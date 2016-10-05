@@ -1,0 +1,24 @@
+label used in Native spreadsheet
+**********************************
+
+# angles
+        ["Pelvic Ant/Posterior Tilt", "Pelvic Up/Down Obliquity", "Pelvic Int/External Rotation" ]
+        ["Hip Flex/Extension", "Hip Ad/Abduction", "Hip Int/External Rotation" ]
+        ["Knee Flex/Extension","Knee Ad/Abduction", "Knee Int/External Rotation"]
+        ["Ankle Dorsi/Plantarflexion", None, "Foot Int/External Progression"]
+
+
+# Moments
+        ["Hip Ext/Flexion", "Hip Ab/Adduction", None ]
+        ["Knee Ext/Flexion", "Knee Ab/Adduction", None ]
+        ["Ankle Dorsi/Plantarflexion", None, None]
+
+
+
+# Powers
+        [ None, None,"Hip" ]
+        [None, None,"Knee"]
+        [None, None,"Ankle"]
+
+
+        

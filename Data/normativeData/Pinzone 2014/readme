@@ -1,0 +1,18 @@
+label used in Native spreadsheet
+**********************************
+
+# angles
+["Pelvis Ant/Pst", "Pelvic Up/Dn", "Pelvic Int/Ext" ]
+["Hip Flx/Ext", "Hip Add/Abd", "Hip Int/Ext" ]
+["Knee Flx/Ext",None, None]
+["Ankle Dor/Pla", None, "Foot Int/Ext"]
+
+# moments
+["Hip Extensor Moment ", "Hip Abductor Moment ", None ]
+["Knee Extensor Moment ", "Knee Abductor Moment ", None ]
+["Plantarflexor Moment ", None, "Ankle Rotation Moment"]
+        
+# powers        
+[ None, None,"Hip Power" ]
+[None, None,"Knee Power"]
+[None, None,"Ankle Power"]
