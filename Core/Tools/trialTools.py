@@ -20,11 +20,11 @@ def isTimeSequenceExist(trial,label):
 
             
     
-def sortedEvents(standardTrial):
+def sortedEvents(trial):
     """
 
     """
-    evs = standardTrial.findChildren(ma.T_Event)
+    evs = trial.findChildren(ma.T_Event)
    
     contextLst=[] # recuperation de tous les contextes   
     for it in evs:
@@ -51,7 +51,7 @@ def sortedEvents(standardTrial):
                     ev.addParent(events)
 
         
-    events.addParent(standardTrial.child(0))
+    events.addParent(trial.child(0))
          
 
 def addTimeSequencesToTrial(trial,nodeToAdd):
@@ -88,7 +88,8 @@ def automaticKineticDetection(dataPath,filenames):
         if filename in kineticFilenames:
             logging.warning("[pyCGM2] : filename %s duplicated in the input list" %(filename))
         else:     
-            trial = ma.io.read(str(dataPath + filename))
+            fileNode = ma.io.read(str(dataPath + filename))
+            trial = fileNode.findChild(ma.T_Trial)
             sortedEvents(trial)
         
             flag_kinetics,times = isKineticFlag(trial)
