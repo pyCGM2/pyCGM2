@@ -321,7 +321,7 @@ class AnalysisFilter(object): # CONTROLER
                 df_label.to_excel(xlsxWriter,str(label+"."+context)) 
 
             xlsxWriter.save()
-            print "basic dataFrame [%s] Exported"%outputName 
+            print "basic dataFrame [%s- basic.xlsx] Exported"%outputName 
 
 
 
@@ -515,7 +515,7 @@ class AnalysisFilter(object): # CONTROLER
                 else:
                     df_stp.to_csv(str(path+"/"+outputName + " - stp - DataFrame.csv"),sep=";")
 
-        print "advanced dataFrame [%s] Exported"%outputName             
+        print "advanced dataFrame [%s- Advanced.xlsx] Exported"%outputName             
 
 
 
@@ -609,7 +609,7 @@ class AnalysisFilter(object): # CONTROLER
                 ma.io.write(root,str(outputName))
             else:
                 ma.io.write(root,str(path + outputName))
-            print "Analysis c3d  [%s] Exported" %outputName 
+            print "Analysis c3d  [%s.c3d] Exported" %outputName 
         except:
             raise Exception ("[pyCGM2] : analysis c3d doesn t export" )            
     
