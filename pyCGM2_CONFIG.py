@@ -8,10 +8,10 @@ import sys
 
 PYTHON_PACKAGES =  'C:\\Anaconda32\\Lib\\site-packages'
 
-NEXUS_SDK_WIN32 = 'C:/Program Files (x86)/Vicon/Nexus2.4/SDK/Win32'
-NEXUS_SDK_PYTHON = 'C:/Program Files (x86)/Vicon/Nexus2.4/SDK/Python'
+NEXUS_SDK_WIN32 = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Win32'
+NEXUS_SDK_PYTHON = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Python'
 
-PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.4\\Python'
+PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.5\\Python'
 
 NORMATIVE_DATABASE_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\Data\\normativeData\\"
 
