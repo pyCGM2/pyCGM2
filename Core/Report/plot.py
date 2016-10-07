@@ -29,20 +29,18 @@ def gaitDescriptivePlot(figAxis,analysis_node,
                     rightLimits=None):
 
     # check if [ pointlabel , context ] in keys of analysis_node 
+    left_flag = False    
     for key in analysis_node.data.keys():
         if key[0] == pointLabel_L and key[1] == contextPointLabel_L:
-            left_flag = True if analysis_node.data[pointLabel_L,contextPointLabel_L]["values"] != [] else False 
-        else:
-            left_flag = False
+            left_flag = True if analysis_node.data[pointLabel_L,contextPointLabel_L]["values"] != [] else False
 
+            
+    right_flag = False
     for key in analysis_node.data.keys():
         if key[0] == pointLabel_R and key[1] == contextPointLabel_R:
             right_flag = True if analysis_node.data[pointLabel_R,contextPointLabel_R]["values"] != [] else False    
-        else:
-            right_flag = False
 
 
-    
     # plot        
     if left_flag:
         mean_L=analysis_node.data[pointLabel_L,contextPointLabel_L]["mean"][:,axis]
@@ -106,16 +104,12 @@ def gaitConsistencyPlot( figAxis, analysis_node,  pointLabel_L,contextPointLabel
     # Left plot
     #------------
     # check pointLabel, contextpoint exist
+    left_flag = False
     for key in analysis_node.data.keys():
         if key[0] == pointLabel_L and key[1] == contextPointLabel_L:
            n = len(analysis_node.data[pointLabel_L,contextPointLabel_L]["values"])
            left_flag = True if n !=0 else False   
-        else:
-           left_flag = False
-
-        
-
-
+           
     # plot    
     if left_flag:
         values_L= np.zeros((101,n))
@@ -142,12 +136,11 @@ def gaitConsistencyPlot( figAxis, analysis_node,  pointLabel_L,contextPointLabel
     # right plot
     #------------
     # check
+    right_flag = False
     for key in analysis_node.data.keys():
         if key[0] == pointLabel_R and key[1] == contextPointLabel_R:
             n = len(analysis_node.data[pointLabel_R,contextPointLabel_R]["values"])
             right_flag = True if n !=0 else False
-        else:
-            right_flag = False
 
     # plot
     if right_flag:
@@ -642,7 +635,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
             gaitConsistencyPlot(ax1,self.m_input.kineticStats, self.__translators["Left.Hip.Moment"]+suffixPlus,"Left", self.__translators["Right.Hip.Moment"]+suffixPlus,"Right",0,"Hip extensor Moment", ylabel = " moment (N.mm.kg-1)")
             gaitConsistencyPlot(ax2,self.m_input.kineticStats, self.__translators["Left.Hip.Moment"]+suffixPlus,"Left", self.__translators["Right.Hip.Moment"]+suffixPlus,"Right",1,"Hip abductor Moment",ylabel = " moment (N.mm.kg-1)")
             gaitConsistencyPlot(ax3,self.m_input.kineticStats, self.__translators["Left.Hip.Moment"]+suffixPlus,"Left", self.__translators["Right.Hip.Moment"]+suffixPlus,"Right",2,"Hip rotation Moment",ylabel = " moment (N.mm.kg-1)")
-            gaitConsistencyPlot(ax4,self.m_input.kineticStats, "LHipPower"+suffixPlus, "Left", "RHipPower"+suffixPlus,"Right",2,"Hip power",ylabel = " power (W.kg-1)")
+            gaitConsistencyPlot(ax4,self.m_input.kineticStats, self.__translators["Left.Hip.Power"]+suffixPlus, "Left", self.__translators["Right.Hip.Power"]+suffixPlus,"Right",2,"Hip power",ylabel = " power (W.kg-1)")
      
             gaitConsistencyPlot(ax5,self.m_input.kineticStats, self.__translators["Left.Knee.Moment"]+suffixPlus,"Left", self.__translators["Right.Knee.Moment"]+suffixPlus,"Right",0,"Knee extensor Moment", ylabel = " moment (N.mm.kg-1)")
             gaitConsistencyPlot(ax6,self.m_input.kineticStats, self.__translators["Left.Knee.Moment"]+suffixPlus,"Left", self.__translators["Right.Knee.Moment"]+suffixPlus,"Right",1,"Knee abductor Moment",ylabel = " moment (N.mm.kg-1)")

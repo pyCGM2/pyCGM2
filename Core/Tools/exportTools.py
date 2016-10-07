@@ -191,7 +191,7 @@ def buid_df_descriptiveCycle101_3(analysis_outputStats):
             df['Stats type'] = "std"
             df_collection_R.append(df)
 
-            valuesMedian=analysis_outputStats.data[label,context],["median"]
+            valuesMedian=analysis_outputStats.data[label,context]["median"]
             df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
             df['Axe']=['X','Y','Z']
             df['Label']=label
