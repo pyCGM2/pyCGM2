@@ -2,7 +2,7 @@
 """
 Created on Mon Oct 03 10:40:17 2016
 
-@author: fabien Leboeuf ( Salfordd Univ)
+@author: fabien Leboeuf ( Salford Univ)
 """
 
 import pdb
