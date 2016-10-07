@@ -51,6 +51,10 @@ if __name__ == "__main__":
         reconstructedFilenameLabelledNoExt ="gait Trial 01_CGM1"  
         reconstructedFilenameLabelled = reconstructedFilenameLabelledNoExt+".c3d"        
     
+        print "data Path: "+ DATA_PATH    
+        print "reconstructed file: "+ reconstructedFilenameLabelled
+    
+        # ----INFOS-----        
         model={"HJC": "har",
            "KinematicsFitting": "OpenSim"}    
     
@@ -71,7 +75,7 @@ if __name__ == "__main__":
                     "external Device": "N",
                     "person assistance": "N"
                      }
-
+        # ----PROCESSING-----
         CGM2smart.gaitProcessing_cgm1 (reconstructedFilenameLabelled, DATA_PATH,
                                model,  subject, experimental, 
                                plotFlag= plotFlag, 
