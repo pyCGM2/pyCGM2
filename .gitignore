@@ -85,3 +85,4 @@ ENV/
 # Spyder project settings
 .spyderproject
 
+*.c3d
