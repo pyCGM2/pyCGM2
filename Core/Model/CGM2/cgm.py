@@ -7,7 +7,6 @@ Created on Wed Jun 03 10:59:01 2015
 
 import numpy as np
 
-import modelFilters as cmf
 import model as cmb
 import modelDecorator as cmd
 import frame as cfr
@@ -2452,7 +2451,7 @@ class CGM1ModelInf(CGM):
                     dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
                     k+=1 
             
-            if motionMethod == cmf.motionMethod.Sodervisk :
+            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=cmot.segmentalLeastSquare(staticPos, 
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())    
@@ -2636,7 +2635,7 @@ class CGM1ModelInf(CGM):
                     k+=1             
         
         
-            if motionMethod == cmf.motionMethod.Sodervisk :
+            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=cmot.segmentalLeastSquare(staticPos, 
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())    
@@ -2813,7 +2812,7 @@ class CGM1ModelInf(CGM):
                     k+=1             
         
         
-            if motionMethod == cmf.motionMethod.Sodervisk :
+            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=cmot.segmentalLeastSquare(staticPos, 
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())    
@@ -3031,7 +3030,7 @@ class CGM1ModelInf(CGM):
                     k+=1             
         
         
-            if motionMethod == cmf.motionMethod.Sodervisk :
+            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=cmot.segmentalLeastSquare(staticPos, 
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())    
@@ -3279,7 +3278,7 @@ class CGM1ModelInf(CGM):
                     k+=1             
         
         
-            if motionMethod == cmf.motionMethod.Sodervisk :
+            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=cmot.segmentalLeastSquare(staticPos, 
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())    
