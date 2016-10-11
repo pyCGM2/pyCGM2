@@ -3,7 +3,11 @@
 Created on Mon Oct 10 11:36:32 2016
 
 @author: Fabien Leboeuf ( Salford Univ, UK)
+
+
+TODO : findProgression Axis should be in another folder. (?) 
 """
+
 
 import btk
 import numpy as np
@@ -156,4 +160,27 @@ def findProgressionFromVectors(a1_long,a2_lat):
     if "Z" not in str(longitudinalAxis+lateralAxis):
         globalFrame = str(longitudinalAxis+lateralAxis+"Z")        
            
-    return   longitudinalAxis,forwardProgression,globalFrame  
+    return   longitudinalAxis,forwardProgression,globalFrame
+    
+    
+def checkMarkers( acq, markerList):
+    """
+    checkMarkers(acqGait, ["LASI", "RASI","LPSI", "RPSI", "RTHIAP", "RTHIAD", "RTHI", "RKNE", "RSHN","RTIAP", "RTIB", "RANK", "RHEE", "RTOE","RCUN","RD1M","RD5M" ])                   
+    """
+    for m in markerList:
+        if not isPointExist(acq, m):
+            raise Exception(" markers %s not found" % m )
+
+def checkFirstAndLastFrame (acq, markerLabel):
+
+    if acq.GetPoint(markerLabel).GetValues()[0,0] == 0:
+        raise Exception ("no marker on first frame")
+    
+    if acq.GetPoint(markerLabel).GetValues()[-1,0] == 0:
+        raise Exception ("no marker on last frame")
+        
+def isGap(acq, markerList):
+    for m in markerList:
+         residualValues = acq.GetPoint(m).GetResiduals()
+         if any(residualValues== -1.0):
+             raise Exception(" gap founded for markers %s " % m )       
