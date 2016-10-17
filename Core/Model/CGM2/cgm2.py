@@ -86,7 +86,7 @@ class CGM2ModelInf(cgm.CGM):
         self.addSegment("Left Shank",2,pyCGM2Enums.SegmentSide.Left,["LANK","LTIB"], tracking_markers = ["LKJC","LANK","LTIB"])
         self.addSegment("Right Shank",5,pyCGM2Enums.SegmentSide.Right,["RANK","RTIB","RSHN","RTIAP"], tracking_markers = ["RKJC","RANK","RTIB","RSHN","RTIAP"])
         self.addSegment("Right Hindfoot",6,pyCGM2Enums.SegmentSide.Right,["RHEE","RCUN","RANK"], tracking_markers = ["RHEE","RCUN","RAJC"])
-        self.addSegment("Right Forefoot",7,pyCGM2Enums.SegmentSide.Right,["RD1M","RD5M","RCUN","RTOE"], tracking_markers = ["RD1M","RD5M","RTOE"])
+        self.addSegment("Right Forefoot",7,pyCGM2Enums.SegmentSide.Right,["RD1M","RD5M","RTOE"], tracking_markers = ["RD1M","RD5M","RvCUN"]) #, "RTOE"])
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
@@ -99,7 +99,7 @@ class CGM2ModelInf(cgm.CGM):
         self.addJoint("RKneeAngles_cgm","Right Thigh", "Right Shank","YXZ")
 
         self.addJoint("RAnkleAngles_cgm","Right Shank", "Right Hindfoot","YXZ")
-        self.addJoint("RForeFootAngles_cgm","Right Hindfoot", "Right Forefoot","YXZ") # rename Joint label
+        self.addJoint("RForeFootAngles_cgm","Right Hindfoot", "Right Forefoot","YXZ") 
 
         self.mp_computed["leftThighOffset"] = 0.0
         self.mp_computed["rightThighOffset"] = 0.0
@@ -129,8 +129,11 @@ class CGM2ModelInf(cgm.CGM):
         dictRef["Right Shank"]={"TF" : {'sequence':"ZXY", 'labels':   ["RANK","RKJC","RTIB","RANK"]} }
                         
         dictRef["Right Hindfoot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RCUN","RAJC",None,"RAJC"]} }  #{"TF" : {'sequence':"ZYiX", 'labels':   ["RCUN","RAJC","RHEE","RAJC"]} }
-        dictRef["Right Forefoot"]={"TF" : {'sequence':"ZXY", 'labels':   ["RTOE","RCUN","RD5M","RCUN"]} }   
-        
+        dictRef["Right Forefoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["RTOE","RvCUN","RD5M","RTOE"]} }  #{"TF" : {'sequence':"ZXY", 'labels':   ["RTOE","RCUN","RD5M","RCUN"]}  
+
+
+
+
         dictRefAnatomical={}
         dictRefAnatomical["Pelvis"]= {'sequence':"YZX", 'labels':  ["RASI","LASI","SACR","midASIS"]} # normaly : midHJC
         dictRefAnatomical["Left Thigh"]= {'sequence':"ZXiY", 'labels':  ["LKJC","LHJC","LKNE","LHJC"]} # origin = Proximal ( differ from native)
@@ -290,25 +293,7 @@ class CGM2ModelInf(cgm.CGM):
         
         # --- fore foot 
         # ----------------
-        # new Points required
-        
-        # method 1
-        # method : Projection of TOE on the plan CUN-D-D5
-#        valueProj = np.zeros((aquiStatic.GetPointFrameNumber(),3))
-#        for i in range(frameInit,frameEnd):
-#            D5= aquiStatic.GetPoint("RD5M").GetValues()[i,:]
-#            D1= aquiStatic.GetPoint("RD1M").GetValues()[i,:]
-#            Or= aquiStatic.GetPoint("RCUN").GetValues()[i,:]
-#            toe = aquiStatic.GetPoint("RTOE").GetValues()[i,:]
-#
-#            valueProj[i,:] = cg.pointProjectionOnPlane(toe,Or,D5,D1)        
-#
-#        btkTools.smartAppendPoint(aquiStatic,"RvTOE",valueProj,desc="projectPlan")
-        
-        
-        
-        # toe offset registration
-        
+        # new Points required => toe offset registration
         toe =  aquiStatic.GetPoint("RTOE").GetValues()
         d5 =  aquiStatic.GetPoint("RD5M").GetValues()
     
@@ -322,19 +307,6 @@ class CGM2ModelInf(cgm.CGM):
 
         btkTools.smartAppendPoint(aquiStatic,"RvTOE",valuesVirtualToe,desc="virtual")
         btkTools.smartAppendPoint(aquiStatic,"RvD5M",valuesVirtualD5,desc="virtual-flat ")
-        #btkTools.smartAppendPoint(aquiStatic,"new",new,desc="virtual-flat ")
-
-
-        
-        print "pt 1RvTOE"
-        print aquiStatic.GetPoint("RvTOE").GetValues().mean(axis= 0)
-        
-        print "Pt2 - RvCUN"
-        print aquiStatic.GetPoint("RvCUN").GetValues().mean(axis= 0)
-
-
-        print "Pt3-RvD5M"
-        print aquiStatic.GetPoint("RvD5M").GetValues().mean(axis= 0)
 
         # new points added
         self.getSegment("Right Forefoot").addMarkerLabel("RMidFoot")
@@ -1246,16 +1218,20 @@ class CGM2ModelInf(cgm.CGM):
         
         
         #   referential construction
-        pt1=aquiStatic.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # toe
-        pt2=aquiStatic.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # cun
-        pt3=aquiStatic.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # M5
+        pt1=aquiStatic.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # D5
+        pt2=aquiStatic.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # Toe
+
+        if dictRef["Right Forefoot"]["TF"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) 
+            v=(pt3-pt1)
+        else:
+           v= 100 * np.array([0.0, 0.0, 1.0])
     
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
                     
-        v=(pt3-pt1)
         v=v/np.linalg.norm(v)
                     
         a2=np.cross(a1,v)
@@ -2770,6 +2746,9 @@ class CGM2ModelInf(cgm.CGM):
             
             seg.getReferential("TF").addMotionFrame(frame)
             
+        # point addition            
+        btkTools.smartAppendPoint(aqui,"RvCUN",seg.getReferential("TF").getNodeTrajectory("RvCUN"),desc="from hindFoot" )            
+            
         # anatomical axis
         seg.anatomicalFrame.motion=[]
         for i in range(0,aqui.GetPointFrameNumber()):
@@ -2802,6 +2781,13 @@ class CGM2ModelInf(cgm.CGM):
             pt1=aqui.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][0])).GetValues()[i,:] 
             pt2=aqui.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][1])).GetValues()[i,:] 
             pt3=aqui.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][2])).GetValues()[i,:] 
+            
+            if dictRef["Right Forefoot"]["TF"]['labels'][2] is not None:
+                pt3=aqui.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][2])).GetValues()[i,:] # not used
+                v=(pt3-pt1)
+            else:
+                v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY              
+            
             ptOrigin=aqui.GetPoint(str(dictRef["Right Forefoot"]["TF"]['labels'][3])).GetValues()[i,:]             
          
          
@@ -2826,8 +2812,8 @@ class CGM2ModelInf(cgm.CGM):
             seg.getReferential("TF").addMotionFrame(frame)
             
         
-        # ajout du point RvCUN
-        btkTools.smartAppendPoint(aqui,"RvCUN",seg.getReferential("TF").getNodeTrajectory("RvCUN") )
+        # point addition
+        # btkTools.smartAppendPoint(aqui,"RvCUN",seg.getReferential("TF").getNodeTrajectory("RvCUN") )
         btkTools.smartAppendPoint(aqui,"RvTOE",seg.getReferential("TF").getNodeTrajectory("RvTOE") )
         btkTools.smartAppendPoint(aqui,"RvD5M",seg.getReferential("TF").getNodeTrajectory("RvD5M") ) 
         
@@ -2894,6 +2880,10 @@ class CGM2ModelInf(cgm.CGM):
             
             seg.getReferential("TF").addMotionFrame(frame)
 
+         # append marker
+        btkTools.smartAppendPoint(aqui,"RvCUN",seg.getReferential("TF").getNodeTrajectory("RvCUN"),desc="opt" )
+
+
         # anatomical Frame
         # ------------------    
         seg.anatomicalFrame.motion=[]
@@ -2914,6 +2904,9 @@ class CGM2ModelInf(cgm.CGM):
         # check presence of markers in the acquisition
         if seg.m_tracking_markers != []:
             for label in seg.m_tracking_markers:
+                print "Label forefoot markers-------"
+                print label
+                print "Label forefoot markers FIN-------"
                 if not btkTools.isPointExist(aqui,label):
                     raise Exception("[pycga] Pre-anatomical  calibration checking : Right Hindfoot point %s doesn't exist"% label )
 
@@ -2956,6 +2949,9 @@ class CGM2ModelInf(cgm.CGM):
                 frame.m_axisZ=R[:,2]
             
             seg.getReferential("TF").addMotionFrame(frame)
+
+        
+
 
         # anatomical Frame
         # ------------------    

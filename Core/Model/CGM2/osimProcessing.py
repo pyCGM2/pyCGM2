@@ -128,10 +128,11 @@ class opensimModel(object):
         osimJointInParent.set(1,positionParent[1]/toMeter)
         osimJointInParent.set(2,positionParent[2]/toMeter)
         
-        osimJointInParent = self.m_model.getJointSet().get(jointLabelInOsim).get_location()
-        osimJointInParent.set(0,positionChild[0]/toMeter)
-        osimJointInParent.set(1,positionChild[1]/toMeter)
-        osimJointInParent.set(2,positionChild[2]/toMeter)
+        osimJointInChild = self.m_model.getJointSet().get(jointLabelInOsim).get_location()
+        osimJointInChild.set(0,positionChild[0]/toMeter)
+        osimJointInChild.set(1,positionChild[1]/toMeter)
+        osimJointInChild.set(2,positionChild[2]/toMeter)
+        
         
         if verbose:  print " osim joint centres %s modified" %(jointLabelInOsim)
 
