@@ -11,6 +11,7 @@ TODO : findProgression Axis should be in another folder. (?)
 
 import btk
 import numpy as np
+import logging
 
 def smartReader(filename):
     reader = btk.btkAcquisitionFileReader()
@@ -42,7 +43,15 @@ def isPointExist(acq,label):
     else: 
         return False
 
+def isPointsExist(acq,labels):
+    for label in labels:
+        if not isPointExist(acq,label):
+            raise Exception("[pyCGM2] markers (%s) doesn't exist"% label )
+
+
 def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
+    logging.info("new point (%s) added to the c3d" % label)
+
     # TODO : si value = 1 lignes alors il faudrait dupliquer la lignes pour les n franes
     # valueProj *np.ones((aquiStatic.GetPointFrameNumber(),3))
     
@@ -77,13 +86,13 @@ def clearPoints(acq, pointlabelList,display = False):
 
 def findProgressionFromPoints(acq,originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel):
     if not isPointExist(acq,originPointLabel):
-        raise Exception( "[pyCGA] : origin point doesnt exist")
+        raise Exception( "[pyCGM2] : origin point doesnt exist")
 
     if not isPointExist(acq,longitudinal_extremityPointLabel):
-        raise Exception( "[pyCGA] : longitudinal point  doesnt exist")
+        raise Exception( "[pyCGM2] : longitudinal point  doesnt exist")
 
     if not isPointExist(acq,lateral_extremityPointLabel):
-        raise Exception( "[pyCGA] : lateral point  doesnt exist")
+        raise Exception( "[pyCGM2] : lateral point  doesnt exist")
 
     originValues = acq.GetPoint(originPointLabel).GetValues()[0,:]
     longitudinal_extremityValues = acq.GetPoint(longitudinal_extremityPointLabel).GetValues()[0,:]
@@ -169,18 +178,18 @@ def checkMarkers( acq, markerList):
     """
     for m in markerList:
         if not isPointExist(acq, m):
-            raise Exception(" markers %s not found" % m )
+            raise Exception("[pyCGM2] markers %s not found" % m )
 
 def checkFirstAndLastFrame (acq, markerLabel):
 
     if acq.GetPoint(markerLabel).GetValues()[0,0] == 0:
-        raise Exception ("no marker on first frame")
+        raise Exception ("[pyCGM2] no marker on first frame")
     
     if acq.GetPoint(markerLabel).GetValues()[-1,0] == 0:
-        raise Exception ("no marker on last frame")
+        raise Exception ("[pyCGM2] no marker on last frame")
         
 def isGap(acq, markerList):
     for m in markerList:
          residualValues = acq.GetPoint(m).GetResiduals()
          if any(residualValues== -1.0):
-             raise Exception(" gap founded for markers %s " % m )       
+             raise Exception("[pyCGM2] gap founded for markers %s " % m )       

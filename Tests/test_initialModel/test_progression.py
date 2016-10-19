@@ -192,6 +192,7 @@ class ProgressionTest():
         np.testing.assert_equal( globalFrame,"YXZ")
 
 if __name__ == "__main__":
+    logging.info("######## PROCESS progression Axis ######")    
     ProgressionTest.gaitTrialProgressionX_forward_lateralY()
     ProgressionTest.gaitTrialProgressionX_backward_lateralY()
     ProgressionTest.gaitTrialProgressionX_forward_lateralY()
@@ -201,3 +202,4 @@ if __name__ == "__main__":
     ProgressionTest.gaitTrialProgressionY_forward_lateralX()
     ProgressionTest.gaitTrialProgressionY_backward_lateralX()
     ProgressionTest.gaitTrialProgressionY_backward_lateralX_static()
+    logging.info("######## PROCESS progression Axis ----> DONE ######")    

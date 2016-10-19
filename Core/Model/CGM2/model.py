@@ -7,6 +7,7 @@ Created on Thu Jan 15 14:27:51 2015
 import numpy as np
 import btk
 import copy
+import logging
 
 import frame as cfr
 
@@ -392,7 +393,8 @@ class Segment(object):
             i+=1
 
         if isFind:
-            print "marker %s already in the marker segment list" % label  
+            logging.warning("marker %s already in the marker segment list" % label)
+
 
         else:
             self.m_markerLabels.append(label)
@@ -413,7 +415,7 @@ class Segment(object):
             i+=1
 
         if isFind:
-            print "marker %s already in the marker segment list" % label  
+            logging.warning("marker %s already in the tracking marker segment list" % label) 
 
         else:
             self.m_tracking_markers.append(label)

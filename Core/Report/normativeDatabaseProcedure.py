@@ -34,7 +34,7 @@ class Pinzone2014_normativeDataBases(object):
             meanLabel = "CentreTwoAverage"
             sdLabel = "CentreTwoSD"
         else:
-            raise Exception("[pyCGA] - dont find Pinzone Normative data centre")
+            raise Exception("[pyCGM2] - dont find Pinzone Normative data centre")
 
         if dataType == "Angles":
             self.data[JointLabel]= dict() 

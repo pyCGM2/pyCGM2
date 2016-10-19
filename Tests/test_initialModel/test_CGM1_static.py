@@ -12,7 +12,8 @@ import pdb
 import logging
 
 try:
-    import pyCGM2.pyCGM2_CONFIG 
+    import pyCGM2.pyCGM2_CONFIG
+    pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.DEBUG)
 except ImportError:
     logging.error("[pyCGM2] : pyCGM2 module not in your python path")
 
@@ -38,7 +39,8 @@ class CGM1_calibrationTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -54,6 +56,7 @@ class CGM1_calibrationTest():
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
+        
         spf_l,sro_l,spf_r,sro_r = model.getViconFootOffset()
 
         
@@ -95,6 +98,7 @@ class CGM1_calibrationTest():
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
         model=cgm.CGM1ModelInf()     
+        model.configure()
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -150,7 +154,9 @@ class CGM1_calibrationTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -231,7 +237,9 @@ class CGM1_calibrationTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -313,7 +321,9 @@ class CGM1_calibrationTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -403,7 +413,9 @@ class CGM1_custom_calibrationTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -447,7 +459,9 @@ class CGM1_custom_calibrationTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -493,6 +507,8 @@ class CGM1_custom_calibrationTest():
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
         model=cgm.CGM1ModelInf()     
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -539,6 +555,8 @@ class CGM1_custom_calibrationTest():
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
         model=cgm.CGM1ModelInf()     
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -587,7 +605,9 @@ class CGM1_custom_calibrationTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -625,16 +645,20 @@ class CGM1_custom_calibrationTest():
 if __name__ == "__main__":
 
     # CGM 1
+    logging.info("######## PROCESS CGM1 ######")
     CGM1_calibrationTest.basicCGM1()
     CGM1_calibrationTest.basicCGM1_flatFoot()
     CGM1_calibrationTest.advancedCGM1_kad_noOptions()
     CGM1_calibrationTest.advancedCGM1_kad_flatFoot()
     CGM1_calibrationTest.advancedCGM1_kad_midMaleolus()      
+    logging.info("######## PROCESS CGM1 --> Done ######")    
     
-#    # CGM1 - custom
+    # CGM1 - custom
+    logging.info("######## PROCESS custom CGM1 ######")
     CGM1_custom_calibrationTest.harrigton_fullPredictor() 
     CGM1_custom_calibrationTest.harrigton_pelvisWidthPredictor()
     CGM1_custom_calibrationTest.harrigton_legLengthPredictor()  
     
     CGM1_custom_calibrationTest.customLocalPosition()
     CGM1_custom_calibrationTest.hara_regressions()
+    logging.info("######## PROCESS custom CGM1 --> Done ######")

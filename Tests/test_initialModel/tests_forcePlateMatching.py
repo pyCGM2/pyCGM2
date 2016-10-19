@@ -94,8 +94,10 @@ class test_matchedFootPlatForm():
         
 if __name__ == "__main__":
     plt.close("all")
-        
+    
+    logging.info("######## PROCESS matched Force Plate ######")        
     test_matchedFootPlatForm.twoPF()
     test_matchedFootPlatForm.threePF()    
     test_matchedFootPlatForm.threePF_patho()    
     test_matchedFootPlatForm.fourPF()
+    logging.info("######## PROCESS matched Force Plate ---> Done ######")        

@@ -7,6 +7,7 @@ Created on Mon May 30 11:08:11 2016
 
 import numpy as np
 import pdb
+import logging
 
 class Bsp(object):
 
@@ -81,7 +82,7 @@ class Bsp(object):
                     length = self.m_model.getSegment(itSegment.name).m_bsp["length"]
                     (mass,com,Ixx,Iyy,Izz)  = Bsp.setParameters( it, length, bodymass)
                     if self.m_model.getSegment(itSegment.name).anatomicalFrame.static.getNode_byLabel("com"): # update com if defined during calibration.
-                        print "segment %s -- com already defined during calibration. " %(itSegment.name)
+                        logging.warning("segment %s -- com already defined during calibration. " %(itSegment.name) )
                         com = self.m_model.getSegment(itSegment.name).anatomicalFrame.static.getNode_byLabel("com").m_local
                     self.m_model.getSegment(itSegment.name).setMass( mass)       
                     self.m_model.getSegment(itSegment.name).setComPosition (com)       

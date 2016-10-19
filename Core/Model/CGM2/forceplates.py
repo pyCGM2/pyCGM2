@@ -9,6 +9,7 @@ import btk
 import numpy as np
 import matplotlib.pyplot as plt
 import pdb
+import logging
 
 from pyCGM2.Core.Tools import  btkTools
 
@@ -83,10 +84,10 @@ def matchingFootSideOnForceplate (btkAcq, left_markerLabelToe ="LTOE", left_mark
             ax.plot(diffR,'-b')
 
         if np.min(diffL)<np.min(diffR):
-            print " Force plate " + str(i) + " : foot Left" 
+            logging.debug(" Force plate " + str(i) + " : left foot")
             suffix = suffix +  "L"
         else:
-            print " Force plate " + str(i) + " : foot Right" 
+            logging.debug(" Force plate " + str(i) + " : right foot")
             suffix = suffix +  "R"
 
 

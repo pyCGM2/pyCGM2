@@ -7,6 +7,7 @@ Created on Wed Jun 03 11:05:55 2015
 
 import numpy as np
 import pdb
+import logging
 
 def setFrameData(a1,a2,sequence):
     if sequence == "XYZ" or sequence == "XYiZ" :
@@ -190,6 +191,8 @@ class Frame(object):
 
         .. todo : use an Enum for the argment positionType
         """
+        logging.info("new node (%s) added " % nodeLabel)
+        
         isFind=False
         i=0
         for nodeIt in self._nodes:
@@ -252,10 +255,8 @@ class Frame(object):
         """ print the label of nodes
     
         """
-        print "--- node label ---"
         for nodeIt in self._nodes:
             print nodeIt.m_name
-        print "--- end  ---"
 
     def eraseNodes(self):    
         self._nodes=[]

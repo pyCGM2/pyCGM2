@@ -6,7 +6,7 @@ Created on Wed Jun 03 11:07:03 2015
 """
 
 import pdb
-
+import logging
 import numpy as np
 import btk
 
@@ -98,6 +98,7 @@ class ModelCalibrationFilter(object):
         self.m_procedure=procedure
         self.m_model=iMod
         self.m_options=options
+        
         
 
     def compute(self, firstFrameOnly = True):
@@ -298,15 +299,16 @@ class ModelJCSFilter(object):
         self._filterCutOffFrequency = fc
 
 
-    def compute(self,description="", pointLabelSuffix ="", verbose = False ):
+    def compute(self,description="", pointLabelSuffix =""):
         """Run motion filter
         """
-         
+              
+        
         for it in  self.m_model.m_jointCollection:
-            if verbose:
-                print " Processing of %s"  %(it.m_label) 
-                print it.m_proximalLabel
-                print it.m_distalLabel
+            logging.info("---Processing of %s---"  % it.m_label)
+            logging.info(" proximal : %s "% it.m_proximalLabel)
+            logging.info(" distal : %s "% it.m_distalLabel)
+
                         
             jointLabel = it.m_label
             proxSeg = self.m_model.getSegment(it.m_proximalLabel)
@@ -372,10 +374,9 @@ class ModelAbsoluteAnglesFilter(object):
         self.m_forwardProgression = forwardProgression
 
     
-    def compute(self,description="absolute", pointLabelSuffix ="", verbose = False ):
+    def compute(self,description="absolute", pointLabelSuffix =""):
         """
-        """
-        
+        """        
         for index in range (0, len(self.m_segmentLabels)):
             
             absoluteAngleValues = np.zeros((self.m_aqui.GetPointFrameNumber(),3))
@@ -462,10 +463,9 @@ class ForcePlateAssemblyFilter(object):
             if l == "L":
                 self.m_model.getSegment(self.m_leftSeglabel).addExternalDeviceWrench(grwc.GetItem(i))
             elif l == "R":
-                print i
                 self.m_model.getSegment(self.m_rightSeglabel).addExternalDeviceWrench(grwc.GetItem(i))
             else:
-                print " force plate %i sans donnees" %(i)
+                logging.warning("force plate %i sans donnees" %(i))
             i+=1
 
         if "L" in self.m_mappedForcePlate:
@@ -496,20 +496,17 @@ class InverseDynamicFilter(object):
         self.m_projection = projection
         self.m_exportMomentContributions = exportMomentContributions
         
-    def compute(self, pointLabelSuffix ="", verbose = False):
+    def compute(self, pointLabelSuffix =""):
         """
         """
 
         self.m_procedure.compute(self.m_model,self.m_aqui,self.m_gravity,self.m_scaleToMeter)        
         
 
-        for it in  self.m_model.m_jointCollection:
-            
-            if verbose:
-                print " Kinetics Processing of %s"  %(it.m_label) 
-                print it.m_label                
-                print it.m_proximalLabel
-                print it.m_distalLabel
+        for it in  self.m_model.m_jointCollection:            
+            logging.info("kinetics of %s"  %(it.m_label)) 
+            logging.info("proximal label :%s" %(it.m_proximalLabel))
+            logging.info("distal label :%s" %(it.m_distalLabel))
             
             jointLabel = it.m_label
             nFrames = self.m_aqui.GetPointFrameNumber() 
@@ -821,16 +818,14 @@ class JointPowerFilter(object):
         self.m_model = iMod
         self.m_scale = scaleToMeter
         
-    def compute(self, pointLabelSuffix="", verbose = False):
+    def compute(self, pointLabelSuffix=""):
         """
         """
 
         for it in  self.m_model.m_jointCollection:
-            if verbose:
-                print it.m_label
-                print " Power Calculation of %s"  %(it.m_label) 
-                print it.m_proximalLabel
-                print it.m_distalLabel
+            logging.info("power of %s"  %(it.m_label)) 
+            logging.info("proximal label :%s" %(it.m_proximalLabel))
+            logging.info("distal label :%s" %(it.m_distalLabel))
 
             jointLabel = it.m_label
             

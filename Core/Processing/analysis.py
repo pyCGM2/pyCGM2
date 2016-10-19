@@ -7,6 +7,7 @@ Created on Mon Oct 03 10:52:09 2016
 import pdb
 import numpy as np
 import pandas as pd
+import logging
 
 # openMA
 import ma.io
@@ -141,7 +142,6 @@ class AnalysisFilter(object): # CONTROLER
         """
         
         """
-        print "####### ANALYSIS FILTER #######"
         pstOut = self.__concreteAnalysisBuilder.computeSpatioTemporel()
         self.analysis.setStp(pstOut)   
         
@@ -321,7 +321,8 @@ class AnalysisFilter(object): # CONTROLER
                 df_label.to_excel(xlsxWriter,str(label+"."+context)) 
 
             xlsxWriter.save()
-            print "basic dataFrame [%s- basic.xlsx] Exported"%outputName 
+            logging.info("basic dataFrame [%s- basic.xlsx] Exported"%outputName)
+
 
 
 
@@ -515,7 +516,7 @@ class AnalysisFilter(object): # CONTROLER
                 else:
                     df_stp.to_csv(str(path+"/"+outputName + " - stp - DataFrame.csv"),sep=";")
 
-        print "advanced dataFrame [%s- Advanced.xlsx] Exported"%outputName             
+        logging.info("advanced dataFrame [%s- Advanced.xlsx] Exported"%outputName)             
 
 
 
@@ -609,7 +610,7 @@ class AnalysisFilter(object): # CONTROLER
                 ma.io.write(root,str(outputName))
             else:
                 ma.io.write(root,str(path + outputName))
-            print "Analysis c3d  [%s.c3d] Exported" %outputName 
+            logging.info("Analysis c3d  [%s.c3d] Exported" %outputName) 
         except:
             raise Exception ("[pyCGM2] : analysis c3d doesn t export" )            
     
@@ -696,8 +697,8 @@ class GaitAnalysisBuilder(AbstractBuilder):
 
         out={}
 
+        logging.info("--stp computation--")
         if self.m_cycles.spatioTemporalCycles is not None :
-            print "spatioTemporal computation"
 
             enableLeftComputation = len ([cycle for cycle in self.m_cycles.spatioTemporalCycles if cycle.enableFlag and cycle.context=="Left"])
             enableRightComputation = len ([cycle for cycle in self.m_cycles.spatioTemporalCycles if cycle.enableFlag and cycle.context=="Right"])
@@ -709,11 +710,11 @@ class GaitAnalysisBuilder(AbstractBuilder):
                 if enableRightComputation:
                     out[label,"Right"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.spatioTemporalCycles,label,"Right")
             if enableLeftComputation:        
-                print "---> Left done"
+                logging.info("left stp computation---> done")
             if enableRightComputation:                
-                print "---> Right done"                
+                logging.info("right stp computation---> done")
         else:
-            print "No spatioTemporal computation"
+            logging.warning("No spatioTemporal computation")
         
         return out
         
@@ -725,6 +726,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         out={}
         outPst={}
 
+        logging.info("--kinematic computation--")
         if self.m_cycles.kinematicCycles is not None:
             print "kinematic computation"
         
@@ -736,9 +738,9 @@ class GaitAnalysisBuilder(AbstractBuilder):
                 for label in CGM2cycle.GaitCycle.STP_LABELS:
                     outPst[label,"Left"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.kinematicCycles,label,"Left")
                 
-                print "---> Left done"
+                logging.info("left kinematic computation---> done")
             else:
-                print "---> Left no output"
+                logging.warning("No left Kinematic computation")
 
             if "Right" in self.m_kinematicLabelsDict.keys():
                 for label in self.m_kinematicLabelsDict["Right"]:
@@ -748,12 +750,12 @@ class GaitAnalysisBuilder(AbstractBuilder):
                 for label in CGM2cycle.GaitCycle.STP_LABELS:
                     outPst[label,"Right"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.kinematicCycles,label,"Right")
                 
-                print "---> Right done"
+                logging.info("right kinematic computation---> done")
             else:
-                print "---> Right no output"
+                logging.warning("No right Kinematic computation")
 
         else:
-            print "No kinematic cycle computation" 
+            logging.warning("No Kinematic computation")
 
         return out,outPst
         
@@ -765,18 +767,18 @@ class GaitAnalysisBuilder(AbstractBuilder):
         out={}
         outPst={}
 
+        logging.info("--kinetic computation--")
         if self.m_cycles.kineticCycles is not None:
-           print "kinetic computation"
-        
+
            if "Left" in self.m_kinematicLabelsDict.keys():
                for label in self.m_kineticLabelsDict["Left"]:
                    labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix!="" else label
                    out[labelPlus,"Left"]=point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
                for label in CGM2cycle.GaitCycle.STP_LABELS:
                     outPst[label,"Left"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.kineticCycles,label,"Left")
-               print "---> Left done"
+               logging.info("left kinetic computation---> done")
            else:
-               print "---> Left no output"
+               logging.warning("No left Kinetic computation")
 
                     
            if "Right" in self.m_kinematicLabelsDict.keys():                
@@ -787,12 +789,12 @@ class GaitAnalysisBuilder(AbstractBuilder):
                for label in CGM2cycle.GaitCycle.STP_LABELS:
                     outPst[label,"Right"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.kineticCycles,label,"Right")
                 
-               print "---> Right done"
+               logging.info("right kinetic computation---> done")
            else:
-               print "---> Right no output"
+               logging.warning("No right Kinetic computation")
 
         else:
-            print "No kinetic cycle computation" 
+            logging.warning("No Kinetic computation")
 
         return out,outPst   
         
@@ -801,9 +803,8 @@ class GaitAnalysisBuilder(AbstractBuilder):
         out={}
         outPst={}
 
-        
+        logging.info("--emg computation--")        
         if self.m_cycles.emgCycles is not None:
-            print "emg computation"
 
             for rawLabel,muscleDict in zip(self.m_emgLabelList,self.m_emgs):
                                 
@@ -818,6 +819,6 @@ class GaitAnalysisBuilder(AbstractBuilder):
                 outPst[label,"Right"]= spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Right")
 
         else:
-            print "no emg computation"
+            logging.warning("No emg computation")
 
         return out,outPst

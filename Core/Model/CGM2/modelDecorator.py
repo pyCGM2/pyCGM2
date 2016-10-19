@@ -7,7 +7,7 @@ Created on Thu Jul 16 21:38:45 2015
 
 import numpy as np
 import pdb
-
+import logging
 
 import cgm
 import model
@@ -163,7 +163,7 @@ def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
 
 
     S = diagS[3:6,3:6]
-    coeffDet = S[2,2]/(np.trace(S)-S[2,2]) #TODO : explanation ? where is came up
+    coeffDet = S[2,2]/(np.trace(S)-S[2,2]) #TODO : explanation ? where does it come up
 
 
 
@@ -180,13 +180,15 @@ def haraRegression(mp_input,mp_computed,markerDiameter = 14.0,  basePlate = 2.0)
     HJCx_L= 11.0 -0.063*mp_input["leftLegLength"] - markerDiameter/2.0 - basePlate
     HJCy_L=8.0+0.086*mp_input["leftLegLength"]
     HJCz_L=-9.0-0.078*mp_input["leftLegLength"]
-        
+    
+    logging.debug("Left HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_L,HJCy_L,HJCz_L))    
     HJC_L_hara=np.array([HJCx_L,HJCy_L,HJCz_L])
     
     HJCx_R= 11.0 -0.063*mp_input["rightLegLength"]- markerDiameter/2.0 - basePlate
     HJCy_R=-1.0*(8.0+0.086*mp_input["rightLegLength"])
     HJCz_R=-9.0-0.078*mp_input["rightLegLength"]
         
+    logging.debug("Right HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_R,HJCy_R,HJCz_R))    
     HJC_R_hara=np.array([HJCx_R,HJCy_R,HJCz_R])
    
     HJC_L = HJC_L_hara       
@@ -252,6 +254,9 @@ def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0
         Rhar_cgm1=np.array([[1, 0, 0],[0, 0, -1], [0, 1, 0]])
         HJC_L = np.dot(Rhar_cgm1,HJC_L_har)       
         HJC_R = np.dot(Rhar_cgm1,HJC_R_har)
+        logging.debug("computation in cgm pelvis referential")
+        logging.debug("Left HJC position from Harrington [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2])) 
+        logging.debug("Right HJC position from Harrington [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2])) 
     else:
         HJC_L = HJC_L_har       
         HJC_R = HJC_R_har
@@ -302,7 +307,7 @@ class Kad(DecoratorModel):
         frameInit =  self.acq.GetFirstFrame()-ff  
         frameEnd = self.acq.GetLastFrame()-ff+1
                 
-        self.model.nativeCgm1 = False
+        #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
 
         if side == "both" or side == "left":
@@ -452,7 +457,7 @@ class HipJointCenterDecorator(DecoratorModel):
         .. warning :: look out the Pevis Referential. it has to be similar with cgm1. 
     
         """
-        self.model.nativeCgm1 = False
+        #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
 
         if position_Left.shape ==(3,):
@@ -473,7 +478,7 @@ class HipJointCenterDecorator(DecoratorModel):
            - `side` (str) - compute either *left* or *right* or *both* hip joint centres           
         
         """ 
-        self.model.nativeCgm1 = False
+        #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
 
         LHJC_har,RHJC_har=harringtonRegression(self.model.mp,self.model.mp_computed,predictors)
@@ -511,7 +516,7 @@ class HipJointCenterDecorator(DecoratorModel):
            - `side` (str) - compute either *left* or *right* or *both* hip joint centres           
         
         """ 
-        self.model.nativeCgm1 = False
+        #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
 
         LHJC_hara,RHJC_hara=haraRegression(self.model.mp,self.model.mp_computed)
@@ -565,7 +570,7 @@ class KneeCalibrationDecorator(DecoratorModel):
         frameInit =  acq.GetFirstFrame()-ff  
         frameEnd = acq.GetLastFrame()-ff+1
                 
-        self.model.nativeCgm1 = False
+        #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
         
         if side=="both" or side=="left":
@@ -622,7 +627,7 @@ class KneeCalibrationDecorator(DecoratorModel):
     def sara(self,side):    
         """
         """ 
-        self.model.nativeCgm1 = False
+        #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
 
         proxMotion = self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").motion
@@ -732,7 +737,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
         frameInit =  acq.GetFirstFrame()-ff  
         frameEnd = acq.GetLastFrame()-ff+1
                 
-        self.model.nativeCgm1 = False
+        #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
         
         markerDiameter = 14
@@ -799,7 +804,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
         frameInit =  acq.GetFirstFrame()-ff  
         frameEnd = acq.GetLastFrame()-ff+1
                 
-        self.model.nativeCgm1 = False
+        #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
         markerDiameter = 14
         

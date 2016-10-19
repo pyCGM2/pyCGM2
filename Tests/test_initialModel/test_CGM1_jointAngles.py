@@ -62,7 +62,9 @@ class CGM1_motionJCSTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -156,7 +158,9 @@ class CGM1_motionJCSTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf() 
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -250,7 +254,9 @@ class CGM1_motionJCSTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -354,7 +360,9 @@ class CGM1_motionJCSTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -459,7 +467,9 @@ class CGM1_motionJCSTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -566,7 +576,9 @@ class CGM1_motionAbsoluteAnglesTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()        
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -647,7 +659,9 @@ class CGM1_motionFullAnglesTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()        
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -769,12 +783,18 @@ class CGM1_motionFullAnglesTest():
                                         acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)                                              
 if __name__ == "__main__":
 
+    logging.info("######## PROCESS CGM1 - JCSK ######")
     CGM1_motionJCSTest.basicCGM1()
     CGM1_motionJCSTest.basicCGM1_flatFoot()  
     CGM1_motionJCSTest.advancedCGM1_kad_noOptions()
     CGM1_motionJCSTest.advancedCGM1_kad_flatFoot()
     CGM1_motionJCSTest.advancedCGM1_kad_midMaleolus()
+    logging.info("######## PROCESS CGM1 - JCSK --> Done ######")    
     
+    logging.info("######## PROCESS CGM1 - Absolute ######")
     CGM1_motionAbsoluteAnglesTest.basicCGM1_absoluteAngles_lowerLimb()
+    logging.info("######## PROCESS CGM1 - Absolute ---> Done ######")
     
+    logging.info("######## PROCESS CGM1 - Full angles ######")
     CGM1_motionFullAnglesTest.basicCGM1()
+    logging.info("######## PROCESS CGM1 - Full angles ---> Done ######")

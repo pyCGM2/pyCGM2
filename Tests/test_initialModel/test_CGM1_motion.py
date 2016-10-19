@@ -60,7 +60,9 @@ class CGM1_motionTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf() 
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -220,7 +222,9 @@ class CGM1_motionTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -383,7 +387,9 @@ class CGM1_motionTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -553,7 +559,9 @@ class CGM1_motionTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()        
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -725,7 +733,9 @@ class CGM1_motionTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()     
+        model=cgm.CGM1ModelInf()
+        model.configure()
+        
         markerDiameter=14                    
         mp={
         'mass'   : 71.0,                
@@ -904,8 +914,10 @@ class CGM1_motionTest():
 
 if __name__ == "__main__":
 
+    logging.info("######## PROCESS CGM1 ######")
     CGM1_motionTest.basicCGM1()
     CGM1_motionTest.basicCGM1_flatFoot()
     CGM1_motionTest.advancedCGM1_kad_noOptions()
     CGM1_motionTest.advancedCGM1_kad_flatFoot()
-    CGM1_motionTest.advancedCGM1_kad_midMaleolus()  
+    CGM1_motionTest.advancedCGM1_kad_midMaleolus()
+    logging.info("######## PROCESS CGM1 --> Done######")

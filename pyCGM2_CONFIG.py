@@ -4,7 +4,10 @@ Created on Thu Sep 08 18:03:03 2016
 
 @author: aaa34169
 """
+import logging
+
 import sys
+#logging.basicConfig(format = "[pyCGM2-%(levelname)s]-%(module)s-%(funcName)s : %(message)s",level = logging.DEBUG) 
 
 PYTHON_PACKAGES =  'C:\\Anaconda32\\Lib\\site-packages'
 
@@ -17,7 +20,11 @@ NORMATIVE_DATABASE_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyC
 
 TEST_DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\"
 
-
+def setLoggingLevel(level):
+    logging.basicConfig(format = "[pyCGM2-%(levelname)s]-%(module)s-%(funcName)s : %(message)s",level = level) 
+    
+    
+    
 
 def addNexusPythonSdk():
     

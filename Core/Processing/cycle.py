@@ -7,7 +7,7 @@ Created on Mon Oct 03 10:52:09 2016
 
 import numpy as np
 import pdb
-
+import logging
 
 import ma.io
 import ma.body
@@ -43,14 +43,10 @@ class Cycle(ma.Node):
         self.end = round(endTime * self.pointfrequency) + 1
         self.context=context
         self.enableFlag = enableFlag
-                
-
-        
-
-        
+                        
         self.discreteDataList=[]
 
-        print "cycle makes from Frame %d   to  %d   (%s) " % (self.begin, self.end, self.context)
+        logging.info("cycle makes from Frame %d   to  %d   (%s) " % (self.begin, self.end, self.context))
         
 
 
@@ -206,22 +202,17 @@ class CyclesFilter:
  
 
     def build(self):
-        print "####### CYCLES FILTER ########"
         cycles = Cycles()
  
-        print " ----- build spatio-Temporal cycles -----" 
         spatioTemporalElements = self.__builder.getSpatioTemporal()
         cycles.setSpatioTemporalCycles(spatioTemporalElements)        
 
-        print " ----- build Kinematics cycles -----"
         kinematicElements = self.__builder.getKinematics()            
         cycles.setKinematicCycles(kinematicElements)
   
-        print " ----- build Kinetic cycles -----"
         kineticElements = self.__builder.getKinetics()
         cycles.setKineticCycles(kineticElements)
 
-        print " ----- build emg cycles -----"
         emgElements = self.__builder.getEmg()
         cycles.setEmgCycles(emgElements)
 
