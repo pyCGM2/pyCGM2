@@ -770,7 +770,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         logging.info("--kinetic computation--")
         if self.m_cycles.kineticCycles is not None:
 
-           if "Left" in self.m_kinematicLabelsDict.keys():
+           if "Left" in self.m_kineticLabelsDict.keys():
                for label in self.m_kineticLabelsDict["Left"]:
                    labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix!="" else label
                    out[labelPlus,"Left"]=point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
@@ -781,7 +781,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
                logging.warning("No left Kinetic computation")
 
                     
-           if "Right" in self.m_kinematicLabelsDict.keys():                
+           if "Right" in self.m_kineticLabelsDict.keys():                
                for label in self.m_kineticLabelsDict["Right"]:
                    labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix!="" else label
                    out[labelPlus,"Right"]=point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
