@@ -17,113 +17,58 @@ import ma.body
 import cycle as CGM2cycle
 import pyCGM2.Core.Tools.exportTools as CGM2exportTools
 
+#---- MODULE METHODS ------
 
-def spatioTemporelParameter_descriptiveStats(cycles,label,context):
-    
-    """   
-    """
+class staticAnalysis(object):
+    def __init__(self,trial,
+                 angleList,
+                 subjectInfos=None,
+                 modelInfos= None,
+                 experimentalInfos=None):
+        
+        self.m_trial =  trial             
+        self.m_angles = angleList
+        self.m_subjectInfos = subjectInfos
+        self.m_modelInfos = modelInfos
+        self.m_experimentalInfos = experimentalInfos
 
-    outDict=dict()    
-    
-    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle 
-    val = np.zeros((n))
-    
-    i=0
-    for cycle in cycles:
-        if cycle.enableFlag and cycle.context==context:
-            val[i] = cycle.getSpatioTemporalParameter(label)
-            i+=1
-    outDict = {'mean':np.mean(val),'std':np.std(val),'median':np.median(val),'values': val}
-            
-    return outDict
-
-
-def point_descriptiveStats(cycles,label,context):
-    """
-    """
+    def buildDataFrame(self):
+        df_collection=[]    
+        
+        for angle in self.m_angles:
+            df=pd.DataFrame({"Mean" :self.m_trial.findChild(ma.T_TimeSequence, angle).data().mean(axis=0)[0:3].T})
+            df['Axe']=['X','Y','Z']
+            df['Label']=angle
        
-    outDict=dict()    
-    
-    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle 
-    
-    x=np.empty((101,n))
-    y=np.empty((101,n))
-    z=np.empty((101,n))
-
-    listOfPointValues=list()
-
-    i=0
-    for cycle in cycles:
-        if cycle.enableFlag and cycle.context==context:
-            tmp = cycle.getPointTimeSequenceDataNormalized(label)
-            x[:,i]=tmp[:,0]
-            y[:,i]=tmp[:,1]
-            z[:,i]=tmp[:,2]
+            if self.m_subjectInfos !=None:         
+                for key,value in self.m_subjectInfos.items():
+                    df[key] = value
             
-            listOfPointValues.append(tmp)
+            if self.m_modelInfos !=None:         
+                for key,value in self.m_modelInfos.items():
+                    df[key] = value
+    
+            if self.m_experimentalInfos !=None:         
+                for key,value in self.m_experimentalInfos.items():
+                    df[key] = value                
+    
+            df_collection.append(df)
             
-            i+=1
-                
-            
-    meanData=np.array(np.zeros((101,3)))    
-    meanData[:,0]=np.mean(x,axis=1)
-    meanData[:,1]=np.mean(y,axis=1)
-    meanData[:,2]=np.mean(z,axis=1)
+            self.m_dataframe = pd.concat(df_collection,ignore_index=True)
+
+    def exportDataFrame(self,outputName,path=None):
+        if hasattr(self, 'm_dataframe'):
+            if path == None:
+                self.m_dataframe.to_csv(str(outputName + " - DataFrame.csv"),sep=";")
+            else:
+                self.m_dataframe.to_csv(str(path+"/"+outputName + " - DataFrame.csv"),sep=";")
+        else:
+            raise Exception ("[pyCGM2] - You need to build dataframe before export => RUN buildDataFrame() of your instance")
     
-    stdData=np.array(np.zeros((101,3)))    
-    stdData[:,0]=np.std(x,axis=1)
-    stdData[:,1]=np.std(y,axis=1)
-    stdData[:,2]=np.std(z,axis=1)
+        
 
 
-    medianData=np.array(np.zeros((101,3)))    
-    medianData[:,0]=np.median(x,axis=1)
-    medianData[:,1]=np.median(y,axis=1)
-    medianData[:,2]=np.median(z,axis=1)
 
-
-    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues }
-    
-
-            
-    return outDict
-    
-    
-    
-def analog_descriptiveStats(cycles,label,context):
-
-    outDict=dict()    
-
-
-    
-    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle 
-    
-    x=np.empty((1001,n))
-
-    i=0
-    for cycle in cycles:
-        if cycle.enableFlag and cycle.context==context:
-            tmp = cycle.getAnalogTimeSequenceDataNormalized(label)
-            x[:,i]=tmp[:,0]
-          
-            
-            i+=1
-
-    x_resize=x[0:1001:10,:]
-            
-    meanData=np.array(np.zeros((101,1)))    
-    meanData[:,0]=np.mean(x_resize,axis=1)
-    
-    stdData=np.array(np.zeros((101,1)))    
-    stdData[:,0]=np.std(x_resize,axis=1)
-
-    medianData=np.array(np.zeros((101,1)))    
-    medianData[:,0]=np.median(x_resize,axis=1)
-
-
-    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': x_resize }
-            
-    return outDict
 
 
 
@@ -705,10 +650,10 @@ class GaitAnalysisBuilder(AbstractBuilder):
 
             for label in CGM2cycle.GaitCycle.STP_LABELS:
                 if enableLeftComputation:
-                    out[label,"Left"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.spatioTemporalCycles,label,"Left")
+                    out[label,"Left"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.spatioTemporalCycles,label,"Left")
 
                 if enableRightComputation:
-                    out[label,"Right"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.spatioTemporalCycles,label,"Right")
+                    out[label,"Right"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.spatioTemporalCycles,label,"Right")
             if enableLeftComputation:        
                 logging.info("left stp computation---> done")
             if enableRightComputation:                
@@ -733,10 +678,10 @@ class GaitAnalysisBuilder(AbstractBuilder):
             if "Left" in self.m_kinematicLabelsDict.keys():
                 for label in self.m_kinematicLabelsDict["Left"]:
                     labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix!="" else label 
-                    out[labelPlus,"Left"]=point_descriptiveStats(self.m_cycles.kinematicCycles,labelPlus,"Left")
+                    out[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kinematicCycles,labelPlus,"Left")
 
                 for label in CGM2cycle.GaitCycle.STP_LABELS:
-                    outPst[label,"Left"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.kinematicCycles,label,"Left")
+                    outPst[label,"Left"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.kinematicCycles,label,"Left")
                 
                 logging.info("left kinematic computation---> done")
             else:
@@ -745,10 +690,10 @@ class GaitAnalysisBuilder(AbstractBuilder):
             if "Right" in self.m_kinematicLabelsDict.keys():
                 for label in self.m_kinematicLabelsDict["Right"]:
                     labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix!="" else label
-                    out[labelPlus,"Right"]=point_descriptiveStats(self.m_cycles.kinematicCycles,labelPlus,"Right")
+                    out[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kinematicCycles,labelPlus,"Right")
 
-                for label in CGM2cycle.GaitCycle.STP_LABELS:
-                    outPst[label,"Right"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.kinematicCycles,label,"Right")
+                for label in CGM2cycle.GaitCycle.STP_LABELS:                    
+                    outPst[label,"Right"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.kinematicCycles,label,"Right")
                 
                 logging.info("right kinematic computation---> done")
             else:
@@ -773,9 +718,9 @@ class GaitAnalysisBuilder(AbstractBuilder):
            if "Left" in self.m_kineticLabelsDict.keys():
                for label in self.m_kineticLabelsDict["Left"]:
                    labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix!="" else label
-                   out[labelPlus,"Left"]=point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
+                   out[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
                for label in CGM2cycle.GaitCycle.STP_LABELS:
-                    outPst[label,"Left"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.kineticCycles,label,"Left")
+                    outPst[label,"Left"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.kineticCycles,label,"Left")
                logging.info("left kinetic computation---> done")
            else:
                logging.warning("No left Kinetic computation")
@@ -784,10 +729,10 @@ class GaitAnalysisBuilder(AbstractBuilder):
            if "Right" in self.m_kineticLabelsDict.keys():                
                for label in self.m_kineticLabelsDict["Right"]:
                    labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix!="" else label
-                   out[labelPlus,"Right"]=point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
+                   out[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
                         
                for label in CGM2cycle.GaitCycle.STP_LABELS:
-                    outPst[label,"Right"]=spatioTemporelParameter_descriptiveStats(self.m_cycles.kineticCycles,label,"Right")
+                    outPst[label,"Right"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.kineticCycles,label,"Right")
                 
                logging.info("right kinetic computation---> done")
            else:
@@ -811,12 +756,12 @@ class GaitAnalysisBuilder(AbstractBuilder):
                 muscleLabel = muscleDict["label"]
                 muscleSide = muscleDict["side"]
 
-                out[muscleLabel,muscleSide,"Left"]=analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Left")
-                out[muscleLabel,muscleSide,"Right"]=analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Right")
+                out[muscleLabel,muscleSide,"Left"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Left")
+                out[muscleLabel,muscleSide,"Right"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Right")
 
             for label in CGM2cycle.GaitCycle.STP_LABELS:
-                outPst[label,"Left"]= spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Left")
-                outPst[label,"Right"]= spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Right")
+                outPst[label,"Left"]= CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Left")
+                outPst[label,"Right"]= CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Right")
 
         else:
             logging.warning("No emg computation")

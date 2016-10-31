@@ -17,7 +17,116 @@ import ma.body
 import pyCGM2.Core.Tools.trialTools as CGM2trialTools
 import pyCGM2.Core.Math.normalisation  as MathNormalisation
 
+#---- MODULE METHODS ------
 
+def spatioTemporelParameter_descriptiveStats(cycles,label,context):
+    
+    """   
+    """
+
+    outDict=dict()    
+    
+    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle 
+    val = np.zeros((n))
+    
+    i=0
+    for cycle in cycles:
+        if cycle.enableFlag and cycle.context==context:
+            val[i] = cycle.getSpatioTemporalParameter(label)
+            i+=1
+    outDict = {'mean':np.mean(val),'std':np.std(val),'median':np.median(val),'values': val}
+            
+    return outDict
+
+
+def point_descriptiveStats(cycles,label,context):
+    """
+    """
+       
+    outDict=dict()    
+    
+    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle 
+    
+    x=np.empty((101,n))
+    y=np.empty((101,n))
+    z=np.empty((101,n))
+
+    listOfPointValues=list()
+
+    i=0
+    for cycle in cycles:
+        if cycle.enableFlag and cycle.context==context:
+            tmp = cycle.getPointTimeSequenceDataNormalized(label)
+            x[:,i]=tmp[:,0]
+            y[:,i]=tmp[:,1]
+            z[:,i]=tmp[:,2]
+            
+            listOfPointValues.append(tmp)
+            
+            i+=1
+                
+            
+    meanData=np.array(np.zeros((101,3)))    
+    meanData[:,0]=np.mean(x,axis=1)
+    meanData[:,1]=np.mean(y,axis=1)
+    meanData[:,2]=np.mean(z,axis=1)
+    
+    stdData=np.array(np.zeros((101,3)))    
+    stdData[:,0]=np.std(x,axis=1)
+    stdData[:,1]=np.std(y,axis=1)
+    stdData[:,2]=np.std(z,axis=1)
+
+
+    medianData=np.array(np.zeros((101,3)))    
+    medianData[:,0]=np.median(x,axis=1)
+    medianData[:,1]=np.median(y,axis=1)
+    medianData[:,2]=np.median(z,axis=1)
+
+
+    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues }
+    
+
+            
+    return outDict
+    
+    
+    
+def analog_descriptiveStats(cycles,label,context):
+
+    outDict=dict()    
+
+
+    
+    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle 
+    
+    x=np.empty((1001,n))
+
+    i=0
+    for cycle in cycles:
+        if cycle.enableFlag and cycle.context==context:
+            tmp = cycle.getAnalogTimeSequenceDataNormalized(label)
+            x[:,i]=tmp[:,0]
+          
+            
+            i+=1
+
+    x_resize=x[0:1001:10,:]
+            
+    meanData=np.array(np.zeros((101,1)))    
+    meanData[:,0]=np.mean(x_resize,axis=1)
+    
+    stdData=np.array(np.zeros((101,1)))    
+    stdData[:,0]=np.std(x_resize,axis=1)
+
+    medianData=np.array(np.zeros((101,1)))    
+    medianData[:,0]=np.median(x_resize,axis=1)
+
+
+    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': x_resize }
+            
+    return outDict
+
+#---- CLASSES ------
 
 class Cycle(ma.Node):
     """
@@ -128,7 +237,7 @@ class GaitCycle(Cycle):
         self.m_normalizedContraFO=round(np.divide(float(self.m_contraFO - self.begin),float(self.end-self.begin))*100)
         
         
-        self.__computeSpatioTemporalParameter(longitudinal_axis,lateral_axis)        
+        self.__computeSpatioTemporalParameter(longitudinal_axis,lateral_axis)
         
         
     def __computeSpatioTemporalParameter(self,longitudinal_axis,lateral_axis):
@@ -146,7 +255,9 @@ class GaitCycle(Cycle):
         pst.setProperty("swingPhase", round(np.divide(swingDuration,duration)*100 ))
         pst.setProperty("doubleStance1", round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.begin) , self.pointfrequency),duration)*100))
         pst.setProperty("doubleStance2", round(np.divide(np.divide(np.abs(self.m_contraFO - self.m_oppositeFS) , self.pointfrequency),duration)*100))
-        pst.setProperty("simpleStance ",round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency),duration)*100))
+        pst.setProperty("simpleStance", round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency),duration)*100))
+
+        #pst.setProperty("simpleStance3 ",15.0 )
 
         if self.context == "Left":
 
@@ -169,19 +280,29 @@ class GaitCycle(Cycle):
                 
         if self.context == "Right":
 
-            if CGM2trialTools.isTimeSequenceExist(self.trial,"RHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"LHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"RTOE"):
-                
-                strideLength=np.abs(self.getPointTimeSequenceData("RHEE")[self.end-self.begin,longitudinal_axis] -\
-                                    self.getPointTimeSequenceData("RHEE")[0,longitudinal_axis])/1000.0
+            if CGM2trialTools.isTimeSequenceExist(self.trial,"RHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"LHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"RTOE"):               
+                try: 
+                    strideLength=np.abs(self.getPointTimeSequenceData("RHEE")[self.end-self.begin,longitudinal_axis] -\
+                                        self.getPointTimeSequenceData("RHEE")[0,longitudinal_axis])/1000.0
+                     
+                    strideWidth = np.abs(self.getPointTimeSequenceData("RTOE")[self.end-self.begin,lateral_axis] -\
+                                     self.getPointTimeSequenceData("LHEE")[0,lateral_axis])/1000.0 
+                                        
+                except IndexError:
+                    strideLength=np.abs(self.getPointTimeSequenceData("RHEE")[(self.end-self.begin)-1,longitudinal_axis] -\
+                                        self.getPointTimeSequenceData("RHEE")[0,longitudinal_axis])/1000.0
+                                        
+                    strideWidth = np.abs(self.getPointTimeSequenceData("RTOE")[self.end-self.begin-1,lateral_axis] -\
+                                     self.getPointTimeSequenceData("LHEE")[0,lateral_axis])/1000.0                                         
+                                        
+                    logging.error("The last frame of the c3d is probably a foot strike. PyCGM2 takes the before-end Frame fro computing bth stride length and stride width" )
+
                 pst.setProperty("strideLength", strideLength)
+                pst.setProperty("strideWidth", strideWidth)
 
                 stepLength = np.abs(self.getPointTimeSequenceData("RHEE")[self.m_oppositeFS-self.begin,longitudinal_axis] -\
                                     self.getPointTimeSequenceData("LHEE")[0,longitudinal_axis])/1000.0
                 pst.setProperty("stepLength", stepLength)
-                
-                strideWidth = np.abs(self.getPointTimeSequenceData("RTOE")[self.end-self.begin,lateral_axis] -\
-                                     self.getPointTimeSequenceData("LHEE")[0,lateral_axis])/1000.0
-                pst.setProperty("strideWidth", strideWidth)
                 
                 pst.setProperty("speed",np.divide(strideLength,duration))
 
