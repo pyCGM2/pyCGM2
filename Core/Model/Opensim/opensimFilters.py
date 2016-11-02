@@ -166,7 +166,6 @@ class opensimReconstructionFilter(object):
         R_LAB_OSIM = osimProcessing.setGlobalTransormation_lab_osim(progressionAxis,forwardProgression) 
         self._osimIK.config(R_LAB_OSIM, acqMotion_forIK, acqMotionFilename )
         self._osimIK.run()
-        self._osimIK.m_ikTool.printToXML("ikv.xml")
         
         # --- gernerate acq with rigid markers
         acqMotionFinal = btk.btkAcquisition.Clone(acqMotion)

@@ -353,7 +353,7 @@ class CGM2_openSimTest():
 if __name__ == "__main__":
 
     logging.info("######## PROCESS CGM2 ######") 
-    #CGM2_openSimTest.kinematicFitting_oneFile_cgmProcedure() 
+    CGM2_openSimTest.kinematicFitting_oneFile_cgmProcedure() 
     CGM2_openSimTest.kinematicFitting_oneFile_generalProcedure() 
     
         
