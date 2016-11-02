@@ -229,7 +229,7 @@ class Referential(object):
         """
         self.motion.append(Frame)
 
-    def getNodeTrajectory(self,label,display = False):
+    def getNodeTrajectory(self,label):
         """ call a Node and compyte its global trajectory
         
         :Parameters:
@@ -242,7 +242,7 @@ class Referential(object):
         """        
 
 
-        node=self.static.getNode_byLabel(label, display = display)
+        node=self.static.getNode_byLabel(label)
         nFrames=len(self.motion)        
         pt=np.zeros((nFrames,3))
         for i in range(0,nFrames):

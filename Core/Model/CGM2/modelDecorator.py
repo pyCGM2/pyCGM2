@@ -181,14 +181,14 @@ def haraRegression(mp_input,mp_computed,markerDiameter = 14.0,  basePlate = 2.0)
     HJCy_L=8.0+0.086*mp_input["leftLegLength"]
     HJCz_L=-9.0-0.078*mp_input["leftLegLength"]
     
-    logging.debug("Left HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_L,HJCy_L,HJCz_L))    
+    logging.info("Left HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_L,HJCy_L,HJCz_L))    
     HJC_L_hara=np.array([HJCx_L,HJCy_L,HJCz_L])
     
     HJCx_R= 11.0 -0.063*mp_input["rightLegLength"]- markerDiameter/2.0 - basePlate
     HJCy_R=-1.0*(8.0+0.086*mp_input["rightLegLength"])
     HJCz_R=-9.0-0.078*mp_input["rightLegLength"]
         
-    logging.debug("Right HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_R,HJCy_R,HJCz_R))    
+    logging.info("Right HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_R,HJCy_R,HJCz_R))    
     HJC_R_hara=np.array([HJCx_R,HJCy_R,HJCz_R])
    
     HJC_L = HJC_L_hara       
@@ -254,9 +254,9 @@ def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0
         Rhar_cgm1=np.array([[1, 0, 0],[0, 0, -1], [0, 1, 0]])
         HJC_L = np.dot(Rhar_cgm1,HJC_L_har)       
         HJC_R = np.dot(Rhar_cgm1,HJC_R_har)
-        logging.debug("computation in cgm pelvis referential")
-        logging.debug("Left HJC position from Harrington [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2])) 
-        logging.debug("Right HJC position from Harrington [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2])) 
+        logging.info("computation in cgm pelvis referential")
+        logging.info("Left HJC position from Harrington [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2])) 
+        logging.info("Right HJC position from Harrington [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2])) 
     else:
         HJC_L = HJC_L_har       
         HJC_R = HJC_R_har

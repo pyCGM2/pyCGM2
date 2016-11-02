@@ -50,7 +50,7 @@ def isPointsExist(acq,labels):
 
 
 def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
-    logging.info("new point (%s) added to the c3d" % label)
+    logging.debug("new point (%s) added to the c3d" % label)
 
     # TODO : si value = 1 lignes alors il faudrait dupliquer la lignes pour les n franes
     # valueProj *np.ones((aquiStatic.GetPointFrameNumber(),3))

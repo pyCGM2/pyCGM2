@@ -191,7 +191,7 @@ class Frame(object):
 
         .. todo : use an Enum for the argment positionType
         """
-        logging.info("new node (%s) added " % nodeLabel)
+        logging.debug("new node (%s) added " % nodeLabel)
         
         isFind=False
         i=0
@@ -233,7 +233,7 @@ class Frame(object):
         """
         return self._nodes[index]           
     
-    def getNode_byLabel(self,label,display = False):
+    def getNode_byLabel(self,label):
         """ return a node in the list from its label
         
          :Parameters:
@@ -242,8 +242,7 @@ class Frame(object):
         
         for nodeIt in self._nodes:
             if str(label+"_node") == nodeIt.m_name:
-                if display:
-                    print " target label ( %s) - label find (%s) " %(label,nodeIt.m_name)        
+                logging.debug( " target label ( %s) - label find (%s) " %(label,nodeIt.m_name) )       
                 return nodeIt
         
         return False        
