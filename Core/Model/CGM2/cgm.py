@@ -7,6 +7,7 @@ Created on Wed Jun 03 10:59:01 2015
 
 import numpy as np
 import logging
+import pdb
 
 import model as cmb
 import modelDecorator as cmd
@@ -259,14 +260,14 @@ class CGM1ModelInf(CGM):
 
     def configure(self):
         self.addSegment("Pelvis",0,pyCGM2Enums.SegmentSide.Central,["LASI","RASI","LPSI","RPSI"], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
-        self.addSegment("Left Thigh",1,pyCGM2Enums.SegmentSide.Left,["LKNE","LTHI"], tracking_markers = ["LHJC","LKNE","LTHI"])
-        self.addSegment("Right Thigh",4,pyCGM2Enums.SegmentSide.Right,["RKNE","RTHI"], tracking_markers = ["RHJC","RKNE","RTHI"])
-        self.addSegment("Left Shank",2,pyCGM2Enums.SegmentSide.Left,["LANK","LTIB"], tracking_markers = ["LKJC","LANK","LTIB"])
+        self.addSegment("Left Thigh",1,pyCGM2Enums.SegmentSide.Left,["LKNE","LTHI"], tracking_markers = ["LKNE","LTHI"])
+        self.addSegment("Right Thigh",4,pyCGM2Enums.SegmentSide.Right,["RKNE","RTHI"], tracking_markers = ["RKNE","RTHI"])
+        self.addSegment("Left Shank",2,pyCGM2Enums.SegmentSide.Left,["LANK","LTIB"], tracking_markers = ["LANK","LTIB"])
         self.addSegment("Left Shank Proximal",7,pyCGM2Enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Right Shank",5,pyCGM2Enums.SegmentSide.Right,["RANK","RTIB"], tracking_markers = ["RKJC","RANK","RTIB"])
+        self.addSegment("Right Shank",5,pyCGM2Enums.SegmentSide.Right,["RANK","RTIB"], tracking_markers = ["RANK","RTIB"])
         self.addSegment("Right Shank Proximal",8,pyCGM2Enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Left Foot",3,pyCGM2Enums.SegmentSide.Left,["LAJC","LHEE","LTOE"], tracking_markers = ["LAJC","LHEE","LTOE"] )
-        self.addSegment("Right Foot",6,pyCGM2Enums.SegmentSide.Right,["RAJC","RHEE","RTOE"], tracking_markers = ["RAJC","RHEE","RTOE"])
+        self.addSegment("Left Foot",3,pyCGM2Enums.SegmentSide.Left,["LAJC","LHEE","LTOE"], tracking_markers = ["LHEE","LTOE"] )
+        self.addSegment("Right Foot",6,pyCGM2Enums.SegmentSide.Right,["RAJC","RHEE","RTOE"], tracking_markers = ["RHEE","RTOE"])
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
@@ -288,7 +289,7 @@ class CGM1ModelInf(CGM):
         self.mp_computed["leftTibialTorsion"] = 0.0
         self.mp_computed["rightTibialTorsion"] = 0.0
 
-
+        pdb.set_trace()
     def calibrationProcedure(self):
         
         """ calibration procedure of the cgm1 
@@ -1623,7 +1624,7 @@ class CGM1ModelInf(CGM):
             
             angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_thi, self.getSegment("Left Thigh").anatomicalFrame.static.m_axisZ))    
             self.mp_computed["leftThighOffset"]= -angle # angle needed : Thi toward knee flexion
-            logging.debug(" left Thigh Offset => %s " % str(self.mp_computed["leftThighOffset"]))
+            logging.info(" left Thigh Offset => %s " % str(self.mp_computed["leftThighOffset"]))
             
 
 
@@ -1650,7 +1651,7 @@ class CGM1ModelInf(CGM):
             angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis_opp, v_thi,self.getSegment("Right Thigh").anatomicalFrame.static.m_axisZ))
             
             self.mp_computed["rightThighOffset"]=-angle # angle needed : Thi toward knee flexion
-            logging.debug(" right Thigh Offset => %s " % str(self.mp_computed["rightThighOffset"]))
+            logging.info(" right Thigh Offset => %s " % str(self.mp_computed["rightThighOffset"]))
         
         
 
@@ -1681,7 +1682,7 @@ class CGM1ModelInf(CGM):
         
             angle= np.rad2deg( geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
             self.mp_computed["leftTibialTorsion"] = angle
-            logging.debug(" left tibial torsion => %s " % str(self.mp_computed["leftTibialTorsion"]))
+            logging.info(" left tibial torsion => %s " % str(self.mp_computed["leftTibialTorsion"]))
             
 
             #"****** left angle beetween tib and flexion axis **********"    
@@ -1693,7 +1694,7 @@ class CGM1ModelInf(CGM):
         
             angle=np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_tib,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
             self.mp_computed["leftShankOffset"]= -angle
-            logging.debug(" left shank offset => %s " % str(self.mp_computed["leftShankOffset"]))
+            logging.info(" left shank offset => %s " % str(self.mp_computed["leftShankOffset"]))
 
             
             #"****** left angle beetween ank and flexion axis (not used by native pig)**********"        
@@ -1702,7 +1703,7 @@ class CGM1ModelInf(CGM):
             angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_ank,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
 
             self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"] = angle
-            logging.debug(" left projection offset => %s " % str(self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"]))
+            logging.info(" left projection offset => %s " % str(self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"]))
 
 
 
@@ -1733,7 +1734,7 @@ class CGM1ModelInf(CGM):
         
             angle= np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
             self.mp_computed["rightTibialTorsion"] = angle
-            logging.debug(" right tibial torsion => %s " % str(self.mp_computed["rightTibialTorsion"]))
+            logging.info(" right tibial torsion => %s " % str(self.mp_computed["rightTibialTorsion"]))
 
         
         
@@ -1749,7 +1750,7 @@ class CGM1ModelInf(CGM):
         
             angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_tib,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
             self.mp_computed["rightShankOffset"]= -angle
-            logging.debug(" right shank offset => %s " % str(self.mp_computed["rightShankOffset"]))
+            logging.info(" right shank offset => %s " % str(self.mp_computed["rightShankOffset"]))
 
             
             
@@ -1760,7 +1761,7 @@ class CGM1ModelInf(CGM):
             angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_ank,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
 
             self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"] = angle
-            logging.debug(" right projection offset => %s " % str(self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"]))
+            logging.info(" right projection offset => %s " % str(self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"]))
         
 
     def getAbdAddAnkleJointOffset(self,side="both"):
@@ -1780,7 +1781,7 @@ class CGM1ModelInf(CGM):
             
             angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_ank,self.getSegment("Left Shank").anatomicalFrame.static.m_axisX))
             self.mp_computed["leftAJCAbAdOffset"] = angle
-            logging.debug(" leftAJCAbAdOffset => %s " % str(self.mp_computed["leftAJCAbAdOffset"]))
+            logging.info(" leftAJCAbAdOffset => %s " % str(self.mp_computed["leftAJCAbAdOffset"]))
             
 
         if side == "both" or side == "right" : 
@@ -1797,7 +1798,7 @@ class CGM1ModelInf(CGM):
            
             angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_ank,self.getSegment("Right Shank").anatomicalFrame.static.m_axisX))
             self.mp_computed["rightAJCAbAdOffset"] = angle
-            logging.debug(" rightAJCAbAdOffset => %s " % str(self.mp_computed["rightAJCAbAdOffset"]))
+            logging.info(" rightAJCAbAdOffset => %s " % str(self.mp_computed["rightAJCAbAdOffset"]))
 
 
     def getFootOffset(self, side = "both"):
@@ -1807,10 +1808,10 @@ class CGM1ModelInf(CGM):
             y,x,z = ceuler.euler_yxz(R)
             
             self.mp_computed["leftStaticPlantarFlexion"] = np.rad2deg(y)
-            logging.debug(" leftStaticPlantarFlexion => %s " % str(self.mp_computed["leftStaticPlantarFlexion"])) 
+            logging.info(" leftStaticPlantarFlexion => %s " % str(self.mp_computed["leftStaticPlantarFlexion"])) 
 
             self.mp_computed["leftStaticRotOff"] = np.rad2deg(x)
-            logging.debug(" leftStaticRotOff => %s " % str(self.mp_computed["leftStaticRotOff"]))
+            logging.info(" leftStaticRotOff => %s " % str(self.mp_computed["leftStaticRotOff"]))
 
         
         if side == "both" or side == "right" :      
@@ -1818,10 +1819,10 @@ class CGM1ModelInf(CGM):
             y,x,z = ceuler.euler_yxz(R)    
             
             self.mp_computed["rightStaticPlantarFlexion"] = np.rad2deg(y)
-            logging.debug(" rightStaticPlantarFlexion => %s " % str(self.mp_computed["rightStaticPlantarFlexion"])) 
+            logging.info(" rightStaticPlantarFlexion => %s " % str(self.mp_computed["rightStaticPlantarFlexion"])) 
             
             self.mp_computed["rightStaticRotOff"] = np.rad2deg(x)
-            logging.debug(" rightStaticPlantarFlexion => %s " % str(self.mp_computed["rightStaticPlantarFlexion"])) 
+            logging.info(" rightStaticPlantarFlexion => %s " % str(self.mp_computed["rightStaticPlantarFlexion"])) 
 
 
     def getViconFootOffset(self):
@@ -1831,18 +1832,18 @@ class CGM1ModelInf(CGM):
         """        
         
         spf_l = self.mp_computed["leftStaticPlantarFlexion"] * -1.0
-        logging.debug(" Left staticPlantarFlexion offset (Vicon compatible)  => %s " % str(spf_l))
+        logging.info(" Left staticPlantarFlexion offset (Vicon compatible)  => %s " % str(spf_l))
         
         
         sro_l = self.mp_computed["leftStaticRotOff"] * -1.0
-        logging.debug("Left staticRotation offset (Vicon compatible)  => %s " % str(sro_l))
+        logging.info("Left staticRotation offset (Vicon compatible)  => %s " % str(sro_l))
 
         
         spf_r = self.mp_computed["rightStaticPlantarFlexion"] * -1.0
-        logging.debug("Right staticRotation offset (Vicon compatible)  => %s " % str(spf_r))
+        logging.info("Right staticRotation offset (Vicon compatible)  => %s " % str(spf_r))
        
         sro_r = self.mp_computed["rightStaticRotOff"] 
-        logging.debug("Right staticRotation offset (Vicon compatible)  => %s " % str(sro_r))        
+        logging.info("Right staticRotation offset (Vicon compatible)  => %s " % str(sro_r))        
 
         return spf_l,sro_l,spf_r,sro_r
 
@@ -1855,12 +1856,12 @@ class CGM1ModelInf(CGM):
 
         if side  == "Left":
             val = self.mp_computed["leftThighOffset"] * -1.0
-            logging.debug(" Left thigh offset (Vicon compatible)  => %s " % str(val))             
+            logging.info(" Left thigh offset (Vicon compatible)  => %s " % str(val))             
             return val
  
         if side  == "Right":
             val = self.mp_computed["rightThighOffset"]            
-            logging.debug(" Right thigh offset (Vicon compatible)  => %s " % str(val))             
+            logging.info(" Right thigh offset (Vicon compatible)  => %s " % str(val))             
             return val        
         
         
@@ -1872,12 +1873,12 @@ class CGM1ModelInf(CGM):
 
         if side  == "Left":
             val = self.mp_computed["leftShankOffset"] * -1.0
-            logging.debug(" Left shank offset (Vicon compatible)  => %s " % str(val)) 
+            logging.info(" Left shank offset (Vicon compatible)  => %s " % str(val)) 
             return val
  
         if side  == "Right":
             val = self.mp_computed["rightShankOffset"]
-            logging.debug(" Right shank offset (Vicon compatible)  => %s " % str(val))
+            logging.info(" Right shank offset (Vicon compatible)  => %s " % str(val))
             return val         
 
     
@@ -2739,8 +2740,13 @@ class CGM1ModelInf(CGM):
         """
         seg=self.getSegment("Left Thigh")
 
-        #  --- check presence of tracking markers in the acquisition
+        #  --- add LHJC if list <2 - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
+            if len(seg.m_tracking_markers)==2: 
+                if "LHJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("LHJC")
+                    logging.info("LHJC added to tracking marker list")
+            
             btkTools.isPointsExist(aqui,seg.m_tracking_markers)
 
         # --- Motion of the Technical frame
@@ -2809,9 +2815,12 @@ class CGM1ModelInf(CGM):
         """
         seg=self.getSegment("Right Thigh")
 
-        #  --- check presence of tracking markers in the acquisition
+        #  --- add RHJC if list <2 - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
-            btkTools.isPointsExist(aqui,seg.m_tracking_markers)
+            if len(seg.m_tracking_markers)==2: 
+                if "RHJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("RHJC")
+                    logging.info("RHJC added to tracking marker list")
             
         # --- Motion of the Technical frame
         seg.getReferential("TF").motion =[]
@@ -2880,9 +2889,12 @@ class CGM1ModelInf(CGM):
         """
         seg=self.getSegment("Left Shank")
         
-        #  --- check presence of tracking markers in the acquisition
+        #  --- add LKJC if list <2 - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
-            btkTools.isPointsExist(aqui,seg.m_tracking_markers)
+            if len(seg.m_tracking_markers)==2: 
+                if "LKJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("LKJC")
+                    logging.info("LKJC added to tracking marker list")
             
         # --- Motion of the Technical frame        
         seg.getReferential("TF").motion =[]
@@ -2947,9 +2959,12 @@ class CGM1ModelInf(CGM):
         """
         seg=self.getSegment("Right Shank")
 
-        #  --- check presence of tracking markers in the acquisition
+        #  --- add RKJC if list <2 - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
-            btkTools.isPointsExist(aqui,seg.m_tracking_markers)
+            if len(seg.m_tracking_markers)==2: 
+                if "RKJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("RKJC")
+                    logging.info("RKJC added to tracking marker list")
             
         # --- Motion of the Technical frame
 
