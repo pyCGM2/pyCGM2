@@ -59,12 +59,12 @@ class CGM2ModelInf(cgm.CGM1ModelInf):
     def configure(self):
         # todo create a Foot segment
         self.addSegment("Pelvis", 0,pyCGM2Enums.SegmentSide.Central,["LASI","RASI","LPSI","RPSI"], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
-        self.addSegment("Left Thigh",1,pyCGM2Enums.SegmentSide.Left,["LKNE","LTHI"], tracking_markers = ["LHJC","LKNE","LTHI"])
-        self.addSegment("Right Thigh",4,pyCGM2Enums.SegmentSide.Right,["RKNE","RTHI","RTHIAP","RTHIAD"], tracking_markers = ["RHJC","RKNE","RTHI","RTHIAP","RTHIAD"])
-        self.addSegment("Left Shank",2,pyCGM2Enums.SegmentSide.Left,["LANK","LTIB"], tracking_markers = ["LKJC","LANK","LTIB"])
-        self.addSegment("Right Shank",5,pyCGM2Enums.SegmentSide.Right,["RANK","RTIB","RSHN","RTIAP"], tracking_markers = ["RKJC","RANK","RTIB","RSHN","RTIAP"])
-        self.addSegment("Right Hindfoot",6,pyCGM2Enums.SegmentSide.Right,["RHEE","RCUN","RANK"], tracking_markers = ["RHEE","RCUN","RAJC"])
-        self.addSegment("Right Forefoot",7,pyCGM2Enums.SegmentSide.Right,["RD1M","RD5M","RTOE"], tracking_markers = ["RD1M","RD5M","RvCUN"]) # look out, i added the virtual cuneiform, located from Hind Foot
+        self.addSegment("Left Thigh",1,pyCGM2Enums.SegmentSide.Left,["LKNE","LTHI"], tracking_markers = ["LKNE","LTHI"])
+        self.addSegment("Right Thigh",4,pyCGM2Enums.SegmentSide.Right,["RKNE","RTHI","RTHIAP","RTHIAD"], tracking_markers = ["RKNE","RTHI","RTHIAP","RTHIAD"])
+        self.addSegment("Left Shank",2,pyCGM2Enums.SegmentSide.Left,["LANK","LTIB"], tracking_markers = ["LANK","LTIB"])
+        self.addSegment("Right Shank",5,pyCGM2Enums.SegmentSide.Right,["RANK","RTIB","RSHN","RTIAP"], tracking_markers = ["RANK","RTIB","RSHN","RTIAP"])
+        self.addSegment("Right Hindfoot",6,pyCGM2Enums.SegmentSide.Right,["RHEE","RCUN","RANK"], tracking_markers = ["RHEE","RCUN"])
+        self.addSegment("Right Forefoot",7,pyCGM2Enums.SegmentSide.Right,["RD1M","RD5M","RTOE"], tracking_markers = ["RD1M","RD5M"]) 
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
@@ -726,9 +726,12 @@ class CGM2ModelInf(cgm.CGM1ModelInf):
     
         seg=self.getSegment("Right Hindfoot")
 
-        #  --- check presence of tracking markers in the acquisition
+        #  --- add RAJC if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
-            btkTools.isPointsExist(aqui,seg.m_tracking_markers)
+            if len(seg.m_tracking_markers)==2: 
+                if "RAJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("RAJC")
+                    logging.debug("RAJC added to tracking marker list")
 
         # --- Motion of the Technical frame
         seg.getReferential("TF").motion =[]
@@ -784,9 +787,12 @@ class CGM2ModelInf(cgm.CGM1ModelInf):
     
         seg=self.getSegment("Right Forefoot")
 
-        #  --- check presence of tracking markers in the acquisition
+        #  --- add RvCUN if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
-            btkTools.isPointsExist(aqui,seg.m_tracking_markers)
+            if len(seg.m_tracking_markers)==2: 
+                if "RvCUN" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("RvCUN")
+                    logging.debug("RvCUN added to tracking marker list")
 
         # --- Motion of the Technical frame
         seg.getReferential("TF").motion =[]
@@ -890,4 +896,54 @@ class CGM2ModelInf(cgm.CGM1ModelInf):
             values[:,2] = np.rad2deg(  jointValues[:,2])
             
         return values
-            
+
+    # --- opensim --------
+    def opensimTrackingMarkers(self):
+
+        out={}
+        for segIt in self.m_segmentCollection:
+            out[segIt.name] = segIt.m_tracking_markers 
+        
+        return out
+
+    def opensimGeometry(self):
+        """
+        TODO require : joint name from opensim -> find alternative
+        
+        rather a class method than a method instance
+        """
+        
+        out={}
+        out["hip_r"]= {"joint label":"RHJC", "proximal segment label":"Pelvis", "distal segment label":"Right Thigh" }
+        out["knee_r"]= {"joint label":"RKJC", "proximal segment label":"Right Thigh", "distal segment label":"Right Shank" }
+        out["ankle_r"]= {"joint label":"RAJC", "proximal segment label":"Right Shank", "distal segment label":"Right Hindfoot" }        
+        out["mtp_r"]= {"joint label":"RvCUN", "proximal segment label":"Right Hindfoot", "distal segment label":"Right Forefoot" }        
+
+
+        out["hip_l"]= {"joint label":"LHJC", "proximal segment label":"Pelvis", "distal segment label":"Left Thigh" }
+        out["knee_l"]= {"joint label":"LKJC", "proximal segment label":"Left Thigh", "distal segment label":"Left Shank" }
+        #out["ankle_l"]= {"joint label":"LAJC", "proximal segment label":"Left Shank", "distal segment label":"Left Hindfoot" }        
+        #out["mtp_l"]= {"joint label":"LvCUN", "proximal segment label":"Left Hindfoot", "distal segment label":"Left Forefoot" }        
+
+        return out
+        
+    def opensimIkTask(self):
+        out={}
+        out={"LASI":100,
+             "RASI":100,
+             "LPSI":100,
+             "RPSI":100,
+             "RTHI":100,
+             "RTHIAP":100,
+             "RTHIAD":100,
+             "RKNE":100,
+             "RTIB":100,
+             "RTIAP":100,
+             "RSHN":100,
+             "RANK":100,
+             "RHEE":100,
+             "RCUN":100,
+             "RD1M":100,
+             "RD5M":100}
+        
+        return out

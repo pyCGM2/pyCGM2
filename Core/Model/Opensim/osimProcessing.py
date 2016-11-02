@@ -8,13 +8,23 @@ import opensim
 import numpy as np
 import btk
 import pdb
+import logging
+
+R_OSIM_CGM = {"Pelvis" : np.array([[1,0,0],[0,0,1],[0,-1,0]]) ,
+              "Left Thigh" : np.array([[1,0,0],[0,0,1],[0,-1,0]]),
+              "Left Shank" : np.array([[1,0,0],[0,0,1],[0,-1,0]]),
+              "Right Thigh" : np.array([[1,0,0],[0,0,1],[0,-1,0]]),
+              "Right Shank" : np.array([[1,0,0],[0,0,1],[0,-1,0]]),
+              "Right Hindfoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
+              "Right Forefoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]])
+              }
+
 
 def globalTransformationLabToOsim(acq,R_LAB_OSIM):
 
     points = acq.GetPoints()
     for it in btk.Iterate(points):
         if it.GetType() == btk.btkPoint.Marker:
-            print "marker : " + str(it.GetLabel()) 
             values = np.zeros(it.GetValues().shape)            
             for i in range(0,it.GetValues().shape[0]):            
                 values[i,:] = np.dot(R_LAB_OSIM,it.GetValues()[i,:])
@@ -101,7 +111,7 @@ def setGlobalTransormation_lab_osim(axis,forwardProgression):
 class opensimModel(object):
     
 
-    def __init__(self,osimFile,cgmModel):
+    def __init__(self,osimFile,cgmModel,):
         """Constructor 
         """
         self.m_osimFile = osimFile
@@ -115,7 +125,14 @@ class opensimModel(object):
         self.m_model.initSystem()
         self.m_myState = self.m_model.initSystem()
 
-    def setOsimJoinCentres(self,R_OSIM_CGM, jointLabelInOsim, parentSegmentLabel,childSegmentLabel, nodeLabel, toMeter = 1000.0 , verbose = False):
+
+
+        
+    def addMarkerSet(self,markersetFile): 
+        markerSet= opensim.MarkerSet(markersetFile)
+        self.m_model.replaceMarkerSet(self.m_myState,markerSet)
+
+    def setOsimJoinCentres(self,R_OSIM_CGM, jointLabelInOsim, parentSegmentLabel,childSegmentLabel, nodeLabel, toMeter = 1000.0):
 
         locationInParent =  self.m_cgmModel.getSegment(parentSegmentLabel).anatomicalFrame.static.getNode_byLabel(nodeLabel).m_local # TODO : verifier que node exist
         locationInChild =  self.m_cgmModel.getSegment(childSegmentLabel).anatomicalFrame.static.getNode_byLabel(nodeLabel).m_local # TODO : verifier que node exist
@@ -133,67 +150,11 @@ class opensimModel(object):
         osimJointInChild.set(1,positionChild[1]/toMeter)
         osimJointInChild.set(2,positionChild[2]/toMeter)
         
-        
-        if verbose:  print " osim joint centres %s modified" %(jointLabelInOsim)
-
-
-#    def setOsimJoinCentres(self,R_OSIM_CGM, localLHJC ,localRHJC ,localLKJC ,localRKJC ,localLAJC ,localRAJC, virtualForeFoot):
-#        
-#        LHJC =   np.dot(R_OSIM_CGM["Pelvis"],localLHJC)
-#        RHJC =   np.dot(R_OSIM_CGM["Pelvis"],localRHJC)
-#        
-#        LKJC =   np.dot(R_OSIM_CGM["Left Thigh"],localLKJC)
-#        RKJC =   np.dot(R_OSIM_CGM["Right Thigh"],localRKJC)
-#        
-#        LAJC =   np.dot(R_OSIM_CGM["Left Shank"],localLAJC)
-#        RAJC =   np.dot(R_OSIM_CGM["Right Shank"],localRAJC)
-#        
-#
-#        RCUN =   np.dot(R_OSIM_CGM["Right Hindfoot"],virtualForeFoot)
-#
-#
-#        lhjc = self.m_model.getJointSet().get("hip_l").get_location_in_parent()
-#        lhjc.set(0,LHJC[0]/1000.0)
-#        lhjc.set(1,LHJC[1]/1000.0)
-#        lhjc.set(2,LHJC[2]/1000.0)
-#    
-#        rhjc = self.m_model.getJointSet().get("hip_r").get_location_in_parent()
-#        rhjc.set(0,RHJC[0]/1000.0) 
-#        rhjc.set(1,RHJC[1]/1000.0)
-#        rhjc.set(2,RHJC[2]/1000.0)
-#    
-#        # modif KJC
-#        lkjc = self.m_model.getJointSet().get("knee_l").get_location_in_parent()
-#        lkjc.set(0,LKJC[0]/1000.0)
-#        lkjc.set(1,LKJC[1]/1000.0)
-#        lkjc.set(2,LKJC[2]/1000.0)
-#    
-#        rkjc = self.m_model.getJointSet().get("knee_r").get_location_in_parent()
-#        rkjc.set(0,RKJC[0]/1000.0)
-#        rkjc.set(1,RKJC[1]/1000.0)
-#        rkjc.set(2,RKJC[2]/1000.0)
-#    
-#        # modif AJC
-#        lajc = self.m_model.getJointSet().get("ankle_l").get_location_in_parent()
-#        lajc.set(0,LAJC[0]/1000.0)
-#        lajc.set(1,LAJC[1]/1000.0)
-#        lajc.set(2,LAJC[2]/1000.0)
-#    
-#        rajc = self.m_model.getJointSet().get("ankle_r").get_location_in_parent()
-#        rajc.set(0,RAJC[0]/1000.0) 
-#        rajc.set(1,RAJC[1]/1000.0)
-#        rajc.set(2,RAJC[2]/1000.0)
-#        
-#
-#
-#        rvff = self.m_model.getJointSet().get("mtp_r").get_location_in_parent()
-#        rvff.set(0,RCUN[0]/1000.0) 
-#        rvff.set(1,RCUN[1]/1000.0)
-#        rvff.set(2,RCUN[2]/1000.0)
-        
+        logging.debug( "osim joint centres %s modified"%(jointLabelInOsim))
         
 
-    def addmarkerFromModel(self, label, osimBodyName = "", modelSegmentLabel = "", rotation_osim_model=np.eye(3), toMeter=1000.0,verbose = False):
+
+    def addmarkerFromModel(self, label, osimBodyName = "", modelSegmentLabel = "", rotation_osim_model=np.eye(3), toMeter=1000.0):
         
         if (osimBodyName != ""  and  modelSegmentLabel != "") :  
             localPos = np.dot(rotation_osim_model,
@@ -207,7 +168,7 @@ class opensimModel(object):
              
             self.m_markers.append(m)
              
-        if verbose : print "marker (" + label + ") added"              
+        logging.debug( "marker (%s) added"%(label))    
              
          
     def createMarkerSet(self):
@@ -216,7 +177,7 @@ class opensimModel(object):
             self.m_model.getMarkerSet().set(i,self.m_markers[i]) # FIXME  : this line cause a memory issue : it would be better to use add_maker but i have an error with const double[3] when i specified the offset 
             
         
-    def updateMarkerInMarkerSet(self, label, modelSegmentLabel = "", rotation_osim_model=np.eye(3), toMeter=1000.0,verbose = False):
+    def updateMarkerInMarkerSet(self, label, modelSegmentLabel = "", rotation_osim_model=np.eye(3), toMeter=1000.0):
        
        
        markers = opensim.ArrayStr()
@@ -224,7 +185,7 @@ class opensimModel(object):
 
        index = markers.findIndex(label)
        if index != -1:
-           if verbose : print " le marker (%s) trouve " %(label)
+           logging.debug( "marker (%s) found"%(label))
            localPos = np.dot(rotation_osim_model,
                                   self.m_cgmModel.getSegment(modelSegmentLabel).anatomicalFrame.static.getNode_byLabel(label).m_local) # TODO : verifier que node exist
            
@@ -232,8 +193,9 @@ class opensimModel(object):
            self.m_model.updMarkerSet().get(label).getOffset().set(1,localPos[1]/toMeter)
            self.m_model.updMarkerSet().get(label).getOffset().set(2,localPos[2]/toMeter)
            
-       else:          
-           if verbose : print " le marker (%s) n est pas dans le markerset " %(label)
+       else:
+           raise Exception ("[pyCGM2] marker (%s) is not within the markerset"%label)
+
                     
         
         
@@ -253,13 +215,15 @@ class opensimKinematicFitting(object):
         pr= self.m_ikTool.getPropertyByName("report_marker_locations")
         opensim.PropertyHelper().setValueBool(True,pr)
         
-        self.setAccuracy(0.00000001)
+        #self.setAccuracy(1e-08)
 
     def setAccuracy(self,value):
         pr= self.m_ikTool.getPropertyByName("accuracy")
         opensim.PropertyHelper().setValueDouble(value,pr)        
         
-        
+    def setResultsDirectory(self,path):
+        pr= self.m_ikTool.getPropertyByName("results_directory")
+        opensim.PropertyHelper().setValueString(path,pr)        
 
     def addIkMarkerTask(self,label,weight=100):
         markerTask = opensim.IKMarkerTask()
@@ -285,17 +249,26 @@ class opensimKinematicFitting(object):
         self.m_ikTool.setMarkerDataFileName(filenameNoExt+".trc")
         self.m_ikTool.setOutputMotionFileName(filenameNoExt+".mot")
  
-        markerData = opensim.MarkerData(filenameNoExt+".trc")
-        self.m_ikTool.setStartTime(markerData.getStartFrameTime()) # time not frame !
-        self.m_ikTool.setEndTime(markerData.getLastFrameTime())     
+        #  set times ( FIXME - I had surprise with set method, i prefer to handle the xmlnode directly) 
+        prTime= self.m_ikTool.getPropertyByName("time_range")
 
+        opensim.PropertyHelper().appendValueDouble(0.0, prTime)
+        endTime = (acq.GetLastFrame() - acq.GetFirstFrame())/acq.GetPointFrequency()        
+        opensim.PropertyHelper().appendValueDouble(endTime, prTime)        
+        
+        # doesn t work
+        # markerData = opensim.MarkerData(filenameNoExt+".trc")
+        # self.m_ikTool.setStartTime(markerData.getStartFrameTime()) # time not frame !
+        # self.m_ikTool.setEndTime(markerData.getLastFrameTime())     
+        
+        
     def updateIKTask(self,label,weight):
         ts =self.m_ikTool.getIKTaskSet()
         index = ts.getIndex(label)
         if index !=-1 : 
             ts.get(label).setWeight(weight)
         else:
-            raise Exception("[pycga-osim] the label (%s) doesn t exist ")
+            raise Exception("[[pyCGM2]] the label (%s) doesn t exist ")
 
     def run(self):
         
