@@ -7,7 +7,6 @@ Created on Thu Sep 08 18:03:03 2016
 import logging
 
 import sys
-#logging.basicConfig(format = "[pyCGM2-%(levelname)s]-%(module)s-%(funcName)s : %(message)s",level = logging.DEBUG) 
 
 PYTHON_PACKAGES =  'C:\\Anaconda32\\Lib\\site-packages'
 
@@ -19,6 +18,9 @@ PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.5\\Python'
 NORMATIVE_DATABASE_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\Data\\normativeData\\"
 
 TEST_DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\"
+
+OPENSIM_PREBUILD_MODEL_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\Extern\\opensim\\"
+
 
 def setLoggingLevel(level):
     logging.basicConfig(format = "[pyCGM2-%(levelname)s]-%(module)s-%(funcName)s : %(message)s",level = level) 
