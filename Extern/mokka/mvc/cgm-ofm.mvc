@@ -208,15 +208,6 @@
             <Link pt1="RAJC" pt2="RHindFoot_Z"/>
         </Segment>
         <Segment label="right fore foot CS" colorR="0" colorG="0.666667" colorB="1" visible="1" surface="0" description="">
-            <Point label="RvCUN"/>
-            <Point label="RForeFoot_X"/>
-            <Point label="RForeFoot_Y"/>
-            <Point label="RForeFoot_Z"/>
-            <Link pt1="RvCUN" pt2="RForeFoot_X"/>
-            <Link pt1="RvCUN" pt2="RForeFoot_Y"/>
-            <Link pt1="RvCUN" pt2="RForeFoot_Z"/>
-        </Segment>
-        <Segment label="right fore foot CS - toeOrigin" colorR="0" colorG="0.666667" colorB="1" visible="1" surface="0" description="">
             <Point label="RvTOE"/>
             <Point label="RForeFoot_X"/>
             <Point label="RForeFoot_Y"/>
@@ -225,8 +216,6 @@
             <Link pt1="RvTOE" pt2="RForeFoot_Y"/>
             <Link pt1="RvTOE" pt2="RForeFoot_Z"/>
         </Segment>        
-        
-        
         <Segment label="righ shank CS" colorR="0" colorG="0.666667" colorB="1" visible="1" surface="0" description="">
             <Point label="RKJC"/>
             <Point label="RShank_X"/>
