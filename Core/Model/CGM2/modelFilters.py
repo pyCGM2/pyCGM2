@@ -305,9 +305,9 @@ class ModelJCSFilter(object):
               
         
         for it in  self.m_model.m_jointCollection:
-            logging.info("---Processing of %s---"  % it.m_label)
-            logging.info(" proximal : %s "% it.m_proximalLabel)
-            logging.info(" distal : %s "% it.m_distalLabel)
+            logging.debug("---Processing of %s---"  % it.m_label)
+            logging.debug(" proximal : %s "% it.m_proximalLabel)
+            logging.debug(" distal : %s "% it.m_distalLabel)
 
                         
             jointLabel = it.m_label
@@ -504,9 +504,9 @@ class InverseDynamicFilter(object):
         
 
         for it in  self.m_model.m_jointCollection:            
-            logging.info("kinetics of %s"  %(it.m_label)) 
-            logging.info("proximal label :%s" %(it.m_proximalLabel))
-            logging.info("distal label :%s" %(it.m_distalLabel))
+            logging.debug("kinetics of %s"  %(it.m_label)) 
+            logging.debug("proximal label :%s" %(it.m_proximalLabel))
+            logging.debug("distal label :%s" %(it.m_distalLabel))
             
             jointLabel = it.m_label
             nFrames = self.m_aqui.GetPointFrameNumber() 
@@ -823,9 +823,9 @@ class JointPowerFilter(object):
         """
 
         for it in  self.m_model.m_jointCollection:
-            logging.info("power of %s"  %(it.m_label)) 
-            logging.info("proximal label :%s" %(it.m_proximalLabel))
-            logging.info("distal label :%s" %(it.m_distalLabel))
+            logging.debug("power of %s"  %(it.m_label)) 
+            logging.debug("proximal label :%s" %(it.m_proximalLabel))
+            logging.debug("distal label :%s" %(it.m_distalLabel))
 
             jointLabel = it.m_label
             
