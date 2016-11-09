@@ -251,12 +251,12 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
 
 
         self.__translators["Left.Hip.Power"] = "LHipPower"
-        self.__translators["Left.Knee.Power"] = "LKneeMoment"
-        self.__translators["Left.Ankle.Power"] = "LAnkleMoment"
+        self.__translators["Left.Knee.Power"] = "LKneePower"
+        self.__translators["Left.Ankle.Power"] = "LAnklePower"
    
-        self.__translators["Right.Hip.Power"] = "RHipMoment"
-        self.__translators["Right.Knee.Power"] = "RKneeMoment"
-        self.__translators["Right.Ankle.Power"] = "RAnkleMoment"
+        self.__translators["Right.Hip.Power"] = "RHipPower"
+        self.__translators["Right.Knee.Power"] = "RKneePower"
+        self.__translators["Right.Ankle.Power"] = "RAnklePower"
 
         self.__limits=dict()
         for side in ["Left","Right"]:
