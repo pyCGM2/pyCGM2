@@ -249,12 +249,46 @@ class CGM1ModelInf(CGM):
     
     
     @classmethod    
-    def cleanAcquisition(cls, acq):
-        markers = ["LASI","RASI","LPSI","RPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"] 
+    def cleanAcquisition(cls, acq, subjetPrefix="",removelateralKnee=False, kadEnable= False, ankleMedEnable = False):
+        markers = [subjetPrefix+"LASI",
+                   subjetPrefix+"RASI",
+                   subjetPrefix+"LPSI",
+                   subjetPrefix+"RPSI",
+                   subjetPrefix+"LTHI",
+                   subjetPrefix+"LKNE",
+                   subjetPrefix+"LTIB",
+                   subjetPrefix+"LANK",
+                   subjetPrefix+"LHEE",
+                   subjetPrefix+"LTOE",
+                   subjetPrefix+"RTHI",
+                   subjetPrefix+"RKNE",
+                   subjetPrefix+"RTIB",
+                   subjetPrefix+"RANK",
+                   subjetPrefix+"RHEE",
+                   subjetPrefix+"RTOE",
+                   subjetPrefix+"SACR"]
+
+        if removelateralKnee:
+            markers.append(subjetPrefix+"LKNE")                  
+            markers.append(subjetPrefix+"RKNE")                  
+
+
+        if kadEnable:
+            markers.append(subjetPrefix+"LKAX")                  
+            markers.append(subjetPrefix+"LKD1")                  
+            markers.append(subjetPrefix+"LKD2")                                     
+            markers.append(subjetPrefix+"RKAX")                  
+            markers.append(subjetPrefix+"RKD1")                  
+            markers.append(subjetPrefix+"RKD2")                                     
+
+        if ankleMedEnable:
+            markers.append(subjetPrefix+"LMED")   
+            markers.append(subjetPrefix+"RMED")   
+
+                   
         btkTools.clearPoints(acq,markers) 
         return acq
-   
-   
+
     def __repr__(self):
         return "cgm1"
 

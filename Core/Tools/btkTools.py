@@ -69,17 +69,18 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
         new_btkPoint.SetType(PointType)
         acq.AppendPoint(new_btkPoint)
 
-def clearPoints(acq, pointlabelList,display = False):
+def clearPoints(acq, pointlabelList):
     
     i = acq.GetPoints().Begin()
     while i != acq.GetPoints().End():
         label =  i.value().GetLabel()
         if label not in pointlabelList:
             i = acq.RemovePoint(i)
-            if display: print label + " removed"
+            logging.debug( label + " removed")
         else:
             i.incr()
-            if display: print label + " found"
+            logging.debug( label + " found")
+
 
 
     return acq
@@ -192,4 +193,15 @@ def isGap(acq, markerList):
     for m in markerList:
          residualValues = acq.GetPoint(m).GetResiduals()
          if any(residualValues== -1.0):
-             raise Exception("[pyCGM2] gap founded for markers %s " % m )       
+             raise Exception("[pyCGM2] gap founded for markers %s " % m )    
+             
+def modifyEventSubject(acq,newSubjectlabel):
+    # events
+    nEvents = acq.GetEventNumber()
+    if nEvents>=1: 
+        for i in range(0, nEvents):
+            acq.GetEvent(i).SetSubject(newSubjectlabel)
+    return acq
+
+def modifySubject(acq,newSubjectlabel):
+    acq.GetMetaData().FindChild("SUBJECTS").value().FindChild("NAMES").value().GetInfo().SetValue(0,str(newSubjectlabel))
