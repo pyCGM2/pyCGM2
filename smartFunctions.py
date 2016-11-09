@@ -35,7 +35,11 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                          plotFlag= True, 
                          exportSpreadSheetFlag = True,
                          exportAnalysisC3dFlag = True,
-                         normativeDataDict = None ):
+                         consistencyOnly = False,
+                         normativeDataDict = None,
+                         name_out=None,
+                         DATA_PATH_OUT= None
+                         ):
                              
     #---- PRELIMINARY STAGE
     #--------------------------------------------------------------------------
@@ -95,14 +99,28 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
     
+    
+    
+    if DATA_PATH_OUT is None:
+        DATA_PATH_OUT = DATA_PATH
+    
+    
     if exportAnalysisC3dFlag:
-        c3dAnalysisName = modelledFilenames[0][:-4]+"-Cycles" if len(modelledFilenames) == 1 else  "MultiTrials"
-        analysisFilter.exportAnalysisC3d(c3dAnalysisName, path=DATA_PATH)
+        if name_out  is None:
+            c3dAnalysisName = modelledFilenames[0][:-4]+"-Cycles" if len(modelledFilenames) == 1 else  "MultiTrials"
+        else:
+            c3dAnalysisName = name_out
+            
+        analysisFilter.exportAnalysisC3d(c3dAnalysisName, path=DATA_PATH_OUT)
 
     if exportSpreadSheetFlag:
-        spreadSheetName = modelledFilenames[0][:-4] if len(modelledFilenames) == 1 else  "MultiTrials"
-        analysisFilter.exportBasicDataFrame(spreadSheetName, path=DATA_PATH)
-        analysisFilter.exportAdvancedDataFrame(spreadSheetName, path=DATA_PATH)
+        if name_out  is None:
+            spreadSheetName = modelledFilenames[0][:-4] if len(modelledFilenames) == 1 else  "MultiTrials"
+        else:
+            spreadSheetName = name_out
+
+        analysisFilter.exportBasicDataFrame(spreadSheetName, path=DATA_PATH_OUT)
+        analysisFilter.exportAdvancedDataFrame(spreadSheetName, path=DATA_PATH_OUT)
 
     #---- GAIT PLOTTING FILTER
     #--------------------------------------------------------------------------
@@ -120,10 +138,14 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
             chosenModality = normativeDataDict["Modality"]
             pf.setNormativeDataProcedure(CGM2normdata.Pinzone2014_normativeDataBases(chosenModality)) # modalites : "Center One" ,"Center Two"
 
-        pf.setPath(DATA_PATH)
-        pdfnameSuffix = modelledFilenames[0][:-4] if len(modelledFilenames) == 1 else  "MultiTrials"
+        pf.setPath(DATA_PATH_OUT)
+        if name_out  is None:
+            pdfnameSuffix = modelledFilenames[0][:-4] if len(modelledFilenames) == 1 else  "MultiTrials"
+        else:
+            pdfnameSuffix = name_out
+        
         pf.setPdfSuffix(pdfnameSuffix)
-        pf.plot(consistencyOnly=False)
+        pf.plot(consistencyOnly=consistencyOnly)
 
         #os.startfile(DATA_PATH+"consistencyKinematics_"+ gaitFilenameLabelled[:-4]+".pdf")
         #os.startfile(DATA_PATH+"consistencyKinetics_"+ gaitFilenameLabelled[:-4]+".pdf")
