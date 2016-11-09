@@ -471,30 +471,38 @@ class GaitCyclesBuilder(CyclesBuilder):
     def getKinetics(self):
         
         if self.kineticTrials is not None:
+            
             kineticCycles=list()
             for trial in  self.kineticTrials:
-                 
-                context = "Left"
-                left_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
-                    left_fs_times.append(ev.time())
-
-                for i in range(0, len(left_fs_times)-1):
-                    kineticCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                                   context,
-                                                   longitudinal_axis = self.longitudinal_axis,
-                                                   lateral_axis =self.lateral_axis)) 
-
-                context = "Right"
-                right_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-                    right_fs_times.append(ev.time())
-
-                for i in range(0, len(right_fs_times)-1):
-                    kineticCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                                   context,
-                                                   longitudinal_axis = self.longitudinal_axis,
-                                                   lateral_axis =self.lateral_axis))
+                
+                flag_kinetics,times = CGM2trialTools.isKineticFlag(trial)
+                
+                if flag_kinetics:
+                    context = "Left"
+                    left_fs_times=list()
+                    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
+                        left_fs_times.append(ev.time())
+                    
+                    logging.info("--left kinetic cycle--")
+                    for i in range(0, len(left_fs_times)-1):
+                        if left_fs_times[i] in times:
+                            kineticCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
+                                                           context,
+                                                           longitudinal_axis = self.longitudinal_axis,
+                                                           lateral_axis =self.lateral_axis)) 
+    
+                    context = "Right"
+                    right_fs_times=list()
+                    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
+                        right_fs_times.append(ev.time())
+    
+                    logging.info("--right kinetic cycle--")
+                    for i in range(0, len(right_fs_times)-1):
+                        if right_fs_times[i] in times: 
+                            kineticCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
+                                                           context,
+                                                           longitudinal_axis = self.longitudinal_axis,
+                                                           lateral_axis =self.lateral_axis))
 
             return kineticCycles
         else:
