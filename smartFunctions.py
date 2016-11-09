@@ -5,14 +5,15 @@ Created on Mon Jul 11 11:42:19 2016
 @author: Fabien Leboeuf (Salford Univ)
 
 
-# FUNCTIONS IN PROGRESS. ( DO NOT USE) - need thinking more
+# FUNCTIONS IN PROGRESS.
 
 
 """
 
 # -- classic packages --    
+import logging
 
-
+# openma
 import ma.io
 
 # pyCGM package
@@ -39,7 +40,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     #--------------------------------------------------------------------------
     # check if modelledFilenames is string                          
     if isinstance(modelledFilenames,str) or isinstance(modelledFilenames,unicode):
-        print " [pyCGM2] gait Processing on ONE file"        
+        logging.info( "gait Processing on ONE file")        
         modelledFilenames = [modelledFilenames]
     
 
