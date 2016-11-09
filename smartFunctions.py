@@ -12,6 +12,7 @@ Created on Mon Jul 11 11:42:19 2016
 
 # -- classic packages --    
 import logging
+import pdb
 
 # openma
 import ma.io
@@ -93,6 +94,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     analysisFilter = CGM2analysis.AnalysisFilter()
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
+    
     if exportAnalysisC3dFlag:
         c3dAnalysisName = modelledFilenames[0][:-4]+"-Cycles" if len(modelledFilenames) == 1 else  "MultiTrials"
         analysisFilter.exportAnalysisC3d(c3dAnalysisName, path=DATA_PATH)
