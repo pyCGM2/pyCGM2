@@ -42,6 +42,11 @@ def addNexusPythonSdk():
         raise Exception("untick Use nexus Python in your python pipeline operation. pyCGA apps recommand anaconda Packages ")
         
 
-def addOpenma():
-    sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma")
-    sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma\\ma")
+def addOpenma(branch="master"):
+    if branch=="master":
+        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma")
+        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma\\ma")
+
+    elif branch="plugin-gait-kad":
+        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\plugin-gait-kad\\master\\bin\\swig\\python\\openma")
+        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\plugin-gait-kad\\master\\bin\\swig\\python\\openma\\ma")
