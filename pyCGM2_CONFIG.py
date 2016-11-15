@@ -44,9 +44,20 @@ def addNexusPythonSdk():
 
 def addOpenma(branch="master"):
     if branch=="master":
-        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma")
-        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma\\ma")
+        
+        # method 1 : with path definition
+        # need definition in the PATH, I appended these two folders: 
+        # C:\Users\AAA34169\Documents\Programming\openMA\Build\master\bin;
+        # C:\Users\AAA34169\Documents\Programming\openMA\Build\master\bin\swig\python\openma\ma;
+        #sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma")
+        #sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma\\ma")
+        
+        # method 2 : with openMA distribution made manually 
+        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma")
+        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma\\ma")
 
-    elif branch="plugin-gait-kad":
-        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\plugin-gait-kad\\master\\bin\\swig\\python\\openma")
-        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\plugin-gait-kad\\master\\bin\\swig\\python\\openma\\ma")
+    elif branch=="plugin-gait-kad":
+        
+        # method 2 : with openMA distribution made manually 
+        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma")
+        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma\\ma")
