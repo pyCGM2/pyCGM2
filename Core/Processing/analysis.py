@@ -673,8 +673,6 @@ class GaitAnalysisBuilder(AbstractBuilder):
 
         logging.info("--kinematic computation--")
         if self.m_cycles.kinematicCycles is not None:
-            print "kinematic computation"
-        
             if "Left" in self.m_kinematicLabelsDict.keys():
                 for label in self.m_kinematicLabelsDict["Left"]:
                     labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix!="" else label 
