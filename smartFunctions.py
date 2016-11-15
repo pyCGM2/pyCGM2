@@ -33,7 +33,8 @@ import pyCGM2.Core.Report.normativeDatabaseProcedure as CGM2normdata
 def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH, 
                          modelInfo, subjectInfo, experimentalInfo, 
                          plotFlag= True, 
-                         exportSpreadSheetFlag = True,
+                         exportBasicSpreadSheetFlag = True,
+                         exportAdvancedSpreadSheetFlag = True,
                          exportAnalysisC3dFlag = True,
                          consistencyOnly = False,
                          normativeDataDict = None,
@@ -55,7 +56,6 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     kinematicTrials=[]
     kineticFilenames =[]
     for kinematicFilename in modelledFilenames:
-        print kinematicFilename
         kinematicFileNode = ma.io.read(str(DATA_PATH + kinematicFilename))
         kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
         CGM2trialTools.sortedEvents(kinematicTrial)
@@ -113,14 +113,14 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
             
         analysisFilter.exportAnalysisC3d(c3dAnalysisName, path=DATA_PATH_OUT)
 
-    if exportSpreadSheetFlag:
+    if exportBasicSpreadSheetFlag or exportAdvancedSpreadSheetFlag:
         if name_out  is None:
             spreadSheetName = modelledFilenames[0][:-4] if len(modelledFilenames) == 1 else  "MultiTrials"
         else:
             spreadSheetName = name_out
 
-        analysisFilter.exportBasicDataFrame(spreadSheetName, path=DATA_PATH_OUT)
-        analysisFilter.exportAdvancedDataFrame(spreadSheetName, path=DATA_PATH_OUT)
+        if exportBasicSpreadSheetFlag : analysisFilter.exportBasicDataFrame(spreadSheetName, path=DATA_PATH_OUT)
+        if exportAdvancedSpreadSheetFlag : analysisFilter.exportAdvancedDataFrame(spreadSheetName, path=DATA_PATH_OUT)
 
     #---- GAIT PLOTTING FILTER
     #--------------------------------------------------------------------------
