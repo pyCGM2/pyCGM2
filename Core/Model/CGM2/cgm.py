@@ -323,7 +323,7 @@ class CGM1ModelInf(CGM):
         self.mp_computed["leftTibialTorsion"] = 0.0
         self.mp_computed["rightTibialTorsion"] = 0.0
 
-        pdb.set_trace()
+
     def calibrationProcedure(self):
         
         """ calibration procedure of the cgm1 
@@ -518,6 +518,11 @@ class CGM1ModelInf(CGM):
 
         .. note:: 
         """             
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]
+
+
 
         seg=self.getSegment("Pelvis")
 
@@ -583,6 +588,7 @@ class CGM1ModelInf(CGM):
         self.mp_computed['meanlegLength'] = np.mean( [self.mp['leftLegLength'],self.mp['rightLegLength'] ])
 
         # local Position of the hip joint centers
+                
         LHJC_loc,RHJC_loc= CGM.hipJointCenters(self.mp,self.mp_computed,markerDiameter)
 
         # --- nodes manager
@@ -667,6 +673,9 @@ class CGM1ModelInf(CGM):
         
 
         """ 
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]
 
         seg = self.getSegment("Left Thigh")
 
@@ -751,7 +760,10 @@ class CGM1ModelInf(CGM):
            - `options` (kwargs) - use to pass option altering the standard construction
 
         """ 
-        
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]
+            
         seg = self.getSegment("Right Thigh")
 
 
@@ -838,6 +850,11 @@ class CGM1ModelInf(CGM):
            - `options` (kwargs) - use to pass option altering the standard construction
 
         """ 
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]        
+        
+        
         
         seg = self.getSegment("Left Shank")
         
@@ -924,6 +941,9 @@ class CGM1ModelInf(CGM):
            - `options` (kwargs) - use to pass option altering the standard construction
 
         """ 
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]
         
         
         seg = self.getSegment("Right Shank")
@@ -1481,6 +1501,10 @@ class CGM1ModelInf(CGM):
            - `options` (kwargs) - use to pass option altering the standard construction
 
         """             
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]        
+        
         
         seg=self.getSegment("Left Foot")
         
@@ -1944,16 +1968,16 @@ class CGM1ModelInf(CGM):
  
             logging.info(" - Left Thigh - motion -")
             logging.info(" -----------------------")            
-            self._left_thigh_motion(aqui, dictRef, dictAnat)
+            self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
             logging.info(" - Right Thigh - motion -")
             logging.info(" ------------------------")            
-            self._right_thigh_motion(aqui, dictRef, dictAnat)
+            self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
 
             logging.info(" - Left Shank - motion -")
             logging.info(" -----------------------") 
-            self._left_shank_motion(aqui, dictRef, dictAnat)
+            self._left_shank_motion(aqui, dictRef, dictAnat,options=options)
  
             logging.info(" - Left Shank-proximal - motion -")
             logging.info(" --------------------------------") 
@@ -1961,7 +1985,7 @@ class CGM1ModelInf(CGM):
  
             logging.info(" - Right Shank - motion -")
             logging.info(" ------------------------") 
-            self._right_shank_motion(aqui, dictRef, dictAnat)
+            self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
 
             logging.info(" - Right Shank-proximal - motion -")
             logging.info(" ---------------------------------") 
@@ -2095,7 +2119,7 @@ class CGM1ModelInf(CGM):
             seg.anatomicalFrame.addMotionFrame(frame)
 
 
-    def _left_thigh_motion(self,aqui, dictRef,dictAnat):
+    def _left_thigh_motion(self,aqui, dictRef,dictAnat,options=None):
         """ 
         :Parameters:
         
@@ -2105,6 +2129,11 @@ class CGM1ModelInf(CGM):
            - `motionMethod` (Enum motionMethod) - method use to optimize pose
 
         """
+
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]        
+        
         seg=self.getSegment("Left Thigh")
 
 
@@ -2191,7 +2220,7 @@ class CGM1ModelInf(CGM):
      
 
 
-    def _right_thigh_motion(self,aqui, dictRef,dictAnat):
+    def _right_thigh_motion(self,aqui, dictRef,dictAnat,options=None):
         """ 
         :Parameters:
         
@@ -2201,6 +2230,11 @@ class CGM1ModelInf(CGM):
            - `motionMethod` (Enum motionMethod) - method use to optimize pose
 
         """
+        
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]          
+        
         seg=self.getSegment("Right Thigh")
         
         # --- motion of the technical referential
@@ -2285,7 +2319,7 @@ class CGM1ModelInf(CGM):
     
 
 
-    def _left_shank_motion(self,aqui, dictRef,dictAnat):
+    def _left_shank_motion(self,aqui, dictRef,dictAnat,options=None):
         """ 
         :Parameters:
         
@@ -2295,6 +2329,9 @@ class CGM1ModelInf(CGM):
            - `motionMethod` (Enum motionMethod) - method use to optimize pose
 
         """
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]        
         
         seg=self.getSegment("Left Shank")
                    
@@ -2425,7 +2462,7 @@ class CGM1ModelInf(CGM):
             segProx.anatomicalFrame.addMotionFrame(frame)
 
     
-    def _right_shank_motion(self,aqui, dictRef,dictAnat):
+    def _right_shank_motion(self,aqui, dictRef,dictAnat,options=None):
         """ 
         :Parameters:
         
@@ -2435,6 +2472,10 @@ class CGM1ModelInf(CGM):
            - `motionMethod` (Enum motionMethod) - method use to optimize pose
 
         """
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]        
+        
         seg=self.getSegment("Right Shank")
 
         
