@@ -120,9 +120,9 @@ def buid_df_cycles1_1(analysis_outputStats):
             df_L=pd.merge(df_L,df_collection_L[i])        
     
     if right_flag: 
-        df_pst_R=df_collection_R[0]       
+        df_R=df_collection_R[0]       
         for i in range(1,len(df_collection_R)):
-            df_pst_R=pd.merge(df_pst_R,df_collection_R[i])
+            df_R=pd.merge(df_R,df_collection_R[i])
     
     if left_flag and right_flag:
         DF = pd.concat([df_L,df_R],ignore_index=True)
