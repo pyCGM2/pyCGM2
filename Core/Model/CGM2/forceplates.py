@@ -90,5 +90,5 @@ def matchingFootSideOnForceplate (btkAcq, left_markerLabelToe ="LTOE", left_mark
             logging.debug(" Force plate " + str(i) + " : right foot")
             suffix = suffix +  "R"
 
-
+    logging.info("Matched Force plate ===> %s", (suffix))
     return suffix
