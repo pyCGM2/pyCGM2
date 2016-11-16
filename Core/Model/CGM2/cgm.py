@@ -19,8 +19,7 @@ import pyCGM2.Core.enums as pyCGM2Enums
 from pyCGM2.Core.Math import geometry
 from pyCGM2.Core.Tools import  btkTools
 
-markerDiameter=14.0 # TODO ou mettre ca
-basePlate = 2.0
+
 
 class CGM(cmb.Model):
 
@@ -521,6 +520,17 @@ class CGM1ModelInf(CGM):
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0 
+
+        if "basePlate" in options.keys():
+            logging.info(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0 
+
+
+
 
 
 
@@ -676,7 +686,15 @@ class CGM1ModelInf(CGM):
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0 
 
+        if "basePlate" in options.keys():
+            logging.info(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0             
+            
         seg = self.getSegment("Left Thigh")
 
 
@@ -763,6 +781,15 @@ class CGM1ModelInf(CGM):
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0 
+            
+        if "basePlate" in options.keys():
+            logging.info(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0             
+            
             
         seg = self.getSegment("Right Thigh")
 
@@ -852,7 +879,16 @@ class CGM1ModelInf(CGM):
         """ 
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
-            markerDiameter = options["markerDiameter"]        
+            markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0
+            
+        if "basePlate" in options.keys():
+            logging.info(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0             
+            
         
         
         
@@ -944,6 +980,15 @@ class CGM1ModelInf(CGM):
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0 
+
+        if "basePlate" in options.keys():
+            logging.info(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0             
+            
         
         
         seg = self.getSegment("Right Shank")
@@ -1504,7 +1549,16 @@ class CGM1ModelInf(CGM):
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]        
-        
+        else:
+            markerDiameter=14.0 
+
+        if "basePlate" in options.keys():
+            logging.info(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0             
+            
+
         
         seg=self.getSegment("Left Foot")
         
@@ -1993,11 +2047,11 @@ class CGM1ModelInf(CGM):
             
             logging.info(" - Left foot - motion -")
             logging.info(" ----------------------")
-            self._left_foot_motion(aqui, dictRef, dictAnat)
+            self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
 
             logging.info(" - Right foot - motion -")
             logging.info(" ----------------------")
-            self._right_foot_motion(aqui, dictRef, dictAnat)
+            self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
 
             
         
@@ -2133,6 +2187,14 @@ class CGM1ModelInf(CGM):
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]        
+        else:
+            markerDiameter=14.0 
+
+        if "basePlate" in options.keys():
+            logging.info(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0  
         
         seg=self.getSegment("Left Thigh")
 
@@ -2234,7 +2296,15 @@ class CGM1ModelInf(CGM):
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]          
-        
+        else:
+            markerDiameter=14.0 
+
+        if "basePlate" in options.keys():
+            logging.info(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0  
+            
         seg=self.getSegment("Right Thigh")
         
         # --- motion of the technical referential
@@ -2332,6 +2402,14 @@ class CGM1ModelInf(CGM):
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]        
+        else:
+            markerDiameter=14.0 
+
+        if "basePlate" in options.keys():
+            logging.info(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0  
         
         seg=self.getSegment("Left Shank")
                    
@@ -2475,6 +2553,14 @@ class CGM1ModelInf(CGM):
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]        
+        else:
+            markerDiameter=14.0 
+
+        if "basePlate" in options.keys():
+            logging.info(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0  
         
         seg=self.getSegment("Right Shank")
 
@@ -2605,7 +2691,7 @@ class CGM1ModelInf(CGM):
     
 
 
-    def _left_foot_motion(self,aqui, dictRef,dictAnat):
+    def _left_foot_motion(self,aqui, dictRef,dictAnat,options=None):
         """ 
         :Parameters:
         
@@ -2632,8 +2718,12 @@ class CGM1ModelInf(CGM):
          
             a1=(pt2-pt1)
             a1=a1/np.linalg.norm(a1)
-                     
-            v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY
+            
+            if "viconCGM1compatible" in options.keys():
+                v=self.getSegment("Left Shank Proximal").anatomicalFrame.motion[i].m_axisY
+            else:
+                v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY
+            
             v=v/np.linalg.norm(v)
                     
             a2=np.cross(a1,v)
@@ -2665,7 +2755,7 @@ class CGM1ModelInf(CGM):
             frame.update(R,ptOrigin)
             seg.anatomicalFrame.addMotionFrame(frame)
 
-    def _right_foot_motion(self,aqui, dictRef,dictAnat):
+    def _right_foot_motion(self,aqui, dictRef,dictAnat,options=None):
         """ 
         :Parameters:
         
@@ -2693,8 +2783,11 @@ class CGM1ModelInf(CGM):
          
             a1=(pt2-pt1)
             a1=a1/np.linalg.norm(a1)
-                     
-            v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY
+            
+            if "viconCGM1compatible" in options.keys():
+                v=self.getSegment("Right Shank Proximal").anatomicalFrame.motion[i].m_axisY
+            else:
+                v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY
             v=v/np.linalg.norm(v)
                     
             a2=np.cross(a1,v)
