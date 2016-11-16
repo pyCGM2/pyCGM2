@@ -132,6 +132,10 @@ def findProgressionFromPoints(acq,originPointLabel, longitudinal_extremityPointL
         globalFrame = str(longitudinalAxis+lateralAxis+"Y")        
     if "Z" not in str(longitudinalAxis+lateralAxis):
         globalFrame = str(longitudinalAxis+lateralAxis+"Z")        
+
+    logging.info("Longitudinal axis : %s"%(longitudinalAxis))
+    logging.info("forwardProgression : %s"%(str(forwardProgression)))
+    logging.info("globalFrame : %s"%(str(globalFrame)))
            
     return   longitudinalAxis,forwardProgression,globalFrame  
 
@@ -169,6 +173,10 @@ def findProgressionFromVectors(a1_long,a2_lat):
         globalFrame = str(longitudinalAxis+lateralAxis+"Y")        
     if "Z" not in str(longitudinalAxis+lateralAxis):
         globalFrame = str(longitudinalAxis+lateralAxis+"Z")        
+
+    logging.info("Longitudinal axis : %s"%(longitudinalAxis))
+    logging.info("forwardProgression : %s"%(str(forwardProgression)))
+    logging.info("globalFrame : %s"%(str(globalFrame)))
            
     return   longitudinalAxis,forwardProgression,globalFrame
     
