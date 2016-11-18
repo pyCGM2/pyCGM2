@@ -2,25 +2,25 @@
 <KinematicModel MODEL="PlugInGait LowerBody SACR Ai_MWT" VERSION="3.2">
 	<Parameters>
 		<StaticParameter NAME="Bodymass" PRIOR="65" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="mass"/>
-		<StaticParameter NAME="Height" PRIOR="1700" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="scalar"/>
-		<StaticParameter NAME="InterAsisDistance" PRIOR="200" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="0" QUANTITY="scalar"/>
+		<StaticParameter NAME="Height" PRIOR="1700" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
+		<StaticParameter NAME="InterAsisDistance" PRIOR="200" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="0" QUANTITY="length"/>
 		
-		<StaticParameter NAME="LeftLegLength" PRIOR="800" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="scalar"/>
-		<StaticParameter NAME="LeftKneeWidth" PRIOR="120" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="scalar"/>
-		<StaticParameter NAME="LeftAnkleWidth" PRIOR="100" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="scalar"/>
+		<StaticParameter NAME="LeftLegLength" PRIOR="800" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
+		<StaticParameter NAME="LeftKneeWidth" PRIOR="120" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
+		<StaticParameter NAME="LeftAnkleWidth" PRIOR="100" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
 		<StaticParameter NAME="LeftTibialTorsion" PRIOR="0" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="0" QUANTITY="angle"/>
-		<StaticParameter NAME="LeftSoleDelta" PRIOR="0" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="0" QUANTITY="scalar"/>
+		<StaticParameter NAME="LeftSoleDelta" PRIOR="0" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="0" QUANTITY="length"/>
 		<StaticParameter NAME="LeftThighRotation" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="0" REQUIRED="0" QUANTITY="angle"/>
 		<StaticParameter NAME="LeftShankRotation" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="0" REQUIRED="0" QUANTITY="angle"/>
 		<StaticParameter NAME="LeftStaticPlantFlex" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="1" REQUIRED="0" QUANTITY="angle"/>
 		<StaticParameter NAME="LeftStaticRotOff" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="1" REQUIRED="0" QUANTITY="angle"/>
 		<StaticParameter NAME="LeftAnkleAbAdd" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="1" REQUIRED="0" QUANTITY="angle"/>
 		
-		<StaticParameter NAME="RightLegLength" PRIOR="800" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="scalar"/>
-		<StaticParameter NAME="RightKneeWidth" PRIOR="120" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="scalar"/>
-		<StaticParameter NAME="RightAnkleWidth" PRIOR="100" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="scalar"/>
+		<StaticParameter NAME="RightLegLength" PRIOR="800" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
+		<StaticParameter NAME="RightKneeWidth" PRIOR="120" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
+		<StaticParameter NAME="RightAnkleWidth" PRIOR="100" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
 		<StaticParameter NAME="RightTibialTorsion" PRIOR="0" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="0" QUANTITY="angle"/>
-		<StaticParameter NAME="RightSoleDelta" PRIOR="0" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="0" QUANTITY="scalar"/>
+		<StaticParameter NAME="RightSoleDelta" PRIOR="0" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="0" QUANTITY="length"/>
 		<StaticParameter NAME="RightThighRotation" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="0" REQUIRED="0" QUANTITY="angle"/>
 		<StaticParameter NAME="RightShankRotation" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="0" REQUIRED="0" QUANTITY="angle"/>
 		<StaticParameter NAME="RightStaticPlantFlex" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="1" REQUIRED="0" QUANTITY="angle"/>

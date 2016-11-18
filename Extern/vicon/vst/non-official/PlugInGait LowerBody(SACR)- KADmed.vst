@@ -2,23 +2,23 @@
 <KinematicModel MODEL="tryKADmed" VERSION="3.2">
 	<Parameters>
 		<StaticParameter NAME="Bodymass" PRIOR="65" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="mass"/>
-		<StaticParameter NAME="Height" PRIOR="1700" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
-		<StaticParameter NAME="InterAsisDistance" PRIOR="200" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="scalar"/>
-		<StaticParameter NAME="LeftLegLength" PRIOR="800" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
-		<StaticParameter NAME="LeftKneeWidth" PRIOR="120" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
-		<StaticParameter NAME="LeftAnkleWidth" PRIOR="100" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
+		<StaticParameter NAME="Height" PRIOR="1700" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="length"/>
+		<StaticParameter NAME="InterAsisDistance" PRIOR="200" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="length"/>
+		<StaticParameter NAME="LeftLegLength" PRIOR="800" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="length"/>
+		<StaticParameter NAME="LeftKneeWidth" PRIOR="120" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="length"/>
+		<StaticParameter NAME="LeftAnkleWidth" PRIOR="100" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="length"/>
 		<StaticParameter NAME="LeftTibialTorsion" PRIOR="0" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
-		<StaticParameter NAME="LeftSoleDelta" PRIOR="0" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="scalar"/>
+		<StaticParameter NAME="LeftSoleDelta" PRIOR="0" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="length"/>
 		<StaticParameter NAME="LeftThighRotation" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
 		<StaticParameter NAME="LeftShankRotation" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
 		<StaticParameter NAME="LeftStaticPlantFlex" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="true" REQUIRED="false" QUANTITY="angle"/>
 		<StaticParameter NAME="LeftStaticRotOff" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="true" REQUIRED="false" QUANTITY="angle"/>
 		<StaticParameter NAME="LeftAnkleAbAdd" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="true" REQUIRED="false" QUANTITY="angle"/>
-		<StaticParameter NAME="RightLegLength" PRIOR="800" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
-		<StaticParameter NAME="RightKneeWidth" PRIOR="120" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
-		<StaticParameter NAME="RightAnkleWidth" PRIOR="100" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
+		<StaticParameter NAME="RightLegLength" PRIOR="800" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="length"/>
+		<StaticParameter NAME="RightKneeWidth" PRIOR="120" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="length"/>
+		<StaticParameter NAME="RightAnkleWidth" PRIOR="100" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="length"/>
 		<StaticParameter NAME="RightTibialTorsion" PRIOR="0" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
-		<StaticParameter NAME="RightSoleDelta" PRIOR="0" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="scalar"/>
+		<StaticParameter NAME="RightSoleDelta" PRIOR="0" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="length"/>
 		<StaticParameter NAME="RightThighRotation" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
 		<StaticParameter NAME="RightShankRotation" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
 		<StaticParameter NAME="RightStaticPlantFlex" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="true" REQUIRED="false" QUANTITY="angle"/>
