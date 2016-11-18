@@ -474,7 +474,7 @@ class CGM1ModelInf(CGM):
         
         
         # ---- FOOT CALIBRATION
-        #-------------------------------------            
+        #-------------------------------------
         # foot ( need  Y-axis of the shank anatomic Frame)
         logging.info(" --- Left Foot - TF calibration (uncorrected) ---")
         logging.info(" -------------------------------------------------")
@@ -2070,10 +2070,14 @@ class CGM1ModelInf(CGM):
         self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
         self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
         self.displayMotionCoordinateSystem( aqui,  "Left Shank" , "LShank" )
+        self.displayMotionCoordinateSystem( aqui,  "Left Shank Proximal" , "LShankProx" )
         self.displayMotionCoordinateSystem( aqui,  "Right Shank" , "RShank" )
+        self.displayMotionCoordinateSystem( aqui,  "Right Shank Proximal" , "RShankProx" )
         self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFoot" )
         self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFoot" )
 
+        self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical") 
+        self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical") 
     # ----- native motion ------
 
     
@@ -2739,7 +2743,7 @@ class CGM1ModelInf(CGM):
             
             seg.getReferential("TF").addMotionFrame(frame)
 
-            
+
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
         
