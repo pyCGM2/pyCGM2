@@ -1118,11 +1118,11 @@ class CGM1_motionFullAnglesTest():
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
                                         useLeftTibialTorsion = True,useRightTibialTorsion = True)
         modMotion.compute()
-
+        
         # relative angles
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
-        
+                                        
         # absolute angles 
         longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
@@ -1131,8 +1131,8 @@ class CGM1_motionFullAnglesTest():
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
-        btkTools.smartWriter(acqGait, "advancedCGM1_kad_midMaleolus-14.c3d")   
-   
+        #btkTools.smartWriter(acqGait, "advancedCGM1_kad_midMaleolus-14.c3d")   
+
         # tests on joint angles
         np.testing.assert_almost_equal( acqGait.GetPoint("RHipAngles").GetValues(),
                                         acqGait.GetPoint("RHipAngles_cgm1_6dof").GetValues(), decimal =3)
@@ -1145,7 +1145,7 @@ class CGM1_motionFullAnglesTest():
 
         np.testing.assert_almost_equal( acqGait.GetPoint("LKneeAngles").GetValues(),
                                         acqGait.GetPoint("LKneeAngles_cgm1_6dof").GetValues(), decimal =3)   
-   
+        
         #np.testing.assert_almost_equal( acqGait.GetPoint("RAnkleAngles").GetValues(),
         #                                acqGait.GetPoint("RAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
 
@@ -1170,19 +1170,20 @@ class CGM1_motionFullAnglesTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+                                                 useLeftTibialTorsion = True,useRightTibialTorsion = True)
         modMotion.compute()
 
-         # relative angles
+        # relative angles
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
-        
+
         # absolute angles 
         longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
                                       globalFrameOrientation = globalFrame,
-                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")  
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
         #btkTools.smartWriter(acqGait, "test.c3d")   
    
@@ -1211,9 +1212,9 @@ class CGM1_motionFullAnglesTest():
 #        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
 #                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
         np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
-                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3) 
+                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
         np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
-                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3) 
+                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)                                                                               
 
     @classmethod
     def advancedCGM1_kad_midMaleolus_viconCompatible(cls):     
@@ -1277,7 +1278,7 @@ class CGM1_motionFullAnglesTest():
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
-        btkTools.smartWriter(acqGait, "advancedCGM1_kad_midMaleolus_viconComaptible-14.c3d")   
+        #btkTools.smartWriter(acqGait, "advancedCGM1_kad_midMaleolus_viconComaptible-14.c3d")   
    
         # tests on joint angles
         np.testing.assert_almost_equal( acqGait.GetPoint("RHipAngles").GetValues(),
@@ -1362,6 +1363,65 @@ class CGM1_motionFullAnglesTest():
                                         acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3) 
         np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
                                         acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3) 
+
+
+    
+
+class CGM1_motionFullAnglesTest_customApproach():
+    @classmethod
+    def basicCGM1_bodyBuilderFoot(cls):     
+        """
+        goal : know  effet on Foot kinematics of a foot referential built according ta sequence metionned in some bodybuilder code:
+        LFoot = [LTOE,LAJC-LTOE,LAJC-LKJC,zyx]
+        
+        """    
+        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
+    
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
+        
+        model=cgm.CGM1ModelInf()
+        model.configure()        
+        
+        markerDiameter=14                    
+        mp={
+        'mass'   : 71.0,                
+        'leftLegLength' : 860.0,
+        'rightLegLength' : 865.0 ,
+        'leftKneeWidth' : 102.0,
+        'rightKneeWidth' : 103.4,
+        'leftAnkleWidth' : 75.3,
+        'rightAnkleWidth' : 72.9,       
+        }        
+        model.addAnthropoInputParameter(mp)
+                                    
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                            useBodyBuilderFoot=True).compute() 
+
+        # ------ Test 1 Motion Axe X -------
+        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"        
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        
+        # Motion FILTER 
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion.compute()
+
+        # relative angles
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+        
+        # absolute angles 
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      globalFrameOrientation = globalFrame,
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
+        
+        btkTools.smartWriter(acqGait, "testuseBodyBuilderFoot.c3d")       
+
                                               
 if __name__ == "__main__":
 
@@ -1384,6 +1444,9 @@ if __name__ == "__main__":
     CGM1_motionFullAnglesTest.advancedCGM1_kad_flatFoot()
     CGM1_motionFullAnglesTest.advancedCGM1_kad_midMaleolus() # vicon ERROR. tests fail for ankle angle and foot progress
     CGM1_motionFullAnglesTest.advancedCGM1_kad_midMaleolus_viconCompatible()     
+    
+#    logging.info("######## PROCESS CGM1 - Full angles - CUSTOM APPROACHES ######")    
+    CGM1_motionFullAnglesTest_customApproach.basicCGM1_bodyBuilderFoot()   
     
     
     logging.info("######## PROCESS CGM1 - Full angles ---> Done ######")
