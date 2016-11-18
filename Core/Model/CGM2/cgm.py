@@ -344,7 +344,8 @@ class CGM1ModelInf(CGM):
         
         dictRef["Left Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LTOE","LAJC",None,"LAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
         dictRef["Right Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RTOE","RAJC",None,"RAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis         
-        
+
+
         dictRefAnatomical={}
         dictRefAnatomical["Pelvis"]= {'sequence':"YZX", 'labels':  ["RASI","LASI","SACR","midASIS"]} # normaly : midHJC
         dictRefAnatomical["Left Thigh"]= {'sequence':"ZXiY", 'labels':  ["LKJC","LHJC","LKNE","LHJC"]} # origin = Proximal ( differ from native)
@@ -354,6 +355,7 @@ class CGM1ModelInf(CGM):
 
         dictRefAnatomical["Left Foot"]={'sequence':"ZXiY", 'labels':  ["LTOE","LHEE",None,"LAJC"]}    # corrected foot      
         dictRefAnatomical["Right Foot"]={'sequence':"ZXiY", 'labels':  ["RTOE","RHEE",None,"RAJC"]}    # corrected foot
+
         
         return dictRef,dictRefAnatomical
 
@@ -1081,21 +1083,32 @@ class CGM1ModelInf(CGM):
         seg = self.getSegment("Left Foot")
         
         # ---  additional markers and Update of the marker segment list
-        # NA
+        seg.addMarkerLabel("LKJC")
+
+
+        if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
+            logging.warning("You use a Left uncorrected foot sequence different than native CGM1")
+            dictRef["Left Foot"]={"TF" : {'sequence':"ZYX", 'labels':   ["LTOE","LAJC","LKJC","LAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
+
 
         # --- Construction of the technical Referential
         tf=seg.getReferential("TF")
 
-        pt1=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        #pt3=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not use
+        pt1=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#LTOE
+        pt2=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#AJC
+        
+        if dictRef["Left Foot"]["TF"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            v=(pt3-pt1)
+        else:
+            v=self.getSegment("Left Shank").anatomicalFrame.static.m_axisY #(pt3-pt1) 
+
     
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
                     
-        v=self.getSegment("Left Shank").anatomicalFrame.static.m_axisY #(pt3-pt1) 
         v=v/np.linalg.norm(v)
                     
         a2=np.cross(a1,v)
@@ -1137,21 +1150,33 @@ class CGM1ModelInf(CGM):
         seg = self.getSegment("Right Foot")
         
         # ---  additional markers and Update of the marker segment list
-        # NA
+        seg.addMarkerLabel("RKJC")
+
+        if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]: 
+            logging.warning("You use a right uncorrected foot sequence different than native CGM1")
+            dictRef["Right Foot"]={"TF" : {'sequence':"ZYX", 'labels':   ["RTOE","RAJC","RKJC","RAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
+
+
 
         # --- Construction of the anatomical Referential
         tf=seg.getReferential("TF")
 
         pt1=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         pt2=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        #pt3=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
+        
+        if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            v=(pt3-pt1)
+        else:
+            v=self.getSegment("Right Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)         
+        
+        
     
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
                     
-        v=self.getSegment("Right Shank").anatomicalFrame.static.m_axisY #(pt3-pt1) 
         v=v/np.linalg.norm(v)
                     
         a2=np.cross(a1,v)
@@ -1559,25 +1584,32 @@ class CGM1ModelInf(CGM):
             basePlate=2.0             
             
 
-        
         seg=self.getSegment("Left Foot")
         
+        if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
+            logging.warning("You use a Left corrected foot sequence different than native CGM1")
+            dictAnatomic["Left Foot"]={'sequence':"ZYX", 'labels':  ["LTOE","LHEE","LKJC","LAJC"]}    # corrected foot      
+            
+        
         # --- Construction of the anatomical Referential
-        pt1=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt1=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # LTOE
         pt2=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        #pt3=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-    
+              
         if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
             logging.warning ("option (leftFlatFoot) enable")            
             pt2[2] = pt1[2]    
-            
+    
+        if dictAnatomic["Left Foot"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            v=(pt3-pt1)
+        else:
+            v=self.getSegment("Left Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)         
     
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
-                    
-        v=self.getSegment("Left Shank").anatomicalFrame.static.m_axisY #(pt3-pt1) 
+                                                       
         v=v/np.linalg.norm(v)
                     
         a2=np.cross(a1,v)
@@ -1646,7 +1678,11 @@ class CGM1ModelInf(CGM):
         """             
         
         seg=self.getSegment("Right Foot")
-        
+
+        if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
+            logging.warning("You use a Right corrected foot sequence different than native CGM1")
+            dictAnatomic["Right Foot"]={'sequence':"ZYX", 'labels':  ["RTOE","RHEE","RKJC","RAJC"]}    # corrected foot
+
         # --- Construction of the anatomical Referential
         pt1=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         pt2=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -1655,13 +1691,19 @@ class CGM1ModelInf(CGM):
         if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
             logging.warning ("option (rightFlatFoot) enable")
             pt2[2] = pt1[2]    
+
+        if dictAnatomic["Right Foot"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            v=(pt3-pt1)
+        else:
+            v=self.getSegment("Right Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
+
     
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
                     
-        v=self.getSegment("Right Shank").anatomicalFrame.static.m_axisY #(pt3-pt1) 
         v=v/np.linalg.norm(v)
                     
         a2=np.cross(a1,v)
@@ -2716,17 +2758,24 @@ class CGM1ModelInf(CGM):
 
             pt1=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][0])).GetValues()[i,:] #toe
             pt2=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][1])).GetValues()[i,:] #ajc
-            #pt3=aqui.GetPoint(str(dictRef["Right Hindfoot"]["TF"]['labels'][2])).GetValues()[i,:] #hee not used
+            
+            if dictRef["Left Foot"]["TF"]['labels'][2] is not None:
+                pt3=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[i,:]
+                v=(pt3-pt1)
+            else:
+                if "viconCGM1compatible" in options.keys():
+                    v=self.getSegment("Left Shank Proximal").anatomicalFrame.motion[i].m_axisY
+                else:
+                    v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY           
+            
+            
             ptOrigin=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[i,:]             
          
          
             a1=(pt2-pt1)
             a1=a1/np.linalg.norm(a1)
             
-            if "viconCGM1compatible" in options.keys():
-                v=self.getSegment("Left Shank Proximal").anatomicalFrame.motion[i].m_axisY
-            else:
-                v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY
+            
             
             v=v/np.linalg.norm(v)
                     
@@ -2781,17 +2830,22 @@ class CGM1ModelInf(CGM):
 
             pt1=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][0])).GetValues()[i,:] #toe
             pt2=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][1])).GetValues()[i,:] #ajc
-            #pt3=aqui.GetPoint(str(dictRef["Right Hindfoot"]["TF"]['labels'][2])).GetValues()[i,:] #hee not used
+            
+            if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
+                pt3=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[i,:]
+                v=(pt3-pt1)
+            else:
+                if "viconCGM1compatible" in options.keys():
+                    v=self.getSegment("Right Shank Proximal").anatomicalFrame.motion[i].m_axisY
+                else:
+                    v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY              
+            
             ptOrigin=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[i,:]             
          
          
             a1=(pt2-pt1)
             a1=a1/np.linalg.norm(a1)
             
-            if "viconCGM1compatible" in options.keys():
-                v=self.getSegment("Right Shank Proximal").anatomicalFrame.motion[i].m_axisY
-            else:
-                v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY
             v=v/np.linalg.norm(v)
                     
             a2=np.cross(a1,v)
