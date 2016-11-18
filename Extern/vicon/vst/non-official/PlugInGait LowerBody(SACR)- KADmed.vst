@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<KinematicModel MODEL="tryKADmed" VERSION="3.2">
+	<Parameters>
+		<StaticParameter NAME="Bodymass" PRIOR="65" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="mass"/>
+		<StaticParameter NAME="Height" PRIOR="1700" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
+		<StaticParameter NAME="InterAsisDistance" PRIOR="200" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="scalar"/>
+		<StaticParameter NAME="LeftLegLength" PRIOR="800" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
+		<StaticParameter NAME="LeftKneeWidth" PRIOR="120" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
+		<StaticParameter NAME="LeftAnkleWidth" PRIOR="100" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
+		<StaticParameter NAME="LeftTibialTorsion" PRIOR="0" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="LeftSoleDelta" PRIOR="0" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="scalar"/>
+		<StaticParameter NAME="LeftThighRotation" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="LeftShankRotation" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="LeftStaticPlantFlex" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="true" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="LeftStaticRotOff" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="true" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="LeftAnkleAbAdd" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="true" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="RightLegLength" PRIOR="800" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
+		<StaticParameter NAME="RightKneeWidth" PRIOR="120" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
+		<StaticParameter NAME="RightAnkleWidth" PRIOR="100" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="scalar"/>
+		<StaticParameter NAME="RightTibialTorsion" PRIOR="0" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="RightSoleDelta" PRIOR="0" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="false" QUANTITY="scalar"/>
+		<StaticParameter NAME="RightThighRotation" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="RightShankRotation" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="false" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="RightStaticPlantFlex" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="true" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="RightStaticRotOff" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="true" REQUIRED="false" QUANTITY="angle"/>
+		<StaticParameter NAME="RightAnkleAbAdd" PRIOR="0" HIDDEN="false" ADVANCED="true" READONLY="true" REQUIRED="false" QUANTITY="angle"/>
+		<Parameter NAME="Pelvis_Left Thigh_x" VALUE="-0" PRIOR="-0" HIDDEN="true"/>
+		<Parameter NAME="Pelvis_Left Thigh_y" VALUE="0" PRIOR="0" HIDDEN="true"/>
+		<Parameter NAME="Pelvis_Left Thigh_z" VALUE="0" PRIOR="0" HIDDEN="true"/>
+		<Parameter NAME="Pelvis_Right Thigh_x" VALUE="0" PRIOR="0" HIDDEN="true"/>
+		<Parameter NAME="Pelvis_Right Thigh_y" VALUE="0" PRIOR="0" HIDDEN="true"/>
+		<Parameter NAME="Pelvis_Right Thigh_z" VALUE="-166.6431884765625" PRIOR="-166.6431884765625" HIDDEN="true"/>
+		<Parameter NAME="Pelvis_Pelvis3_x" VALUE="0" PRIOR="0" HIDDEN="true"/>
+		<Parameter NAME="Pelvis_Pelvis3_y" VALUE="169.56520080566406" PRIOR="169.56520080566406" HIDDEN="true"/>
+		<Parameter NAME="Pelvis_Pelvis3_z" VALUE="-83.72998046875" PRIOR="-83.72998046875" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Shank_x" VALUE="-1.8429702208777599e-014" PRIOR="-1.8429702208777599e-014" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Shank_y" VALUE="39.8701171875" PRIOR="39.8701171875" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Shank_z" VALUE="-348.47088623046875" PRIOR="-348.47088623046875" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Thigh2_x" VALUE="-1.3322676295501878e-014" PRIOR="-1.3322676295501878e-014" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Thigh2_y" VALUE="-1.4210854715202004e-014" PRIOR="-1.4210854715202004e-014" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Thigh2_z" VALUE="-249.58064270019531" PRIOR="-249.58064270019531" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Thigh4_x" VALUE="84.1829833984375" PRIOR="84.1829833984375" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Thigh4_y" VALUE="59.544631958007813" PRIOR="59.544631958007813" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Thigh4_z" VALUE="-233.39517211914062" PRIOR="-233.39517211914062" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Thigh5_x" VALUE="133.68125915527344" PRIOR="133.68125915527344" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Thigh5_y" VALUE="95.384323120117187" PRIOR="95.384323120117187" HIDDEN="true"/>
+		<Parameter NAME="Left Thigh_Left Thigh5_z" VALUE="-364.81271362304688" PRIOR="-364.81271362304688" HIDDEN="true"/>
+		<Parameter NAME="Left Shank_Left Foot_x" VALUE="-7.1054273576010019e-015" PRIOR="-7.1054273576010019e-015" HIDDEN="true"/>
+		<Parameter NAME="Left Shank_Left Foot_y" VALUE="54.590484619140625" PRIOR="54.590484619140625" HIDDEN="true"/>
+		<Parameter NAME="Left Shank_Left Foot_z" VALUE="-324.96975708007812" PRIOR="-324.96975708007812" HIDDEN="true"/>
+		<Parameter NAME="Left Shank_Left Shank2_x" VALUE="-7.1054273576010019e-015" PRIOR="-7.1054273576010019e-015" HIDDEN="true"/>
+		<Parameter NAME="Left Shank_Left Shank2_y" VALUE="-7.1054273576010019e-015" PRIOR="-7.1054273576010019e-015" HIDDEN="true"/>
+		<Parameter NAME="Left Shank_Left Shank2_z" VALUE="-201.83827209472656" PRIOR="-201.83827209472656" HIDDEN="true"/>
+		<Parameter NAME="Left Shank_Left Shank4_x" VALUE="57.19195556640625" PRIOR="57.19195556640625" HIDDEN="true"/>
+		<Parameter NAME="Left Shank_Left Shank4_y" VALUE="119.17379760742187" PRIOR="119.17379760742187" HIDDEN="true"/>
+		<Parameter NAME="Left Shank_Left Shank4_z" VALUE="-332.97311401367187" PRIOR="-332.97311401367187" HIDDEN="true"/>
+		<Parameter NAME="Left Foot_Left Foot2_x" VALUE="-1.1102230246251565e-016" PRIOR="-1.1102230246251565e-016" HIDDEN="true"/>
+		<Parameter NAME="Left Foot_Left Foot2_y" VALUE="0" PRIOR="0" HIDDEN="true"/>
+		<Parameter NAME="Left Foot_Left Foot2_z" VALUE="-65.699737548828125" PRIOR="-65.699737548828125" HIDDEN="true"/>
+		<Parameter NAME="Left Foot_Left Foot3_x" VALUE="0" PRIOR="0" HIDDEN="true"/>
+		<Parameter NAME="Left Foot_Left Foot3_y" VALUE="92.663429260253906" PRIOR="92.663429260253906" HIDDEN="true"/>
+		<Parameter NAME="Left Foot_Left Foot3_z" VALUE="19.273960113525391" PRIOR="19.273960113525391" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Shank_x" VALUE="2.6645352591003757e-014" PRIOR="2.6645352591003757e-014" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Shank_y" VALUE="43.879711151123047" PRIOR="43.879711151123047" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Shank_z" VALUE="-361.478759765625" PRIOR="-361.478759765625" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Thigh2_x" VALUE="2.1316282072803006e-014" PRIOR="2.1316282072803006e-014" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Thigh2_y" VALUE="7.1054273576010019e-015" PRIOR="7.1054273576010019e-015" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Thigh2_z" VALUE="-264.20382690429688" PRIOR="-264.20382690429688" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Thigh4_x" VALUE="-73.528907775878906" PRIOR="-73.528907775878906" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Thigh4_y" VALUE="54.588619232177734" PRIOR="54.588619232177734" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Thigh4_z" VALUE="-237.25178527832031" PRIOR="-237.25178527832031" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Thigh5_x" VALUE="-118.77613067626953" PRIOR="-118.77613067626953" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Thigh5_y" VALUE="127.91069793701172" PRIOR="127.91069793701172" HIDDEN="true"/>
+		<Parameter NAME="Right Thigh_Right Thigh5_z" VALUE="-354.559814453125" PRIOR="-354.559814453125" HIDDEN="true"/>
+		<Parameter NAME="Right Shank_Right Foot_x" VALUE="1.4210854715202004e-014" PRIOR="1.4210854715202004e-014" HIDDEN="true"/>
+		<Parameter NAME="Right Shank_Right Foot_y" VALUE="48.701076507568359" PRIOR="48.701076507568359" HIDDEN="true"/>
+		<Parameter NAME="Right Shank_Right Foot_z" VALUE="-327.52362060546875" PRIOR="-327.52362060546875" HIDDEN="true"/>
+		<Parameter NAME="Right Shank_Right Shank2_x" VALUE="1.4210854715202004e-014" PRIOR="1.4210854715202004e-014" HIDDEN="true"/>
+		<Parameter NAME="Right Shank_Right Shank2_y" VALUE="7.1054273576010019e-015" PRIOR="7.1054273576010019e-015" HIDDEN="true"/>
+		<Parameter NAME="Right Shank_Right Shank2_z" VALUE="-176.4967041015625" PRIOR="-176.4967041015625" HIDDEN="true"/>
+		<Parameter NAME="Right Shank_Right Shank4_x" VALUE="-46.860847473144531" PRIOR="-46.860847473144531" HIDDEN="true"/>
+		<Parameter NAME="Right Shank_Right Shank4_y" VALUE="122.62014007568359" PRIOR="122.62014007568359" HIDDEN="true"/>
+		<Parameter NAME="Right Shank_Right Shank4_z" VALUE="-339.0196533203125" PRIOR="-339.0196533203125" HIDDEN="true"/>
+		<Parameter NAME="Right Foot_Right Foot2_x" VALUE="-5.5511151231257827e-017" PRIOR="-5.5511151231257827e-017" HIDDEN="true"/>
+		<Parameter NAME="Right Foot_Right Foot2_y" VALUE="0" PRIOR="0" HIDDEN="true"/>
+		<Parameter NAME="Right Foot_Right Foot2_z" VALUE="-66.151329040527344" PRIOR="-66.151329040527344" HIDDEN="true"/>
+		<Parameter NAME="Right Foot_Right Foot3_x" VALUE="0" PRIOR="0" HIDDEN="true"/>
+		<Parameter NAME="Right Foot_Right Foot3_y" VALUE="85.984085083007813" PRIOR="85.984085083007813" HIDDEN="true"/>
+		<Parameter NAME="Right Foot_Right Foot3_z" VALUE="23.599189758300781" PRIOR="23.599189758300781" HIDDEN="true"/>
+	</Parameters>
+	<Skeleton RGB="93 93 93">
+		<Segment NAME="Pelvis" OPACITY="255" BOUNDS="-16.66432 -16.66432 -166.643188 16.66432 16.66432 0" MASS="0" MASS-CENTRE="0 0 0" INERTIA="0 0 0" RGB="255 164 0" HIDDEN="false" DRAW-END-RATIO="1" DRAW-HEIGHT="0.5" DRAW-TWIST="0" DRAW-WIDTH="0.5" DRAW-STYLE="box" DRAW-SHADING="shaded-smooth">
+			<JointFree NAME="World_Pelvis" PRE-ORIENTATION="0 0 0" PRE-POSITION="0 0 0" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0" MEAN="0 0 0 0 0 0" COVARIANCE="2.464900016784668 0 0 0 0 0 0 2.464900016784668 0 0 0 0 0 0 246.49000549316406 0 0 0 0 0 0 1000000 0 0 0 0 0 0 1000000 0 0 0 0 0 0 1000000" T="* * * * * *" SIGNS="+ + + + + +" RANGE-CENTRING-STATE="0 0 0 0 0 0" RANGE-MATRIX="29.60881233215332 0 0 0 0 0 0 29.60881233215332 0 0 0 0 0 0 29.60881233215332 0 0 0 0 0 0 100000000 0 0 0 0 0 0 100000000 0 0 0 0 0 0 100000000">
+				<JointTemplate MEAN="0 0 0 0 0 0" COVARIANCE="2.464900016784668 0 0 0 0 0 0 2.464900016784668 0 0 0 0 0 0 246.49000549316406 0 0 0 0 0 0 1000000 0 0 0 0 0 0 1000000 0 0 0 0 0 0 1000000" TPOSE-MEAN="0 0 0 0 0 0" TPOSE-COVARIANCE="0.10000000149011612 0 0 0 0 0 0 0.10000000149011612 0 0 0 0 0 0 0.10000000149011612 0 0 0 0 0 0 0.10000000149011612 0 0 0 0 0 0 0.10000000149011612 0 0 0 0 0 0 0.10000000149011612" PRE-ORIENTATION="0 0 0" PRE-POSITION="0 0 0" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0"/>
+			</JointFree>
+			<Segment NAME="Left Thigh" OPACITY="255" BOUNDS="-24.958065 -24.958065 -249.580643 24.958065 24.958065 0" MASS="0" MASS-CENTRE="0 0 0" INERTIA="0 0 0" RGB="255 0 0" HIDDEN="false" DRAW-END-RATIO="1" DRAW-HEIGHT="0.5" DRAW-TWIST="0" DRAW-WIDTH="0.5" DRAW-STYLE="box" DRAW-SHADING="shaded-smooth">
+				<JointBall NAME="Pelvis_Left Thigh" PRE-ORIENTATION="2.8355820199999999 -0.409907937 -1.7458721399999999" PRE-POSITION="-0 0 0" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0" MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" T="* * *" SIGNS="+ + +" RANGE-CENTRING-STATE="0 0 0" RANGE-MATRIX="29.60881233215332 0 0 0 29.60881233215332 0 0 0 29.60881233215332">
+					<JointTemplate MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" TPOSE-MEAN="0 0 0" TPOSE-COVARIANCE="0.10000000149011612 0 0 0 0.10000000149011612 0 0 0 0.10000000149011612" PRE-ORIENTATION="2.83558202 -0.409907937 -1.74587214" PRE-POSITION="'Pelvis_Left Thigh_x' 'Pelvis_Left Thigh_y' 'Pelvis_Left Thigh_z'" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0"/>
+				</JointBall>
+				<Segment NAME="Left Shank" OPACITY="255" BOUNDS="-20.1838284 -20.1838284 -201.838272 20.1838284 20.1838284 0" MASS="0" MASS-CENTRE="0 0 0" INERTIA="0 0 0" RGB="255 0 0" HIDDEN="false" DRAW-END-RATIO="1" DRAW-HEIGHT="0.5" DRAW-TWIST="0" DRAW-WIDTH="0.5" DRAW-STYLE="box" DRAW-SHADING="shaded-smooth">
+					<JointBall NAME="Left Thigh_Left Shank" PRE-ORIENTATION="0.14967992899999999 -0.513323486 -0.85967558600000005" PRE-POSITION="-1.8429702208777599e-014 39.8701171875 -348.47088623046875" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 -0" MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" T="* * *" SIGNS="+ + +" RANGE-CENTRING-STATE="0 0 0" RANGE-MATRIX="29.60881233215332 0 0 0 29.60881233215332 0 0 0 29.60881233215332">
+						<JointTemplate MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" TPOSE-MEAN="0 0 0" TPOSE-COVARIANCE="0.10000000149011612 0 0 0 0.10000000149011612 0 0 0 0.10000000149011612" PRE-ORIENTATION="0.149679929 -0.513323486 -0.859675586" PRE-POSITION="'Left Thigh_Left Shank_x' 'Left Thigh_Left Shank_y' 'Left Thigh_Left Shank_z'" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 -0"/>
+					</JointBall>
+					<Segment NAME="Left Foot" OPACITY="255" BOUNDS="-6.56997395 -6.56997395 -65.6997375 6.56997395 6.56997395 0" MASS="0" MASS-CENTRE="0 0 0" INERTIA="0 0 0" RGB="255 0 0" HIDDEN="false" DRAW-END-RATIO="1" DRAW-HEIGHT="0.5" DRAW-TWIST="0" DRAW-WIDTH="0.5" DRAW-STYLE="box" DRAW-SHADING="shaded-smooth">
+						<JointBall NAME="Left Shank_Left Foot" PRE-ORIENTATION="0.102571078 -1.4129068899999999 -0.27924141299999999" PRE-POSITION="-7.1054273576010019e-015 54.590484619140625 -324.96975708007812" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0" MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" T="* * *" SIGNS="+ + +" RANGE-CENTRING-STATE="0 0 0" RANGE-MATRIX="29.60881233215332 0 0 0 29.60881233215332 0 0 0 29.60881233215332">
+							<JointTemplate MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" TPOSE-MEAN="0 0 0" TPOSE-COVARIANCE="0.10000000149011612 0 0 0 0.10000000149011612 0 0 0 0.10000000149011612" PRE-ORIENTATION="0.102571078 -1.41290689 -0.279241413" PRE-POSITION="'Left Shank_Left Foot_x' 'Left Shank_Left Foot_y' 'Left Shank_Left Foot_z'" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0"/>
+						</JointBall>
+					</Segment>
+				</Segment>
+			</Segment>
+			<Segment NAME="Right Thigh" OPACITY="255" BOUNDS="-26.4203835 -26.4203835 -264.203827 26.4203835 26.4203835 0" MASS="0" MASS-CENTRE="0 0 0" INERTIA="0 0 0" RGB="0 255 0" HIDDEN="false" DRAW-END-RATIO="1" DRAW-HEIGHT="0.5" DRAW-TWIST="0" DRAW-WIDTH="0.5" DRAW-STYLE="box" DRAW-SHADING="shaded-smooth">
+				<JointBall NAME="Pelvis_Right Thigh" PRE-ORIENTATION="-1.6658368100000001 0.20787076700000001 2.49820113" PRE-POSITION="0 0 -166.6431884765625" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0" MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" T="* * *" SIGNS="+ + +" RANGE-CENTRING-STATE="0 0 0" RANGE-MATRIX="29.60881233215332 0 0 0 29.60881233215332 0 0 0 29.60881233215332">
+					<JointTemplate MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" TPOSE-MEAN="0 0 0" TPOSE-COVARIANCE="0.10000000149011612 0 0 0 0.10000000149011612 0 0 0 0.10000000149011612" PRE-ORIENTATION="-1.66583681 0.207870767 2.49820113" PRE-POSITION="'Pelvis_Right Thigh_x' 'Pelvis_Right Thigh_y' 'Pelvis_Right Thigh_z'" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0"/>
+				</JointBall>
+				<Segment NAME="Right Shank" OPACITY="255" BOUNDS="-17.6496716 -17.6496716 -176.496704 17.6496716 17.6496716 0" MASS="0" MASS-CENTRE="0 0 0" INERTIA="0 0 0" RGB="0 255 0" HIDDEN="false" DRAW-END-RATIO="1" DRAW-HEIGHT="0.5" DRAW-TWIST="0" DRAW-WIDTH="0.5" DRAW-STYLE="box" DRAW-SHADING="shaded-smooth">
+					<JointBall NAME="Right Thigh_Right Shank" PRE-ORIENTATION="0.29013001900000002 0.57820981699999996 0.76985061200000005" PRE-POSITION="2.6645352591003757e-014 43.879711151123047 -361.478759765625" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0" MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" T="* * *" SIGNS="+ + +" RANGE-CENTRING-STATE="0 0 0" RANGE-MATRIX="29.60881233215332 0 0 0 29.60881233215332 0 0 0 29.60881233215332">
+						<JointTemplate MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" TPOSE-MEAN="0 0 0" TPOSE-COVARIANCE="0.10000000149011612 0 0 0 0.10000000149011612 0 0 0 0.10000000149011612" PRE-ORIENTATION="0.290130019 0.578209817 0.769850612" PRE-POSITION="'Right Thigh_Right Shank_x' 'Right Thigh_Right Shank_y' 'Right Thigh_Right Shank_z'" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0"/>
+					</JointBall>
+					<Segment NAME="Right Foot" OPACITY="255" BOUNDS="-6.61513281 -6.61513281 -66.151329 6.61513281 6.61513281 0" MASS="0" MASS-CENTRE="0 0 0" INERTIA="0 0 0" RGB="0 255 0" HIDDEN="false" DRAW-END-RATIO="1" DRAW-HEIGHT="0.5" DRAW-TWIST="0" DRAW-WIDTH="0.5" DRAW-STYLE="box" DRAW-SHADING="shaded-smooth">
+						<JointBall NAME="Right Shank_Right Foot" PRE-ORIENTATION="0.192698538 1.20995462 0.0063065183300000001" PRE-POSITION="1.4210854715202004e-014 48.701076507568359 -327.52362060546875" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0" MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" T="* * *" SIGNS="+ + +" RANGE-CENTRING-STATE="0 0 0" RANGE-MATRIX="29.60881233215332 0 0 0 29.60881233215332 0 0 0 29.60881233215332">
+							<JointTemplate MEAN="0 0 0" COVARIANCE="1.0466666221618652 0 0 0 1.0466666221618652 0 0 0 1.0466666221618652" TPOSE-MEAN="0 0 0" TPOSE-COVARIANCE="0.10000000149011612 0 0 0 0.10000000149011612 0 0 0 0.10000000149011612" PRE-ORIENTATION="0.192698538 1.20995462 0.00630651833" PRE-POSITION="'Right Shank_Right Foot_x' 'Right Shank_Right Foot_y' 'Right Shank_Right Foot_z'" INVERSE-POST-ORIENTATION="0 0 0" INVERSE-POST-POSITION="0 0 0"/>
+						</JointBall>
+					</Segment>
+				</Segment>
+			</Segment>
+		</Segment>
+	</Skeleton>
+	<MarkerSet>
+		<Markers>
+			<Marker NAME="LASI" RADIUS="12.5" RGB="255 0 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="RASI" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="SACR" RADIUS="12.5" RGB="255 164 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="LTHI" RADIUS="12.5" RGB="255 0 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="LKAX" RADIUS="12.5" RGB="255 0 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="LKD1" RADIUS="12.5" RGB="255 0 0" STATUS="optional" VIEW-ANGLE="0"/>
+			<Marker NAME="LKD2" RADIUS="12.5" RGB="255 0 0" STATUS="optional" VIEW-ANGLE="0"/>
+			<Marker NAME="LTIB" RADIUS="12.5" RGB="255 0 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="LANK" RADIUS="12.5" RGB="255 0 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="LMED" RADIUS="12.5" RGB="255 0 0" STATUS="optional" VIEW-ANGLE="0"/>
+			<Marker NAME="LHEE" RADIUS="12.5" RGB="255 0 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="LTOE" RADIUS="12.5" RGB="255 0 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="RTHI" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="RKAX" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="RKD1" RADIUS="12.5" RGB="0 255 0" STATUS="optional" VIEW-ANGLE="0"/>
+			<Marker NAME="RKD2" RADIUS="12.5" RGB="0 255 0" STATUS="optional" VIEW-ANGLE="0"/>
+			<Marker NAME="RTIB" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="RANK" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="RMED" RADIUS="12.5" RGB="0 255 0" STATUS="optional" VIEW-ANGLE="0"/>
+			<Marker NAME="RHEE" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="RTOE" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
+		</Markers>
+		<Sticks>
+			<Stick MARKER1="LASI" MARKER2="RASI" RGB1="255 164 0" RGB2="255 164 0"/>
+			<Stick MARKER1="LASI" MARKER2="SACR" RGB1="255 164 0" RGB2="255 164 0"/>
+			<Stick MARKER1="LASI" MARKER2="LTHI" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="RASI" MARKER2="SACR" RGB1="255 164 0" RGB2="255 164 0"/>
+			<Stick MARKER1="RASI" MARKER2="RTHI" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Stick MARKER1="LTHI" MARKER2="LKAX" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="LKAX" MARKER2="LKD1" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="LKAX" MARKER2="LKD2" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="LTIB" MARKER2="LANK" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="LTIB" MARKER2="LMED" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="LANK" MARKER2="LMED" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="LANK" MARKER2="LHEE" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="LANK" MARKER2="LTOE" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="LMED" MARKER2="LHEE" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="LMED" MARKER2="LTOE" RGB1="255 0 0" RGB2="255 0 0"/>
+			<Stick MARKER1="RTHI" MARKER2="RKAX" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Stick MARKER1="RKAX" MARKER2="RKD1" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Stick MARKER1="RKAX" MARKER2="RKD2" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Stick MARKER1="RTIB" MARKER2="RANK" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Stick MARKER1="RTIB" MARKER2="RMED" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Stick MARKER1="RANK" MARKER2="RMED" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Stick MARKER1="RANK" MARKER2="RHEE" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Stick MARKER1="RANK" MARKER2="RTOE" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Stick MARKER1="RMED" MARKER2="RHEE" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Stick MARKER1="RMED" MARKER2="RTOE" RGB1="0 255 0" RGB2="0 255 0"/>
+		</Sticks>
+	</MarkerSet>
+	<TargetSet>
+		<Targets>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="LASI" OPACITY="255" POSITION="'Pelvis_Left Thigh_x' 'Pelvis_Left Thigh_y' 'Pelvis_Left Thigh_z'" RGB="93 93 93" SEGMENT="Pelvis" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="RASI" OPACITY="255" POSITION="'Pelvis_Right Thigh_x' 'Pelvis_Right Thigh_y' 'Pelvis_Right Thigh_z'" RGB="93 93 93" SEGMENT="Pelvis" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="SACR" OPACITY="255" POSITION="'Pelvis_Pelvis3_x' 'Pelvis_Pelvis3_y' 'Pelvis_Pelvis3_z'" RGB="93 93 93" SEGMENT="Pelvis" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="LTHI" OPACITY="255" POSITION="'Left Thigh_Left Thigh2_x' 'Left Thigh_Left Thigh2_y' 'Left Thigh_Left Thigh2_z'" RGB="93 93 93" SEGMENT="Left Thigh" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="LKAX" OPACITY="255" POSITION="'Left Thigh_Left Shank_x' 'Left Thigh_Left Shank_y' 'Left Thigh_Left Shank_z'" RGB="93 93 93" SEGMENT="Left Thigh" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="LKD1" OPACITY="255" POSITION="'Left Thigh_Left Thigh4_x' 'Left Thigh_Left Thigh4_y' 'Left Thigh_Left Thigh4_z'" RGB="93 93 93" SEGMENT="Left Thigh" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="LKD2" OPACITY="255" POSITION="'Left Thigh_Left Thigh5_x' 'Left Thigh_Left Thigh5_y' 'Left Thigh_Left Thigh5_z'" RGB="93 93 93" SEGMENT="Left Thigh" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="LTIB" OPACITY="255" POSITION="'Left Shank_Left Shank2_x' 'Left Shank_Left Shank2_y' 'Left Shank_Left Shank2_z'" RGB="93 93 93" SEGMENT="Left Shank" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="LANK" OPACITY="255" POSITION="'Left Shank_Left Foot_x' 'Left Shank_Left Foot_y' 'Left Shank_Left Foot_z'" RGB="93 93 93" SEGMENT="Left Shank" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="LMED" OPACITY="255" POSITION="'Left Shank_Left Shank4_x' 'Left Shank_Left Shank4_y' 'Left Shank_Left Shank4_z'" RGB="93 93 93" SEGMENT="Left Shank" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="LHEE" OPACITY="255" POSITION="'Left Foot_Left Foot2_x' 'Left Foot_Left Foot2_y' 'Left Foot_Left Foot2_z'" RGB="93 93 93" SEGMENT="Left Foot" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="LTOE" OPACITY="255" POSITION="'Left Foot_Left Foot3_x' 'Left Foot_Left Foot3_y' 'Left Foot_Left Foot3_z'" RGB="93 93 93" SEGMENT="Left Foot" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="RTHI" OPACITY="255" POSITION="'Right Thigh_Right Thigh2_x' 'Right Thigh_Right Thigh2_y' 'Right Thigh_Right Thigh2_z'" RGB="93 93 93" SEGMENT="Right Thigh" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="RKAX" OPACITY="255" POSITION="'Right Thigh_Right Shank_x' 'Right Thigh_Right Shank_y' 'Right Thigh_Right Shank_z'" RGB="93 93 93" SEGMENT="Right Thigh" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="RKD1" OPACITY="255" POSITION="'Right Thigh_Right Thigh4_x' 'Right Thigh_Right Thigh4_y' 'Right Thigh_Right Thigh4_z'" RGB="93 93 93" SEGMENT="Right Thigh" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="RKD2" OPACITY="255" POSITION="'Right Thigh_Right Thigh5_x' 'Right Thigh_Right Thigh5_y' 'Right Thigh_Right Thigh5_z'" RGB="93 93 93" SEGMENT="Right Thigh" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="RTIB" OPACITY="255" POSITION="'Right Shank_Right Shank2_x' 'Right Shank_Right Shank2_y' 'Right Shank_Right Shank2_z'" RGB="93 93 93" SEGMENT="Right Shank" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="RANK" OPACITY="255" POSITION="'Right Shank_Right Foot_x' 'Right Shank_Right Foot_y' 'Right Shank_Right Foot_z'" RGB="93 93 93" SEGMENT="Right Shank" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="RMED" OPACITY="255" POSITION="'Right Shank_Right Shank4_x' 'Right Shank_Right Shank4_y' 'Right Shank_Right Shank4_z'" RGB="93 93 93" SEGMENT="Right Shank" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="RHEE" OPACITY="255" POSITION="'Right Foot_Right Foot2_x' 'Right Foot_Right Foot2_y' 'Right Foot_Right Foot2_z'" RGB="93 93 93" SEGMENT="Right Foot" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+			<TargetLocalPointToWorldPoint COVARIANCE="1 0 0 0 1 0 0 0 1" FILL-GAPS="false" GAUSSIAN="true" HIDDEN="false" MARKER="RTOE" OPACITY="255" POSITION="'Right Foot_Right Foot3_x' 'Right Foot_Right Foot3_y' 'Right Foot_Right Foot3_z'" RGB="93 93 93" SEGMENT="Right Foot" WEIGHT="1" DRAW-STYLE="None">
+				<TargetLocalPointToWorldPointTemplate COVARIANCE="1 0 0 0 1 0 0 0 1"/>
+			</TargetLocalPointToWorldPoint>
+		</Targets>
+	</TargetSet>
+</KinematicModel>
+
