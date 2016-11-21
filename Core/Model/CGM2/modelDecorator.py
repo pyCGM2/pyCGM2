@@ -292,15 +292,14 @@ class Kad(DecoratorModel):
         super(Kad,self).__init__(iModel)
         self.acq = iAcq
         
-    def compute(self,side="both",displayMarkers = False):    
+    def compute(self,side="both",markerDiameter = 14,displayMarkers = False):    
         """
         1- calcul position de KNE
         2- ajout offset. 
         3- creer un node KJC_kad et AJC_kad
          
         """
-        distSkin = 0 #%17-2-7; dist origin to plate minus markers plate thickness and half marker diameter        
-        markerDiameter = 14        
+        distSkin = 0 #%17-2-7; dist origin to plate minus markers plate thickness and half marker diameter             
         
         ff = self.acq.GetFirstFrame() 
 
@@ -550,7 +549,7 @@ class KneeCalibrationDecorator(DecoratorModel):
         """
         super(KneeCalibrationDecorator,self).__init__(iModel)
         
-    def midCondyles(self,acq, side="both",leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LMEPI",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RMEPI", withNoModelParameter=False):   
+    def midCondyles(self,acq, side="both",leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LMEPI",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RMEPI", markerDiameter = 14, withNoModelParameter=False):   
         """ compute KJC as the mid-condyles point          
         
         :Parameters:
@@ -563,7 +562,6 @@ class KneeCalibrationDecorator(DecoratorModel):
         .. todo :: coding exception if label doesn t find. 
 
         """
-        markerDiameter = 14 # Todo : mettre a l exterieur 
         
         ff = acq.GetFirstFrame()     
     
@@ -719,7 +717,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
         
     def midMaleolus(self,acq, side="both",
                     leftLateralAnkleLabel="LANK", leftMedialAnkleLabel="LMED",
-                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", withNoModelParameter=False):   
+                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14, withNoModelParameter=False):   
         """ compute AJC as the mid-condyles point          
         
         :Parameters:
@@ -740,7 +738,6 @@ class AnkleCalibrationDecorator(DecoratorModel):
         #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
         
-        markerDiameter = 14
         
         if side=="both" or side=="left":
             
@@ -785,7 +782,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
 
     def midMaleolusAxis(self,acq, side="both",
                     leftLateralAnkleLabel="LANK", leftMedialAnkleLabel="LMED",
-                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", withNoModelParameter=False):   
+                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14, withNoModelParameter=False):   
         
         """ compute AJC as the mid-condyles point          
         
@@ -806,7 +803,6 @@ class AnkleCalibrationDecorator(DecoratorModel):
                 
         #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
-        markerDiameter = 14
         
         if side=="both" or side=="left":
             pass
