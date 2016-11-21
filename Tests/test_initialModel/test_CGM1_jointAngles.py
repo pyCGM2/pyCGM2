@@ -1506,7 +1506,6 @@ class CGM1_motionFullAnglesTest():
         np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
                                         acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)    
 
-        pdb.set_trace()
 
     @classmethod
     def advancedCGM1_kad_midMaleolus_TrueEquinus(cls):     
