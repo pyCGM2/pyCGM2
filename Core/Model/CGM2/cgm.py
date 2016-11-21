@@ -98,7 +98,7 @@ class CGM(cmb.Model):
             L=offset
         
         
-            eps = 0.00001
+            eps = 0.00000001
                     
         
             AB = np.linalg.norm(A-B) 
@@ -153,8 +153,11 @@ class CGM(cmb.Model):
         
             count = 0
             while diffBeta > eps or count > 1000:
+                if count > 1000:
+                    logging.warning("count boubdary achieve")
+
                         	
-                count = count + 1                
+                count = count + 1 
                 idiff = diffBeta
                 
                 Salpha = Salpha + alphaincr
@@ -186,6 +189,7 @@ class CGM(cmb.Model):
                         alphaincr = -alphaincr
                     else:
                         alphaincr = -alphaincr / 2;
+                        
         
             return P  
 
