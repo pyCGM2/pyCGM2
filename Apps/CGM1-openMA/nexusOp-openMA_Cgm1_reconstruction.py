@@ -11,7 +11,8 @@ import logging
 
 
 try:
-    import pyCGM2.pyCGM2_CONFIG 
+    import pyCGM2.pyCGM2_CONFIG
+    pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
 except ImportError:
     logging.error("[pyCGM2] : pyCGM2 module not in your python path")
 
@@ -26,7 +27,7 @@ import ma.body
 
 # pyCGM2
 import pyCGM2.Core.Model.openmaLib as openmaLib
-import pyCGM2.Core.Tools.trialTools as CGM2trialTools
+from  pyCGM2.Core.Tools  import trialTools
 
    
 if __name__ == "__main__":
@@ -46,17 +47,16 @@ if __name__ == "__main__":
         DATA_PATH, reconstructFilenameLabelledNoExt = pyNEXUS.GetTrialName()
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
 
-        print "data Path: "+ DATA_PATH    
-        print "calibration file: "+ calibrateFilenameLabelled
-        print "reconstruction file: "+ reconstructFilenameLabelled
+        logging.info( "data Path: "+ DATA_PATH )   
+        logging.info( "calibration file: "+ calibrateFilenameLabelled)
+        logging.info( "reconstruction file: "+ reconstructFilenameLabelled )     
 
         
         # ----- SUBJECT --------
         subjects = pyNEXUS.GetSubjectNames()
         subject =   subjects[0]  
-        print "--------------"
-        print "Subject name : " + subject  
-        print "--------------"
+        logging.info( "Subject name : " + subject)  
+
         Parameters = pyNEXUS.GetSubjectParamNames(subject)
 
         sub = ma.Subject(str(subject)) 
@@ -75,7 +75,7 @@ if __name__ == "__main__":
         staticNode = ma.io.read(str(DATA_PATH+calibrateFilenameLabelled))
     
         # calibration
-        cgm1_static = ma.body.PluginGait(ma.body.Region_Lower, ma.body.Side_Both)
+        cgm1_static = ma.body.PluginGait(ma.body.Region_Lower, ma.body.Side_Both,ma.body.PluginGait.Variant_Basic)
         cgm1_static.setProperty("gravity",ma.Any([0.0,0.0,-9.81]))
         cgm1_static.setProperty("leftFootFlatEnabled",ma.Any(flag_leftFlatFoot))
         cgm1_static.setProperty("rightFootFlatEnabled",ma.Any(flag_rightFlatFoot))
@@ -98,15 +98,16 @@ if __name__ == "__main__":
         
     
         # append new parameters to the gait trial    
-        CGM2trialTools.addTimeSequencesToTrial(dynamicTrial,kinematics)
-        CGM2trialTools.addTimeSequencesToTrial(dynamicTrial,kinetics)
+        trialTools.addTimeSequencesToTrial(dynamicTrial,kinematics)
+        trialTools.addTimeSequencesToTrial(dynamicTrial,kinetics)
     
         # add property
         dynamicTrial.setProperty('MODELLING:NAME',"CGM1")
+        dynamicTrial.setProperty('MODELLING:PROCESSING',"openMA")
         
         # ----- WRITER --------
-        if ma.io.write(dynamicNode,str(DATA_PATH + reconstructFilenameLabelled[:-4] + "_CGM1.c3d")):
-            print "[pyCGM2] : file ( %s) reconsctructed " % (reconstructFilenameLabelled)                 
+        if ma.io.write(dynamicNode,str(DATA_PATH + reconstructFilenameLabelled[:-4] + "_openmaCGM1.c3d")):
+            logging.info( "file ( %s) reconstructed ( suffix : _openmaCGM1.c3d) " % (reconstructFilenameLabelled) )                 
 
 
               
