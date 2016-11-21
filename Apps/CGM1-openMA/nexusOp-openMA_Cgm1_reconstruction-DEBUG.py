@@ -39,7 +39,7 @@ if __name__ == "__main__":
     calibrateFilenameLabelled = "static Cal 01.c3d"
 
     #---- DATA ------ 
-    DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\OpenMA\\CGM1\\basic\\cgm1\\"
+    DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\openMA-CGM1-basic\\"
     reconstructFilenameLabelledNoExt ="gait Trial 01"  
     reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
     
