@@ -507,8 +507,7 @@ class CGM1ModelInf(CGM):
         logging.info(" --------------------")
         self.getFootOffset(side = "both") 
 
-
-   
+  
     # ---- Technical Referential Calibration    
     def _pelvis_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):    
         """ pelvis
@@ -1837,10 +1836,13 @@ class CGM1ModelInf(CGM):
                                  
             v_ankleFlexionAxis = proj_ankleFlexionAxis/np.linalg.norm(proj_ankleFlexionAxis)
         
-        
-            angle= np.rad2deg( geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
-            self.mp_computed["leftTibialTorsion"] = angle
-            logging.info(" left tibial torsion => %s " % str(self.mp_computed["leftTibialTorsion"]))
+            if "leftTibialTorsion" in self.mp.keys():
+                logging.warning("Left Tibial torsion defined from your mp file")
+                self.mp_computed["leftTibialTorsion"] = - self.mp["leftTibialTorsion"] # sign - because vicon standard considers external offset as positive
+            else:
+                angle= np.rad2deg( geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
+                self.mp_computed["leftTibialTorsion"] = angle
+                logging.info(" left tibial torsion => %s " % str(self.mp_computed["leftTibialTorsion"]))
             
 
             #"****** left angle beetween tib and flexion axis **********"    
@@ -1889,13 +1891,14 @@ class CGM1ModelInf(CGM):
                                  
             v_ankleFlexionAxis = proj_ankleFlexionAxis/np.linalg.norm(proj_ankleFlexionAxis)
         
-        
-            angle= np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
-            self.mp_computed["rightTibialTorsion"] = angle
-            logging.info(" right tibial torsion => %s " % str(self.mp_computed["rightTibialTorsion"]))
+            if "rightTibialTorsion" in self.mp.keys():
+                logging.warning("Right  Tibial torsion defined from your mp file")
+                self.mp_computed["rightTibialTorsion"] =  self.mp["rightTibialTorsion"]
+            else:
+                angle= np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
+                self.mp_computed["rightTibialTorsion"] = angle
+                logging.info(" Right tibial torsion => %s " % str(self.mp_computed["rightTibialTorsion"]))
 
-        
-        
             #"****** right angle beetween tib and flexion axis **********"    
             tibLocal = self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RTIB").m_local
             proj_tib = np.array([ tibLocal[0],
