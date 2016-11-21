@@ -23,6 +23,7 @@ MAIN_BENCHMARK_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchm
 
 OPENSIM_PREBUILD_MODEL_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\Extern\\opensim\\"
 
+OPENMA_BINDING_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\third party\\"
 
 def setLoggingLevel(level):
     logging.basicConfig(format = "[pyCGM2-%(levelname)s]-%(module)s-%(funcName)s : %(message)s",level = level) 
@@ -44,22 +45,29 @@ def addNexusPythonSdk():
         raise Exception("untick Use nexus Python in your python pipeline operation. pyCGA apps recommand anaconda Packages ")
         
 
-def addOpenma(branch="master"):
-    if branch=="master":
-        
-        # method 1 : with path definition
-        # need definition in the PATH, I appended these two folders: 
-        # C:\Users\AAA34169\Documents\Programming\openMA\Build\master\bin;
-        # C:\Users\AAA34169\Documents\Programming\openMA\Build\master\bin\swig\python\openma\ma;
-        #sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma")
-        #sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma\\ma")
-        
-        # method 2 : with openMA distribution made manually 
-        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma")
-        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma\\ma")
+def addOpenma(branch=None):
 
-    elif branch=="plugin-gait-kad":
-        
-        # method 2 : with openMA distribution made manually 
-        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma")
-        sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma\\ma")
+    if branch is None:
+        sys.path.append(OPENMA_BINDING_PATH + "\\openma")
+        sys.path.append(OPENMA_BINDING_PATH + "\\openma\\ma")
+    else:
+        if branch=="master":
+            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma")
+            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma\\ma")
+            
+            # method 1 : with path definition
+            # need definition in the PATH, I appended these two folders: 
+            # C:\Users\AAA34169\Documents\Programming\openMA\Build\master\bin;
+            # C:\Users\AAA34169\Documents\Programming\openMA\Build\master\bin\swig\python\openma\ma;
+            #sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma")
+            #sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma\\ma")
+            
+            # method 2 : with openMA distribution made manually 
+            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma")
+            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma\\ma")
+    
+        elif branch=="plugin-gait-kad":
+            
+            # method 2 : with openMA distribution made manually 
+            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma")
+            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma\\ma")
