@@ -101,11 +101,18 @@ class AnalysisFilter(object): # CONTROLER
             self.analysis.setEmg(emgOut, pst = matchPst_emg)
 
 
-    def exportBasicDataFrame(self,outputName, path=None):
+    def exportBasicDataFrame(self,outputName, path=None,excelFormat = "xls"):
         if path == None:
-            xlsxWriter = pd.ExcelWriter(str(outputName + "- basic.xlsx"))
+            if excelFormat == "xls":
+                xlsxWriter = pd.ExcelWriter(str(outputName + "- basic.xls"),engine='xlsxwriter')
+            elif excelFormat == "xlsx":
+                xlsxWriter = pd.ExcelWriter(str(outputName + "- basic.xlsx"))
         else:
-            xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- basic.xlsx"))
+            if excelFormat == "xls":
+                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- basic.xls"),engine='xlsxwriter')
+            elif excelFormat == "xlsx":
+                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- basic.xlsx"))
+ 
 
 
         # metadata
@@ -272,16 +279,20 @@ class AnalysisFilter(object): # CONTROLER
 
 
 
-    def exportAdvancedDataFrame(self,outputName, path=None, csvFileExport =False):
+    def exportAdvancedDataFrame(self,outputName, path=None, excelFormat = "xls",csvFileExport =False):
         """
         
         """ 
         if path == None:
-            xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xlsx"))
+            if excelFormat == "xls":
+                xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xls"),engine='xlsxwriter')
+            elif excelFormat == "xlsx":
+                xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xlsx"))
         else:
-            xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- Advanced.xlsx"))
-        
-
+            if excelFormat == "xls":
+                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- Advanced.xls"),engine='xlsxwriter')
+            elif excelFormat == "xlsx":
+                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- Advanced.xlsx"))
         # infos
         #-------    
         if self.__concreteAnalysisBuilder.m_modelInfos != None:          
@@ -716,7 +727,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
            found_context = list() 
            for cycle in self.m_cycles.kineticCycles:
                found_context.append(cycle.context)
-               
+           
 
            if "Left" in self.m_kineticLabelsDict.keys():
                if "Left" in found_context:
