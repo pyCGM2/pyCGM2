@@ -104,16 +104,15 @@ class AnalysisFilter(object): # CONTROLER
     def exportBasicDataFrame(self,outputName, path=None,excelFormat = "xls"):
         if path == None:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(outputName + "- basic.xls"),engine='xlsxwriter')
+                xlsxWriter = pd.ExcelWriter(str(outputName + "- basic.xls"),engine='xlwt')
             elif excelFormat == "xlsx":
                 xlsxWriter = pd.ExcelWriter(str(outputName + "- basic.xlsx"))
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- basic.xls"),engine='xlsxwriter')
+                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- basic.xls"),engine='xlwt')
             elif excelFormat == "xlsx":
                 xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- basic.xlsx"))
  
-
 
         # metadata
         #--------------
@@ -273,7 +272,7 @@ class AnalysisFilter(object): # CONTROLER
                 df_label.to_excel(xlsxWriter,str(label+"."+context)) 
 
             xlsxWriter.save()
-            logging.info("basic dataFrame [%s- basic.xlsx] Exported"%outputName)
+            logging.info("basic dataFrame [%s- basic] Exported"%outputName)
 
 
 
@@ -285,12 +284,12 @@ class AnalysisFilter(object): # CONTROLER
         """ 
         if path == None:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xls"),engine='xlsxwriter')
+                xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xls"),engine='xlwt')
             elif excelFormat == "xlsx":
                 xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xlsx"))
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- Advanced.xls"),engine='xlsxwriter')
+                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- Advanced.xls"),engine='xlwt')
             elif excelFormat == "xlsx":
                 xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- Advanced.xlsx"))
         # infos
@@ -472,9 +471,9 @@ class AnalysisFilter(object): # CONTROLER
                 else:
                     df_stp.to_csv(str(path+"/"+outputName + " - stp - DataFrame.csv"),sep=";")
 
-        logging.info("advanced dataFrame [%s- Advanced.xlsx] Exported"%outputName)             
+        logging.info("advanced dataFrame [%s- Advanced] Exported"%outputName)             
 
-
+        xlsxWriter.save()
 
     def exportAnalysisC3d(self,outputName, path=None):
         
