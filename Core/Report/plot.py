@@ -221,7 +221,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
         super(GaitAnalysisPlotBuilder, self).__init__(iObj=iObj)
         
         if isinstance(self.m_input,CGM2analysis.Analysis):
-            print "AnaysisStats object"
+            pass
         else:
             logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
             
