@@ -559,13 +559,14 @@ class AnalysisFilter(object): # CONTROLER
                 values[:,0:3] = val                
                 moment.setData(values)
                 cycle+=1         
-                
+        
+
         try:                
             if path == None:
-                ma.io.write(root,str(outputName))
+                ma.io.write(root,str(outputName+".c3d"))
             else:
-                ma.io.write(root,str(path + outputName))
-            logging.info("Analysis c3d  [%s.c3d] Exported" %outputName) 
+                ma.io.write(root,str(path + outputName+".c3d"))
+            logging.info("Analysis c3d  [%s.c3d] Exported" %( str(outputName +".c3d")) )
         except:
             raise Exception ("[pyCGM2] : analysis c3d doesn t export" )            
     
