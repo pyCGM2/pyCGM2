@@ -10,7 +10,8 @@ import logging
 import matplotlib.pyplot as plt
 
 try:
-    import pyCGM2.pyCGM2_CONFIG 
+    import pyCGM2.pyCGM2_CONFIG
+    pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
 except ImportError:
     logging.error("[pyCGM2] : pyCGM2 module not in your python path")
 
@@ -79,8 +80,9 @@ if __name__ == "__main__":
         CGM2smart.gaitProcessing_cgm1 (reconstructedFilenameLabelled, DATA_PATH,
                                model,  subject, experimental, 
                                plotFlag= plotFlag, 
-                               exportSpreadSheetFlag = True,
-                               exportAnalysisC3dFlag = True,
+                               exportBasicSpreadSheetFlag = exportSpreadSheetFlag,
+                               exportAdvancedSpreadSheetFlag = exportSpreadSheetFlag,
+                               exportAnalysisC3dFlag = exportAnalysisC3dFlag,
                                normativeDataDict = normativeData)
 
     else: 

@@ -10,7 +10,8 @@ import logging
 import matplotlib.pyplot as plt
 
 try:
-    import pyCGM2.pyCGM2_CONFIG 
+    import pyCGM2.pyCGM2_CONFIG
+    pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.DEBUG)
 except ImportError:
     logging.error("[pyCGM2] : pyCGM2 module not in your python path")
 
@@ -47,12 +48,12 @@ if __name__ == "__main__":
         normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
         
         # ----DATA-----        
-        DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\test0\\"
-        reconstructedFilenameLabelledNoExt ="gait Trial 01_CGM1"  
+        DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-gaitProcessing\\"
+        reconstructedFilenameLabelledNoExt ="gait Trial 01"  
         reconstructedFilenameLabelled = reconstructedFilenameLabelledNoExt+".c3d"        
     
-        print "data Path: "+ DATA_PATH    
-        print "reconstructed file: "+ reconstructedFilenameLabelled
+        logging.info("data Path: "+ DATA_PATH)    
+        logging.info( "reconstructed file: "+ reconstructedFilenameLabelled)
     
         # ----INFOS-----        
         model={"HJC": "har",
@@ -75,12 +76,14 @@ if __name__ == "__main__":
                     "external Device": "N",
                     "person assistance": "N"
                      }
+                     
         # ----PROCESSING-----
         CGM2smart.gaitProcessing_cgm1 (reconstructedFilenameLabelled, DATA_PATH,
                                model,  subject, experimental, 
                                plotFlag= plotFlag, 
-                               exportSpreadSheetFlag = True,
-                               exportAnalysisC3dFlag = True,
+                               exportBasicSpreadSheetFlag = exportSpreadSheetFlag,
+                               exportAdvancedSpreadSheetFlag = exportSpreadSheetFlag,
+                               exportAnalysisC3dFlag = exportAnalysisC3dFlag,
                                normativeDataDict = normativeData)
     else: 
-        logging.error("[pyCGA] : Nexus Not Connected")
+        logging.error("Nexus Not Connected")

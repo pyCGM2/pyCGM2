@@ -39,7 +39,9 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                          consistencyOnly = False,
                          normativeDataDict = None,
                          name_out=None,
-                         DATA_PATH_OUT= None
+                         DATA_PATH_OUT= None,
+                         longitudinal_axis=None,
+                         lateral_axis = None
                          ):
                              
     #---- PRELIMINARY STAGE
@@ -66,6 +68,19 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     # - kinetic Trials ( check if kinetic events)        
     kineticTrials,kineticFilenames,flag_kinetics =  CGM2trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames)                         
 
+    if longitudinal_axis is None or lateral_axis is None:
+        logging.info("Automatic detection of Both longitudinal and lateral Axes")
+        longitudinalAxis,forwardProgression,globalFrame = CGM2trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
+    else:    
+        if longitudinal_axis is None or lateral_axis is not None:
+            raise Exception("[pyCGM2] Longitudinal_axis has to be also defined")     
+        if longitudinal_axis is not None or lateral_axis is None:
+            raise Exception("[pyCGM2] Lateral_axis has to be also defined")     
+
+        if longitudinal_axis is not None or lateral_axis is not None:
+            globalFrame[0] = longitudinal_axis
+            globalFrame[1] = lateral_axis
+
 
     #---- GAIT CYCLES FILTER
     #--------------------------------------------------------------------------
@@ -73,7 +88,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                                                kinematicTrials = kinematicTrials,
                                                kineticTrials = kineticTrials,
                                                emgTrials=None,
-                                               longitudinal_axis=0,lateral_axis=1)
+                                               longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
             
     cyclefilter = CGM2cycle.CyclesFilter()
     cyclefilter.setBuilder(cycleBuilder)
@@ -99,8 +114,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
     
-    
-    
+   
     if DATA_PATH_OUT is None:
         DATA_PATH_OUT = DATA_PATH
     
