@@ -374,13 +374,28 @@ class CyclesBuilder(object):
     """
     Abstract Builder
     """
-    def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None,longitudinal_axis=0,lateral_axis=1):
+    def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None,longitudinal_axis="X",lateral_axis="Y"):
         self.spatioTemporalTrials =spatioTemporalTrials        
         self.kinematicTrials =kinematicTrials
         self.kineticTrials =kineticTrials
         self.emgTrials =emgTrials
         self.longitudinal_axis=longitudinal_axis
         self.lateral_axis=lateral_axis
+        
+        if self.longitudinal_axis == "X":
+            self.longitudinal_axis_index = 0
+        elif self.longitudinal_axis == "Y":
+            self.longitudinal_axis_index = 1
+        elif self.longitudinal_axis == "Z":
+            self.longitudinal_axis_index = 2
+
+        if self.lateral_axis == "X":
+            self.lateral_axis_index = 0
+        elif self.lateral_axis == "Y":
+            self.lateral_axis_index = 1
+        elif self.lateral_axis == "Z":
+            self.lateral_axis_index = 2
+
 
 
     def getSpatioTemporal(self): pass   
@@ -393,7 +408,7 @@ class GaitCyclesBuilder(CyclesBuilder):
     CONCRETE builder for gait analysis
     """
 
-    def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None,longitudinal_axis=0,lateral_axis=1):
+    def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None,longitudinal_axis="X",lateral_axis="Y"):
         super(GaitCyclesBuilder, self).__init__(
             spatioTemporalTrials = spatioTemporalTrials,
             kinematicTrials=kinematicTrials,
@@ -402,8 +417,8 @@ class GaitCyclesBuilder(CyclesBuilder):
             longitudinal_axis=longitudinal_axis,
             lateral_axis=lateral_axis
             )
-
-           
+            
+          
     def getSpatioTemporal(self):
         
         if self.spatioTemporalTrials is not None:
@@ -418,8 +433,8 @@ class GaitCyclesBuilder(CyclesBuilder):
                 for i in range(0, len(left_fs_times)-1):
                     spatioTemporalCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
                                                    context,
-                                                   longitudinal_axis = self.longitudinal_axis,
-                                                   lateral_axis =self.lateral_axis)) 
+                                                   longitudinal_axis = self.longitudinal_axis_index,
+                                                   lateral_axis =self.lateral_axis_index)) 
 
                 context = "Right"
                 right_fs_times=list()
@@ -429,8 +444,8 @@ class GaitCyclesBuilder(CyclesBuilder):
                 for i in range(0, len(right_fs_times)-1):
                     spatioTemporalCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
                                                    context,
-                                                   longitudinal_axis = self.longitudinal_axis,
-                                                   lateral_axis =self.lateral_axis))
+                                                   longitudinal_axis = self.longitudinal_axis_index,
+                                                   lateral_axis =self.lateral_axis_index))
 
             return spatioTemporalCycles
         else:
@@ -450,8 +465,8 @@ class GaitCyclesBuilder(CyclesBuilder):
                 for i in range(0, len(left_fs_times)-1):
                     kinematicCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
                                                    context,
-                                                   longitudinal_axis = self.longitudinal_axis,
-                                                   lateral_axis =self.lateral_axis)) 
+                                                   longitudinal_axis = self.longitudinal_axis_index,
+                                                   lateral_axis =self.lateral_axis_index)) 
 
                 context = "Right"
                 right_fs_times=list()
@@ -461,8 +476,8 @@ class GaitCyclesBuilder(CyclesBuilder):
                 for i in range(0, len(right_fs_times)-1):
                     kinematicCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
                                                    context,
-                                                   longitudinal_axis = self.longitudinal_axis,
-                                                   lateral_axis =self.lateral_axis))
+                                                   longitudinal_axis = self.longitudinal_axis_index,
+                                                   lateral_axis =self.lateral_axis_index))
 
             return kinematicCycles
         else:
@@ -471,6 +486,8 @@ class GaitCyclesBuilder(CyclesBuilder):
     def getKinetics(self):
         
         if self.kineticTrials is not None:
+            
+            detectionTimeOffset = 0.02            
             
             kineticCycles=list()
             for trial in  self.kineticTrials:
@@ -482,13 +499,14 @@ class GaitCyclesBuilder(CyclesBuilder):
                     left_fs_times=list()
                     for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
                         left_fs_times.append(ev.time())
-                    
+                                            
                     for i in range(0, len(left_fs_times)-1):
-                        if left_fs_times[i] in times:
+                        timeDiff_L =  [x-left_fs_times[i] for x in times ]
+                        if any([True if x <detectionTimeOffset else False for x in timeDiff_L]):
                             kineticCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
                                                            context,
-                                                           longitudinal_axis = self.longitudinal_axis,
-                                                           lateral_axis =self.lateral_axis)) 
+                                                           longitudinal_axis = self.longitudinal_axis_index,
+                                                           lateral_axis =self.lateral_axis_index)) 
     
                     context = "Right"
                     right_fs_times=list()
@@ -496,11 +514,12 @@ class GaitCyclesBuilder(CyclesBuilder):
                         right_fs_times.append(ev.time())
     
                     for i in range(0, len(right_fs_times)-1):
-                        if right_fs_times[i] in times: 
+                        timeDiff_R =  [x-right_fs_times[i] for x in times ]
+                        if any([True if x <detectionTimeOffset else False for x in timeDiff_R]):
                             kineticCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
                                                            context,
-                                                           longitudinal_axis = self.longitudinal_axis,
-                                                           lateral_axis =self.lateral_axis))
+                                                           longitudinal_axis = self.longitudinal_axis_index,
+                                                           lateral_axis =self.lateral_axis_index))
 
             return kineticCycles
         else:
@@ -520,8 +539,8 @@ class GaitCyclesBuilder(CyclesBuilder):
                 for i in range(0, len(left_fs_times)-1):
                     emgCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
                                                    context,
-                                                   longitudinal_axis = self.longitudinal_axis,
-                                                   lateral_axis =self.lateral_axis)) 
+                                                   longitudinal_axis = self.longitudinal_axis_index,
+                                                   lateral_axis =self.lateral_axis_index)) 
 
                 context = "Right"
                 right_fs_times=list()
@@ -531,8 +550,8 @@ class GaitCyclesBuilder(CyclesBuilder):
                 for i in range(0, len(right_fs_times)-1):
                     emgCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
                                                    context,
-                                                   longitudinal_axis = self.longitudinal_axis,
-                                                   lateral_axis =self.lateral_axis))
+                                                   longitudinal_axis = self.longitudinal_axis_index,
+                                                   lateral_axis =self.lateral_axis_index))
 
             return emgCycles
         else:
