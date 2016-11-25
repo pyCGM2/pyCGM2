@@ -61,6 +61,20 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
         kinematicFileNode = ma.io.read(str(DATA_PATH + kinematicFilename))
         kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
         CGM2trialTools.sortedEvents(kinematicTrial)
+
+        if longitudinal_axis is None or lateral_axis is None:
+            logging.info("Automatic detection of Both longitudinal and lateral Axes")
+            longitudinalAxis,forwardProgression,globalFrame = CGM2trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
+        else:    
+            if longitudinal_axis is None or lateral_axis is not None:
+                raise Exception("[pyCGM2] Longitudinal_axis has to be also defined")     
+            if longitudinal_axis is not None or lateral_axis is None:
+                raise Exception("[pyCGM2] Lateral_axis has to be also defined")     
+    
+            if longitudinal_axis is not None or lateral_axis is not None:
+                globalFrame[0] = longitudinal_axis
+                globalFrame[1] = lateral_axis
+
         
         kinematicTrials.append(kinematicTrial)
         kineticFilenames.append(kinematicFilename)
@@ -68,18 +82,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     # - kinetic Trials ( check if kinetic events)        
     kineticTrials,kineticFilenames,flag_kinetics =  CGM2trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames)                         
 
-    if longitudinal_axis is None or lateral_axis is None:
-        logging.info("Automatic detection of Both longitudinal and lateral Axes")
-        longitudinalAxis,forwardProgression,globalFrame = CGM2trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
-    else:    
-        if longitudinal_axis is None or lateral_axis is not None:
-            raise Exception("[pyCGM2] Longitudinal_axis has to be also defined")     
-        if longitudinal_axis is not None or lateral_axis is None:
-            raise Exception("[pyCGM2] Lateral_axis has to be also defined")     
-
-        if longitudinal_axis is not None or lateral_axis is not None:
-            globalFrame[0] = longitudinal_axis
-            globalFrame[1] = lateral_axis
+    
 
 
     #---- GAIT CYCLES FILTER

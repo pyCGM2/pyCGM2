@@ -496,31 +496,42 @@ class GaitCyclesBuilder(CyclesBuilder):
                 
                 if flag_kinetics:
                     context = "Left"
+                    count_L=0
                     left_fs_times=list()
                     for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
                         left_fs_times.append(ev.time())
                                             
                     for i in range(0, len(left_fs_times)-1):
                         timeDiff_L =  [x-left_fs_times[i] for x in times ]
-                        if any([True if x <detectionTimeOffset else False for x in timeDiff_L]):
+                        
+                        if any([True if (x>-detectionTimeOffset and x <detectionTimeOffset) else False for x in timeDiff_L]):
+                            count_L+=1
+                            logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_times[i], left_fs_times[i+1]))
                             kineticCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
                                                            context,
                                                            longitudinal_axis = self.longitudinal_axis_index,
                                                            lateral_axis =self.lateral_axis_index)) 
-    
+                
+                    logging.debug("%i Left Kinetic cycles available" %(count_L))    
+                    
+                    
                     context = "Right"
+                    count_R=0                    
                     right_fs_times=list()
                     for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
                         right_fs_times.append(ev.time())
     
                     for i in range(0, len(right_fs_times)-1):
                         timeDiff_R =  [x-right_fs_times[i] for x in times ]
-                        if any([True if x <detectionTimeOffset else False for x in timeDiff_R]):
+                        if any([True if (x>-detectionTimeOffset and x <detectionTimeOffset) else False for x in timeDiff_R]):
+                            count_R+=1
+                            logging.debug("right kinetic cycle found from %.2f to %.2f" %(right_fs_times[i], right_fs_times[i+1]))
                             kineticCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
                                                            context,
                                                            longitudinal_axis = self.longitudinal_axis_index,
                                                            lateral_axis =self.lateral_axis_index))
-
+                    logging.debug("%i Right Kinetic cycles available" %(count_R))  
+                      
             return kineticCycles
         else:
             return None
