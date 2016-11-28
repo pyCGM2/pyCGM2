@@ -56,7 +56,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     # distinguishing trials for kinematic and kinetic processing                             
     # - kinematic Trials      
     kinematicTrials=[]
-    kineticFilenames =[]
+    kinematicFilenames =[]
     for kinematicFilename in modelledFilenames:
         kinematicFileNode = ma.io.read(str(DATA_PATH + kinematicFilename))
         kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
@@ -75,15 +75,11 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                 globalFrame[0] = longitudinal_axis
                 globalFrame[1] = lateral_axis
 
-        
         kinematicTrials.append(kinematicTrial)
-        kineticFilenames.append(kinematicFilename)
+        kinematicFilenames.append(kinematicFilename)
 
     # - kinetic Trials ( check if kinetic events)        
     kineticTrials,kineticFilenames,flag_kinetics =  CGM2trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames)                         
-
-    
-
 
     #---- GAIT CYCLES FILTER
     #--------------------------------------------------------------------------
