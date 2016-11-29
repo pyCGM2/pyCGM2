@@ -14,9 +14,599 @@ import pdb
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
+# openMA
+import ma.io
+import ma.body
+
 
 # pyCGM2
 import pyCGM2.Core.Processing.analysis as CGM2analysis
+
+# ---- convenient plot ------
+def gaitKinematicsTemporalPlotPanel(trials,labels,filename="",path = ""):
+    '''
+    goal : plot gait kinematic panel from a openma::trial instances
+    warning:: trials must be originated from the same c3d. This function is ready to plot outputs with different models 
+       
+    plot.gaitKinematicsTemporalPlotPanel([kinematicTrials_VICON[0],
+                                          kinematicTrials_OPENMA[0],
+                                          kinematicTrials_PYCGM2[0]],["Vicon","openMA","pyCGM2"])
+ 
+   ''' 
+
+    # input check 
+    n_trials = len(trials)
+
+    if  not all(x.property("TRIAL:ACTUAL_START_FIELD").cast()[0] == trials[0].property("TRIAL:ACTUAL_START_FIELD").cast()[0] for x in trials):
+        raise Exception("trial Instances don t have the same first frame.")
+
+    if  not all(x.property("TRIAL:ACTUAL_END_FIELD").cast()[0] == trials[0].property("TRIAL:ACTUAL_END_FIELD").cast()[0] for x in trials):
+        raise Exception("trial Instances don t have the same first frame.")
+ 
+ 
+ 
+    colormap = plt.cm.gnuplot
+    colormap_i=[colormap(i) for i in np.linspace(0, 1, len(trials))]    
+    
+    
+    firstFrame = trials[0].property("TRIAL:ACTUAL_START_FIELD").cast()[0] 
+    lastFrame = trials[0].property("TRIAL:ACTUAL_END_FIELD").cast()[0]    
+
+    end = lastFrame-firstFrame+1
+    
+    # --- left Kinematics ------
+    fig_left = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+    title=" LEFT Temporal Kinematics "  
+    fig_left.suptitle(title)
+    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+    
+    
+    ax1 = plt.subplot(5,3,1)# Pelvis X
+    ax2 = plt.subplot(5,3,2)# Pelvis Y
+    ax3 = plt.subplot(5,3,3)# Pelvis Z       
+    ax4 = plt.subplot(5,3,4)# Hip X
+    ax5 = plt.subplot(5,3,5)# Hip Y
+    ax6 = plt.subplot(5,3,6)# Hip Z   
+    ax7 = plt.subplot(5,3,7)# Knee X
+    ax8 = plt.subplot(5,3,8)# Knee Y
+    ax9 = plt.subplot(5,3,9)# Knee Z   
+    ax10 = plt.subplot(5,3,10)# Ankle X
+    ax11 = plt.subplot(5,3,11)# Ankle Y
+    ax12 = plt.subplot(5,3,12)# Ankle Z
+    ax13 = plt.subplot(5,3,15)# foot Progression Z    
+        
+    axes=[ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8,ax9,ax10,ax11,ax12,ax13]    
+    
+    i=0
+    for trial in trials:
+        
+
+        ax1.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles").data()[:,0], '-', color= colormap_i[i])
+        ax2.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles").data()[:,1], '-', color= colormap_i[i])
+        ax3.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles").data()[:,2], '-', color= colormap_i[i])
+        ax4.plot(trial.findChild(ma.T_TimeSequence,"LHipAngles").data()[:,0], '-', color= colormap_i[i])
+        ax5.plot(trial.findChild(ma.T_TimeSequence,"LHipAngles").data()[:,1], '-', color= colormap_i[i])
+        ax6.plot(trial.findChild(ma.T_TimeSequence,"LHipAngles").data()[:,2], '-', color= colormap_i[i])
+        ax7.plot(trial.findChild(ma.T_TimeSequence,"LKneeAngles").data()[:,0], '-', color= colormap_i[i])
+        ax8.plot(trial.findChild(ma.T_TimeSequence,"LKneeAngles").data()[:,1], '-', color= colormap_i[i])
+        ax9.plot(trial.findChild(ma.T_TimeSequence,"LKneeAngles").data()[:,2], '-', color= colormap_i[i])
+        ax10.plot(trial.findChild(ma.T_TimeSequence,"LAnkleAngles").data()[:,0], '-', color= colormap_i[i])
+        ax11.plot(trial.findChild(ma.T_TimeSequence,"LAnkleAngles").data()[:,1], '-', color= colormap_i[i])
+        ax12.plot(trial.findChild(ma.T_TimeSequence,"LAnkleAngles").data()[:,2], '-', color= colormap_i[i])
+        ax13.plot(trial.findChild(ma.T_TimeSequence,"LFootProgressAngles").data()[:,2], '-', color= colormap_i[i])
+       
+        i+=1
+   
+    for axIt in axes:
+        axIt.set_xlim([0,end])
+        axIt.tick_params(axis='x', which='major', labelsize=6)
+        axIt.tick_params(axis='y', which='major', labelsize=6)
+    
+    ax1.legend(labels,bbox_to_anchor=(0., 1.20, 1., .102),
+          ncol=len(trials), mode="expand", borderaxespad=0., fontsize = 5)
+
+    ax1.set_title("Pelvis Tilt" ,size=8)  
+    ax2.set_title("Pelvis Obliquity" ,size=8)  
+    ax3.set_title("Pelvis Rotation" ,size=8)  
+    ax4.set_title("Hip Flexion" ,size=8)  
+    ax5.set_title("Hip Adduction" ,size=8)  
+    ax6.set_title("Hip Rotation" ,size=8)  
+    ax7.set_title("Knee Flexion" ,size=8)  
+    ax8.set_title("Knee Adduction" ,size=8)  
+    ax9.set_title("Knee Rotation" ,size=8)  
+    ax10.set_title("Ankle Flexion" ,size=8)  
+    ax11.set_title("Ankle Adduction" ,size=8)  
+    ax12.set_title("Ankle Rotation" ,size=8)  
+    ax13.set_title("Foot Progress" ,size=8)  
+    
+    # --- right Kinematics ------
+    fig_right = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+    title=" RIGHT Temporal Kinematics "  
+    fig_right.suptitle(title)
+    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+    
+    
+    ax1 = plt.subplot(5,3,1)# Pelvis X
+    ax2 = plt.subplot(5,3,2)# Pelvis Y
+    ax3 = plt.subplot(5,3,3)# Pelvis Z       
+    ax4 = plt.subplot(5,3,4)# Hip X
+    ax5 = plt.subplot(5,3,5)# Hip Y
+    ax6 = plt.subplot(5,3,6)# Hip Z   
+    ax7 = plt.subplot(5,3,7)# Knee X
+    ax8 = plt.subplot(5,3,8)# Knee Y
+    ax9 = plt.subplot(5,3,9)# Knee Z   
+    ax10 = plt.subplot(5,3,10)# Ankle X
+    ax11 = plt.subplot(5,3,11)# Ankle Y
+    ax12 = plt.subplot(5,3,12)# Ankle Z
+    ax13 = plt.subplot(5,3,15)# Ankle Z    
+        
+    axes=[ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8,ax9,ax10,ax11,ax12,ax13]    
+        
+    i=0
+    for trial in trials:
+        
+
+        ax1.plot(trial.findChild(ma.T_TimeSequence,"RPelvisAngles").data()[:,0], '-', color= colormap_i[i])
+        ax2.plot(trial.findChild(ma.T_TimeSequence,"RPelvisAngles").data()[:,1], '-', color= colormap_i[i])
+        ax3.plot(trial.findChild(ma.T_TimeSequence,"RPelvisAngles").data()[:,2], '-', color= colormap_i[i])
+        ax4.plot(trial.findChild(ma.T_TimeSequence,"RHipAngles").data()[:,0], '-', color= colormap_i[i])
+        ax5.plot(trial.findChild(ma.T_TimeSequence,"RHipAngles").data()[:,1], '-', color= colormap_i[i])
+        ax6.plot(trial.findChild(ma.T_TimeSequence,"RHipAngles").data()[:,2], '-', color= colormap_i[i])
+        ax7.plot(trial.findChild(ma.T_TimeSequence,"RKneeAngles").data()[:,0], '-', color= colormap_i[i])
+        ax8.plot(trial.findChild(ma.T_TimeSequence,"RKneeAngles").data()[:,1], '-', color= colormap_i[i])
+        ax9.plot(trial.findChild(ma.T_TimeSequence,"RKneeAngles").data()[:,2], '-', color= colormap_i[i])
+        ax10.plot(trial.findChild(ma.T_TimeSequence,"RAnkleAngles").data()[:,0], '-', color= colormap_i[i])
+        ax11.plot(trial.findChild(ma.T_TimeSequence,"RAnkleAngles").data()[:,1], '-', color= colormap_i[i])
+        ax12.plot(trial.findChild(ma.T_TimeSequence,"RAnkleAngles").data()[:,2], '-', color= colormap_i[i])
+        ax13.plot(trial.findChild(ma.T_TimeSequence,"RFootProgressAngles").data()[:,2], '-', color= colormap_i[i])
+        i+=1
+   
+   
+   
+    for axIt in axes:
+        axIt.set_xlim([0,end])
+        axIt.tick_params(axis='x', which='major', labelsize=6)
+        axIt.tick_params(axis='y', which='major', labelsize=6)
+    
+    ax1.legend(labels,bbox_to_anchor=(0., 1.20, 1., .102),
+          ncol=len(trials), mode="expand", borderaxespad=0., fontsize = 5)
+
+    ax1.set_title("Pelvis Tilt" ,size=8)  
+    ax2.set_title("Pelvis Obliquity" ,size=8)  
+    ax3.set_title("Pelvis Rotation" ,size=8)  
+    ax4.set_title("Hip Flexion" ,size=8)  
+    ax5.set_title("Hip Adduction" ,size=8)  
+    ax6.set_title("Hip Rotation" ,size=8)  
+    ax7.set_title("Knee Flexion" ,size=8)  
+    ax8.set_title("Knee Adduction" ,size=8)  
+    ax9.set_title("Knee Rotation" ,size=8)  
+    ax10.set_title("Ankle Flexion" ,size=8)  
+    ax11.set_title("Ankle Adduction" ,size=8)  
+    ax12.set_title("Ankle Rotation" ,size=8)  
+    ax13.set_title("Foot Progress" ,size=8)
+
+
+#    pp = PdfPages(str(path+ filename[:-4] +"-Left Temporal Kinematics.pdf"))
+#    pp.savefig(fig_left)    
+#    pp.close()   
+
+#    pp = PdfPages(str(path+ filename[:-4] +"-Left Temporal Kinematics.pdf"))
+#    pp.savefig(fig_right)    
+#    pp.close()    
+    
+
+
+def gaitKineticsTemporalPlotPanel(trials,labels,filename="",path = ""):
+    '''
+    goal : plot gait kinetic panel from a openma::trial instances
+    warning:: trials must be originated from the same c3d. This function is ready to plot outputs with different models 
+
+    plot.gaitKinematicsTemporalPlotPanel([kineticTrials_VICON[0],
+                                          kineticTrials_OPENMA[0],
+                                          kineticTrials_PYCGM2[0]],["Vicon","openMA","pyCGM2"])
+ 
+     
+
+   ''' 
+
+    # input check 
+    n_trials = len(trials)
+    if  not all(x.property("TRIAL:ACTUAL_START_FIELD").cast()[0] == trials[0].property("TRIAL:ACTUAL_START_FIELD").cast()[0] for x in trials):
+        raise Exception("trial Instances don t have the same first frame.")
+
+    if  not all(x.property("TRIAL:ACTUAL_END_FIELD").cast()[0] == trials[0].property("TRIAL:ACTUAL_END_FIELD").cast()[0] for x in trials):
+        raise Exception("trial Instances don t have the same first frame.")
+ 
+ 
+    colormap = plt.cm.gnuplot
+    colormap_i=[colormap(i) for i in np.linspace(0, 1, len(trials))]    
+        
+    firstFrame = trials[0].property("TRIAL:ACTUAL_START_FIELD").cast()[0] 
+    lastFrame = trials[0].property("TRIAL:ACTUAL_END_FIELD").cast()[0]    
+
+    end = lastFrame-firstFrame+1
+    
+    # --- left Kinetics ------
+    fig_left = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+    title=" LEFT Temporal Kinetics "  
+    fig_left.suptitle(title)
+    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+    
+    ax1 = plt.subplot(3,4,1)# Hip X extensor
+    ax2 = plt.subplot(3,4,2)# Hip Y abductor
+    ax3 = plt.subplot(3,4,3)# Hip Z rotation      
+    ax4 = plt.subplot(3,4,4)# Knee Z power
+
+    ax5 = plt.subplot(3,4,5)# knee X extensor
+    ax6 = plt.subplot(3,4,6)# knee Y abductor
+    ax7 = plt.subplot(3,4,7)# knee Z rotation      
+    ax8 = plt.subplot(3,4,8)# knee Z power
+
+    ax9 = plt.subplot(3,4,9)# ankle X plantar flexion
+    ax10 = plt.subplot(3,4,10)# ankle Y rotation
+    ax11 = plt.subplot(3,4,11)# ankle Z everter      
+    ax12 = plt.subplot(3,4,12)# ankle Z power
+    
+    axes=[ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8,ax9,ax10,ax11,ax12]        
+    
+    i=0
+    for trial in trials:
+        
+
+        ax1.plot(trial.findChild(ma.T_TimeSequence,"LHipMoment").data()[:,0], '-', color= colormap_i[i])
+        ax2.plot(trial.findChild(ma.T_TimeSequence,"LHipMoment").data()[:,1], '-', color= colormap_i[i])
+        ax3.plot(trial.findChild(ma.T_TimeSequence,"LHipMoment").data()[:,2], '-', color= colormap_i[i])
+        ax4.plot(trial.findChild(ma.T_TimeSequence,"LHipPower").data()[:,2], '-', color= colormap_i[i])
+
+        ax5.plot(trial.findChild(ma.T_TimeSequence,"LKneeMoment").data()[:,0], '-', color= colormap_i[i])
+        ax6.plot(trial.findChild(ma.T_TimeSequence,"LKneeMoment").data()[:,1], '-', color= colormap_i[i])
+        ax7.plot(trial.findChild(ma.T_TimeSequence,"LKneeMoment").data()[:,2], '-', color= colormap_i[i])
+        ax8.plot(trial.findChild(ma.T_TimeSequence,"LKneePower").data()[:,2], '-', color= colormap_i[i])
+
+        ax9.plot(trial.findChild(ma.T_TimeSequence,"LAnkleMoment").data()[:,0], '-', color= colormap_i[i])
+        ax10.plot(trial.findChild(ma.T_TimeSequence,"LAnkleMoment").data()[:,1], '-', color= colormap_i[i])
+        ax11.plot(trial.findChild(ma.T_TimeSequence,"LAnkleMoment").data()[:,2], '-', color= colormap_i[i])
+        ax12.plot(trial.findChild(ma.T_TimeSequence,"LAnklePower").data()[:,2], '-', color= colormap_i[i])
+
+       
+        i+=1
+   
+    for axIt in axes:
+        axIt.set_xlim([0,end])
+        axIt.tick_params(axis='x', which='major', labelsize=6)
+        axIt.tick_params(axis='y', which='major', labelsize=6)
+    
+    ax1.legend(labels,bbox_to_anchor=(0., 1.20, 1., .102),
+          ncol=len(trials), mode="expand", borderaxespad=0., fontsize = 5)
+
+    ax1.set_title("Hip extensor Moment" ,size=8)  
+    ax2.set_title("Hip adductor Moment" ,size=8)  
+    ax3.set_title("Hip rotation Moment" ,size=8)  
+    ax4.set_title("Hip power" ,size=8)  
+    
+    ax5.set_title("Knee extensor Moment" ,size=8)  
+    ax6.set_title("Knee adductor Moment" ,size=8)  
+    ax7.set_title("Knee rotation Moment" ,size=8)  
+    ax8.set_title("Knee power" ,size=8)    
+
+    ax9.set_title("Ankle extensor Moment" ,size=8)  
+    ax10.set_title("Ankle adductor Moment" ,size=8)  
+    ax11.set_title("Ankle rotation Moment" ,size=8)  
+    ax12.set_title("Ankle power" ,size=8) 
+    
+#    pp = PdfPages(str(path+ filename[:-4] +"-Left Temporal Kinetics.pdf"))
+#    pp.savefig(fig_left)    
+#    pp.close()  
+
+     # --- right Kinetics ------
+    fig_right = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+    title=" Right Temporal Kinetics "  
+    fig_right.suptitle(title)
+    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+    
+    ax1 = plt.subplot(3,4,1)# Hip X extensor
+    ax2 = plt.subplot(3,4,2)# Hip Y abductor
+    ax3 = plt.subplot(3,4,3)# Hip Z rotation      
+    ax4 = plt.subplot(3,4,4)# Knee Z power
+
+    ax5 = plt.subplot(3,4,5)# knee X extensor
+    ax6 = plt.subplot(3,4,6)# knee Y abductor
+    ax7 = plt.subplot(3,4,7)# knee Z rotation      
+    ax8 = plt.subplot(3,4,8)# knee Z power
+
+    ax9 = plt.subplot(3,4,9)# ankle X plantar flexion
+    ax10 = plt.subplot(3,4,10)# ankle Y rotation
+    ax11 = plt.subplot(3,4,11)# ankle Z everter      
+    ax12 = plt.subplot(3,4,12)# ankle Z power
+    
+    axes=[ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8,ax9,ax10,ax11,ax12]        
+    
+    i=0
+    for trial in trials:
+        
+
+        ax1.plot(trial.findChild(ma.T_TimeSequence,"RHipMoment").data()[:,0], '-', color= colormap_i[i])
+        ax2.plot(trial.findChild(ma.T_TimeSequence,"RHipMoment").data()[:,1], '-', color= colormap_i[i])
+        ax3.plot(trial.findChild(ma.T_TimeSequence,"RHipMoment").data()[:,2], '-', color= colormap_i[i])
+        ax4.plot(trial.findChild(ma.T_TimeSequence,"RHipPower").data()[:,2], '-', color= colormap_i[i])
+
+        ax5.plot(trial.findChild(ma.T_TimeSequence,"RKneeMoment").data()[:,0], '-', color= colormap_i[i])
+        ax6.plot(trial.findChild(ma.T_TimeSequence,"RKneeMoment").data()[:,1], '-', color= colormap_i[i])
+        ax7.plot(trial.findChild(ma.T_TimeSequence,"RKneeMoment").data()[:,2], '-', color= colormap_i[i])
+        ax8.plot(trial.findChild(ma.T_TimeSequence,"RKneePower").data()[:,2], '-', color= colormap_i[i])
+
+        ax9.plot(trial.findChild(ma.T_TimeSequence,"RAnkleMoment").data()[:,0], '-', color= colormap_i[i])
+        ax10.plot(trial.findChild(ma.T_TimeSequence,"RAnkleMoment").data()[:,1], '-', color= colormap_i[i])
+        ax11.plot(trial.findChild(ma.T_TimeSequence,"RAnkleMoment").data()[:,2], '-', color= colormap_i[i])
+        ax12.plot(trial.findChild(ma.T_TimeSequence,"RAnklePower").data()[:,2], '-', color= colormap_i[i])
+
+        i+=1
+   
+    for axIt in axes:
+        axIt.set_xlim([0,end])
+        axIt.tick_params(axis='x', which='major', labelsize=6)
+        axIt.tick_params(axis='y', which='major', labelsize=6)
+    
+    ax1.legend(labels,bbox_to_anchor=(0., 1.20, 1., .102),
+          ncol=len(trials), mode="expand", borderaxespad=0., fontsize = 5)
+
+    ax1.set_title("Hip extensor Moment" ,size=8)  
+    ax2.set_title("Hip adductor Moment" ,size=8)  
+    ax3.set_title("Hip rotation Moment" ,size=8)  
+    ax4.set_title("Hip power" ,size=8)  
+    
+    ax5.set_title("Knee extensor Moment" ,size=8)  
+    ax6.set_title("Knee adductor Moment" ,size=8)  
+    ax7.set_title("Knee rotation Moment" ,size=8)  
+    ax8.set_title("Knee power" ,size=8)    
+
+    ax9.set_title("Ankle extensor Moment" ,size=8)  
+    ax10.set_title("Ankle adductor Moment" ,size=8)  
+    ax11.set_title("Ankle rotation Moment" ,size=8)  
+    ax12.set_title("Ankle power" ,size=8) 
+    
+#    pp = PdfPages(str(path+ filename[:-4] +"-Left Temporal Kinetics.pdf"))
+#    pp.savefig(fig_left)    
+#    pp.close()   
+
+#    pp = PdfPages(str(path+ filename[:-4] +"-Left Temporal Kinetics.pdf"))
+#    pp.savefig(fig_right)    
+#    pp.close()    
+
+
+def gaitKinematicsCycleTemporalPlotPanel(cycleInstances,labels,filename="",path = ""):
+    '''
+    goal : plot kinematic gait panel from a pyCGM2::cycle instance
+    warning:: cycleInstances must be originated from the same c3d and ouputed from cycleFilter. This function is ready to plot outputs with different models 
+       
+    plot.gaitKinematicsCycleTemporalPlotPanel([cycles_VICON.kinematicCycles[1], 
+                                               cycles_OPENMA.kinematicCycles[1],
+                                               cycles_PYCGM2.kinematicCycles[1]], 
+                                               ["Vicon", "openma","pyCGM2"])
+
+   '''
+
+
+    # input check 
+    n_cycleInstances = len(cycleInstances)
+    if  not all(x.begin == cycleInstances[0].begin for x in cycleInstances):
+        raise Exception("cycleInstances don t have the same first frame.")
+
+    if  not  all(x.end == cycleInstances[0].end for x in cycleInstances):
+        raise Exception("cycleInstances don t have the same last frame")
+ 
+    colormap = plt.cm.gnuplot
+    colormap_i=[colormap(i) for i in np.linspace(0, 1, len(cycleInstances))]    
+    
+
+    firstFrame = cycleInstances[0].begin
+    lastFrame = cycleInstances[0].end  
+
+    end = lastFrame-firstFrame+1
+    
+
+    fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+    if cycleInstances[0].context == "Left":
+        title=" LEFT Cycle Temporal Kinematics"   
+    if cycleInstances[0].context == "Right":
+        title=" RIGHT Cycle Temporal Kinematics"   
+    fig.suptitle(title)
+    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+    
+    
+    ax1 = plt.subplot(5,3,1)# Pelvis X
+    ax2 = plt.subplot(5,3,2)# Pelvis Y
+    ax3 = plt.subplot(5,3,3)# Pelvis Z       
+    ax4 = plt.subplot(5,3,4)# Hip X
+    ax5 = plt.subplot(5,3,5)# Hip Y
+    ax6 = plt.subplot(5,3,6)# Hip Z   
+    ax7 = plt.subplot(5,3,7)# Knee X
+    ax8 = plt.subplot(5,3,8)# Knee Y
+    ax9 = plt.subplot(5,3,9)# Knee Z   
+    ax10 = plt.subplot(5,3,10)# Ankle X
+    ax11 = plt.subplot(5,3,11)# Ankle Y
+    ax12 = plt.subplot(5,3,12)# Ankle Z
+    ax13 = plt.subplot(5,3,15)# foot Progression Z    
+        
+    axes=[ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8,ax9,ax10,ax11,ax12,ax13]    
+    
+    i=0
+    for cycleIt in cycleInstances:
+        
+        if cycleIt.context == "Left":
+            ax1.plot(cycleIt.getPointTimeSequenceData("LPelvisAngles")[:,0], '-', color= colormap_i[i])
+            ax2.plot(cycleIt.getPointTimeSequenceData("LPelvisAngles")[:,1], '-', color= colormap_i[i])
+            ax3.plot(cycleIt.getPointTimeSequenceData("LPelvisAngles")[:,2], '-', color= colormap_i[i])
+            ax4.plot(cycleIt.getPointTimeSequenceData("LHipAngles")[:,0], '-', color= colormap_i[i])
+            ax5.plot(cycleIt.getPointTimeSequenceData("LHipAngles")[:,1], '-', color= colormap_i[i])
+            ax6.plot(cycleIt.getPointTimeSequenceData("LHipAngles")[:,2], '-', color= colormap_i[i])
+            ax7.plot(cycleIt.getPointTimeSequenceData("LKneeAngles")[:,0], '-', color= colormap_i[i])
+            ax8.plot(cycleIt.getPointTimeSequenceData("LKneeAngles")[:,1], '-', color= colormap_i[i])
+            ax9.plot(cycleIt.getPointTimeSequenceData("LKneeAngles")[:,2], '-', color= colormap_i[i])
+            ax10.plot(cycleIt.getPointTimeSequenceData("LAnkleAngles")[:,0], '-', color= colormap_i[i])
+            ax11.plot(cycleIt.getPointTimeSequenceData("LAnkleAngles")[:,1], '-', color= colormap_i[i])
+            ax12.plot(cycleIt.getPointTimeSequenceData("LAnkleAngles")[:,2], '-', color= colormap_i[i])
+            ax13.plot(cycleIt.getPointTimeSequenceData("LFootProgressAngles")[:,2], '-', color= colormap_i[i])
+
+        if cycleIt.context == "Right":
+            ax1.plot(cycleIt.getPointTimeSequenceData("RPelvisAngles")[:,0], '-', color= colormap_i[i])
+            ax2.plot(cycleIt.getPointTimeSequenceData("RPelvisAngles")[:,1], '-', color= colormap_i[i])
+            ax3.plot(cycleIt.getPointTimeSequenceData("RPelvisAngles")[:,2], '-', color= colormap_i[i])
+            ax4.plot(cycleIt.getPointTimeSequenceData("RHipAngles")[:,0], '-', color= colormap_i[i])
+            ax5.plot(cycleIt.getPointTimeSequenceData("RHipAngles")[:,1], '-', color= colormap_i[i])
+            ax6.plot(cycleIt.getPointTimeSequenceData("RHipAngles")[:,2], '-', color= colormap_i[i])
+            ax7.plot(cycleIt.getPointTimeSequenceData("RKneeAngles")[:,0], '-', color= colormap_i[i])
+            ax8.plot(cycleIt.getPointTimeSequenceData("RKneeAngles")[:,1], '-', color= colormap_i[i])
+            ax9.plot(cycleIt.getPointTimeSequenceData("RKneeAngles")[:,2], '-', color= colormap_i[i])
+            ax10.plot(cycleIt.getPointTimeSequenceData("RAnkleAngles")[:,0], '-', color= colormap_i[i])
+            ax11.plot(cycleIt.getPointTimeSequenceData("RAnkleAngles")[:,1], '-', color= colormap_i[i])
+            ax12.plot(cycleIt.getPointTimeSequenceData("RAnkleAngles")[:,2], '-', color= colormap_i[i])
+            ax13.plot(cycleIt.getPointTimeSequenceData("RFootProgressAngles")[:,2], '-', color= colormap_i[i])
+           
+        i+=1
+   
+    for axIt in axes:
+        axIt.set_xlim([0,end])
+        axIt.tick_params(axis='x', which='major', labelsize=6)
+        axIt.tick_params(axis='y', which='major', labelsize=6)
+    
+    ax1.legend(labels,bbox_to_anchor=(0., 1.20, 1., .102),
+          ncol=len(cycleInstances), mode="expand", borderaxespad=0., fontsize = 5)
+
+    ax1.set_title("Pelvis Tilt" ,size=8)  
+    ax2.set_title("Pelvis Obliquity" ,size=8)  
+    ax3.set_title("Pelvis Rotation" ,size=8)  
+    ax4.set_title("Hip Flexion" ,size=8)  
+    ax5.set_title("Hip Adduction" ,size=8)  
+    ax6.set_title("Hip Rotation" ,size=8)  
+    ax7.set_title("Knee Flexion" ,size=8)  
+    ax8.set_title("Knee Adduction" ,size=8)  
+    ax9.set_title("Knee Rotation" ,size=8)  
+    ax10.set_title("Ankle Flexion" ,size=8)  
+    ax11.set_title("Ankle Adduction" ,size=8)  
+    ax12.set_title("Ankle Rotation" ,size=8)  
+    ax13.set_title("Foot Progress" ,size=8) 
+
+
+def gaitKineticsCycleTemporalPlotPanel(cycleInstances,labels,filename="",path = ""):
+ 
+    '''
+    goal : plot gait kinetic panel from a pyCGM2::cycle instance
+    warning:: cycleInstances must be originated from the same c3d and ouputed from cycleFilter. This function is ready to plot outputs with different models 
+    
+       
+    plot.gaitKineticsCycleTemporalPlotPanel([cycles_VICON.kineticCycles[1], 
+                                               cycles_OPENMA.kineticCycles[1],
+                                               cycles_PYCGM2.kineticCycles[1]], 
+                                               ["Vicon", "openma","pyCGM2"])
+ 
+   
+   ''' 
+    # input check 
+    n_cycleInstances = len(cycleInstances)
+    if  not all(x.begin == cycleInstances[0].begin for x in cycleInstances):
+        raise Exception("cycleInstances don t have the same first frame.")
+
+    if  not all(x.end == cycleInstances[0].end for x in cycleInstances):
+        raise Exception("cycleInstances don t have the same last frame") 
+
+ 
+    colormap = plt.cm.gnuplot
+    colormap_i=[colormap(i) for i in np.linspace(0, 1, len(cycleInstances))]    
+    
+    
+    firstFrame = cycleInstances[0].begin
+    lastFrame = cycleInstances[0].end  
+
+    end = lastFrame-firstFrame+1
+    
+
+    fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+    if cycleInstances[0].context == "Left":
+        title=" LEFT Cycle Temporal Kinetics"   
+    if cycleInstances[0].context == "Right":
+        title=" RIGHT Cycle Temporal Kinetics"   
+    fig.suptitle(title)
+    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+
+    ax1 = plt.subplot(3,4,1)# Hip X extensor
+    ax2 = plt.subplot(3,4,2)# Hip Y abductor
+    ax3 = plt.subplot(3,4,3)# Hip Z rotation      
+    ax4 = plt.subplot(3,4,4)# Knee Z power
+
+    ax5 = plt.subplot(3,4,5)# knee X extensor
+    ax6 = plt.subplot(3,4,6)# knee Y abductor
+    ax7 = plt.subplot(3,4,7)# knee Z rotation      
+    ax8 = plt.subplot(3,4,8)# knee Z power
+
+    ax9 = plt.subplot(3,4,9)# ankle X plantar flexion
+    ax10 = plt.subplot(3,4,10)# ankle Y rotation
+    ax11 = plt.subplot(3,4,11)# ankle Z everter      
+    ax12 = plt.subplot(3,4,12)# ankle Z power  
+        
+    axes=[ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8,ax9,ax10,ax11,ax12]    
+    
+    i=0
+    for cycleIt in cycleInstances:
+        
+        if cycleIt.context == "Left":
+            ax1.plot(cycleIt.getPointTimeSequenceData("LHipMoment")[:,0], '-', color= colormap_i[i])
+            ax2.plot(cycleIt.getPointTimeSequenceData("LHipMoment")[:,1], '-', color= colormap_i[i])
+            ax3.plot(cycleIt.getPointTimeSequenceData("LHipMoment")[:,2], '-', color= colormap_i[i])
+            ax4.plot(cycleIt.getPointTimeSequenceData("LHipPower")[:,2], '-', color= colormap_i[i])
+    
+            ax5.plot(cycleIt.getPointTimeSequenceData("LKneeMoment")[:,0], '-', color= colormap_i[i])
+            ax6.plot(cycleIt.getPointTimeSequenceData("LKneeMoment")[:,1], '-', color= colormap_i[i])
+            ax7.plot(cycleIt.getPointTimeSequenceData("LKneeMoment")[:,2], '-', color= colormap_i[i])
+            ax8.plot(cycleIt.getPointTimeSequenceData("LKneePower")[:,2], '-', color= colormap_i[i])
+    
+            ax9.plot(cycleIt.getPointTimeSequenceData("LAnkleMoment")[:,0], '-', color= colormap_i[i])
+            ax10.plot(cycleIt.getPointTimeSequenceData("LAnkleMoment")[:,1], '-', color= colormap_i[i])
+            ax11.plot(cycleIt.getPointTimeSequenceData("LAnkleMoment")[:,2], '-', color= colormap_i[i])
+            ax12.plot(cycleIt.getPointTimeSequenceData("LAnklePower")[:,2], '-', color= colormap_i[i])
+
+        if cycleIt.context == "Right":
+            ax1.plot(cycleIt.getPointTimeSequenceData("RHipMoment")[:,0], '-', color= colormap_i[i])
+            ax2.plot(cycleIt.getPointTimeSequenceData("RHipMoment")[:,1], '-', color= colormap_i[i])
+            ax3.plot(cycleIt.getPointTimeSequenceData("RHipMoment")[:,2], '-', color= colormap_i[i])
+            ax4.plot(cycleIt.getPointTimeSequenceData("RHipPower")[:,2], '-', color= colormap_i[i])
+    
+            ax5.plot(cycleIt.getPointTimeSequenceData("RKneeMoment")[:,0], '-', color= colormap_i[i])
+            ax6.plot(cycleIt.getPointTimeSequenceData("RKneeMoment")[:,1], '-', color= colormap_i[i])
+            ax7.plot(cycleIt.getPointTimeSequenceData("RKneeMoment")[:,2], '-', color= colormap_i[i])
+            ax8.plot(cycleIt.getPointTimeSequenceData("RKneePower")[:,2], '-', color= colormap_i[i])
+    
+            ax9.plot(cycleIt.getPointTimeSequenceData("RAnkleMoment")[:,0], '-', color= colormap_i[i])
+            ax10.plot(cycleIt.getPointTimeSequenceData("RAnkleMoment")[:,1], '-', color= colormap_i[i])
+            ax11.plot(cycleIt.getPointTimeSequenceData("RAnkleMoment")[:,2], '-', color= colormap_i[i])
+            ax12.plot(cycleIt.getPointTimeSequenceData("RAnklePower")[:,2], '-', color= colormap_i[i])
+
+        i+=1
+   
+    for axIt in axes:
+        axIt.set_xlim([0,end])
+        axIt.tick_params(axis='x', which='major', labelsize=6)
+        axIt.tick_params(axis='y', which='major', labelsize=6)
+    
+    ax1.legend(labels,bbox_to_anchor=(0., 1.20, 2., .102),
+          ncol=len(cycleInstances), mode="expand", borderaxespad=0., fontsize = 5)
+
+    ax1.set_title("Hip extensor Moment" ,size=8)  
+    ax2.set_title("Hip adductor Moment" ,size=8)  
+    ax3.set_title("Hip rotation Moment" ,size=8)  
+    ax4.set_title("Hip power" ,size=8)  
+    
+    ax5.set_title("Knee extensor Moment" ,size=8)  
+    ax6.set_title("Knee adductor Moment" ,size=8)  
+    ax7.set_title("Knee rotation Moment" ,size=8)  
+    ax8.set_title("Knee power" ,size=8)    
+
+    ax9.set_title("Ankle extensor Moment" ,size=8)  
+    ax10.set_title("Ankle adductor Moment" ,size=8)  
+    ax11.set_title("Ankle rotation Moment" ,size=8)  
+    ax12.set_title("Ankle power" ,size=8) 
+
+# ---- local plot ------
 
 def gaitDescriptivePlot(figAxis,analysis_node, 
                     pointLabel_L,contextPointLabel_L, 
