@@ -379,9 +379,9 @@ class CGM1ModelInf(CGM):
 
         .. todo:: shrink and clone the aquisition to seleted frames           
         """
-        logging.info("=====================================================")
-        logging.info("===================CGM CALIBRATION===================")
-        logging.info("=====================================================")        
+        logging.debug("=====================================================")
+        logging.debug("===================CGM CALIBRATION===================")
+        logging.debug("=====================================================")        
         
         ff=aquiStatic.GetFirstFrame() 
         lf=aquiStatic.GetLastFrame()
@@ -401,43 +401,43 @@ class CGM1ModelInf(CGM):
         # ---- Pelvis-THIGH-SHANK CALIBRATION
         #-------------------------------------
         # calibration of technical Referentials
-        logging.info(" --- Pelvis - TF calibration ---")
-        logging.info(" -------------------------------")        
+        logging.debug(" --- Pelvis - TF calibration ---")
+        logging.debug(" -------------------------------")        
         self._pelvis_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
         
-        logging.info(" --- Left Thigh- TF calibration ---")
-        logging.info(" ----------------------------------")
+        logging.debug(" --- Left Thigh- TF calibration ---")
+        logging.debug(" ----------------------------------")
         self._left_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
 
-        logging.info(" --- Right Thigh - TF calibration ---")
-        logging.info(" ------------------------------------")        
+        logging.debug(" --- Right Thigh - TF calibration ---")
+        logging.debug(" ------------------------------------")        
         self._right_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
         
-        logging.info(" --- Left Shank - TF calibration ---")
-        logging.info(" -----------------------------------")        
+        logging.debug(" --- Left Shank - TF calibration ---")
+        logging.debug(" -----------------------------------")        
         self._left_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
         
         
-        logging.info(" --- Richt Shank - TF calibration ---")
-        logging.info(" ------------------------------------")        
+        logging.debug(" --- Richt Shank - TF calibration ---")
+        logging.debug(" ------------------------------------")        
         self._right_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
 
         
 
         # calibration of anatomical Referentials
-        logging.info(" --- Pelvis - AF calibration ---")
-        logging.info(" -------------------------------") 
+        logging.debug(" --- Pelvis - AF calibration ---")
+        logging.debug(" -------------------------------") 
         self._pelvis_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
         self.displayStaticCoordinateSystem( aquiStatic, "Pelvis","Pelvis",referential = "Anatomic"  )
 
-        logging.info(" --- Left Thigh - AF calibration ---")
-        logging.info(" -----------------------------------") 
+        logging.debug(" --- Left Thigh - AF calibration ---")
+        logging.debug(" -----------------------------------") 
         self._left_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
         self.displayStaticCoordinateSystem( aquiStatic, "Left Thigh","LThigh",referential = "Anatomic"  )
 
 
-        logging.info(" --- Right Thigh - AF calibration ---")
-        logging.info(" ------------------------------------") 
+        logging.debug(" --- Right Thigh - AF calibration ---")
+        logging.debug(" ------------------------------------") 
         self._right_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
         self.displayStaticCoordinateSystem( aquiStatic, "Right Thigh","RThigh",referential = "Anatomic"  )  
 
@@ -448,14 +448,14 @@ class CGM1ModelInf(CGM):
         self.getThighOffset(side="right")
 
 
-        logging.info(" --- Left Shank - AF calibration ---")
-        logging.info(" -------------------------------")
+        logging.debug(" --- Left Shank - AF calibration ---")
+        logging.debug(" -------------------------------")
         self._left_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
         self.displayStaticCoordinateSystem( aquiStatic, "Left Shank","LShank",referential = "Anatomic"  )
         
         
-        logging.info(" --- Right Shank - AF calibration ---")
-        logging.info(" -------------------------------")        
+        logging.debug(" --- Right Shank - AF calibration ---")
+        logging.debug(" -------------------------------")        
         self._right_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)    
         self.displayStaticCoordinateSystem( aquiStatic, "Right Shank","RShank",referential = "Anatomic"  )
 
@@ -465,15 +465,15 @@ class CGM1ModelInf(CGM):
         self.getShankOffsets(side="both")# compute TibialRotation and Shank offset
         self.getAbdAddAnkleJointOffset(side="both")
 
-        logging.info(" --- Left Shank Proximal- AF calibration ---")
-        logging.info(" -------------------------------------------")
+        logging.debug(" --- Left Shank Proximal- AF calibration ---")
+        logging.debug(" -------------------------------------------")
         #   shank Prox ( copy )
         self.updateSegmentFromCopy("Left Shank Proximal", self.getSegment("Left Shank")) # look out . I copied the shank instance and rename it 
         self._left_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
         self.displayStaticCoordinateSystem( aquiStatic, "Left Shank Proximal","LShankProx",referential = "Anatomic"  )        
 
-        logging.info(" --- Right Shank Proximal- AF calibration ---")
-        logging.info(" --------------------------------------------")
+        logging.debug(" --- Right Shank Proximal- AF calibration ---")
+        logging.debug(" --------------------------------------------")
         self.updateSegmentFromCopy("Right Shank Proximal", self.getSegment("Right Shank"))        
         self._right_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
         self.displayStaticCoordinateSystem( aquiStatic, "Right Shank Proximal","RShankProx",referential = "Anatomic"  )
@@ -482,24 +482,24 @@ class CGM1ModelInf(CGM):
         # ---- FOOT CALIBRATION
         #-------------------------------------
         # foot ( need  Y-axis of the shank anatomic Frame)
-        logging.info(" --- Left Foot - TF calibration (uncorrected) ---")
-        logging.info(" -------------------------------------------------")
+        logging.debug(" --- Left Foot - TF calibration (uncorrected) ---")
+        logging.debug(" -------------------------------------------------")
         self._left_unCorrectedFoot_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
         self.displayStaticCoordinateSystem( aquiStatic, "Left Foot","LFootUncorrected",referential = "technic"  )  
 
-        logging.info(" --- Left Foot - AF calibration (corrected) ---")
-        logging.info(" ----------------------------------------------")
+        logging.debug(" --- Left Foot - AF calibration (corrected) ---")
+        logging.debug(" ----------------------------------------------")
         self._left_foot_corrected_calibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
         self.displayStaticCoordinateSystem( aquiStatic, "Left Foot","LFoot",referential = "Anatomic"  )              
 
 
-        logging.info(" --- Right Foot - TF calibration (uncorrected) ---")
-        logging.info(" -------------------------------------------------")
+        logging.debug(" --- Right Foot - TF calibration (uncorrected) ---")
+        logging.debug(" -------------------------------------------------")
         self._right_unCorrectedFoot_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
         self.displayStaticCoordinateSystem( aquiStatic, "Right Foot","RFootUncorrected",referential = "technic"  )              
 
-        logging.info(" --- Right Foot - AF calibration (corrected) ---")
-        logging.info(" -----------------------------------------------")
+        logging.debug(" --- Right Foot - AF calibration (corrected) ---")
+        logging.debug(" -----------------------------------------------")
         self._right_foot_corrected_calibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
         self.displayStaticCoordinateSystem( aquiStatic, "Right Foot","RFoot",referential = "Anatomic"  )      
  
@@ -2058,62 +2058,62 @@ class CGM1ModelInf(CGM):
            - `motionMethod` (Enum motionMethod) - method use to optimize pose         
 
         """         
-        logging.info("=====================================================")         
-        logging.info("===================  CGM MOTION   ===================")
-        logging.info("=====================================================")
+        logging.debug("=====================================================")         
+        logging.debug("===================  CGM MOTION   ===================")
+        logging.debug("=====================================================")
        
         if motionMethod == pyCGM2Enums.motionMethod.Native: #cmf.motionMethod.Native:
-            logging.info("--- Native motion process ---")
+            logging.debug("--- Native motion process ---")
             
-            logging.info(" - Pelvis - motion -")
-            logging.info(" -------------------")
+            logging.debug(" - Pelvis - motion -")
+            logging.debug(" -------------------")
             self._pelvis_motion(aqui, dictRef, dictAnat)
  
-            logging.info(" - Left Thigh - motion -")
-            logging.info(" -----------------------")            
+            logging.debug(" - Left Thigh - motion -")
+            logging.debug(" -----------------------")            
             self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
-            logging.info(" - Right Thigh - motion -")
-            logging.info(" ------------------------")            
+            logging.debug(" - Right Thigh - motion -")
+            logging.debug(" ------------------------")            
             self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
 
-            logging.info(" - Left Shank - motion -")
-            logging.info(" -----------------------") 
+            logging.debug(" - Left Shank - motion -")
+            logging.debug(" -----------------------") 
             self._left_shank_motion(aqui, dictRef, dictAnat,options=options)
  
-            logging.info(" - Left Shank-proximal - motion -")
-            logging.info(" --------------------------------") 
+            logging.debug(" - Left Shank-proximal - motion -")
+            logging.debug(" --------------------------------") 
             self._left_shankProximal_motion(aqui,dictAnat,options=options)
  
-            logging.info(" - Right Shank - motion -")
-            logging.info(" ------------------------") 
+            logging.debug(" - Right Shank - motion -")
+            logging.debug(" ------------------------") 
             self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
 
-            logging.info(" - Right Shank-proximal - motion -")
-            logging.info(" ---------------------------------") 
+            logging.debug(" - Right Shank-proximal - motion -")
+            logging.debug(" ---------------------------------") 
             self._right_shankProximal_motion(aqui,dictAnat,options=options)
             
-            logging.info(" - Left foot - motion -")
-            logging.info(" ----------------------")
+            logging.debug(" - Left foot - motion -")
+            logging.debug(" ----------------------")
             self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
 
-            logging.info(" - Right foot - motion -")
-            logging.info(" ----------------------")
+            logging.debug(" - Right foot - motion -")
+            logging.debug(" ----------------------")
             self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
 
             
         
         if motionMethod == pyCGM2Enums.motionMethod.Sodervisk:
-            logging.info("--- Segmental Least-square motion process ---")
+            logging.debug("--- Segmental Least-square motion process ---")
             self._pelvis_motion_optimize(aqui, dictRef,motionMethod)
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)        
             self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
 
-        logging.info("--- Display Coordinate system ---")
-        logging.info(" --------------------------------")
+        logging.debug("--- Display Coordinate system ---")
+        logging.debug(" --------------------------------")
     
         self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
         self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
@@ -2978,7 +2978,7 @@ class CGM1ModelInf(CGM):
             if len(seg.m_tracking_markers)==2: 
                 if "LHJC" not in seg.m_tracking_markers:
                     seg.m_tracking_markers.append("LHJC")
-                    logging.info("LHJC added to tracking marker list")
+                    logging.debug("LHJC added to tracking marker list")
             
             btkTools.isPointsExist(aqui,seg.m_tracking_markers)
 
@@ -3053,7 +3053,7 @@ class CGM1ModelInf(CGM):
             if len(seg.m_tracking_markers)==2: 
                 if "RHJC" not in seg.m_tracking_markers:
                     seg.m_tracking_markers.append("RHJC")
-                    logging.info("RHJC added to tracking marker list")
+                    logging.debug("RHJC added to tracking marker list")
             
         # --- Motion of the Technical frame
         seg.getReferential("TF").motion =[]
@@ -3127,7 +3127,7 @@ class CGM1ModelInf(CGM):
             if len(seg.m_tracking_markers)==2: 
                 if "LKJC" not in seg.m_tracking_markers:
                     seg.m_tracking_markers.append("LKJC")
-                    logging.info("LKJC added to tracking marker list")
+                    logging.debug("LKJC added to tracking marker list")
             
         # --- Motion of the Technical frame        
         seg.getReferential("TF").motion =[]
@@ -3197,7 +3197,7 @@ class CGM1ModelInf(CGM):
             if len(seg.m_tracking_markers)==2: 
                 if "RKJC" not in seg.m_tracking_markers:
                     seg.m_tracking_markers.append("RKJC")
-                    logging.info("RKJC added to tracking marker list")
+                    logging.debug("RKJC added to tracking marker list")
             
         # --- Motion of the Technical frame
 
