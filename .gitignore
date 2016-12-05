@@ -86,3 +86,4 @@ ENV/
 .spyderproject
 
 *.c3d
+*.pyc
