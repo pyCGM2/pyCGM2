@@ -10,11 +10,10 @@ import pdb
 import logging
 
 
-try:
-    import pyCGM2.pyCGM2_CONFIG
-    pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
-except ImportError:
-    logging.error("[pyCGM2] : pyCGM2 module not in your python path")
+# pyCGM2 settings
+import pyCGM2
+pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
+
 
 # vicon
 pyCGM2.pyCGM2_CONFIG.addNexusPythonSdk()
@@ -24,10 +23,10 @@ import ViconNexus
 pyCGM2.pyCGM2_CONFIG.addOpenma()
 import ma.io
 import ma.body
-
-# pyCGM2
+   
+# pyCGM2 libraries   
 import pyCGM2.Core.Model.openmaLib as openmaLib
-from  pyCGM2.Core.Tools  import trialTools
+from  pyCGM2.Core.Tools  import trialTools   
    
 if __name__ == "__main__":
 

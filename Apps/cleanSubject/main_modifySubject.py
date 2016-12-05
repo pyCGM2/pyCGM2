@@ -7,6 +7,7 @@ Created on Mon Jun 20 12:00:58 2016
 
 
 import btk
+import pyCGM2
 
 from pyCGM2.Core.Tools import  btkTools
 

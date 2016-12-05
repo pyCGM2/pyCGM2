@@ -8,11 +8,10 @@ Created on Mon Oct 03 10:40:17 2016
 import pdb
 import logging
 
-try:
-    import pyCGM2.pyCGM2_CONFIG 
-except ImportError:
-    logging.error("[pyCGM2] : pyCGM2 module not in your python path")
 
+# pyCGM2 settings
+import pyCGM2
+pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
 
 # vicon
 pyCGM2.pyCGM2_CONFIG.addNexusPythonSdk()
@@ -22,6 +21,7 @@ import ViconNexus
 pyCGM2.pyCGM2_CONFIG.addOpenma()
 import ma.io
 import ma.body
+
 
 # local lib
 import lib.functions  as libf
