@@ -40,6 +40,7 @@ if __name__ == "__main__":
         #---- INPUTS------   
         flag_leftFlatFoot =  bool(int(sys.argv[1]))
         flag_rightFlatFoot =  bool(int(sys.argv[2]))
+        markerDiameter = float(sys.argv[3])
 
 
         #---- DATA ------           
@@ -61,7 +62,7 @@ if __name__ == "__main__":
 
 
         sub = ma.Subject(str(subject)) 
-        sub.setProperty("markerDiameter",ma.Any(14.0))
+        sub.setProperty("markerDiameter",ma.Any(markerDiameter))
         sub.setProperty("leftLegLength",ma.Any(pyNEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0]))
         sub.setProperty("leftKneeWidth",ma.Any(pyNEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0]))
         sub.setProperty("leftAnkleWidth",ma.Any(pyNEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0]))

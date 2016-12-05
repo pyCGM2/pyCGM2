@@ -40,6 +40,7 @@ if __name__ == "__main__":
         flag_leftFlatFoot =  True
         flag_rightFlatFoot =  True
         calibrateFilenameLabelled = "static Cal 01.c3d"
+        markerDiameter = 14 #float(sys.argv[3])
     
         #---- DATA ------ 
         DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\openMA-CGM1-basic\\"
@@ -51,10 +52,10 @@ if __name__ == "__main__":
         logging.info( "reconstruction file: "+ reconstructFilenameLabelled )     
             
         # ----- SUBJECT --------
-        sub = ma.Subject(str("Fabien")) 
+        sub = ma.Subject(str("Subject Name")) 
         sub.setProperty("mass",ma.Any(71.0))
         sub.setProperty("height",ma.Any(1756.0))
-        sub.setProperty("markerDiameter",ma.Any(14.0))
+        sub.setProperty("markerDiameter",ma.Any(markerDiameter))
         sub.setProperty("leftLegLength",ma.Any(860))
         sub.setProperty("leftKneeWidth",ma.Any(102.0))
         sub.setProperty("leftAnkleWidth",ma.Any(73.4))

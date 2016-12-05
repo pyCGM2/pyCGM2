@@ -42,6 +42,7 @@ if __name__ == "__main__":
         calibrateFilenameLabelled = sys.argv[1] 
         flag_leftFlatFoot =  bool(int(sys.argv[2]))
         flag_rightFlatFoot =  bool(int(sys.argv[3]))
+        markerDiameter =  float(sys.argv[4])        
         
         #---- DATA ----
         DATA_PATH, reconstructFilenameLabelledNoExt = pyNEXUS.GetTrialName()
@@ -60,7 +61,7 @@ if __name__ == "__main__":
         Parameters = pyNEXUS.GetSubjectParamNames(subject)
 
         sub = ma.Subject(str(subject)) 
-        sub.setProperty("markerDiameter",ma.Any(14.0))
+        sub.setProperty("markerDiameter",ma.Any(markerDiameter))
         sub.setProperty("leftLegLength",ma.Any(pyNEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0]))
         sub.setProperty("leftKneeWidth",ma.Any(pyNEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0]))
         sub.setProperty("leftAnkleWidth",ma.Any(pyNEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0]))
