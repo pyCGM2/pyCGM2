@@ -9,21 +9,21 @@ import pdb
 import logging
 import matplotlib.pyplot as plt
 
-try:
-    import pyCGM2.pyCGM2_CONFIG
-    pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
-except ImportError:
-    logging.error("[pyCGM2] : pyCGM2 module not in your python path")
+# pyCGM2 settings
+import pyCGM2
+pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
 
-# vicon
+# vicon nexus
 pyCGM2.pyCGM2_CONFIG.addNexusPythonSdk()
 import ViconNexus
+
 
 # openMA
 pyCGM2.pyCGM2_CONFIG.addOpenma()
 import ma.io
 import ma.body
-
+    
+# pyCGM2 libraries    
 import pyCGM2.smartFunctions as CGM2smart
     
 if __name__ == "__main__":
@@ -34,16 +34,16 @@ if __name__ == "__main__":
     pyNEXUS = ViconNexus.ViconNexus()    
     NEXUS_PYTHON_CONNECTED = pyNEXUS.Client.IsConnected() 
 
-    NEXUS_PYTHON_CONNECTED = True   
+       
         
     if NEXUS_PYTHON_CONNECTED: 
         
         
         #---- INPUTS ----- 
         plotFlag = bool(int(sys.argv[1]))
-        exportSpreadSheetFlag = bool(int(sys.argv[2]))
-        exportAnalysisC3dFlag = bool(int(sys.argv[3]))
-        normativeDataInput = sys.argv[3] #"Schwartz2008_VeryFast"
+        exportSpreadSheetFlag = False #bool(int(sys.argv[2]))
+        exportAnalysisC3dFlag = False # bool(int(sys.argv[3]))
+        normativeDataInput = sys.argv[2] #"Schwartz2008_VeryFast"
         
         normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
         
@@ -55,26 +55,9 @@ if __name__ == "__main__":
         print "reconstructed file: "+ reconstructedFilenameLabelled
 
         # -----INFOS--------     
-        model={"HJC": "har",
-           "KinematicsFitting": "OpenSim"}    
-    
-        subject={"ipp": "000",
-                 "firstname": "NA",
-                 "surname": "NA",
-                 "sex": "M",
-                 "dob": "-"
-                         }
-                         
-        experimental={            
-                    "date": "NA",
-                    "doctor": "NA",
-                    "context": "Research",
-                    "task": "S",
-                    "shoe": "N",
-                    "orthosis Prothesis": "N",
-                    "external Device": "N",
-                    "person assistance": "N"
-                     }
+        model=None  
+        subject=None
+        experimental=None
 
         # ----PROCESSING-----
         CGM2smart.gaitProcessing_cgm1 (reconstructedFilenameLabelled, DATA_PATH,
@@ -83,6 +66,7 @@ if __name__ == "__main__":
                                exportBasicSpreadSheetFlag = exportSpreadSheetFlag,
                                exportAdvancedSpreadSheetFlag = exportSpreadSheetFlag,
                                exportAnalysisC3dFlag = exportAnalysisC3dFlag,
+                               consistencyOnly = True,
                                normativeDataDict = normativeData)
 
     else: 

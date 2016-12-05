@@ -7,25 +7,27 @@ Created on Mon Oct 03 10:40:17 2016
 
 import pdb
 import logging
+
+
 import matplotlib.pyplot as plt
 
-try:
-    import pyCGM2.pyCGM2_CONFIG
-    pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.DEBUG)
-except ImportError:
-    logging.error("[pyCGM2] : pyCGM2 module not in your python path")
+# pyCGM2 settings
+import pyCGM2
+pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
 
-
-# vicon
+# vicon nexus
 pyCGM2.pyCGM2_CONFIG.addNexusPythonSdk()
 import ViconNexus
+
 
 # openMA
 pyCGM2.pyCGM2_CONFIG.addOpenma()
 import ma.io
 import ma.body
-
+    
+# pyCGM2 libraries    
 import pyCGM2.smartFunctions as CGM2smart
+
     
 if __name__ == "__main__":
     plt.close("all")    
@@ -42,8 +44,8 @@ if __name__ == "__main__":
         
         #---- INPUTS ----- 
         plotFlag = True #bool(int(sys.argv[1]))
-        exportSpreadSheetFlag = True  #bool(int(sys.argv[2]))
-        exportAnalysisC3dFlag = True
+        exportSpreadSheetFlag = False  #bool(int(sys.argv[2]))
+        exportAnalysisC3dFlag = False
         normativeDataInput = "Schwartz2008_VeryFast"
         normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
         
@@ -56,26 +58,11 @@ if __name__ == "__main__":
         logging.info( "reconstructed file: "+ reconstructedFilenameLabelled)
     
         # ----INFOS-----        
-        model={"HJC": "har",
-           "KinematicsFitting": "OpenSim"}    
+        model=None  
     
-        subject={"ipp": "000",
-                 "firstname": "NA",
-                 "surname": "NA",
-                 "sex": "M",
-                 "dob": "-"
-                         }
+        subject=None
                          
-        experimental={            
-                    "date": "NA",
-                    "doctor": "NA",
-                    "context": "Research",
-                    "task": "S",
-                    "shoe": "N",
-                    "orthosis Prothesis": "N",
-                    "external Device": "N",
-                    "person assistance": "N"
-                     }
+        experimental=None
                      
         # ----PROCESSING-----
         CGM2smart.gaitProcessing_cgm1 (reconstructedFilenameLabelled, DATA_PATH,
@@ -84,6 +71,7 @@ if __name__ == "__main__":
                                exportBasicSpreadSheetFlag = exportSpreadSheetFlag,
                                exportAdvancedSpreadSheetFlag = exportSpreadSheetFlag,
                                exportAnalysisC3dFlag = exportAnalysisC3dFlag,
+                               consistencyOnly = True,
                                normativeDataDict = normativeData)
     else: 
         logging.error("Nexus Not Connected")
