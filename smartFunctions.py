@@ -13,9 +13,8 @@ Created on Mon Jul 11 11:42:19 2016
 # -- classic packages --    
 import logging
 import pdb
+import os
 
-# openma
-import ma.io
 
 # pyCGM package
 import pyCGM2.Core.Processing.cycle as CGM2cycle
@@ -23,12 +22,50 @@ import pyCGM2.Core.Tools.trialTools as CGM2trialTools
 import pyCGM2.Core.Processing.analysis as CGM2analysis
 import pyCGM2.Core.Report.plot as CGM2plot
 import pyCGM2.Core.Report.normativeDatabaseProcedure as CGM2normdata
+from pyCGM2.Core.Processing import analysis
 
 
+# openma
+import ma.io
 
 
+def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH, 
+                         modelInfo, subjectInfo, experimentalInfo,
+                         name_out=None,  DATA_PATH_OUT= None ):
 
+    # reader    
+    kinematicFileNode = ma.io.read(str(DATA_PATH + modelledStaticFilename))
+    kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
+    
+    # prameters
+    angles =["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles",
+                          "RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles"]
 
+    # analysis
+    staticAnalysis = analysis.staticAnalysisFilter(kinematicTrial,angles,
+                            subjectInfos=subjectInfo,
+                            modelInfos= modelInfo,
+                            experimentalInfos=experimentalInfo)
+    staticAnalysis.buildDataFrame()
+    
+    # plot
+    if DATA_PATH_OUT is None:
+        DATA_PATH_OUT = DATA_PATH
+
+    plotBuilder = CGM2plot.StaticAnalysisPlotBuilder(staticAnalysis.m_dataframe)
+    # Filter
+    pf = CGM2plot.PlottingFilter()
+    pf.setBuilder(plotBuilder)
+    pf.setPath(DATA_PATH_OUT)
+    if name_out  is None:
+        pdfname = modelledStaticFilename[:-4] 
+    else:
+        pdfname = name_out
+    
+    pf.setPdfName(pdfname)
+    pf.plot()
+
+    os.startfile(DATA_PATH+"staticAngleProfiles_"+ pdfname +".pdf")
 
 def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH, 
                          modelInfo, subjectInfo, experimentalInfo, 
@@ -113,11 +150,10 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
     
-   
+    # export dataframe
     if DATA_PATH_OUT is None:
         DATA_PATH_OUT = DATA_PATH
-    
-    
+        
     if exportAnalysisC3dFlag:
         if name_out  is None:
             c3dAnalysisName = modelledFilenames[0][:-4]+"-Cycles" if len(modelledFilenames) == 1 else  "MultiTrials"
@@ -139,29 +175,30 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     #--------------------------------------------------------------------------
     if plotFlag:    
         plotBuilder = CGM2plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=True)
+        if normativeDataDict["Author"] == "Schwartz2008":
+            chosenModality = normativeDataDict["Modality"]
+            plotBuilder.setNormativeDataProcedure(CGM2normdata.Schwartz2008_normativeDataBases(chosenModality)) # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
+        elif normativeDataDict["Author"] == "Pinzone2014":
+            chosenModality = normativeDataDict["Modality"]
+            plotBuilder.setNormativeDataProcedure(CGM2normdata.Pinzone2014_normativeDataBases(chosenModality)) # modalites : "Center One" ,"Center Two"
+       
+        plotBuilder.setConsistencyOnly(consistencyOnly)       
        
         # Filter
         pf = CGM2plot.PlottingFilter()
         pf.setBuilder(plotBuilder)
-
-        if normativeDataDict["Author"] == "Schwartz2008":
-            chosenModality = normativeDataDict["Modality"]
-            pf.setNormativeDataProcedure(CGM2normdata.Schwartz2008_normativeDataBases(chosenModality)) # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
-        elif normativeDataDict["Author"] == "Pinzone2014":
-            chosenModality = normativeDataDict["Modality"]
-            pf.setNormativeDataProcedure(CGM2normdata.Pinzone2014_normativeDataBases(chosenModality)) # modalites : "Center One" ,"Center Two"
-
         pf.setPath(DATA_PATH_OUT)
+ 
         if name_out  is None:
-            pdfnameSuffix = modelledFilenames[0][:-4] if len(modelledFilenames) == 1 else  "MultiTrials"
+            pdfName = modelledFilenames[0][:-4] if len(modelledFilenames) == 1 else  "MultiTrials"
         else:
-            pdfnameSuffix = name_out
+            pdfName = name_out
         
-        pf.setPdfSuffix(pdfnameSuffix)
-        pf.plot(consistencyOnly=consistencyOnly)
+        pf.setPdfName(pdfName)
+        pf.plot()
 
-        #os.startfile(DATA_PATH+"consistencyKinematics_"+ gaitFilenameLabelled[:-4]+".pdf")
-        #os.startfile(DATA_PATH+"consistencyKinetics_"+ gaitFilenameLabelled[:-4]+".pdf")
+        os.startfile(DATA_PATH+"consistencyKinematics_"+ pdfName +".pdf")
+        os.startfile(DATA_PATH+"consistencyKinetics_"+ pdfName+".pdf")
 
 
         

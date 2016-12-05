@@ -13,14 +13,18 @@ import pdb
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
+import matplotlib.patches as mpatches
+
+# pyCGM2
+#import pyCGM2
+import pyCGM2.Core.Processing.analysis as CGM2analysis
+
 
 # openMA
 import ma.io
 import ma.body
 
 
-# pyCGM2
-import pyCGM2.Core.Processing.analysis as CGM2analysis
 
 # ---- convenient plot ------
 def gaitKinematicsTemporalPlotPanel(trials,labels,filename="",path = ""):
@@ -77,9 +81,9 @@ def gaitKinematicsTemporalPlotPanel(trials,labels,filename="",path = ""):
         
     axes=[ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8,ax9,ax10,ax11,ax12,ax13]    
     
+
     i=0
     for trial in trials:
-        
 
         ax1.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles").data()[:,0], '-', color= colormap_i[i])
         ax2.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles").data()[:,1], '-', color= colormap_i[i])
@@ -186,13 +190,13 @@ def gaitKinematicsTemporalPlotPanel(trials,labels,filename="",path = ""):
     ax13.set_title("Foot Progress" ,size=8)
 
 
-#    pp = PdfPages(str(path+ filename[:-4] +"-Left Temporal Kinematics.pdf"))
-#    pp.savefig(fig_left)    
-#    pp.close()   
+    pp = PdfPages(str(path+ filename[:-4] +"-Left Temporal Kinematics.pdf"))
+    pp.savefig(fig_left)    
+    pp.close()   
 
-#    pp = PdfPages(str(path+ filename[:-4] +"-Left Temporal Kinematics.pdf"))
-#    pp.savefig(fig_right)    
-#    pp.close()    
+    pp = PdfPages(str(path+ filename[:-4] +"-Left Temporal Kinematics.pdf"))
+    pp.savefig(fig_right)    
+    pp.close()    
     
 
 
@@ -771,28 +775,20 @@ class PlottingFilter(object):
         self.__concretePlotBuilder = None
         self.m_path = None
         self.m_pdfSuffix = None
-        self.m_nd_procedure = None
 
     def setPath(self,path):
         self.m_path = path    
-        
-    def setNormativeDataProcedure(self,ndp):
-        self.m_nd_procedure = ndp    
-        
-    def setPdfSuffix(self,suffix):
-        self.m_pdfSuffix = suffix    
+                
+    def setPdfName(self,name):
+        self.m_pdfName = name    
    
     def setBuilder(self,concretePlotBuilder):
         self.__concretePlotBuilder = concretePlotBuilder    
     
-    def plot(self, consistencyOnly=True):
+    def plot(self):
         
-        if self.m_nd_procedure is None:
-            self.__concretePlotBuilder.plotPanel(self.m_path,self.m_pdfSuffix,consistencyOnly=consistencyOnly)
+            self.__concretePlotBuilder.plotPanel(self.m_path,self.m_pdfName)
 
-        else:
-            self.m_nd_procedure.constructNormativeData()
-            self.__concretePlotBuilder.plotPanel(self.m_path,self.m_pdfSuffix,consistencyOnly=consistencyOnly,normativeData = self.m_nd_procedure.data)
 
 # ------ BUILDER -----------
 class AbstractPlotBuilder(object):
@@ -806,6 +802,112 @@ class AbstractPlotBuilder(object):
         pass
 
 
+class StaticAnalysisPlotBuilder(AbstractPlotBuilder):
+    def __init__(self,iObj):
+        super(StaticAnalysisPlotBuilder, self).__init__(iObj=iObj)
+    
+    def plotPanel(self,path,pdfName):
+        
+        pdfNamePlus = "_" + pdfName if pdfName != None else ""
+        
+        path = path if  path != None else ""
+        
+        pelvis_ante =  self.m_input[( self.m_input.Label=="LPelvisAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()         
+
+        leftHip_x =  self.m_input[( self.m_input.Label=="LHipAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()
+        rightHip_x =  self.m_input[( self.m_input.Label=="RHipAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()
+        
+        leftknee_x =  self.m_input[( self.m_input.Label=="LKneeAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix() 
+        rightknee_x =  self.m_input[( self.m_input.Label=="RKneeAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix() 
+
+        leftAnkle_x =  self.m_input[( self.m_input.Label=="LAnkleAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()          
+        rightAnkle_x =  self.m_input[( self.m_input.Label=="RAnkleAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()          
+
+
+        pelvis_up =  self.m_input[( self.m_input.Label=="LPelvisAngles") &  ( self.m_input.Axe=="Y")  ].Mean.as_matrix()
+
+        leftHip_y =  self.m_input[( self.m_input.Label=="LHipAngles") &  ( self.m_input.Axe=="Y")  ].Mean.as_matrix()
+        rightHip_y =  self.m_input[( self.m_input.Label=="RHipAngles") &  ( self.m_input.Axe=="Y")  ].Mean.as_matrix()
+        
+        pelvis_int =  self.m_input[( self.m_input.Label=="LPelvisAngles") &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
+
+        leftHip_z =  self.m_input[( self.m_input.Label=="LHipAngles") &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
+        rightHip_z =  self.m_input[( self.m_input.Label=="RHipAngles") &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
+
+
+        leftFootProgress_z =  self.m_input[( self.m_input.Label=="LFootProgressAngles") &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
+        rightFootProgress_z =  self.m_input[( self.m_input.Label=="RFootProgressAngles") &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
+        
+#        fig, ax = plt.subplots(figsize=(8.27,3.93), dpi=100,facecolor="white")
+
+        fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+        ax = plt.subplot(5,1,1)        
+        
+        width = 1
+        plt.bar(0,pelvis_ante,width, color = "g", label = "overall")
+        
+        plt.bar(1.5,leftHip_x,width, color = "r", label = "left")
+        plt.bar(2.5,rightHip_x,width, color = "b", label = "right")
+
+        plt.bar(4,leftknee_x,width, color = "r") 
+        plt.bar(5,rightknee_x,width, color = "b")
+
+        plt.bar(6.5,leftAnkle_x,width, color = "r") 
+        plt.bar(7.5,rightAnkle_x,width, color = "b")
+
+        plt.bar(9,pelvis_up,width, color = "g") 
+
+        plt.bar(10.5,leftHip_y,width, color = "r")
+        plt.bar(11.5,rightHip_y,width, color = "b")
+
+        plt.bar(13,pelvis_int,width, color = "g") 
+
+        plt.bar(14.5,leftHip_z,width, color = "r")
+        plt.bar(15.5,rightHip_z,width, color = "b")
+
+
+        plt.bar(17,leftFootProgress_z,width, color = "r")
+        plt.bar(18,rightFootProgress_z,width, color = "b")
+
+        ax.set_xticks([0.5,
+                       2.5,
+                       5,
+                       7.5,
+                       9.5,
+                       11.5,
+                       13.5,
+                       15.5,
+                       18
+                       ])
+        ax.set_xticklabels(["Pelvis (ante/pos)", 
+                            "Hip (flexion/ext)",
+                            "Knee (flexion/ext)",
+                            "Ankle (flexion/ext)",
+                            "Pelvis (obli)",
+                            "Hip (abd/Add)",
+                            "Pelvis (int/ext)",
+                            "Hip (int/ext)",
+                            "Foot Progress (int/ext)"],rotation=30,size = 6)        
+        
+        red_patch = mpatches.Patch(color='red', label='Left')
+        blue_patch = mpatches.Patch(color='blue', label='Right')
+        green_patch = mpatches.Patch(color='green', label='Overall')
+
+        ax.legend(handles=[red_patch, blue_patch, green_patch], bbox_to_anchor=(0., 1.2, 1., .102), loc=3,
+           ncol=3, mode="expand", borderaxespad=0.,fontsize = 8)        
+        
+        
+        
+        ax.set_title("Static Angle Profile" ,size=12)  
+        
+        ax.tick_params(axis='y', which='major', labelsize=6)
+
+        pp = PdfPages(str(path+ "staticAngleProfiles"+pdfNamePlus+".pdf"))
+        pp.savefig(fig)    
+        pp.close()  
+
+
+
 class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
     def __init__(self,iObj,kineticFlag=True,pointLabelSuffix=""):
         super(GaitAnalysisPlotBuilder, self).__init__(iObj=iObj)
@@ -816,7 +918,10 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
             logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
             
         self.m_pointLabelSuffix = pointLabelSuffix
-        self.m_kineticFlag = kineticFlag             
+        self.m_kineticFlag = kineticFlag
+
+        self.m_nd_procedure = None        
+        self.m_flagConsistencyOnly = False
         
         self.__translators=dict()
         self.__translators["Left.PelvisProgress.Angles"] = "LPelvisAngles"
@@ -941,15 +1046,27 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
         else:    
             raise Exception( "[pyCGM2] input value must be either a integer or a float ")
            
+    def setNormativeDataProcedure(self,ndp):
+        self.m_nd_procedure = ndp    
+        self.m_nd_procedure.constructNormativeData()
+
+    def setConsistencyOnly(self,iBool):
+        self.m_flagConsistencyOnly = iBool
 
    
-    def plotPanel(self,path,pdfSuffix, consistencyOnly=False,normativeData=None):
+    def plotPanel(self,path,pdfName):
         
-        pdfSuffixPlus = "_" + pdfSuffix if pdfSuffix != None else ""
+        pdfNamePlus = "_" + pdfName if pdfName != None else ""
         
         path = path if  path != None else ""
 
-        if not consistencyOnly:
+
+        if self.m_nd_procedure is not None:
+            normativeData = self.m_nd_procedure.data
+        else:
+            normativeData = None
+
+        if not self.m_flagConsistencyOnly:
             # ---- descriptive Kinematics (mean + std)        
             figDescritiveKinematics = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
             title=u""" Descriptive Kinematics \n """ 
@@ -1038,7 +1155,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
                 ax12.fill_between(np.linspace(0,100,51), normativeData["Ankle.Angles"]["mean"][:,2]-normativeData["Ankle.Angles"]["sd"][:,2], normativeData["Ankle.Angles"]["mean"][:,2]+normativeData["Ankle.Angles"]["sd"][:,2], facecolor="green", alpha=0.5,linewidth=0)
 
     
-            pp = PdfPages(str(path+ "descriptiveKinematics"+pdfSuffixPlus+".pdf"))
+            pp = PdfPages(str(path+ "descriptiveKinematics"+pdfNamePlus+".pdf"))
             pp.savefig(figDescritiveKinematics)    
             pp.close() 
         
@@ -1129,12 +1246,12 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
             ax12.fill_between(np.linspace(0,100,51), normativeData["Ankle.Angles"]["mean"][:,2]-normativeData["Ankle.Angles"]["sd"][:,2], normativeData["Ankle.Angles"]["mean"][:,2]+normativeData["Ankle.Angles"]["sd"][:,2], facecolor="green", alpha=0.5,linewidth=0)
 
 
-        pp = PdfPages(str(path+ "consistencyKinematics"+pdfSuffixPlus+".pdf"))
+        pp = PdfPages(str(path+ "consistencyKinematics"+pdfNamePlus+".pdf"))
         pp.savefig(figConsistencyKinematics)    
         pp.close() 
         
         if self.m_kineticFlag:
-            if not consistencyOnly:
+            if not self.m_flagConsistencyOnly:
                 # ---- descriptive Kinetics (mean + std)        
                 figDescriptiveKinetics = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
                 title=u""" Descriptive Kinetics \n """ 
@@ -1177,7 +1294,8 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
                 gaitDescriptivePlot(ax11,self.m_input.kineticStats, self.__translators["Left.Ankle.Moment"]+suffixPlus,"Left", self.__translators["Right.Ankle.Moment"]+suffixPlus,"Right",2,"Ankle everter Moment",ylabel = " moment (N.mm.kg-1)", xlabel ="Gait cycle %")
                 gaitDescriptivePlot(ax12,self.m_input.kineticStats, self.__translators["Left.Ankle.Power"]+suffixPlus,"Left", self.__translators["Right.Ankle.Power"]+suffixPlus,"Right",2,"Ankle power",ylabel = " power (W.kg-1)", xlabel ="Gait cycle %")
         
-                if normativeData is not None:
+                if self.m_nd_procedure is not None:
+                    
                     ax1.fill_between(np.linspace(0,100,51), normativeData["Hip.Moment"]["mean"][:,0]-normativeData["Hip.Moment"]["sd"][:,0], normativeData["Hip.Moment"]["mean"][:,0]+normativeData["Hip.Moment"]["sd"][:,0], facecolor="green", alpha=0.5,linewidth=0)
                     ax2.fill_between(np.linspace(0,100,51), normativeData["Hip.Moment"]["mean"][:,1]-normativeData["Hip.Moment"]["sd"][:,1], normativeData["Hip.Moment"]["mean"][:,1]+normativeData["Hip.Moment"]["sd"][:,1], facecolor="green", alpha=0.5,linewidth=0)
                     
@@ -1194,7 +1312,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
                     ax12.fill_between(np.linspace(0,100,51), normativeData["Ankle.Power"]["mean"][:,2]-normativeData["Ankle.Power"]["sd"][:,2], normativeData["Ankle.Power"]["mean"][:,2]+normativeData["Ankle.Power"]["sd"][:,2], facecolor="green", alpha=0.5,linewidth=0)
 
         
-                pp = PdfPages(str(path+ "descriptiveKinetics"+pdfSuffixPlus+".pdf"))
+                pp = PdfPages(str(path+ "descriptiveKinetics"+pdfNamePlus+".pdf"))
                 pp.savefig(figDescriptiveKinetics)    
                 pp.close() 
             
@@ -1257,7 +1375,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
 
                 ax12.fill_between(np.linspace(0,100,51), normativeData["Ankle.Power"]["mean"][:,2]-normativeData["Ankle.Power"]["sd"][:,2], normativeData["Ankle.Power"]["mean"][:,2]+normativeData["Ankle.Power"]["sd"][:,2], facecolor="green", alpha=0.5,linewidth=0)    
     
-            pp = PdfPages(str(path+ "consistencyKinetics"+pdfSuffixPlus+".pdf"))
+            pp = PdfPages(str(path+ "consistencyKinetics"+pdfNamePlus+".pdf"))
     
             pp.savefig(figConsistencyKinetics)    
             pp.close() 
