@@ -8,29 +8,40 @@ import logging
 
 import sys
 
-PYTHON_PACKAGES =  'C:\\Anaconda32\\Lib\\site-packages'
+# ------------------- CONSTANT ------------------------------------------------
 
+# [REQUIRED] ----------------------------------
+MAIN_PYCGM2_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)  
+PYTHON_PACKAGES =  'C:\\Anaconda32\\Lib\\site-packages' # site-package in your python environnement
+
+
+# configure if you want to run processes from Nexus   
 NEXUS_SDK_WIN32 = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Win32'
 NEXUS_SDK_PYTHON = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Python'
-
 PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.5\\Python'
 
-NORMATIVE_DATABASE_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\Data\\normativeData\\"
 
+# [OPTIONAL] ----------------------------------
+ 
+# [Optional]: openMA binding
+OPENMA_BINDING_PATH = MAIN_PYCGM2_PATH + "third party\\" # By default, use openMA distribution included in third party folder  
+
+# [Optional] Normative data base. 
+NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"Data\\normativeData\\"  # By default, use pyCGM2-embedded normative data ( Schartz - Pinzone )  
+
+# [Optional] main folder containing osim model 
+OPENSIM_PREBUILD_MODEL_PATH = MAIN_PYCGM2_PATH + "Extern\\opensim\\" 
+
+# [Optional] path pointing at Data Folders used for Tests
 TEST_DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\"
-
 MAIN_BENCHMARK_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\"
 
-OPENSIM_PREBUILD_MODEL_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\Extern\\opensim\\"
-
-OPENMA_BINDING_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\third party\\"
+# ------------------- METHODS ------------------------------------------------
 
 def setLoggingLevel(level):
     logging.basicConfig(format = "[pyCGM2-%(levelname)s]-%(module)s-%(funcName)s : %(message)s",level = level) 
-    
-    
-    
 
+    
 def addNexusPythonSdk():
     
     if NEXUS_SDK_WIN32  not in sys.path:
@@ -71,3 +82,36 @@ def addOpenma(branch=None):
             # method 2 : with openMA distribution made manually 
             sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma")
             sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma\\ma")
+            
+            
+def checkConfig():
+
+    for it in sys.path: 
+        if "pyCGM2" in it: 
+            print "OK"    
+    try:
+        import pyCGM2
+        import pyCGM2.pyCGM2_CONFIG
+        pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.DEBUG)
+        logging.info("pyCGM2 ---> OK")
+    except ImportError:
+        raise Exception ("[pyCGM2] : pyCGM2 module not in your python path")
+    
+    
+    # vicon nexus
+    pyCGM2.pyCGM2_CONFIG.addNexusPythonSdk()
+    try:
+        import ViconNexus
+        logging.info("vicon API ---> OK" )
+    except ImportError:
+        raise Exception ("[pyCGM2] : viconNexus is not in your python path. Check pyCGM2_CONFIG")
+    
+    
+    # openMA
+    pyCGM2.pyCGM2_CONFIG.addOpenma()
+    try:
+        import ma.io
+        import ma.body
+        logging.info("openMA API ---> OK" )        
+    except ImportError:
+        raise Exception ("[pyCGM2] : openma is not in your python path. Check pyCGM2_CONFIG")

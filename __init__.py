@@ -1,0 +1,1 @@
+import pyCGM2.pyCGM2_CONFIG
