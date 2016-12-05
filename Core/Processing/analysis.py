@@ -9,17 +9,20 @@ import numpy as np
 import pandas as pd
 import logging
 
+# pyCGM2
+
+import pyCGM2.Core.Processing.cycle as CGM2cycle
+import pyCGM2.Core.Tools.exportTools as CGM2exportTools
+
 # openMA
+
 import ma.io
 import ma.body
 
-# pyCGM2
-import cycle as CGM2cycle
-import pyCGM2.Core.Tools.exportTools as CGM2exportTools
 
 #---- MODULE METHODS ------
 
-class staticAnalysis(object):
+class staticAnalysisFilter(object):
     def __init__(self,trial,
                  angleList,
                  subjectInfos=None,
@@ -39,7 +42,15 @@ class staticAnalysis(object):
             df=pd.DataFrame({"Mean" :self.m_trial.findChild(ma.T_TimeSequence, angle).data().mean(axis=0)[0:3].T})
             df['Axe']=['X','Y','Z']
             df['Label']=angle
-       
+            
+            if angle[0] == "L":
+                df['Side'] = "Left" 
+            elif angle[0] == "R":
+                df['Side'] = "Right"
+            else:
+                df['Side'] = "NA"
+
+                
             if self.m_subjectInfos !=None:         
                 for key,value in self.m_subjectInfos.items():
                     df[key] = value
