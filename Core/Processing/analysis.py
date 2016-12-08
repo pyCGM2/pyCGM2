@@ -147,6 +147,8 @@ class AnalysisFilter(object): # CONTROLER
             for key in subjInfo:
                 list_index.append(key)
             serie_subject = pd.Series(subjInfo)
+        else:
+            serie_subject = pd.Series()
         
         if modelInfo !=None:
             for key in modelInfo:
