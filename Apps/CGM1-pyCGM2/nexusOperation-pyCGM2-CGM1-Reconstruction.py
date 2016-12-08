@@ -43,6 +43,9 @@ if __name__ == "__main__":
 
         #---- INPUTS------       
         calibrateFilenameLabelled = sys.argv[1] 
+        
+        logging.info(bool(int(sys.argv[2])))         
+        
         flag_leftFlatFoot =  bool(int(sys.argv[2]))
         flag_rightFlatFoot =  bool(int(sys.argv[3]))
         markerDiameter =  float(sys.argv[4])        

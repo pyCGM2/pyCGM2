@@ -44,7 +44,7 @@ if __name__ == "__main__":
         
         #---- INPUTS ----- 
         plotFlag = True #bool(int(sys.argv[1]))
-        exportSpreadSheetFlag = False  #bool(int(sys.argv[2]))
+        exportSpreadSheetFlag = True  #bool(int(sys.argv[2]))
         exportAnalysisC3dFlag = False
         normativeDataInput = "Schwartz2008_VeryFast"
         normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
