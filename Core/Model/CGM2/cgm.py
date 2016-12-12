@@ -1983,7 +1983,7 @@ class CGM1ModelInf(CGM):
             logging.info(" rightStaticPlantarFlexion => %s " % str(self.mp_computed["rightStaticPlantarFlexion"])) 
             
             self.mp_computed["rightStaticRotOff"] = np.rad2deg(x)
-            logging.info(" rightStaticPlantarFlexion => %s " % str(self.mp_computed["rightStaticPlantarFlexion"])) 
+            logging.info(" rightStaticRotOff => %s " % str(self.mp_computed["rightStaticRotOff"])) 
 
 
     def getViconFootOffset(self):

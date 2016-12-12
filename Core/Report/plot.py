@@ -803,40 +803,48 @@ class AbstractPlotBuilder(object):
 
 
 class StaticAnalysisPlotBuilder(AbstractPlotBuilder):
-    def __init__(self,iObj):
+    def __init__(self,iObj,pointLabelSuffix=""):
+        """
+        TODO : use a dictionaray for handling point label.( as i did for GaitAnalysisPlotBuilder) 
+        
+        """        
+        
         super(StaticAnalysisPlotBuilder, self).__init__(iObj=iObj)
+        self.m_pointLabelSuffix = pointLabelSuffix
     
     def plotPanel(self,path,pdfName):
+        
+        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""        
         
         pdfNamePlus = "_" + pdfName if pdfName != None else ""
         
         path = path if  path != None else ""
         
-        pelvis_ante =  self.m_input[( self.m_input.Label=="LPelvisAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()         
+        pelvis_ante =  self.m_input[( self.m_input.Label=="LPelvisAngles"+suffixPlus) &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()         
 
-        leftHip_x =  self.m_input[( self.m_input.Label=="LHipAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()
-        rightHip_x =  self.m_input[( self.m_input.Label=="RHipAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()
+        leftHip_x =  self.m_input[( self.m_input.Label=="LHipAngles"+suffixPlus) &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()
+        rightHip_x =  self.m_input[( self.m_input.Label=="RHipAngles"+suffixPlus) &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()
         
-        leftknee_x =  self.m_input[( self.m_input.Label=="LKneeAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix() 
-        rightknee_x =  self.m_input[( self.m_input.Label=="RKneeAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix() 
+        leftknee_x =  self.m_input[( self.m_input.Label=="LKneeAngles"+suffixPlus) &  ( self.m_input.Axe=="X")  ].Mean.as_matrix() 
+        rightknee_x =  self.m_input[( self.m_input.Label=="RKneeAngles"+suffixPlus) &  ( self.m_input.Axe=="X")  ].Mean.as_matrix() 
 
-        leftAnkle_x =  self.m_input[( self.m_input.Label=="LAnkleAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()          
-        rightAnkle_x =  self.m_input[( self.m_input.Label=="RAnkleAngles") &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()          
+        leftAnkle_x =  self.m_input[( self.m_input.Label=="LAnkleAngles"+suffixPlus) &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()          
+        rightAnkle_x =  self.m_input[( self.m_input.Label=="RAnkleAngles"+suffixPlus) &  ( self.m_input.Axe=="X")  ].Mean.as_matrix()          
 
 
-        pelvis_up =  self.m_input[( self.m_input.Label=="LPelvisAngles") &  ( self.m_input.Axe=="Y")  ].Mean.as_matrix()
+        pelvis_up =  self.m_input[( self.m_input.Label=="LPelvisAngles"+suffixPlus) &  ( self.m_input.Axe=="Y")  ].Mean.as_matrix()
 
-        leftHip_y =  self.m_input[( self.m_input.Label=="LHipAngles") &  ( self.m_input.Axe=="Y")  ].Mean.as_matrix()
-        rightHip_y =  self.m_input[( self.m_input.Label=="RHipAngles") &  ( self.m_input.Axe=="Y")  ].Mean.as_matrix()
+        leftHip_y =  self.m_input[( self.m_input.Label=="LHipAngles"+suffixPlus) &  ( self.m_input.Axe=="Y")  ].Mean.as_matrix()
+        rightHip_y =  self.m_input[( self.m_input.Label=="RHipAngles"+suffixPlus) &  ( self.m_input.Axe=="Y")  ].Mean.as_matrix()
         
-        pelvis_int =  self.m_input[( self.m_input.Label=="LPelvisAngles") &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
+        pelvis_int =  self.m_input[( self.m_input.Label=="LPelvisAngles"+suffixPlus) &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
 
-        leftHip_z =  self.m_input[( self.m_input.Label=="LHipAngles") &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
-        rightHip_z =  self.m_input[( self.m_input.Label=="RHipAngles") &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
+        leftHip_z =  self.m_input[( self.m_input.Label=="LHipAngles"+suffixPlus) &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
+        rightHip_z =  self.m_input[( self.m_input.Label=="RHipAngles"+suffixPlus) &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
 
 
-        leftFootProgress_z =  self.m_input[( self.m_input.Label=="LFootProgressAngles") &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
-        rightFootProgress_z =  self.m_input[( self.m_input.Label=="RFootProgressAngles") &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
+        leftFootProgress_z =  self.m_input[( self.m_input.Label=="LFootProgressAngles"+suffixPlus) &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
+        rightFootProgress_z =  self.m_input[( self.m_input.Label=="RFootProgressAngles"+suffixPlus) &  ( self.m_input.Axe=="Z")  ].Mean.as_matrix()
         
 #        fig, ax = plt.subplots(figsize=(8.27,3.93), dpi=100,facecolor="white")
 

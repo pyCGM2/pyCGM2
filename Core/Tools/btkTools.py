@@ -46,8 +46,9 @@ def isPointExist(acq,label):
 def isPointsExist(acq,labels):
     for label in labels:
         if not isPointExist(acq,label):
-            raise Exception("[pyCGM2] markers (%s) doesn't exist"% label )
-
+            logging.error("[pyCGM2] markers (%s) doesn't exist"% label )
+            return False
+    return True
 
 def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
     logging.debug("new point (%s) added to the c3d" % label)

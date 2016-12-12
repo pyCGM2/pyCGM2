@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-
 """
- 
 Usage:
     file.py
     file.py -h | --help
@@ -29,14 +27,13 @@ Options:
     --modality=<modalitfy>  Modality of the Normative Database used  [default: Free]
 
 """
-
 import os
 import logging
 import matplotlib.pyplot as plt 
 import json
 import sys
-from docopt import docopt
 import pdb
+from docopt import docopt
 
 # pyCGM2 settings
 import pyCGM2
@@ -52,16 +49,17 @@ import ma.io
 import ma.body
 
 # pyCGM2 libraries
-from pyCGM2.Core.Model.CGM2 import cgm, modelFilters,forceplates,bodySegmentParameters
+from pyCGM2.Core.Model.CGM2 import cgm, modelFilters, modelDecorator,forceplates,bodySegmentParameters
 from pyCGM2.Core.Tools import btkTools
 import pyCGM2.Core.enums as pyCGM2Enums
 from pyCGM2 import  smartFunctions 
 
+        
+    
 
     
 if __name__ == "__main__":
     args = docopt(__doc__, version='0.1')
-        
     plt.close("all")
     pyNEXUS = ViconNexus.ViconNexus()    
     NEXUS_PYTHON_CONNECTED = pyNEXUS.Client.IsConnected()
@@ -69,7 +67,6 @@ if __name__ == "__main__":
     #NEXUS_PYTHON_CONNECTED = True   
      
     if NEXUS_PYTHON_CONNECTED: # run Operation
-
 
         #---- INPUTS------
         if args['Calibration']:
@@ -85,8 +82,8 @@ if __name__ == "__main__":
         normativeDataInput = str(args['--author']+"_"+ args['--modality'])#"Schwartz2008_VeryFast"
 
 
-        
-        #---- DATA ----
+    
+        #---- DATA ------ 
         DATA_PATH, reconstructFilenameLabelledNoExt = pyNEXUS.GetTrialName()
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
 
@@ -120,6 +117,7 @@ if __name__ == "__main__":
         'leftAnkleWidth' : pyNEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0],
         'rightAnkleWidth' : pyNEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],       
         }
+        
  
         # -----------CGM STATIC CALIBRATION--------------------
         model=cgm.CGM1ModelInf()
@@ -130,15 +128,87 @@ if __name__ == "__main__":
         # reader
         acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
 
+        # check KAD presence
+        if (btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) and btkTools.isPointsExist(acqStatic,["RKAX","RKD1","RKD2"])):
+            logging.info("Both KAD found")
+            side = "both"
+        elif (btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) and not btkTools.isPointsExist(acqStatic,["RKAX","RKD1","RKD2"])):
+            side = "left"
+            logging.info("left KAD found")
+        elif (not btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) and btkTools.isPointsExist(acqStatic,["RKAX","RKD1","RKD2"])):
+            side = "right"
+            logging.info("right KAD found")
+        else:
+            raise Exception("no KAD markers found. check you acquisition")
+
+
         # initial static filter
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                             leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                             markerDiameter=markerDiameter).compute() 
 
+        
+         # decorator
+        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side=side , displayMarkers = True)
+
+        # check medial ankle
+        if side == "both":
+            if btkTools.isPointExist(acqStatic,"LMED") and btkTools.isPointExist(acqStatic,"RMED"):  
+                logging.info("Both medial ankle marker found. Both Tibial Torsions applied")
+                modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side=side)
+
+                modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid",
+                                   useLeftTibialTorsion = True,useRightTibialTorsion = True,
+                                   markerDiameter=markerDiameter).compute()
+            else:
+                 modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad", 
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad",
+                                   useLeftTibialTorsion = False,useRightTibialTorsion = False,
+                                   markerDiameter=markerDiameter).compute()
+
+        elif side == "left":
+            if btkTools.isPointExist(acqStatic,"LMED"):  
+                modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side=side)
+                logging.info("Left medial ankle marker found. Left Tibial Torsion applied only")
+                
+                modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+                                                    useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
+                                                    useLeftTibialTorsion = True,
+                                                    markerDiameter=markerDiameter).compute()
+            else:
+                modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+                                                    useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad", 
+                                                    useLeftTibialTorsion = True,
+                                                    markerDiameter=markerDiameter).compute()
+
+
+        elif side == "right":
+            if btkTools.isPointExist(acqStatic,"RMED"):  
+                modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side=side)
+                logging.info("Right medial ankle marker found. Right Tibial Torsion applied only")
+                
+                modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+                                                    useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid", 
+                                                    useRightTibialTorsion = True,
+                                                    markerDiameter=markerDiameter).compute()
+            else:
+                modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+                                                    useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad", 
+                                                    useRightTibialTorsion = True,
+                                                    markerDiameter=markerDiameter).compute()
+
+
+       
 
         # -----------CGM RECONSTRUCTION--------------------
-        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+        if staticProcessing:
+            acqGait = acqStatic 
+        else:
+            acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
                                                   markerDiameter=markerDiameter)
@@ -186,31 +256,36 @@ if __name__ == "__main__":
 
 
         # -----------CGM PROCESSING--------------------
-        # infos        
-        model= None 
-        subject=None       
-        experimental=None
 
         if staticProcessing:
             # static angle profile
+            model= None 
+            subject=None       
+            experimental=None
             smartFunctions.staticProcessing_cgm1(str(reconstructFilenameLabelled[:-4] + "_cgm1.c3d"), DATA_PATH,
                                                  model,  subject, experimental,
                                                  pointLabelSuffix = pointSuffix)            
         else:
- 
-            if gaitProcessingEnable:
-                normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
-                             
-                # ----PROCESSING-----
-                smartFunctions.gaitProcessing_cgm1 (str(reconstructFilenameLabelled[:-4] + "_cgm1.c3d"), DATA_PATH,
-                                       model,  subject, experimental,
-                                       pointLabelSuffix = pointSuffix,
-                                       plotFlag= True, 
-                                       exportBasicSpreadSheetFlag = False,
-                                       exportAdvancedSpreadSheetFlag = False,
-                                       exportAnalysisC3dFlag = False,
-                                       consistencyOnly = True,
-                                       normativeDataDict = normativeData)
+                
+            # inputs
+            normativeDataInput = "Schwartz2008_VeryFast"
+            normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
+        
+            # infos        
+            model= None 
+            subject=None       
+            experimental=None
+                         
+            # ----PROCESSING-----
+            smartFunctions.gaitProcessing_cgm1 (str(reconstructFilenameLabelled[:-4] + "_cgm1.c3d"), DATA_PATH,
+                                   model,  subject, experimental, 
+                                   pointLabelSuffix = pointSuffix,
+                                   plotFlag= True, 
+                                   exportBasicSpreadSheetFlag = False,
+                                   exportAdvancedSpreadSheetFlag = False,
+                                   exportAnalysisC3dFlag = False,
+                                   consistencyOnly = True,
+                                   normativeDataDict = normativeData)
    
     else: 
         logging.error("Nexus Not Connected")     

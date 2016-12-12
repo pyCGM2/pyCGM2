@@ -47,6 +47,8 @@ if __name__ == "__main__":
         exportSpreadSheetFlag = True  #bool(int(sys.argv[2]))
         exportAnalysisC3dFlag = False
         normativeDataInput = "Schwartz2008_VeryFast"
+        pointSuffix=""        
+        
         normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
         
         # ----DATA-----        
@@ -66,7 +68,8 @@ if __name__ == "__main__":
                      
         # ----PROCESSING-----
         CGM2smart.gaitProcessing_cgm1 (reconstructedFilenameLabelled, DATA_PATH,
-                               model,  subject, experimental, 
+                               model,  subject, experimental,
+                               pointLabelSuffix = pointSuffix,
                                plotFlag= plotFlag, 
                                exportBasicSpreadSheetFlag = exportSpreadSheetFlag,
                                exportAdvancedSpreadSheetFlag = exportSpreadSheetFlag,

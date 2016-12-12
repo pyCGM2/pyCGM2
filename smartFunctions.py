@@ -31,15 +31,18 @@ import ma.io
 
 def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH, 
                          modelInfo, subjectInfo, experimentalInfo,
+                         pointLabelSuffix = "",
                          name_out=None,  DATA_PATH_OUT= None ):
 
-    # reader    
+    pointLabelSuffixPlus  = pointLabelSuffix   if pointLabelSuffix =="" else "_"+pointLabelSuffix   
+    # reader
+    
     kinematicFileNode = ma.io.read(str(DATA_PATH + modelledStaticFilename))
     kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
     
     # prameters
-    angles =["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles",
-                          "RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles"]
+    angles =["LHipAngles"+pointLabelSuffixPlus,"LKneeAngles"+pointLabelSuffixPlus,"LAnkleAngles"+pointLabelSuffixPlus,"LFootProgressAngles"+pointLabelSuffixPlus,"LPelvisAngles"+pointLabelSuffixPlus,
+                          "RHipAngles"+pointLabelSuffixPlus,"RKneeAngles"+pointLabelSuffixPlus,"RAnkleAngles"+pointLabelSuffixPlus,"RFootProgressAngles"+pointLabelSuffixPlus,"RPelvisAngles"+pointLabelSuffixPlus]
 
     # analysis
     staticAnalysis = analysis.staticAnalysisFilter(kinematicTrial,angles,
@@ -52,7 +55,7 @@ def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH,
     if DATA_PATH_OUT is None:
         DATA_PATH_OUT = DATA_PATH
 
-    plotBuilder = CGM2plot.StaticAnalysisPlotBuilder(staticAnalysis.m_dataframe)
+    plotBuilder = CGM2plot.StaticAnalysisPlotBuilder(staticAnalysis.m_dataframe,pointLabelSuffix=pointLabelSuffix)
     # Filter
     pf = CGM2plot.PlottingFilter()
     pf.setBuilder(plotBuilder)
@@ -68,7 +71,8 @@ def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH,
     os.startfile(DATA_PATH+"staticAngleProfiles_"+ pdfname +".pdf")
 
 def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH, 
-                         modelInfo, subjectInfo, experimentalInfo, 
+                         modelInfo, subjectInfo, experimentalInfo,
+                         pointLabelSuffix = "",
                          plotFlag= True, 
                          exportBasicSpreadSheetFlag = True,
                          exportAdvancedSpreadSheetFlag = True,
@@ -132,11 +136,14 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
 
     #---- GAIT ANALYSIS FILTER
     #--------------------------------------------------------------------------
-    kinematicLabelsDict ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles"],
-                    'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles"] }
 
-    kineticLabelsDict ={ 'Left': ["LHipMoment","LKneeMoment","LAnkleMoment", "LHipPower","LKneePower","LAnklePower"],
-                    'Right': ["RHipMoment","RKneeMoment","RAnkleMoment", "RHipPower","RKneePower","RAnklePower"]}
+    pointLabelSuffixPlus  = pointLabelSuffix   if pointLabelSuffix =="" else "_"+pointLabelSuffix
+
+    kinematicLabelsDict ={ 'Left': ["LHipAngles"+pointLabelSuffixPlus,"LKneeAngles"+pointLabelSuffixPlus,"LAnkleAngles"+pointLabelSuffixPlus,"LFootProgressAngles"+pointLabelSuffixPlus,"LPelvisAngles"+pointLabelSuffixPlus],
+                    'Right': ["RHipAngles"+pointLabelSuffixPlus,"RKneeAngles"+pointLabelSuffixPlus,"RAnkleAngles"+pointLabelSuffixPlus,"RFootProgressAngles"+pointLabelSuffixPlus,"RPelvisAngles"+pointLabelSuffixPlus] }
+
+    kineticLabelsDict ={ 'Left': ["LHipMoment"+pointLabelSuffixPlus,"LKneeMoment"+pointLabelSuffixPlus,"LAnkleMoment"+pointLabelSuffixPlus, "LHipPower"+pointLabelSuffixPlus,"LKneePower"+pointLabelSuffixPlus,"LAnklePower"+pointLabelSuffixPlus],
+                    'Right': ["RHipMoment"+pointLabelSuffixPlus,"RKneeMoment"+pointLabelSuffixPlus,"RAnkleMoment"+pointLabelSuffixPlus, "RHipPower"+pointLabelSuffixPlus,"RKneePower"+pointLabelSuffixPlus,"RAnklePower"+pointLabelSuffixPlus]}
 
 
     analysisBuilder = CGM2analysis.GaitAnalysisBuilder(cycles,
@@ -174,7 +181,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     #---- GAIT PLOTTING FILTER
     #--------------------------------------------------------------------------
     if plotFlag:    
-        plotBuilder = CGM2plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=True)
+        plotBuilder = CGM2plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=flag_kinetics, pointLabelSuffix= pointLabelSuffix)
         if normativeDataDict["Author"] == "Schwartz2008":
             chosenModality = normativeDataDict["Modality"]
             plotBuilder.setNormativeDataProcedure(CGM2normdata.Schwartz2008_normativeDataBases(chosenModality)) # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
