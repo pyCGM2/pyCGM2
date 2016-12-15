@@ -1,13 +1,27 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Oct 03 10:40:17 2016
+Usage:
+    file.py
+    file.py -h | --help
+    file.py --version
+    file.py  <vertical_global_axis> [ --left_medial_knee_marker=<lmm> --right_medial_knee_marker=<rmm> -u ]  
 
-@author: fabien Leboeuf ( Salford Univ)
+Arguments:
+
+ 
+Options:
+    -h --help   Show help message
+    -u          update c3d
+    --left_medial_knee_marker=<lmm>  suffix associated with classic vicon output label  [default: LMEPI].
+    --right_medial_knee_marker=<rmm>  suffix associated with classic vicon output label  [default: RMEPI].
+
+
 """
 
 import sys
 import pdb
 import logging
+from docopt import docopt
 
 # pyCGM2 settings
 import pyCGM2 
@@ -32,6 +46,9 @@ import lib.functions  as libf
     
 if __name__ == "__main__":
     
+    args = docopt(__doc__, version='0.1')
+    
+    print args
     print "======== [pyCGM2-Virtual KAD] ========="    
     
     pyNEXUS = ViconNexus.ViconNexus()    
@@ -41,11 +58,13 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED: 
 
         # ---- INPUTS ----
-        vertical_global_axis = sys.argv[1] #"Z" 
-        left_medial_knee_marker =  sys.argv[2] #"LMEPI"
-        right_medial_knee_marker =  sys.argv[3]# "RMEPI"            
-        updateC3d = bool(int(sys.argv[4])) #False
+        vertical_global_axis = args["<vertical_global_axis>"] #sys.argv[1] #"Z" 
+        left_medial_knee_marker = args["--left_medial_knee_marker"]# sys.argv[2] #"LMEPI"
+        
+        right_medial_knee_marker = args["--right_medial_knee_marker"]# sys.argv[3]# "RMEPI"            
+        updateC3d = args["-u"]
 
+        print left_medial_knee_marker
         # ---- DATA ----
         DATA_PATH, filenameNoExt = pyNEXUS.GetTrialName()
         filename = filenameNoExt+".c3d"

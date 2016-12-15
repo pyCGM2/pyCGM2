@@ -37,15 +37,28 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED:       
     
+        Calibration = False
+        if Calibration:
+            calibrateFilenameLabelledNoExt = None   
+        else:
+            calibrateFilenameLabelledNoExt = "static Cal 01"
+            
         flag_leftFlatFoot =  True
         flag_rightFlatFoot =  True
-        calibrateFilenameLabelled = "static Cal 01.c3d"
-        markerDiameter = 14 #float(sys.argv[3])
+        markerDiameter = 14 
     
         #---- DATA ------ 
         DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\openMA-CGM1-basic\\"
         reconstructFilenameLabelledNoExt ="gait Trial 01"  
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
+        
+        if calibrateFilenameLabelledNoExt is None:
+            logging.warning("Static Processing")
+            staticProcessing = True
+            calibrateFilenameLabelled = reconstructFilenameLabelled
+        else:
+            staticProcessing = False
+            calibrateFilenameLabelled = calibrateFilenameLabelledNoExt + ".c3d"        
         
         logging.info( "data Path: "+ DATA_PATH )   
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
@@ -85,17 +98,18 @@ if __name__ == "__main__":
         #---- EXTRACT KINEMATICS AND KINETICS -----
         kinematics  = ma.body.extract_joint_kinematics(cgm1_gait)
         openmaLib.renameOpenMAtoVicon(kinematics)
-        kinetics = ma.body.extract_joint_kinetics(cgm1_gait)
-        openmaLib.renameOpenMAtoVicon(kinetics)
         
-    
         # append new parameters to the gait trial    
         trialTools.addTimeSequencesToTrial(dynamicTrial,kinematics)
-        trialTools.addTimeSequencesToTrial(dynamicTrial,kinetics)
+        
+        if not staticProcessing:
+            kinetics = ma.body.extract_joint_kinetics(cgm1_gait)
+            openmaLib.renameOpenMAtoVicon(kinetics)
+            trialTools.addTimeSequencesToTrial(dynamicTrial,kinetics)
     
         # add property
-        dynamicTrial.setProperty('MODELLING:NAME',"CGM1")
-        dynamicTrial.setProperty('MODELLING:PROCESSING',"openMA")
+        dynamicTrial.setProperty('MODEL:NAME',"CGM1")
+        dynamicTrial.setProperty('MODEL:PROCESSOR',"openMA")
         
         # ----- WRITER --------
         if ma.io.write(dynamicNode,str(DATA_PATH + reconstructFilenameLabelled[:-4] + "_openmaCGM1.c3d")):

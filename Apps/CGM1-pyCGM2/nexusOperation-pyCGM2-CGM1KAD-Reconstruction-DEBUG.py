@@ -9,6 +9,7 @@ import logging
 import matplotlib.pyplot as plt 
 import json
 import pdb
+import btk
 
 # pyCGM2 settings
 import pyCGM2
@@ -43,11 +44,16 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
         #---- INPUTS------     
-        calibrateFilenameLabelledNoExt = "Static Cal 01-both"   #static Cal 01-onlyLeft
+        Calibration = False
+        if Calibration:
+            calibrateFilenameLabelledNoExt = None   
+        else:
+            calibrateFilenameLabelledNoExt = "static Cal 01-onlyLeft"      
+        
         flag_leftFlatFoot =  True
         flag_rightFlatFoot =  True
         markerDiameter = 14
-        normativeDataInput = "Schwartz2008_VeryFast"
+        normativeDataInput = "Schwartz2008_Free"
         pointSuffix = "tr"
     
         #---- DATA ------ 
@@ -56,7 +62,7 @@ if __name__ == "__main__":
         reconstructFilenameLabelledNoExt = "Gait Trial 01"  
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
 
-        if calibrateFilenameLabelledNoExt == "":
+        if calibrateFilenameLabelledNoExt is None:
             logging.warning("Static Processing")
             staticProcessing = True
             calibrateFilenameLabelled = reconstructFilenameLabelled
@@ -164,7 +170,6 @@ if __name__ == "__main__":
 
 
        
-
         # -----------CGM RECONSTRUCTION--------------------
         if staticProcessing:
             acqGait = acqStatic 
@@ -210,6 +215,12 @@ if __name__ == "__main__":
     
             modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
        
+        # add metadata   
+        md_Model = btk.btkMetaData('MODEL') # create main metadata
+        btk.btkMetaDataCreateChild(md_Model, "NAME", "CGM1")
+        btk.btkMetaDataCreateChild(md_Model, "PROCESSOR", "pyCGM2")
+        acqGait.GetMetaData().AppendChild(md_Model)
+        
         # writer
         btkTools.smartWriter(acqGait,str(DATA_PATH + reconstructFilenameLabelled[:-4] + "_cgm1.c3d"))
         logging.info( "[pyCGM2] : file ( %s) reconstructed in pyCGM2-model path " % (reconstructFilenameLabelled))

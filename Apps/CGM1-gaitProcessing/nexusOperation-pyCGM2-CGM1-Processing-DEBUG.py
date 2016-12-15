@@ -26,7 +26,7 @@ import ma.io
 import ma.body
     
 # pyCGM2 libraries    
-import pyCGM2.smartFunctions as CGM2smart
+from pyCGM2 import  smartFunctions 
 
     
 if __name__ == "__main__":
@@ -43,17 +43,18 @@ if __name__ == "__main__":
         
         
         #---- INPUTS ----- 
+        staticProcessing= False
         plotFlag = True #bool(int(sys.argv[1]))
         exportSpreadSheetFlag = True  #bool(int(sys.argv[2]))
         exportAnalysisC3dFlag = False
-        normativeDataInput = "Schwartz2008_VeryFast"
+        normativeDataInput = "Schwartz2008_Free"
         pointSuffix=""        
         
         normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
         
         # ----DATA-----        
         DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-gaitProcessing\\"
-        reconstructedFilenameLabelledNoExt ="gait Trial 01"  
+        reconstructedFilenameLabelledNoExt ="gait Trial 03"  
         reconstructedFilenameLabelled = reconstructedFilenameLabelledNoExt+".c3d"        
     
         logging.info("data Path: "+ DATA_PATH)    
@@ -67,14 +68,20 @@ if __name__ == "__main__":
         experimental=None
                      
         # ----PROCESSING-----
-        CGM2smart.gaitProcessing_cgm1 (reconstructedFilenameLabelled, DATA_PATH,
-                               model,  subject, experimental,
-                               pointLabelSuffix = pointSuffix,
-                               plotFlag= plotFlag, 
-                               exportBasicSpreadSheetFlag = exportSpreadSheetFlag,
-                               exportAdvancedSpreadSheetFlag = exportSpreadSheetFlag,
-                               exportAnalysisC3dFlag = exportAnalysisC3dFlag,
-                               consistencyOnly = True,
-                               normativeDataDict = normativeData)
+        if staticProcessing:
+            # static angle profile
+            smartFunctions.staticProcessing_cgm1(reconstructedFilenameLabelled, DATA_PATH,
+                                                 model,  subject, experimental,
+                                                 pointLabelSuffix = pointSuffix)
+        else:
+            smartFunctions.gaitProcessing_cgm1 (reconstructedFilenameLabelled, DATA_PATH,
+                                   model,  subject, experimental,
+                                   pointLabelSuffix = pointSuffix,
+                                   plotFlag= plotFlag, 
+                                   exportBasicSpreadSheetFlag = exportSpreadSheetFlag,
+                                   exportAdvancedSpreadSheetFlag = exportSpreadSheetFlag,
+                                   exportAnalysisC3dFlag = exportAnalysisC3dFlag,
+                                   consistencyOnly = True,
+                                   normativeDataDict = normativeData)
     else: 
         logging.error("Nexus Not Connected")

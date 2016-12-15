@@ -1,13 +1,38 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Sep 20 13:05:09 2016
+ 
+Usage:
+    file.py
+    file.py -h | --help
+    file.py --version
+    file.py  Calibration [-lr] [--markerDiameter=<n>]  
+    file.py  Calibration [-lr] [--markerDiameter=<n> --pointSuffix=<ps>] 
+    file.py  <staticFile> [-lr] [--markerDiameter=<n>]
+    file.py  <staticFile> [-lr] [--markerDiameter=<n>] [-p ]
+    file.py  <staticFile> [-lr] [--markerDiameter=<n>] [-p  --author=<authorYear> --modality=<modalitfy>]
+    file.py  <staticFile> [-lr] [--markerDiameter=<n> --pointSuffix=<ps>]         
+    file.py  <staticFile> [-lr] [--markerDiameter=<n> --pointSuffix=<ps>] [-p | --plot --author=<authorYear> --modality=<modalitfy>]    
+    
+ 
+Arguments:
 
-@author: aaa34169
+ 
+Options:
+    -h --help   Show help message
+    -l          Enable left flat foot option
+    -r          Enable right flat foot option
+    -p   Enable gait Plots  
+    --markerDiameter=<n>  marker diameter [default: 14].
+    --pointSuffix=<ps>  suffix associated with classic vicon output label  [default: ""].
+    --author=<authorYear>   Name and year of the Normative Data base used [default: Schwartz2008]
+    --modality=<modalitfy>  Modality of the Normative Database used  [default: Free]
+
 """
 
 import sys
 import pdb
 import logging
+from docopt import docopt
 
 
 # pyCGM2 settings
@@ -31,22 +56,40 @@ from  pyCGM2.Core.Tools  import trialTools
 
 
 if __name__ == "__main__":
-     
+    args = docopt(__doc__, version='0.1')    
+    
     pyNEXUS = ViconNexus.ViconNexus()    
     NEXUS_PYTHON_CONNECTED = pyNEXUS.Client.IsConnected() 
 
         
     if NEXUS_PYTHON_CONNECTED: # run operation
         
-        #---- INPUTS------       
-        calibrateFilenameLabelled = sys.argv[1] 
-        flag_leftFlatFoot =  bool(int(sys.argv[2]))
-        flag_rightFlatFoot =  bool(int(sys.argv[3]))
-        markerDiameter =  float(sys.argv[4])        
+        #---- INPUTS------
+        if args['Calibration']:
+            calibrateFilenameLabelledNoExt = None  #sys.argv[1] 
+        else:
+            calibrateFilenameLabelledNoExt = args['<staticFile>']  #sys.argv[1] 
+
+        flag_leftFlatFoot =  args['-l'] #bool(int(sys.argv[2]))
+        flag_rightFlatFoot = args['-r'] #bool(int(sys.argv[3]))
+        markerDiameter =  float(args['--markerDiameter']) #float(sys.argv[4])
+       
         
-        #---- DATA ----
+        
+        
+   
+        
+        #---- DATA ----        
         DATA_PATH, reconstructFilenameLabelledNoExt = pyNEXUS.GetTrialName()
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
+
+        if calibrateFilenameLabelledNoExt is None:
+            logging.warning("Static Processing")
+            staticProcessing = True
+            calibrateFilenameLabelled = reconstructFilenameLabelled
+        else:
+            staticProcessing = False
+            calibrateFilenameLabelled = calibrateFilenameLabelledNoExt + ".c3d"
 
         logging.info( "data Path: "+ DATA_PATH )   
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
@@ -94,17 +137,18 @@ if __name__ == "__main__":
         #---- EXTRACT KINEMATICS AND KINETICS -----
         kinematics  = ma.body.extract_joint_kinematics(cgm1_gait)
         openmaLib.renameOpenMAtoVicon(kinematics)
-        kinetics = ma.body.extract_joint_kinetics(cgm1_gait)
-        openmaLib.renameOpenMAtoVicon(kinetics)
-        
-    
         # append new parameters to the gait trial    
         trialTools.addTimeSequencesToTrial(dynamicTrial,kinematics)
-        trialTools.addTimeSequencesToTrial(dynamicTrial,kinetics)
+
+        if not staticProcessing:
+            kinetics = ma.body.extract_joint_kinetics(cgm1_gait)
+            openmaLib.renameOpenMAtoVicon(kinetics)
+
+            trialTools.addTimeSequencesToTrial(dynamicTrial,kinetics)
     
         # add property
-        dynamicTrial.setProperty('MODELLING:NAME',"CGM1")
-        dynamicTrial.setProperty('MODELLING:PROCESSING',"openMA")
+        dynamicTrial.setProperty('MODEL:NAME',"CGM1")
+        dynamicTrial.setProperty('MODEL:PROCESSOR',"openMA")
         
         # ----- WRITER --------
         if ma.io.write(dynamicNode,str(DATA_PATH + reconstructFilenameLabelled[:-4] + "_openmaCGM1.c3d")):

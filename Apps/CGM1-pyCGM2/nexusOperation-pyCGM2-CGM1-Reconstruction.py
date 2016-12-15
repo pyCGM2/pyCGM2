@@ -9,8 +9,8 @@ Usage:
     file.py  Calibration [-lr] [--markerDiameter=<n>]  
     file.py  Calibration [-lr] [--markerDiameter=<n> --pointSuffix=<ps>] 
     file.py  <staticFile> [-lr] [--markerDiameter=<n>]
-    file.py  <staticFile> [-lr] [--markerDiameter=<n>] [-p | --plot]
-    file.py  <staticFile> [-lr] [--markerDiameter=<n>] [-p | --plot --author=<authorYear> --modality=<modalitfy>]
+    file.py  <staticFile> [-lr] [--markerDiameter=<n>] [-p ]
+    file.py  <staticFile> [-lr] [--markerDiameter=<n>] [-p  --author=<authorYear> --modality=<modalitfy>]
     file.py  <staticFile> [-lr] [--markerDiameter=<n> --pointSuffix=<ps>]         
     file.py  <staticFile> [-lr] [--markerDiameter=<n> --pointSuffix=<ps>] [-p | --plot --author=<authorYear> --modality=<modalitfy>]    
     
@@ -22,7 +22,7 @@ Options:
     -h --help   Show help message
     -l          Enable left flat foot option
     -r          Enable right flat foot option
-    -p --plot   Enable gait Plots  
+    -p   Enable gait Plots  
     --markerDiameter=<n>  marker diameter [default: 14].
     --pointSuffix=<ps>  suffix associated with classic vicon output label  [default: ""].
     --author=<authorYear>   Name and year of the Normative Data base used [default: Schwartz2008]
@@ -37,6 +37,7 @@ import json
 import sys
 from docopt import docopt
 import pdb
+import btk
 
 # pyCGM2 settings
 import pyCGM2
@@ -80,8 +81,12 @@ if __name__ == "__main__":
         flag_leftFlatFoot =  args['-l'] #bool(int(sys.argv[2]))
         flag_rightFlatFoot = args['-r'] #bool(int(sys.argv[3]))
         markerDiameter =  float(args['--markerDiameter']) #float(sys.argv[4])
-        pointSuffix = args['--pointSuffix']
-        gaitProcessingEnable = args['--plot']
+        if  args['--pointSuffix'] == '""':
+            pointSuffix = ""
+        else:
+            pointSuffix = args['--pointSuffix']   
+
+        gaitProcessingEnable = args['-p']
         normativeDataInput = str(args['--author']+"_"+ args['--modality'])#"Schwartz2008_VeryFast"
 
 
@@ -179,6 +184,12 @@ if __name__ == "__main__":
     
             modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
        
+        # add metadata   
+        md_Model = btk.btkMetaData('MODEL') # create main metadata
+        btk.btkMetaDataCreateChild(md_Model, "NAME", "CGM1")
+        btk.btkMetaDataCreateChild(md_Model, "PROCESSOR", "pyCGM2")
+        acqGait.GetMetaData().AppendChild(md_Model)
+
         # writer
         btkTools.smartWriter(acqGait,str(DATA_PATH + reconstructFilenameLabelled[:-4] + "_cgm1.c3d"))
         logging.info( "[pyCGM2] : file ( %s) reconstructed in pyCGM2-model path " % (reconstructFilenameLabelled))
