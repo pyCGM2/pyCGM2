@@ -12,10 +12,9 @@ import sys
 
 # [REQUIRED] ----------------------------------
 MAIN_PYCGM2_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)  
-PYTHON_PACKAGES =  'C:\\Anaconda32\\Lib\\site-packages' # site-package in your python environnement
 
 
-# configure if you want to run processes from Nexus   
+# [REQUIRED - if Vicon USer] configure if you want to run processes from Nexus   
 NEXUS_SDK_WIN32 = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Win32'
 NEXUS_SDK_PYTHON = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Python'
 PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.5\\Python'
@@ -26,7 +25,7 @@ PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.5\\Python'
 # [Optional]: openMA binding
 OPENMA_BINDING_PATH = MAIN_PYCGM2_PATH + "third party\\" # By default, use openMA distribution included in third party folder  
 
-# [Optional] Normative data base. 
+# [Optional] path to embbbed Normative data base. 
 NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"Data\\normativeData\\"  # By default, use pyCGM2-embedded normative data ( Schartz - Pinzone )  
 
 # [Optional] main folder containing osim model 
@@ -104,7 +103,7 @@ def checkConfig():
         import ViconNexus
         logging.info("vicon API ---> OK" )
     except ImportError:
-        raise Exception ("[pyCGM2] : viconNexus is not in your python path. Check pyCGM2_CONFIG")
+        logging.error ("[pyCGM2] : viconNexus is not in your python path. Check pyCGM2_CONFIG")
     
     
     # openMA
@@ -114,4 +113,4 @@ def checkConfig():
         import ma.body
         logging.info("openMA API ---> OK" )        
     except ImportError:
-        raise Exception ("[pyCGM2] : openma is not in your python path. Check pyCGM2_CONFIG")
+        logging.error ("[pyCGM2] : openma is not in your python path. Check pyCGM2_CONFIG")
