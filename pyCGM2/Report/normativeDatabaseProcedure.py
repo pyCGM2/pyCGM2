@@ -6,10 +6,8 @@ Created on Mon Sep 26 16:32:22 2016
 """
 import logging
 
-try:
-    import pyCGM2.pyCGM2_CONFIG
-except ImportError:
-    logging.error("[pyCGM2] : pyCGM2 module not in your python path")
+
+import pyCGM2
 
 
 import pdb
@@ -20,7 +18,7 @@ class Pinzone2014_normativeDataBases(object):
 
     def __init__(self,centre):
         
-        self.m_filename = pyCGM2.pyCGM2_CONFIG.NORMATIVE_DATABASE_PATH+"Pinzone 2014\\Formatted- Pinzone2014.xlsx"
+        self.m_filename = pyCGM2.CONFIG.NORMATIVE_DATABASE_PATH+"Pinzone 2014\\Formatted- Pinzone2014.xlsx"
         self.m_centre = centre
         self.data = dict()
     
@@ -93,7 +91,7 @@ class Schwartz2008_normativeDataBases(object):
 
     def __init__(self,speed):
         
-        self.m_filename = pyCGM2.pyCGM2_CONFIG.NORMATIVE_DATABASE_PATH+"Schwartz 2008\\Formatted- Schwartz2008.xlsx"        
+        self.m_filename = pyCGM2.CONFIG.NORMATIVE_DATABASE_PATH+"Schwartz 2008\\Formatted- Schwartz2008.xlsx"        
         
         self.m_speedModality = speed
         self.data = dict()

@@ -12,19 +12,16 @@ import matplotlib.pyplot as plt
 import btk
 import pdb
 
-try:
-    import pyCGM2.pyCGM2_CONFIG
-    pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
-except ImportError:
-    logging.error("[pyCGM2] : pyCGM2 module not in your python path")
+import pyCGM2
+pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 
 # pyCGM2
-from pyCGM2.Core.Tools import  btkTools
-from pyCGM2.Core.Model.CGM2 import cgm2, modelFilters, modelDecorator
-from pyCGM2.Core.Model.Opensim import osimProcessing,opensimFilters
-import pyCGM2.Core.enums as pyCGM2Enums
-from pyCGM2.Core.Math import numeric
+from pyCGM2.Tools import  btkTools
+from pyCGM2.Model.CGM2 import cgm2, modelFilters, modelDecorator
+from pyCGM2.Model.Opensim import osimProcessing,opensimFilters
+import pyCGM2.enums as pyCGM2Enums
+from pyCGM2.Math import numeric
 
 
     

@@ -14,8 +14,8 @@ import ma.body
 
 
 
-import pyCGM2.Core.Tools.trialTools as CGM2trialTools
-import pyCGM2.Core.Math.normalisation  as MathNormalisation
+import pyCGM2.Tools.trialTools as CGM2trialTools
+import pyCGM2.Math.normalisation  as MathNormalisation
 
 #---- MODULE METHODS ------
 

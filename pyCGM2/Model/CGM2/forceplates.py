@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import pdb
 import logging
 
-from pyCGM2.Core.Tools import  btkTools
+from pyCGM2.Tools import  btkTools
 
 
 

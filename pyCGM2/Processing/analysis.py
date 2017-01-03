@@ -11,8 +11,8 @@ import logging
 
 # pyCGM2
 
-import pyCGM2.Core.Processing.cycle as CGM2cycle
-import pyCGM2.Core.Tools.exportTools as CGM2exportTools
+import pyCGM2.Processing.cycle as CGM2cycle
+import pyCGM2.Tools.exportTools as CGM2exportTools
 
 # openMA
 

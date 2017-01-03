@@ -17,18 +17,17 @@ import matplotlib.pyplot as plt
 import pdb
 import logging
 
-try:
-    import pyCGM2.pyCGM2_CONFIG 
-except ImportError:
-    logging.error("[pyCGM2] : pyCGM2 module not in your python path")
+import pyCGM2
+pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
-
+# btk
+pyCGM2.CONFIG.addBtk()  
 
 # pyCGM2
-from pyCGM2.Core.Tools import  btkTools
-from pyCGM2.Core.Model.CGM2 import cgm, modelFilters, modelDecorator, frame, bodySegmentParameters, forceplates
-import pyCGM2.Core.enums as pyCGM2Enums
-from pyCGM2.Core.Math import numeric
+from pyCGM2.Tools import  btkTools
+from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator, frame, bodySegmentParameters, forceplates
+import pyCGM2.enums as pyCGM2Enums
+from pyCGM2.Math import numeric
 
 plt.close("all")
 
@@ -85,7 +84,7 @@ class CGM1_motionInverseDynamicsTest():
     @classmethod
     def basicCGM1_distal(cls):
 
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-filtered\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    

@@ -37,25 +37,29 @@ import json
 import sys
 from docopt import docopt
 import pdb
-import btk
+
 
 # pyCGM2 settings
 import pyCGM2
-pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
+pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 # vicon nexus
-pyCGM2.pyCGM2_CONFIG.addNexusPythonSdk()
+pyCGM2.CONFIG.addNexusPythonSdk()
 import ViconNexus
 
 # openMA
-pyCGM2.pyCGM2_CONFIG.addOpenma()
+pyCGM2.CONFIG.addOpenma()
 import ma.io
 import ma.body
 
+# btk
+pyCGM2.CONFIG.addBtk()  
+import btk
+
 # pyCGM2 libraries
-from pyCGM2.Core.Model.CGM2 import cgm, modelFilters,forceplates,bodySegmentParameters
-from pyCGM2.Core.Tools import btkTools
-import pyCGM2.Core.enums as pyCGM2Enums
+from pyCGM2.Model.CGM2 import cgm, modelFilters,forceplates,bodySegmentParameters
+from pyCGM2.Tools import btkTools
+import pyCGM2.enums as pyCGM2Enums
 from pyCGM2 import  smartFunctions 
 
 

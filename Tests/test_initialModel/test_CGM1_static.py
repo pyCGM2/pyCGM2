@@ -11,18 +11,16 @@ import scipy as sp
 import pdb
 import logging
 
-try:
-    import pyCGM2.pyCGM2_CONFIG
-    pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.DEBUG)
-except ImportError:
-    logging.error("[pyCGM2] : pyCGM2 module not in your python path")
+import pyCGM2
+pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
-
+# btk
+pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
-from pyCGM2.Core.Tools import  btkTools
-from pyCGM2.Core.Model.CGM2 import cgm, modelFilters,modelDecorator
-import pyCGM2.Core.enums as pyCGM2Enums
+from pyCGM2.Tools import  btkTools
+from pyCGM2.Model.CGM2 import cgm, modelFilters,modelDecorator
+import pyCGM2.enums as pyCGM2Enums
 
 
 
@@ -34,7 +32,7 @@ class CGM1_calibrationTest():
         GOAL : compare Joint centres and foot Offset
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -100,7 +98,7 @@ class CGM1_calibrationTest():
         GOAL : compare Joint centres and foot Offset
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic FlatFoot\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic FlatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -157,7 +155,7 @@ class CGM1_calibrationTest():
         GOAL : compare Joint centres and foot Offset
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-basic\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -240,7 +238,7 @@ class CGM1_calibrationTest():
         GOAL : compare Joint centres and foot Offset
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-flatFoot\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-flatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -324,7 +322,7 @@ class CGM1_calibrationTest():
         GOAL : compare Joint centres and foot Offset
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -445,7 +443,7 @@ class CGM1_calibrationTest():
         
         """    
         
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.MAIN_BENCHMARK_PATH + "True equinus\S02\CGM1-Vicon-Modelled\\"
+        MAIN_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH + "True equinus\S02\CGM1-Vicon-Modelled\\"
         staticFilename = "54_22-11-2010_S.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -543,7 +541,7 @@ class CGM1_custom_calibrationTest():
         GOAL : compare Joint centres and foot Offset
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -589,7 +587,7 @@ class CGM1_custom_calibrationTest():
         GOAL : compare Joint centres and foot Offset
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -636,7 +634,7 @@ class CGM1_custom_calibrationTest():
         GOAL : compare Joint centres and foot Offset
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -684,7 +682,7 @@ class CGM1_custom_calibrationTest():
         GOAL : compare Joint centres and foot Offset
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -733,7 +731,7 @@ class CGM1_custom_calibrationTest():
         GOAL : compare Joint centres and foot Offset
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
         
         
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
@@ -784,7 +782,7 @@ class CGM1_custom_calibrationTest():
         LFoot = [LTOE,LAJC-LTOE,LAJC-LKJC,zyx]
 
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    

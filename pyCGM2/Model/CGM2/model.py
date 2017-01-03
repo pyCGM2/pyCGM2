@@ -11,10 +11,10 @@ import logging
 
 import frame as cfr
 
-from  pyCGM2.Core.Tools import  btkTools
-from pyCGM2.Core.Math import  derivation
+from  pyCGM2.Tools import  btkTools
+from pyCGM2.Math import  derivation
 
-import pyCGM2.Core.Signal.signal_processing as pyCGM2signal 
+import pyCGM2.Signal.signal_processing as pyCGM2signal 
 
 
 

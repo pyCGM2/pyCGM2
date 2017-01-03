@@ -17,10 +17,10 @@ import euler as ceu
 
 
 
-import pyCGM2.Core.Signal.signal_processing as pyCGM2signal 
-import pyCGM2.Core.enums as pyCGM2Enums
-from pyCGM2.Core.Math import numeric
-from pyCGM2.Core.Tools import  btkTools
+import pyCGM2.Signal.signal_processing as pyCGM2signal 
+import pyCGM2.enums as pyCGM2Enums
+from pyCGM2.Math import numeric
+from pyCGM2.Tools import  btkTools
 
 
 

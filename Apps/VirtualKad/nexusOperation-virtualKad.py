@@ -25,14 +25,14 @@ from docopt import docopt
 
 # pyCGM2 settings
 import pyCGM2 
-pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
+pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 # vicon
-pyCGM2.pyCGM2_CONFIG.addNexusPythonSdk()
+pyCGM2.CONFIG.addNexusPythonSdk()
 import ViconNexus
 
 # openMA
-pyCGM2.pyCGM2_CONFIG.addOpenma()
+pyCGM2.CONFIG.addOpenma()
 import ma.io
 import ma.body
 

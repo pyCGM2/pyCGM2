@@ -17,7 +17,7 @@ import matplotlib.patches as mpatches
 
 # pyCGM2
 #import pyCGM2
-import pyCGM2.Core.Processing.analysis as CGM2analysis
+import pyCGM2.Processing.analysis as CGM2analysis
 
 
 # openMA

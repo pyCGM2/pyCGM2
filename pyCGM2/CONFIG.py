@@ -7,12 +7,9 @@ Created on Thu Sep 08 18:03:03 2016
 import logging
 
 import sys
+import os
 
-# ------------------- CONSTANT ------------------------------------------------
-
-# [REQUIRED] ----------------------------------
-MAIN_PYCGM2_PATH = "C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)  
-
+# ------------------- CONSTANTS ------------------------------------------------
 
 # [REQUIRED - if Vicon USer] configure if you want to run processes from Nexus   
 NEXUS_SDK_WIN32 = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Win32'
@@ -21,9 +18,11 @@ PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.5\\Python'
 
 
 # [OPTIONAL] ----------------------------------
+MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)) + "\\" #C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)  
+
  
-# [Optional]: openMA binding
-OPENMA_BINDING_PATH = MAIN_PYCGM2_PATH + "third party\\" # By default, use openMA distribution included in third party folder  
+# [Optional]: openMA binding 
+THIRDPARTY_PATH = MAIN_PYCGM2_PATH + "third party\\" # By default, use openMA distribution included in third party folder  
 
 # [Optional] path to embbbed Normative data base. 
 NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"Data\\normativeData\\"  # By default, use pyCGM2-embedded normative data ( Schartz - Pinzone )  
@@ -58,8 +57,8 @@ def addNexusPythonSdk():
 def addOpenma(branch=None):
 
     if branch is None:
-        sys.path.append(OPENMA_BINDING_PATH + "\\openma")
-        sys.path.append(OPENMA_BINDING_PATH + "\\openma\\ma")
+        sys.path.append(THIRDPARTY_PATH + "\\openma")
+        sys.path.append(THIRDPARTY_PATH + "\\openma\\ma")
     else:
         if branch=="master":
             sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma")
@@ -82,7 +81,11 @@ def addOpenma(branch=None):
             sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma")
             sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma\\ma")
             
-            
+
+def addBtk():
+    sys.path.append(THIRDPARTY_PATH + "\\btk")
+
+
 def checkConfig():
 
     for it in sys.path: 
@@ -90,27 +93,36 @@ def checkConfig():
             print "OK"    
     try:
         import pyCGM2
-        import pyCGM2.pyCGM2_CONFIG
-        pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.DEBUG)
+        import pyCGM2.CONFIG
+        pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
         logging.info("pyCGM2 ---> OK")
     except ImportError:
         raise Exception ("[pyCGM2] : pyCGM2 module not in your python path")
     
     
     # vicon nexus
-    pyCGM2.pyCGM2_CONFIG.addNexusPythonSdk()
+    pyCGM2.CONFIG.addNexusPythonSdk()
     try:
         import ViconNexus
         logging.info("vicon API ---> OK" )
     except ImportError:
-        logging.error ("[pyCGM2] : viconNexus is not in your python path. Check pyCGM2_CONFIG")
+        logging.error ("[pyCGM2] : viconNexus is not in your python path. Check CONFIG")
     
     
     # openMA
-    pyCGM2.pyCGM2_CONFIG.addOpenma()
+    pyCGM2.CONFIG.addOpenma()
     try:
         import ma.io
         import ma.body
         logging.info("openMA API ---> OK" )        
     except ImportError:
-        logging.error ("[pyCGM2] : openma is not in your python path. Check pyCGM2_CONFIG")
+        logging.error ("[pyCGM2] : openma is not in your python path. Check CONFIG")
+        
+        
+    # btk
+    pyCGM2.CONFIG.addBtk()
+    try:
+        import btk
+        logging.info("btk API ---> OK" )        
+    except ImportError:
+        logging.error ("[pyCGM2] : btk is not in your python path. Check CONFIG")        

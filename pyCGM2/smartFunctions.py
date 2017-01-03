@@ -17,12 +17,12 @@ import os
 
 
 # pyCGM package
-import pyCGM2.Core.Processing.cycle as CGM2cycle
-import pyCGM2.Core.Tools.trialTools as CGM2trialTools
-import pyCGM2.Core.Processing.analysis as CGM2analysis
-import pyCGM2.Core.Report.plot as CGM2plot
-import pyCGM2.Core.Report.normativeDatabaseProcedure as CGM2normdata
-from pyCGM2.Core.Processing import analysis
+import pyCGM2.Processing.cycle as CGM2cycle
+import pyCGM2.Tools.trialTools as CGM2trialTools
+import pyCGM2.Processing.analysis as CGM2analysis
+import pyCGM2.Report.plot as CGM2plot
+import pyCGM2.Report.normativeDatabaseProcedure as CGM2normdata
+from pyCGM2.Processing import analysis
 
 
 # openma

@@ -8,16 +8,15 @@ Created on Thu Jul 07 15:14:18 2016
 import logging
 import matplotlib.pyplot as plt
 
-try:
-    import pyCGM2.pyCGM2_CONFIG 
-except ImportError:
-    logging.error("[pyCGM2] : pyCGM2 module not in your python path")
+import pyCGM2
+pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
-
+# btk
+pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
-from pyCGM2.Core.Tools import  btkTools
-from pyCGM2.Core.Model.CGM2 import forceplates
+from pyCGM2.Tools import  btkTools
+from pyCGM2.Model.CGM2 import forceplates
 
 
 

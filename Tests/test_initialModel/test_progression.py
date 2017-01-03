@@ -15,15 +15,14 @@ import numpy as np
 import pdb
 import logging
 
-try:
-    import pyCGM2.pyCGM2_CONFIG 
-except ImportError:
-    logging.error("[pyCGM2] : pyCGM2 module not in your python path")
+import pyCGM2
+pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
-
+# btk
+pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
-from pyCGM2.Core.Tools import  btkTools
+from pyCGM2.Tools import  btkTools
 
 class ProgressionTest(): 
 
@@ -31,7 +30,7 @@ class ProgressionTest():
     def gaitTrialProgressionX_forward_lateralY(cls):
         """
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\progression\\"
         
    
         gaitFilename="gait_X_forward.c3d"        
@@ -55,7 +54,7 @@ class ProgressionTest():
         """
        
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\progression\\"
 
         gaitFilename="gait_X_backward.c3d"        
         acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
@@ -78,7 +77,7 @@ class ProgressionTest():
         """
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\progression\\"
 
         gaitFilename="static_X.c3d"       
         acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
@@ -101,7 +100,7 @@ class ProgressionTest():
         """
         
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\progression\\"
 
         gaitFilename="static_X_backward.c3d"       
         acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
@@ -124,7 +123,7 @@ class ProgressionTest():
     def gaitTrialProgressionY_forward_lateralX(cls):
         """
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\progression\\"
         
    
         gaitFilename="gait_Y_forward.c3d"        
@@ -148,7 +147,7 @@ class ProgressionTest():
     def gaitTrialProgressionY_backward_lateralX(cls):
         """
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\progression\\"
         
    
         gaitFilename="gait_Y_backward.c3d"        
@@ -172,7 +171,7 @@ class ProgressionTest():
     def gaitTrialProgressionY_backward_lateralX_static(cls):
         """
         """    
-        MAIN_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\progression\\"
         
    
         gaitFilename="static_Y_backward.c3d"        

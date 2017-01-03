@@ -13,15 +13,15 @@ import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
-pyCGM2.pyCGM2_CONFIG.setLoggingLevel(logging.INFO)
+pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 # vicon nexus
-pyCGM2.pyCGM2_CONFIG.addNexusPythonSdk()
+pyCGM2.CONFIG.addNexusPythonSdk()
 import ViconNexus
 
 
 # openMA
-pyCGM2.pyCGM2_CONFIG.addOpenma()
+pyCGM2.CONFIG.addOpenma()
 import ma.io
 import ma.body
     
@@ -32,8 +32,6 @@ from pyCGM2 import  smartFunctions
 if __name__ == "__main__":
     plt.close("all")    
     
-
-
 #    pyNEXUS = ViconNexus.ViconNexus()    
 #    NEXUS_PYTHON_CONNECTED = pyNEXUS.Client.IsConnected() 
 

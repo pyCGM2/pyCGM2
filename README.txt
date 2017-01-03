@@ -1,0 +1,2 @@
+Ceci est le contenu du fichier README.TXT. Il s'agit d'un fichier texte ou RST contenant la description longue du paquet. Deporter cette description dans un fichier externe a setup.py permet d'ameliorer la lisibilite du code de setup.py.
+Ce fichier contient normalement au minimum le nom du paquet, son but, la licence et un hyperlien si possible. Il peut etre utile d'ajouter en sus un exemple.

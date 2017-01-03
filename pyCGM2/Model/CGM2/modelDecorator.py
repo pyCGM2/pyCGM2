@@ -12,9 +12,9 @@ import logging
 import cgm
 import model
 
-import pyCGM2.Core.enums as pyCGM2Enums
-from pyCGM2.Core.Tools import  btkTools
-from pyCGM2.Core.Math import  numeric, geometry
+import pyCGM2.enums as pyCGM2Enums
+from pyCGM2.Tools import  btkTools
+from pyCGM2.Math import  numeric, geometry
 
 
 

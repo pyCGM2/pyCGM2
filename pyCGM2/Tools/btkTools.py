@@ -8,10 +8,11 @@ Created on Mon Oct 10 11:36:32 2016
 TODO : findProgression Axis should be in another folder. (?) 
 """
 
-
-import btk
 import numpy as np
 import logging
+
+import btk
+
 
 def smartReader(filename):
     reader = btk.btkAcquisitionFileReader()
