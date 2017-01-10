@@ -27,7 +27,7 @@ import sys
 import pdb
 import logging
 import matplotlib.pyplot as plt
-from docopt import docopt
+import argparse
 
 # pyCGM2 settings
 import pyCGM2
@@ -47,8 +47,21 @@ import ma.body
 from pyCGM2 import  smartFunctions 
     
 if __name__ == "__main__":
-    plt.close("all")
-    args = docopt(__doc__, version='0.1')
+
+    parser = argparse.ArgumentParser(description='CGM')
+    parser.add_argument('--StaticProcessing', action='store_true', help='calibration' )
+    parser.add_argument('-p','--plot', action='store_true', help='left flat foot flag' )
+    parser.add_argument('--c3d', action='store_true', help='right flat foot flag' )
+    parser.add_argument('-x','--xls', action='store_true', help='enable plot' )
+    parser.add_argument('--pointSuffix', default="", type=str)
+    parser.add_argument('--author', default="Schwartz2008", type=str)
+    parser.add_argument('--modality', default="Free", type=str)    
+    
+    args = parser.parse_args()
+    
+    logging.info(args)
+
+   
     plt.close("all")    
     
 
@@ -62,19 +75,16 @@ if __name__ == "__main__":
         
         
         #---- INPUTS -----
-        staticProcessing = args['StaticAngleProfile']
-        plotFlag = args['--plot'] #bool(int(sys.argv[1]))
-        exportSpreadSheetFlag = args['--xls'] #bool(int(sys.argv[2]))
-        exportAnalysisC3dFlag = args['--c3d'] #bool(int(sys.argv[3]))
-        normativeDataInput = str(args['--author']+"_"+ args['--modality']) #sys.argv[4] #"Schwartz2008_VeryFast"
-        if  args['--pointSuffix'] == '""':
+        staticProcessing = args.StaticProcessing 
+        plotFlag = args.plot
+        exportSpreadSheetFlag = args.xls
+        exportAnalysisC3dFlag = args.c3d 
+        normativeDataInput = str(args.author+"_"+ args.modality) #"Schwartz2008_VeryFast"       
+        if  args.pointSuffix == "":
             pointSuffix = ""
         else:
-            pointSuffix = args['--pointSuffix']# sys.argv[5]         
-
-            
-        print args
-        
+            pointSuffix = args.pointSuffix
+                    
         # ----DATA-----        
         DATA_PATH, reconstructedFilenameLabelledNoExt = pyNEXUS.GetTrialName() 
         reconstructedFilenameLabelled = reconstructedFilenameLabelledNoExt+".c3d"        

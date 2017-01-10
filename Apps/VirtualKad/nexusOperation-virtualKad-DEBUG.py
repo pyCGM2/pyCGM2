@@ -58,9 +58,7 @@ if __name__ == "__main__":
                     left_medial_knee_marker = left_medial_knee_marker, 
                     right_medial_knee_marker = right_medial_knee_marker, 
                     updateC3d = updateC3d)
-
-
-        
+       
         if updateC3d :
             logging.warning ("[pyCGM2-virtual Kad] Static file updated")
         else: 

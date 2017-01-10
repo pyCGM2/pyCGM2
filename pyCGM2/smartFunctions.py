@@ -35,12 +35,18 @@ def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH,
                          name_out=None,  DATA_PATH_OUT= None ):
 
     pointLabelSuffixPlus  = pointLabelSuffix   if pointLabelSuffix =="" else "_"+pointLabelSuffix   
+
     # reader
-    
     kinematicFileNode = ma.io.read(str(DATA_PATH + modelledStaticFilename))
     kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
+
+
+    # --- common temporal plot
+    temporelPlotPdf = CGM2plot.gaitKinematicsTemporalPlotPanel(kinematicTrial,pointLabelSuffix=pointLabelSuffix,  filename=modelledStaticFilename, path = DATA_PATH)
+
     
-    # prameters
+    # --- static angle profile
+    # parameters
     angles =["LHipAngles"+pointLabelSuffixPlus,"LKneeAngles"+pointLabelSuffixPlus,"LAnkleAngles"+pointLabelSuffixPlus,"LFootProgressAngles"+pointLabelSuffixPlus,"LPelvisAngles"+pointLabelSuffixPlus,
                           "RHipAngles"+pointLabelSuffixPlus,"RKneeAngles"+pointLabelSuffixPlus,"RAnkleAngles"+pointLabelSuffixPlus,"RFootProgressAngles"+pointLabelSuffixPlus,"RPelvisAngles"+pointLabelSuffixPlus]
 
@@ -55,7 +61,7 @@ def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH,
     if DATA_PATH_OUT is None:
         DATA_PATH_OUT = DATA_PATH
 
-    plotBuilder = CGM2plot.StaticAnalysisPlotBuilder(staticAnalysis.m_dataframe,pointLabelSuffix=pointLabelSuffix)
+    plotBuilder = CGM2plot.StaticAnalysisPlotBuilder(staticAnalysis.m_dataframe,pointLabelSuffix=pointLabelSuffix, staticModelledFilename = modelledStaticFilename)
     # Filter
     pf = CGM2plot.PlottingFilter()
     pf.setBuilder(plotBuilder)
@@ -68,7 +74,10 @@ def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH,
     pf.setPdfName(pdfname)
     pf.plot()
 
+    os.startfile(DATA_PATH+temporelPlotPdf)
     os.startfile(DATA_PATH+"staticAngleProfiles_"+ pdfname +".pdf")
+
+
 
 def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH, 
                          modelInfo, subjectInfo, experimentalInfo,
@@ -205,7 +214,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
         pf.plot()
 
         os.startfile(DATA_PATH+"consistencyKinematics_"+ pdfName +".pdf")
-        os.startfile(DATA_PATH+"consistencyKinetics_"+ pdfName+".pdf")
+        if flag_kinetics: os.startfile(DATA_PATH+"consistencyKinetics_"+ pdfName+".pdf")
 
 
         

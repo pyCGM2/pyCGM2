@@ -1,38 +1,12 @@
 # -*- coding: utf-8 -*-
 """
  
-Usage:
-    file.py
-    file.py -h | --help
-    file.py --version
-    file.py  Calibration [-lr] [--markerDiameter=<n>]  
-    file.py  Calibration [-lr] [--markerDiameter=<n> --pointSuffix=<ps>] 
-    file.py  <staticFile> [-lr] [--markerDiameter=<n>]
-    file.py  <staticFile> [-lr] [--markerDiameter=<n>] [-p ]
-    file.py  <staticFile> [-lr] [--markerDiameter=<n>] [-p  --author=<authorYear> --modality=<modalitfy>]
-    file.py  <staticFile> [-lr] [--markerDiameter=<n> --pointSuffix=<ps>]         
-    file.py  <staticFile> [-lr] [--markerDiameter=<n> --pointSuffix=<ps>] [-p | --plot --author=<authorYear> --modality=<modalitfy>]    
-    
- 
-Arguments:
-
- 
-Options:
-    -h --help   Show help message
-    -l          Enable left flat foot option
-    -r          Enable right flat foot option
-    -p   Enable gait Plots  
-    --markerDiameter=<n>  marker diameter [default: 14].
-    --pointSuffix=<ps>  suffix associated with classic vicon output label  [default: ""].
-    --author=<authorYear>   Name and year of the Normative Data base used [default: Schwartz2008]
-    --modality=<modalitfy>  Modality of the Normative Database used  [default: Free]
-
 """
 
 import sys
 import pdb
 import logging
-from docopt import docopt
+import argparse
 
 
 # pyCGM2 settings
@@ -52,11 +26,24 @@ import ma.body
 # pyCGM2 libraries   
 import pyCGM2.Model.openmaLib as openmaLib
 from  pyCGM2.Tools  import trialTools   
-   
+from pyCGM2 import  smartFunctions 
 
 
 if __name__ == "__main__":
-    args = docopt(__doc__, version='0.1')    
+    parser = argparse.ArgumentParser(description='CGM')
+    parser.add_argument('--Calibration', action='store_true', help='calibration' )
+    parser.add_argument('--staticFile', default="", type=str)
+    parser.add_argument('-l','--leftFlatFoot', action='store_true', help='left flat foot flag' )
+    parser.add_argument('-r','--rightFlatFoot', action='store_true', help='right flat foot flag' )
+    parser.add_argument('-p','--processing', action='store_true', help='enable plot' )
+    parser.add_argument('--markerDiameter', default=14, type=float)
+    parser.add_argument('--pointSuffix', default="", type=str)
+    parser.add_argument('--author', default="Schwartz2008", type=str)
+    parser.add_argument('--modality', default="Free", type=str)    
+    
+    args = parser.parse_args()
+    
+    logging.info(args)
     
     pyNEXUS = ViconNexus.ViconNexus()    
     NEXUS_PYTHON_CONNECTED = pyNEXUS.Client.IsConnected() 
@@ -65,20 +52,23 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED: # run operation
         
         #---- INPUTS------
-        if args['Calibration']:
-            calibrateFilenameLabelledNoExt = None  #sys.argv[1] 
+        if args.Calibration:
+            calibrateFilenameLabelledNoExt = None  
         else:
-            calibrateFilenameLabelledNoExt = args['<staticFile>']  #sys.argv[1] 
+            calibrateFilenameLabelledNoExt = args.staticFile
 
-        flag_leftFlatFoot =  args['-l'] #bool(int(sys.argv[2]))
-        flag_rightFlatFoot = args['-r'] #bool(int(sys.argv[3]))
-        markerDiameter =  float(args['--markerDiameter']) #float(sys.argv[4])
+        flag_leftFlatFoot =  args.leftFlatFoot 
+        flag_rightFlatFoot = args.rightFlatFoot 
+        markerDiameter =  args.markerDiameter 
+        if  args.pointSuffix == "":
+            pointSuffix = ""
+        else:
+            pointSuffix = args.pointSuffix  
+
+        enableProcessing = args.processing
+        normativeDataInput = str(args.author+"_"+ args.modality) #"Schwartz2008_VeryFast"
        
-        
-        
-        
-   
-        
+               
         #---- DATA ----        
         DATA_PATH, reconstructFilenameLabelledNoExt = pyNEXUS.GetTrialName()
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
@@ -154,7 +144,35 @@ if __name__ == "__main__":
         if ma.io.write(dynamicNode,str(DATA_PATH + reconstructFilenameLabelled[:-4] + "_openmaCGM1.c3d")):
             logging.info( "file ( %s) reconstructed ( suffix : _openmaCGM1.c3d) " % (reconstructFilenameLabelled) )                 
 
+        # -----------CGM PROCESSING--------------------
+        if enableProcessing:
 
+            # infos        
+            model= None 
+            subject=None       
+            experimental=None
+    
+            if staticProcessing:
+                
+                # temporal static angle and static angle profile
+                smartFunctions.staticProcessing_cgm1(str(reconstructFilenameLabelled[:-4] + "_openmaCGM1.c3d"), DATA_PATH,
+                                                     model,  subject, experimental,
+                                                     pointLabelSuffix = pointSuffix)          
+            else:
+     
+    
+                normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
+                             
+                # ----PROCESSING-----
+                smartFunctions.gaitProcessing_cgm1 (str(reconstructFilenameLabelled[:-4] + "_openmaCGM1.c3d"), DATA_PATH,
+                                       model,  subject, experimental,
+                                       pointLabelSuffix = pointSuffix,
+                                       plotFlag= True, 
+                                       exportBasicSpreadSheetFlag = False,
+                                       exportAdvancedSpreadSheetFlag = False,
+                                       exportAnalysisC3dFlag = False,
+                                       consistencyOnly = True,
+                                       normativeDataDict = normativeData)
               
     else: 
         logging.error(" Nexus Not Connected")        

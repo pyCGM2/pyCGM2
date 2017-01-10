@@ -42,8 +42,8 @@ if __name__ == "__main__":
         
         #---- INPUTS ----- 
         staticProcessing= False
-        plotFlag = True #bool(int(sys.argv[1]))
-        exportSpreadSheetFlag = True  #bool(int(sys.argv[2]))
+        plotFlag = True 
+        exportSpreadSheetFlag = True  
         exportAnalysisC3dFlag = False
         normativeDataInput = "Schwartz2008_Free"
         pointSuffix=""        
@@ -60,9 +60,7 @@ if __name__ == "__main__":
     
         # ----INFOS-----        
         model=None  
-    
         subject=None
-                         
         experimental=None
                      
         # ----PROCESSING-----

@@ -26,7 +26,8 @@ import ma.body
    
 # pyCGM2 libraries   
 import pyCGM2.Model.openmaLib as openmaLib
-from  pyCGM2.Tools  import trialTools   
+from  pyCGM2.Tools  import trialTools
+from pyCGM2 import  smartFunctions    
    
 if __name__ == "__main__":
 
@@ -45,20 +46,31 @@ if __name__ == "__main__":
             
         flag_leftFlatFoot =  True
         flag_rightFlatFoot =  True
-        markerDiameter = 14 
+        markerDiameter = 14
+        pointSuffix = ""  
+
+        enableProcessing = True
+        normativeDataInput = "Schwartz2008_Free"
     
         #---- DATA ------ 
         DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\openMA-CGM1-basic\\"
         reconstructFilenameLabelledNoExt ="gait Trial 01"  
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
         
+        
         if calibrateFilenameLabelledNoExt is None:
             logging.warning("Static Processing")
             staticProcessing = True
-            calibrateFilenameLabelled = reconstructFilenameLabelled
+            calibrateFilenameLabelled = "static Cal 01" + ".c3d" 
+            reconstructFilenameLabelledNoExt = "static Cal 01"  
+            reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
         else:
             staticProcessing = False
-            calibrateFilenameLabelled = calibrateFilenameLabelledNoExt + ".c3d"        
+            reconstructFilenameLabelledNoExt = "gait Trial 01"  
+            reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
+            calibrateFilenameLabelled = reconstructFilenameLabelled        
+        
+    
         
         logging.info( "data Path: "+ DATA_PATH )   
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
@@ -114,3 +126,33 @@ if __name__ == "__main__":
         # ----- WRITER --------
         if ma.io.write(dynamicNode,str(DATA_PATH + reconstructFilenameLabelled[:-4] + "_openmaCGM1.c3d")):
             logging.info( "file ( %s) reconstructed ( suffix : _openmaCGM1.c3d) " % (reconstructFilenameLabelled) )                
+
+        # -----------CGM PROCESSING--------------------
+        if enableProcessing:
+
+            # infos        
+            model= None 
+            subject=None       
+            experimental=None
+    
+            if staticProcessing:
+                
+                # temporal static angle and static angle profile
+                smartFunctions.staticProcessing_cgm1(str(reconstructFilenameLabelled[:-4] + "_openmaCGM1.c3d"), DATA_PATH,
+                                                     model,  subject, experimental,
+                                                     pointLabelSuffix = pointSuffix)          
+            else:
+     
+    
+                normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
+                             
+                # ----PROCESSING-----
+                smartFunctions.gaitProcessing_cgm1 (str(reconstructFilenameLabelled[:-4] + "_openmaCGM1.c3d"), DATA_PATH,
+                                       model,  subject, experimental,
+                                       pointLabelSuffix = pointSuffix,
+                                       plotFlag= True, 
+                                       exportBasicSpreadSheetFlag = False,
+                                       exportAdvancedSpreadSheetFlag = False,
+                                       exportAnalysisC3dFlag = False,
+                                       consistencyOnly = True,
+                                       normativeDataDict = normativeData)

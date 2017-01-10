@@ -36,7 +36,6 @@ from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2 import  smartFunctions 
 
-
     
 if __name__ == "__main__":
     
@@ -49,7 +48,7 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
         #---- INPUTS------
-        Calibration = False
+        Calibration = True
         if Calibration:
             calibrateFilenameLabelledNoExt = None   
         else:
@@ -60,19 +59,23 @@ if __name__ == "__main__":
         markerDiameter = 14
         normativeDataInput = "Schwartz2008_Free"
         pointSuffix = "tr"
+        enableProcessing = True
     
         #---- DATA ------ 
         DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\pyCGM2-CGM1-basic\\"
-        reconstructFilenameLabelledNoExt = "gait Trial 01"  
-        reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
+
 
         if calibrateFilenameLabelledNoExt is None:
             logging.warning("Static Processing")
             staticProcessing = True
-            calibrateFilenameLabelled = reconstructFilenameLabelled
+            calibrateFilenameLabelled = "static Cal 01" + ".c3d" 
+            reconstructFilenameLabelledNoExt = "static Cal 01"  
+            reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
         else:
             staticProcessing = False
-            calibrateFilenameLabelled = calibrateFilenameLabelledNoExt + ".c3d"
+            reconstructFilenameLabelledNoExt = "gait Trial 01"  
+            reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
+            calibrateFilenameLabelled = reconstructFilenameLabelled
 
         
         logging.info( "data Path: "+ DATA_PATH )   
@@ -156,39 +159,38 @@ if __name__ == "__main__":
         btk.btkMetaDataCreateChild(md_Model, "PROCESSOR", "pyCGM2")
         acqGait.GetMetaData().AppendChild(md_Model)
        
+       
         # writer
         btkTools.smartWriter(acqGait,str(DATA_PATH + reconstructFilenameLabelled[:-4] + "_cgm1.c3d"))
         logging.info( "[pyCGM2] : file ( %s) reconstructed in pyCGM2-model path " % (reconstructFilenameLabelled))
 
 
-        
-
-
         # -----------CGM PROCESSING--------------------
-        # infos        
-        model= None 
-        subject=None       
-        experimental=None
-
-        if staticProcessing:
-            # static angle profile
-            smartFunctions.staticProcessing_cgm1(str(reconstructFilenameLabelled[:-4] + "_cgm1.c3d"), DATA_PATH,
-                                                 model,  subject, experimental,
-                                                 pointLabelSuffix = pointSuffix)            
-        else:
- 
-            normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
-                         
-            # ----PROCESSING-----
-            smartFunctions.gaitProcessing_cgm1 (str(reconstructFilenameLabelled[:-4] + "_cgm1.c3d"), DATA_PATH,
-                                   model,  subject, experimental,
-                                   pointLabelSuffix = pointSuffix,
-                                   plotFlag= True, 
-                                   exportBasicSpreadSheetFlag = False,
-                                   exportAdvancedSpreadSheetFlag = False,
-                                   exportAnalysisC3dFlag = False,
-                                   consistencyOnly = True,
-                                   normativeDataDict = normativeData)
+        if enableProcessing:
+            # infos        
+            model= None 
+            subject=None       
+            experimental=None
+    
+            if staticProcessing:
+                # temporal static angle and static angle profile
+                smartFunctions.staticProcessing_cgm1(str(reconstructFilenameLabelled[:-4] + "_cgm1.c3d"), DATA_PATH,
+                                                     model,  subject, experimental,
+                                                     pointLabelSuffix = pointSuffix)            
+            else:
+     
+                normativeData = { "Author": normativeDataInput[:normativeDataInput.find("_")],"Modality": normativeDataInput[normativeDataInput.find("_")+1:]} 
+                             
+                # ----PROCESSING-----
+                smartFunctions.gaitProcessing_cgm1 (str(reconstructFilenameLabelled[:-4] + "_cgm1.c3d"), DATA_PATH,
+                                       model,  subject, experimental,
+                                       pointLabelSuffix = pointSuffix,
+                                       plotFlag= True, 
+                                       exportBasicSpreadSheetFlag = False,
+                                       exportAdvancedSpreadSheetFlag = False,
+                                       exportAnalysisC3dFlag = False,
+                                       consistencyOnly = True,
+                                       normativeDataDict = normativeData)
    
     else: 
         logging.error("Nexus Not Connected")     
