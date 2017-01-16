@@ -22,7 +22,16 @@ import ma.body
 
 #---- MODULE METHODS ------
 
-class staticAnalysisFilter(object):
+# --- Object to build-----
+
+class StaticAnalysis(): # OBJECT TO CONSTRUCT
+    """
+   
+    """
+    def __init__(self):
+        self.data=None
+
+class StaticAnalysisFilter(object):
     def __init__(self,trial,
                  angleList,
                  subjectInfos=None,
@@ -35,7 +44,10 @@ class staticAnalysisFilter(object):
         self.m_modelInfos = modelInfos
         self.m_experimentalInfos = experimentalInfos
 
-    def buildDataFrame(self):
+        self.analysis = StaticAnalysis()
+        #self.m_dataframe = None
+
+    def build(self):
         df_collection=[]    
         
         for angle in self.m_angles:
@@ -65,14 +77,19 @@ class staticAnalysisFilter(object):
     
             df_collection.append(df)
             
-            self.m_dataframe = pd.concat(df_collection,ignore_index=True)
+            self.analysis.data = pd.concat(df_collection,ignore_index=True)
 
     def exportDataFrame(self,outputName,path=None):
+        
         if hasattr(self, 'm_dataframe'):
             if path == None:
-                self.m_dataframe.to_csv(str(outputName + " - DataFrame.csv"),sep=";")
+                xlsxWriter = pd.ExcelWriter(str(outputName + "- static.xls"),engine='xlwt')
+                self.analysis.data.to_excel(xlsxWriter,'mean static')
             else:
-                self.m_dataframe.to_csv(str(path+"/"+outputName + " - DataFrame.csv"),sep=";")
+                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- static.xls"),engine='xlwt')
+                self.analysis.data.to_excel(xlsxWriter,'mean static')
+            
+            xlsxWriter.save()
         else:
             raise Exception ("[pyCGM2] - You need to build dataframe before export => RUN buildDataFrame() of your instance")
     
@@ -587,6 +604,8 @@ class AnalysisFilter(object): # CONTROLER
 # ---- PATTERN BUILDER ------
 
 # --- Object to build-----
+
+
 class Analysis(): # OBJECT TO CONSTRUCT
     """
    
