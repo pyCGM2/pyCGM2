@@ -1,28 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
- 
-Usage:
-    file.py
-    file.py -h | --help
-    file.py --version
-    file.py StaticAngleProfile
-    file.py [--plot --c3d --xls --pointSuffix=<ps>]    
-    file.py [--plot --c3d --xls --pointSuffix=<ps> --author=<authorYear> --modality=<modalitfy>]  
-
- 
-Arguments:
-
- 
-Options:
-    -h --help   Show help message
-    --c3d
-    --plot
-    --xls
-    --pointSuffix=<ps>  suffix associated with classic vicon output label  [default: ""].
-    --author=<authorYear>   Name and year of the Normative Data base used [default: Schwartz2008]
-    --modality=<modalitfy>  Modality of the Normative Database used  [default: Free]
-"""
-
 import sys
 import pdb
 import logging
@@ -49,10 +25,9 @@ from pyCGM2 import  smartFunctions
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='CGM')
-    parser.add_argument('--StaticProcessing', action='store_true', help='calibration' )
-    parser.add_argument('-p','--plot', action='store_true', help='left flat foot flag' )
-    parser.add_argument('--c3d', action='store_true', help='right flat foot flag' )
-    parser.add_argument('-x','--xls', action='store_true', help='enable plot' )
+    parser.add_argument('--StaticProcessing', action='store_true', help='static processing' )
+    parser.add_argument('-p','--plot', action='store_true', help='plot results' )
+    parser.add_argument('-x','--xls', action='store_true', help='return spreadsheet' )
     parser.add_argument('--pointSuffix', default="", type=str)
     parser.add_argument('--author', default="Schwartz2008", type=str)
     parser.add_argument('--modality', default="Free", type=str)    
@@ -78,7 +53,6 @@ if __name__ == "__main__":
         staticProcessing = args.StaticProcessing 
         plotFlag = args.plot
         exportSpreadSheetFlag = args.xls
-        exportAnalysisC3dFlag = args.c3d 
         normativeDataInput = str(args.author+"_"+ args.modality) #"Schwartz2008_VeryFast"       
         if  args.pointSuffix == "":
             pointSuffix = ""
@@ -111,7 +85,7 @@ if __name__ == "__main__":
                                    plotFlag= plotFlag, 
                                    exportBasicSpreadSheetFlag = exportSpreadSheetFlag,
                                    exportAdvancedSpreadSheetFlag = exportSpreadSheetFlag,
-                                   exportAnalysisC3dFlag = exportAnalysisC3dFlag,
+                                   exportAnalysisC3dFlag = False,
                                    consistencyOnly = True,
                                    normativeDataDict = normativeData)
 

@@ -44,7 +44,6 @@ if __name__ == "__main__":
         staticProcessing= False
         plotFlag = True 
         exportSpreadSheetFlag = True  
-        exportAnalysisC3dFlag = False
         normativeDataInput = "Schwartz2008_Free"
         pointSuffix=""        
         
@@ -76,7 +75,7 @@ if __name__ == "__main__":
                                    plotFlag= plotFlag, 
                                    exportBasicSpreadSheetFlag = exportSpreadSheetFlag,
                                    exportAdvancedSpreadSheetFlag = exportSpreadSheetFlag,
-                                   exportAnalysisC3dFlag = exportAnalysisC3dFlag,
+                                   exportAnalysisC3dFlag = False,
                                    consistencyOnly = True,
                                    normativeDataDict = normativeData)
     else: 
