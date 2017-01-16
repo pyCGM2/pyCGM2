@@ -1,23 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Usage:
-    file.py
-    file.py -h | --help
-    file.py --version
-    file.py  <vertical_global_axis> [ --left_medial_knee_marker=<lmm> --right_medial_knee_marker=<rmm> -u ]  
-
-Arguments:
-
- 
-Options:
-    -h --help   Show help message
-    -u          update c3d
-    --left_medial_knee_marker=<lmm>  suffix associated with classic vicon output label  [default: LMEPI].
-    --right_medial_knee_marker=<rmm>  suffix associated with classic vicon output label  [default: RMEPI].
-
-
-"""
-
 import sys
 import pdb
 import logging
