@@ -16,14 +16,9 @@ import pdb
 import os
 
 
-# pyCGM package
-import pyCGM2.Processing.cycle as CGM2cycle
-import pyCGM2.Tools.trialTools as CGM2trialTools
-import pyCGM2.Processing.analysis as CGM2analysis
-import pyCGM2.Report.plot as CGM2plot
-import pyCGM2.Report.normativeDatabaseProcedure as CGM2normdata
-from pyCGM2.Processing import analysis
-
+from pyCGM2.Processing import cycle,analysis
+from pyCGM2.Report import plot,normativeDatabaseProcedure
+from pyCGM2.Tools import trialTools
 
 # openma
 import ma.io
@@ -31,8 +26,10 @@ import ma.io
 
 def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH, 
                          modelInfo, subjectInfo, experimentalInfo,
+                         exportSpreadSheet=False,
                          pointLabelSuffix = "",
                          name_out=None,  DATA_PATH_OUT= None ):
+
 
     pointLabelSuffixPlus  = pointLabelSuffix   if pointLabelSuffix =="" else "_"+pointLabelSuffix   
 
@@ -42,7 +39,7 @@ def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH,
 
 
     # --- common temporal plot
-    temporelPlotPdf = CGM2plot.gaitKinematicsTemporalPlotPanel(kinematicTrial,pointLabelSuffix=pointLabelSuffix,  filename=modelledStaticFilename, path = DATA_PATH)
+    temporelPlotPdf = plot.gaitKinematicsTemporalPlotPanel(kinematicTrial,modelledStaticFilename, pointLabelSuffix=pointLabelSuffix, path = DATA_PATH)
 
     
     # --- static angle profile
@@ -51,19 +48,29 @@ def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH,
                           "RHipAngles"+pointLabelSuffixPlus,"RKneeAngles"+pointLabelSuffixPlus,"RAnkleAngles"+pointLabelSuffixPlus,"RFootProgressAngles"+pointLabelSuffixPlus,"RPelvisAngles"+pointLabelSuffixPlus]
 
     # analysis
-    staticAnalysis = analysis.staticAnalysisFilter(kinematicTrial,angles,
+    staticAnalysis = analysis.StaticAnalysisFilter(kinematicTrial,angles,
                             subjectInfos=subjectInfo,
                             modelInfos= modelInfo,
                             experimentalInfos=experimentalInfo)
-    staticAnalysis.buildDataFrame()
+    staticAnalysis.build()
+    
+  
     
     # plot
     if DATA_PATH_OUT is None:
         DATA_PATH_OUT = DATA_PATH
 
-    plotBuilder = CGM2plot.StaticAnalysisPlotBuilder(staticAnalysis.m_dataframe,pointLabelSuffix=pointLabelSuffix, staticModelledFilename = modelledStaticFilename)
+    if exportSpreadSheet:
+        if name_out  is None:
+            spreadSheetName = modelledStaticFilename[:-4] 
+        else:
+            spreadSheetName = name_out
+
+        staticAnalysis.exportDataFrame(spreadSheetName, path=DATA_PATH_OUT) 
+
+    plotBuilder = plot.StaticAnalysisPlotBuilder(staticAnalysis.analysis,pointLabelSuffix=pointLabelSuffix, staticModelledFilename = modelledStaticFilename)
     # Filter
-    pf = CGM2plot.PlottingFilter()
+    pf = plot.PlottingFilter()
     pf.setBuilder(plotBuilder)
     pf.setPath(DATA_PATH_OUT)
     if name_out  is None:
@@ -110,11 +117,11 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     for kinematicFilename in modelledFilenames:
         kinematicFileNode = ma.io.read(str(DATA_PATH + kinematicFilename))
         kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
-        CGM2trialTools.sortedEvents(kinematicTrial)
+        trialTools.sortedEvents(kinematicTrial)
 
         if longitudinal_axis is None or lateral_axis is None:
             logging.info("Automatic detection of Both longitudinal and lateral Axes")
-            longitudinalAxis,forwardProgression,globalFrame = CGM2trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
+            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
         else:    
             if longitudinal_axis is None or lateral_axis is not None:
                 raise Exception("[pyCGM2] Longitudinal_axis has to be also defined")     
@@ -129,17 +136,17 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
         kinematicFilenames.append(kinematicFilename)
 
     # - kinetic Trials ( check if kinetic events)        
-    kineticTrials,kineticFilenames,flag_kinetics =  CGM2trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames)                         
+    kineticTrials,kineticFilenames,flag_kinetics =  trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames)                         
 
     #---- GAIT CYCLES FILTER
     #--------------------------------------------------------------------------
-    cycleBuilder = CGM2cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
+    cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
                                                kinematicTrials = kinematicTrials,
                                                kineticTrials = kineticTrials,
                                                emgTrials=None,
                                                longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
             
-    cyclefilter = CGM2cycle.CyclesFilter()
+    cyclefilter = cycle.CyclesFilter()
     cyclefilter.setBuilder(cycleBuilder)
     cycles = cyclefilter.build()
 
@@ -155,16 +162,17 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                     'Right': ["RHipMoment"+pointLabelSuffixPlus,"RKneeMoment"+pointLabelSuffixPlus,"RAnkleMoment"+pointLabelSuffixPlus, "RHipPower"+pointLabelSuffixPlus,"RKneePower"+pointLabelSuffixPlus,"RAnklePower"+pointLabelSuffixPlus]}
 
 
-    analysisBuilder = CGM2analysis.GaitAnalysisBuilder(cycles,
+    analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
                                                   kinematicLabelsDict = kinematicLabelsDict,
                                                   kineticLabelsDict = kineticLabelsDict,
                                                   subjectInfos=subjectInfo,
                                                   modelInfos=modelInfo,
                                                   experimentalInfos=experimentalInfo)
     
-    analysisFilter = CGM2analysis.AnalysisFilter()
+    analysisFilter = analysis.AnalysisFilter()
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
+    
     
     # export dataframe
     if DATA_PATH_OUT is None:
@@ -190,18 +198,19 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     #---- GAIT PLOTTING FILTER
     #--------------------------------------------------------------------------
     if plotFlag:    
-        plotBuilder = CGM2plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=flag_kinetics, pointLabelSuffix= pointLabelSuffix)
+        
+        plotBuilder = plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=flag_kinetics, pointLabelSuffix= pointLabelSuffix)
         if normativeDataDict["Author"] == "Schwartz2008":
             chosenModality = normativeDataDict["Modality"]
-            plotBuilder.setNormativeDataProcedure(CGM2normdata.Schwartz2008_normativeDataBases(chosenModality)) # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
+            plotBuilder.setNormativeDataProcedure(normativeDatabaseProcedure.Schwartz2008_normativeDataBases(chosenModality)) # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
         elif normativeDataDict["Author"] == "Pinzone2014":
             chosenModality = normativeDataDict["Modality"]
-            plotBuilder.setNormativeDataProcedure(CGM2normdata.Pinzone2014_normativeDataBases(chosenModality)) # modalites : "Center One" ,"Center Two"
+            plotBuilder.setNormativeDataProcedure(normativeDatabaseProcedure.Pinzone2014_normativeDataBases(chosenModality)) # modalites : "Center One" ,"Center Two"
        
         plotBuilder.setConsistencyOnly(consistencyOnly)       
        
         # Filter
-        pf = CGM2plot.PlottingFilter()
+        pf = plot.PlottingFilter()
         pf.setBuilder(plotBuilder)
         pf.setPath(DATA_PATH_OUT)
  

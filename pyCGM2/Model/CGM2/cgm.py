@@ -3292,9 +3292,9 @@ class CGM1ModelInf(CGM):
         
     def finalizeAbsoluteAngles(self,SegmentLabel,anglesValues):
         """
-        Eigen::Matrix<double,Eigen::Dynamic,1> temp = angle->GetValues().col(1);
-      angle->GetValues().col(1) = angle->GetValues().col(2);
-      angle->GetValues().col(2) =  -1.0 * temp;
+           Eigen::Matrix<double,Eigen::Dynamic,1> temp = angle->GetValues().col(1);
+           angle->GetValues().col(1) = angle->GetValues().col(2);
+           angle->GetValues().col(2) =  -1.0 * temp;
         """        
         
         values = np.zeros((anglesValues.shape))
