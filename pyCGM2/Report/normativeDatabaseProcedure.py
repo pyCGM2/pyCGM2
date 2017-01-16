@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Sep 26 16:32:22 2016
-
-@author: AAA34169
-"""
 import logging
 
 
@@ -17,12 +12,33 @@ import numpy as np
 class Pinzone2014_normativeDataBases(object):
 
     def __init__(self,centre):
+        """ 
+        **Description :** Constructor of Pinzone2014_normativeDataBases 
+        
+
+        :Parameters:
+             - `centre` (str) - two choices : CentreOne or CentreTwo 
+ 
+        **Usage**
+       
+        .. code:: python
+
+            from pyCGM2.Report import normativeDatabaseProcedure
+            nd = normativeDatabaseProcedure.Pinzone2014_normativeDataBases("CentreOne")
+            nd.constructNormativeData() # this function 
+            nd.data # dictionnary with all parameters extracted from the dataset CentreOne reference in Pinzone2014 
+ 
+ 
+        """
         
         self.m_filename = pyCGM2.CONFIG.NORMATIVE_DATABASE_PATH+"Pinzone 2014\\Formatted- Pinzone2014.xlsx"
         self.m_centre = centre
         self.data = dict()
     
     def __setDict(self,dataframe,JointLabel,axisLabel, dataType):
+        """ populate an item of the member dictionnary (data) 
+         
+        """
 
         if self.m_centre == "CentreOne":
             meanLabel = "CentreOneAverage"
@@ -69,6 +85,11 @@ class Pinzone2014_normativeDataBases(object):
 
     
     def constructNormativeData(self):
+        
+        """ 
+            **Description :**  Read initial xls file and construct the member dictionnary (data)
+        """
+        
         angles =pd.read_excel(self.m_filename,sheetname = "Angles")        
         moments =pd.read_excel(self.m_filename,sheetname = "Moments")
         powers =pd.read_excel(self.m_filename,sheetname = "Powers")                        
@@ -89,14 +110,39 @@ class Pinzone2014_normativeDataBases(object):
             
 class Schwartz2008_normativeDataBases(object):
 
+
     def __init__(self,speed):
-        
+
+        """ 
+        **Description :** Constructor of Schwartz2008_normativeDataBases
+
+        :Parameters:
+               - `speed` (str) -  choices : VerySlow, Slow, Free, Fast, VeryFast 
+ 
+        **usage**
+       
+        .. code:: python
+
+            from pyCGM2.Report import normativeDatabaseProcedure
+            nd = normativeDatabaseProcedure.Schwartz2008_normativeDataBases("Free")
+            nd.constructNormativeData() # this function 
+            nd.data # dictionnary with all parameters extracted from the dataset CentreOne reference in Pinzone2014 
+ 
+ 
+        """
+
         self.m_filename = pyCGM2.CONFIG.NORMATIVE_DATABASE_PATH+"Schwartz 2008\\Formatted- Schwartz2008.xlsx"        
         
         self.m_speedModality = speed
         self.data = dict()
 
     def __setDict(self,dataframe,JointLabel,axisLabel, dataType):
+        """ 
+            Populate an item of the member dictionnary (data) 
+         
+        """        
+        
+        
         if self.m_speedModality == "VerySlow":
             meanLabel = "VerySlowMean"
             sdLabel = "VerySlowSd"
@@ -152,6 +198,10 @@ class Schwartz2008_normativeDataBases(object):
         
         
     def constructNormativeData(self):
+        """ 
+            **Description :**  Read initial xls file and construct the member dictionnary (data)
+        """
+
         angles =pd.read_excel(self.m_filename,sheetname = "Joint Rotations")        
         moments =pd.read_excel(self.m_filename,sheetname = "Joint Moments")
         powers =pd.read_excel(self.m_filename,sheetname = "Joint Power")                        
