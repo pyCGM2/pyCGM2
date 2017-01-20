@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 10 11:21:57 2016
-
-@author: Fabien Leboeuf ( Salford Univ, UK)
-"""
 import numpy as np
 import scipy as sp
 from scipy import interpolate
 
 def splineFittingDerivation(values,sampleFrequency,order=1):
+    """
+        Spline fitting derivation
+
+        :Parameters:
+            - `values` (numpy.array(m,n)) - array of values 
+            - `sampleFrequency` (double) - sample frequency 
+            - `order` (order) -  order of derivation             
+
+        :Return:
+            - `out` (numpy.array(m,n)) - derivated values 
+
+    """
     N = values.shape[0]
     m = values.shape[1]
     
@@ -31,6 +38,19 @@ def splineFittingDerivation(values,sampleFrequency,order=1):
 
 
 def splineDerivation(values,sampleFrequency,order=1):
+    
+    """
+        Spline derivation
+
+        :Parameters:
+            - `values` (numpy.array(m,n)) - array of values 
+            - `sampleFrequency` (double) - sample frequency 
+            - `order` (order) -  order of derivation             
+
+        :Return:
+            - `out` (numpy.array(m,n)) - derivated values 
+
+    """
 
     N = values.shape[0]
     m = values.shape[1]
@@ -50,6 +70,18 @@ def splineDerivation(values,sampleFrequency,order=1):
 
 
 def firstOrderFiniteDifference(values,sampleFrequency):
+    
+    """
+        First-order differentiation of an array
+
+        :Parameters:
+            - `values` (numpy.array(m,n)) - array of values 
+            - `sampleFrequency` (double) - sample frequency 
+
+        :Return:
+            - `out` (numpy.array(m,n)) - derivated values 
+
+    """
     
     n,m = values.shape
     out = np.zeros((n,m))
@@ -75,9 +107,15 @@ def firstOrderFiniteDifference(values,sampleFrequency):
 
 def secondOrderFiniteDifference(values,sampleFrequency):
     """
-    derivateValues.row(i)=(1*this->m_Values.row(i-1) 
-      -2*this->m_Values.row(i)
-      +1*this->m_Values.row(i+1))/(pow(1/pointFrequency,2));
+        Second-order differentiation of an array
+
+        :Parameters:
+            - `values` (numpy.array(m,n)) - array of values 
+            - `sampleFrequency` (double) - sample frequency 
+
+        :Return:
+            - `out` (numpy.array(m,n)) - derivated values 
+
     """
 
 
@@ -103,6 +141,18 @@ def secondOrderFiniteDifference(values,sampleFrequency):
    
 
 def matrixFirstDerivation(motionList, sampleFrequency):
+    
+    """
+        First-order differentiation of a list of array
+
+        :Parameters:
+            - `values` (list of numpy.array(m,n)) - array of values 
+            - `sampleFrequency` (double) - sample frequency 
+
+        :Return:
+            - `out` (list numpy.array(m,n)) - derivated values 
+
+    """
 
     nf = len(motionList)
     matrixList=[]
@@ -122,6 +172,18 @@ def matrixFirstDerivation(motionList, sampleFrequency):
 
 
 def matrixSecondDerivation(motionList,sampleFrequency):
+    """
+        Second-order differentiation of a list of array
+
+        :Parameters:
+            - `values` (list of numpy.array(m,n)) - array of values 
+            - `sampleFrequency` (double) - sample frequency 
+
+        :Return:
+            - `out` (list numpy.array(m,n)) - derivated values 
+
+    """    
+    
     nf = len(motionList)
     matrixList=[]
 

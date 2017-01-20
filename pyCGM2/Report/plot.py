@@ -32,7 +32,7 @@ def gaitKinematicsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""
         :Parameters:
              - `trial` (openma-trial) - openma trial from a c3d
              - `filename` (str) - c3d filename of the gait trial
-             - `pointLabelSuffix` (str) - suffix ending conventional kinematic CGM labels
+             - `pointLabelSuffix` (str) - suffix ending vicon output nomenclature
              - `path` (str) - path pointing a folder where pdf will be stored. Must end with \\
 
         :Return:
@@ -44,7 +44,7 @@ def gaitKinematicsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""
 
 
 
-        """
+    """
 
     pointLabelSuffixPlus  = pointLabelSuffix   if pointLabelSuffix =="" else "_"+pointLabelSuffix
 
@@ -157,7 +157,7 @@ def gaitKineticsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""):
         :Parameters:
              - `trial` (openma-trial) - openma trial
              - `filename` (str) - c3d filename of the gait trial
-             - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
+             - `pointLabelSuffix` (str) - suffix ending vicon output nomenclature
              - `path` (str) - path pointing a folder where pdf will be stored. Must end with \\
 
         :Return:
@@ -1167,11 +1167,12 @@ def gaitConsistencyPlot( figAxis, analysisStructureItem,  pointLabel_L,contextPo
 
 # ------ FILTER -----------
 class PlottingFilter(object):
+    """
+        **Description :** This filter calls a concrete PlotBuilder and run  its plot-embedded method
+    """
 
     def __init__(self):
-        '''
-            **Description :** Filter constructor. This filter calls a concrete PlotBuilder and run  its plot-embedded method
-        '''
+
         self.__concretePlotBuilder = None
         self.m_path = None
         self.m_pdfSuffix = None
@@ -1235,10 +1236,12 @@ class AbstractPlotBuilder(object):
 
 
 class StaticAnalysisPlotBuilder(AbstractPlotBuilder):
+    """
+        **Description :** construct static analysis plot profile
+    """        
+    
     def __init__(self,iStaticAnalysis,pointLabelSuffix="",staticModelledFilename=""):
         """
-            **Description :** Constructor of static analysis plots
-
             :Parameters:
                  - `iStaticAnalysis` (pyCGM2.Processing.analysis.StaticAnalysis ) - StaticAnalysis instance built from StaticAnalysisFilter
                  - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
@@ -1372,86 +1375,90 @@ class StaticAnalysisPlotBuilder(AbstractPlotBuilder):
 
 
 class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
+    """
+        **Description :** Constructor of gait plot panel.
+    
+        .. warning:: 
+        
+            By default, the plotPanel method uses vicon point nomenclature through a dictionnary ``translators``. 
+            Use *setTranslator* method if you want to use another point label 
+
+        .. note::
+
+            The kinematic panel is made of 12 subplots
+
+            ================  ==============================    ===========
+            matplotlib Axis   translators                       Axis label
+            ================  ==============================    ===========
+            ax1               "Left.PelvisProgress.Angles"      Tilt
+                              "Right.PelvisProgress.Angles"
+            ax2               "Left.PelvisProgress.Angles"      Obli
+                              "Right.PelvisProgress.Angles"
+            ax3               "Left.PelvisProgress.Angles"      Rota
+                              "Right.PelvisProgress.Angles"
+            ax4               "Left.Hip.Angles"                 Flex
+                              "Right.Hip.Angles"
+            ax5               "Left.Hip.Angles"                 Addu
+                              "Right.Hip.Angles"
+            ax6               "Left.Hip.Angles"                 Rota
+                              "Right.Hip.Angles"
+            ax7               "Left.Knee.Angles"                Flex
+                              "Right.Knee.Angles"
+            ax8               "Left.Knee.Angles"                Addu
+                              "Right.Knee.Angles"
+            ax9               "Left.Knee.Angles"                Rota
+                              "Right.Knee.Angles"
+            ax10              "Left.Ankle.Angles"               Flex
+                              "Right.Ankle.Angles"
+            ax11              "Left.Ankle.Angles"               Addu
+                              "Right.Ankle.Angles"
+            ax12              "Left.FootProgress.Angles"        Rota
+                              "Right.FootProgress.Angles"
+            ================  ==============================    ===========
+
+            The kinetic panel is made of 12 subplots
+
+            ================  ==============================    ===========
+            matplotlib Axis   translators                       Axis label
+            ================  ==============================    ===========
+            ax1               "Left.Hip.Moment"                 Ext
+                              "Right.Hip.Moment"
+            ax2               "Left.Hip.Moment"                 Abd
+                              "Right.Hip.Moment"
+            ax3               "Left.Hip.Moment"                 Rot
+                              "Right.Hip.Moment"
+            ax4               "Left.Hip.Power"
+                              "Right.Hip.Power"
+            ax5               "Left.Knee.Moment"                Ext
+                              "Right.Knee.Moment"
+            ax6               "Left.Knee.Moment"                Abd
+                              "Right.Knee.Moment"
+            ax7               "Left.Knee.Moment"                Rot
+                              "Right.Knee.Moment"
+            ax8               "Left.Knee.Power"                  
+                              "Right.Knee.Power"
+            ax9               "Left.Ankle.Moment"               Pla
+                              "Right.Ankle.Moment"
+            ax10              "Left.Ankle.Moment"               Rot
+                              "Right.Ankle.Moment"
+            ax11              "Left.Ankle.Moment"               Eve
+                              "Right.Ankle.Moment"
+            ax12              "Left.Ankle.Power"
+                              "Right.Ankle.Power"
+            ================  ==============================    ===========
+            
+    """
+    
     def __init__(self,iAnalysis,kineticFlag=True,pointLabelSuffix=""):
 
         """
-            **Description :** Constructor of gait plot panel.
-
-            .. warning:: 
-            
-                By default, the plotPanel method uses vicon point nomenclature through a dictionnary ``translators``. 
-                Use *setTranslator* method if you want to use another point label 
-
-
             :Parameters:
                  - `iAnalysis` (pyCGM2.Processing.analysis.Analysis ) - Analysis instance built from AnalysisFilter
                  - `kineticFlag` (bool) - enable kinetic plots
                  - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
 
 
-            .. note::
 
-                The kinematic panel is made of 12 subplots
-    
-                ================  ==============================    ===========
-                matplotlib Axis   translators                       Axis label
-                ================  ==============================    ===========
-                ax1               "Left.PelvisProgress.Angles"      Tilt
-                                  "Right.PelvisProgress.Angles"
-                ax2               "Left.PelvisProgress.Angles"      Obli
-                                  "Right.PelvisProgress.Angles"
-                ax3               "Left.PelvisProgress.Angles"      Rota
-                                  "Right.PelvisProgress.Angles"
-                ax4               "Left.Hip.Angles"                 Flex
-                                  "Right.Hip.Angles"
-                ax5               "Left.Hip.Angles"                 Addu
-                                  "Right.Hip.Angles"
-                ax6               "Left.Hip.Angles"                 Rota
-                                  "Right.Hip.Angles"
-                ax7               "Left.Knee.Angles"                Flex
-                                  "Right.Knee.Angles"
-                ax8               "Left.Knee.Angles"                Addu
-                                  "Right.Knee.Angles"
-                ax9               "Left.Knee.Angles"                Rota
-                                  "Right.Knee.Angles"
-                ax10              "Left.Ankle.Angles"               Flex
-                                  "Right.Ankle.Angles"
-                ax11              "Left.Ankle.Angles"               Addu
-                                  "Right.Ankle.Angles"
-                ax12              "Left.FootProgress.Angles"        Rota
-                                  "Right.FootProgress.Angles"
-                ================  ==============================    ===========
-    
-                The kinetic panel is made of 12 subplots
-    
-                ================  ==============================    ===========
-                matplotlib Axis   translators                       Axis label
-                ================  ==============================    ===========
-                ax1               "Left.Hip.Moment"                 Ext
-                                  "Right.Hip.Moment"
-                ax2               "Left.Hip.Moment"                 Abd
-                                  "Right.Hip.Moment"
-                ax3               "Left.Hip.Moment"                 Rot
-                                  "Right.Hip.Moment"
-                ax4               "Left.Hip.Power"
-                                  "Right.Hip.Power"
-                ax5               "Left.Knee.Moment"                Ext
-                                  "Right.Knee.Moment"
-                ax6               "Left.Knee.Moment"                Abd
-                                  "Right.Knee.Moment"
-                ax7               "Left.Knee.Moment"                Rot
-                                  "Right.Knee.Moment"
-                ax8               "Left.Knee.Power"                  
-                                  "Right.Knee.Power"
-                ax9               "Left.Ankle.Moment"               Pla
-                                  "Right.Ankle.Moment"
-                ax10              "Left.Ankle.Moment"               Rot
-                                  "Right.Ankle.Moment"
-                ax11              "Left.Ankle.Moment"               Eve
-                                  "Right.Ankle.Moment"
-                ax12              "Left.Ankle.Power"
-                                  "Right.Ankle.Power"
-                ================  ==============================    ===========
 
         """
 

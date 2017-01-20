@@ -1,12 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 10 11:36:32 2016
-
-@author: Fabien Leboeuf ( Salford Univ, UK)
-
-
-TODO : findProgression Axis should be in another folder. (?) 
-"""
 
 import numpy as np
 import logging
@@ -15,6 +7,12 @@ import btk
 
 
 def smartReader(filename):
+    """
+        Convenient function to read a c3d with Btk    
+
+        :Parameters:
+            - `filename` (str) - path and filename of the c3d
+    """
     reader = btk.btkAcquisitionFileReader()
     reader.SetFilename(filename)
     reader.Update()
@@ -22,6 +20,13 @@ def smartReader(filename):
     return acq 
 
 def smartWriter(acq, filename):
+    """
+        Convenient function to write a c3d with Btk    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `filename` (str) - path and filename of the c3d
+    """
     writer = btk.btkAcquisitionFileWriter()
     writer.SetInput(acq)
     writer.SetFilename(filename)
@@ -29,6 +34,13 @@ def smartWriter(acq, filename):
 
 
 def isPointExist(acq,label):
+    """
+        Check if a point label exists inside an acquisition    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `label` (str) - point label
+    """
     #TODO : replace by btkIterate
     i = acq.GetPoints().Begin()
     while i != acq.GetPoints().End(): 
@@ -45,6 +57,13 @@ def isPointExist(acq,label):
         return False
 
 def isPointsExist(acq,labels):
+    """
+        Check if point labels exist inside an acquisition    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `labels` (list of str) - point labels
+    """
     for label in labels:
         if not isPointExist(acq,label):
             logging.error("[pyCGM2] markers (%s) doesn't exist"% label )
@@ -52,6 +71,16 @@ def isPointsExist(acq,labels):
     return True
 
 def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
+    """
+        Append/Update a point inside an acquisition    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `label` (str) - point label
+            - `values` (numpy.array(n,3)) - point label
+            - `PointType` (enums of btk.btkPoint) - type of Point            
+    """    
+    
     logging.debug("new point (%s) added to the c3d" % label)
 
     # TODO : si value = 1 lignes alors il faudrait dupliquer la lignes pour les n franes
@@ -72,6 +101,14 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
         acq.AppendPoint(new_btkPoint)
 
 def clearPoints(acq, pointlabelList):
+    """
+        Clear points    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `lapointlabelListel` (list of str) - point labels
+
+    """    
     
     i = acq.GetPoints().Begin()
     while i != acq.GetPoints().End():
@@ -88,6 +125,16 @@ def clearPoints(acq, pointlabelList):
     return acq
 
 def findProgressionFromPoints(acq,originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel):
+    """
+        Find progression from 3 markers    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `originPointLabel` (str) - origin marker label 
+            - `longitudinal_extremityPointLabel` (str) - forward marker label
+            - `lateral_extremityPointLabel` (str) - lateral marker label
+
+    """ 
     if not isPointExist(acq,originPointLabel):
         raise Exception( "[pyCGM2] : origin point doesnt exist")
 
@@ -143,6 +190,14 @@ def findProgressionFromPoints(acq,originPointLabel, longitudinal_extremityPointL
 
 
 def findProgressionFromVectors(a1_long,a2_lat):
+    """
+        Find progression from 2 vectors    
+
+        :Parameters:
+            - `a1_long` (numpy.array(3,)) - forward vector 
+            - `a1_long` (numpy.array(3,)) - lateral vector
+
+    """ 
 
     a1=a1_long/np.linalg.norm(a1_long)
 
@@ -185,13 +240,24 @@ def findProgressionFromVectors(a1_long,a2_lat):
     
 def checkMarkers( acq, markerList):
     """
-    checkMarkers(acqGait, ["LASI", "RASI","LPSI", "RPSI", "RTHIAP", "RTHIAD", "RTHI", "RKNE", "RSHN","RTIAP", "RTIB", "RANK", "RHEE", "RTOE","RCUN","RD1M","RD5M" ])                   
+        Check if marker labels exist inside an acquisition    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `markerList` (list of str) - marker labels
     """
     for m in markerList:
         if not isPointExist(acq, m):
             raise Exception("[pyCGM2] markers %s not found" % m )
 
 def checkFirstAndLastFrame (acq, markerLabel):
+    """
+        Check if extremity frames are correct    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `markerLabel` (str) - marker label
+    """
 
     if acq.GetPoint(markerLabel).GetValues()[0,0] == 0:
         raise Exception ("[pyCGM2] no marker on first frame")
@@ -200,12 +266,27 @@ def checkFirstAndLastFrame (acq, markerLabel):
         raise Exception ("[pyCGM2] no marker on last frame")
         
 def isGap(acq, markerList):
+    """
+        Check if there is a gap    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `markerList` (list of str) - marker labels
+    """
     for m in markerList:
          residualValues = acq.GetPoint(m).GetResiduals()
          if any(residualValues== -1.0):
              raise Exception("[pyCGM2] gap founded for markers %s " % m )    
              
 def modifyEventSubject(acq,newSubjectlabel):
+    """
+        update the subject name of all events   
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `newSubjectlabel` (str) - desired subject name
+    """
+    
     # events
     nEvents = acq.GetEventNumber()
     if nEvents>=1: 
@@ -214,4 +295,11 @@ def modifyEventSubject(acq,newSubjectlabel):
     return acq
 
 def modifySubject(acq,newSubjectlabel):
+    """
+        update the subject name inside c3d metadata   
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `newSubjectlabel` (str) - desired subject name
+    """
     acq.GetMetaData().FindChild("SUBJECTS").value().FindChild("NAMES").value().GetInfo().SetValue(0,str(newSubjectlabel))

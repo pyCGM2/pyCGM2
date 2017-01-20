@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 03 10:52:09 2016
-
-@author: fabien Leboeuf ( Salford Univ)
-"""
-
 import numpy as np
 import pdb
 import logging
@@ -13,20 +7,29 @@ import ma.io
 import ma.body
 
 
-
 import pyCGM2.Tools.trialTools as CGM2trialTools
 import pyCGM2.Math.normalisation  as MathNormalisation
 
-#---- MODULE METHODS ------
+#----module methods ------
 
 def spatioTemporelParameter_descriptiveStats(cycles,label,context):
     
-    """   
+    """
+        Compute descriptive statistics of spatio-temporal parameters from a `cycles` instance  
+        
+        :Parameters:
+             - `cycles` (pyCGM2.Processing.cycle.Cycles) - Cycles instance built fron CycleFilter
+             - `label` (str) - spatio-temporal label
+             - `context` (str) - cycle side context ( Left, Right) 
+ 
+        :Return:
+            - `outDict` (dict)  - dictionnary with descriptive statistics ( mean, std, median).  Addictional Item *val* collects cycle values
+
     """
 
     outDict=dict()    
     
-    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle 
+    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context])  
     val = np.zeros((n))
     
     i=0
@@ -41,6 +44,16 @@ def spatioTemporelParameter_descriptiveStats(cycles,label,context):
 
 def point_descriptiveStats(cycles,label,context):
     """
+        Compute descriptive statistics of point parameters from a `cycles` instance  
+        
+        :Parameters:
+             - `cycles` (pyCGM2.Processing.cycle.Cycles) - Cycles instance built fron CycleFilter
+             - `label` (str) - point label
+             - `context` (str) - cycle side context ( Left, Right) 
+ 
+        :Return:
+            - `outDict` (dict)  - dictionnary with descriptive statistics ( mean, std, median).  Addictional Item *values* collects cycle values
+
     """
        
     outDict=dict()    
@@ -92,6 +105,20 @@ def point_descriptiveStats(cycles,label,context):
     
     
 def analog_descriptiveStats(cycles,label,context):
+    """
+        Compute descriptive statistics of analog parameters from a `cycles` instance  
+        
+        :Parameters:
+             - `cycles` (pyCGM2.Processing.cycle.Cycles) - Cycles instance built fron CycleFilter
+             - `label` (str) - analog label
+             - `context` (str) - cycle side context ( Left, Right) 
+ 
+        :Return:
+            - `outDict` (dict)  - dictionnary with descriptive statistics ( mean, std, median).  Addictional Item *values* collects cycle values
+
+    """
+
+
 
     outDict=dict()    
 
@@ -126,17 +153,24 @@ def analog_descriptiveStats(cycles,label,context):
             
     return outDict
 
-#---- CLASSES ------
+#----module classes ------
 
 class Cycle(ma.Node):
     """
-    pour definir un label, il faut passer par la methode setName de l objet node
+        Cut out a trial and create a generic Cycle from specific times 
+    """
+    #pour definir un label, il faut passer par la methode setName de l objet node
 
-    """    
-    
+
     
     def __init__(self,trial,startTime,endTime,context, enableFlag = True):
         """
+        :Parameters:
+             - `trial` (openma-trial) - openma from a c3d
+             - `startTime` (double) -  start time of the cycle
+             - `endTime` (double) - end time of the cycle 
+             - `enableFlag` (bool) - flag the Cycle in order to indicate if we can use it in a analysis process.   
+         
         """
   
         nodeLabel = "Cycle"   
@@ -160,33 +194,77 @@ class Cycle(ma.Node):
 
 
     def setEnableFlag(self,flag):
+        """
+        set the cycle flag
+        
+        :Parameters:
+             - `flag` (bool) - boolean flag 
+         
+        """        
         self.enableFlag = flag        
         
     def addDiscreteData(self,label,value,instant):
         pass #todo
 
-    def getPointTimeSequenceData(self,markerLabel):
-        if CGM2trialTools.isTimeSequenceExist(self.trial,markerLabel):
-            return  self.trial.findChild(ma.T_TimeSequence, markerLabel).data()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)  
+    def getPointTimeSequenceData(self,pointLabel):
+        """
+            Get temporal point data of the cycle  
+        
+            :Parameters:
+                - `pointLabel` (str) - point Label
+         
+        """
+        if CGM2trialTools.isTimeSequenceExist(self.trial,pointLabel):
+            return  self.trial.findChild(ma.T_TimeSequence, pointLabel).data()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)  
         else:
-            raise Exception("[pyCGM2] marker %s doesn t exist"% markerLabel )
+            raise Exception("[pyCGM2] marker %s doesn t exist"% pointLabel )
 
 
-    def getPointTimeSequenceDataNormalized(self,markerLabel):
-        data = self.getPointTimeSequenceData(markerLabel)
+    def getPointTimeSequenceDataNormalized(self,pointLabel):
+        """
+            Normalisation of a point label 
+        
+            :Parameters:
+                - `pointLabel` (str) - point Label
+         
+        """         
+        
+        data = self.getPointTimeSequenceData(pointLabel)
         return  MathNormalisation.timeSequenceNormalisation(101,data)
 
     def getAnalogTimeSequenceData(self,analogLabel):
+        """
+            Get analog data of the cycle  
+        
+            :Parameters:
+                - `analogLabel` (str) - analog Label
+         
+        """
         if CGM2trialTools.isTimeSequenceExist(self.trial,analogLabel):
             return  self.trial.findChild(ma.T_TimeSequence, analogLabel).data()[(self.begin-self.firstFrame) * self.appf : (self.end-self.firstFrame+1) * self.appf,:]
         else:
             raise Exception("[pyCGM2] Analog %s doesn t exist"% analogLabel )
         
     def getAnalogTimeSequenceDataNormalized(self,analogLabel):
+        """
+            Get analog data of the cycle  
+            
+            :Parameters:
+                - `analogLabel` (str) - analog Label
+        """                 
+        
         data = self.getAnalogTimeSequenceData(analogLabel)
         return  MathNormalisation.timeSequenceNormalisation(101,data)        
 
     def getEvents(self,context="All"):
+        """
+            Get all events of the cycle  
+            
+            :Parameters:
+                - `context` (str) - event context ( All, Left or Right) 
+
+        """
+        
         events = ma.Node("Events")
         evsn = self.trial.findChild(ma.T_Node,"SortedEvents")
         for ev in evsn.findChildren(ma.T_Event):
@@ -202,6 +280,22 @@ class Cycle(ma.Node):
         
 class GaitCycle(Cycle):
 
+    """
+        Herited method of Cycle specifying a Gait Cycle 
+        
+        .. note:: 
+        
+            - By default, X0 and Yo are the longitudinal and lateral global axis respectively
+            - Each GaitCycle creation computes spatio-temporal parameters automatically.
+            - spatio-temporal parameters are :
+                "duration", "cadence", 
+                "stanceDuration", "stancePhase", 
+                "swingDuration", "swingPhase", "doubleStance1", "doubleStance2",
+                "simpleStance", "strideLength", "stepLength",
+                "strideWidth", "speed"
+    """
+
+
     STP_LABELS=["duration","cadence", "stanceDuration",  "stancePhase", 
                 "swingDuration", "swingPhase", "doubleStance1", "doubleStance2",
                 "simpleStance", "strideLength", "stepLength",
@@ -210,6 +304,19 @@ class GaitCycle(Cycle):
     
     def __init__(self,gaitTrial,startTime,endTime,context, enableFlag = True,
                  longitudinal_axis=0,lateral_axis=1):
+        """
+        :Parameters:
+             - `trial` (openma-trial) - openma from a c3d
+             - `startTime` (double) -  start time of the cycle
+             - `endTime` (double) - end time of the cycle 
+             - `enableFlag` (bool) - flag the Cycle in order to indicate if we can use it in a analysis process.
+             - `longitudinal_axis` (int) - index of the  longitudinal global axis (X=0, Y=1, Z=2)
+             - `lateral_axis` (int) - index of the lateral global axis (X=0, Y=1, Z=2)                 
+
+        """
+
+
+
         super(GaitCycle, self).__init__(gaitTrial,startTime,endTime,context, enableFlag = enableFlag)
         
         #ajout des oppositeFO, contraFO,oopositeFS 
@@ -307,22 +414,42 @@ class GaitCycle(Cycle):
                 pst.setProperty("speed",np.divide(strideLength,duration))
 
     def getSpatioTemporalParameter(self,label):
+        """
+        Return a spatio-temporal parameter
+
+        :Parameters:
+             - `label` (str) - label of the desired spatio-temporal parameter
+        """
+
         stpNode = self.findChild(ma.T_Node,"stp")
         return stpNode.property(label).cast()
+
+
+# ----- PATTERN BUILDER -----
 
 # ----- FILTER -----
 class CyclesFilter: 
     """
-    get the different element of cyclesAnalysis and construct the object cyclesAnalysis
+        Filter buiding a Cycles instance.
     """
  
     __builder = None
  
     def setBuilder(self, builder):
+        """
+            Set the cycle builder        
+        
+            :Parameters:
+                 - `builder` (concrete cycleBuilder) - a concrete cycle builder   
+
+        """
         self.__builder = builder
  
 
     def build(self):
+        """
+            Build a `Cycles` instance
+        """
         cycles = Cycles()
  
         spatioTemporalElements = self.__builder.getSpatioTemporal()
@@ -340,13 +467,20 @@ class CyclesFilter:
         return cycles   
 
 
-
-
-# ----- BUILDER PATTERN -----
-
-# --- object to build 
+# --- OBJECT TO BUILD
 class Cycles(): 
     """
+    Object to build from CycleFilter. 
+    
+    Cycles work as **class-container**. Its attribute member collects list of build Cycle
+
+    Attribute :
+      
+      - `spatioTemporalCycles` - (list of Cycle) - collect list of build cycles uses for spatiotemporal analysis       
+      - `kinematicCycles` - (list of Cycle) - collect list of build cycles uses for kinematic analysis
+      - `kineticCycles` - (list of Cycle) - collect list of build cycles uses for kinetic analysis 
+      - `emgCycles` - (list of Cycle) - collect list of build cycles uses for emg analysis   
+       
     """
    
     def __init__(self):
@@ -369,12 +503,11 @@ class Cycles():
         self.emgCycles = emgCycles_instance    
     
     
-# --- builders 
+# --- BUILDER 
 class CyclesBuilder(object):
-    """
-    Abstract Builder
-    """
+
     def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None,longitudinal_axis="X",lateral_axis="Y"):
+
         self.spatioTemporalTrials =spatioTemporalTrials        
         self.kinematicTrials =kinematicTrials
         self.kineticTrials =kineticTrials
@@ -405,10 +538,25 @@ class CyclesBuilder(object):
 
 class GaitCyclesBuilder(CyclesBuilder):
     """
-    CONCRETE builder for gait analysis
+        Concrete builder extracting Cycles from gait trials
+        
+        .. important:: The underlying concept is spatio-temporal parameters, kinematic outputs, kinetic ouputs or emg  could be extracted from different gait trials. 
+
     """
 
     def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None,longitudinal_axis="X",lateral_axis="Y"):
+        """
+            :Parameters:
+                 - `spatioTemporalTrials` (list of openma trials) - list of trials of which Cycles will be extracted for computing spatio-temporal parameters   
+                 - `kinematicTrials` (list of openma trials) - list of trials of which Cycles will be extracted for computing kinematic outputs 
+                 - `kineticTrials` (list of openma trials) - list of trials of which Cycles will be extracted for computing kinetic outputs 
+                 - `emgTrials` (list of openma trials) - list of trials of which Cycles will be extracted for emg 
+                 - `longitudinal_axis` (str) - label of the  longitudinal global axis (X, Y or Z)
+                 - `lateral_axis` (str) - label of the  longitudinal global axis (X, Y or Z)                
+
+        """        
+        
+        
         super(GaitCyclesBuilder, self).__init__(
             spatioTemporalTrials = spatioTemporalTrials,
             kinematicTrials=kinematicTrials,
@@ -420,6 +568,12 @@ class GaitCyclesBuilder(CyclesBuilder):
             
           
     def getSpatioTemporal(self):
+        """
+           extract Cycles used for  spatio Temporal parameters
+       
+           :return:
+               -`spatioTemporalCycles` (list of GaitCycle)
+        """
         
         if self.spatioTemporalTrials is not None:
             spatioTemporalCycles=list()
@@ -452,6 +606,12 @@ class GaitCyclesBuilder(CyclesBuilder):
             return None
 
     def getKinematics(self):
+        """
+           extract Cycles used for kinematic outputs
+           
+           :return:
+             -`kinematicCycles` (list of GaitCycle)
+        """        
         
         if self.kinematicTrials is not None:
             kinematicCycles=list()
@@ -484,6 +644,12 @@ class GaitCyclesBuilder(CyclesBuilder):
             return None
             
     def getKinetics(self):
+        """
+            extract Cycles used for kinetic outputs
+        
+            :return:
+                -`kineticCycles` (list of GaitCycle)
+        """
         
         if self.kineticTrials is not None:
             
@@ -537,6 +703,12 @@ class GaitCyclesBuilder(CyclesBuilder):
             return None
             
     def getEmg(self):
+        """
+            Extract Cycles used for emg
+
+            :return:
+                -`emgCycles` (list of GaitCycle)
+        """        
         
         if self.emgTrials is not None:
             emgCycles=list()

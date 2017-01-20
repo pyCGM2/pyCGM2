@@ -22,42 +22,61 @@ import pyCGM2.Signal.signal_processing as pyCGM2signal
 
 class Model(object):
     """
-    Model is a class-container collecting *segments* and *anthropometric data*.
+        Abstract class `Model`.
+        `Model` collects *segments*, *joints*, *body segment parameters* and present convenient model-componant accessors
 
             
     """
 
     def __init__(self):
-        """ **Constructor**
-        
-        :Parameters:
-         - `m_segmentCollection` (list) - collection of Segment
-         - `mp` (dict) - anthropometric paramater
-        """
+
         self.m_segmentCollection=[]
         self.m_jointCollection=[]
         self.mp=dict()
         self.mp_computed=dict()
         self.m_chains=dict()
 
+    def __repr__(self):
+        return "Basis Model"        
+
     def addChain(self,label,indexSegmentList):
+        """
+            Add a segment chain
+            
+            :Parameters:
+                - `label` (str) - label of the chain
+                - `indexSegmentList` (list of int) - index of segment
+                    
+        """
         self.m_chains[label] = indexSegmentList
 
     def addJoint(self,label,proxLabel, distLabel, sequence):
-        """ add a joint 
-        :Parameters:
         """
+            Add a joint
+            
+            :Parameters:
+                - `label` (str) - label of the chain
+                - `proxLabel` (str) - label of the proximal segment
+                - `distLabel` (str) - label of the distal segment
+                - `sequence` (str) - sequence angle
+                    
+        """
+
         j=Joint( label, proxLabel,distLabel,sequence)
         self.m_jointCollection.append(j)
 
 
     def addSegment(self,label,index,sideEnum, lst_markerlabel=[], tracking_markers=[],):
-        """ add a Segment to the model
-        
-        :Parameters:
-         - `label` (str) - label of the Segment ( Pelvis, Left Thigh...)
-         - `lst_markerlabel` (list) - list of marker label
-
+        """
+            Add a segment
+            
+            :Parameters:
+                - `label` (str) - label of the segment
+                - `index` (str) - index of the segment
+                - `sideEnum` (pyCGM2.enums) - body side
+                - `lst_markerlabel` (list of str) - sequence angle
+                - `tracking_markers` (list of str) - sequence angle
+                    
         """
         
         s=Segment(label,index,sideEnum,lst_markerlabel,tracking_markers)
@@ -66,7 +85,11 @@ class Model(object):
 
     def updateSegmentFromCopy(self,targetLabel, segmentToCopy):
         """ 
-        update a segment by copying and renaming  another segment instance         
+            Update a segment from a copy of  another segment instance 
+
+            :Parameters:
+                - `targetLabel` (str) - label of the segment
+                - `segmentToCopy` (pyCGM2.Model.CGM2.model.Segment) - pyCGM2.Model.CGM2.model.Segment instance
         
         """
         copiedSegment = copy.deepcopy(segmentToCopy)
@@ -76,21 +99,16 @@ class Model(object):
                 self.m_segmentCollection[i] = copiedSegment
 
 
-
-
-    def __repr__(self):
-        return "Basis Model"
-
-
-
-
     def getSegment(self,label):
-        """ get Segment from its label
+        """ 
+            Get `Segment` from its label
         
-        :Parameters:
-         - `label` (str) - label of the Segment ( Pelvis, Left Thigh...)
+            :Parameters:
+                - `label` (str) - label of the Segment 
                       
-        :Returns Type: Segment 
+            :Return:
+                - `na` (pyCGM2.Model.CGM2.model.Segment) - pyCGM2.Model.CGM2.model.Segment instance
+            
 
         """        
 
@@ -100,7 +118,16 @@ class Model(object):
 
     def getSegmentIndex(self,label):
         """ 
-        """        
+            Get Segment index
+        
+            :Parameters:
+                - `label` (str) - label of the Segment 
+                      
+            :Return:
+                - `na` (int) - index
+            
+
+        """         
         index=0
         for it in self.m_segmentCollection:
             if it.name == label:
@@ -109,13 +136,17 @@ class Model(object):
 
 
     def getSegmentByIndex(self,index):
-        """ get Segment by its index
+        """ 
+            Get `Segment` from its index
         
-        :Parameters:
+            :Parameters:
+                - `index` (int) - index of the Segment 
                       
-        :Returns Type: Segment 
+            :Return:
+                - `na` (pyCGM2.Model.CGM2.model.Segment) - pyCGM2.Model.CGM2.model.Segment instance
+            
 
-        """        
+        """         
 
         for it in self.m_segmentCollection:
             if it.index == index:
@@ -124,39 +155,29 @@ class Model(object):
 
 
     def getJoint(self,label):
-        """ get Segment from its label
+        """ 
+            Get `Joint` from its label
         
-        :Parameters:
-        :Returns Type: Joint
-        """        
+            :Parameters:
+                - `label` (str) - label of the joint 
+                      
+            :Return:
+                - `na` (pyCGM2.Model.CGM2.model.Joint) - pyCGM2.Model.CGM2.model.Joint instance
+            
+
+        """       
 
         for it in self.m_jointCollection:
             if it.m_label == label:
                 return it
 
     def addAnthropoInputParameter(self,iDict):
-        """ add anthropometric data to the model  
+        """ 
+            Add measured anthropometric data to the model  
         
-        :Parameters:
-         - `iDict` (dict) - dictionnary of anthropometric data
+            :Parameters:
+               - `iDict` (dict) - dictionnary of anthropometric data
                       
-        :Examples:
-        ::
-
-            mp={
-           'mass'   : 75.0,         
-           'height'   : 1760.0,         
-           'pelvisDepth'   : 204.0,         
-           'leftLegLength' : 820.0,
-           'rightLegLength' : 820.0 ,
-           'asisDistance' : 240.38 ,
-           'leftKneeWidth' : 103.0,
-           'rightKneeWidth' : 103.0,
-           'leftAnkleWidth' : 71.0,
-           'rightAnkleWidth' : 71.0 
-            }  
-            model.addAnthropoInputParameter(mp)            
-
         """
 
         self.mp=iDict
@@ -165,18 +186,18 @@ class Model(object):
         
         
     def decomposeTrackingMarkers(self,acq,TechnicalFrameLabel):
-        """
-        decompose marker and keep a noisy signal along one axis only.
 
-        :Parameters:
-         - `acq` (btk-acq) - 
-         - `TechnicalFrameLabel` (str) - label of the technical Frame
-         
-        .. todo:: 
-        
-         - comment travailler avec des referentiels techniques differents par segment
-         - rajouter des exceptions
-        """        
+    #        decompose marker and keep a noisy signal along one axis only.
+    #
+    #        :Parameters:
+    #         - `acq` (btk-acq) - 
+    #         - `TechnicalFrameLabel` (str) - label of the technical Frame
+    #         
+    #        .. todo:: 
+    #        
+    #         - comment travailler avec des referentiels techniques differents par segment
+    #         - rajouter des exceptions
+
         
         for seg in self.m_segmentCollection:
             
@@ -198,49 +219,48 @@ class Model(object):
 
         
 
-# --------  MODEL COMPONANTS ---------        
 
 # --------  MODEL COMPONANTS ---------        
 class Referential(object):
-    def __init__(self):
-        """ **Constructor**
-        
-        :Parameters:
-         - `label` (str) - label of the Referential you want to build
-        """ 
+    """
+         A `Referential` is a coordinate system
+    """
+    def __init__(self): 
         self.static=cfr.Frame() 
         self.motion=[]
-        self.relativeMatrixAnatomic = np.zeros((3,3))      # R ^a_t    
+        self.relativeMatrixAnatomic = np.zeros((3,3))         
 
     def setStaticFrame(self,Frame):
-        """ 
+        """
+            Set a `Frame` to the member Static of the `Referential`
         
-        :Parameters:
-         - `Frame` (Frame) - Frame object appended 
+            :Parameters:
+                - `Frame` (pyCGM2.Model.CGM2.frame.Frame) - pyCGM2-Frame instance
         """
         self.static = Frame
 
 
     def addMotionFrame(self,Frame):
-        """ add a Frame to the motion component fo the Referential
+        """ 
+             Add a `Frame` to the motion member of the `Referential`
         
-        :Parameters:
-         - `Frame` (Frame) - Frame object appended 
+            :Parameters:
+                - `Frame` (pyCGM2.Model.CGM2.frame.Frame) - pyCGM2-Frame instance
+
         """
         self.motion.append(Frame)
 
     def getNodeTrajectory(self,label):
-        """ call a Node and compyte its global trajectory
+        """ 
+            Get trajectory of a node        
         
-        :Parameters:
-         - `label` (str) - label of the called node 
-         - `display` (bool) - display print info 
-        
-        :Returns: a 3-column array with global trajectory
-        :rtype: np.array((n,3))
-        
-        """        
+            :Parameters:
+                - `label` (str) - label of the desired node 
 
+            :Return: 
+                - `pt` (numpy.array(:,3)) - values of the global point trajectory   
+
+        """        
 
         node=self.static.getNode_byLabel(label)
         nFrames=len(self.motion)        
@@ -253,23 +273,36 @@ class Referential(object):
 
 
 class TechnicalReferential(Referential):
+    """
+        A `TechnicalReferential` inherit from `Referential`. This specification defines a *Technical* Coordinate system of the segment 
+    """
     def __init__(self, label):
+        """
+            :Parameters:
+                - `label` (str) - label of the technical referential
+        """
+        #TODO - By labelling a technical referential, the code accepts multi-technical referentials per Segment. This feature should be removed 
+        
+        
         super(TechnicalReferential, self).__init__()
+        
+        
         self.label=label
 
 
     def setRelativeMatrixAnatomic(self, array):
-        """ set the raltive matrix anatomic in technic( static). 
-        
-        it's the matrix R(^a_t) 
-        
-        :Parameters:
-         - `array` (np.array(3,3)) - matrix  
-       
+        """ 
+            Set the relative rigid rotation of the anatomical Referential expressed in the technical referential (:math:`R^a_t`). 
+                    
+            :Parameters:
+                - `array` (numpy.array(3,3) - rigid rotation        
         """
         self.relativeMatrixAnatomic = array
 
 class AnatomicalReferential(Referential):
+    """
+        A `AnatomicalReferential` inherit from `Referential`. This specification defines the *Anatomical* Coordinate system of a segment 
+    """
     def __init__(self):
         super(AnatomicalReferential, self).__init__()
 
@@ -279,20 +312,23 @@ class AnatomicalReferential(Referential):
 
 class Segment(object):
     """ 
-    .. todo:: 
-       
-       Referential doesn't distinguish anatomical frame  from technical frame
-       used only for tracking gait and/or functional calibration
- 
-       compute constant matrix rotation between each referential.static      
+        A Segment defines a solid composing of the model         
+    """    
+    #TODO
+    #       Referential doesn't distinguish anatomical frame  from technical frame
+    #       used only for tracking gait and/or functional calibration
+    # 
+    #       compute constant matrix rotation between each referential.static      
 
-    """
+
     def __init__(self,label,index,sideEnum ,lst_markerlabel=[], tracking_markers = []):
-        """ **Constructor**
-
-        :Parameters:
-         - `label` (str) - label of the segment you want to create  
-         - `lst_markerlabel` (lst) - list of marker label
+        """ 
+            :Parameters:
+                - `label` (str) - label of the segment
+                - `index` (str) - index of the segment
+                - `sideEnum` (pyCGM2.enums) - body side
+                - `lst_markerlabel` (list of str) - sequence angle
+                - `tracking_markers` (list of str) - sequence angle
         """
 
         self.name=label
@@ -327,14 +363,26 @@ class Segment(object):
 
 
     def zeroingExternalDevice(self):
+        """
+            Zeroing external device wrench
+        """
         self.m_externalDeviceWrenchs = list()
         self.m_externalDeviceBtkWrench = None
 
     def zeroingProximalWrench(self):
+        """
+            Zeroing proximal wrench
+        """        
         self.m_proximalWrench = None
 
 
     def downSampleExternalDeviceWrenchs(self,appf):
+        """
+            Downsample external device wrenchs
+            
+            :Parameters:
+                - `appf` (int) - analog point per frame
+        """                
         if self.isExternalDeviceWrenchsConnected():        
             
             for wrIt in  self.m_externalDeviceWrenchs:
@@ -352,37 +400,83 @@ class Segment(object):
        
 
     def isExternalDeviceWrenchsConnected(self):
+        """
+            Detect external device wrenchs
+        """
         if self.m_externalDeviceWrenchs == []:
             return False
         else:
             return True
 
     def addExternalDeviceWrench(self, btkWrench):
+        """
+            Add an external device wrench 
+            
+            :Parameters:
+                - `btkWrench` (btk.wrench) - a btk wrench instance            
+            
+        """
         self.m_externalDeviceWrenchs.append(btkWrench)
 
    
 
     def setMass(self, value):
+        """
+            Set segment mass
+            
+            :Parameters:
+                - `value` (float) - mass            
+            
+        """
         self.m_bsp["mass"] = value        
 
     def setLength(self, value):
+        """
+            Set segment length
+            
+            :Parameters:
+                - `value` (float) - length            
+            
+        """
         self.m_bsp["length"] = value        
 
     def setRog(self, value):
+        """
+            Set segment radius of giration
+            
+            :Parameters:
+                - `value` (float) - radius of giration            
+            
+        """
         self.m_bsp["rog"] = value        
 
     def setComPosition(self, array3):
+        """
+            Set local position of the centre of mass 
+            
+            :Parameters:
+                - `array3` (numpy.array(3,)) - centre of mass position            
+            
+        """
         self.m_bsp["com"] = array3        
 
     def setInertiaTensor(self, array33):
+        """
+            Set segment inertia tensor 
+            
+            :Parameters:
+                - `array33` (numpy.array(3,3)) - tensor of inertia           
+            
+        """
         self.m_bsp["inertia"] = array33        
 
 
     def addMarkerLabel(self,label):
-        """ add a marker to the list
+        """ 
+            Add a marker 
 
-        :Parameters:
-         - `label` (str) - marker label  
+            :Parameters:
+                - `label` (str) - marker label  
         """
         isFind=False
         i=0
@@ -401,10 +495,11 @@ class Segment(object):
 
 
     def addTrackingMarkerLabel(self,label):
-        """ add a marker to the list of tracking markers
+        """ 
+            Add a tracking marker 
 
-        :Parameters:
-         - `label` (str) - marker label  
+            :Parameters:
+                - `label` (str) - marker label  
         """
         isFind=False
         i=0
@@ -424,9 +519,11 @@ class Segment(object):
 
 
     def addTechnicalReferential(self,label):
-        """ add a referential by its label
-        :Parameters:
-         - `label` (str) - technical frame label  
+        """ 
+            Add a technical referential 
+            
+            :Parameters:
+                - `label` (str) - technical frame label  
         """
 
   
@@ -436,24 +533,31 @@ class Segment(object):
 
 
     def getReferential(self,label):
-        """ get a referential by its label
-        :Parameters:
-         - `label` (str) - referential label  
+        """ 
+            Access a referential from its label
+
+            :Parameters:
+                - `label` (str) - technical referential label  
 
         """ 
 
         for tfIt in  self.referentials:
             if tfIt.label == label:
                 return tfIt
-                
-
-    
-        #self.m_angularVelocity = AngularVelocValues    
-
-        
+                        
     
 
     def getComTrajectory(self,exportBtkPoint=False, btkAcq=None):
+        """
+            Get global trajectory of the centre of mass        
+
+            :Parameters:
+                - `exportBtkPoint` (bool) - enable export as btk point
+                - `btkAcq` (btk acquisition) - a btk acquisition instance
+
+            :Return:
+                - `values` (numpy.array(n,3)) - values of the com trajectory        
+        """
 
         frameNumber = len(self.anatomicalFrame.motion)         
         values = np.zeros((frameNumber,3))   
@@ -467,6 +571,20 @@ class Segment(object):
 
 
     def getComVelocity(self,pointFrequency,method = "spline"):
+        """
+            Get global linear velocity of the centre of mass        
+
+            :Parameters:
+                - `pointFrequency` (double) - point frequency
+                - `method` (str) - derivation method (spline, spline fitting)
+
+            :Return:
+                - `values` (numpy.array(n,3)) - values of the com velocity            
+            
+            .. note :: if method doesnt recognize, numerical first order derivation is used 
+        
+        """        
+        
         if method == "spline":
             values = derivation.splineDerivation(self.getComTrajectory(),pointFrequency,order=1) 
         elif method == "spline fitting":
@@ -478,6 +596,26 @@ class Segment(object):
 
 
     def getComAcceleration(self,pointFrequency,method = "spline", **options):
+        """
+            Get global linear acceleration of the centre of mass        
+
+            :Parameters:
+                - `pointFrequency` (double) - point frequency
+                - `method` (str) - derivation method (spline, spline fitting)
+                - `**options` (kwargs) - options pass to method. 
+            
+            :Return:
+                - `values` (numpy.array(n,3)) - values of the com acceleration
+
+            .. attention :: com trajectory can be smoothed  by calling fc and order, the cut-off frequency and the order of the low-pass filter respectively  
+
+ 
+            .. note :: 
+
+                if method doesnt recognize, numerical second order derivation is used 
+
+        
+        """ 
         
         valueCom = self.getComTrajectory()
         if "fc" in options.keys() and  "order" in options.keys():        
@@ -497,15 +635,28 @@ class Segment(object):
 
 
     def getAngularVelocity(self,sampleFrequency,method="conventional"): 
-        """ short description
-        :Parameters:
-         - `?` (?) - desc  
+        """ 
+            Get angular velocity         
+        
+            :Parameters:
+                - `sampleFrequency` (double) - point frequency
+                - `method` (str) - method used for computing the angular velocity
 
-          AngVel = [ ...
-              dot( NextPosR(:,2), PrevPosR(:,3) ); ...
-              dot( NextPosR(:,3), PrevPosR(:,1) ); ...
-              dot( NextPosR(:,1), PrevPosR(:,2) ); ...
-              ] ./ (2*SamplePeriod);
+            :Return:
+                - `AngularVelocValues` (numpy.array(n,3)) - values of the angular velocity
+                
+            .. note::
+                
+                The *pig* method reproduce a  bodybuilder code of the plug-in gait.  
+                
+                .. raw:: python
+
+                      AngVel = [ dot( NextPosR(:,2), PrevPosR(:,3) ); ...
+                                 dot( NextPosR(:,3), PrevPosR(:,1) ); ...
+                                 dot( NextPosR(:,1), PrevPosR(:,2) ); ...
+                               ] ./ (2*SamplePeriod);
+
+                The *conventional* method computes angular velocity through this statement :math:`\dot{R}R^t`   
 
         """ 
  
@@ -542,18 +693,34 @@ class Segment(object):
         
         
     def getAngularAcceleration(self,sampleFrequency):
+        """ 
+            Get angular acceleration         
         
+            :Parameters:
+                - `sampleFrequency` (double) - point frequency
+            
+            :Return:
+                - `values` (numpy.array(n,3)) - values of the angular accelration
+                
+                
+            .. note:: A first order differention of the angular velocity is used
+        """        
+                
         values = derivation.firstOrderFiniteDifference(self.getAngularVelocity(sampleFrequency),sampleFrequency)
         return values
              
 class Joint(object):
     """
-
+        a Joint defines relative motion between a proximal and a distal segment  
     """
 
     def __init__(self, label, proxLabel,distLabel,sequence):
-        """ **Constructor**
-        :Parameters:
+        """ 
+            :Parameters:
+                - `label` (str) - label of the chain
+                - `proxLabel` (str) - label of the proximal segment
+                - `distLabel` (str) - label of the distal segment
+                - `sequence` (str) - sequence angle
         """
         self.m_label=label
         self.m_proximalLabel=proxLabel

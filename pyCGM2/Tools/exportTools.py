@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 04 16:17:08 2016
-
-@author: fabien Leboeuf
-"""
 import numpy as np
 import pandas as pd   
 import logging
@@ -15,7 +10,7 @@ import ma.body
 
 
 # ----- PANDAS ---------
-# TODO : programmation a optimiser
+# TODO : optimize implementation
 
 FRAMES_HEADER=list()
 for i in range(0,101):

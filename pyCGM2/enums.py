@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat May 28 20:24:38 2016
-
-@author: aaa34169
-"""
 
 from enum import Enum
 
 
 def isEnumMember(member, enum):
+    """
+        check if member of an enum
+    """
 
     flag = False
     for enumIt in enum:
@@ -20,39 +18,47 @@ def isEnumMember(member, enum):
 
 
 class motionMethod(Enum):
+    """ Enum defining method uses for computing a segment pose """
     NoMotion = 0
     Native = 1
     Sodervisk = 2
 
 
 class MomentProjection(Enum):
+    """ Enum defining in which Segment expressed kinetics"""
     Global = 0
     Proximal = 1
     Distal = 2
 
 
-class BspModel(Enum):
-    Dempster = "Dempster"
-    DempsterVicon = "DempsterVicon"    
-    DeLeva = "DeLeva"
-
-class Sex(Enum):
-    Male = "M"
-    Female = "F"
-    
-
-class InverseDynamicAlgo(Enum):
-    Quaternion = "quaternion"
-    Generic = "generic"    
-    RotationMatrix = "rotationMatrix"
-
-
 class HarringtonPredictor(Enum):
+    """ Enum defining harrington's regression predictor"""
     Native = "full"
     PelvisWidth = "PWonly"    
     LegLength = "LLonly"
 
 class SegmentSide(Enum):
+    """ Enum defining segment side"""    
     Central = 0
     Left = 1
     Right = 2
+    
+
+# --- enum used with Btk-Models
+# obsolete
+#class BspModel(Enum):
+#    Dempster = "Dempster"
+#    DempsterVicon = "DempsterVicon"    
+#    DeLeva = "DeLeva"
+#
+#class Sex(Enum):
+#    Male = "M"
+#    Female = "F"
+#    
+#
+#class InverseDynamicAlgo(Enum):
+#    Quaternion = "quaternion"
+#    Generic = "generic"    
+#    RotationMatrix = "rotationMatrix"
+    
+    

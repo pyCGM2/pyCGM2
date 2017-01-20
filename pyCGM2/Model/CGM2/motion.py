@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat May 09 22:46:25 2015
-
-@author: fleboeuf
-"""
-
 import os
 import sys
 
@@ -15,30 +9,19 @@ import scipy as sp
 
 
 
-def segmentalLeastSquare(A, B):
-    """Calculates the transformation between two coordinate systems using SVD.
+def segmentalLeastSquare(A, B):    
+    """
+        Compute the transformation between two coordinate systems using SVD.
 
-    See the help of the svdt function.
-
-    Parameters
-    ----------
-    A   : 2D Numpy array (n, 3), where n is the number of markers.
-        Coordinates [x,y,z] of at least three markers
-    B   : 2D Numpy array (n, 3), where n is the number of markers.
-        Coordinates [x,y,z] of at least three markers
-
-    Returns
-    -------
-    R    : 2D Numpy array (3, 3)
-         Rotation matrix between A and B
-    L    : 1D Numpy array (3,)
-         Translation vector between A and B
-    RMSE : float
-         Root-mean-squared error for the rigid body model: B = R*A + L + err.
-
-    See Also
-    --------
-    numpy.linalg.svd
+        :Parameters:
+            - `A` (numpy.array(n,3)) - Coordinates [x,y,z] of at least three markers
+            - `B` (numpy.array(n,3)) - Coordinates [x,y,z] of at least three markers
+            
+        :Return:
+            - `R` (numpy.array(3,3)) - Rotation matrix between A and B
+            - `L` (numpy.array(3,)) - Translation vector between A and B
+            - `RMSE` (float) - Root-mean-squared error for the rigid body model( :math:` B = R*A + L + err`).
+    
     """
 
     Am = np.mean(A, axis=0)           # centroid of m1

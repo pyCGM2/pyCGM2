@@ -1,14 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jul 11 11:42:19 2016
-
-@author: Fabien Leboeuf (Salford Univ)
-
-
-# FUNCTIONS IN PROGRESS.
-
-
-"""
 
 # -- classic packages --    
 import logging
@@ -29,8 +19,21 @@ def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH,
                          exportSpreadSheet=False,
                          pointLabelSuffix = "",
                          name_out=None,  DATA_PATH_OUT= None ):
-
-
+    """
+        Process a static c3d with lower limb CGM outputs
+        
+        :Parameters:
+           - `modelledStaticFilename` (str) - filename of the static c3d including cgm kinematics 
+           - `DATA_PATH` (str) - folder ofthe static file ( must end with \\)    
+           - `modelInfo` (dict) - info about the model    
+           - `subjectInfo` (dict) -  info about the subject             
+           - `experimentalInfo` (dict) - info about experimental conditions               
+           - `exportSpreadSheet` (bool) - flag enable xls export    
+           - `pointLabelSuffix` (str) - suffix added to standard cgm nomenclature    
+           - `name_out` (str) - new filename of any output file ( instead modelledStaticFilename)     
+           - `DATA_PATH_OUT` (str) - new folder to store any output file    
+    """
+    
     pointLabelSuffixPlus  = pointLabelSuffix   if pointLabelSuffix =="" else "_"+pointLabelSuffix   
 
     # reader
@@ -100,6 +103,26 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                          longitudinal_axis=None,
                          lateral_axis = None
                          ):
+    """
+        Proces  of multiple gait c3d with lower limb CGM outputs
+        
+        :Parameters:
+           - `modelledFilenames` (list of str) - filenames of gai trial with kinematics and kinetics  
+           - `DATA_PATH` (str) - folder where  modelledFilenames are stored  
+           - `modelInfo` (dict) - info about the model   
+           - `subjectInfo` (dict) - info about the subject               
+           - `experimentalInfo` (dict) - info about experimental conditions               
+           - `pointLabelSuffix` (str) - suffix added to standard cgm nomenclature    
+           - `exportBasicSpreadSheetFlag` (bool) - enable xls export of a basic spreadsheet    
+           - `exportAdvancedSpreadSheetFlag` (bool) - enable xls export of an advanced spreadsheet 
+           - `exportAnalysisC3dFlag` (bool) - export a single 101-frames c3d storing all gait cycle  
+           - `longitudinal_axis` (str) - label of the global longitudinal axis    
+           - `lateral_axis` (str) - label of the global lateral axis
+           - `name_out` (str) - new filename of any output files   
+           - `DATA_PATH_OUT` (str) - new folder to store any  output files
+    """
+
+
                              
     #---- PRELIMINARY STAGE
     #--------------------------------------------------------------------------

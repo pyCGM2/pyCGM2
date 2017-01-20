@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 03 10:52:09 2016
-
-@author: fabien Leboeuf ( Salford Univ)
-"""
 import pdb
 import numpy as np
 import pandas as pd
@@ -20,23 +15,100 @@ import ma.io
 import ma.body
 
 
-#---- MODULE METHODS ------
+# ---- PATTERN BUILDER ------
 
-# --- Object to build-----
+# --- OBJECT TO BUILD-----
 
-class StaticAnalysis(): # OBJECT TO CONSTRUCT
+class StaticAnalysis(): 
     """
-   
+        Object built from StaticAnalysisFilter.build(). Its member *data* is a pandas dataframe  
+        
     """
+
     def __init__(self):
+
         self.data=None
 
+
+class Analysis(): 
+    """
+       Object built from AnalysisFilter.build(). 
+       
+       Analysis work as **class-container**. Its attribute members return descriptive statistics    
+       
+       Attributes :
+      
+          - `stpStats` (dict)  - descritive statictics of stapiotemporal parameters         
+          - `kinematicStats` (Analysis.Structure)  - descritive statictics of kinematics data.          
+          - `kineticStats` (Analysis.Structure)  - descritive statictics of kinetics data.          
+          - `emgStats` (Analysis.Structure)  - descritive statictics of emg data.          
+
+       .. note: 
+           
+           Notice kinematicStats, kineticStats and emgStats are `Analysis.Structure object`. This object implies two dictionnary as sublevels.
+            
+             - `data` collect descriptive statistics of either kinematics, kinetics or emg. 
+             - `pst` returns the spatiotemporal parameters of all cycles involved in either kinematics, kinetics or emg processing.
+             
+        
+    """
+
+    class Structure:
+        data = dict()
+        pst = dict()  
+   
+    def __init__(self):
+
+        self.stpStats=dict()
+        self.kinematicStats = Analysis.Structure()
+        self.kineticStats=Analysis.Structure()
+        self.emgStats=Analysis.Structure()
+        self.gps= None
+        self.coactivations=[]
+
+    def setStp(self,inDict):   
+        self.stpStats = inDict    
+      
+    def setKinematic(self,data, pst = dict()):   
+        self.kinematicStats.data = data
+        self.kinematicStats.pst = pst 
+
+    def setKinetic(self,data, pst = dict()):   
+        self.kineticStats.data = data
+        self.kineticStats.pst = pst 
+
+
+    def setEmg(self,data, pst = dict()):   
+        self.emgStats.data = data
+        self.emgStats.pst = pst 
+
+
+
+# ---- FILTERS ------
 class StaticAnalysisFilter(object):
+    """
+        filter building a StaticAnalysis instance from a static trial        
+        
+    """
+    
     def __init__(self,trial,
                  angleList,
                  subjectInfos=None,
                  modelInfos= None,
                  experimentalInfos=None):
+
+        """
+            :Parameters:
+                 - `trial` (openma-trial) - openma trial from a c3d
+                 - `angleList` (list of str) - list of angle labels.    
+                 - `subjectInfos` (dict) - information about the subject   
+                 - `modelInfos` (dict) - information about the model   
+                 - `experimentalInfos` (dict) - information about the experimental conditions   
+
+        """
+
+        self.analysis = StaticAnalysis()
+
         
         self.m_trial =  trial             
         self.m_angles = angleList
@@ -44,10 +116,15 @@ class StaticAnalysisFilter(object):
         self.m_modelInfos = modelInfos
         self.m_experimentalInfos = experimentalInfos
 
-        self.analysis = StaticAnalysis()
-        #self.m_dataframe = None
+
 
     def build(self):
+        
+        """
+             build a StaticAnalysis instance  
+    
+        """        
+        
         df_collection=[]    
         
         for angle in self.m_angles:
@@ -80,39 +157,48 @@ class StaticAnalysisFilter(object):
             self.analysis.data = pd.concat(df_collection,ignore_index=True)
 
     def exportDataFrame(self,outputName,path=None):
+        """
+             export the member *analysis* as xls file 
+    
+            :Parameters:
+                - `outputName` (str) - name of the xls file ( without xls extension)
+                - `path` (str) - folder in which xls files will be stored
+                
+        """        
         
-        if hasattr(self, 'm_dataframe'):
-            if path == None:
-                xlsxWriter = pd.ExcelWriter(str(outputName + "- static.xls"),engine='xlwt')
-                self.analysis.data.to_excel(xlsxWriter,'mean static')
-            else:
-                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- static.xls"),engine='xlwt')
-                self.analysis.data.to_excel(xlsxWriter,'mean static')
-            
-            xlsxWriter.save()
+        if path == None:
+            xlsxWriter = pd.ExcelWriter(str(outputName + "- static.xls"),engine='xlwt')
+            self.analysis.data.to_excel(xlsxWriter,'mean static')
         else:
-            raise Exception ("[pyCGM2] - You need to build dataframe before export => RUN buildDataFrame() of your instance")
+            xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- static.xls"),engine='xlwt')
+            self.analysis.data.to_excel(xlsxWriter,'mean static')
+        
+        xlsxWriter.save()
     
         
-
-
-
-
-
-
-# ---- FILTER ------
-class AnalysisFilter(object): # CONTROLER
+class AnalysisFilter(object):
+    """
+         Filter building an Analysis instance. 
+    """            
 
     def __init__(self):
         self.__concreteAnalysisBuilder = None
-        self.analysis = Analysis() # output stats container 
+        self.analysis = Analysis() 
     
     def setBuilder(self,concreteBuilder):
+        """
+             set a concrete builder
+    
+            :Parameters:
+                - `concreteBuilder` (Builder) - a concrete Builder
+               
+        """          
+        
         self.__concreteAnalysisBuilder = concreteBuilder
    
     def build (self) :
-        
         """
+            build member analysis from a concrete builder 
         
         """
         pstOut = self.__concreteAnalysisBuilder.computeSpatioTemporel()
@@ -130,6 +216,18 @@ class AnalysisFilter(object): # CONTROLER
 
 
     def exportBasicDataFrame(self,outputName, path=None,excelFormat = "xls"):
+        """
+            export  member *analysis* as xls file in a basic mode. 
+            A basic xls puts Frame number in column. Each outputs is included as new sheet.     
+    
+            :Parameters:
+                - `outputName` (str) - name of the xls file ( without xls extension)
+                - `path` (str) - folder in which xls files will be stored
+                - `excelFormat` (str) - by default : xls. xlsx is also available
+                
+        """
+
+
         if path == None:
             if excelFormat == "xls":
                 xlsxWriter = pd.ExcelWriter(str(outputName + "- basic.xls"),engine='xlwt')
@@ -310,8 +408,28 @@ class AnalysisFilter(object): # CONTROLER
 
     def exportAdvancedDataFrame(self,outputName, path=None, excelFormat = "xls",csvFileExport =False):
         """
-        
-        """ 
+            export  member *analysis* as xls file in a Advanced mode. 
+            A Advanced xls report outputs in a single sheet and put frames in row. 
+            
+            .. note::
+                
+                an advanced xls contains the folowing sheets: 
+                    * `descriptive stp` : descriptive statistic of spatio-tenporal parameters 
+                    * `stp cycles` : all cycles used for computing descriptive statistics of spatio-temporal parameters 
+                    * `descriptive kinematics` : descriptive statistic of kinematic parameters 
+                    * `kinematics cycles` : all cycles used for computing descriptive statistics of kinematic parameters
+                    * `descriptive kinetics` : descriptive statistic of kinetic parameters 
+                    * `kinetics cycles` : all cycles used for computing descriptive statistics of kinetic parameters
+    
+            :Parameters:
+                - `outputName` (str) - name of the xls file ( without xls extension)
+                - `path` (str) - folder in which xls files will be stored
+                - `excelFormat` (str) - by default : xls. xlsx is also available
+                - `csvFileExport` (bool) - enable export of csv files
+                
+        """
+
+
         if path == None:
             if excelFormat == "xls":
                 xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xls"),engine='xlwt')
@@ -443,9 +561,9 @@ class AnalysisFilter(object): # CONTROLER
             df_kinematics.to_excel(xlsxWriter,'Kinematic cycles')
             if csvFileExport:
                 if path == None:
-                    df_kinematics.to_csv(str(outputName + " - stp - DataFrame.csv"),sep=";")
+                    df_kinematics.to_csv(str(outputName + " - kinematics - DataFrame.csv"),sep=";")
                 else:
-                    df_kinematics.to_csv(str(path+"/"+outputName + " - stp - DataFrame.csv"),sep=";")
+                    df_kinematics.to_csv(str(path+"/"+outputName + " - kinematics - DataFrame.csv"),sep=";")
             
 
 
@@ -497,15 +615,24 @@ class AnalysisFilter(object): # CONTROLER
             df_kinetics.to_excel(xlsxWriter,'Kinetic cycles')
             if csvFileExport:
                 if path == None:
-                    df_stp.to_csv(str(outputName + " - stp - DataFrame.csv"),sep=";")
+                    df_stp.to_csv(str(outputName + " - kinetics - DataFrame.csv"),sep=";")
                 else:
-                    df_stp.to_csv(str(path+"/"+outputName + " - stp - DataFrame.csv"),sep=";")
+                    df_stp.to_csv(str(path+"/"+outputName + " - kinetics - DataFrame.csv"),sep=";")
 
         logging.info("advanced dataFrame [%s- Advanced] Exported"%outputName)             
 
         xlsxWriter.save()
 
     def exportAnalysisC3d(self,outputName, path=None):
+        """
+             export a  101-frames c3d grouping all cycle parameters  
+    
+            :Parameters:
+                - `outputName` (str) - name of the xls file ( without xls extension)
+                - `path` (str) - folder in which xls files will be stored
+                
+        """
+
         
         root = ma.Node('root')    
         trial = ma.Trial("AnalysisC3d",root)
@@ -601,50 +728,12 @@ class AnalysisFilter(object): # CONTROLER
             raise Exception ("[pyCGM2] : analysis c3d doesn t export" )            
     
 
-# ---- PATTERN BUILDER ------
-
-# --- Object to build-----
-
-
-class Analysis(): # OBJECT TO CONSTRUCT
-    """
-   
-    """
-    class Structure:
-        data = dict()
-        pst = dict()  
-   
-    def __init__(self):
-        self.stpStats=dict()
-        self.kinematicStats = Analysis.Structure()
-        self.kineticStats=Analysis.Structure()
-        self.emgStats=Analysis.Structure()
-        self.gps= None
-        self.coactivations=[]
-
-    def setStp(self,inDict):   
-        self.stpStats = inDict    
-      
-    def setKinematic(self,data, pst = dict()):   
-        self.kinematicStats.data = data
-        self.kinematicStats.pst = pst 
-
-    def setKinetic(self,data, pst = dict()):   
-        self.kineticStats.data = data
-        self.kineticStats.pst = pst 
-
-
-    def setEmg(self,data, pst = dict()):   
-        self.emgStats.data = data
-        self.emgStats.pst = pst 
 
 
 
-# --- Builder-----
+
+# --- BUILDERS-----
 class AbstractBuilder(object):
-    """
-    Abstract Builder
-    """
     def __init__(self,cycles=None):
         self.m_cycles =cycles        
 
@@ -662,12 +751,44 @@ class AbstractBuilder(object):
 
 
 class GaitAnalysisBuilder(AbstractBuilder):
+    """
+        **Description** : builder of a common clinical gait analysis         
+    """
+    
+    
+    
     def __init__(self,cycles,
                  kinematicLabelsDict=None ,
                  kineticLabelsDict =None,
                  pointlabelSuffix = "",
                  emgLabelList = None, 
                  modelInfos = None, subjectInfos = None, experimentalInfos = None, emgs = None):
+
+        """
+            :Parameters:
+                 - `cycles` (pyCGM2.Processing.cycle.Cycles) - Cycles instance built from CycleFilter
+                 - `kinematicLabelsDict` (dict) - dictionnary with two items (Left and Right) grouping kinematic output label    
+                 - `kineticLabelsDict` (dict) - dictionnary with two items (Left and Right) grouping kinetic output label   
+                 - `pointlabelSuffix` (dict) - suffix ending kinematicLabels and kineticLabels dictionnaries
+                 - `emgLabelList` (list of str) - labels of used emg   
+                 - `subjectInfos` (dict) - information about the subject   
+                 - `modelInfos` (dict) - information about the model   
+                 - `experimentalInfos` (dict) - information about the experimental conditions
+                 -  .. attention:: `emgs` (pyCGM2emg) - object in progress 
+
+
+            .. note::
+            
+                modelInfos,experimentalInfos, subjectInfos are convenient dictionnaries in which you can store different sort of information
+
+
+                
+
+            
+
+        """
+
+
         super(GaitAnalysisBuilder, self).__init__(cycles=cycles)
 
         self.m_kinematicLabelsDict = kinematicLabelsDict
@@ -683,6 +804,13 @@ class GaitAnalysisBuilder(AbstractBuilder):
         
     def computeSpatioTemporel(self):
 
+        """ 
+            **Description:** compute descriptive of spatio-temporal parameters 
+
+            :return:
+                - `out` (dict) - dictionnary with descriptive statictics of spatio-temporal parameters
+                
+        """ 
         out={}
 
         logging.info("--stp computation--")
@@ -707,9 +835,13 @@ class GaitAnalysisBuilder(AbstractBuilder):
         return out
         
     def computeKinematics(self):
-        """
-        calcul toutes les valeurs Moyennes pour les labels de points 
-        """
+        """ compute descriptive of kinematics parameters 
+        
+            :return:
+                - `out` (dict) - dictionnary with descriptive statictics of kinematics parameters 
+                - `outPst` ( dict) - dictionnary with descriptive statictics of spatio-temporal parameters matching  kinematics parameters
+        
+        """ 
 
         out={}
         outPst={}
@@ -747,9 +879,15 @@ class GaitAnalysisBuilder(AbstractBuilder):
         
         
     def computeKinetics(self):
-        """
-         
-        """
+        """ compute descriptive of kinetics parameters 
+        
+            :return:
+                - `out` (dict) - dictionnary with descriptive statictics of kinetics parameters 
+                - `outPst` ( dict) - dictionnary with descriptive statictics of spatio-temporal parameters matching  kinetics parameters
+        
+        """ 
+
+
         out={}
         outPst={}
 
@@ -792,6 +930,15 @@ class GaitAnalysisBuilder(AbstractBuilder):
         return out,outPst   
         
     def computeEmgEnvelopes(self):
+        
+        """ 
+            Compute descriptive of emg values
+            
+            :return:
+                - `out` (dict) - dictionnary with descriptive statictics of emg envelopes 
+                - `outPst` ( dict) - dictionnary with descriptive statictics of spatio-temporal parameters matching emg envelopes
+        """ 
+
 
         out={}
         outPst={}

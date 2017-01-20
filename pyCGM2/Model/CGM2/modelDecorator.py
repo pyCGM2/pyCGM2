@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jul 16 21:38:45 2015
-
-@author: fleboeuf
-"""
 
 import numpy as np
 import pdb
@@ -19,6 +14,11 @@ from pyCGM2.Math import  numeric, geometry
 
 
 def setDescription(nodeLabel):
+    """
+        return a node description
+    """
+
+
     if "kad" in nodeLabel:
         return "kad"
     elif "sara" in nodeLabel:
@@ -39,39 +39,41 @@ def setDescription(nodeLabel):
         return "custom"
 
 
-
+# ---- CONVENIENT FUNCTIONS ------
 def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
-    """ Computation of the hip joint center position from Harrington's regressions.         
+    """ 
     
-    :Parameters:
-       - `proxMotionRef` (list of Frame) - motion of the proximal referential             
-       - `distMotionRef` (list of Frame) - motion of the distal referential
-       - `gap` (double) - distance in mm for positionning an axis limit
-       - `method` (int) - affect the objective function ( see ehrig). 
-
-    :Returns:
-       - `prox_origin` (np.array(3)) - position of the origin in the proximal referential             
-       - `prox_axisLim` (np.array(3)) - position on a point on the axis in the proximal referential             
-       - `dist_origin` (np.array(3)) - position of the origin in the distal referential             
-       - `dist_axisLim` (np.array(3)) - position on a point on the axis in the distal referential
-       - `prox_axisNorm` (np.array(3)) - axis in the proximal frame
-       - `dist_axisNorm` (np.array(3)) - axis in the proximal frame       
-       - `coeffDet`     (double) - See about it with morgan          
-
-
-    .. warning :: 
+        Computation of the hip joint center position from Harrington's regressions.         
     
-        linalg.svd and matlab are different. V from scipy has to be transpose. 
-        Moreover, singular values output in a 1d array not a diagonal matrix
+        :Parameters:
+            - `proxMotionRef` (list of numpy.array(3,3)) - motion of the proximal referential             
+            - `distMotionRef` (list of numpy.array(3,3)) - motion of the distal referential
+            - `gap` (double) - distance in mm for positionning an axis limit
+            - `method` (int) - affect the objective function (see Ehrig et al.). 
 
-    .. todo :: 
-    
-        check the computation of the coefDet with Morgan
+        :Returns:
+            - `prox_origin` (np.array(3)) - position of the origin in the proximal referential             
+            - `prox_axisLim` (np.array(3)) - position on a point on the axis in the proximal referential             
+            - `dist_origin` (np.array(3)) - position of the origin in the distal referential             
+            - `dist_axisLim` (np.array(3)) - position on a point on the axis in the distal referential
+            - `prox_axisNorm` (np.array(3)) - axis in the proximal frame
+            - `dist_axisNorm` (np.array(3)) - axis in the proximal frame       
+            - `coeffDet`     (double) - See about it with morgan          
+
+
+        .. warning :: 
+            
+            linalg.svd and matlab are different. V from scipy has to be transposed. 
+            In addition, singular values are returned in a 1d array not a diagonal matrix
+
+        **Reference**
         
-        is it the SARA method or the ATT ? ( morgan use another algorithm)
+        Ehrig, R., Taylor, W. R., Duda, G., & Heller, M. (2007). A survey of formal methods for determining functional joint axes. Journal of Biomechanics, 40(10), 2150–7.
 
     """ 
-
+    
+    #TODO: Validate     
+    
     if method =="1": 
   
         nFrames= len(proxMotionRef)  
@@ -165,9 +167,6 @@ def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
     S = diagS[3:6,3:6]
     coeffDet = S[2,2]/(np.trace(S)-S[2,2]) #TODO : explanation ? where does it come up
 
-
-
-
     return prox_origin.reshape(3),prox_axisLim.reshape(3),dist_origin.reshape(3),dist_axisLim.reshape(3),prox_axisNorm,dist_axisNorm,coeffDet
    
    
@@ -175,7 +174,22 @@ def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
    
    
 def haraRegression(mp_input,mp_computed,markerDiameter = 14.0,  basePlate = 2.0):   
-    # mp_computed not used.
+    """
+        Hip joint centre regression from Hara et al, 2016
+
+        :Parameters:
+            - `mp_input` (dict) - dictionnary of the measured anthropometric parameters
+            - `mp_computed` (dict) - dictionnary of the cgm-computed anthropometric parameters
+            - `markerDiameter` (double) - diameter of the marker
+            - `basePlate` (double) - thickness of the base plate
+        
+        **Reference**
+        
+        Hara, R., Mcginley, J. L., C, B., Baker, R., & Sangeux, M. (2016). Generation of age and sex specific regression equations to locate the Hip Joint Centres. Gait & Posture
+    
+    """
+    #TODO : remove mp_computed
+   
    
     HJCx_L= 11.0 -0.063*mp_input["leftLegLength"] - markerDiameter/2.0 - basePlate
     HJCy_L=8.0+0.086*mp_input["leftLegLength"]
@@ -199,15 +213,29 @@ def haraRegression(mp_input,mp_computed,markerDiameter = 14.0,  basePlate = 2.0)
 
 
 def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0, basePlate = 2.0, cgmReferential=True):
-    """ Computation of the hip joint center position from Harrington's regressions.         
+    """
+        Hip joint centre regression from Harrington et al, 2007
+
+        :Parameters:
+            - `mp_input` (dict) - dictionnary of the measured anthropometric parameters
+            - `mp_computed` (dict) - dictionnary of the cgm-computed anthropometric parameters
+            - `predictors` (str) - predictor choice of the regression (full,PWonly,LLonly)
+            - `markerDiameter` (double) - diameter of the marker
+            - `basePlate` (double) - thickness of the base plate
+            - `cgmReferential` (bool) - flag indicating HJC position will be expressed in the CGM pelvis Coordinate system
     
-    :Parameters:
-       - `mp_input` (dict) - a dictionnary of input anthropometric parameters           
-       - `mp_computed` (dict) - a dictionnary of anthropometric parameters infered from input ones (meanlegLength for example)   
+        .. note:: Predictor choice allow using modified Harrington's regression from Sangeux 2015  
+    
+        '' warning:: this function requires pelvisDepth,asisDistance and meanlegLength which are automaticcly computed during CGM calibration
 
-    .. todo :: not really clear : input and computed parameters
-
-    """ 
+    
+        **Reference**
+       
+          - Harrington, M., Zavatsky, A., Lawson, S., Yuan, Z., & Theologis, T. (2007). Prediction of the hip joint centre in adults, children, and patients with cerebral palsy based on magnetic resonance imaging. Journal of Biomechanics, 40(3), 595–602
+          - Sangeux, M. (2015). On the implementation of predictive methods to locate the hip joint centres. Gait and Posture, 42(3), 402–405.
+    
+    """
+    #TODO : how to work without CGM calibration
 
     if predictors.value == "full":
         HJCx_L=-0.24*mp_computed["pelvisDepth"]-9.9  - markerDiameter/2.0 - basePlate # post/ant
@@ -264,12 +292,10 @@ def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0
     return HJC_L,HJC_R
 
 
-# -------- ABSTRACT DECORATOR MODEL ---------
+# -------- ABSTRACT DECORATOR MODEL : INTERFACE ---------
 
 class DecoratorModel(model.Model):
-    """
-    .. note ::     model decorator Interface   
-    """
+    # interface    
 
     def __init__(self, iModel):
         super(DecoratorModel,self).__init__()
@@ -278,28 +304,27 @@ class DecoratorModel(model.Model):
 #-------- CONCRETE DECORATOR MODEL ---------
 class Kad(DecoratorModel):
     """
-    .. Note : a concrete decorator altering the hip joint centers with regression equations    
+         A concrete CGM decorator altering the knee joint centre from the Knee Aligment device    
     """ 
     def __init__(self, iModel,iAcq):
-        """Constructor
-
-        :Parameters:
-           - `iModel` (Model) - model instance   
-           - `iAcq` (btkAcquisition) - btk aquisition   
-
-        .. note:: if i want add a new regression, just add it as a method here       
         """
+            :Parameters:
+                - `iModel` (pyCGM2.Model.CGM2.cgm.CGM) - a CGM instance   
+                - `iAcq` (btkAcquisition) - btk aquisition inctance of a static c3d with the KAD          
+        """
+        
         super(Kad,self).__init__(iModel)
         self.acq = iAcq
         
     def compute(self,side="both",markerDiameter = 14,displayMarkers = False):    
         """
-        1- calcul position de KNE
-        2- ajout offset. 
-        3- creer un node KJC_kad et AJC_kad
-         
+             :Parameters:
+                - `side` (str) - body side 
+                - `markerDiameter` (double) - diameter of the marker
+                - `displayMarkers` (bool) - display markers RKNE, RKJC and RAJC from KAD processing  
+
         """
-        distSkin = 0 #%17-2-7; dist origin to plate minus markers plate thickness and half marker diameter             
+        distSkin = 0           
         
         ff = self.acq.GetFirstFrame() 
 
@@ -351,11 +376,6 @@ class Kad(DecoratorModel):
             self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKNE_kad",LKNE,positionType="Global")
             self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_kad",LKJC,positionType="Global") 
             self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_kad",LAJC,positionType="Global")
-
-
-
-
-
 
             
         if side == "both" or side == "right":
@@ -433,30 +453,29 @@ class Kad(DecoratorModel):
 
 class HipJointCenterDecorator(DecoratorModel):
     """
-    .. Note : a concrete decorator altering the hip joint centers with regression equations    
+        Concrete CGM decorators altering the hip joint centre     
     """ 
     def __init__(self, iModel):
-        """Constructor
-
-        :Parameters:
-           - `iModel` (Model ) - model instance   
-
-        .. note:: if i want add a new regression, just add it as a method here       
+        """
+            :Parameters:
+              - `iModel` (pyCGM2.Model.CGM2.cgm.CGM) - a CGM instance 
         """
         super(HipJointCenterDecorator,self).__init__(iModel)
         
     def custom(self,position_Left=0,position_Right=0,methodDesc="custom"):
-        """ add hip joint centres from golden device          
+        """ 
         
-        :Parameters:
-           - `position_Left` (np.array, 3) - position of the left hip center in the Pelvis Referential           
-           - `position_Right` (np.array, 3) - position of the right hip center in the Pelvis Referential
-           - `methodDesc` (str) - short description of the method 
+            Locate hip joint centres manually          
+        
+            :Parameters:
+               - `position_Left` (np.array(3,)) - position of the left hip center in the Pelvis Referential           
+               - `position_Right` (np.array(3,)) - position of the right hip center in the Pelvis Referential
+               - `methodDesc` (str) - short description of the method 
            
-        .. warning :: look out the Pevis Referential. it has to be similar with cgm1. 
+           .. warning :: look out the Pelvis referential. It has to be similar with cgm1. 
     
         """
-        #self.model.nativeCgm1 = False
+
         self.model.decoratedModel = True
 
         if position_Left.shape ==(3,):
@@ -471,13 +490,15 @@ class HipJointCenterDecorator(DecoratorModel):
 
         
     def harrington(self,predictors= pyCGM2Enums.HarringtonPredictor.Native, side="both"):    
-        """ Use of the Harrington's regressions function        
+        """ 
+            Use of the Harrington's regressions        
         
-        :Parameters:
-           - `side` (str) - compute either *left* or *right* or *both* hip joint centres           
+            :Parameters:
+               - `predictors` (pyCGM2.enums) - enums specifying harrington's predictors to use
+               - `side` (str) - body side 
         
         """ 
-        #self.model.nativeCgm1 = False
+
         self.model.decoratedModel = True
 
         LHJC_har,RHJC_har=harringtonRegression(self.model.mp,self.model.mp_computed,predictors)
@@ -509,13 +530,14 @@ class HipJointCenterDecorator(DecoratorModel):
             self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_har",pos_R, positionType="Global")
 
     def hara(self, side="both"):    
-        """ Use of the Hara's regressions function        
+        """ 
+            Use of the Hara's regressions        
         
-        :Parameters:
-           - `side` (str) - compute either *left* or *right* or *both* hip joint centres           
+            :Parameters:
+               - `side` (str) - body side 
         
         """ 
-        #self.model.nativeCgm1 = False
+ 
         self.model.decoratedModel = True
 
         LHJC_hara,RHJC_hara=haraRegression(self.model.mp,self.model.mp_computed)
@@ -538,31 +560,29 @@ class HipJointCenterDecorator(DecoratorModel):
 
 class KneeCalibrationDecorator(DecoratorModel):
     """
-    .. Note : a concrete decorator altering the knee joint axis from a functionnal method    
+        Concrete cgm decorator altering the knee joint      
     """ 
     def __init__(self, iModel):
-        """Constructor
-
-        :Parameters:
-           - `iModel` (Model ) - model instance   
-       
         """
+            :Parameters:
+              - `iModel` (pyCGM2.Model.CGM2.cgm.CGM) - a CGM instance 
+        """
+
         super(KneeCalibrationDecorator,self).__init__(iModel)
         
     def midCondyles(self,acq, side="both",leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LMEPI",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RMEPI", markerDiameter = 14, withNoModelParameter=False):   
-        """ compute KJC as the mid-condyles point          
+        """ 
+            Compute Knee joint centre from mid condyles         
         
-        :Parameters:
-           - `acq` (btkAcquisition) - static acquisition           
-           - `side` (str) - both, left or right
-           - `leftLateralKneeLabel` (str) - point label of the left lateral knee marker
-           - `leftMedialKneeLabel` (str) - point label of the left medial knee marker           
-           
-           
-        .. todo :: coding exception if label doesn t find. 
-
-        """
+            :Parameters:
+                - `acq` (btkAcquisition) - a btk acquisition instance of a static c3d           
+                - `side` (str) - body side
+                - `leftLateralKneeLabel` (str) -  label of the left lateral knee marker
+                - `leftMedialKneeLabel` (str) -  label of the left medial knee marker   
         
+        """         
+        # TODO : coding exception if label doesn t find.        
+         
         ff = acq.GetFirstFrame()     
     
         frameInit =  acq.GetFirstFrame()-ff  
@@ -623,8 +643,15 @@ class KneeCalibrationDecorator(DecoratorModel):
 
     
     def sara(self,side):    
-        """
         """ 
+            Compute Knee flexion axis and relocate knee joint centre from SARA functional calibration         
+        
+            :Parameters:
+                - `side` (str) - body side
+
+        """
+         
+
         #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
 
@@ -704,32 +731,31 @@ class KneeCalibrationDecorator(DecoratorModel):
 
 class AnkleCalibrationDecorator(DecoratorModel):
     """
-    .. Note : a concrete decorator altering the ankle joint axis from a functionnal method    
-    """ 
+        Concrete cgm decorator altering the ankle joint     
+    """
     def __init__(self, iModel):
-        """Constructor
-
-        :Parameters:
-           - `iModel` (Model ) - model instance   
-       
+        """
+            :Parameters:
+              - `iModel` (pyCGM2.Model.CGM2.cgm.CGM) - a CGM instance 
         """
         super(AnkleCalibrationDecorator,self).__init__(iModel)
         
     def midMaleolus(self,acq, side="both",
                     leftLateralAnkleLabel="LANK", leftMedialAnkleLabel="LMED",
-                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14, withNoModelParameter=False):   
-        """ compute AJC as the mid-condyles point          
-        
-        :Parameters:
-           - `acq` (btkAcquisition) - static acquisition           
-           - `side` (str) - both, left or right
-           - `leftLateralAnkleLabel` (str) - point label of the left lateral knee marker
-           - `leftMedialAnkleLabel` (str) - point label of the left medial knee marker           
-           
-           
-        .. todo :: coding exception if label doesn t find. 
+                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14, withNoModelParameter=False): 
 
-        """    
+        """ 
+            Compute Ankle joint centre from mid malleoli         
+        
+            :Parameters:
+                - `acq` (btkAcquisition) - a btk acquisition instance of a static c3d           
+                - `side` (str) - body side
+                - `leftLateralAnkleLabel` (str) -  label of the left lateral knee marker
+                - `leftMedialAnkleLabel` (str) -  label of the left medial knee marker   
+        
+        """                         
+                        
+                        
         ff = acq.GetFirstFrame()     
     
         frameInit =  acq.GetFirstFrame()-ff  
@@ -784,18 +810,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
                     leftLateralAnkleLabel="LANK", leftMedialAnkleLabel="LMED",
                     rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14, withNoModelParameter=False):   
         
-        """ compute AJC as the mid-condyles point          
         
-        :Parameters:
-           - `acq` (btkAcquisition) - static acquisition           
-           - `side` (str) - both, left or right
-           - `leftLateralAnkleLabel` (str) - point label of the left lateral knee marker
-           - `leftMedialAnkleLabel` (str) - point label of the left medial knee marker           
-           
-           
-        .. todo :: coding exception if label doesn t find. 
-
-        """    
         ff = acq.GetFirstFrame()     
     
         frameInit =  acq.GetFirstFrame()-ff  

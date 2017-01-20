@@ -9,7 +9,22 @@ import numpy as np
 
 
 def angleFrom2Vectors(v1,v2, vn):
-    """ return the signed angle between v1 and v2)"""
+    """ 
+        Return a signed angle between 2 vectors 
+
+        .. note:: the common orthogonal vector is used for defining the sign of the angle 
+
+        :Parameters:
+            - `v1` (numpy.array(3,)) - first vector 
+            - `v2` (numpy.array(3,)) - second vector
+            - `vn` (numpy.array(3,)) - common orthogonal vector. 
+
+        :Return:
+            - `angle` (double) - signed angle 
+
+    """        
+        
+
     cross = np.cross(v1, v2)
     angle= np.arctan2(np.linalg.norm(np.cross(v1, v2)), np.dot(v2, v1)) 
 
@@ -22,21 +37,23 @@ def oppositeVector(v1):
     return (-1*np.ones(3))*v1
 
 def LineLineIntersect(p1,p2,p3,p4):
-    """ Calculates the line segment pa_pb that is the shortest route
-    between two lines p1_p2 and p3_p4. Calculates also the values of
-    mua and mub where: 
-       - pa = p1 + mua (p2 - p1) 
-       - pb = p3 + mub (p4 - p3)
+    """ 
+        Calculates the line segment pa_pb that is the shortest route
+        between two lines p1_p2 and p3_p4. Calculates also the values of
+        mua and mub where: 
+            - pa = p1 + mua (p2 - p1) 
+            - pb = p3 + mub (p4 - p3)
 
-    :parameters:
-    
-      - p1 ('np.array(3)') : 3d coordinates 
-      - p2 ('np.array(3)') : 3d coordinates      
-      - p3 ('np.array(3)') : 3d coordinates 
-      - p4 ('np.array(3)') : 3d coordinates 
+        :parameters:
+            - p1 ('np.array(3)') : 3d coordinates 
+            - p2 ('np.array(3)') : 3d coordinates      
+            - p3 ('np.array(3)') : 3d coordinates 
+            - p4 ('np.array(3)') : 3d coordinates 
 
-    .. note ; this a python conversion from the code proposed by
-    Paul Bourke at http://astronomy.swin.edu.au/~pbourke/geometry/lineline3d/
+        .. note:: 
+
+            this a python conversion from the code proposed by
+            Paul Bourke at http://astronomy.swin.edu.au/~pbourke/geometry/lineline3d/
 
     """    
     pa = np.zeros((3))

@@ -25,7 +25,6 @@ import ma.io
 import ma.body
    
 # pyCGM2 libraries   
-import pyCGM2.Model.openmaLib as openmaLib
 from  pyCGM2.Tools  import trialTools
 from pyCGM2 import  smartFunctions    
    
@@ -109,14 +108,14 @@ if __name__ == "__main__":
      
         #---- EXTRACT KINEMATICS AND KINETICS -----
         kinematics  = ma.body.extract_joint_kinematics(cgm1_gait)
-        openmaLib.renameOpenMAtoVicon(kinematics)
+        trialTools.renameOpenMAtoVicon(kinematics)
         
         # append new parameters to the gait trial    
         trialTools.addTimeSequencesToTrial(dynamicTrial,kinematics)
         
         if not staticProcessing:
             kinetics = ma.body.extract_joint_kinetics(cgm1_gait)
-            openmaLib.renameOpenMAtoVicon(kinetics)
+            trialTools.renameOpenMAtoVicon(kinetics)
             trialTools.addTimeSequencesToTrial(dynamicTrial,kinetics)
     
         # add property

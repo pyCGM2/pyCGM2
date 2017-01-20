@@ -1,16 +1,39 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 10 11:34:45 2016
 
-@author: Fabien Leboeuf ( Salford Univ, UK)
-"""
 import numpy as np
 
 
 def rms(x, axis=None):
+    """
+        Calculate the rms of an array
+        
+        :Parameters:
+            - `x` (numpy.array(m,n)) : array
+            - `axis` (int) direction of computation 
+        
+        .. note::
+        
+            - if axis=0 , you get rms for each column
+            - if axis=1 , you get rms for each row
+        
+        :Return:
+            - `na` (numpy.array(?,?))  array dimension depend on axis argument  
+    """
+
     return np.sqrt(np.mean(x**2, axis=axis))
 
 def skewMatrix(vector):
+    """
+        return a skew matrix from a vector
+        
+        :Parameters:
+            - `vector` (numpy.array(3,)) : array
+
+        :Return:
+            - `na` (numpy.matrix) : skew matrix
+
+    
+    """    
     if isinstance(vector, ( np.matrix)):
         out=np.zeros((3,3))
         out[0,1]= -vector[0,2]    

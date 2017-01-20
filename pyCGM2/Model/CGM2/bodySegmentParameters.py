@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon May 30 11:08:11 2016
-
-@author: aaa34169
-"""
-
 import numpy as np
 import pdb
 import logging
 
 class Bsp(object):
+    """ 
+        Body Segment Parameter of the lower limb according Dempster 1995
+        
+        **Reference**
+        
+        Dempster. (1955). Body Segment Parameter Data for 2-D Studies
+ 
+    """
+    # TODO: Improve implementation in order to consider different body sement parameter table. 
+
 
     TABLE = dict()
     TABLE["Foot"] = dict() 
@@ -31,6 +35,25 @@ class Bsp(object):
 
     @classmethod
     def setParameters(cls, bspSegmentLabel,segmentLength, bodymass):
+        """
+        Compute body parameter of a selected lower limb segment       
+        
+        :Parameters:
+           - `bspSegmentLabel` (str) - segment label defined in the class object `TABLE`
+           - `segmentLength` (double) - length of the segment
+           - `bodymass` (double) - mass of the subject
+        """
+        # TODO Pelvis
+        # % Length = distance from midpoint of hip joint centres to junction between L4 and L5. (see Winter/Dempster)
+        #% 0.925 is found from the ratio of the distance between HJC's and "Length" measured on the current mesh (EthelredBones.OBJ)      
+        #      PelvisLength = obj.PelvisScale() * 0.925;
+        #      
+        #      CentreOfMass = ( obj.PelvisOriginOffset() + ... 
+        #        (obj.m_TopLumbar5-obj.PelvisOriginOffset()) * 0.895 ) ./ PelvisLength;
+        #      
+        #      I = Bodymass * 0.142 * ( obj.m_Settings.m_PelvisROG.^2 );
+        #      obj.m_KineticPelvis = KineticSegment( obj.m_Pelvis, CentreOfMass, Bodymass*0.142, ...
+        #                                            [I;I;I], NullSegment(), [0;0;0] );        
         
         mass = bodymass *  Bsp.TABLE[bspSegmentLabel]["mass"]/100.0
         com = -1.0 * segmentLength *  Bsp.TABLE[bspSegmentLabel]["com"]/100.0 # com from Prox->dist but longitudinal is from Dist-> prox Generally
@@ -44,23 +67,21 @@ class Bsp(object):
         return (mass,com,Ixx,Iyy,Izz )        
         
         
-    # TODO Pelvis
-    # % Length = distance from midpoint of hip joint centres to junction between L4 and L5. (see Winter/Dempster)
-    #% 0.925 is found from the ratio of the distance between HJC's and "Length" measured on the current mesh (EthelredBones.OBJ)      
-    #      PelvisLength = obj.PelvisScale() * 0.925;
-    #      
-    #      CentreOfMass = ( obj.PelvisOriginOffset() + ... 
-    #        (obj.m_TopLumbar5-obj.PelvisOriginOffset()) * 0.895 ) ./ PelvisLength;
-    #      
-    #      I = Bodymass * 0.142 * ( obj.m_Settings.m_PelvisROG.^2 );
-    #      obj.m_KineticPelvis = KineticSegment( obj.m_Pelvis, CentreOfMass, Bodymass*0.142, ...
-    #                                            [I;I;I], NullSegment(), [0;0;0] );
+    
 
 
     def __init__(self,iModel):
+        """
+        :Parameters:
+           - `iModel` (pyCGM2.Model.CGM2.Model) - pyCGM2.Model.CGM2.Model instance
+
+        """
         self.m_model = iModel
         
     def compute(self):
+        """
+        Compute body segment parameters of a Model
+        """
         
         bodymass =  self.m_model.mp["mass"]
 

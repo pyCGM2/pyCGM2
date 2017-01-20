@@ -1,15 +1,28 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Jun 03 11:05:55 2015
-
-@author: fleboeuf
-"""
 
 import numpy as np
 import pdb
 import logging
 
 def setFrameData(a1,a2,sequence):
+    """
+        set Frame of a ccordinate system accoring two vector and a sequence
+        
+        :Parameters:
+           - `a1` (numy.array(1,3)) - first vector        
+           - `a2` (str) - second vector  
+           - `sequence` (str) - construction sequence (XYZ, XYiZ)
+        
+        :Return:
+            - `axisX` (numy.array(1,3)) - x-axis of the coordinate system
+            - `axisY` (numy.array(1,3)) - y-axis of the coordinate system
+            - `axisZ` (numy.array(1,3)) - z-axis of the coordinate system
+            - `rot` (numy.array(3,3)) - rotation matrix of the coordinate system
+
+        .. note:: if sequence includes a *i* ( ex: XYiZ), opposite of vector a2 is considered  
+                     
+    """
+
     if sequence == "XYZ" or sequence == "XYiZ" :
         if sequence == "XYiZ":
             a2=a2*-1.0
@@ -71,30 +84,23 @@ def setFrameData(a1,a2,sequence):
     return axisX, axisY, axisZ, rot
 
 class Frame(object):
-    """ a Frame is an axis system
+    """
+        A Frame defined a segment pose
  
-    .. note:: Frame embbeds Node object   
-
-    .. todo:: rename Frame by SegmentalFrame ??   
-        
     """    
     
     
     class Node(object):
-        """ A node is a local frame point. a node is characterized by a constant position
+        """
+            A node is a local position of a point in a Frame 
         """        
+ 
         def __init__(self,label):
-            """ Constructor
-            
-            Generally a node come from a global position.  
-            
-           :Parameters:
-               - `label` (str) - label of the node you want to build 
+            """  
+                :Parameters:
+                   - `label` (str) - desired label of the node  
            
-           .. warning:: automatically the suffixe "_node" will be added to the label
-    
-           .. todo:: wow to deal with muscle insertion
-
+                .. note:: automatically, the suffix "_node" ends the node label
             """
 
             self.m_name = label+"_node"
@@ -103,31 +109,29 @@ class Frame(object):
             
         def computeLocal(self,rot,t):
             """
-            compute local position from global
+                Compute local position from global position
             
-           :Parameters:
-               - `rot` (np.array((3,3))) - a rotation matrix 
-               - `t` (np.array((1,3))) - a translation vector 
+                :Parameters:
+                    - `rot` (np.array(3,3)) - a rotation matrix 
+                    - `t` (np.array((1,3))) - a translation vector 
                
             """
             self.m_local=np.dot(rot.T,(self.m_global-t))
     
         def computeGlobal(self,rot,t):
             """
-            compute global position from local
+                Compute global position from local
             
-           :Parameters:
-               - `rot` (np.array((3,3))) - a rotation matrix 
-               - `t` (np.array((1,3))) - a translation vector 
+                :Parameters:
+                    - `rot` (np.array((3,3))) - a rotation matrix 
+                    - `t` (np.array((1,3))) - a translation vector 
            
             """
 
             self.m_global=np.dot(rot,self.m_local) +t
     
     def __init__(self):
-        """ Constructor
-        Initialization of both X-Y-Z axes, translation vector, rotation matrix and node list 
-        """
+
         self.m_axisX=np.zeros((1,3))                    
         self.m_axisY=np.zeros((1,3))
         self.m_axisZ=np.zeros((1,3))
@@ -139,33 +143,51 @@ class Frame(object):
         self._nodes=[]
 
     def getRotation(self):
-        """ get rotation matrix
+        """ 
+            Get rotation matrix
+            
+            :Return:
+                - `na` (np.array((3,3))) - a rotation matrix 
+            
         """
         return self._matrixRot
 
     def getTranslation(self):
-        """ get translation vector
+        """ 
+            Get translation vector
+
+            :Return:
+                - `na` (np.array((3,))) - a translation vector 
+                    
         """
         return self._translation
 
     def setRotation(self, R):
-        """ set rotation matrix
+        """ 
+            Set rotation matrix
         
-         :Parameters:
-               - `rot` (np.array((3,3))) - a rotation matrix 
+            :Parameters:
+               - `R` (np.array(3,3) - a rotation matrix 
         """
 
         self._matrixRot=R
 
     def setTranslation(self,t):
-        """ set translation vector
+        """ 
+            Set translation vector
         
-         :Parameters:
-               - `t` (np.array((3,))) - a translation vector 
+            :Parameters:
+               - `t` (np.array(3,)) - a translation vector 
         """
         self._translation=t
 
     def updateAxisFromRotation(self,R):
+        """ 
+            Update a rotation matrix
+        
+            :Parameters:
+               - `R` (np.array(3,3) - a rotation matrix 
+        """
         self.m_axisX = R[:,0]
         self.m_axisY = R[:,1]
         self.m_axisZ = R[:,2]
@@ -173,6 +195,14 @@ class Frame(object):
         self._matrixRot = R
 
     def update(self,R,t):
+        """ 
+            Update both rotation matrix and translation vector
+        
+            :Parameters:
+               - `R` (np.array(3,3) - a rotation matrix
+               - `t` (np.array(3,)) - a translation vector 
+        """        
+        
         self.m_axisX = R[:,0]
         self.m_axisY = R[:,1]
         self.m_axisZ = R[:,2]
@@ -180,17 +210,17 @@ class Frame(object):
         self._matrixRot = R
 
     def addNode(self,nodeLabel,position, positionType="Global"):
-        """ update or append a node 
-         
-         caution with the argument positionType
+        """ 
+            Append a `Node` to a Frame
         
-         :Parameters:
-            - `nodeLabel` (str) - node of the label you want to add 
-            - `position` (np.array((3,))) - a translation vector 
-            - `positionType` (str) - two choice Global or Local 
+            :Parameters:
+                - `nodeLabel` (str) - node label 
+                - `position` (np.array(3,)) - a translation vector 
+                - `positionType` (str) - two choice Global or Local 
 
-        .. todo : use an Enum for the argment positionType
         """
+        #TODO : use an Enum for the argment positionType
+        
         logging.debug("new node (%s) added " % nodeLabel)
         
         isFind=False
@@ -200,8 +230,6 @@ class Frame(object):
                 isFind=True
                 index = i
             i+=1
-
-
         
         if isFind:
             if positionType == "Global":
@@ -226,18 +254,24 @@ class Frame(object):
             self._nodes.append(node)
     
     def getNode_byIndex(self,index):
-        """ return a node in the list from its index
+        """ 
+            Return a node within the list from its index
         
-         :Parameters:
-            - `index` (int) - index in the list
+            :Parameters:
+                - `index` (int) - index of the node within the list
+            :Return:
+                - `na` (pyCGM2.pyCGM2.Model.CGM2.Frame.Node) - a node instance
         """
         return self._nodes[index]           
     
     def getNode_byLabel(self,label):
-        """ return a node in the list from its label
+        """ 
+            Return a node in the list from its label
         
          :Parameters:
             - `label` (str) - label of the node you want to find
+         :Return:
+            - `na` (pyCGM2.pyCGM2.Model.CGM2.Frame.Node) - a node instance
         """
         
         for nodeIt in self._nodes:
@@ -251,12 +285,16 @@ class Frame(object):
 
 
     def printAllNodes(self):
-        """ print the label of nodes
+        """ 
+            Display all node labels
     
         """
         for nodeIt in self._nodes:
             print nodeIt.m_name
 
     def eraseNodes(self):    
+        """
+            erase all nodes
+        """
         self._nodes=[]
 

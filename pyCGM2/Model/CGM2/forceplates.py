@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jul 09 10:38:10 2015
-
-@author: fleboeuf
-"""
+# -*- coding: utf-8 -*-
 
 import btk
 import numpy as np
@@ -18,6 +14,14 @@ from pyCGM2.Tools import  btkTools
 
 
 def appendForcePlateCornerAsMarker (btkAcq):
+    """
+        Add a marker at each force plate corners
+        
+        :Parameters:
+           - `btkAcq` (btkAcquisition) : Btk acquisition instance from a c3d        
+        
+    """
+
 
     # --- ground reaction force wrench ---
     pfe = btk.btkForcePlatformsExtractor()
@@ -47,7 +51,18 @@ def appendForcePlateCornerAsMarker (btkAcq):
 
 def matchingFootSideOnForceplate (btkAcq, left_markerLabelToe ="LTOE", left_markerLabelHeel ="LHEE", 
                  right_markerLabelToe ="RTOE", right_markerLabelHeel ="RHEE",  display = False):
-
+    """
+        Convenient function detecting foot in contact with a force plate
+        
+        :Parameters:
+           - `btkAcq` (btkAcquisition) - Btk acquisition instance from a c3d        
+           - `left_markerLabelToe` (str) - label of the left toe marker  
+           - `left_markerLabelHeel` (str) - label of the left heel marker 
+           - `right_markerLabelToe` (str) - label of the right toe marker
+           - `right_markerLabelHeel` (str) - label of the right heel marker 
+           - `display` (bool) - display n figures ( n depend on force plate number) presenting relative distance between mid foot and the orgin of the force plate 
+        
+    """
      
     ff=btkAcq.GetFirstFrame()
     lf=btkAcq.GetLastFrame()

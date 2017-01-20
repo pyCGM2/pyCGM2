@@ -48,7 +48,7 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
         #---- INPUTS------
-        Calibration = True
+        Calibration = False
         if Calibration:
             calibrateFilenameLabelledNoExt = None   
         else:

@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 03 13:06:12 2016
-
-@author: aaa34169
-"""
 import numpy as np
 import pdb
 
 def timeSequenceNormalisation(Nrow,data):
-    """
+    """ 
+        Normalisation of an array
+
+        :parameters:
+            - `Nrow` (double) : number of interval
+            - `data` (numpy.array(m,n)) : number of interval
+            
     """
     
     ncol = data.shape[1]    

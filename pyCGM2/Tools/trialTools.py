@@ -14,6 +14,13 @@ import logging
 
 
 def isTimeSequenceExist(trial,label):
+    """
+        Check if a Time sequence exists inside a trial    
+
+        :Parameters:
+            - `trial` (openma.trial) - an openma trial instance
+            - `label` (str) - label of the time sequence
+    """
     try:
         trial.findChild(ma.T_TimeSequence,label)
         return True
@@ -23,9 +30,15 @@ def isTimeSequenceExist(trial,label):
             
     
 def sortedEvents(trial):
-    """
 
     """
+        Sort out events of a trial    
+
+        :Parameters:
+            - `trial` (openma.trial) - an openma trial instance
+
+    """
+
     evs = trial.findChildren(ma.T_Event)
    
     contextLst=[] # recuperation de tous les contextes   
@@ -57,14 +70,27 @@ def sortedEvents(trial):
          
 
 def addTimeSequencesToTrial(trial,nodeToAdd):
-        trialTimeSequences = trial.timeSequences() 
-        tss = nodeToAdd.child(0).findChildren(ma.T_TimeSequence)
-        for ts in tss:
-            #print ts.name()
-            ts.addParent(trialTimeSequences)
-     
+    """
+        Add a Time sequence into a trial    
+
+        :Parameters:
+            - `trial` (openma.trial) - an openma trial instance
+            - `nodeToAdd` (openma.TimeSequence) - time sequence
+    """    
+    trialTimeSequences = trial.timeSequences() 
+    tss = nodeToAdd.child(0).findChildren(ma.T_TimeSequence)
+    for ts in tss:
+        #print ts.name()
+        ts.addParent(trialTimeSequences)
+ 
 
 def isKineticFlag(trial):
+    """
+        Flag up if correct kinetics available       
+
+        :Parameters:
+            - `trial` (openma.trial) - an openma trial instance
+    """
 
 
     kineticEvent_times=[]
@@ -82,6 +108,13 @@ def isKineticFlag(trial):
 
             
 def automaticKineticDetection(dataPath,filenames):
+    """
+        convenient method for detecting correct kinetic in a filename set    
+
+        :Parameters:
+            - `dataPath` (str) - folder path 
+            - `filenames` (list of str) - filename of the different acquisitions
+    """
     kineticTrials=[]
     kineticFilenames=[]
     for filename in filenames:
@@ -104,6 +137,17 @@ def automaticKineticDetection(dataPath,filenames):
 
 
 def findProgressionFromPoints(trial,originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel):
+    """
+        Find progression from 3 markers    
+
+        :Parameters:
+            - `trial` (openMA trial) - an openma trial instance
+            - `originPointLabel` (str) - origin marker label 
+            - `longitudinal_extremityPointLabel` (str) - forward marker label
+            - `lateral_extremityPointLabel` (str) - lateral marker label
+
+    """    
+    
     if not isTimeSequenceExist(trial,originPointLabel):
         raise Exception( "[pyCGM2] : origin point doesnt exist")
 
@@ -157,3 +201,33 @@ def findProgressionFromPoints(trial,originPointLabel, longitudinal_extremityPoin
     logging.info("globalFrame : %s"%(str(globalFrame)))
 
     return   longitudinalAxis,forwardProgression,globalFrame
+    
+    
+def renameOpenMAtoVicon(analysis, suffix=""):
+    """
+        Convenient function renaming openma standard point label to vicon CGM point label     
+        
+        :Parameters:
+            - `analysis` (openMA node) - openma node containing time sequences of model outputs
+            - `suffix` (str) - point label suffix 
+                
+    """
+    tss = analysis.child(0).findChildren(ma.T_TimeSequence)
+    for ts in tss:
+        name = ts.name()
+        
+        if "Angle" in name:
+            newName = name.replace(".", "")
+            newName= newName + "s" + suffix
+            if ("Pelvis" in name):
+                newName = newName.replace("Progress", "") + suffix
+        if "Force" in name:
+            newName = name.replace(".", "")
+            newName = newName[0: newName.rfind("Force")+5] + suffix
+        if "Moment" in name:
+            newName = name.replace(".", "")
+            newName = newName[0: newName.rfind("Moment")+6] + suffix
+        if "Power" in name:
+            newName = name.replace(".", "")
+            newName = newName[0: newName.rfind("Power")+5] + suffix
+        ts.setName(newName)    
