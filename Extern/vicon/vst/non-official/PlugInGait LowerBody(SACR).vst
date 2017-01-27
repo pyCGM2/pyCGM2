@@ -160,6 +160,8 @@
 			<Stick MARKER1="RANK" MARKER2="RHEE" RGB1="0 255 0" RGB2="0 255 0"/>
 			<Stick MARKER1="RANK" MARKER2="RTOE" RGB1="0 255 0" RGB2="0 255 0"/>
 			<Stick MARKER1="RHEE" MARKER2="RTOE" RGB1="0 255 0" RGB2="0 255 0"/>
+			<Marker NAME="LKNE" RADIUS="12.5" RGB="255 0 0" STATUS="optional" VIEW-ANGLE="0"/>
+			<Marker NAME="RKNE" RADIUS="12.5" RGB="0 255 0" STATUS="optional" VIEW-ANGLE="0"/>			
 		</Sticks>
 	</MarkerSet>
 	<TargetSet>
@@ -212,4 +214,3 @@
 		</Targets>
 	</TargetSet>
 </KinematicModel>
-

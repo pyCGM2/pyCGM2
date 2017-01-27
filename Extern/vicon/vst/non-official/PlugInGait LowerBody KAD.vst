@@ -4,7 +4,7 @@
 		<StaticParameter NAME="Bodymass" PRIOR="65" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="mass"/>
 		<StaticParameter NAME="Height" PRIOR="1700" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
 		<StaticParameter NAME="InterAsisDistance" PRIOR="200" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="0" QUANTITY="length"/>
-		
+
 		<StaticParameter NAME="LeftLegLength" PRIOR="800" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
 		<StaticParameter NAME="LeftKneeWidth" PRIOR="120" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
 		<StaticParameter NAME="LeftAnkleWidth" PRIOR="100" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
@@ -15,7 +15,7 @@
 		<StaticParameter NAME="LeftStaticPlantFlex" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="1" REQUIRED="0" QUANTITY="angle"/>
 		<StaticParameter NAME="LeftStaticRotOff" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="1" REQUIRED="0" QUANTITY="angle"/>
 		<StaticParameter NAME="LeftAnkleAbAdd" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="1" REQUIRED="0" QUANTITY="angle"/>
-		
+
 		<StaticParameter NAME="RightLegLength" PRIOR="800" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
 		<StaticParameter NAME="RightKneeWidth" PRIOR="120" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
 		<StaticParameter NAME="RightAnkleWidth" PRIOR="100" HIDDEN="0" ADVANCED="0" READONLY="0" REQUIRED="1" QUANTITY="length"/>
@@ -26,13 +26,13 @@
 		<StaticParameter NAME="RightStaticPlantFlex" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="1" REQUIRED="0" QUANTITY="angle"/>
 		<StaticParameter NAME="RightStaticRotOff" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="1" REQUIRED="0" QUANTITY="angle"/>
 		<StaticParameter NAME="RightAnkleAbAdd" PRIOR="0" HIDDEN="0" ADVANCED="1" READONLY="1" REQUIRED="0" QUANTITY="angle"/>
-		
+
 		<Parameter NAME="HipWidth" VALUE="95" PRIOR="95" SD="0" HIDDEN="0"/>
 		<Parameter NAME="UpperLegLength" VALUE="410" PRIOR="410" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LowerLegLength" VALUE="400" PRIOR="400" SD="0" HIDDEN="0"/>
 		<Parameter NAME="FootLength" VALUE="210" PRIOR="210" SD="0" HIDDEN="0"/>
 		<Parameter NAME="Waist_Y" VALUE="60" PRIOR="60" SD="0" HIDDEN="0"/>
-		
+
 		<Parameter NAME="FWT_Root_X" VALUE="105" PRIOR="105" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LFWT_Root_Z" VALUE="65" PRIOR="65" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LBWT_Root_X" VALUE="0" PRIOR="0" SD="0" HIDDEN="0"/>
@@ -40,7 +40,7 @@
 		<Parameter NAME="RFWT_Root_Z" VALUE="65" PRIOR="65" SD="0" HIDDEN="0"/>
 		<Parameter NAME="RBWT_Root_X" VALUE="-35" PRIOR="-35" SD="0" HIDDEN="0"/>
 		<Parameter NAME="RBWT_Root_Z" VALUE="-100" PRIOR="-100" SD="0" HIDDEN="0"/>
-		
+
 		<Parameter NAME="LKNE_L_Femur_X" VALUE="35" PRIOR="35" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LKNE_L_Femur_Y" VALUE="-390" PRIOR="-390" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LKNE_L_Femur_Z" VALUE="10" PRIOR="10" SD="0" HIDDEN="0"/>
@@ -51,7 +51,7 @@
 		<Parameter NAME="LHEL_L_Foot_Y" VALUE="-25" PRIOR="-25" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LHEL_L_Foot_Z" VALUE="-30" PRIOR="-30" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LTOE_L_Toe_Z" VALUE="140" PRIOR="140" SD="0" HIDDEN="0"/>
-		
+
 		<Parameter NAME="RKNE_R_Femur_X" VALUE="-35" PRIOR="-35" SD="0" HIDDEN="0"/>
 		<Parameter NAME="RKNE_R_Femur_Y" VALUE="-390" PRIOR="-390" SD="0" HIDDEN="0"/>
 		<Parameter NAME="RKNE_R_Femur_Z" VALUE="10" PRIOR="10" SD="0" HIDDEN="0"/>
@@ -62,14 +62,14 @@
 		<Parameter NAME="RHEL_R_Foot_Y" VALUE="-25" PRIOR="-25" SD="0" HIDDEN="0"/>
 		<Parameter NAME="RHEL_R_Foot_Z" VALUE="-30" PRIOR="-30" SD="0" HIDDEN="0"/>
 		<Parameter NAME="RTOE_R_Toe_Z" VALUE="140" PRIOR="140" SD="0" HIDDEN="0"/>
-		
+
 		<Parameter NAME="LHIP_L_Femur_X" VALUE="40" PRIOR="40" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LHIP_L_Femur_Y" VALUE="-240" PRIOR="-240" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LHIP_L_Femur_Z" VALUE="20" PRIOR="20" SD="0" HIDDEN="0"/>
 		<Parameter NAME="RHIP_R_Femur_X" VALUE="-40" PRIOR="-40" SD="0" HIDDEN="0"/>
 		<Parameter NAME="RHIP_R_Femur_Y" VALUE="-240" PRIOR="-240" SD="0" HIDDEN="0"/>
 		<Parameter NAME="RHIP_R_Femur_Z" VALUE="20" PRIOR="20" SD="0" HIDDEN="0"/>
-		
+
 		<Parameter NAME="LSHN_L_Tibia_X" VALUE="30" PRIOR="30" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LSHN_L_Tibia_Y" VALUE="-180" PRIOR="-180" SD="0" HIDDEN="0"/>
 		<Parameter NAME="LSHN_L_Tibia_Z" VALUE="-10" PRIOR="-10" SD="0" HIDDEN="0"/>
@@ -146,6 +146,8 @@
 			<Marker NAME="RANK" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
 			<Marker NAME="RHEE" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
 			<Marker NAME="RTOE" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="LKNE" RADIUS="12.5" RGB="255 0 0" STATUS="optional" VIEW-ANGLE="0"/>
+			<Marker NAME="RKNE" RADIUS="12.5" RGB="0 255 0" STATUS="optional" VIEW-ANGLE="0"/>			
 		</Markers>
 		<Sticks>
 			<Stick MARKER1="LASI" MARKER2="LPSI" RGB1="192 192 192" RGB2="192 192 192"/>
@@ -239,4 +241,3 @@
 		</Targets>
 	</TargetSet>
 </KinematicModel>
-

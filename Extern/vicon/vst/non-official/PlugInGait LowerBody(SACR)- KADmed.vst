@@ -148,6 +148,8 @@
 			<Marker NAME="RMED" RADIUS="12.5" RGB="0 255 0" STATUS="optional" VIEW-ANGLE="0"/>
 			<Marker NAME="RHEE" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
 			<Marker NAME="RTOE" RADIUS="12.5" RGB="0 255 0" STATUS="required" VIEW-ANGLE="0"/>
+			<Marker NAME="LKNE" RADIUS="12.5" RGB="255 0 0" STATUS="optional" VIEW-ANGLE="0"/>
+			<Marker NAME="RKNE" RADIUS="12.5" RGB="0 255 0" STATUS="optional" VIEW-ANGLE="0"/>			
 		</Markers>
 		<Sticks>
 			<Stick MARKER1="LASI" MARKER2="RASI" RGB1="255 164 0" RGB2="255 164 0"/>
@@ -245,4 +247,3 @@
 		</Targets>
 	</TargetSet>
 </KinematicModel>
-
