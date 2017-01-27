@@ -245,6 +245,32 @@ class CGM(cmb.Model):
         btkTools.smartAppendPoint(acqui,targetPointLabel+"_Y",valY,desc="")
         btkTools.smartAppendPoint(acqui,targetPointLabel+"_Z",valZ,desc="")
 
+
+    def displayMotionViconCoordinateSystem(self,acqui,  segmentLabel,targetPointLabelO,targetPointLabelX,targetPointLabelY,targetPointLabelZ, referential = "Anatomic" ):
+        seg=self.getSegment(segmentLabel)
+        
+        origin=np.zeros((acqui.GetPointFrameNumber(),3))
+        valX=np.zeros((acqui.GetPointFrameNumber(),3))
+        valY=np.zeros((acqui.GetPointFrameNumber(),3))
+        valZ=np.zeros((acqui.GetPointFrameNumber(),3))        
+        
+        
+        if referential == "Anatomic":
+            ref =seg.anatomicalFrame
+        else:
+            ref = seg.getReferential("TF")
+            
+        for i in range(0,acqui.GetPointFrameNumber()):    
+            origin[i,:] = ref.motion[i].getTranslation()
+            valX[i,:]= np.dot(ref.motion[i].getRotation() , np.array([100.0,0.0,0.0])) + ref.motion[i].getTranslation()
+            valY[i,:]= np.dot(ref.motion[i].getRotation() , np.array([0.0,100.0,0.0])) + ref.motion[i].getTranslation()
+            valZ[i,:]= np.dot(ref.motion[i].getRotation() , np.array([0.0,0.0,100.0])) + ref.motion[i].getTranslation()       
+       
+        btkTools.smartAppendPoint(acqui,targetPointLabelO,origin,desc="")   
+        btkTools.smartAppendPoint(acqui,targetPointLabelX,valX,desc="")
+        btkTools.smartAppendPoint(acqui,targetPointLabelY,valY,desc="")
+        btkTools.smartAppendPoint(acqui,targetPointLabelZ,valZ,desc="")
+
 class CGM1ModelInf(CGM):
     """ 
     Lower limb conventional Gait Model 1 (i.e. Vicon Plugin Gait)
@@ -2174,18 +2200,27 @@ class CGM1ModelInf(CGM):
         logging.debug("--- Display Coordinate system ---")
         logging.debug(" --------------------------------")
     
-        self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
-        self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
-        self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
-        self.displayMotionCoordinateSystem( aqui,  "Left Shank" , "LShank" )
-        self.displayMotionCoordinateSystem( aqui,  "Left Shank Proximal" , "LShankProx" )
-        self.displayMotionCoordinateSystem( aqui,  "Right Shank" , "RShank" )
-        self.displayMotionCoordinateSystem( aqui,  "Right Shank Proximal" , "RShankProx" )
-        self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFoot" )
-        self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFoot" )
-
-        self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical") 
-        self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical") 
+        #self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
+        self.displayMotionViconCoordinateSystem(aqui,"Pelvis","PELO","PELA","PELL","PELP")
+        #self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
+        self.displayMotionViconCoordinateSystem(aqui,"Left Thigh","LFEO","LFEA","LFEL","LFEP")
+        #self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
+        self.displayMotionViconCoordinateSystem(aqui,"Right Thigh","RFEO","RFEA","RFEL","RFEP")
+        #self.displayMotionCoordinateSystem( aqui,  "Left Shank" , "LShank" )
+        self.displayMotionViconCoordinateSystem(aqui,"Left Shank","LTIO","LTIA","LTIL","LTIP")
+        #self.displayMotionCoordinateSystem( aqui,  "Left Shank Proximal" , "LShankProx" )
+        self.displayMotionViconCoordinateSystem(aqui,"Left Shank Proximal","LTPO","LTPA","LTPL","LTPP")
+        #self.displayMotionCoordinateSystem( aqui,  "Right Shank" , "RShank" )
+        self.displayMotionViconCoordinateSystem(aqui,"Right Shank","RTIO","RTIA","RTIL","RTIP")
+        #self.displayMotionCoordinateSystem( aqui,  "Right Shank Proximal" , "RShankProx" )
+        self.displayMotionViconCoordinateSystem(aqui,"Right Shank Proximal","RTPO","RTPA","RTPL","RTPP")
+        #self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFoot" )
+        self.displayMotionViconCoordinateSystem(aqui,"Left Foot","LFOO","LFOA","LFOL","LFOP") 
+        #self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFoot" )
+        self.displayMotionViconCoordinateSystem(aqui,"Right Foot","RFOO","RFOA","RFOL","RFOP") 
+        
+        #self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical") 
+        #self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical") 
     # ----- native motion ------
 
     
