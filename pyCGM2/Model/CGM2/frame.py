@@ -83,6 +83,47 @@ def setFrameData(a1,a2,sequence):
         
     return axisX, axisY, axisZ, rot
 
+class Node(object):
+    """
+        A node is a local position of a point in a Frame 
+    """        
+ 
+    def __init__(self,label):
+        """  
+            :Parameters:
+               - `label` (str) - desired label of the node  
+       
+            .. note:: automatically, the suffix "_node" ends the node label
+        """
+
+        self.m_name = label+"_node"
+        self.m_global = np.zeros((1,3))
+        self.m_local = np.zeros((1,3))
+        
+    def computeLocal(self,rot,t):
+        """
+            Compute local position from global position
+        
+            :Parameters:
+                - `rot` (np.array(3,3)) - a rotation matrix 
+                - `t` (np.array((1,3))) - a translation vector 
+           
+        """
+        self.m_local=np.dot(rot.T,(self.m_global-t))
+
+    def computeGlobal(self,rot,t):
+        """
+            Compute global position from local
+        
+            :Parameters:
+                - `rot` (np.array((3,3))) - a rotation matrix 
+                - `t` (np.array((1,3))) - a translation vector 
+       
+        """
+
+        self.m_global=np.dot(rot,self.m_local) +t
+
+
 class Frame(object):
     """
         A Frame defined a segment pose
@@ -90,45 +131,7 @@ class Frame(object):
     """    
     
     
-    class Node(object):
-        """
-            A node is a local position of a point in a Frame 
-        """        
- 
-        def __init__(self,label):
-            """  
-                :Parameters:
-                   - `label` (str) - desired label of the node  
-           
-                .. note:: automatically, the suffix "_node" ends the node label
-            """
-
-            self.m_name = label+"_node"
-            self.m_global = np.zeros((1,3))
-            self.m_local = np.zeros((1,3))
-            
-        def computeLocal(self,rot,t):
-            """
-                Compute local position from global position
-            
-                :Parameters:
-                    - `rot` (np.array(3,3)) - a rotation matrix 
-                    - `t` (np.array((1,3))) - a translation vector 
-               
-            """
-            self.m_local=np.dot(rot.T,(self.m_global-t))
     
-        def computeGlobal(self,rot,t):
-            """
-                Compute global position from local
-            
-                :Parameters:
-                    - `rot` (np.array((3,3))) - a rotation matrix 
-                    - `t` (np.array((1,3))) - a translation vector 
-           
-            """
-
-            self.m_global=np.dot(rot,self.m_local) +t
     
     def __init__(self):
 
@@ -242,7 +245,7 @@ class Frame(object):
                 raise Exception("positionType not Known (Global or Local")                
             
         else:
-            node=Frame.Node(nodeLabel)
+            node=Node(nodeLabel)
             if positionType == "Global":
                 node.m_global=position
                 node.computeLocal(self._matrixRot,self._translation)
