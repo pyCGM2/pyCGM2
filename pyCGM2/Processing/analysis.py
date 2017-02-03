@@ -121,14 +121,22 @@ class StaticAnalysisFilter(object):
     def build(self):
         
         """
-             build a StaticAnalysis instance  
+            build a StaticAnalysis instance  
     
+            .. warning::  Last frame is removed from mean calculation because the IK engine of opensim can return an error on the last frame 
         """        
         
         df_collection=[]    
         
         for angle in self.m_angles:
-            df=pd.DataFrame({"Mean" :self.m_trial.findChild(ma.T_TimeSequence, angle).data().mean(axis=0)[0:3].T})
+            
+            data = self.m_trial.findChild(ma.T_TimeSequence, angle).data()
+            if data.shape[0]<=2:
+                logging.warning("Frame inferior to 2 in your static file. Get the first frame only")
+                df=pd.DataFrame({"Mean" :self.m_trial.findChild(ma.T_TimeSequence, angle).data()[0,0:3]}) 
+            else:
+                df=pd.DataFrame({"Mean" :self.m_trial.findChild(ma.T_TimeSequence, angle).data()[:-1].mean(axis=0)[0:3].T})
+
             df['Axe']=['X','Y','Z']
             df['Label']=angle
             
@@ -235,11 +243,10 @@ class AnalysisFilter(object):
                 xlsxWriter = pd.ExcelWriter(str(outputName + "- basic.xlsx"))
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- basic.xls"),engine='xlwt')
+                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- basic.xls"),engine='xlwt')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- basic.xlsx"))
+                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- basic.xlsx"))
  
-
         # metadata
         #--------------
         if self.__concreteAnalysisBuilder.m_subjectInfos != None:          
@@ -399,8 +406,8 @@ class AnalysisFilter(object):
                 df_label = pd.concat([df_x,df_y,df_z])
                 df_label.to_excel(xlsxWriter,str(label+"."+context)) 
 
-            xlsxWriter.save()
-            logging.info("basic dataFrame [%s- basic] Exported"%outputName)
+        xlsxWriter.save()
+        logging.info("basic dataFrame [%s- basic] Exported"%outputName)
 
 
 
@@ -437,9 +444,10 @@ class AnalysisFilter(object):
                 xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xlsx"))
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- Advanced.xls"),engine='xlwt')
+                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- Advanced.xls"),engine='xlwt')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter(str(path+"/"+outputName + "- Advanced.xlsx"))
+                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- Advanced.xlsx"))
+
         # infos
         #-------    
         if self.__concreteAnalysisBuilder.m_modelInfos != None:          
@@ -508,7 +516,7 @@ class AnalysisFilter(object):
                 if path == None:
                     df_stp.to_csv(str(outputName + " - stp - DataFrame.csv"),sep=";")
                 else:
-                    df_stp.to_csv(str(path+"/"+outputName + " - stp - DataFrame.csv"),sep=";")
+                    df_stp.to_csv(str(path+outputName + " - stp - DataFrame.csv"),sep=";")
 
         
         # Kinematics ouput
@@ -563,7 +571,7 @@ class AnalysisFilter(object):
                 if path == None:
                     df_kinematics.to_csv(str(outputName + " - kinematics - DataFrame.csv"),sep=";")
                 else:
-                    df_kinematics.to_csv(str(path+"/"+outputName + " - kinematics - DataFrame.csv"),sep=";")
+                    df_kinematics.to_csv(str(path+outputName + " - kinematics - DataFrame.csv"),sep=";")
             
 
 
@@ -617,7 +625,7 @@ class AnalysisFilter(object):
                 if path == None:
                     df_stp.to_csv(str(outputName + " - kinetics - DataFrame.csv"),sep=";")
                 else:
-                    df_stp.to_csv(str(path+"/"+outputName + " - kinetics - DataFrame.csv"),sep=";")
+                    df_stp.to_csv(str(path+outputName + " - kinetics - DataFrame.csv"),sep=";")
 
         logging.info("advanced dataFrame [%s- Advanced] Exported"%outputName)             
 
