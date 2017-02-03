@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Sep 08 18:03:03 2016
-
-@author: aaa34169
-"""
 import logging
 
 import sys
@@ -34,6 +29,9 @@ OPENSIM_PREBUILD_MODEL_PATH = MAIN_PYCGM2_PATH + "Extern\\opensim\\"
 TEST_DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\"
 MAIN_BENCHMARK_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\"
 
+# [optional] path pointing pyCGM2-Nexus tools
+
+NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\" 
 # ------------------- METHODS ------------------------------------------------
 
 def setLoggingLevel(level):
