@@ -5,6 +5,7 @@ Created on Tue Nov 01 14:52:00 2016
 @author: Fabien Leboeuf ( Salford Univ, UK)
 """
 
+import os
 import numpy as np
 import logging
 import btk
@@ -162,7 +163,11 @@ class opensimReconstructionFilter(object):
         for markerIt in self.m_procedure.ikTags.keys():
             self._osimIK.updateIKTask(markerIt,self.m_procedure.ikTags[markerIt])
         
+        
         # --- configuration and run IK
+        if os.path.isfile(self.opensimOutputDir +"ik_model_marker_locations.sto"):
+            os.remove(self.opensimOutputDir +"ik_model_marker_locations.sto")
+
         R_LAB_OSIM = osimProcessing.setGlobalTransormation_lab_osim(progressionAxis,forwardProgression) 
         self._osimIK.config(R_LAB_OSIM, acqMotion_forIK, acqMotionFilename )
         self._osimIK.run()
@@ -175,7 +180,7 @@ class opensimReconstructionFilter(object):
             lenOsim  = len(values)
             lenc3d  = acqMotion.GetPoint(marker).GetFrameNumber()
             if lenOsim < lenc3d: 
-                logging.warnings(" size osim (%i) inferior to c3d (%i)" % (lenOsim,lenc3d))
+                logging.warning(" size osim (%i) inferior to c3d (%i)" % (lenOsim,lenc3d))
                 values2 = np.zeros((lenc3d,3))
                 values2[0:lenOsim,:]=values
                 values2[lenOsim:lenc3d,:]=acqMotion.GetPoint(marker).GetValues()[lenOsim:lenc3d,:]
