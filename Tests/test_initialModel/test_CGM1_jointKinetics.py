@@ -1,16 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 04 13:59:48 2016
-
-@author: aaa34169
-
-
-I prefer numpy.testing than unitest. 
-easy to debug and assert method better suits. 
-
-"""
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -89,20 +77,20 @@ class CGM1_motionInverseDynamicsTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
 
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -130,7 +118,7 @@ class CGM1_motionInverseDynamicsTest():
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot", 
                                  rightSegmentLabel="Right Foot").compute()
-        print mappedForcePlate
+        
         
         idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
         modelFilters.InverseDynamicFilter(model,
@@ -158,20 +146,20 @@ class CGM1_motionInverseDynamicsTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure() 
        
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -199,7 +187,7 @@ class CGM1_motionInverseDynamicsTest():
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot", 
                                  rightSegmentLabel="Right Foot").compute()
-        print mappedForcePlate
+        
         
         idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
         modelFilters.InverseDynamicFilter(model,
@@ -225,20 +213,20 @@ class CGM1_motionInverseDynamicsTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -266,7 +254,7 @@ class CGM1_motionInverseDynamicsTest():
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot", 
                                  rightSegmentLabel="Right Foot").compute()
-        print mappedForcePlate
+        
         
         idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
         modelFilters.InverseDynamicFilter(model,
@@ -294,20 +282,20 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
 
         markerDiameter=14                    
         mp={
-        'mass'   : 72.0,                
-        'leftLegLength' : 840.0,
-        'rightLegLength' : 850.0 ,
-        'leftKneeWidth' : 105.0,
-        'rightKneeWidth' : 110.4,
-        'leftAnkleWidth' : 74.0,
-        'rightAnkleWidth' : 74.0,       
+        'Bodymass'   : 72.0,                
+        'LeftLegLength' : 840.0,
+        'RightLegLength' : 850.0 ,
+        'LeftKneeWidth' : 105.0,
+        'RightKneeWidth' : 110.4,
+        'LeftAnkleWidth' : 74.0,
+        'RightAnkleWidth' : 74.0,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -359,20 +347,20 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         markerDiameter=14                    
         mp={
-        'mass'   : 72.0,                
-        'leftLegLength' : 840.0,
-        'rightLegLength' : 850.0 ,
-        'leftKneeWidth' : 105.0,
-        'rightKneeWidth' : 110.4,
-        'leftAnkleWidth' : 74.0,
-        'rightAnkleWidth' : 74.0,       
+        'Bodymass'   : 72.0,                
+        'LeftLegLength' : 840.0,
+        'RightLegLength' : 850.0 ,
+        'LeftKneeWidth' : 105.0,
+        'RightKneeWidth' : 110.4,
+        'LeftAnkleWidth' : 74.0,
+        'RightAnkleWidth' : 74.0,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -424,20 +412,20 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 72.0,                
-        'leftLegLength' : 840.0,
-        'rightLegLength' : 850.0 ,
-        'leftKneeWidth' : 105.0,
-        'rightKneeWidth' : 110.4,
-        'leftAnkleWidth' : 74.0,
-        'rightAnkleWidth' : 74.0,       
+        'Bodymass'   : 72.0,                
+        'LeftLegLength' : 840.0,
+        'RightLegLength' : 850.0 ,
+        'LeftKneeWidth' : 105.0,
+        'RightKneeWidth' : 110.4,
+        'LeftAnkleWidth' : 74.0,
+        'RightAnkleWidth' : 74.0,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -492,20 +480,20 @@ class CGM1_motionInverseDynamics_batchprocessing_Test():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -534,7 +522,7 @@ class CGM1_motionInverseDynamics_batchprocessing_Test():
             modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                      leftSegmentLabel="Left Foot", 
                                      rightSegmentLabel="Right Foot").compute()
-            print mappedForcePlate
+            
             
             idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
             modelFilters.InverseDynamicFilter(model,

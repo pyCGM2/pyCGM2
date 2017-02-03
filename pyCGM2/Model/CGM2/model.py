@@ -171,16 +171,22 @@ class Model(object):
             if it.m_label == label:
                 return it
 
-    def addAnthropoInputParameter(self,iDict):
+    def addAnthropoInputParameters(self,iDict,optional=None):
         """ 
             Add measured anthropometric data to the model  
         
             :Parameters:
-               - `iDict` (dict) - dictionnary of anthropometric data
+               - `iDict` (dict) - requried anthropometric data
+               - `optionalMp` (dict) - optional anthropometric data
                       
         """
 
         self.mp=iDict
+        
+        if optional is not None:
+            self.mp.update(optional)
+            
+        
 
 
         

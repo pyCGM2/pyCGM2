@@ -78,13 +78,6 @@ class CGM2ModelInf(cgm.CGM1ModelInf):
         self.addJoint("RAnkle","Right Shank", "Right Hindfoot","YXZ")
         self.addJoint("RForeFoot","Right Hindfoot", "Right Forefoot","YXZ") 
 
-        self.mp_computed["leftThighOffset"] = 0.0
-        self.mp_computed["rightThighOffset"] = 0.0
-        self.mp_computed["leftShankOffset"] = 0.0
-        self.mp_computed["rightShankOffset"] = 0.0
-        self.mp_computed["leftTibialTorsion"] = 0.0
-        self.mp_computed["rightTibialTorsion"] = 0.0
-
           
     def calibrationProcedure(self):
         
@@ -527,22 +520,22 @@ class CGM2ModelInf(cgm.CGM1ModelInf):
             self._pelvis_motion(aqui, dictRef, dictAnat)
             logging.info(" - Left Thigh - motion -")
             logging.info(" -----------------------")            
-            self._left_thigh_motion(aqui, dictRef, dictAnat)
+            self._left_thigh_motion(aqui, dictRef, dictAnat, options=options)
             logging.info(" - Right Thigh - motion -")
             logging.info(" ------------------------")
-            self._right_thigh_motion(aqui, dictRef, dictAnat)
+            self._right_thigh_motion(aqui, dictRef, dictAnat, options=options)
             logging.info(" - Left Shank - motion -")
             logging.info(" -----------------------")
-            self._left_shank_motion(aqui, dictRef, dictAnat) 
+            self._left_shank_motion(aqui, dictRef, dictAnat, options=options) 
             logging.info(" - Right Shank - motion -")
             logging.info(" ------------------------")
-            self._right_shank_motion(aqui, dictRef, dictAnat)
+            self._right_shank_motion(aqui, dictRef, dictAnat, options=options)
             logging.info(" - Right Hindfoot - motion -")
             logging.info(" ---------------------------")
-            self._right_hindFoot_motion(aqui, dictRef, dictAnat)
+            self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
             logging.info(" - Right Forefoot - motion -")
             logging.info(" ---------------------------")
-            self._right_foreFoot_motion(aqui, dictRef, dictAnat)
+            self._right_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
         
         if motionMethod == pyCGM2Enums.motionMethod.Sodervisk:
             
@@ -583,7 +576,7 @@ class CGM2ModelInf(cgm.CGM1ModelInf):
         btkTools.smartWriter(aqui, "tmp-dyn.c3d")
 
     # ----- native motion ------
-    def _right_hindFoot_motion(self,aqui, dictRef,dictAnat):
+    def _right_hindFoot_motion(self,aqui, dictRef,dictAnat,options=None):
         """ 
         :Parameters:
         
@@ -651,7 +644,7 @@ class CGM2ModelInf(cgm.CGM1ModelInf):
             seg.anatomicalFrame.addMotionFrame(frame)
 
 
-    def _right_foreFoot_motion(self,aqui, dictRef,dictAnat):
+    def _right_foreFoot_motion(self,aqui, dictRef,dictAnat,options=None):
         """ 
         :Parameters:
         

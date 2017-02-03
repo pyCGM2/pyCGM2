@@ -60,20 +60,20 @@ class CGM1_motionJCSTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
-        }        
-        model.addAnthropoInputParameter(mp)
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
+        }         
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -156,20 +156,20 @@ class CGM1_motionJCSTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf() 
+        model=cgm.CGM1LowerLimbs() 
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
-        }        
-        model.addAnthropoInputParameter(mp)
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
+        }         
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
@@ -252,20 +252,20 @@ class CGM1_motionJCSTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
@@ -358,20 +358,20 @@ class CGM1_motionJCSTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
@@ -465,20 +465,20 @@ class CGM1_motionJCSTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
-        }        
-        model.addAnthropoInputParameter(mp)
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
+        }         
+        model.addAnthropoInputParameters(mp)
                                     
         # --- calibration                                    
         scp=modelFilters.StaticCalibrationProcedure(model)
@@ -490,8 +490,7 @@ class CGM1_motionJCSTest():
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
                                    useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid",
-                                   useLeftTibialTorsion = True,useRightTibialTorsion = True).compute()
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
 
         # ------ Test 1 Motion Axe X -------
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"        
@@ -500,8 +499,7 @@ class CGM1_motionJCSTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                        useLeftTibialTorsion = True,useRightTibialTorsion = True)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
         modMotion.compute()
 
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
@@ -535,8 +533,7 @@ class CGM1_motionJCSTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                        useLeftTibialTorsion = True,useRightTibialTorsion = True)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
         modMotion.compute()
 
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
@@ -574,20 +571,20 @@ class CGM1_motionAbsoluteAnglesTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
-        }        
-        model.addAnthropoInputParameter(mp)
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
+        }         
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -657,20 +654,20 @@ class CGM1_motionFullAnglesTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -792,19 +789,19 @@ class CGM1_motionFullAnglesTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
-        }        
-        model.addAnthropoInputParameter(mp)
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
+        }         
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -934,19 +931,19 @@ class CGM1_motionFullAnglesTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -1077,19 +1074,19 @@ class CGM1_motionFullAnglesTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -1100,8 +1097,7 @@ class CGM1_motionFullAnglesTest():
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
                                    useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid",
-                                   useLeftTibialTorsion = True,useRightTibialTorsion = True).compute()
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
 
         # tibial torsion
         ltt_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LTibialTorsion").value().GetInfo().ToDouble()[0])
@@ -1151,8 +1147,7 @@ class CGM1_motionFullAnglesTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                        useLeftTibialTorsion = True,useRightTibialTorsion = True)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
         modMotion.compute()
         
         # relative angles
@@ -1208,8 +1203,7 @@ class CGM1_motionFullAnglesTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useLeftTibialTorsion = True,useRightTibialTorsion = True)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
         modMotion.compute()
 
         # relative angles
@@ -1268,19 +1262,19 @@ class CGM1_motionFullAnglesTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -1291,8 +1285,7 @@ class CGM1_motionFullAnglesTest():
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
                                    useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid",
-                                   useLeftTibialTorsion = True,useRightTibialTorsion = True).compute()
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -1303,7 +1296,6 @@ class CGM1_motionFullAnglesTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                        useLeftTibialTorsion = True,useRightTibialTorsion = True,
                                         viconCGM1compatible = True)
         modMotion.compute()
 
@@ -1359,7 +1351,6 @@ class CGM1_motionFullAnglesTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useLeftTibialTorsion = True,useRightTibialTorsion = True,
                                                  viconCGM1compatible = True)
         modMotion.compute()
 
@@ -1417,21 +1408,26 @@ class CGM1_motionFullAnglesTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
+        
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,
-        'leftTibialTorsion' : -12.0031,
-        'rightTibialTorsion' : -17.7351        
-        }        
-        model.addAnthropoInputParameter(mp)
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
+        }         
+
+        optional_mp={
+        'LeftTibialTorsion' : -12.0031,
+        'RightTibialTorsion' : -17.7351    
+        }
+        
+        model.addAnthropoInputParameters(mp,optional=optional_mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
@@ -1442,8 +1438,7 @@ class CGM1_motionFullAnglesTest():
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
                                    useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid",
-                                   useLeftTibialTorsion = True,useRightTibialTorsion = True).compute()
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -1454,8 +1449,7 @@ class CGM1_motionFullAnglesTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                        useLeftTibialTorsion = True,useRightTibialTorsion = True,
-                                        viconCGM1compatible = True)
+                                                 viconCGM1compatible = True)
         modMotion.compute()
 
         # relative angles
@@ -1514,19 +1508,19 @@ class CGM1_motionFullAnglesTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         mp={
-        'mass'   : 41.3,                
-        'leftLegLength' : 775.0,
-        'rightLegLength' : 770.0 ,
-        'leftKneeWidth' : 105.1,
-        'rightKneeWidth' : 107.0,
-        'leftAnkleWidth' : 68.4,
-        'rightAnkleWidth' : 68.6,       
+        'Bodymass'   : 41.3,                
+        'LeftLegLength' : 775.0,
+        'RightLegLength' : 770.0 ,
+        'LeftKneeWidth' : 105.1,
+        'RightKneeWidth' : 107.0,
+        'LeftAnkleWidth' : 68.4,
+        'RightAnkleWidth' : 68.6,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
@@ -1541,7 +1535,6 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
                                    useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
                                    useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid",
-                                   useLeftTibialTorsion = True,useRightTibialTorsion = True,
                                    markerDiameter=25).compute()
 
 
@@ -1608,8 +1601,7 @@ class CGM1_motionFullAnglesTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                        useLeftTibialTorsion = True,useRightTibialTorsion = True,
-                                        markerDiameter=25)
+                                                  markerDiameter=25)
         modMotion.compute()
         
         # relative angles
@@ -1714,19 +1706,19 @@ class CGM1_motionFullAnglesTest_customApproach():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,

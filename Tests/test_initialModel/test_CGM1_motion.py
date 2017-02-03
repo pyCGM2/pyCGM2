@@ -1,16 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 04 13:59:48 2016
-
-@author: aaa34169
-
-
-I prefer numpy.testing than unitest. 
-easy to debug and assert method better suits. 
-
-"""
-
-
 import numpy as np
 import pdb
 import logging
@@ -59,33 +47,36 @@ class CGM1_motionTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf() 
+        model=cgm.CGM1LowerLimbs() 
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         # CALIBRATION
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
 
+        print model.m_useRightTibialTorsion
+
         # --- Test 1 Motion Axe X -------
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"        
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+                                                 useForMotionTest=True)
         modMotion.compute()
 
-        #btkTools.smartWriter(acqGait, "test.c3d")        
+        btkTools.smartWriter(acqGait, "test.c3d")        
 
 
         # ---     tests joint centre trajectory
@@ -148,7 +139,8 @@ class CGM1_motionTest():
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 12.c3d"        
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+                                                 useForMotionTest=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -221,20 +213,20 @@ class CGM1_motionTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
-        }        
-        model.addAnthropoInputParameter(mp)
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
+        }         
+        model.addAnthropoInputParameters(mp)
                                     
         
         scp=modelFilters.StaticCalibrationProcedure(model)
@@ -248,7 +240,8 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+                                                 useForMotionTest=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -315,7 +308,8 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+                                                 useForMotionTest=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -386,20 +380,20 @@ class CGM1_motionTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
-        }        
-        model.addAnthropoInputParameter(mp)
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
+        }       
+        model.addAnthropoInputParameters(mp)
                                     
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
@@ -422,7 +416,8 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+                                                 useForMotionTest=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -488,7 +483,8 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+                                                 useForMotionTest=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -558,20 +554,20 @@ class CGM1_motionTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()        
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
@@ -595,7 +591,8 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+                                                 useForMotionTest=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -661,7 +658,8 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+                                                 useForMotionTest=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -732,20 +730,20 @@ class CGM1_motionTest():
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
         
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         
         markerDiameter=14                    
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }        
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
@@ -757,8 +755,7 @@ class CGM1_motionTest():
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
                                    useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid",
-                                   useLeftTibialTorsion = True,useRightTibialTorsion = True).compute()
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -769,7 +766,7 @@ class CGM1_motionTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                        useLeftTibialTorsion = True,useRightTibialTorsion = True)
+                                                 useForMotionTest=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -844,7 +841,7 @@ class CGM1_motionTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                        useLeftTibialTorsion = True,useRightTibialTorsion = True)
+                                                 useForMotionTest=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -919,4 +916,4 @@ if __name__ == "__main__":
     CGM1_motionTest.advancedCGM1_kad_noOptions()
     CGM1_motionTest.advancedCGM1_kad_flatFoot()
     CGM1_motionTest.advancedCGM1_kad_midMaleolus()
-    logging.info("######## PROCESS CGM1 --> Done######")
+#    logging.info("######## PROCESS CGM1 --> Done######")

@@ -83,7 +83,7 @@ class Bsp(object):
         Compute body segment parameters of a Model
         """
         
-        bodymass =  self.m_model.mp["mass"]
+        bodymass =  self.m_model.mp["Bodymass"]
 
 #        # example for one segment left thigh
 #        length = self.m_model.getSegment("Left Thigh").m_bsp["length"]

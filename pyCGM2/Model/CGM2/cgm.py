@@ -22,7 +22,9 @@ class CGM(cmb.Model):
 
     def __init__(self):
         super(CGM, self).__init__()    
-    
+        self.m_useLeftTibialTorsion=False
+        self.m_useRightTibialTorsion=False
+        
     @classmethod
     def hipJointCenters(cls,mp_input,mp_computed,markerDiameter):
         """
@@ -42,17 +44,17 @@ class CGM(cmb.Model):
         
         """        
         
-        C=mp_computed["meanlegLength"] * 0.115 - 15.3
+        C=mp_computed["MeanlegLength"] * 0.115 - 15.3
         
-        HJCx_L= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["leftAsisTrocanterDistance"] + markerDiameter/2) * np.cos(0.314)
-        HJCy_L=-1*(C * np.sin(0.5) - (mp_computed["asisDistance"] / 2.0))              
-        HJCz_L= - C * np.cos(0.5) * np.cos(0.314) - (mp_computed["leftAsisTrocanterDistance"] + markerDiameter/2) * np.sin(0.314)
+        HJCx_L= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2) * np.cos(0.314)
+        HJCy_L=-1*(C * np.sin(0.5) - (mp_computed["InterAsisDistance"] / 2.0))              
+        HJCz_L= - C * np.cos(0.5) * np.cos(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2) * np.sin(0.314)
 
         HJC_L=np.array([HJCx_L,HJCy_L,HJCz_L])
 
-        HJCx_R= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["rightAsisTrocanterDistance"] + markerDiameter/2) * np.cos(0.314)
-        HJCy_R=+1*(C * np.sin(0.5) - (mp_computed["asisDistance"] / 2.0))              
-        HJCz_R= -C * np.cos(0.5) * np.cos(0.314) - (mp_computed["rightAsisTrocanterDistance"] + markerDiameter/2) * np.sin(0.314)
+        HJCx_R= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["RightAsisTrocanterDistance"] + markerDiameter/2) * np.cos(0.314)
+        HJCy_R=+1*(C * np.sin(0.5) - (mp_computed["InterAsisDistance"] / 2.0))              
+        HJCz_R= -C * np.cos(0.5) * np.cos(0.314) - (mp_computed["RightAsisTrocanterDistance"] + markerDiameter/2) * np.sin(0.314)
 
         HJC_R=np.array([HJCx_R,HJCy_R,HJCz_R])
         
@@ -271,7 +273,7 @@ class CGM(cmb.Model):
         btkTools.smartAppendPoint(acqui,targetPointLabelY,valY,desc="")
         btkTools.smartAppendPoint(acqui,targetPointLabelZ,valZ,desc="")
 
-class CGM1ModelInf(CGM):
+class CGM1LowerLimbs(CGM):
     """ 
     Lower limb conventional Gait Model 1 (i.e. Vicon Plugin Gait)
     
@@ -280,8 +282,9 @@ class CGM1ModelInf(CGM):
     nativeCgm1 = True        
     
     def __init__(self):
-        super(CGM1ModelInf, self).__init__()
+        super(CGM1LowerLimbs, self).__init__()
         self.decoratedModel = False
+        
 
     def __repr__(self):
         return "LowerLimb CGM1"        
@@ -371,13 +374,6 @@ class CGM1ModelInf(CGM):
         self.addJoint("RKnee","Right Thigh", "Right Shank Proximal","YXZ")
         #self.addJoint("RKneeAngles_cgm","Right Thigh", "Right Shank","YXZ")
         self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ")
-
-        self.mp_computed["leftThighOffset"] = 0.0
-        self.mp_computed["rightThighOffset"] = 0.0
-        self.mp_computed["leftShankOffset"] = 0.0
-        self.mp_computed["rightShankOffset"] = 0.0
-        self.mp_computed["leftTibialTorsion"] = 0.0
-        self.mp_computed["rightTibialTorsion"] = 0.0
 
 
     def calibrationProcedure(self):
@@ -495,10 +491,19 @@ class CGM1ModelInf(CGM):
         self.displayStaticCoordinateSystem( aquiStatic, "Right Thigh","RThigh",referential = "Anatomic"  )  
 
 
-        logging.info(" --- Thigh Offsets ---")
-        logging.info(" --------------------") 
-        self.getThighOffset(side="left")
-        self.getThighOffset(side="right")
+        logging.debug(" --- Thigh Offsets ---")
+        logging.debug(" --------------------")
+        if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
+            self.mp_computed["LeftThighRotationOffset"]= -self.mp["LeftThighRotation"]
+            
+        else:
+            self.getThighOffset(side="left")
+
+        if self.mp.has_key("RightThighRotation") and self.mp["RightThighRotation"] != 0:
+            self.mp_computed["RightThighRotationOffset"]= self.mp["RightThighRotation"]
+        else:
+            self.getThighOffset(side="right")
+        
 
 
         logging.debug(" --- Left Shank - AF calibration ---")
@@ -513,10 +518,46 @@ class CGM1ModelInf(CGM):
         self.displayStaticCoordinateSystem( aquiStatic, "Right Shank","RShank",referential = "Anatomic"  )
 
 
-        logging.info(" --- Shank Offsets ---")
-        logging.info(" ---------------------") 
-        self.getShankOffsets(side="both")# compute TibialRotation and Shank offset
-        self.getAbdAddAnkleJointOffset(side="both")
+        logging.debug(" ---Shank  Offsets ---")
+        logging.debug(" ---------------------")
+
+        # shakRotation
+        if self.mp.has_key("LeftShankRotation") and self.mp["LeftShankRotation"] != 0:
+            self.mp_computed["LeftShankRotationOffset"]= -self.mp["LeftShankRotation"]
+        else:        
+            self.getShankOffsets(side="left")
+        
+        if self.mp.has_key("RightShankRotation") and self.mp["RightShankRotation"] != 0:
+                self.mp_computed["RightShankRotationOffset"]= self.mp["RightShankRotation"]
+        else: 
+            self.getShankOffsets(side="right")
+
+        # tibial Torsion
+        #   left
+        if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0:
+            self.mp_computed["LeftTibialTorsionOffset"]= -self.mp["LeftTibialTorsion"]
+            self.m_useLeftTibialTorsion=True
+        else:
+            if self.m_useLeftTibialTorsion:
+                self.getTibialTorsionOffset(side="left")
+            else:
+                self.mp_computed["LeftTibialTorsionOffset"]= 0
+                
+        #   right
+        if self.mp.has_key("RightTibialTorsion") and self.mp["RightTibialTorsion"] != 0:
+            self.mp_computed["RightTibialTorsionOffset"]= self.mp["RightTibialTorsion"]
+            self.m_useRightTibialTorsion=True
+        else:
+            if self.m_useRightTibialTorsion:
+                self.getTibialTorsionOffset(side="right")
+            else:
+                self.mp_computed["RightTibialTorsionOffset"]= 0
+
+
+        # AbdAdd offset
+        self.getAbdAddAnkleJointOffset(side="left")
+        self.getAbdAddAnkleJointOffset(side="right")
+        
 
         logging.debug(" --- Left Shank Proximal- AF calibration ---")
         logging.debug(" -------------------------------------------")
@@ -556,8 +597,8 @@ class CGM1ModelInf(CGM):
         self._right_foot_corrected_calibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
         self.displayStaticCoordinateSystem( aquiStatic, "Right Foot","RFoot",referential = "Anatomic"  )      
  
-        logging.info(" --- Foot Offsets ---")
-        logging.info(" --------------------")
+        logging.debug(" --- Foot Offsets ---")
+        logging.debug(" --------------------")
         self.getFootOffset(side = "both") 
 
   
@@ -601,17 +642,20 @@ class CGM1ModelInf(CGM):
         seg.addMarkerLabel("midASIS")
             
         # new mp    
-        if self.mp.has_key("pelvisDepth"):
-            self.mp_computed["pelvisDepth"] = self.mp["pelvisDepth"]
+        if self.mp.has_key("PelvisDepth") and self.mp["PelvisDepth"] != 0:
+            logging.warning("PelvisDepth defined from your vsk file")
+            self.mp_computed["PelvisDepth"] = self.mp["PelvisDepth"]
         else:
-            logging.info("Pelvis Depth computed and added to model parameters")
-            self.mp_computed["pelvisDepth"] = np.linalg.norm( valMidAsis.mean(axis=0)-valSACR.mean(axis=0)) - 2.0* (markerDiameter/2.0) -2.0* (basePlate/2.0)
+            logging.warning("Pelvis Depth computed and added to model parameters")
+            self.mp_computed["PelvisDepth"] = np.linalg.norm( valMidAsis.mean(axis=0)-valSACR.mean(axis=0)) - 2.0* (markerDiameter/2.0) -2.0* (basePlate/2.0)
 
-        if self.mp.has_key("asisDistance"):
-            self.mp_computed["asisDistance"] = self.mp["asisDistance"]
+
+        if self.mp.has_key("InterAsisDistance") and self.mp["InterAsisDistance"] != 0:
+            logging.warning("InterAsisDistance defined from your vsk file")
+            self.mp_computed["InterAsisDistance"] = self.mp["InterAsisDistance"]
         else:
-            logging.info("asisDistance computed and added to model parameters")            
-            self.mp_computed["asisDistance"] = np.linalg.norm( aquiStatic.GetPoint("LASI").GetValues().mean(axis=0) - aquiStatic.GetPoint("RASI").GetValues().mean(axis=0))
+            logging.warning("asisDistance computed and added to model parameters")            
+            self.mp_computed["InterAsisDistance"] = np.linalg.norm( aquiStatic.GetPoint("LASI").GetValues().mean(axis=0) - aquiStatic.GetPoint("RASI").GetValues().mean(axis=0))
 
 
 
@@ -645,9 +689,19 @@ class CGM1ModelInf(CGM):
 
         # --- Hip Joint centers location 
         # anthropometric parameter computed
-        self.mp_computed['leftAsisTrocanterDistance'] = 0.1288*self.mp['leftLegLength']-48.56
-        self.mp_computed['rightAsisTrocanterDistance'] = 0.1288*self.mp['rightLegLength']-48.56
-        self.mp_computed['meanlegLength'] = np.mean( [self.mp['leftLegLength'],self.mp['rightLegLength'] ])
+        if self.mp.has_key("LeftAsisTrocanterDistance") and self.mp["LeftAsisTrocanterDistance"] != 0:
+            logging.warning("LeftAsisTrocanterDistance defined from your vsk file")
+            self.mp_computed['LeftAsisTrocanterDistance'] = self.mp["LeftAsisTrocanterDistance"]
+        else:
+            self.mp_computed['LeftAsisTrocanterDistance'] = 0.1288*self.mp['LeftLegLength']-48.56
+
+        if self.mp.has_key("RightAsisTrocanterDistance") and self.mp["RightAsisTrocanterDistance"] != 0:
+            logging.warning("RightAsisTrocanterDistance defined from your vsk file")
+            self.mp_computed['RightAsisTrocanterDistance'] = self.mp["RightAsisTrocanterDistance"]
+        else:
+            self.mp_computed['RightAsisTrocanterDistance'] = 0.1288*self.mp['RightLegLength']-48.56
+        
+        self.mp_computed['MeanlegLength'] = np.mean( [self.mp['LeftLegLength'],self.mp['RightLegLength'] ])
 
         # local Position of the hip joint centers
                 
@@ -779,7 +833,13 @@ class CGM1ModelInf(CGM):
         tf.static.setTranslation(ptOrigin)
 
         # --- knee Joint centers location from chord method
-        LKJC = CGM.chord( (self.mp["leftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["leftThighOffset"] ) 
+        if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
+            logging.warning("LeftThighRotation defined from your vsk file") 
+            self.mp_computed["LeftThighRotationOffset"] = self.mp["LeftThighRotation"]* -1.0
+        else:
+            self.mp_computed["LeftThighRotationOffset"] = 0.0
+
+        LKJC = CGM.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] ) 
       
         # --- node manager
         tf.static.addNode("LKJC_chord",LKJC,positionType="Global")
@@ -877,7 +937,13 @@ class CGM1ModelInf(CGM):
 
 
         # --- knee Joint centers location
-        RKJC = CGM.chord( (self.mp["rightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3,beta=self.mp_computed["rightThighOffset"] ) # could consider decorqted LHJC
+        if self.mp.has_key("RightThighRotation") and self.mp["RightThighRotation"] != 0:
+            logging.warning("RightThighRotation defined from your vsk file")
+            self.mp_computed["RightThighRotationOffset"] = self.mp["RightThighRotation"]
+        else:
+            self.mp_computed["RightThighRotationOffset"] = 0.0
+
+        RKJC = CGM.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3,beta=self.mp_computed["RightThighRotationOffset"] ) # could consider a previous offset
 
         # --- node manager
         tf.static.addNode("RKJC_chord",RKJC,positionType="Global")
@@ -974,7 +1040,13 @@ class CGM1ModelInf(CGM):
 
 
         # --- ankle Joint centers location
-        LAJC = CGM.chord( (self.mp["leftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["leftShankOffset"] )
+        if self.mp.has_key("LeftShankRotation") and self.mp["LeftShankRotation"] != 0:
+            logging.warning("LeftShankRotation defined from your vsk file")
+            self.mp_computed["LeftShankRotationOffset"] = self.mp["LeftShankRotation"]*-1.0 
+        else:
+            self.mp_computed["LeftShankRotationOffset"]=0.0
+            
+        LAJC = CGM.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
 
         # --- node manager
         tf.static.addNode("LAJC_chord",LAJC,positionType="Global")
@@ -1073,7 +1145,13 @@ class CGM1ModelInf(CGM):
         tf.static.setTranslation(ptOrigin)
 
         # --- ankle Joint centers location
-        RAJC = CGM.chord( (self.mp["rightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["rightShankOffset"] )
+        if self.mp.has_key("RightShankRotation") and self.mp["RightShankRotation"] != 0:
+            logging.warning("RightShankRotation defined from your vsk file")
+            self.mp_computed["RightShankRotationOffset"] = self.mp["RightShankRotation"] 
+        else:
+            self.mp_computed["RightShankRotationOffset"]=0.0
+
+        RAJC = CGM.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
 
         # --- node manager
         tf.static.addNode("RAJC_chord",RAJC,positionType="Global")
@@ -1466,15 +1544,13 @@ class CGM1ModelInf(CGM):
                - `frameInit` (dict) - first frame
                - `frameEnd` (dict) - end frame
         """        
-        #TODO : deal with the case : tibial torsion within mp_input
 
-        if "useLeftTibialTorsion" in options.keys():
-            logging.warning ("option (useLeftTibialTorsion) enable")
-            tibialTorsion = np.deg2rad(self.mp_computed["leftTibialTorsion"])
+        if self.m_useLeftTibialTorsion:
+            tibialTorsion = np.deg2rad(self.mp_computed["LeftTibialTorsionOffset"])
         else:
-            logging.warning ("option (useLeftTibialTorsion) disable - No tibial Torsion")
-            tibialTorsion = 0.0 
-
+            tibialTorsion = 0.0
+            
+            
         seg=self.getSegment("Left Shank Proximal")
 
         
@@ -1566,15 +1642,12 @@ class CGM1ModelInf(CGM):
                - `frameInit` (dict) - first frame
                - `frameEnd` (dict) - end frame
         """        
-        #TODO : deal with the case : tibial torsion within mp_input        
-        
 
-        if "useRightTibialTorsion" in options.keys():
-            logging.warning ("option (useRightTibialTorsion) enable")
-            tibialTorsion = np.deg2rad(self.mp_computed["rightTibialTorsion"])
+        if self.m_useRightTibialTorsion:
+            tibialTorsion = np.deg2rad(self.mp_computed["RightTibialTorsionOffset"])
         else:
-            logging.warning ("option (useRightTibialTorsion) disable - No Tibial Torsion")
-            tibialTorsion = 0.0 
+            tibialTorsion = 0.0        
+
 
         seg=self.getSegment("Right Shank Proximal")
 
@@ -1804,6 +1877,7 @@ class CGM1ModelInf(CGM):
         """
 
         if side == "both" or side=="left":
+            
             # Left --------        
             kneeFlexionAxis=    np.dot(self.getSegment("Left Thigh").anatomicalFrame.static.getRotation().T, 
                                            self.getSegment("Left Thigh").anatomicalFrame.static.m_axisY)
@@ -1822,13 +1896,14 @@ class CGM1ModelInf(CGM):
             v_thi = proj_thi/np.linalg.norm(proj_thi)
             
             angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_thi, self.getSegment("Left Thigh").anatomicalFrame.static.m_axisZ))    
-            self.mp_computed["leftThighOffset"]= -angle # angle needed : Thi toward knee flexion
-            logging.info(" left Thigh Offset => %s " % str(self.mp_computed["leftThighOffset"]))
+
+            self.mp_computed["LeftThighRotationOffset"]= -angle # angle needed : Thi toward knee flexion
+            logging.debug(" left Thigh Offset => %s " % str(self.mp_computed["LeftThighRotationOffset"]))
             
 
-
         if side == "both" or side=="right":
-            # Left --------        
+
+       
             kneeFlexionAxis=    np.dot(self.getSegment("Right Thigh").anatomicalFrame.static.getRotation().T, 
                                            self.getSegment("Right Thigh").anatomicalFrame.static.m_axisY)
             
@@ -1849,9 +1924,9 @@ class CGM1ModelInf(CGM):
             
             angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis_opp, v_thi,self.getSegment("Right Thigh").anatomicalFrame.static.m_axisZ))
             
-            self.mp_computed["rightThighOffset"]=-angle # angle needed : Thi toward knee flexion
-            logging.info(" right Thigh Offset => %s " % str(self.mp_computed["rightThighOffset"]))
-        
+            self.mp_computed["RightThighRotationOffset"]=-angle # angle needed : Thi toward knee flexion
+            logging.debug(" right Thigh Offset => %s " % str(self.mp_computed["RightThighRotationOffset"]))
+    
         
 
     def getShankOffsets(self, side = "both"):
@@ -1859,7 +1934,6 @@ class CGM1ModelInf(CGM):
             Get shank offsets :
              
              - Angle between the projection of the lateral shank marker and the ankle flexion axis
-             - tibial torsion
              - Angle between the projection of the lateral ankle marker and the ankle flexion axis        
         
             :Parameters:
@@ -1867,6 +1941,87 @@ class CGM1ModelInf(CGM):
         """
         
         if side == "both" or side == "left" :
+            
+            ankleFlexionAxis=    np.dot(self.getSegment("Left Shank").anatomicalFrame.static.getRotation().T, 
+                                       self.getSegment("Left Shank").anatomicalFrame.static.m_axisY)
+        
+        
+            proj_ankleFlexionAxis = np.array([ ankleFlexionAxis[0],
+                               ankleFlexionAxis[1],
+                                 0]) 
+                                 
+            v_ankleFlexionAxis = proj_ankleFlexionAxis/np.linalg.norm(proj_ankleFlexionAxis)
+        
+            #"****** left angle beetween tib and flexion axis **********"    
+            tibLocal = self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LTIB").m_local
+            proj_tib = np.array([ tibLocal[0],
+                               tibLocal[1],
+                                 0])                                 
+            v_tib = proj_tib/np.linalg.norm(proj_tib)
+        
+            angle=np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_tib,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
+            self.mp_computed["LeftShankRotationOffset"]= -angle
+            logging.debug(" left shank offset => %s " % str(self.mp_computed["LeftShankRotationOffset"]))
+    
+            
+            #"****** left angle beetween ank and flexion axis (not used by native pig)**********"        
+            ANK =  self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LANK").m_local                    
+            v_ank = ANK/np.linalg.norm(ANK)            
+            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_ank,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
+    
+            self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"] = angle
+            #logging.info(" left projection offset => %s " % str(self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"]))
+
+
+        
+        if side == "both" or side == "right" :
+
+            ankleFlexionAxis=    np.dot(self.getSegment("Right Shank").anatomicalFrame.static.getRotation().T, 
+                                       self.getSegment("Right Shank").anatomicalFrame.static.m_axisY)
+        
+        
+            proj_ankleFlexionAxis = np.array([ ankleFlexionAxis[0],
+                               ankleFlexionAxis[1],
+                                 0]) 
+                                 
+            v_ankleFlexionAxis = proj_ankleFlexionAxis/np.linalg.norm(proj_ankleFlexionAxis)
+        
+            #"****** right angle beetween tib and flexion axis **********"    
+            tibLocal = self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RTIB").m_local
+            proj_tib = np.array([ tibLocal[0],
+                               tibLocal[1],
+                                 0])
+                                 
+            v_tib = proj_tib/np.linalg.norm(proj_tib)
+            v_ankleFlexionAxis_opp = geometry.oppositeVector(v_ankleFlexionAxis) 
+
+        
+            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_tib,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
+            self.mp_computed["RightShankRotationOffset"]= -angle
+            logging.debug(" right shank offset => %s " % str(self.mp_computed["RightShankRotationOffset"]))
+
+            
+            
+            #"****** right angle beetween ank and flexion axis ( Not used by Native Pig)**********"        
+            ANK =  self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RANK").m_local                    
+            v_ank = ANK/np.linalg.norm(ANK)              
+           
+            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_ank,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
+
+            self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"] = angle
+            #logging.info(" right projection offset => %s " % str(self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"]))
+    
+
+    def getTibialTorsionOffset(self, side = "both"):
+        """
+            Get tibial torsion offset :
+        
+            :Parameters:
+               - `side` (str) - body side  (both, left, right)    
+        """
+        
+        if side == "both" or side == "left" :
+            
             #"****** right angle beetween anatomical axis **********"            
             kneeFlexionAxis=    np.dot(self.getSegment("Left Shank").anatomicalFrame.static.getRotation().T, 
                                        self.getSegment("Left Thigh").anatomicalFrame.static.m_axisY)
@@ -1887,41 +2042,14 @@ class CGM1ModelInf(CGM):
                                  0]) 
                                  
             v_ankleFlexionAxis = proj_ankleFlexionAxis/np.linalg.norm(proj_ankleFlexionAxis)
-        
-            if "leftTibialTorsion" in self.mp.keys():
-                logging.warning("Left Tibial torsion defined from your mp file")
-                self.mp_computed["leftTibialTorsion"] = - self.mp["leftTibialTorsion"] # sign - because vicon standard considers external offset as positive
-            else:
-                angle= np.rad2deg( geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
-                self.mp_computed["leftTibialTorsion"] = angle
-                logging.info(" left tibial torsion => %s " % str(self.mp_computed["leftTibialTorsion"]))
-            
-
-            #"****** left angle beetween tib and flexion axis **********"    
-            tibLocal = self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LTIB").m_local
-            proj_tib = np.array([ tibLocal[0],
-                               tibLocal[1],
-                                 0])                                 
-            v_tib = proj_tib/np.linalg.norm(proj_tib)
-        
-            angle=np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_tib,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
-            self.mp_computed["leftShankOffset"]= -angle
-            logging.info(" left shank offset => %s " % str(self.mp_computed["leftShankOffset"]))
-
-            
-            #"****** left angle beetween ank and flexion axis (not used by native pig)**********"        
-            ANK =  self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LANK").m_local                    
-            v_ank = ANK/np.linalg.norm(ANK)            
-            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_ank,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
-
-            self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"] = angle
-            logging.info(" left projection offset => %s " % str(self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"]))
-
-
-
-        
+                        
+            angle= np.rad2deg( geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
+            self.mp_computed["LeftTibialTorsionOffset"] = angle
+            logging.debug(" left tibial torsion => %s " % str(self.mp_computed["LeftTibialTorsionOffset"]))
+                    
         
         if side == "both" or side == "right" :
+            
             #"****** right angle beetween anatomical axis **********"            
             kneeFlexionAxis=    np.dot(self.getSegment("Right Shank").anatomicalFrame.static.getRotation().T, 
                                        self.getSegment("Right Thigh").anatomicalFrame.static.m_axisY)
@@ -1943,39 +2071,10 @@ class CGM1ModelInf(CGM):
                                  
             v_ankleFlexionAxis = proj_ankleFlexionAxis/np.linalg.norm(proj_ankleFlexionAxis)
         
-            if "rightTibialTorsion" in self.mp.keys():
-                logging.warning("Right  Tibial torsion defined from your mp file")
-                self.mp_computed["rightTibialTorsion"] =  self.mp["rightTibialTorsion"]
-            else:
-                angle= np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
-                self.mp_computed["rightTibialTorsion"] = angle
-                logging.info(" Right tibial torsion => %s " % str(self.mp_computed["rightTibialTorsion"]))
-
-            #"****** right angle beetween tib and flexion axis **********"    
-            tibLocal = self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RTIB").m_local
-            proj_tib = np.array([ tibLocal[0],
-                               tibLocal[1],
-                                 0])
-                                 
-            v_tib = proj_tib/np.linalg.norm(proj_tib)
-            v_ankleFlexionAxis_opp = geometry.oppositeVector(v_ankleFlexionAxis) 
-
-        
-            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_tib,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
-            self.mp_computed["rightShankOffset"]= -angle
-            logging.info(" right shank offset => %s " % str(self.mp_computed["rightShankOffset"]))
-
             
-            
-            #"****** right angle beetween ank and flexion axis ( Not used by Native Pig)**********"        
-            ANK =  self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RANK").m_local                    
-            v_ank = ANK/np.linalg.norm(ANK)              
-           
-            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_ank,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
-
-            self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"] = angle
-            logging.info(" right projection offset => %s " % str(self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"]))
-        
+            angle= np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
+            self.mp_computed["RightTibialTorsionOffset"] = angle
+            logging.debug(" Right tibial torsion => %s " % str(self.mp_computed["RightTibialTorsionOffset"]))
 
     def getAbdAddAnkleJointOffset(self,side="both"):
         """
@@ -1998,8 +2097,8 @@ class CGM1ModelInf(CGM):
             v_ank = ANK/np.linalg.norm(ANK)
             
             angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_ank,self.getSegment("Left Shank").anatomicalFrame.static.m_axisX))
-            self.mp_computed["leftAJCAbAdOffset"] = angle
-            logging.info(" leftAJCAbAdOffset => %s " % str(self.mp_computed["leftAJCAbAdOffset"]))
+            self.mp_computed["LeftAnkleAbAddOffset"] = angle 
+            logging.debug(" LeftAnkleAbAddOffset => %s " % str(self.mp_computed["LeftAnkleAbAddOffset"]))
             
 
         if side == "both" or side == "right" : 
@@ -2015,8 +2114,8 @@ class CGM1ModelInf(CGM):
             v_ank = ANK/np.linalg.norm(ANK)
            
             angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_ank,self.getSegment("Right Shank").anatomicalFrame.static.m_axisX))
-            self.mp_computed["rightAJCAbAdOffset"] = angle
-            logging.info(" rightAJCAbAdOffset => %s " % str(self.mp_computed["rightAJCAbAdOffset"]))
+            self.mp_computed["RightAnkleAbAddOffset"] = angle
+            logging.debug(" RightAnkleAbAddOffset => %s " % str(self.mp_computed["RightAnkleAbAddOffset"]))
 
 
     def getFootOffset(self, side = "both"):
@@ -2035,22 +2134,22 @@ class CGM1ModelInf(CGM):
             R = self.getSegment("Left Foot").getReferential("TF").relativeMatrixAnatomic
             y,x,z = ceuler.euler_yxz(R)
             
-            self.mp_computed["leftStaticPlantarFlexion"] = np.rad2deg(y)
-            logging.info(" leftStaticPlantarFlexion => %s " % str(self.mp_computed["leftStaticPlantarFlexion"])) 
+            self.mp_computed["LeftStaticPlantFlexOffset"] = np.rad2deg(y) 
+            logging.debug(" LeftStaticPlantFlexOffset => %s " % str(self.mp_computed["LeftStaticPlantFlexOffset"])) 
 
-            self.mp_computed["leftStaticRotOff"] = np.rad2deg(x)
-            logging.info(" leftStaticRotOff => %s " % str(self.mp_computed["leftStaticRotOff"]))
+            self.mp_computed["LeftStaticRotOffset"] = np.rad2deg(x)
+            logging.debug(" LeftStaticRotOffset => %s " % str(self.mp_computed["LeftStaticRotOffset"]))
 
         
         if side == "both" or side == "right" :      
             R = self.getSegment("Right Foot").getReferential("TF").relativeMatrixAnatomic
             y,x,z = ceuler.euler_yxz(R)    
             
-            self.mp_computed["rightStaticPlantarFlexion"] = np.rad2deg(y)
-            logging.info(" rightStaticPlantarFlexion => %s " % str(self.mp_computed["rightStaticPlantarFlexion"])) 
+            self.mp_computed["RightStaticPlantFlexOffset"] = np.rad2deg(y)
+            logging.debug(" RightStaticPlantFlexOffset => %s " % str(self.mp_computed["RightStaticPlantFlexOffset"])) 
             
-            self.mp_computed["rightStaticRotOff"] = np.rad2deg(x)
-            logging.info(" rightStaticRotOff => %s " % str(self.mp_computed["rightStaticRotOff"])) 
+            self.mp_computed["RightStaticRotOffset"] = np.rad2deg(x)
+            logging.debug(" RightStaticRotOffset => %s " % str(self.mp_computed["RightStaticRotOffset"])) 
 
 
     def getViconFootOffset(self):
@@ -2064,18 +2163,18 @@ class CGM1ModelInf(CGM):
 
         """        
         
-        spf_l = self.mp_computed["leftStaticPlantarFlexion"] * -1.0
+        spf_l = self.mp_computed["LeftStaticPlantFlexOffset"] * -1.0
         logging.info(" Left staticPlantarFlexion offset (Vicon compatible)  => %s " % str(spf_l))
         
         
-        sro_l = self.mp_computed["leftStaticRotOff"] * -1.0
+        sro_l = self.mp_computed["LeftStaticRotOffset"] * -1.0
         logging.info("Left staticRotation offset (Vicon compatible)  => %s " % str(sro_l))
 
         
-        spf_r = self.mp_computed["rightStaticPlantarFlexion"] * -1.0
+        spf_r = self.mp_computed["RightStaticPlantFlexOffset"] * -1.0
         logging.info("Right staticRotation offset (Vicon compatible)  => %s " % str(spf_r))
        
-        sro_r = self.mp_computed["rightStaticRotOff"] 
+        sro_r = self.mp_computed["RightStaticRotOffset"] 
         logging.info("Right staticRotation offset (Vicon compatible)  => %s " % str(sro_r))        
 
         return spf_l,sro_l,spf_r,sro_r
@@ -2094,12 +2193,12 @@ class CGM1ModelInf(CGM):
 
 
         if side  == "Left":
-            val = self.mp_computed["leftThighOffset"] * -1.0
+            val = self.mp_computed["LeftThighRotationOffset"] * -1.0
             logging.info(" Left thigh offset (Vicon compatible)  => %s " % str(val))             
             return val
  
         if side  == "Right":
-            val = self.mp_computed["rightThighOffset"]            
+            val = self.mp_computed["RightThighRotationOffset"]            
             logging.info(" Right thigh offset (Vicon compatible)  => %s " % str(val))             
             return val        
         
@@ -2116,15 +2215,35 @@ class CGM1ModelInf(CGM):
         """        
 
         if side  == "Left":
-            val = self.mp_computed["leftShankOffset"] * -1.0
+            val = self.mp_computed["LeftShankRotationOffset"] * -1.0
             logging.info(" Left shank offset (Vicon compatible)  => %s " % str(val)) 
             return val
  
         if side  == "Right":
-            val = self.mp_computed["rightShankOffset"]
+            val = self.mp_computed["RightShankRotationOffset"]
             logging.info(" Right shank offset (Vicon compatible)  => %s " % str(val))
             return val         
 
+    def getViconTibialTorsion(self, side):
+        """
+            Get vicon compatible tibial tosion offset 
+                          
+            :Parameters:
+               - `side` (str) - body side  (both, left, right)    
+
+            .. note:  standard vicon CGM consider positive = internal rotation
+
+        """        
+
+        if side  == "Left":
+            val = self.mp_computed["LeftTibialTorsionOffset"] * -1.0
+            logging.info(" Left tibial torsion (Vicon compatible)  => %s " % str(val)) 
+            return val
+ 
+        if side  == "Right":
+            val = self.mp_computed["RightTibialTorsionOffset"]
+            logging.info(" Right tibial torsion  (Vicon compatible)  => %s " % str(val))
+            return val
     
     # ----- Motion --------------
     def computeMotion(self,aqui, dictRef,dictAnat, motionMethod,options=None ):
@@ -2200,27 +2319,36 @@ class CGM1ModelInf(CGM):
         logging.debug("--- Display Coordinate system ---")
         logging.debug(" --------------------------------")
     
-        #self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
-        self.displayMotionViconCoordinateSystem(aqui,"Pelvis","PELO","PELA","PELL","PELP")
-        #self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
-        self.displayMotionViconCoordinateSystem(aqui,"Left Thigh","LFEO","LFEA","LFEL","LFEP")
-        #self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
-        self.displayMotionViconCoordinateSystem(aqui,"Right Thigh","RFEO","RFEA","RFEL","RFEP")
-        #self.displayMotionCoordinateSystem( aqui,  "Left Shank" , "LShank" )
-        self.displayMotionViconCoordinateSystem(aqui,"Left Shank","LTIO","LTIA","LTIL","LTIP")
-        #self.displayMotionCoordinateSystem( aqui,  "Left Shank Proximal" , "LShankProx" )
-        self.displayMotionViconCoordinateSystem(aqui,"Left Shank Proximal","LTPO","LTPA","LTPL","LTPP")
-        #self.displayMotionCoordinateSystem( aqui,  "Right Shank" , "RShank" )
-        self.displayMotionViconCoordinateSystem(aqui,"Right Shank","RTIO","RTIA","RTIL","RTIP")
-        #self.displayMotionCoordinateSystem( aqui,  "Right Shank Proximal" , "RShankProx" )
-        self.displayMotionViconCoordinateSystem(aqui,"Right Shank Proximal","RTPO","RTPA","RTPL","RTPP")
-        #self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFoot" )
-        self.displayMotionViconCoordinateSystem(aqui,"Left Foot","LFOO","LFOA","LFOL","LFOP") 
-        #self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFoot" )
-        self.displayMotionViconCoordinateSystem(aqui,"Right Foot","RFOO","RFOA","RFOL","RFOP") 
+         
         
-        #self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical") 
-        #self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical") 
+
+        if not "useForMotionTest" in options.keys():
+            self.displayMotionViconCoordinateSystem(aqui,"Pelvis","PELO","PELA","PELL","PELP")
+            self.displayMotionViconCoordinateSystem(aqui,"Left Thigh","LFEO","LFEA","LFEL","LFEP")
+            self.displayMotionViconCoordinateSystem(aqui,"Right Thigh","RFEO","RFEA","RFEL","RFEP")
+            self.displayMotionViconCoordinateSystem(aqui,"Left Shank","LTIO","LTIA","LTIL","LTIP")
+            self.displayMotionViconCoordinateSystem(aqui,"Left Shank Proximal","LTPO","LTPA","LTPL","LTPP")
+            self.displayMotionViconCoordinateSystem(aqui,"Right Shank","RTIO","RTIA","RTIL","RTIP")
+            self.displayMotionViconCoordinateSystem(aqui,"Right Shank Proximal","RTPO","RTPA","RTPL","RTPP")
+            self.displayMotionViconCoordinateSystem(aqui,"Left Foot","LFOO","LFOA","LFOL","LFOP") 
+            self.displayMotionViconCoordinateSystem(aqui,"Right Foot","RFOO","RFOA","RFOL","RFOP")
+        else:            
+            self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
+            self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
+            self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
+            self.displayMotionCoordinateSystem( aqui,  "Left Shank" , "LShank" )
+            self.displayMotionCoordinateSystem( aqui,  "Left Shank Proximal" , "LShankProx" )
+            self.displayMotionCoordinateSystem( aqui,  "Right Shank" , "RShank" )
+            self.displayMotionCoordinateSystem( aqui,  "Right Shank Proximal" , "RShankProx" )
+            self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFoot" )
+            self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFoot" )
+            self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical") 
+            self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical") 
+
+            self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical") 
+            self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical")
+
+
     # ----- native motion ------
 
     
@@ -2385,7 +2513,7 @@ class CGM1ModelInf(CGM):
 
             seg.getReferential("TF").addMotionFrame(frame)
 
-            LKJCvalues[i,:] = CGM.chord( (self.mp["leftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["leftThighOffset"] )
+            LKJCvalues[i,:] = CGM.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
             
             
         # --- LKJC     
@@ -2494,7 +2622,7 @@ class CGM1ModelInf(CGM):
 
             seg.getReferential("TF").addMotionFrame(frame)
 
-            RKJCvalues[i,:] = CGM.chord( (self.mp["rightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["rightThighOffset"] )
+            RKJCvalues[i,:] = CGM.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
             
             
         # --- RKJC    
@@ -2603,14 +2731,14 @@ class CGM1ModelInf(CGM):
             seg.getReferential("TF").addMotionFrame(frame)
 
 
-            LAJCvalues[i,:] = CGM.chord( (self.mp["leftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["leftShankOffset"] )
+            LAJCvalues[i,:] = CGM.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
                 
             # update of the AJC location with rotation around abdAddAxis 
-            LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,-self.mp_computed["leftAJCAbAdOffset"])
+            LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,-self.mp_computed["LeftAnkleAbAddOffset"])
             
 
         # --- LAJC
-        if self.mp_computed["leftAJCAbAdOffset"] > 0.01:
+        if self.mp_computed["LeftAnkleAbAddOffset"] > 0.01:
             desc="chord+AbAdRot"
         else:
             desc="chord"
@@ -2667,13 +2795,12 @@ class CGM1ModelInf(CGM):
         segProx=self.getSegment("Left Shank Proximal")
 
 
-        # --- managment of tibial torsion    
-        if "useLeftTibialTorsion" in options.keys():
-            logging.warning("option (useLeftTibialTorsion) enable")
-            tibialTorsion = np.deg2rad(self.mp_computed["leftTibialTorsion"])
+        # --- managment of tibial torsion
+        if self.m_useLeftTibialTorsion:
+            tibialTorsion = np.deg2rad(self.mp_computed["LeftTibialTorsionOffset"])
         else:
-            logging.warning("option (useLeftTibialTorsion) disable")
-            tibialTorsion = 0.0 #np.deg2rad(self.mp_computed["leftTibialTorsion"])
+            tibialTorsion = 0.0
+    
 
 
         # --- motion of both technical and anatomical referentials of the proximal shank
@@ -2765,13 +2892,13 @@ class CGM1ModelInf(CGM):
             seg.getReferential("TF").addMotionFrame(frame)
 
             # ajc position from chord modified by shank offset 
-            RAJCvalues[i,:] = CGM.chord( (self.mp["rightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["rightShankOffset"] )
+            RAJCvalues[i,:] = CGM.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
 
             # update of the AJC location with rotation around abdAddAxis 
-            RAJCvalues[i,:] = self._rotateAjc(RAJCvalues[i,:],pt2,pt1,   self.mp_computed["rightAJCAbAdOffset"])
+            RAJCvalues[i,:] = self._rotateAjc(RAJCvalues[i,:],pt2,pt1,   self.mp_computed["RightAnkleAbAddOffset"]) 
 
         # --- RAJC
-        if self.mp_computed["rightAJCAbAdOffset"] >0.01:
+        if self.mp_computed["RightAnkleAbAddOffset"] >0.01:
             desc="chord+AbAdRot"
         else:
             desc="chord"
@@ -2830,11 +2957,12 @@ class CGM1ModelInf(CGM):
 
        
         # --- management of the tibial torsion 
-        if "useRightTibialTorsion" in options.keys():
-            tibialTorsion = np.deg2rad(self.mp_computed["rightTibialTorsion"])
+        if self.m_useRightTibialTorsion:
+            tibialTorsion = np.deg2rad(self.mp_computed["RightTibialTorsionOffset"])
         else:
-            tibialTorsion = 0.0 #np.deg2rad(self.mp_computed["leftTibialTorsion"])
-
+            tibialTorsion = 0.0
+       
+       
         # --- motion of both technical and anatomical referentials of the proximal shank
         segProx.getReferential("TF").motion =[]
         segProx.anatomicalFrame.motion=[]

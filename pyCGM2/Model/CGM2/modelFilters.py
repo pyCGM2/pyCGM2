@@ -450,7 +450,6 @@ class ModelMotionFilter(object):
         """
             Run the motion filter
         """
-        
         if str(self.m_model) != "Basis Model":
            self.m_model.computeMotion(self.m_aqui,
                                       self.m_procedure.definition[0],
@@ -810,12 +809,12 @@ class InverseDynamicFilter(object):
             momentValues = np.zeros((nFrames,3))
             for i in range(0,nFrames ):
                 if self.m_projection == pyCGM2Enums.MomentProjection.Global:
-                    forceValues[i,:] = (1.0 / self.m_model.mp["mass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:]
-                    momentValues[i,:] = (1.0 / self.m_model.mp["mass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:]
+                    forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:]
+                    momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:]
                 else:
-                    forceValues[i,:] = (1.0 / self.m_model.mp["mass"]) * np.dot(mot[i].getRotation().T, 
+                    forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T, 
                                                                             self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:].T) 
-                    momentValues[i,:] = (1.0 / self.m_model.mp["mass"]) * np.dot(mot[i].getRotation().T, 
+                    momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T, 
                                                                             self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:].T) 
             
             finalForceValues,finalMomentValues = self.m_model.finalizeKinetics(jointLabel,forceValues,momentValues,self.m_projection)
@@ -839,9 +838,9 @@ class InverseDynamicFilter(object):
                     momentValues = np.zeros((nFrames,3))
                     for i in range(0,nFrames ):
                         if self.m_projection == pyCGM2Enums.MomentProjection.Global:
-                            momentValues[i,:] = (1.0 / self.m_model.mp["mass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:]
+                            momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:]
                         else:
-                            momentValues[i,:] = (1.0 / self.m_model.mp["mass"]) * np.dot(mot[i].getRotation().T, 
+                            momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T, 
                                                                                     self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:].T) 
                 
                     finalForceValues,finalMomentValues = self.m_model.finalizeKinetics(jointLabel,forceValues,momentValues,self.m_projection)
@@ -896,7 +895,7 @@ class JointPowerFilter(object):
             
             power = np.zeros((nFrames,3))
             for i in range(0, nFrames):            
-                power[i,2] = -1.0*(1.0 / self.m_model.mp["mass"]) * self.m_scale * np.dot(self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:] ,relativeOmega[i,:])# 
+                power[i,2] = -1.0*(1.0 / self.m_model.mp["Bodymass"]) * self.m_scale * np.dot(self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:] ,relativeOmega[i,:])# 
 
 
             fulljointLabel  = jointLabel + "Power_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Power"
