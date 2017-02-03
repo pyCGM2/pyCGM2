@@ -84,18 +84,18 @@ if __name__ == "__main__":
         
         # subject mp
         mp={
-        'mass'   : 71.0,                
-        'leftLegLength' : 860.0,
-        'rightLegLength' : 865.0 ,
-        'leftKneeWidth' : 102.0,
-        'rightKneeWidth' : 103.4,
-        'leftAnkleWidth' : 75.3,
-        'rightAnkleWidth' : 72.9,       
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
         }
         
  
         # -----------CGM STATIC CALIBRATION--------------------
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         model.addAnthropoInputParameter(mp)
 

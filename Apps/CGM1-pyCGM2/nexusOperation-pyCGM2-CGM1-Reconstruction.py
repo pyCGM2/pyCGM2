@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-"""
-
 import os
 import logging
 import matplotlib.pyplot as plt 
@@ -109,17 +106,18 @@ if __name__ == "__main__":
         Parameters = pyNEXUS.GetSubjectParamNames(subject)
         
         mp={
-        'mass'   : pyNEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],                
-        'leftLegLength' : pyNEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],
-        'rightLegLength' : pyNEXUS.GetSubjectParamDetails( subject, "RightLegLength")[0] ,
-        'leftKneeWidth' : pyNEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0],
-        'rightKneeWidth' : pyNEXUS.GetSubjectParamDetails( subject, "RightKneeWidth")[0],
-        'leftAnkleWidth' : pyNEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0],
-        'rightAnkleWidth' : pyNEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],       
+        'Bodymass'   : pyNEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],                
+        'LeftLegLength' : pyNEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],
+        'RightLegLength' : pyNEXUS.GetSubjectParamDetails( subject, "RightLegLength")[0] ,
+        'LeftKneeWidth' : pyNEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0],
+        'RightKneeWidth' : pyNEXUS.GetSubjectParamDetails( subject, "RightKneeWidth")[0],
+        'LeftAnkleWidth' : pyNEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0],
+        'RightAnkleWidth' : pyNEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],       
         }
+        logging.info(mp)
  
         # -----------CGM STATIC CALIBRATION--------------------
-        model=cgm.CGM1ModelInf()
+        model=cgm.CGM1LowerLimbs()
         model.configure()
         model.addAnthropoInputParameter(mp)
 
