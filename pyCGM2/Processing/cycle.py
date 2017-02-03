@@ -179,11 +179,11 @@ class Cycle(ma.Node):
         self.pointfrequency = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
         self.analogfrequency = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate() 
         self.appf =  self.analogfrequency / self.pointfrequency
-        self.firstFrame = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime() * self.pointfrequency
+        self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime() * self.pointfrequency))
 
 
-        self.begin =  round(startTime * self.pointfrequency) + 1
-        self.end = round(endTime * self.pointfrequency) + 1
+        self.begin =  int(round(startTime * self.pointfrequency) + 1)
+        self.end = int(round(endTime * self.pointfrequency) + 1)
         self.context=context
         self.enableFlag = enableFlag
                         
@@ -214,8 +214,9 @@ class Cycle(ma.Node):
                 - `pointLabel` (str) - point Label
          
         """
+        
         if CGM2trialTools.isTimeSequenceExist(self.trial,pointLabel):
-            return  self.trial.findChild(ma.T_TimeSequence, pointLabel).data()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)  
+            return self.trial.findChild(ma.T_TimeSequence, pointLabel).data()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual) 
         else:
             raise Exception("[pyCGM2] marker %s doesn t exist"% pointLabel )
 
@@ -327,11 +328,11 @@ class GaitCycle(Cycle):
             oppositeSide="Right"
         for ev in evs.findChildren(ma.T_Event):
             if ev.name() == "Foot Off" and ev.context()==oppositeSide:
-                oppositeFO= round(ev.time() * self.pointfrequency) + 1 
+                oppositeFO= int(round(ev.time() * self.pointfrequency) + 1) 
             if ev.name() == "Foot Strike" and ev.context()==oppositeSide:
-                oppositeFS= round(ev.time() * self.pointfrequency) + 1
+                oppositeFS= int(round(ev.time() * self.pointfrequency) + 1)
             if ev.name() == "Foot Off" and ev.context()==context:
-                contraFO = round(ev.time() * self.pointfrequency) + 1
+                contraFO = int(round(ev.time() * self.pointfrequency) + 1)
         if oppositeFO > oppositeFS:
             raise Exception("[pyCGM2] : check your c3d - Gait event error")
         
