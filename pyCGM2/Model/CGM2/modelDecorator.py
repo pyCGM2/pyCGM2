@@ -432,12 +432,18 @@ class Kad(DecoratorModel):
             self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_kad",RKJC,positionType="Global")
             self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_kad",RAJC,positionType="Global")
     
-    
+        # add KNE markers to static c3d
+        if side == "both" or side == "left":
+                val = LKNE * np.ones((self.acq.GetPointFrameNumber(),3))      
+                btkTools.smartAppendPoint(self.acq,"LKNE",val, desc="KAD")
+
+        if side == "both" or side == "right":
+                val = RKNE * np.ones((self.acq.GetPointFrameNumber(),3))      
+                btkTools.smartAppendPoint(self.acq,"RKNE",val, desc="KAD") # KNE updated.     
+
 
         if displayMarkers:
             if side == "both" or side == "right":
-                val = RKNE * np.ones((self.acq.GetPointFrameNumber(),3))      
-                btkTools.smartAppendPoint(self.acq,"RKNE",val, desc="KAD") # KNE updated. 
 
                 val = RKJC * np.ones((self.acq.GetPointFrameNumber(),3))      
                 btkTools.smartAppendPoint(self.acq,"RKJC-KAD",val, desc="KAD")
@@ -446,9 +452,6 @@ class Kad(DecoratorModel):
                 btkTools.smartAppendPoint(self.acq,"RAJC-KAD",val, desc="KAD")
 
             if side == "both" or side == "left":
-                val = LKNE * np.ones((self.acq.GetPointFrameNumber(),3))      
-                btkTools.smartAppendPoint(self.acq,"LKNE",val, desc="KAD") 
-
                 
                 val = LKJC * np.ones((self.acq.GetPointFrameNumber(),3))      
                 btkTools.smartAppendPoint(self.acq,"LKJC-KAD",val, desc="KAD")
