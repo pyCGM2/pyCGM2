@@ -55,7 +55,8 @@ class CGM1_calibrationTest():
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
         
-        spf_l,sro_l,spf_r,sro_r = model.getViconFootOffset()
+        spf_l,sro_l= model.getViconFootOffset("Left")
+        spf_r,sro_r= model.getViconFootOffset("Right")
 
         
         btkTools.smartWriter(acqStatic, "CGM1_calibrationTest-basicCGM1.c3d") 
@@ -124,7 +125,8 @@ class CGM1_calibrationTest():
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, leftFlatFoot = True, rightFlatFoot = True).compute() 
-        spf_l,sro_l,spf_r,sro_r = model.getViconFootOffset()
+        spf_l,sro_l= model.getViconFootOffset("Left")
+        spf_r,sro_r= model.getViconFootOffset("Right")
 
         
         # TESTS ------------------------------------------------
@@ -217,7 +219,8 @@ class CGM1_calibrationTest():
 
 
         # foot offsets
-        spf_l,sro_l,spf_r,sro_r = model.getViconFootOffset()
+        spf_l,sro_l= model.getViconFootOffset("Left")
+        spf_r,sro_r= model.getViconFootOffset("Right")
 
         vicon_spf_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticPlantFlex").value().GetInfo().ToDouble()[0])
         vicon_spf_r  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RStaticPlantFlex").value().GetInfo().ToDouble()[0])
@@ -301,8 +304,9 @@ class CGM1_calibrationTest():
 
 
         # foot offsets
-        spf_l,sro_l,spf_r,sro_r = model.getViconFootOffset()
-
+        spf_l,sro_l= model.getViconFootOffset("Left")
+        spf_r,sro_r= model.getViconFootOffset("Right")
+        
         vicon_spf_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticPlantFlex").value().GetInfo().ToDouble()[0])
         vicon_spf_r  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RStaticPlantFlex").value().GetInfo().ToDouble()[0])
         vicon_sro_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticRotOff").value().GetInfo().ToDouble()[0])
@@ -398,7 +402,8 @@ class CGM1_calibrationTest():
         np.testing.assert_almost_equal(rtt_vicon,model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
 
         # foot offsets
-        spf_l,sro_l,spf_r,sro_r = model.getViconFootOffset()
+        spf_l,sro_l= model.getViconFootOffset("Left")
+        spf_r,sro_r= model.getViconFootOffset("Right")
 
         vicon_spf_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticPlantFlex").value().GetInfo().ToDouble()[0])
         vicon_spf_r  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RStaticPlantFlex").value().GetInfo().ToDouble()[0])
@@ -446,8 +451,11 @@ class CGM1_calibrationTest():
 
 
         # shank abAdd offset
-        np.testing.assert_almost_equal(-1.0 *model.mp_computed["LeftAnkleAbAddOffset"] , np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LAnkleAbAdd").value().GetInfo().ToDouble()[0]) , decimal = 3)
-        np.testing.assert_almost_equal(model.mp_computed["RightAnkleAbAddOffset"] , np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RAnkleAbAdd").value().GetInfo().ToDouble()[0]) , decimal = 3)
+        abdAdd_l = model.getViconAnkleAbAddOffset("Left")
+        abdAdd_r = model.getViconAnkleAbAddOffset("Right")
+
+        np.testing.assert_almost_equal(abdAdd_l , np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LAnkleAbAdd").value().GetInfo().ToDouble()[0]) , decimal = 3)
+        np.testing.assert_almost_equal(abdAdd_r , np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RAnkleAbAdd").value().GetInfo().ToDouble()[0]) , decimal = 3)
 
         btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_midMaleolus.c3d") 
 
@@ -503,7 +511,9 @@ class CGM1_calibrationTest():
         
 
         # foot offsets
-        spf_l,sro_l,spf_r,sro_r = model.getViconFootOffset()
+        spf_l,sro_l= model.getViconFootOffset("Left")
+        spf_r,sro_r= model.getViconFootOffset("Right")
+
         vicon_spf_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticPlantFlex").value().GetInfo().ToDouble()[0])
         vicon_spf_r  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RStaticPlantFlex").value().GetInfo().ToDouble()[0])
         vicon_sro_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticRotOff").value().GetInfo().ToDouble()[0])
@@ -1022,8 +1032,8 @@ class CGM1_custom_calibrationTest():
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                             useBodyBuilderFoot=True).compute() 
         
-        spf_l,sro_l,spf_r,sro_r = model.getViconFootOffset()
-
+        spf_l,sro_l= model.getViconFootOffset("Left")
+        spf_r,sro_r= model.getViconFootOffset("Right")
         
         btkTools.smartWriter(acqStatic, "CGM1_calibrationTest-basicCGM1.c3d") 
         # TESTS ------------------------------------------------
@@ -1073,11 +1083,11 @@ if __name__ == "__main__":
 #    CGM1_calibrationTest.advancedCGM1_kad_midMaleolus_TrueEquinus()  
     logging.info("######## PROCESS CGM1 --> Done ######")        
 
-    logging.info("######## PROCESS CGM1 --- MANUAL ######")
-    CGM1_manual_calibrationTest.basicCGM1_manualThighShankRotation() # work
-    CGM1_manual_calibrationTest.basicCGM1_manualTibialTorsion() # work
-    CGM1_manual_calibrationTest.advancedCGM1_kadMed_manualTibialTorsion() # work
-    logging.info("######## PROCESS CGM1 --- MANUAL --> Done ######")    
+#    logging.info("######## PROCESS CGM1 --- MANUAL ######")
+#    CGM1_manual_calibrationTest.basicCGM1_manualThighShankRotation() # work
+#    CGM1_manual_calibrationTest.basicCGM1_manualTibialTorsion() # work
+#    CGM1_manual_calibrationTest.advancedCGM1_kadMed_manualTibialTorsion() # work
+#    logging.info("######## PROCESS CGM1 --- MANUAL --> Done ######")    
 
 
 #    
