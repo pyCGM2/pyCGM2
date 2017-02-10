@@ -303,3 +303,31 @@ def modifySubject(acq,newSubjectlabel):
             - `newSubjectlabel` (str) - desired subject name
     """
     acq.GetMetaData().FindChild("SUBJECTS").value().FindChild("NAMES").value().GetInfo().SetValue(0,str(newSubjectlabel))
+    
+    
+def checkPigProcessing(acq):
+    """
+        Check if a pig processing was carried out. 
+
+        .. warning:: 
+        
+            This function checked if MODEL ( a metadata generated from pyCGM2) is within metadata list and if it has children. 
+            Indeed, Vicon Nexus PIG operation keeps MODEL as metadata and remove its children (!) 
+        
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+
+    """
+
+    md=acq.GetMetaData()
+    
+    flag = True
+    for it in btk.Iterate(md):
+        if it.GetLabel() == "MODEL":
+            for it2 in btk.Iterate(it):
+                if it2.GetLabel() == "NAME":
+                    flag = False
+    return flag
+
+
+  
