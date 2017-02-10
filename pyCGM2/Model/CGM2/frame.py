@@ -4,6 +4,80 @@ import numpy as np
 import pdb
 import logging
 
+
+
+def getQuaternionFromMatrix(RotMat):
+    """
+        Calculates the quaternion representation of the rotation described by RotMat
+        Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes article "Quaternion Calculus and Fast Animation".
+       
+       :Parameters:
+           - `RotMat` (numy.array(3,3)) - Rotation Matrix        
+
+        
+        :Return:
+            - `Quaternion` (numy.array(4)) - 4 components of a quaternion
+              
+    """
+
+    Quaternion = np.zeros( (4) );
+    Trace = np.trace( RotMat )
+    if Trace > 0:
+        Root = np.sqrt( Trace + 1 )
+        Quaternion[3] = 0.5 * Root
+        Root = 0.5 / Root;
+        Quaternion[0] = ( RotMat[2,1] - RotMat[1,2] ) * Root
+        Quaternion[1] = ( RotMat[0,2] - RotMat[2,0] ) * Root
+        Quaternion[2] = ( RotMat[1,0] - RotMat[0,1] ) * Root
+    else:
+        Next = np.array([ 1, 2, 0 ])
+        i = 0
+        if RotMat[1,1] > RotMat[0,0]:
+            i = 1
+        if RotMat(2,2) > RotMat[i,i] :
+            i = 2
+            
+        j = Next[i]
+        k = Next[j]
+      
+        Root = np.sqrt( RotMat[i,i] - RotMat[j,j] - RotMat[k,k] + 1 )
+        Quaternion[i] = 0.5 * Root
+        Root = 0.5 / Root;
+        Quaternion[3] = ( RotMat[k,j] - RotMat[j,k] ) * Root
+        Quaternion[j] = ( RotMat(j,i) + RotMat(i,j) ) * Root
+        Quaternion[k] = ( RotMat[k,i] + RotMat[i,k] ) * Root
+    
+    Quaternion = Quaternion / np.linalg.norm( Quaternion)
+
+    return Quaternion
+    
+
+def angleAxisFromQuaternion(Quaternion): 
+    """
+        Calculates the AngleAxis representation of the rotation described by a
+        quaternion
+       
+       :Parameters:
+           - `Quaternion` (numy.array(4)) - 4 components of a quaternion       
+
+        
+        :Return:
+            - `AngleAxis` (numy.array(3)) - angle Axis in deg
+              
+    """
+
+    imag = Quaternion[:-1 ]
+    real = Quaternion[ 3 ]
+
+    lenQ = np.linalg.norm( imag )
+    if lenQ < 100*np.spacing(np.single(1)): 
+        AngleAxis = imag
+    else:
+        angle = 2*np.arctan2( lenQ, real )
+        AngleAxis = angle/lenQ * imag
+ 
+    return np.rad2deg(AngleAxis)   
+
 def setFrameData(a1,a2,sequence):
     """
         set Frame of a ccordinate system accoring two vector and a sequence
@@ -154,6 +228,15 @@ class Frame(object):
             
         """
         return self._matrixRot
+
+    def getAngleAxis(self):
+
+        quaternion = getQuaternionFromMatrix(self._matrixRot)
+        axisAngle =  angleAxisFromQuaternion(quaternion)
+        
+        
+        return axisAngle
+
 
     def getTranslation(self):
         """ 
