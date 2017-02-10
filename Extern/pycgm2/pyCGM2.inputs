@@ -1,0 +1,15 @@
+{
+  "Calibration" : {
+    "Left flat foot" : "True" ,
+    "Right flat foot" : "True" ,
+    "Marker diameter" : 14,
+    "Point suffix" : ""
+  },
+  "Normative data" : {
+    "Author" : "Schwartz",
+    "Modality" : "Free"
+  },
+  "Subject" : {},
+  "Experimental conditions" : {},
+  "Model " : {} 
+}
