@@ -464,7 +464,68 @@ class Kad(DecoratorModel):
 #            writer.Update()
 
             
+class Cgm1ManualOffsets(DecoratorModel):
+    """
 
+    """ 
+    def __init__(self, iModel):
+        """
+            :Parameters:
+              - `iModel` (pyCGM2.Model.CGM2.cgm.CGM) - a CGM instance 
+        """
+        super(Cgm1ManualOffsets,self).__init__(iModel)
+        
+
+    def compute(self,acq,side,offset,markerDiameter,tibialTorsion):
+        
+        self.model.decoratedModel = True
+        
+        ff = acq.GetFirstFrame()
+        frameInit =  acq.GetFirstFrame()-ff  
+        frameEnd = acq.GetLastFrame()-ff+1        
+        
+        if side == "left":
+            HJC = acq.GetPoint("LHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            KNE = acq.GetPoint("LKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            THI = acq.GetPoint("LTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            
+            KJC = cgm.CGM1LowerLimbs.chord((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= offset )
+            
+            # locate AJC    
+            ANK = acq.GetPoint("LANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
+                
+                
+            # add nodes to referential 
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mo",KJC,positionType="Global")  
+            
+            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mo",KJC,positionType="Global") 
+            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_mo",AJC,positionType="Global")
+            
+            if tibialTorsion:
+                self.model.m_useLeftTibialTorsion=True
+        
+        if side == "right":
+            HJC = acq.GetPoint("RHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            KNE = acq.GetPoint("RKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            THI = acq.GetPoint("RTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            
+            KJC = cgm.CGM1LowerLimbs.chord((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= offset )
+
+            # locate AJC            
+            ANK = acq.GetPoint("RANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
+                
+                
+            # add nodes to referential 
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mo",KJC,positionType="Global")  
+            
+            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_mo",KJC,positionType="Global") 
+            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_mo",AJC,positionType="Global") 
+            
+            if tibialTorsion:
+                self.model.m_useRightTibialTorsion=True
+        
 
 class HipJointCenterDecorator(DecoratorModel):
     """
@@ -584,6 +645,8 @@ class KneeCalibrationDecorator(DecoratorModel):
         """
 
         super(KneeCalibrationDecorator,self).__init__(iModel)
+        
+        
         
     def midCondyles(self,acq, side="both",leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LMEPI",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RMEPI", markerDiameter = 14, withNoModelParameter=False):   
         """ 
