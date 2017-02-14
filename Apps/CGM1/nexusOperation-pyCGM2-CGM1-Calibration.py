@@ -136,11 +136,11 @@ if __name__ == "__main__":
         model.configure()
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
-        # reader
+        # btk acquisition
         acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
 
         # relabel PIG output if processing previously
-        cgm.CGM.reLabelPigOutputs(acqStatic)
+        cgm.CGM.reLabelPigOutputs(acqStatic) 
 
 
         # check static marker configuration
@@ -212,32 +212,30 @@ if __name__ == "__main__":
         abdAdd_r = model.getViconAnkleAbAddOffset("Right")
 
 
-        pyNEXUS.SetSubjectParam( subject, "InterAsisDistance",round(model.mp_computed["InterAsisDistance"],6))
-        pyNEXUS.SetSubjectParam( subject, "LeftAsisTrocanterDistance",round(model.mp_computed["LeftAsisTrocanterDistance"],6))
-        pyNEXUS.SetSubjectParam( subject, "LeftThighRotation",round(th_l,6))
-        pyNEXUS.SetSubjectParam( subject, "LeftShankRotation",round(sh_l,6))
-        pyNEXUS.SetSubjectParam( subject, "LeftTibialTorsion",round(tt_l,6))
+        pyNEXUS.SetSubjectParam( subject, "InterAsisDistance",model.mp_computed["InterAsisDistance"])
+        pyNEXUS.SetSubjectParam( subject, "LeftAsisTrocanterDistance",model.mp_computed["LeftAsisTrocanterDistance"])
+        pyNEXUS.SetSubjectParam( subject, "LeftThighRotation",th_l)
+        pyNEXUS.SetSubjectParam( subject, "LeftShankRotation",sh_l)
+        pyNEXUS.SetSubjectParam( subject, "LeftTibialTorsion",tt_l)
 
 
-        pyNEXUS.SetSubjectParam( subject, "RightAsisTrocanterDistance",round(model.mp_computed["RightAsisTrocanterDistance"],6))
-        pyNEXUS.SetSubjectParam( subject, "RightThighRotation",round(th_r,6))
-        pyNEXUS.SetSubjectParam( subject, "RightShankRotation",round(sh_r,6))
-        pyNEXUS.SetSubjectParam( subject, "RightTibialTorsion",round(tt_r,6))
+        pyNEXUS.SetSubjectParam( subject, "RightAsisTrocanterDistance",model.mp_computed["RightAsisTrocanterDistance"])
+        pyNEXUS.SetSubjectParam( subject, "RightThighRotation",th_r)
+        pyNEXUS.SetSubjectParam( subject, "RightShankRotation",sh_r)
+        pyNEXUS.SetSubjectParam( subject, "RightTibialTorsion",tt_r)
 
 
-        pyNEXUS.SetSubjectParam( subject, "LeftStaticPlantFlex",round(spf_l,6))
-        pyNEXUS.SetSubjectParam( subject, "LeftStaticRotOff",round(sro_l,6))
-        pyNEXUS.SetSubjectParam( subject, "LeftAnkleAbAdd",round(abdAdd_l,6))
+        pyNEXUS.SetSubjectParam( subject, "LeftStaticPlantFlex",spf_l)
+        pyNEXUS.SetSubjectParam( subject, "LeftStaticRotOff",sro_l)
+        pyNEXUS.SetSubjectParam( subject, "LeftAnkleAbAdd",abdAdd_l)
 
-        pyNEXUS.SetSubjectParam( subject, "RightStaticPlantFlex",round(spf_r,6))
-        pyNEXUS.SetSubjectParam( subject, "RightStaticRotOff",round(sro_r,6))
-        pyNEXUS.SetSubjectParam( subject, "RightAnkleAbAdd",round(abdAdd_r,6))
+        pyNEXUS.SetSubjectParam( subject, "RightStaticPlantFlex",spf_r)
+        pyNEXUS.SetSubjectParam( subject, "RightStaticRotOff",sro_r)
+        pyNEXUS.SetSubjectParam( subject, "RightAnkleAbAdd",abdAdd_r)
 
 
 
         # -----------CGM RECONSTRUCTION--------------------
-
-
         modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
                                                   markerDiameter=markerDiameter,
                                                   useForMotionTest=True)
@@ -255,38 +253,32 @@ if __name__ == "__main__":
                                                 globalFrameOrientation = globalFrame,
                                                 forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-        # add metadata
-        md_Model = btk.btkMetaData('MODEL') # create main metadata
-        btk.btkMetaDataCreateChild(md_Model, "NAME", "CGM1")
-        btk.btkMetaDataCreateChild(md_Model, "PROCESSOR", "pyCGM2")
-        acqStatic.GetMetaData().AppendChild(md_Model)
-
-        # save
-        #btkTools.smartWriter(acqStatic,str(DATA_PATH + calibrateFilenameLabelled[:-4] + "_cgm1.c3d"))
-        #logging.info( "[pyCGM2] : file ( %s) reconstructed in pyCGM2-model path " % (calibrateFilenameLabelled))
+        
 
         # save pycgm2.model
-
         modelFile = open(DATA_PATH + "pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
 
-
-#        # TEST INTERFACE
-#        print "------------------"
-#        print pyNEXUS.GetModelOutputNames("cgm1")
-#        print "------------------"
-#
-#        angles=[]
-#        for it in btk.Iterate(acqStatic.GetPoints()):
-#            if it.GetType() == btk.btkPoint.Angle:
-#                angles.append(it.GetLabel())
-#        print angles
-
         logging.info( "EXPORT VICON")
-        viconInterface.ViconInterface(pyNEXUS,model,acqStatic,"cgm1").do()
+        viconInterface.ViconInterface(pyNEXUS,
+                                      model,acqStatic,subject,
+                                      staticProcessing=True).run()
 
-        #pyNEXUS.SaveTrial(30)
+        if DEBUG:
+            pyNEXUS.SaveTrial(30)
+
+        
+            # add metadata
+            acqStatic2= btkTools.smartReader(str(DATA_PATH + calibrateFilenameLabelled))
+            md_Model = btk.btkMetaData('MODEL') # create main metadata
+            btk.btkMetaDataCreateChild(md_Model, "NAME", "CGM1")
+            btk.btkMetaDataCreateChild(md_Model, "PROCESSOR", "pyCGM2")
+            acqStatic2.GetMetaData().AppendChild(md_Model)
+    
+            # save
+            btkTools.smartWriter(acqStatic2,str(DATA_PATH + calibrateFilenameLabelled[:-4] + ".c3d"))
+            logging.info( "[pyCGM2] : file ( %s) reconstructed in pyCGM2-model path " % (calibrateFilenameLabelled))
 
 
     else:
