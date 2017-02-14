@@ -156,7 +156,7 @@ class CGM(cmb.Model):
             L=offset
 
 
-            eps = 0.00000001
+            eps =  0.001 #0.00000001
 
 
             AB = np.linalg.norm(A-B)
@@ -210,9 +210,9 @@ class CGM(cmb.Model):
                         [    0,   0,   0,       1.0  ]])
 
             count = 0
-            while diffBeta > eps or count > 1000:
-                if count > 1000:
-                    logging.warning("count boubdary achieve")
+            while diffBeta > eps or count > 100:
+                if count > 100:
+                    logging.warning("count boundary achieve")
 
 
                 count = count + 1
@@ -235,8 +235,6 @@ class CGM(cmb.Model):
 
                 sens = np.dot(np.cross(ProjC,ProjB).T,nBone)
 
-
-
                 Betai = sens/np.linalg.norm(sens)*np.arccos((np.dot(ProjC.T,ProjB))/(np.linalg.norm(ProjC)*np.linalg.norm(ProjB)))*180.0/np.pi
 
                 diffBeta = np.abs(beta - Betai)
@@ -246,7 +244,7 @@ class CGM(cmb.Model):
                         Salpha = Salpha - alphaincr
                         alphaincr = -alphaincr
                     else:
-                        alphaincr = -alphaincr / 2;
+                        alphaincr = -alphaincr / 2.0;
 
 
             return P
@@ -591,6 +589,9 @@ class CGM1LowerLimbs(CGM):
             self.getShankOffsets(side="right")
 
         # tibial Torsion
+        #   - check if TibialTorsion whithin main mp
+        #    - if not : if member useTibialTorsion enable from a decorator : calculate tibial Torsion
+        #     - if not no Tibial Torsion       
         #   left
         if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0:
             self.mp_computed["LeftTibialTorsionOffset"]= -self.mp["LeftTibialTorsion"]
