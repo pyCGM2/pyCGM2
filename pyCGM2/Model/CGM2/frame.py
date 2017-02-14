@@ -34,7 +34,7 @@ def getQuaternionFromMatrix(RotMat):
         i = 0
         if RotMat[1,1] > RotMat[0,0]:
             i = 1
-        if RotMat(2,2) > RotMat[i,i] :
+        if RotMat[2,2] > RotMat[i,i] :
             i = 2
             
         j = Next[i]
@@ -44,7 +44,7 @@ def getQuaternionFromMatrix(RotMat):
         Quaternion[i] = 0.5 * Root
         Root = 0.5 / Root;
         Quaternion[3] = ( RotMat[k,j] - RotMat[j,k] ) * Root
-        Quaternion[j] = ( RotMat(j,i) + RotMat(i,j) ) * Root
+        Quaternion[j] = ( RotMat[j,i] + RotMat[i,j] ) * Root
         Quaternion[k] = ( RotMat[k,i] + RotMat[i,k] ) * Root
     
     Quaternion = Quaternion / np.linalg.norm( Quaternion)
