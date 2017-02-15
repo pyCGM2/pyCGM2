@@ -53,6 +53,7 @@ class CGM(cmb.Model):
         self.m_useLeftTibialTorsion=False
         self.m_useRightTibialTorsion=False
 
+
     @classmethod
     def reLabelPigOutputs(cls,acq):
         pigFlag = btkTools.checkPigProcessing(acq)
@@ -584,20 +585,17 @@ class CGM1LowerLimbs(CGM):
             self.getShankOffsets(side="left")
 
         if self.mp.has_key("RightShankRotation") and self.mp["RightShankRotation"] != 0:
-                self.mp_computed["RightShankRotationOffset"]= self.mp["RightShankRotation"]
+            self.mp_computed["RightShankRotationOffset"]= self.mp["RightShankRotation"]
         else:
             self.getShankOffsets(side="right")
 
         # tibial Torsion
-        #   - check if TibialTorsion whithin main mp
-        #    - if not : if member useTibialTorsion enable from a decorator : calculate tibial Torsion
-        #     - if not no Tibial Torsion       
-        #   left
-        if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0:
+
+        if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0: #   - check if TibialTorsion whithin main mp
             self.mp_computed["LeftTibialTorsionOffset"]= -self.mp["LeftTibialTorsion"]
             self.m_useLeftTibialTorsion=True
         else:
-            if self.m_useLeftTibialTorsion:
+            if self.m_useLeftTibialTorsion: # if useTibialTorsion flag enable from a decorator
                 self.getTibialTorsionOffset(side="left")
             else:
                 self.mp_computed["LeftTibialTorsionOffset"]= 0

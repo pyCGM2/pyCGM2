@@ -486,6 +486,15 @@ class Cgm1ManualOffsets(DecoratorModel):
         frameEnd = acq.GetLastFrame()-ff+1        
         
         if side == "left":
+            
+            # zeroing of shankRotation if non-zero
+            if shankoffset!=0:
+                if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+                    if self.model.mp.has_key("LeftShankRotation") : 
+                        self.model.mp["LeftShankRotation"] = 0
+                        logging.warning("Special CGM1 case - shank offset cancelled")            
+            
+            # location of KJC and AJC depends on thighRotation and tibial torsion 
             HJC = acq.GetPoint("LHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             KNE = acq.GetPoint("LKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             THI = acq.GetPoint("LTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -496,17 +505,13 @@ class Cgm1ManualOffsets(DecoratorModel):
             # locate AJC    
             ANK = acq.GetPoint("LANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-            if thighoffset ==0 and shankoffset!=0:
-                logging.warning("Special CGM1 case - shank offset disable because of thighoffset equal zero")                    
+            if thighoffset !=0 :
+                AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= -1.*tibialTorsion )
+ 
+            else:                                   
                 TIB = acq.GetPoint("LTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
                 AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
 
-                if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
-                    if self.model.mp.has_key("LeftShankRotation") : self.model.mp["LeftShankRotation"] =0
-                    
-            else:
-                AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= -1.*tibialTorsion )
-                
                 
             # add nodes to referential 
             self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mo",KJC,positionType="Global")  
@@ -515,12 +520,21 @@ class Cgm1ManualOffsets(DecoratorModel):
             self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mo",KJC,positionType="Global") 
             self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_mo",AJC,positionType="Global")
             
-            if thighoffset !=0 and tibialTorsion:
+            # enable tibialTorsion flag
+            if thighoffset !=0 and tibialTorsion !=0:
                 self.model.m_useLeftTibialTorsion=True
         
-     
         
         if side == "right":
+            
+            # zeroing of shankRotation if non-zero
+            if shankoffset!=0:
+                if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+                    if self.model.mp.has_key("RightShankRotation") : 
+                        self.model.mp["RightShankRotation"] = 0
+                        logging.warning("Special CGM1 case - shank offset cancelled")            
+
+            # location of KJC and AJC depends on thighRotation and tibial torsion 
             HJC = acq.GetPoint("RHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             KNE = acq.GetPoint("RKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             THI = acq.GetPoint("RTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -529,26 +543,24 @@ class Cgm1ManualOffsets(DecoratorModel):
 
             # locate AJC            
             ANK = acq.GetPoint("RANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-            if thighoffset ==0 and shankoffset!=0:
-                logging.warning("Special CGM1 case - shank offset disable because of thighoffset equal zero")
+            if thighoffset != 0 :
+                AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
+            else:                
+                
                 TIB = acq.GetPoint("RTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
                 AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
 
-                if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
-                    if self.model.mp.has_key("RightShankRotation") : self.model.mp["RightShankRotation"] =0             
-            else:
-                AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
-                
-                
-            # add nodes to referential 
+                                        
+            # create and add nodes to the technical referential 
             self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mo",KJC,positionType="Global")  
             
             self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_mo",KJC,positionType="Global") 
             self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_mo",AJC,positionType="Global") 
             
-            if thighoffset !=0 and tibialTorsion:
+            # enable tibialTorsion flag    
+            if thighoffset !=0 and tibialTorsion!=0:
                 self.model.m_useRightTibialTorsion=True
+
 
 
 
