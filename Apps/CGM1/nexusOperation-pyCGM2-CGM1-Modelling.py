@@ -95,7 +95,8 @@ if __name__ == "__main__":
         
         # ---Motion filter----    
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                  markerDiameter=markerDiameter)
+                                                  markerDiameter=markerDiameter,
+                                                  viconCGM1compatible=True)
 
         modMotion.compute()
 
