@@ -493,7 +493,7 @@ class Segment(object):
             i+=1
 
         if isFind:
-            logging.warning("marker %s already in the marker segment list" % label)
+            logging.debug("marker %s already in the marker segment list" % label)
 
 
         else:
@@ -516,7 +516,7 @@ class Segment(object):
             i+=1
 
         if isFind:
-            logging.warning("marker %s already in the tracking marker segment list" % label) 
+            logging.debug("marker %s already in the tracking marker segment list" % label) 
 
         else:
             self.m_tracking_markers.append(label)

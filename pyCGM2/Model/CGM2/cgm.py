@@ -2255,18 +2255,18 @@ class CGM1LowerLimbs(CGM):
         """
         if side  == "Left":
             spf = self.mp_computed["LeftStaticPlantFlexOffset"] * -1.0
-            logging.info(" Left staticPlantarFlexion offset (Vicon compatible)  => %s " % str(spf))
+            logging.debug(" Left staticPlantarFlexion offset (Vicon compatible)  => %s " % str(spf))
 
 
             sro = self.mp_computed["LeftStaticRotOffset"] * -1.0
-            logging.info("Left staticRotation offset (Vicon compatible)  => %s " % str(sro))
+            logging.debug("Left staticRotation offset (Vicon compatible)  => %s " % str(sro))
 
         if side  == "Right":
             spf = self.mp_computed["RightStaticPlantFlexOffset"] * -1.0
-            logging.info("Right staticRotation offset (Vicon compatible)  => %s " % str(spf))
+            logging.debug("Right staticRotation offset (Vicon compatible)  => %s " % str(spf))
 
             sro = self.mp_computed["RightStaticRotOffset"]
-            logging.info("Right staticRotation offset (Vicon compatible)  => %s " % str(sro))
+            logging.debug("Right staticRotation offset (Vicon compatible)  => %s " % str(sro))
 
         return spf,sro
 
@@ -2283,12 +2283,12 @@ class CGM1LowerLimbs(CGM):
         """
         if side  == "Left":
             abdAdd = self.mp_computed["LeftAnkleAbAddOffset"] * -1.0
-            logging.info(" Left AnkleAbAddOffset offset (Vicon compatible)  => %s " % str(abdAdd))
+            logging.debug(" Left AnkleAbAddOffset offset (Vicon compatible)  => %s " % str(abdAdd))
 
 
         if side  == "Right":
             abdAdd = self.mp_computed["RightAnkleAbAddOffset"]
-            logging.info(" Right AnkleAbAddOffset offset (Vicon compatible)  => %s " % str(abdAdd))
+            logging.debug(" Right AnkleAbAddOffset offset (Vicon compatible)  => %s " % str(abdAdd))
 
         return abdAdd
 
@@ -2307,12 +2307,12 @@ class CGM1LowerLimbs(CGM):
 
         if side  == "Left":
             val = self.mp_computed["LeftThighRotationOffset"] * -1.0
-            logging.info(" Left thigh offset (Vicon compatible)  => %s " % str(val))
+            logging.debug(" Left thigh offset (Vicon compatible)  => %s " % str(val))
             return val
 
         if side  == "Right":
             val = self.mp_computed["RightThighRotationOffset"]
-            logging.info(" Right thigh offset (Vicon compatible)  => %s " % str(val))
+            logging.debug(" Right thigh offset (Vicon compatible)  => %s " % str(val))
             return val
 
 
@@ -2329,12 +2329,12 @@ class CGM1LowerLimbs(CGM):
 
         if side  == "Left":
             val = self.mp_computed["LeftShankRotationOffset"] * -1.0
-            logging.info(" Left shank offset (Vicon compatible)  => %s " % str(val))
+            logging.debug(" Left shank offset (Vicon compatible)  => %s " % str(val))
             return val
 
         if side  == "Right":
             val = self.mp_computed["RightShankRotationOffset"]
-            logging.info(" Right shank offset (Vicon compatible)  => %s " % str(val))
+            logging.debug(" Right shank offset (Vicon compatible)  => %s " % str(val))
             return val
 
     def getViconTibialTorsion(self, side):
@@ -2350,12 +2350,12 @@ class CGM1LowerLimbs(CGM):
 
         if side  == "Left":
             val = self.mp_computed["LeftTibialTorsionOffset"] * -1.0
-            logging.info(" Left tibial torsion (Vicon compatible)  => %s " % str(val))
+            logging.debug(" Left tibial torsion (Vicon compatible)  => %s " % str(val))
             return val
 
         if side  == "Right":
             val = self.mp_computed["RightTibialTorsionOffset"]
-            logging.info(" Right tibial torsion  (Vicon compatible)  => %s " % str(val))
+            logging.debug(" Right tibial torsion  (Vicon compatible)  => %s " % str(val))
             return val
 
     # ----- Motion --------------
@@ -3969,14 +3969,14 @@ class CGM1LowerLimbs(CGM):
         nexusTools.appendModelledMarkerFromAcq(nexusHandle,vskName,"RKJC", acq)
         nexusTools.appendModelledMarkerFromAcq(nexusHandle,vskName,"LAJC", acq)
         nexusTools.appendModelledMarkerFromAcq(nexusHandle,vskName,"RAJC", acq)
-        logging.info("jc over")
+        logging.debug("jc over")
 
         # export angles
         for it in btk.Iterate(acq.GetPoints()):
             if it.GetType() == btk.btkPoint.Angle:
                 print it.GetLabel()
                 nexusTools.appendAngleFromAcq(nexusHandle,vskName,str(it.GetLabel()), acq)
-        logging.info("angles over")
+        logging.debug("angles over")
         
         # bones
         # -------------
@@ -3986,15 +3986,15 @@ class CGM1LowerLimbs(CGM):
         #nexusTools.appendBones(nexusHandle,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
         nexusTools.appendBones(nexusHandle,vskName,"LTI", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
         nexusTools.appendBones(nexusHandle,vskName,"LFO", self.getSegment("Left Foot"), OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset") )
-        nexusTools.appendBones(nexusHandle,vskName,"LTO", self.getSegment("Left Foot"), OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin") )
+        nexusTools.appendBones(nexusHandle,vskName,"LTO", self.getSegment("Left Foot"), OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0 )
 
         nexusTools.appendBones(nexusHandle,vskName,"RFE", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
         #nexusTools.appendBones(nexusHandle,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
         nexusTools.appendBones(nexusHandle,vskName,"RTI", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
         nexusTools.appendBones(nexusHandle,vskName,"RFO", self.getSegment("Right Foot") , OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset") )
-        nexusTools.appendBones(nexusHandle,vskName,"RTO", self.getSegment("Right Foot") ,  OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"))
+        nexusTools.appendBones(nexusHandle,vskName,"RTO", self.getSegment("Right Foot") ,  OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"), manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0)
         
-        logging.info("bones over")
+        logging.debug("bones over")
         
         if not staticProcessing:
             # export Force
@@ -4002,19 +4002,19 @@ class CGM1LowerLimbs(CGM):
                 if it.GetType() == btk.btkPoint.Force:
                     print it.GetLabel()
                     nexusTools.appendForceFromAcq(nexusHandle,vskName,str(it.GetLabel()), acq)
-            logging.info("force over")
+            logging.debug("force over")
             
             # export Moment
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Moment:
                     print it.GetLabel()
                     nexusTools.appendMomentFromAcq(nexusHandle,vskName,str(it.GetLabel()), acq)
-            logging.info("Moment over")
+            logging.debug("Moment over")
             
             # export Moment
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Power:
                     print it.GetLabel()
                     nexusTools.appendPowerFromAcq(nexusHandle,vskName,str(it.GetLabel()), acq)
-            logging.info("power over")
+            logging.debug("power over")
         
