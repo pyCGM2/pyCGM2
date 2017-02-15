@@ -6,19 +6,19 @@ import pdb
 
 
 
-def appendModelledMarkerFromAcq(nexusHandle,vskName,label, acq):
+def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
 
-    lst = nexusHandle.GetModelOutputNames(vskName)
+    lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
-        nexusHandle.GetModelOutput(vskName, label)
-        logging.info( "marker (%s) already exist" %(label))
+        NEXUS.GetModelOutput(vskName, label)
+        logging.debug( "marker (%s) already exist" %(label))
     else:
-        nexusHandle.CreateModeledMarker(vskName, label)
+        NEXUS.CreateModeledMarker(vskName, label)
 
     values = acq.GetPoint(label).GetValues()
         
-    ff,lf = nexusHandle.GetTrialRange()
-    framecount = nexusHandle.GetFrameCount()
+    ff,lf = NEXUS.GetTrialRange()
+    framecount = NEXUS.GetFrameCount()
 
 
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
@@ -32,24 +32,24 @@ def appendModelledMarkerFromAcq(nexusHandle,vskName,label, acq):
         data[2][i] = values[j,2]
         j+=1
 
-    nexusHandle.SetModelOutput( vskName, label, data, exists )  
+    NEXUS.SetModelOutput( vskName, label, data, exists )  
 
 
 
 
-def appendAngleFromAcq(nexusHandle,vskName,label, acq):
+def appendAngleFromAcq(NEXUS,vskName,label, acq):
 
-    lst = nexusHandle.GetModelOutputNames(vskName)
+    lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
-        nexusHandle.GetModelOutput(vskName, label)
-        logging.info( "angle (%s) already exist" %(label))
+        NEXUS.GetModelOutput(vskName, label)
+        logging.debug( "angle (%s) already exist" %(label))
     else:
-        nexusHandle.CreateModelOutput( vskName, label, "Angles", ["X","Y","Z"], ["Angle","Angle","Angle"])
+        NEXUS.CreateModelOutput( vskName, label, "Angles", ["X","Y","Z"], ["Angle","Angle","Angle"])
 
     values = acq.GetPoint(label).GetValues()
         
-    ff,lf = nexusHandle.GetTrialRange()
-    framecount = nexusHandle.GetFrameCount()
+    ff,lf = NEXUS.GetTrialRange()
+    framecount = NEXUS.GetFrameCount()
 
 
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
@@ -63,23 +63,23 @@ def appendAngleFromAcq(nexusHandle,vskName,label, acq):
         data[2][i] = values[j,2]
         j+=1
 
-    nexusHandle.SetModelOutput( vskName, label, data, exists )  
+    NEXUS.SetModelOutput( vskName, label, data, exists )  
 
 
 
-def appendForceFromAcq(nexusHandle,vskName,label, acq):
+def appendForceFromAcq(NEXUS,vskName,label, acq):
 
-    lst = nexusHandle.GetModelOutputNames(vskName)
+    lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
-        nexusHandle.GetModelOutput(vskName, label)
-        logging.info( "force (%s) already exist" %(label))
+        NEXUS.GetModelOutput(vskName, label)
+        logging.debug( "force (%s) already exist" %(label))
     else:
-        nexusHandle.CreateModelOutput( vskName, label, "Forces", ["X","Y","Z"], ["Force","Force","Force"])
+        NEXUS.CreateModelOutput( vskName, label, "Forces", ["X","Y","Z"], ["Force","Force","Force"])
 
     values = acq.GetPoint(label).GetValues()
         
-    ff,lf = nexusHandle.GetTrialRange()
-    framecount = nexusHandle.GetFrameCount()
+    ff,lf = NEXUS.GetTrialRange()
+    framecount = NEXUS.GetFrameCount()
 
 
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
@@ -93,23 +93,23 @@ def appendForceFromAcq(nexusHandle,vskName,label, acq):
         data[2][i] = values[j,2]
         j+=1
 
-    nexusHandle.SetModelOutput( vskName, label, data, exists )  
+    NEXUS.SetModelOutput( vskName, label, data, exists )  
 
 
 
-def appendMomentFromAcq(nexusHandle,vskName,label, acq):
+def appendMomentFromAcq(NEXUS,vskName,label, acq):
 
-    lst = nexusHandle.GetModelOutputNames(vskName)
+    lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
-        nexusHandle.GetModelOutput(vskName, label)
-        logging.info( "moment (%s) already exist" %(label))
+        NEXUS.GetModelOutput(vskName, label)
+        logging.debug( "moment (%s) already exist" %(label))
     else:
-        nexusHandle.CreateModelOutput( vskName, label, "Moments", ["X","Y","Z"], ["Torque","Torque","Torque"])
+        NEXUS.CreateModelOutput( vskName, label, "Moments", ["X","Y","Z"], ["Torque","Torque","Torque"])
 
     values = acq.GetPoint(label).GetValues()
         
-    ff,lf = nexusHandle.GetTrialRange()
-    framecount = nexusHandle.GetFrameCount()
+    ff,lf = NEXUS.GetTrialRange()
+    framecount = NEXUS.GetFrameCount()
 
 
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
@@ -123,21 +123,21 @@ def appendMomentFromAcq(nexusHandle,vskName,label, acq):
         data[2][i] = values[j,2]
         j+=1
 
-    nexusHandle.SetModelOutput( vskName, label, data, exists )  
+    NEXUS.SetModelOutput( vskName, label, data, exists )  
 
-def appendPowerFromAcq(nexusHandle,vskName,label, acq):
+def appendPowerFromAcq(NEXUS,vskName,label, acq):
 
-    lst = nexusHandle.GetModelOutputNames(vskName)
+    lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
-        nexusHandle.GetModelOutput(vskName, label)
-        logging.info( "power (%s) already exist" %(label))
+        NEXUS.GetModelOutput(vskName, label)
+        logging.debug( "power (%s) already exist" %(label))
     else:
-        nexusHandle.CreateModelOutput( vskName, label, "Powers", ["X","Y","Z"], ["Power","Power","Power"])
+        NEXUS.CreateModelOutput( vskName, label, "Powers", ["X","Y","Z"], ["Power","Power","Power"])
 
     values = acq.GetPoint(label).GetValues()
         
-    ff,lf = nexusHandle.GetTrialRange()
-    framecount = nexusHandle.GetFrameCount()
+    ff,lf = NEXUS.GetTrialRange()
+    framecount = NEXUS.GetFrameCount()
 
 
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
@@ -151,18 +151,18 @@ def appendPowerFromAcq(nexusHandle,vskName,label, acq):
         data[2][i] = values[j,2]
         j+=1
 
-    nexusHandle.SetModelOutput( vskName, label, data, exists )    
+    NEXUS.SetModelOutput( vskName, label, data, exists )    
         
-def appendBones(nexusHandle,vskName,label,segment,OriginValues=None,manualScale=None):
+def appendBones(NEXUS,vskName,label,segment,OriginValues=None,manualScale=None):
     
-    lst = nexusHandle.GetModelOutputNames(vskName)
+    lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
-        nexusHandle.GetModelOutput(vskName, label)
+        NEXUS.GetModelOutput(vskName, label)
     else:
-        nexusHandle.CreateModelOutput( vskName, label, 'Plug-in Gait Bones', ['RX', 'RY', 'RZ', 'TX', 'TY', 'TZ', 'SX', 'SY', 'SZ'], ['Angle', 'Angle', 'Angle', 'Length', 'Length', 'Length', 'Length', 'Length', 'Length'])
+        NEXUS.CreateModelOutput( vskName, label, 'Plug-in Gait Bones', ['RX', 'RY', 'RZ', 'TX', 'TY', 'TZ', 'SX', 'SY', 'SZ'], ['Angle', 'Angle', 'Angle', 'Length', 'Length', 'Length', 'Length', 'Length', 'Length'])
     
-    ff,lf = nexusHandle.GetTrialRange()
-    framecount = nexusHandle.GetFrameCount()
+    ff,lf = NEXUS.GetTrialRange()
+    framecount = NEXUS.GetFrameCount()
     
     
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount))),
@@ -197,6 +197,6 @@ def appendBones(nexusHandle,vskName,label,segment,OriginValues=None,manualScale=
 
         j+=1
 
-    nexusHandle.SetModelOutput( vskName, label, data, exists )      
+    NEXUS.SetModelOutput( vskName, label, data, exists )      
     
    
