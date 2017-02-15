@@ -32,13 +32,13 @@ from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
 from pyCGM2 import viconInterface
 
 def updateNexusSubjectMp(NEXUS,model):
-    th_l = model.getViconThighOffset("Left")
-    sh_l = model.getViconShankOffset("Left")
-    tt_l = model.getViconTibialTorsion("Left")
+    th_l = 0 if model.getViconThighOffset("Left") < 0.000001 else model.getViconThighOffset("Left")
+    sh_l = 0 if model.getViconShankOffset("Left") < 0.000001 else model.getViconShankOffset("Left")
+    tt_l = 0 if model.getViconTibialTorsion("Left") < 0.000001 else model.getViconTibialTorsion("Left")
 
-    th_r = model.getViconThighOffset("Right")
-    sh_r = model.getViconShankOffset("Right")
-    tt_r = model.getViconTibialTorsion("Right")
+    th_r = 0 if model.getViconThighOffset("Right") < 0.000001 else model.getViconThighOffset("Right")
+    sh_r = 0 if model.getViconShankOffset("Right") < 0.000001 else model.getViconShankOffset("Right")
+    tt_r = 0 if model.getViconTibialTorsion("Right") < 0.000001 else model.getViconTibialTorsion("Right")
 
     spf_l,sro_l = model.getViconFootOffset("Left")
     spf_r,sro_r = model.getViconFootOffset("Right")
@@ -46,6 +46,8 @@ def updateNexusSubjectMp(NEXUS,model):
     abdAdd_l = model.getViconAnkleAbAddOffset("Left")
     abdAdd_r = model.getViconAnkleAbAddOffset("Right")
 
+
+    
 
     NEXUS.SetSubjectParam( subject, "InterAsisDistance",model.mp_computed["InterAsisDistance"])
     NEXUS.SetSubjectParam( subject, "LeftAsisTrocanterDistance",model.mp_computed["LeftAsisTrocanterDistance"])
@@ -93,7 +95,7 @@ def checkCGM1_StaticMarkerConfig(acqStatic):
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = False
+    DEBUG = True
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -191,7 +193,7 @@ if __name__ == "__main__":
                                             leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                             markerDiameter=markerDiameter,
                                             ).compute()
-
+        pdb.set_trace()
         # ---- Decorators -----
         # Goal = modified calibration according the identified marker set or if offsets manually set   
  
