@@ -6,24 +6,20 @@ import json
 import pdb
 import cPickle
 import json
-import numpy as np
 
 # pyCGM2 settings
 import pyCGM2
 pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
+
 # vicon nexus
-pyCGM2.CONFIG.addNexusPythonSdk()
 import ViconNexus
 
-
 # openMA
-pyCGM2.CONFIG.addOpenma()
-import ma.io
-import ma.body
+#import ma.io
+#import ma.body
 
 #btk
-pyCGM2.CONFIG.addBtk()
 import btk
 
 
@@ -104,8 +100,9 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # inputs
+        # --------------------------INPUTS ------------------------------------
 
+        # --- acquisition file and path----
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
             calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
@@ -121,26 +118,28 @@ if __name__ == "__main__":
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
 
 
-
+        # ---- pyCGM2 files ----
         if not os.path.isfile( DATA_PATH + "pyCGM2.inputs"):
             raise Exception ("pyCGM2.inputs file doesn't exist")
         else:
             inputs = json.loads(open(DATA_PATH +'pyCGM2.inputs').read())
 
+        # ---- configuration parameters ----
         flag_leftFlatFoot =  bool(inputs["Calibration"]["Left flat foot"])
         flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
         markerDiameter = float(inputs["Calibration"]["Marker diameter"])
         pointSuffix = inputs["Calibration"]["Point suffix"]
 
 
-        # subject mp
+        # --------------------------SUBJECT -----------------------------------
+        # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
         subject =   subjects[0]
         logging.info(  "Subject name : " + subject  )
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
 
-
+        # --- mp data ----
         required_mp={
         'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
         'LeftLegLength' : NEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],#860.0,
@@ -164,51 +163,61 @@ if __name__ == "__main__":
         }
 
 
-        # -----------CGM STATIC CALIBRATION--------------------
+        # --------------------------MODEL--------------------------------------
+
+        # ---definition---
         model=cgm.CGM1LowerLimbs()
         model.configure()
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
-        # btk acquisition
+        # ---btk acquisition---
         acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
 
-        # relabel PIG output if processing previously
+        # ---relabel PIG output if processing previously---
         cgm.CGM.reLabelPigOutputs(acqStatic) 
 
 
-        # check static marker configuration
+        # ---check marker set used----
         staticMarkerConfiguration= checkCGM1_StaticMarkerConfig(acqStatic)
 
 
-        # initial static filter
-        scp=modelFilters.StaticCalibrationProcedure(model)
+        # --------------------------STATIC CALBRATION--------------------------                
+        scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
+        
+        # ---initial calibration filter----
+        # use if all optional mp are zero    
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                             leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                             markerDiameter=markerDiameter,
                                             ).compute()
 
-        # decorators
-        # mettre dans l ordre KAD- AnkleMed Knee med de maniere a ce que le label duu node a utiliser dans la calibration finale soit updater
+        # ---- Decorators -----
+        # Goal = modified calibration according the identified marker set or if offsets manually set   
+ 
 
+
+        # initialisation of node label 
         useLeftKJCnodeLabel = "LKJC_chord"
         useLeftAJCnodeLabel = "LAJC_chord"
         useRightKJCnodeLabel = "RKJC_chord"
         useRightAJCnodeLabel = "RAJC_chord"
 
-        
+        # case 1 : NO kad, NO medial ankle BUT thighRotation different from zero ( mean manual modification or new calibration from a previous one )
+        #   This 
         if not staticMarkerConfiguration["leftKadFlag"]  and not staticMarkerConfiguration["leftMedialAnkleFlag"] and not staticMarkerConfiguration["leftMedialKneeFlag"] and optional_mp["LeftThighRotation"] !=0:
             logging.info("Left Side - CGM1 - Origine - manual offsets")            
             modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],markerDiameter,optional_mp["LeftTibialTorsion"],optional_mp["LeftShankRotation"])
             useLeftKJCnodeLabel = "LKJC_mo"
             useLeftAJCnodeLabel = "LAJC_mo"
        
+
         if not staticMarkerConfiguration["rightKadFlag"]  and not staticMarkerConfiguration["rightMedialAnkleFlag"] and not staticMarkerConfiguration["rightMedialKneeFlag"] and optional_mp["RightThighRotation"] !=0:
             logging.info("Right Side - CGM1 - Origine - manual offsets")            
             modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
             useRightKJCnodeLabel = "RKJC_mo"
             useRightAJCnodeLabel = "RAJC_mo"
 
-
+        # case 2 : kad FOUND and NO medial Ankle 
         if staticMarkerConfiguration["leftKadFlag"]:
             logging.info("Left Side - CGM1 - KAD variant")
             modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left", displayMarkers = False)
@@ -220,6 +229,7 @@ if __name__ == "__main__":
             useRightKJCnodeLabel = "RKJC_kad"
             useRightAJCnodeLabel = "RAJC_kad"
         
+        # case 3 : both kad and medial ankle FOUND 
         if staticMarkerConfiguration["leftKadFlag"]:
             if staticMarkerConfiguration["leftMedialAnkleFlag"]:
                 logging.info("Left Side - CGM1 - KAD + medial ankle ")
@@ -233,7 +243,7 @@ if __name__ == "__main__":
                 modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
                 useRightAJCnodeLabel = "RAJC_mid"
 
-
+        # ----Final Calibration filter if model previously decorated ----- 
         if model.decoratedModel:
             # initial static filter
             modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
@@ -242,24 +252,30 @@ if __name__ == "__main__":
                                markerDiameter=markerDiameter).compute()
 
         
-        #----update optional_mp inside the vsk ( mean vsk)-----
+        #----update subject mp----
         updateNexusSubjectMp(NEXUS,model)
 
 
 
-        # -----------CGM RECONSTRUCTION--------------------
+        # ----------------------CGM MODELLING----------------------------------
+        # ----motion filter----
+        # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system         
+    
         modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
                                                   markerDiameter=markerDiameter,
-                                                  viconCGM1compatible=True,
-                                                  useForMotionTest=True)
+                                                  viconCGM1compatible=True)
 
         modMotion.compute()
 
 
-#        # Joint kinematics
+        #---- Joint kinematics----
+        # relative angles
         modelFilters.ModelJCSFilter(model,acqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
+        # detection of traveling axis
         longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqStatic,"SACR","midASIS","LPSI")
+
+        # absolute angles
         modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
                                                segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                                 angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -268,20 +284,23 @@ if __name__ == "__main__":
 
         
 
-        # save pycgm2.model
+        # ----------------------SAVE-------------------------------------------
         modelFile = open(DATA_PATH + "pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
 
-        logging.info( "EXPORT VICON")
+        # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,
                                       model,acqStatic,subject,
                                       staticProcessing=True).run()
 
+        # ========END of the nexus OPERATION if run from Nexus  =========
+
+
         if DEBUG:
             NEXUS.SaveTrial(30)
 
-        
+            # code below is similar to operation "nexusOperation_pyCGM2-CGM1-metadata.py"        
             # add metadata
             acqStatic2= btkTools.smartReader(str(DATA_PATH + calibrateFilenameLabelled))
             md_Model = btk.btkMetaData('MODEL') # create main metadata
@@ -295,4 +314,4 @@ if __name__ == "__main__":
 
 
     else:
-        print "NO Nexus"
+        raise Exception("NO Nexus connection. Turn on Nexus")

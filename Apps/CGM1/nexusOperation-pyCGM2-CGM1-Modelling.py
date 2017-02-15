@@ -7,7 +7,7 @@ import json
 import pdb
 import cPickle
 import json
-import numpy as np
+
 
 # pyCGM2 settings
 import pyCGM2
@@ -17,7 +17,6 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # openMA
-#pyCGM2.CONFIG.addOpenma()
 #import ma.io
 #import ma.body
 
@@ -45,7 +44,8 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # inputs
+        # ----------------------INPUTS-------------------------------------------
+        # --- acquisition file and path----
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\New Session 3\\"
             reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 12"
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ reconstructFilenameLabelled)
 
-
+        # ---- pyCGM2 files ----
         if not os.path.isfile(DATA_PATH + "pyCGM2.model"):
             raise Exception ("pyCGM2.model file doesn't exist. Run Calibration operation")
         else:
@@ -72,52 +72,60 @@ if __name__ == "__main__":
         else:
             inputs = json.loads(open(DATA_PATH + 'pyCGM2.inputs').read())
 
-
+        # ---- configuration parameters ----
         markerDiameter = float(inputs["Calibration"]["Marker diameter"])
         pointSuffix = inputs["Calibration"]["Point suffix"]
 
-        # subject mp
+        # --------------------------SUBJECT -----------------------------------
         subjects = NEXUS.GetSubjectNames()
         subject =   subjects[0]
         logging.info(  "Subject name : " + subject  )
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
 
-        # btk acquisition
+        # --------------------------MODELLLING--------------------------
+        # --- btk acquisition ----
         acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
-        # relabel PIG output if processing previously
+        # --relabel PIG output if processing previously---
         cgm.CGM.reLabelPigOutputs(acqGait)
 
-        scp=modelFilters.StaticCalibrationProcedure(model)
+
+        scp=modelFilters.StaticCalibrationProcedure(model) # procedure
+        
+        # ---Motion filter----    
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
                                                   markerDiameter=markerDiameter)
 
         modMotion.compute()
 
 
-        # Joint kinematics
+        #---- Joint kinematics----
+        # relative angles
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
-#
+
+        # detection of traveling axis
         longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
+        # absolute angles        
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                                segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                                 angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
                                                 globalFrameOrientation = globalFrame,
                                                 forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-        # BSP model
+        #---- Body segment parameters----
         bspModel = bodySegmentParameters.Bsp(model)
         bspModel.compute()
 
-        # force plate -- construction du wrench attribue au pied
-        forceplates.appendForcePlateCornerAsMarker(acqGait)
+        # --- force plate handling----
+        # find foot  in contact        
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        # assembly foot and force plate        
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",
                                  rightSegmentLabel="Right Foot").compute()
 
-        # Joint kinetics
+        #---- Joint kinetics----
         idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
         modelFilters.InverseDynamicFilter(model,
                              acqGait,
@@ -125,29 +133,29 @@ if __name__ == "__main__":
                              projection = pyCGM2Enums.MomentProjection.Distal
                              ).compute(pointLabelSuffix=pointSuffix)
 
-
+        #---- Joint energetics----
         modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
-
-
-        # ---- VICON UI Interface----
+        # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,model,acqGait,subject).run()
+
+        # ========END of the nexus OPERATION if run from Nexus  =========
 
         if DEBUG:
 
-            # ---- SAVE----
             NEXUS.SaveTrial(30)
     
-            # ---- addMetadata----
+            # code below is similar to operation "nexusOperation_pyCGM2-CGM1-metadata.py"        
+            # add metadata
             acqGait2= btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
             md_Model = btk.btkMetaData('MODEL') # create main metadata
             btk.btkMetaDataCreateChild(md_Model, "NAME", "CGM1")
             btk.btkMetaDataCreateChild(md_Model, "PROCESSOR", "pyCGM2")
             acqGait2.GetMetaData().AppendChild(md_Model)
     
-    #         writer
+            #writer
             btkTools.smartWriter(acqGait2,str(DATA_PATH + reconstructFilenameLabelled[:-4] + ".c3d"))
 
 
     else:
-        print "NO Nexus"
+        raise Exception("NO Nexus connection. Turn on Nexus")
