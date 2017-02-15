@@ -35,6 +35,44 @@ from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
 
 from pyCGM2 import viconInterface
 
+def updateNexusSubjectMp(NEXUS,model):
+    th_l = model.getViconThighOffset("Left")
+    sh_l = model.getViconShankOffset("Left")
+    tt_l = model.getViconTibialTorsion("Left")
+
+    th_r = model.getViconThighOffset("Right")
+    sh_r = model.getViconShankOffset("Right")
+    tt_r = model.getViconTibialTorsion("Right")
+
+    spf_l,sro_l = model.getViconFootOffset("Left")
+    spf_r,sro_r = model.getViconFootOffset("Right")
+
+    abdAdd_l = model.getViconAnkleAbAddOffset("Left")
+    abdAdd_r = model.getViconAnkleAbAddOffset("Right")
+
+
+    NEXUS.SetSubjectParam( subject, "InterAsisDistance",model.mp_computed["InterAsisDistance"])
+    NEXUS.SetSubjectParam( subject, "LeftAsisTrocanterDistance",model.mp_computed["LeftAsisTrocanterDistance"])
+    NEXUS.SetSubjectParam( subject, "LeftThighRotation",th_l)
+    NEXUS.SetSubjectParam( subject, "LeftShankRotation",sh_l)
+    NEXUS.SetSubjectParam( subject, "LeftTibialTorsion",tt_l)
+
+
+    NEXUS.SetSubjectParam( subject, "RightAsisTrocanterDistance",model.mp_computed["RightAsisTrocanterDistance"])
+    NEXUS.SetSubjectParam( subject, "RightThighRotation",th_r)
+    NEXUS.SetSubjectParam( subject, "RightShankRotation",sh_r)
+    NEXUS.SetSubjectParam( subject, "RightTibialTorsion",tt_r)
+
+
+    NEXUS.SetSubjectParam( subject, "LeftStaticPlantFlex",spf_l)
+    NEXUS.SetSubjectParam( subject, "LeftStaticRotOff",sro_l)
+    NEXUS.SetSubjectParam( subject, "LeftAnkleAbAdd",abdAdd_l)
+
+    NEXUS.SetSubjectParam( subject, "RightStaticPlantFlex",spf_r)
+    NEXUS.SetSubjectParam( subject, "RightStaticRotOff",sro_r)
+    NEXUS.SetSubjectParam( subject, "RightAnkleAbAdd",abdAdd_r)
+
+
 def checkCGM1_StaticMarkerConfig(acqStatic):
 
     out = dict()
@@ -55,19 +93,14 @@ def checkCGM1_StaticMarkerConfig(acqStatic):
     return out
 
 
-
-
 if __name__ == "__main__":
 
     plt.close("all")
     DEBUG = False
 
-    pyNEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = pyNEXUS.Client.IsConnected()
+    NEXUS = ViconNexus.ViconNexus()
+    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-    print NEXUS_PYTHON_CONNECTED
-
-    #NEXUS_PYTHON_CONNECTED = True
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
@@ -76,11 +109,11 @@ if __name__ == "__main__":
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
             calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
-            pyNEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
+            da,pa = NEXUS.GetTrialName()
+            NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
-            DATA_PATH, calibrateFilenameLabelledNoExt = pyNEXUS.GetTrialName()
-
+            DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
 
@@ -101,33 +134,33 @@ if __name__ == "__main__":
 
 
         # subject mp
-        subjects = pyNEXUS.GetSubjectNames()
+        subjects = NEXUS.GetSubjectNames()
         subject =   subjects[0]
         logging.info(  "Subject name : " + subject  )
-        Parameters = pyNEXUS.GetSubjectParamNames(subject)
+        Parameters = NEXUS.GetSubjectParamNames(subject)
 
 
 
         required_mp={
-        'Bodymass'   : pyNEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
-        'LeftLegLength' : pyNEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],#860.0,
-        'RightLegLength' : pyNEXUS.GetSubjectParamDetails( subject, "RightLegLength")[0],#865.0 ,
-        'LeftKneeWidth' : pyNEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0],#102.0,
-        'RightKneeWidth' : pyNEXUS.GetSubjectParamDetails( subject, "RightKneeWidth")[0],#103.4,
-        'LeftAnkleWidth' : pyNEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0],#75.3,
-        'RightAnkleWidth' : pyNEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],#72.9,
+        'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
+        'LeftLegLength' : NEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],#860.0,
+        'RightLegLength' : NEXUS.GetSubjectParamDetails( subject, "RightLegLength")[0],#865.0 ,
+        'LeftKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0],#102.0,
+        'RightKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "RightKneeWidth")[0],#103.4,
+        'LeftAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0],#75.3,
+        'RightAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],#72.9,
         }
 
         optional_mp={
-        'InterAsisDistance'   : pyNEXUS.GetSubjectParamDetails( subject, "InterAsisDistance")[0],#0,
-        'LeftAsisTrocanterDistance' : pyNEXUS.GetSubjectParamDetails( subject, "LeftAsisTrocanterDistance")[0],#0,
-        'LeftTibialTorsion' : pyNEXUS.GetSubjectParamDetails( subject, "LeftTibialTorsion")[0],#0 ,
-        'LeftThighRotation' : pyNEXUS.GetSubjectParamDetails( subject, "LeftThighRotation")[0],#0,
-        'LeftShankRotation' : pyNEXUS.GetSubjectParamDetails( subject, "LeftShankRotation")[0],#0,
-        'RightAsisTrocanterDistance' : pyNEXUS.GetSubjectParamDetails( subject, "RightAsisTrocanterDistance")[0],#0,
-        'RightTibialTorsion' : pyNEXUS.GetSubjectParamDetails( subject, "RightTibialTorsion")[0],#0 ,
-        'RightThighRotation' : pyNEXUS.GetSubjectParamDetails( subject, "RightThighRotation")[0],#0,
-        'RightShankRotation' : pyNEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
+        'InterAsisDistance'   : NEXUS.GetSubjectParamDetails( subject, "InterAsisDistance")[0],#0,
+        'LeftAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "LeftAsisTrocanterDistance")[0],#0,
+        'LeftTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "LeftTibialTorsion")[0],#0 ,
+        'LeftThighRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftThighRotation")[0],#0,
+        'LeftShankRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftShankRotation")[0],#0,
+        'RightAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "RightAsisTrocanterDistance")[0],#0,
+        'RightTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "RightTibialTorsion")[0],#0 ,
+        'RightThighRotation' : NEXUS.GetSubjectParamDetails( subject, "RightThighRotation")[0],#0,
+        'RightShankRotation' : NEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
         }
 
 
@@ -162,30 +195,44 @@ if __name__ == "__main__":
         useRightKJCnodeLabel = "RKJC_chord"
         useRightAJCnodeLabel = "RAJC_chord"
 
+        
+        if not staticMarkerConfiguration["leftKadFlag"]  and not staticMarkerConfiguration["leftMedialAnkleFlag"] and not staticMarkerConfiguration["leftMedialKneeFlag"] and optional_mp["LeftThighRotation"] !=0:
+            logging.info("Left Side - CGM1 - Origine - manual offsets")            
+            modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],markerDiameter,optional_mp["LeftTibialTorsion"],optional_mp["LeftShankRotation"])
+            useLeftKJCnodeLabel = "LKJC_mo"
+            useLeftAJCnodeLabel = "LAJC_mo"
+       
+        if not staticMarkerConfiguration["rightKadFlag"]  and not staticMarkerConfiguration["rightMedialAnkleFlag"] and not staticMarkerConfiguration["rightMedialKneeFlag"] and optional_mp["RightThighRotation"] !=0:
+            logging.info("Right Side - CGM1 - Origine - manual offsets")            
+            modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
+            useRightKJCnodeLabel = "RKJC_mo"
+            useRightAJCnodeLabel = "RAJC_mo"
+
+
         if staticMarkerConfiguration["leftKadFlag"]:
+            logging.info("Left Side - CGM1 - KAD variant")
             modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left", displayMarkers = False)
             useLeftKJCnodeLabel = "LKJC_kad"
             useLeftAJCnodeLabel = "LAJC_kad"
         if staticMarkerConfiguration["rightKadFlag"]:
+            logging.info("Right Side - CGM1 - KAD variant")
             modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right", displayMarkers = False)
             useRightKJCnodeLabel = "RKJC_kad"
             useRightAJCnodeLabel = "RAJC_kad"
+        
+        if staticMarkerConfiguration["leftKadFlag"]:
+            if staticMarkerConfiguration["leftMedialAnkleFlag"]:
+                logging.info("Left Side - CGM1 - KAD + medial ankle ")
+                modelDecorator.AnkstaticConfigurationleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
+                useLeftAJCnodeLabel = "LAJC_mid"
 
-        if staticMarkerConfiguration["leftMedialAnkleFlag"]:
-            modelDecorator.AnkstaticConfigurationleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
-            useLeftAJCnodeLabel = "LAJC_mid"
-        if staticMarkerConfiguration["rightMedialAnkleFlag"]:
-            modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
-            useRightAJCnodeLabel = "RAJC_mid"
+        if staticMarkerConfiguration["rightKadFlag"]:
 
-        if staticMarkerConfiguration["leftMedialKneeFlag"]:
-            modelDecorator.KmodelFiltersneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="left")
-            useLeftKJCnodeLabel = "LKJC_mid"
+            if staticMarkerConfiguration["rightMedialAnkleFlag"]:
+                logging.info("Right Side - CGM1 - KAD + medial ankle ")
+                modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
+                useRightAJCnodeLabel = "RAJC_mid"
 
-
-        if staticMarkerConfiguration["rightMedialKneeFlag"]:
-            modelDecorator.AnkleCalibrationDecorator(model).mpyCGM2.inputsidCondyles(acqStatic, markerDiameter=markerDiameter, side="right")
-            useRightKJCnodeLabel = "RKJC_mid"
 
         if model.decoratedModel:
             # initial static filter
@@ -194,50 +241,16 @@ if __name__ == "__main__":
                                useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
                                markerDiameter=markerDiameter).compute()
 
-
+        
         #----update optional_mp inside the vsk ( mean vsk)-----
-
-        th_l = model.getViconThighOffset("Left")
-        sh_l = model.getViconShankOffset("Left")
-        tt_l = model.getViconTibialTorsion("Left")
-
-        th_r = model.getViconThighOffset("Right")
-        sh_r = model.getViconShankOffset("Right")
-        tt_r = model.getViconTibialTorsion("Right")
-
-        spf_l,sro_l = model.getViconFootOffset("Left")
-        spf_r,sro_r = model.getViconFootOffset("Right")
-
-        abdAdd_l = model.getViconAnkleAbAddOffset("Left")
-        abdAdd_r = model.getViconAnkleAbAddOffset("Right")
-
-
-        pyNEXUS.SetSubjectParam( subject, "InterAsisDistance",model.mp_computed["InterAsisDistance"])
-        pyNEXUS.SetSubjectParam( subject, "LeftAsisTrocanterDistance",model.mp_computed["LeftAsisTrocanterDistance"])
-        pyNEXUS.SetSubjectParam( subject, "LeftThighRotation",th_l)
-        pyNEXUS.SetSubjectParam( subject, "LeftShankRotation",sh_l)
-        pyNEXUS.SetSubjectParam( subject, "LeftTibialTorsion",tt_l)
-
-
-        pyNEXUS.SetSubjectParam( subject, "RightAsisTrocanterDistance",model.mp_computed["RightAsisTrocanterDistance"])
-        pyNEXUS.SetSubjectParam( subject, "RightThighRotation",th_r)
-        pyNEXUS.SetSubjectParam( subject, "RightShankRotation",sh_r)
-        pyNEXUS.SetSubjectParam( subject, "RightTibialTorsion",tt_r)
-
-
-        pyNEXUS.SetSubjectParam( subject, "LeftStaticPlantFlex",spf_l)
-        pyNEXUS.SetSubjectParam( subject, "LeftStaticRotOff",sro_l)
-        pyNEXUS.SetSubjectParam( subject, "LeftAnkleAbAdd",abdAdd_l)
-
-        pyNEXUS.SetSubjectParam( subject, "RightStaticPlantFlex",spf_r)
-        pyNEXUS.SetSubjectParam( subject, "RightStaticRotOff",sro_r)
-        pyNEXUS.SetSubjectParam( subject, "RightAnkleAbAdd",abdAdd_r)
+        updateNexusSubjectMp(NEXUS,model)
 
 
 
         # -----------CGM RECONSTRUCTION--------------------
         modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
                                                   markerDiameter=markerDiameter,
+                                                  viconCGM1compatible=True,
                                                   useForMotionTest=True)
 
         modMotion.compute()
@@ -261,12 +274,12 @@ if __name__ == "__main__":
         modelFile.close()
 
         logging.info( "EXPORT VICON")
-        viconInterface.ViconInterface(pyNEXUS,
+        viconInterface.ViconInterface(NEXUS,
                                       model,acqStatic,subject,
                                       staticProcessing=True).run()
 
         if DEBUG:
-            pyNEXUS.SaveTrial(30)
+            NEXUS.SaveTrial(30)
 
         
             # add metadata

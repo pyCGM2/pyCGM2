@@ -39,12 +39,9 @@ if __name__ == "__main__":
 
     DEBUG = False
 
-    pyNEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = pyNEXUS.Client.IsConnected()
+    NEXUS = ViconNexus.ViconNexus()
+    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-    print NEXUS_PYTHON_CONNECTED
-
-    #NEXUS_PYTHON_CONNECTED = True
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
@@ -52,10 +49,10 @@ if __name__ == "__main__":
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\New Session 3\\"
             reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 12"
-            pyNEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
+            NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
         else:
-            DATA_PATH, reconstructFilenameLabelledNoExt = pyNEXUS.GetTrialName()
+            DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
 
@@ -80,10 +77,10 @@ if __name__ == "__main__":
         pointSuffix = inputs["Calibration"]["Point suffix"]
 
         # subject mp
-        subjects = pyNEXUS.GetSubjectNames()
+        subjects = NEXUS.GetSubjectNames()
         subject =   subjects[0]
         logging.info(  "Subject name : " + subject  )
-        Parameters = pyNEXUS.GetSubjectParamNames(subject)
+        Parameters = NEXUS.GetSubjectParamNames(subject)
 
 
         # btk acquisition
@@ -134,12 +131,12 @@ if __name__ == "__main__":
 
 
         # ---- VICON UI Interface----
-        viconInterface.ViconInterface(pyNEXUS,model,acqGait,subject).run()
+        viconInterface.ViconInterface(NEXUS,model,acqGait,subject).run()
 
         if DEBUG:
 
             # ---- SAVE----
-            pyNEXUS.SaveTrial(30)
+            NEXUS.SaveTrial(30)
     
             # ---- addMetadata----
             acqGait2= btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
