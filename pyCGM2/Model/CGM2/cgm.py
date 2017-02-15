@@ -3960,39 +3960,38 @@ class CGM1LowerLimbs(CGM):
         return valuesF,valuesM
 
     # ----- vicon API -------
-    def viconExport(self,nexusHandle,acq,vskName, staticProcessing):
+    def viconExport(self,NEXUS,acq,vskName, staticProcessing):
 
          # export JC
-        nexusTools.appendModelledMarkerFromAcq(nexusHandle,vskName,"LHJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(nexusHandle,vskName,"RHJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(nexusHandle,vskName,"LKJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(nexusHandle,vskName,"RKJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(nexusHandle,vskName,"LAJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(nexusHandle,vskName,"RAJC", acq)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHJC", acq)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKJC", acq)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq)
         logging.debug("jc over")
 
         # export angles
         for it in btk.Iterate(acq.GetPoints()):
             if it.GetType() == btk.btkPoint.Angle:
-                print it.GetLabel()
-                nexusTools.appendAngleFromAcq(nexusHandle,vskName,str(it.GetLabel()), acq)
+                nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
         logging.debug("angles over")
         
         # bones
         # -------------
-        nexusTools.appendBones(nexusHandle,vskName,"PEL", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,"PEL", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() )
 
-        nexusTools.appendBones(nexusHandle,vskName,"LFE", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
-        #nexusTools.appendBones(nexusHandle,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
-        nexusTools.appendBones(nexusHandle,vskName,"LTI", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
-        nexusTools.appendBones(nexusHandle,vskName,"LFO", self.getSegment("Left Foot"), OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset") )
-        nexusTools.appendBones(nexusHandle,vskName,"LTO", self.getSegment("Left Foot"), OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0 )
+        nexusTools.appendBones(NEXUS,vskName,"LFE", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
+        #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
+        nexusTools.appendBones(NEXUS,vskName,"LTI", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,"LFO", self.getSegment("Left Foot"), OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset") )
+        nexusTools.appendBones(NEXUS,vskName,"LTO", self.getSegment("Left Foot"), OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0 )
 
-        nexusTools.appendBones(nexusHandle,vskName,"RFE", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
-        #nexusTools.appendBones(nexusHandle,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
-        nexusTools.appendBones(nexusHandle,vskName,"RTI", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
-        nexusTools.appendBones(nexusHandle,vskName,"RFO", self.getSegment("Right Foot") , OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset") )
-        nexusTools.appendBones(nexusHandle,vskName,"RTO", self.getSegment("Right Foot") ,  OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"), manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0)
+        nexusTools.appendBones(NEXUS,vskName,"RFE", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
+        #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
+        nexusTools.appendBones(NEXUS,vskName,"RTI", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,"RFO", self.getSegment("Right Foot") , OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset") )
+        nexusTools.appendBones(NEXUS,vskName,"RTO", self.getSegment("Right Foot") ,  OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"), manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0)
         
         logging.debug("bones over")
         
@@ -4000,21 +3999,18 @@ class CGM1LowerLimbs(CGM):
             # export Force
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Force:
-                    print it.GetLabel()
-                    nexusTools.appendForceFromAcq(nexusHandle,vskName,str(it.GetLabel()), acq)
+                    nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
             logging.debug("force over")
             
             # export Moment
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Moment:
-                    print it.GetLabel()
-                    nexusTools.appendMomentFromAcq(nexusHandle,vskName,str(it.GetLabel()), acq)
+                    nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
             logging.debug("Moment over")
             
             # export Moment
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Power:
-                    print it.GetLabel()
-                    nexusTools.appendPowerFromAcq(nexusHandle,vskName,str(it.GetLabel()), acq)
+                    nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
             logging.debug("power over")
         
