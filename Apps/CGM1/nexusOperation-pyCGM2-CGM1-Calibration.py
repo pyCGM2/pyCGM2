@@ -95,7 +95,7 @@ def checkCGM1_StaticMarkerConfig(acqStatic):
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = True
+    DEBUG = False
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -193,7 +193,6 @@ if __name__ == "__main__":
                                             leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                             markerDiameter=markerDiameter,
                                             ).compute()
-        pdb.set_trace()
         # ---- Decorators -----
         # Goal = modified calibration according the identified marker set or if offsets manually set   
  
@@ -208,26 +207,26 @@ if __name__ == "__main__":
         # case 1 : NO kad, NO medial ankle BUT thighRotation different from zero ( mean manual modification or new calibration from a previous one )
         #   This 
         if not staticMarkerConfiguration["leftKadFlag"]  and not staticMarkerConfiguration["leftMedialAnkleFlag"] and not staticMarkerConfiguration["leftMedialKneeFlag"] and optional_mp["LeftThighRotation"] !=0:
-            logging.info("Left Side - CGM1 - Origine - manual offsets")            
+            logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")            
             modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],markerDiameter,optional_mp["LeftTibialTorsion"],optional_mp["LeftShankRotation"])
             useLeftKJCnodeLabel = "LKJC_mo"
             useLeftAJCnodeLabel = "LAJC_mo"
        
 
         if not staticMarkerConfiguration["rightKadFlag"]  and not staticMarkerConfiguration["rightMedialAnkleFlag"] and not staticMarkerConfiguration["rightMedialKneeFlag"] and optional_mp["RightThighRotation"] !=0:
-            logging.info("Right Side - CGM1 - Origine - manual offsets")            
+            logging.warning("CASE FOUND ===> Right Side - CGM1 - Origine - manual offsets")            
             modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
             useRightKJCnodeLabel = "RKJC_mo"
             useRightAJCnodeLabel = "RAJC_mo"
 
         # case 2 : kad FOUND and NO medial Ankle 
         if staticMarkerConfiguration["leftKadFlag"]:
-            logging.info("Left Side - CGM1 - KAD variant")
+            logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD variant")
             modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left", displayMarkers = False)
             useLeftKJCnodeLabel = "LKJC_kad"
             useLeftAJCnodeLabel = "LAJC_kad"
         if staticMarkerConfiguration["rightKadFlag"]:
-            logging.info("Right Side - CGM1 - KAD variant")
+            logging.warning("CASE FOUND ===> Right Side - CGM1 - KAD variant")
             modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right", displayMarkers = False)
             useRightKJCnodeLabel = "RKJC_kad"
             useRightAJCnodeLabel = "RAJC_kad"
@@ -235,14 +234,13 @@ if __name__ == "__main__":
         # case 3 : both kad and medial ankle FOUND 
         if staticMarkerConfiguration["leftKadFlag"]:
             if staticMarkerConfiguration["leftMedialAnkleFlag"]:
-                logging.info("Left Side - CGM1 - KAD + medial ankle ")
+                logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD + medial ankle ")
                 modelDecorator.AnkstaticConfigurationleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
                 useLeftAJCnodeLabel = "LAJC_mid"
 
         if staticMarkerConfiguration["rightKadFlag"]:
-
             if staticMarkerConfiguration["rightMedialAnkleFlag"]:
-                logging.info("Right Side - CGM1 - KAD + medial ankle ")
+                logging.warning("CASE FOUND ===> Right Side - CGM1 - KAD + medial ankle ")
                 modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
                 useRightAJCnodeLabel = "RAJC_mid"
 

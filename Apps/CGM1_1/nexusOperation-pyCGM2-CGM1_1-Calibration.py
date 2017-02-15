@@ -203,26 +203,25 @@ if __name__ == "__main__":
         useRightAJCnodeLabel = "RAJC_chord"
 
         # case 1 : NO kad, NO medial ankle BUT thighRotation different from zero ( mean manual modification or new calibration from a previous one )
-        #   This 
         if not staticMarkerConfiguration["leftKadFlag"]  and not staticMarkerConfiguration["leftMedialAnkleFlag"] and not staticMarkerConfiguration["leftMedialKneeFlag"] and optional_mp["LeftThighRotation"] !=0:
-            logging.info("Left Side - CGM1 - Origine - manual offsets")            
+            logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")            
             modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],markerDiameter,optional_mp["LeftTibialTorsion"],optional_mp["LeftShankRotation"])
             useLeftKJCnodeLabel = "LKJC_mo"
             useLeftAJCnodeLabel = "LAJC_mo"
         if not staticMarkerConfiguration["rightKadFlag"]  and not staticMarkerConfiguration["rightMedialAnkleFlag"] and not staticMarkerConfiguration["rightMedialKneeFlag"] and optional_mp["RightThighRotation"] !=0:
-            logging.info("Right Side - CGM1 - Origine - manual offsets")            
+            logging.warning("CASE FOUND ===> Right Side - CGM1 - Origine - manual offsets")            
             modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
             useRightKJCnodeLabel = "RKJC_mo"
             useRightAJCnodeLabel = "RAJC_mo"
 
         # case 2 : kad FOUND and NO medial Ankle 
         if staticMarkerConfiguration["leftKadFlag"]:
-            logging.info("Left Side - CGM1 - KAD variant")
+            logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD variant")
             modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left", displayMarkers = False)
             useLeftKJCnodeLabel = "LKJC_kad"
             useLeftAJCnodeLabel = "LAJC_kad"
         if staticMarkerConfiguration["rightKadFlag"]:
-            logging.info("Right Side - CGM1 - KAD variant")
+            logging.warning("CASE FOUND ===> Right Side - CGM1 - KAD variant")
             modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right", displayMarkers = False)
             useRightKJCnodeLabel = "RKJC_kad"
             useRightAJCnodeLabel = "RAJC_kad"
@@ -230,26 +229,22 @@ if __name__ == "__main__":
 
         # case 3 : medial knee FOUND 
         if staticMarkerConfiguration["leftMedialKneeFlag"]:
-            logging.info("Left Side - CGM1 - medial knee ")
+            logging.warning("CASE FOUND ===> Left Side - CGM1 - medial knee ")
             modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="left")
             useLeftKJCnodeLabel = "LKJC_mid"
-
-
         if staticMarkerConfiguration["rightMedialKneeFlag"]:
-            logging.info("Right Side - CGM1 - medial knee ")
+            logging.warning("CASE FOUND ===> Right Side - CGM1 - medial knee ")
             modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="right")
             useRightKJCnodeLabel = "RKJC_mid"
 
 
         # case 4 : medial ankle FOUND 
         if staticMarkerConfiguration["leftMedialAnkleFlag"]:
-            logging.info("Left Side - CGM1 - medial ankle ")
+            logging.warning("CASE FOUND ===> Left Side - CGM1 - medial ankle ")
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
             useLeftAJCnodeLabel = "LAJC_mid"
-
-
         if staticMarkerConfiguration["rightMedialAnkleFlag"]:
-            logging.info("Right Side - CGM1 - medial ankle ")
+            logging.warning("CASE FOUND ===> Right Side - CGM1 - medial ankle ")
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
             useRightAJCnodeLabel = "RAJC_mid"
 
