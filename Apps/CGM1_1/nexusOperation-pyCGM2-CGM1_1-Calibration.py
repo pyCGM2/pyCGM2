@@ -275,8 +275,7 @@ if __name__ == "__main__":
         # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system         
     
         modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
-                                                  markerDiameter=markerDiameter,
-                                                  viconCGM1compatible=True)
+                                                  markerDiameter=markerDiameter)
 
         modMotion.compute()
 
