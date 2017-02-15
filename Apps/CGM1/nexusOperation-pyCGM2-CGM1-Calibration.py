@@ -74,12 +74,12 @@ def checkCGM1_StaticMarkerConfig(acqStatic):
     out = dict()
 
     # medial ankle markers
-    out["leftMedialAnkleFlag"] = True if btkTools.isPointExist(acqStatic,"LMED") else False
-    out["rightMedialAnkleFlag"] = True if btkTools.isPointExist(acqStatic,"RMED") else False
+    out["leftMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["LMED","LANK"]) else False
+    out["rightMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["RMED","RANK"]) else False
 
-    # medial ankle markers
-    out["leftMedialKneeFlag"] = True if btkTools.isPointExist(acqStatic,"LMEPI") else False
-    out["rightMedialKneeFlag"] = True if btkTools.isPointExist(acqStatic,"RMEPI") else False
+    # medial knee markers
+    out["leftMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["LMEPI","LKNE"]) else False
+    out["rightMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["RMEPI","RKNE"]) else False
 
 
     # kad
@@ -87,6 +87,7 @@ def checkCGM1_StaticMarkerConfig(acqStatic):
     out["rightKadFlag"] = True if btkTools.isPointsExist(acqStatic,["RKAX","RKD1","RKD2"]) else False
 
     return out
+
 
 
 if __name__ == "__main__":
