@@ -686,7 +686,9 @@ class KneeCalibrationDecorator(DecoratorModel):
         
         
         
-    def midCondyles(self,acq, side="both",leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LMEPI",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RMEPI", markerDiameter = 14, withNoModelParameter=False):   
+    def midCondyles(self,acq, side="both",
+                    leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LMEPI",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RMEPI", 
+                    markerDiameter = 14, withNoModelParameter=False, cgm1Behaviour=False):   
         """ 
             Compute Knee joint centre from mid condyles         
         
@@ -727,12 +729,23 @@ class KneeCalibrationDecorator(DecoratorModel):
            
             LKJC = LKNE + ((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0)*v
            
+            if cgm1Behaviour:
+                # locate AJC
+                LANK = self.acq.GetPoint("LANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                LAJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJC,LKNE,beta= 0.0 )
+                
+                self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_midKnee",LAJC,positionType="Global")
+           
             if withNoModelParameter:
                 self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mid",mid_L, positionType="Global")
                 self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mid",mid_L, positionType="Global")
             else:
                 self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mid",LKJC, positionType="Global")
                 self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mid",LKJC, positionType="Global")
+
+            
+
+
             
         if side=="both" or side=="right":
 
@@ -754,6 +767,13 @@ class KneeCalibrationDecorator(DecoratorModel):
             v=v/np.linalg.norm(v)
            
             RKJC = RKNE + ((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0)*v
+
+            if cgm1Behaviour:
+                # locate AJC
+                RANK = self.acq.GetPoint("RANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                RAJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJC,RKNE,beta= 0.0 )
+                
+                self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_midKnee",RAJC,positionType="Global")
 
             if withNoModelParameter:
                 self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",mid_R, positionType="Global")
