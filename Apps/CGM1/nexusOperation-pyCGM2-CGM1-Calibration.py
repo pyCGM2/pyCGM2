@@ -235,7 +235,7 @@ if __name__ == "__main__":
         if staticMarkerConfiguration["leftKadFlag"]:
             if staticMarkerConfiguration["leftMedialAnkleFlag"]:
                 logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD + medial ankle ")
-                modelDecorator.AnkstaticConfigurationleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
+                modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
                 useLeftAJCnodeLabel = "LAJC_mid"
 
         if staticMarkerConfiguration["rightKadFlag"]:

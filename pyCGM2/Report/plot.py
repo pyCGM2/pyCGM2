@@ -36,7 +36,7 @@ def gaitKinematicsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""
              - `path` (str) - path pointing a folder where pdf will be stored. Must end with \\
 
         :Return:
-            - a pdf file name with extension "- Temporal Kinematics.pdf"
+            - a pdf file name with extension "-  Kinematics.pdf"
             - `pdfName` (str)  - filename of the output pdf
 
 
@@ -55,7 +55,7 @@ def gaitKinematicsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""
 
     # --- left Kinematics ------
     fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-    title= filename[:-4] + " - Temporal Kinematics "
+    title= filename[:-4] + " - Kinematics "
     fig.suptitle(title)
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -139,7 +139,7 @@ def gaitKinematicsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""
     ax12.set_title("Ankle Rotation" ,size=8)
     ax13.set_title("Foot Progress" ,size=8)
 
-    pdfName = filename[:-4] +"- Temporal Kinematics.pdf"
+    pdfName = filename[:-4] +"- Kinematics.pdf"
     pp = PdfPages(str(path+ pdfName))
     pp.savefig(fig)
     pp.close()
@@ -161,7 +161,7 @@ def gaitKineticsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""):
              - `path` (str) - path pointing a folder where pdf will be stored. Must end with \\
 
         :Return:
-            - a pdf file name with extension "- Temporal Kinetics.pdf"
+            - a pdf file name with extension "- Kinetics.pdf"
             - `pdfName` (str)  - filename of the output pdf
 
 
@@ -174,7 +174,7 @@ def gaitKineticsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""):
     end = lastFrame-firstFrame
 
     fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-    title= filename[:-4] + " - Temporal Kinetics "
+    title= filename[:-4] + " - Kinetics "
     fig.suptitle(title)
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -247,7 +247,7 @@ def gaitKineticsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""):
     ax12.set_title("Ankle power" ,size=8)
 
 
-    pdfName = filename[:-4] +"- Temporal Kinetics.pdf"
+    pdfName = filename[:-4] +"- Kinetics.pdf"
     pp = PdfPages(str(path+ pdfName))
     pp.savefig(fig)
     pp.close()
@@ -275,7 +275,7 @@ def gaitKinematicsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointL
              - `path` (str) - path pointing a folder where pdf will be stored. Must end with \\
 
         :Return:
-            - pdf filenames with extension "- multiModels - Left Temporal Kinematics.pdf"   and "- multiModels - Right Temporal Kinematics.pdf"
+            - pdf filenames with extension "- multiModels - Left  Kinematics.pdf"   and "- multiModels - Right  Kinematics.pdf"
 
         **Usage**
 
@@ -311,7 +311,7 @@ def gaitKinematicsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointL
 
     # --- left Kinematics ------
     fig_left = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-    title=" LEFT Temporal Kinematics "
+    title=" LEFT Kinematics "
     fig_left.suptitle(title)
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -389,7 +389,7 @@ def gaitKinematicsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointL
 
     # --- right Kinematics ------
     fig_right = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-    title=" RIGHT Temporal Kinematics "
+    title=" RIGHT Kinematics "
     fig_right.suptitle(title)
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -468,11 +468,11 @@ def gaitKinematicsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointL
     ax13.set_title("Foot Progress" ,size=8)
 
 
-    pp = PdfPages(str(path+ filename[:-4] +"-multiModels - Left Temporal Kinematics.pdf"))
+    pp = PdfPages(str(path+ filename[:-4] +"-multiModels - Left  Kinematics.pdf"))
     pp.savefig(fig_left)
     pp.close()
 
-    pp = PdfPages(str(path+ filename[:-4] +"-multiModels - Right Temporal Kinematics.pdf"))
+    pp = PdfPages(str(path+ filename[:-4] +"-multiModels - Right  Kinematics.pdf"))
     pp.savefig(fig_right)
     pp.close()
 
@@ -494,7 +494,7 @@ def gaitKineticsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointLab
              - `path` (str) - path pointing a folder where pdf will be stored. Must end with \\
 
         :Return:
-            - pdf filenames with extension "- multiModels - Left Temporal Kinetics.pdf"   and "- multiModels - Right Temporal Kinetics.pdf"
+            - pdf filenames with extension "- multiModels - Left  Kinetics.pdf"   and "- multiModels - Right  Kinetics.pdf"
 
         **Usage**
 
@@ -528,7 +528,7 @@ def gaitKineticsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointLab
 
     # --- left Kinetics ------
     fig_left = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-    title=" LEFT Temporal Kinetics "
+    title=" LEFT  Kinetics "
     fig_left.suptitle(title)
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -594,13 +594,13 @@ def gaitKineticsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointLab
     ax11.set_title("Ankle rotation Moment" ,size=8)
     ax12.set_title("Ankle power" ,size=8)
 
-#    pp = PdfPages(str(path+ filename[:-4] +"-Left Temporal Kinetics.pdf"))
+#    pp = PdfPages(str(path+ filename[:-4] +"-Left  Kinetics.pdf"))
 #    pp.savefig(fig_left)
 #    pp.close()
 
      # --- right Kinetics ------
     fig_right = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-    title=" Right Temporal Kinetics "
+    title=" Right  Kinetics "
     fig_right.suptitle(title)
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -665,11 +665,11 @@ def gaitKineticsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointLab
     ax11.set_title("Ankle rotation Moment" ,size=8)
     ax12.set_title("Ankle power" ,size=8)
 
-    pp = PdfPages(str(path+ filename[:-4] +"-multiModels - Left Temporal Kinetics.pdf"))
+    pp = PdfPages(str(path+ filename[:-4] +"-multiModels - Left  Kinetics.pdf"))
     pp.savefig(fig_left)
     pp.close()
 
-    pp = PdfPages(str(path+ filename[:-4] +"-multiModels - Right Temporal Kinetics.pdf"))
+    pp = PdfPages(str(path+ filename[:-4] +"-multiModels - Right  Kinetics.pdf"))
     pp.savefig(fig_right)
     pp.close()
 
@@ -729,9 +729,9 @@ def gaitKinematicsCycleTemporal_multipleModel_PlotPanel(cycleInstances,labels,fi
 
     fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
     if cycleInstances[0].context == "Left":
-        title=" LEFT Cycle Temporal Kinematics"
+        title=" LEFT Cycle  Kinematics"
     if cycleInstances[0].context == "Right":
-        title=" RIGHT Cycle Temporal Kinematics"
+        title=" RIGHT Cycle  Kinematics"
     fig.suptitle(title)
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -865,9 +865,9 @@ def gaitKineticsCycleTemporal_multipleModel_PlotPanel(cycleInstances,labels,file
 
     fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
     if cycleInstances[0].context == "Left":
-        title=" LEFT Cycle Temporal Kinetics"
+        title=" LEFT Cycle  Kinetics"
     if cycleInstances[0].context == "Right":
-        title=" RIGHT Cycle Temporal Kinetics"
+        title=" RIGHT Cycle  Kinetics"
     fig.suptitle(title)
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -1675,7 +1675,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
         if not self.m_flagConsistencyOnly:
             # ---- descriptive Kinematics (mean + std)
             figDescritiveKinematics = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-            title=u""" Descriptive Kinematics \n """
+            title=u""" Descriptive Time-normalized Kinematics \n """
             figDescritiveKinematics.suptitle(title)
             plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -1755,7 +1755,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
 
         # ---- consitency Kinematics plot
         figConsistencyKinematics = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-        title=u""" Consistency Kinematics \n """
+        title=u""" Consistency Time-normalized Kinematics \n """
         figConsistencyKinematics.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -1835,7 +1835,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
             if not self.m_flagConsistencyOnly:
                 # ---- descriptive Kinetics (mean + std)
                 figDescriptiveKinetics = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-                title=u""" Descriptive Kinetics \n """
+                title=u""" Descriptive Time-normalized Kinetics \n """
                 figDescriptiveKinetics.suptitle(title)
                 plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -1914,7 +1914,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
 
             # ---- consistency Kinetics (mean + std)
             figConsistencyKinetics = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-            title=u""" Consistency Kinetics \n """
+            title=u""" Consistency Time-normalized Kinetics \n """
             figConsistencyKinetics.suptitle(title)
             plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
