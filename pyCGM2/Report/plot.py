@@ -90,34 +90,34 @@ def gaitKinematicsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""
     ax12.set_ylim([-30,30])
     ax13.set_ylim([-30,30])
 
-    ax1.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= "r")
-    ax2.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= "r")
-    ax3.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
-    ax4.plot(trial.findChild(ma.T_TimeSequence,"LHipAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= "r")
-    ax5.plot(trial.findChild(ma.T_TimeSequence,"LHipAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= "r")
-    ax6.plot(trial.findChild(ma.T_TimeSequence,"LHipAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
-    ax7.plot(trial.findChild(ma.T_TimeSequence,"LKneeAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= "r")
-    ax8.plot(trial.findChild(ma.T_TimeSequence,"LKneeAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= "r")
-    ax9.plot(trial.findChild(ma.T_TimeSequence,"LKneeAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
-    ax10.plot(trial.findChild(ma.T_TimeSequence,"LAnkleAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= "r")
-    ax11.plot(trial.findChild(ma.T_TimeSequence,"LAnkleAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= "r")
-    ax12.plot(trial.findChild(ma.T_TimeSequence,"LAnkleAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
-    ax13.plot(trial.findChild(ma.T_TimeSequence,"LFootProgressAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
+    ax1.plot(trial.findChild(ma.T_TimeSequence,str("LPelvisAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= "r")
+    ax2.plot(trial.findChild(ma.T_TimeSequence,str("LPelvisAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= "r")
+    ax3.plot(trial.findChild(ma.T_TimeSequence,str("LPelvisAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
+    ax4.plot(trial.findChild(ma.T_TimeSequence,str("LHipAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= "r")
+    ax5.plot(trial.findChild(ma.T_TimeSequence,str("LHipAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= "r")
+    ax6.plot(trial.findChild(ma.T_TimeSequence,str("LHipAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
+    ax7.plot(trial.findChild(ma.T_TimeSequence,str("LKneeAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= "r")
+    ax8.plot(trial.findChild(ma.T_TimeSequence,str("LKneeAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= "r")
+    ax9.plot(trial.findChild(ma.T_TimeSequence,str("LKneeAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
+    ax10.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= "r")
+    ax11.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= "r")
+    ax12.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
+    ax13.plot(trial.findChild(ma.T_TimeSequence,str("LFootProgressAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
 
 
-    ax1.plot(trial.findChild(ma.T_TimeSequence,"RPelvisAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= "b")
-    ax2.plot(trial.findChild(ma.T_TimeSequence,"RPelvisAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= "b")
-    ax3.plot(trial.findChild(ma.T_TimeSequence,"RPelvisAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
-    ax4.plot(trial.findChild(ma.T_TimeSequence,"RHipAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= "b")
-    ax5.plot(trial.findChild(ma.T_TimeSequence,"RHipAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= "b")
-    ax6.plot(trial.findChild(ma.T_TimeSequence,"RHipAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
-    ax7.plot(trial.findChild(ma.T_TimeSequence,"RKneeAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= "b")
-    ax8.plot(trial.findChild(ma.T_TimeSequence,"RKneeAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= "b")
-    ax9.plot(trial.findChild(ma.T_TimeSequence,"RKneeAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
-    ax10.plot(trial.findChild(ma.T_TimeSequence,"RAnkleAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= "b")
-    ax11.plot(trial.findChild(ma.T_TimeSequence,"RAnkleAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= "b")
-    ax12.plot(trial.findChild(ma.T_TimeSequence,"RAnkleAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
-    ax13.plot(trial.findChild(ma.T_TimeSequence,"RFootProgressAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
+    ax1.plot(trial.findChild(ma.T_TimeSequence,str("RPelvisAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= "b")
+    ax2.plot(trial.findChild(ma.T_TimeSequence,str("RPelvisAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= "b")
+    ax3.plot(trial.findChild(ma.T_TimeSequence,str("RPelvisAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
+    ax4.plot(trial.findChild(ma.T_TimeSequence,str("RHipAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= "b")
+    ax5.plot(trial.findChild(ma.T_TimeSequence,str("RHipAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= "b")
+    ax6.plot(trial.findChild(ma.T_TimeSequence,str("RHipAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
+    ax7.plot(trial.findChild(ma.T_TimeSequence,str("RKneeAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= "b")
+    ax8.plot(trial.findChild(ma.T_TimeSequence,str("RKneeAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= "b")
+    ax9.plot(trial.findChild(ma.T_TimeSequence,str("RKneeAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
+    ax10.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= "b")
+    ax11.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= "b")
+    ax12.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
+    ax13.plot(trial.findChild(ma.T_TimeSequence,str("RFootProgressAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
 
 
     for axIt in axes:
@@ -195,36 +195,36 @@ def gaitKineticsTemporalPlotPanel(trial,filename,pointLabelSuffix="",path = ""):
 
     axes=[ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8,ax9,ax10,ax11,ax12]
 
-    ax1.plot(trial.findChild(ma.T_TimeSequence,"LHipMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= "r")
-    ax2.plot(trial.findChild(ma.T_TimeSequence,"LHipMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= "r")
-    ax3.plot(trial.findChild(ma.T_TimeSequence,"LHipMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
-    ax4.plot(trial.findChild(ma.T_TimeSequence,"LHipPower"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
+    ax1.plot(trial.findChild(ma.T_TimeSequence,str("LHipMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= "r")
+    ax2.plot(trial.findChild(ma.T_TimeSequence,str("LHipMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= "r")
+    ax3.plot(trial.findChild(ma.T_TimeSequence,str("LHipMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
+    ax4.plot(trial.findChild(ma.T_TimeSequence,str("LHipPower"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
 
-    ax5.plot(trial.findChild(ma.T_TimeSequence,"LKneeMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= "r")
-    ax6.plot(trial.findChild(ma.T_TimeSequence,"LKneeMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= "r")
-    ax7.plot(trial.findChild(ma.T_TimeSequence,"LKneeMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
-    ax8.plot(trial.findChild(ma.T_TimeSequence,"LKneePower"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
+    ax5.plot(trial.findChild(ma.T_TimeSequence,str("LKneeMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= "r")
+    ax6.plot(trial.findChild(ma.T_TimeSequence,str("LKneeMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= "r")
+    ax7.plot(trial.findChild(ma.T_TimeSequence,str("LKneeMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
+    ax8.plot(trial.findChild(ma.T_TimeSequence,str("LKneePower"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
 
-    ax9.plot(trial.findChild(ma.T_TimeSequence,"LAnkleMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= "r")
-    ax10.plot(trial.findChild(ma.T_TimeSequence,"LAnkleMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= "r")
-    ax11.plot(trial.findChild(ma.T_TimeSequence,"LAnkleMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
-    ax12.plot(trial.findChild(ma.T_TimeSequence,"LAnklePower"+pointLabelSuffixPlus).data()[:,2], '-', color= "r")
+    ax9.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= "r")
+    ax10.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= "r")
+    ax11.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
+    ax12.plot(trial.findChild(ma.T_TimeSequence,str("LAnklePower"+pointLabelSuffixPlus)).data()[:,2], '-', color= "r")
 
 
-    ax1.plot(trial.findChild(ma.T_TimeSequence,"RHipMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= "b")
-    ax2.plot(trial.findChild(ma.T_TimeSequence,"RHipMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= "b")
-    ax3.plot(trial.findChild(ma.T_TimeSequence,"RHipMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
-    ax4.plot(trial.findChild(ma.T_TimeSequence,"RHipPower"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
+    ax1.plot(trial.findChild(ma.T_TimeSequence,str("RHipMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= "b")
+    ax2.plot(trial.findChild(ma.T_TimeSequence,str("RHipMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= "b")
+    ax3.plot(trial.findChild(ma.T_TimeSequence,str("RHipMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
+    ax4.plot(trial.findChild(ma.T_TimeSequence,str("RHipPower"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
 
-    ax5.plot(trial.findChild(ma.T_TimeSequence,"RKneeMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= "b")
-    ax6.plot(trial.findChild(ma.T_TimeSequence,"RKneeMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= "b")
-    ax7.plot(trial.findChild(ma.T_TimeSequence,"RKneeMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
-    ax8.plot(trial.findChild(ma.T_TimeSequence,"RKneePower"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
+    ax5.plot(trial.findChild(ma.T_TimeSequence,str("RKneeMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= "b")
+    ax6.plot(trial.findChild(ma.T_TimeSequence,str("RKneeMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= "b")
+    ax7.plot(trial.findChild(ma.T_TimeSequence,str("RKneeMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
+    ax8.plot(trial.findChild(ma.T_TimeSequence,str("RKneePower"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
 
-    ax9.plot(trial.findChild(ma.T_TimeSequence,"RAnkleMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= "b")
-    ax10.plot(trial.findChild(ma.T_TimeSequence,"RAnkleMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= "b")
-    ax11.plot(trial.findChild(ma.T_TimeSequence,"RAnkleMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
-    ax12.plot(trial.findChild(ma.T_TimeSequence,"RAnklePower"+pointLabelSuffixPlus).data()[:,2], '-', color= "b")
+    ax9.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= "b")
+    ax10.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= "b")
+    ax11.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
+    ax12.plot(trial.findChild(ma.T_TimeSequence,str("RAnklePower"+pointLabelSuffixPlus)).data()[:,2], '-', color= "b")
 
     for axIt in axes:
         axIt.set_xlim([0,end])
@@ -349,19 +349,19 @@ def gaitKinematicsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointL
     i=0
     for trial in trials:
 
-        ax1.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax2.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax3.plot(trial.findChild(ma.T_TimeSequence,"LPelvisAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax4.plot(trial.findChild(ma.T_TimeSequence,"LHipAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax5.plot(trial.findChild(ma.T_TimeSequence,"LHipAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax6.plot(trial.findChild(ma.T_TimeSequence,"LHipAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax7.plot(trial.findChild(ma.T_TimeSequence,"LKneeAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax8.plot(trial.findChild(ma.T_TimeSequence,"LKneeAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax9.plot(trial.findChild(ma.T_TimeSequence,"LKneeAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax10.plot(trial.findChild(ma.T_TimeSequence,"LAnkleAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax11.plot(trial.findChild(ma.T_TimeSequence,"LAnkleAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax12.plot(trial.findChild(ma.T_TimeSequence,"LAnkleAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax13.plot(trial.findChild(ma.T_TimeSequence,"LFootProgressAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
+        ax1.plot(trial.findChild(ma.T_TimeSequence,str("LPelvisAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax2.plot(trial.findChild(ma.T_TimeSequence,str("LPelvisAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax3.plot(trial.findChild(ma.T_TimeSequence,str("LPelvisAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax4.plot(trial.findChild(ma.T_TimeSequence,str("LHipAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax5.plot(trial.findChild(ma.T_TimeSequence,str("LHipAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax6.plot(trial.findChild(ma.T_TimeSequence,str("LHipAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax7.plot(trial.findChild(ma.T_TimeSequence,str("LKneeAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax8.plot(trial.findChild(ma.T_TimeSequence,str("LKneeAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax9.plot(trial.findChild(ma.T_TimeSequence,str("LKneeAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax10.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax11.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax12.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax13.plot(trial.findChild(ma.T_TimeSequence,str("LFootProgressAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
 
         i+=1
 
@@ -428,19 +428,19 @@ def gaitKinematicsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointL
     for trial in trials:
 
 
-        ax1.plot(trial.findChild(ma.T_TimeSequence,"RPelvisAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax2.plot(trial.findChild(ma.T_TimeSequence,"RPelvisAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax3.plot(trial.findChild(ma.T_TimeSequence,"RPelvisAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax4.plot(trial.findChild(ma.T_TimeSequence,"RHipAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax5.plot(trial.findChild(ma.T_TimeSequence,"RHipAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax6.plot(trial.findChild(ma.T_TimeSequence,"RHipAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax7.plot(trial.findChild(ma.T_TimeSequence,"RKneeAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax8.plot(trial.findChild(ma.T_TimeSequence,"RKneeAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax9.plot(trial.findChild(ma.T_TimeSequence,"RKneeAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax10.plot(trial.findChild(ma.T_TimeSequence,"RAnkleAngles"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax11.plot(trial.findChild(ma.T_TimeSequence,"RAnkleAngles"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax12.plot(trial.findChild(ma.T_TimeSequence,"RAnkleAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax13.plot(trial.findChild(ma.T_TimeSequence,"RFootProgressAngles"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
+        ax1.plot(trial.findChild(ma.T_TimeSequence,str("RPelvisAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax2.plot(trial.findChild(ma.T_TimeSequence,str("RPelvisAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax3.plot(trial.findChild(ma.T_TimeSequence,str("RPelvisAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax4.plot(trial.findChild(ma.T_TimeSequence,str("RHipAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax5.plot(trial.findChild(ma.T_TimeSequence,str("RHipAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax6.plot(trial.findChild(ma.T_TimeSequence,str("RHipAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax7.plot(trial.findChild(ma.T_TimeSequence,str("RKneeAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax8.plot(trial.findChild(ma.T_TimeSequence,str("RKneeAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax9.plot(trial.findChild(ma.T_TimeSequence,str("RKneeAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax10.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleAngles"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax11.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleAngles"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax12.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax13.plot(trial.findChild(ma.T_TimeSequence,str("RFootProgressAngles"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
         i+=1
 
 
@@ -553,20 +553,20 @@ def gaitKineticsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointLab
     for trial in trials:
 
 
-        ax1.plot(trial.findChild(ma.T_TimeSequence,"LHipMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax2.plot(trial.findChild(ma.T_TimeSequence,"LHipMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax3.plot(trial.findChild(ma.T_TimeSequence,"LHipMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax4.plot(trial.findChild(ma.T_TimeSequence,"LHipPower"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
+        ax1.plot(trial.findChild(ma.T_TimeSequence,str("LHipMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax2.plot(trial.findChild(ma.T_TimeSequence,str("LHipMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax3.plot(trial.findChild(ma.T_TimeSequence,str("LHipMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax4.plot(trial.findChild(ma.T_TimeSequence,str("LHipPower"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
 
-        ax5.plot(trial.findChild(ma.T_TimeSequence,"LKneeMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax6.plot(trial.findChild(ma.T_TimeSequence,"LKneeMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax7.plot(trial.findChild(ma.T_TimeSequence,"LKneeMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax8.plot(trial.findChild(ma.T_TimeSequence,"LKneePower"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
+        ax5.plot(trial.findChild(ma.T_TimeSequence,str("LKneeMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax6.plot(trial.findChild(ma.T_TimeSequence,str("LKneeMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax7.plot(trial.findChild(ma.T_TimeSequence,str("LKneeMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax8.plot(trial.findChild(ma.T_TimeSequence,str("LKneePower"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
 
-        ax9.plot(trial.findChild(ma.T_TimeSequence,"LAnkleMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax10.plot(trial.findChild(ma.T_TimeSequence,"LAnkleMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax11.plot(trial.findChild(ma.T_TimeSequence,"LAnkleMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax12.plot(trial.findChild(ma.T_TimeSequence,"LAnklePower"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
+        ax9.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax10.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax11.plot(trial.findChild(ma.T_TimeSequence,str("LAnkleMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax12.plot(trial.findChild(ma.T_TimeSequence,str("LAnklePower"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
 
 
         i+=1
@@ -625,20 +625,20 @@ def gaitKineticsTemporal_multipleModel_PlotPanel(trials,labels,filename,pointLab
     for trial in trials:
 
 
-        ax1.plot(trial.findChild(ma.T_TimeSequence,"RHipMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax2.plot(trial.findChild(ma.T_TimeSequence,"RHipMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax3.plot(trial.findChild(ma.T_TimeSequence,"RHipMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax4.plot(trial.findChild(ma.T_TimeSequence,"RHipPower"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
+        ax1.plot(trial.findChild(ma.T_TimeSequence,str("RHipMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax2.plot(trial.findChild(ma.T_TimeSequence,str("RHipMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax3.plot(trial.findChild(ma.T_TimeSequence,str("RHipMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax4.plot(trial.findChild(ma.T_TimeSequence,str("RHipPower"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
 
-        ax5.plot(trial.findChild(ma.T_TimeSequence,"RKneeMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax6.plot(trial.findChild(ma.T_TimeSequence,"RKneeMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax7.plot(trial.findChild(ma.T_TimeSequence,"RKneeMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax8.plot(trial.findChild(ma.T_TimeSequence,"RKneePower"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
+        ax5.plot(trial.findChild(ma.T_TimeSequence,str("RKneeMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax6.plot(trial.findChild(ma.T_TimeSequence,str("RKneeMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax7.plot(trial.findChild(ma.T_TimeSequence,str("RKneeMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax8.plot(trial.findChild(ma.T_TimeSequence,str("RKneePower"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
 
-        ax9.plot(trial.findChild(ma.T_TimeSequence,"RAnkleMoment"+pointLabelSuffixPlus).data()[:,0], '-', color= colormap_i[i])
-        ax10.plot(trial.findChild(ma.T_TimeSequence,"RAnkleMoment"+pointLabelSuffixPlus).data()[:,1], '-', color= colormap_i[i])
-        ax11.plot(trial.findChild(ma.T_TimeSequence,"RAnkleMoment"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
-        ax12.plot(trial.findChild(ma.T_TimeSequence,"RAnklePower"+pointLabelSuffixPlus).data()[:,2], '-', color= colormap_i[i])
+        ax9.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleMoment"+pointLabelSuffixPlus)).data()[:,0], '-', color= colormap_i[i])
+        ax10.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleMoment"+pointLabelSuffixPlus)).data()[:,1], '-', color= colormap_i[i])
+        ax11.plot(trial.findChild(ma.T_TimeSequence,str("RAnkleMoment"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
+        ax12.plot(trial.findChild(ma.T_TimeSequence,str("RAnklePower"+pointLabelSuffixPlus)).data()[:,2], '-', color= colormap_i[i])
 
         i+=1
 
