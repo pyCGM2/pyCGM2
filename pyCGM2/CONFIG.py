@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-
 import sys
 import os
+import generatePipeline
 
 # ------------------- CONSTANTS ------------------------------------------------
 
@@ -15,6 +15,8 @@ PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.5\\Python'
 # [OPTIONAL] ----------------------------------
 MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)) + "\\" #C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)  
 
+# [Optional]: Apps path 
+MAIN_PYCGM2_APPS_PATH = MAIN_PYCGM2_PATH+"Apps\\"
  
 # [Optional]: openMA binding 
 THIRDPARTY_PATH = MAIN_PYCGM2_PATH + "third party\\" # By default, use openMA distribution included in third party folder  
@@ -32,6 +34,18 @@ MAIN_BENCHMARK_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchm
 # [optional] path pointing pyCGM2-Nexus tools
 
 NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\" 
+
+
+# pipeline generation
+
+# cgm1
+generatePipeline.pipeline_pyCGM2_CGM1_Calibration(MAIN_PYCGM2_APPS_PATH) 
+generatePipeline.pipeline_pyCGM2_CGM1_Fitting(MAIN_PYCGM2_APPS_PATH) 
+# cgm1.1
+generatePipeline.pipeline_pyCGM2_CGM1_1_Calibration(MAIN_PYCGM2_APPS_PATH) 
+generatePipeline.pipeline_pyCGM2_CGM1_1_Fitting(MAIN_PYCGM2_APPS_PATH) 
+
+
 # ------------------- METHODS ------------------------------------------------
 
 def setLoggingLevel(level):
@@ -123,4 +137,5 @@ def checkConfig():
         import btk
         logging.info("btk API ---> OK" )        
     except ImportError:
-        logging.error ("[pyCGM2] : btk is not in your python path. Check CONFIG")        
+        logging.error ("[pyCGM2] : btk is not in your python path. Check CONFIG")  
+   
