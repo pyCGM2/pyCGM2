@@ -477,6 +477,14 @@ class Cgm1ManualOffsets(DecoratorModel):
         
 
     def compute(self,acq,side,thighoffset,markerDiameter,tibialTorsion,shankoffset):
+        """
+             :Parameters:
+                - `side` (str) - body side 
+                - `thighoffset` (double) - thigh offset
+                - `markerDiameter` (double) - diameter of marker
+                - `shankoffset` (double) - shanl offset
+                - `tibialTorsion` (double) - tinbial torsion value
+        """
         
          
         self.model.decoratedModel = True
@@ -690,13 +698,17 @@ class KneeCalibrationDecorator(DecoratorModel):
                     leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LMEPI",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RMEPI", 
                     markerDiameter = 14, withNoModelParameter=False, cgm1Behaviour=False):   
         """ 
-            Compute Knee joint centre from mid condyles         
+            Compute Knee joint centre from mid condyles.
+            
+            .. note:: AJC might be relocate, like KAD processing if cgm1Behaviour flag enable
         
             :Parameters:
                 - `acq` (btkAcquisition) - a btk acquisition instance of a static c3d           
                 - `side` (str) - body side
                 - `leftLateralKneeLabel` (str) -  label of the left lateral knee marker
-                - `leftMedialKneeLabel` (str) -  label of the left medial knee marker   
+                - `leftMedialKneeLabel` (str) -  label of the left medial knee marker
+                - `withNoModelParameter` (bool) -  use mid position directly instead of applying an offset along mediolateral axis
+                - `cgm1Behaviour` (bool) -  relocate AJC
         
         """         
         # TODO : coding exception if label doesn t find.        
@@ -897,7 +909,8 @@ class AnkleCalibrationDecorator(DecoratorModel):
                 - `acq` (btkAcquisition) - a btk acquisition instance of a static c3d           
                 - `side` (str) - body side
                 - `leftLateralAnkleLabel` (str) -  label of the left lateral knee marker
-                - `leftMedialAnkleLabel` (str) -  label of the left medial knee marker   
+                - `leftMedialAnkleLabel` (str) -  label of the left medial knee marker
+                - `withNoModelParameter` (bool) -  use mid position directly instead of applying an offset along mediolateral axis
         
         """                         
                         
