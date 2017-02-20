@@ -88,7 +88,9 @@ class CGM1_motionInverseDynamicsTest():
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,     
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
         }        
         model.addAnthropoInputParameters(mp)
                                     
@@ -294,6 +296,8 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
         'RightKneeWidth' : 110.4,
         'LeftAnkleWidth' : 74.0,
         'RightAnkleWidth' : 74.0,       
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,    
         }        
         model.addAnthropoInputParameters(mp)
                                     
@@ -492,6 +496,8 @@ class CGM1_motionInverseDynamics_batchprocessing_Test():
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
         'RightAnkleWidth' : 72.9,       
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,    
         }        
         model.addAnthropoInputParameters(mp)
                                     

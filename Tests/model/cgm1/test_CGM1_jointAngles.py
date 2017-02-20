@@ -71,7 +71,9 @@ class CGM1_motionJCSTest():
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,   
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
         }         
         model.addAnthropoInputParameters(mp)
                                     
@@ -582,7 +584,9 @@ class CGM1_motionAbsoluteAnglesTest():
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9, 
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
         }         
         model.addAnthropoInputParameters(mp)
                                     
@@ -665,7 +669,9 @@ class CGM1_motionFullAnglesTest():
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,     
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
         }        
         model.addAnthropoInputParameters(mp)
                                     
@@ -1716,7 +1722,9 @@ class CGM1_motionFullAnglesTest_customApproach():
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,    
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
         }        
         model.addAnthropoInputParameters(mp)
                                     

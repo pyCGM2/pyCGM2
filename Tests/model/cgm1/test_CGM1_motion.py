@@ -59,6 +59,8 @@ class CGM1_motionTest():
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
         'RightAnkleWidth' : 72.9,       
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,    
         }        
         model.addAnthropoInputParameters(mp)
                                     
@@ -225,13 +227,16 @@ class CGM1_motionTest():
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
         'RightAnkleWidth' : 72.9,       
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,    
         }         
         model.addAnthropoInputParameters(mp)
                                     
         
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, leftFlatFoot = True, rightFlatFoot = True).compute() 
-        spf_l,sro_l,spf_r,sro_r = model.getViconFootOffset()
+        spf_l,sro_l = model.getViconFootOffset("Left")
+        spf_r,sro_r = model.getViconFootOffset("Right")
 
         # ------ Test 1 Motion Axe X -------
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"        
@@ -392,6 +397,8 @@ class CGM1_motionTest():
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
         'RightAnkleWidth' : 72.9,       
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,    
         }       
         model.addAnthropoInputParameters(mp)
                                     
@@ -566,6 +573,8 @@ class CGM1_motionTest():
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
         'RightAnkleWidth' : 72.9,       
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,    
         }        
         model.addAnthropoInputParameters(mp)
                                     
@@ -742,6 +751,8 @@ class CGM1_motionTest():
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
         'RightAnkleWidth' : 72.9,       
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,    
         }        
         model.addAnthropoInputParameters(mp)
                                     

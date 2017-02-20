@@ -1276,7 +1276,6 @@ class CGM1LowerLimbs(CGM):
         # ---  additional markers and Update of the marker segment list
         seg.addMarkerLabel("LKJC")
 
-
         if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
             logging.warning("You use a Left uncorrected foot sequence different than native CGM1")
             dictRef["Left Foot"]={"TF" : {'sequence':"ZYX", 'labels':   ["LTOE","LAJC","LKJC","LAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
@@ -1287,6 +1286,7 @@ class CGM1LowerLimbs(CGM):
 
         pt1=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#LTOE
         pt2=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#AJC
+
 
         if dictRef["Left Foot"]["TF"]['labels'][2] is not None:
             pt3=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -1781,11 +1781,15 @@ class CGM1LowerLimbs(CGM):
 
         # --- Construction of the anatomical Referential
         pt1=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # LTOE
-        pt2=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt2=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # LHEE
 
         if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
             logging.warning ("option (leftFlatFoot) enable")
-            pt2[2] = pt1[2]
+            if ("LeftSoleDelta" in self.mp.keys() and self.mp["LeftSoleDelta"]!=0):
+                logging.warning ("option (LeftSoleDelta) compensation")
+
+            pt2[2] = pt1[2]+self.mp['LeftSoleDelta']
+
 
         if dictAnatomic["Left Foot"]['labels'][2] is not None:
             pt3=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -1884,7 +1888,12 @@ class CGM1LowerLimbs(CGM):
 
         if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
             logging.warning ("option (rightFlatFoot) enable")
-            pt2[2] = pt1[2]
+
+            if ("RightSoleDelta" in self.mp.keys() and self.mp["RightSoleDelta"]!=0):
+                logging.warning ("option (RightSoleDelta) compensation")
+            
+            pt2[2] = pt1[2]+self.mp['RightSoleDelta']
+
 
         if dictAnatomic["Right Foot"]['labels'][2] is not None:
             pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
