@@ -169,7 +169,10 @@ class CGM1_motionJCSTest():
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,    
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
+        
         }         
         model.addAnthropoInputParameters(mp)
                                     
@@ -265,7 +268,10 @@ class CGM1_motionJCSTest():
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,  
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
+        
         }        
         model.addAnthropoInputParameters(mp)
                                     
@@ -371,7 +377,10 @@ class CGM1_motionJCSTest():
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,  
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
+        
         }        
         model.addAnthropoInputParameters(mp)
                                     
@@ -478,7 +487,10 @@ class CGM1_motionJCSTest():
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,  
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
+        
         }         
         model.addAnthropoInputParameters(mp)
                                     
@@ -603,12 +615,15 @@ class CGM1_motionAbsoluteAnglesTest():
         modMotion.compute()
 
         longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
+
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                               segmentLabels=["Left Foot","Right Foot","Pelvis"],
                               angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                              eulerSequences=["TOR","TOR", "TOR"],
                               globalFrameOrientation = globalFrame,
                               forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
-        
+
+        #btkTools.smartWriter(acqGait, "verifX.c3d")        
         # ---   tests on angles
         np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
                                         acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
@@ -618,7 +633,6 @@ class CGM1_motionAbsoluteAnglesTest():
                                         acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
         np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
                                         acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)                                        
-
 
         # ------ Test 2 Motion Axe -X -------
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 12.c3d"        
@@ -633,6 +647,97 @@ class CGM1_motionAbsoluteAnglesTest():
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
+                                      globalFrameOrientation = globalFrame,
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+        
+            
+        
+        # ---   tests on angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)                                                                               
+
+
+    @classmethod
+    def basicCGM1_absoluteAngles_lowerLimb_AxisY(cls):  
+        """
+                
+        """    
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-Y axis\\"
+        staticFilename = "sujet 1 Cal 01.c3d" 
+    
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
+        
+        model=cgm.CGM1LowerLimbs()
+        model.configure()        
+        
+        markerDiameter=14                    
+        mp={
+        'Bodymass'   : 75.0,                
+        'LeftLegLength' : 820.0,
+        'RightLegLength' : 820.0 ,
+        'LeftKneeWidth' : 103.0,
+        'RightKneeWidth' : 103.0,
+        'LeftAnkleWidth' : 71.0,
+        'RightAnkleWidth' : 71.0, 
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
+        }         
+        model.addAnthropoInputParameters(mp)
+                                    
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
+
+        # ------ Test 1 Motion Axe Y -------
+        gaitFilename="marchePIG04.c3d"        
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        
+        # Motion FILTER 
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion.compute()
+
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
+
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                              segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                              angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                              eulerSequences=["TOR","TOR", "TOR"],
+                              globalFrameOrientation = globalFrame,
+                              forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+        
+        #btkTools.smartWriter(acqGait, "verifY.c3d")   
+        #---   tests on angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)                                        
+
+
+        # ------ Test 2 Motion Axe -Y -------
+        gaitFilename="marchePIG04.c3d"        
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        
+        # Motion FILTER 
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion.compute()
+
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
         
@@ -644,7 +749,7 @@ class CGM1_motionAbsoluteAnglesTest():
         np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
                                         acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
         np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
-                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)                                                                               
+                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)  
 
 
 class CGM1_motionFullAnglesTest():
@@ -696,6 +801,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
@@ -838,6 +944,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
@@ -981,6 +1088,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
@@ -1165,6 +1273,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
@@ -1314,6 +1423,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
@@ -1467,6 +1577,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
@@ -1619,6 +1730,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
@@ -1750,6 +1862,7 @@ class CGM1_motionFullAnglesTest_customApproach():
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
         
@@ -1760,7 +1873,7 @@ class CGM1_motionFullAnglesTest_customApproach():
 if __name__ == "__main__":
 
 
-    CGM1_motionFullAnglesTest.advancedCGM1_kad_midMaleolus_viconCompatible_tibialTorsionManually() # with fixed vicon error  -->  tests fail for ankle angle and foot progress
+    #CGM1_motionFullAnglesTest.advancedCGM1_kad_midMaleolus_viconCompatible_tibialTorsionManually() # with fixed vicon error  -->  tests fail for ankle angle and foot progress
 
     
 #    plt.close("all")
@@ -1774,7 +1887,8 @@ if __name__ == "__main__":
 #    logging.info("######## PROCESS CGM1 - JCSK --> Done ######")    
 #    
 #    #logging.info("######## PROCESS CGM1 - Absolute ######")
-#    CGM1_motionAbsoluteAnglesTest.basicCGM1_absoluteAngles_lowerLimb()
+    CGM1_motionAbsoluteAnglesTest.basicCGM1_absoluteAngles_lowerLimb()
+    CGM1_motionAbsoluteAnglesTest.basicCGM1_absoluteAngles_lowerLimb_AxisY()
 #    logging.info("######## PROCESS CGM1 - Absolute ---> Done ######")
 #    
 #    logging.info("######## PROCESS CGM1 - Full angles ######")

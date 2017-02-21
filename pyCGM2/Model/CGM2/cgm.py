@@ -3694,12 +3694,6 @@ class CGM1LowerLimbs(CGM):
 
         """
 
-        # note from btk
-        #  Eigen::Matrix<double,Eigen::Dynamic,1> temp = angle->GetValues().col(1);
-        #           angle->GetValues().col(1) = angle->GetValues().col(2);
-        #           angle->GetValues().col(2) =  -1.0 * temp;
-
-
         values = np.zeros((anglesValues.shape))
         if SegmentLabel == "Left Foot" :
             values[:,0] =  np.rad2deg(  anglesValues[:,0])
@@ -3720,11 +3714,6 @@ class CGM1LowerLimbs(CGM):
             values[:,0] =  np.rad2deg(  anglesValues[:,0])
             values[:,1] =  np.rad2deg(  anglesValues[:,1])
             values[:,2] =  - np.rad2deg(  anglesValues[:,2])
-
-        else:
-            values[:,0] = np.rad2deg(  anglesValues[:,0])
-            values[:,1] = np.rad2deg(  anglesValues[:,1])
-            values[:,2] = np.rad2deg(  anglesValues[:,2])
 
         return values
 
@@ -3969,7 +3958,26 @@ class CGM1LowerLimbs(CGM):
         return valuesF,valuesM
 
     # ----- vicon API -------
-    def viconExport(self,NEXUS,acq,vskName, staticProcessing):
+    def viconExport(self,NEXUS,acq,vskName, staticProcessingFlag):
+        """
+            method exporting model outputs to Nexus UI
+
+            This method exports :
+                
+                - joint centres as modelled-marker
+                - angles
+                - moment
+                - force
+                - power
+                - bones
+            
+            
+            :Parameters:
+                - `NEXUS` () - Nexus environment 
+                - `vskName` (str) - name of the subject created in Nexus
+                - `staticProcessingFlag` (bool`) : flag indicating only static model ouput will be export  
+                
+        """
 
          # export JC
         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq)
@@ -4004,7 +4012,7 @@ class CGM1LowerLimbs(CGM):
         
         logging.debug("bones over")
         
-        if not staticProcessing:
+        if not staticProcessingFlag:
             # export Force
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Force:

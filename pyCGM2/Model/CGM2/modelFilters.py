@@ -610,7 +610,7 @@ class ModelAbsoluteAnglesFilter(object):
     
     """      
 
-    def __init__(self, iMod, acq, segmentLabels,angleLabels, globalFrameOrientation = "XYZ", forwardProgression = True  ):
+    def __init__(self, iMod, acq, segmentLabels=list(),angleLabels=list(), eulerSequences=list(), globalFrameOrientation = "XYZ", forwardProgression = True  ):
         """
             :Parameters:
                - `acq` (btkAcquisition) - btk acquisition instance of a dynamic trial
@@ -625,6 +625,7 @@ class ModelAbsoluteAnglesFilter(object):
         self.m_model = iMod
         self.m_segmentLabels = segmentLabels
         self.m_angleLabels = angleLabels
+        self.m_eulerSequences = eulerSequences
         self.m_globalFrameOrientation = globalFrameOrientation
         self.m_forwardProgression = forwardProgression
 
@@ -644,26 +645,80 @@ class ModelAbsoluteAnglesFilter(object):
             
             absoluteAngleValues = np.zeros((self.m_aqui.GetPointFrameNumber(),3))
 
+
             if self.m_globalFrameOrientation == "XYZ":
                 if self.m_forwardProgression:
-                    Rglobal = np.array([[1,0,0],[0,1,0],[0,0,1]])
+                    pt1=np.array([0,0,0]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt2=np.array([1,0,0])#aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt3=np.array([0,0,1]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
                 else:
-                    Rglobal = np.array([[-1,0,0],[0,-1,0],[0,0,1]])
-                
-                
+                    pt1=np.array([0,0,0]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt2=np.array([-1,0,0])#aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt3=np.array([0,0,1]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+                a1=(pt2-pt1)
+                v=(pt3-pt1)
+                a2=np.cross(a1,v)
+                x,y,z,Rglobal=cfr.setFrameData(a1,a2,"XYiZ")
+
+            if self.m_globalFrameOrientation == "YXZ":
+                if self.m_forwardProgression:
+
+                    pt1=np.array([0,0,0]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt2=np.array([0,1,0])#aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt3=np.array([0,0,1]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                else:
+                    pt1=np.array([0,0,0]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt2=np.array([0,-1,0])#aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt3=np.array([0,0,1]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+                a1=(pt2-pt1)
+                v=(pt3-pt1)
+                a2=np.cross(a1,v)
+                x,y,z,Rglobal=cfr.setFrameData(a1,a2,"XYiZ")
+
             seg = self.m_model.getSegment(self.m_segmentLabels[index])
-            side  = seg.side           
+            side  = seg.side
+            eulerSequence = self.m_eulerSequences[index]
+            
+            if eulerSequence == "TOR":
+                logging.info( "segment (%s) - sequence Tilt-Obliquity-Rotation used" %(seg.name) )
+            elif eulerSequence == "TRO":
+                logging.info( "segment (%s) - sequence Tilt-Rotation-Obliquity used" %(seg.name) )
+            elif eulerSequence == "ROT":
+                logging.info( "segment (%s) - sequence Rotation-Obliquity-Tilt used" %(seg.name) )
+            elif eulerSequence == "RTO":
+                logging.info( "segment (%s) - sequence Rotation-Tilt-Obliquity used" %(seg.name) )
+            elif eulerSequence == "OTR":
+                logging.info( "segment (%s) - sequence Obliquity-Tilt-Rotation used" %(seg.name) )
+            elif eulerSequence == "ORT":
+                logging.info( "segment (%s) - sequence Obliquity-Rotation-Tilt used" %(seg.name) )
+            else: 
+                logging.warning( "segment (%s) - sequence doest recognize - sequence Tilt-Obliquity-Rotation used by default" %(seg.name) )
+        
             
             for i in range (0, self.m_aqui.GetPointFrameNumber()):
                 Rseg = seg.anatomicalFrame.motion[i].getRotation()
                 Rrelative= np.dot(Rglobal.T,Rseg)
-
-                if self.m_globalFrameOrientation == "XYZ":
-                    Euler1,Euler2,Euler3 = ceu.euler_yxz(Rrelative)
                 
-                absoluteAngleValues[i,0] = Euler1
-                absoluteAngleValues[i,1] = Euler2
-                absoluteAngleValues[i,2] = Euler3
+                if eulerSequence == "TOR":
+                    tilt,obliquity,rotation = ceu.euler_yxz(Rrelative,similarOrder =True)
+                elif eulerSequence == "TRO":
+                    tilt,Euler2,obliquity = ceu.euler_yzx(Rrelative)
+                elif eulerSequence == "ROT":
+                    rotation,obliquity,tilt = ceu.euler_zxy(Rrelative)
+                elif eulerSequence == "RTO":
+                    rotation,tilt,obliquity = ceu.euler_zyx(Rrelative)
+                elif eulerSequence == "OTR":
+                    obliquity,tilt,rotation = ceu.euler_xyz(Rrelative)
+                elif eulerSequence == "ORT":
+                    obliquity,rotation,tilt = ceu.euler_xzy(Rrelative)
+                else: 
+                    tilt,obliquity,rotation = ceu.euler_yxz(Rrelative)
+
+                absoluteAngleValues[i,0] = tilt
+                absoluteAngleValues[i,1] = obliquity
+                absoluteAngleValues[i,2] = rotation
         
             if side == pyCGM2Enums.SegmentSide.Central:
                 
@@ -685,7 +740,7 @@ class ModelAbsoluteAnglesFilter(object):
                 btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
                                      absoluteAngleValues,PointType=btk.btkPoint.Angle, desc=description)   
 
-        #smartWriter(self.m_aqui, "verifAbsAng.c3d")                           
+#        btkTools.smartWriter(self.m_aqui, "verifAbsAng.c3d")                           
 
 # ----- Force plates -----
 
