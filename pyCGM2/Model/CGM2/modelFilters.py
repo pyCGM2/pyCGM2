@@ -617,6 +617,7 @@ class ModelAbsoluteAnglesFilter(object):
                - `iMod` (pyCGM2.Model.CGM2.model.Model) - a model instance
                - `segmentLabels` (list of str) - segment labels
                - `angleLabels` (list of str) - absolute angles labels
+               - `eulerSequences` (list of str) - euler sequence to use. ( nomenclature TOR (ie Tilt-Obliquity-Rotation) ) 
                - `globalFrameOrientation` (str) - global frame
                - `forwardProgression` (bool) - flag indicating subject moves in same direction than the global longitudinal axis
 
@@ -648,13 +649,13 @@ class ModelAbsoluteAnglesFilter(object):
 
             if self.m_globalFrameOrientation == "XYZ":
                 if self.m_forwardProgression:
-                    pt1=np.array([0,0,0]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    pt2=np.array([1,0,0])#aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    pt3=np.array([0,0,1]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt1=np.array([0,0,0]) 
+                    pt2=np.array([1,0,0])
+                    pt3=np.array([0,0,1]) 
                 else:
-                    pt1=np.array([0,0,0]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    pt2=np.array([-1,0,0])#aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    pt3=np.array([0,0,1]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt1=np.array([0,0,0]) 
+                    pt2=np.array([-1,0,0])
+                    pt3=np.array([0,0,1]) 
 
                 a1=(pt2-pt1)
                 v=(pt3-pt1)
@@ -664,14 +665,14 @@ class ModelAbsoluteAnglesFilter(object):
             if self.m_globalFrameOrientation == "YXZ":
                 if self.m_forwardProgression:
 
-                    pt1=np.array([0,0,0]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    pt2=np.array([0,1,0])#aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    pt3=np.array([0,0,1]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    pt1=np.array([0,0,0])
+                    pt2=np.array([0,1,0])
+                    pt3=np.array([0,0,1])
                 else:
-                    pt1=np.array([0,0,0]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    pt2=np.array([0,-1,0])#aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    pt3=np.array([0,0,1]) #aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
+                    pt1=np.array([0,0,0]) 
+                    pt2=np.array([0,-1,0])
+                    pt3=np.array([0,0,1]) 
+                    
                 a1=(pt2-pt1)
                 v=(pt3-pt1)
                 a2=np.cross(a1,v)
