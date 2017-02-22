@@ -32,19 +32,19 @@ from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
 from pyCGM2 import viconInterface
 
 def updateNexusSubjectMp(NEXUS,model):
-    th_l = 0 if model.getViconThighOffset("Left") < 0.000001 else model.getViconThighOffset("Left")
-    sh_l = 0 if model.getViconShankOffset("Left") < 0.000001 else model.getViconShankOffset("Left")
-    tt_l = 0 if model.getViconTibialTorsion("Left") < 0.000001 else model.getViconTibialTorsion("Left")
+    th_l = 0 if np.abs(model.getViconThighOffset("Left")) < 0.000001 else model.getViconThighOffset("Left")
+    sh_l = 0 if np.abs(model.getViconShankOffset("Left"))< 0.000001 else model.getViconShankOffset("Left")
+    tt_l = 0 if np.abs(model.getViconTibialTorsion("Left")) < 0.000001 else model.getViconTibialTorsion("Left")
 
-    th_r = 0 if model.getViconThighOffset("Right") < 0.000001 else model.getViconThighOffset("Right")
-    sh_r = 0 if model.getViconShankOffset("Right") < 0.000001 else model.getViconShankOffset("Right")
-    tt_r = 0 if model.getViconTibialTorsion("Right") < 0.000001 else model.getViconTibialTorsion("Right")
+    th_r = 0 if np.abs(model.getViconThighOffset("Right")) < 0.000001 else model.getViconThighOffset("Right")
+    sh_r = 0 if np.abs(model.getViconShankOffset("Right")) < 0.000001 else model.getViconShankOffset("Right")
+    tt_r = 0 if np.abs(model.getViconTibialTorsion("Right")) < 0.000001 else model.getViconTibialTorsion("Right")
 
     spf_l,sro_l = model.getViconFootOffset("Left")
     spf_r,sro_r = model.getViconFootOffset("Right")
 
-    abdAdd_l = model.getViconAnkleAbAddOffset("Left")
-    abdAdd_r = model.getViconAnkleAbAddOffset("Right")
+    abdAdd_l = 0 if np.abs(model.getViconAnkleAbAddOffset("Left")) < 0.000001 else model.getViconAnkleAbAddOffset("Left") 
+    abdAdd_r = 0 if np.abs(model.getViconAnkleAbAddOffset("Right")) < 0.000001 else model.getViconAnkleAbAddOffset("Right") 
 
 
     
