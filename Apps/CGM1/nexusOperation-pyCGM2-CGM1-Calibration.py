@@ -21,7 +21,7 @@ import ViconNexus
 
 #btk
 import btk
-
+import numpy as np
 
 
 # pyCGM2 libraries

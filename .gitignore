@@ -87,3 +87,5 @@ ENV/
 
 *.c3d
 *.pyc
+
+*.pipeline

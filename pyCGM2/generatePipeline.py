@@ -32,7 +32,7 @@ CALIBRATION_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
     
       <Entry DisplayName="Run pyCGM2-CGM1-i- Gait Processing " Enabled="1" OperationId="107" OperationName="Python">
         <ParamList name="">
-          <Param name="Script" value="PATH_APPS/Apps/CGM1_i dataProcessing/nexusOperation-pyCGM2-CGM1_i-gaitProcessing.py"/>
+          <Param name="Script" value="PATH_APPS/CGM1-i_dataProcessing/nexusOperation-pyCGM2-CGM1_i-staticProcessing.py"/>
           <Param name="ScriptArgs"/>
           <Param name="UseNexusPython" value="false"/>
           <Param name="LaunchPython" value="false"/>
@@ -73,7 +73,7 @@ FITTING_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
     
       <Entry DisplayName="Run pyCGM2-CGM1-i- Gait Processing " Enabled="1" OperationId="107" OperationName="Python">
         <ParamList name="">
-          <Param name="Script" value="PATH_APPS/Apps/CGM1_i dataProcessing/nexusOperation-pyCGM2-CGM1_i-gaitProcessing.py"/>
+          <Param name="Script" value="PATH_APPS/CGM1-i_dataProcessing/nexusOperation-pyCGM2-CGM1_i-gaitProcessing.py"/>
           <Param name="ScriptArgs"/>
           <Param name="UseNexusPython" value="false"/>
           <Param name="LaunchPython" value="false"/>
@@ -123,7 +123,7 @@ def pipeline_pyCGM2_CGM1_1_Fitting(myAppFolder_path):
        
     myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
     
-    content = string.replace(CALIBRATION_CONTENT, 'iMODEL', "CGM1_1")
+    content = string.replace(FITTING_CONTENT, 'iMODEL', "CGM1_1")
     content_new = string.replace(content, 'PATH_APPS', myAppFolder_path_slash[:-1])
     
     if not os.path.isfile( str(myAppFolder_path+"CGM1_1\\") + "pyCGM2-CGM1_1-Fitting.Pipeline"):
