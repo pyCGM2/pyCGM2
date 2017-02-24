@@ -103,7 +103,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                          lateral_axis = None
                          ):
     """
-        Proces  of multiple gait c3d with lower limb CGM outputs
+        Processing  of multiple gait c3d with lower limb CGM outputs
         
         :Parameters:
            - `modelledFilenames` (list of str) - filenames of gai trial with kinematics and kinetics  
@@ -119,6 +119,12 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
            - `lateral_axis` (str) - label of the global lateral axis
            - `name_out` (str) - new filename of any output files   
            - `DATA_PATH_OUT` (str) - new folder to store any  output files
+
+   
+       *TODO* :
+       
+           - better manage both longitudinal_axis and laterals_axis inputs. 
+
     """
 
 

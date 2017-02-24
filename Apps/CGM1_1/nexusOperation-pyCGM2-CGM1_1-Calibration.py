@@ -109,7 +109,6 @@ if __name__ == "__main__":
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
             calibrateFilenameLabelledNoExt = "test" #"static Cal 01-noKAD-noAnkleMed" #
-            da,pa = NEXUS.GetTrialName()
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -255,10 +254,6 @@ if __name__ == "__main__":
             logging.warning("CASE FOUND ===> Right Side - CGM1 - medial ankle ")
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
             useRightAJCnodeLabel = "RAJC_mid"
-
-        print "---------------------"
-        print useRightAJCnodeLabel
-        print "---------------------"
 
         # ----Final Calibration filter if model previously decorated ----- 
         if model.decoratedModel:
