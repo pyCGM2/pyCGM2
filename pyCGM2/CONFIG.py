@@ -32,12 +32,13 @@ TEST_DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\"
 MAIN_BENCHMARK_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\"
 
 # [optional] path pointing pyCGM2-Nexus tools
-
 NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\" 
+
+# [optional]  setting folder
+PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"Settings\\"
 
 
 # pipeline generation
-
 # cgm1
 generatePipeline.pipeline_pyCGM2_CGM1_Calibration(MAIN_PYCGM2_APPS_PATH) 
 generatePipeline.pipeline_pyCGM2_CGM1_Fitting(MAIN_PYCGM2_APPS_PATH) 

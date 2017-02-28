@@ -6,6 +6,7 @@ import json
 import pdb
 import cPickle
 import json
+from shutil import copyfile
 
 # pyCGM2 settings
 import pyCGM2
@@ -122,7 +123,8 @@ if __name__ == "__main__":
 
         # ---- pyCGM2 files ----
         if not os.path.isfile( DATA_PATH + "pyCGM2.inputs"):
-            raise Exception ("pyCGM2.inputs file doesn't exist")
+            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.inputs"), str(DATA_PATH + "pyCGM2.inputs"))
+            logging.warning("Copy of pyCGM2.inputs from pyCGM2 settings")
         else:
             inputs = json.loads(open(DATA_PATH +'pyCGM2.inputs').read())
 
