@@ -329,5 +329,23 @@ def checkPigProcessing(acq):
                     flag = False
     return flag
 
+def hasChild(md,mdLabel):
+    """
+        Check if a label is within metadata 
 
+        .. note:: 
+        
+            btk has a HasChildren method. HasChild doesn t exist, you have to use MetadataIterator to loop metadata   
+        
+        :Parameters:
+            - `md` (btkMetadata) - a btk metadata instance
+            - `mdLabel` (str) - label of the metadata you want to check
+    """
+
+    outMd = None
+    for itMd in btk.Iterate(md):
+        if itMd.GetLabel() == mdLabel:
+            outMd = itMd
+            break
+    return outMd
   
