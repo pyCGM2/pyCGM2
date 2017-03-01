@@ -954,7 +954,7 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
                     pointLabel_L,contextPointLabel_L,
                     pointLabel_R, contextPointLabel_R,
                     axis,
-                    title, xlabel="", ylabel="",
+                    title, xlabel="", ylabel="",ylim=None,
                     leftLimits=None,
                     rightLimits=None):
 
@@ -1018,8 +1018,10 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
             double1 = analysisStructureItem.pst['doubleStance1', 'Left']["mean"]
             double2 = analysisStructureItem.pst['doubleStance2', 'Left']["mean"]
             figAxis.axvline(stance,color='r',ls='dashed')
-            figAxis.axvline(double1,color='r',ls='dotted')
-            figAxis.axvline(stance-double2,color='r',ls='dotted')
+            
+            
+            figAxis.axvline(double1,ymin=0.9, ymax=1.0,color='r',ls='dotted')
+            figAxis.axvline(stance-double2,ymin=0.9, ymax=1.0,color='r',ls='dotted')
 
         if leftLimits is not None:
             for value in leftLimits:
@@ -1040,8 +1042,8 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
             double1 = analysisStructureItem.pst['doubleStance1', 'Right']["mean"]
             double2 = analysisStructureItem.pst['doubleStance2', 'Right']["mean"]
             figAxis.axvline(stance,color='b',ls='dashed')
-            figAxis.axvline(double1,color='b',ls='dotted')
-            figAxis.axvline(stance-double2,color='b',ls='dotted')
+            figAxis.axvline(double1,ymin=0.9, ymax=1.0,color='b',ls='dotted')
+            figAxis.axvline(stance-double2,ymin=0.9, ymax=1.0,color='b',ls='dotted')
 
         if rightLimits is not None:
             for value in rightLimits:
@@ -1054,11 +1056,15 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
     figAxis.tick_params(axis='y', which='major', labelsize=6)
     figAxis.set_xlabel(xlabel,size=8)
     figAxis.set_ylabel(ylabel,size=8)
+    
+    if ylim is not None:
+        figAxis.set_ylim(ylim)
 
 
 def gaitConsistencyPlot( figAxis, analysisStructureItem,  pointLabel_L,contextPointLabel_L, pointLabel_R, contextPointLabel_R, axis, title, xlabel="", ylabel="",
                     leftLimits=None,
-                    rightLimits=None):
+                    rightLimits=None,
+                    ylim=None):
 
     '''
 
@@ -1117,8 +1123,9 @@ def gaitConsistencyPlot( figAxis, analysisStructureItem,  pointLabel_L,contextPo
         if analysisStructureItem.pst !={}:
             for valStance,valDouble1,valDouble2, in zip(analysisStructureItem.pst['stancePhase', 'Left']["values"],analysisStructureItem.pst['doubleStance1', 'Left']["values"],analysisStructureItem.pst['doubleStance2', 'Left']["values"]):
                 figAxis.axvline(valStance,color='r',ls='dashed')
-                figAxis.axvline(valDouble1,color='r',ls='dotted')
-                figAxis.axvline(valStance-valDouble2,color='r',ls='dotted')
+
+                figAxis.axvline(valDouble1,ymin=0.9, ymax =1.0 ,color='r',ls='dotted')
+                figAxis.axvline(valStance-valDouble2,ymin=0.9, ymax =1.0 ,color='r',ls='dotted')
 
 
         if leftLimits is not None:
@@ -1148,8 +1155,9 @@ def gaitConsistencyPlot( figAxis, analysisStructureItem,  pointLabel_L,contextPo
         if analysisStructureItem.pst !={}:
             for valStance,valDouble1,valDouble2, in zip(analysisStructureItem.pst['stancePhase', 'Right']["values"],analysisStructureItem.pst['doubleStance1', 'Right']["values"],analysisStructureItem.pst['doubleStance2', 'Right']["values"]):
                 figAxis.axvline(valStance,color='b',ls='dashed')
-                figAxis.axvline(valDouble1,color='b',ls='dotted')
-                figAxis.axvline(valStance-valDouble2,color='b',ls='dotted')
+
+                figAxis.axvline(valDouble1,ymin=0.9, ymax=1.0, color='b',ls='dotted')
+                figAxis.axvline(valStance-valDouble2,ymin=0.9, ymax=1.0, color='b',ls='dotted')
 
         if rightLimits is not None:
             for value in rightLimits:
@@ -1164,6 +1172,8 @@ def gaitConsistencyPlot( figAxis, analysisStructureItem,  pointLabel_L,contextPo
     figAxis.set_xlabel(xlabel,size=8)
     figAxis.set_ylabel(ylabel,size=8)
 
+    if ylim is not None:
+        figAxis.set_ylim(ylim)
 
 # ------ FILTER -----------
 class PlottingFilter(object):
@@ -1542,6 +1552,42 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
             self.__limits[str(side)+".Ankle.Power"] = None
 
 
+        self.__ylimits=dict()
+
+        self.__ylimits["PelvisProgress.Angles","Tilt"] = [0,60]
+        self.__ylimits["PelvisProgress.Angles","Obli"] = [-30,30]
+        self.__ylimits["PelvisProgress.Angles","Rota"] = [-30,30]
+    
+        self.__ylimits["Hip.Angles","Flex"] = [-20,70]
+        self.__ylimits["Hip.Angles","Addu"] = [-30,30]
+        self.__ylimits["Hip.Angles","Rota"] = [-30,30]
+    
+        self.__ylimits["Knee.Angles","Flex"] = [-15,75]
+        self.__ylimits["Knee.Angles","Addu"] = [-30,30]
+        self.__ylimits["Knee.Angles","Rota"] = [-30,30]
+    
+        self.__ylimits["Ankle.Angles","Flex"] = [-30,30]
+        self.__ylimits["Ankle.Angles","Addu"] = [-30,30]
+    
+        self.__ylimits["FootProgress.Angles","Rota"] = [-30,30]
+    
+    
+        self.__ylimits["Hip.Moment","Ext"] = [-2.0 *1000.0, 3.0*1000.0]
+        self.__ylimits["Hip.Moment","Abd"] = [-2.0*1000.0, 1.0*1000.0]
+        self.__ylimits["Hip.Moment","Rot"] = [-0.5*1000.0, 0.5*1000.0]
+        self.__ylimits["Hip.Power"] = [-3.0, 3.0]
+    
+        self.__ylimits["Knee.Moment","Ext"] = [-1.0*1000.0, 1.0*1000.0]
+        self.__ylimits["Knee.Moment","Abd"] = [-1.0*1000.0, 1.0*1000.0]
+        self.__ylimits["Knee.Moment","Rot"] = [-0.5*1000.0, 0.5*1000.0]
+        self.__ylimits["Knee.Power"] = [-3.0, 3.0]
+    
+        self.__ylimits["Ankle.Moment","Pla"] = [-1.0*1000.0, 3.0*1000.0]
+        self.__ylimits["Ankle.Moment","Rot"] = [-0.5*1000.0, 0.5*1000.0]
+        self.__ylimits["Ankle.Moment","Eve"] = [-0.5*1000.0, 0.5*1000.0]
+        self.__ylimits["Ankle.Power"] = [-2.0, 5.0]
+
+
     def printTranslators(self):
         """
             **Description :** display all translator labels
@@ -1698,40 +1744,52 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
             # make
             suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
             gaitDescriptivePlot(ax1,  self.m_input.kinematicStats, self.__translators["Left.PelvisProgress.Angles"]+suffixPlus,"Left", self.__translators["Right.PelvisProgress.Angles"]+suffixPlus,"Right",0,"Pelvis Tilt", ylabel = " angle (deg)",
-                            leftLimits = self.__limits["Left.PelvisProgress.Angles","Tilt"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Tilt"])
+                            leftLimits = self.__limits["Left.PelvisProgress.Angles","Tilt"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Tilt"],
+                            ylim = self.__ylimits["PelvisProgress.Angles","Tilt"])
                             
             gaitDescriptivePlot(ax2,  self.m_input.kinematicStats, self.__translators["Left.PelvisProgress.Angles"]+suffixPlus,"Left", self.__translators["Right.PelvisProgress.Angles"]+suffixPlus,"Right",1,"Pelvis Obliquity", ylabel = " angle (deg)",
-                            leftLimits = self.__limits["Left.PelvisProgress.Angles","Obli"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Obli"])
+                            leftLimits = self.__limits["Left.PelvisProgress.Angles","Obli"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Obli"],
+                            ylim = self.__ylimits["PelvisProgress.Angles","Obli"])
                           
             gaitDescriptivePlot(ax3,  self.m_input.kinematicStats, self.__translators["Left.PelvisProgress.Angles"]+suffixPlus,"Left", self.__translators["Right.PelvisProgress.Angles"]+suffixPlus,"Right",2,"Pelvis Rotation", ylabel = " angle (deg)",
-                            leftLimits = self.__limits["Left.PelvisProgress.Angles","Rota"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Rota"])
+                            leftLimits = self.__limits["Left.PelvisProgress.Angles","Rota"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Rota"],
+                            ylim = self.__ylimits["PelvisProgress.Angles","Rota"])
                           
             gaitDescriptivePlot(ax4,  self.m_input.kinematicStats, self.__translators["Left.Hip.Angles"]+suffixPlus,"Left", self.__translators["Right.Hip.Angles"]+suffixPlus,"Right",0,"Hip flexion", ylabel = " angle (deg)",
-                            leftLimits = self.__limits["Left.Hip.Angles","Flex"],rightLimits = self.__limits["Right.Hip.Angles","Flex"])
+                            leftLimits = self.__limits["Left.Hip.Angles","Flex"],rightLimits = self.__limits["Right.Hip.Angles","Flex"],
+                            ylim = self.__ylimits["Hip.Angles","Flex"])
                           
             gaitDescriptivePlot(ax5,  self.m_input.kinematicStats, self.__translators["Left.Hip.Angles"]+suffixPlus,"Left", self.__translators["Right.Hip.Angles"]+suffixPlus,"Right",1,"Hip adduction",ylabel = " angle (deg)",
-                            leftLimits = self.__limits["Left.Hip.Angles","Addu"],rightLimits = self.__limits["Right.Hip.Angles","Addu"])
+                            leftLimits = self.__limits["Left.Hip.Angles","Addu"],rightLimits = self.__limits["Right.Hip.Angles","Addu"],
+                            ylim = self.__ylimits["Hip.Angles","Addu"])
                           
             gaitDescriptivePlot(ax6,  self.m_input.kinematicStats, self.__translators["Left.Hip.Angles"]+suffixPlus,"Left", self.__translators["Right.Hip.Angles"]+suffixPlus,"Right",2,"Hip rotation",ylabel = " angle (deg)",
-                            leftLimits = self.__limits["Left.Hip.Angles","Rota"],rightLimits = self.__limits["Right.Hip.Angles","Rota"])
+                            leftLimits = self.__limits["Left.Hip.Angles","Rota"],rightLimits = self.__limits["Right.Hip.Angles","Rota"],
+                            ylim = self.__ylimits["Hip.Angles","Rota"])
                           
             gaitDescriptivePlot(ax7,  self.m_input.kinematicStats, self.__translators["Left.Knee.Angles"]+suffixPlus,"Left", self.__translators["Right.Knee.Angles"]+suffixPlus,"Right",0,"Knee flexion",ylabel = " angle (deg)",
-                            leftLimits = self.__limits["Left.Knee.Angles","Flex"],rightLimits = self.__limits["Right.Knee.Angles","Flex"])
+                            leftLimits = self.__limits["Left.Knee.Angles","Flex"],rightLimits = self.__limits["Right.Knee.Angles","Flex"],
+                            ylim = self.__ylimits["Knee.Angles","Flex"])
                           
             gaitDescriptivePlot(ax8,  self.m_input.kinematicStats, self.__translators["Left.Knee.Angles"]+suffixPlus,"Left", self.__translators["Right.Knee.Angles"]+suffixPlus,"Right",1,"Knee adduction",ylabel = " angle (deg)",
-                            leftLimits = self.__limits["Left.Knee.Angles","Addu"],rightLimits = self.__limits["Right.Knee.Angles","Addu"])
+                            leftLimits = self.__limits["Left.Knee.Angles","Addu"],rightLimits = self.__limits["Right.Knee.Angles","Addu"],
+                            ylim = self.__ylimits["Knee.Angles","Addu"])
                           
             gaitDescriptivePlot(ax9,  self.m_input.kinematicStats, self.__translators["Left.Knee.Angles"]+suffixPlus,"Left", self.__translators["Right.Knee.Angles"]+suffixPlus,"Right",2,"Knee rotation",ylabel = " angle (deg)",
-                            leftLimits = self.__limits["Left.Knee.Angles","Rota"],rightLimits = self.__limits["Right.Knee.Angles","Rota"])
+                            leftLimits = self.__limits["Left.Knee.Angles","Rota"],rightLimits = self.__limits["Right.Knee.Angles","Rota"],
+                            ylim = self.__ylimits["Knee.Angles","Rota"])
 
             gaitDescriptivePlot(ax10, self.m_input.kinematicStats,  self.__translators["Left.Ankle.Angles"]+suffixPlus,"Left", self.__translators["Right.Ankle.Angles"]+suffixPlus,"Right",0,"Ankle dorsiflexion",ylabel = " angle (deg)", xlabel ="Gait cycle %",
-                            leftLimits = self.__limits["Left.Ankle.Angles","Flex"],rightLimits = self.__limits["Right.Ankle.Angles","Flex"])
+                            leftLimits = self.__limits["Left.Ankle.Angles","Flex"],rightLimits = self.__limits["Right.Ankle.Angles","Flex"],
+                            ylim = self.__ylimits["Ankle.Angles","Flex"])
 
             gaitDescriptivePlot(ax11, self.m_input.kinematicStats,  self.__translators["Left.Ankle.Angles"]+suffixPlus,"Left", self.__translators["Right.Ankle.Angles"]+suffixPlus,"Right",1,"Ankle adduction",ylabel = " angle (deg)", xlabel ="Gait cycle %",
-                            leftLimits = self.__limits["Left.Ankle.Angles","Addu"],rightLimits = self.__limits["Right.Ankle.Angles","Addu"])
+                            leftLimits = self.__limits["Left.Ankle.Angles","Addu"],rightLimits = self.__limits["Right.Ankle.Angles","Addu"],
+                            ylim = self.__ylimits["Ankle.Angles","Addu"])
 
             gaitDescriptivePlot(ax12, self.m_input.kinematicStats,  self.__translators["Left.FootProgress.Angles"]+suffixPlus,"Left", self.__translators["Right.FootProgress.Angles"]+suffixPlus,"Right",1,"Foot Progression",ylabel = "angle (deg)", xlabel ="Gait cycle %",
-                            leftLimits = self.__limits["Left.FootProgress.Angles","Rota"],rightLimits = self.__limits["Right.FootProgress.Angles","Rota"])
+                            leftLimits = self.__limits["Left.FootProgress.Angles","Rota"],rightLimits = self.__limits["Right.FootProgress.Angles","Rota"],
+                            ylim = self.__ylimits["FootProgress.Angles","Rota"])
 
 
 
@@ -1778,40 +1836,52 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
         # make
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
         gaitConsistencyPlot(ax1,  self.m_input.kinematicStats, self.__translators["Left.PelvisProgress.Angles"]+suffixPlus,"Left", self.__translators["Right.PelvisProgress.Angles"]+suffixPlus,"Right",0,"Pelvis Tilt", ylabel = " angle (deg)",
-                            leftLimits = self.__limits["Left.PelvisProgress.Angles","Tilt"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Tilt"])
-
+                            leftLimits = self.__limits["Left.PelvisProgress.Angles","Tilt"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Tilt"],
+                            ylim = self.__ylimits["PelvisProgress.Angles","Tilt"])
+                            
         gaitConsistencyPlot(ax2,  self.m_input.kinematicStats, self.__translators["Left.PelvisProgress.Angles"]+suffixPlus,"Left", self.__translators["Right.PelvisProgress.Angles"]+suffixPlus,"Right",1,"Pelvis Obliquity", ylabel = " angle (deg)",
-                        leftLimits = self.__limits["Left.PelvisProgress.Angles","Obli"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Obli"])
-
+                        leftLimits = self.__limits["Left.PelvisProgress.Angles","Obli"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Obli"],
+                        ylim = self.__ylimits["PelvisProgress.Angles","Obli"])
+                      
         gaitConsistencyPlot(ax3,  self.m_input.kinematicStats, self.__translators["Left.PelvisProgress.Angles"]+suffixPlus,"Left", self.__translators["Right.PelvisProgress.Angles"]+suffixPlus,"Right",2,"Pelvis Rotation", ylabel = " angle (deg)",
-                        leftLimits = self.__limits["Left.PelvisProgress.Angles","Rota"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Rota"])
-
+                        leftLimits = self.__limits["Left.PelvisProgress.Angles","Rota"],rightLimits = self.__limits["Right.PelvisProgress.Angles","Rota"],
+                        ylim = self.__ylimits["PelvisProgress.Angles","Rota"])
+                      
         gaitConsistencyPlot(ax4,  self.m_input.kinematicStats, self.__translators["Left.Hip.Angles"]+suffixPlus,"Left", self.__translators["Right.Hip.Angles"]+suffixPlus,"Right",0,"Hip flexion", ylabel = " angle (deg)",
-                        leftLimits = self.__limits["Left.Hip.Angles","Flex"],rightLimits = self.__limits["Right.Hip.Angles","Flex"])
-
+                        leftLimits = self.__limits["Left.Hip.Angles","Flex"],rightLimits = self.__limits["Right.Hip.Angles","Flex"],
+                        ylim = self.__ylimits["Hip.Angles","Flex"])
+                      
         gaitConsistencyPlot(ax5,  self.m_input.kinematicStats, self.__translators["Left.Hip.Angles"]+suffixPlus,"Left", self.__translators["Right.Hip.Angles"]+suffixPlus,"Right",1,"Hip adduction",ylabel = " angle (deg)",
-                        leftLimits = self.__limits["Left.Hip.Angles","Addu"],rightLimits = self.__limits["Right.Hip.Angles","Addu"])
-
+                        leftLimits = self.__limits["Left.Hip.Angles","Addu"],rightLimits = self.__limits["Right.Hip.Angles","Addu"],
+                        ylim = self.__ylimits["Hip.Angles","Addu"])
+                      
         gaitConsistencyPlot(ax6,  self.m_input.kinematicStats, self.__translators["Left.Hip.Angles"]+suffixPlus,"Left", self.__translators["Right.Hip.Angles"]+suffixPlus,"Right",2,"Hip rotation",ylabel = " angle (deg)",
-                        leftLimits = self.__limits["Left.Hip.Angles","Rota"],rightLimits = self.__limits["Right.Hip.Angles","Rota"])
-
+                        leftLimits = self.__limits["Left.Hip.Angles","Rota"],rightLimits = self.__limits["Right.Hip.Angles","Rota"],
+                        ylim = self.__ylimits["Hip.Angles","Rota"])
+                      
         gaitConsistencyPlot(ax7,  self.m_input.kinematicStats, self.__translators["Left.Knee.Angles"]+suffixPlus,"Left", self.__translators["Right.Knee.Angles"]+suffixPlus,"Right",0,"Knee flexion",ylabel = " angle (deg)",
-                        leftLimits = self.__limits["Left.Knee.Angles","Flex"],rightLimits = self.__limits["Right.Knee.Angles","Flex"])
-
+                        leftLimits = self.__limits["Left.Knee.Angles","Flex"],rightLimits = self.__limits["Right.Knee.Angles","Flex"],
+                        ylim = self.__ylimits["Knee.Angles","Flex"])
+                      
         gaitConsistencyPlot(ax8,  self.m_input.kinematicStats, self.__translators["Left.Knee.Angles"]+suffixPlus,"Left", self.__translators["Right.Knee.Angles"]+suffixPlus,"Right",1,"Knee adduction",ylabel = " angle (deg)",
-                        leftLimits = self.__limits["Left.Knee.Angles","Addu"],rightLimits = self.__limits["Right.Knee.Angles","Addu"])
-
+                        leftLimits = self.__limits["Left.Knee.Angles","Addu"],rightLimits = self.__limits["Right.Knee.Angles","Addu"],
+                        ylim = self.__ylimits["Knee.Angles","Addu"])
+                      
         gaitConsistencyPlot(ax9,  self.m_input.kinematicStats, self.__translators["Left.Knee.Angles"]+suffixPlus,"Left", self.__translators["Right.Knee.Angles"]+suffixPlus,"Right",2,"Knee rotation",ylabel = " angle (deg)",
-                        leftLimits = self.__limits["Left.Knee.Angles","Rota"],rightLimits = self.__limits["Right.Knee.Angles","Rota"])
-
+                        leftLimits = self.__limits["Left.Knee.Angles","Rota"],rightLimits = self.__limits["Right.Knee.Angles","Rota"],
+                        ylim = self.__ylimits["Knee.Angles","Rota"])
+        
         gaitConsistencyPlot(ax10, self.m_input.kinematicStats,  self.__translators["Left.Ankle.Angles"]+suffixPlus,"Left", self.__translators["Right.Ankle.Angles"]+suffixPlus,"Right",0,"Ankle dorsiflexion",ylabel = " angle (deg)", xlabel ="Gait cycle %",
-                        leftLimits = self.__limits["Left.Ankle.Angles","Flex"],rightLimits = self.__limits["Right.Ankle.Angles","Flex"])
-
+                        leftLimits = self.__limits["Left.Ankle.Angles","Flex"],rightLimits = self.__limits["Right.Ankle.Angles","Flex"],
+                        ylim = self.__ylimits["Ankle.Angles","Flex"])
+        
         gaitConsistencyPlot(ax11, self.m_input.kinematicStats,  self.__translators["Left.Ankle.Angles"]+suffixPlus,"Left", self.__translators["Right.Ankle.Angles"]+suffixPlus,"Right",1,"Ankle adduction",ylabel = " angle (deg)", xlabel ="Gait cycle %",
-                        leftLimits = self.__limits["Left.Ankle.Angles","Addu"],rightLimits = self.__limits["Right.Ankle.Angles","Addu"])
-
+                        leftLimits = self.__limits["Left.Ankle.Angles","Addu"],rightLimits = self.__limits["Right.Ankle.Angles","Addu"],
+                        ylim = self.__ylimits["Ankle.Angles","Addu"])
+        
         gaitConsistencyPlot(ax12, self.m_input.kinematicStats,  self.__translators["Left.FootProgress.Angles"]+suffixPlus,"Left", self.__translators["Right.FootProgress.Angles"]+suffixPlus,"Right",1,"Foot Progression",ylabel = "angle (deg)", xlabel ="Gait cycle %",
-                        leftLimits = self.__limits["Left.FootProgress.Angles","Rota"],rightLimits = self.__limits["Right.FootProgress.Angles","Rota"])
+                        leftLimits = self.__limits["Left.FootProgress.Angles","Rota"],rightLimits = self.__limits["Right.FootProgress.Angles","Rota"],
+                        ylim = self.__ylimits["FootProgress.Angles","Rota"])
 
 
         if normativeData is not None:
@@ -1861,32 +1931,44 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
                 suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
 
                 gaitDescriptivePlot(ax1,self.m_input.kineticStats, self.__translators["Left.Hip.Moment"]+suffixPlus,"Left", self.__translators["Right.Hip.Moment"]+suffixPlus,"Right",0,"Hip extensor Moment", ylabel = " moment (N.mm.kg-1)",
-                                    leftLimits = self.__limits["Left.Hip.Moment","Ext"],rightLimits = self.__limits["Right.Hip.Moment","Ext"])
+                                    leftLimits = self.__limits["Left.Hip.Moment","Ext"],rightLimits = self.__limits["Right.Hip.Moment","Ext"],
+                                    ylim =self.__ylimits["Hip.Moment","Ext"],scale =1000.0)
                 gaitDescriptivePlot(ax2,self.m_input.kineticStats, self.__translators["Left.Hip.Moment"]+suffixPlus,"Left", self.__translators["Right.Hip.Moment"]+suffixPlus,"Right",1,"Hip abductor Moment",ylabel = " moment (N.mm.kg-1)",
-                                    leftLimits = self.__limits["Left.Hip.Moment","Abd"],rightLimits = self.__limits["Right.Hip.Moment","Abd"])
+                                    leftLimits = self.__limits["Left.Hip.Moment","Abd"],rightLimits = self.__limits["Right.Hip.Moment","Abd"],
+                                    ylim =self.__ylimits["Hip.Moment","Abd"],scale =1000.0)
                 gaitDescriptivePlot(ax3,self.m_input.kineticStats, self.__translators["Left.Hip.Moment"]+suffixPlus,"Left", self.__translators["Right.Hip.Moment"]+suffixPlus,"Right",2,"Hip rotation Moment",ylabel = " moment (N.mm.kg-1)",
-                                    leftLimits = self.__limits["Left.Hip.Moment","Rot"],rightLimits = self.__limits["Right.Hip.Moment","Rot"])
+                                    leftLimits = self.__limits["Left.Hip.Moment","Rot"],rightLimits = self.__limits["Right.Hip.Moment","Rot"],
+                                    ylim =self.__ylimits["Hip.Moment","Rot"],scale =1000.0)
                 gaitDescriptivePlot(ax4,self.m_input.kineticStats, self.__translators["Left.Hip.Power"]+suffixPlus, "Left", self.__translators["Right.Hip.Power"]+suffixPlus,"Right",2,"Hip power",ylabel = " power (W.kg-1)",
-                                    leftLimits = self.__limits["Left.Hip.Power"],rightLimits = self.__limits["Right.Hip.Power"])
+                                    leftLimits = self.__limits["Left.Hip.Power"],rightLimits = self.__limits["Right.Hip.Power"],
+                                    ylim =self.__ylimits["Hip.Power","Ext"],scale =1000.0)
 
 
                 gaitDescriptivePlot(ax5,self.m_input.kineticStats, self.__translators["Left.Knee.Moment"]+suffixPlus,"Left", self.__translators["Right.Knee.Moment"]+suffixPlus,"Right",0,"Knee extensor Moment", ylabel = " moment (N.mm.kg-1)",
-                                    leftLimits = self.__limits["Left.Knee.Moment","Ext"],rightLimits = self.__limits["Right.Knee.Moment","Ext"])
+                                    leftLimits = self.__limits["Left.Knee.Moment","Ext"],rightLimits = self.__limits["Right.Knee.Moment","Ext"],
+                                    ylim =self.__ylimits["Knee.Moment","Ext"],scale =1000.0)
                 gaitDescriptivePlot(ax6,self.m_input.kineticStats, self.__translators["Left.Knee.Moment"]+suffixPlus,"Left", self.__translators["Right.Knee.Moment"]+suffixPlus,"Right",1,"Knee abductor Moment",ylabel = " moment (N.mm.kg-1)",
-                                    leftLimits = self.__limits["Left.Knee.Moment","Abd"],rightLimits = self.__limits["Right.Knee.Moment","Abd"])
+                                    leftLimits = self.__limits["Left.Knee.Moment","Abd"],rightLimits = self.__limits["Right.Knee.Moment","Abd"],
+                                    ylim =self.__ylimits["Knee.Moment","Abd"],scale =1000.0)
                 gaitDescriptivePlot(ax7,self.m_input.kineticStats, self.__translators["Left.Knee.Moment"]+suffixPlus,"Left", self.__translators["Right.Knee.Moment"]+suffixPlus,"Right",2,"Knee rotation Moment",ylabel = " moment (N.mm.kg-1)",
-                                    leftLimits = self.__limits["Left.Knee.Moment","Rot"],rightLimits = self.__limits["Right.Knee.Moment","Rot"])
+                                    leftLimits = self.__limits["Left.Knee.Moment","Rot"],rightLimits = self.__limits["Right.Knee.Moment","Rot"],
+                                    ylim =self.__ylimits["Knee.Moment","Rot"],scale =1000.0)
                 gaitDescriptivePlot(ax8,self.m_input.kineticStats, self.__translators["Left.Knee.Power"]+suffixPlus, "Left", self.__translators["Right.Knee.Power"]+suffixPlus,"Right",2,"Knee power",ylabel = " power (W.kg-1)",
-                                    leftLimits = self.__limits["Left.Knee.Power"],rightLimits = self.__limits["Right.Knee.Power"])
+                                    leftLimits = self.__limits["Left.Knee.Power"],rightLimits = self.__limits["Right.Knee.Power"],
+                                    ylim =self.__ylimits["Knee.Moment","Power"],scale =1000.0)
 
                 gaitDescriptivePlot(ax9,self.m_input.kineticStats, self.__translators["Left.Ankle.Moment"]+suffixPlus,"Left", self.__translators["Right.Ankle.Moment"]+suffixPlus,"Right",0,"Ankle plantarflexor Moment", ylabel = " moment (N.mm.kg-1)",xlabel ="Gait cycle %",
-                                    leftLimits = self.__limits["Left.Ankle.Moment","Pla"],rightLimits = self.__limits["Right.Ankle.Moment","Pla"])
+                                    leftLimits = self.__limits["Left.Ankle.Moment","Pla"],rightLimits = self.__limits["Right.Ankle.Moment","Pla"],
+                                    ylim =self.__ylimits["Ankle.Moment","Ext"],scale =1000.0)
                 gaitDescriptivePlot(ax10,self.m_input.kineticStats, self.__translators["Left.Ankle.Moment"]+suffixPlus,"Left", self.__translators["Right.Ankle.Moment"]+suffixPlus,"Right",1,"Ankle rotation Moment",ylabel = " moment (N.mm.kg-1)",xlabel ="Gait cycle %",
-                                    leftLimits = self.__limits["Left.Ankle.Moment","Rot"],rightLimits = self.__limits["Right.Ankle.Moment","Rot"])
+                                    leftLimits = self.__limits["Left.Ankle.Moment","Rot"],rightLimits = self.__limits["Right.Ankle.Moment","Rot"],
+                                    ylim =self.__ylimits["Ankle.Moment","Rot"],scale =1000.0)
                 gaitDescriptivePlot(ax11,self.m_input.kineticStats, self.__translators["Left.Ankle.Moment"]+suffixPlus,"Left", self.__translators["Right.Ankle.Moment"]+suffixPlus,"Right",2,"Ankle everter Moment",ylabel = " moment (N.mm.kg-1)",xlabel ="Gait cycle %",
-                                    leftLimits = self.__limits["Left.Ankle.Moment","Eve"],rightLimits = self.__limits["Right.Ankle.Moment","Eve"])
+                                    leftLimits = self.__limits["Left.Ankle.Moment","Eve"],rightLimits = self.__limits["Right.Ankle.Moment","Eve"],
+                                    ylim =self.__ylimits["Ankle.Moment","Eve"],scale =1000.0)
                 gaitDescriptivePlot(ax12,self.m_input.kineticStats, self.__translators["Left.Ankle.Power"]+suffixPlus, "Left", self.__translators["Right.Ankle.Power"]+suffixPlus,"Right",2,"Ankle power",ylabel = " power (W.kg-1)",xlabel ="Gait cycle %",
-                                    leftLimits = self.__limits["Left.Ankle.Power"],rightLimits = self.__limits["Right.Ankle.Power"])
+                                    leftLimits = self.__limits["Left.Ankle.Power"],rightLimits = self.__limits["Right.Ankle.Power"],
+                                    ylim =self.__ylimits["Ankle.Moment","Power"],scale =1000.0)
 
 
                 if self.m_nd_procedure is not None:
@@ -1940,32 +2022,44 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
             suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
 
             gaitConsistencyPlot(ax1,self.m_input.kineticStats, self.__translators["Left.Hip.Moment"]+suffixPlus,"Left", self.__translators["Right.Hip.Moment"]+suffixPlus,"Right",0,"Hip extensor Moment", ylabel = " moment (N.mm.kg-1)",
-                                    leftLimits = self.__limits["Left.Hip.Moment","Ext"],rightLimits = self.__limits["Right.Hip.Moment","Ext"])
+                                    leftLimits = self.__limits["Left.Hip.Moment","Ext"],rightLimits = self.__limits["Right.Hip.Moment","Ext"],
+                                    ylim =self.__ylimits["Hip.Moment","Ext"])
             gaitConsistencyPlot(ax2,self.m_input.kineticStats, self.__translators["Left.Hip.Moment"]+suffixPlus,"Left", self.__translators["Right.Hip.Moment"]+suffixPlus,"Right",1,"Hip abductor Moment",ylabel = " moment (N.mm.kg-1)",
-                                    leftLimits = self.__limits["Left.Hip.Moment","Abd"],rightLimits = self.__limits["Right.Hip.Moment","Abd"])
+                                leftLimits = self.__limits["Left.Hip.Moment","Abd"],rightLimits = self.__limits["Right.Hip.Moment","Abd"],
+                                ylim =self.__ylimits["Hip.Moment","Abd"])
             gaitConsistencyPlot(ax3,self.m_input.kineticStats, self.__translators["Left.Hip.Moment"]+suffixPlus,"Left", self.__translators["Right.Hip.Moment"]+suffixPlus,"Right",2,"Hip rotation Moment",ylabel = " moment (N.mm.kg-1)",
-                                    leftLimits = self.__limits["Left.Hip.Moment","Rot"],rightLimits = self.__limits["Right.Hip.Moment","Rot"])
+                                leftLimits = self.__limits["Left.Hip.Moment","Rot"],rightLimits = self.__limits["Right.Hip.Moment","Rot"],
+                                ylim =self.__ylimits["Hip.Moment","Rot"])
             gaitConsistencyPlot(ax4,self.m_input.kineticStats, self.__translators["Left.Hip.Power"]+suffixPlus, "Left", self.__translators["Right.Hip.Power"]+suffixPlus,"Right",2,"Hip power",ylabel = " power (W.kg-1)",
-                                leftLimits = self.__limits["Left.Hip.Power"],rightLimits = self.__limits["Right.Hip.Power"])
-
-
+                                leftLimits = self.__limits["Left.Hip.Power"],rightLimits = self.__limits["Right.Hip.Power"],
+                                ylim =self.__ylimits["Hip.Power"])
+            
+            
             gaitConsistencyPlot(ax5,self.m_input.kineticStats, self.__translators["Left.Knee.Moment"]+suffixPlus,"Left", self.__translators["Right.Knee.Moment"]+suffixPlus,"Right",0,"Knee extensor Moment", ylabel = " moment (N.mm.kg-1)",
-                                leftLimits = self.__limits["Left.Knee.Moment","Ext"],rightLimits = self.__limits["Right.Knee.Moment","Ext"])
+                                leftLimits = self.__limits["Left.Knee.Moment","Ext"],rightLimits = self.__limits["Right.Knee.Moment","Ext"],
+                                ylim =self.__ylimits["Knee.Moment","Ext"])
             gaitConsistencyPlot(ax6,self.m_input.kineticStats, self.__translators["Left.Knee.Moment"]+suffixPlus,"Left", self.__translators["Right.Knee.Moment"]+suffixPlus,"Right",1,"Knee abductor Moment",ylabel = " moment (N.mm.kg-1)",
-                                leftLimits = self.__limits["Left.Knee.Moment","Abd"],rightLimits = self.__limits["Right.Knee.Moment","Abd"])
+                                leftLimits = self.__limits["Left.Knee.Moment","Abd"],rightLimits = self.__limits["Right.Knee.Moment","Abd"],
+                                ylim =self.__ylimits["Knee.Moment","Abd"])
             gaitConsistencyPlot(ax7,self.m_input.kineticStats, self.__translators["Left.Knee.Moment"]+suffixPlus,"Left", self.__translators["Right.Knee.Moment"]+suffixPlus,"Right",2,"Knee rotation Moment",ylabel = " moment (N.mm.kg-1)",
-                                leftLimits = self.__limits["Left.Knee.Moment","Rot"],rightLimits = self.__limits["Right.Knee.Moment","Rot"])
+                                leftLimits = self.__limits["Left.Knee.Moment","Rot"],rightLimits = self.__limits["Right.Knee.Moment","Rot"],
+                                ylim =self.__ylimits["Knee.Moment","Rot"])
             gaitConsistencyPlot(ax8,self.m_input.kineticStats, self.__translators["Left.Knee.Power"]+suffixPlus, "Left", self.__translators["Right.Knee.Power"]+suffixPlus,"Right",2,"Knee power",ylabel = " power (W.kg-1)",
-                                leftLimits = self.__limits["Left.Knee.Power"],rightLimits = self.__limits["Right.Knee.Power"])
-
+                                leftLimits = self.__limits["Left.Knee.Power"],rightLimits = self.__limits["Right.Knee.Power"],
+                                ylim =self.__ylimits["Knee.Power"])
+            
             gaitConsistencyPlot(ax9,self.m_input.kineticStats, self.__translators["Left.Ankle.Moment"]+suffixPlus,"Left", self.__translators["Right.Ankle.Moment"]+suffixPlus,"Right",0,"Ankle plantarflexor Moment", ylabel = " moment (N.mm.kg-1)",xlabel ="Gait cycle %",
-                                leftLimits = self.__limits["Left.Ankle.Moment","Pla"],rightLimits = self.__limits["Right.Ankle.Moment","Pla"])
+                                leftLimits = self.__limits["Left.Ankle.Moment","Pla"],rightLimits = self.__limits["Right.Ankle.Moment","Pla"],
+                                ylim =self.__ylimits["Ankle.Moment","Pla"])
             gaitConsistencyPlot(ax10,self.m_input.kineticStats, self.__translators["Left.Ankle.Moment"]+suffixPlus,"Left", self.__translators["Right.Ankle.Moment"]+suffixPlus,"Right",1,"Ankle rotation Moment",ylabel = " moment (N.mm.kg-1)",xlabel ="Gait cycle %",
-                                leftLimits = self.__limits["Left.Ankle.Moment","Rot"],rightLimits = self.__limits["Right.Ankle.Moment","Rot"])
+                                leftLimits = self.__limits["Left.Ankle.Moment","Rot"],rightLimits = self.__limits["Right.Ankle.Moment","Rot"],
+                                ylim =self.__ylimits["Ankle.Moment","Rot"])
             gaitConsistencyPlot(ax11,self.m_input.kineticStats, self.__translators["Left.Ankle.Moment"]+suffixPlus,"Left", self.__translators["Right.Ankle.Moment"]+suffixPlus,"Right",2,"Ankle everter Moment",ylabel = " moment (N.mm.kg-1)",xlabel ="Gait cycle %",
-                                leftLimits = self.__limits["Left.Ankle.Moment","Eve"],rightLimits = self.__limits["Right.Ankle.Moment","Eve"])
+                                leftLimits = self.__limits["Left.Ankle.Moment","Eve"],rightLimits = self.__limits["Right.Ankle.Moment","Eve"],
+                                ylim =self.__ylimits["Ankle.Moment","Eve"])
             gaitConsistencyPlot(ax12,self.m_input.kineticStats, self.__translators["Left.Ankle.Power"]+suffixPlus, "Left", self.__translators["Right.Ankle.Power"]+suffixPlus,"Right",2,"Ankle power",ylabel = " power (W.kg-1)",xlabel ="Gait cycle %",
-                                leftLimits = self.__limits["Left.Ankle.Power"],rightLimits = self.__limits["Right.Ankle.Power"])            
+                                leftLimits = self.__limits["Left.Ankle.Power"],rightLimits = self.__limits["Right.Ankle.Power"],
+                                ylim =self.__ylimits["Ankle.Power"])            
             
             
             if normativeData is not None:

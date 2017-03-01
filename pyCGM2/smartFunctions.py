@@ -228,6 +228,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     if plotFlag:    
         
         plotBuilder = plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=flag_kinetics, pointLabelSuffix= pointLabelSuffix)
+        
         if normativeDataDict["Author"] == "Schwartz2008":
             chosenModality = normativeDataDict["Modality"]
             plotBuilder.setNormativeDataProcedure(normativeDatabaseProcedure.Schwartz2008_normativeDataBases(chosenModality)) # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
