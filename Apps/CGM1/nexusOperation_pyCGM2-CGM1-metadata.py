@@ -85,17 +85,18 @@ if __name__ == "__main__":
             DATA_PATH, filenameNoExt = pyNEXUS.GetTrialName()
 
         # ----- inputs -----
-        if not os.path.isfile(DATA_PATH + "pyCGM2.model"):
-            raise Exception ("pyCGM2.model file doesn't exist. Run Calibration operation")
-        else:
-            f = open(DATA_PATH + 'pyCGM2.model', 'r')
-            model = cPickle.load(f)
-            f.close()
-
-        if not os.path.isfile(DATA_PATH + "pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
-            raise Exception ("pyCGM2.inputs file doesn't exist")
-        else:
-            inputs = json.loads(open(DATA_PATH + 'pyCGM2.inputs').read())
+        if args.calibration:
+            if not os.path.isfile(DATA_PATH + "pyCGM2.model"):
+                raise Exception ("pyCGM2.model file doesn't exist. Run Calibration operation")
+            else:
+                f = open(DATA_PATH + 'pyCGM2.model', 'r')
+                model = cPickle.load(f)
+                f.close()
+    
+            if not os.path.isfile(DATA_PATH + "pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
+                raise Exception ("pyCGM2.inputs file doesn't exist")
+            else:
+                inputs = json.loads(open(DATA_PATH + 'pyCGM2.inputs').read())
 
         filename = filenameNoExt+".c3d"
 
