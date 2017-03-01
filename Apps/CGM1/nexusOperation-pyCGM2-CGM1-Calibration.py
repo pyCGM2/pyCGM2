@@ -96,7 +96,7 @@ def checkCGM1_StaticMarkerConfig(acqStatic):
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = True
+    DEBUG = False
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
