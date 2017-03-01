@@ -24,13 +24,13 @@ CALIBRATION_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
       <Entry DisplayName="add pyCGM2-iMODEL- metadata" Enabled="1" OperationId="106" OperationName="Python">
         <ParamList name="">
           <Param name="Script" value="PATH_APPS/iMODEL/nexusOperation_pyCGM2-iMODEL-metadata.py"/>
-          <Param name="ScriptArgs"/>
+          <Param name="ScriptArgs" value="--calibration"/>
           <Param name="UseNexusPython" value="false"/>
           <Param name="LaunchPython" value="false"/>
         </ParamList>
       </Entry>
     
-      <Entry DisplayName="Run pyCGM2-CGM1-i- Gait Processing " Enabled="1" OperationId="107" OperationName="Python">
+      <Entry DisplayName="Run pyCGM2-CGM1-i- static Processing " Enabled="1" OperationId="107" OperationName="Python">
         <ParamList name="">
           <Param name="Script" value="PATH_APPS/CGM1-i_dataProcessing/nexusOperation-pyCGM2-CGM1_i-staticProcessing.py"/>
           <Param name="ScriptArgs"/>
