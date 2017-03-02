@@ -152,17 +152,6 @@ if __name__ == "__main__":
 
             NEXUS.SaveTrial(30)
     
-            # code below is similar to operation "nexusOperation_pyCGM2-CGM1-metadata.py"        
-            # add metadata
-            acqGait2= btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
-            md_Model = btk.btkMetaData('MODEL') # create main metadata
-            btk.btkMetaDataCreateChild(md_Model, "NAME", "CGM1")
-            btk.btkMetaDataCreateChild(md_Model, "PROCESSOR", "pyCGM2")
-            acqGait2.GetMetaData().AppendChild(md_Model)
-    
-            #writer
-            btkTools.smartWriter(acqGait2,str(DATA_PATH + reconstructFilenameLabelled[:-4] + ".c3d"))
-
-
+            
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
