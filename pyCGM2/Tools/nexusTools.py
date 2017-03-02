@@ -5,6 +5,26 @@ import logging
 import pdb
 
 
+def ckeckActivatedSubject(NEXUS,subjectNames,marker):
+    out=list()
+    for subject in subjectNames:
+        
+        if NEXUS.GetTrajectory(subject,marker) == ([], [], [], []):
+            out.append(False)
+        else: 
+            out.append(True)
+
+    if out.count(False) == len(out):
+        raise Exception("[pyCGM2] : pycgm2 don t find activate subject")
+
+    if out.count(True)>1:
+        raise Exception("[pyCGM2] : two subjects are activated. Select one ony")
+    else:
+        index = out.index(True)
+        logging.info("Active subject is %s"%(subjectNames[index]))
+        
+        return subjectNames[index]
+    
 
 def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
 
