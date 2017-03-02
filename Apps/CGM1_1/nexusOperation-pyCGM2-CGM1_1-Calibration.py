@@ -27,13 +27,13 @@ import numpy as np
 
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools
+from pyCGM2.Tools import btkTools,nexusTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
 
 from pyCGM2 import viconInterface
 
-def updateNexusSubjectMp(NEXUS,model):
+def updateNexusSubjectMp(NEXUS,model,subjectName):
     th_l = 0 if np.abs(model.getViconThighOffset("Left")) < 0.000001 else model.getViconThighOffset("Left")
     sh_l = 0 if np.abs(model.getViconShankOffset("Left"))< 0.000001 else model.getViconShankOffset("Left")
     tt_l = 0 if np.abs(model.getViconTibialTorsion("Left")) < 0.000001 else model.getViconTibialTorsion("Left")
@@ -51,26 +51,26 @@ def updateNexusSubjectMp(NEXUS,model):
 
 
 
-    NEXUS.SetSubjectParam( subject, "InterAsisDistance",model.mp_computed["InterAsisDistance"])
-    NEXUS.SetSubjectParam( subject, "LeftAsisTrocanterDistance",model.mp_computed["LeftAsisTrocanterDistance"])
-    NEXUS.SetSubjectParam( subject, "LeftThighRotation",th_l)
-    NEXUS.SetSubjectParam( subject, "LeftShankRotation",sh_l)
-    NEXUS.SetSubjectParam( subject, "LeftTibialTorsion",tt_l)
+    NEXUS.SetSubjectParam( subjectName, "InterAsisDistance",model.mp_computed["InterAsisDistance"])
+    NEXUS.SetSubjectParam( subjectName, "LeftAsisTrocanterDistance",model.mp_computed["LeftAsisTrocanterDistance"])
+    NEXUS.SetSubjectParam( subjectName, "LeftThighRotation",th_l)
+    NEXUS.SetSubjectParam( subjectName, "LeftShankRotation",sh_l)
+    NEXUS.SetSubjectParam( subjectName, "LeftTibialTorsion",tt_l)
 
 
-    NEXUS.SetSubjectParam( subject, "RightAsisTrocanterDistance",model.mp_computed["RightAsisTrocanterDistance"])
-    NEXUS.SetSubjectParam( subject, "RightThighRotation",th_r)
-    NEXUS.SetSubjectParam( subject, "RightShankRotation",sh_r)
-    NEXUS.SetSubjectParam( subject, "RightTibialTorsion",tt_r)
+    NEXUS.SetSubjectParam( subjectName, "RightAsisTrocanterDistance",model.mp_computed["RightAsisTrocanterDistance"])
+    NEXUS.SetSubjectParam( subjectName, "RightThighRotation",th_r)
+    NEXUS.SetSubjectParam( subjectName, "RightShankRotation",sh_r)
+    NEXUS.SetSubjectParam( subjectName, "RightTibialTorsion",tt_r)
 
 
-    NEXUS.SetSubjectParam( subject, "LeftStaticPlantFlex",spf_l)
-    NEXUS.SetSubjectParam( subject, "LeftStaticRotOff",sro_l)
-    NEXUS.SetSubjectParam( subject, "LeftAnkleAbAdd",abdAdd_l)
+    NEXUS.SetSubjectParam( subjectName, "LeftStaticPlantFlex",spf_l)
+    NEXUS.SetSubjectParam( subjectName, "LeftStaticRotOff",sro_l)
+    NEXUS.SetSubjectParam( subjectName, "LeftAnkleAbAdd",abdAdd_l)
 
-    NEXUS.SetSubjectParam( subject, "RightStaticPlantFlex",spf_r)
-    NEXUS.SetSubjectParam( subject, "RightStaticRotOff",sro_r)
-    NEXUS.SetSubjectParam( subject, "RightAnkleAbAdd",abdAdd_r)
+    NEXUS.SetSubjectParam( subjectName, "RightStaticPlantFlex",spf_r)
+    NEXUS.SetSubjectParam( subjectName, "RightStaticRotOff",sro_r)
+    NEXUS.SetSubjectParam( subjectName, "RightAnkleAbAdd",abdAdd_r)
 
 
 def checkCGM1_StaticMarkerConfig(acqStatic):
@@ -120,13 +120,32 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
 
+        # ---btk acquisition---
+        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
 
-        # ---- pyCGM2 files ----
-        if not os.path.isfile( DATA_PATH + "pyCGM2.inputs"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.inputs"), str(DATA_PATH + "pyCGM2.inputs"))
+        # check if acq was saved with only one  activated subject
+        if acqStatic.GetPoint(0).GetLabel().count(":"):
+            raise Exception("[pyCGM2] Your input static c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
+
+        # ---relabel PIG output if processing previously---
+        cgm.CGM.reLabelPigOutputs(acqStatic) 
+
+
+        # --------------------------SUBJECT -----------------------------------
+        # Notice : Work with ONE subject by session
+        subjects = NEXUS.GetSubjectNames()
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")        
+        Parameters = NEXUS.GetSubjectParamNames(subject)
+
+
+        # --------------------pyCGM2 INPUT FILES ------------------------------
+        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.inputs"):
+            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.inputs"), str(DATA_PATH + subject+"-pyCGM2.inputs"))
             logging.warning("Copy of pyCGM2.inputs from pyCGM2 settings")
+            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read())
         else:
-            inputs = json.loads(open(DATA_PATH +'pyCGM2.inputs').read())
+            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read())
+
 
         # ---- configuration parameters ----
         flag_leftFlatFoot =  bool(inputs["Calibration"]["Left flat foot"])
@@ -134,13 +153,6 @@ if __name__ == "__main__":
         markerDiameter = float(inputs["Calibration"]["Marker diameter"])
         pointSuffix = inputs["Calibration"]["Point suffix"]
 
-
-        # --------------------------SUBJECT -----------------------------------
-        # Notice : Work with ONE subject by session
-        subjects = NEXUS.GetSubjectNames()
-        subject =   subjects[0]
-        logging.info(  "Subject name : " + subject  )
-        Parameters = NEXUS.GetSubjectParamNames(subject)
 
 
         # --- mp data ----
@@ -168,20 +180,11 @@ if __name__ == "__main__":
         'RightShankRotation' : NEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
         }
 
-
         # --------------------------MODEL--------------------------------------
-
         # ---definition---
         model=cgm.CGM1LowerLimbs()
         model.configure()
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
-
-        # ---btk acquisition---
-        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
-
-        # ---relabel PIG output if processing previously---
-        cgm.CGM.reLabelPigOutputs(acqStatic) 
-
 
         # ---check marker set used----
         staticMarkerConfiguration= checkCGM1_StaticMarkerConfig(acqStatic)
@@ -267,7 +270,7 @@ if __name__ == "__main__":
 
         
         #----update subject mp----
-        updateNexusSubjectMp(NEXUS,model)
+        updateNexusSubjectMp(NEXUS,model,subject)
 
 
 
@@ -299,7 +302,7 @@ if __name__ == "__main__":
         
 
         # ----------------------SAVE-------------------------------------------
-        modelFile = open(DATA_PATH + "pyCGM2.model", "w")
+        modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
 
@@ -313,19 +316,6 @@ if __name__ == "__main__":
 
         if DEBUG:
             NEXUS.SaveTrial(30)
-
-            # code below is similar to operation "nexusOperation_pyCGM2-CGM1-metadata.py"        
-            # add metadata
-            acqStatic2= btkTools.smartReader(str(DATA_PATH + calibrateFilenameLabelled))
-            md_Model = btk.btkMetaData('MODEL') # create main metadata
-            btk.btkMetaDataCreateChild(md_Model, "NAME", "CGM1_1")
-            btk.btkMetaDataCreateChild(md_Model, "PROCESSOR", "pyCGM2")
-            acqStatic2.GetMetaData().AppendChild(md_Model)
-    
-            # save
-            btkTools.smartWriter(acqStatic2,str(DATA_PATH + calibrateFilenameLabelled[:-4] + ".c3d"))
-            logging.info( "[pyCGM2] : file ( %s) reconstructed in pyCGM2-model path " % (calibrateFilenameLabelled))
-
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

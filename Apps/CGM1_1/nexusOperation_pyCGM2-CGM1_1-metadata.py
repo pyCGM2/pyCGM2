@@ -15,7 +15,7 @@ import ViconNexus
 import btk
 
 
-from pyCGM2.Tools import btkTools
+from pyCGM2.Tools import btkTools,nexusTools
 
 
 def getViconMP(model):
@@ -60,10 +60,10 @@ def getViconMP(model):
 
 if __name__ == "__main__":
 
-    DEBUG = True
+    DEBUG = False
 
-    pyNEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = pyNEXUS.Client.IsConnected()
+    NEXUS = ViconNexus.ViconNexus()
+    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
 
     parser = argparse.ArgumentParser(description='CGM1')
@@ -79,24 +79,30 @@ if __name__ == "__main__":
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
             filenameNoExt = "static Cal 01-noKAD-noAnkleMed" 
-            pyNEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
+            NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
 
         else:
-            DATA_PATH, filenameNoExt = pyNEXUS.GetTrialName()
+            DATA_PATH, filenameNoExt = NEXUS.GetTrialName()
 
-        # ----- inputs -----
+        # ----- Subject -----
+        # need subject to find input files 
+        subjects = NEXUS.GetSubjectNames()
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        logging.info(  "Subject name : " + subject  )
+
+        # input files
         if args.calibration:
-            if not os.path.isfile(DATA_PATH + "pyCGM2.model"):
-                raise Exception ("pyCGM2.model file doesn't exist. Run Calibration operation")
+            if not os.path.isfile(DATA_PATH + subject+"-pyCGM2.model"):
+                raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
             else:
-                f = open(DATA_PATH + 'pyCGM2.model', 'r')
+                f = open(DATA_PATH + subject+'-pyCGM2.model', 'r')
                 model = cPickle.load(f)
                 f.close()
     
-            if not os.path.isfile(DATA_PATH + "pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
-                raise Exception ("pyCGM2.inputs file doesn't exist")
+            if not os.path.isfile(DATA_PATH + subject+"-pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
+                raise Exception ("%s-pyCGM2.inputs file doesn't exist"%subject)
             else:
-                inputs = json.loads(open(DATA_PATH + 'pyCGM2.inputs').read())
+                inputs = json.loads(open(DATA_PATH + subject+'-pyCGM2.inputs').read())
 
         filename = filenameNoExt+".c3d"
 

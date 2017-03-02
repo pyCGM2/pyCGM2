@@ -25,7 +25,7 @@ import btk
 
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools
+from pyCGM2.Tools import btkTools,nexusTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, forceplates,bodySegmentParameters
 #
@@ -59,38 +59,43 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ reconstructFilenameLabelled)
 
-        # ---- pyCGM2 files ----
-        if not os.path.isfile(DATA_PATH + "pyCGM2.model"):
-            raise Exception ("pyCGM2.model file doesn't exist. Run Calibration operation")
+        # --- btk acquisition ----
+        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+        
+        #   check if acq was saved with only one  activated subject
+        if acqGait.GetPoint(0).GetLabel().count(":"):
+            raise Exception("[pyCGM2] Your Trial c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
+
+        # --relabel PIG output if processing previously---
+        cgm.CGM.reLabelPigOutputs(acqGait)
+        
+        # --------------------------SUBJECT -----------------------------------
+
+        # Notice : Work with ONE subject by session
+        subjects = NEXUS.GetSubjectNames()
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        logging.info(  "Subject name : " + subject  )
+
+        # --------------------pyCGM2 INPUT FILES ------------------------------
+        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
+            raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
         else:
-            f = open(DATA_PATH + 'pyCGM2.model', 'r')
+            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
             model = cPickle.load(f)
             f.close()
 
-        if not os.path.isfile(DATA_PATH + "pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
-            raise Exception ("pyCGM2.inputs file doesn't exist")
+        if not os.path.isfile(DATA_PATH + subject +"-pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
+            raise Exception ("%s-pyCGM2.inputs file doesn't exist"%subject)
         else:
-            inputs = json.loads(open(DATA_PATH + 'pyCGM2.inputs').read())
+            inputs = json.loads(open(DATA_PATH + subject +'-pyCGM2.inputs').read())
 
         # ---- configuration parameters ----
         markerDiameter = float(inputs["Calibration"]["Marker diameter"])
         pointSuffix = inputs["Calibration"]["Point suffix"]
 
-        # --------------------------SUBJECT -----------------------------------
-        subjects = NEXUS.GetSubjectNames()
-        subject =   subjects[0]
-        logging.info(  "Subject name : " + subject  )
-        Parameters = NEXUS.GetSubjectParamNames(subject)
-
 
         # --------------------------MODELLLING--------------------------
-        # --- btk acquisition ----
-        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
-
-        # --relabel PIG output if processing previously---
-        cgm.CGM.reLabelPigOutputs(acqGait)
-
-
+       
         scp=modelFilters.StaticCalibrationProcedure(model) # procedure
         
         # ---Motion filter----    

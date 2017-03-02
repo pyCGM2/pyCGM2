@@ -16,7 +16,7 @@ import ViconNexus
     
 # pyCGM2 libraries    
 from pyCGM2 import  smartFunctions 
-
+from pyCGM2.Tools import btkTools,nexusTools
     
 if __name__ == "__main__":
    
@@ -46,11 +46,17 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ reconstructedFilenameLabelled)
 
-         # ---- pyCGM2 files ----
-        if not os.path.isfile( DATA_PATH + "pyCGM2.inputs"):
-            raise Exception ("pyCGM2.inputs file doesn't exist")
+        # ----- Subject -----
+        # need subject to find input files 
+        subjects = NEXUS.GetSubjectNames()
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        logging.info(  "Subject name : " + subject  )
+
+        # ---- pyCGM2 input files ----
+        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.inputs"):
+            raise Exception ("%s-pyCGM2.inputs file doesn't exist"%subject)
         else:
-            inputs = json.loads(open(DATA_PATH +'pyCGM2.inputs').read())
+            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read())
 
         # ---- configuration parameters ----
         pointSuffix = inputs["Calibration"]["Point suffix"]
