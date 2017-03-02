@@ -155,10 +155,8 @@ if __name__ == "__main__":
         markerDiameter = float(inputs["Calibration"]["Marker diameter"])
         pointSuffix = inputs["Calibration"]["Point suffix"]
 
+        # --------------------------MP DATA -----------------------------------
 
-
-
-        # --- mp data ----
         required_mp={
         'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
         'LeftLegLength' : NEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],#860.0,
@@ -208,8 +206,6 @@ if __name__ == "__main__":
         # ---- Decorators -----
         # Goal = modified calibration according the identified marker set or if offsets manually set   
  
-
-
         # initialisation of node label 
         useLeftKJCnodeLabel = "LKJC_chord"
         useLeftAJCnodeLabel = "LAJC_chord"
