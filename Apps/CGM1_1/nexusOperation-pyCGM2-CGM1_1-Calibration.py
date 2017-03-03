@@ -7,6 +7,9 @@ import pdb
 import cPickle
 import json
 from shutil import copyfile
+from collections import OrderedDict
+import argparse
+import sys
 
 # pyCGM2 settings
 import pyCGM2
@@ -23,6 +26,7 @@ import ViconNexus
 #btk
 import btk
 import numpy as np
+
 
 
 
@@ -98,6 +102,12 @@ if __name__ == "__main__":
     plt.close("all")
     DEBUG = False
 
+    parser = argparse.ArgumentParser(description='CGM1.1 Calibration')
+    parser.add_argument('--force', action='store_true', help='force flat foot options')
+    parser.add_argument('-l','--leftFlatFoot', action='store_true', help='left flat foot option')
+    parser.add_argument('-r','--rightFlatFoot', action='store_true', help='right flat foot option')
+    args = parser.parse_args()
+
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
@@ -142,16 +152,26 @@ if __name__ == "__main__":
         if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.inputs"):
             copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.inputs"), str(DATA_PATH + subject+"-pyCGM2.inputs"))
             logging.warning("Copy of pyCGM2.inputs from pyCGM2 settings")
-            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read())
+            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
         else:
-            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read())
+            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
 
 
         # ---- configuration parameters ----
-        flag_leftFlatFoot =  bool(inputs["Calibration"]["Left flat foot"])
-        flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
-        markerDiameter = float(inputs["Calibration"]["Marker diameter"])
-        pointSuffix = inputs["Calibration"]["Point suffix"]
+        if args.force:
+            flag_leftFlatFoot = args.leftFlatFoot
+            inputs["Calibration"]["Left flat foot"] = str(flag_leftFlatFoot)
+               
+            flag_rightFlatFoot = args.rightFlatFoot
+            inputs["Calibration"]["Right flat foot"] = str(flag_rightFlatFoot)
+
+        else:
+            flag_leftFlatFoot =  bool(inputs["Calibration"]["Left flat foot"])
+            flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
+
+
+        markerDiameter = float(inputs["Global"]["Marker diameter"])
+        pointSuffix = inputs["Global"]["Point suffix"]
 
         # --------------------------MP DATA -----------------------------------
 
@@ -301,6 +321,14 @@ if __name__ == "__main__":
         
 
         # ----------------------SAVE-------------------------------------------
+        if args.force:
+            F = open(str(DATA_PATH + subject+"-pyCGM2.inputs"),"w") 
+            F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
+            F.close()        
+
+            logging.warning("Flat foot option forced => %s-pyCGM2.inputs file overwrite. "%subject)            
+
+
         modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()

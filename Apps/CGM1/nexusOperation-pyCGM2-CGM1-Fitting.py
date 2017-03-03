@@ -7,7 +7,7 @@ import json
 import pdb
 import cPickle
 import json
-
+from collections import OrderedDict
 
 # pyCGM2 settings
 import pyCGM2
@@ -87,11 +87,21 @@ if __name__ == "__main__":
         if not os.path.isfile(DATA_PATH + subject +"-pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
             raise Exception ("%s-pyCGM2.inputs file doesn't exist"%subject)
         else:
-            inputs = json.loads(open(DATA_PATH + subject +'-pyCGM2.inputs').read())
+            inputs = json.loads(open(DATA_PATH + subject +'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
 
         # ---- configuration parameters ----
-        markerDiameter = float(inputs["Calibration"]["Marker diameter"])
-        pointSuffix = inputs["Calibration"]["Point suffix"]
+        markerDiameter = float(inputs["Global"]["Marker diameter"])
+        pointSuffix = inputs["Global"]["Point suffix"]
+
+        
+        if inputs["Fitting"]["Moment Projection"] == "Distal":
+            momentProjection = pyCGM2Enums.MomentProjection.Distal
+        elif inputs["Fitting"]["Moment Projection"] == "Proximal":
+            momentProjection = pyCGM2Enums.MomentProjection.Distal
+        elif inputs["Fitting"]["Moment Projection"] == "Global":
+            momentProjection = pyCGM2Enums.MomentProjection.Global
+        else:
+            raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
 
         # --------------------------MODELLLING--------------------------
@@ -137,7 +147,7 @@ if __name__ == "__main__":
         modelFilters.InverseDynamicFilter(model,
                              acqGait,
                              procedure = idp,
-                             projection = pyCGM2Enums.MomentProjection.Distal
+                             projection = momentProjection
                              ).compute(pointLabelSuffix=pointSuffix)
 
         #---- Joint energetics----

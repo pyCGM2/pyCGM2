@@ -6,6 +6,7 @@ import json
 import argparse
 import cPickle
 import numpy as np
+from collections import OrderedDict
 
 import pyCGM2
 pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
@@ -102,7 +103,7 @@ if __name__ == "__main__":
             if not os.path.isfile(DATA_PATH + subject+"-pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
                 raise Exception ("%s-pyCGM2.inputs file doesn't exist"%subject)
             else:
-                inputs = json.loads(open(DATA_PATH + subject+'-pyCGM2.inputs').read())
+                inputs = json.loads(open(DATA_PATH + subject+'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
 
         filename = filenameNoExt+".c3d"
 
@@ -121,8 +122,11 @@ if __name__ == "__main__":
             if args.calibration:
 
                 for item in inputs["Calibration"].items():
-                    print item
                     btk.btkMetaDataCreateChild(md_Model, str(item[0]), str(item[1]))
+
+                for item in inputs["Global"].items():
+                    btk.btkMetaDataCreateChild(md_Model, str(item[0]), str(item[1]))                    
+                    
                     
                 mps = getViconMP(model)
                 for item in mps.items():
@@ -140,6 +144,9 @@ if __name__ == "__main__":
                     print item
                     btk.btkMetaDataCreateChild(md_Model, str(item[0]), str(item[1]))
                 
+                for item in inputs["Global"].items():
+                    btk.btkMetaDataCreateChild(md_Model, str(item[0]), str(item[1]))      
+
                 mps = getViconMP(model)
                 for item in mps.items():
                     btk.btkMetaDataCreateChild(md_Model, str(item[0]), str(item[1]))

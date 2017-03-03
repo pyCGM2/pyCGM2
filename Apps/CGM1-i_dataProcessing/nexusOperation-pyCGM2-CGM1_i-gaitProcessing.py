@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import argparse
 import json
 import os
+from collections import OrderedDict
 
 # pyCGM2 settings
 import pyCGM2
@@ -56,17 +57,17 @@ if __name__ == "__main__":
         if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.inputs"):
             raise Exception ("%s-pyCGM2.inputs file doesn't exist"%subject)
         else:
-            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read())
+            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
 
         # ---- configuration parameters ----
-        pointSuffix = inputs["Calibration"]["Point suffix"]
-        normativeData = inputs["Normative data"]
+        pointSuffix = inputs["Global"]["Point suffix"]
+        normativeData = inputs["Processing"]["Normative data"]
 
 
         # -----infos--------     
-        model = None if  inputs["Model"]=={} else inputs["Model"]  
-        subject = None if inputs["Subject"]=={} else inputs["Subject"] 
-        experimental = None if inputs["Experimental conditions"]=={} else inputs["Experimental conditions"] 
+        model = None if  inputs["Processing"]["Model"]=={} else inputs["Processing"]["Model"]  
+        subject = None if inputs["Processing"]["Subject"]=={} else inputs["Processing"]["Subject"] 
+        experimental = None if inputs["Processing"]["Experimental conditions"]=={} else inputs["Processing"]["Experimental conditions"] 
 
         # --------------------------PROCESSING --------------------------------
         # pycgm2-filter pipeline are gathered in a single function
