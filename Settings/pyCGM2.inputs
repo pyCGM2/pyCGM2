@@ -1,15 +1,23 @@
-{
-  "Calibration" : {
-    "Left flat foot" : "True" ,
-    "Right flat foot" : "True" ,
+{ 
+  "version" : "0.1",  
+  "Global" : {
     "Marker diameter" : 14,
     "Point suffix" : ""
   },
-  "Normative data" : {
-    "Author" : "Schwartz2008",
-    "Modality" : "Free"
+  "Calibration" : {
+    "Left flat foot" : "True" ,
+    "Right flat foot" : "True" 
   },
-  "Subject" : {},
-  "Experimental conditions" : {},
-  "Model" : {} 
+  "Fitting" : {
+    "Moment Projection" : "Distal"
+  },
+  "Processing" : {
+    "Normative data" : {
+      "Author" : "Schwartz2008",
+      "Modality" : "Free"
+    },
+    "Subject" : {},
+    "Experimental conditions" : {},
+    "Model" : {}
+  }    
 }
