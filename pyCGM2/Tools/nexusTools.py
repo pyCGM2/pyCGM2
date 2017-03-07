@@ -37,7 +37,9 @@ def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
 
     values = acq.GetPoint(label).GetValues()
         
-    ff,lf = NEXUS.GetTrialRange()
+    #ff,lf = NEXUS.GetTrialRange()
+    ff = acq.GetFirstFrame()    
+    lf = acq.GetLastFrame()
     framecount = NEXUS.GetFrameCount()
 
 
@@ -68,10 +70,12 @@ def appendAngleFromAcq(NEXUS,vskName,label, acq):
 
     values = acq.GetPoint(label).GetValues()
         
-    ff,lf = NEXUS.GetTrialRange()
+    #ff,lf = NEXUS.GetTrialRange()
+    ff = acq.GetFirstFrame()    
+    lf = acq.GetLastFrame()
+
     framecount = NEXUS.GetFrameCount()
-
-
+    
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
     exists = [False]*framecount
    
@@ -98,7 +102,9 @@ def appendForceFromAcq(NEXUS,vskName,label, acq):
 
     values = acq.GetPoint(label).GetValues()
         
-    ff,lf = NEXUS.GetTrialRange()
+    #ff,lf = NEXUS.GetTrialRange()
+    ff = acq.GetFirstFrame()    
+    lf = acq.GetLastFrame()
     framecount = NEXUS.GetFrameCount()
 
 
@@ -128,7 +134,9 @@ def appendMomentFromAcq(NEXUS,vskName,label, acq):
 
     values = acq.GetPoint(label).GetValues()
         
-    ff,lf = NEXUS.GetTrialRange()
+    #ff,lf = NEXUS.GetTrialRange()
+    ff = acq.GetFirstFrame()    
+    lf = acq.GetLastFrame()
     framecount = NEXUS.GetFrameCount()
 
 
@@ -156,7 +164,9 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq):
 
     values = acq.GetPoint(label).GetValues()
         
-    ff,lf = NEXUS.GetTrialRange()
+    #ff,lf = NEXUS.GetTrialRange()
+    ff = acq.GetFirstFrame()    
+    lf = acq.GetLastFrame()
     framecount = NEXUS.GetFrameCount()
 
 
@@ -173,7 +183,7 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq):
 
     NEXUS.SetModelOutput( vskName, label, data, exists )    
         
-def appendBones(NEXUS,vskName,label,segment,OriginValues=None,manualScale=None):
+def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=None):
     
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
@@ -181,7 +191,10 @@ def appendBones(NEXUS,vskName,label,segment,OriginValues=None,manualScale=None):
     else:
         NEXUS.CreateModelOutput( vskName, label, 'Plug-in Gait Bones', ['RX', 'RY', 'RZ', 'TX', 'TY', 'TZ', 'SX', 'SY', 'SZ'], ['Angle', 'Angle', 'Angle', 'Length', 'Length', 'Length', 'Length', 'Length', 'Length'])
     
-    ff,lf = NEXUS.GetTrialRange()
+    #ff,lf = NEXUS.GetTrialRange()
+    ff = acq.GetFirstFrame()    
+    lf = acq.GetLastFrame()
+    
     framecount = NEXUS.GetFrameCount()
     
     
