@@ -83,8 +83,9 @@ def staticProcessing_cgm1(modelledStaticFilename, DATA_PATH,
     pf.setPdfName(pdfname)
     pf.plot()
 
-    os.startfile(DATA_PATH+temporelPlotPdf)
-    os.startfile(DATA_PATH+"staticAngleProfiles_"+ pdfname +".pdf")
+    if name_out  is None:
+        os.startfile(DATA_PATH+temporelPlotPdf)
+        os.startfile(DATA_PATH+"staticAngleProfiles_"+ pdfname +".pdf")
 
 
 
@@ -252,8 +253,9 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
         pf.setPdfName(pdfName)
         pf.plot()
 
-        os.startfile(DATA_PATH+"consistencyKinematics_"+ pdfName +".pdf")
-        if flag_kinetics: os.startfile(DATA_PATH+"consistencyKinetics_"+ pdfName+".pdf")
+        if name_out  is None:
+            os.startfile(DATA_PATH+"consistencyKinematics_"+ pdfName +".pdf")
+            if flag_kinetics: os.startfile(DATA_PATH+"consistencyKinetics_"+ pdfName+".pdf")
 
 
         
