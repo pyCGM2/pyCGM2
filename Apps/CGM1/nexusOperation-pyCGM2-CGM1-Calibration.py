@@ -100,7 +100,7 @@ if __name__ == "__main__":
     plt.close("all")
     DEBUG = False
 
-    parser = argparse.ArgumentParser(description='CGM1.1 Calibration')
+    parser = argparse.ArgumentParser(description='CGM1 Calibration')
     parser.add_argument('--force', action='store_true', help='force flat foot options')
     parser.add_argument('-l','--leftFlatFoot', action='store_true', help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot', action='store_true', help='right flat foot option')
