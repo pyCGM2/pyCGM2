@@ -91,14 +91,17 @@ def appendAngleFromAcq(NEXUS,vskName,label, acq):
 
 
 
-def appendForceFromAcq(NEXUS,vskName,label, acq):
+def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
 
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
         logging.debug( "force (%s) already exist" %(label))
     else:
-        NEXUS.CreateModelOutput( vskName, label, "Forces", ["X","Y","Z"], ["Force","Force","Force"])
+        if normalizedData:
+            NEXUS.CreateModelOutput( vskName, label, "Forces", ["X","Y","Z"], ["Force","Force","Force"])
+        else:
+            NEXUS.CreateModelOutput( vskName, label, "Forces", ["X","Y","Z"], ["ForceNormalized","ForceNormalized","ForceNormalized"])
 
     values = acq.GetPoint(label).GetValues()
         
@@ -123,14 +126,17 @@ def appendForceFromAcq(NEXUS,vskName,label, acq):
 
 
 
-def appendMomentFromAcq(NEXUS,vskName,label, acq):
+def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
 
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
         logging.debug( "moment (%s) already exist" %(label))
     else:
-        NEXUS.CreateModelOutput( vskName, label, "Moments", ["X","Y","Z"], ["Torque","Torque","Torque"])
+        if normalizedData:
+            NEXUS.CreateModelOutput( vskName, label, "Moments", ["X","Y","Z"], ["TorqueNormalized","TorqueNormalized","TorqueNormalized"])#
+        else:
+            NEXUS.CreateModelOutput( vskName, label, "Moments", ["X","Y","Z"], ["Torque","Torque","Torque"])
 
     values = acq.GetPoint(label).GetValues()
         
@@ -153,15 +159,19 @@ def appendMomentFromAcq(NEXUS,vskName,label, acq):
 
     NEXUS.SetModelOutput( vskName, label, data, exists )  
 
-def appendPowerFromAcq(NEXUS,vskName,label, acq):
+def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
 
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
         logging.debug( "power (%s) already exist" %(label))
     else:
-        NEXUS.CreateModelOutput( vskName, label, "Powers", ["X","Y","Z"], ["Power","Power","Power"])
-
+        if normalizedData:
+            NEXUS.CreateModelOutput( vskName, label, "Powers", ["X","Y","Z"], ["Power","Power","Power"])
+        else:
+            NEXUS.CreateModelOutput( vskName, label, "Powers", ["X","Y","Z"], ["PowerNormalized","PowerNormalized","PowerNormalized"])
+            
+            
     values = acq.GetPoint(label).GetValues()
         
     #ff,lf = NEXUS.GetTrialRange()
