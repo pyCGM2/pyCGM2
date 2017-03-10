@@ -3,6 +3,7 @@ import logging
 import sys
 import os
 import generatePipeline
+import generateFiles   
 
 # ------------------- CONSTANTS ------------------------------------------------
 
@@ -10,6 +11,13 @@ import generatePipeline
 NEXUS_SDK_WIN32 = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Win32'
 NEXUS_SDK_PYTHON = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Python'
 PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.5\\Python'
+
+
+APPDATA_FOLDER = os.getenv("PROGRAMDATA")
+PYCGM2_APPDATA_PATH = APPDATA_FOLDER+"\\pyCGM2\\" 
+
+if not os.path.exists(PYCGM2_APPDATA_PATH[:-1]):
+    os.makedirs(PYCGM2_APPDATA_PATH[:-1])
 
 
 # [OPTIONAL] ----------------------------------
@@ -38,13 +46,16 @@ NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\"
 PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"Settings\\"
 
 
+# setting files
+generateFiles.generateCGM1_Settings(PYCGM2_APPDATA_PATH)
+
 # pipeline generation
 # cgm1
-generatePipeline.pipeline_pyCGM2_CGM1_Calibration(MAIN_PYCGM2_APPS_PATH) 
-generatePipeline.pipeline_pyCGM2_CGM1_Fitting(MAIN_PYCGM2_APPS_PATH) 
+generatePipeline.pipeline_pyCGM2_CGM1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
+generatePipeline.pipeline_pyCGM2_CGM1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
 # cgm1.1
-generatePipeline.pipeline_pyCGM2_CGM1_1_Calibration(MAIN_PYCGM2_APPS_PATH) 
-generatePipeline.pipeline_pyCGM2_CGM1_1_Fitting(MAIN_PYCGM2_APPS_PATH) 
+generatePipeline.pipeline_pyCGM2_CGM1_1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
+generatePipeline.pipeline_pyCGM2_CGM1_1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
 
 
 # ------------------- METHODS ------------------------------------------------
