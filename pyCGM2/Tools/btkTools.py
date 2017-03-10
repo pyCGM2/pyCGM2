@@ -304,30 +304,29 @@ def modifySubject(acq,newSubjectlabel):
     """
     acq.GetMetaData().FindChild("SUBJECTS").value().FindChild("NAMES").value().GetInfo().SetValue(0,str(newSubjectlabel))
     
+
+def getNumberOfModelOutputs(acq):
+    n_angles=0                
+    n_forces=0                
+    n_moments=0                
+    n_powers=0                
+
+ 
+    for it in btk.Iterate(acq.GetPoints()):
+        if it.GetType() == btk.btkPoint.Angle:
+            n_angles+=1
+
+        if it.GetType() == btk.btkPoint.Force:
+            n_forces+=1
+
+        if it.GetType() == btk.btkPoint.Moment:
+            n_moments+=1
+
+        if it.GetType() == btk.btkPoint.Power:
+            n_powers+=1
+
+    return  n_angles,n_forces ,n_moments,n_powers
     
-def checkPigProcessing(acq):
-    """
-        Check if a pig processing was carried out. 
-
-        .. warning:: 
-        
-            This function checked if MODEL ( a metadata generated from pyCGM2) is within metadata list and if it has children. 
-            Indeed, Vicon Nexus PIG operation keeps MODEL as metadata and remove its children (!) 
-        
-        :Parameters:
-            - `acq` (btkAcquisition) - a btk acquisition inctance
-
-    """
-
-    md=acq.GetMetaData()
-    
-    flag = True
-    for it in btk.Iterate(md):
-        if it.GetLabel() == "MODEL":
-            for it2 in btk.Iterate(it):
-                if it2.GetLabel() == "NAME":
-                    flag = False
-    return flag
 
 def hasChild(md,mdLabel):
     """
