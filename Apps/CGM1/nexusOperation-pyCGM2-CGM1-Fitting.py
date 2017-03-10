@@ -9,6 +9,8 @@ import cPickle
 import json
 from collections import OrderedDict
 from shutil import copyfile
+import argparse
+
 
 # pyCGM2 settings
 import pyCGM2
@@ -31,7 +33,7 @@ import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, forceplates,bodySegmentParameters
 #
 from pyCGM2 import viconInterface
-
+import argparse
 
 
 if __name__ == "__main__":
@@ -42,6 +44,9 @@ if __name__ == "__main__":
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
+    parser = argparse.ArgumentParser(description='CGM1 Fitting')
+    parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
+    args = parser.parse_args()
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
@@ -113,15 +118,25 @@ if __name__ == "__main__":
         markerDiameter = float(inputs["Global"]["Marker diameter"])
         pointSuffix = inputs["Global"]["Point suffix"]
 
-        
-        if inputs["Fitting"]["Moment Projection"] == "Distal":
-            momentProjection = pyCGM2Enums.MomentProjection.Distal
-        elif inputs["Fitting"]["Moment Projection"] == "Proximal":
-            momentProjection = pyCGM2Enums.MomentProjection.Distal
-        elif inputs["Fitting"]["Moment Projection"] == "Global":
-            momentProjection = pyCGM2Enums.MomentProjection.Global
-        else:
-            raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
+        if args.proj is not None:        
+            if args.proj == "Distal":
+                momentProjection = pyCGM2Enums.MomentProjection.Distal
+            elif args.proj == "Proximal":
+                momentProjection = pyCGM2Enums.MomentProjection.Distal
+            elif args.proj == "Global":
+                momentProjection = pyCGM2Enums.MomentProjection.Global
+            else:
+                raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
+
+        else:        
+            if inputs["Fitting"]["Moment Projection"] == "Distal":
+                momentProjection = pyCGM2Enums.MomentProjection.Distal
+            elif inputs["Fitting"]["Moment Projection"] == "Proximal":
+                momentProjection = pyCGM2Enums.MomentProjection.Distal
+            elif inputs["Fitting"]["Moment Projection"] == "Global":
+                momentProjection = pyCGM2Enums.MomentProjection.Global
+            else:
+                raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
 
         # --------------------------MODELLLING--------------------------
