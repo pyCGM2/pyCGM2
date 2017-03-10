@@ -55,26 +55,24 @@ class CGM(cmb.Model):
 
 
     @classmethod
-    def reLabelPigOutputs(cls,acq):
-        pigFlag = btkTools.checkPigProcessing(acq)
-        if pigFlag:
-            for it in btk.Iterate(acq.GetPoints()):
-                if it.GetType() == btk.btkPoint.Angle and  it.GetLabel() in CGM.PIG_STATIC_ANGLE_LABELS:
-                    logging.warning( "angle (%s) suffixed (.PIG)" %(it.GetLabel()))
-                    it.SetLabel(it.GetLabel()+".PIG")
+    def reLabelOldOutputs(cls,acq):
+        for it in btk.Iterate(acq.GetPoints()):
+            if it.GetType() == btk.btkPoint.Angle and  it.GetLabel() in CGM.PIG_STATIC_ANGLE_LABELS:
+                logging.warning( "angle (%s) suffixed (.OLD)" %(it.GetLabel()))
+                it.SetLabel(it.GetLabel()+".OLD")
 
-                if it.GetType() == btk.btkPoint.Force and  it.GetLabel() in CGM.PIG_STATIC_FORCE_LABELS:
-                    logging.warning( "force (%s) suffixed (.PIG)" %(it.GetLabel()))
-                    it.SetLabel(it.GetLabel()+".PIG")
+            if it.GetType() == btk.btkPoint.Force and  it.GetLabel() in CGM.PIG_STATIC_FORCE_LABELS:
+                logging.warning( "force (%s) suffixed (.OLD)" %(it.GetLabel()))
+                it.SetLabel(it.GetLabel()+".OLD")
 
-                if it.GetType() == btk.btkPoint.Moment and  it.GetLabel() in CGM.PIG_STATIC_MOMENT_LABELS:
-                    logging.warning( "moment (%s) suffixed (.PIG)" %(it.GetLabel()))
-                    it.SetLabel(it.GetLabel()+".PIG")
+            if it.GetType() == btk.btkPoint.Moment and  it.GetLabel() in CGM.PIG_STATIC_MOMENT_LABELS:
+                logging.warning( "moment (%s) suffixed (.OLD)" %(it.GetLabel()))
+                it.SetLabel(it.GetLabel()+".OLD")
 
 
-                if it.GetType() == btk.btkPoint.Power and  it.GetLabel() in CGM.PIG_STATIC_POWER_LABELS:
-                    logging.warning( "power (%s) suffixed (.PIG)" %(it.GetLabel()))
-                    it.SetLabel(it.GetLabel()+".PIG")
+            if it.GetType() == btk.btkPoint.Power and  it.GetLabel() in CGM.PIG_STATIC_POWER_LABELS:
+                logging.warning( "power (%s) suffixed (.OLD)" %(it.GetLabel()))
+                it.SetLabel(it.GetLabel()+".OLD")
 
     @classmethod
     def hipJointCenters(cls,mp_input,mp_computed,markerDiameter):
