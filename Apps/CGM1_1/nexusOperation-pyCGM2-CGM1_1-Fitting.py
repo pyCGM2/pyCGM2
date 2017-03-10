@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import json
 import pdb
 import cPickle
+from shutil import copyfile
 import json
 from collections import OrderedDict
 
@@ -68,7 +69,10 @@ if __name__ == "__main__":
             raise Exception("[pyCGM2] Your Trial c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
 
         # --relabel PIG output if processing previously---
-        cgm.CGM.reLabelPigOutputs(acqGait)
+        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqGait)
+
+        if any([n_angles,n_forces ,n_moments,  n_powers])==1:            
+            cgm.CGM.reLabelOldOutputs(acqGait) 
 
         # --------------------------SUBJECT -----------------------------------
         # Notice : Work with ONE subject by session
@@ -84,10 +88,16 @@ if __name__ == "__main__":
             model = cPickle.load(f)
             f.close()
 
-        if not os.path.isfile(DATA_PATH + subject +"-pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
-            raise Exception ("%s-pyCGM2.inputs file doesn't exist"%subject)
+        # global setting ( in user/AppData)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
+
+        # info file
+        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
+            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
+            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
+            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
         else:
-            inputs = json.loads(open(DATA_PATH + subject +'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
+            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
         # ---- configuration parameters ----
         markerDiameter = float(inputs["Global"]["Marker diameter"])
@@ -132,6 +142,8 @@ if __name__ == "__main__":
         # --- force plate handling----
         # find foot  in contact        
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        logging.info("Force plate assignment : %s" %mappedForcePlate)
+
         # assembly foot and force plate        
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",

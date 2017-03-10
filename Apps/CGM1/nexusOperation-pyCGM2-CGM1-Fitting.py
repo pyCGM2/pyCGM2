@@ -8,6 +8,7 @@ import pdb
 import cPickle
 import json
 from collections import OrderedDict
+from shutil import copyfile
 
 # pyCGM2 settings
 import pyCGM2
@@ -47,8 +48,12 @@ if __name__ == "__main__":
         # ----------------------INPUTS-------------------------------------------
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\New Session 3\\"
-            reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 12"
+#            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\New Session 3\\"
+#            reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 12"
+
+            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\True equinus\\S02\\test\\"            
+            reconstructFilenameLabelledNoExt = "gait trial 01"
+            
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
         else:
@@ -67,8 +72,12 @@ if __name__ == "__main__":
             raise Exception("[pyCGM2] Your Trial c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
 
         # --relabel PIG output if processing previously---
-        cgm.CGM.reLabelPigOutputs(acqGait)
-        
+        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqGait)
+
+        if any([n_angles,n_forces ,n_moments,  n_powers])==1:             
+            cgm.CGM.reLabelOldOutputs(acqGait) 
+
+
         # --------------------------SUBJECT -----------------------------------
 
         # Notice : Work with ONE subject by session
@@ -77,6 +86,8 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 INPUT FILES ------------------------------
+
+        # model
         if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
             raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
         else:
@@ -84,10 +95,19 @@ if __name__ == "__main__":
             model = cPickle.load(f)
             f.close()
 
-        if not os.path.isfile(DATA_PATH + subject +"-pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
-            raise Exception ("%s-pyCGM2.inputs file doesn't exist"%subject)
+
+        # global setting ( in user/AppData)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
+
+        # info file
+        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
+            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
+            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
+            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
         else:
-            inputs = json.loads(open(DATA_PATH + subject +'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
+            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+
+
 
         # ---- configuration parameters ----
         markerDiameter = float(inputs["Global"]["Marker diameter"])
@@ -137,6 +157,8 @@ if __name__ == "__main__":
         # --- force plate handling----
         # find foot  in contact        
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        logging.info("Force plate assignment : %s" %mappedForcePlate)
+
         # assembly foot and force plate        
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",

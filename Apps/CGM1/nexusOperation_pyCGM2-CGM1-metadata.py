@@ -100,10 +100,6 @@ if __name__ == "__main__":
                 model = cPickle.load(f)
                 f.close()
     
-            if not os.path.isfile(DATA_PATH + subject+"-pyCGM2.inputs"): #DATA_PATH + "pyCGM2.inputs"):
-                raise Exception ("%s-pyCGM2.inputs file doesn't exist"%subject)
-            else:
-                inputs = json.loads(open(DATA_PATH + subject+'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
 
         filename = filenameNoExt+".c3d"
 
@@ -119,15 +115,8 @@ if __name__ == "__main__":
             md_Model.ClearChildren()
             btk.btkMetaDataCreateChild(md_Model, "NAME", "CGM1")
             btk.btkMetaDataCreateChild(md_Model, "PROCESSOR", "pyCGM2")
+
             if args.calibration:
-
-                for item in inputs["Calibration"].items():
-                    btk.btkMetaDataCreateChild(md_Model, str(item[0]), str(item[1]))
-
-                for item in inputs["Global"].items():
-                    btk.btkMetaDataCreateChild(md_Model, str(item[0]), str(item[1]))                    
-                    
-                    
                 mps = getViconMP(model)
                 for item in mps.items():
                     btk.btkMetaDataCreateChild(md_Model, str(item[0]), str(item[1]))
@@ -140,12 +129,6 @@ if __name__ == "__main__":
             btk.btkMetaDataCreateChild(md_Model, "PROCESSOR", "pyCGM2")
             
             if args.calibration:
-                for item in inputs["Calibration"].items():
-                    print item
-                    btk.btkMetaDataCreateChild(md_Model, str(item[0]), str(item[1]))
-                
-                for item in inputs["Global"].items():
-                    btk.btkMetaDataCreateChild(md_Model, str(item[0]), str(item[1]))      
 
                 mps = getViconMP(model)
                 for item in mps.items():

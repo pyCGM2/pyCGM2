@@ -7,6 +7,8 @@ import argparse
 import json
 import os
 from collections import OrderedDict
+from shutil import copyfile
+
 
 # pyCGM2 settings
 import pyCGM2
@@ -54,20 +56,24 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # ---- pyCGM2 input files ----
-        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.inputs"):
-            raise Exception ("%s-pyCGM2.inputs file doesn't exist"%subject)
+
+       # info file
+        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
+            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
+            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
+            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
         else:
-            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
+            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
         # ---- configuration parameters ----
-        pointSuffix = inputs["Global"]["Point suffix"]
-        normativeData = inputs["Processing"]["Normative data"]
+        pointSuffix = infoSettings["Global"]["Point suffix"]
+        normativeData = infoSettings["Processing"]["Normative data"]
 
 
         # -----infos--------     
-        model = None if  inputs["Processing"]["Model"]=={} else inputs["Processing"]["Model"]  
-        subject = None if inputs["Processing"]["Subject"]=={} else inputs["Processing"]["Subject"] 
-        experimental = None if inputs["Processing"]["Experimental conditions"]=={} else inputs["Processing"]["Experimental conditions"] 
+        model = None if  infoSettings["Processing"]["Model"]=={} else infoSettings["Processing"]["Model"]  
+        subject = None if infoSettings["Processing"]["Subject"]=={} else infoSettings["Processing"]["Subject"] 
+        experimental = None if infoSettings["Processing"]["Experimental conditions"]=={} else infoSettings["Processing"]["Experimental conditions"] 
 
         # --------------------------PROCESSING --------------------------------
         # pycgm2-filter pipeline are gathered in a single function

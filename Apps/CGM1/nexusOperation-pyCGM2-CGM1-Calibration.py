@@ -101,9 +101,8 @@ if __name__ == "__main__":
     DEBUG = False
 
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
-    parser.add_argument('--force', action='store_true', help='force flat foot options')
-    parser.add_argument('-l','--leftFlatFoot', action='store_true', help='left flat foot option')
-    parser.add_argument('-r','--rightFlatFoot', action='store_true', help='right flat foot option')
+    parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
+    parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -117,8 +116,13 @@ if __name__ == "__main__":
         # --- acquisition file and path----
         if DEBUG:
             
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
-            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
+#            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
+#            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
+            
+            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\True equinus\\S02\\test\\"
+            calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
+
+            
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -129,7 +133,7 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
 
-
+        
         # ---btk acquisition---
         acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
 
@@ -138,7 +142,10 @@ if __name__ == "__main__":
             raise Exception("[pyCGM2] Your input static c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
 
         # ---relabel PIG output if processing previously---
-        cgm.CGM.reLabelPigOutputs(acqStatic) 
+        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqStatic)
+
+        if any([n_angles,n_forces ,n_moments,  n_powers])==1:             
+            cgm.CGM.reLabelOldOutputs(acqStatic) 
         
         # --------------------------SUBJECT -----------------------------------
 
@@ -149,25 +156,31 @@ if __name__ == "__main__":
 
 
         # --------------------pyCGM2 INPUT FILES ------------------------------
-        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.inputs"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.inputs"), str(DATA_PATH + subject+"-pyCGM2.inputs"))
-            logging.warning("Copy of pyCGM2.inputs from pyCGM2 settings")
-            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
+
+        # global setting ( in user/AppData)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
+
+        # info file
+        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
+            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
+            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
+            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
         else:
-            inputs = json.loads(open(DATA_PATH +subject+'-pyCGM2.inputs').read(),object_pairs_hook=OrderedDict)
+            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
 
         # ---- configuration parameters ----
-        if args.force:
-            flag_leftFlatFoot = args.leftFlatFoot
-            inputs["Calibration"]["Left flat foot"] = str(flag_leftFlatFoot)
-               
-            flag_rightFlatFoot = args.rightFlatFoot
-            inputs["Calibration"]["Right flat foot"] = str(flag_rightFlatFoot)
-
+        if args.leftFlatFoot is not None:      
+            flag_leftFlatFoot = bool(args.leftFlatFoot)
         else:
-            flag_leftFlatFoot =  bool(inputs["Calibration"]["Left flat foot"])
+            flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
+               
+        if args.rightFlatFoot is not None:
+            flag_rightFlatFoot = bool(args.rightFlatFoot)
+        else:
             flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
+
+
 
         markerDiameter = float(inputs["Global"]["Marker diameter"])
         pointSuffix = inputs["Global"]["Point suffix"]
@@ -311,19 +324,11 @@ if __name__ == "__main__":
 
         
 
-        # ----------------------SAVE-------------------------------------------
-        if args.force:
-            F = open(str(DATA_PATH + subject+"-pyCGM2.inputs"),"w") 
-            F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
-            F.close()        
-
-            logging.warning("Flat foot option forced => %s-pyCGM2.inputs file overwrite. "%subject)            
-
-
-
+        # ----------------------SAVE-------------------------------------------  
         modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
+
 
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,
@@ -332,8 +337,10 @@ if __name__ == "__main__":
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 
+        
 
         if DEBUG:
+            btkTools.smartWriter(acqStatic, "testStatic.c3d")  
             NEXUS.SaveTrial(30)
 
     else:
