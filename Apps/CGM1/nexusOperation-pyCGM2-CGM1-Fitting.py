@@ -172,11 +172,11 @@ if __name__ == "__main__":
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
         logging.info("Force plate assignment : %s" %mappedForcePlate)
 
-        if args.fpma is not None:
-            if len(args.fpma) != len(mappedForcePlate):
+        if args.mfpa is not None:
+            if len(args.mfpa) != len(mappedForcePlate):
                 raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(mappedForcePlate))))
             else:
-                mappedForcePlate = args.fpma
+                mappedForcePlate = args.mfpa
                 logging.warning("Force plates assign manually")
 
                 
