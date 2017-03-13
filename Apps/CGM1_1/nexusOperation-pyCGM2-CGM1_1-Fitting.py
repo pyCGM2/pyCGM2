@@ -45,6 +45,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='CGM1-1 Fitting')
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
+    parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     args = parser.parse_args()
 
 
@@ -159,6 +160,13 @@ if __name__ == "__main__":
         # find foot  in contact        
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
         logging.info("Force plate assignment : %s" %mappedForcePlate)
+
+        if args.mfpa is not None:
+            if len(args.mfpa) != len(mappedForcePlate):
+                raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(mappedForcePlate))))
+            else:
+                mappedForcePlate = args.mfpa
+                logging.warning("Force plates assign manually")
 
         # assembly foot and force plate        
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
