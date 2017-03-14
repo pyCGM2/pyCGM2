@@ -74,35 +74,15 @@ def updateNexusSubjectMp(NEXUS,model,subjectName):
     NEXUS.SetSubjectParam( subjectName, "RightAnkleAbAdd",abdAdd_r)
 
 
-def checkCGM1_StaticMarkerConfig(acqStatic):
-
-    out = dict()
-
-    # medial ankle markers
-    out["leftMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["LMED","LANK"]) else False
-    out["rightMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["RMED","RANK"]) else False
-
-    # medial knee markers
-    out["leftMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["LMEPI","LKNE"]) else False
-    out["rightMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["RMEPI","RKNE"]) else False
-
-
-    # kad
-    out["leftKadFlag"] = True if btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) else False
-    out["rightKadFlag"] = True if btkTools.isPointsExist(acqStatic,["RKAX","RKD1","RKD2"]) else False
-
-    return out
-
-
-
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = False
+    DEBUG = True
 
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
+    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -119,8 +99,8 @@ if __name__ == "__main__":
 #            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
 #            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
             
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\True equinus\\S02\\test\\"
-            calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\True equinus\\S01\\CGM1\\"
+            calibrateFilenameLabelledNoExt = "static - PIG" #"static Cal 01-noKAD-noAnkleMed" #
 
             
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
@@ -172,17 +152,24 @@ if __name__ == "__main__":
         # ---- configuration parameters ----
         if args.leftFlatFoot is not None:      
             flag_leftFlatFoot = bool(args.leftFlatFoot)
+            logging.warning("Left flat foot forces : %s"%(str(bool(args.leftFlatFoot))))
         else:
             flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
                
         if args.rightFlatFoot is not None:
             flag_rightFlatFoot = bool(args.rightFlatFoot)
+            logging.warning("Right flat foot forces : %s"%(str(bool(args.rightFlatFoot))))
         else:
             flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
 
 
+        if args.markerDiameter is not None: 
+            markerDiameter = float(args.markerDiameter)
+            logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
+        else:
+            markerDiameter = float(inputs["Global"]["Marker diameter"])
 
-        markerDiameter = float(inputs["Global"]["Marker diameter"])
+
         pointSuffix = inputs["Global"]["Point suffix"]
 
         # --------------------------MP DATA -----------------------------------
@@ -221,7 +208,7 @@ if __name__ == "__main__":
 
 
         # ---check marker set used----
-        staticMarkerConfiguration= checkCGM1_StaticMarkerConfig(acqStatic)
+        staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
 
 
         # --------------------------STATIC CALBRATION--------------------------                

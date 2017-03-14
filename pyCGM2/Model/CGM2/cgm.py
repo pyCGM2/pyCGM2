@@ -92,7 +92,7 @@ class CGM(cmb.Model):
 
 
         """
-
+        
         C=mp_computed["MeanlegLength"] * 0.115 - 15.3
 
         HJCx_L= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2) * np.cos(0.314)
@@ -319,6 +319,26 @@ class CGM(cmb.Model):
         btkTools.smartAppendPoint(acqui,targetPointLabelX,valX,desc="")
         btkTools.smartAppendPoint(acqui,targetPointLabelY,valY,desc="")
         btkTools.smartAppendPoint(acqui,targetPointLabelZ,valZ,desc="")
+
+    @classmethod
+    def checkCGM1_StaticMarkerConfig(cls,acqStatic):
+
+        out = dict()
+    
+        # medial ankle markers
+        out["leftMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["LMED","LANK"]) else False
+        out["rightMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["RMED","RANK"]) else False
+    
+        # medial knee markers
+        out["leftMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["LMEPI","LKNE"]) else False
+        out["rightMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["RMEPI","RKNE"]) else False
+    
+    
+        # kad
+        out["leftKadFlag"] = True if btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) else False
+        out["rightKadFlag"] = True if btkTools.isPointsExist(acqStatic,["RKAX","RKD1","RKD2"]) else False
+    
+        return out
 
 class CGM1LowerLimbs(CGM):
     """
@@ -709,7 +729,6 @@ class CGM1LowerLimbs(CGM):
         else:
             logging.warning("Pelvis Depth computed and added to model parameters")
             self.mp_computed["PelvisDepth"] = np.linalg.norm( valMidAsis.mean(axis=0)-valSACR.mean(axis=0)) - 2.0* (markerDiameter/2.0) -2.0* (basePlate/2.0)
-
 
         if self.mp.has_key("InterAsisDistance") and self.mp["InterAsisDistance"] != 0:
             logging.warning("InterAsisDistance defined from your vsk file")
@@ -2442,17 +2461,7 @@ class CGM1LowerLimbs(CGM):
 
 
 
-        if not "useForMotionTest" in options.keys():
-            self.displayMotionViconCoordinateSystem(aqui,"Pelvis","PELO","PELA","PELL","PELP")
-            self.displayMotionViconCoordinateSystem(aqui,"Left Thigh","LFEO","LFEA","LFEL","LFEP")
-            self.displayMotionViconCoordinateSystem(aqui,"Right Thigh","RFEO","RFEA","RFEL","RFEP")
-            self.displayMotionViconCoordinateSystem(aqui,"Left Shank","LTIO","LTIA","LTIL","LTIP")
-            self.displayMotionViconCoordinateSystem(aqui,"Left Shank Proximal","LTPO","LTPA","LTPL","LTPP")
-            self.displayMotionViconCoordinateSystem(aqui,"Right Shank","RTIO","RTIA","RTIL","RTIP")
-            self.displayMotionViconCoordinateSystem(aqui,"Right Shank Proximal","RTPO","RTPA","RTPL","RTPP")
-            self.displayMotionViconCoordinateSystem(aqui,"Left Foot","LFOO","LFOA","LFOL","LFOP")
-            self.displayMotionViconCoordinateSystem(aqui,"Right Foot","RFOO","RFOA","RFOL","RFOP")
-        else:
+        if "useForMotionTest" in options.keys() and options["useForMotionTest"]:
             self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
             self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
             self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
@@ -2467,6 +2476,19 @@ class CGM1LowerLimbs(CGM):
 
             self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical")
             self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical")
+
+        else:            
+            
+            self.displayMotionViconCoordinateSystem(aqui,"Pelvis","PELO","PELA","PELL","PELP")
+            self.displayMotionViconCoordinateSystem(aqui,"Left Thigh","LFEO","LFEA","LFEL","LFEP")
+            self.displayMotionViconCoordinateSystem(aqui,"Right Thigh","RFEO","RFEA","RFEL","RFEP")
+            self.displayMotionViconCoordinateSystem(aqui,"Left Shank","LTIO","LTIA","LTIL","LTIP")
+            self.displayMotionViconCoordinateSystem(aqui,"Left Shank Proximal","LTPO","LTPA","LTPL","LTPP")
+            self.displayMotionViconCoordinateSystem(aqui,"Right Shank","RTIO","RTIA","RTIL","RTIP")
+            self.displayMotionViconCoordinateSystem(aqui,"Right Shank Proximal","RTPO","RTPA","RTPL","RTPP")
+            self.displayMotionViconCoordinateSystem(aqui,"Left Foot","LFOO","LFOA","LFOL","LFOP")
+            self.displayMotionViconCoordinateSystem(aqui,"Right Foot","RFOO","RFOA","RFOL","RFOP")
+        
 
 
     # ----- native motion ------
@@ -3139,8 +3161,9 @@ class CGM1LowerLimbs(CGM):
                 pt3=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[i,:]
                 v=(pt3-pt1)
             else:
-                if "viconCGM1compatible" in options.keys():
+                if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
                     v=self.getSegment("Left Shank Proximal").anatomicalFrame.motion[i].m_axisY
+
                 else:
                     v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY
 
@@ -3216,8 +3239,9 @@ class CGM1LowerLimbs(CGM):
                 pt3=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[i,:]
                 v=(pt3-pt1)
             else:
-                if "viconCGM1compatible" in options.keys():
+                if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"] :
                     v=self.getSegment("Right Shank Proximal").anatomicalFrame.motion[i].m_axisY
+
                 else:
                     v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY
 

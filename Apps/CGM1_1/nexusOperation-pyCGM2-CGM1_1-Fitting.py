@@ -46,6 +46,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CGM1-1 Fitting')
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
+    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     args = parser.parse_args()
 
 
@@ -106,7 +107,13 @@ if __name__ == "__main__":
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
         # ---- configuration parameters ----
-        markerDiameter = float(inputs["Global"]["Marker diameter"])
+        if args.markerDiameter is not None: 
+            markerDiameter = float(args.markerDiameter)
+            logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
+        else:
+            markerDiameter = float(inputs["Global"]["Marker diameter"])
+            
+            
         pointSuffix = inputs["Global"]["Point suffix"]
 
         if args.proj is not None:        

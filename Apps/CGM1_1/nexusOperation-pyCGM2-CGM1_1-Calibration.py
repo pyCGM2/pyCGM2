@@ -76,26 +76,6 @@ def updateNexusSubjectMp(NEXUS,model,subjectName):
     NEXUS.SetSubjectParam( subjectName, "RightAnkleAbAdd",abdAdd_r)
 
 
-def checkCGM1_StaticMarkerConfig(acqStatic):
-
-    out = dict()
-
-    # medial ankle markers
-    out["leftMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["LMED","LANK"]) else False
-    out["rightMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["RMED","RANK"]) else False
-
-    # medial knee markers
-    out["leftMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["LMEPI","LKNE"]) else False
-    out["rightMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["RMEPI","RKNE"]) else False
-
-
-    # kad
-    out["leftKadFlag"] = True if btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) else False
-    out["rightKadFlag"] = True if btkTools.isPointsExist(acqStatic,["RKAX","RKD1","RKD2"]) else False
-
-    return out
-
-
 if __name__ == "__main__":
 
     plt.close("all")
@@ -104,6 +84,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CGM1.1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
+    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     args = parser.parse_args()
 
 
@@ -176,7 +157,13 @@ if __name__ == "__main__":
             flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
 
 
-        markerDiameter = float(inputs["Global"]["Marker diameter"])
+        if args.markerDiameter is not None: 
+            markerDiameter = float(args.markerDiameter)
+            logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
+        else:
+            markerDiameter = float(inputs["Global"]["Marker diameter"])
+
+
         pointSuffix = inputs["Global"]["Point suffix"]
 
         # --------------------------MP DATA -----------------------------------
@@ -212,7 +199,7 @@ if __name__ == "__main__":
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
         # ---check marker set used----
-        staticMarkerConfiguration= checkCGM1_StaticMarkerConfig(acqStatic)
+        staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
 
 
         # --------------------------STATIC CALBRATION--------------------------                
