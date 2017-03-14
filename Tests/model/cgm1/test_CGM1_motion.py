@@ -917,7 +917,9 @@ class CGM1_motionTest():
 #        np.testing.assert_almost_equal( R_rightFoot,
 #                                        R_rightFootVicon, decimal =3)
 
-
+        
+        
+        
 
 if __name__ == "__main__":
 
