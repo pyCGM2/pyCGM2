@@ -134,7 +134,7 @@ if __name__ == "__main__":
         # --------------------pyCGM2 INPUT FILES ------------------------------
 
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1_1-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
 
         # info file
         if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
@@ -314,7 +314,7 @@ if __name__ == "__main__":
         
 
         # ----------------------SAVE-------------------------------------------
-        modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
+        modelFile = open(DATA_PATH + subject+"-CGM1_1-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
 
