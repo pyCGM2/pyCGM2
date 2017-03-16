@@ -83,6 +83,7 @@ if __name__ == "__main__":
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    parser.add_argument('--check', action='store_true', help='force model output suffix' )
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -96,11 +97,11 @@ if __name__ == "__main__":
         # --- acquisition file and path----
         if DEBUG:
             
-#            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
-#            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
+            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
             
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\True equinus\\S01\\CGM1\\"
-            calibrateFilenameLabelledNoExt = "static - PIG" #"static Cal 01-noKAD-noAnkleMed" #
+#            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\True equinus\\S01\\CGM1\\"
+#            calibrateFilenameLabelledNoExt = "static - PIG" #"static Cal 01-noKAD-noAnkleMed" #
 
             
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
@@ -121,11 +122,10 @@ if __name__ == "__main__":
         if acqStatic.GetPoint(0).GetLabel().count(":"):
             raise Exception("[pyCGM2] Your input static c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
 
-        # ---relabel PIG output if processing previously---
-        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqStatic)
-
-        if any([n_angles,n_forces ,n_moments,  n_powers])==1:             
-            cgm.CGM.reLabelOldOutputs(acqStatic) 
+#        # ---relabel PIG output if processing previously---
+#        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqStatic)
+#        if any([n_angles,n_forces ,n_moments,  n_powers])==1:             
+#            cgm.CGM.reLabelOldOutputs(acqStatic) 
         
         # --------------------------SUBJECT -----------------------------------
 
@@ -169,8 +169,11 @@ if __name__ == "__main__":
         else:
             markerDiameter = float(inputs["Global"]["Marker diameter"])
 
-
-        pointSuffix = inputs["Global"]["Point suffix"]
+        pointSuffix="cgm1.0"
+#        if args.check:
+#            pointSuffix="cgm1.0"
+#        else:
+#            pointSuffix = inputs["Global"]["Point suffix"]
 
         # --------------------------MP DATA -----------------------------------
 
@@ -342,6 +345,7 @@ if __name__ == "__main__":
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,
                                       model,acqStatic,subject,
+                                      pointSuffix,
                                       staticProcessing=True).run()
 
         # ========END of the nexus OPERATION if run from Nexus  =========

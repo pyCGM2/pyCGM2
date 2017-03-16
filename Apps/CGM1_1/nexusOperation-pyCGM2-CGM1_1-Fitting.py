@@ -47,6 +47,7 @@ if __name__ == "__main__":
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    parser.add_argument('--check', action='store_true', help='force model output suffix')
     args = parser.parse_args()
 
 
@@ -75,11 +76,10 @@ if __name__ == "__main__":
         if acqGait.GetPoint(0).GetLabel().count(":"):
             raise Exception("[pyCGM2] Your Trial c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
 
-        # --relabel PIG output if processing previously---
-        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqGait)
-
-        if any([n_angles,n_forces ,n_moments,  n_powers])==1:            
-            cgm.CGM.reLabelOldOutputs(acqGait) 
+#        # --relabel PIG output if processing previously---
+#        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqGait)
+#        if any([n_angles,n_forces ,n_moments,  n_powers])==1:            
+#            cgm.CGM.reLabelOldOutputs(acqGait) 
 
         # --------------------------SUBJECT -----------------------------------
         # Notice : Work with ONE subject by session
@@ -114,7 +114,11 @@ if __name__ == "__main__":
             markerDiameter = float(inputs["Global"]["Marker diameter"])
             
             
-        pointSuffix = inputs["Global"]["Point suffix"]
+        pointSuffix="cgm1.1"
+#        if args.check:
+#            pointSuffix="cgm1.1"
+#        else:
+#            pointSuffix = inputs["Global"]["Point suffix"]
 
         if args.proj is not None:        
             if args.proj == "Distal":
@@ -192,7 +196,7 @@ if __name__ == "__main__":
         modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
         # ----------------------DISPLAY ON VICON-------------------------------
-        viconInterface.ViconInterface(NEXUS,model,acqGait,subject).run()
+        viconInterface.ViconInterface(NEXUS,model,acqGait,subject,pointSuffix).run()
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 
