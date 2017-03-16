@@ -151,7 +151,6 @@ class CGM1_calibrationTest():
         plt.plot(acqStatic.GetPoint("LAnkleAngles").GetValues()[:,2] -acqStatic.GetPoint("LAnkleAngles"+"_cgm1_6dof").GetValues()[:,2])
 
 
-
     @classmethod
     def basicCGM1_KAD(cls):      
    
@@ -385,7 +384,6 @@ if __name__ == "__main__":
 
     # CGM 1
     logging.info("######## PROCESS CGM1 ######")
-    #CGM1_calibrationTest.basicCGM1() 
-    
-    #CGM1_calibrationTest.basicCGM1_KAD()
+    CGM1_calibrationTest.basicCGM1() 
+    CGM1_calibrationTest.basicCGM1_KAD()
     CGM1_calibrationTest.basicCGM1_KAD_tibialTorsion()
