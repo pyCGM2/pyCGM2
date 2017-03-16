@@ -48,6 +48,7 @@ PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"Settings\\"
 
 # setting files
 generateFiles.generateCGM1_Settings(PYCGM2_APPDATA_PATH)
+generateFiles.generateCGM1_1_Settings(PYCGM2_APPDATA_PATH)
 
 # pipeline generation
 # cgm1
