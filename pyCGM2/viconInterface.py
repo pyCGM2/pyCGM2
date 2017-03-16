@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 class ViconInterface(object):
-    def __init__(self,NEXUS,iModel, iAcq, vskName, staticProcessing = False ):
+    def __init__(self,NEXUS,iModel, iAcq, vskName,pointSuffix, staticProcessing = False ):
         """
             Constructor
            
@@ -17,11 +17,12 @@ class ViconInterface(object):
         self.m_vskName = vskName
         self.NEXUS = NEXUS
         self.staticProcessing = staticProcessing
+        self.m_pointSuffix = pointSuffix if pointSuffix=="" else str("_"+pointSuffix)
 
     def run(self):
         """
             method calling embedded-model method : viconExport  
         """
-        self.m_model.viconExport(self.NEXUS,self.m_acq, self.m_vskName,self.staticProcessing)
+        self.m_model.viconExport(self.NEXUS,self.m_acq, self.m_vskName,self.m_pointSuffix,self.staticProcessing)
         
         
