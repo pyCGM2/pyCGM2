@@ -948,10 +948,6 @@ class CGM1LowerLimbs(CGM):
                 # construction of the btkPoint label (LKJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"LKJC",val,desc=desc)
-            else:
-                logging.warning(" option (useLeftKJCnode) not found : KJC from chord ")
-                btkTools.smartAppendPoint(aquiStatic,"LKJC",val,desc="chord")
-
 
         # --- final LKJC
         final_LKJC = aquiStatic.GetPoint("LKJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -1054,9 +1050,12 @@ class CGM1LowerLimbs(CGM):
                 # construction of the btkPoint label (LKJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"RKJC",val,desc=desc)
-            else:
-                logging.warning(" option (useRightKJCnode) not found : KJC from chord ")
-                btkTools.smartAppendPoint(aquiStatic,"RKJC",val,desc="chord")
+
+            if "useRightKJCmarker" in options.keys():
+                RKJCvalues = aquiStatic.GetPoint(options["useRightKJCmarker"]).GetValues()[frameInit:frameEnd,:]
+                desc = aquiStatic.GetPoint(options["useRightKJCmarker"]).GetDescription()
+                btkTools.smartAppendPoint(aquiStatic,"RKJC",RKJCvalues,desc=desc)
+
 
 
         # --- final KJC
@@ -1158,11 +1157,7 @@ class CGM1LowerLimbs(CGM):
                 # construction of the btkPoint label (LAJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"LAJC",val,desc=desc)
-            else:
-                logging.warning(" option (useLeftAJCnode) not found : AJC from chord ")
-                btkTools.smartAppendPoint(aquiStatic,"LAJC",val,desc="chord")
-
-
+            
         # --- final AJC
         final_LAJC = aquiStatic.GetPoint("LAJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
         tf.static.addNode("LAJC",final_LAJC,positionType="Global")
@@ -1259,9 +1254,7 @@ class CGM1LowerLimbs(CGM):
                 # construction of the btkPoint label (RAJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"RAJC",val,desc=desc)
-            else:
-                logging.warning( "option (useRightAJCnode) not found : AJC from chord" )
-                btkTools.smartAppendPoint(aquiStatic,"RAJC",val,desc="chord")
+            
 
 
         # --- Final AJC
@@ -1837,7 +1830,7 @@ class CGM1LowerLimbs(CGM):
         # This section compute the actual Relative Rotation between anatomical and technical Referential
         trueRelativeMatrixAnatomic = np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation())
         y,x,z = ceuler.euler_yxz(trueRelativeMatrixAnatomic)
-
+        
         # the native CGM relative rotation leaves out the rotation around Z
         rotX =np.array([[1,0,0],
                         [0,np.cos(x),-np.sin(x)],
@@ -1849,6 +1842,7 @@ class CGM1LowerLimbs(CGM):
         relativeMatrixAnatomic = np.dot(rotY,rotX)
 
         tf.setRelativeMatrixAnatomic( relativeMatrixAnatomic)
+        tf.additionalInfos["trueRelativeMatrix"] = trueRelativeMatrixAnatomic
 
         # --- node manager
         for label in seg.m_markerLabels:
@@ -2406,15 +2400,17 @@ class CGM1LowerLimbs(CGM):
         logging.debug("=====================================================")
 
         if motionMethod == pyCGM2Enums.motionMethod.Native: #cmf.motionMethod.Native:
-            logging.debug("--- Native motion process ---")
+            pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
 
+            #if not pigStaticProcessing:
             logging.debug(" - Pelvis - motion -")
             logging.debug(" -------------------")
             self._pelvis_motion(aqui, dictRef, dictAnat)
 
             logging.debug(" - Left Thigh - motion -")
             logging.debug(" -----------------------")
-            self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
+            self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)            
+                
 
             logging.debug(" - Right Thigh - motion -")
             logging.debug(" ------------------------")
@@ -2424,7 +2420,6 @@ class CGM1LowerLimbs(CGM):
             logging.debug(" - Left Shank - motion -")
             logging.debug(" -----------------------")
             self._left_shank_motion(aqui, dictRef, dictAnat,options=options)
-
             logging.debug(" - Left Shank-proximal - motion -")
             logging.debug(" --------------------------------")
             self._left_shankProximal_motion(aqui,dictAnat,options=options)
@@ -2439,12 +2434,19 @@ class CGM1LowerLimbs(CGM):
 
             logging.debug(" - Left foot - motion -")
             logging.debug(" ----------------------")
-            self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
 
+            if pigStaticProcessing:
+                self._left_foot_motion_static(aqui, dictAnat,options=options)                
+            else:
+                self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
+                
             logging.debug(" - Right foot - motion -")
             logging.debug(" ----------------------")
-            self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
 
+            if pigStaticProcessing:
+                self._right_foot_motion_static(aqui, dictAnat,options=options)
+            else:
+                self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
 
 
         if motionMethod == pyCGM2Enums.motionMethod.Sodervisk:
@@ -2460,34 +2462,34 @@ class CGM1LowerLimbs(CGM):
 
 
 
-
-        if "useForMotionTest" in options.keys() and options["useForMotionTest"]:
-            self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
-            self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
-            self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
-            self.displayMotionCoordinateSystem( aqui,  "Left Shank" , "LShank" )
-            self.displayMotionCoordinateSystem( aqui,  "Left Shank Proximal" , "LShankProx" )
-            self.displayMotionCoordinateSystem( aqui,  "Right Shank" , "RShank" )
-            self.displayMotionCoordinateSystem( aqui,  "Right Shank Proximal" , "RShankProx" )
-            self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFoot" )
-            self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFoot" )
-            self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical")
-            self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical")
-
-            self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical")
-            self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical")
-
-        else:            
-            
-            self.displayMotionViconCoordinateSystem(aqui,"Pelvis","PELO","PELA","PELL","PELP")
-            self.displayMotionViconCoordinateSystem(aqui,"Left Thigh","LFEO","LFEA","LFEL","LFEP")
-            self.displayMotionViconCoordinateSystem(aqui,"Right Thigh","RFEO","RFEA","RFEL","RFEP")
-            self.displayMotionViconCoordinateSystem(aqui,"Left Shank","LTIO","LTIA","LTIL","LTIP")
-            self.displayMotionViconCoordinateSystem(aqui,"Left Shank Proximal","LTPO","LTPA","LTPL","LTPP")
-            self.displayMotionViconCoordinateSystem(aqui,"Right Shank","RTIO","RTIA","RTIL","RTIP")
-            self.displayMotionViconCoordinateSystem(aqui,"Right Shank Proximal","RTPO","RTPA","RTPL","RTPP")
-            self.displayMotionViconCoordinateSystem(aqui,"Left Foot","LFOO","LFOA","LFOL","LFOP")
-            self.displayMotionViconCoordinateSystem(aqui,"Right Foot","RFOO","RFOA","RFOL","RFOP")
+        if not pigStaticProcessing:
+            if "useForMotionTest" in options.keys() and options["useForMotionTest"]:
+                self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
+                self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
+                self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
+                self.displayMotionCoordinateSystem( aqui,  "Left Shank" , "LShank" )
+                self.displayMotionCoordinateSystem( aqui,  "Left Shank Proximal" , "LShankProx" )
+                self.displayMotionCoordinateSystem( aqui,  "Right Shank" , "RShank" )
+                self.displayMotionCoordinateSystem( aqui,  "Right Shank Proximal" , "RShankProx" )
+                self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFoot" )
+                self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFoot" )
+                self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical")
+                self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical")
+    
+                self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical")
+                self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical")
+    
+            else:            
+    
+                self.displayMotionViconCoordinateSystem(aqui,"Pelvis","PELO","PELA","PELL","PELP")
+                self.displayMotionViconCoordinateSystem(aqui,"Left Thigh","LFEO","LFEA","LFEL","LFEP")
+                self.displayMotionViconCoordinateSystem(aqui,"Right Thigh","RFEO","RFEA","RFEL","RFEP")
+                self.displayMotionViconCoordinateSystem(aqui,"Left Shank","LTIO","LTIA","LTIL","LTIP")
+                self.displayMotionViconCoordinateSystem(aqui,"Left Shank Proximal","LTPO","LTPA","LTPL","LTPP")
+                self.displayMotionViconCoordinateSystem(aqui,"Right Shank","RTIO","RTIA","RTIL","RTIP")
+                self.displayMotionViconCoordinateSystem(aqui,"Right Shank Proximal","RTPO","RTPA","RTPL","RTPP")
+                self.displayMotionViconCoordinateSystem(aqui,"Left Foot","LFOO","LFOA","LFOL","LFOP")
+                self.displayMotionViconCoordinateSystem(aqui,"Right Foot","RFOO","RFOA","RFOL","RFOP")
         
 
 
@@ -2520,20 +2522,22 @@ class CGM1LowerLimbs(CGM):
 
         for i in range(0,aqui.GetPointFrameNumber()):
 
+            
+
             pt1=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()[i,:]
             pt2=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()[i,:]
             pt3=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()[i,:]
             ptOrigin=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][3])).GetValues()[i,:]
 
-
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Pelvis"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -2571,13 +2575,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Pelvis"]['sequence'])
             frame=cfr.Frame()
@@ -2636,13 +2640,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Left Thigh"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -2657,9 +2661,16 @@ class CGM1LowerLimbs(CGM):
 
             LKJCvalues[i,:] = CGM.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
 
-
+                
         # --- LKJC
-        btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues, desc="chord")
+        if not "useLeftKJCmarker" in options.keys():
+            btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues, desc="chord")
+        else:
+            LKJCvalues = aqui.GetPoint(options["useLeftKJCmarker"]).GetValues()
+            desc = aqui.GetPoint(options["useLeftKJCmarker"]).GetDescription()
+            btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues,desc=desc)
+
+            
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
@@ -2677,13 +2688,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Left Thigh"]['sequence'])
             frame=cfr.Frame()
@@ -2695,9 +2706,6 @@ class CGM1LowerLimbs(CGM):
             frame.setTranslation(ptOrigin)
 
             seg.anatomicalFrame.addMotionFrame(frame)
-
-
-
 
 
 
@@ -2745,13 +2753,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Right Thigh"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -2768,7 +2776,12 @@ class CGM1LowerLimbs(CGM):
 
 
         # --- RKJC
-        btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues, desc="chord")
+        if not "useRightKJCmarker" in options.keys():
+            btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues, desc="chord")
+        else:
+            RKJCvalues = aqui.GetPoint(options["useRightKJCmarker"]).GetValues()
+            desc = aqui.GetPoint(options["useRightKJCmarker"]).GetDescription()
+            btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues,desc=desc)
 
         # --- motion of the anatomical referential
 
@@ -2786,13 +2799,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Right Thigh"]['sequence'])
             frame=cfr.Frame()
@@ -2853,13 +2866,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Left Shank"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -2871,7 +2884,6 @@ class CGM1LowerLimbs(CGM):
             frame.setTranslation(ptOrigin)
 
             seg.getReferential("TF").addMotionFrame(frame)
-
 
             LAJCvalues[i,:] = CGM.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
 
@@ -2885,8 +2897,18 @@ class CGM1LowerLimbs(CGM):
         else:
             desc="chord"
 
-        btkTools.smartAppendPoint(aqui,"LAJC",LAJCvalues, desc=desc)
+        if not "useLeftAJCmarker" in options.keys():
+            btkTools.smartAppendPoint(aqui,"LAJC",LAJCvalues, desc=desc)
+        else:
+            LAJCvalues = aqui.GetPoint(options["useLeftAJCmarker"]).GetValues()
+            desc = aqui.GetPoint(options["useLeftAJCmarker"]).GetDescription()
+            btkTools.smartAppendPoint(aqui,"LAJC",LAJCvalues,desc=desc)
 
+
+#        if not "forceAJC" in options.keys() or not options["forceAJC"]:
+#            btkTools.smartAppendPoint(aqui,"LAJC",LAJCvalues, desc=desc)
+
+  
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
 
@@ -2903,13 +2925,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Left Shank"]['sequence'])
             frame=cfr.Frame()
@@ -2938,11 +2960,14 @@ class CGM1LowerLimbs(CGM):
 
 
         # --- managment of tibial torsion
+
         if self.m_useLeftTibialTorsion:
             tibialTorsion = np.deg2rad(self.mp_computed["LeftTibialTorsionOffset"])
         else:
             tibialTorsion = 0.0
 
+        if "pigStatic" in options.keys() and options["pigStatic"]:  
+            tibialTorsion = 0.0
 
 
         # --- motion of both technical and anatomical referentials of the proximal shank
@@ -3014,13 +3039,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Right Shank"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -3045,7 +3070,12 @@ class CGM1LowerLimbs(CGM):
         else:
             desc="chord"
 
-        btkTools.smartAppendPoint(aqui,"RAJC",RAJCvalues, desc=desc)
+        if not "useRightAJCmarker" in options.keys():
+            btkTools.smartAppendPoint(aqui,"RAJC",RAJCvalues, desc=desc)
+        else:
+            RAJCvalues = aqui.GetPoint(options["useRightAJCmarker"]).GetValues()
+            desc = aqui.GetPoint(options["useRightAJCmarker"]).GetDescription()
+            btkTools.smartAppendPoint(aqui,"RAJC",RAJCvalues,desc=desc)
 
 
         # --- motion of the anatomical referential
@@ -3064,13 +3094,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Right Shank"]['sequence'])
             frame=cfr.Frame()
@@ -3130,6 +3160,7 @@ class CGM1LowerLimbs(CGM):
             segProx.anatomicalFrame.addMotionFrame(frame)
 
 
+    
 
 
     def _left_foot_motion(self,aqui, dictRef,dictAnat,options=None):
@@ -3172,14 +3203,14 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
 
 
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -3201,13 +3232,38 @@ class CGM1LowerLimbs(CGM):
         # computation
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Left Foot"]['labels'][3])).GetValues()[i,:]
-            #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
+            
+#            if "pigStatic" in options.keys() and options["pigStatic"]:
+#
+#                pt1=aqui.GetPoint(str(dictAnat["Left Foot"]['labels'][0])).GetValues()[i,:] #toe
+#                pt2=aqui.GetPoint(str(dictAnat["Left Foot"]['labels'][1])).GetValues()[i,:] #hee
+#
+#                if dictAnat["Left Foot"]['labels'][2] is not None:
+#                    pt3=aqui.GetPoint(str(dictRef["Left Foot"]['labels'][2])).GetValues()[i,:]
+#                    v=(pt3-pt1)
+#                else:
+#                    v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY # distal segment
+#
+#                a1=(pt2-pt1)
+#                a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+#       
+#                v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+#    
+#                a2=np.cross(a1,v)
+#                a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+#    
+#                x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Left Foot"]['sequence'])                
+#
+#
+#            else:
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
+
+
             frame=cfr.Frame()
             frame.update(R,ptOrigin)
             seg.anatomicalFrame.addMotionFrame(frame)
 
-
+    
 
     def _right_foot_motion(self,aqui, dictRef,dictAnat,options=None):
         """
@@ -3249,12 +3305,12 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
 
-            v=v/np.linalg.norm(v)
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -3276,8 +3332,91 @@ class CGM1LowerLimbs(CGM):
         seg.anatomicalFrame.motion=[]
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Right Foot"]['labels'][3])).GetValues()[i,:]
-            #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
+           
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
+
+            frame=cfr.Frame()
+            frame.update(R,ptOrigin)
+            seg.anatomicalFrame.addMotionFrame(frame)
+
+    # ---- static PIG -----
+
+    def _left_foot_motion_static(self,aquiStatic, dictAnat,options=None):
+        
+        """
+        compute foot anatomicalFrame from marker 
+        """        
+        
+        seg=self.getSegment("Left Foot")        
+        
+        seg.anatomicalFrame.motion=[]
+
+        # additional markers
+        # NA
+
+        # computation
+        for i in range(0,aquiStatic.GetPointFrameNumber()):
+            ptOrigin=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][3])).GetValues()[i,:]
+            
+
+            pt1=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][0])).GetValues()[i,:] #toe
+            pt2=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][1])).GetValues()[i,:] #hee
+
+            if dictAnat["Left Foot"]['labels'][2] is not None:
+                pt3=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][2])).GetValues()[i,:]
+                v=(pt3-pt1)
+            else:
+                v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY # distal segment
+                print v
+
+            a1=(pt2-pt1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+   
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+
+            a2=np.cross(a1,v)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+
+            x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Left Foot"]['sequence'])                
+
+            frame=cfr.Frame()
+            frame.update(R,ptOrigin)
+            seg.anatomicalFrame.addMotionFrame(frame) 
+
+
+    def _right_foot_motion_static(self,aquiStatic, dictAnat,options=None):
+        
+        seg=self.getSegment("Right Foot")        
+        
+        seg.anatomicalFrame.motion=[]
+
+        # additional markers
+        # NA
+
+        # computation
+        for i in range(0,aquiStatic.GetPointFrameNumber()):
+            ptOrigin=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][3])).GetValues()[i,:]
+            
+
+            pt1=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][0])).GetValues()[i,:] #toe
+            pt2=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][1])).GetValues()[i,:] #hee
+
+            if dictAnat["Right Foot"]['labels'][2] is not None:
+                pt3=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][2])).GetValues()[i,:]
+                v=(pt3-pt1)
+            else:
+                v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY # distal segment
+
+            a1=(pt2-pt1)
+            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+   
+            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+
+            a2=np.cross(a1,v)
+            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+
+            x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Right Foot"]['sequence'])                
+
             frame=cfr.Frame()
             frame.update(R,ptOrigin)
             seg.anatomicalFrame.addMotionFrame(frame)

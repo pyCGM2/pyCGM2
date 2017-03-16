@@ -234,7 +234,8 @@ class Referential(object):
     def __init__(self): 
         self.static=cfr.Frame() 
         self.motion=[]
-        self.relativeMatrixAnatomic = np.zeros((3,3))         
+        self.relativeMatrixAnatomic = np.zeros((3,3)) 
+        self.additionalInfos = dict()
 
     def setStaticFrame(self,Frame):
         """
