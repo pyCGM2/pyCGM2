@@ -2,6 +2,7 @@
 
 import numpy as np
 import logging
+import pdb
 
 import btk
 
@@ -124,6 +125,61 @@ def clearPoints(acq, pointlabelList):
 
     return acq
 
+def findProgressionAxisFromPelvicMarkers(acq,markers):
+
+    if not isPointsExist(acq,markers):
+        raise Exception( "[pyCGM2] : one of pelvic marker doesn't exist")
+
+
+    index = findFirstValidFrame(acq,markers)
+
+    originValues = (acq.GetPoint("LPSI").GetValues()[index,:] + acq.GetPoint("RPSI").GetValues()[index,:])/2.0 
+    longitudinal_extremityValues = (acq.GetPoint("LASI").GetValues()[index,:] + acq.GetPoint("RASI").GetValues()[index,:])/2.0 
+    lateral_extremityValues = acq.GetPoint("LPSI").GetValues()[index,:]
+
+
+    a1=(longitudinal_extremityValues-originValues)
+    a1=a1/np.linalg.norm(a1)
+
+    a2=(lateral_extremityValues-originValues)
+    a2=a2/np.linalg.norm(a2)
+
+    globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
+
+    # longitudinal axis    
+    tmp=[]
+    for axis in globalAxes.keys():
+        res = np.dot(a1,globalAxes[axis])
+        tmp.append(res)
+    maxIndex = np.argmax(np.abs(tmp))
+    longitudinalAxis =  globalAxes.keys()[maxIndex]
+    forwardProgression = True if tmp[maxIndex]>0 else False
+    
+    # lateral axis
+    tmp=[]
+    for axis in globalAxes.keys():
+        res = np.dot(a2,globalAxes[axis])
+        tmp.append(res)
+    maxIndex = np.argmax(np.abs(tmp))
+    lateralAxis =  globalAxes.keys()[maxIndex]    
+    
+
+    # global frame
+    if "X" not in str(longitudinalAxis+lateralAxis):
+        globalFrame = str(longitudinalAxis+lateralAxis+"X")
+    if "Y" not in str(longitudinalAxis+lateralAxis):
+        globalFrame = str(longitudinalAxis+lateralAxis+"Y")        
+    if "Z" not in str(longitudinalAxis+lateralAxis):
+        globalFrame = str(longitudinalAxis+lateralAxis+"Z")        
+
+    logging.info("Longitudinal axis : %s"%(longitudinalAxis))
+    logging.info("forwardProgression : %s"%(str(forwardProgression)))
+    logging.info("globalFrame : %s"%(str(globalFrame)))
+           
+    return   longitudinalAxis,forwardProgression,globalFrame,index  
+
+
+
 def findProgressionFromPoints(acq,originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel):
     """
         Find progression from 3 markers    
@@ -144,9 +200,12 @@ def findProgressionFromPoints(acq,originPointLabel, longitudinal_extremityPointL
     if not isPointExist(acq,lateral_extremityPointLabel):
         raise Exception( "[pyCGM2] : lateral point  doesnt exist")
 
-    originValues = acq.GetPoint(originPointLabel).GetValues()[0,:]
-    longitudinal_extremityValues = acq.GetPoint(longitudinal_extremityPointLabel).GetValues()[0,:]
-    lateral_extremityValues = acq.GetPoint(lateral_extremityPointLabel).GetValues()[0,:]
+
+    index = findFirstValidFrame(acq,[originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel])
+
+    originValues = acq.GetPoint(originPointLabel).GetValues()[index,:]
+    longitudinal_extremityValues = acq.GetPoint(longitudinal_extremityPointLabel).GetValues()[index,:]
+    lateral_extremityValues = acq.GetPoint(lateral_extremityPointLabel).GetValues()[index,:]
 
     a1=(longitudinal_extremityValues-originValues)
     a1=a1/np.linalg.norm(a1)
@@ -348,3 +407,22 @@ def hasChild(md,mdLabel):
             break
     return outMd
   
+def findFirstValidFrame(acq,markerLabels):
+
+
+    for i in range(0,acq.GetPointFrameNumber()):
+        flag = list()
+        for j in range(0,len(markerLabels)):
+            if acq.GetPoint(markerLabels[j]).GetResidual(i) == 0 :
+                flag.append(1)
+            else:
+                flag.append(0)
+        
+        if all(flag)==1:
+            index = i
+            logging.debug("Frame %i is the first frame containing the marker list"%(i))
+            break
+    try:
+        return index
+    except:
+        logging.error("no Frame contains the marker list")
