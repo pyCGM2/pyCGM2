@@ -470,12 +470,15 @@ class Cgm1ManualOffsets(DecoratorModel):
 
     def compute(self,acq,side,thighoffset,markerDiameter,tibialTorsion,shankoffset):
         """
-             :Parameters:
-                - `side` (str) - body side 
-                - `thighoffset` (double) - thigh offset
-                - `markerDiameter` (double) - diameter of marker
-                - `shankoffset` (double) - shanl offset
-                - `tibialTorsion` (double) - tinbial torsion value
+        Replicate behaviour of CGM1 in case of manual modification of offsets. 
+        That means only a non zero value of thigh offset enable re computation of AJC           
+        
+         :Parameters:
+            - `side` (str) - body side 
+            - `thighoffset` (double) - thigh offset
+            - `markerDiameter` (double) - diameter of marker
+            - `shankoffset` (double) - shanl offset
+            - `tibialTorsion` (double) - tinbial torsion value
         """
         
          
