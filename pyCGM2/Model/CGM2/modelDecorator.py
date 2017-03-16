@@ -316,7 +316,7 @@ class Kad(DecoratorModel):
         super(Kad,self).__init__(iModel)
         self.acq = iAcq
         
-    def compute(self,side="both",markerDiameter = 14,displayMarkers = False):    
+    def compute(self,side="both",markerDiameter = 14):    
         """
              :Parameters:
                 - `side` (str) - body side 
@@ -334,6 +334,15 @@ class Kad(DecoratorModel):
         #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
 
+        LKJCvalues =  np.zeros((self.acq.GetPointFrameNumber(),3))
+        LKNEvalues =  np.zeros((self.acq.GetPointFrameNumber(),3)) 
+        LAJCvalues = np.zeros((self.acq.GetPointFrameNumber(),3)) 
+
+        RKJCvalues = np.zeros((self.acq.GetPointFrameNumber(),3))
+        RKNEvalues =  np.zeros((self.acq.GetPointFrameNumber(),3)) 
+        RAJCvalues = np.zeros((self.acq.GetPointFrameNumber(),3)) 
+
+        
         if side == "both" or side == "left":
             
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
@@ -341,47 +350,45 @@ class Kad(DecoratorModel):
                 if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0 # look out, it's mp, not mp_computed.   
                 if self.model.mp.has_key("LeftShankRotation") : self.model.mp["LeftShankRotation"] =0             
             
-            
-            #  compute points left and right lateral condyle
-            LKAX = self.acq.GetPoint("LKAX").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            LKD1 = self.acq.GetPoint("LKD1").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            LKD2 = self.acq.GetPoint("LKD2").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            for i in range(0,self.acq.GetPointFrameNumber()):
+                #  compute points left and right lateral condyle
+                LKAX = self.acq.GetPoint("LKAX").GetValues()[i,:]
+                LKD1 = self.acq.GetPoint("LKD1").GetValues()[i,:]
+                LKD2 = self.acq.GetPoint("LKD2").GetValues()[i,:]
+                    
+                dist = np.array([np.linalg.norm(LKAX-LKD1), np.linalg.norm(LKAX-LKD2),np.linalg.norm(LKD1-LKD2)] )
+                dist =  dist / np.sqrt(2)
+                res = np.array([np.mean(dist), np.var(dist)])
+                n = np.cross(LKD2-LKD1 , LKAX-LKD1)
+                n= n/np.linalg.norm(n)
                 
-            dist = np.array([np.linalg.norm(LKAX-LKD1), np.linalg.norm(LKAX-LKD2),np.linalg.norm(LKD1-LKD2)] )
-            dist =  dist / np.sqrt(2)
-            res = np.array([np.mean(dist), np.var(dist)])
-            n = np.cross(LKD2-LKD1 , LKAX-LKD1)
-            n= n/np.linalg.norm(n)
+                I = (LKD1+LKAX)/2
+                PP1 = 2/3.0*(I-LKD2)+LKD2
+                O = PP1 - n*np.sqrt(3)*res[0]/3.0   
+                LKAXO = (O-LKAX)/np.linalg.norm(O-LKAX)
+    
+                LKNEvalues[i,:] = O + LKAXO * distSkin
             
-            I = (LKD1+LKAX)/2
-            PP1 = 2/3.0*(I-LKD2)+LKD2
-            O = PP1 - n*np.sqrt(3)*res[0]/3.0   
-            LKAXO = (O-LKAX)/np.linalg.norm(O-LKAX)
+                # locate KJC
+    #            LKJC = LKNE + LKAXO * (self.model.mp["leftKneeWidth"]+markerDiameter )/2.0
+                if btkTools.isPointExist(self.acq,"LHJC"):
+                    LHJC = self.acq.GetPoint("LHJC").GetValues()[i,:]
+                    LKJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,LKNEvalues[i,:],LHJC,LKAX, beta= 0.0 )
+                else:
+                    LKJCvalues[i,:] = LKNEvalues[i,:] + LKAXO * (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0
+                              
+                # locate AJC
+                LANK = self.acq.GetPoint("LANK").GetValues()[i,:]
+                LAJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKAX,beta= 0.0 )
+            
 
-            LKNE = O + LKAXO * distSkin
-        
-            # locate KJC
-#            LKJC = LKNE + LKAXO * (self.model.mp["leftKneeWidth"]+markerDiameter )/2.0
-            if btkTools.isPointExist(self.acq,"LHJC"):
-                LHJC = self.acq.GetPoint("LHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                LKJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,LKNE,LHJC,LKAX, beta= 0.0 )
-            else:
-                LKJC = LKNE + LKAXO * (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0
-            
-            
-            
-            # locate AJC
-            LANK = self.acq.GetPoint("LANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            LAJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJC,LKAX,beta= 0.0 )
-            
-            
             # add nodes to referential 
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKNE_kad",LKNE,positionType="Global")
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_kad",LKJC,positionType="Global")  
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKNE_kad",LKNEvalues.mean(axis =0),positionType="Global")
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_kad",LKJCvalues.mean(axis =0),positionType="Global")  
             
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKNE_kad",LKNE,positionType="Global")
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_kad",LKJC,positionType="Global") 
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_kad",LAJC,positionType="Global")
+            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKNE_kad",LKNEvalues.mean(axis =0),positionType="Global")
+            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_kad",LKJCvalues.mean(axis =0),positionType="Global") 
+            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_kad",LAJCvalues.mean(axis =0),positionType="Global")
 
             
         if side == "both" or side == "right":
@@ -392,76 +399,61 @@ class Kad(DecoratorModel):
                 if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0 # look out, it's mp, not mp_computed.   
                 if self.model.mp.has_key("RightShankRotation") : self.model.mp["RightShankRotation"] =0 
 
-            #  compute points left and right lateral condyle                    
-            RKAX = self.acq.GetPoint("RKAX").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            RKD1 = self.acq.GetPoint("RKD1").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            RKD2 = self.acq.GetPoint("RKD2").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+            for i in range(0,self.acq.GetPointFrameNumber()):
+                #  compute points left and right lateral condyle                    
+                RKAX = self.acq.GetPoint("RKAX").GetValues()[i,:]
+                RKD1 = self.acq.GetPoint("RKD1").GetValues()[i,:]
+                RKD2 = self.acq.GetPoint("RKD2").GetValues()[i,:]
+                    
+                dist = np.array([np.linalg.norm(RKAX-RKD1), np.linalg.norm(RKAX-RKD2),np.linalg.norm(RKD1-RKD2)] )
+                dist =  dist / np.sqrt(2)
+                res = np.array([np.mean(dist), np.var(dist)])
+                n = np.cross(RKD2-RKD1 , RKAX-RKD1)
+                n= n/np.linalg.norm(n)
                 
-            dist = np.array([np.linalg.norm(RKAX-RKD1), np.linalg.norm(RKAX-RKD2),np.linalg.norm(RKD1-RKD2)] )
-            dist =  dist / np.sqrt(2)
-            res = np.array([np.mean(dist), np.var(dist)])
-            n = np.cross(RKD2-RKD1 , RKAX-RKD1)
-            n= n/np.linalg.norm(n)
-            
-            n=-n # look out the negative sign
-            
-            
-            I = (RKD1+RKAX)/2
-            PP1 = 2/3.0*(I-RKD2)+RKD2
-            O = PP1 - n*np.sqrt(3)*res[0]/3.0   
-            RKAXO = (O-RKAX)/np.linalg.norm(O-RKAX)
-            RKNE = O + RKAXO * distSkin
-        
-            # locate KJC
-#            RKJC = RKNE + RKAXO * (self.model.mp["rightKneeWidth"]+markerDiameter )/2.0
-            if btkTools.isPointExist(self.acq,"RHJC"):
-                RHJC = self.acq.GetPoint("RHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                RKJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,RKNE,RHJC,RKAX,beta= 0.0 )
-            else:
-                RKJC = RKNE + RKAXO * (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0
+                n=-n # look out the negative sign
                 
-            # locate AJC
-            RANK = self.acq.GetPoint("RANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            RAJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJC,RKAX,beta= 0.0 )
+                
+                I = (RKD1+RKAX)/2
+                PP1 = 2/3.0*(I-RKD2)+RKD2
+                O = PP1 - n*np.sqrt(3)*res[0]/3.0   
+                RKAXO = (O-RKAX)/np.linalg.norm(O-RKAX)
+                RKNEvalues[i,:] = O + RKAXO * distSkin
+            
+                # locate KJC
+    #            RKJC = RKNE + RKAXO * (self.model.mp["rightKneeWidth"]+markerDiameter )/2.0
+                if btkTools.isPointExist(self.acq,"RHJC"):
+                    RHJC = self.acq.GetPoint("RHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                    RKJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,RKNEvalues[i,:],RHJC,RKAX,beta= 0.0 )
+                else:
+                    RKJCvalues[i,:] = RKNEvalues[i,:] + RKAXO * (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0
+                    
+                # locate AJC
+                RANK = self.acq.GetPoint("RANK").GetValues()[i,:]
+                RAJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKAX,beta= 0.0 )
             
             # add nodes to referential
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKNE_kad",RKNE,positionType="Global")
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_kad",RKJC,positionType="Global")  
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKNE_kad",RKNEvalues.mean(axis=0),positionType="Global")
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_kad",RKJCvalues.mean(axis=0),positionType="Global")  
             
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKNE_kad",RKNE,positionType="Global")
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_kad",RKJC,positionType="Global")
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_kad",RAJC,positionType="Global")
+            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKNE_kad",RKNEvalues.mean(axis=0),positionType="Global")
+            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_kad",RKJCvalues.mean(axis=0),positionType="Global")
+            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_kad",RAJCvalues.mean(axis=0),positionType="Global")
     
         # add KNE markers to static c3d
         if side == "both" or side == "left":
-                val = LKNE * np.ones((self.acq.GetPointFrameNumber(),3))      
-                btkTools.smartAppendPoint(self.acq,"LKNE",val, desc="KAD")
+            btkTools.smartAppendPoint(self.acq,"LKNE",LKNEvalues, desc="KAD")
+            btkTools.smartAppendPoint(self.acq,"LKJC_KAD",LKJCvalues, desc="KAD")
+            btkTools.smartAppendPoint(self.acq,"LAJC_KAD",LAJCvalues, desc="KAD")
 
         if side == "both" or side == "right":
-                val = RKNE * np.ones((self.acq.GetPointFrameNumber(),3))      
-                btkTools.smartAppendPoint(self.acq,"RKNE",val, desc="KAD") # KNE updated.     
+            btkTools.smartAppendPoint(self.acq,"RKNE",RKNEvalues, desc="KAD") # KNE updated.     
+            btkTools.smartAppendPoint(self.acq,"RKJC_KAD",RKJCvalues, desc="KAD")
+            btkTools.smartAppendPoint(self.acq,"RAJC_KAD",RAJCvalues, desc="KAD")
 
 
-        if displayMarkers:
-            if side == "both" or side == "right":
-
-                val = RKJC * np.ones((self.acq.GetPointFrameNumber(),3))      
-                btkTools.smartAppendPoint(self.acq,"RKJC-KAD",val, desc="KAD")
-                
-                val = RAJC * np.ones((self.acq.GetPointFrameNumber(),3))      
-                btkTools.smartAppendPoint(self.acq,"RAJC-KAD",val, desc="KAD")
-
-            if side == "both" or side == "left":
-                
-                val = LKJC * np.ones((self.acq.GetPointFrameNumber(),3))      
-                btkTools.smartAppendPoint(self.acq,"LKJC-KAD",val, desc="KAD")
-                val = LAJC * np.ones((self.acq.GetPointFrameNumber(),3))      
-                btkTools.smartAppendPoint(self.acq,"LAJC-KAD",val, desc="KAD")
-
-#            writer = btk.btkAcquisitionFileWriter() 
-#            writer.SetInput(self.acq)
-#            writer.SetFilename("C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGA-DATA\\tmp-static-KAD.c3d")
-#            writer.Update()
+        #btkTools.smartWriter(self.acq, "tmp-static-KAD.c3d")        
 
             
 class Cgm1ManualOffsets(DecoratorModel):
@@ -721,6 +713,9 @@ class KneeCalibrationDecorator(DecoratorModel):
         #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
         
+        LKJCvalues = np.zeros((acq.GetPointFrameNumber(),3)) 
+        RKJCvalues = np.zeros((acq.GetPointFrameNumber(),3))         
+        
         if side=="both" or side=="left":
 
             # CGM specification
@@ -728,33 +723,21 @@ class KneeCalibrationDecorator(DecoratorModel):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0 
 
-            mid_L = (acq.GetPoint(leftLateralKneeLabel).GetValues()[frameInit:frameEnd,:] + 
-                     acq.GetPoint(leftMedialKneeLabel).GetValues()[frameInit:frameEnd,:])/2.0
-            mid_L = mid_L.mean(axis =0)
+            for i in range(0,acq.GetPointFrameNumber()):
+                LKNE = acq.GetPoint(leftLateralKneeLabel).GetValues()[i,:]
+                LMEPI = acq.GetPoint(leftMedialKneeLabel).GetValues()[i,:]  
+               
+                v = LMEPI-LKNE
+                v=v/np.linalg.norm(v)
+               
+                LKJCvalues[i,:] = LKNE + ((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0)*v
+           
+            # nodes   
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
+            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
 
-
-            LKNE = acq.GetPoint(leftLateralKneeLabel).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            LMEPI = acq.GetPoint(leftMedialKneeLabel).GetValues()[frameInit:frameEnd,:].mean(axis=0)  
-           
-            v = LMEPI-LKNE
-            v=v/np.linalg.norm(v)
-           
-            LKJC = LKNE + ((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0)*v
-           
-            if cgm1Behaviour:
-                # locate AJC
-                LANK = self.acq.GetPoint("LANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                LAJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJC,LKNE,beta= 0.0 )
-                
-                self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_midKnee",LAJC,positionType="Global")
-           
-            if withNoModelParameter:
-                self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mid",mid_L, positionType="Global")
-                self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mid",mid_L, positionType="Global")
-            else:
-                self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mid",LKJC, positionType="Global")
-                self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mid",LKJC, positionType="Global")
-
+            # marker
+            btkTools.smartAppendPoint(acq,"LKJC_MID",LKJCvalues, desc="MID")
             
 
 
@@ -766,34 +749,21 @@ class KneeCalibrationDecorator(DecoratorModel):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0 
 
-            mid_R = (acq.GetPoint(rightLateralKneeLabel).GetValues()[frameInit:frameEnd,:] + 
-                     acq.GetPoint(rightMedialKneeLabel).GetValues()[frameInit:frameEnd,:])/2.0
-                     
-            mid_R = mid_R.mean(axis =0)
+            for i in range(0,acq.GetPointFrameNumber()):
 
+                RKNE = acq.GetPoint(rightLateralKneeLabel).GetValues()[i,:]
+                RMEPI = acq.GetPoint(rightMedialKneeLabel).GetValues()[i,:] 
+               
+                v = RMEPI-RKNE
+                v=v/np.linalg.norm(v)
+               
+                RKJCvalues[i,:] = RKNE + ((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0)*v
 
-            RKNE = acq.GetPoint(rightLateralKneeLabel).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            RMEPI = acq.GetPoint(rightMedialKneeLabel).GetValues()[frameInit:frameEnd,:].mean(axis=0)  
-           
-            v = RMEPI-RKNE
-            v=v/np.linalg.norm(v)
-           
-            RKJC = RKNE + ((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0)*v
-
-            if cgm1Behaviour:
-                # locate AJC
-                RANK = self.acq.GetPoint("RANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                RAJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJC,RKNE,beta= 0.0 )
-                
-                self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_midKnee",RAJC,positionType="Global")
-
-            if withNoModelParameter:
-                self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",mid_R, positionType="Global")
-                self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_mid",mid_R, positionType="Global")
-            else:
-                self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",RKJC, positionType="Global")
-                self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_mid",RKJC, positionType="Global")             
-                   
+            # nodes
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
+            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
+            #marker
+            btkTools.smartAppendPoint(acq,"RKJC_MID",RKJCvalues, desc="MID")                   
         
         
         
@@ -900,7 +870,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
         
     def midMaleolus(self,acq, side="both",
                     leftLateralAnkleLabel="LANK", leftMedialAnkleLabel="LMED",
-                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14, withNoModelParameter=False): 
+                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14): 
 
         """ 
             Compute Ankle joint centre from mid malleoli         
@@ -910,7 +880,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
                 - `side` (str) - body side
                 - `leftLateralAnkleLabel` (str) -  label of the left lateral knee marker
                 - `leftMedialAnkleLabel` (str) -  label of the left medial knee marker
-                - `withNoModelParameter` (bool) -  use mid position directly instead of applying an offset along mediolateral axis
+                
         
         """                         
                         
@@ -923,6 +893,8 @@ class AnkleCalibrationDecorator(DecoratorModel):
         #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
         
+        LAJCvalues = np.zeros((acq.GetPointFrameNumber(),3)) 
+        RAJCvalues = np.zeros((acq.GetPointFrameNumber(),3)) 
         
         if side=="both" or side=="left":
             
@@ -931,26 +903,21 @@ class AnkleCalibrationDecorator(DecoratorModel):
                 self.model.m_useLeftTibialTorsion=True
                 if self.model.mp.has_key("LeftTibialTorsion") : self.model.mp["LeftTibialTorsion"] =0
 
-            
-            mid_L = (acq.GetPoint(leftLateralAnkleLabel).GetValues()[frameInit:frameEnd,:] + 
-                     acq.GetPoint(leftMedialAnkleLabel).GetValues()[frameInit:frameEnd,:])/2.0
-            mid_L = mid_L.mean(axis =0)            
-            
-            LANK = acq.GetPoint(leftLateralAnkleLabel).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            LMED = acq.GetPoint(leftMedialAnkleLabel).GetValues()[frameInit:frameEnd,:].mean(axis=0)  
-           
-            v = LMED-LANK
-            v=v/np.linalg.norm(v)
-           
-            LAJC = LANK + ((self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0)*v
-            
-            if withNoModelParameter:
-                self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_mid",mid_L, positionType="Global")
-            else:
-                self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_mid",LAJC, positionType="Global")
-            # add line below when foot referential will be built
-            #self.model.getSegment("Left Foot").getReferential("TF").static.addNode("LAJC_mid",mid_L.mean(axis=0), positionType="Global")
+            for i in range(0,acq.GetPointFrameNumber()):
+                LANK = acq.GetPoint(leftLateralAnkleLabel).GetValues()[i,:]
+                LMED = acq.GetPoint(leftMedialAnkleLabel).GetValues()[i,:]  
+               
+                v = LMED-LANK
+                v=v/np.linalg.norm(v)
+               
+                LAJCvalues[i,:] = LANK + ((self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0)*v
 
+            # add node            
+            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
+            self.model.getSegment("Left Foot").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
+            # 
+            btkTools.smartAppendPoint(acq,"LAJC_MID",LAJCvalues, desc="MID")             
+             
          
             
 
@@ -961,25 +928,22 @@ class AnkleCalibrationDecorator(DecoratorModel):
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 self.model.m_useRightTibialTorsion=True
                 if self.model.mp.has_key("RightTibialTorsion") : self.model.mp["RightTibialTorsion"] =0
-                
-            mid_R = (acq.GetPoint(rightLateralAnkleLabel).GetValues()[frameInit:frameEnd,:] + 
-                     acq.GetPoint(rightMedialAnkleLabel).GetValues()[frameInit:frameEnd,:])/2.0
-            mid_R = mid_R.mean(axis =0) 
             
-            RANK = acq.GetPoint(rightLateralAnkleLabel).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            RMED = acq.GetPoint(rightMedialAnkleLabel).GetValues()[frameInit:frameEnd,:].mean(axis=0)  
-           
-            v = RMED-RANK
-            v=v/np.linalg.norm(v)
-           
-            RAJC =  RANK + ((self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0)*v
+            for i in range(0,acq.GetPointFrameNumber()):
+                RANK = acq.GetPoint(rightLateralAnkleLabel).GetValues()[i,:]
+                RMED = acq.GetPoint(rightMedialAnkleLabel).GetValues()[i,:]  
+               
+                v = RMED-RANK
+                v=v/np.linalg.norm(v)
+               
+                RAJCvalues[i,:] =  RANK + ((self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0)*v
 
-            if withNoModelParameter:
-                self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_mid",mid_R, positionType="Global")
-                # TODO : foot
-            else:
-                self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_mid",RAJC, positionType="Global")
-            
+
+            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
+            self.model.getSegment("Right Foot").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
+
+            btkTools.smartAppendPoint(acq,"RAJC_MID",RAJCvalues, desc="MID")             
+
     def midMaleolusAxis(self,acq, side="both",
                     leftLateralAnkleLabel="LANK", leftMedialAnkleLabel="LMED",
                     rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14, withNoModelParameter=False):   
