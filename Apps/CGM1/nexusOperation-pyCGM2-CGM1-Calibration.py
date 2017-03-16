@@ -237,11 +237,11 @@ if __name__ == "__main__":
 
         # case 1 : NO kad, NO medial ankle BUT thighRotation different from zero ( mean manual modification or new calibration from a previous one )
         #  case not necessary - static PIG operation - dont consider any offsets        
-#        if not staticMarkerConfiguration["leftKadFlag"]  and not staticMarkerConfiguration["leftMedialAnkleFlag"] and not staticMarkerConfiguration["leftMedialKneeFlag"] and optional_mp["LeftThighRotation"] !=0:
-#            logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")            
-#            modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],markerDiameter,optional_mp["LeftTibialTorsion"],optional_mp["LeftShankRotation"])
-#            useLeftKJCnodeLabel = "LKJC_mo"
-#            useLeftAJCnodeLabel = "LAJC_mo"
+        if not staticMarkerConfiguration["leftKadFlag"]  and not staticMarkerConfiguration["leftMedialAnkleFlag"] and not staticMarkerConfiguration["leftMedialKneeFlag"] and optional_mp["LeftThighRotation"] !=0:
+            logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")            
+            modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],markerDiameter,optional_mp["LeftTibialTorsion"],optional_mp["LeftShankRotation"])
+            useLeftKJCnodeLabel = "LKJC_mo"
+            useLeftAJCnodeLabel = "LAJC_mo"
        
 
         if not staticMarkerConfiguration["rightKadFlag"]  and not staticMarkerConfiguration["rightMedialAnkleFlag"] and not staticMarkerConfiguration["rightMedialKneeFlag"] and optional_mp["RightThighRotation"] !=0:
