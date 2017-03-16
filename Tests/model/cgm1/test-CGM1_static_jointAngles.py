@@ -6,7 +6,7 @@ import pdb
 import logging
 
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
+pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
 
 import pyCGM2
 # btk
@@ -31,15 +31,17 @@ def plotComparison(acq,acqs,angleLabel):
 
     ax1.plot(acqs.GetPoint(angleLabel).GetValues()[:,0],"-r")
     ax1.plot(acq.GetPoint(angleLabel).GetValues()[:,0],"-b")
-    ax1.plot(acq.GetPoint(angleLabel+"_cgm1_6dof").GetValues()[:,0],"-g")
+    ax1.plot(acqs.GetPoint(angleLabel+"_cgm1_6dof").GetValues()[:,0],"-g")
     
     ax2.plot(acqs.GetPoint(angleLabel).GetValues()[:,1],"-r")
     ax2.plot(acq.GetPoint(angleLabel).GetValues()[:,1],"-b")
-    ax2.plot(acq.GetPoint(angleLabel+"_cgm1_6dof").GetValues()[:,1],"-g")
+    ax2.plot(acqs.GetPoint(angleLabel+"_cgm1_6dof").GetValues()[:,1],"-g")
     
     ax3.plot(acqs.GetPoint(angleLabel).GetValues()[:,2],"-r")
     ax3.plot(acq.GetPoint(angleLabel).GetValues()[:,2],"-b")
-    ax3.plot(acq.GetPoint(angleLabel+"_cgm1_6dof").GetValues()[:,2],"-g")
+    ax3.plot(acqs.GetPoint(angleLabel+"_cgm1_6dof").GetValues()[:,2],"-g")
+    
+    
 
 
 class CGM1_calibrationTest(): 
@@ -108,10 +110,10 @@ class CGM1_calibrationTest():
         logging.info(" LStaticRotOff : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(sro_l,vicon_sro_l))
         logging.info(" RStaticRotOff : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(sro_r,vicon_sro_r))
 
-#        np.testing.assert_almost_equal(spf_l,vicon_spf_l , decimal = 3)
-#        np.testing.assert_almost_equal(spf_r,vicon_spf_r , decimal = 3)
-#        np.testing.assert_almost_equal(sro_l,vicon_sro_l , decimal = 3)
-#        np.testing.assert_almost_equal(sro_r,vicon_sro_r , decimal = 3)
+        np.testing.assert_almost_equal(spf_l,vicon_spf_l , decimal = 3)
+        np.testing.assert_almost_equal(spf_r,vicon_spf_r , decimal = 3)
+        np.testing.assert_almost_equal(sro_l,vicon_sro_l , decimal = 3)
+        np.testing.assert_almost_equal(sro_r,vicon_sro_r , decimal = 3)
         
         # -------- CGM FITTING -------------------------------------------------
 
@@ -119,7 +121,9 @@ class CGM1_calibrationTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
-                                                 markerDiameter=markerDiameter)
+                                                 markerDiameter=markerDiameter,
+                                                 pigStatic=True,
+                                                 viconCGM1compatible=False)
         modMotion.compute()
         
         # relative angles
@@ -133,26 +137,7 @@ class CGM1_calibrationTest():
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 02-dynamics.c3d"   #"staticComparisonPipelines.c3d"        
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
         
-        # Motion FILTER 
-        # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 markerDiameter=markerDiameter)
-        modMotion.compute()
-        
-        # relative angles
-        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
-
-                                        
-        # absolute angles 
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
-        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
-                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                      eulerSequences=["TOR","TOR", "TOR"],
-                                      globalFrameOrientation = globalFrame,
-                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
-#        
-#
+      
 
 #        # output and plot        
         #btkTools.smartWriter(acqGait, "test_basicCGM1_staticAngles.c3d")   
@@ -160,8 +145,10 @@ class CGM1_calibrationTest():
         plotComparison(acqGait,acqStatic,"LKneeAngles")
         plotComparison(acqGait,acqStatic,"LAnkleAngles")
 
-
-
+        plt.figure()
+        plt.plot(acqStatic.GetPoint("LAnkleAngles").GetValues()[:,0] -acqStatic.GetPoint("LAnkleAngles"+"_cgm1_6dof").GetValues()[:,0])
+        plt.figure()
+        plt.plot(acqStatic.GetPoint("LAnkleAngles").GetValues()[:,2] -acqStatic.GetPoint("LAnkleAngles"+"_cgm1_6dof").GetValues()[:,2])
 
 
 
@@ -195,13 +182,18 @@ class CGM1_calibrationTest():
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
         
         
-        # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute(displayMarkers = True)
-
-        # final calibration        
+#        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute()
+#
+#        # final calibration
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad", 
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
                                    useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()        
+        
+        
+#        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+#                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad", 
+#                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()        
         
         
         spf_l,sro_l= model.getViconFootOffset("Left")
@@ -248,7 +240,10 @@ class CGM1_calibrationTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
-                                                 markerDiameter=markerDiameter)
+                                                 markerDiameter=markerDiameter,
+                                                 useLeftKJCmarker="LKJC_KAD", useLeftAJCmarker="LAJC_KAD",pigStatic=True,
+                                                 useRightKJCmarker="RKJC_KAD", useRightAJCmarker="RAJC_KAD",
+                                                 viconCGM1compatible=False)
         modMotion.compute()
         
         # relative angles
@@ -261,28 +256,6 @@ class CGM1_calibrationTest():
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 02-dynamics.c3d"   #"staticComparisonPipelines.c3d"        
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
         
-        # Motion FILTER 
-        # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 viconCGM1compatible=False,
-                                                 markerDiameter=markerDiameter,
-                                                 useForMotionTest=True)
-        modMotion.compute()
-        
-        # relative angles
-        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
-
-                                        
-        # absolute angles 
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
-        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
-                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                      eulerSequences=["TOR","TOR", "TOR"],
-                                      globalFrameOrientation = globalFrame,
-                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
-#        
-#
 
 #        # output and plot        
 #        btkTools.smartWriter(acqGait, "test_basicCGM1_KAD-staticAngles.c3d")   
@@ -323,13 +296,13 @@ class CGM1_calibrationTest():
         
         
         # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute(displayMarkers = True)
+        modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
         # final calibration        
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                    leftFlatFoot = False, rightFlatFoot = False,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
                                    useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()        
         
         
@@ -376,7 +349,10 @@ class CGM1_calibrationTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
-                                                 markerDiameter=markerDiameter)
+                                                 markerDiameter=markerDiameter,
+                                                 viconCGM1compatible = False,
+                                                 useRightKJCmarker="RKJC_KAD", useRightAJCmarker="RAJC_KAD",
+                                                 useLeftKJCmarker="LKJC_KAD", useLeftAJCmarker="LAJC_MID",pigStatic=True)
         modMotion.compute()
         
         # relative angles
@@ -392,34 +368,16 @@ class CGM1_calibrationTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 markerDiameter=markerDiameter,
-                                                 useForMotionTest=True,
-                                                 viconCGM1compatible = True)
-        modMotion.compute()
         
-        # relative angles
-        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
-                                        
-        # absolute angles 
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
-        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
-                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                      eulerSequences=["TOR","TOR", "TOR"],
-                                      globalFrameOrientation = globalFrame,
-                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")        
-#        
-#
-
-#        # output and plot        
+        # output and plot        
         #btkTools.smartWriter(acqGait, "test_basicCGM1_KADmed-staticAngles.c3d")   
 
         plotComparison(acqGait,acqStatic,"LHipAngles")
         plotComparison(acqGait,acqStatic,"LKneeAngles")
         plotComparison(acqGait,acqStatic,"LAnkleAngles")
 
+       
         
 if __name__ == "__main__":
     
@@ -428,5 +386,6 @@ if __name__ == "__main__":
     # CGM 1
     logging.info("######## PROCESS CGM1 ######")
     #CGM1_calibrationTest.basicCGM1() 
+    
     #CGM1_calibrationTest.basicCGM1_KAD()
     CGM1_calibrationTest.basicCGM1_KAD_tibialTorsion()

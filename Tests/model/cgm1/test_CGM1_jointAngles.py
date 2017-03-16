@@ -282,7 +282,7 @@ class CGM1_motionJCSTest():
 
 
         # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute(displayMarkers = True)
+        modelDecorator.Kad(model,acqStatic).compute()
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
                                    useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad", 
@@ -391,7 +391,7 @@ class CGM1_motionJCSTest():
 
 
         # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute(displayMarkers = True)
+        modelDecorator.Kad(model,acqStatic).compute()
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                    leftFlatFoot = True, rightFlatFoot = True,
@@ -894,7 +894,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
 
         # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute(displayMarkers = True)
+        modelDecorator.Kad(model,acqStatic).compute()
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
                                    useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad", 
@@ -1040,7 +1040,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
 
         # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute(displayMarkers = True)
+        modelDecorator.Kad(model,acqStatic).compute()
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                    leftFlatFoot = True, rightFlatFoot = True,
@@ -1187,7 +1187,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
 
         # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute(displayMarkers = True)
+        modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
@@ -1380,7 +1380,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
 
         # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute(displayMarkers = True)
+        modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
@@ -1537,7 +1537,7 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
 
         # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute(displayMarkers = True)
+        modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
