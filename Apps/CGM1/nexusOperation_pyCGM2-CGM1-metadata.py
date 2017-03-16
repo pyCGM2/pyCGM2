@@ -93,10 +93,10 @@ if __name__ == "__main__":
 
         # input files
         if args.calibration:
-            if not os.path.isfile(DATA_PATH + subject+"-pyCGM2.model"):
-                raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+            if not os.path.isfile(DATA_PATH + subject+"-CGM1-pyCGM2.model"):
+                raise Exception ("%s-CGM1-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
             else:
-                f = open(DATA_PATH + subject+'-pyCGM2.model', 'r')
+                f = open(DATA_PATH + subject+'-CGM1-pyCGM2.model', 'r')
                 model = cPickle.load(f)
                 f.close()
     
