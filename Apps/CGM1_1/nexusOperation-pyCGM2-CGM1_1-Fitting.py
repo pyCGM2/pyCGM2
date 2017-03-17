@@ -76,6 +76,9 @@ if __name__ == "__main__":
         if acqGait.GetPoint(0).GetLabel().count(":"):
             raise Exception("[pyCGM2] Your Trial c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
 
+
+        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)
+
 #        # --relabel PIG output if processing previously---
 #        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqGait)
 #        if any([n_angles,n_forces ,n_moments,  n_powers])==1:            
@@ -193,6 +196,9 @@ if __name__ == "__main__":
 
         #---- Joint energetics----
         modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
+
+        #---- zero unvalid frames ---
+        btkTools.applyValidFramesOnOutput(acqGait,validFrames)  
 
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,model,acqGait,subject,pointSuffix).run()
