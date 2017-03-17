@@ -256,7 +256,7 @@ if __name__ == "__main__":
         # case 2 : kad FOUND and NO medial Ankle 
         if staticMarkerConfiguration["leftKadFlag"]:
             logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD variant")
-            modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left", displayMarkers = False)
+            modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
             useLeftKJCnodeLabel = "LKJC_kad"
             useLeftAJCnodeLabel = "LAJC_kad"
             
@@ -265,7 +265,7 @@ if __name__ == "__main__":
             
         if staticMarkerConfiguration["rightKadFlag"]:
             logging.warning("CASE FOUND ===> Right Side - CGM1 - KAD variant")
-            modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right", displayMarkers = False)
+            modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
             useRightKJCnodeLabel = "RKJC_kad"
             useRightAJCnodeLabel = "RAJC_kad"
         
