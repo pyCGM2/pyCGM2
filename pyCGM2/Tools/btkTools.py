@@ -6,7 +6,7 @@ import pdb
 
 import btk
 
-
+# --- acquisition -----
 def smartReader(filename):
     """
         Convenient function to read a c3d with Btk    
@@ -86,8 +86,8 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
 
     # TODO : si value = 1 lignes alors il faudrait dupliquer la lignes pour les n franes
     # valueProj *np.ones((aquiStatic.GetPointFrameNumber(),3))
-    
-    
+
+    values = np.nan_to_num(values) 
     
     if isPointExist(acq,label):
         acq.GetPoint(label).SetValues(values)
@@ -125,13 +125,69 @@ def clearPoints(acq, pointlabelList):
 
     return acq
 
+def checkFirstAndLastFrame (acq, markerLabel):
+    """
+        Check if extremity frames are correct    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `markerLabel` (str) - marker label
+    """
+
+    if acq.GetPoint(markerLabel).GetValues()[0,0] == 0:
+        raise Exception ("[pyCGM2] no marker on first frame")
+    
+    if acq.GetPoint(markerLabel).GetValues()[-1,0] == 0:
+        raise Exception ("[pyCGM2] no marker on last frame")
+        
+def isGap(acq, markerList):
+    """
+        Check if there is a gap    
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `markerList` (list of str) - marker labels
+    """
+    for m in markerList:
+         residualValues = acq.GetPoint(m).GetResiduals()
+         if any(residualValues== -1.0):
+             raise Exception("[pyCGM2] gap founded for markers %s " % m )  
+
+def findValidFrames(acq,markerLabels):
+
+    flag = list()
+    for i in range(0,acq.GetPointFrameNumber()):
+        pointFlag=list()
+        for marker in markerLabels:
+            if acq.GetPoint(marker).GetResidual(i) == 0 :
+                pointFlag.append(1)
+            else:
+                pointFlag.append(0)
+        
+        if all(pointFlag)==1:
+            flag.append(1)
+        else:
+            flag.append(0)
+        
+    firstValidFrame = flag.index(1) 
+    lastValidFrame = len(flag) - flag[::-1].index(1) - 1
+
+    return flag,firstValidFrame,lastValidFrame
+             
+# --- Model -----
 def findProgressionAxisFromPelvicMarkers(acq,markers):
 
     if not isPointsExist(acq,markers):
         raise Exception( "[pyCGM2] : one of pelvic marker doesn't exist")
 
+    # default
+    longitudinalAxis="X"
+    globalFrame="XYZ"
+    forwardProgression = True
 
-    index = findFirstValidFrame(acq,markers)
+    # find valid frames and get the first one
+    flag,vff,vlf = findValidFrames(acq,markers)
+    index = vff
 
     originValues = (acq.GetPoint("LPSI").GetValues()[index,:] + acq.GetPoint("RPSI").GetValues()[index,:])/2.0 
     longitudinal_extremityValues = (acq.GetPoint("LASI").GetValues()[index,:] + acq.GetPoint("RASI").GetValues()[index,:])/2.0 
@@ -176,7 +232,7 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
     logging.info("forwardProgression : %s"%(str(forwardProgression)))
     logging.info("globalFrame : %s"%(str(globalFrame)))
            
-    return   longitudinalAxis,forwardProgression,globalFrame,index  
+    return   longitudinalAxis,forwardProgression,globalFrame  
 
 
 
@@ -309,34 +365,8 @@ def checkMarkers( acq, markerList):
         if not isPointExist(acq, m):
             raise Exception("[pyCGM2] markers %s not found" % m )
 
-def checkFirstAndLastFrame (acq, markerLabel):
-    """
-        Check if extremity frames are correct    
-
-        :Parameters:
-            - `acq` (btkAcquisition) - a btk acquisition inctance
-            - `markerLabel` (str) - marker label
-    """
-
-    if acq.GetPoint(markerLabel).GetValues()[0,0] == 0:
-        raise Exception ("[pyCGM2] no marker on first frame")
-    
-    if acq.GetPoint(markerLabel).GetValues()[-1,0] == 0:
-        raise Exception ("[pyCGM2] no marker on last frame")
-        
-def isGap(acq, markerList):
-    """
-        Check if there is a gap    
-
-        :Parameters:
-            - `acq` (btkAcquisition) - a btk acquisition inctance
-            - `markerList` (list of str) - marker labels
-    """
-    for m in markerList:
-         residualValues = acq.GetPoint(m).GetResiduals()
-         if any(residualValues== -1.0):
-             raise Exception("[pyCGM2] gap founded for markers %s " % m )    
-             
+  
+# --- events -----             
 def modifyEventSubject(acq,newSubjectlabel):
     """
         update the subject name of all events   
@@ -386,7 +416,7 @@ def getNumberOfModelOutputs(acq):
 
     return  n_angles,n_forces ,n_moments,n_powers
     
-
+# --- metadata -----
 def hasChild(md,mdLabel):
     """
         Check if a label is within metadata 
@@ -406,23 +436,8 @@ def hasChild(md,mdLabel):
             outMd = itMd
             break
     return outMd
-  
-def findFirstValidFrame(acq,markerLabels):
 
 
-    for i in range(0,acq.GetPointFrameNumber()):
-        flag = list()
-        for j in range(0,len(markerLabels)):
-            if acq.GetPoint(markerLabels[j]).GetResidual(i) == 0 :
-                flag.append(1)
-            else:
-                flag.append(0)
-        
-        if all(flag)==1:
-            index = i
-            logging.debug("Frame %i is the first frame containing the marker list"%(i))
-            break
-    try:
-        return index
-    except:
-        logging.error("no Frame contains the marker list")
+
+
+
