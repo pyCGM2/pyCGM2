@@ -26,6 +26,10 @@ if __name__ == "__main__":
     plt.close("all")
     DEBUG = False
 
+    parser = argparse.ArgumentParser(description='CGM1 Calibration')
+    parser.add_argument('--pointSuffix', type=str, help='force suffix')
+    args = parser.parse_args()
+
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
@@ -66,7 +70,11 @@ if __name__ == "__main__":
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
         # ---- configuration parameters ----
-        pointSuffix = infoSettings["Global"]["Point suffix"]
+        if args.pointSuffix is not None:
+            pointSuffix = args.pointSuffix
+        else:
+            pointSuffix = infoSettings["Processing"]["Point suffix"]        
+        
         normativeData = infoSettings["Processing"]["Normative data"]
 
 

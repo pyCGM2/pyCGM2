@@ -30,6 +30,11 @@ if __name__ == "__main__":
     plt.close("all")
     DEBUG = False
 
+
+    parser = argparse.ArgumentParser(description='CGM1 Calibration')
+    parser.add_argument('--pointSuffix', type=str, help='force suffix')
+    args = parser.parse_args()
+
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
@@ -71,7 +76,12 @@ if __name__ == "__main__":
 
 
         # ---- configuration parameters ----
-        pointSuffix = infoSettings["Processing"]["Point suffix"]
+        if args.pointSuffix is not None:
+            pointSuffix = args.pointSuffix
+        else:
+            pointSuffix = infoSettings["Processing"]["Point suffix"]
+
+        
 
         # -----infos--------     
         model = None if  infoSettings["Processing"]["Model"]=={} else infoSettings["Processing"]["Model"]  
