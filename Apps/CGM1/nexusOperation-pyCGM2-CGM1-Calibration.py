@@ -169,11 +169,11 @@ if __name__ == "__main__":
         else:
             markerDiameter = float(inputs["Global"]["Marker diameter"])
 
-        pointSuffix="cgm1.0"
-#        if args.check:
-#            pointSuffix="cgm1.0"
-#        else:
-#            pointSuffix = inputs["Global"]["Point suffix"]
+
+        if args.check:
+            pointSuffix="cgm1.0"
+        else:
+            pointSuffix = inputs["Global"]["Point suffix"]
 
         # --------------------------MP DATA -----------------------------------
 
