@@ -154,7 +154,7 @@ if __name__ == "__main__":
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
         # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionFromPoints(acqGait,"SACR","midASIS","LPSI")
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","RASI","RPSI","LPSI"])
         # absolute angles        
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                                segmentLabels=["Left Foot","Right Foot","Pelvis"],
