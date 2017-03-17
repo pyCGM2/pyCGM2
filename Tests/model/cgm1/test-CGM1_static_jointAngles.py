@@ -385,5 +385,5 @@ if __name__ == "__main__":
     # CGM 1
     logging.info("######## PROCESS CGM1 ######")
     CGM1_calibrationTest.basicCGM1() 
-    CGM1_calibrationTest.basicCGM1_KAD()
-    CGM1_calibrationTest.basicCGM1_KAD_tibialTorsion()
+#    CGM1_calibrationTest.basicCGM1_KAD()
+#    CGM1_calibrationTest.basicCGM1_KAD_tibialTorsion()

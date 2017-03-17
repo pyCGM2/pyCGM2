@@ -393,13 +393,13 @@ class ModelCalibrationFilter(object):
                 
         
                     a1=(pt2-pt1)
-                    a1=a1/np.linalg.norm(a1)
+                    a1=np.divide(a1,np.linalg.norm(a1))
                     
                     v=(pt3-pt1)
-                    v=v/np.linalg.norm(v)
+                    v=np.divide(v,np.linalg.norm(v))
                     
                     a2=np.cross(a1,v)
-                    a2=a2/np.linalg.norm(a2)
+                    a2=np.divide(a2,np.linalg.norm(a2))
        
                     x,y,z,R=cfr.setFrameData(a1,a2,self.m_procedure.definition[segName][tfName]['sequence'])          
 
@@ -475,13 +475,13 @@ class ModelMotionFilter(object):
                         if self.m_method == pyCGM2Enums.motionMethod.None :
              
                             a1=(pt2-pt1)
-                            a1=a1/np.linalg.norm(a1)
+                            a1=np.divide(a1,np.linalg.norm(a1)) #a1/np.linalg.norm(a1)
                         
                             v=(pt3-pt1)
-                            v=v/np.linalg.norm(v)
+                            v=np.divide(v,np.linalg.norm(v))#v/np.linalg.norm(v)
                         
                             a2=np.cross(a1,v)
-                            a2=a2/np.linalg.norm(a2)
+                            a2=np.divide(a2,np.linalg.norm(a2))#a2/np.linalg.norm(a2)
     
                             x,y,z,R=cfr.setFrameData(a1,a2,self.m_procedure.definition[segName][tfName]['sequence']) 
                             frame=cfr.Frame()                
