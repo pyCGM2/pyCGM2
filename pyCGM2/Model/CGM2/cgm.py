@@ -354,6 +354,17 @@ class CGM1LowerLimbs(CGM):
     def __init__(self):
         super(CGM1LowerLimbs, self).__init__()
         self.decoratedModel = False
+        
+        self.version = "1.0"
+
+    def setCGM1Version(self,string):
+        if string not in ["1.0", "1.1"]:
+            raise Exception ("[pyCGM2] cgm1 version not known")
+        else: 
+            self.version = string
+
+
+
 
 
     def __repr__(self):
@@ -436,12 +447,20 @@ class CGM1LowerLimbs(CGM):
         self.addChain("Right Lower Limb", [6,5,4,0])
 
         self.addJoint("LHip","Pelvis", "Left Thigh","YXZ")
-        self.addJoint("LKnee","Left Thigh", "Left Shank Proximal","YXZ")
+        if self.version == "1.1":
+            self.addJoint("LKnee","Left Thigh", "Left Shank","YXZ")
+        else:
+            self.addJoint("LKnee","Left Thigh", "Left Shank Proximal","YXZ")
+
         #self.addJoint("LKneeAngles_cgm","Left Thigh", "Left Shank","YXZ")
         self.addJoint("LAnkle","Left Shank", "Left Foot","YXZ")
 
         self.addJoint("RHip","Pelvis", "Right Thigh","YXZ")
-        self.addJoint("RKnee","Right Thigh", "Right Shank Proximal","YXZ")
+        if self.version == "1.1":
+            self.addJoint("RKnee","Right Thigh", "Right Shank","YXZ")        
+        else:
+            self.addJoint("RKnee","Right Thigh", "Right Shank Proximal","YXZ")
+
         #self.addJoint("RKneeAngles_cgm","Right Thigh", "Right Shank","YXZ")
         self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ")
 

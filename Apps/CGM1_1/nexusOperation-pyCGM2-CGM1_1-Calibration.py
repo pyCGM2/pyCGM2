@@ -198,6 +198,7 @@ if __name__ == "__main__":
         # --------------------------MODEL--------------------------------------
         # ---definition---
         model=cgm.CGM1LowerLimbs()
+        model.setCGM1Version("1.1")
         model.configure()
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
