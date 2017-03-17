@@ -87,7 +87,9 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
     # TODO : si value = 1 lignes alors il faudrait dupliquer la lignes pour les n franes
     # valueProj *np.ones((aquiStatic.GetPointFrameNumber(),3))
 
-    values = np.nan_to_num(values) 
+    values = np.nan_to_num(values)
+    
+    
     
     if isPointExist(acq,label):
         acq.GetPoint(label).SetValues(values)
@@ -173,6 +175,21 @@ def findValidFrames(acq,markerLabels):
     lastValidFrame = len(flag) - flag[::-1].index(1) - 1
 
     return flag,firstValidFrame,lastValidFrame
+
+
+def applyValidFramesOnOutput(acq,validFrames):
+
+    validFrames = np.asarray(validFrames)
+    
+    for it in btk.Iterate(acq.GetPoints()):
+        if it.GetType() in [btk.btkPoint.Angle, btk.btkPoint.Force, btk.btkPoint.Moment,btk.btkPoint.Power]:
+            values = it.GetValues()
+            for i in range(0,3):
+                values[:,i] =  values[:,i] * validFrames           
+            it.SetValues(values)
+            
+
+
              
 # --- Model -----
 def findProgressionAxisFromPelvicMarkers(acq,markers):
@@ -364,6 +381,9 @@ def checkMarkers( acq, markerList):
     for m in markerList:
         if not isPointExist(acq, m):
             raise Exception("[pyCGM2] markers %s not found" % m )
+
+
+
 
   
 # --- events -----             
