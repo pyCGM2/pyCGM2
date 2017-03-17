@@ -3345,8 +3345,6 @@ class CGM1LowerLimbs(CGM):
                 v=(pt3-pt1)
             else:
                 v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY # distal segment
-                print v
-
 
             a1=(pt2-pt1)
             a1=np.divide(a1,np.linalg.norm(a1))
