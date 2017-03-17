@@ -95,15 +95,15 @@ class CGM(cmb.Model):
         
         C=mp_computed["MeanlegLength"] * 0.115 - 15.3
 
-        HJCx_L= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2) * np.cos(0.314)
+        HJCx_L= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2.0) * np.cos(0.314)
         HJCy_L=-1*(C * np.sin(0.5) - (mp_computed["InterAsisDistance"] / 2.0))
-        HJCz_L= - C * np.cos(0.5) * np.cos(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2) * np.sin(0.314)
+        HJCz_L= - C * np.cos(0.5) * np.cos(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2.0) * np.sin(0.314)
 
         HJC_L=np.array([HJCx_L,HJCy_L,HJCz_L])
 
-        HJCx_R= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["RightAsisTrocanterDistance"] + markerDiameter/2) * np.cos(0.314)
+        HJCx_R= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["RightAsisTrocanterDistance"] + markerDiameter/2.0) * np.cos(0.314)
         HJCy_R=+1*(C * np.sin(0.5) - (mp_computed["InterAsisDistance"] / 2.0))
-        HJCz_R= -C * np.cos(0.5) * np.cos(0.314) - (mp_computed["RightAsisTrocanterDistance"] + markerDiameter/2) * np.sin(0.314)
+        HJCz_R= -C * np.cos(0.5) * np.cos(0.314) - (mp_computed["RightAsisTrocanterDistance"] + markerDiameter/2.0) * np.sin(0.314)
 
         HJC_R=np.array([HJCx_R,HJCy_R,HJCz_R])
 
@@ -130,9 +130,9 @@ class CGM(cmb.Model):
         """
 
         if beta == 0.0:
-            y=(J-I)/np.linalg.norm(J-I)
+            y=np.divide((J-I),np.linalg.norm(J-I))
             x=np.cross(y,K-I)
-            x=(x)/np.linalg.norm(x)
+            x=np.divide((x),np.linalg.norm(x))
             z=np.cross(x,y)
 
             matR=np.array([x,y,z]).T
@@ -140,7 +140,7 @@ class CGM(cmb.Model):
 
             d=np.linalg.norm(I-J)
             theta=np.arcsin(offset/d)*2.0
-            v_r=np.array([0, -d/2, 0])
+            v_r=np.array([0, -d/2.0, 0])
 
             rot=np.array([[1,0,0],[0,np.cos(theta),-1.0*np.sin(theta)],[0,np.sin(theta),np.cos(theta)] ])
 
@@ -165,9 +165,9 @@ class CGM(cmb.Model):
             # chord avec beta nul
             #P = chord(L,B,A,C,beta=0.0) # attention ma methode . attention au arg input
 
-            y=(J-I)/np.linalg.norm(J-I)
+            y=np.divide((J-I),np.linalg.norm(J-I))
             x=np.cross(y,K-I)
-            x=(x)/np.linalg.norm(x)
+            x=np.divide((x),np.linalg.norm(x))
             z=np.cross(x,y)
 
             matR=np.array([x,y,z]).T
@@ -175,7 +175,7 @@ class CGM(cmb.Model):
 
             d=np.linalg.norm(I-J)
             theta=np.arcsin(offset/d)*2.0
-            v_r=np.array([0, -d/2, 0])
+            v_r=np.array([0, -d/2.0, 0])
 
             rot=np.array([[1,0,0],[0,np.cos(theta),-1.0*np.sin(theta)],[0,np.sin(theta),np.cos(theta)] ])
 
@@ -190,16 +190,16 @@ class CGM(cmb.Model):
 
 
             # define P research circle in T plan
-            n = (A-B)/AB
+            n = np.divide((A-B),AB)
             O = A - np.dot(n, AO)
             r = L*np.cos(alpha) #OK
 
 
             # build segment
             #T = BuildSegment(O,n,P-O,'zyx');
-            Z=n/np.linalg.norm(n)
-            Y=np.cross(Z,P-O)/np.linalg.norm(np.cross(Z,P-O))
-            X=np.cross(Y,Z)/np.linalg.norm(np.cross(Y,Z))
+            Z=np.divide(n,np.linalg.norm(n))
+            Y=np.divide(np.cross(Z,P-O),np.linalg.norm(np.cross(Z,P-O)))
+            X=np.divide(np.cross(Y,Z),np.linalg.norm(np.cross(Y,Z)))
             Origin= O
 
             # erreur ici, il manque les norm
@@ -234,7 +234,8 @@ class CGM(cmb.Model):
 
                 sens = np.dot(np.cross(ProjC,ProjB).T,nBone)
 
-                Betai = sens/np.linalg.norm(sens)*np.arccos((np.dot(ProjC.T,ProjB))/(np.linalg.norm(ProjC)*np.linalg.norm(ProjB)))*180.0/np.pi
+               
+                Betai = np.divide(sens,np.linalg.norm(sens))*np.arccos(np.divide((np.dot(ProjC.T,ProjB)),(np.linalg.norm(ProjC)*np.linalg.norm(ProjB))))*180.0/np.pi
 
                 diffBeta = np.abs(beta - Betai)
 
@@ -714,6 +715,7 @@ class CGM1LowerLimbs(CGM):
 
         # new markers
         valSACR=(aquiStatic.GetPoint("LPSI").GetValues() + aquiStatic.GetPoint("RPSI").GetValues()) / 2.0
+        
         btkTools.smartAppendPoint(aquiStatic,"SACR",valSACR,desc="")
 
         valMidAsis=(aquiStatic.GetPoint("LASI").GetValues() + aquiStatic.GetPoint("RASI").GetValues()) / 2.0
@@ -2530,18 +2532,18 @@ class CGM1LowerLimbs(CGM):
             ptOrigin=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][3])).GetValues()[i,:]
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+
+            a1=np.divide(a1,np.linalg.norm(a1)) 
 
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2)) 
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Pelvis"]["TF"]['sequence'])
             frame=cfr.Frame()
-
             frame.m_axisX=x
             frame.m_axisY=y
             frame.m_axisZ=z
@@ -2575,13 +2577,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Pelvis"]['sequence'])
             frame=cfr.Frame()
@@ -2640,13 +2642,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Left Thigh"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -2688,13 +2690,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Left Thigh"]['sequence'])
             frame=cfr.Frame()
@@ -2753,13 +2755,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Right Thigh"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -2799,13 +2801,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Right Thigh"]['sequence'])
             frame=cfr.Frame()
@@ -2866,13 +2868,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Left Shank"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -2925,13 +2927,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Left Shank"]['sequence'])
             frame=cfr.Frame()
@@ -3039,13 +3041,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Right Shank"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -3094,13 +3096,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Right Shank"]['sequence'])
             frame=cfr.Frame()
@@ -3203,14 +3205,13 @@ class CGM1LowerLimbs(CGM):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
-
-
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
+
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -3233,29 +3234,6 @@ class CGM1LowerLimbs(CGM):
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Left Foot"]['labels'][3])).GetValues()[i,:]
             
-#            if "pigStatic" in options.keys() and options["pigStatic"]:
-#
-#                pt1=aqui.GetPoint(str(dictAnat["Left Foot"]['labels'][0])).GetValues()[i,:] #toe
-#                pt2=aqui.GetPoint(str(dictAnat["Left Foot"]['labels'][1])).GetValues()[i,:] #hee
-#
-#                if dictAnat["Left Foot"]['labels'][2] is not None:
-#                    pt3=aqui.GetPoint(str(dictRef["Left Foot"]['labels'][2])).GetValues()[i,:]
-#                    v=(pt3-pt1)
-#                else:
-#                    v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY # distal segment
-#
-#                a1=(pt2-pt1)
-#                a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
-#       
-#                v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
-#    
-#                a2=np.cross(a1,v)
-#                a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
-#    
-#                x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Left Foot"]['sequence'])                
-#
-#
-#            else:
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
 
 
@@ -3303,14 +3281,14 @@ class CGM1LowerLimbs(CGM):
 
             ptOrigin=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[i,:]
 
-
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
 
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
+
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
             frame=cfr.Frame()
@@ -3369,13 +3347,15 @@ class CGM1LowerLimbs(CGM):
                 v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY # distal segment
                 print v
 
+
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
-   
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
+
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
+            
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Left Foot"]['sequence'])                
 
@@ -3408,12 +3388,12 @@ class CGM1LowerLimbs(CGM):
                 v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY # distal segment
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1) if np.linalg.norm(a1)!=0 else np.zeros((3))
-   
-            v=v/np.linalg.norm(v) if np.linalg.norm(v)!=0 else np.zeros((3))
+            a1=np.divide(a1,np.linalg.norm(a1))
+
+            v=np.divide(v,np.linalg.norm(v)) 
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2) if np.linalg.norm(a2)!=0 else np.zeros((3))
+            a2=np.divide(a2,np.linalg.norm(a2))
 
             x,y,z,R=cfr.setFrameData(a1,a2,dictAnat["Right Foot"]['sequence'])                
 
@@ -3816,13 +3796,13 @@ class CGM1LowerLimbs(CGM):
 
 
         a1=(kjc-ajc)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.divide(a1,np.linalg.norm(a1))
 
         v=(ank-ajc)
-        v=v/np.linalg.norm(v)
+        v=np.divide(v,np.linalg.norm(v)) 
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.divide(a2,np.linalg.norm(a2))
 
         x,y,z,R=cfr.setFrameData(a1,a2,"ZXY")
         frame=cfr.Frame()
