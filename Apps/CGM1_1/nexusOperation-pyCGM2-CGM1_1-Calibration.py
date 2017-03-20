@@ -265,7 +265,7 @@ if __name__ == "__main__":
         modelFilters.ModelJCSFilter(model,acqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
         # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","RASI","RPSI","LPSI"])
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqStatic,["LASI","RASI","RPSI","LPSI"])
 
         # absolute angles
         modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
@@ -284,7 +284,8 @@ if __name__ == "__main__":
 
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,
-                                      model,acqStatic,subject,pointSuffix
+                                      model,acqStatic,subject,
+                                      pointSuffix,
                                       staticProcessing=True).run()
 
         # ========END of the nexus OPERATION if run from Nexus  =========
