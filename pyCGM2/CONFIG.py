@@ -25,7 +25,7 @@ MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath
 
 # [Optional]: Apps path 
 MAIN_PYCGM2_APPS_PATH = MAIN_PYCGM2_PATH+"Apps\\"
- 
+
 # [Optional]: openMA binding 
 THIRDPARTY_PATH = MAIN_PYCGM2_PATH + "third party\\" # By default, use openMA distribution included in third party folder  
 
