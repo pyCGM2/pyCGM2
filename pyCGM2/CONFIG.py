@@ -49,6 +49,7 @@ PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"Settings\\"
 # setting files
 generateFiles.generateCGM1_Settings(PYCGM2_APPDATA_PATH)
 generateFiles.generateCGM1_1_Settings(PYCGM2_APPDATA_PATH)
+generateFiles.generateCGM2_1_Settings(PYCGM2_APPDATA_PATH)
 
 # pipeline generation
 # cgm1
@@ -57,6 +58,11 @@ generatePipeline.pipeline_pyCGM2_CGM1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDA
 # cgm1.1
 generatePipeline.pipeline_pyCGM2_CGM1_1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
 generatePipeline.pipeline_pyCGM2_CGM1_1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
+# cgm2.1
+generatePipeline.pipeline_pyCGM2_CGM2_1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
+generatePipeline.pipeline_pyCGM2_CGM2_1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
+
+
 
 
 # ------------------- METHODS ------------------------------------------------
