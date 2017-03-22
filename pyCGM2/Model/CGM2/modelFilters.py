@@ -508,6 +508,27 @@ class ModelMotionFilter(object):
                         segPicked.getReferential(tfName).addMotionFrame(frame)
 
 
+
+
+class TrackingMarkerDecompositionFilter(object):
+    """
+        decomposition of tracking markers
+    """
+    def __init__(self,iModel,iAcq):
+        """
+            :Parameters:
+            
+               -- `` ( ) -   
+
+        """
+        self.m_model = iModel
+        self.m_acq = iAcq
+
+
+    def decompose(self):
+         self.m_model.decomposeTrackingMarkers(self.m_acq)
+
+
 # ----- Joint angles -----
 
 class ModelJCSFilter(object):

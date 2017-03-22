@@ -4117,6 +4117,33 @@ class CGM1LowerLimbs(CGM):
 
         return valuesF,valuesM
 
+    # ----- decomposetrackingMarkers -------
+    def decomposeTrackingMarkers(self,acq):
+
+        for seg in self.m_segmentCollection: 
+           print seg.name 
+           if  "Proximal" not in seg.name:                   
+               if "Foot" in seg.name:
+                    suffix = ["sup/inf", "med/lat", "pro/dis"]
+               elif "Pelvis" in seg.name:
+                    suffix = ["pos/ant", "med/lat", "sup/inf"] 
+               else:
+                    suffix = ["pos/ant", "med/lat", "pro/dis"]
+            
+               for marker in seg.m_tracking_markers:
+        
+                   nodeTraj= seg.anatomicalFrame.getNodeTrajectory(marker)            
+                   markersTraj =acq.GetPoint(marker).GetValues()        
+                    
+                   markerTrajectoryX=np.array( [ markersTraj[:,0], nodeTraj[:,1], nodeTraj[:,2]]).T
+                   markerTrajectoryY=np.array( [ nodeTraj[:,0], markersTraj[:,1], nodeTraj[:,2]]).T
+                   markerTrajectoryZ=np.array( [ nodeTraj[:,0], nodeTraj[:,1], markersTraj[:,2]]).T
+
+                   btkTools.smartAppendPoint(acq,marker+suffix[0],markerTrajectoryX,PointType=btk.btkPoint.Marker, desc="")            
+                   btkTools.smartAppendPoint(acq,marker+suffix[1],markerTrajectoryY,PointType=btk.btkPoint.Marker, desc="")            
+                   btkTools.smartAppendPoint(acq,marker+suffix[2],markerTrajectoryZ,PointType=btk.btkPoint.Marker, desc="")  
+        
+
     # ----- vicon API -------
     def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):
         """
