@@ -7,7 +7,7 @@ import logging
 # pyCGM2
 
 import pyCGM2.Processing.cycle as CGM2cycle
-import pyCGM2.Tools.exportTools as CGM2exportTools
+from pyCGM2.Tools import exportTools 
 
 # openMA
 
@@ -64,6 +64,7 @@ class Analysis():
         self.kineticStats=Analysis.Structure()
         self.emgStats=Analysis.Structure()
         self.gps= None
+        self.gvs = None
         self.coactivations=[]
 
     def setStp(self,inDict):   
@@ -82,6 +83,27 @@ class Analysis():
         self.emgStats.data = data
         self.emgStats.pst = pst 
 
+    def setGps(self,GpsStatsOverall,GpsStatsContext):
+        self.gps = dict()
+        self.gps["Overall"] = GpsStatsOverall
+        self.gps["Context"] = GpsStatsContext
+
+    def setGvs(self,gvsStats):
+        self.gvs = gvsStats
+
+
+    def getKinematicCycleNumbers(self):
+        for label,context in self.kinematicStats.data.keys():
+            if context == "Left":
+                n_leftCycles = self.kinematicStats.data[label, context]["values"].__len__()
+                break
+
+        for label,context in self.kinematicStats.data.keys():
+            if context == "Right":
+                n_rightCycles = self.kinematicStats.data[label, context]["values"].__len__()
+                break
+        return n_leftCycles, n_rightCycles
+        
 
 
 # ---- FILTERS ------
@@ -473,41 +495,41 @@ class AnalysisFilter(object):
 
             # stage 1 : get descriptive data
             # --------------------------------
-            df_descriptiveStp = CGM2exportTools.buid_df_descriptiveCycle1_1(self.analysis.stpStats)
+            df_descriptiveStp = exportTools.buid_df_descriptiveCycle1_1(self.analysis.stpStats)
             
             # add infos
             if modelInfo !=None:         
                 for key,value in modelInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_descriptiveStp, key)
+                    exportTools.isColumnNameExist( df_descriptiveStp, key)
                     df_descriptiveStp[key] = value            
             
             if subjInfo !=None:         
                 for key,value in subjInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_descriptiveStp, key)
+                    exportTools.isColumnNameExist( df_descriptiveStp, key)
                     df_descriptiveStp[key] = value
             if condExpInfo !=None:         
                 for key,value in condExpInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_descriptiveStp, key)
+                    exportTools.isColumnNameExist( df_descriptiveStp, key)
                     df_descriptiveStp[key] = value
             df_descriptiveStp.to_excel(xlsxWriter,'descriptive stp')
             
 
             # stage 2 : get cycle values
             # --------------------------------
-            df_stp = CGM2exportTools.buid_df_cycles1_1(self.analysis.stpStats)
+            df_stp = exportTools.buid_df_cycles1_1(self.analysis.stpStats)
             
             # add infos
             if modelInfo !=None:         
                 for key,value in modelInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_stp, key)
+                    exportTools.isColumnNameExist( df_stp, key)
                     df_stp[key] = value 
             if subjInfo !=None:         
                 for key,value in subjInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_stp, key)
+                    exportTools.isColumnNameExist( df_stp, key)
                     df_stp[key] = value
             if condExpInfo !=None:         
                 for key,value in condExpInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_stp, key)
+                    exportTools.isColumnNameExist( df_stp, key)
                     df_stp[key] = value
                         
             df_stp.to_excel(xlsxWriter,'stp cycles')
@@ -518,6 +540,66 @@ class AnalysisFilter(object):
                 else:
                     df_stp.to_csv(str(path+outputName + " - stp - DataFrame.csv"),sep=";")
 
+        # Scores
+        #---------------------------
+
+        # GPS
+        if self.analysis.gps is not None:
+            
+           
+            
+
+            df_descriptiveGpsByContext = exportTools.buid_df_descriptiveCycle1_1_onlyContext(self.analysis.gps["Context"], "Gps")
+            df_descriptiveGpsOverall = exportTools.buid_df_descriptiveCycle1_1_overall(self.analysis.gps["Overall"],"Gps")
+            df_descriptiveGps =  pd.concat([df_descriptiveGpsOverall,df_descriptiveGpsByContext])     
+
+            df_allGpsByContext = exportTools.buid_df_descriptiveCycle1_1_onlyContext(self.analysis.gps["Context"], "Gps")
+
+            # add infos
+            for itdf in [df_descriptiveGps,df_allGpsByContext]:
+                if modelInfo !=None:         
+                    for key,value in modelInfo.items():
+                        exportTools.isColumnNameExist( itdf, key)
+                        itdf[key] = value 
+    
+                if subjInfo !=None:         
+                    for key,value in subjInfo.items():
+                        exportTools.isColumnNameExist( itdf, key)
+                        itdf[key] = value
+                if condExpInfo !=None:         
+                    for key,value in condExpInfo.items():
+                        exportTools.isColumnNameExist( itdf, key)
+                        itdf[key] = value 
+
+
+            df_descriptiveGps.to_excel(xlsxWriter,'descriptive GPS ') 
+            df_allGpsByContext.to_excel(xlsxWriter,'GPS cycles ')
+
+
+        if self.analysis.gvs is not None:
+            df_descriptiveGvs = exportTools.buid_df_descriptiveCycle1_3(self.analysis.gvs,"Gvs")
+            df_allGvs = exportTools.buid_df_cycles1_3(self.analysis.gvs, "Gvs")
+
+            # add infos
+            for itdf in [df_descriptiveGvs,df_allGvs]:
+                if modelInfo !=None:         
+                    for key,value in modelInfo.items():
+                        exportTools.isColumnNameExist( itdf, key)
+                        itdf[key] = value 
+    
+                if subjInfo !=None:         
+                    for key,value in subjInfo.items():
+                        exportTools.isColumnNameExist( itdf, key)
+                        itdf[key] = value
+                if condExpInfo !=None:         
+                    for key,value in condExpInfo.items():
+                        exportTools.isColumnNameExist( itdf, key)
+                        itdf[key] = value 
+
+
+            df_descriptiveGvs.to_excel(xlsxWriter,'descriptive GVS ') 
+            df_allGvs.to_excel(xlsxWriter,'GVS cycles ')
+            
         
         # Kinematics ouput
         #---------------------------
@@ -527,20 +609,20 @@ class AnalysisFilter(object):
 
             # stage 1 : get descriptive data
             # --------------------------------            
-            df_descriptiveKinematics = CGM2exportTools.buid_df_descriptiveCycle101_3(self.analysis.kinematicStats)
+            df_descriptiveKinematics = exportTools.buid_df_descriptiveCycle101_3(self.analysis.kinematicStats)
 
             # add infos
             if modelInfo !=None:         
                 for key,value in modelInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_descriptiveKinematics, key)
+                    exportTools.isColumnNameExist( df_descriptiveKinematics, key)
                     df_descriptiveKinematics[key] = value 
             if subjInfo !=None:         
                 for key,value in subjInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_descriptiveKinematics, key)
+                    exportTools.isColumnNameExist( df_descriptiveKinematics, key)
                     df_descriptiveKinematics[key] = value
             if condExpInfo !=None:         
                 for key,value in condExpInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_descriptiveKinematics, key)
+                    exportTools.isColumnNameExist( df_descriptiveKinematics, key)
                     df_descriptiveKinematics[key] = value
 
             df_descriptiveKinematics.to_excel(xlsxWriter,'descriptive kinematics ')                
@@ -549,21 +631,21 @@ class AnalysisFilter(object):
             # --------------------------------
             
             # cycles            
-            df_kinematics =  CGM2exportTools.buid_df_cycles101_3(self.analysis.kinematicStats) 
+            df_kinematics =  exportTools.buid_df_cycles101_3(self.analysis.kinematicStats) 
 
             # add infos
             if modelInfo !=None:         
                 for key,value in modelInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_kinematics, key)
+                    exportTools.isColumnNameExist( df_kinematics, key)
                     df_kinematics[key] = value 
 
             if subjInfo !=None:         
                 for key,value in subjInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_kinematics, key)
+                    exportTools.isColumnNameExist( df_kinematics, key)
                     df_kinematics[key] = value
             if condExpInfo !=None:         
                 for key,value in condExpInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_kinematics, key)
+                    exportTools.isColumnNameExist( df_kinematics, key)
                     df_kinematics[key] = value
                             
             df_kinematics.to_excel(xlsxWriter,'Kinematic cycles')
@@ -581,20 +663,20 @@ class AnalysisFilter(object):
 
             # stage 1 : get descriptive data
             # --------------------------------            
-            df_descriptiveKinetics = CGM2exportTools.buid_df_descriptiveCycle101_3(self.analysis.kineticStats)
+            df_descriptiveKinetics = exportTools.buid_df_descriptiveCycle101_3(self.analysis.kineticStats)
 
             # add infos
             if modelInfo !=None:         
                 for key,value in modelInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_stp, key)
+                    exportTools.isColumnNameExist( df_stp, key)
                     df_descriptiveKinetics[key] = value 
             if subjInfo !=None:         
                 for key,value in subjInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_descriptiveKinetics, key)
+                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
                     df_descriptiveKinetics[key] = value
             if condExpInfo !=None:         
                 for key,value in condExpInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_descriptiveKinetics, key)
+                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
                     df_descriptiveKinetics[key] = value
 
             df_descriptiveKinetics.to_excel(xlsxWriter,'descriptive kinetics ')                
@@ -603,21 +685,21 @@ class AnalysisFilter(object):
             # --------------------------------
             
             # cycles            
-            df_kinetics =  CGM2exportTools.buid_df_cycles101_3(self.analysis.kineticStats) 
+            df_kinetics =  exportTools.buid_df_cycles101_3(self.analysis.kineticStats) 
 
             # add infos
             if modelInfo !=None:         
                 for key,value in modelInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_kinetics, key)
+                    exportTools.isColumnNameExist( df_kinetics, key)
                     df_kinetics[key] = value 
 
             if subjInfo !=None:         
                 for key,value in subjInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_kinetics, key)
+                    exportTools.isColumnNameExist( df_kinetics, key)
                     df_kinetics[key] = value
             if condExpInfo !=None:         
                 for key,value in condExpInfo.items():
-                    CGM2exportTools.isColumnNameExist( df_kinetics, key)
+                    exportTools.isColumnNameExist( df_kinetics, key)
                     df_kinetics[key] = value
                             
             df_kinetics.to_excel(xlsxWriter,'Kinetic cycles')
@@ -808,7 +890,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         self.m_modelInfos=modelInfos        
         self.m_subjectInfos = subjectInfos
         self.m_experimentalConditionInfos = experimentalInfos
-        
+    
         
     def computeSpatioTemporel(self):
 
