@@ -348,9 +348,9 @@ class CGM1LowerLimbs(CGM):
     """
 
     nativeCgm1 = True
-    
-    MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
+    MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
+    
     def __init__(self):
         super(CGM1LowerLimbs, self).__init__()
         self.decoratedModel = False

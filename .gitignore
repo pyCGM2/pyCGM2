@@ -89,3 +89,5 @@ ENV/
 *.pyc
 
 *.pipeline
+*.xls
+*.xlsx
