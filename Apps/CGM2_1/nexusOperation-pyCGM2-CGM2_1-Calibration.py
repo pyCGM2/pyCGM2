@@ -60,8 +60,8 @@ if __name__ == "__main__":
 
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
-            calibrateFilenameLabelledNoExt = "test" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\True equinus\\S01\\CGM2.1\\"
+            calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -110,7 +110,6 @@ if __name__ == "__main__":
 
 
         hjcMethod = inputs["Calibration"]["HJC regression"] 
-
 
         if args.leftFlatFoot is not None:      
             flag_leftFlatFoot = bool(args.leftFlatFoot)
@@ -191,6 +190,8 @@ if __name__ == "__main__":
         useRightHJCnodeLabel = "RHJC_cgm1" 
         if hjcMethod == "Hara":
             modelDecorator.HipJointCenterDecorator(model).hara()  
+            useLeftHJCnodeLabel = "LHJC_Hara"
+            useRightHJCnodeLabel = "RHJC_Hara" 
             
         
         # knee - ankle centres ---

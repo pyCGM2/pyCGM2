@@ -191,16 +191,16 @@ def haraRegression(mp_input,mp_computed,markerDiameter = 14.0,  basePlate = 2.0)
     #TODO : remove mp_computed
    
    
-    HJCx_L= 11.0 -0.063*mp_input["leftLegLength"] - markerDiameter/2.0 - basePlate
-    HJCy_L=8.0+0.086*mp_input["leftLegLength"]
-    HJCz_L=-9.0-0.078*mp_input["leftLegLength"]
+    HJCx_L= 11.0 -0.063*mp_input["LeftLegLength"] - markerDiameter/2.0 - basePlate
+    HJCy_L=8.0+0.086*mp_input["LeftLegLength"]
+    HJCz_L=-9.0-0.078*mp_input["LeftLegLength"]
     
     logging.info("Left HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_L,HJCy_L,HJCz_L))    
     HJC_L_hara=np.array([HJCx_L,HJCy_L,HJCz_L])
     
-    HJCx_R= 11.0 -0.063*mp_input["rightLegLength"]- markerDiameter/2.0 - basePlate
-    HJCy_R=-1.0*(8.0+0.086*mp_input["rightLegLength"])
-    HJCz_R=-9.0-0.078*mp_input["rightLegLength"]
+    HJCx_R= 11.0 -0.063*mp_input["RightLegLength"]- markerDiameter/2.0 - basePlate
+    HJCy_R=-1.0*(8.0+0.086*mp_input["RightLegLength"])
+    HJCz_R=-9.0-0.078*mp_input["RightLegLength"]
         
     logging.info("Right HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_R,HJCy_R,HJCz_R))    
     HJC_R_hara=np.array([HJCx_R,HJCy_R,HJCz_R])
@@ -238,45 +238,45 @@ def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0
     #TODO : how to work without CGM calibration
 
     if predictors.value == "full":
-        HJCx_L=-0.24*mp_computed["pelvisDepth"]-9.9  - markerDiameter/2.0 - basePlate # post/ant
-        HJCy_L=-0.16*mp_computed["asisDistance"]-0.04*mp_computed["meanlegLength"]-7.1 
-        HJCz_L=-1*(0.28*mp_computed["pelvisDepth"]+0.16*mp_computed["asisDistance"]+7.9)
+        HJCx_L=-0.24*mp_computed["PelvisDepth"]-9.9  - markerDiameter/2.0 - basePlate # post/ant
+        HJCy_L=-0.16*mp_computed["InterAsisDistance"]-0.04*mp_computed["MeanlegLength"]-7.1 
+        HJCz_L=-1*(0.28*mp_computed["PelvisDepth"]+0.16*mp_computed["InterAsisDistance"]+7.9)
         HJC_L_har=np.array([HJCx_L,HJCy_L,HJCz_L])
 
-        HJCx_R=-0.24*mp_computed["pelvisDepth"]-9.9 - markerDiameter/2.0 - basePlate# post/ant
-        HJCy_R=-0.16*mp_computed["asisDistance"]-0.04*mp_computed["meanlegLength"]-7.1 
-        HJCz_R=1*(0.28*mp_computed["pelvisDepth"]+0.16*mp_computed["asisDistance"]+7.9) 
+        HJCx_R=-0.24*mp_computed["PelvisDepth"]-9.9 - markerDiameter/2.0 - basePlate# post/ant
+        HJCy_R=-0.16*mp_computed["InterAsisDistance"]-0.04*mp_computed["MeanlegLength"]-7.1 
+        HJCz_R=1*(0.28*mp_computed["PelvisDepth"]+0.16*mp_computed["InterAsisDistance"]+7.9) 
         HJC_R_har=np.array([HJCx_R,HJCy_R,HJCz_R])    
 
     elif predictors.value=="PWonly":
-        HJCx_L=-0.138*mp_computed["asisDistance"]-10.4 - markerDiameter/2.0 - basePlate
-        HJCy_L=-0.305*mp_computed["asisDistance"]-10.9
-        HJCz_L=-1*(0.33*mp_computed["asisDistance"]+7.3)
+        HJCx_L=-0.138*mp_computed["InterAsisDistance"]-10.4 - markerDiameter/2.0 - basePlate
+        HJCy_L=-0.305*mp_computed["InterAsisDistance"]-10.9
+        HJCz_L=-1*(0.33*mp_computed["InterAsisDistance"]+7.3)
         
         HJC_L_har=np.array([HJCx_L,HJCy_L,HJCz_L])
     
-        HJCx_R=-0.138*mp_computed["asisDistance"]-10.4 - markerDiameter/2.0 - basePlate
-        HJCy_R=-0.305*mp_computed["asisDistance"]-10.9
-        HJCz_R=1*(0.33*mp_computed["asisDistance"]+7.3)
+        HJCx_R=-0.138*mp_computed["InterAsisDistance"]-10.4 - markerDiameter/2.0 - basePlate
+        HJCy_R=-0.305*mp_computed["InterAsisDistance"]-10.9
+        HJCz_R=1*(0.33*mp_computed["InterAsisDistance"]+7.3)
         
         HJC_R_har=np.array([HJCx_R,HJCy_R,HJCz_R]) 
     
 
     elif predictors.value=="LLonly":
-        HJCx_L=-0.041*mp_computed["meanlegLength"]-6.3 - markerDiameter/2.0 - basePlate
-        HJCy_L=-0.083*mp_computed["meanlegLength"]-7.9
-        HJCz_L=-1*(0.0874*mp_computed["meanlegLength"]+5.4)
+        HJCx_L=-0.041*mp_computed["MeanlegLength"]-6.3 - markerDiameter/2.0 - basePlate
+        HJCy_L=-0.083*mp_computed["MeanlegLength"]-7.9
+        HJCz_L=-1*(0.0874*mp_computed["MeanlegLength"]+5.4)
         
         HJC_L_har=np.array([HJCx_L,HJCy_L,HJCz_L])
     
-        HJCx_R=-0.041*mp_computed["meanlegLength"]-6.3 - markerDiameter/2.0 - basePlate
-        HJCy_R=-0.083*mp_computed["meanlegLength"]-7.9
-        HJCz_R=1*(0.0874*mp_computed["meanlegLength"]+5.4)
+        HJCx_R=-0.041*mp_computed["MeanlegLength"]-6.3 - markerDiameter/2.0 - basePlate
+        HJCy_R=-0.083*mp_computed["MeanlegLength"]-7.9
+        HJCz_R=1*(0.0874*mp_computed["MeanlegLength"]+5.4)
         
         HJC_R_har=np.array([HJCx_R,HJCy_R,HJCz_R])
         
     else:
-        raise Exception("[pycga] Predictor is unknown choixe possible : full, PWonly, LLonly")
+        raise Exception("[pyCGM2] Predictor is unknown choixe possible : full, PWonly, LLonly")
 
     if cgmReferential :
         Rhar_cgm1=np.array([[1, 0, 0],[0, 0, -1], [0, 1, 0]])
@@ -662,15 +662,15 @@ class HipJointCenterDecorator(DecoratorModel):
         
         if side == "both":
             # add nodes to pelvis            
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_hara",LHJC_hara, positionType="Local")
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_hara",RHJC_hara, positionType="Local")
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Hara",LHJC_hara, positionType="Local")
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_Hara",RHJC_hara, positionType="Local")
             
             # add nodes Thigh
-            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_hara").m_global
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_hara",pos_L, positionType="Global")
+            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Hara").m_global
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Hara",pos_L, positionType="Global")
 
-            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_hara").m_global
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_hara",pos_R, positionType="Global")
+            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Hara").m_global
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Hara",pos_R, positionType="Global")
     
     
     
