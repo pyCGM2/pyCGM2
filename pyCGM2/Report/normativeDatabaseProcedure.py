@@ -103,7 +103,8 @@ class Pinzone2014_normativeDataBases(object):
         self.__setDict(angles,"Pelvis.Angles",["Pelvis Ant/Pst", "Pelvic Up/Dn", "Pelvic Int/Ext" ], "Angles")
         self.__setDict(angles,"Hip.Angles",["Hip Flx/Ext", "Hip Add/Abd", "Hip Int/Ext" ], "Angles")
         self.__setDict(angles,"Knee.Angles",["Knee Flx/Ext",None, None], "Angles")
-        self.__setDict(angles,"Ankle.Angles",["Ankle Dor/Pla", None, "Foot Int/Ext"], "Angles")
+        self.__setDict(angles,"Ankle.Angles",["Ankle Dor/Pla", None, None], "Angles")
+        self.__setDict(angles,"Foot.Angles",[None, None, "Foot Int/Ext"], "Angles")
 
         self.__setDict(moments,"Hip.Moment",["Hip Extensor Moment ", "Hip Abductor Moment ", None ], "Moments")
         self.__setDict(moments,"Knee.Moment",["Knee Extensor Moment ", "Knee Abductor Moment ", None ], "Moments")
@@ -220,7 +221,8 @@ class Schwartz2008_normativeDataBases(object):
         self.__setDict(angles,"Pelvis.Angles",["Pelvic Ant/Posterior Tilt", "Pelvic Up/Down Obliquity", "Pelvic Int/External Rotation" ], "Angles")
         self.__setDict(angles,"Hip.Angles",["Hip Flex/Extension", "Hip Ad/Abduction", "Hip Int/External Rotation" ],"Angles")
         self.__setDict(angles,"Knee.Angles",["Knee Flex/Extension","Knee Ad/Abduction", "Knee Int/External Rotation"], "Angles")
-        self.__setDict(angles,"Ankle.Angles",["Ankle Dorsi/Plantarflexion", None, "Foot Int/External Progression"], "Angles")
+        self.__setDict(angles,"Ankle.Angles",["Ankle Dorsi/Plantarflexion", None, None], "Angles")
+        self.__setDict(angles,"Foot.Angles",[None, None, "Foot Int/External Progression"], "Angles")
 
         self.__setDict(moments,"Hip.Moment",["Hip Ext/Flexion", "Hip Ab/Adduction", None ], "Moments")
         self.__setDict(moments,"Knee.Moment",["Knee Ext/Flexion", "Knee Ab/Adduction", None ], "Moments")
