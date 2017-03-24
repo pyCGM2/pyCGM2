@@ -30,7 +30,7 @@ basePlate = 2.0
 
 
 
-class CGM2ModelInf(cgm.CGM1ModelInf):
+class CGM2ModelInf(cgm.CGM1LowerLimbs):
     """ implementation of the cgm2
     
     

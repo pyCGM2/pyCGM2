@@ -2415,16 +2415,15 @@ class CGM1LowerLimbs(CGM):
            - `options` (dict) - dictionnary use to pass options
 
         """
-
-
-
         logging.debug("=====================================================")
         logging.debug("===================  CGM MOTION   ===================")
         logging.debug("=====================================================")
 
-        if motionMethod == pyCGM2Enums.motionMethod.Native: #cmf.motionMethod.Native:
-            pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
+        pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
 
+
+        if motionMethod == pyCGM2Enums.motionMethod.Native: #cmf.motionMethod.Native:
+            
             #if not pigStaticProcessing:
             logging.debug(" - Pelvis - motion -")
             logging.debug(" -------------------")
@@ -2474,11 +2473,15 @@ class CGM1LowerLimbs(CGM):
 
         if motionMethod == pyCGM2Enums.motionMethod.Sodervisk:
             logging.debug("--- Segmental Least-square motion process ---")
-            self._pelvis_motion_optimize(aqui, dictRef,motionMethod)
-            self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
-            self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
+            self._pelvis_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
+            self._left_thigh_motion_optimize(aqui, dictRef,dictAnat,motionMethod)
+            self._right_thigh_motion_optimize(aqui, dictRef,dictAnat,motionMethod)
+            self._left_shank_motion_optimize(aqui, dictRef,dictAnat,motionMethod)
+            self._right_shank_motion_optimize(aqui, dictRef,dictAnat,motionMethod)
+            self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
+            self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
+#            self._leftFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod) # issue AJC - HEE and TOE may be inline -> singularities !!
+#            self._rightFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
 
         logging.debug("--- Display Coordinate system ---")
         logging.debug(" --------------------------------")
@@ -3573,6 +3576,11 @@ class CGM1LowerLimbs(CGM):
             frame.update(R,ptOrigin)
             seg.anatomicalFrame.addMotionFrame(frame)
 
+        # remove LHC from list of tracking markers
+        if "LHJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LHJC")
+            
+
+
 
     def _right_thigh_motion_optimize(self,aqui, dictRef, dictAnat, motionMethod):
         """
@@ -3648,6 +3656,8 @@ class CGM1LowerLimbs(CGM):
             frame.update(R,ptOrigin)
             seg.anatomicalFrame.addMotionFrame(frame)
 
+        # remove HJC from list of tracking markers
+        if "RHJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RHJC")
 
     def _left_shank_motion_optimize(self,aqui, dictRef,dictAnat,  motionMethod):
         """
@@ -3720,6 +3730,11 @@ class CGM1LowerLimbs(CGM):
             frame.update(R,ptOrigin)
             seg.anatomicalFrame.addMotionFrame(frame)
 
+        # remove KJC from list of tracking markers
+        if "LKJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LKJC")
+
+
+
     def _right_shank_motion_optimize(self,aqui, dictRef,dictAnat, motionMethod):
         """
             Compute Motion of the anatomical coordinate system of the right shank from rigid transformation with motion of the technical coordinate system.
@@ -3787,7 +3802,6 @@ class CGM1LowerLimbs(CGM):
 
 
         # --- Motion of anatomical Frame
-
         seg.anatomicalFrame.motion=[]
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Right Shank"]['labels'][3])).GetValues()[i,:]
@@ -3796,6 +3810,131 @@ class CGM1LowerLimbs(CGM):
             frame=cfr.Frame()
             frame.update(R,ptOrigin)
             seg.anatomicalFrame.addMotionFrame(frame)
+
+
+        # remove KJC from list of tracking markers
+        if "RKJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RKJC")
+
+    def _leftFoot_motion_optimize(self,aqui, dictRef,dictAnat, motionMethod):
+    
+        seg=self.getSegment("Left Foot")
+
+        #  --- add LAJC if marker list < 2  - check presence of tracking markers in the acquisition
+        if seg.m_tracking_markers != []:
+            if len(seg.m_tracking_markers)==2: 
+                if "LAJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("LAJC")
+                    logging.debug("LAJC added to tracking marker list")
+
+        # --- Motion of the Technical frame
+        seg.getReferential("TF").motion =[]
+
+        # part 1: get global location in Static
+        if seg.m_tracking_markers != []: # work with tracking markers
+            staticPos = np.zeros((len(seg.m_tracking_markers),3))
+            i=0            
+            for label in seg.m_tracking_markers:
+                staticPos[i,:] = seg.getReferential("TF").static.getNode_byLabel(label).m_global
+                i+=1                
+            
+        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
+        for i in range(0,aqui.GetPointFrameNumber()):
+            
+            if seg.m_tracking_markers != []: # work with traking markers 
+                dynPos = np.zeros((len(seg.m_tracking_markers),3)) # use 
+                k=0            
+                for label in seg.m_tracking_markers:
+                    dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
+                    k+=1 
+            
+            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+                Ropt, Lopt, RMSE, Am, Bm= cmot.segmentalLeastSquare(staticPos, 
+                                                              dynPos)
+                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())    
+                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt                                        
+                            
+                frame=cfr.Frame()
+                frame.setRotation(R)
+                frame.setTranslation(tOri)
+                frame.m_axisX=R[:,0]
+                frame.m_axisY=R[:,1]
+                frame.m_axisZ=R[:,2]
+            
+            seg.getReferential("TF").addMotionFrame(frame)
+
+        # --- Motion of the Anatomical  frame   
+        seg.anatomicalFrame.motion=[]
+        for i in range(0,aqui.GetPointFrameNumber()):
+            ptOrigin=aqui.GetPoint(str(dictAnat["Left Foot"]['labels'][3])).GetValues()[i,:]
+            #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
+            R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
+            frame=cfr.Frame() 
+            frame.update(R,ptOrigin)
+            seg.anatomicalFrame.addMotionFrame(frame)
+            
+        # remove AJC from list of tracking markers
+        if "LAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LAJC")
+            
+
+    def _rightFoot_motion_optimize(self,aqui, dictRef,dictAnat, motionMethod):
+    
+        seg=self.getSegment("Right Foot")
+
+        #  --- add RAJC if marker list < 2  - check presence of tracking markers in the acquisition
+        if seg.m_tracking_markers != []:
+            if len(seg.m_tracking_markers)==2: 
+                if "RAJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("RAJC")
+                    logging.debug("RAJC added to tracking marker list")
+
+        # --- Motion of the Technical frame
+        seg.getReferential("TF").motion =[]
+
+        # part 1: get global location in Static
+        if seg.m_tracking_markers != []: # work with tracking markers
+            staticPos = np.zeros((len(seg.m_tracking_markers),3))
+            i=0            
+            for label in seg.m_tracking_markers:
+                staticPos[i,:] = seg.getReferential("TF").static.getNode_byLabel(label).m_global
+                i+=1                
+            
+        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
+        for i in range(0,aqui.GetPointFrameNumber()):
+            
+            if seg.m_tracking_markers != []: # work with traking markers 
+                dynPos = np.zeros((len(seg.m_tracking_markers),3)) # use 
+                k=0            
+                for label in seg.m_tracking_markers:
+                    dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
+                    k+=1 
+            
+            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+                Ropt, Lopt, RMSE, Am, Bm= cmot.segmentalLeastSquare(staticPos, 
+                                                              dynPos)
+                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())    
+                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt                                        
+                            
+                frame=cfr.Frame()
+                frame.setRotation(R)
+                frame.setTranslation(tOri)
+                frame.m_axisX=R[:,0]
+                frame.m_axisY=R[:,1]
+                frame.m_axisZ=R[:,2]
+            
+            seg.getReferential("TF").addMotionFrame(frame)
+
+        # --- Motion of the Anatomical  frame   
+        seg.anatomicalFrame.motion=[]
+        for i in range(0,aqui.GetPointFrameNumber()):
+            ptOrigin=aqui.GetPoint(str(dictAnat["Right Foot"]['labels'][3])).GetValues()[i,:]
+            #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
+            R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
+            frame=cfr.Frame() 
+            frame.update(R,ptOrigin)
+            seg.anatomicalFrame.addMotionFrame(frame)
+
+        # remove AJC from list of tracking markers
+        if "RAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RAJC")
 
 
     # ---- tools ----
@@ -4143,6 +4282,60 @@ class CGM1LowerLimbs(CGM):
                    btkTools.smartAppendPoint(acq,marker+suffix[1],markerTrajectoryY,PointType=btk.btkPoint.Marker, desc="")            
                    btkTools.smartAppendPoint(acq,marker+suffix[2],markerTrajectoryZ,PointType=btk.btkPoint.Marker, desc="")  
         
+    # --- opensim --------
+    def opensimTrackingMarkers(self):
+
+        out={}
+        for segIt in self.m_segmentCollection:
+            if "Proximal" not in segIt.name:
+                out[segIt.name] = segIt.m_tracking_markers 
+        
+        return out
+
+    def opensimGeometry(self):
+        """
+        TODO require : joint name from opensim -> find alternative
+        
+        rather a class method than a method instance
+        """
+        
+        out={}
+        out["hip_r"]= {"joint label":"RHJC", "proximal segment label":"Pelvis", "distal segment label":"Right Thigh" }
+        out["knee_r"]= {"joint label":"RKJC", "proximal segment label":"Right Thigh", "distal segment label":"Right Shank" }
+        out["ankle_r"]= {"joint label":"RAJC", "proximal segment label":"Right Shank", "distal segment label":"Right Foot" }        
+        #out["mtp_r"]=       
+
+
+        out["hip_l"]= {"joint label":"LHJC", "proximal segment label":"Pelvis", "distal segment label":"Left Thigh" }
+        out["knee_l"]= {"joint label":"LKJC", "proximal segment label":"Left Thigh", "distal segment label":"Left Shank" }
+        out["ankle_l"]= {"joint label":"LAJC", "proximal segment label":"Left Shank", "distal segment label":"Left Foot" }        
+        #out["mtp_l"]=       
+
+        return out
+        
+    def opensimIkTask(self):
+        out={}
+        out={"LASI":100,
+             "RASI":100,
+             "LPSI":100,
+             "RPSI":100,
+             "RTHI":100,
+             "RKNE":100,
+             "RTIB":100,
+             "RANK":100,
+             "RHEE":100,
+             "RTOE":100,
+             "LTHI":100,                
+             "LKNE":100,
+             "LTIB":100,
+             "LANK":100,
+             "LHEE":100,
+             "LTOE":100,             
+             }
+        
+        return out
+
+
 
     # ----- vicon API -------
     def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):

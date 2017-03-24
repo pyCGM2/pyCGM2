@@ -23,9 +23,9 @@ def setDescription(nodeLabel):
         return "kad"
     elif "sara" in nodeLabel:
         return "sara"
-    elif "hara" in nodeLabel:
+    elif "Hara" in nodeLabel:
         return "hara"        
-    elif "har" in nodeLabel:
+    elif "Harr" in nodeLabel:
         return "har"
     elif "mid" in nodeLabel:
         return "mid"
@@ -917,7 +917,9 @@ class AnkleCalibrationDecorator(DecoratorModel):
 
             # add node            
             self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
-            self.model.getSegment("Left Foot").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
+
+            if repr(self.model) == "LowerLimb CGM1":            
+                self.model.getSegment("Left Foot").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
             # 
             btkTools.smartAppendPoint(acq,"LAJC_MID",LAJCvalues, desc="MID")             
              
@@ -943,7 +945,8 @@ class AnkleCalibrationDecorator(DecoratorModel):
 
 
             self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
-            self.model.getSegment("Right Foot").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
+            if repr(self.model) == "LowerLimb CGM1":            
+                self.model.getSegment("Right Foot").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
 
             btkTools.smartAppendPoint(acq,"RAJC_MID",RAJCvalues, desc="MID")             
 

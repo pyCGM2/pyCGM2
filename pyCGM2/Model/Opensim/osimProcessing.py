@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue May 17 14:00:12 2016
-
-@author: aaa34169
-"""
 import opensim 
 import numpy as np
 import btk
@@ -15,9 +10,13 @@ R_OSIM_CGM = {"Pelvis" : np.array([[1,0,0],[0,0,1],[0,-1,0]]) ,
               "Left Shank" : np.array([[1,0,0],[0,0,1],[0,-1,0]]),
               "Right Thigh" : np.array([[1,0,0],[0,0,1],[0,-1,0]]),
               "Right Shank" : np.array([[1,0,0],[0,0,1],[0,-1,0]]),
+              "Left Foot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
+              "Right Foot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
               "Right Hindfoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
               "Right Forefoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]])
               }
+              
+
 
 
 def globalTransformationLabToOsim(acq,R_LAB_OSIM):
@@ -112,8 +111,6 @@ class opensimModel(object):
     
 
     def __init__(self,osimFile,cgmModel,):
-        """Constructor 
-        """
         self.m_osimFile = osimFile
         
         
@@ -202,10 +199,7 @@ class opensimModel(object):
         
 class opensimKinematicFitting(object):
 
-    #def __init__(self,osimModel,ikTool):    
     def __init__(self,osimModel,ikToolFiles):
-        """Constructor 
-        """
         self.m_model = osimModel
 
         ikTool =  opensim.InverseKinematicsTool(ikToolFiles)         

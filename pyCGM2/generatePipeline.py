@@ -163,3 +163,29 @@ def pipeline_pyCGM2_CGM2_1_Fitting(myAppFolder_path,userAppData_path):
     if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_1-Fitting.Pipeline"):
         with open(userAppData_path + "pyCGM2-CGM2_1-Fitting.Pipeline", "w") as text_file:
             text_file.write(content_new)      
+
+#-----------------------CGM 2.2------------------------------------------------            
+def pipeline_pyCGM2_CGM2_2_Calibration(myAppFolder_path,userAppData_path):
+   
+    content = string.replace(CALIBRATION_CONTENT, 'iMODEL', "CGM2_2")
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+    
+    content_new = string.replace(content, 'PATH_APPS', myAppFolder_path_slash[:-1])
+
+    if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_2-Calibration.Pipeline"):
+        with open(userAppData_path + "pyCGM2-CGM2_2-Calibration.Pipeline", "w") as text_file:
+            text_file.write(content_new)
+
+    
+            
+def pipeline_pyCGM2_CGM2_2_Fitting(myAppFolder_path,userAppData_path):
+
+       
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+    
+    content = string.replace(FITTING_CONTENT, 'iMODEL', "CGM2_2")
+    content_new = string.replace(content, 'PATH_APPS', myAppFolder_path_slash[:-1])
+    
+    if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_2-Fitting.Pipeline"):
+        with open(userAppData_path + "pyCGM2-CGM2_2-Fitting.Pipeline", "w") as text_file:
+            text_file.write(content_new)  

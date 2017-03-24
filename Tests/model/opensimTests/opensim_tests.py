@@ -18,7 +18,7 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
-from pyCGM2.Model.CGM2 import cgm2, modelFilters, modelDecorator
+from pyCGM2.Model.CGM2 import cgm2Julie, modelFilters, modelDecorator
 from pyCGM2.Model.Opensim import osimProcessing,opensimFilters
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Math import numeric
@@ -56,7 +56,7 @@ class CGM2_openSimTest():
     @classmethod
     def kinematicFitting_oneFile_cgmProcedure(cls):  
         
-        DATA_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM2\\LowerLimb\\subject10_S1A1_julieDataSet_noModelOutputs\\"
+        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\LowerLimb\\subject10_S1A1_julieDataSet_noModelOutputs\\"
         
         config=dict()  
         config["static"] = "StaticR010S1A1.c3d"
@@ -67,13 +67,13 @@ class CGM2_openSimTest():
                              "R010S1A1Gait007.c3d",
                              "R010S1A1Gait010.c3d"] 
                              
-        configMP = {"mass" : 64.0 ,
-                "leftLegLength" : 865.0,
-                "rightLegLength" : 855.0,
-                "leftKneeWidth" : 100.0,
-                "rightKneeWidth" : 101.0,
-                "leftAnkleWidth" : 69.0,
-                "rightAnkleWidth" : 69.0}    
+        configMP = {"Bodymass" : 64.0 ,
+                "LeftLegLength" : 865.0,
+                "RightLegLength" : 855.0,
+                "LeftKneeWidth" : 100.0,
+                "RightKneeWidth" : 101.0,
+                "LeftAnkleWidth" : 69.0,
+                "RightAnkleWidth" : 69.0}    
     
         requiredMarkers= ["LASI", "RASI","LPSI", "RPSI", "RTHIAP", "RTHIAD", "RTHI", "RKNE", "RSHN","RTIAP", "RTIB", "RANK", "RHEE", "RTOE","RCUN","RD1M","RD5M" ]  
     
@@ -81,26 +81,26 @@ class CGM2_openSimTest():
         acqStatic=btkTools.smartReader(DATA_PATH+config["static"])
 
         # model    
-        model=cgm2.CGM2ModelInf()
+        model=cgm2Julie.CGM2ModelInf()
         model.configure()
         markerDiameter=14          
                                     
                                     
         mp={
-        'mass'   : configMP["mass"],                
-        'leftLegLength' : configMP["leftLegLength"],
-        'rightLegLength' : configMP["rightLegLength"] ,
-        'leftKneeWidth' : configMP["leftKneeWidth"],
-        'rightKneeWidth' : configMP["rightKneeWidth"],
-        'leftAnkleWidth' : configMP["leftAnkleWidth"],
-        'rightAnkleWidth' : configMP["rightAnkleWidth"],       
+        'Bodymass'   : configMP["Bodymass"],                
+        'LeftLegLength' : configMP["LeftLegLength"],
+        'RightLegLength' : configMP["RightLegLength"] ,
+        'LeftKneeWidth' : configMP["LeftKneeWidth"],
+        'RightKneeWidth' : configMP["RightKneeWidth"],
+        'LeftAnkleWidth' : configMP["LeftAnkleWidth"],
+        'RightAnkleWidth' : configMP["RightAnkleWidth"],       
         }  
                                     
          #offset 2ndToe Joint
         toe = acqStatic.GetPoint("RTOE").GetValues()[:,:].mean(axis=0)
         mp["rightToeOffset"] =  (toe[2]-markerDiameter/2.0)/2.0
                                     
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         # -----------CGM STATIC CALIBRATION--------------------
                                                                    
@@ -149,9 +149,9 @@ class CGM2_openSimTest():
     
         # ------- OPENSIM IK --------------------------------------
         cgmprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
-        markersetFile = pyCGM2.pyCGM2_CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-markerset.xml"
+        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-markerset.xml"
 
-        osimfile = pyCGM2.pyCGM2_CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-model.osim"    
+        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-model.osim"    
 
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -161,15 +161,16 @@ class CGM2_openSimTest():
         fittingOsim = oscf.build()
     
         filename = config["dynamicTrial"][0]
-        cgmMotionProcedure = opensimFilters.CgmOpensimReconstructionProcedure(model)
+        cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model)
+        cgmFittingProcedure.updateMarkerWeight("LASI",100)
         
-        iksetupFile = pyCGM2.pyCGM2_CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\ikSetUp_template.xml"
+        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\ikSetUp_template.xml"
         
-        osrf = opensimFilters.opensimReconstructionFilter(iksetupFile, 
+        osrf = opensimFilters.opensimFittingFilter(iksetupFile, 
                                                           fittingOsim, 
-                                                          cgmMotionProcedure,
+                                                          cgmFittingProcedure,
                                                           DATA_PATH )
-        acqIK = osrf.reconstruct(acqGait,str(DATA_PATH + filename ))
+        acqIK = osrf.run(acqGait,str(DATA_PATH + filename ))
     
         # -------- NEW MOTION FILTER ON IK MARKERS ------------------
         
@@ -191,7 +192,7 @@ class CGM2_openSimTest():
     @classmethod
     def kinematicFitting_oneFile_generalProcedure(cls):  
         
-        DATA_PATH = pyCGM2.pyCGM2_CONFIG.TEST_DATA_PATH + "CGM2\\LowerLimb\\subject10_S1A1_julieDataSet_noModelOutputs\\"
+        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\LowerLimb\\subject10_S1A1_julieDataSet_noModelOutputs\\"
         
         config=dict()  
         config["static"] = "StaticR010S1A1.c3d"
@@ -202,13 +203,13 @@ class CGM2_openSimTest():
                              "R010S1A1Gait007.c3d",
                              "R010S1A1Gait010.c3d"] 
                              
-        configMP = {"mass" : 64.0 ,
-                "leftLegLength" : 865.0,
-                "rightLegLength" : 855.0,
-                "leftKneeWidth" : 100.0,
-                "rightKneeWidth" : 101.0,
-                "leftAnkleWidth" : 69.0,
-                "rightAnkleWidth" : 69.0}    
+        configMP = {"Bodymass" : 64.0 ,
+                "LeftLegLength" : 865.0,
+                "RightLegLength" : 855.0,
+                "LeftKneeWidth" : 100.0,
+                "RightKneeWidth" : 101.0,
+                "LeftAnkleWidth" : 69.0,
+                "RightAnkleWidth" : 69.0}     
     
         requiredMarkers= ["LASI", "RASI","LPSI", "RPSI", "RTHIAP", "RTHIAD", "RTHI", "RKNE", "RSHN","RTIAP", "RTIB", "RANK", "RHEE", "RTOE","RCUN","RD1M","RD5M" ]  
     
@@ -216,26 +217,26 @@ class CGM2_openSimTest():
         acqStatic=btkTools.smartReader(DATA_PATH+config["static"])
 
         # model    
-        model=cgm2.CGM2ModelInf()
+        model=cgm2Julie.CGM2ModelInf()
         model.configure()
         markerDiameter=14          
                                     
                                     
         mp={
-        'mass'   : configMP["mass"],                
-        'leftLegLength' : configMP["leftLegLength"],
-        'rightLegLength' : configMP["rightLegLength"] ,
-        'leftKneeWidth' : configMP["leftKneeWidth"],
-        'rightKneeWidth' : configMP["rightKneeWidth"],
-        'leftAnkleWidth' : configMP["leftAnkleWidth"],
-        'rightAnkleWidth' : configMP["rightAnkleWidth"],       
-        }  
+        'Bodymass'   : configMP["Bodymass"],                
+        'LeftLegLength' : configMP["LeftLegLength"],
+        'RightLegLength' : configMP["RightLegLength"] ,
+        'LeftKneeWidth' : configMP["LeftKneeWidth"],
+        'RightKneeWidth' : configMP["RightKneeWidth"],
+        'LeftAnkleWidth' : configMP["LeftAnkleWidth"],
+        'RightAnkleWidth' : configMP["RightAnkleWidth"],       
+        } 
                                     
          #offset 2ndToe Joint
         toe = acqStatic.GetPoint("RTOE").GetValues()[:,:].mean(axis=0)
         mp["rightToeOffset"] =  (toe[2]-markerDiameter/2.0)/2.0
                                     
-        model.addAnthropoInputParameter(mp)
+        model.addAnthropoInputParameters(mp)
                                     
         # -----------CGM STATIC CALIBRATION--------------------
                                                                    
@@ -283,7 +284,7 @@ class CGM2_openSimTest():
     
     
         # ------- OPENSIM IK --------------------------------------
-        generalprocedure = opensimFilters.GeneralOpensimCalibrationProcedures()
+        generalprocedure = opensimFilters.GeneralOpensimCalibrationProcedure()
         generalprocedure.setMarkers("Pelvis", ["LASI","RASI","LPSI","RPSI"])
         generalprocedure.setMarkers("Right Thigh", ["RKNE","RTHI","RTHIAP","RTHIAD"])
         generalprocedure.setMarkers("Right Shank", ["RANK","RTIB","RSHN","RTIAP"])
@@ -295,8 +296,8 @@ class CGM2_openSimTest():
         generalprocedure.setGeometry("ankle_r","RAJC","Right Shank","Right Hindfoot")
         generalprocedure.setGeometry("mtp_r","RvCUN","Right Hindfoot","Right Forefoot")
     
-        osimfile = pyCGM2.pyCGM2_CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-model.osim"    
-        markersetFile = pyCGM2.pyCGM2_CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-markerset.xml"
+        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-model.osim"    
+        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-markerset.xml"
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
                                                 model,
@@ -305,32 +306,32 @@ class CGM2_openSimTest():
         fittingOsim = oscf.build()
     
         filename = config["dynamicTrial"][0]
-        generalMotionProcedure = opensimFilters.GeneralOpensimReconstructionProcedure()
-        generalMotionProcedure.setIkTags("LASI",100)
-        generalMotionProcedure.setIkTags("RASI",100)
-        generalMotionProcedure.setIkTags("LPSI",100)
-        generalMotionProcedure.setIkTags("RPSI",100)
-        generalMotionProcedure.setIkTags("LASI",100)
-        generalMotionProcedure.setIkTags("RTHI",100)
-        generalMotionProcedure.setIkTags("RTHIAP",100)
-        generalMotionProcedure.setIkTags("RTHIAD",100)
-        generalMotionProcedure.setIkTags("RKNE",100)
-        generalMotionProcedure.setIkTags("RTIB",100)
-        generalMotionProcedure.setIkTags("RTIAP",100)
-        generalMotionProcedure.setIkTags("RSHN",100)
-        generalMotionProcedure.setIkTags("RANK",100)
-        generalMotionProcedure.setIkTags("RHEE",100)
-        generalMotionProcedure.setIkTags("RCUN",100)
-        generalMotionProcedure.setIkTags("RD1M",100)
-        generalMotionProcedure.setIkTags("RD5M",100)
+        generalMotionProcedure = opensimFilters.GeneralOpensimFittingProcedure()
+        generalMotionProcedure.setMarkerWeight("LASI",100)
+        generalMotionProcedure.setMarkerWeight("RASI",100)
+        generalMotionProcedure.setMarkerWeight("LPSI",100)
+        generalMotionProcedure.setMarkerWeight("RPSI",100)
+        generalMotionProcedure.setMarkerWeight("LASI",100)
+        generalMotionProcedure.setMarkerWeight("RTHI",100)
+        generalMotionProcedure.setMarkerWeight("RTHIAP",100)
+        generalMotionProcedure.setMarkerWeight("RTHIAD",100)
+        generalMotionProcedure.setMarkerWeight("RKNE",100)
+        generalMotionProcedure.setMarkerWeight("RTIB",100)
+        generalMotionProcedure.setMarkerWeight("RTIAP",100)
+        generalMotionProcedure.setMarkerWeight("RSHN",100)
+        generalMotionProcedure.setMarkerWeight("RANK",100)
+        generalMotionProcedure.setMarkerWeight("RHEE",100)
+        generalMotionProcedure.setMarkerWeight("RCUN",100)
+        generalMotionProcedure.setMarkerWeight("RD1M",100)
+        generalMotionProcedure.setMarkerWeight("RD5M",100)
         
-        iksetupFile = pyCGM2.pyCGM2_CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\ikSetUp_template.xml"
+        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\ikSetUp_template.xml"
         
-        osrf = opensimFilters.opensimReconstructionFilter(iksetupFile, 
+        osrf = opensimFilters.opensimFittingFilter(iksetupFile, 
                                                           fittingOsim, 
                                                           generalMotionProcedure,
                                                           DATA_PATH )
-        acqIK = osrf.reconstruct(acqGait,str(DATA_PATH + filename ))
+        acqIK = osrf.run(acqGait,str(DATA_PATH + filename ))
     
         # -------- NEW MOTION FILTER ON IK MARKERS ------------------
         
@@ -350,7 +351,7 @@ class CGM2_openSimTest():
 if __name__ == "__main__":
 
     logging.info("######## PROCESS CGM2 ######") 
-    CGM2_openSimTest.kinematicFitting_oneFile_cgmProcedure() 
+    #CGM2_openSimTest.kinematicFitting_oneFile_cgmProcedure() 
     CGM2_openSimTest.kinematicFitting_oneFile_generalProcedure() 
     
         
