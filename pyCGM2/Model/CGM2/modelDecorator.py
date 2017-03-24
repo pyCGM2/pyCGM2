@@ -717,7 +717,10 @@ class KneeCalibrationDecorator(DecoratorModel):
         self.model.decoratedModel = True
         
         LKJCvalues = np.zeros((acq.GetPointFrameNumber(),3)) 
-        RKJCvalues = np.zeros((acq.GetPointFrameNumber(),3))         
+        RKJCvalues = np.zeros((acq.GetPointFrameNumber(),3))     
+        
+        LAJCvalues = np.zeros((acq.GetPointFrameNumber(),3)) 
+        RAJCvalues = np.zeros((acq.GetPointFrameNumber(),3))         
         
         if side=="both" or side=="left":
 
@@ -734,7 +737,12 @@ class KneeCalibrationDecorator(DecoratorModel):
                 v=v/np.linalg.norm(v)
                
                 LKJCvalues[i,:] = LKNE + ((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0)*v
-           
+   
+                 # locate AJC
+                LANK = acq.GetPoint("LANK").GetValues()[i,:]
+                LAJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKNE,beta= 0.0 )
+
+        
             # nodes   
             self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
             self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
@@ -742,6 +750,10 @@ class KneeCalibrationDecorator(DecoratorModel):
             # marker
             btkTools.smartAppendPoint(acq,"LKJC_MID",LKJCvalues, desc="MID")
             
+   
+            
+            # add nodes to referential             
+            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_midKnee",LAJCvalues.mean(axis =0),positionType="Global")
 
 
             
@@ -761,6 +773,10 @@ class KneeCalibrationDecorator(DecoratorModel):
                 v=v/np.linalg.norm(v)
                
                 RKJCvalues[i,:] = RKNE + ((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0)*v
+                
+                # locate AJC
+                RANK = acq.GetPoint("RANK").GetValues()[i,:]
+                RAJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKNE,beta= 0.0 )
 
             # nodes
             self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
@@ -768,10 +784,11 @@ class KneeCalibrationDecorator(DecoratorModel):
             #marker
             btkTools.smartAppendPoint(acq,"RKJC_MID",RKJCvalues, desc="MID")                   
         
+            
+            
+            # add nodes to referential             
+            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_midKnee",RAJCvalues.mean(axis =0),positionType="Global")
         
-        
-        
-
     
     def sara(self,side):    
         """ 
