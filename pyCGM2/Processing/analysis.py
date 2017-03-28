@@ -546,17 +546,17 @@ class AnalysisFilter(object):
         # GPS
         if self.analysis.gps is not None:
             
-           
+            exportTools.buid_df_cycles1_1_onlyContext(self.analysis.gps["Context"], "Gps")
             
 
             df_descriptiveGpsByContext = exportTools.buid_df_descriptiveCycle1_1_onlyContext(self.analysis.gps["Context"], "Gps")
             df_descriptiveGpsOverall = exportTools.buid_df_descriptiveCycle1_1_overall(self.analysis.gps["Overall"],"Gps")
             df_descriptiveGps =  pd.concat([df_descriptiveGpsOverall,df_descriptiveGpsByContext])     
 
-            df_allGpsByContext = exportTools.buid_df_descriptiveCycle1_1_onlyContext(self.analysis.gps["Context"], "Gps")
+            df_allGpsByContext = exportTools.buid_df_cycles1_1_onlyContext(self.analysis.gps["Context"], "Gps")
 
             # add infos
-            for itdf in [df_descriptiveGps,df_allGpsByContext]:
+            for itdf in [df_descriptiveGps,df_descriptiveGpsByContext,df_allGpsByContext]:
                 if modelInfo !=None:         
                     for key,value in modelInfo.items():
                         exportTools.isColumnNameExist( itdf, key)
