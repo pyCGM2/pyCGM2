@@ -2489,7 +2489,7 @@ class CGM1LowerLimbs(CGM):
 
 
         if not pigStaticProcessing:
-            if "useForMotionTest" in options.keys() and options["useForMotionTest"]:
+            if "usePyCGM2_coordinateSystem" in options.keys() and options["usePyCGM2_coordinateSystem"]:
                 self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
                 self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
                 self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
