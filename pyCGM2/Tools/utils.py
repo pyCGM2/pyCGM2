@@ -15,7 +15,20 @@ def getFiles(path, extension, ignore=None):
                 out.append(file)
     
     return out
+
+
+def getC3dFiles(path, text="", ignore=None ):
+
+    out=list()
+    for file in os.listdir(path):
+       if ignore is None:
+           if file.endswith(".c3d"):
+               if text in file:  out.append(file)
+       else:
+           if file.endswith(".c3d") and ignore not in file:
+               if text in file:  out.append(file)
     
+    return out    
     
 def copySessionFolder(folderPath, folder2copy, newFolder):
 
