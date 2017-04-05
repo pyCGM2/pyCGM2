@@ -30,7 +30,7 @@ def getC3dFiles(path, text="", ignore=None ):
     
     return out    
     
-def copySessionFolder(folderPath, folder2copy, newFolder):
+def copySessionFolder(folderPath, folder2copy, newFolder, selectedFiles=None):
 
     if not os.path.isdir(str(folderPath+"\\"+newFolder)):
         os.makedirs(str(folderPath+"\\"+newFolder)) 
@@ -44,7 +44,20 @@ def copySessionFolder(folderPath, folder2copy, newFolder):
 
             shutil.copyfile(src, dst)
         else:
-            src = folderPath+"\\"+folder2copy+"\\" +file
-            dst = folderPath+"\\"+newFolder+"\\" + file            
+            if selectedFiles is None:
+                fileToCopy = file
+ 
+                src = folderPath+"\\"+folder2copy+"\\" +fileToCopy
+                dst = folderPath+"\\"+newFolder+"\\" + fileToCopy            
+        
+                shutil.copyfile(src, dst)
+               
+                
+            else:
+                if file in selectedFiles:
+                    fileToCopy = file
 
-            shutil.copyfile(src, dst)
+                    src = folderPath+"\\"+folder2copy+"\\" +fileToCopy
+                    dst = folderPath+"\\"+newFolder+"\\" + fileToCopy            
+        
+                    shutil.copyfile(src, dst)

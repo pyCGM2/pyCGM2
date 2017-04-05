@@ -143,7 +143,7 @@ if __name__ == "__main__":
             if inputs["Fitting"]["Moment Projection"] == "Distal":
                 momentProjection = pyCGM2Enums.MomentProjection.Distal
             elif inputs["Fitting"]["Moment Projection"] == "Proximal":
-                momentProjection = pyCGM2Enums.MomentProjection.Distal
+                momentProjection = pyCGM2Enums.MomentProjection.Proximal
             elif inputs["Fitting"]["Moment Projection"] == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
             else:
