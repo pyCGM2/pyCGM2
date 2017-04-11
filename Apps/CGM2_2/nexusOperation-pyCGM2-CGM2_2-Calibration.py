@@ -41,7 +41,7 @@ from pyCGM2 import viconInterface
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = False
+    DEBUG = True
 
     parser = argparse.ArgumentParser(description='CGM2.2 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\True equinus\\S01\\CGM2.1\\"
+            DATA_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH +"True equinus\\S01\\CGM2.2\\" 
             calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
