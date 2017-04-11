@@ -1014,7 +1014,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
             angle= np.arccos(np.dot(v2,v1))
         
             print "****** right Tibial Main **********"
-            print np.sign(np.cross(v2,v1)[2])*angle*360.0/(2.0*np.pi)
+            print np.sign(np.cross(v2,v1)[2])*angle*360.0/(2.0*np.pi)        
         
-        
+
 
