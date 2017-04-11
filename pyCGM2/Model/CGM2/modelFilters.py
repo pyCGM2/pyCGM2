@@ -523,10 +523,62 @@ class TrackingMarkerDecompositionFilter(object):
         """
         self.m_model = iModel
         self.m_acq = iAcq
-
+        
+    
 
     def decompose(self):
-         self.m_model.decomposeTrackingMarkers(self.m_acq)
+        """
+           Run decomposition. 
+           - add directionMarker as tracking markers
+           - add nodes to bth Technical and Anatomical CS
+           - decompose tracking marker in the motion trial
+           
+        TODO : revoir les suffix car depende de l orientation des referentiels           
+           
+        """ 
+        for seg in self.m_model.m_segmentCollection: 
+            if  "Proximal" not in seg.name:                   
+                if "Foot" in seg.name:
+                    suffix = ["_supInf", "_medLat", "_proDis"]
+                elif "Pelvis" in seg.name:
+                    suffix = ["_posAnt", "_medLat", "_supInf"] 
+                else:
+                    suffix = ["_posAnt", "_medLat", "_proDis"]
+                            
+                copyTrackingMarkers = list(seg.m_tracking_markers) # copy of list           
+
+                # add direction point as tracking markers and copy node  
+                for marker in copyTrackingMarkers:
+                    globalNodePos = seg.anatomicalFrame.static.getNode_byLabel(marker).m_global
+                    
+                    seg.anatomicalFrame.static.addNode(marker+suffix[0],globalNodePos,positionType="Global")
+                    seg.getReferential("TF").static.addNode(marker+suffix[0],globalNodePos,positionType="Global")
+
+                    seg.anatomicalFrame.static.addNode(marker+suffix[1],globalNodePos,positionType="Global")
+                    seg.getReferential("TF").static.addNode(marker+suffix[1],globalNodePos,positionType="Global")
+
+                    seg.anatomicalFrame.static.addNode(marker+suffix[2],globalNodePos,positionType="Global")
+                    seg.getReferential("TF").static.addNode(marker+suffix[2],globalNodePos,positionType="Global")
+
+                    seg.addTrackingMarkerLabel(str(marker+suffix[0]))
+                    seg.addTrackingMarkerLabel(str(marker+suffix[1]))
+                    seg.addTrackingMarkerLabel(str(marker+suffix[2]))             
+            
+            
+                # decompose tracking marker in the acq 
+                for marker in copyTrackingMarkers:
+
+                    nodeTraj= seg.anatomicalFrame.getNodeTrajectory(marker)   
+                    markersTraj =self.m_acq.GetPoint(marker).GetValues()        
+                    
+                    markerTrajectoryX=np.array( [ markersTraj[:,0], nodeTraj[:,1], nodeTraj[:,2]]).T
+                    markerTrajectoryY=np.array( [ nodeTraj[:,0], markersTraj[:,1], nodeTraj[:,2]]).T
+                    markerTrajectoryZ=np.array( [ nodeTraj[:,0], nodeTraj[:,1], markersTraj[:,2]]).T
+
+                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[0],markerTrajectoryX,PointType=btk.btkPoint.Marker, desc="")            
+                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[1],markerTrajectoryY,PointType=btk.btkPoint.Marker, desc="")            
+                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[2],markerTrajectoryZ,PointType=btk.btkPoint.Marker, desc="")  
+
 
 
 # ----- Joint angles -----
