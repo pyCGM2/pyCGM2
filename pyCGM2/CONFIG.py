@@ -51,6 +51,8 @@ generateFiles.generateCGM1_Settings(PYCGM2_APPDATA_PATH)
 generateFiles.generateCGM1_1_Settings(PYCGM2_APPDATA_PATH)
 generateFiles.generateCGM2_1_Settings(PYCGM2_APPDATA_PATH)
 generateFiles.generateCGM2_2_Settings(PYCGM2_APPDATA_PATH)
+generateFiles.generateCGM2_2_Expert_Settings(PYCGM2_APPDATA_PATH)
+
 
 # pipeline generation
 # cgm1
@@ -65,6 +67,10 @@ generatePipeline.pipeline_pyCGM2_CGM2_1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APP
 # cgm2.2
 generatePipeline.pipeline_pyCGM2_CGM2_2_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
 generatePipeline.pipeline_pyCGM2_CGM2_2_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
+# cgm2.2-Expert
+generatePipeline.pipeline_pyCGM2_CGM2_2_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
+generatePipeline.pipeline_pyCGM2_CGM2_2_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
+
 
 
 

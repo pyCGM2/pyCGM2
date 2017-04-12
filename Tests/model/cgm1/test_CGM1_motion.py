@@ -75,7 +75,7 @@ class CGM1_motionTest():
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useForMotionTest=True)
+                                                 usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
         btkTools.smartWriter(acqGait, "test.c3d")        
@@ -142,7 +142,7 @@ class CGM1_motionTest():
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useForMotionTest=True)
+                                                 usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -246,7 +246,7 @@ class CGM1_motionTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useForMotionTest=True)
+                                                 usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -314,7 +314,7 @@ class CGM1_motionTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useForMotionTest=True)
+                                                 usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -424,7 +424,7 @@ class CGM1_motionTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useForMotionTest=True)
+                                                 usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -491,7 +491,7 @@ class CGM1_motionTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useForMotionTest=True)
+                                                 usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -601,7 +601,7 @@ class CGM1_motionTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useForMotionTest=True)
+                                                 usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -668,7 +668,7 @@ class CGM1_motionTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useForMotionTest=True)
+                                                 usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -777,7 +777,7 @@ class CGM1_motionTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useForMotionTest=True)
+                                                 usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        
@@ -852,7 +852,7 @@ class CGM1_motionTest():
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
-                                                 useForMotionTest=True)
+                                                 usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
         #btkTools.smartWriter(acqGait, "test.c3d")        

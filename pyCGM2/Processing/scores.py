@@ -150,6 +150,8 @@ class CGM1_GPS(object):
                                        
         
         overall_gps_values = np.concatenate((outDict_gps_context["Right"]["values"],outDict_gps_context["Left"]["values"])) 
+        
+
         outDict_gps={'mean':np.array([np.mean(overall_gps_values)]),
                           'std':np.array([np.std(overall_gps_values)]), 
                            'median': np.array([np.median(overall_gps_values)]),

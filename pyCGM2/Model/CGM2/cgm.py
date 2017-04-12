@@ -24,6 +24,8 @@ class CGM(cmb.Model):
         Abstract Class of the Conventional Gait Model
     """
 
+   
+
     PIG_STATIC_ANGLE_LABELS= ["LPelvisAngles","RPelvisAngles",
                               "LHipAngles","RHipAngles",
                               "LKneeAngles","RKneeAngles",
@@ -2472,6 +2474,19 @@ class CGM1LowerLimbs(CGM):
 
 
         if motionMethod == pyCGM2Enums.motionMethod.Sodervisk:
+
+            # ---remove all  direction marker from tracking markers.
+            for seg in self.m_segmentCollection:
+                
+                selectedTrackingMarkers=list()
+    
+                for marker in seg.m_tracking_markers:
+                    if marker in CGM1LowerLimbs.MARKERS :
+                        selectedTrackingMarkers.append(marker)
+                
+                seg.m_tracking_markers= selectedTrackingMarkers
+                
+            
             logging.debug("--- Segmental Least-square motion process ---")
             self._pelvis_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
             self._left_thigh_motion_optimize(aqui, dictRef,dictAnat,motionMethod)
@@ -2489,7 +2504,7 @@ class CGM1LowerLimbs(CGM):
 
 
         if not pigStaticProcessing:
-            if "useForMotionTest" in options.keys() and options["useForMotionTest"]:
+            if "usePyCGM2_coordinateSystem" in options.keys() and options["usePyCGM2_coordinateSystem"]:
                 self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
                 self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
                 self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
@@ -3435,6 +3450,7 @@ class CGM1LowerLimbs(CGM):
                - `dictAnat` (dict) - dictionnary reporting markers and sequence use for building Anatomical coordinate system
         """
         seg=self.getSegment("Pelvis")
+        
 
         #  --- check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -3523,6 +3539,7 @@ class CGM1LowerLimbs(CGM):
 
             btkTools.isPointsExist(aqui,seg.m_tracking_markers)
 
+
         # --- Motion of the Technical frame
         seg.getReferential("TF").motion =[]
 
@@ -3594,6 +3611,7 @@ class CGM1LowerLimbs(CGM):
 
         """
         seg=self.getSegment("Right Thigh")
+        
 
         #  --- add RHJC if list <2 - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -4256,41 +4274,19 @@ class CGM1LowerLimbs(CGM):
 
         return valuesF,valuesM
 
-    # ----- decomposetrackingMarkers -------
-    def decomposeTrackingMarkers(self,acq):
 
-        for seg in self.m_segmentCollection: 
-           print seg.name 
-           if  "Proximal" not in seg.name:                   
-               if "Foot" in seg.name:
-                    suffix = ["sup/inf", "med/lat", "pro/dis"]
-               elif "Pelvis" in seg.name:
-                    suffix = ["pos/ant", "med/lat", "sup/inf"] 
-               else:
-                    suffix = ["pos/ant", "med/lat", "pro/dis"]
-            
-               for marker in seg.m_tracking_markers:
-        
-                   nodeTraj= seg.anatomicalFrame.getNodeTrajectory(marker)            
-                   markersTraj =acq.GetPoint(marker).GetValues()        
-                    
-                   markerTrajectoryX=np.array( [ markersTraj[:,0], nodeTraj[:,1], nodeTraj[:,2]]).T
-                   markerTrajectoryY=np.array( [ nodeTraj[:,0], markersTraj[:,1], nodeTraj[:,2]]).T
-                   markerTrajectoryZ=np.array( [ nodeTraj[:,0], nodeTraj[:,1], markersTraj[:,2]]).T
-
-                   btkTools.smartAppendPoint(acq,marker+suffix[0],markerTrajectoryX,PointType=btk.btkPoint.Marker, desc="")            
-                   btkTools.smartAppendPoint(acq,marker+suffix[1],markerTrajectoryY,PointType=btk.btkPoint.Marker, desc="")            
-                   btkTools.smartAppendPoint(acq,marker+suffix[2],markerTrajectoryZ,PointType=btk.btkPoint.Marker, desc="")  
-        
     # --- opensim --------
     def opensimTrackingMarkers(self):
 
+        
         out={}
         for segIt in self.m_segmentCollection:
             if "Proximal" not in segIt.name:
                 out[segIt.name] = segIt.m_tracking_markers 
         
         return out
+
+        
 
     def opensimGeometry(self):
         """
@@ -4313,25 +4309,97 @@ class CGM1LowerLimbs(CGM):
 
         return out
         
-    def opensimIkTask(self):
+    def opensimIkTask(self,expert=False):
         out={}
-        out={"LASI":100,
-             "RASI":100,
-             "LPSI":100,
-             "RPSI":100,
-             "RTHI":100,
-             "RKNE":100,
-             "RTIB":100,
-             "RANK":100,
-             "RHEE":100,
-             "RTOE":100,
-             "LTHI":100,                
-             "LKNE":100,
-             "LTIB":100,
-             "LANK":100,
-             "LHEE":100,
-             "LTOE":100,             
-             }
+
+        if expert:
+            
+            out={"LASI":100,
+                 "LASI_posAnt":100,
+                 "LASI_medLat":100,
+                 "LASI_supInf":100,
+                 "RASI":100,
+                 "RASI_posAnt":100,
+                 "RASI_medLat":100,
+                 "RASI_supInf":100,
+                 "LPSI":100,
+                 "LPSI_posAnt":100,
+                 "LPSI_medLat":100,
+                 "LPSI_supInf":100,
+                 "RPSI":100,
+                 "RPSI_posAnt":100,
+                 "RPSI_medLat":100,
+                 "RPSI_supInf":100,                 
+
+                 "RTHI":100,
+                 "RTHI_posAnt":100,
+                 "RTHI_medLat":100,
+                 "RTHI_proDis":100,
+                 "RKNE":100,
+                 "RKNE_posAnt":100,
+                 "RKNE_medLat":100,
+                 "RKNE_proDis":100,
+                 "RTIB":100,
+                 "RTIB_posAnt":100,
+                 "RTIB_medLat":100,
+                 "RTIB_proDis":100,
+                 "RANK":100,
+                 "RANK_posAnt":100,
+                 "RANK_medLat":100,
+                 "RANK_proDis":100,
+                 "RHEE":100,
+                 "RHEE_supInf":100,
+                 "RHEE_medLat":100,
+                 "RHEE_proDis":100,
+                 "RTOE":100,
+                 "RTOE_supInf":100,
+                 "RTOE_medLat":100,
+                 "RTOE_proDis":100,
+
+                 "LTHI":100,
+                 "LTHI_posAnt":100,
+                 "LTHI_medLat":100,
+                 "LTHI_proDis":100,
+                 "LKNE":100,
+                 "LKNE_posAnt":100,
+                 "LKNE_medLat":100,
+                 "LKNE_proDis":100,
+                 "LTIB":100,
+                 "LTIB_posAnt":100,
+                 "LTIB_medLat":100,
+                 "LTIB_proDis":100,
+                 "LANK":100,
+                 "LANK_posAnt":100,
+                 "LANK_medLat":100,
+                 "LANK_proDis":100,
+                 "LHEE":100,
+                 "LHEE_supInf":100,
+                 "LHEE_medLat":100,
+                 "LHEE_proDis":100,
+                 "LTOE":100,
+                 "LTOE_supInf":100,
+                 "LTOE_medLat":100,
+                 "LTOE_proDis":100,            
+                 }
+            
+        else:
+            out={"LASI":100,
+                 "RASI":100,
+                 "LPSI":100,
+                 "RPSI":100,
+                 "RTHI":100,
+                 "RKNE":100,
+                 "RTIB":100,
+                 "RANK":100,
+                 "RHEE":100,
+                 "RTOE":100,
+                 "LTHI":100,                
+                 "LKNE":100,
+                 "LTIB":100,
+                 "LANK":100,
+                 "LHEE":100,
+                 "LTOE":100,             
+                 } 
         
         return out
 

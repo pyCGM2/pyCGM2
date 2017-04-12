@@ -6,7 +6,7 @@ import pdb
 import os
 
 
-from pyCGM2.Processing import cycle,analysis
+from pyCGM2.Processing import cycle,analysis,scores
 from pyCGM2.Report import plot,normativeDatabaseProcedure
 from pyCGM2.Tools import trialTools
 
@@ -128,6 +128,15 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
 
     """
 
+    #---- NORMATIVE DATASET
+    #--------------------------------------------------------------------------
+
+    if normativeDataDict["Author"] == "Schwartz2008":
+        chosenModality = normativeDataDict["Modality"]
+        ndp = normativeDatabaseProcedure.Schwartz2008_normativeDataBases(chosenModality)    # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
+    elif normativeDataDict["Author"] == "Pinzone2014":
+        chosenModality = normativeDataDict["Modality"]
+        ndp = normativeDatabaseProcedure.Pinzone2014_normativeDataBases(chosenModality) # modalites : "Center One" ,"Center Two"
 
                              
     #---- PRELIMINARY STAGE
@@ -202,6 +211,12 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
     
+
+    ## --- GPS ----
+    gps =scores.CGM1_GPS()
+    scf = scores.ScoreFilter(gps,analysisFilter.analysis, ndp)
+    scf.compute()
+
     
     # export dataframe
     if DATA_PATH_OUT is None:
@@ -229,15 +244,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     if plotFlag:    
         
         plotBuilder = plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=flag_kinetics, pointLabelSuffix= pointLabelSuffix)
-        
-        if normativeDataDict["Author"] == "Schwartz2008":
-            chosenModality = normativeDataDict["Modality"]
-            plotBuilder.setNormativeDataProcedure(normativeDatabaseProcedure.Schwartz2008_normativeDataBases(chosenModality)) # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
-        elif normativeDataDict["Author"] == "Pinzone2014":
-            chosenModality = normativeDataDict["Modality"]
-            plotBuilder.setNormativeDataProcedure(normativeDatabaseProcedure.Pinzone2014_normativeDataBases(chosenModality)) # modalites : "Center One" ,"Center Two"
-       
-      
+        plotBuilder.setNormativeDataProcedure(ndp)
         plotBuilder.setConsistencyOnly(consistencyOnly)       
        
         # Filter

@@ -17,16 +17,14 @@ def setDescription(nodeLabel):
     """
         return a node description
     """
-
-
     if "kad" in nodeLabel:
         return "kad"
     elif "sara" in nodeLabel:
         return "sara"
     elif "Hara" in nodeLabel:
         return "hara"        
-    elif "Harr" in nodeLabel:
-        return "har"
+    elif "Harrington" in nodeLabel:
+        return "Harrington"
     elif "mid" in nodeLabel:
         return "mid"
     elif "us" in nodeLabel:
@@ -620,31 +618,31 @@ class HipJointCenterDecorator(DecoratorModel):
 
         LHJC_har,RHJC_har=harringtonRegression(self.model.mp,self.model.mp_computed,predictors)
 
-        
         if side == "both":
             
             # add nodes to pelvis            
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_har",LHJC_har, positionType="Local")
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_har",RHJC_har, positionType="Local")
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Harrington",LHJC_har, positionType="Local")
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_Harrington",RHJC_har, positionType="Local")
+
 
             # add nodes Thigh
-            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_har").m_global
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_har",pos_L, positionType="Global")
+            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Harrington").m_global
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Harrington",pos_L, positionType="Global")
 
-            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_har").m_global
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_har",pos_R, positionType="Global")
+            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Harrington").m_global
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Harrington",pos_R, positionType="Global")
 
 
         elif side == "left":
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_har",LHJC_har, positionType="Local")
-            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_har").m_global
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_har",pos_L, positionType="Global")
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Harrington",LHJC_har, positionType="Local")
+            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Harrington").m_global
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Harrington",pos_L, positionType="Global")
 
 
         elif side == "right":
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_har",RHJC_har, positionType="Local")
-            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_har").m_global
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_har",pos_R, positionType="Global")
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_Harrington",RHJC_har, positionType="Local")
+            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Harrington").m_global
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Harrington",pos_R, positionType="Global")
 
     def hara(self, side="both"):    
         """ 
@@ -1014,7 +1012,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
             angle= np.arccos(np.dot(v2,v1))
         
             print "****** right Tibial Main **********"
-            print np.sign(np.cross(v2,v1)[2])*angle*360.0/(2.0*np.pi)
+            print np.sign(np.cross(v2,v1)[2])*angle*360.0/(2.0*np.pi)        
         
-        
+
 
