@@ -32,7 +32,7 @@ import numpy as np
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools,nexusTools
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
+from pyCGM2.Model.CGM2 import cgm,cgm2, modelFilters, modelDecorator
 from pyCGM2.Model.Opensim import opensimFilters
 
 from pyCGM2 import viconInterface
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     plt.close("all")
     DEBUG = False
 
-    parser = argparse.ArgumentParser(description='CGM2.2 Calibration')
+    parser = argparse.ArgumentParser(description='CGM2.3 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH +"True equinus\\S01\\CGM2.2\\" 
+            DATA_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH +"True equinus\\S01\\CGM2.3\\" 
             calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
@@ -76,6 +76,8 @@ if __name__ == "__main__":
 
         # ---btk acquisition---
         acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+        
+        
 
         # check if acq was saved with only one  activated subject
         if acqStatic.GetPoint(0).GetLabel().count(":"):
@@ -97,7 +99,7 @@ if __name__ == "__main__":
         # --------------------pyCGM2 INPUT FILES ------------------------------
 
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_2-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
 
         # info file
         if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
@@ -132,7 +134,7 @@ if __name__ == "__main__":
 
 
         if args.check:
-            pointSuffix="cgm2.2"
+            pointSuffix="cgm2.3"
         else:
             pointSuffix = inputs["Global"]["Point suffix"]
 
@@ -162,10 +164,12 @@ if __name__ == "__main__":
         'RightShankRotation' : NEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
         }
 
+        # --------------------------STATIC FILE WITH TRANSLATORS --------------------------------------
+        acqStatic =  btkTools.applyTranslators(acqStatic,inputs["Translators"])
+
         # --------------------------MODEL--------------------------------------
         # ---definition---
-        model=cgm.CGM1LowerLimbs()
-        model.setCGM1Version("1.1")
+        model=cgm2.CGM2_3LowerLimbs()
         model.configure()
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
@@ -280,7 +284,7 @@ if __name__ == "__main__":
     
             # --- opensim calibration Filter ---
             osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile        
-            markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-markerset.xml" # markerset
+            markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml" # markerset
             cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
         
             oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -291,7 +295,7 @@ if __name__ == "__main__":
             
             
             # --- opensim Fitting Filter ---
-            iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
+            iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml" # ik tool file
     
             cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
             cgmFittingProcedure.updateMarkerWeight("LASI",inputs["Fitting"]["Weight"]["LASI"]) 
@@ -311,6 +315,24 @@ if __name__ == "__main__":
             cgmFittingProcedure.updateMarkerWeight("LHEE",inputs["Fitting"]["Weight"]["LHEE"])
             cgmFittingProcedure.updateMarkerWeight("LTOE",inputs["Fitting"]["Weight"]["LTOE"])
                
+            cgmFittingProcedure.updateMarkerWeight("LTHIAP",inputs["Fitting"]["Weight"]["LTHIAP"])
+            cgmFittingProcedure.updateMarkerWeight("LTHIAD",inputs["Fitting"]["Weight"]["LTHIAD"])
+            cgmFittingProcedure.updateMarkerWeight("LTIBAP",inputs["Fitting"]["Weight"]["LTIBAP"])
+            cgmFittingProcedure.updateMarkerWeight("LTIBAD",inputs["Fitting"]["Weight"]["LTIBAD"])
+            cgmFittingProcedure.updateMarkerWeight("RTHIAP",inputs["Fitting"]["Weight"]["RTHIAP"])
+            cgmFittingProcedure.updateMarkerWeight("RTHIAD",inputs["Fitting"]["Weight"]["RTHIAD"])
+            cgmFittingProcedure.updateMarkerWeight("RTIBAP",inputs["Fitting"]["Weight"]["RTIBAP"])
+            cgmFittingProcedure.updateMarkerWeight("RTIBAD",inputs["Fitting"]["Weight"]["RTIBAD"])
+
+#            cgmFittingProcedure.updateMarkerWeight("LTHL",inputs["Fitting"]["Weight"]["LTHL"])
+#            cgmFittingProcedure.updateMarkerWeight("LTHLD",inputs["Fitting"]["Weight"]["LTHLD"])
+#            cgmFittingProcedure.updateMarkerWeight("LPAT",inputs["Fitting"]["Weight"]["LPAT"])
+#            cgmFittingProcedure.updateMarkerWeight("LTIBL",inputs["Fitting"]["Weight"]["LTIBL"])
+#            cgmFittingProcedure.updateMarkerWeight("RTHL",inputs["Fitting"]["Weight"]["RTHL"])
+#            cgmFittingProcedure.updateMarkerWeight("RTHLD",inputs["Fitting"]["Weight"]["RTHLD"])
+#            cgmFittingProcedure.updateMarkerWeight("RPAT",inputs["Fitting"]["Weight"]["RPAT"])
+#            cgmFittingProcedure.updateMarkerWeight("RTIBL",inputs["Fitting"]["Weight"]["RTIBL"])
+  
             
             osrf = opensimFilters.opensimFittingFilter(iksetupFile, 
                                                               scalingOsim,
@@ -348,7 +370,7 @@ if __name__ == "__main__":
         
 
         # ----------------------SAVE-------------------------------------------
-        modelFile = open(DATA_PATH + subject+"-CGM2_2-pyCGM2.model", "w")
+        modelFile = open(DATA_PATH + subject+"-CGM2_3-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
 

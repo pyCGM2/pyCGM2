@@ -172,7 +172,82 @@ CONTENT_INPUTS_CGM2_2_EXPERT ="""
     }
     """
            
-
+CONTENT_INPUTS_CGM2_3 ="""
+    {  
+      "Global" : {
+        "Marker diameter" : 14,
+        "Point suffix" : ""
+      },
+      "Translators" : {
+            "LASI":"LASI",
+            "RASI":"RASI",
+            "LPSI":"LPSI",
+            "RPSI":"RPSI",
+            "RTHI":"RTHL",
+            "RKNE":"RKNE",
+            "RTHIAP":"RTHAP",
+            "RTHIAD":"RTHAD",
+            "RTIB":"RTIBL",
+            "RANK":"RANK",
+            "RTIBAP":"RTIAP",
+            "RTIBAD":"RTIAD",
+            "RHEE":"RHEE",
+            "RTOE":"RTOE",
+            "LTHI":"LTHL",
+            "LKNE":"LKNE",
+            "LTHIAP":"LTHAP",
+            "LTHIAD":"LTHAD",
+            "LTIB":"LTIBL",
+            "LANK":"LANK",
+            "LTIBAP":"LTIAP",
+            "LTIBAD":"LTIAD",
+            "LHEE":"LHEE",
+            "LTOE":"LTOE"
+            },
+      "Calibration" : {
+        "HJC regression" : "Hara",
+        "Left flat foot" : 1 ,
+        "Right flat foot" : 1 
+      },
+      "Fitting" : {
+        "Moment Projection" : "Proximal",
+        "Weight" :{
+            "LASI":100,
+            "RASI":100,
+            "LPSI":100,
+            "RPSI":100,
+            "RTHI":100,
+            "RKNE":100,
+            "RTHIAP":100,
+            "RTHIAD":100,
+            "RTIB":100,
+            "RANK":100,
+            "RTIBAP":100,
+            "RTIBAD":100,
+            "RHEE":100,
+            "RTOE":100,
+            "LTHI":100,
+            "LKNE":100,
+            "LTHIAP":100,
+            "LTHIAD":100,
+            "LTIB":100,
+            "LANK":100,
+            "LTIBAP":100,
+            "LTIBAD":100,
+            "LHEE":100,
+            "LTOE":100,
+            "RTHL":0,
+            "RTHLD":0,
+            "RPAT":0,
+            "RTIBL":0,
+            "LTHL":0,
+            "LTHLD":0,
+            "LPAT":0,
+            "LTIBL":0
+        }
+      }   
+    }
+    """
 
 
 def generateCGM1_Settings(userAppData_path):
@@ -217,5 +292,14 @@ def generateCGM2_2_Expert_Settings(userAppData_path):
         inputs = json.loads(CONTENT_INPUTS_CGM2_2_EXPERT,object_pairs_hook=OrderedDict)
         
         F = open(str(userAppData_path+"CGM2_2-Expert-pyCGM2.inputs"),"w") 
+        F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
+        F.close() 
+
+def generateCGM2_3_Settings(userAppData_path):
+
+    if not os.path.isfile( userAppData_path + "CGM2_3-pyCGM2.inputs"):    
+        inputs = json.loads(CONTENT_INPUTS_CGM2_3,object_pairs_hook=OrderedDict)
+        
+        F = open(str(userAppData_path+"CGM2_3-pyCGM2.inputs"),"w") 
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()          
