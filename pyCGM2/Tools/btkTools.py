@@ -192,6 +192,53 @@ def applyValidFramesOnOutput(acq,validFrames):
 
              
 # --- Model -----
+
+def applyTranslators(acq, translators):
+    """
+    :note: Difficulty is to prevent c3d with duplicated point label.  
+
+    """
+    acqClone = btk.btkAcquisition.Clone(acq) 
+        
+    markerList = translators.keys()
+    
+    # gather all labels    
+    for it in translators.keys():
+        if it not in markerList:
+            markerList.append(translators[it])
+
+    # remove all points in clone if exist within the former list                     
+    for point in  btk.Iterate(acq.GetPoints()):
+        if point.GetType() == btk.btkPoint.Marker:
+            label = point.GetLabel()
+            if label in markerList:
+                acqClone.RemovePoint(label)
+
+    # add renamed point from translator                    
+    for it in translators.keys():
+       logging.debug("Initial point (%s) renamed (%s)  added into the c3d" %(str(translators[it]), str(it)))
+       smartAppendPoint(acqClone,str(it),acq.GetPoint(str(translators[it])).GetValues(),PointType=btk.btkPoint.Marker) 
+
+
+
+    # add initial point  
+    newlist =  list()
+    for itP in btk.Iterate(acqClone.GetPoints()):
+        if itP.GetType() == btk.btkPoint.Marker:
+            newlist.append(itP.GetLabel())
+            
+    logging.debug("------------------------------------------------------------------------")            
+    for it in translators.keys():
+        if translators[it] not in newlist: 
+            logging.debug("Initial point (%s) added to the new c3d" %(str(translators[it])))  
+            smartAppendPoint(acqClone,str(translators[it] ),acq.GetPoint(str(translators[it])).GetValues(),PointType=btk.btkPoint.Marker) 
+
+
+    return acqClone    
+       
+
+
+
 def findProgressionAxisFromPelvicMarkers(acq,markers):
 
     if not isPointsExist(acq,markers):
