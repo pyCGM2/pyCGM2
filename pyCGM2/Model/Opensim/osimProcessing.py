@@ -260,7 +260,11 @@ class opensimKinematicFitting(object):
         ts =self.m_ikTool.getIKTaskSet()
         index = ts.getIndex(label)
         if index !=-1 : 
-            ts.get(label).setWeight(weight)
+            if weight != 0:
+                ts.get(label).setApply(True)
+                ts.get(label).setWeight(weight)
+            else:
+                ts.get(label).setApply(False)
         else:
             raise Exception("[[pyCGM2]] the label (%s) doesn t exist ")
 
