@@ -160,12 +160,6 @@
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
 					<weight>100</weight>
 				</IKMarkerTask> 
- 				<IKMarkerTask name="LTHL">
-					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
-					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>0</weight>
-				</IKMarkerTask>
                 <IKMarkerTask name="LTHLD">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
 					<apply>true</apply>
@@ -175,18 +169,6 @@
                 <IKMarkerTask name="LPAT">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
 					<apply>false</apply>
-					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>0</weight>
-				</IKMarkerTask>
-                <IKMarkerTask name="LTIBL">
-					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
-					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>0</weight>
-				</IKMarkerTask>
-                <IKMarkerTask name="RTHL">
-					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
 					<weight>0</weight>
 				</IKMarkerTask>
@@ -201,13 +183,7 @@
 					<apply>false</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
 					<weight>0</weight>
-				</IKMarkerTask>
-                <IKMarkerTask name="RTIBL">
-					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
-					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>0</weight>
-				</IKMarkerTask>               
+				</IKMarkerTask>           
 			</objects>
 			<groups />
 		</IKTaskSet>
