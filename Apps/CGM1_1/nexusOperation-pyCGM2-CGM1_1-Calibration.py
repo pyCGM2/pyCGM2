@@ -278,6 +278,10 @@ if __name__ == "__main__":
         
 
         # ----------------------SAVE-------------------------------------------
+        if os.path.isfile(DATA_PATH + subject + "-CGM1_1-pyCGM2.model"):
+            logging.warning("previous model removed")
+            os.remove(DATA_PATH + subject + "-CGM1_1-pyCGM2.model")
+
         modelFile = open(DATA_PATH + subject+"-CGM1_1-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()

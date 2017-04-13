@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\"
     staticFilename = "static.c3d"
-    gaitFilename="gait trial 01.c3d"
+    gaitFilename= "gait trial 01.c3d"
     markerDiameter=14     
     mp={
     'Bodymass'   : 36.9,                
@@ -44,30 +44,30 @@ if __name__ == "__main__":
     CONTENT_INPUTS_CGM2_3 ="""
         {
         "Translators" : {
-            "LASI":"LASI",
-            "RASI":"RASI",
-            "LPSI":"LPSI",
-            "RPSI":"RPSI",
-            "RTHI":"RTHL",
-            "RKNE":"RKNE",
+            "LASI":"",
+            "RASI":"",
+            "LPSI":"",
+            "RPSI":"",
+            "RTHI":"",
+            "RKNE":"",
             "RTHIAP":"RTHAP",
             "RTHIAD":"RTHAD",
             "RTIB":"RTIBL",
-            "RANK":"RANK",
+            "RANK":"",
             "RTIBAP":"RTIAP",
             "RTIBAD":"RTIAD",
-            "RHEE":"RHEE",
-            "RTOE":"RTOE",
+            "RHEE":"",
+            "RTOE":"",
             "LTHI":"LTHL",
-            "LKNE":"LKNE",
+            "LKNE":"",
             "LTHIAP":"LTHAP",
             "LTHIAD":"LTHAD",
             "LTIB":"LTIBL",
-            "LANK":"LANK",
+            "LANK":"",
             "LTIBAP":"LTIAP",
             "LTIBAD":"LTIAD",
-            "LHEE":"LHEE",
-            "LTOE":"LTOE"
+            "LHEE":"",
+            "LTOE":""
             }
         }
       """        

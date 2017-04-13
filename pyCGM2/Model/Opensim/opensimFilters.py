@@ -167,7 +167,7 @@ class opensimCalibrationFilter(object):
         self._osimModel.addMarkerSet(markerSetFile)
         
 
-    def build(self):
+    def build(self,exportOsim=True):
         """
             Build the calibrated opensim model
         """
@@ -185,9 +185,10 @@ class opensimCalibrationFilter(object):
                                                 self.m_procedure.geometry[openSimJointLabel]["distal segment label"], 
                                                 self.m_procedure.geometry[openSimJointLabel]["joint label"], 
                                                 toMeter = self.m_toMeter)
-
+                                             
         self._osimModel.m_model.setName("pyCGM2 calibrated model")
         
+        if exportOsim: self.exportXml("scaledModel.osim")
         return self._osimModel
         
         
@@ -219,14 +220,15 @@ class opensimFittingFilter(object):
         self.m_procedure = ikTagProcedure
         
         self.accuracy = accuracy
-        self.opensimOutputDir=dataDir
-        
 
+        
+        self.opensimOutputDir = dataDir if dataDir[-1:] =="\\" else str(dataDir+"\\")
+        
         self._osimIK = osimProcessing.opensimKinematicFitting(self.m_calibratedOsim.m_model,self.m_ikToolFile)
         self._osimIK.setAccuracy(self.accuracy)
         self._osimIK.setResultsDirectory(self.opensimOutputDir)
     
-    def run(self,acqMotion, acqMotionFilename):
+    def run(self,acqMotion, acqMotionFilename,exportSetUp=True):
         """
             Run kinematic fitting
             :Parameters:
@@ -251,25 +253,31 @@ class opensimFittingFilter(object):
 
         R_LAB_OSIM = osimProcessing.setGlobalTransormation_lab_osim(progressionAxis,forwardProgression) 
         self._osimIK.config(R_LAB_OSIM, acqMotion_forIK, acqMotionFilename )
+        
+        if exportSetUp: self.exportXml("scaledModel-ikSetUp.xml")
+        
+        
         self._osimIK.run()
         
         # --- gernerate acq with rigid markers
         acqMotionFinal = btk.btkAcquisition.Clone(acqMotion)
         for marker in self.m_procedure.ikTags.keys():
-            values =osimProcessing.sto2pointValues(self.opensimOutputDir + "ik_model_marker_locations.sto",marker,R_LAB_OSIM)
-            lenOsim  = len(values)
-            lenc3d  = acqMotion.GetPoint(marker).GetFrameNumber()
-            if lenOsim < lenc3d: 
-                logging.warning(" size osim (%i) inferior to c3d (%i)" % (lenOsim,lenc3d))
-                values2 = np.zeros((lenc3d,3))
-                values2[0:lenOsim,:]=values
-                values2[lenOsim:lenc3d,:]=acqMotion.GetPoint(marker).GetValues()[lenOsim:lenc3d,:]
+            if self.m_procedure.ikTags[marker] != 0:
+                values =osimProcessing.sto2pointValues(self.opensimOutputDir + "ik_model_marker_locations.sto",marker,R_LAB_OSIM)
+                lenOsim  = len(values)
     
-                btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" ) # new acq with marker overwrited
-                btkTools.smartAppendPoint(acqMotionFinal,marker, values2, desc= "kinematic fitting" ) # new acq with marker overwrited
-            else:
-                btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" ) # measured marker suffix with _m
-                btkTools.smartAppendPoint(acqMotionFinal,marker, values, desc= "kinematic fitting" ) # new acq with marker overwrited    
+                lenc3d  = acqMotion.GetPoint(marker).GetFrameNumber()
+                if lenOsim < lenc3d: 
+                    logging.warning(" size osim (%i) inferior to c3d (%i)" % (lenOsim,lenc3d))
+                    values2 = np.zeros((lenc3d,3))
+                    values2[0:lenOsim,:]=values
+                    values2[lenOsim:lenc3d,:]=acqMotion.GetPoint(marker).GetValues()[lenOsim:lenc3d,:]
+        
+                    btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" ) # new acq with marker overwrited
+                    btkTools.smartAppendPoint(acqMotionFinal,marker, values2, desc= "kinematic fitting" ) # new acq with marker overwrited
+                else:
+                    btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" ) # measured marker suffix with _m
+                    btkTools.smartAppendPoint(acqMotionFinal,marker, values, desc= "kinematic fitting" ) # new acq with marker overwrited    
         
         return acqMotionFinal
         

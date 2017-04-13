@@ -195,15 +195,7 @@
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
 				<fixed>false</fixed>
 			</Marker>
-            <Marker name="LTHL">
-				<!--Body segment in the model on which the marker resides.-->
-				<body>femur_l</body>
-				<!--Location of a marker on the body segment.-->
-				<location> 0.0113673 -0.207466 -0.0554234</location>
-				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
-				<fixed>false</fixed>
-			</Marker>
-			<Marker name="LTHLD">
+            <Marker name="LTHLD">
 				<!--Body segment in the model on which the marker resides.-->
 				<body>femur_l</body>
 				<!--Location of a marker on the body segment.-->
@@ -219,23 +211,7 @@
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
 				<fixed>false</fixed>
 			</Marker>
-            <Marker name="LTIBL">
-				<!--Body segment in the model on which the marker resides.-->
-				<body>tibia_l</body>
-				<!--Location of a marker on the body segment.-->
-				<location> -0.00899724 -0.200308 -0.0490137</location>
-				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
-				<fixed>false</fixed>
-			</Marker>
-            <Marker name="RTHL">
-				<!--Body segment in the model on which the marker resides.-->
-				<body>femur_r</body>
-				<!--Location of a marker on the body segment.-->
-				<location> 0.0167799 -0.21729 0.0555487</location>
-				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
-				<fixed>false</fixed>
-			</Marker>
-			<Marker name="RTHLD">
+            <Marker name="RTHLD">
 				<!--Body segment in the model on which the marker resides.-->
 				<body>femur_r</body>
 				<!--Location of a marker on the body segment.-->
@@ -248,14 +224,6 @@
 				<body>femur_r</body>
 				<!--Location of a marker on the body segment.-->
 				<location> 0.0422081 -0.39479 0.00836546</location>
-				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
-				<fixed>false</fixed>
-			</Marker>
-			<Marker name="RTIBL">
-				<!--Body segment in the model on which the marker resides.-->
-				<body>tibia_r</body>
-				<!--Location of a marker on the body segment.-->
-				<location> -0.00899724 -0.200308 -0.0490137</location>
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
 				<fixed>false</fixed>
 			</Marker>

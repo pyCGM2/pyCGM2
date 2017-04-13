@@ -27,30 +27,30 @@ class translator_tests():
         CONTENT_INPUTS_CGM2_3 ="""
             {  
               "Translators" : {
-                    "LASI":"LASI",
-                    "RASI":"RASI",
-                    "LPSI":"LPSI",
-                    "RPSI":"RPSI",
+                    "LASI":"",
+                    "RASI":"",
+                    "LPSI":"",
+                    "RPSI":"",
                     "RTHI":"RTHL",
-                    "RKNE":"RKNE",
+                    "RKNE":"",
                     "RTHIAP":"RTHAP",
                     "RTHIAD":"RTHAD",
                     "RTIB":"RTIBL",
                     "RANK":"RANK",
-                    "RTIAP":"RTIAP",
-                    "RTIAD":"RTIAD",
-                    "RHEE":"RHEE",
-                    "RTOE":"RTOE",
+                    "RTIBAP":"RTIAP",
+                    "RTIBAD":"RTIAD",
+                    "RHEE":"",
+                    "RTOE":"",
                     "LTHI":"LTHL",
-                    "LKNE":"LKNE",
+                    "LKNE":"",
                     "LTHIAP":"LTHAP",
                     "LTHIAD":"LTHAD",
                     "LTIB":"LTIBL",
-                    "LANK":"LANK",
-                    "LTIAP":"LTIAP",
-                    "LTIAD":"LTIAD",
-                    "LHEE":"LHEE",
-                    "LTOE":"LTOE"
+                    "LANK":"",
+                    "LTIBAP":"LTIAP",
+                    "LTIBAD":"LTIAD",
+                    "LHEE":"",
+                    "LTOE":""
               }  
             }
             """

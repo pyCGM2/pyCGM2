@@ -43,7 +43,7 @@ if __name__ == "__main__":
     plt.close("all")
     DEBUG = False
 
-    parser = argparse.ArgumentParser(description='CGM2.3 Calibration')
+    parser = argparse.ArgumentParser(description='CGM2.3-Expert Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
@@ -62,9 +62,11 @@ if __name__ == "__main__":
 
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH +"True equinus\\S01\\CGM2.3\\" 
-            calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH + "True equinus\\S01\\CGM2.3Expert\\"
+            calibrateFilenameLabelledNoExt = "static" 
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
+
+            args.ik=False
 
         else:
             DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
@@ -99,7 +101,7 @@ if __name__ == "__main__":
         # --------------------pyCGM2 INPUT FILES ------------------------------
 
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-Expert-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
 
         # info file
         if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
@@ -134,7 +136,7 @@ if __name__ == "__main__":
 
 
         if args.check:
-            pointSuffix="cgm2.3"
+            pointSuffix="cgm2.3-Expert"
         else:
             pointSuffix = inputs["Global"]["Point suffix"]
 
@@ -172,6 +174,9 @@ if __name__ == "__main__":
         model=cgm2.CGM2_3LowerLimbs()
         model.configure()
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
+
+        
+
 
         # ---check marker set used----
         staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
@@ -278,13 +283,19 @@ if __name__ == "__main__":
 
         modMotion.compute()
 
+        
 
         if args.ik:
+            
+            # ---Marker decomp filter----           
+            mtf = modelFilters.TrackingMarkerDecompositionFilter(model,acqStatic)
+            mtf.decompose()             
+            
             #                        ---OPENSIM IK---
     
             # --- opensim calibration Filter ---
             osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile        
-            markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml" # markerset
+            markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset - expert.xml" # markerset
             cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
         
             oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -295,9 +306,9 @@ if __name__ == "__main__":
             
             
             # --- opensim Fitting Filter ---
-            iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml" # ik tool file
+            iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-expert-ikSetUp_template.xml" # ik tool file
     
-            cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
+            cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model,expertMode = True) # procedure
             cgmFittingProcedure.updateMarkerWeight("LASI",inputs["Fitting"]["Weight"]["LASI"]) 
             cgmFittingProcedure.updateMarkerWeight("RASI",inputs["Fitting"]["Weight"]["RASI"])
             cgmFittingProcedure.updateMarkerWeight("LPSI",inputs["Fitting"]["Weight"]["LPSI"])
@@ -315,24 +326,126 @@ if __name__ == "__main__":
             cgmFittingProcedure.updateMarkerWeight("LHEE",inputs["Fitting"]["Weight"]["LHEE"])
             cgmFittingProcedure.updateMarkerWeight("LTOE",inputs["Fitting"]["Weight"]["LTOE"])
                
-            cgmFittingProcedure.updateMarkerWeight("LTHIAP",inputs["Fitting"]["Weight"]["LTHIAP"])
-            cgmFittingProcedure.updateMarkerWeight("LTHIAD",inputs["Fitting"]["Weight"]["LTHIAD"])
-            cgmFittingProcedure.updateMarkerWeight("LTIBAP",inputs["Fitting"]["Weight"]["LTIBAP"])
-            cgmFittingProcedure.updateMarkerWeight("LTIBAD",inputs["Fitting"]["Weight"]["LTIBAD"])
-            cgmFittingProcedure.updateMarkerWeight("RTHIAP",inputs["Fitting"]["Weight"]["RTHIAP"])
-            cgmFittingProcedure.updateMarkerWeight("RTHIAD",inputs["Fitting"]["Weight"]["RTHIAD"])
-            cgmFittingProcedure.updateMarkerWeight("RTIBAP",inputs["Fitting"]["Weight"]["RTIBAP"])
-            cgmFittingProcedure.updateMarkerWeight("RTIBAD",inputs["Fitting"]["Weight"]["RTIBAD"])
+            cgmFittingProcedure.updateMarkerWeight("LASI_posAnt",inputs["Fitting"]["Weight"]["LASI_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("LASI_medLat",inputs["Fitting"]["Weight"]["LASI_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LASI_supInf",inputs["Fitting"]["Weight"]["LASI_supInf"])
 
-#            cgmFittingProcedure.updateMarkerWeight("LTHL",inputs["Fitting"]["Weight"]["LTHL"])
-#            cgmFittingProcedure.updateMarkerWeight("LTHLD",inputs["Fitting"]["Weight"]["LTHLD"])
+            cgmFittingProcedure.updateMarkerWeight("RASI_posAnt",inputs["Fitting"]["Weight"]["RASI_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("RASI_medLat",inputs["Fitting"]["Weight"]["RASI_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RASI_supInf",inputs["Fitting"]["Weight"]["RASI_supInf"])
+
+            cgmFittingProcedure.updateMarkerWeight("LPSI_posAnt",inputs["Fitting"]["Weight"]["LPSI_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("LPSI_medLat",inputs["Fitting"]["Weight"]["LPSI_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LPSI_supInf",inputs["Fitting"]["Weight"]["LPSI_supInf"])
+            
+            cgmFittingProcedure.updateMarkerWeight("RPSI_posAnt",inputs["Fitting"]["Weight"]["RPSI_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("RPSI_medLat",inputs["Fitting"]["Weight"]["RPSI_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RPSI_supInf",inputs["Fitting"]["Weight"]["RPSI_supInf"])
+
+            
+            cgmFittingProcedure.updateMarkerWeight("RTHI_posAnt",inputs["Fitting"]["Weight"]["RTHI_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("RTHI_medLat",inputs["Fitting"]["Weight"]["RTHI_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RTHI_proDis",inputs["Fitting"]["Weight"]["RTHI_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("RKNE_posAnt",inputs["Fitting"]["Weight"]["RKNE_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("RKNE_medLat",inputs["Fitting"]["Weight"]["RKNE_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RKNE_proDis",inputs["Fitting"]["Weight"]["RKNE_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("RTIB_posAnt",inputs["Fitting"]["Weight"]["RTIB_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("RTIB_medLat",inputs["Fitting"]["Weight"]["RTIB_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RTIB_proDis",inputs["Fitting"]["Weight"]["RTIB_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("RANK_posAnt",inputs["Fitting"]["Weight"]["RANK_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("RANK_medLat",inputs["Fitting"]["Weight"]["RANK_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RANK_proDis",inputs["Fitting"]["Weight"]["RANK_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("RHEE_supInf",inputs["Fitting"]["Weight"]["RHEE_supInf"])
+            cgmFittingProcedure.updateMarkerWeight("RHEE_medLat",inputs["Fitting"]["Weight"]["RHEE_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RHEE_proDis",inputs["Fitting"]["Weight"]["RHEE_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("RTOE_supInf",inputs["Fitting"]["Weight"]["RTOE_supInf"])
+            cgmFittingProcedure.updateMarkerWeight("RTOE_medLat",inputs["Fitting"]["Weight"]["RTOE_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RTOE_proDis",inputs["Fitting"]["Weight"]["RTOE_proDis"])
+
+
+
+            cgmFittingProcedure.updateMarkerWeight("LTHI_posAnt",inputs["Fitting"]["Weight"]["LTHI_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("LTHI_medLat",inputs["Fitting"]["Weight"]["LTHI_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LTHI_proDis",inputs["Fitting"]["Weight"]["LTHI_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("LKNE_posAnt",inputs["Fitting"]["Weight"]["LKNE_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("LKNE_medLat",inputs["Fitting"]["Weight"]["LKNE_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LKNE_proDis",inputs["Fitting"]["Weight"]["LKNE_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("LTIB_posAnt",inputs["Fitting"]["Weight"]["LTIB_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("LTIB_medLat",inputs["Fitting"]["Weight"]["LTIB_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LTIB_proDis",inputs["Fitting"]["Weight"]["LTIB_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("LANK_posAnt",inputs["Fitting"]["Weight"]["LANK_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("LANK_medLat",inputs["Fitting"]["Weight"]["LANK_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LANK_proDis",inputs["Fitting"]["Weight"]["LANK_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("LHEE_supInf",inputs["Fitting"]["Weight"]["LHEE_supInf"])
+            cgmFittingProcedure.updateMarkerWeight("LHEE_medLat",inputs["Fitting"]["Weight"]["LHEE_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LHEE_proDis",inputs["Fitting"]["Weight"]["LHEE_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("LTOE_supInf",inputs["Fitting"]["Weight"]["LTOE_supInf"])
+            cgmFittingProcedure.updateMarkerWeight("LTOE_medLat",inputs["Fitting"]["Weight"]["LTOE_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LTOE_proDis",inputs["Fitting"]["Weight"]["LTOE_proDis"])
+
+
+            cgmFittingProcedure.updateMarkerWeight("LTHIAP_posAnt",inputs["Fitting"]["Weight"]["LTHIAP_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("LTHIAP_medLat",inputs["Fitting"]["Weight"]["LTHIAP_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LTHIAP_proDis",inputs["Fitting"]["Weight"]["LTHIAP_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("LTHIAD_posAnt",inputs["Fitting"]["Weight"]["LTHIAD_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("LTHIAD_medLat",inputs["Fitting"]["Weight"]["LTHIAD_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LTHIAD_proDis",inputs["Fitting"]["Weight"]["LTHIAD_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("RTHIAP_posAnt",inputs["Fitting"]["Weight"]["RTHIAP_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("RTHIAP_medLat",inputs["Fitting"]["Weight"]["RTHIAP_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RTHIAP_proDis",inputs["Fitting"]["Weight"]["RTHIAP_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("RTHIAD_posAnt",inputs["Fitting"]["Weight"]["RTHIAD_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("RTHIAD_medLat",inputs["Fitting"]["Weight"]["RTHIAD_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RTHIAD_proDis",inputs["Fitting"]["Weight"]["RTHIAD_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("LTIBAP_posAnt",inputs["Fitting"]["Weight"]["LTIBAP_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("LTIBAP_medLat",inputs["Fitting"]["Weight"]["LTIBAP_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LTIBAP_proDis",inputs["Fitting"]["Weight"]["LTIBAP_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("LTIBAD_posAnt",inputs["Fitting"]["Weight"]["LTIBAD_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("LTIBAD_medLat",inputs["Fitting"]["Weight"]["LTIBAD_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("LTIBAD_proDis",inputs["Fitting"]["Weight"]["LTIBAD_proDis"])
+
+            cgmFittingProcedure.updateMarkerWeight("RTIBAP_posAnt",inputs["Fitting"]["Weight"]["RTIBAP_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("RTIBAP_medLat",inputs["Fitting"]["Weight"]["RTIBAP_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RTIBAP_proDis",inputs["Fitting"]["Weight"]["RTIBAP_proDis"])
+
+
+            cgmFittingProcedure.updateMarkerWeight("RTIBAD_posAnt",inputs["Fitting"]["Weight"]["RTIBAD_posAnt"])
+            cgmFittingProcedure.updateMarkerWeight("RTIBAD_medLat",inputs["Fitting"]["Weight"]["RTIBAD_medLat"])
+            cgmFittingProcedure.updateMarkerWeight("RTIBAD_proDis",inputs["Fitting"]["Weight"]["RTIBAD_proDis"])
+
 #            cgmFittingProcedure.updateMarkerWeight("LPAT",inputs["Fitting"]["Weight"]["LPAT"])
-#            cgmFittingProcedure.updateMarkerWeight("LTIBL",inputs["Fitting"]["Weight"]["LTIBL"])
-#            cgmFittingProcedure.updateMarkerWeight("RTHL",inputs["Fitting"]["Weight"]["RTHL"])
-#            cgmFittingProcedure.updateMarkerWeight("RTHLD",inputs["Fitting"]["Weight"]["RTHLD"])
+#            cgmFittingProcedure.updateMarkerWeight("LPAT_posAnt",inputs["Fitting"]["Weight"]["LPAT_posAnt"])
+#            cgmFittingProcedure.updateMarkerWeight("LPAT_medLat",inputs["Fitting"]["Weight"]["LPAT_medLat"])
+#            cgmFittingProcedure.updateMarkerWeight("LPAT_proDis",inputs["Fitting"]["Weight"]["LPAT_proDis"])
+#
 #            cgmFittingProcedure.updateMarkerWeight("RPAT",inputs["Fitting"]["Weight"]["RPAT"])
-#            cgmFittingProcedure.updateMarkerWeight("RTIBL",inputs["Fitting"]["Weight"]["RTIBL"])
-  
+#            cgmFittingProcedure.updateMarkerWeight("RPAT_posAnt",inputs["Fitting"]["Weight"]["RPAT_posAnt"])
+#            cgmFittingProcedure.updateMarkerWeight("RPAT_medLat",inputs["Fitting"]["Weight"]["RPAT_medLat"])
+#            cgmFittingProcedure.updateMarkerWeight("RPAT_proDis",inputs["Fitting"]["Weight"]["RPAT_proDis"])
+
+#            cgmFittingProcedure.updateMarkerWeight("LTHLD",inputs["Fitting"]["Weight"]["LTHLD"])
+#            cgmFittingProcedure.updateMarkerWeight("LTHLD_posAnt",inputs["Fitting"]["Weight"]["LTHLD_posAnt"])
+#            cgmFittingProcedure.updateMarkerWeight("LTHLD_medLat",inputs["Fitting"]["Weight"]["LTHLD_medLat"])
+#            cgmFittingProcedure.updateMarkerWeight("LTHLD_proDis",inputs["Fitting"]["Weight"]["LTHLD_proDis"])
+#
+#            cgmFittingProcedure.updateMarkerWeight("RTHLD",inputs["Fitting"]["Weight"]["RTHLD"])
+#            cgmFittingProcedure.updateMarkerWeight("RTHLD_posAnt",inputs["Fitting"]["Weight"]["RTHLD_posAnt"])
+#            cgmFittingProcedure.updateMarkerWeight("RTHLD_medLat",inputs["Fitting"]["Weight"]["RTHLD_medLat"])
+#            cgmFittingProcedure.updateMarkerWeight("RTHLD_proDis",inputs["Fitting"]["Weight"]["RTHLD_proDis"])
             
             osrf = opensimFilters.opensimFittingFilter(iksetupFile, 
                                                               scalingOsim,
@@ -368,15 +481,16 @@ if __name__ == "__main__":
                                                 forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
         
-
+        
         # ----------------------SAVE-------------------------------------------
-        if os.path.isfile(DATA_PATH + subject + "-CGM2_3-pyCGM2.model"):
+        if os.path.isfile(DATA_PATH + subject + "-CGM2_3-Expert-pyCGM2.model"):
             logging.warning("previous model removed")
-            os.remove(DATA_PATH + subject + "-CGM2_3-pyCGM2.model")
+            os.remove(DATA_PATH + subject + "-CGM2_3-Expert-pyCGM2.model")
 
-        modelFile = open(DATA_PATH + subject+"-CGM2_3-pyCGM2.model", "w")
+        modelFile = open(DATA_PATH + subject+"-CGM2_3-Expert-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
+
 
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,

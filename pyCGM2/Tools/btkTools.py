@@ -195,45 +195,40 @@ def applyValidFramesOnOutput(acq,validFrames):
 
 def applyTranslators(acq, translators):
     """
-    :note: Difficulty is to prevent c3d with duplicated point label.  
+    Rename marker from translators
+    :Parameters:
+        - `acq` (btkAcquisition) - a btk acquisition instance
+        - `translators` (dict) - translators
 
     """
     acqClone = btk.btkAcquisition.Clone(acq) 
         
-    markerList = translators.keys()
-    
-    # gather all labels    
-    for it in translators.keys():
-        if it not in markerList:
-            markerList.append(translators[it])
+    modifiedMarkerList = list()
 
-    # remove all points in clone if exist within the former list                     
+    # gather all labels    
+    for it in translators.items():
+        wantedLabel,initialLabel = it[0],it[1]
+        
+        if wantedLabel != initialLabel and initialLabel !="":
+            modifiedMarkerList.append(it[0])
+            modifiedMarkerList.append(it[1])
+    
+
+    # Remove Modified Markers from Clone
     for point in  btk.Iterate(acq.GetPoints()):
         if point.GetType() == btk.btkPoint.Marker:
             label = point.GetLabel()
-            if label in markerList:
+            if label in modifiedMarkerList:
                 acqClone.RemovePoint(label)
 
-    # add renamed point from translator                    
-    for it in translators.keys():
-       logging.debug("Initial point (%s) renamed (%s)  added into the c3d" %(str(translators[it]), str(it)))
-       smartAppendPoint(acqClone,str(it),acq.GetPoint(str(translators[it])).GetValues(),PointType=btk.btkPoint.Marker) 
-
-
-
-    # add initial point  
-    newlist =  list()
-    for itP in btk.Iterate(acqClone.GetPoints()):
-        if itP.GetType() == btk.btkPoint.Marker:
-            newlist.append(itP.GetLabel())
-            
-    logging.debug("------------------------------------------------------------------------")            
-    for it in translators.keys():
-        if translators[it] not in newlist: 
-            logging.debug("Initial point (%s) added to the new c3d" %(str(translators[it])))  
-            smartAppendPoint(acqClone,str(translators[it] ),acq.GetPoint(str(translators[it])).GetValues(),PointType=btk.btkPoint.Marker) 
-
-
+    # Add Modify markers to clone 
+    for it in translators.items():
+       wantedLabel,initialLabel = it[0],it[1]
+       if wantedLabel != initialLabel and initialLabel !="":
+           logging.debug("Initial point (%s) renamed (%s)  added into the c3d" %(str(wantedLabel), str(initialLabel)))
+           smartAppendPoint(acqClone,str(wantedLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
+           smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
+    
     return acqClone    
        
 
