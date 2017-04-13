@@ -256,20 +256,22 @@ class opensimFittingFilter(object):
         # --- gernerate acq with rigid markers
         acqMotionFinal = btk.btkAcquisition.Clone(acqMotion)
         for marker in self.m_procedure.ikTags.keys():
-            values =osimProcessing.sto2pointValues(self.opensimOutputDir + "ik_model_marker_locations.sto",marker,R_LAB_OSIM)
-            lenOsim  = len(values)
-            lenc3d  = acqMotion.GetPoint(marker).GetFrameNumber()
-            if lenOsim < lenc3d: 
-                logging.warning(" size osim (%i) inferior to c3d (%i)" % (lenOsim,lenc3d))
-                values2 = np.zeros((lenc3d,3))
-                values2[0:lenOsim,:]=values
-                values2[lenOsim:lenc3d,:]=acqMotion.GetPoint(marker).GetValues()[lenOsim:lenc3d,:]
+            if self.m_procedure.ikTags[marker] != 0:
+                values =osimProcessing.sto2pointValues(self.opensimOutputDir + "ik_model_marker_locations.sto",marker,R_LAB_OSIM)
+                lenOsim  = len(values)
     
-                btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" ) # new acq with marker overwrited
-                btkTools.smartAppendPoint(acqMotionFinal,marker, values2, desc= "kinematic fitting" ) # new acq with marker overwrited
-            else:
-                btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" ) # measured marker suffix with _m
-                btkTools.smartAppendPoint(acqMotionFinal,marker, values, desc= "kinematic fitting" ) # new acq with marker overwrited    
+                lenc3d  = acqMotion.GetPoint(marker).GetFrameNumber()
+                if lenOsim < lenc3d: 
+                    logging.warning(" size osim (%i) inferior to c3d (%i)" % (lenOsim,lenc3d))
+                    values2 = np.zeros((lenc3d,3))
+                    values2[0:lenOsim,:]=values
+                    values2[lenOsim:lenc3d,:]=acqMotion.GetPoint(marker).GetValues()[lenOsim:lenc3d,:]
+        
+                    btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" ) # new acq with marker overwrited
+                    btkTools.smartAppendPoint(acqMotionFinal,marker, values2, desc= "kinematic fitting" ) # new acq with marker overwrited
+                else:
+                    btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" ) # measured marker suffix with _m
+                    btkTools.smartAppendPoint(acqMotionFinal,marker, values, desc= "kinematic fitting" ) # new acq with marker overwrited    
         
         return acqMotionFinal
         
