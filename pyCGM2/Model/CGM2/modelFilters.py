@@ -536,7 +536,7 @@ class TrackingMarkerDecompositionFilter(object):
         TODO : revoir les suffix car depende de l orientation des referentiels           
            
         """ 
-        for seg in self.m_model.m_segmentCollection: 
+        for seg in self.m_model.m_segmentCollection:
             if  "Proximal" not in seg.name:                   
                 if "Foot" in seg.name:
                     suffix = ["_supInf", "_medLat", "_proDis"]
@@ -545,7 +545,7 @@ class TrackingMarkerDecompositionFilter(object):
                 else:
                     suffix = ["_posAnt", "_medLat", "_proDis"]
                             
-                copyTrackingMarkers = list(seg.m_tracking_markers) # copy of list           
+                copyTrackingMarkers = list(seg.m_tracking_markers) # copy of list  
 
                 # add direction point as tracking markers and copy node  
                 for marker in copyTrackingMarkers:
@@ -567,13 +567,13 @@ class TrackingMarkerDecompositionFilter(object):
             
                 # decompose tracking marker in the acq 
                 for marker in copyTrackingMarkers:
-
+                    
                     nodeTraj= seg.anatomicalFrame.getNodeTrajectory(marker)   
                     markersTraj =self.m_acq.GetPoint(marker).GetValues()        
                     
-                    markerTrajectoryX=np.array( [ markersTraj[:,0], nodeTraj[:,1], nodeTraj[:,2]]).T
-                    markerTrajectoryY=np.array( [ nodeTraj[:,0], markersTraj[:,1], nodeTraj[:,2]]).T
-                    markerTrajectoryZ=np.array( [ nodeTraj[:,0], nodeTraj[:,1], markersTraj[:,2]]).T
+                    markerTrajectoryX=np.array( [ markersTraj[:,0], nodeTraj[:,1],    nodeTraj[:,2]]).T
+                    markerTrajectoryY=np.array( [ nodeTraj[:,0],    markersTraj[:,1], nodeTraj[:,2]]).T
+                    markerTrajectoryZ=np.array( [ nodeTraj[:,0],    nodeTraj[:,1],    markersTraj[:,2]]).T
 
                     btkTools.smartAppendPoint(self.m_acq,marker+suffix[0],markerTrajectoryX,PointType=btk.btkPoint.Marker, desc="")            
                     btkTools.smartAppendPoint(self.m_acq,marker+suffix[1],markerTrajectoryY,PointType=btk.btkPoint.Marker, desc="")            
