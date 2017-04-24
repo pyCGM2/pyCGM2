@@ -95,7 +95,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                          plotFlag= True, 
                          exportBasicSpreadSheetFlag = True,
                          exportAdvancedSpreadSheetFlag = True,
-                         exportAnalysisC3dFlag = True,
+                         exportAnalysisC3dFlag = False,
                          consistencyOnly = False,
                          normativeDataDict = None,
                          name_out=None,
@@ -130,13 +130,13 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
 
     #---- NORMATIVE DATASET
     #--------------------------------------------------------------------------
-
-    if normativeDataDict["Author"] == "Schwartz2008":
-        chosenModality = normativeDataDict["Modality"]
-        ndp = normativeDatabaseProcedure.Schwartz2008_normativeDataBases(chosenModality)    # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
-    elif normativeDataDict["Author"] == "Pinzone2014":
-        chosenModality = normativeDataDict["Modality"]
-        ndp = normativeDatabaseProcedure.Pinzone2014_normativeDataBases(chosenModality) # modalites : "Center One" ,"Center Two"
+    if normativeDataDict is not None:
+        if normativeDataDict["Author"] == "Schwartz2008":
+            chosenModality = normativeDataDict["Modality"]
+            ndp = normativeDatabaseProcedure.Schwartz2008_normativeDataBases(chosenModality)    # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
+        elif normativeDataDict["Author"] == "Pinzone2014":
+            chosenModality = normativeDataDict["Modality"]
+            ndp = normativeDatabaseProcedure.Pinzone2014_normativeDataBases(chosenModality) # modalites : "Center One" ,"Center Two"
 
                              
     #---- PRELIMINARY STAGE
@@ -231,13 +231,16 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
         analysisFilter.exportAnalysisC3d(c3dAnalysisName, path=DATA_PATH_OUT)
 
     if exportBasicSpreadSheetFlag or exportAdvancedSpreadSheetFlag:
+        
+        xlsExport = analysis.XlsExportFilter(analysisFilter.analysis,analysisBuilder)        
+        
         if name_out  is None:
             spreadSheetName = modelledFilenames[0][:-4] if len(modelledFilenames) == 1 else  "MultiTrials"
         else:
             spreadSheetName = name_out
-
-        if exportBasicSpreadSheetFlag : analysisFilter.exportBasicDataFrame(spreadSheetName, path=DATA_PATH_OUT)
-        if exportAdvancedSpreadSheetFlag : analysisFilter.exportAdvancedDataFrame(spreadSheetName, path=DATA_PATH_OUT)
+        
+        if exportBasicSpreadSheetFlag : xlsExport.exportBasicDataFrame(spreadSheetName, path=DATA_PATH_OUT)
+        if exportAdvancedSpreadSheetFlag : xlsExport.exportAdvancedDataFrame(spreadSheetName, path=DATA_PATH_OUT)
 
     #---- GAIT PLOTTING FILTER
     #--------------------------------------------------------------------------
