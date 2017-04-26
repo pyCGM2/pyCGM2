@@ -102,35 +102,33 @@ class BenedettiTest():
         analysisFilter.build()
 
 
-        #---- GAIT ANALYSIS FILTER
-        #--------------------------------------------------------------------------
-
-        plotBuilder = plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=flag_kinetics, pointLabelSuffix= pointLabelSuffix)
-        plotBuilder.setNormativeDataProcedure(normativeDatabaseProcedure.Schwartz2008_normativeDataBases("Free"))  
-        plotBuilder.setConsistencyOnly(True)
-              
-        # Filter
-        pf = plot.PlottingFilter()
-        pf.setBuilder(plotBuilder)
-        pf.setPath(DATA_PATH)
- 
-        pf.setPdfName("TEST")
-        pf.plot()
+#        #---- GAIT ANALYSIS FILTER
+#        #--------------------------------------------------------------------------
+#
+#        plotBuilder = plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=flag_kinetics, pointLabelSuffix= pointLabelSuffix)
+#        plotBuilder.setNormativeDataProcedure(normativeDatabaseProcedure.Schwartz2008_normativeDataBases("Free"))  
+#        plotBuilder.setConsistencyOnly(True)
+#              
+#        # Filter
+#        pf = plot.PlottingFilter()
+#        pf.setBuilder(plotBuilder)
+#        pf.setPath(DATA_PATH)
+# 
+#        pf.setPdfName("TEST")
+#        pf.plot()
 
 
         #---- DISCRETE POINT FILTER
         #--------------------------------------------------------------------------
 
+        # Benedetti Processing
         dpProcedure = discretePoints.BenedettiProcedure()
         dpf = discretePoints.DiscretePointsFilter(dpProcedure, analysisFilter.analysis)
-        dpf.find()
-        
-        pdb.set_trace()
-        
+        benedettiDataFrame = dpf.getOutput()
+
         
 if __name__ == "__main__":
 
     plt.close("all")  
   
-
     BenedettiTest.kinematics()   
