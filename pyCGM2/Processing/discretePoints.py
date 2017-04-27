@@ -1408,4 +1408,162 @@ class BenedettiProcedure(object):
             series.append(serie)                                   
                                                
         return pd.DataFrame(series)
-                                               
+
+
+class MaxMinProcedure(object):
+
+    NAME = "MaxMin"
+
+       
+    def __init__(self,pointSuffix=None):
+
+        self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
+        
+    def detect (self,analysisInstance):
+
+               
+        dataframes = list()
+        # Left
+        dataframes.append( self.__getExtrema(analysisInstance,"LPelvisAngles","Left"))
+
+        dataframes.append( self.__getExtrema(analysisInstance,"LPelvisAngles","Left"))
+        dataframes.append( self.__getExtrema(analysisInstance,"LHipAngles","Left"))
+        dataframes.append( self.__getExtrema(analysisInstance,"LKneeAngles","Left"))
+        dataframes.append( self.__getExtrema(analysisInstance,"LAnkleAngles","Left")) 
+
+        dataframes.append( self.__getExtrema(analysisInstance,"LHipMoment","Left", dataType = "Kinetics"))
+        dataframes.append( self.__getExtrema(analysisInstance,"LKneeMoment","Left", dataType = "Kinetics"))
+        dataframes.append( self.__getExtrema(analysisInstance,"LAnkleMoment","Left",dataType = "Kinetics"))
+
+        # Right
+        dataframes.append( self.__getExtrema(analysisInstance,"RPelvisAngles","Right"))
+
+        dataframes.append( self.__getExtrema(analysisInstance,"RHipAngles","Right"))
+        dataframes.append( self.__getExtrema(analysisInstance,"RKneeAngles","Right"))
+        dataframes.append( self.__getExtrema(analysisInstance,"RAnkleAngles","Right")) 
+
+        dataframes.append( self.__getExtrema(analysisInstance,"RHipMoment","Right",dataType = "Kinetics"))
+        dataframes.append( self.__getExtrema(analysisInstance,"RKneeMoment","Right",dataType = "Kinetics"))
+        dataframes.append( self.__getExtrema(analysisInstance,"RAnkleMoment","Right",dataType = "Kinetics"))
+
+        return pd.concat(dataframes)
+
+        
+        return pd.concat(dataframes)
+
+    def __construcPandasSerie(self,pointLabel,context, axis, cycleIndex, 
+                              discretePointProcedure,discretePointLabel,discretePointValue,discretePointDescription,
+                              comment):
+        iDict = OrderedDict([('Label', pointLabel), 
+                     ('Context', context), 
+                     ('Axis', axis),
+                     ('Cycle', cycleIndex),
+                     ('DiscretePointProcedure', discretePointProcedure),
+                     ('DiscretePointLabel', discretePointLabel),
+                     ('DiscretePointValue', discretePointValue),
+                     ('DiscretePointDescription', discretePointDescription),
+                     ('Comment', comment)])
+        return pd.Series(iDict)
+
+        
+    def __getExtrema(self,analysisInstance,pointLabel,context,dataType="Kinematics"):
+        
+        if dataType == "Kinematics":
+            normalizedCycleValues = analysisInstance.kinematicStats.data [pointLabel+self.pointSuffix,context]
+        if dataType == "Kinetics":
+            normalizedCycleValues = analysisInstance.kineticStats.data [pointLabel+self.pointSuffix,context]
+
+        stanceValues =         analysisInstance.kinematicStats.pst['stancePhase', context]['values']
+
+        series = list()        
+        
+        #---min stance  
+        label = ["minST","TminST"]
+        axes = ["X","Y","Z"]
+        
+        for axInd in range(0,len(axes)):
+                
+            desc = ["min stance","frame of min stance"]
+            for i in range(0,len(normalizedCycleValues["values"])):
+                value = np.min(normalizedCycleValues["values"][i][:,axInd])
+                frame = np.argmin(normalizedCycleValues["values"][i][:,axInd])
+                
+                serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
+                                                   int(i),
+                                                   BenedettiProcedure.NAME,
+                                                   label[0],value,desc[0],
+                                                   "")
+                series.append(serie)
+                
+                serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
+                                                   int(i),
+                                                   BenedettiProcedure.NAME,
+                                                   label[1],frame,desc[1],
+                                                   "")
+                series.append(serie) 
+
+                #---max stance  
+                label = ["maxST","TmaxST"]
+                desc = ["max stance","frame of max stance"]
+                for i in range(0,len(normalizedCycleValues["values"])):
+                    value = np.max(normalizedCycleValues["values"][i][:,axInd])
+                    frame = np.argmax(normalizedCycleValues["values"][i][:,axInd])
+                    
+                    serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
+                                                       int(i),
+                                                       BenedettiProcedure.NAME,
+                                                       label[0],value,desc[0],
+                                                       "")
+                    series.append(serie)
+                    
+                    serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
+                                                       int(i),
+                                                       BenedettiProcedure.NAME,
+                                                       label[1],frame,desc[1],
+                                                       "")
+                    series.append(serie)
+        
+                 #---min swing  
+                label = ["minSW","TminSW"]
+                desc = ["min swing","frame of min swing"]
+                for i in range(0,len(normalizedCycleValues["values"])):
+                    value = np.min(normalizedCycleValues["values"][i][int(stanceValues[i]):101,axInd])
+                    frame = int(stanceValues[i]) + np.argmin(normalizedCycleValues["values"][i][int(stanceValues[i]):101,axInd])
+                    
+                    serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
+                                                       int(i),
+                                                       BenedettiProcedure.NAME,
+                                                       label[0],value,desc[0],
+                                                       "")
+                    series.append(serie)
+                    
+                    serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
+                                                       int(i),
+                                                       BenedettiProcedure.NAME,
+                                                       label[1],frame,desc[1],
+                                                       "")
+                    series.append(serie) 
+        
+                #---max swing  
+                label = ["maxSW","TmaxSW"]
+                desc = ["max swing","frame of max swing"]
+                for i in range(0,len(normalizedCycleValues["values"])):
+                    value = np.max(normalizedCycleValues["values"][i][int(stanceValues[i]):101,axInd])
+                    frame = int(stanceValues[i]) + np.argmax(normalizedCycleValues["values"][i][int(stanceValues[i]):101,axInd])
+                    
+                    serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
+                                                       int(i),
+                                                       BenedettiProcedure.NAME,
+                                                       label[0],value,desc[0],
+                                                       "")
+                    series.append(serie)
+                    
+                    serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
+                                                       int(i),
+                                                       BenedettiProcedure.NAME,
+                                                       label[1],frame,desc[1],
+                                                       "")
+                    series.append(serie)
+                    
+        return pd.DataFrame(series)
+                                                                                            
