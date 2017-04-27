@@ -32,9 +32,12 @@ class DiscretePointsFilter(object):
          
 
     def getOutput(self):
-        self.dataframe = self.m_procedure.find(self.m_analysis)
+        self.dataframe = self.m_procedure.detect(self.m_analysis)
         
         return self.dataframe
+
+    
+        
         
 
 # --- PROCEDURE ----
@@ -47,13 +50,12 @@ class BenedettiProcedure(object):
 
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
         
-    def find (self,analysisInstance):
+    def detect (self,analysisInstance):
 
         # self.__detectTest(analysisInstance,"RHipMoment","Right") # TEST
         
         dataframes = list()
         # Left
-
         dataframes.append( self.__getPelvis_kinematics(analysisInstance,"LPelvisAngles","Left"))
 
         dataframes.append( self.__getHip_kinematics(analysisInstance,"LPelvisAngles","Left"))
@@ -63,16 +65,18 @@ class BenedettiProcedure(object):
 
         dataframes.append( self.__getHip_kinetics(analysisInstance,"LHipMoment","Left"))
         dataframes.append( self.__getKnee_kinetics(analysisInstance,"LKneeMoment","Left"))
-        dataframes.append( self.__getKnee_kinetics(analysisInstance,"LAnkleMoment","Left"))
+        dataframes.append( self.__getAnkle_kinetics(analysisInstance,"LAnkleMoment","Left"))
 
         # Right
+        dataframes.append( self.__getPelvis_kinematics(analysisInstance,"RPelvisAngles","Right"))
+
         dataframes.append( self.__getHip_kinematics(analysisInstance,"RHipAngles","Right"))
         dataframes.append( self.__getKnee_kinematics(analysisInstance,"RKneeAngles","Right"))
         dataframes.append( self.__getAnkle_kinematics(analysisInstance,"RAnkleAngles","Right")) 
 
         dataframes.append( self.__getHip_kinetics(analysisInstance,"RHipMoment","Right"))
         dataframes.append( self.__getKnee_kinetics(analysisInstance,"RKneeMoment","Right"))
-        dataframes.append( self.__getKnee_kinetics(analysisInstance,"RAnkleMoment","Right"))
+        dataframes.append( self.__getAnkle_kinetics(analysisInstance,"RAnkleMoment","Right"))
 
         return pd.concat(dataframes)
 
@@ -145,7 +149,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -167,7 +171,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -189,7 +193,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -211,7 +215,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -273,7 +277,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -316,7 +320,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -367,7 +371,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -393,7 +397,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -431,7 +435,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -453,7 +457,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -519,7 +523,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -556,7 +560,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -607,7 +611,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -633,7 +637,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -671,7 +675,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -693,7 +697,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -758,7 +762,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -828,7 +832,7 @@ class BenedettiProcedure(object):
                                                comment)
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -881,7 +885,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -904,7 +908,7 @@ class BenedettiProcedure(object):
                                                "")
             series.append(serie)
             
-            serie = self.__construcPandasSerie(label[1],context,axis,
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
                                                label[1],frame,desc[1],
@@ -1074,6 +1078,7 @@ class BenedettiProcedure(object):
                                                
             series.append(serie)
 
+        return pd.DataFrame(series)
     
     def __getKnee_kinetics(self,analysisInstance,pointLabel,context):
         
@@ -1299,6 +1304,9 @@ class BenedettiProcedure(object):
                                                "")
                                                
             series.append(serie)
+
+        return pd.DataFrame(series)
+
             
     def __getAnkle_kinetics(self,analysisInstance,pointLabel,context):
         
@@ -1396,3 +1404,8 @@ class BenedettiProcedure(object):
                                                BenedettiProcedure.NAME,
                                                label[0],frameMin,desc[0],
                                                "")
+            
+            series.append(serie)                                   
+                                               
+        return pd.DataFrame(series)
+                                               

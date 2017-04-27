@@ -6,7 +6,7 @@ import pdb
 import os
 
 
-from pyCGM2.Processing import cycle,analysis,scores
+from pyCGM2.Processing import cycle,analysis,scores,exporter   
 from pyCGM2.Report import plot,normativeDatabaseProcedure
 from pyCGM2.Tools import trialTools
 
@@ -232,7 +232,11 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
 
     if exportBasicSpreadSheetFlag or exportAdvancedSpreadSheetFlag:
         
-        xlsExport = analysis.XlsExportFilter(analysisFilter.analysis,analysisBuilder)        
+        xlsExport = exporter.XlsExportFilter()
+        xlsExport.setAnalysisInstance(analysisFilter.analysis)
+        xlsExport.setConcreteAnalysisBuilder(analysisBuilder)
+        
+        
         
         if name_out  is None:
             spreadSheetName = modelledFilenames[0][:-4] if len(modelledFilenames) == 1 else  "MultiTrials"

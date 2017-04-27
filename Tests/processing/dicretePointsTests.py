@@ -23,7 +23,7 @@ import ma.io
 import ma.body
 
 from pyCGM2.Report import plot,normativeDatabaseProcedure
-from pyCGM2.Processing import cycle,analysis, discretePoints
+from pyCGM2.Processing import cycle,analysis, discretePoints,exporter
 from pyCGM2.Tools import trialTools
 
 class BenedettiTest(): 
@@ -125,6 +125,12 @@ class BenedettiTest():
         dpProcedure = discretePoints.BenedettiProcedure()
         dpf = discretePoints.DiscretePointsFilter(dpProcedure, analysisFilter.analysis)
         benedettiDataFrame = dpf.getOutput()
+
+        xlsExport = exporter.XlsExportFilter()
+        xlsExport.setDataFrames([benedettiDataFrame])
+        xlsExport.exportDataFrames("discretePoints", path=DATA_PATH)
+        
+        
 
         
 if __name__ == "__main__":
