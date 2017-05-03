@@ -7,7 +7,7 @@ import pandas as pd
 from pyCGM2.Tools import exportTools
 from collections import OrderedDict
 from pyCGM2.Signal.detect_peaks import detect_peaks    
-
+from pyCGM2.Math import derivation
 
 #            x= normalizedCycleValues["values"][0][:,2]
 #            plt.plot(x)            
@@ -1485,19 +1485,19 @@ class MaxMinProcedure(object):
                 
             desc = ["min stance","frame of min stance"]
             for i in range(0,len(normalizedCycleValues["values"])):
-                value = np.min(normalizedCycleValues["values"][i][:,axInd])
-                frame = np.argmin(normalizedCycleValues["values"][i][:,axInd])
+                value = np.min(normalizedCycleValues["values"][i][0:int(stanceValues[i])+1,axInd])
+                frame = np.argmin(normalizedCycleValues["values"][i][0:int(stanceValues[i])+1,axInd])
                 
                 serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
                                                    int(i),
-                                                   BenedettiProcedure.NAME,
+                                                   MaxMinProcedure.NAME,
                                                    label[0],value,desc[0],
                                                    "")
                 series.append(serie)
                 
                 serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
                                                    int(i),
-                                                   BenedettiProcedure.NAME,
+                                                   MaxMinProcedure.NAME,
                                                    label[1],frame,desc[1],
                                                    "")
                 series.append(serie) 
@@ -1506,19 +1506,19 @@ class MaxMinProcedure(object):
                 label = ["maxST","TmaxST"]
                 desc = ["max stance","frame of max stance"]
                 for i in range(0,len(normalizedCycleValues["values"])):
-                    value = np.max(normalizedCycleValues["values"][i][:,axInd])
-                    frame = np.argmax(normalizedCycleValues["values"][i][:,axInd])
+                    value = np.max(normalizedCycleValues["values"][i][0:int(stanceValues[i])+1,axInd])
+                    frame = np.argmax(normalizedCycleValues["values"][i][0:int(stanceValues[i])+1,axInd])
                     
                     serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
                                                        int(i),
-                                                       BenedettiProcedure.NAME,
+                                                       MaxMinProcedure.NAME,
                                                        label[0],value,desc[0],
                                                        "")
                     series.append(serie)
                     
                     serie = self.__construcPandasSerie(pointLabel,context,axes[axInd],
                                                        int(i),
-                                                       BenedettiProcedure.NAME,
+                                                       MaxMinProcedure.NAME,
                                                        label[1],frame,desc[1],
                                                        "")
                     series.append(serie)
@@ -1566,4 +1566,189 @@ class MaxMinProcedure(object):
                     series.append(serie)
                     
         return pd.DataFrame(series)
-                                                                                            
+        
+        
+class GoldbergProcedure(object):
+
+    NAME = "Goldberg"
+
+       
+    def __init__(self,pointSuffix=None):
+
+        self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
+        
+    def detect (self,analysisInstance):
+
+               
+        dataframes = list()
+        # Left
+        dataframes.append( self.__getKnee_kinematics(analysisInstance,"LKneeAngles"+self.pointSuffix,"Left"))
+        dataframes.append( self.__getKnee_kinematics(analysisInstance,"RKneeAngles"+self.pointSuffix,"Right"))
+        
+        dataframes.append( self.__getKnee_kinetics(analysisInstance,"LKneeMoment"+self.pointSuffix,"LKneeAngles"+self.pointSuffix,"Left"))
+        dataframes.append( self.__getKnee_kinetics(analysisInstance,"RKneeMoment"+self.pointSuffix,"RKneeAngles"+self.pointSuffix,"Right"))        
+
+
+        
+        return pd.concat(dataframes)
+
+    def __construcPandasSerie(self,pointLabel,context, axis, cycleIndex, 
+                              discretePointProcedure,discretePointLabel,discretePointValue,discretePointDescription,
+                              comment):
+        iDict = OrderedDict([('Label', pointLabel), 
+                     ('Context', context), 
+                     ('Axis', axis),
+                     ('Cycle', cycleIndex),
+                     ('DiscretePointProcedure', discretePointProcedure),
+                     ('DiscretePointLabel', discretePointLabel),
+                     ('DiscretePointValue', discretePointValue),
+                     ('DiscretePointDescription', discretePointDescription),
+                     ('Comment', comment)])
+        return pd.Series(iDict)
+
+        
+    def __getKnee_kinematics(self,analysisInstance,pointLabel,context):
+        
+        normalizedCycleValues = analysisInstance.kinematicStats.data [pointLabel,context]
+        stanceValues =         analysisInstance.kinematicStats.pst['stancePhase', context]['values']
+
+        series = list()        
+        
+        #---maximal knee flexion  
+        label = "G1"
+        axis = "X"
+        
+        desc = "max knee flexion in swing"
+        for i in range(0,len(normalizedCycleValues["values"])):
+            value = np.max(normalizedCycleValues["values"][i][int(stanceValues[i]):101,0])
+
+
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
+                                                   int(i),
+                                                   GoldbergProcedure.NAME,
+                                                   label,value,desc,
+                                                   "")
+            series.append(serie)
+
+
+        #---range of knee flexion in early swing  
+        label = "G2"
+        axis = "X"
+        
+        desc = "range knee flexion in  early swing"
+        for i in range(0,len(normalizedCycleValues["values"])):
+            valueMax = np.max(normalizedCycleValues["values"][i][int(stanceValues[i]):101,0])
+            valueTO = np.max(normalizedCycleValues["values"][i][int(stanceValues[i]),0])
+
+            value = valueMax-valueTO
+
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
+                                                   int(i),
+                                                   GoldbergProcedure.NAME,
+                                                   label,value,desc,
+                                                   "")
+            series.append(serie)
+
+        #---total range of knee motion   
+        label = "G3"
+        axis = "X"
+        
+        desc = "total range knee motion"
+        for i in range(0,len(normalizedCycleValues["values"])):
+            valueMax = np.max(normalizedCycleValues["values"][i][int(stanceValues[i]):101,0])
+            valueMin = np.min(normalizedCycleValues["values"][i][0:int(stanceValues[i]),0])
+
+            value = valueMax-valueMin
+
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
+                                                   int(i),
+                                                   GoldbergProcedure.NAME,
+                                                   label,value,desc,
+                                                   "")
+            series.append(serie)
+
+        #---timing of peak knee flexion relative to TO   
+        label = "G4"
+        axis = "X"
+        
+        desc = "timing of peak knee flexion"
+        for i in range(0,len(normalizedCycleValues["values"])):
+
+            frame = np.argmax(normalizedCycleValues["values"][i][int(stanceValues[i]):101,0])
+
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
+                                                   int(i),
+                                                   GoldbergProcedure.NAME,
+                                                   label,frame,desc,
+                                                   "")
+            series.append(serie)
+
+        #---velocity at TO   
+        label = "G5"
+        axis = "X"
+        
+        desc = "velocity at TO"
+        for i in range(0,len(normalizedCycleValues["values"])):
+
+                
+
+            derivativeValues = derivation.firstOrderFiniteDifference(normalizedCycleValues["values"][i],1.0)
+
+            value = derivativeValues[int(stanceValues[i]),0] 
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
+                                                   int(i),
+                                                   GoldbergProcedure.NAME,
+                                                   label,value,desc,
+                                                   "")
+            series.append(serie)
+
+
+        return pd.DataFrame(series)   
+        
+        
+    def __getKnee_kinetics(self,analysisInstance,pointLabel,kinematicPointLabel,context):
+        
+        normalizedCycleValues = analysisInstance.kineticStats.data [pointLabel,context]
+        normalizedKinematicCycleValues =     analysisInstance.kineticStats.optionalData[kinematicPointLabel,context]        
+        
+        stanceFrame =         analysisInstance.kineticStats.pst['stancePhase', context]['values']
+        secondDoubleStanceFrameRange =         analysisInstance.kineticStats.pst["doubleStance2",context]['values']
+        doubleStanceFrame = stanceFrame-secondDoubleStanceFrameRange
+
+
+        series = list()        
+        
+        #---average moment in double stance   
+        label = "G6"
+        axis = "X"
+        
+        desc = "knee moment average in double stance"
+        for i in range(0,len(normalizedCycleValues["values"])):
+            value = np.mean(normalizedCycleValues["values"][i][int(doubleStanceFrame[i]):int(stanceFrame[i])+1,0])
+
+
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
+                                                   int(i),
+                                                   GoldbergProcedure.NAME,
+                                                   label,value,desc,
+                                                   "")
+            series.append(serie)
+            
+        #---average moment in early swing   
+        label = "G7"
+        axis = "X"
+        
+        desc = "knee moment average in early swing"
+        for i in range(0,len(normalizedCycleValues["values"])):
+
+            earlySwingFrame = int(stanceFrame[i]) + np.argmax(normalizedKinematicCycleValues["values"][i][int(stanceFrame[i]):101,0])
+            value = np.mean(normalizedCycleValues["values"][i][int(stanceFrame[i]):int(earlySwingFrame)+1,0])
+
+            serie = self.__construcPandasSerie(pointLabel,context,axis,
+                                                   int(i),
+                                                   GoldbergProcedure.NAME,
+                                                   label,value,desc,
+                                                   "")
+            series.append(serie)
+
+        return pd.DataFrame(series) 

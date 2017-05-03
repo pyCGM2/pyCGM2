@@ -55,7 +55,8 @@ class Analysis():
 
     class Structure:
         data = dict()
-        pst = dict()  
+        pst = dict()
+        optionalData = dict()
    
     def __init__(self):
 
@@ -74,9 +75,10 @@ class Analysis():
         self.kinematicStats.data = data
         self.kinematicStats.pst = pst 
 
-    def setKinetic(self,data, pst = dict()):   
+    def setKinetic(self,data, pst = dict(), optionalData=dict()):   
         self.kineticStats.data = data
-        self.kineticStats.pst = pst 
+        self.kineticStats.pst = pst
+        self.kineticStats.optionalData = optionalData 
 
 
     def setEmg(self,data, pst = dict()):   
@@ -262,6 +264,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
 
         out={}
         outPst={}
+        outOptional={}
 
         logging.info("--kinetic computation--")
         if self.m_cycles.kineticCycles is not None:
@@ -278,9 +281,14 @@ class GaitAnalysisBuilder(AbstractBuilder):
                        out[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
                    for label in CGM2cycle.GaitCycle.STP_LABELS:
                         outPst[label,"Left"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.kineticCycles,label,"Left")
+                   for label in self.m_kinematicLabelsDict["Left"]:
+                       labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix!="" else label 
+                       outOptional[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
                    logging.info("left kinetic computation---> done")
                else:
                    logging.warning("No left Kinetic computation")
+
+
 
                     
            if "Right" in self.m_kineticLabelsDict.keys(): 
@@ -291,15 +299,21 @@ class GaitAnalysisBuilder(AbstractBuilder):
                             
                    for label in CGM2cycle.GaitCycle.STP_LABELS:
                         outPst[label,"Right"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.kineticCycles,label,"Right")
+
+                   for label in self.m_kinematicLabelsDict["Right"]:
+                       labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix!="" else label 
+                       outOptional[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
+
                     
                    logging.info("right kinetic computation---> done")
                else:
                    logging.warning("No right Kinetic computation")
 
+
         else:
             logging.warning("No Kinetic computation")
 
-        return out,outPst   
+        return out,outPst,outOptional   
         
     def computeEmgEnvelopes(self):
         
@@ -467,8 +481,8 @@ class AnalysisFilter(object):
         kinematicOut,matchPst_kinematic = self.__concreteAnalysisBuilder.computeKinematics()
         self.analysis.setKinematic(kinematicOut, pst= matchPst_kinematic)
 
-        kineticOut,matchPst_kinetic = self.__concreteAnalysisBuilder.computeKinetics()
-        self.analysis.setKinetic(kineticOut, pst= matchPst_kinetic)
+        kineticOut,matchPst_kinetic,matchKinematic = self.__concreteAnalysisBuilder.computeKinetics()
+        self.analysis.setKinetic(kineticOut, pst= matchPst_kinetic, optionalData=matchKinematic)
 
         if self.__concreteAnalysisBuilder.m_emgs :
             emgOut,matchPst_emg = self.__concreteAnalysisBuilder.computeEmgEnvelopes()
