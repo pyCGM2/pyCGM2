@@ -118,6 +118,7 @@ if __name__ == "__main__":
             logging.warning("Left flat foot forces : %s"%(str(bool(args.leftFlatFoot))))
         else:
             flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
+            
                
         if args.rightFlatFoot is not None:
             flag_rightFlatFoot = bool(args.rightFlatFoot)
@@ -261,6 +262,7 @@ if __name__ == "__main__":
             modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                useLeftKJCnode=useLeftKJCnodeLabel, useLeftAJCnode=useLeftAJCnodeLabel,
                                useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
+                               leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter).compute()
 
         
