@@ -60,8 +60,8 @@ if __name__ == "__main__":
         # --- acquisition file and path----
         if DEBUG:
             
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
-            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-20 - myProcess\\verif CGM1\\"
+            calibrateFilenameLabelledNoExt = "MRI-US-20, 2008-12-17, 3DGA 01" #"static Cal 01-noKAD-noAnkleMed" #
             
 #            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\True equinus\\S01\\CGM1\\"
 #            calibrateFilenameLabelledNoExt = "static - PIG" #"static Cal 01-noKAD-noAnkleMed" #
@@ -265,7 +265,6 @@ if __name__ == "__main__":
                                leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter).compute()
 
-        
         #----update subject mp----
         viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 

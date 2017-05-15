@@ -184,6 +184,7 @@ if __name__ == "__main__":
         # --- force plate handling----
         # find foot  in contact        
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
         logging.info("Force plate assignment : %s" %mappedForcePlate)
 
         if args.mfpa is not None:
@@ -192,6 +193,7 @@ if __name__ == "__main__":
             else:
                 mappedForcePlate = args.mfpa
                 logging.warning("Force plates assign manually")
+                forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
 
                 
 
@@ -216,7 +218,11 @@ if __name__ == "__main__":
         btkTools.applyValidFramesOnOutput(acqGait,validFrames)   
 
         # ----------------------DISPLAY ON VICON-------------------------------
+
         viconInterface.ViconInterface(NEXUS,model,acqGait,subject,pointSuffix).run()
+        
+        nexusTools.createGeneralEvents(NEXUS,subject,acqGait,["Left-FP","Right-FP"])
+
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 

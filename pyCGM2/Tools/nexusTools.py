@@ -3,6 +3,7 @@
 import numpy as np
 import logging
 import pdb
+import btk
 
 
 def ckeckActivatedSubject(NEXUS,subjectNames,marker):
@@ -25,6 +26,7 @@ def ckeckActivatedSubject(NEXUS,subjectNames,marker):
         
         return subjectNames[index]
     
+          
 
 def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
 
@@ -243,3 +245,11 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
     NEXUS.SetModelOutput( vskName, label, data, exists )      
     
    
+def createGeneralEvents(NEXUS,subject,acq,labels):
+    
+    freq = acq.GetPointFrequency()  
+    events= acq.GetEvents()
+    for ev in btk.Iterate(events):
+        if ev.GetLabel() in labels:
+            print ev.GetTime()*freq
+            NEXUS.CreateAnEvent( str(subject), "General", str(ev.GetLabel()), int(ev.GetTime()*freq), 0.0 )
