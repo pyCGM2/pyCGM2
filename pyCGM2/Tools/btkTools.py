@@ -425,10 +425,24 @@ def checkMarkers( acq, markerList):
             raise Exception("[pyCGM2] markers %s not found" % m )
 
 
-
-
   
-# --- events -----             
+# --- events -----  
+
+
+def clearEvents(acq,labels):
+
+    events= acq.GetEvents()
+    newEvents=btk.btkEventCollection()
+
+    for ev in btk.Iterate(events):
+        if ev.GetLabel() not in labels:
+            newEvents.InsertItem(ev)
+                    
+    acq.ClearEvents()
+    acq.SetEvents(newEvents)
+
+
+
 def modifyEventSubject(acq,newSubjectlabel):
     """
         update the subject name of all events   

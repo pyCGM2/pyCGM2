@@ -84,29 +84,42 @@ def addTimeSequencesToTrial(trial,nodeToAdd):
         ts.addParent(trialTimeSequences)
  
 
+
 def isKineticFlag(trial):
     """
         Flag up if correct kinetics available       
 
         :Parameters:
             - `trial` (openma.trial) - an openma trial instance
+        
+        :Return:
+            - `` (bool) - flag if kinetic available
+            - `kineticEvent_times` (lst) - time of maximal Normal reaction Forces for both context
+            - `kineticEvent_times_left` (lst) - time of maximal Normal reaction Forces for the Left context            
+            - `kineticEvent_times_right` (lst) - time of maximal Normal reaction Forces for the Right context
     """
 
 
     kineticEvent_times=[]
+    kineticEvent_times_left=[]
+    kineticEvent_times_right=[]
+    
     evsn = trial.findChild(ma.T_Node,"SortedEvents")
     for ev in evsn.findChildren(ma.T_Event):
         if ev.context() == "General":
-            if ev.name() in ["","Event"]:
+            if ev.name() in ['Left-FP','Right-FP']:
                 kineticEvent_times.append(ev.time())
-         
+            if ev.name() in ['Left-FP']:
+                kineticEvent_times_left.append(ev.time())
+            if ev.name() in ['Right-FP']:
+                kineticEvent_times_right.append(ev.time())
 
     if kineticEvent_times==[]:
-        return False,0
+        return False,0,0,0
     else:
-        return True,kineticEvent_times
+        return True,kineticEvent_times,kineticEvent_times_left,kineticEvent_times_right
 
-            
+
 def automaticKineticDetection(dataPath,filenames):
     """
         convenient method for detecting correct kinetic in a filename set    
@@ -125,7 +138,7 @@ def automaticKineticDetection(dataPath,filenames):
             trial = fileNode.findChild(ma.T_Trial)
             sortedEvents(trial)
         
-            flag_kinetics,times = isKineticFlag(trial)
+            flag_kinetics,times, times_l, times_r = isKineticFlag(trial)
             
             if flag_kinetics: 
                 kineticFilenames.append(filename)
@@ -133,8 +146,9 @@ def automaticKineticDetection(dataPath,filenames):
     
     kineticTrials = None if kineticTrials ==[] else kineticTrials    
     
-    return kineticTrials,kineticFilenames,flag_kinetics            
+    return kineticTrials,kineticFilenames,flag_kinetics  
 
+                     
 
 def findProgressionFromPoints(trial,originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel):
     """

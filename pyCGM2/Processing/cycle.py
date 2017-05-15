@@ -643,8 +643,70 @@ class GaitCyclesBuilder(CyclesBuilder):
             return kinematicCycles
         else:
             return None
-            
+
     def getKinetics(self):
+        if self.kineticTrials is not None:
+            
+            detectionTimeOffset = 0.02            
+            
+            kineticCycles=list()
+            for trial in  self.kineticTrials:
+
+                flag_kinetics,times,times_left,times_right = CGM2trialTools.isKineticFlag(trial)
+
+                if flag_kinetics:
+                    context = "Left"
+                    count_L=0
+                    left_fs_times=list()
+                    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
+                        left_fs_times.append(ev.time())
+
+                    for i in range(0, len(left_fs_times)-1):
+                        init =  left_fs_times[i]
+                        end =  left_fs_times[i+1]
+                        
+                        for timeKinetic in times_left:
+                        
+                            if timeKinetic<=end and timeKinetic>=init:
+                                logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_times[i], left_fs_times[i+1]))
+                                kineticCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
+                                                           context,
+                                                           longitudinal_axis = self.longitudinal_axis_index,
+                                                           lateral_axis =self.lateral_axis_index))
+                                                       
+                                count_L+=1
+                    logging.debug("%i Left Kinetic cycles available" %(count_L))
+                                
+
+
+                    context = "Right"
+                    count_R=0
+                    right_fs_times=list()
+                    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
+                        right_fs_times.append(ev.time())
+
+                    for i in range(0, len(right_fs_times)-1):
+                        init =  right_fs_times[i]
+                        end =  right_fs_times[i+1]
+                        
+                        for timeKinetic in times_right:
+                            if timeKinetic<=end and timeKinetic>=init:
+                                logging.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_times[i], right_fs_times[i+1]))
+                                kineticCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
+                                                           context,
+                                                           longitudinal_axis = self.longitudinal_axis_index,
+                                                           lateral_axis =self.lateral_axis_index))
+                                count_R+=1
+                    logging.debug("%i Right Kinetic cycles available" %(count_R))
+            
+            return kineticCycles
+        else:
+            return None
+                            
+
+
+            
+    def getKinetics2(self):
         """
             extract Cycles used for kinetic outputs
         
@@ -658,7 +720,7 @@ class GaitCyclesBuilder(CyclesBuilder):
             
             kineticCycles=list()
             for trial in  self.kineticTrials:
-                
+
                 flag_kinetics,times = CGM2trialTools.isKineticFlag(trial)
                 
                 if flag_kinetics:
