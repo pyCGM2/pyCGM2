@@ -4,12 +4,9 @@
 import os
 import logging
 import matplotlib.pyplot as plt
-import json
+
 import pdb
-import cPickle
-import json
-from collections import OrderedDict
-from shutil import copyfile
+
 import argparse
 
 
@@ -26,15 +23,14 @@ import ViconNexus
 
 #btk
 import btk
-
+import configparser
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools,nexusTools
 
-from pyCGM2.Model.CGM2 import cgm, modelFilters, forceplates,bodySegmentParameters
+from pyCGM2.Model.CGM2 import  forceplates
 #
-from pyCGM2 import viconInterface
-import argparse
+
 
 
 if __name__ == "__main__":
@@ -54,8 +50,8 @@ if __name__ == "__main__":
         # ----------------------INPUTS-------------------------------------------
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
-            reconstructFilenameLabelledNoExt = "Gait Trial 01" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-01 - myProcess\\PIG\\"
+            reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 16" #"static Cal 01-noKAD-noAnkleMed" #
             
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
@@ -97,6 +93,36 @@ if __name__ == "__main__":
                 mappedForcePlate = args.mfpa
                 logging.warning("Force plates assign manually")
                 forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
+
+
+#        # --------- ATTEMPT TO ALTER ENF FROM nexus operation -----------------
+#
+#        #  DONT WORk
+#
+#        # --------------------Modify ENF --------------------------------------
+#        configEnf = configparser.ConfigParser()
+#        configEnf.optionxform = str
+#        enfFile = str(DATA_PATH+reconstructFilenameLabelledNoExt+".Trial.enf")
+#        configEnf.read(enfFile)
+#
+#        
+#        indexFP=1
+#        for letter in mappedForcePlate:
+#            
+#            if letter =="L": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Left"  
+#            if letter =="R": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Right"  
+#            if letter =="X": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Invalid"  
+#         
+#            indexFP+=1
+#
+#        tmpFile =str(DATA_PATH+reconstructFilenameLabelledNoExt+".Trial.enf-tmp")
+#        with open(tmpFile, 'w') as configfile:
+#            configEnf.write(configfile)
+#    
+#        os.remove(enfFile)
+#        os.rename(tmpFile,enfFile)
+#        logging.warning("Enf file updated with Force plate assignement")
+        
 
                 
         # ----------------------DISPLAY ON VICON-------------------------------
