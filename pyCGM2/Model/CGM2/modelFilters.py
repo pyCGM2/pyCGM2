@@ -931,16 +931,22 @@ class InverseDynamicFilter(object):
             nFrames = self.m_aqui.GetPointFrameNumber() 
 
             if "viconCGM1compatible" in self.m_options.keys() and self.m_options["viconCGM1compatible"]:  
-                if it.m_label == "LAnkle": 
-                    it.m_proximalLabel = "Left Shank Proximal"            
-                if it.m_label == "RAnkle": 
-                    it.m_proximalLabel = "Right Shank Proximal"            
+                if it.m_label == "LAnkle":
+                    proximalSegLabel = "Left Shank Proximal"
+                elif it.m_label == "RAnkle": 
+                    proximalSegLabel = "Right Shank Proximal"
+                else:
+                    proximalSegLabel = it.m_proximalLabel
+            
+            else:
+                proximalSegLabel = it.m_proximalLabel                
+                
 
 
             if self.m_projection == pyCGM2Enums.MomentProjection.Distal:
                 mot = self.m_model.getSegment(it.m_distalLabel).anatomicalFrame.motion
             elif self.m_projection == pyCGM2Enums.MomentProjection.Proximal:
-                mot = self.m_model.getSegment(it.m_proximalLabel).anatomicalFrame.motion
+                mot = self.m_model.getSegment(proximalSegLabel).anatomicalFrame.motion
             
             forceValues = np.zeros((nFrames,3))
             momentValues = np.zeros((nFrames,3))
