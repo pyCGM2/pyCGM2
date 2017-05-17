@@ -26,7 +26,7 @@ if __name__ == "__main__":
     plt.close("all")
     DEBUG = False
 
-    parser = argparse.ArgumentParser(description='CGM1 Calibration')
+    parser = argparse.ArgumentParser(description='Gait Processing')
     parser.add_argument('--pointSuffix', type=str, help='force suffix')
     args = parser.parse_args()
 
