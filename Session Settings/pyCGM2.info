@@ -1,0 +1,29 @@
+{ 
+  "Processing" : {
+    "Point suffix" : "",
+    "Normative data" : {
+      "Author" : "Schwartz2008",
+      "Modality" : "Free"
+    },
+    "Subject" : {},
+    "Experimental conditions" : {}
+  },
+  "Modelling" : {
+    "Model" : {},
+    "Trials": {
+        "Static": "",
+        "Motion": []
+    }
+  },
+  "MP" :{
+    "Bodymass": 0,
+    "LeftLegLength": 0,
+    "RightLegLength": 0,
+    "LeftKneeWidth": 0,
+    "RightKneeWidth": 0,
+    "LeftAnkleWidth": 0,
+    "RightAnkleWidth": 0,
+    "LeftSoleDelta": 0,
+    "RightSoleDelta": 0
+  }
+}  

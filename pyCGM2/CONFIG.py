@@ -43,7 +43,7 @@ MAIN_BENCHMARK_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchm
 NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\" 
 
 # [optional]  setting folder
-PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"Settings\\"
+PYCGM2_SESSION_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"Session Settings\\"
 
 
 # setting files
