@@ -1,0 +1,44 @@
+{ 
+  "Processing" : {
+    "Point suffix" : "",
+    "Normative data" : {
+      "Author" : "Schwartz2008",
+      "Modality" : "Free"
+    },
+    "Subject" : {},
+    "Experimental conditions" : {}
+  },
+  "Modelling" : {
+    "Model" : {},
+    "Trials": {
+        "DataPath": "C:\\Users\\AAA34169\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-20 - myProcess\\verif CGM1\\",
+        "Static": "MRI-US-20, 2008-12-17, 3DGA 01.c3d",
+        "Motion": ["MRI-US-20, 2008-12-17, 3DGA 09.c3d",
+                   "MRI-US-20, 2008-12-17, 3DGA 10.c3d"]
+    }
+  },
+  "MP" :{
+    "Required": {
+        "Bodymass": 55.6,
+        "LeftLegLength": 810.0,
+        "RightLegLength": 810.0,
+        "LeftKneeWidth": 119.7,
+        "RightKneeWidth": 119.4,
+        "LeftAnkleWidth": 66.2,
+        "RightAnkleWidth": 67.1,
+        "LeftSoleDelta": 0,
+        "RightSoleDelta": 0
+    },
+    "Optional": {
+        "InterAsisDistance": 0,
+        "LeftAsisTrocanterDistance": 0,
+        "LeftTibialTorsion": 0,
+        "LeftThighRotation": 0,
+        "LeftShankRotation": 0,
+        "RightAsisTrocanterDistance": 0,
+        "RightTibialTorsion": 0,
+        "RightThighRotation": 0,
+        "RightShankRotation": 0
+    }
+  }    
+}  
