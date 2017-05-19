@@ -245,3 +245,27 @@ def renameOpenMAtoVicon(analysis, suffix=""):
             newName = name.replace(".", "")
             newName = newName[0: newName.rfind("Power")+5] + suffix
         ts.setName(newName)    
+        
+def buildTrials(dataPath,trialfilenames):
+    """
+        Get trial list from filenames   
+
+        :Parameters:
+            - `dataPath` (str) - folder path 
+            - `trialfilenames` (list of str) - filename of the different acquisitions
+    """
+    
+    trials=[]
+    filenames =[]
+    for filename in trialfilenames:
+        fileNode = ma.io.read(str(dataPath + filename))
+        trial = fileNode.findChild(ma.T_Trial)
+        sortedEvents(trial)
+
+        trials.append(trial)
+        filenames.append(filename)
+    
+    return trials,filenames
+    
+        
+        

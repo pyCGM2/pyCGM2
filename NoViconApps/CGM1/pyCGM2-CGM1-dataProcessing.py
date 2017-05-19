@@ -65,9 +65,9 @@ if __name__ == "__main__":
     # --------------------------PROCESSING --------------------------------
 
     DATA_PATH = infoSettings["Modelling"]["Trials"]["DataPath"]
-    motionTrials = infoSettings["Modelling"]["Trials"]["Motion"]
-        
-    smartFunctions.gaitProcessing_cgm1 (motionTrials, DATA_PATH,
+    motionTrialFilenames = infoSettings["Modelling"]["Trials"]["Motion"]
+    
+    smartFunctions.gaitProcessing_cgm1 (motionTrialFilenames, DATA_PATH,
                            model,  subject, experimental,
                            pointLabelSuffix = pointSuffix,
                            plotFlag= True, 

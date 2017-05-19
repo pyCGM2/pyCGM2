@@ -138,50 +138,46 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
             chosenModality = normativeDataDict["Modality"]
             ndp = normativeDatabaseProcedure.Pinzone2014_normativeDataBases(chosenModality) # modalites : "Center One" ,"Center Two"
 
-                             
-    #---- PRELIMINARY STAGE
+    #---- Modelled File manager
     #--------------------------------------------------------------------------
-    # check if modelledFilenames is string                          
+    # preliminary check if modelledFilenames is string                          
     if isinstance(modelledFilenames,str) or isinstance(modelledFilenames,unicode):
         logging.info( "gait Processing on ONE file")        
         modelledFilenames = [modelledFilenames]
     
-
-
-    # distinguishing trials for kinematic and kinetic processing                             
-    # - kinematic Trials      
-    kinematicTrials=[]
-    kinematicFilenames =[]
-    for kinematicFilename in modelledFilenames:
-        kinematicFileNode = ma.io.read(str(DATA_PATH + kinematicFilename))
-        kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
-        trialTools.sortedEvents(kinematicTrial)
-
-        if longitudinal_axis is None or lateral_axis is None:
-            logging.info("Automatic detection of Both longitudinal and lateral Axes")
-            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
-        else:    
-            if longitudinal_axis is None or lateral_axis is not None:
-                raise Exception("[pyCGM2] Longitudinal_axis has to be also defined")     
-            if longitudinal_axis is not None or lateral_axis is None:
-                raise Exception("[pyCGM2] Lateral_axis has to be also defined")     
+    # ----kinematic trials---
+    kinematicTrials,kinematicFilenames = trialTools.buildTrials(DATA_PATH,modelledFilenames)
     
-            if longitudinal_axis is not None or lateral_axis is not None:
-                globalFrame[0] = longitudinal_axis
-                globalFrame[1] = lateral_axis
+    # manage Progression axis from the first KinematicsTrial
+    if longitudinal_axis is None or lateral_axis is None:
+            logging.info("Automatic detection of Both longitudinal and lateral Axes")
+            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrials[0],"LPSI","LASI","RPSI")
+    else:    
+        if longitudinal_axis is None or lateral_axis is not None:
+            raise Exception("[pyCGM2] Longitudinal_axis has to be also defined")     
+        if longitudinal_axis is not None or lateral_axis is None:
+            raise Exception("[pyCGM2] Lateral_axis has to be also defined")     
 
-        kinematicTrials.append(kinematicTrial)
-        kinematicFilenames.append(kinematicFilename)
+        if longitudinal_axis is not None or lateral_axis is not None:
+            globalFrame[0] = longitudinal_axis
+            globalFrame[1] = lateral_axis 
 
-    # - kinetic Trials ( check if kinetic events)        
+    #---kinetic Trials--- ( check if kinetic events)        
     kineticTrials,kineticFilenames,flag_kinetics =  trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames)                         
+
+    #---spatioTemporalTrials
+    spatioTemporalTrials = kinematicTrials
+
+    #----emgTrials
+    emgTrials = None
+
 
     #---- GAIT CYCLES FILTER
     #--------------------------------------------------------------------------
-    cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
+    cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=spatioTemporalTrials,
                                                kinematicTrials = kinematicTrials,
                                                kineticTrials = kineticTrials,
-                                               emgTrials=None,
+                                               emgTrials=emgTrials,
                                                longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
             
     cyclefilter = cycle.CyclesFilter()
