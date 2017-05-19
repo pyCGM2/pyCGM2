@@ -315,8 +315,8 @@ def findProgressionFromPoints(acq,originPointLabel, longitudinal_extremityPointL
     if not isPointExist(acq,lateral_extremityPointLabel):
         raise Exception( "[pyCGM2] : lateral point  doesnt exist")
 
-
-    index = findFirstValidFrame(acq,[originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel])
+    validFrames,vff,vlf = findValidFrames(acq,[originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel])
+    index = vff
 
     originValues = acq.GetPoint(originPointLabel).GetValues()[index,:]
     longitudinal_extremityValues = acq.GetPoint(longitudinal_extremityPointLabel).GetValues()[index,:]
