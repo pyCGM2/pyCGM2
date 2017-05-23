@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser.add_argument('--pointSuffix', type=str, help='force suffix')
     args = parser.parse_args()  
     
-    
+
     
     
     # --------------------pyCGM2 SETTINGS FILES ------------------------------
@@ -55,6 +55,7 @@ if __name__ == "__main__":
         pointSuffix = infoSettings["Processing"]["Point suffix"]        
         
     normativeData = infoSettings["Processing"]["Normative data"]
+
 
 
     # -----infos--------     

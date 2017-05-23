@@ -11,7 +11,7 @@
   "Modelling" : {
     "Model" : {},
     "Trials": {
-        "DataPath": "C:\\Users\\AAA34169\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-20 - myProcess\\verif CGM1\\",
+        "DataPath": "C:\\Users\\HLS501\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-20 - myProcess\\verif CGM1\\",
         "Static": "MRI-US-20, 2008-12-17, 3DGA 01.c3d",
         "Motion": ["MRI-US-20, 2008-12-17, 3DGA 09.c3d",
                    "MRI-US-20, 2008-12-17, 3DGA 10.c3d"]
