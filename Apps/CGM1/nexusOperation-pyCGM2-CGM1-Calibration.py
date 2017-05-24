@@ -60,12 +60,9 @@ if __name__ == "__main__":
         # --- acquisition file and path----
         if DEBUG:
             
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
-            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-20 - myProcess\\verif CGM1\\"
+            calibrateFilenameLabelledNoExt = "MRI-US-20, 2008-12-17, 3DGA 01" #"static Cal 01-noKAD-noAnkleMed" #
             
-#            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\True equinus\\S01\\CGM1\\"
-#            calibrateFilenameLabelledNoExt = "static - PIG" #"static Cal 01-noKAD-noAnkleMed" #
-
             
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
@@ -85,11 +82,7 @@ if __name__ == "__main__":
         if acqStatic.GetPoint(0).GetLabel().count(":"):
             raise Exception("[pyCGM2] Your input static c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
 
-#        # ---relabel PIG output if processing previously---
-#        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqStatic)
-#        if any([n_angles,n_forces ,n_moments,  n_powers])==1:             
-#            cgm.CGM.reLabelOldOutputs(acqStatic) 
-        
+       
         # --------------------------SUBJECT -----------------------------------
 
         # Notice : Work with ONE subject by session
@@ -101,16 +94,15 @@ if __name__ == "__main__":
         # --------------------pyCGM2 INPUT FILES ------------------------------
 
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
         # info file
         if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
+            copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
             logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
         else:
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-
 
         # ---- configuration parameters ----
         if args.leftFlatFoot is not None:      
@@ -118,6 +110,7 @@ if __name__ == "__main__":
             logging.warning("Left flat foot forces : %s"%(str(bool(args.leftFlatFoot))))
         else:
             flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
+            
                
         if args.rightFlatFoot is not None:
             flag_rightFlatFoot = bool(args.rightFlatFoot)
@@ -166,6 +159,7 @@ if __name__ == "__main__":
 
 
         # --------------------------MODEL--------------------------------------
+        acqStatic =  btkTools.applyTranslators(acqStatic,inputs["Translators"])
 
         # ---definition---
         model=cgm.CGM1LowerLimbs()
@@ -261,9 +255,9 @@ if __name__ == "__main__":
             modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                useLeftKJCnode=useLeftKJCnodeLabel, useLeftAJCnode=useLeftAJCnodeLabel,
                                useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
+                               leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter).compute()
 
-        
         #----update subject mp----
         viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 

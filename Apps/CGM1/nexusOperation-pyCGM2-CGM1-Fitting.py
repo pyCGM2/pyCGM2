@@ -105,11 +105,11 @@ if __name__ == "__main__":
 
 
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
         # info file
         if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
+            copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
             logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
         else:
@@ -151,6 +151,8 @@ if __name__ == "__main__":
 
 
         # --------------------------MODELLLING--------------------------
+        acqGait =  btkTools.applyTranslators(acqGait,inputs["Translators"])       
+           
        
         scp=modelFilters.StaticCalibrationProcedure(model) # procedure
         
@@ -167,7 +169,7 @@ if __name__ == "__main__":
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
         # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","RASI","RPSI","LPSI"])
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgression(acqGait,"LASI")
 
         # absolute angles        
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
@@ -184,6 +186,7 @@ if __name__ == "__main__":
         # --- force plate handling----
         # find foot  in contact        
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
         logging.info("Force plate assignment : %s" %mappedForcePlate)
 
         if args.mfpa is not None:
@@ -192,6 +195,7 @@ if __name__ == "__main__":
             else:
                 mappedForcePlate = args.mfpa
                 logging.warning("Force plates assign manually")
+                forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
 
                 
 
@@ -206,7 +210,8 @@ if __name__ == "__main__":
         modelFilters.InverseDynamicFilter(model,
                              acqGait,
                              procedure = idp,
-                             projection = momentProjection
+                             projection = momentProjection,
+                             viconCGM1compatible=True
                              ).compute(pointLabelSuffix=pointSuffix)
 
         #---- Joint energetics----
@@ -216,7 +221,11 @@ if __name__ == "__main__":
         btkTools.applyValidFramesOnOutput(acqGait,validFrames)   
 
         # ----------------------DISPLAY ON VICON-------------------------------
+
         viconInterface.ViconInterface(NEXUS,model,acqGait,subject,pointSuffix).run()
+        
+        nexusTools.createGeneralEvents(NEXUS,subject,acqGait,["Left-FP","Right-FP"])
+
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 

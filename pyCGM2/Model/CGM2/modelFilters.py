@@ -885,7 +885,8 @@ class InverseDynamicFilter(object):
         Compute joint Force and moment from Inverse dynamics 
     """ 
 
-    def __init__(self, iMod, btkAcq, procedure = None, gravityVector = np.array([0,0,-1]), scaleToMeter =0.001, projection = pyCGM2Enums.MomentProjection.Distal, exportMomentContributions = False):
+    def __init__(self, iMod, btkAcq, procedure = None, gravityVector = np.array([0,0,-1]), scaleToMeter =0.001, 
+                 projection = pyCGM2Enums.MomentProjection.Distal, exportMomentContributions = False, **options):
         """
            :Parameters:
                - `btkAcq` (btkAcquisition) - btk acquisition instance of a dynamic trial
@@ -905,8 +906,9 @@ class InverseDynamicFilter(object):
         self.m_procedure = procedure
         self.m_projection = projection
         self.m_exportMomentContributions = exportMomentContributions
+        self.m_options = options        
         
-    def compute(self, pointLabelSuffix =""):
+    def compute(self, pointLabelSuffix ="" ):
         """
             Run`InverseDynamicFilter`
             
@@ -927,12 +929,24 @@ class InverseDynamicFilter(object):
             
             jointLabel = it.m_label
             nFrames = self.m_aqui.GetPointFrameNumber() 
+
+            if "viconCGM1compatible" in self.m_options.keys() and self.m_options["viconCGM1compatible"]:  
+                if it.m_label == "LAnkle":
+                    proximalSegLabel = "Left Shank Proximal"
+                elif it.m_label == "RAnkle": 
+                    proximalSegLabel = "Right Shank Proximal"
+                else:
+                    proximalSegLabel = it.m_proximalLabel
             
+            else:
+                proximalSegLabel = it.m_proximalLabel                
+                
+
 
             if self.m_projection == pyCGM2Enums.MomentProjection.Distal:
                 mot = self.m_model.getSegment(it.m_distalLabel).anatomicalFrame.motion
             elif self.m_projection == pyCGM2Enums.MomentProjection.Proximal:
-                mot = self.m_model.getSegment(it.m_proximalLabel).anatomicalFrame.motion
+                mot = self.m_model.getSegment(proximalSegLabel).anatomicalFrame.motion
             
             forceValues = np.zeros((nFrames,3))
             momentValues = np.zeros((nFrames,3))

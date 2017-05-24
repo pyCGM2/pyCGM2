@@ -136,6 +136,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
             Rz = np.abs(force_downsample[:,2])
            
             boolLst = Rz > forceThreshold    
+
             
             enableDataFlag = False
             for it in boolLst.tolist():
@@ -201,8 +202,55 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
                     li = list(suffix)
                     li[indexFP]="X"
                     suffix ="".join(li)
+                    
                 
             indexFP+=1
-
-
+            
     return suffix
+
+
+def addForcePlateGeneralEvents (btkAcq,suffix ):
+    """
+        Add General events from force plate assignmenet
+    """
+
+    ff=btkAcq.GetFirstFrame()
+    lf=btkAcq.GetLastFrame()
+    pf = btkAcq.GetPointFrequency()
+    appf=btkAcq.GetNumberAnalogSamplePerFrame()
+
+     # --- ground reaction force wrench ---
+    pfe = btk.btkForcePlatformsExtractor()
+    grwf = btk.btkGroundReactionWrenchFilter()
+    pfe.SetInput(btkAcq)
+    pfc = pfe.GetOutput()
+    grwf.SetInput(pfc)
+    grwc = grwf.GetOutput()
+    grwc.Update()
+
+    # remove force plates events
+    btkTools.clearEvents(btkAcq,["Left-FP","Right-FP"])
+    
+
+    # add general events
+    indexFP =0
+    for letter in suffix:
+
+        force= grwc.GetItem(indexFP).GetForce().GetValues()
+        force_downsample = force[0:(lf-ff+1)*appf:appf]   # downsample 
+    
+
+        Rz = np.abs(force_downsample[:,2])
+       
+        frameMax=  ff+np.argmax(Rz)        
+        
+        if letter == "L":
+            ev = btk.btkEvent('Left-FP', frameMax/pf, 'General', btk.btkEvent.Automatic, '', 'event from Force plate assignment')        
+            btkAcq.AppendEvent(ev)
+        elif letter == "R":
+            ev = btk.btkEvent('Right-FP', frameMax/pf, 'General', btk.btkEvent.Automatic, '', 'event from Force plate assignment')        
+            btkAcq.AppendEvent(ev)        
+
+        
+        indexFP+=1
+        

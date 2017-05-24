@@ -9,6 +9,24 @@ CONTENT_INPUTS_CGM1 ="""
         "Marker diameter" : 14,
         "Point suffix" : ""
       },
+      "Translators" : {
+        "LASI":"",
+    	  "RASI":"",
+    	  "LPSI":"",
+    	  "RPSI":"",
+    	  "RTHI":"",
+    	  "RKNE":"",
+    	  "RTIB":"",
+    	  "RANK":"",
+    	  "RHEE":"",
+    	  "RTOE":"",
+    	  "LTHI":"",
+    	  "LKNE":"",
+    	  "LTIB":"",
+    	  "LANK":"",
+    	  "LHEE":"",
+    	  "LTOE":""
+	},
       "Calibration" : {
         "Left flat foot" : 1 ,
         "Right flat foot" : 1 
@@ -26,6 +44,24 @@ CONTENT_INPUTS_CGM1_1 ="""
         "Marker diameter" : 14,
         "Point suffix" : ""
       },
+      "Translators" : {
+        "LASI":"",
+    	  "RASI":"",
+    	  "LPSI":"",
+    	  "RPSI":"",
+    	  "RTHI":"",
+    	  "RKNE":"",
+    	  "RTIB":"",
+    	  "RANK":"",
+    	  "RHEE":"",
+    	  "RTOE":"",
+    	  "LTHI":"",
+    	  "LKNE":"",
+    	  "LTIB":"",
+    	  "LANK":"",
+    	  "LHEE":"",
+    	  "LTOE":""
+	},
       "Calibration" : {
         "Left flat foot" : 1 ,
         "Right flat foot" : 1 
@@ -42,6 +78,24 @@ CONTENT_INPUTS_CGM2_1 ="""
         "Marker diameter" : 14,
         "Point suffix" : ""
       },
+      "Translators" : {
+        "LASI":"",
+    	  "RASI":"",
+    	  "LPSI":"",
+    	  "RPSI":"",
+    	  "RTHI":"",
+    	  "RKNE":"",
+    	  "RTIB":"",
+    	  "RANK":"",
+    	  "RHEE":"",
+    	  "RTOE":"",
+    	  "LTHI":"",
+    	  "LKNE":"",
+    	  "LTIB":"",
+    	  "LANK":"",
+    	  "LHEE":"",
+    	  "LTOE":""
+	},      
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
@@ -59,6 +113,24 @@ CONTENT_INPUTS_CGM2_2 ="""
         "Marker diameter" : 14,
         "Point suffix" : ""
       },
+      "Translators" : {
+        "LASI":"",
+    	  "RASI":"",
+    	  "LPSI":"",
+    	  "RPSI":"",
+    	  "RTHI":"",
+    	  "RKNE":"",
+    	  "RTIB":"",
+    	  "RANK":"",
+    	  "RHEE":"",
+    	  "RTOE":"",
+    	  "LTHI":"",
+    	  "LKNE":"",
+    	  "LTIB":"",
+    	  "LANK":"",
+    	  "LHEE":"",
+    	  "LTOE":""
+	},      
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
@@ -94,6 +166,24 @@ CONTENT_INPUTS_CGM2_2_EXPERT ="""
         "Marker diameter" : 14,
         "Point suffix" : ""
       },
+      "Translators" : {
+        "LASI":"",
+    	  "RASI":"",
+    	  "LPSI":"",
+    	  "RPSI":"",
+    	  "RTHI":"",
+    	  "RKNE":"",
+    	  "RTIB":"",
+    	  "RANK":"",
+    	  "RHEE":"",
+    	  "RTOE":"",
+    	  "LTHI":"",
+    	  "LKNE":"",
+    	  "LTIB":"",
+    	  "LANK":"",
+    	  "LHEE":"",
+    	  "LTOE":""
+	},
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
@@ -409,63 +499,63 @@ CONTENT_INPUTS_CGM2_3_EXPERT ="""
 
 def generateCGM1_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM1-pyCGM2.inputs"):    
+    if not os.path.isfile( userAppData_path + "CGM1-pyCGM2.settings"):    
         inputs = json.loads(CONTENT_INPUTS_CGM1,object_pairs_hook=OrderedDict)
         
-        F = open(str(userAppData_path+"CGM1-pyCGM2.inputs"),"w") 
+        F = open(str(userAppData_path+"CGM1-pyCGM2.settings"),"w") 
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()
         
 def generateCGM1_1_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM1_1-pyCGM2.inputs"):    
+    if not os.path.isfile( userAppData_path + "CGM1_1-pyCGM2.settings"):    
         inputs = json.loads(CONTENT_INPUTS_CGM1_1,object_pairs_hook=OrderedDict)
         
-        F = open(str(userAppData_path+"CGM1_1-pyCGM2.inputs"),"w") 
+        F = open(str(userAppData_path+"CGM1_1-pyCGM2.settings"),"w") 
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()
 
 def generateCGM2_1_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_1-pyCGM2.inputs"):    
+    if not os.path.isfile( userAppData_path + "CGM2_1-pyCGM2.settings"):    
         inputs = json.loads(CONTENT_INPUTS_CGM2_1,object_pairs_hook=OrderedDict)
         
-        F = open(str(userAppData_path+"CGM2_1-pyCGM2.inputs"),"w") 
+        F = open(str(userAppData_path+"CGM2_1-pyCGM2.settings"),"w") 
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()        
         
 def generateCGM2_2_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_2-pyCGM2.inputs"):    
+    if not os.path.isfile( userAppData_path + "CGM2_2-pyCGM2.settings"):    
         inputs = json.loads(CONTENT_INPUTS_CGM2_2,object_pairs_hook=OrderedDict)
         
-        F = open(str(userAppData_path+"CGM2_2-pyCGM2.inputs"),"w") 
+        F = open(str(userAppData_path+"CGM2_2-pyCGM2.settings"),"w") 
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()         
         
 def generateCGM2_2_Expert_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_2-Expert-pyCGM2.inputs"):    
+    if not os.path.isfile( userAppData_path + "CGM2_2-Expert-pyCGM2.settings"):    
         inputs = json.loads(CONTENT_INPUTS_CGM2_2_EXPERT,object_pairs_hook=OrderedDict)
         
-        F = open(str(userAppData_path+"CGM2_2-Expert-pyCGM2.inputs"),"w") 
+        F = open(str(userAppData_path+"CGM2_2-Expert-pyCGM2.settings"),"w") 
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close() 
 
 def generateCGM2_3_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_3-pyCGM2.inputs"):    
+    if not os.path.isfile( userAppData_path + "CGM2_3-pyCGM2.settings"):    
         inputs = json.loads(CONTENT_INPUTS_CGM2_3,object_pairs_hook=OrderedDict)
         
-        F = open(str(userAppData_path+"CGM2_3-pyCGM2.inputs"),"w") 
+        F = open(str(userAppData_path+"CGM2_3-pyCGM2.settings"),"w") 
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()
 
 def generateCGM2_3_Expert_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_3-Expert-pyCGM2.inputs"):    
+    if not os.path.isfile( userAppData_path + "CGM2_3-Expert-pyCGM2.settings"):    
         inputs = json.loads(CONTENT_INPUTS_CGM2_3_EXPERT,object_pairs_hook=OrderedDict)
         
-        F = open(str(userAppData_path+"CGM2_3-Expert-pyCGM2.inputs"),"w") 
+        F = open(str(userAppData_path+"CGM2_3-Expert-pyCGM2.settings"),"w") 
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()             

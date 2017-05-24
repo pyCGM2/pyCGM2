@@ -22,7 +22,7 @@ import ma.io
 import ma.body
 
 from pyCGM2.Model.CGM2 import cgm
-from pyCGM2.Processing import cycle,analysis,scores
+from pyCGM2.Processing import cycle,analysis,scores,exporter,c3dManager
 from pyCGM2.Report import normativeDatabaseProcedure
 from pyCGM2.Tools import trialTools
 
@@ -34,7 +34,7 @@ class GpsTest():
     @classmethod
     def GpsCGM1Test(cls):
          # ----DATA-----        
-        DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\analysis\\gps\\"
+        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gps\\"
 
         reconstructedFilenameLabelledNoExt ="gait Trial 03 - viconName"  
         reconstructedFilenameLabelled = reconstructedFilenameLabelledNoExt+".c3d"        
@@ -45,34 +45,23 @@ class GpsTest():
         
         modelledFilenames = [reconstructedFilenameLabelled]        
         
-        #---- GAIT CYCLES FILTER PRELIMARIES
+        #---- c3d manager
         #--------------------------------------------------------------------------
-        # distinguishing trials for kinematic and kinetic processing                             
-
-        # - kinematic Trials      
-        kinematicTrials=[]
-        kinematicFilenames =[]
-        for kinematicFilename in modelledFilenames:
-            kinematicFileNode = ma.io.read(str(DATA_PATH + kinematicFilename))
-            kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
-            trialTools.sortedEvents(kinematicTrial)
-    
-            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
-    
-            kinematicTrials.append(kinematicTrial)
-            kinematicFilenames.append(kinematicFilename)
-    
-        # - kinetic Trials ( check if kinetic events)        
-        kineticTrials,kineticFilenames,flag_kinetics =  trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames) 
+                
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
+        cmf.enableEmg(False)
+        trialManager = cmf.generate()
         
+    
+    
         #---- GAIT CYCLES FILTER
         #--------------------------------------------------------------------------
-        cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
-                                               kinematicTrials = kinematicTrials,
-                                               kineticTrials = kineticTrials,
-                                               emgTrials=None,
-                                               longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
-            
+        cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=trialManager.spatioTemporal["Trials"],
+                                                   kinematicTrials = trialManager.kinematic["Trials"],
+                                                   kineticTrials = trialManager.kinetic["Trials"],
+                                                   emgTrials=trialManager.emg["Trials"])    
+                
         cyclefilter = cycle.CyclesFilter()
         cyclefilter.setBuilder(cycleBuilder)
         cycles = cyclefilter.build()
@@ -111,12 +100,13 @@ class GpsTest():
         gps =scores.CGM1_GPS()
         ndp = normativeDatabaseProcedure.Schwartz2008_normativeDataBases("Free")
         
-        
         scf = scores.ScoreFilter(gps,analysisFilter.analysis, ndp)
         scf.compute()
 
-        
-        analysisFilter.exportAdvancedDataFrame("test")
+        xlsExport = exporter.XlsExportFilter()
+        xlsExport.setAnalysisInstance(analysisFilter.analysis)
+        xlsExport.setConcreteAnalysisBuilder(analysisBuilder)
+        xlsExport.exportAdvancedDataFrame("gpsTest", path=DATA_PATH)
 
 
 
