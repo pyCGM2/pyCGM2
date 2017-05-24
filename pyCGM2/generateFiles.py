@@ -9,6 +9,24 @@ CONTENT_INPUTS_CGM1 ="""
         "Marker diameter" : 14,
         "Point suffix" : ""
       },
+      "Translators" : {
+        "LASI":"",
+    	  "RASI":"",
+    	  "LPSI":"",
+    	  "RPSI":"",
+    	  "RTHI":"",
+    	  "RKNE":"",
+    	  "RTIB":"",
+    	  "RANK":"",
+    	  "RHEE":"",
+    	  "RTOE":"",
+    	  "LTHI":"",
+    	  "LKNE":"",
+    	  "LTIB":"",
+    	  "LANK":"",
+    	  "LHEE":"",
+    	  "LTOE":""
+	},
       "Calibration" : {
         "Left flat foot" : 1 ,
         "Right flat foot" : 1 
@@ -26,6 +44,24 @@ CONTENT_INPUTS_CGM1_1 ="""
         "Marker diameter" : 14,
         "Point suffix" : ""
       },
+      "Translators" : {
+        "LASI":"",
+    	  "RASI":"",
+    	  "LPSI":"",
+    	  "RPSI":"",
+    	  "RTHI":"",
+    	  "RKNE":"",
+    	  "RTIB":"",
+    	  "RANK":"",
+    	  "RHEE":"",
+    	  "RTOE":"",
+    	  "LTHI":"",
+    	  "LKNE":"",
+    	  "LTIB":"",
+    	  "LANK":"",
+    	  "LHEE":"",
+    	  "LTOE":""
+	},
       "Calibration" : {
         "Left flat foot" : 1 ,
         "Right flat foot" : 1 
@@ -42,6 +78,24 @@ CONTENT_INPUTS_CGM2_1 ="""
         "Marker diameter" : 14,
         "Point suffix" : ""
       },
+      "Translators" : {
+        "LASI":"",
+    	  "RASI":"",
+    	  "LPSI":"",
+    	  "RPSI":"",
+    	  "RTHI":"",
+    	  "RKNE":"",
+    	  "RTIB":"",
+    	  "RANK":"",
+    	  "RHEE":"",
+    	  "RTOE":"",
+    	  "LTHI":"",
+    	  "LKNE":"",
+    	  "LTIB":"",
+    	  "LANK":"",
+    	  "LHEE":"",
+    	  "LTOE":""
+	},      
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
@@ -59,6 +113,24 @@ CONTENT_INPUTS_CGM2_2 ="""
         "Marker diameter" : 14,
         "Point suffix" : ""
       },
+      "Translators" : {
+        "LASI":"",
+    	  "RASI":"",
+    	  "LPSI":"",
+    	  "RPSI":"",
+    	  "RTHI":"",
+    	  "RKNE":"",
+    	  "RTIB":"",
+    	  "RANK":"",
+    	  "RHEE":"",
+    	  "RTOE":"",
+    	  "LTHI":"",
+    	  "LKNE":"",
+    	  "LTIB":"",
+    	  "LANK":"",
+    	  "LHEE":"",
+    	  "LTOE":""
+	},      
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
@@ -94,6 +166,24 @@ CONTENT_INPUTS_CGM2_2_EXPERT ="""
         "Marker diameter" : 14,
         "Point suffix" : ""
       },
+      "Translators" : {
+        "LASI":"",
+    	  "RASI":"",
+    	  "LPSI":"",
+    	  "RPSI":"",
+    	  "RTHI":"",
+    	  "RKNE":"",
+    	  "RTIB":"",
+    	  "RANK":"",
+    	  "RHEE":"",
+    	  "RTOE":"",
+    	  "LTHI":"",
+    	  "LKNE":"",
+    	  "LTIB":"",
+    	  "LANK":"",
+    	  "LHEE":"",
+    	  "LTOE":""
+	},
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
