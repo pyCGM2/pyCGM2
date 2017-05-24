@@ -30,7 +30,7 @@ class xlsExportTest():
         
         # ----DATA-----        
 
-        DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d" ] 
                 
         # ----INFOS-----        
@@ -52,9 +52,7 @@ class xlsExportTest():
                          consistencyOnly = False,
                          normativeDataDict = normativeDataSet,
                          name_out=None,
-                         DATA_PATH_OUT= None,
-                         longitudinal_axis=None,
-                         lateral_axis = None)
+                         DATA_PATH_OUT= None)
                          
 
     @classmethod
@@ -62,7 +60,7 @@ class xlsExportTest():
         
         # ----DATA-----        
 
-        DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 01 - viconName.c3d","gait Trial 03 - viconName.c3d"  ] 
                 
         # ----INFOS-----        
@@ -84,13 +82,11 @@ class xlsExportTest():
                          consistencyOnly = False,
                          normativeDataDict = normativeDataSet,
                          name_out=None,
-                         DATA_PATH_OUT= None,
-                         longitudinal_axis=None,
-                         lateral_axis = None)
+                         DATA_PATH_OUT= None)
 
 if __name__ == "__main__":
 
     plt.close("all")  
   
-    #xlsExportTest.gaitXlsExport_oneFile()
+    xlsExportTest.gaitXlsExport_oneFile()
     xlsExportTest.gaitXlsExport_twoFiles()   

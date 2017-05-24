@@ -8,7 +8,7 @@ import os
 
 from pyCGM2.Processing import cycle,analysis,scores,exporter,c3dManager   
 from pyCGM2.Report import plot,normativeDatabaseProcedure
-from pyCGM2.Tools import trialTools
+
 
 # openma
 import ma.io
@@ -99,10 +99,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                          consistencyOnly = False,
                          normativeDataDict = None,
                          name_out=None,
-                         DATA_PATH_OUT= None,
-                         longitudinal_axis=None,
-                         lateral_axis = None
-                         ):
+                         DATA_PATH_OUT= None  ):
     """
         Processing  of multiple gait c3d with lower limb CGM outputs
         
