@@ -21,7 +21,7 @@ if not os.path.exists(PYCGM2_APPDATA_PATH[:-1]):
 
 
 # [OPTIONAL] ----------------------------------
-MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)) + "\\" #C:\\Users\\AAA34169\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)  
+MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)) + "\\" #C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)  
 
 # [Optional]: Apps path 
 MAIN_PYCGM2_APPS_PATH = MAIN_PYCGM2_PATH+"Apps\\"
@@ -36,8 +36,8 @@ NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"Data\\normativeData\\"  # By defaul
 OPENSIM_PREBUILD_MODEL_PATH = MAIN_PYCGM2_PATH + "Extern\\opensim\\" 
 
 # [Optional] path pointing at Data Folders used for Tests
-TEST_DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\"
-MAIN_BENCHMARK_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\"
+TEST_DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\"
+MAIN_BENCHMARK_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\"
 
 # [optional] path pointing pyCGM2-Nexus tools
 NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\" 
@@ -107,25 +107,25 @@ def addOpenma(branch=None):
         sys.path.append(THIRDPARTY_PATH + "\\openma\\ma")
     else:
         if branch=="master":
-            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma")
-            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma\\ma")
+            sys.path.append("C:\\Users\\HLS501\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma")
+            sys.path.append("C:\\Users\\HLS501\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma\\ma")
             
             # method 1 : with path definition
             # need definition in the PATH, I appended these two folders: 
-            # C:\Users\AAA34169\Documents\Programming\openMA\Build\master\bin;
-            # C:\Users\AAA34169\Documents\Programming\openMA\Build\master\bin\swig\python\openma\ma;
-            #sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma")
-            #sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma\\ma")
+            # C:\Users\HLS501\Documents\Programming\openMA\Build\master\bin;
+            # C:\Users\HLS501\Documents\Programming\openMA\Build\master\bin\swig\python\openma\ma;
+            #sys.path.append("C:\\Users\\HLS501\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma")
+            #sys.path.append("C:\\Users\\HLS501\\Documents\\Programming\\openMA\\Build\\master\\bin\\swig\\python\\openma\\ma")
             
             # method 2 : with openMA distribution made manually 
-            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma")
-            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma\\ma")
+            sys.path.append("C:\\Users\\HLS501\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma")
+            sys.path.append("C:\\Users\\HLS501\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma\\ma")
     
         elif branch=="plugin-gait-kad":
             
             # method 2 : with openMA distribution made manually 
-            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma")
-            sys.path.append("C:\\Users\\AAA34169\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma\\ma")
+            sys.path.append("C:\\Users\\HLS501\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma")
+            sys.path.append("C:\\Users\\HLS501\\Documents\\Programming\\openMA\\distribuable\\OpenMA-KAD\\openma\\ma")
             
 
 def addBtk():
