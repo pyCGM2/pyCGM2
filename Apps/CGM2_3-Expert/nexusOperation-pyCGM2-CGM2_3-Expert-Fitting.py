@@ -341,7 +341,8 @@ if __name__ == "__main__":
         modelFilters.ModelJCSFilter(model,acqIK).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
         # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqIK,["LASI","RASI","RPSI","LPSI"])
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxis(acqIK,"LASI")
+
         # absolute angles        
         modelFilters.ModelAbsoluteAnglesFilter(model,acqIK,
                                                segmentLabels=["Left Foot","Right Foot","Pelvis"],
