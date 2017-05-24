@@ -12,6 +12,7 @@ import pyCGM2.Math.normalisation  as MathNormalisation
 
 #----module methods ------
 
+                    
 def spatioTemporelParameter_descriptiveStats(cycles,label,context):
     
     """
@@ -303,16 +304,13 @@ class GaitCycle(Cycle):
                 "strideWidth", "speed"]
 
     
-    def __init__(self,gaitTrial,startTime,endTime,context, enableFlag = True,
-                 longitudinal_axis=0,lateral_axis=1):
+    def __init__(self,gaitTrial,startTime,endTime,context, enableFlag = True):
         """
         :Parameters:
              - `trial` (openma-trial) - openma from a c3d
              - `startTime` (double) -  start time of the cycle
              - `endTime` (double) - end time of the cycle 
              - `enableFlag` (bool) - flag the Cycle in order to indicate if we can use it in a analysis process.
-             - `longitudinal_axis` (int) - index of the  longitudinal global axis (X=0, Y=1, Z=2)
-             - `lateral_axis` (int) - index of the lateral global axis (X=0, Y=1, Z=2)                 
 
         """
 
@@ -345,10 +343,10 @@ class GaitCycle(Cycle):
         self.m_normalizedContraFO=round(np.divide(float(self.m_contraFO - self.begin),float(self.end-self.begin))*100)
         
         
-        self.__computeSpatioTemporalParameter(longitudinal_axis,lateral_axis)
+        self.__computeSpatioTemporalParameter()
         
         
-    def __computeSpatioTemporalParameter(self,longitudinal_axis,lateral_axis):
+    def __computeSpatioTemporalParameter(self):
 
         duration = np.divide((self.end-self.begin),self.pointfrequency)
 
@@ -371,6 +369,13 @@ class GaitCycle(Cycle):
 
             if CGM2trialTools.isTimeSequenceExist(self.trial,"LHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"RHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"LTOE"):
                 
+
+                progressionAxis,forwardProgression,globalFrame = CGM2trialTools.findProgression(self.trial,"LHEE")
+                
+                longitudinal_axis=0  if progressionAxis =="X" else 1
+                lateral_axis=1  if progressionAxis =="X" else 0
+
+                    
                 strideLength=np.abs(self.getPointTimeSequenceData("LHEE")[self.end-self.begin,longitudinal_axis] -\
                                     self.getPointTimeSequenceData("LHEE")[0,longitudinal_axis])/1000.0
                 pst.setProperty("strideLength", strideLength)
@@ -389,22 +394,18 @@ class GaitCycle(Cycle):
         if self.context == "Right":
 
             if CGM2trialTools.isTimeSequenceExist(self.trial,"RHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"LHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"RTOE"):               
-                try: 
-                    strideLength=np.abs(self.getPointTimeSequenceData("RHEE")[self.end-self.begin,longitudinal_axis] -\
-                                        self.getPointTimeSequenceData("RHEE")[0,longitudinal_axis])/1000.0
-                     
-                    strideWidth = np.abs(self.getPointTimeSequenceData("RTOE")[self.end-self.begin,lateral_axis] -\
-                                     self.getPointTimeSequenceData("LHEE")[0,lateral_axis])/1000.0 
-                                        
-                except IndexError:
-                    strideLength=np.abs(self.getPointTimeSequenceData("RHEE")[(self.end-self.begin)-1,longitudinal_axis] -\
-                                        self.getPointTimeSequenceData("RHEE")[0,longitudinal_axis])/1000.0
-                                        
-                    strideWidth = np.abs(self.getPointTimeSequenceData("RTOE")[self.end-self.begin-1,lateral_axis] -\
-                                     self.getPointTimeSequenceData("LHEE")[0,lateral_axis])/1000.0                                         
-                                        
-                    logging.error("The last frame of the c3d is probably a foot strike. PyCGM2 takes the before-end Frame fro computing bth stride length and stride width" )
 
+                progressionAxis,forwardProgression,globalFrame = CGM2trialTools.findProgression(self.trial,"RHEE")
+
+                longitudinal_axis=0  if progressionAxis =="X" else 1
+                lateral_axis=1  if progressionAxis =="X" else 0 
+
+                strideLength=np.abs(self.getPointTimeSequenceData("RHEE")[self.end-self.begin,longitudinal_axis] -\
+                                    self.getPointTimeSequenceData("RHEE")[0,longitudinal_axis])/1000.0
+                 
+                strideWidth = np.abs(self.getPointTimeSequenceData("RTOE")[self.end-self.begin,lateral_axis] -\
+                                 self.getPointTimeSequenceData("LHEE")[0,lateral_axis])/1000.0 
+                                        
                 pst.setProperty("strideLength", strideLength)
                 pst.setProperty("strideWidth", strideWidth)
 
@@ -507,31 +508,13 @@ class Cycles():
 # --- BUILDER 
 class CyclesBuilder(object):
 
-    def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None,longitudinal_axis="X",lateral_axis="Y"):
+    def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None):
 
         self.spatioTemporalTrials =spatioTemporalTrials        
         self.kinematicTrials =kinematicTrials
         self.kineticTrials =kineticTrials
         self.emgTrials =emgTrials
-        self.longitudinal_axis=longitudinal_axis
-        self.lateral_axis=lateral_axis
-        
-        if self.longitudinal_axis == "X":
-            self.longitudinal_axis_index = 0
-        elif self.longitudinal_axis == "Y":
-            self.longitudinal_axis_index = 1
-        elif self.longitudinal_axis == "Z":
-            self.longitudinal_axis_index = 2
-
-        if self.lateral_axis == "X":
-            self.lateral_axis_index = 0
-        elif self.lateral_axis == "Y":
-            self.lateral_axis_index = 1
-        elif self.lateral_axis == "Z":
-            self.lateral_axis_index = 2
-
-
-
+       
     def getSpatioTemporal(self): pass   
     def getKinematics(self):pass
     def getKinetics(self):pass
@@ -545,7 +528,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
     """
 
-    def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None,longitudinal_axis="X",lateral_axis="Y"):
+    def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None):
         """
             :Parameters:
                  - `spatioTemporalTrials` (list of openma trials) - list of trials of which Cycles will be extracted for computing spatio-temporal parameters   
@@ -563,8 +546,6 @@ class GaitCyclesBuilder(CyclesBuilder):
             kinematicTrials=kinematicTrials,
             kineticTrials = kineticTrials,
             emgTrials = emgTrials,
-            longitudinal_axis=longitudinal_axis,
-            lateral_axis=lateral_axis
             )
             
           
@@ -587,9 +568,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
                 for i in range(0, len(left_fs_times)-1):
                     spatioTemporalCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                                   context,
-                                                   longitudinal_axis = self.longitudinal_axis_index,
-                                                   lateral_axis =self.lateral_axis_index)) 
+                                                   context)) 
 
                 context = "Right"
                 right_fs_times=list()
@@ -598,9 +577,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
                 for i in range(0, len(right_fs_times)-1):
                     spatioTemporalCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                                   context,
-                                                   longitudinal_axis = self.longitudinal_axis_index,
-                                                   lateral_axis =self.lateral_axis_index))
+                                                   context))
 
             return spatioTemporalCycles
         else:
@@ -625,9 +602,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
                 for i in range(0, len(left_fs_times)-1):
                     kinematicCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                                   context,
-                                                   longitudinal_axis = self.longitudinal_axis_index,
-                                                   lateral_axis =self.lateral_axis_index)) 
+                                                   context)) 
 
                 context = "Right"
                 right_fs_times=list()
@@ -636,9 +611,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
                 for i in range(0, len(right_fs_times)-1):
                     kinematicCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                                   context,
-                                                   longitudinal_axis = self.longitudinal_axis_index,
-                                                   lateral_axis =self.lateral_axis_index))
+                                                   context))
 
             return kinematicCycles
         else:
@@ -670,9 +643,7 @@ class GaitCyclesBuilder(CyclesBuilder):
                             if timeKinetic<=end and timeKinetic>=init:
                                 logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_times[i], left_fs_times[i+1]))
                                 kineticCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                                           context,
-                                                           longitudinal_axis = self.longitudinal_axis_index,
-                                                           lateral_axis =self.lateral_axis_index))
+                                                           context))
                                                        
                                 count_L+=1
                     logging.debug("%i Left Kinetic cycles available" %(count_L))
@@ -693,9 +664,7 @@ class GaitCyclesBuilder(CyclesBuilder):
                             if timeKinetic<=end and timeKinetic>=init:
                                 logging.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_times[i], right_fs_times[i+1]))
                                 kineticCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                                           context,
-                                                           longitudinal_axis = self.longitudinal_axis_index,
-                                                           lateral_axis =self.lateral_axis_index))
+                                                           context))
                                 count_R+=1
                     logging.debug("%i Right Kinetic cycles available" %(count_R))
             
@@ -737,9 +706,7 @@ class GaitCyclesBuilder(CyclesBuilder):
                             count_L+=1
                             logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_times[i], left_fs_times[i+1]))
                             kineticCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                                           context,
-                                                           longitudinal_axis = self.longitudinal_axis_index,
-                                                           lateral_axis =self.lateral_axis_index)) 
+                                                           context)) 
                 
                     logging.debug("%i Left Kinetic cycles available" %(count_L))    
                     
@@ -756,9 +723,7 @@ class GaitCyclesBuilder(CyclesBuilder):
                             count_R+=1
                             logging.debug("right kinetic cycle found from %.2f to %.2f" %(right_fs_times[i], right_fs_times[i+1]))
                             kineticCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                                           context,
-                                                           longitudinal_axis = self.longitudinal_axis_index,
-                                                           lateral_axis =self.lateral_axis_index))
+                                                           context))
                     logging.debug("%i Right Kinetic cycles available" %(count_R))  
                       
             return kineticCycles
@@ -784,9 +749,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
                 for i in range(0, len(left_fs_times)-1):
                     emgCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                                   context,
-                                                   longitudinal_axis = self.longitudinal_axis_index,
-                                                   lateral_axis =self.lateral_axis_index)) 
+                                                   context)) 
 
                 context = "Right"
                 right_fs_times=list()
@@ -795,9 +758,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
                 for i in range(0, len(right_fs_times)-1):
                     emgCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                                   context,
-                                                   longitudinal_axis = self.longitudinal_axis_index,
-                                                   lateral_axis =self.lateral_axis_index))
+                                                   context))
 
             return emgCycles
         else:

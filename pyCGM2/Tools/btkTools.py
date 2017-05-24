@@ -161,7 +161,7 @@ def findValidFrames(acq,markerLabels):
     for i in range(0,acq.GetPointFrameNumber()):
         pointFlag=list()
         for marker in markerLabels:
-            if acq.GetPoint(marker).GetResidual(i) == 0 :
+            if acq.GetPoint(marker).GetResidual(i) >= 0 :
                 pointFlag.append(1)
             else:
                 pointFlag.append(0)
@@ -233,6 +233,39 @@ def applyTranslators(acq, translators):
        
 
 
+def findProgression(acq,marker):
+
+    if not isPointExist(acq,marker):
+        raise Exception( "[pyCGM2] : marker doesn't exist")
+
+    # find valid frames and get the first one
+    flag,vff,vlf = findValidFrames(acq,[marker])
+
+    values = acq.GetPoint(marker).GetValues()[vff:vlf,:] 
+    
+    MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
+    absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
+
+    ind = np.argmax(absMaxValues)
+    diff = MaxValues[ind]
+    
+    if ind ==0 :
+        progressionAxis = "X"
+        lateralAxis = "Y"
+    else:
+        progressionAxis = "Y"
+        lateralAxis = "X"
+
+    forwardProgression = True if diff>0 else False
+
+    globalFrame = str(progressionAxis+lateralAxis+"Z")        
+
+    logging.info("Progression axis : %s"%(progressionAxis))
+    logging.info("forwardProgression : %s"%(str(forwardProgression)))
+    logging.info("globalFrame : %s"%(str(globalFrame)))
+        
+    return   progressionAxis,forwardProgression,globalFrame
+
 
 def findProgressionAxisFromPelvicMarkers(acq,markers):
 
@@ -294,124 +327,6 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
     return   longitudinalAxis,forwardProgression,globalFrame  
 
 
-
-def findProgressionFromPoints(acq,originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel):
-    """
-        Find progression from 3 markers    
-
-        :Parameters:
-            - `acq` (btkAcquisition) - a btk acquisition inctance
-            - `originPointLabel` (str) - origin marker label 
-            - `longitudinal_extremityPointLabel` (str) - forward marker label
-            - `lateral_extremityPointLabel` (str) - lateral marker label
-
-    """ 
-    if not isPointExist(acq,originPointLabel):
-        raise Exception( "[pyCGM2] : origin point doesnt exist")
-
-    if not isPointExist(acq,longitudinal_extremityPointLabel):
-        raise Exception( "[pyCGM2] : longitudinal point  doesnt exist")
-
-    if not isPointExist(acq,lateral_extremityPointLabel):
-        raise Exception( "[pyCGM2] : lateral point  doesnt exist")
-
-    validFrames,vff,vlf = findValidFrames(acq,[originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel])
-    index = vff
-
-    originValues = acq.GetPoint(originPointLabel).GetValues()[index,:]
-    longitudinal_extremityValues = acq.GetPoint(longitudinal_extremityPointLabel).GetValues()[index,:]
-    lateral_extremityValues = acq.GetPoint(lateral_extremityPointLabel).GetValues()[index,:]
-
-    a1=(longitudinal_extremityValues-originValues)
-    a1=a1/np.linalg.norm(a1)
-
-    a2=(lateral_extremityValues-originValues)
-    a2=a2/np.linalg.norm(a2)
-
-    globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
-
-    # longitudinal axis    
-    tmp=[]
-    for axis in globalAxes.keys():
-        res = np.dot(a1,globalAxes[axis])
-        tmp.append(res)
-    maxIndex = np.argmax(np.abs(tmp))
-    longitudinalAxis =  globalAxes.keys()[maxIndex]
-    forwardProgression = True if tmp[maxIndex]>0 else False
-    
-    # lateral axis
-    tmp=[]
-    for axis in globalAxes.keys():
-        res = np.dot(a2,globalAxes[axis])
-        tmp.append(res)
-    maxIndex = np.argmax(np.abs(tmp))
-    lateralAxis =  globalAxes.keys()[maxIndex]    
-    
-
-    # global frame
-    if "X" not in str(longitudinalAxis+lateralAxis):
-        globalFrame = str(longitudinalAxis+lateralAxis+"X")
-    if "Y" not in str(longitudinalAxis+lateralAxis):
-        globalFrame = str(longitudinalAxis+lateralAxis+"Y")        
-    if "Z" not in str(longitudinalAxis+lateralAxis):
-        globalFrame = str(longitudinalAxis+lateralAxis+"Z")        
-
-    logging.info("Longitudinal axis : %s"%(longitudinalAxis))
-    logging.info("forwardProgression : %s"%(str(forwardProgression)))
-    logging.info("globalFrame : %s"%(str(globalFrame)))
-           
-    return   longitudinalAxis,forwardProgression,globalFrame  
-
-
-def findProgressionFromVectors(a1_long,a2_lat):
-    """
-        Find progression from 2 vectors    
-
-        :Parameters:
-            - `a1_long` (numpy.array(3,)) - forward vector 
-            - `a1_long` (numpy.array(3,)) - lateral vector
-
-    """ 
-
-    a1=a1_long/np.linalg.norm(a1_long)
-
-    a2=a2_lat/np.linalg.norm(a2_lat)
-
-    globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
-
-    # longitudinal axis    
-    tmp=[]
-    for axis in globalAxes.keys():
-        res = np.dot(a1,globalAxes[axis])
-        tmp.append(res)
-    maxIndex = np.argmax(np.abs(tmp))
-    longitudinalAxis =  globalAxes.keys()[maxIndex]
-    forwardProgression = True if tmp[maxIndex]>0 else False
-    
-    # lateral axis
-    tmp=[]
-    for axis in globalAxes.keys():
-        res = np.dot(a2,globalAxes[axis])
-        tmp.append(res)
-    maxIndex = np.argmax(np.abs(tmp))
-    lateralAxis =  globalAxes.keys()[maxIndex]    
-    
-
-    # global frame
-    if "X" not in str(longitudinalAxis+lateralAxis):
-        globalFrame = str(longitudinalAxis+lateralAxis+"X")
-    if "Y" not in str(longitudinalAxis+lateralAxis):
-        globalFrame = str(longitudinalAxis+lateralAxis+"Y")        
-    if "Z" not in str(longitudinalAxis+lateralAxis):
-        globalFrame = str(longitudinalAxis+lateralAxis+"Z")        
-
-    logging.info("Longitudinal axis : %s"%(longitudinalAxis))
-    logging.info("forwardProgression : %s"%(str(forwardProgression)))
-    logging.info("globalFrame : %s"%(str(globalFrame)))
-           
-    return   longitudinalAxis,forwardProgression,globalFrame
-    
-    
 def checkMarkers( acq, markerList):
     """
         Check if marker labels exist inside an acquisition    

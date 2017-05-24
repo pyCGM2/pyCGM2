@@ -152,22 +152,6 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
     cmf.enableEmg(False)
     trialManager = cmf.generate()
-
-    
-    # manage Progression axis from the first KinematicsTrial
-    if longitudinal_axis is None or lateral_axis is None:
-            logging.info("Automatic detection of Both longitudinal and lateral Axes")
-            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(trialManager.kinematic["Trials"][0],"LPSI","LASI","RPSI")
-    else:    
-        if longitudinal_axis is None or lateral_axis is not None:
-            raise Exception("[pyCGM2] Longitudinal_axis has to be also defined")     
-        if longitudinal_axis is not None or lateral_axis is None:
-            raise Exception("[pyCGM2] Lateral_axis has to be also defined")     
-
-        if longitudinal_axis is not None or lateral_axis is not None:
-            globalFrame[0] = longitudinal_axis
-            globalFrame[1] = lateral_axis 
-
     
 
 
@@ -176,8 +160,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=trialManager.spatioTemporal["Trials"],
                                                kinematicTrials = trialManager.kinematic["Trials"],
                                                kineticTrials = trialManager.kinetic["Trials"],
-                                               emgTrials=trialManager.emg["Trials"],
-                                               longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
+                                               emgTrials=trialManager.emg["Trials"])
             
     cyclefilter = cycle.CyclesFilter()
     cyclefilter.setBuilder(cycleBuilder)

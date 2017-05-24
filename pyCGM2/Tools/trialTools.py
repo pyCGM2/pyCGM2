@@ -12,6 +12,7 @@ import ma.io
 import ma.body
 import logging
 
+import matplotlib.pyplot as plt
 
 def isTimeSequenceExist(trial,label):
     """
@@ -148,11 +149,41 @@ def automaticKineticDetection(dataPath,filenames):
     
     return kineticTrials,kineticFilenames,flag_kinetics  
 
-                     
 
-def findProgressionFromPoints(trial,originPointLabel, longitudinal_extremityPointLabel,lateral_extremityPointLabel):
+def findProgression(trial,pointLabel):
+
+    if not isTimeSequenceExist(trial,pointLabel):
+        raise Exception( "[pyCGM2] : origin point doesnt exist")
+                     
+    values = trial.findChild(ma.T_TimeSequence,pointLabel).data()[:,0:3]
+    
+    MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
+    absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
+
+    ind = np.argmax(absMaxValues)
+    diff = MaxValues[ind]
+    
+    if ind ==0 :
+        progressionAxis = "X"
+        lateralAxis = "Y"
+    else:
+        progressionAxis = "Y"
+        lateralAxis = "X"
+
+    forwardProgression = True if diff>0 else False
+
+    globalFrame = str(progressionAxis+lateralAxis+"Z")        
+
+    logging.info("Progression axis : %s"%(progressionAxis))
+    logging.info("forwardProgression : %s"%(str(forwardProgression)))
+    logging.info("globalFrame : %s"%(str(globalFrame)))
+        
+    return   progressionAxis,forwardProgression,globalFrame
+
+
+def findProgressionFromPelvicMarkers(trial,LASI="LASI",RASI="RASI", LPSI="LPSI", RPSI="RPSI", SACR=None):
     """
-        Find progression from 3 markers    
+ 
 
         :Parameters:
             - `trial` (openMA trial) - an openma trial instance
@@ -162,24 +193,39 @@ def findProgressionFromPoints(trial,originPointLabel, longitudinal_extremityPoin
 
     """    
     
-    if not isTimeSequenceExist(trial,originPointLabel):
-        raise Exception( "[pyCGM2] : origin point doesnt exist")
+    if not isTimeSequenceExist(trial,LASI):
+        raise Exception( "[pyCGM2] : LPSI doesnt exist")
 
-    if not isTimeSequenceExist(trial,longitudinal_extremityPointLabel):
-        raise Exception( "[pyCGM2] : longitudinal point  doesnt exist")
-
-    if not isTimeSequenceExist(trial,lateral_extremityPointLabel):
-        raise Exception( "[pyCGM2] : lateral point  doesnt exist")
-
-    originValues = trial.findChild(ma.T_TimeSequence,originPointLabel).data()[0,0:3]
-    longitudinal_extremityValues = trial.findChild(ma.T_TimeSequence,longitudinal_extremityPointLabel).data()[0,0:3]
-    lateral_extremityValues = trial.findChild(ma.T_TimeSequence,lateral_extremityPointLabel).data()[0,0:3]#[ acq.GetPoint(originPointLabel).GetValues()[0,:]
+    if not isTimeSequenceExist(trial,RASI):
+        raise Exception( "[pyCGM2] : RASI  doesnt exist")
 
 
-    a1=(longitudinal_extremityValues-originValues)
+    LASIvalues = trial.findChild(ma.T_TimeSequence,LASI).data()[0,0:3]
+    RASIvalues = trial.findChild(ma.T_TimeSequence,RASI).data()[0,0:3]    
+
+    midASISvalues =   (LASIvalues+RASIvalues)/2.0  
+
+    if SACR is not None:
+        if not isTimeSequenceExist(trial,LPSI):
+            raise Exception( "[pyCGM2] : LPSI  doesnt exist")
+    
+        if not isTimeSequenceExist(trial,RPSI):
+            raise Exception( "[pyCGM2] : RPSI  doesnt exist")
+
+
+        LPSIvalues = trial.findChild(ma.T_TimeSequence,LPSI).data()[0,0:3]        
+        RPSIvalues = trial.findChild(ma.T_TimeSequence,LPSI).data()[0,0:3]
+        midPSISvalues =   (LPSIvalues+RPSIvalues)/2.0
+    else:
+        if not isTimeSequenceExist(trial,SACR):
+            raise Exception( "[pyCGM2] : SACR  doesnt exist")
+
+        midPSISvalues = trial.findChild(ma.T_TimeSequence,SACR).data()[0,0:3]
+    
+    a1=(midASISvalues-midPSISvalues)
     a1=a1/np.linalg.norm(a1)
 
-    a2=(lateral_extremityValues-originValues)
+    a2=(RPSIvalues-midPSISvalues)
     a2=a2/np.linalg.norm(a2)
 
     globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
@@ -213,9 +259,8 @@ def findProgressionFromPoints(trial,originPointLabel, longitudinal_extremityPoin
     logging.info("Longitudinal axis : %s"%(longitudinalAxis))
     logging.info("forwardProgression : %s"%(str(forwardProgression)))
     logging.info("globalFrame : %s"%(str(globalFrame)))
-
+        
     return   longitudinalAxis,forwardProgression,globalFrame
-    
     
 def renameOpenMAtoVicon(analysis, suffix=""):
     """
@@ -268,4 +313,9 @@ def buildTrials(dataPath,trialfilenames):
     return trials,filenames
     
         
-        
+def smartTrialReader(dataPath,trialfilename):
+    fileNode = ma.io.read(str(dataPath + trialfilename))
+    trial = fileNode.findChild(ma.T_Trial)
+    sortedEvents(trial)
+
+    return trial        
