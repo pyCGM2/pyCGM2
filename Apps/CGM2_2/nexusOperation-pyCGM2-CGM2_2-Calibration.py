@@ -163,6 +163,8 @@ if __name__ == "__main__":
         }
 
         # --------------------------MODEL--------------------------------------
+        acqStatic =  btkTools.applyTranslators(acqStatic,inputs["Translators"])
+
         # ---definition---
         model=cgm.CGM1LowerLimbs()
         model.setCGM1Version("1.1")

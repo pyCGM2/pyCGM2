@@ -151,6 +151,8 @@ if __name__ == "__main__":
 
 
         # --------------------------MODELLLING--------------------------
+        acqGait =  btkTools.applyTranslators(acqGait,inputs["Translators"])       
+           
        
         scp=modelFilters.StaticCalibrationProcedure(model) # procedure
         

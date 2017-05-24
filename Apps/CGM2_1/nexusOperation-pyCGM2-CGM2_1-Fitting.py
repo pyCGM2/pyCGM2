@@ -143,6 +143,8 @@ if __name__ == "__main__":
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")      
         
         # --------------------------MODELLLING--------------------------
+        acqGait =  btkTools.applyTranslators(acqGait,inputs["Translators"])               
+        
         scp=modelFilters.StaticCalibrationProcedure(model) 
         # ---Motion filter----    
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
