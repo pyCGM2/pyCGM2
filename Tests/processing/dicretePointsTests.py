@@ -23,17 +23,17 @@ import ma.io
 import ma.body
 
 from pyCGM2.Report import plot,normativeDatabaseProcedure
-from pyCGM2.Processing import cycle,analysis, discretePoints,exporter
+from pyCGM2.Processing import cycle,analysis, discretePoints,exporter,c3dManager
 from pyCGM2.Tools import trialTools
 
 class BenedettiTest(): 
 
     @classmethod
-    def kinematics(cls):
+    def test(cls):
                 
         # ----DATA-----        
 
-        DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 01 - viconName.c3d","gait Trial 03 - viconName.c3d"  ] 
                 
         # ----INFOS-----        
@@ -45,34 +45,28 @@ class BenedettiTest():
         normativeDataSet["Author"] = "Schwartz2008"
         normativeDataSet["Modality"] = "Free"           
         
-
         pointLabelSuffix=""        
-        
-        # distinguishing trials for kinematic and kinetic processing                             
-        # - kinematic Trials      
-        kinematicTrials=[]
-        kinematicFilenames =[]
-        for kinematicFilename in modelledFilenames:
-            kinematicFileNode = ma.io.read(str(DATA_PATH + kinematicFilename))
-            kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
-            trialTools.sortedEvents(kinematicTrial)
     
 
-            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
+
+        #---- c3d manager
+        #--------------------------------------------------------------------------
+                
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
+        cmf.enableEmg(False)
+        trialManager = cmf.generate()
+        
     
-            kinematicTrials.append(kinematicTrial)
-            kinematicFilenames.append(kinematicFilename)
-    
-        # - kinetic Trials ( check if kinetic events)        
-        kineticTrials,kineticFilenames,flag_kinetics =  trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames)                         
     
         #---- GAIT CYCLES FILTER
         #--------------------------------------------------------------------------
-        cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
-                                                   kinematicTrials = kinematicTrials,
-                                                   kineticTrials = kineticTrials,
-                                                   emgTrials=None,
-                                                   longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
+        cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=trialManager.spatioTemporal["Trials"],
+                                                   kinematicTrials = trialManager.kinematic["Trials"],
+                                                   kineticTrials = trialManager.kinetic["Trials"],
+                                                   emgTrials=trialManager.emg["Trials"])        
+        
+        
                 
         cyclefilter = cycle.CyclesFilter()
         cyclefilter.setBuilder(cycleBuilder)
@@ -128,17 +122,17 @@ class BenedettiTest():
 
         xlsExport = exporter.XlsExportFilter()
         xlsExport.setDataFrames([benedettiDataFrame])
-        xlsExport.exportDataFrames("discretePoints", path=DATA_PATH)
+        xlsExport.exportDataFrames("BenedettiTable", path=DATA_PATH)
         
         
 class MaxMinTest(): 
 
     @classmethod
-    def kinematics(cls):
+    def test(cls):
                 
         # ----DATA-----        
 
-        DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 01 - viconName.c3d","gait Trial 03 - viconName.c3d"  ] 
                 
         # ----INFOS-----        
@@ -153,31 +147,22 @@ class MaxMinTest():
 
         pointLabelSuffix=""        
         
-        # distinguishing trials for kinematic and kinetic processing                             
-        # - kinematic Trials      
-        kinematicTrials=[]
-        kinematicFilenames =[]
-        for kinematicFilename in modelledFilenames:
-            kinematicFileNode = ma.io.read(str(DATA_PATH + kinematicFilename))
-            kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
-            trialTools.sortedEvents(kinematicTrial)
+        #---- c3d manager
+        #--------------------------------------------------------------------------
+                
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
+        cmf.enableEmg(False)
+        trialManager = cmf.generate()
+        
     
-
-            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
-    
-            kinematicTrials.append(kinematicTrial)
-            kinematicFilenames.append(kinematicFilename)
-    
-        # - kinetic Trials ( check if kinetic events)        
-        kineticTrials,kineticFilenames,flag_kinetics =  trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames)                         
     
         #---- GAIT CYCLES FILTER
         #--------------------------------------------------------------------------
-        cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
-                                                   kinematicTrials = kinematicTrials,
-                                                   kineticTrials = kineticTrials,
-                                                   emgTrials=None,
-                                                   longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
+        cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=trialManager.spatioTemporal["Trials"],
+                                                   kinematicTrials = trialManager.kinematic["Trials"],
+                                                   kineticTrials = trialManager.kinetic["Trials"],
+                                                   emgTrials=trialManager.emg["Trials"])    
                 
         cyclefilter = cycle.CyclesFilter()
         cyclefilter.setBuilder(cycleBuilder)
@@ -238,11 +223,11 @@ class MaxMinTest():
 class GoldbergTest(): 
 
     @classmethod
-    def kinematics(cls):
+    def test(cls):
                 
         # ----DATA-----        
 
-        DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 01 - viconName.c3d","gait Trial 03 - viconName.c3d"  ] 
                 
         # ----INFOS-----        
@@ -257,31 +242,22 @@ class GoldbergTest():
 
         pointLabelSuffix=""        
         
-        # distinguishing trials for kinematic and kinetic processing                             
-        # - kinematic Trials      
-        kinematicTrials=[]
-        kinematicFilenames =[]
-        for kinematicFilename in modelledFilenames:
-            kinematicFileNode = ma.io.read(str(DATA_PATH + kinematicFilename))
-            kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
-            trialTools.sortedEvents(kinematicTrial)
+        #---- c3d manager
+        #--------------------------------------------------------------------------
+                
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
+        cmf.enableEmg(False)
+        trialManager = cmf.generate()
+        
     
-
-            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
-    
-            kinematicTrials.append(kinematicTrial)
-            kinematicFilenames.append(kinematicFilename)
-    
-        # - kinetic Trials ( check if kinetic events)        
-        kineticTrials,kineticFilenames,flag_kinetics =  trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames)                         
     
         #---- GAIT CYCLES FILTER
         #--------------------------------------------------------------------------
-        cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
-                                                   kinematicTrials = kinematicTrials,
-                                                   kineticTrials = kineticTrials,
-                                                   emgTrials=None,
-                                                   longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
+        cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=trialManager.spatioTemporal["Trials"],
+                                                   kinematicTrials = trialManager.kinematic["Trials"],
+                                                   kineticTrials = trialManager.kinetic["Trials"],
+                                                   emgTrials=trialManager.emg["Trials"])    
                 
         cyclefilter = cycle.CyclesFilter()
         cyclefilter.setBuilder(cycleBuilder)
@@ -338,12 +314,20 @@ class GoldbergTest():
         xlsExport = exporter.XlsExportFilter()
         xlsExport.setDataFrames(dataFrame)
         xlsExport.exportDataFrames("discretePointsGoldberg", path=DATA_PATH)
-        
+
+
+#        xlsExport = exporter.XlsExportFilter()
+#        xlsExport.setDataFrames(dataFrame)
+#        xlsExport.setAnalysisInstance(analysisFilter.analysis)
+#        xlsExport.setConcreteAnalysisBuilder(analysisBuilder)
+#        xlsExport.exportDataFrames("discretePointsGoldberg", path=DATA_PATH)
+#        xlsExport.exportAdvancedDataFrame("analysis", path=DATA_PATH)
+
         
 if __name__ == "__main__":
 
     plt.close("all")  
   
-    BenedettiTest.kinematics()
-    MaxMinTest.kinematics()
-    GoldbergTest.kinematics()
+    BenedettiTest.test()
+    MaxMinTest.test()
+    GoldbergTest.test()

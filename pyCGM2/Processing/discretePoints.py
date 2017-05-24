@@ -63,20 +63,47 @@ class BenedettiProcedure(object):
         dataframes.append( self.__getKnee_kinematics(analysisInstance,"LKneeAngles","Left"))
         dataframes.append( self.__getAnkle_kinematics(analysisInstance,"LAnkleAngles","Left")) 
 
-        dataframes.append( self.__getHip_kinetics(analysisInstance,"LHipMoment","Left"))
-        dataframes.append( self.__getKnee_kinetics(analysisInstance,"LKneeMoment","Left"))
-        dataframes.append( self.__getAnkle_kinetics(analysisInstance,"LAnkleMoment","Left"))
+        try:
+            dataframes.append( self.__getHip_kinetics(analysisInstance,"LHipMoment","Left"))
+        except KeyError:
+            pass
+
+            
+        try:
+            dataframes.append( self.__getKnee_kinetics(analysisInstance,"LKneeMoment","Left"))
+        except KeyError:
+            pass
+            
+        try:
+            dataframes.append( self.__getAnkle_kinetics(analysisInstance,"LAnkleMoment","Left"))
+        except KeyError:
+            pass
+
 
         # Right
         dataframes.append( self.__getPelvis_kinematics(analysisInstance,"RPelvisAngles","Right"))
-
         dataframes.append( self.__getHip_kinematics(analysisInstance,"RHipAngles","Right"))
         dataframes.append( self.__getKnee_kinematics(analysisInstance,"RKneeAngles","Right"))
         dataframes.append( self.__getAnkle_kinematics(analysisInstance,"RAnkleAngles","Right")) 
 
-        dataframes.append( self.__getHip_kinetics(analysisInstance,"RHipMoment","Right"))
-        dataframes.append( self.__getKnee_kinetics(analysisInstance,"RKneeMoment","Right"))
-        dataframes.append( self.__getAnkle_kinetics(analysisInstance,"RAnkleMoment","Right"))
+
+        try:
+            dataframes.append( self.__getHip_kinetics(analysisInstance,"RHipMoment","Right"))
+        except KeyError:
+            pass
+
+            
+        try:
+            dataframes.append( self.__getKnee_kinetics(analysisInstance,"RKneeMoment","Right"))
+        except KeyError:
+            pass
+            
+        try:
+            dataframes.append( self.__getAnkle_kinetics(analysisInstance,"RAnkleMoment","Right"))
+        except KeyError:
+            pass
+
+
 
         return pd.concat(dataframes)
 
@@ -921,7 +948,7 @@ class BenedettiProcedure(object):
 
     def __getHip_kinetics(self,analysisInstance,pointLabel,context):
         
-        
+
         normalizedCycleValues = analysisInstance.kineticStats.data [pointLabel+self.pointSuffix,context]
         loadingResponseValues = analysisInstance.kineticStats.pst['doubleStance1', context]['values']
         stanceValues =         analysisInstance.kineticStats.pst['stancePhase', context]['values']
@@ -1079,6 +1106,7 @@ class BenedettiProcedure(object):
             series.append(serie)
 
         return pd.DataFrame(series)
+        
     
     def __getKnee_kinetics(self,analysisInstance,pointLabel,context):
         
@@ -1430,10 +1458,23 @@ class MaxMinProcedure(object):
         dataframes.append( self.__getExtrema(analysisInstance,"LHipAngles","Left"))
         dataframes.append( self.__getExtrema(analysisInstance,"LKneeAngles","Left"))
         dataframes.append( self.__getExtrema(analysisInstance,"LAnkleAngles","Left")) 
+        
+        try:
+            dataframes.append( self.__getExtrema(analysisInstance,"LHipMoment","Left", dataType = "Kinetics"))
+        except KeyError:
+            pass
+        
+        try:
+            dataframes.append( self.__getExtrema(analysisInstance,"LKneeMoment","Left", dataType = "Kinetics"))
+        except KeyError:
+            pass
 
-        dataframes.append( self.__getExtrema(analysisInstance,"LHipMoment","Left", dataType = "Kinetics"))
-        dataframes.append( self.__getExtrema(analysisInstance,"LKneeMoment","Left", dataType = "Kinetics"))
-        dataframes.append( self.__getExtrema(analysisInstance,"LAnkleMoment","Left",dataType = "Kinetics"))
+        try:
+            dataframes.append( self.__getExtrema(analysisInstance,"LAnkleMoment","Left", dataType = "Kinetics"))
+        except KeyError:
+            pass        
+        
+
 
         # Right
         dataframes.append( self.__getExtrema(analysisInstance,"RPelvisAngles","Right"))
@@ -1442,10 +1483,20 @@ class MaxMinProcedure(object):
         dataframes.append( self.__getExtrema(analysisInstance,"RKneeAngles","Right"))
         dataframes.append( self.__getExtrema(analysisInstance,"RAnkleAngles","Right")) 
 
-        dataframes.append( self.__getExtrema(analysisInstance,"RHipMoment","Right",dataType = "Kinetics"))
-        dataframes.append( self.__getExtrema(analysisInstance,"RKneeMoment","Right",dataType = "Kinetics"))
-        dataframes.append( self.__getExtrema(analysisInstance,"RAnkleMoment","Right",dataType = "Kinetics"))
+        try:
+            dataframes.append( self.__getExtrema(analysisInstance,"RHipMoment","Right", dataType = "Kinetics"))
+        except KeyError:
+            pass
+        
+        try:
+            dataframes.append( self.__getExtrema(analysisInstance,"RKneeMoment","Right", dataType = "Kinetics"))
+        except KeyError:
+            pass
 
+        try:
+            dataframes.append( self.__getExtrema(analysisInstance,"RAnkleMoment","Right", dataType = "Kinetics"))
+        except KeyError:
+            pass 
         return pd.concat(dataframes)
 
         
@@ -1581,13 +1632,20 @@ class GoldbergProcedure(object):
 
                
         dataframes = list()
-        # Left
+
         dataframes.append( self.__getKnee_kinematics(analysisInstance,"LKneeAngles"+self.pointSuffix,"Left"))
         dataframes.append( self.__getKnee_kinematics(analysisInstance,"RKneeAngles"+self.pointSuffix,"Right"))
         
-        dataframes.append( self.__getKnee_kinetics(analysisInstance,"LKneeMoment"+self.pointSuffix,"LKneeAngles"+self.pointSuffix,"Left"))
-        dataframes.append( self.__getKnee_kinetics(analysisInstance,"RKneeMoment"+self.pointSuffix,"RKneeAngles"+self.pointSuffix,"Right"))        
+        try:
+            dataframes.append( self.__getKnee_kinetics(analysisInstance,"LKneeMoment"+self.pointSuffix,"LKneeAngles"+self.pointSuffix,"Left"))
+        except KeyError:
+            pass
 
+        try:
+            dataframes.append( self.__getKnee_kinetics(analysisInstance,"RKneeMoment"+self.pointSuffix,"RKneeAngles"+self.pointSuffix,"Right"))     
+        except KeyError:
+            pass
+        
 
         
         return pd.concat(dataframes)
