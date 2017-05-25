@@ -27,7 +27,7 @@ MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath
 MAIN_PYCGM2_APPS_PATH = MAIN_PYCGM2_PATH+"Apps\\"
 
 # [Optional]: openMA binding 
-THIRDPARTY_PATH = MAIN_PYCGM2_PATH + "third party\\" # By default, use openMA distribution included in third party folder  
+THIRDPARTY_PATH = MAIN_PYCGM2_PATH + "thirdParty\\" # By default, use openMA distribution included in third party folder  
 
 # [Optional] path to embbbed Normative data base. 
 NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"Data\\normativeData\\"  # By default, use pyCGM2-embedded normative data ( Schartz - Pinzone )  
@@ -43,7 +43,7 @@ MAIN_BENCHMARK_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-benchmar
 NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\" 
 
 # [optional]  setting folder
-PYCGM2_SESSION_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"Session Settings\\"
+PYCGM2_SESSION_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"SessionSettings\\"
 
 
 # setting files
