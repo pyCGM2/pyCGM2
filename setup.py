@@ -10,7 +10,7 @@ def gen_data_files(*dirs):
     return results
 
 setup(name = 'pyCGM2',
-    version = '0.0.1',
+    version = '1.0.0-beta',
     author = 'fabien Leboeuf',
     author_email = 'fabien.leboeuf@gmail.com',
     keywords = 'python Conventional Gait Model',
