@@ -100,7 +100,6 @@ def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
         
         
     elif method =="2": # idem programmation morgan
-        print "morgan"
         nFrames= len(proxMotionRef)  
     
     
@@ -793,53 +792,65 @@ class KneeCalibrationDecorator(DecoratorModel):
             Compute Knee flexion axis and relocate knee joint centre from SARA functional calibration         
         
             :Parameters:
-                - `side` (str) - body side
+                - `side` (str) - lower limb side
 
         """
          
 
-        #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
 
-        proxMotion = self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").motion
-        distMotion = self.model.getSegment("Left Shank").getReferential("TF_anaCalib").motion
+        if side == "Left":
+            proxSegmentLabel = "Left Thigh"
+            distSegmentlabel = "Left Shank"
+            HJClabel = "LHJC"
+            KJClabel = "LKJC"
+        elif side == "Right":
+            proxSegmentLabel = "Right Thigh"
+            distSegmentlabel = "Right Shank"
+            HJClabel = "RHJC"
+            KJClabel = "RKJC"
+        else:
+            raise Exception("[pyCGM2] side doesn t recongnize")
+
+
+    
+        proxMotion = self.model.getSegment(proxSegmentLabel).getReferential("TF").motion
+        distMotion = self.model.getSegment(distSegmentlabel).getReferential("TF").motion
         
         # -- main function -----
         prox_ori,prox_axisLim,dist_ori,dist_axisLim,axis_prox,axis_dist,quality = saraCalibration(proxMotion,distMotion,method="2")
         # end function -----
 
 
-        # add nodes        
-        self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").static.addNode("KneeFlexionOri",prox_ori,positionType="Local")
-        self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").static.addNode("KneeFlexionAxis",prox_axisLim,positionType="Local")
+        # add nodes in TF        
+        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KneeFlexionOri",prox_ori,positionType="Local")
+        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KneeFlexionAxis",prox_axisLim,positionType="Local")
     
-        self.model.getSegment("Left Shank").getReferential("TF_anaCalib").static.addNode("KneeFlexionOri",dist_ori,positionType="Local")
-        self.model.getSegment("Left Shank").getReferential("TF_anaCalib").static.addNode("KneeFlexionAxis",dist_axisLim,positionType="Local")     
+        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KneeFlexionOri",dist_ori,positionType="Local")
+        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KneeFlexionAxis",dist_axisLim,positionType="Local")     
    
         # compute error
-        xp = self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").getNodeTrajectory("KneeFlexionOri")
-        xd = self.model.getSegment("Left Shank").getReferential("TF_anaCalib").getNodeTrajectory("KneeFlexionOri")
-
-        
+        xp = self.model.getSegment(proxSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
+        xd = self.model.getSegment(distSegmentlabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
 
         ferr = xp-xd
         Merr = numeric.rms(ferr)
-        print " sara rms error : %s " % str(Merr)
+        logging.info( " sara rms error : %s " % str(Merr))
 
         # --- registration of the Knee center ---
         
         # longitudinal axis of the femur 
-        p1 = self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").static.getNode_byLabel("LHJC").m_global
-        p2 = self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").static.getNode_byLabel("LKJC").m_global
+        p1 = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(HJClabel).m_global
+        p2 = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(KJClabel).m_global
 
         # middle of origin in Global
-        p_proxOri = self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").static.getNode_byLabel("KneeFlexionOri").m_global
-        p_distOri = self.model.getSegment("Left Shank").getReferential("TF_anaCalib").static.getNode_byLabel("KneeFlexionOri").m_global        
+        p_proxOri = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel("KneeFlexionOri").m_global
+        p_distOri = self.model.getSegment(distSegmentlabel).getReferential("TF").static.getNode_byLabel("KneeFlexionOri").m_global        
         center = np.mean((p_distOri,p_proxOri),axis= 0)
         
         # axis lim
-        p_proxAxis = self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").static.getNode_byLabel("KneeFlexionAxis").m_global
-        p_distAxis = self.model.getSegment("Left Shank").getReferential("TF_anaCalib").static.getNode_byLabel("KneeFlexionAxis").m_global
+        p_proxAxis = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel("KneeFlexionAxis").m_global
+        p_distAxis = self.model.getSegment(distSegmentlabel).getReferential("TF").static.getNode_byLabel("KneeFlexionAxis").m_global
 
         # intersection beetween midcenter-axis and logitudinal axis
         proxIntersect,pb1 = geometry.LineLineIntersect(center,p_proxAxis,p1,p2)
@@ -848,29 +859,27 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         # shortest distance                
         shortestDistance_prox =  np.linalg.norm(proxIntersect-pb1)
-        print " 3d line intersect : shortest distance beetween logidudinal axis and flexion axis sur Proximal  : %s  " % str(shortestDistance_prox)
+        logging.info(" 3d line intersect : shortest distance beetween logidudinal axis and flexion axis sur Proximal  : %s  " % str(shortestDistance_prox))
         shortestDistance_dist =  np.linalg.norm(distIntersect-pb2)
-        print " 3d line intersect : shortest distance beetween logidudinal axis and flexion axis sur Distal  : %s  " % str(shortestDistance_dist)
+        logging.info( " 3d line intersect : shortest distance beetween logidudinal axis and flexion axis sur Distal  : %s  " % str(shortestDistance_dist))
 
         # mean of the intersection point        
         center = np.mean((proxIntersect,distIntersect), axis=0)
 
         # Node manager
-        #  the node LKJC_sara is added in all "Referentials. 
-        self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").static.addNode("LKJC_sara",center, positionType="Global")
-        self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_sara",center, positionType="Global")        
-       
-        print " in  TF-------" 
-        print " LKJC "
-        print self.model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_local
-        print " LKJC sara "
-        print self.model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC_sara").m_local
+        #  the node KJC_sara is added in all "Referentials. 
 
-        print " in  TF_anaCalib-------" 
-        print " LKJC "
-        print self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").static.getNode_byLabel("LKJC").m_local
-        print " LKJC sara "
-        print self.model.getSegment("Left Thigh").getReferential("TF_anaCalib").static.getNode_byLabel("LKJC_sara").m_local
+        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KJC_sara",center, positionType="Global")        
+        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KJC_sara",center, positionType="Global")       
+ 
+ 
+         # Comparison of local position of KJCs
+        localKJC = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(KJClabel).m_local 
+        saraKJC = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel("KJC_sara").m_local
+
+        logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (localKJC[0],localKJC[1],localKJC[2]))
+        logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (saraKJC[0],saraKJC[1],saraKJC[2]))
+
         
 
 

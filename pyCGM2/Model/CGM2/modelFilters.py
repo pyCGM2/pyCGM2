@@ -445,7 +445,17 @@ class ModelMotionFilter(object):
         self.m_method = method
         self.m_options = options
 
-
+    def segmentalCompute(self,segments):
+        if str(self.m_model) != "Basis Model":
+            self.m_model.computeOptimizedSegmentMotion(self.m_aqui,
+                                             segments,
+                                             self.m_procedure.definition[0],
+                                             self.m_procedure.definition[1],
+                                             self.m_method)
+        else:
+            pass
+                    
+        
     def compute(self):
         """
             Run the motion filter

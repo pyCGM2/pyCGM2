@@ -108,10 +108,18 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
     def calibrate(self,aquiStatic, dictRef, dictAnatomic,  options=None): #  
         
         super(CGM2_3LowerLimbs, self).calibrate(aquiStatic, dictRef, dictAnatomic,  options=options)
-#
+
+
+    # --- motion --------
+
+
+
+
 #    def computeMotion(self,aqui, dictRef,dictAnat, motionMethod,options=None ):
 #
 #        super(CGM2_3LowerLimbs, self).computeMotion(aqui, dictRef,dictAnat, motionMethod, options=options)
+
+
 
     # --- opensim --------
     def opensimTrackingMarkers(self):
