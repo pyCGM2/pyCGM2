@@ -79,16 +79,16 @@ if __name__ == "__main__":
     
 
     # --- Calibration ---                          
-    acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
+     
     
     model=cgm2.CGM2_3LowerLimbs()
     model.configure()        
 
     inputs = json.loads(CONTENT_INPUTS_CGM2_3,object_pairs_hook=OrderedDict)
     translators = inputs["Translators"]
-    
+    acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename),translators=translators)   
 
-    acqStatic =  btkTools.applyTranslators(acqStatic,translators)    
+    #acqStatic =  btkTools.applyTranslators(acqStatic,translators)    
     
     
     model.addAnthropoInputParameters(mp)
@@ -104,8 +104,8 @@ if __name__ == "__main__":
 
     
     # ------ LEFT KNEE CALIBRATION -------      
-    acqLeftKnee = btkTools.smartReader(str(MAIN_PATH +  leftKneeFilename))
-    acqLeftKnee =  btkTools.applyTranslators(acqLeftKnee,translators)     
+    acqLeftKnee = btkTools.smartReader(str(MAIN_PATH +  leftKneeFilename),translators=translators)
+    #acqLeftKnee =  btkTools.applyTranslators(acqLeftKnee,translators)     
 
 #    # Motion of only left 
 #    modMotionTest=modelFilters.ModelMotionFilter(scp,acqLeftKnee,model,pyCGM2Enums.motionMethod.Sodervisk)
@@ -139,8 +139,8 @@ if __name__ == "__main__":
 
 
     # ------ Right KNEE CALIBRATION -------      
-    acqRightKnee = btkTools.smartReader(str(MAIN_PATH +  rightKneeFilename))
-    acqRightKnee =  btkTools.applyTranslators(acqRightKnee,translators)     
+    acqRightKnee = btkTools.smartReader(str(MAIN_PATH +  rightKneeFilename),translators=translators)
+    #acqRightKnee =  btkTools.applyTranslators(acqRightKnee,translators)     
 
     # Motion FILTER 
     modMotionRightKnee=modelFilters.ModelMotionFilter(scp,acqRightKnee,model,pyCGM2Enums.motionMethod.Sodervisk)

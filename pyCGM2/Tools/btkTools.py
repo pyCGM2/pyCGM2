@@ -7,17 +7,20 @@ import pdb
 import btk
 
 # --- acquisition -----
-def smartReader(filename):
+def smartReader(filename,translators=None):
     """
         Convenient function to read a c3d with Btk    
 
         :Parameters:
             - `filename` (str) - path and filename of the c3d
+            - `translators` (str) - marker translators
     """
     reader = btk.btkAcquisitionFileReader()
     reader.SetFilename(filename)
     reader.Update()
     acq=reader.GetOutput()
+    if translators is not None:
+        acq =  applyTranslators(acq,translators)
     return acq 
 
 def smartWriter(acq, filename):
