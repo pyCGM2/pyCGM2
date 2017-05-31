@@ -103,8 +103,8 @@ def addNexusPythonSdk():
 def addOpenma(branch=None):
 
     if branch is None:
-        sys.path.append(THIRDPARTY_PATH + "\\openma")
-        sys.path.append(THIRDPARTY_PATH + "\\openma\\ma")
+        sys.path.append(THIRDPARTY_PATH + "openma")
+        sys.path.append(THIRDPARTY_PATH + "openma\\ma")
     else:
         if branch=="master":
             sys.path.append("C:\\Users\\HLS501\\Documents\\Programming\\openMA\\distribuable\\OpenMA\\openma")
@@ -129,7 +129,7 @@ def addOpenma(branch=None):
             
 
 def addBtk():
-    sys.path.append(THIRDPARTY_PATH + "\\btk")
+    sys.path.append(THIRDPARTY_PATH + "btk")
 
 
 def checkConfig():
