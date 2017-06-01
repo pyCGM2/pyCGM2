@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pdb
 import logging
+import cPickle
 
 import pyCGM2
 pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
@@ -79,26 +80,31 @@ class CGM2_SARA_test():
         
         
         # --- Calibration ---                          
-        model=cgm2.CGM2_3LowerLimbs()
-        model.configure()        
-        
+#        model=cgm2.CGM2_3LowerLimbs()
+#        model.configure()        
+#        pdb.set_trace()
+#        
         inputs = json.loads(CONTENT_INPUTS_CGM2_3,object_pairs_hook=OrderedDict)
         translators = inputs["Translators"]
-        
+
+        f = open(MAIN_PATH +  'MRI-US-01-CGM2_3-pyCGM2.model', 'r')
+        model = cPickle.load(f)
+        f.close() 
+
+#        
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename),translators=translators)   
-        
-           
-        model.addAnthropoInputParameters(mp)
-                                    
+#          
+#        model.addAnthropoInputParameters(mp)
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
-        #    # cgm decorator
-        modelDecorator.HipJointCenterDecorator(model).hara()  
-            
-        #    # final
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara").compute()
-        
+#        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
+#        
+#        #    # cgm decorator
+        #modelDecorator.HipJointCenterDecorator(model).hara()  
+#            
+#        #    # final
+        #modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara").compute()
+
+               
         
         # ------ LEFT KNEE CALIBRATION -------      
         acqLeftKnee = btkTools.smartReader(str(MAIN_PATH +  leftKneeFilename),translators=translators)
@@ -116,10 +122,10 @@ class CGM2_SARA_test():
         #    btkTools.smartAppendPoint(acqLeftKnee,"KneeFlexionAxis",axis)   
         
         # Motion of the model
-        modMotion=modelFilters.ModelMotionFilter(scp,acqLeftKnee,model,pyCGM2Enums.motionMethod.Native,
-                                                     usePyCGM2_coordinateSystem=True,
-                                                     useLeftKJCmarker="LKJC_Chord")
-        modMotion.compute()
+#        modMotion=modelFilters.ModelMotionFilter(scp,acqLeftKnee,model,pyCGM2Enums.motionMethod.Native,
+#                                                     usePyCGM2_coordinateSystem=True,
+#                                                     useLeftKJCmarker="LKJC_Chord")
+#        modMotion.compute()
         
         
         #btkTools.smartWriter(acqLeftKnee, "acqLeftKnee.c3d")
@@ -128,19 +134,19 @@ class CGM2_SARA_test():
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftKJCnode="KJC_sara").compute()
         
         
-        # ------ Right KNEE CALIBRATION -------      
-        acqRightKnee = btkTools.smartReader(str(MAIN_PATH +  rightKneeFilename),translators=translators)
-        
-        # Motion FILTER 
-        modMotionRightKnee=modelFilters.ModelMotionFilter(scp,acqRightKnee,model,pyCGM2Enums.motionMethod.Sodervisk)
-        modMotionRightKnee.segmentalCompute(["Right Thigh","Right Shank"])    
-        
-        # cgm decorator
-        modelDecorator.KneeCalibrationDecorator(model).sara("Right")
-        
-        
-        # new static calibration with KJC node         
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useRightKJCnode="KJC_sara").compute()
+#        # ------ Right KNEE CALIBRATION -------      
+#        acqRightKnee = btkTools.smartReader(str(MAIN_PATH +  rightKneeFilename),translators=translators)
+#        
+#        # Motion FILTER 
+#        modMotionRightKnee=modelFilters.ModelMotionFilter(scp,acqRightKnee,model,pyCGM2Enums.motionMethod.Sodervisk)
+#        modMotionRightKnee.segmentalCompute(["Right Thigh","Right Shank"])    
+#        
+#        # cgm decorator
+#        modelDecorator.KneeCalibrationDecorator(model).sara("Right")
+#        
+#        
+#        # new static calibration with KJC node         
+#        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useRightKJCnode="KJC_sara").compute()
                             
         
         btkTools.smartWriter(acqStatic, "CGM2_3_SARA_test.c3d")

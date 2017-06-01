@@ -168,6 +168,8 @@ if __name__ == "__main__":
         # ---definition---
         model=cgm2.CGM2_3LowerLimbs()
         model.configure()
+        model.setStaticFilename(calibrateFilenameLabelled)
+        
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
         # ---check marker set used----

@@ -142,16 +142,17 @@ if __name__ == "__main__":
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")      
         
         
-        # --------------------------STATIC FILE WITH TRANSLATORS --------------------------------------
+        # --------------------------ACQ WITH TRANSLATORS --------------------------------------
 
         # --- btk acquisition ----
         acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
         btkTools.checkMultipleSubject(acqGait)
 
-        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)
-
         acqGait =  btkTools.applyTranslators(acqGait,translators)
+        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm2.CGM2_3LowerLimbs.MARKERS)
+
+        
                
         # --- initial motion Filter ---
         scp=modelFilters.StaticCalibrationProcedure(model) 
