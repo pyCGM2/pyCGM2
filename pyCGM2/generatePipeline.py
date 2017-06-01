@@ -85,6 +85,34 @@ FITTING_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
     </Pipeline>"""
 
 
+SARA_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
+    <Pipeline>
+    
+      <Entry DisplayName="Save Trial - C3D + VSK" Enabled="1" OperationId="49" OperationName="SaveOperation">
+        <ParamList name="">
+          <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+          <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+        </ParamList>
+      </Entry>
+    
+      <Entry DisplayName="Run Python Operation" Enabled="1" OperationId="50" OperationName="Python">
+        <ParamList name="">
+          <Param name="Script" value="PATH_APPS/CGM2_3p_kneeCalibration/nexusOperation-pyCGM2-CGM2_3p_SARA.py"/>
+          <Param name="ScriptArgs"/>
+          <Param name="UseNexusPython" value="false"/>
+          <Param name="LaunchPython" value="false"/>
+        </ParamList>
+      </Entry>
+    
+      <Entry DisplayName="Save Trial - C3D + VSK" Enabled="1" OperationId="51" OperationName="SaveOperation">
+        <ParamList name="">
+          <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+          <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+        </ParamList>
+      </Entry>
+    
+    </Pipeline>"""
+
 # ------------------- CGM1 ------------------------------------------------------
 def pipeline_pyCGM2_CGM1_Calibration(myAppFolder_path,userAppData_path):
 
@@ -263,3 +291,15 @@ def pipeline_pyCGM2_CGM2_3_Expert_Fitting(myAppFolder_path,userAppData_path):
     if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_3-Expert-Fitting.Pipeline"):
         with open(userAppData_path + "pyCGM2-CGM2_3-Expert-Fitting.Pipeline", "w") as text_file:
             text_file.write(content_new)
+            
+#-----------------------CGM 2.3i -SARA method------------------------------------------            
+def pipeline_pyCGM2_CGM2_3_SARA_kneeCalibration(myAppFolder_path,userAppData_path):
+   
+    
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+    
+    content = string.replace(SARA_CONTENT, 'PATH_APPS', myAppFolder_path_slash[:-1])
+
+    if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_3p_SARA.Pipeline"):
+        with open(userAppData_path + "pyCGM2-CGM2_3p_SARA.Pipeline", "w") as text_file:
+            text_file.write(content)       

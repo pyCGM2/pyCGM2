@@ -869,8 +869,8 @@ class KneeCalibrationDecorator(DecoratorModel):
         # Node manager
         #  the node KJC_sara is added in all "Referentials. 
 
-        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KJC_sara",center, positionType="Global")        
-        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KJC_sara",center, positionType="Global")       
+        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KJC_Sara",center, positionType="Global")        
+        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KJC_Sara",center, positionType="Global")       
  
  
          # Comparison of local position of KJCs

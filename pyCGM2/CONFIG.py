@@ -56,6 +56,7 @@ generateFiles.generateCGM2_3_Settings(PYCGM2_APPDATA_PATH)
 generateFiles.generateCGM2_3_Expert_Settings(PYCGM2_APPDATA_PATH)
 
 
+
 # pipeline generation
 # cgm1
 generatePipeline.pipeline_pyCGM2_CGM1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
@@ -78,7 +79,8 @@ generatePipeline.pipeline_pyCGM2_CGM2_3_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APP
 # cgm2.3-Expert
 generatePipeline.pipeline_pyCGM2_CGM2_3_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
 generatePipeline.pipeline_pyCGM2_CGM2_3_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
-
+# cgm2.3-Sara
+generatePipeline.pipeline_pyCGM2_CGM2_3_SARA_kneeCalibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH)
 
 # ------------------- METHODS ------------------------------------------------
 

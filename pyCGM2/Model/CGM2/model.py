@@ -35,9 +35,13 @@ class Model(object):
         self.mp=dict()
         self.mp_computed=dict()
         self.m_chains=dict()
+        self.m_staticFilename=None
 
     def __repr__(self):
         return "Basis Model"        
+
+    def setStaticFilename(self,name):
+        self.m_staticFilename=name
 
     def addChain(self,label,indexSegmentList):
         """
