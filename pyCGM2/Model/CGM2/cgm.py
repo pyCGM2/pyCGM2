@@ -2533,7 +2533,7 @@ class CGM1LowerLimbs(CGM):
                 
             
             logging.debug("--- Segmental Least-square motion process ---")
-            self._pelvis_motion(aqui, dictRef, motionMethod)
+            self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
             self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
 
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
