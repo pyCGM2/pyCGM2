@@ -191,7 +191,9 @@ def applyValidFramesOnOutput(acq,validFrames):
                 values[:,i] =  values[:,i] * validFrames           
             it.SetValues(values)
             
-
+def checkMultipleSubject(acq):            
+    if acq.GetPoint(0).GetLabel().count(":"):
+        raise Exception("[pyCGM2] Your input static c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
 
              
 # --- Model -----
