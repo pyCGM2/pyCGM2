@@ -23,6 +23,7 @@ from pyCGM2.Tools import btkTools,nexusTools
 from pyCGM2.Model.CGM2 import cgm2, modelFilters, modelDecorator
 import pyCGM2.enums as pyCGM2Enums
 
+from pyCGM2 import viconInterface
 
 def detectSide(acq,left_markerLabel,right_markerLabel):
 
@@ -157,6 +158,11 @@ if __name__ == "__main__":
 
         # ----------------------VICON INTERFACE-------------------------------------------
 
+        #--- update mp
+        viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
+
+
+        #--- Add modelled markers
         Or_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
         axis_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
         Or_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
@@ -167,7 +173,9 @@ if __name__ == "__main__":
        
         btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inShank",Or_inShank)
         btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inShank",axis_inShank) 
-        #
+
+
+        
         nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inThigh", acqFunc)
         nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inThigh", acqFunc)     
         nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inShank", acqFunc)
