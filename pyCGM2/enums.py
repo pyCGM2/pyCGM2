@@ -29,6 +29,8 @@ class MomentProjection(Enum):
     Global = 0
     Proximal = 1
     Distal = 2
+    JCS = 3
+    JCS_Dual =4
 
 
 class HarringtonPredictor(Enum):
