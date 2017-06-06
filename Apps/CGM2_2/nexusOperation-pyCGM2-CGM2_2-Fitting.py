@@ -230,6 +230,7 @@ if __name__ == "__main__":
         # --- force plate handling----
         # find foot  in contact        
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqIK)
+        forceplates.addForcePlateGeneralEvents(acqIK,mappedForcePlate)
         logging.info("Force plate assignment : %s" %mappedForcePlate)
 
         if args.mfpa is not None:
@@ -237,6 +238,7 @@ if __name__ == "__main__":
                 raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(mappedForcePlate))))
             else:
                 mappedForcePlate = args.mfpa
+                forceplates.addForcePlateGeneralEvents(acqIK,mappedForcePlate)
                 logging.warning("Force plates assign manually")
 
         # assembly foot and force plate        
@@ -260,7 +262,7 @@ if __name__ == "__main__":
 
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,model,acqIK,subject,pointSuffix).run()
-
+        nexusTools.createGeneralEvents(NEXUS,subject,acqIK,["Left-FP","Right-FP"])
         # ========END of the nexus OPERATION if run from Nexus  =========
 
         if DEBUG:
