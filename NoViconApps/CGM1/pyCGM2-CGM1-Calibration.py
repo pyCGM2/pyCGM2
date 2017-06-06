@@ -22,7 +22,7 @@ from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
 
-    
+
 if __name__ == "__main__":
 
     plt.close("all")
@@ -35,22 +35,24 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
 
-    # --------------------pyCGM2 SETTINGS FILES ------------------------------
+    # --------------------GLOBAL SETTINGS ------------------------------
 
     # global setting ( in user/AppData)
     inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
-    # info file
+    # --------------------SESSION  SETTINGS ------------------------------
     infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
+    # --------------------CONFIGURATION ------------------------------
+
     # ---- configuration parameters ----
-    if args.leftFlatFoot is not None:      
+    if args.leftFlatFoot is not None:
         flag_leftFlatFoot = bool(args.leftFlatFoot)
         logging.warning("Left flat foot forces : %s"%(str(bool(args.leftFlatFoot))))
     else:
         flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
-        
-           
+
+
     if args.rightFlatFoot is not None:
         flag_rightFlatFoot = bool(args.rightFlatFoot)
         logging.warning("Right flat foot forces : %s"%(str(bool(args.rightFlatFoot))))
@@ -58,7 +60,7 @@ if __name__ == "__main__":
         flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
 
 
-    if args.markerDiameter is not None: 
+    if args.markerDiameter is not None:
         markerDiameter = float(args.markerDiameter)
         logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
     else:
@@ -70,9 +72,7 @@ if __name__ == "__main__":
     else:
         pointSuffix = inputs["Global"]["Point suffix"]
 
-
-
-    # --------------------------INPUTS ------------------------------------
+    # --------------------------LOADING ------------------------------------
 
     DATA_PATH = infoSettings["Modelling"]["Trials"]["DataPath"]
     calibrateFilenameLabelled = infoSettings["Modelling"]["Trials"]["Static"]
@@ -80,10 +80,17 @@ if __name__ == "__main__":
     logging.info( "data Path: "+ DATA_PATH )
     logging.info( "calibration file: "+ calibrateFilenameLabelled)
 
-        
-    # ---btk acquisition---
-    acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+    # --------------------------TRANSLATORS ------------------------------------
 
+    if os.path.isfile( DATA_PATH + "CGM1.translators"):
+       logging.warning("local translator found")
+       sessionTranslators = json.loads(open(DATA_PATH + "CGM1.translators").read(),object_pairs_hook=OrderedDict)
+       translators = sessionTranslators["Translators"]
+    else:
+       translators = inputs["Translators"]
+
+
+    # --------------------------SUBJECT ------------------------------------
 
     required_mp={
     'Bodymass'   : infoSettings["MP"]["Required"]["Bodymass"],
@@ -109,7 +116,15 @@ if __name__ == "__main__":
     'RightShankRotation' : infoSettings["MP"]["Optional"][ "RightShankRotation"],#0,
         }
 
-    # --------------------------MODEL--------------------------------------
+
+    # --------------------------ACQUISITION--------------------------------------
+
+    # ---btk acquisition---
+    acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+    btkTools.checkMultipleSubject(acqStatic)
+
+    acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+
 
     # ---definition---
     model=cgm.CGM1LowerLimbs()
@@ -121,74 +136,74 @@ if __name__ == "__main__":
     staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
 
 
-    # --------------------------STATIC CALBRATION--------------------------                
+    # --------------------------STATIC CALBRATION--------------------------
     scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
-    
+
     # ---initial calibration filter----
-    # use if all optional mp are zero    
+    # use if all optional mp are zero
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                         leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                         markerDiameter=markerDiameter,
                                         ).compute()
     # ---- Decorators -----
-    # Goal = modified calibration according the identified marker set or if offsets manually set   
- 
-    # initialisation of node label and marker labels 
+    # Goal = modified calibration according the identified marker set or if offsets manually set
+
+    # initialisation of node label and marker labels
     useLeftKJCnodeLabel = "LKJC_chord"
     useLeftAJCnodeLabel = "LAJC_chord"
     useRightKJCnodeLabel = "RKJC_chord"
     useRightAJCnodeLabel = "RAJC_chord"
-    
+
     useLeftKJCmarkerLabel = "LKJC"
     useLeftAJCmarkerLabel = "LAJC"
     useRightKJCmarkerLabel = "RKJC"
     useRightAJCmarkerLabel = "RAJC"
-            
+
 
     # case 1 : NO kad, NO medial ankle BUT thighRotation different from zero ( mean manual modification or new calibration from a previous one )
-    #  case not necessary - static PIG operation - dont consider any offsets        
+    #  case not necessary - static PIG operation - dont consider any offsets
     if not staticMarkerConfiguration["leftKadFlag"]  and not staticMarkerConfiguration["leftMedialAnkleFlag"] and not staticMarkerConfiguration["leftMedialKneeFlag"] and optional_mp["LeftThighRotation"] !=0:
-        logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")            
+        logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")
         modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],markerDiameter,optional_mp["LeftTibialTorsion"],optional_mp["LeftShankRotation"])
         useLeftKJCnodeLabel = "LKJC_mo"
         useLeftAJCnodeLabel = "LAJC_mo"
-   
+
 
     if not staticMarkerConfiguration["rightKadFlag"]  and not staticMarkerConfiguration["rightMedialAnkleFlag"] and not staticMarkerConfiguration["rightMedialKneeFlag"] and optional_mp["RightThighRotation"] !=0:
-        logging.warning("CASE FOUND ===> Right Side - CGM1 - Origine - manual offsets")            
+        logging.warning("CASE FOUND ===> Right Side - CGM1 - Origine - manual offsets")
         modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
         useRightKJCnodeLabel = "RKJC_mo"
         useRightAJCnodeLabel = "RAJC_mo"
 
-    # case 2 : kad FOUND and NO medial Ankle 
+    # case 2 : kad FOUND and NO medial Ankle
     if staticMarkerConfiguration["leftKadFlag"]:
         logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD variant")
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
         useLeftKJCnodeLabel = "LKJC_kad"
         useLeftAJCnodeLabel = "LAJC_kad"
-        
+
         useLeftKJCmarkerLabel = "LKJC_KAD"
         useLeftAJCmarkerLabel = "LAJC_KAD"
-        
+
     if staticMarkerConfiguration["rightKadFlag"]:
         logging.warning("CASE FOUND ===> Right Side - CGM1 - KAD variant")
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
         useRightKJCnodeLabel = "RKJC_kad"
         useRightAJCnodeLabel = "RAJC_kad"
-    
+
         useRightKJCmarkerLabel = "RKJC_KAD"
-        useRightAJCmarkerLabel = "RAJC_KAD"        
-    
-    
-    # case 3 : both kad and medial ankle FOUND 
+        useRightAJCmarkerLabel = "RAJC_KAD"
+
+
+    # case 3 : both kad and medial ankle FOUND
     if staticMarkerConfiguration["leftKadFlag"]:
         if staticMarkerConfiguration["leftMedialAnkleFlag"]:
             logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD + medial ankle ")
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
             useLeftAJCnodeLabel = "LAJC_mid"
-            
-            useLeftAJCmarkerLabel = "LAJC_MID"                
-            
+
+            useLeftAJCmarkerLabel = "LAJC_MID"
+
 
     if staticMarkerConfiguration["rightKadFlag"]:
         if staticMarkerConfiguration["rightMedialAnkleFlag"]:
@@ -196,10 +211,10 @@ if __name__ == "__main__":
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
             useRightAJCnodeLabel = "RAJC_mid"
 
-            useRightAJCmarkerLabel = "RAJC_MID"        
+            useRightAJCmarkerLabel = "RAJC_MID"
 
 
-    # ----Final Calibration filter if model previously decorated ----- 
+    # ----Final Calibration filter if model previously decorated -----
     if model.decoratedModel:
         # initial static filter
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
@@ -213,7 +228,7 @@ if __name__ == "__main__":
 
     # ----------------------CGM MODELLING----------------------------------
     # ----motion filter----
-    # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system         
+    # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system
 
     modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
                                               markerDiameter=markerDiameter,
@@ -229,7 +244,7 @@ if __name__ == "__main__":
     modelFilters.ModelJCSFilter(model,acqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
     # detection of traveling axis
-    longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqStatic,["LASI","RASI","RPSI","LPSI"])  
+    longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqStatic,["LASI","RASI","RPSI","LPSI"])
 
     # absolute angles
     modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
@@ -239,7 +254,7 @@ if __name__ == "__main__":
                                             globalFrameOrientation = globalFrame,
                                             forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-    
+
 
     # ----------------------SAVE-------------------------------------------
 
@@ -253,9 +268,9 @@ if __name__ == "__main__":
     infoSettings["MP"]["Optional"][ "RightAsisTrocanterDistance"] = model.mp_computed["RightAsisTrocanterDistance"]
     infoSettings["MP"]["Optional"][ "RightTibialTorsion"] = model.mp_computed["RightTibialTorsionOffset"]
     infoSettings["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
-    infoSettings["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]    
-    
-    with open('pyCGM2.info', 'w') as outfile:  
+    infoSettings["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
+
+    with open('pyCGM2.info', 'w') as outfile:
         json.dump(infoSettings, outfile,indent=4)
 
 
@@ -263,10 +278,10 @@ if __name__ == "__main__":
     if os.path.isfile(DATA_PATH + "CGM1-pyCGM2.model"):
         logging.warning("previous model removed")
         os.remove(DATA_PATH + "CGM1-pyCGM2.model")
-        
+
     modelFile = open(DATA_PATH + "CGM1-pyCGM2.model", "w")
     cPickle.dump(model, modelFile)
     modelFile.close()
 
-    # overwrite static file        
-    btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled)) 
+    # overwrite static file
+    btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled))
