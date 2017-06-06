@@ -25,10 +25,10 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 import btk
 
 
-# pyCGM2 libraries    
-from pyCGM2 import  smartFunctions 
+# pyCGM2 libraries
+from pyCGM2 import  smartFunctions
 
-from pyCGM2.Processing import cycle,analysis,scores,exporter,c3dManager, discretePoints       
+from pyCGM2.Processing import cycle,analysis,scores,exporter,c3dManager, discretePoints
 from pyCGM2.Report import plot,normativeDatabaseProcedure
 
 #
@@ -37,49 +37,26 @@ import argparse
 
 
 if __name__ == "__main__":
-    
+
     parser = argparse.ArgumentParser(description='Gait Processing')
     parser.add_argument('--pointSuffix', type=str, help='force suffix')
-    args = parser.parse_args()  
-    
+    args = parser.parse_args()
 
-    
-    
-    # --------------------pyCGM2 SETTINGS FILES ------------------------------
+    # --------------------SESSIONS INFOS ------------------------------
 
-
-    # info file
     infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-        
+
     if args.pointSuffix is not None:
         pointSuffix = args.pointSuffix
     else:
-        pointSuffix = infoSettings["Processing"]["Point suffix"]        
-        
+        pointSuffix = infoSettings["Processing"]["Point suffix"]
+
     normativeData = infoSettings["Processing"]["Normative data"]
 
-
-
-    # -----infos--------     
-    model = None if  infoSettings["Modelling"]["Model"]=={} else infoSettings["Modelling"]["Model"]  
-    subject = None if infoSettings["Processing"]["Subject"]=={} else infoSettings["Processing"]["Subject"] 
-    experimental = None if infoSettings["Processing"]["Experimental conditions"]=={} else infoSettings["Processing"]["Experimental conditions"] 
-
-    # --------------------------PROCESSING --------------------------------
-
-#    DATA_PATH = infoSettings["Modelling"]["Trials"]["DataPath"]
-#    motionTrialFilenames = infoSettings["Modelling"]["Trials"]["Motion"]
-    
-#    smartFunctions.gaitProcessing_cgm1 (motionTrialFilenames, DATA_PATH,
-#                           model,  subject, experimental,
-#                           pointLabelSuffix = pointSuffix,
-#                           plotFlag= True, 
-#                           exportBasicSpreadSheetFlag = False,
-#                           exportAdvancedSpreadSheetFlag = False,
-#                           exportAnalysisC3dFlag = False,
-#                           consistencyOnly = True,
-#                           normativeDataDict = normativeData)
-
+    # -----infos--------
+    model = None if  infoSettings["Modelling"]["Model"]=={} else infoSettings["Modelling"]["Model"]
+    subject = None if infoSettings["Processing"]["Subject"]=={} else infoSettings["Processing"]["Subject"]
+    experimental = None if infoSettings["Processing"]["Experimental conditions"]=={} else infoSettings["Processing"]["Experimental conditions"]
 
     # --------------------------PROCESSING --------------------------------
 
@@ -98,20 +75,18 @@ if __name__ == "__main__":
 
     #---- Modelled File manager
     #--------------------------------------------------------------------------
-    # preliminary check if modelledFilenames is string                          
+    # preliminary check if modelledFilenames is string
     if isinstance(motionTrialFilenames,str) or isinstance(motionTrialFilenames,unicode):
-        logging.info( "gait Processing on ONE file")        
+        logging.info( "gait Processing on ONE file")
         modelledFilenames = [motionTrialFilenames]
     else:
         modelledFilenames = motionTrialFilenames
-
 
 
     c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
     cmf.enableEmg(False)
     trialManager = cmf.generate()
-    
 
 
     #---- GAIT CYCLES FILTER
@@ -120,7 +95,7 @@ if __name__ == "__main__":
                                                kinematicTrials = trialManager.kinematic["Trials"],
                                                kineticTrials = trialManager.kinetic["Trials"],
                                                emgTrials=trialManager.emg["Trials"])
-            
+
     cyclefilter = cycle.CyclesFilter()
     cyclefilter.setBuilder(cycleBuilder)
     cycles = cyclefilter.build()
@@ -143,11 +118,11 @@ if __name__ == "__main__":
                                                   subjectInfos=subject,
                                                   modelInfos=model,
                                                   experimentalInfos=experimental)
-    
+
     analysisFilter = analysis.AnalysisFilter()
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
-    
+
 
     # --- GPS ----
     gps =scores.CGM1_GPS()
@@ -165,31 +140,28 @@ if __name__ == "__main__":
     dpProcedure = discretePoints.MaxMinProcedure()
     dpf = discretePoints.DiscretePointsFilter(dpProcedure, analysisFilter.analysis)
     maxMinDataFrame = dpf.getOutput()
-    
+
 
     # --- Excel exporter ----
-        
+
     spreadSheetName= "Session"
     xlsExport = exporter.XlsExportFilter()
     xlsExport.setDataFrames([benedettiDataFrame,maxMinDataFrame])
-    xlsExport.exportDataFrames("discretePoints", path=DATA_PATH)    
-    
+    xlsExport.exportDataFrames("discretePoints", path=DATA_PATH)
+
     xlsExport.setAnalysisInstance(analysisFilter.analysis)
     xlsExport.setConcreteAnalysisBuilder(analysisBuilder)
     xlsExport.exportAdvancedDataFrame(spreadSheetName, path=DATA_PATH)
-        
-        
-
 
     #---- GAIT PLOTTING FILTER
     #--------------------------------------------------------------------------
 
     plotBuilder = plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=trialManager.kineticFlag, pointLabelSuffix= pointSuffix)
     plotBuilder.setNormativeDataProcedure(ndp)
-    plotBuilder.setConsistencyOnly(True)       
-       
+    plotBuilder.setConsistencyOnly(True)
+
     # Filter
-    pdfName = "session"  
+    pdfName = "session"
     pf = plot.PlottingFilter()
     pf.setBuilder(plotBuilder)
     pf.setPath(DATA_PATH)
