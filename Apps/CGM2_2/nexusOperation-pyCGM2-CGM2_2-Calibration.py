@@ -41,7 +41,7 @@ from pyCGM2 import viconInterface
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = False
+    DEBUG = True
 
     parser = argparse.ArgumentParser(description='CGM2.2 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -58,13 +58,20 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # --------------------------INPUTS ------------------------------------
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        # global setting ( in user/AppData)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_2-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+
+
+        # --------------------------LOADING ------------------------------------
 
         # --- acquisition file and path----
         if DEBUG:
             DATA_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH +"True equinus\\S01\\CGM2.2\\" 
             calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
+            
+            args.ik=True
 
         else:
             DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
@@ -74,31 +81,40 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
 
-        # ---btk acquisition---
-        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
-
-        # check if acq was saved with only one  activated subject
-        if acqStatic.GetPoint(0).GetLabel().count(":"):
-            raise Exception("[pyCGM2] Your input static c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
-
-#        # ---relabel PIG output if processing previously---
-#        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqStatic)
-#        if any([n_angles,n_forces ,n_moments,  n_powers])==1:               
-#            cgm.CGM.reLabelOldOutputs(acqStatic) 
-
 
         # --------------------------SUBJECT -----------------------------------
+
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")        
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
+        required_mp={
+        'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
+        'LeftLegLength' : NEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],#860.0,
+        'RightLegLength' : NEXUS.GetSubjectParamDetails( subject, "RightLegLength")[0],#865.0 ,
+        'LeftKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0],#102.0,
+        'RightKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "RightKneeWidth")[0],#103.4,
+        'LeftAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0],#75.3,
+        'RightAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],#72.9,
+        'LeftSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "LeftSoleDelta")[0],#75.3,
+        'RightSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "RightSoleDelta")[0],#72.9,        
+        }
 
-        # --------------------pyCGM2 INPUT FILES ------------------------------
-
-        # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_2-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
-
+        optional_mp={
+        'InterAsisDistance'   : NEXUS.GetSubjectParamDetails( subject, "InterAsisDistance")[0],#0,
+        'LeftAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "LeftAsisTrocanterDistance")[0],#0,
+        'LeftTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "LeftTibialTorsion")[0],#0 ,
+        'LeftThighRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftThighRotation")[0],#0,
+        'LeftShankRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftShankRotation")[0],#0,
+        'RightAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "RightAsisTrocanterDistance")[0],#0,
+        'RightTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "RightTibialTorsion")[0],#0 ,
+        'RightThighRotation' : NEXUS.GetSubjectParamDetails( subject, "RightThighRotation")[0],#0,
+        'RightShankRotation' : NEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
+        }
+        
+        
+        # --------------------------SESSIONS INFOS -----------------------------------
         # info file
         if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
             copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
@@ -107,9 +123,16 @@ if __name__ == "__main__":
         else:
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
+        #  translators management 
+        if os.path.isfile( DATA_PATH + "CGM2-2.translators"):
+           logging.warning("local translator found")
+           sessionTranslators = json.loads(open(DATA_PATH + "CGM2-2.translators").read(),object_pairs_hook=OrderedDict)
+           translators = sessionTranslators["Translators"]
+        else:
+           translators = inputs["Translators"]
 
-        # ---- configuration parameters ----
 
+        # --------------------------CONFIG -----------------------------------
 
         hjcMethod = inputs["Calibration"]["HJC regression"] 
 
@@ -136,34 +159,16 @@ if __name__ == "__main__":
         else:
             pointSuffix = inputs["Global"]["Point suffix"]
 
-        # --------------------------MP DATA -----------------------------------
 
-        required_mp={
-        'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
-        'LeftLegLength' : NEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],#860.0,
-        'RightLegLength' : NEXUS.GetSubjectParamDetails( subject, "RightLegLength")[0],#865.0 ,
-        'LeftKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0],#102.0,
-        'RightKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "RightKneeWidth")[0],#103.4,
-        'LeftAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0],#75.3,
-        'RightAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],#72.9,
-        'LeftSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "LeftSoleDelta")[0],#75.3,
-        'RightSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "RightSoleDelta")[0],#72.9,        
-        }
 
-        optional_mp={
-        'InterAsisDistance'   : NEXUS.GetSubjectParamDetails( subject, "InterAsisDistance")[0],#0,
-        'LeftAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "LeftAsisTrocanterDistance")[0],#0,
-        'LeftTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "LeftTibialTorsion")[0],#0 ,
-        'LeftThighRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftThighRotation")[0],#0,
-        'LeftShankRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftShankRotation")[0],#0,
-        'RightAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "RightAsisTrocanterDistance")[0],#0,
-        'RightTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "RightTibialTorsion")[0],#0 ,
-        'RightThighRotation' : NEXUS.GetSubjectParamDetails( subject, "RightThighRotation")[0],#0,
-        'RightShankRotation' : NEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
-        }
+        # --------------------ACQUISITION------------------------------
 
-        # --------------------------MODEL--------------------------------------
-        acqStatic =  btkTools.applyTranslators(acqStatic,inputs["Translators"])
+        # ---btk acquisition---
+        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+        btkTools.checkMultipleSubject(acqStatic)
+
+        acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+        
 
         # ---definition---
         model=cgm.CGM1LowerLimbs()
