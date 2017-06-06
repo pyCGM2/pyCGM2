@@ -56,9 +56,11 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # --------------------------INPUTS ------------------------------------
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        # global setting ( in user/AppData)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
-        # --- acquisition file and path----
+        # --------------------------LOADING ------------------------------------
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
             calibrateFilenameLabelledNoExt = "test" #"static Cal 01-noKAD-noAnkleMed" #
@@ -72,65 +74,11 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
 
-        # ---btk acquisition---
-        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
-
-        # check if acq was saved with only one  activated subject
-        if acqStatic.GetPoint(0).GetLabel().count(":"):
-            raise Exception("[pyCGM2] Your input static c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
-
-#        # ---relabel PIG output if processing previously---
-#        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqStatic)
-#        if any([n_angles,n_forces ,n_moments,  n_powers])==1:               
-#            cgm.CGM.reLabelOldOutputs(acqStatic) 
-
-
-        # --------------------------SUBJECT -----------------------------------
+        # --------------------------SUBJECT ------------------------------------
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")        
         Parameters = NEXUS.GetSubjectParamNames(subject)
-
-
-        # --------------------pyCGM2 INPUT FILES ------------------------------
-
-        # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
-
-        # info file
-        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
-            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-        else:
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-
-
-        # ---- configuration parameters ----
-        if args.leftFlatFoot is not None:      
-            flag_leftFlatFoot = bool(args.leftFlatFoot)
-        else:
-            flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
-               
-        if args.rightFlatFoot is not None:
-            flag_rightFlatFoot = bool(args.rightFlatFoot)
-        else:
-            flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
-
-
-        if args.markerDiameter is not None: 
-            markerDiameter = float(args.markerDiameter)
-            logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
-        else:
-            markerDiameter = float(inputs["Global"]["Marker diameter"])
-
-
-        if args.check:
-            pointSuffix="cgm1.1"
-        else:
-            pointSuffix = inputs["Global"]["Point suffix"]
-
-        # --------------------------MP DATA -----------------------------------
 
         required_mp={
         'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
@@ -156,8 +104,55 @@ if __name__ == "__main__":
         'RightShankRotation' : NEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
         }
 
-        # --------------------------MODEL--------------------------------------
-        acqStatic =  btkTools.applyTranslators(acqStatic,inputs["Translators"])
+
+        # --------------------------SESSION INFOS ------------------------------------
+        # info file
+        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
+            copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
+            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
+            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+        else:
+            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+
+        #  translators management 
+        if os.path.isfile( DATA_PATH + "CGM1.translators"):
+           logging.warning("local translator found")
+           sessionTranslators = json.loads(open(DATA_PATH + "CGM1.translators").read(),object_pairs_hook=OrderedDict)
+           translators = sessionTranslators["Translators"]
+        else:
+           translators = inputs["Translators"]
+
+        # --------------------------CONFIG ------------------------------------
+
+        if args.leftFlatFoot is not None:      
+            flag_leftFlatFoot = bool(args.leftFlatFoot)
+        else:
+            flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
+               
+        if args.rightFlatFoot is not None:
+            flag_rightFlatFoot = bool(args.rightFlatFoot)
+        else:
+            flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
+
+
+        if args.markerDiameter is not None: 
+            markerDiameter = float(args.markerDiameter)
+            logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
+        else:
+            markerDiameter = float(inputs["Global"]["Marker diameter"])
+
+
+        if args.check:
+            pointSuffix="cgm1.1"
+        else:
+            pointSuffix = inputs["Global"]["Point suffix"]
+        # --------------------------ACQUISITION ------------------------------------
+
+        # ---btk acquisition---
+        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+        btkTools.checkMultipleSubject(acqStatic)
+
+        acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
         # ---definition---
         model=cgm.CGM1LowerLimbs()

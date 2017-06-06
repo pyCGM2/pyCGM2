@@ -53,7 +53,11 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # ----------------------INPUTS-------------------------------------------
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        # global setting ( in user/AppData)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+
+        # --------------------------LOADING ------------------------------------
         # --- acquisition file and path----
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\New Session 3\\"
@@ -69,28 +73,12 @@ if __name__ == "__main__":
         logging.info( "calibration file: "+ reconstructFilenameLabelled)
 
 
-        # --- btk acquisition ----
-        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
-
-        #   check if acq was saved with only one  activated subject
-        if acqGait.GetPoint(0).GetLabel().count(":"):
-            raise Exception("[pyCGM2] Your Trial c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
-
-
-        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)
-
-#        # --relabel PIG output if processing previously---
-#        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqGait)
-#        if any([n_angles,n_forces ,n_moments,  n_powers])==1:            
-#            cgm.CGM.reLabelOldOutputs(acqGait) 
-
-        # --------------------------SUBJECT -----------------------------------
-        # Notice : Work with ONE subject by session
+        # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
         logging.info(  "Subject name : " + subject  )
 
-        # --------------------pyCGM2 INPUT FILES ------------------------------
+        # --------------------pyCGM2 MODEL ------------------------------
         if not os.path.isfile(DATA_PATH + subject + "-CGM2_1-pyCGM2.model"):
             raise Exception ("%s-CGM2_1-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
         else:
@@ -98,9 +86,8 @@ if __name__ == "__main__":
             model = cPickle.load(f)
             f.close()
 
-        # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
+        # --------------------------SESSION INFOS ------------------------------------
         # info file
         if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
             copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
@@ -108,8 +95,17 @@ if __name__ == "__main__":
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
         else:
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+            
+        #  translators management 
+        if os.path.isfile( DATA_PATH + "CGM1.translators"):
+           logging.warning("local translator found")
+           sessionTranslators = json.loads(open(DATA_PATH + "CGM1.translators").read(),object_pairs_hook=OrderedDict)
+           translators = sessionTranslators["Translators"]
+        else:
+           translators = inputs["Translators"]
 
-        # ---- configuration parameters ----
+        # --------------------------CONFIG ------------------------------------
+
         if args.markerDiameter is not None: 
             markerDiameter = float(args.markerDiameter)
             logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
@@ -141,9 +137,17 @@ if __name__ == "__main__":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")      
-        
-        # --------------------------MODELLLING--------------------------
-        acqGait =  btkTools.applyTranslators(acqGait,inputs["Translators"])               
+
+
+        # --------------------------ACQUISITION ------------------------------------
+
+        # --- btk acquisition ----        
+        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+
+        btkTools.checkMultipleSubject(acqGait)
+        acqGait =  btkTools.applyTranslators(acqGait,translators)
+        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)  
+              
         
         scp=modelFilters.StaticCalibrationProcedure(model) 
         # ---Motion filter----    
@@ -158,7 +162,7 @@ if __name__ == "__main__":
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
         # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgression(acqGait,"LASI")
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"]) 
         
         # absolute angles        
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,

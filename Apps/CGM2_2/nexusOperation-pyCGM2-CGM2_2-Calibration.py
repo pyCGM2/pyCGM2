@@ -124,9 +124,9 @@ if __name__ == "__main__":
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
         #  translators management 
-        if os.path.isfile( DATA_PATH + "CGM2-2.translators"):
+        if os.path.isfile( DATA_PATH + "CGM1.translators"):
            logging.warning("local translator found")
-           sessionTranslators = json.loads(open(DATA_PATH + "CGM2-2.translators").read(),object_pairs_hook=OrderedDict)
+           sessionTranslators = json.loads(open(DATA_PATH + "CGM1.translators").read(),object_pairs_hook=OrderedDict)
            translators = sessionTranslators["Translators"]
         else:
            translators = inputs["Translators"]
