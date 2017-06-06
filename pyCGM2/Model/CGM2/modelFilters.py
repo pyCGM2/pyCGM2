@@ -1016,7 +1016,7 @@ class InverseDynamicFilter(object):
                         e3 = distSeg.anatomicalFrame.motion[i].m_axisX
                         order=[2,1,0]
 
-                    e2=np.cross(e1,e3)
+                    e2= np.cross(e3,e1)
                     e2=np.divide(e2,np.linalg.norm(e2))
                 
                     if self.m_projection == pyCGM2Enums.MomentProjection.JCS_Dual:                
@@ -1026,7 +1026,7 @@ class InverseDynamicFilter(object):
                         forceValues[i,order[2]] = np.divide(np.dot(np.cross(e1,e2),F[i]), np.dot(np.cross(e1,e2),e3))
                     
                         momentValues[i,order[0]] = np.divide(np.dot(np.cross(e2,e3),M[i]), np.dot(np.cross(e1,e2),e3)) 
-                        momentValues[i,order[1]] = np.divide(np.dot(np.cross(e3,e1),M[i]), np.dot(np.cross(e1,e2),e3))
+                        momentValues[i,order[1]] = np.dot(M[i],e2) #np.divide(np.dot(np.cross(e3,e1),M[i]), np.dot(np.cross(e1,e2),e3))
                         momentValues[i,order[2]] = np.divide(np.dot(np.cross(e1,e2),M[i]), np.dot(np.cross(e1,e2),e3))
 
                     if self.m_projection == pyCGM2Enums.MomentProjection.JCS:                
@@ -1036,8 +1036,8 @@ class InverseDynamicFilter(object):
                         forceValues[i,order[2]] = np.dot(F[i],e3)
                     
                         momentValues[i,order[0]] = np.dot(M[i],e1) 
-                        momentValues[i,order[1]] = np.dot(M[i],e2)
-                        momentValues[i,order[2]] = np.dot(M[i],e3)
+                        momentValues[i,order[1]] = np.dot(M[i],e2) 
+                        momentValues[i,order[2]] = np.dot(M[i],e3) 
 
                     
                     
