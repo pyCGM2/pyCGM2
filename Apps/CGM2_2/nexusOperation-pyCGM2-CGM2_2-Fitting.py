@@ -39,7 +39,7 @@ from pyCGM2 import viconInterface
 if __name__ == "__main__":
 
 
-    DEBUG = True
+    DEBUG = False
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CGM2-2 Fitting')
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
-    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')  
+    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     args = parser.parse_args()
 
@@ -98,7 +98,7 @@ if __name__ == "__main__":
         else:
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
-        #  translators management 
+        #  translators management
         if os.path.isfile( DATA_PATH + "CGM1.translators"):
            logging.warning("local translator found")
            sessionTranslators = json.loads(open(DATA_PATH + "CGM1.translators").read(),object_pairs_hook=OrderedDict)
@@ -108,19 +108,19 @@ if __name__ == "__main__":
 
         # --------------------------CONFIG ------------------------------------
 
-        if args.markerDiameter is not None: 
+        if args.markerDiameter is not None:
             markerDiameter = float(args.markerDiameter)
             logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
         else:
             markerDiameter = float(inputs["Global"]["Marker diameter"])
-            
-            
+
+
         if args.check:
             pointSuffix="cgm2.2"
         else:
             pointSuffix = inputs["Global"]["Point suffix"]
 
-        if args.proj is not None:        
+        if args.proj is not None:
             if args.proj == "Distal":
                 momentProjection = pyCGM2Enums.MomentProjection.Distal
             elif args.proj == "Proximal":
@@ -130,7 +130,7 @@ if __name__ == "__main__":
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
-        else:        
+        else:
             if inputs["Fitting"]["Moment Projection"] == "Distal":
                 momentProjection = pyCGM2Enums.MomentProjection.Distal
             elif inputs["Fitting"]["Moment Projection"] == "Proximal":
@@ -138,20 +138,20 @@ if __name__ == "__main__":
             elif inputs["Fitting"]["Moment Projection"] == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
             else:
-                raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")  
+                raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
         # --------------------------ACQUISITION ------------------------------------
 
-        # --- btk acquisition ----        
+        # --- btk acquisition ----
         acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
         btkTools.checkMultipleSubject(acqGait)
         acqGait =  btkTools.applyTranslators(acqGait,translators)
-        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS) 
+        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)
 
-        
+
         # --- initial motion Filter ---
-        scp=modelFilters.StaticCalibrationProcedure(model) 
+        scp=modelFilters.StaticCalibrationProcedure(model)
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
         modMotion.compute()
 
@@ -159,22 +159,22 @@ if __name__ == "__main__":
         #                        ---OPENSIM IK---
 
         # --- opensim calibration Filter ---
-        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile        
+        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
         markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-markerset.xml" # markerset
         cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
-    
+
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
                                                 model,
                                                 cgmCalibrationprocedure)
         oscf.addMarkerSet(markersetFile)
         scalingOsim = oscf.build()
-        
-        
+
+
         # --- opensim Fitting Filter ---
         iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
 
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
-        cgmFittingProcedure.updateMarkerWeight("LASI",inputs["Fitting"]["Weight"]["LASI"]) 
+        cgmFittingProcedure.updateMarkerWeight("LASI",inputs["Fitting"]["Weight"]["LASI"])
         cgmFittingProcedure.updateMarkerWeight("RASI",inputs["Fitting"]["Weight"]["RASI"])
         cgmFittingProcedure.updateMarkerWeight("LPSI",inputs["Fitting"]["Weight"]["LPSI"])
         cgmFittingProcedure.updateMarkerWeight("RPSI",inputs["Fitting"]["Weight"]["RPSI"])
@@ -190,18 +190,18 @@ if __name__ == "__main__":
         cgmFittingProcedure.updateMarkerWeight("LANK",inputs["Fitting"]["Weight"]["LANK"])
         cgmFittingProcedure.updateMarkerWeight("LHEE",inputs["Fitting"]["Weight"]["LHEE"])
         cgmFittingProcedure.updateMarkerWeight("LTOE",inputs["Fitting"]["Weight"]["LTOE"])
-           
-        
-        osrf = opensimFilters.opensimFittingFilter(iksetupFile, 
+
+
+        osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           scalingOsim,
                                                           cgmFittingProcedure,
                                                           str(DATA_PATH) )
-        acqIK = osrf.run(acqGait,str(DATA_PATH + reconstructFilenameLabelled ))        
-        
-        
-        
+        acqIK = osrf.run(acqGait,str(DATA_PATH + reconstructFilenameLabelled ))
+
+
+
         # --- final pyCGM2 model motion Filter ---
-        # use fitted markers             
+        # use fitted markers
         modMotionFitted=modelFilters.ModelMotionFilter(scp,acqIK,model,pyCGM2Enums.motionMethod.Sodervisk ,
                                                   markerDiameter=markerDiameter)
 
@@ -213,9 +213,9 @@ if __name__ == "__main__":
         modelFilters.ModelJCSFilter(model,acqIK).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
         # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqIK,["LASI","LPSI","RASI","RPSI"]) 
-        
-        # absolute angles        
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqIK,["LASI","LPSI","RASI","RPSI"])
+
+        # absolute angles
         modelFilters.ModelAbsoluteAnglesFilter(model,acqIK,
                                                segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                                 angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -228,7 +228,7 @@ if __name__ == "__main__":
         bspModel.compute()
 
         # --- force plate handling----
-        # find foot  in contact        
+        # find foot  in contact
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqIK)
         forceplates.addForcePlateGeneralEvents(acqIK,mappedForcePlate)
         logging.info("Force plate assignment : %s" %mappedForcePlate)
@@ -241,7 +241,7 @@ if __name__ == "__main__":
                 forceplates.addForcePlateGeneralEvents(acqIK,mappedForcePlate)
                 logging.warning("Force plates assign manually")
 
-        # assembly foot and force plate        
+        # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,acqIK,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",
                                  rightSegmentLabel="Right Foot").compute()
@@ -258,7 +258,7 @@ if __name__ == "__main__":
         modelFilters.JointPowerFilter(model,acqIK).compute(pointLabelSuffix=pointSuffix)
 
         #---- zero unvalid frames ---
-        btkTools.applyValidFramesOnOutput(acqIK,validFrames)  
+        btkTools.applyValidFramesOnOutput(acqIK,validFrames)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,model,acqIK,subject,pointSuffix).run()
@@ -268,7 +268,7 @@ if __name__ == "__main__":
         if DEBUG:
 
             NEXUS.SaveTrial(30)
-    
-            
+
+
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
