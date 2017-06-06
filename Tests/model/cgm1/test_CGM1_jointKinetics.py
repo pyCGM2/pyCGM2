@@ -161,7 +161,7 @@ class CGM1_motionInverseDynamicsTest():
     @classmethod
     def basicCGM1_proximal(cls,plotFlag=False):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic-filtered\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -231,7 +231,7 @@ class CGM1_motionInverseDynamicsTest():
     @classmethod
     def basicCGM1_global(cls,plotFlag=False):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic-filtered\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -635,7 +635,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
     @classmethod
     def basicCGM1_distal(cls):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic_pathologicalSubject\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic_pathologicalSubject\\"
         staticFilename = "BOVE Vincent Cal 01.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -702,7 +702,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
     @classmethod
     def basicCGM1_proximal(cls):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic_pathologicalSubject\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic_pathologicalSubject\\"
         staticFilename = "BOVE Vincent Cal 01.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -767,7 +767,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
     @classmethod
     def basicCGM1_global(cls):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic_pathologicalSubject\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic_pathologicalSubject\\"
         staticFilename = "BOVE Vincent Cal 01.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -835,7 +835,7 @@ class CGM1_motionInverseDynamics_batchprocessing_Test():
     @classmethod
     def basicCGM1_distal(cls):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic-filtered\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -904,17 +904,17 @@ class CGM1_motionInverseDynamics_batchprocessing_Test():
 if __name__ == "__main__":
     
     logging.info("######## PROCESS CGM1 - InverseDynamics ######")    
-#    CGM1_motionInverseDynamicsTest.basicCGM1_distal(plotFlag=False) 
-#    CGM1_motionInverseDynamicsTest.basicCGM1_proximal(plotFlag=False)
-#    CGM1_motionInverseDynamicsTest.basicCGM1_global(plotFlag=False)
-#    CGM1_motionInverseDynamicsTest.kadMedCGM1_distal(plotFlag=True) # no tests
-#    CGM1_motionInverseDynamicsTest.kadMedCGM1_proximal(plotFlag=True) # no tests
+    CGM1_motionInverseDynamicsTest.basicCGM1_distal(plotFlag=False) 
+    CGM1_motionInverseDynamicsTest.basicCGM1_proximal(plotFlag=False)
+    CGM1_motionInverseDynamicsTest.basicCGM1_global(plotFlag=False)
+    CGM1_motionInverseDynamicsTest.kadMedCGM1_distal(plotFlag=True) # no tests
+    CGM1_motionInverseDynamicsTest.kadMedCGM1_proximal(plotFlag=True) # no tests
     
-    #CGM1_motionInverseDynamicsTest.basicCGM1_JCS(plotFlag=True)
-    CGM1_motionInverseDynamicsTest.basicCGM1_JCS_Dual(plotFlag=True)
+    CGM1_motionInverseDynamicsTest.basicCGM1_JCS(plotFlag=True) # no tests
+    CGM1_motionInverseDynamicsTest.basicCGM1_JCS_Dual(plotFlag=True) # no tests
     
-#    CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_distal()
-#    CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_proximal()
+    CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_distal()
+    CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_proximal()
 #    ##CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_global() # No success -  TODO : with Y as traveling axis, i got inversion on X and Y Force Components
     
     
