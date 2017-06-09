@@ -309,13 +309,19 @@ class CGMLowerlimbInverseDynamicProcedure(object):
         calcul segment par segment, j automatiserai plus tard ! 
     
         """
-        self.computeSegmental(model,"Left Foot",btkAcq, gravity, scaleToMeter)
-        self.computeSegmental(model,"Left Shank",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Left Foot")
+        if model.version == "2.4":
+            self.computeSegmental(model,"Left HindFoot",btkAcq, gravity, scaleToMeter)
+            self.computeSegmental(model,"Right HindFoot",btkAcq, gravity, scaleToMeter)
+        else:
+            self.computeSegmental(model,"Left Foot",btkAcq, gravity, scaleToMeter)
+            self.computeSegmental(model,"Right Foot",btkAcq, gravity, scaleToMeter)
+
+        self.computeSegmental(model,"Left Shank",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Left Foot")        
         model.getSegment("Left Shank Proximal").m_proximalWrench = model.getSegment("Left Shank").m_proximalWrench 
         model.getSegment("Left Shank Proximal").m_proximalMomentContribution = model.getSegment("Left Shank").m_proximalMomentContribution
         self.computeSegmental(model,"Left Thigh",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Left Shank")
 
-        self.computeSegmental(model,"Right Foot",btkAcq, gravity, scaleToMeter)
+
         self.computeSegmental(model,"Right Shank",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Right Foot")
         model.getSegment("Right Shank Proximal").m_proximalWrench = model.getSegment("Right Shank").m_proximalWrench 
         model.getSegment("Right Shank Proximal").m_proximalMomentContribution = model.getSegment("Right Shank").m_proximalMomentContribution 
