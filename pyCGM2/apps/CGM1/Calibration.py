@@ -231,7 +231,7 @@ if __name__ == "__main__":
     # ----motion filter----
     # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system
 
-    modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
+    modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Determinist,
                                               markerDiameter=markerDiameter,
                                               viconCGM1compatible=False,
                                               pigStatic=True,
