@@ -365,12 +365,8 @@ class CGM1LowerLimbs(CGM):
         else: 
             self.version = string
 
-
-
-
-
     def __repr__(self):
-        return "LowerLimb CGM1"
+        return "LowerLimb CGM1.0"
 
     @classmethod
     def cleanAcquisition(cls, acq, subjetPrefix="",removelateralKnee=False, kadEnable= False, ankleMedEnable = False):
@@ -2444,6 +2440,17 @@ class CGM1LowerLimbs(CGM):
             if btkTools.isPointExist(aqui,originAnatomicalFrame):
                 self._anatomical_motion(aqui,"Right Shank",originLabel = originAnatomicalFrame)
 
+        if "Left Foot" in segments: 
+            self._left_foot_motion_optimize(aqui, dictRef,motionMethod)
+            originAnatomicalFrame = str(dictAnat["Left Foot"]['labels'][3])
+            if btkTools.isPointExist(aqui,originAnatomicalFrame):
+                self._anatomical_motion(aqui,"Left Foot",originLabel = originAnatomicalFrame)
+
+        if "Right Foot" in segments: 
+            self._right_foot_motion_optimize(aqui, dictRef,motionMethod)
+            originAnatomicalFrame = str(dictAnat["Right Foot"]['labels'][3])
+            if btkTools.isPointExist(aqui,originAnatomicalFrame):
+                self._anatomical_motion(aqui,"Right Foot",originLabel = originAnatomicalFrame)
 
 
 
@@ -2469,7 +2476,7 @@ class CGM1LowerLimbs(CGM):
         pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
 
 
-        if motionMethod == pyCGM2Enums.motionMethod.Native: #cmf.motionMethod.Native:
+        if motionMethod == pyCGM2Enums.motionMethod.Determinist: #cmf.motionMethod.Native:
             
             #if not pigStaticProcessing:
             logging.debug(" - Pelvis - motion -")
@@ -2548,9 +2555,14 @@ class CGM1LowerLimbs(CGM):
             self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
 
-
-#            self._leftFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod) # issue AJC - HEE and TOE may be inline -> singularities !!
+            # foot
+            # issue with least-square optimization :  AJC - HEE and TOE may be inline -> singularities !!
+#            self._leftFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod) 
 #            self._rightFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
+
+            self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
+            self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
+
 
         logging.debug("--- Display Coordinate system ---")
         logging.debug(" --------------------------------")
@@ -2571,8 +2583,6 @@ class CGM1LowerLimbs(CGM):
                 self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical")
                 self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical")
     
-                self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFootUncorrected",referential="technical")
-                self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFootUncorrected",referential="technical")
     
             else:            
     

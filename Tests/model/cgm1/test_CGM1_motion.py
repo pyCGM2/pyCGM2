@@ -74,7 +74,7 @@ class CGM1_motionTest():
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"        
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -141,7 +141,7 @@ class CGM1_motionTest():
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 12.c3d"        
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -245,7 +245,7 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -313,7 +313,7 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -423,7 +423,7 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -490,7 +490,7 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -600,7 +600,7 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -667,7 +667,7 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -776,7 +776,7 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -851,7 +851,7 @@ class CGM1_motionTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 

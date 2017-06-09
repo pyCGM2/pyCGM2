@@ -153,7 +153,7 @@ if __name__ == "__main__":
         scp=modelFilters.StaticCalibrationProcedure(model) # procedure
         
         # ---Motion filter----    
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                   markerDiameter=markerDiameter,
                                                   viconCGM1compatible=True)
 

@@ -122,7 +122,7 @@ class CGM2_SARA_test():
         #    btkTools.smartAppendPoint(acqLeftKnee,"KneeFlexionAxis",axis)   
         
         # Motion of the model
-#        modMotion=modelFilters.ModelMotionFilter(scp,acqLeftKnee,model,pyCGM2Enums.motionMethod.Native,
+#        modMotion=modelFilters.ModelMotionFilter(scp,acqLeftKnee,model,pyCGM2Enums.motionMethod.Determinist,
 #                                                     usePyCGM2_coordinateSystem=True,
 #                                                     useLeftKJCmarker="LKJC_Chord")
 #        modMotion.compute()

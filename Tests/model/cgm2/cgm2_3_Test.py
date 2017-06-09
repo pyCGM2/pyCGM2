@@ -107,7 +107,7 @@ if __name__ == "__main__":
     acqGait =  btkTools.applyTranslators(acqGait,translators)     
     # Motion FILTER 
 
-    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
     modMotion.compute()
 
     # relative angles

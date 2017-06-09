@@ -275,7 +275,7 @@ if __name__ == "__main__":
 
         # ----------------------CGM MODELLING----------------------------------
         # ----motion filter----
-        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Determinist,
                                                   markerDiameter=markerDiameter)
 
         modMotion.compute()

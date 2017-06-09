@@ -119,7 +119,7 @@ class CGM1_motionInverseDynamicsTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -191,7 +191,7 @@ class CGM1_motionInverseDynamicsTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -261,7 +261,7 @@ class CGM1_motionInverseDynamicsTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -342,7 +342,7 @@ class CGM1_motionInverseDynamicsTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  viconCGM1compatible=True)
         modMotion.compute()
 
@@ -427,7 +427,7 @@ class CGM1_motionInverseDynamicsTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  viconCGM1compatible=False)
         modMotion.compute()
 
@@ -503,7 +503,7 @@ class CGM1_motionInverseDynamicsTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -583,7 +583,7 @@ class CGM1_motionInverseDynamicsTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  usePyCGM2_coordinateSystem=True)
         modMotion.compute()
 
@@ -667,7 +667,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -732,7 +732,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -797,7 +797,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -868,7 +868,7 @@ class CGM1_motionInverseDynamics_batchprocessing_Test():
             
             # Motion FILTER 
             # optimisation segmentaire et calibration fonctionnel
-            modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+            modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
             modMotion.compute()
     
             # Joint kinematics

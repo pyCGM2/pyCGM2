@@ -137,7 +137,7 @@ class CGM2_openSimTest():
                                     
     
         # --- filters
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
        
                                         
@@ -273,7 +273,7 @@ class CGM2_openSimTest():
                                     
     
         # --- filters
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
        
                                         
