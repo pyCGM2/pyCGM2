@@ -1941,52 +1941,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         """
         values = np.zeros((jointValues.shape))
 
-        # check if that work
-#        if jointLabel not in  ["RForeFoot","LForeFoot"]: 
-#            values = super(CGM2_4LowerLimbs, self).finalizeJCS(jointLabel, jointValues)
-#        elif jointLabel == "LForeFoot": # TODO : check
-#            values[:,0] = -1.0 * np.rad2deg(  jointValues[:,0])     
-#            values[:,1] = -1.0*np.rad2deg(  jointValues[:,2])
-#            values[:,2] = -1.0*np.rad2deg(  jointValues[:,1])
-#            
-#        elif jointLabel == "RForeFoot": # TODO : check
-#            values[:,0] = -1.0 * np.rad2deg(  jointValues[:,0])     
-#            values[:,1] = np.rad2deg(  jointValues[:,2])
-#            values[:,2] = np.rad2deg(  jointValues[:,1])
-
-
-
-
-        if jointLabel == "LHip" :  #LHPA=<-1(LHPA),-2(LHPA),-3(LHPA)> {*flexion, adduction, int. rot.			*}
-            values[:,0] = - np.rad2deg(  jointValues[:,0])
-            values[:,1] = - np.rad2deg(  jointValues[:,1])
-            values[:,2] = - np.rad2deg(  jointValues[:,2])
-
-        elif jointLabel == "LKnee" : # LKNA=<1(LKNA),-2(LKNA),-3(LKNA)-$LTibialTorsion>  {*flexion, varus, int. rot.		*}
-            values[:,0] = np.rad2deg(  jointValues[:,0])
-            values[:,1] = -np.rad2deg(  jointValues[:,1])
-            values[:,2] = -np.rad2deg(  jointValues[:,2])
-
-        elif jointLabel == "RHip" :  # RHPA=<-1(RHPA),2(RHPA),3(RHPA)>   {*flexion, adduction, int. rot.			*}
-            values[:,0] = - np.rad2deg(  jointValues[:,0])
-            values[:,1] =  np.rad2deg(  jointValues[:,1])
-            values[:,2] =  np.rad2deg(  jointValues[:,2])
-
-        elif jointLabel == "RKnee" : #  RKNA=<1(RKNA),2(RKNA),3(RKNA)-$RTibialTorsion>    {*flexion, varus, int. rot.		*}
-            values[:,0] = np.rad2deg(  jointValues[:,0])
-            values[:,1] = np.rad2deg(  jointValues[:,1])
-            values[:,2] = np.rad2deg(  jointValues[:,2])
-
-        elif jointLabel == "LAnkle":
-            values[:,0] = -1.0* np.rad2deg(  jointValues[:,0]  + np.radians(90))
-            values[:,1] = -1.0*np.rad2deg(  jointValues[:,2])
-            values[:,2] =  -1.0*np.rad2deg(  jointValues[:,1])
-
-        elif jointLabel == "RAnkle":
-            values[:,0] = -1.0* np.rad2deg(  jointValues[:,0]  + np.radians(90))
-            values[:,1] = np.rad2deg(  jointValues[:,2])
-            values[:,2] =  np.rad2deg(  jointValues[:,1])
-            
+        if jointLabel not in  ["RForeFoot","LForeFoot"]: 
+            values = super(CGM2_4LowerLimbs, self).finalizeJCS(jointLabel, jointValues)
         elif jointLabel == "LForeFoot": # TODO : check
             values[:,0] = -1.0 * np.rad2deg(  jointValues[:,0])     
             values[:,1] = -1.0*np.rad2deg(  jointValues[:,2])
@@ -1997,10 +1953,53 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             values[:,1] = np.rad2deg(  jointValues[:,2])
             values[:,2] = np.rad2deg(  jointValues[:,1])
 
-        else:
-            values[:,0] = np.rad2deg(  jointValues[:,0])
-            values[:,1] = np.rad2deg(  jointValues[:,1])
-            values[:,2] = np.rad2deg(  jointValues[:,2])
+
+
+
+#        if jointLabel == "LHip" :  #LHPA=<-1(LHPA),-2(LHPA),-3(LHPA)> {*flexion, adduction, int. rot.			*}
+#            values[:,0] = - np.rad2deg(  jointValues[:,0])
+#            values[:,1] = - np.rad2deg(  jointValues[:,1])
+#            values[:,2] = - np.rad2deg(  jointValues[:,2])
+#
+#        elif jointLabel == "LKnee" : # LKNA=<1(LKNA),-2(LKNA),-3(LKNA)-$LTibialTorsion>  {*flexion, varus, int. rot.		*}
+#            values[:,0] = np.rad2deg(  jointValues[:,0])
+#            values[:,1] = -np.rad2deg(  jointValues[:,1])
+#            values[:,2] = -np.rad2deg(  jointValues[:,2])
+#
+#        elif jointLabel == "RHip" :  # RHPA=<-1(RHPA),2(RHPA),3(RHPA)>   {*flexion, adduction, int. rot.			*}
+#            values[:,0] = - np.rad2deg(  jointValues[:,0])
+#            values[:,1] =  np.rad2deg(  jointValues[:,1])
+#            values[:,2] =  np.rad2deg(  jointValues[:,2])
+#
+#        elif jointLabel == "RKnee" : #  RKNA=<1(RKNA),2(RKNA),3(RKNA)-$RTibialTorsion>    {*flexion, varus, int. rot.		*}
+#            values[:,0] = np.rad2deg(  jointValues[:,0])
+#            values[:,1] = np.rad2deg(  jointValues[:,1])
+#            values[:,2] = np.rad2deg(  jointValues[:,2])
+#
+#        elif jointLabel == "LAnkle":
+#            values[:,0] = -1.0* np.rad2deg(  jointValues[:,0]  + np.radians(90))
+#            values[:,1] = -1.0*np.rad2deg(  jointValues[:,2])
+#            values[:,2] =  -1.0*np.rad2deg(  jointValues[:,1])
+#
+#        elif jointLabel == "RAnkle":
+#            values[:,0] = -1.0* np.rad2deg(  jointValues[:,0]  + np.radians(90))
+#            values[:,1] = np.rad2deg(  jointValues[:,2])
+#            values[:,2] =  np.rad2deg(  jointValues[:,1])
+#            
+#        elif jointLabel == "LForeFoot": # TODO : check
+#            values[:,0] = -1.0 * np.rad2deg(  jointValues[:,0])     
+#            values[:,1] = -1.0*np.rad2deg(  jointValues[:,2])
+#            values[:,2] = -1.0*np.rad2deg(  jointValues[:,1])
+#            
+#        elif jointLabel == "RForeFoot": # TODO : check
+#            values[:,0] = -1.0 * np.rad2deg(  jointValues[:,0])     
+#            values[:,1] = np.rad2deg(  jointValues[:,2])
+#            values[:,2] = np.rad2deg(  jointValues[:,1])
+#
+#        else:
+#            values[:,0] = np.rad2deg(  jointValues[:,0])
+#            values[:,1] = np.rad2deg(  jointValues[:,1])
+#            values[:,2] = np.rad2deg(  jointValues[:,2])
 
         return values
     
