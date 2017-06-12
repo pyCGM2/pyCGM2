@@ -12,8 +12,14 @@ R_OSIM_CGM = {"Pelvis" : np.array([[1,0,0],[0,0,1],[0,-1,0]]) ,
               "Right Shank" : np.array([[1,0,0],[0,0,1],[0,-1,0]]),
               "Left Foot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
               "Right Foot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
-              "Right Hindfoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
+              "Right HindFoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
+              "Right ForeFoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
+              "Left HindFoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
+              "Left ForeFoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
+
+              "Right Hindfoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]), # use for julie's model
               "Right Forefoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]])
+
               }
               
 
@@ -176,7 +182,7 @@ class opensimModel(object):
         
     def updateMarkerInMarkerSet(self, label, modelSegmentLabel = "", rotation_osim_model=np.eye(3), toMeter=1000.0):
        
-       
+       #if label =="LTOE": pdb.set_trace()
        markers = opensim.ArrayStr()
        self.m_model.getMarkerSet().getMarkerNames(markers)
 
