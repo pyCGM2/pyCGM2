@@ -47,15 +47,15 @@ PYCGM2_SESSION_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"SessionSettings\\"
 
 
 # setting files
-generateFiles.generateCGM1_Settings(PYCGM2_APPDATA_PATH)
-generateFiles.generateCGM1_1_Settings(PYCGM2_APPDATA_PATH)
-generateFiles.generateCGM2_1_Settings(PYCGM2_APPDATA_PATH)
-generateFiles.generateCGM2_2_Settings(PYCGM2_APPDATA_PATH)
-generateFiles.generateCGM2_2_Expert_Settings(PYCGM2_APPDATA_PATH)
-generateFiles.generateCGM2_3_Settings(PYCGM2_APPDATA_PATH)
-generateFiles.generateCGM2_3_Expert_Settings(PYCGM2_APPDATA_PATH)
-generateFiles.generateCGM2_4_Settings(PYCGM2_APPDATA_PATH)
-generateFiles.generateCGM2_4_Expert_Settings(PYCGM2_APPDATA_PATH)
+generateSettings.generateCGM1_Settings(PYCGM2_APPDATA_PATH)
+generateSettings.generateCGM1_1_Settings(PYCGM2_APPDATA_PATH)
+generateSettings.generateCGM2_1_Settings(PYCGM2_APPDATA_PATH)
+generateSettings.generateCGM2_2_Settings(PYCGM2_APPDATA_PATH)
+generateSettings.generateCGM2_2_Expert_Settings(PYCGM2_APPDATA_PATH)
+generateSettings.generateCGM2_3_Settings(PYCGM2_APPDATA_PATH)
+generateSettings.generateCGM2_3_Expert_Settings(PYCGM2_APPDATA_PATH)
+generateSettings.generateCGM2_4_Settings(PYCGM2_APPDATA_PATH)
+generateSettings.generateCGM2_4_Expert_Settings(PYCGM2_APPDATA_PATH)
 
 # pipeline generation
 # cgm1
