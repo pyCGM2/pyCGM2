@@ -303,3 +303,27 @@ def pipeline_pyCGM2_CGM2_3_SARA_kneeCalibration(myAppFolder_path,userAppData_pat
     if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_3p_SARA.Pipeline"):
         with open(userAppData_path + "pyCGM2-CGM2_3p_SARA.Pipeline", "w") as text_file:
             text_file.write(content)       
+            
+#-----------------------CGM 2.4------------------------------------------------            
+def pipeline_pyCGM2_CGM2_4_Calibration(myAppFolder_path,userAppData_path):
+   
+    content = string.replace(CALIBRATION_CONTENT, 'iMODEL', "CGM2_4")
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+    
+    content_new = string.replace(content, 'PATH_APPS', myAppFolder_path_slash[:-1])
+
+    if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_4-Calibration.Pipeline"):
+        with open(userAppData_path + "pyCGM2-CGM2_4-Calibration.Pipeline", "w") as text_file:
+            text_file.write(content_new)       
+            
+def pipeline_pyCGM2_CGM2_4_Fitting(myAppFolder_path,userAppData_path):
+
+       
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+    
+    content = string.replace(FITTING_CONTENT, 'iMODEL', "CGM2_4")
+    content_new = string.replace(content, 'PATH_APPS', myAppFolder_path_slash[:-1])
+    
+    if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_4-Fitting.Pipeline"):
+        with open(userAppData_path + "pyCGM2-CGM2_4-Fitting.Pipeline", "w") as text_file:
+            text_file.write(content_new)

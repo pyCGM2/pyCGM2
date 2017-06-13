@@ -54,7 +54,7 @@ generateFiles.generateCGM2_2_Settings(PYCGM2_APPDATA_PATH)
 generateFiles.generateCGM2_2_Expert_Settings(PYCGM2_APPDATA_PATH)
 generateFiles.generateCGM2_3_Settings(PYCGM2_APPDATA_PATH)
 generateFiles.generateCGM2_3_Expert_Settings(PYCGM2_APPDATA_PATH)
-
+generateFiles.generateCGM2_4_Settings(PYCGM2_APPDATA_PATH)
 
 
 # pipeline generation
@@ -81,7 +81,9 @@ generatePipeline.pipeline_pyCGM2_CGM2_3_Expert_Calibration(MAIN_PYCGM2_APPS_PATH
 generatePipeline.pipeline_pyCGM2_CGM2_3_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
 # cgm2.3-Sara
 generatePipeline.pipeline_pyCGM2_CGM2_3_SARA_kneeCalibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH)
-
+# cgm2.3
+generatePipeline.pipeline_pyCGM2_CGM2_4_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
+generatePipeline.pipeline_pyCGM2_CGM2_4_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH) 
 # ------------------- METHODS ------------------------------------------------
 
 def setLoggingLevel(level):
