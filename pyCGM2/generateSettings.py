@@ -67,7 +67,7 @@ CONTENT_INPUTS_CGM1_1 ="""
         "Right flat foot" : 1 
       },
       "Fitting" : {
-        "Moment Projection" : "Proximal"
+        "Moment Projection" : "JCS"
       }   
     }
     """
@@ -102,7 +102,7 @@ CONTENT_INPUTS_CGM2_1 ="""
         "Right flat foot" : 1 
       },
       "Fitting" : {
-        "Moment Projection" : "Proximal"
+        "Moment Projection" : "JCS"
       }   
     }
     """
@@ -137,7 +137,7 @@ CONTENT_INPUTS_CGM2_2 ="""
         "Right flat foot" : 1 
       },
       "Fitting" : {
-        "Moment Projection" : "Proximal",
+        "Moment Projection" : "JCS",
         "Weight" :{
             "LASI" : 100,
             "RASI" : 100,
@@ -190,7 +190,7 @@ CONTENT_INPUTS_CGM2_2_EXPERT ="""
         "Right flat foot" : 1 
       },
       "Fitting" : {
-        "Moment Projection" : "Proximal",
+        "Moment Projection" : "JCS",
         "Weight" :{
              "LASI":0,
              "LASI_posAnt":100,
@@ -300,7 +300,7 @@ CONTENT_INPUTS_CGM2_3 ="""
         "Right flat foot" : 1 
       },
       "Fitting" : {
-        "Moment Projection" : "Proximal",
+        "Moment Projection" : "JCS",
         "Weight" :{
             "LASI":100,
             "RASI":100,
@@ -373,7 +373,7 @@ CONTENT_INPUTS_CGM2_3_EXPERT ="""
         "Right flat foot" : 1 
       },
       "Fitting" : {
-        "Moment Projection" : "Proximal",
+        "Moment Projection" : "JCS",
         "Weight" :{
             "LASI":0,
              "LASI_posAnt":100,
@@ -540,7 +540,7 @@ CONTENT_INPUTS_CGM2_4 ="""
         "Right flat foot" : 1 
       },
       "Fitting" : {
-        "Moment Projection" : "Proximal",
+        "Moment Projection" : "JCS",
         "Weight" :{
             "LASI":100,
             "RASI":100,
@@ -626,7 +626,7 @@ CONTENT_INPUTS_CGM2_4_EXPERT ="""
         "Right flat foot" : 1 
       },
       "Fitting" : {
-        "Moment Projection" : "Proximal",
+        "Moment Projection" : "JCS",
         "Weight" :{
             "LASI":0,
              "LASI_posAnt":100,
