@@ -13,7 +13,7 @@ pyCGM2.CONFIG.addBtk()
     
 # pyCGM2
 from pyCGM2.Tools import  btkTools
-from pyCGM2.Model.CGM2 import cgm2, modelFilters, modelDecorator
+from pyCGM2.Model.CGM2 import cgm2, modelFilters, modelDecorator,forceplates,bodySegmentParameters
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Math import numeric
 from pyCGM2.Model.Opensim import opensimFilters
@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
 
 
-    MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm 2_4\\bothSide\\"
+    MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\bothSide\\"
     staticFilename = "static.c3d"
     gaitFilename= "gait 01.c3d"
     markerDiameter=14     
@@ -80,6 +80,7 @@ if __name__ == "__main__":
         }
       """        
     
+    momentProjection = pyCGM2Enums.MomentProjection.Proximal
 
     # --- Calibration ---                          
     acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -206,6 +207,31 @@ if __name__ == "__main__":
     
     btkTools.smartWriter(acqIK,"fitting-cgm2_4-angles.c3d")
                         
-                        
+
+
+    # --- force plate handling----
+    # find foot  in contact
+    mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqIK)
+    forceplates.addForcePlateGeneralEvents(acqIK,mappedForcePlate)
+    logging.info("Force plate assignment : %s" %mappedForcePlate)
+
+
+    # assembly foot and force plate
+    modelFilters.ForcePlateAssemblyFilter(model,acqIK,mappedForcePlate,
+                             leftSegmentLabel="Left HindFoot",
+                             rightSegmentLabel="Right HindFoot").compute()
+
+    #---- Joint kinetics----
+    idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
+    modelFilters.InverseDynamicFilter(model,
+                         acqIK,
+                         procedure = idp,
+                         projection = momentProjection
+                         ).compute(pointLabelSuffix="ik")
+
+    #---- Joint energetics----
+    modelFilters.JointPowerFilter(model,acqIK).compute(pointLabelSuffix="ik")        
+
+    btkTools.smartWriter(acqIK,"fitting-cgm2_4-kinetics.c3d")                
      
 

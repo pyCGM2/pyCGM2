@@ -2271,14 +2271,14 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         nexusTools.appendBones(NEXUS,vskName,acq,"LFE", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
         #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
         nexusTools.appendBones(NEXUS,vskName,acq,"LTI", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LFO", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LTO", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LvCUN").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"LFO", self.getSegment("Left HindFoot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"LTO", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LvCUN").GetValues() )
 
         nexusTools.appendBones(NEXUS,vskName,acq,"RFE", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
         #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
         nexusTools.appendBones(NEXUS,vskName,acq,"RTI", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
         nexusTools.appendBones(NEXUS,vskName,acq,"RFO", self.getSegment("Right HindFoot") , OriginValues = acq.GetPoint("RHEE").GetValues()  )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RTO", self.getSegment("Right HindFoot") ,  OriginValues = acq.GetPoint("RvCUN").GetValues())
+        nexusTools.appendBones(NEXUS,vskName,acq,"RTO", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RvCUN").GetValues())
         
         logging.debug("bones over")
         
