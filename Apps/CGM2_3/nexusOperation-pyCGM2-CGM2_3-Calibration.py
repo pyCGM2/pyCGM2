@@ -41,7 +41,7 @@ from pyCGM2 import viconInterface
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = True
+    DEBUG = False
 
     parser = argparse.ArgumentParser(description='CGM2.3 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
