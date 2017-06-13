@@ -327,3 +327,27 @@ def pipeline_pyCGM2_CGM2_4_Fitting(myAppFolder_path,userAppData_path):
     if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_4-Fitting.Pipeline"):
         with open(userAppData_path + "pyCGM2-CGM2_4-Fitting.Pipeline", "w") as text_file:
             text_file.write(content_new)
+
+#-----------------------CGM 2.4 EXPERT------------------------------------------            
+def pipeline_pyCGM2_CGM2_4_Expert_Calibration(myAppFolder_path,userAppData_path):
+   
+    content = string.replace(CALIBRATION_CONTENT, 'iMODEL', "CGM2_4-Expert")
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+    
+    content_new = string.replace(content, 'PATH_APPS', myAppFolder_path_slash[:-1])
+
+    if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_4-Expert-Calibration.Pipeline"):
+        with open(userAppData_path + "pyCGM2-CGM2_4-Expert-Calibration.Pipeline", "w") as text_file:
+            text_file.write(content_new)       
+            
+def pipeline_pyCGM2_CGM2_4_Expert_Fitting(myAppFolder_path,userAppData_path):
+
+       
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+    
+    content = string.replace(FITTING_CONTENT, 'iMODEL', "CGM2_4-Expert")
+    content_new = string.replace(content, 'PATH_APPS', myAppFolder_path_slash[:-1])
+    
+    if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_4-Expert-Fitting.Pipeline"):
+        with open(userAppData_path + "pyCGM2-CGM2_4-Expert-Fitting.Pipeline", "w") as text_file:
+            text_file.write(content_new)
