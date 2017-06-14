@@ -3,7 +3,7 @@ import logging
 import sys
 import os
 import generatePipeline
-import generateFiles   
+import generateSettings   
 
 # ------------------- CONSTANTS ------------------------------------------------
 
