@@ -42,9 +42,9 @@ if __name__ == "__main__":
     plt.close("all")
     DEBUG = False
 
-#    parser = argparse.ArgumentParser(description='Gait Processing')
-#    parser.add_argument('--pointSuffix', type=str, help='force suffix')
-#    args = parser.parse_args()
+    parser = argparse.ArgumentParser(description='SARA Knee Functional Calibration')
+    parser.add_argument('--version', type=str, help='version of cgm2.i',default="2.3")
+    args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -59,6 +59,7 @@ if __name__ == "__main__":
             reconstructedFilenameLabelledNoExt = "Left Knee"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
 
+        
         else:
             DATA_PATH, reconstructedFilenameLabelledNoExt = NEXUS.GetTrialName()
 
@@ -69,7 +70,16 @@ if __name__ == "__main__":
 
         # --------------------GLOBAL SETTINGS ------------------------------
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        if args.version=="2.3":
+            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        elif args.version=="2.3e":            
+            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        elif args.version=="2.4":
+            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        elif args.version=="2.4e":            
+            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        else:
+            raise Exception ("[pyCGM2] version of cgm dont recognize ( recognized versions are 2.3 or 2.3e 2.4 and 2.4e)")
 
 
         # --------------------------SUBJECT -----------------------------------
@@ -79,12 +89,38 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
             
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-CGM2_3-pyCGM2.model"):
-            raise Exception ("%s-CGM2_3-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+        if args.version=="2.3":    
+            if not os.path.isfile(DATA_PATH + subject + "-CGM2_3-pyCGM2.model"):
+                raise Exception ("%s-CGM2_3-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+            else:
+                f = open(DATA_PATH + subject + '-CGM2_3-pyCGM2.model', 'r')
+                model = cPickle.load(f)
+                f.close()
+        elif args.version=="2.3e":            
+            if not os.path.isfile(DATA_PATH + subject + "-CGM2_3-Expert-pyCGM2.model"):
+                raise Exception ("%s-CGM2_3-Expert-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+            else:
+                f = open(DATA_PATH + subject + '-CGM2_3-Expert-pyCGM2.model', 'r')
+                model = cPickle.load(f)
+                f.close()
+        elif args.version=="2.4":
+            if not os.path.isfile(DATA_PATH + subject + "-CGM2_4-pyCGM2.model"):
+                raise Exception ("%s-CGM2_4-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+            else:
+                f = open(DATA_PATH + subject + '-CGM2_4-pyCGM2.model', 'r')
+                model = cPickle.load(f)
+                f.close()
+        elif args.version=="2.4e":            
+            if not os.path.isfile(DATA_PATH + subject + "-CGM2_4-Expert-pyCGM2.model"):
+                raise Exception ("%s-CGM2_4-Expert-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+            else:
+                f = open(DATA_PATH + subject + '-CGM2_4-Expert-pyCGM2.model', 'r')
+                model = cPickle.load(f)
+                f.close()
         else:
-            f = open(DATA_PATH + subject + '-CGM2_3-pyCGM2.model', 'r')
-            model = cPickle.load(f)
-            f.close()
+            raise Exception ("[pyCGM2] version of cgm dont recognize ( recognized versions are 2.3 or 2.3e 2.4 and 2.4e)")
+
+
         
         # --------------------------SESSION INFOS -----------------------------
         # info file
@@ -96,14 +132,23 @@ if __name__ == "__main__":
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
 
-        #  translators management 
-        if os.path.isfile( DATA_PATH + "CGM2-3.translators"):
-           logging.warning("local translator found")
-           sessionTranslators = json.loads(open(DATA_PATH + "CGM2-3.translators").read(),object_pairs_hook=OrderedDict)
-           translators = sessionTranslators["Translators"]
+        #  translators management
+        if args.version=="2.3" or args.version=="2.3e": 
+            if os.path.isfile( DATA_PATH + "CGM2-3.translators"):
+               logging.warning("local translator found")
+               sessionTranslators = json.loads(open(DATA_PATH + "CGM2-3.translators").read(),object_pairs_hook=OrderedDict)
+               translators = sessionTranslators["Translators"]
+            else:
+               translators = inputs["Translators"]            
+        elif args.version=="2.4" or args.version=="2.4e":
+            if os.path.isfile( DATA_PATH + "CGM2-4.translators"):
+               logging.warning("local translator found")
+               sessionTranslators = json.loads(open(DATA_PATH + "CGM2-4.translators").read(),object_pairs_hook=OrderedDict)
+               translators = sessionTranslators["Translators"]
+            else:
+               translators = inputs["Translators"]     
         else:
-           translators = inputs["Translators"]            
-            
+            raise Exception ("[pyCGM2] version of cgm dont recognize ( recognized versions are 2.3 or 2.3e 2.4 and 2.4e)")
             
         # --------------------------ACQ WITH TRANSLATORS --------------------------------------
 
@@ -112,11 +157,23 @@ if __name__ == "__main__":
 
         btkTools.checkMultipleSubject(acqFunc)
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
-        validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm2.CGM2_3LowerLimbs.MARKERS)
+         
 
         # motion side of the lower limb 
         side = detectSide(acqFunc,"LANK","RANK")
         logging.info("Detected motion side : %s" %(side) )
+
+        if side == "Left":
+            thigh_markers = model.getSegment("Left Thigh").m_tracking_markers
+            shank_markers = model.getSegment("Left Shank").m_tracking_markers
+ 
+        elif side == "Right":
+            thigh_markers = model.getSegment("Right Thigh").m_tracking_markers
+            shank_markers = model.getSegment("Right Shank").m_tracking_markers
+
+        validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,thigh_markers+shank_markers) 
+
+
 
         proximalSegmentLabel=str(side+" Thigh")
         distalSegmentLabel=str(side+" Shank")        
@@ -145,16 +202,32 @@ if __name__ == "__main__":
             modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useRightKJCnode="KJC_Sara").compute()
 
         # ----------------------SAVE-------------------------------------------
-        if os.path.isfile(DATA_PATH + subject + "-CGM2_3-pyCGM2.model"):
-            logging.warning("previous model removed")
-            os.remove(DATA_PATH + subject + "-CGM2_3-pyCGM2.model")
+        if args.version=="2.3": 
+            modelFullFilename = str(DATA_PATH + subject + "-CGM2_3-pyCGM2.model")            
+        elif args.version=="2.3e":            
+            modelFullFilename = str(DATA_PATH + subject + "-CGM2_3-Expert-pyCGM2.model")  
+        elif args.version=="2.4":
+            modelFullFilename = str(DATA_PATH + subject + "-CGM2_4-pyCGM2.model")  
+        elif args.version=="2.4e":
+            modelFullFilename = str(DATA_PATH + subject + "-CGM2_3-Expert-pyCGM2.model")                  
+        else:
+            raise Exception ("[pyCGM2] version of cgm dont recognize ( recognized versions are 2.3 or 2.3e 2.4 and 2.4e)")
+  
 
-        modelFile = open(DATA_PATH + subject+"-CGM2_3-pyCGM2.model", "w")
+           
+        if os.path.isfile(modelFullFilename):
+            logging.warning("previous model removed")
+            os.remove(modelFullFilename)
+
+        modelFile = open(modelFullFilename, "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
         logging.warning("model updated with SARA knee Joint centre")
 
 
+        
+            
+            
 
         # ----------------------VICON INTERFACE-------------------------------------------
 

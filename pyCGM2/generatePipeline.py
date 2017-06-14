@@ -98,7 +98,7 @@ SARA_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
       <Entry DisplayName="Run Python Operation" Enabled="1" OperationId="50" OperationName="Python">
         <ParamList name="">
           <Param name="Script" value="PATH_APPS/CGM2_3p_kneeCalibration/nexusOperation-pyCGM2-CGM2_3p_SARA.py"/>
-          <Param name="ScriptArgs"/>
+          <Param name="ScriptArgs" value="version =2.3"/>
           <Param name="UseNexusPython" value="false"/>
           <Param name="LaunchPython" value="false"/>
         </ParamList>

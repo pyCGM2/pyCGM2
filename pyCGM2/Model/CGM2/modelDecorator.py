@@ -875,7 +875,7 @@ class KneeCalibrationDecorator(DecoratorModel):
  
          # Comparison of local position of KJCs
         localKJC = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(KJClabel).m_local 
-        saraKJC = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel("KJC_sara").m_local
+        saraKJC = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel("KJC_Sara").m_local
 
         logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (localKJC[0],localKJC[1],localKJC[2]))
         logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (saraKJC[0],saraKJC[1],saraKJC[2]))
