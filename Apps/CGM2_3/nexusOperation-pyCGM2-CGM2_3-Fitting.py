@@ -62,7 +62,7 @@ if __name__ == "__main__":
         # ----------------------LOADING-------------------------------------------
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH + "True equinus\\S01\\CGM2.3\\"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\"
             reconstructFilenameLabelledNoExt = "gait trial 01"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
