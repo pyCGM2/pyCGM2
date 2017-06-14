@@ -618,7 +618,7 @@ CONTENT_INPUTS_CGM2_4_EXPERT ="""
             "LTOE":"",
             "LCUN":"",
             "LD1M":"",
-            "LD5M":"",
+            "LD5M":""
             },
       "Calibration" : {
         "HJC regression" : "Hara",
