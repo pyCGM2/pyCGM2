@@ -28,7 +28,7 @@ from pyCGM2.Tools import btkTools,nexusTools
 if __name__ == "__main__":
    
     plt.close("all")
-    DEBUG = False
+    DEBUG = True
 
 
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
@@ -44,8 +44,8 @@ if __name__ == "__main__":
         # --------------------------INPUTS ------------------------------------
 
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
-            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\"
+            calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         
 
         # -----infos--------     
-        model = None if  infoSettings["Processing"]["Model"]=={} else infoSettings["Processing"]["Model"]  
+        model = None if  infoSettings["Modelling"]["Model"]=={} else infoSettings["Modelling"]["Model"]  
         subject = None if infoSettings["Processing"]["Subject"]=={} else infoSettings["Processing"]["Subject"] 
         experimental = None if infoSettings["Processing"]["Experimental conditions"]=={} else infoSettings["Processing"]["Experimental conditions"] 
 
