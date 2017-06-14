@@ -28,7 +28,7 @@ from pyCGM2.Tools import btkTools,nexusTools
 if __name__ == "__main__":
    
     plt.close("all")
-    DEBUG = True
+    DEBUG = False
 
 
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
