@@ -43,13 +43,14 @@ if __name__ == "__main__":
     }        
     model.addAnthropoInputParameters(mp)
                                 
-    # CALIBRATION
+    #----CALIBRATION----
+
+    # initial calibration
     scp=modelFilters.StaticCalibrationProcedure(model)
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
 
-    print model.m_useRightTibialTorsion
 
-    # --- Test 1 Motion Axe X -------
+    # motion    
     gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"        
     acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
@@ -57,14 +58,15 @@ if __name__ == "__main__":
                                              usePyCGM2_coordinateSystem=True)
     modMotion.compute()
 
-
+    # calibration decorators
     modelDecorator.KneeCalibrationDecorator(model).dynaKad("Left")
     modelDecorator.KneeCalibrationDecorator(model).dynaKad("Right")
 
-    # calibration with dynaKad offset    
+    # final calibration    
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
 
-    # new motion with dynaKAD offset
+    #----MOTION----
+    # motion with dynakadOffset
     modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                              usePyCGM2_coordinateSystem=True)
     modMotion.compute()
