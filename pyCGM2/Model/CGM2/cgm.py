@@ -2751,6 +2751,12 @@ class CGM1LowerLimbs(CGM):
                     self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
                                             aqui,options=options)
 
+            # if dynaKad offset
+            if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0:
+                logging.debug("Left DynaKad offset found. Anatomical referential rotated from dynaKad offset")
+                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeDynaKadOffset"],
+                                            aqui,options=options)
+
 
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
@@ -2762,6 +2768,12 @@ class CGM1LowerLimbs(CGM):
         
                     self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
                                             aqui,options=options)
+            # if dynaKad offset
+            if self.mp_computed.has_key("RightKneeDynaKadOffset") and self.mp_computed["RightKneeDynaKadOffset"] != 0:
+                logging.debug("Right DynaKad offset found. Anatomical referential rotated from dynaKad offset")
+                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeDynaKadOffset"],
+                                            aqui,options=options)
+
 
 
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
