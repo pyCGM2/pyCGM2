@@ -586,17 +586,53 @@ class CGM1LowerLimbs(CGM):
 
         logging.debug(" --- Thigh Offsets ---")
         logging.debug(" --------------------")
+        
+        
+        logging.debug(" ------Left-------")
         if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
             self.mp_computed["LeftThighRotationOffset"]= -self.mp["LeftThighRotation"]
 
         else:
             self.getThighOffset(side="left")
+        
+        # if SARA axis
+        if "enableLongitudinalRotation" in options.keys():
+            if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+                logging.debug("SARA axis found from the left thigh")
+        
+                self.getAngleOffsetFromFunctionalSaraAxis("left")
+                
+                self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
+                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
+            
+        # if dynaKad offset
+        if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0:
+            logging.debug("left DynaKad offset found. Anatomical referential rotated from dynaKad offset")
+            self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKneeDynaKadOffset"],
+                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
 
+
+        logging.debug(" ------Right-------")
         if self.mp.has_key("RightThighRotation") and self.mp["RightThighRotation"] != 0:
             self.mp_computed["RightThighRotationOffset"]= self.mp["RightThighRotation"]
         else:
             self.getThighOffset(side="right")
 
+        if "enableLongitudinalRotation" in options.keys():
+            if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+                logging.debug("SARA axis found from the Right thigh")
+        
+                self.getAngleOffsetFromFunctionalSaraAxis("right")
+                
+                self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
+                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+
+        # if dynaKad offset
+        if self.mp_computed.has_key("RightKneeDynaKadOffset") and self.mp_computed["RightKneeDynaKadOffset"] != 0:
+            logging.debug("Right DynaKad offset found. Anatomical referential rotated from dynaKad offset")
+            self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKneeDynaKadOffset"],
+                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
         logging.debug(" --- Left Shank - AF calibration ---")
@@ -1528,6 +1564,10 @@ class CGM1LowerLimbs(CGM):
         seg.setLength(np.linalg.norm(kjc-hjc))
 
 
+    
+
+
+
     def _right_thigh_Anatomicalcalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
         """
             Construct the Anatomical Coordinate system of the right thigh.
@@ -1993,6 +2033,51 @@ class CGM1LowerLimbs(CGM):
         seg.anatomicalFrame.static.addNode("ToeOrigin",local_to,positionType="Local")
 
 
+    def _rotateAnatomicalFrame(self,segmentLabel, angle, aquiStatic, dictAnatomic,frameInit,frameEnd,):
+        """
+           Rotate the anatomical frame along its longitudnial axis
+
+            :Parameters:
+               - `aquiStatic` (btkAcquisition) - btkAcquisition instance from a static c3d
+               - `dictAnatomic` (dict) - dictionnary reporting markers and sequence use for building Anatomical coordinate system
+               - `frameInit` (dict) - first frame
+               - `frameEnd` (dict) - end frame
+
+
+        """
+
+        seg=self.getSegment(segmentLabel)
+
+        angle = np.deg2rad(angle)
+
+        # --- set static anatomical Referential
+        # Rotation of the static anatomical Referential by the tibial Torsion angle
+        rotZ = np.eye(3,3)
+        rotZ[0,0] = np.cos(angle)
+        rotZ[0,1] = np.sin(angle)
+        rotZ[1,0] = - np.sin(angle)
+        rotZ[1,1] = np.cos(angle)
+
+        R = np.dot(seg.anatomicalFrame.static.getRotation(),rotZ) # apply rotation
+
+        
+        frame=cfr.Frame()
+        frame.update(R,seg.anatomicalFrame.static.getTranslation() )
+        seg.anatomicalFrame.setStaticFrame(frame)
+
+        # --- relative rotation Technical Anatomical
+        tf=seg.getReferential("TF")
+        tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
+
+        # node manager
+        for label in seg.m_markerLabels:
+            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+
+        # --- relative rotation Technical Anatomical
+        tf=seg.getReferential("TF")
+        tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
+
     # ---- Offsets -------
 
     def getThighOffset(self,side= "both"):
@@ -2279,6 +2364,92 @@ class CGM1LowerLimbs(CGM):
             logging.debug(" RightStaticRotOffset => %s " % str(self.mp_computed["RightStaticRotOffset"]))
 
 
+
+    def getAngleOffsetFromFunctionalSaraAxis(self,side= "both"):
+        """
+             Angle between the projection of the lateral knee marker and the functional flexion axis
+
+            :Parameters:
+               - `side` (str) - body side  (both, left, right)
+        """
+
+        if side == "both" or side=="left":
+
+            # Left --------
+            
+            # node SARA_axis add in the anatomic Frame
+            saraAxisGlobal = self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis").m_global
+            self.getSegment("Left Thigh").anatomicalFrame.static.addNode("KJC_SaraAxis",saraAxisGlobal,positionType="Global")
+
+            
+            # projection of Knee flexion
+            kneeFlexionAxis=    np.dot(self.getSegment("Left Thigh").anatomicalFrame.static.getRotation().T,
+                                           self.getSegment("Left Thigh").anatomicalFrame.static.m_axisY)
+
+
+            proj_kneeFlexionAxis = np.array([ kneeFlexionAxis[0],
+                                   kneeFlexionAxis[1],
+                                     0])
+            v_kneeFlexionAxis = proj_kneeFlexionAxis/np.linalg.norm(proj_kneeFlexionAxis)
+
+
+
+            
+            # projection of saraAxis
+            saraAxisLocal = self.getSegment("Left Thigh").anatomicalFrame.static.getNode_byLabel("KJC_SaraAxis").m_local
+            
+            proj_saraAxis = np.array([ saraAxisLocal[0],
+                                   saraAxisLocal[1],
+                                     0])
+            v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
+
+            angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_saraAxis, self.getSegment("Left Thigh").anatomicalFrame.static.m_axisZ))
+
+            if angle > 60.0:
+                raise Exception ("[pyCGM2] : angle between the medio lateral axis of the CS and the functional flexion exceeds 60 degrees. check your data")  
+
+            self.mp_computed["LeftKneeFuncCalibrationOffset"]= angle 
+            logging.debug(" left Function axis Offset => %s " % str(self.mp_computed["LeftKneeFuncCalibrationOffset"]))
+
+
+        if side == "both" or side=="right":
+
+            # node SARA_axis add in the anatomic Frame
+            saraAxisGlobal = self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis").m_global
+            self.getSegment("Right Thigh").anatomicalFrame.static.addNode("KJC_SaraAxis",saraAxisGlobal,positionType="Global")
+
+            # knee flexion
+            kneeFlexionAxis=    np.dot(self.getSegment("Right Thigh").anatomicalFrame.static.getRotation().T,
+                                           self.getSegment("Right Thigh").anatomicalFrame.static.m_axisY)
+
+
+            proj_kneeFlexionAxis = np.array([ kneeFlexionAxis[0],
+                                   kneeFlexionAxis[1],
+                                     0])
+            v_kneeFlexionAxis = proj_kneeFlexionAxis/np.linalg.norm(proj_kneeFlexionAxis)
+
+            
+
+            saraAxisLocal = self.getSegment("Right Thigh").anatomicalFrame.static.getNode_byLabel("KJC_SaraAxis").m_local
+            proj_saraAxis = np.array([ saraAxisLocal[0],
+                                   saraAxisLocal[1],
+                                     0])
+            v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
+
+            angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_saraAxis, self.getSegment("Right Thigh").anatomicalFrame.static.m_axisZ))
+
+
+            if angle > 60.0:
+                raise Exception ("[pyCGM2] : angle between the medio lateral axis of the CS and the functional flexion exceeds 60 degrees. check your data")  
+
+
+            self.mp_computed["RightKneeFuncCalibrationOffset"]= angle # angle needed : Thi toward knee flexion
+            logging.debug(" Right Function axis Offset => %s " % str(self.mp_computed["RightKneeFuncCalibrationOffset"]))
+
+
+
+
+
     def getViconFootOffset(self, side):
         """
             Get vicon compatible foot offsets :
@@ -2487,10 +2658,37 @@ class CGM1LowerLimbs(CGM):
             logging.debug(" -----------------------")
             self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)            
                 
+            if "enableLongitudinalRotation" in options.keys() and options["enableLongitudinalRotation"]:    
+                if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+                    logging.debug("SARA axis found from the left thigh")
+        
+                    self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
+                                            aqui,options=options)
+
+            # if dynaKad offset
+            if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0:
+                logging.debug("Left DynaKad offset found. Anatomical referential rotated from dynaKad offset")
+                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeDynaKadOffset"],
+                                            aqui,options=options)
+
 
             logging.debug(" - Right Thigh - motion -")
             logging.debug(" ------------------------")
             self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
+
+
+            if "enableLongitudinalRotation" in options.keys() and options["enableLongitudinalRotation"]:    
+                if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+                    logging.debug("SARA axis found from the Right thigh")
+        
+                    self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
+                                            aqui,options=options)
+
+            # if dynaKad offset
+            if self.mp_computed.has_key("RightKneeDynaKadOffset") and self.mp_computed["RightKneeDynaKadOffset"] != 0:
+                logging.debug("Right DynaKad offset found. Anatomical referential rotated from dynaKad offset")
+                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeDynaKadOffset"],
+                                            aqui,options=options)
 
 
             logging.debug(" - Left Shank - motion -")
@@ -2546,8 +2744,25 @@ class CGM1LowerLimbs(CGM):
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
 
+            if "enableLongitudinalRotation" in options.keys() and options["enableLongitudinalRotation"]:    
+                if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+                    logging.debug("SARA axis found from the left thigh")
+        
+                    self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
+                                            aqui,options=options)
+
+
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
+
+
+            if "enableLongitudinalRotation" in options.keys() and options["enableLongitudinalRotation"]:    
+                if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+                    logging.debug("SARA axis found from the Right thigh")
+        
+                    self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
+                                            aqui,options=options)
+
 
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
@@ -4021,6 +4236,47 @@ class CGM1LowerLimbs(CGM):
             frame=cfr.Frame()
             frame.update(R,ptOrigin)
             seg.anatomicalFrame.addMotionFrame(frame)
+
+
+    def _rotate_anatomical_motion(self,segmentLabel,angle,aqui,options=None):
+        """
+            rotate an anatomical frame along its long axis
+
+            :Parameters:
+               - `` () - 
+
+
+        """
+
+        seg=self.getSegment(segmentLabel)
+
+
+        angle = np.deg2rad(angle)
+
+        # --- motion of both technical and anatomical referentials of the proximal shank
+
+        #seg.anatomicalFrame.motion=[]
+
+        # additional markers
+        # NA
+
+        # computation
+        rotZ = np.eye(3,3)
+        rotZ[0,0] = np.cos(angle)
+        rotZ[0,1] = np.sin(angle)
+        rotZ[1,0] = - np.sin(angle)
+        rotZ[1,1] = np.cos(angle)
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            
+            ptOrigin=seg.anatomicalFrame.motion[i].getTranslation()
+
+            R = np.dot(seg.anatomicalFrame.motion[i].getRotation(),rotZ) 
+            
+            seg.anatomicalFrame.motion[i].update(R,ptOrigin)
+
+            
+
 
     # ---- tools ----
     def _rotateAjc(self,ajc,kjc,ank, offset):

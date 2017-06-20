@@ -6,7 +6,7 @@ import logging
 import cPickle
 
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
+pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
 
 import pyCGM2
 # btk
@@ -23,6 +23,8 @@ import json
 from collections import OrderedDict
 
 
+
+# enableLongitudinalRotation in Static and Motion filter rotate along Z 
 class CGM2_SARA_test(): 
 
     @classmethod
@@ -32,6 +34,7 @@ class CGM2_SARA_test():
         
         leftKneeFilename = "Left Knee.c3d"
         rightKneeFilename = "Right Knee.c3d"
+        gaitFilename= "gait trial 01.c3d"
         
         
         markerDiameter=14     
@@ -80,29 +83,29 @@ class CGM2_SARA_test():
         
         
         # --- Calibration ---                          
-#        model=cgm2.CGM2_3LowerLimbs()
-#        model.configure()        
-#        pdb.set_trace()
-#        
+        model=cgm2.CGM2_3LowerLimbs()
+        model.configure()        
+
+        
         inputs = json.loads(CONTENT_INPUTS_CGM2_3,object_pairs_hook=OrderedDict)
         translators = inputs["Translators"]
 
-        f = open(MAIN_PATH +  'MRI-US-01-CGM2_3-pyCGM2.model', 'r')
-        model = cPickle.load(f)
-        f.close() 
+#        f = open(MAIN_PATH +  'MRI-US-01-CGM2_3-pyCGM2.model', 'r')
+#        model = cPickle.load(f)
+#        f.close() 
 
-#        
+        
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename),translators=translators)   
-#          
-#        model.addAnthropoInputParameters(mp)
+          
+        model.addAnthropoInputParameters(mp)
         scp=modelFilters.StaticCalibrationProcedure(model)
-#        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-#        
-#        #    # cgm decorator
-        #modelDecorator.HipJointCenterDecorator(model).hara()  
-#            
-#        #    # final
-        #modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
+        
+        # cgm decorator
+        modelDecorator.HipJointCenterDecorator(model).hara()  
+            
+        # final
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara").compute()
 
                
         
@@ -115,23 +118,23 @@ class CGM2_SARA_test():
         
         # decorator
         modelDecorator.KneeCalibrationDecorator(model).sara("Left")
-        #    Or = model.getSegment("Left Thigh").getReferential("TF").getNodeTrajectory("KneeFlexionOri")
-        #    axis = model.getSegment("Left Thigh").getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
-        #
-        #    btkTools.smartAppendPoint(acqLeftKnee,"KneeFlexionOri",Or)
-        #    btkTools.smartAppendPoint(acqLeftKnee,"KneeFlexionAxis",axis)   
-        
-        # Motion of the model
-#        modMotion=modelFilters.ModelMotionFilter(scp,acqLeftKnee,model,pyCGM2Enums.motionMethod.Determinist,
-#                                                     usePyCGM2_coordinateSystem=True,
-#                                                     useLeftKJCmarker="LKJC_Chord")
-#        modMotion.compute()
+
+
+        Or_inThigh = model.getSegment("Left Thigh").getReferential("TF").getNodeTrajectory("KneeFlexionOri")
+        axis_inThigh = model.getSegment("Left Thigh").getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
         
         
-        #btkTools.smartWriter(acqLeftKnee, "acqLeftKnee.c3d")
+        btkTools.smartAppendPoint(acqLeftKnee,"Left" +"_KneeFlexionOri",Or_inThigh)
+        btkTools.smartAppendPoint(acqLeftKnee,"Left" +"_KneeFlexionAxis",axis_inThigh) 
+       
+
+        btkTools.smartWriter(acqLeftKnee, "CGM2_3_SARAfunc_test.c3d")
         
         # new static calibration          
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftKJCnode="KJC_sara").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+                                            useLeftKJCnode="KJC_Sara",
+                                            enableLongitudinalRotation=True
+                                            ).compute()
         
         
 #        # ------ Right KNEE CALIBRATION -------      
@@ -151,6 +154,23 @@ class CGM2_SARA_test():
         
         btkTools.smartWriter(acqStatic, "CGM2_3_SARA_test.c3d")
         
+
+        # ------ Fitting -------      
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+    
+        acqGait =  btkTools.applyTranslators(acqGait,translators)     
+        # Motion FILTER 
+    
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
+                                                 enableLongitudinalRotation=True)
+        modMotion.compute()
+    
+        # relative angles
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6nodof")
+        
+
+        btkTools.smartWriter(acqGait, "fitting-cgm2_3-withNoRottest.c3d")        
+
     
 
 if __name__ == "__main__":

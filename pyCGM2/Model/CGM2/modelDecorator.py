@@ -3,6 +3,8 @@
 import numpy as np
 import pdb
 import logging
+import matplotlib.pyplot as plt 
+from scipy.optimize import least_squares
 
 import cgm
 import model
@@ -12,6 +14,8 @@ import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Math import  numeric, geometry
 
+
+import euler
 
 def setDescription(nodeLabel):
     """
@@ -37,7 +41,60 @@ def setDescription(nodeLabel):
         return "custom"
 
 
+
+
 # ---- CONVENIENT FUNCTIONS ------
+def dynaKadCalibration(proxMotionRef,distMotionRef,sequence="YXZ",index=1):
+
+    # onjective function : minimize variance of the knee varus valgus angle
+    def objFun(x, proxMotionRef, distMotionRef,sequence,index):
+        nFrames= len(proxMotionRef) 
+         
+        angle=np.deg2rad(x)     
+        rotZ = np.eye(3,3)
+        rotZ[0,0] = np.cos(angle)
+        rotZ[0,1] = np.sin(angle)
+        rotZ[1,0] = - np.sin(angle)
+        rotZ[1,1] = np.cos(angle)
+    
+        jointValues = np.zeros((nFrames,3))
+        for i in range(0,nFrames): 
+            Rprox = np.dot(proxMotionRef[i].getRotation(),rotZ) 
+            Rdist = distMotionRef[i].getRotation() 
+             
+            Rrelative= np.dot(Rprox.T, Rdist)
+    
+            if sequence == "XYZ":
+                Euler1,Euler2,Euler3 = euler.euler_xyz(Rrelative)
+            elif sequence == "XZY":
+                Euler1,Euler2,Euler3 = euler.euler_xzy(Rrelative)
+            elif sequence == "YXZ":
+                Euler1,Euler2,Euler3 = euler.euler_yxz(Rrelative)
+            elif sequence == "YZX":
+                Euler1,Euler2,Euler3 = euler.euler_yzx(Rrelative)
+            elif sequence == "ZXY":
+                Euler1,Euler2,Euler3 = euler.euler_zxy(Rrelative)
+            elif sequence == "ZYX":
+                Euler1,Euler2,Euler3 = euler.euler_zyx(Rrelative)
+            else:
+                raise Exception("[pyCGM2] joint sequence unknown ")
+
+            jointValues[i,0] = Euler1
+            jointValues[i,1] = Euler2
+            jointValues[i,2] = Euler3    
+    
+        variance = np.var(jointValues[:,index])
+          
+        return variance
+
+    x0 = 0.0 # deg
+    res = least_squares(objFun, x0, args=(proxMotionRef, distMotionRef,sequence,index), verbose=1)
+
+    return res.x[0]
+
+
+
+
 def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
     """ 
     
@@ -116,10 +173,10 @@ def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
             Rdist = distMotionRef[i].getRotation() 
             tdist = distMotionRef[i].getTranslation() 
            
+           
             P = np.concatenate((np.concatenate((Rprox,tprox.reshape(1,3).T),axis=1),np.array([[0,0,0,1]])),axis=0)
             D = np.concatenate((np.concatenate((Rdist,tdist.reshape(1,3).T),axis=1),np.array([[0,0,0,1]])),axis=0)
-    
-        
+
             T = np.dot(np.linalg.pinv(P),D)
             R = T[0:3,0:3 ]
             d= T[0:3,3].reshape(3,1) 
@@ -154,11 +211,11 @@ def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
     prox_axisNorm=AoR[0:3]/np.linalg.norm(AoR[0:3])
     dist_axisNorm=AoR[3:6]/np.linalg.norm(AoR[3:6])
 
-    prox_origin = CoR_prox -  gap * prox_axisNorm.reshape(3,1)
-    prox_axisLim = CoR_prox + gap * prox_axisNorm.reshape(3,1)
+    prox_origin = CoR_prox +  gap * prox_axisNorm.reshape(3,1)
+    prox_axisLim = CoR_prox - gap * prox_axisNorm.reshape(3,1)
 
-    dist_origin = CoR_dist - gap * dist_axisNorm.reshape(3,1)
-    dist_axisLim = CoR_dist + gap * dist_axisNorm.reshape(3,1)
+    dist_origin = CoR_dist + gap * dist_axisNorm.reshape(3,1)
+    dist_axisLim = CoR_dist - gap * dist_axisNorm.reshape(3,1)
 
 
     S = diagS[3:6,3:6]
@@ -851,6 +908,7 @@ class KneeCalibrationDecorator(DecoratorModel):
         # axis lim
         p_proxAxis = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel("KneeFlexionAxis").m_global
         p_distAxis = self.model.getSegment(distSegmentlabel).getReferential("TF").static.getNode_byLabel("KneeFlexionAxis").m_global
+        meanAxis = np.mean((p_proxAxis,p_distAxis),axis= 0)
 
         # intersection beetween midcenter-axis and logitudinal axis
         proxIntersect,pb1 = geometry.LineLineIntersect(center,p_proxAxis,p1,p2)
@@ -872,6 +930,10 @@ class KneeCalibrationDecorator(DecoratorModel):
         self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KJC_Sara",center, positionType="Global")        
         self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KJC_Sara",center, positionType="Global")       
  
+
+        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KJC_SaraAxis",meanAxis, positionType="Global")        
+        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KJC_SaraAxis",meanAxis, positionType="Global") 
+
  
          # Comparison of local position of KJCs
         localKJC = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(KJClabel).m_local 
@@ -879,6 +941,41 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (localKJC[0],localKJC[1],localKJC[2]))
         logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (saraKJC[0],saraKJC[1],saraKJC[2]))
+        
+    def dynaKad(self,side):    
+        """ 
+            Compute Knee flexion axis and relocate knee joint centre from SARA functional calibration         
+        
+            :Parameters:
+                - `side` (str) - lower limb side
+
+        """
+         
+
+        self.model.decoratedModel = True
+
+        if side == "Left":
+            proxSegmentLabel = "Left Thigh"
+            distSegmentlabel = "Left Shank"
+            offsetLabel ="LeftKneeDynaKadOffset"
+        elif side == "Right":
+            proxSegmentLabel = "Right Thigh"
+            distSegmentlabel = "Right Shank"
+            offsetLabel ="RightKneeDynaKadOffset"
+        else:
+            raise Exception("[pyCGM2] side doesn t recongnize")
+
+
+    
+        proxMotion = self.model.getSegment(proxSegmentLabel).getReferential("TF").motion
+        distMotion = self.model.getSegment(distSegmentlabel).getReferential("TF").motion
+        
+        # -- main function -----
+        longRot = dynaKadCalibration(proxMotion,distMotion)
+        # end function -----
+        self.model.mp_computed[offsetLabel] = longRot
+        
+        
 
         
 
