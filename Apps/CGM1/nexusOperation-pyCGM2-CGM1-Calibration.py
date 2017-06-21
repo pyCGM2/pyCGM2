@@ -164,6 +164,8 @@ if __name__ == "__main__":
         # ---definition---
         model=cgm.CGM1LowerLimbs()
         model.configure()
+        model.setStaticFilename(calibrateFilenameLabelled)        
+        
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
 
