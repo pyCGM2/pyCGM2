@@ -40,7 +40,7 @@ from pyCGM2 import viconInterface
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = False
+    DEBUG = True
 
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -63,8 +63,8 @@ if __name__ == "__main__":
     
         if DEBUG:
             
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-20 - myProcess\\verif CGM1\\"
-            calibrateFilenameLabelledNoExt = "MRI-US-20, 2008-12-17, 3DGA 01" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
+            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
             
             
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
@@ -297,11 +297,11 @@ if __name__ == "__main__":
         
 
         # ----------------------SAVE-------------------------------------------
-        if os.path.isfile(DATA_PATH + subject + "-CGM1-pyCGM2.model"):
+        if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
             logging.warning("previous model removed")
-            os.remove(DATA_PATH + subject + "-CGM1-pyCGM2.model")
+            os.remove(DATA_PATH + subject + "-pyCGM2.model")
             
-        modelFile = open(DATA_PATH + subject+"-CGM1-pyCGM2.model", "w")
+        modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
 

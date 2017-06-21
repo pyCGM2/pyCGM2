@@ -39,7 +39,7 @@ import argparse
 if __name__ == "__main__":
 
 
-    DEBUG = False
+    DEBUG = True
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
             reconstructFilenameLabelledNoExt = "Gait Trial 01" #"static Cal 01-noKAD-noAnkleMed" #
             
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
@@ -80,13 +80,19 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        # model
-        if not os.path.isfile(DATA_PATH + subject + "-CGM1-pyCGM2.model"):
-            raise Exception ("%s-CGM1-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
+            raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM1 Calibration operation"%subject)
         else:
-            f = open(DATA_PATH + subject + '-CGM1-pyCGM2.model', 'r')
+            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
             model = cPickle.load(f)
             f.close()
+        
+        # --------------------------CHECKING -----------------------------------    
+        # check model is the CGM1
+        if repr(model) != "LowerLimb CGM1.0":
+            logging.info("loaded model : %s" %(repr(model) ))
+            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM1 calibration pipeline"%subject)
+            
 
 
         # --------------------------SESSION INFOS ------------------------------------
@@ -165,7 +171,7 @@ if __name__ == "__main__":
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
         # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"]) 
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"]) 
 
         # absolute angles        
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
