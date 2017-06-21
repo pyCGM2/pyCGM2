@@ -39,7 +39,7 @@ import argparse
 if __name__ == "__main__":
 
 
-    DEBUG = True
+    DEBUG = False
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
