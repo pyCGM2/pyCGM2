@@ -2569,7 +2569,7 @@ class CGM1LowerLimbs(CGM):
     # ----- Motion --------------
     def computeOptimizedSegmentMotion(self,aqui,segments, dictRef,dictAnat,motionMethod ):
         """
-        
+        warning : look at the origin, it s not the procimal joint ! this process break down the dependancy to other segment
         """
 
         # ---remove all  direction marker from tracking markers.
@@ -2583,46 +2583,33 @@ class CGM1LowerLimbs(CGM):
             
         logging.debug("--- Segmental Least-square motion process ---")
         if "Pelvis" in segments:  
-            self._pelvis_motion(aqui, dictRef, motionMethod)
+            self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
             self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
 
         if "Left Thigh" in segments: 
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Left Thigh"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Left Thigh",originLabel = originAnatomicalFrame)
-            else:
-                logging.info("[pyCGM2] no motion of the left thigh Anatomical Referential. OriginLabel unknown")
+            self._anatomical_motion(aqui,"Left Thigh",originLabel = "LKJC")            
+
 
         if "Right Thigh" in segments: 
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Right Thigh"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Right Thigh",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Right Thigh",originLabel = "RKJC")
 
         if "Left Shank" in segments: 
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Left Shank"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Left Shank",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Left Shank",originLabel = "LAJC")
 
         if "Right Shank" in segments: 
             self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Right Shank"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Right Shank",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Right Shank",originLabel = "RAJC")
 
         if "Left Foot" in segments: 
             self._left_foot_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Left Foot"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Left Foot",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Left Foot",originLabel = "LHEE")
 
         if "Right Foot" in segments: 
             self._right_foot_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Right Foot"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Right Foot",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Right Foot",originLabel = "RHEE")
 
 
 

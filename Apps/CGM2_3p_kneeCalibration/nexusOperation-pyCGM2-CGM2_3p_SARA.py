@@ -58,6 +58,7 @@ if __name__ == "__main__":
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\Knee Calibration\\" 
             reconstructedFilenameLabelledNoExt = "Left Knee"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
+            args.version=="2.3"
 
         
         else:
@@ -68,19 +69,27 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ reconstructFilenameLabelled)
 
+        # --------------------CHOICE -----------------------------
+        if args.version=="2.3":
+            modelName = "CGM2_3-pyCGM2.model"
+            globalSettingName = "CGM2_3-pyCGM2.settings"
+        elif args.version=="2.3e":        
+            modelName = "CGM2_3-Expert-pyCGM2.model"
+            globalSettingName = "CGM2_3-Expert-pyCGM2.settings"
+        elif args.version=="2.4":        
+            modelName = "CGM2_4-pyCGM2.model"
+            globalSettingName = "CGM2_4-pyCGM2.settings"
+        elif args.version=="2.4e":        
+            modelName = "CGM2_4-Expert-pyCGM2.model"
+            globalSettingName = "CGM2_4-Expert-pyCGM2.settings"
+        else:
+            raise Exception ("[pyCGM2] version of cgm2.3+ dont recognize ( recognized versions are 2.3 or 2.3e 2.4 and 2.4e)")
+
+
         # --------------------GLOBAL SETTINGS ------------------------------
         # global setting ( in user/AppData)
-        if args.version=="2.3":
-            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
-        elif args.version=="2.3e":            
-            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
-        elif args.version=="2.4":
-            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
-        elif args.version=="2.4e":            
-            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
-        else:
-            raise Exception ("[pyCGM2] version of cgm dont recognize ( recognized versions are 2.3 or 2.3e 2.4 and 2.4e)")
-
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+globalSettingName)).read(),object_pairs_hook=OrderedDict)
+       
 
         # --------------------------SUBJECT -----------------------------------
         # Notice : Work with ONE subject by session
@@ -89,37 +98,12 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
             
         # --------------------pyCGM2 MODEL ------------------------------
-        if args.version=="2.3":    
-            if not os.path.isfile(DATA_PATH + subject + "-CGM2_3-pyCGM2.model"):
-                raise Exception ("%s-CGM2_3-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
-            else:
-                f = open(DATA_PATH + subject + '-CGM2_3-pyCGM2.model', 'r')
-                model = cPickle.load(f)
-                f.close()
-        elif args.version=="2.3e":            
-            if not os.path.isfile(DATA_PATH + subject + "-CGM2_3-Expert-pyCGM2.model"):
-                raise Exception ("%s-CGM2_3-Expert-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
-            else:
-                f = open(DATA_PATH + subject + '-CGM2_3-Expert-pyCGM2.model', 'r')
-                model = cPickle.load(f)
-                f.close()
-        elif args.version=="2.4":
-            if not os.path.isfile(DATA_PATH + subject + "-CGM2_4-pyCGM2.model"):
-                raise Exception ("%s-CGM2_4-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
-            else:
-                f = open(DATA_PATH + subject + '-CGM2_4-pyCGM2.model', 'r')
-                model = cPickle.load(f)
-                f.close()
-        elif args.version=="2.4e":            
-            if not os.path.isfile(DATA_PATH + subject + "-CGM2_4-Expert-pyCGM2.model"):
-                raise Exception ("%s-CGM2_4-Expert-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
-            else:
-                f = open(DATA_PATH + subject + '-CGM2_4-Expert-pyCGM2.model', 'r')
-                model = cPickle.load(f)
-                f.close()
+        if not os.path.isfile(DATA_PATH + subject + "-"+modelName):
+            raise Exception ("%s-%s file doesn't exist. Run Calibration operation"%(subject,modelName))
         else:
-            raise Exception ("[pyCGM2] version of cgm dont recognize ( recognized versions are 2.3 or 2.3e 2.4 and 2.4e)")
-
+            f = open(DATA_PATH + subject + "-"+ modelName, 'r')
+            model = cPickle.load(f)
+            f.close()
 
         
         # --------------------------SESSION INFOS -----------------------------
@@ -202,30 +186,15 @@ if __name__ == "__main__":
             modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useRightKJCnode="KJC_Sara").compute()
 
         # ----------------------SAVE-------------------------------------------
-        if args.version=="2.3": 
-            modelFullFilename = str(DATA_PATH + subject + "-CGM2_3-pyCGM2.model")            
-        elif args.version=="2.3e":            
-            modelFullFilename = str(DATA_PATH + subject + "-CGM2_3-Expert-pyCGM2.model")  
-        elif args.version=="2.4":
-            modelFullFilename = str(DATA_PATH + subject + "-CGM2_4-pyCGM2.model")  
-        elif args.version=="2.4e":
-            modelFullFilename = str(DATA_PATH + subject + "-CGM2_3-Expert-pyCGM2.model")                  
-        else:
-            raise Exception ("[pyCGM2] version of cgm dont recognize ( recognized versions are 2.3 or 2.3e 2.4 and 2.4e)")
-  
 
-           
-        if os.path.isfile(modelFullFilename):
+        if os.path.isfile(str(DATA_PATH + subject + "-"+modelName)):
             logging.warning("previous model removed")
-            os.remove(modelFullFilename)
+            os.remove(str(DATA_PATH + subject + "-"+modelName))
 
-        modelFile = open(modelFullFilename, "w")
+        modelFile = open(str(DATA_PATH + subject + "-"+modelName), "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
         logging.warning("model updated with SARA knee Joint centre")
-
-
-        
             
             
 
@@ -234,25 +203,37 @@ if __name__ == "__main__":
         #--- update mp
         viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 
+        nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
 
         #--- Add modelled markers
-        Or_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
-        axis_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
-        Or_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
-        axis_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
-        
-        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inThigh",Or_inThigh)
-        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inThigh",axis_inThigh) 
-       
-        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inShank",Or_inShank)
-        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inShank",axis_inShank) 
+#        Or_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
+#        axis_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
+#        Or_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
+#        axis_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
+#               
+#        
+#        
+#        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inThigh",Or_inThigh)
+#        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inThigh",axis_inThigh) 
+#       
+#        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inShank",Or_inShank)
+#        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inShank",axis_inShank) 
+#
+#        
+#        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inThigh", acqFunc)
+#        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inThigh", acqFunc)     
+#        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inShank", acqFunc)
+#        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inShank", acqFunc)     
 
 
-        
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inThigh", acqFunc)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inThigh", acqFunc)     
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inShank", acqFunc)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inShank", acqFunc)     
+        meanOr_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KJC_Sara")
+        meanAxis_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KJC_SaraAxis")
+
+        btkTools.smartAppendPoint(acqFunc,side+"_KJC_Sara",meanOr_inThigh)
+        btkTools.smartAppendPoint(acqFunc,side+"_KJC_SaraAxis",meanAxis_inThigh) 
+
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KJC_Sara", acqFunc)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KJC_SaraAxis", acqFunc) 
 
         #btkTools.smartWriter(acqFunc, "acqFunc-test.c3d")
         
