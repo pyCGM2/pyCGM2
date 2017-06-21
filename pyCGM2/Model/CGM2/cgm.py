@@ -54,8 +54,7 @@ class CGM(cmb.Model):
         super(CGM, self).__init__()
         self.m_useLeftTibialTorsion=False
         self.m_useRightTibialTorsion=False
-
-
+        
     @classmethod
     def reLabelOldOutputs(cls,acq):
         for it in btk.Iterate(acq.GetPoints()):
@@ -606,10 +605,12 @@ class CGM1LowerLimbs(CGM):
                                             aquiStatic, dictAnatomic,frameInit,frameEnd)
             
         # if dynaKad offset
-        if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0:
+            
+        if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0   :
             logging.debug("left DynaKad offset found. Anatomical referential rotated from dynaKad offset")
             self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKneeDynaKadOffset"],
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
+                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
+                                    
 
 
         logging.debug(" ------Right-------")
