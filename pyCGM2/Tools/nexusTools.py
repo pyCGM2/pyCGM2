@@ -6,27 +6,40 @@ import pdb
 import btk
 
 
-def ckeckActivatedSubject(NEXUS,subjectNames,marker):
-    out=list()
+
+    
+def ckeckActivatedSubject(NEXUS,subjectNames):
+
+    subjectMarkerWithTraj=dict()
     for subject in subjectNames:
-        
-        if NEXUS.GetTrajectory(subject,marker) == ([], [], [], []):
-            out.append(False)
-        else: 
-            out.append(True)
+        markers  = NEXUS.GetMarkerNames(subject)
+        marker = None
+        for mark in markers:
+            if  NEXUS.GetTrajectory(subject,mark) != ([], [], [], []):
+                marker = mark
+                logging.debug("Subject : %s ( marker (%s) with trajectory )" %(subject,marker))
+                subjectMarkerWithTraj[subject] = marker
+                break
+    
+    flags=list()
+    for value in subjectMarkerWithTraj.itervalues():
+        if value is not None:
+            flags.append(True)
+        else:
+            flags.append(False)
 
-    if out.count(False) == len(out):
-        raise Exception("[pyCGM2] : pycgm2 don t find activate subject")
-
-    if out.count(True)>1:
+    if flags.count(True)>1:
         raise Exception("[pyCGM2] : two subjects are activated. Select one ony")
     else:
-        index = out.index(True)
+        index = flags.index(True)
         logging.info("Active subject is %s"%(subjectNames[index]))
         
-        return subjectNames[index]
-    
-          
+    return subjectNames[index]
+
+        
+
+        
+        
 
 def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
 

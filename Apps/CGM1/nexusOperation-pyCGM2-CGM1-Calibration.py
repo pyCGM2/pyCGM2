@@ -40,7 +40,7 @@ from pyCGM2 import viconInterface
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = false
+    DEBUG = False
 
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")        
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)        
         Parameters = NEXUS.GetSubjectParamNames(subject)
         
         required_mp={
@@ -297,6 +297,8 @@ if __name__ == "__main__":
         
 
         # ----------------------SAVE-------------------------------------------
+
+        #pyCGM2.model 
         if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
             logging.warning("previous model removed")
             os.remove(DATA_PATH + subject + "-pyCGM2.model")
@@ -304,6 +306,12 @@ if __name__ == "__main__":
         modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
+
+        #used model 
+        modelInUse = repr(model)
+        file=open(DATA_PATH + subject+"."+modelInUse,'a')
+        file.close()
+    
 
 
         # ----------------------DISPLAY ON VICON-------------------------------

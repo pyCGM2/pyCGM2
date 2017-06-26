@@ -74,21 +74,24 @@ if __name__ == "__main__":
     
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
+
+        #print args.calibration
         # --------------------------INPUTS ------------------------------------
 
         # ----- trial -----
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
             filenameNoExt = "static Cal 01-noKAD-noAnkleMed" 
             NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
 
+            args.calibration = True
         else:
             DATA_PATH, filenameNoExt = NEXUS.GetTrialName()
 
         # ----- Subject -----
         # need subject to find input files 
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
         # input files
@@ -101,10 +104,13 @@ if __name__ == "__main__":
                 f.close()
 
         # --------------------------CHECKING -----------------------------------    
-        # check model is the CGM1
-        if repr(model) != "LowerLimb CGM1.0":
-            logging.info("loaded model : %s" %(repr(model) ))
-            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM1 calibration pipeline"%subject)
+        print model
+
+#        # check model is the CGM1
+#        if repr(model) != "LowerLimb CGM1.0":
+#            print model
+#            #logging.info("loaded model : %s" %(repr(model) ))
+#            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM1 calibration pipeline"%subject)
     
     
 
