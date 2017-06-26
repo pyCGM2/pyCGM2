@@ -250,77 +250,7 @@ class CGM(cmb.Model):
 
             return P
 
-    def displayStaticCoordinateSystem(self,aquiStatic,  segmentLabel, targetPointLabel, referential = "Anatomic" ):
-        """
-            Display a coordinate system. Its Axis are represented by 3 virtual markers suffixed by (_X,_Y,_Z)
-
-            :Parameters:
-                - `aquiStatic` (btkAcquisition) - btkAcquisition instance from a static c3d
-                - `segmentLabel` (str) - segment label
-                - `targetPointLabel` (str) - label of the point defining axis limits
-                - `referential` (str) - type of segment coordinate system you want dislay ( if other than *Anatomic*, Technical Coordinate system will be displayed )
-
-        """
-
-        seg=self.getSegment(segmentLabel)
-        if referential == "Anatomic":
-            ref =seg.anatomicalFrame
-        else:
-            ref = seg.getReferential("TF")
-
-        val =  np.dot(ref.static.getRotation() , np.array([100.0,0.0,0.0])) + ref.static.getTranslation()
-        btkTools.smartAppendPoint(aquiStatic,targetPointLabel+"_X",val*np.ones((aquiStatic.GetPointFrameNumber(),3)),desc="")
-        val =  np.dot(ref.static.getRotation() , np.array([0.0,100.0,0.0])) + ref.static.getTranslation()
-        btkTools.smartAppendPoint(aquiStatic,targetPointLabel+"_Y",val*np.ones((aquiStatic.GetPointFrameNumber(),3)),desc="")
-        val =  np.dot(ref.static.getRotation() , np.array([0.0,0,100.0])) + ref.static.getTranslation()
-        btkTools.smartAppendPoint(aquiStatic,targetPointLabel+"_Z",val*np.ones((aquiStatic.GetPointFrameNumber(),3)),desc="")
-
-    def displayMotionCoordinateSystem(self,acqui,  segmentLabel, targetPointLabel, referential = "Anatomic" ):
-        seg=self.getSegment(segmentLabel)
-        valX=np.zeros((acqui.GetPointFrameNumber(),3))
-        valY=np.zeros((acqui.GetPointFrameNumber(),3))
-        valZ=np.zeros((acqui.GetPointFrameNumber(),3))
-
-
-        if referential == "Anatomic":
-            ref =seg.anatomicalFrame
-        else:
-            ref = seg.getReferential("TF")
-
-        for i in range(0,acqui.GetPointFrameNumber()):
-            valX[i,:]= np.dot(ref.motion[i].getRotation() , np.array([100.0,0.0,0.0])) + ref.motion[i].getTranslation()
-            valY[i,:]= np.dot(ref.motion[i].getRotation() , np.array([0.0,100.0,0.0])) + ref.motion[i].getTranslation()
-            valZ[i,:]= np.dot(ref.motion[i].getRotation() , np.array([0.0,0.0,100.0])) + ref.motion[i].getTranslation()
-
-        btkTools.smartAppendPoint(acqui,targetPointLabel+"_X",valX,desc="")
-        btkTools.smartAppendPoint(acqui,targetPointLabel+"_Y",valY,desc="")
-        btkTools.smartAppendPoint(acqui,targetPointLabel+"_Z",valZ,desc="")
-
-
-    def displayMotionViconCoordinateSystem(self,acqui,  segmentLabel,targetPointLabelO,targetPointLabelX,targetPointLabelY,targetPointLabelZ, referential = "Anatomic" ):
-        seg=self.getSegment(segmentLabel)
-
-        origin=np.zeros((acqui.GetPointFrameNumber(),3))
-        valX=np.zeros((acqui.GetPointFrameNumber(),3))
-        valY=np.zeros((acqui.GetPointFrameNumber(),3))
-        valZ=np.zeros((acqui.GetPointFrameNumber(),3))
-
-
-        if referential == "Anatomic":
-            ref =seg.anatomicalFrame
-        else:
-            ref = seg.getReferential("TF")
-
-        for i in range(0,acqui.GetPointFrameNumber()):
-            origin[i,:] = ref.motion[i].getTranslation()
-            valX[i,:]= np.dot(ref.motion[i].getRotation() , np.array([100.0,0.0,0.0])) + ref.motion[i].getTranslation()
-            valY[i,:]= np.dot(ref.motion[i].getRotation() , np.array([0.0,100.0,0.0])) + ref.motion[i].getTranslation()
-            valZ[i,:]= np.dot(ref.motion[i].getRotation() , np.array([0.0,0.0,100.0])) + ref.motion[i].getTranslation()
-
-        btkTools.smartAppendPoint(acqui,targetPointLabelO,origin,desc="")
-        btkTools.smartAppendPoint(acqui,targetPointLabelX,valX,desc="")
-        btkTools.smartAppendPoint(acqui,targetPointLabelY,valY,desc="")
-        btkTools.smartAppendPoint(acqui,targetPointLabelZ,valZ,desc="")
+    
 
     @classmethod
     def checkCGM1_StaticMarkerConfig(cls,acqStatic):
