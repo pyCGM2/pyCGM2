@@ -44,7 +44,7 @@ def setDescription(nodeLabel):
 
 
 # ---- CONVENIENT FUNCTIONS ------
-def dynaKadCalibration(proxMotionRef,distMotionRef,sequence="YXZ",index=1):
+def calibration2Dof(proxMotionRef,distMotionRef,sequence="YXZ",index=1):
 
     # onjective function : minimize variance of the knee varus valgus angle
     def objFun(x, proxMotionRef, distMotionRef,sequence,index):
@@ -942,9 +942,9 @@ class KneeCalibrationDecorator(DecoratorModel):
         logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (localKJC[0],localKJC[1],localKJC[2]))
         logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (saraKJC[0],saraKJC[1],saraKJC[2]))
         
-    def dynaKad(self,side):    
+    def calibrate2dof(self,side):    
         """ 
-            Compute Knee flexion axis and relocate knee joint centre from SARA functional calibration         
+            "2dof" knee calibration (similar to dynaKAD)
         
             :Parameters:
                 - `side` (str) - lower limb side
@@ -957,11 +957,11 @@ class KneeCalibrationDecorator(DecoratorModel):
         if side == "Left":
             proxSegmentLabel = "Left Thigh"
             distSegmentlabel = "Left Shank"
-            offsetLabel ="LeftKneeDynaKadOffset"
+            offsetLabel ="LeftKnee2DofOffset"
         elif side == "Right":
             proxSegmentLabel = "Right Thigh"
             distSegmentlabel = "Right Shank"
-            offsetLabel ="RightKneeDynaKadOffset"
+            offsetLabel ="RightKnee2DofOffset"
         else:
             raise Exception("[pyCGM2] side doesn t recongnize")
 
@@ -971,7 +971,7 @@ class KneeCalibrationDecorator(DecoratorModel):
         distMotion = self.model.getSegment(distSegmentlabel).getReferential("TF").motion
         
         # -- main function -----
-        longRot = dynaKadCalibration(proxMotion,distMotion)
+        longRot = calibration2Dof(proxMotion,distMotion)
         # end function -----
         self.model.mp_computed[offsetLabel] = longRot
         

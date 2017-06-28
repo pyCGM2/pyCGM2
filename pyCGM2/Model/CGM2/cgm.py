@@ -524,21 +524,19 @@ class CGM1LowerLimbs(CGM):
         else:
             self.getThighOffset(side="left")
         
-        # if SARA axis
-        if "enableLongitudinalRotation" in options.keys():
-            if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                logging.debug("SARA axis found from the left thigh")
-        
-                self.getAngleOffsetFromFunctionalSaraAxis("left")
-                
-                self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
+        # if SARA axis - rotate around the lonitudinal plane
+        if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+            logging.debug("SARA axis found from the left thigh")
+    
+            self.getAngleOffsetFromFunctionalSaraAxis("left")
             
-        # if dynaKad offset
+            self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
+                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
             
-        if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0   :
-            logging.debug("left DynaKad offset found. Anatomical referential rotated from dynaKad offset")
-            self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKneeDynaKadOffset"],
+        # if 2dof offset
+        if self.mp_computed.has_key("LeftKnee2DofOffset") and self.mp_computed["LeftKnee2DofOffset"] != 0   :
+            logging.debug("left 2Dof offset found. Anatomical referential rotated from 2Dof offset")
+            self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKnee2DofOffset"],
                                         aquiStatic, dictAnatomic,frameInit,frameEnd)
                                     
 
@@ -549,20 +547,19 @@ class CGM1LowerLimbs(CGM):
         else:
             self.getThighOffset(side="right")
 
-        if "enableLongitudinalRotation" in options.keys():
-            if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                logging.debug("SARA axis found from the Right thigh")
-        
-                self.getAngleOffsetFromFunctionalSaraAxis("right")
-                
-                self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
+        # if SARA axis - rotate around the lonitudinal plane
+        if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+            logging.debug("SARA axis found from the Right thigh")
+    
+            self.getAngleOffsetFromFunctionalSaraAxis("right")
+            
+            self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
+                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-
-        # if dynaKad offset
-        if self.mp_computed.has_key("RightKneeDynaKadOffset") and self.mp_computed["RightKneeDynaKadOffset"] != 0:
-            logging.debug("Right DynaKad offset found. Anatomical referential rotated from dynaKad offset")
-            self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKneeDynaKadOffset"],
+        # if 2dof offset
+        if self.mp_computed.has_key("RightKnee2DofOffset") and self.mp_computed["RightKnee2DofOffset"] != 0:
+            logging.debug("Right 2Dof offset found. Anatomical referential rotated from 2Dof offset")
+            self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKnee2DofOffset"],
                                             aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
