@@ -2585,9 +2585,9 @@ class CGM1LowerLimbs(CGM):
                                         aqui,options=options)
 
             # if dynaKad offset
-            if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0:
-                logging.debug("Left DynaKad offset found. Anatomical referential rotated from dynaKad offset")
-                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeDynaKadOffset"],
+            if self.mp_computed.has_key("LeftKnee2DofOffset") and self.mp_computed["LeftKnee2DofOffset"] != 0:
+                logging.debug("Left 2DofCalibration offset found. Anatomical referential rotated ")
+                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKnee2DofOffset"],
                                             aqui,options=options)
 
 
@@ -2603,9 +2603,9 @@ class CGM1LowerLimbs(CGM):
                                         aqui,options=options)
 
             # if dynaKad offset
-            if self.mp_computed.has_key("RightKneeDynaKadOffset") and self.mp_computed["RightKneeDynaKadOffset"] != 0:
-                logging.debug("Right DynaKad offset found. Anatomical referential rotated from dynaKad offset")
-                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeDynaKadOffset"],
+            if self.mp_computed.has_key("RightKnee2DofOffset") and self.mp_computed["RightKnee2DofOffset"] != 0:
+                logging.debug("Right 2DofCalibration offset found. Anatomical referential rotated")
+                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKnee2DofOffset"],
                                             aqui,options=options)
 
 
