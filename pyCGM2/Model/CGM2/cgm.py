@@ -2575,13 +2575,14 @@ class CGM1LowerLimbs(CGM):
             logging.debug(" - Left Thigh - motion -")
             logging.debug(" -----------------------")
             self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)            
-                
-            if "enableLongitudinalRotation" in options.keys() and options["enableLongitudinalRotation"]:    
-                if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                    logging.debug("SARA axis found from the left thigh")
-        
-                    self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
-                                            aqui,options=options)
+            
+            
+            # if rotation offset from knee functional calibration
+            if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+                logging.debug("SARA axis found from the left thigh")
+    
+                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
+                                        aqui,options=options)
 
             # if dynaKad offset
             if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0:
@@ -2594,13 +2595,12 @@ class CGM1LowerLimbs(CGM):
             logging.debug(" ------------------------")
             self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
-
-            if "enableLongitudinalRotation" in options.keys() and options["enableLongitudinalRotation"]:    
-                if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                    logging.debug("SARA axis found from the Right thigh")
-        
-                    self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
-                                            aqui,options=options)
+            # if rotation offset from knee functional calibration
+            if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+                logging.debug("SARA axis found from the Right thigh")
+    
+                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
+                                        aqui,options=options)
 
             # if dynaKad offset
             if self.mp_computed.has_key("RightKneeDynaKadOffset") and self.mp_computed["RightKneeDynaKadOffset"] != 0:
