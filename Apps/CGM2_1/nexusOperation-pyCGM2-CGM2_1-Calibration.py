@@ -19,15 +19,6 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 # vicon nexus
 import ViconNexus
 
-# openMA
-#import ma.io
-#import ma.body
-
-#btk
-import btk
-import numpy as np
-
-
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools,nexusTools
@@ -35,7 +26,7 @@ import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
 
 from pyCGM2 import viconInterface
-
+from pyCGM2.Utils import fileManagement
 
 if __name__ == "__main__":
 
@@ -58,7 +49,7 @@ if __name__ == "__main__":
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
@@ -77,7 +68,7 @@ if __name__ == "__main__":
         # --------------------------SUBJECT ------------------------------------
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
         required_mp={
@@ -105,22 +96,13 @@ if __name__ == "__main__":
         }
 
 
-
         # --------------------------SESSION INFOS ------------------------------------
         # info file
-        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
-            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-        else:
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-
+        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        
         #  translators management
-        if os.path.isfile( DATA_PATH + "CGM1.translators"):
-           logging.warning("local translator found")
-           sessionTranslators = json.loads(open(DATA_PATH + "CGM1.translators").read(),object_pairs_hook=OrderedDict)
-           translators = sessionTranslators["Translators"]
-        else:
+        infoSettings = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        if not infoSettings:
            translators = inputs["Translators"]
 
 
@@ -295,12 +277,12 @@ if __name__ == "__main__":
 
 
         # ----------------------SAVE-------------------------------------------
-        if os.path.isfile(DATA_PATH + subject + "-CGM2_1-pyCGM2.model"):
+        if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
             logging.warning("previous model removed")
-            os.remove(DATA_PATH + subject + "-CGM2_1-pyCGM2.model")
+            os.remove(DATA_PATH + subject + "-pyCGM2.model")
 
 
-        modelFile = open(DATA_PATH + subject+"-CGM2_1-pyCGM2.model", "w")
+        modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
 

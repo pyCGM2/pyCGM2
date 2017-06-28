@@ -18,12 +18,6 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 # vicon nexus
 import ViconNexus
 
-# openMA
-#import ma.io
-#import ma.body
-
-#btk
-import btk
 
 
 # pyCGM2 libraries
@@ -32,6 +26,7 @@ import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, forceplates,bodySegmentParameters
 #
 from pyCGM2 import viconInterface
+from pyCGM2.Utils import fileManagement
 
 
 
@@ -75,33 +70,30 @@ if __name__ == "__main__":
 
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-CGM2_1-pyCGM2.model"):
-            raise Exception ("%s-CGM2_1-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
+            raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
         else:
-            f = open(DATA_PATH + subject + '-CGM2_1-pyCGM2.model', 'r')
+            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
             model = cPickle.load(f)
             f.close()
 
+        # --------------------------CHECKING -----------------------------------    
+        # check model
+        if repr(model) != "LowerLimb CGM2.1":
+            logging.info("loaded model : %s" %(repr(model) ))
+            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.1 calibration pipeline"%subject)
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file
-        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
-            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-        else:
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-            
-        #  translators management 
-        if os.path.isfile( DATA_PATH + "CGM1.translators"):
-           logging.warning("local translator found")
-           sessionTranslators = json.loads(open(DATA_PATH + "CGM1.translators").read(),object_pairs_hook=OrderedDict)
-           translators = sessionTranslators["Translators"]
-        else:
+        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+
+        #  translators management
+        infoSettings = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        if not infoSettings:
            translators = inputs["Translators"]
 
         # --------------------------CONFIG ------------------------------------
