@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
@@ -101,8 +101,8 @@ if __name__ == "__main__":
         infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
         
         #  translators management
-        infoSettings = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
-        if not infoSettings:
+        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        if not translators:
            translators = inputs["Translators"]
 
 

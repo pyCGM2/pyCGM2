@@ -106,8 +106,8 @@ if __name__ == "__main__":
         infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
-        infoSettings = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
-        if not infoSettings:
+        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        if not translators:
            translators = inputs["Translators"]
 
         # --------------------------CONFIG ------------------------------------

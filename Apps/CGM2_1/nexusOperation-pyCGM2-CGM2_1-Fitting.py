@@ -92,8 +92,8 @@ if __name__ == "__main__":
         infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
-        infoSettings = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
-        if not infoSettings:
+        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        if not translators:
            translators = inputs["Translators"]
 
         # --------------------------CONFIG ------------------------------------
@@ -117,6 +117,8 @@ if __name__ == "__main__":
                 momentProjection = pyCGM2Enums.MomentProjection.Proximal
             elif args.proj == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
+            elif args.proj == "JCS":
+                momentProjection = pyCGM2Enums.MomentProjection.JCS
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
@@ -127,6 +129,8 @@ if __name__ == "__main__":
                 momentProjection = pyCGM2Enums.MomentProjection.Proximal
             elif inputs["Fitting"]["Moment Projection"] == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
+            elif inputs["Fitting"]["Moment Projection"] == "JCS":
+                momentProjection = pyCGM2Enums.MomentProjection.JCS                
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")      
 

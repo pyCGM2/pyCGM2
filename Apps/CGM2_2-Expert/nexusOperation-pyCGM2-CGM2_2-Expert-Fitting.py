@@ -34,7 +34,7 @@ from pyCGM2.Model.Opensim import opensimFilters
 #
 from pyCGM2 import viconInterface
 
-
+from pyCGM2.Utils import fileManagement
 
 if __name__ == "__main__":
 
@@ -81,33 +81,31 @@ if __name__ == "__main__":
 
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-CGM2_2-Expert-pyCGM2.model"):
-            raise Exception ("%s-CGM2_2-Expert-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
+            raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
         else:
-            f = open(DATA_PATH + subject + '-CGM2_2-Expert-pyCGM2.model', 'r')
+            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
             model = cPickle.load(f)
             f.close()
 
+        # --------------------------CHECKING -----------------------------------    
+        # check model
+        if repr(model) != "LowerLimb CGM2.2e":
+            logging.info("loaded model : %s" %(repr(model) ))
+            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.2e calibration pipeline"%subject)
+
+
         # --------------------------SESSION INFOS ------------------------------------
-        # info file
-        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
-            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-        else:
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
-        if os.path.isfile( DATA_PATH + "CGM1.translators"):
-           logging.warning("local translator found")
-           sessionTranslators = json.loads(open(DATA_PATH + "CGM1.translators").read(),object_pairs_hook=OrderedDict)
-           translators = sessionTranslators["Translators"]
-        else:
+        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        if not translators:
            translators = inputs["Translators"]
 
         # --------------------------CONFIG ------------------------------------
@@ -130,6 +128,8 @@ if __name__ == "__main__":
                 momentProjection = pyCGM2Enums.MomentProjection.Proximal
             elif args.proj == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
+            elif args.proj == "JCS":
+                momentProjection = pyCGM2Enums.MomentProjection.JCS
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
@@ -140,6 +140,8 @@ if __name__ == "__main__":
                 momentProjection = pyCGM2Enums.MomentProjection.Proximal
             elif inputs["Fitting"]["Moment Projection"] == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
+            elif inputs["Fitting"]["Moment Projection"] == "JCS":
+                momentProjection = pyCGM2Enums.MomentProjection.JCS
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
         # --------------------------ACQUISITION ------------------------------------
