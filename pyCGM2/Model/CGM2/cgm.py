@@ -528,7 +528,7 @@ class CGM1LowerLimbs(CGM):
         if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
             logging.debug("SARA axis found from the left thigh")
     
-            self.getAngleOffsetFromFunctionalSaraAxis("left")
+            self.getAngleOffsetFromFunctionalAxis("left","KJC_SaraAxis")
             
             self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
                                         aquiStatic, dictAnatomic,frameInit,frameEnd)
@@ -547,11 +547,12 @@ class CGM1LowerLimbs(CGM):
         else:
             self.getThighOffset(side="right")
 
+
         # if SARA axis - rotate around the lonitudinal plane
         if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
             logging.debug("SARA axis found from the Right thigh")
     
-            self.getAngleOffsetFromFunctionalSaraAxis("right")
+            self.getAngleOffsetFromFunctionalAxis("right","KJC_SaraAxis")
             
             self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
                                         aquiStatic, dictAnatomic,frameInit,frameEnd)
@@ -2293,12 +2294,14 @@ class CGM1LowerLimbs(CGM):
 
 
 
-    def getAngleOffsetFromFunctionalSaraAxis(self,side= "both"):
+    def getAngleOffsetFromFunctionalAxis(self,side,axisPointName):
         """
              Angle between the projection of the lateral knee marker and the functional flexion axis
 
             :Parameters:
                - `side` (str) - body side  (both, left, right)
+               
+               KJC_SaraAxis
         """
 
         if side == "both" or side=="left":
@@ -2306,8 +2309,8 @@ class CGM1LowerLimbs(CGM):
             # Left --------
             
             # node SARA_axis add in the anatomic Frame
-            saraAxisGlobal = self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis").m_global
-            self.getSegment("Left Thigh").anatomicalFrame.static.addNode("KJC_SaraAxis",saraAxisGlobal,positionType="Global")
+            saraAxisGlobal = self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel(axisPointName).m_global
+            self.getSegment("Left Thigh").anatomicalFrame.static.addNode(axisPointName,saraAxisGlobal,positionType="Global")
 
             
             # projection of Knee flexion
@@ -2324,7 +2327,7 @@ class CGM1LowerLimbs(CGM):
 
             
             # projection of saraAxis
-            saraAxisLocal = self.getSegment("Left Thigh").anatomicalFrame.static.getNode_byLabel("KJC_SaraAxis").m_local
+            saraAxisLocal = self.getSegment("Left Thigh").anatomicalFrame.static.getNode_byLabel(axisPointName).m_local
             
             proj_saraAxis = np.array([ saraAxisLocal[0],
                                    saraAxisLocal[1],
@@ -2343,8 +2346,8 @@ class CGM1LowerLimbs(CGM):
         if side == "both" or side=="right":
 
             # node SARA_axis add in the anatomic Frame
-            saraAxisGlobal = self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis").m_global
-            self.getSegment("Right Thigh").anatomicalFrame.static.addNode("KJC_SaraAxis",saraAxisGlobal,positionType="Global")
+            saraAxisGlobal = self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel(axisPointName).m_global
+            self.getSegment("Right Thigh").anatomicalFrame.static.addNode(axisPointName,saraAxisGlobal,positionType="Global")
 
             # knee flexion
             kneeFlexionAxis=    np.dot(self.getSegment("Right Thigh").anatomicalFrame.static.getRotation().T,
@@ -2358,7 +2361,7 @@ class CGM1LowerLimbs(CGM):
 
             
 
-            saraAxisLocal = self.getSegment("Right Thigh").anatomicalFrame.static.getNode_byLabel("KJC_SaraAxis").m_local
+            saraAxisLocal = self.getSegment("Right Thigh").anatomicalFrame.static.getNode_byLabel(axisPointName).m_local
             proj_saraAxis = np.array([ saraAxisLocal[0],
                                    saraAxisLocal[1],
                                      0])

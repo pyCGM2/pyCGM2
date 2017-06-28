@@ -18,7 +18,7 @@ from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.CGM2 import cgm2, modelFilters, modelDecorator
 import pyCGM2.enums as pyCGM2Enums
 
-from pyCGM2.Model.Opensim import opensimFilters
+#from pyCGM2.Model.Opensim import opensimFilters
 import json
 from collections import OrderedDict
 
@@ -161,8 +161,7 @@ class CGM2_SARA_test():
         acqGait =  btkTools.applyTranslators(acqGait,translators)     
         # Motion FILTER 
     
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
-                                                 enableLongitudinalRotation=True)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
     
         # relative angles
