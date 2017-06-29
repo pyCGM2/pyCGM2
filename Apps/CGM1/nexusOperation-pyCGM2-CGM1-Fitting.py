@@ -82,12 +82,10 @@ if __name__ == "__main__":
         
         # --------------------------CHECKING -----------------------------------    
         # check model is the CGM1
-        if repr(model) != "LowerLimb CGM1.0":
-            logging.info("loaded model : %s" %(repr(model) ))
-            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM1 calibration pipeline"%subject)
+        logging.info("loaded model : %s" %(model.version ))
+        if model.version != "CGM1.0":
+            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM1.0 calibration pipeline"%model.version)
             
-
-
         # --------------------------SESSION INFOS ------------------------------------
         # info file
         infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
