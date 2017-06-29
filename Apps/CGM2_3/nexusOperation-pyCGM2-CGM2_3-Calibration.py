@@ -327,15 +327,13 @@ if __name__ == "__main__":
 
 
 
-            # --- final pyCGM2 model motion Filter ---
-            # use fitted markers
-            modMotionFitted=modelFilters.ModelMotionFilter(scp,acqStaticIK,model,pyCGM2Enums.motionMethod.Sodervisk)
-
-            modMotionFitted.compute()
-
-
         # eventual static acquisition to consider for joint kinematics
         finalAcqStatic = acqStaticIK if args.ik else acqStatic
+
+        # --- final pyCGM2 model motion Filter ---
+        # use fitted markers
+        modMotionFitted=modelFilters.ModelMotionFilter(scp,finalAcqStatic,model,pyCGM2Enums.motionMethod.Sodervisk)
+        modMotionFitted.compute()
 
         #---- Joint kinematics----
         # relative angles
