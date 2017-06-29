@@ -36,6 +36,8 @@ class CGM1_calibrationTest():
         
         model=cgm.CGM1LowerLimbs()
         model.configure()
+
+
         markerDiameter=14                    
         mp={
         'Bodymass'   : 71.0,                
@@ -49,9 +51,10 @@ class CGM1_calibrationTest():
         'RightSoleDelta' : 0,
         }        
         model.addAnthropoInputParameters(mp)
-                                    
-        # -----------CGM STATIC CALIBRATION--------------------
+                                 
+         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
+        
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
         
         spf_l,sro_l= model.getViconFootOffset("Left")
@@ -1601,13 +1604,13 @@ if __name__ == "__main__":
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationOFF_shankRotationON_tibialTorsionOFF()
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationON_shankRotationON_tibialTorsionOFF()
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationON_shankRotationON_tibialTorsionON()
-#    logging.info("######## PROCESS CGM1 --> Done ######")        
-#
+    logging.info("######## PROCESS CGM1 --> Done ######")        
+
 #    logging.info("######## PROCESS CGM 1.1 --- MANUAL ######")
-    CGM11_calibrationTest.basicCGM1_manualOffsets() # work
-    CGM11_calibrationTest.basicCGM1_manualThighShankRotation() # work
-    CGM11_calibrationTest.basicCGM1_manualTibialTorsion() # work
-    CGM11_calibrationTest.advancedCGM1_kadMed_manualTibialTorsion() # work
+#    CGM11_calibrationTest.basicCGM1_manualOffsets() # work
+#    CGM11_calibrationTest.basicCGM1_manualThighShankRotation() # work
+#    CGM11_calibrationTest.basicCGM1_manualTibialTorsion() # work
+#    CGM11_calibrationTest.advancedCGM1_kadMed_manualTibialTorsion() # work
 #    logging.info("######## PROCESS CGM 1.1 --- MANUAL --> Done ######")    
 
 
