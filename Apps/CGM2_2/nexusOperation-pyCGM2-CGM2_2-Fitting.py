@@ -54,8 +54,8 @@ if __name__ == "__main__":
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH + "True equinus\\S01\\CGM2.2\\"
-            reconstructFilenameLabelledNoExt = "gait trial 01"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.2\\c3dOnly\\"
+            reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 12"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
         else:
@@ -83,8 +83,8 @@ if __name__ == "__main__":
 
         # --------------------------CHECKING -----------------------------------    
         # check model
-        if repr(model) != "LowerLimb CGM2.2":
-            logging.info("loaded model : %s" %(repr(model) ))
+        logging.info("loaded model : %s" %(model.version))
+        if model.version != "CGM2.2":
             raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.2 calibration pipeline"%subject)
 
         # --------------------------SESSION INFOS ------------------------------------
