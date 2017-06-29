@@ -18,6 +18,41 @@ from pyCGM2.Tools import  btkTools,nexusTools
 import cgm
 
 
+class CGM2_1LowerLimbs(cgm.CGM1LowerLimbs):
+    """
+
+    """
+
+    #nativeCgm1 = True
+
+    MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
+    
+    def __init__(self):
+        super(CGM2_1LowerLimbs, self).__init__()
+        self.decoratedModel = False
+        
+        self.version = "CGM2.1"
+
+    def __repr__(self):
+        return "LowerLimb CGM2.1"
+
+class CGM2_2LowerLimbs(cgm.CGM1LowerLimbs):
+    """
+
+    """
+
+    MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
+    
+    def __init__(self):
+        super(CGM2_1LowerLimbs, self).__init__()
+        self.decoratedModel = False
+        
+        self.version = "CGM2.2"
+
+    def __repr__(self):
+        return "LowerLimb CGM2.2"
+
+
 class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
     """ 
         implementation of the cgm2.3 skin marker added
