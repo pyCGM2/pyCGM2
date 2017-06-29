@@ -53,8 +53,8 @@ if __name__ == "__main__":
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\New Session 3\\"
-            reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 12"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
+            reconstructFilenameLabelledNoExt = "Gait Trial 01"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
         else:
@@ -82,9 +82,9 @@ if __name__ == "__main__":
 
         # --------------------------CHECKING -----------------------------------    
         # check model is the CGM1_1
-        if repr(model) != "LowerLimb CGM1.1":
-            logging.info("loaded model : %s" %(repr(model) ))
-            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM1 calibration pipeline"%subject)
+        logging.info("loaded model : %s" %(model.version ))
+        if model.version != "CGM1.1":
+            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM1.1 calibration pipeline"%model.version)
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file

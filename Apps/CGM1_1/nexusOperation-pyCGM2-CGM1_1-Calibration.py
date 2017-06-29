@@ -54,8 +54,8 @@ if __name__ == "__main__":
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
-            calibrateFilenameLabelledNoExt = "test" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
+            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -125,11 +125,11 @@ if __name__ == "__main__":
         else:
             markerDiameter = float(inputs["Global"]["Marker diameter"])
 
-
         if args.check:
             pointSuffix="cgm1.1"
         else:
             pointSuffix = inputs["Global"]["Point suffix"]
+
         # --------------------------ACQUISITION ------------------------------------
 
         # ---btk acquisition---
@@ -140,10 +140,11 @@ if __name__ == "__main__":
 
         # ---definition---
         model=cgm.CGM1LowerLimbs()
-        model.setCGM1Version("1.1")
+        model.setVersion("CGM1.1")
         model.configure()
+ 
         model.setStaticFilename(calibrateFilenameLabelled)
-        
+
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
         # ---check marker set used----
