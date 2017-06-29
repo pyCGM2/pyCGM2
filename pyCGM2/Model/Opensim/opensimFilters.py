@@ -174,9 +174,7 @@ class opensimCalibrationFilter(object):
 
         # IMPORTANT update marker from procedure ( need markers in osim)        
         for segName in self.m_procedure.markers.keys():
-            print segName
             for marker in self.m_procedure.markers[segName]:
-                print marker
                 self._osimModel.updateMarkerInMarkerSet( marker, modelSegmentLabel = segName, rotation_osim_model=osimProcessing.R_OSIM_CGM[segName], toMeter=self.m_toMeter)
 
         # set joint centre geometry
