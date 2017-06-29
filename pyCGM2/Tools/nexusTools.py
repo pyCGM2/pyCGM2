@@ -264,5 +264,5 @@ def createGeneralEvents(NEXUS,subject,acq,labels):
     events= acq.GetEvents()
     for ev in btk.Iterate(events):
         if ev.GetLabel() in labels:
-            print ev.GetTime()*freq
+            #print ev.GetTime()*freq
             NEXUS.CreateAnEvent( str(subject), "General", str(ev.GetLabel()), int(ev.GetTime()*freq), 0.0 )

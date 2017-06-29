@@ -100,9 +100,6 @@ def mot2pointValues(motFilename,labels,orientation =[1,1,1]):
     return pointValues
 
 def setGlobalTransormation_lab_osim(axis,forwardProgression):
-    print axis
-    print "forward"
-    print forwardProgression
     """ Todo : incomplet, il faut traiter tous les cas """
     if axis =="X":
         if forwardProgression:
