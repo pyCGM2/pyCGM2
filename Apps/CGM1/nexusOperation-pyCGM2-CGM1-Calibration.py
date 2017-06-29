@@ -35,7 +35,7 @@ from pyCGM2.Utils import fileManagement
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = True
+    DEBUG = False
 
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -149,8 +149,8 @@ if __name__ == "__main__":
         # ---definition---
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        model.setStaticFilename(calibrateFilenameLabelled)
 
+        model.setStaticFilename(calibrateFilenameLabelled)
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
 
