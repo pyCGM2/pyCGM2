@@ -22,7 +22,7 @@ import ViconNexus
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools,nexusTools
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model.CGM2 import cgm,cgm2, modelFilters, forceplates,bodySegmentParameters
+from pyCGM2.Model.CGM2 import cgm2, modelFilters, forceplates,bodySegmentParameters
 from pyCGM2.Model.Opensim import opensimFilters
 from pyCGM2.Utils import fileManagement
 
