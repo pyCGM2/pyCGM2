@@ -44,7 +44,7 @@ class CGM2_2LowerLimbs(cgm.CGM1LowerLimbs):
     MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
     
     def __init__(self):
-        super(CGM2_1LowerLimbs, self).__init__()
+        super(CGM2_2LowerLimbs, self).__init__()
         self.decoratedModel = False
         
         self.version = "CGM2.2"
