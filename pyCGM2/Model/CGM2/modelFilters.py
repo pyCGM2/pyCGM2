@@ -309,7 +309,7 @@ class CGMLowerlimbInverseDynamicProcedure(object):
         calcul segment par segment, j automatiserai plus tard ! 
     
         """
-        if model.version == "2.4":
+        if model.version in ["CGM2.4","CGM2.4e"]:
             self.computeSegmental(model,"Left HindFoot",btkAcq, gravity, scaleToMeter)
             self.computeSegmental(model,"Right HindFoot",btkAcq, gravity, scaleToMeter)
             self.computeSegmental(model,"Left Shank",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Left HindFoot")
