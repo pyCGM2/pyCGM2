@@ -33,7 +33,7 @@ from pyCGM2.Utils import fileManagement
 if __name__ == "__main__":
 
 
-    DEBUG = False
+    DEBUG = True
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         # --------------------------LOADING ------------------------------------
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\New Session 3\\"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM2\\cgm2.1\\c3dOnly\\"
             reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 12"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
@@ -83,8 +83,8 @@ if __name__ == "__main__":
 
         # --------------------------CHECKING -----------------------------------    
         # check model
-        if repr(model) != "LowerLimb CGM2.1":
-            logging.info("loaded model : %s" %(repr(model) ))
+        logging.info("loaded model : %s" %(model.version ))
+        if model.version != "CGM2.1":
             raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.1 calibration pipeline"%subject)
 
         # --------------------------SESSION INFOS ------------------------------------

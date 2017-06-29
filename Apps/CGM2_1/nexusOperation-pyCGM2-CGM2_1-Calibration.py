@@ -23,7 +23,7 @@ import ViconNexus
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools,nexusTools
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
+from pyCGM2.Model.CGM2 import cgm,cgm2, modelFilters, modelDecorator
 
 from pyCGM2 import viconInterface
 from pyCGM2.Utils import fileManagement
@@ -53,8 +53,8 @@ if __name__ == "__main__":
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH+"True equinus\\S01\\CGM2.1\\"
-            calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM2\\cgm2.1\\cgm1\\"
+            calibrateFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 02" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -143,11 +143,10 @@ if __name__ == "__main__":
 
 
         # ---definition---
-        model=cgm.CGM1LowerLimbs()
-        model.setCGM1Version("1.1")
+        model=cgm2.CGM2_1LowerLimbs()
         model.configure()
-        model.setStaticFilename(calibrateFilenameLabelled)
         
+        model.setStaticFilename(calibrateFilenameLabelled)
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
         # ---check marker set used----
