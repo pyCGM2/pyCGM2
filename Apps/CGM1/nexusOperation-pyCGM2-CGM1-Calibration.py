@@ -61,6 +61,8 @@ if __name__ == "__main__":
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
             calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
 
+#            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM1-calibration2Dof\\"
+#            calibrateFilenameLabelledNoExt = "Static" 
 
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
