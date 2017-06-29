@@ -77,7 +77,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
         self.decoratedModel = False
     
-        self.version = "2.3"
+        self.version = "CGM2.3"
         
         #self.__configure()
         
@@ -367,7 +367,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         self.decoratedModel = False
         
-        self.version = "2.4"
+        self.version = "CGM2.4"
         
         #self.__configure()
 
