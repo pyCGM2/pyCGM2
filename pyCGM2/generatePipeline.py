@@ -81,7 +81,7 @@ SARA_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
     
       <Entry DisplayName="Run Python Operation" Enabled="1" OperationId="50" OperationName="Python">
         <ParamList name="">
-          <Param name="Script" value="PATH_APPS/CGM2_3p_kneeCalibration/nexusOperation-pyCGM2-CGM2_3p_SARA.py"/>
+          <Param name="Script" value="PATH_APPS/Knee Calibration/nexusOperation-pyCGM2-SARA.py"/>
           <Param name="ScriptArgs" value="version =2.3"/>
           <Param name="UseNexusPython" value="false"/>
           <Param name="LaunchPython" value="false"/>
@@ -96,6 +96,35 @@ SARA_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
       </Entry>
     
     </Pipeline>"""
+    
+CALIBRATION2DOF_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
+    <Pipeline>
+    
+      <Entry DisplayName="Save Trial - C3D + VSK" Enabled="1" OperationId="49" OperationName="SaveOperation">
+        <ParamList name="">
+          <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+          <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+        </ParamList>
+      </Entry>
+    
+      <Entry DisplayName="Run Python Operation" Enabled="1" OperationId="50" OperationName="Python">
+        <ParamList name="">
+          <Param name="Script" value="PATH_APPS/Knee Calibration/nexusOperation-pyCGM2-2DofCalibration.py"/>
+          <Param name="ScriptArgs" value="version =2.3"/>
+          <Param name="UseNexusPython" value="false"/>
+          <Param name="LaunchPython" value="false"/>
+        </ParamList>
+      </Entry>
+    
+      <Entry DisplayName="Save Trial - C3D + VSK" Enabled="1" OperationId="51" OperationName="SaveOperation">
+        <ParamList name="">
+          <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+          <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+        </ParamList>
+      </Entry>
+    
+    </Pipeline>"""    
+    
 
 # ------------------- CGM1 ------------------------------------------------------
 def pipeline_pyCGM2_CGM1_Calibration(myAppFolder_path,userAppData_path):
@@ -275,19 +304,7 @@ def pipeline_pyCGM2_CGM2_3_Expert_Fitting(myAppFolder_path,userAppData_path):
     if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_3-Expert-Fitting.Pipeline"):
         with open(userAppData_path + "pyCGM2-CGM2_3-Expert-Fitting.Pipeline", "w") as text_file:
             text_file.write(content_new)
-            
-#-----------------------CGM 2.3i -SARA method------------------------------------------            
-def pipeline_pyCGM2_CGM2_3_SARA_kneeCalibration(myAppFolder_path,userAppData_path):
-   
-    
-    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
-    
-    content = string.replace(SARA_CONTENT, 'PATH_APPS', myAppFolder_path_slash[:-1])
-
-    if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_3p_SARA.Pipeline"):
-        with open(userAppData_path + "pyCGM2-CGM2_3p_SARA.Pipeline", "w") as text_file:
-            text_file.write(content)       
-            
+                        
 #-----------------------CGM 2.4------------------------------------------------            
 def pipeline_pyCGM2_CGM2_4_Calibration(myAppFolder_path,userAppData_path):
    
@@ -335,3 +352,27 @@ def pipeline_pyCGM2_CGM2_4_Expert_Fitting(myAppFolder_path,userAppData_path):
     if not os.path.isfile( userAppData_path + "pyCGM2-CGM2_4-Expert-Fitting.Pipeline"):
         with open(userAppData_path + "pyCGM2-CGM2_4-Expert-Fitting.Pipeline", "w") as text_file:
             text_file.write(content_new)
+            
+#------------------------SARA method------------------------------------------            
+def pipeline_pyCGM2_SARA_kneeCalibration(myAppFolder_path,userAppData_path):
+   
+    
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+    
+    content = string.replace(SARA_CONTENT, 'PATH_APPS', myAppFolder_path_slash[:-1])
+
+    if not os.path.isfile( userAppData_path + "pyCGM2-SARA.Pipeline"):
+        with open(userAppData_path + "pyCGM2-SARA.Pipeline", "w") as text_file:
+            text_file.write(content)       
+
+#------------------------2DOF method------------------------------------------            
+def pipeline_pyCGM2_2dof_kneeCalibration(myAppFolder_path,userAppData_path):
+   
+    
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+    
+    content = string.replace(CALIBRATION2DOF_CONTENT, 'PATH_APPS', myAppFolder_path_slash[:-1])
+
+    if not os.path.isfile( userAppData_path + "pyCGM2-Knee2Dof.Pipeline"):
+        with open(userAppData_path + "pyCGM2-Knee2Dof.Pipeline", "w") as text_file:
+            text_file.write(content)       
