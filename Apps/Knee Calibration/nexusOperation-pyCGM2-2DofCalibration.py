@@ -103,6 +103,12 @@ if __name__ == "__main__":
                inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_2-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
         elif model.version == "CGM2.3":
                inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        elif model.version == "CGM2.3e":
+               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        elif model.version == "CGM2.4":
+               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        elif model.version == "CGM2.4e":
+               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
         else:
             raise Exception ("model version not found [contact admin]")
@@ -116,6 +122,8 @@ if __name__ == "__main__":
             translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         elif model.version in  ["CGM2.3","CGM2.3e"]:
             translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM2-3.translators")
+        elif model.version in  ["CGM2.4","CGM2.4e"]:
+            translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM2-4.translators")
 
         if not translators:
            translators = inputs["Translators"]        
@@ -135,10 +143,6 @@ if __name__ == "__main__":
         
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
             validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1LowerLimbs.MARKERS)
-        elif model.version in  ["CGM2.3","CGM2.3e"]:
-            validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm2.CGM2_3LowerLimbs.MARKERS)
-        elif model.version in  ["CGM2.4","CGM2.4e"]:
-            validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm2.CGM2_4LowerLimbs.MARKERS)
          
         # static calibration procedure
         scp=modelFilters.StaticCalibrationProcedure(model)
