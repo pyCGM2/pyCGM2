@@ -32,7 +32,7 @@ from pyCGM2.Utils import fileManagement
 if __name__ == "__main__":
 
 
-    DEBUG = False
+    DEBUG = True
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -77,6 +77,7 @@ if __name__ == "__main__":
             raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM1 Calibration operation"%subject)
         else:
             f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
+            
             model = cPickle.load(f)
             f.close()
         
@@ -198,11 +199,26 @@ if __name__ == "__main__":
                              viconCGM1compatible=True
                              ).compute(pointLabelSuffix=pointSuffix)
 
+
         #---- Joint energetics----
         modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
         #---- zero unvalid frames ---
         btkTools.applyValidFramesOnOutput(acqGait,validFrames)   
+
+
+        # ----------------------SAVE-------------------------------------------
+        # cpickle doesn t work. Incompatibility with Swig. ( see about BTK wrench) 
+        #pyCGM2.model
+#        if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
+#            logging.warning("previous model removed")
+#            os.remove(DATA_PATH + subject + "-pyCGM2.model")
+#
+#        modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
+#        cPickle.dump(model, modelFile)
+#        modelFile.close()
+   
+
 
         # ----------------------DISPLAY ON VICON-------------------------------
 

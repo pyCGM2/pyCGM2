@@ -35,7 +35,7 @@ from pyCGM2.Utils import fileManagement
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = False
+    DEBUG = True
 
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -283,7 +283,8 @@ if __name__ == "__main__":
 
 
 
-        # ----------------------SAVE-------------------------------------------
+        # ----------------------SAVE-------------------------------------------        
+
 
         #pyCGM2.model
         if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
@@ -291,6 +292,12 @@ if __name__ == "__main__":
             os.remove(DATA_PATH + subject + "-pyCGM2.model")
 
         modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
+        cPickle.dump(model, modelFile)
+        modelFile.close()
+
+        if os.path.isfile(DATA_PATH + subject + "-pyCGM2-INIT.model"):
+            os.remove(DATA_PATH + subject + "-pyCGM2-INIT.model")
+        modelFile = open(DATA_PATH + subject+"-pyCGM2-INIT.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
 

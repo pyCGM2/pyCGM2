@@ -10,6 +10,7 @@ from collections import OrderedDict
 from shutil import copyfile
 import cPickle
 import numpy as np
+import copy
 
 # pyCGM2 settings
 import pyCGM2
@@ -82,12 +83,13 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-            raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2-INIT.model"):
+            raise Exception ("%s-pyCGM2-INIT.model file doesn't exist. Run Calibration operation"%subject)
         else:
-            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
+            f = open(DATA_PATH + subject + '-pyCGM2-INIT.model', 'r')
             model = cPickle.load(f)
             f.close()
+
 
         logging.info("loaded model : %s" %(model.version ))
        
@@ -190,6 +192,7 @@ if __name__ == "__main__":
 
 
         # ----------------------SAVE-------------------------------------------
+
         if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
             logging.warning("previous model removed")
             os.remove(DATA_PATH + subject + "-pyCGM2.model")

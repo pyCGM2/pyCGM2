@@ -74,11 +74,12 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
+        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2-INIT.model"):
             raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
         else:
-            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
+            f = open(DATA_PATH + subject + '-pyCGM2-INIT.model', 'r')
             model = cPickle.load(f)
+
             f.close()
 
         logging.info("loaded model : %s" %(model.version ))
