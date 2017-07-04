@@ -855,17 +855,21 @@ class KneeCalibrationDecorator(DecoratorModel):
          
 
         self.model.decoratedModel = True
+        
+        
 
         if side == "Left":
             proxSegmentLabel = "Left Thigh"
             distSegmentlabel = "Left Shank"
             HJClabel = "LHJC"
             KJClabel = "LKJC"
+            self.model._kneeSARA_count["Left"] = self.model._kneeSARA_count["Left"] + 1 
         elif side == "Right":
             proxSegmentLabel = "Right Thigh"
             distSegmentlabel = "Right Shank"
             HJClabel = "RHJC"
             KJClabel = "RKJC"
+            self.model._kneeSARA_count["Right"] = self.model._kneeSARA_count["Right"] + 1 
         else:
             raise Exception("[pyCGM2] side doesn t recongnize")
 
@@ -958,10 +962,12 @@ class KneeCalibrationDecorator(DecoratorModel):
             proxSegmentLabel = "Left Thigh"
             distSegmentlabel = "Left Shank"
             offsetLabel ="LeftKnee2DofOffset"
+            self.model._knee2Dof_count["Left"] = self.model._knee2Dof_count["Left"] + 1 
         elif side == "Right":
             proxSegmentLabel = "Right Thigh"
             distSegmentlabel = "Right Shank"
             offsetLabel ="RightKnee2DofOffset"
+            self.model._knee2Dof_count["Right"] = self.model._knee2Dof_count["Right"] + 1 
         else:
             raise Exception("[pyCGM2] side doesn t recongnize")
 

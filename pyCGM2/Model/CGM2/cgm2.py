@@ -77,6 +77,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
         self.decoratedModel = False
     
+    
         self.version = "CGM2.3"
         
         #self.__configure()

@@ -89,11 +89,6 @@ class CGM2_SARA_test():
         
         inputs = json.loads(CONTENT_INPUTS_CGM2_3,object_pairs_hook=OrderedDict)
         translators = inputs["Translators"]
-
-#        f = open(MAIN_PATH +  'MRI-US-01-CGM2_3-pyCGM2.model', 'r')
-#        model = cPickle.load(f)
-#        f.close() 
-
         
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename),translators=translators)   
           
@@ -135,7 +130,7 @@ class CGM2_SARA_test():
                                             useLeftKJCnode="KJC_Sara",
                                             enableLongitudinalRotation=True
                                             ).compute()
-        
+
         
 #        # ------ Right KNEE CALIBRATION -------      
 #        acqRightKnee = btkTools.smartReader(str(MAIN_PATH +  rightKneeFilename),translators=translators)
