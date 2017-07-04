@@ -371,6 +371,13 @@ if __name__ == "__main__":
         cPickle.dump(model, modelFile)
         modelFile.close()
 
+
+        if os.path.isfile(DATA_PATH + subject + "-pyCGM2-INIT.model"):
+            os.remove(DATA_PATH + subject + "-pyCGM2-INIT.model")
+        modelFile = open(DATA_PATH + subject+"-pyCGM2-INIT.model", "w")
+        cPickle.dump(model, modelFile)
+        modelFile.close()
+
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,
                                       model,finalAcqStatic,subject,
