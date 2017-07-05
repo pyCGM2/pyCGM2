@@ -61,7 +61,7 @@ if __name__ == "__main__":
         # ----- Subject -----
         # need subject to find pycgm2 input files 
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
         # ---- pyCGM2 input files ----
