@@ -90,11 +90,11 @@ if __name__ == "__main__":
         elif model.version == "CGM2.3":
                inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
         elif model.version == "CGM2.3e":
-               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
         elif model.version == "CGM2.4":
-               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
         elif model.version == "CGM2.4e":
-               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
         else:
             raise Exception ("model version not found [contact admin]")
         
@@ -174,7 +174,10 @@ if __name__ == "__main__":
             viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 
             # -- add nexus Bones
-            nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
+            if side == "Left":
+                nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE0", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
+            elif side == "Right":
+                nexusTools.appendBones(NEXUS,subject,acqFunc,"RFE0", model.getSegment("Right Thigh"),OriginValues = acqFunc.GetPoint("RKJC").GetValues() )
 
             # add modelled markers
             meanOr_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KJC_Sara")
@@ -185,32 +188,39 @@ if __name__ == "__main__":
 
             nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KJC_Sara", acqFunc)
             nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KJC_SaraAxis", acqFunc)
+
+            # --------------------------NEW MOTION FILTER - DISPLAY BONES---------  
+            modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Sodervisk)
+            modMotion.segmentalCompute([proximalSegmentLabel,distalSegmentLabel])
+
+            # -- add nexus Bones
+            if side == "Left":
+                nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE1", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
+            elif side == "Right":
+                nexusTools.appendBones(NEXUS,subject,acqFunc,"RFE1", model.getSegment("Right Thigh"),OriginValues = acqFunc.GetPoint("RKJC").GetValues() )
         
         
-        #--- Add modelled markers
-#        Or_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
-#        axis_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
-#        Or_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
-#        axis_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
-#               
-#        
-#        
-#        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inThigh",Or_inThigh)
-#        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inThigh",axis_inThigh) 
-#       
-#        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inShank",Or_inShank)
-#        btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inShank",axis_inShank) 
-#
-#        
-#        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inThigh", acqFunc)
-#        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inThigh", acqFunc)     
-#        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inShank", acqFunc)
-#        nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inShank", acqFunc)     
-
-
-         
-
-            btkTools.smartWriter(acqFunc, "acqFunc-test.c3d")
+            #--- Add modelled markers
+            #Or_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
+            #axis_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
+            #Or_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
+            #axis_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
+                           
+                    
+                    
+            #btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inThigh",Or_inThigh)
+            #btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inThigh",axis_inThigh) 
+                   
+            #btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inShank",Or_inShank)
+            #btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inShank",axis_inShank) 
+            
+                    
+            #nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inThigh", acqFunc)
+            #nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inThigh", acqFunc)     
+            #nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inShank", acqFunc)
+            #nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inShank", acqFunc)     
+            
+            #btkTools.smartWriter(acqFunc, "acqFunc-test.c3d")
         
 
     else:

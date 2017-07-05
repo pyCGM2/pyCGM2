@@ -58,12 +58,12 @@ if __name__ == "__main__":
 
         if DEBUG:
             # for CGM1 to CGM2.2
-#            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM1-calibration2Dof\\" 
-#            reconstructedFilenameLabelledNoExt = "Left Knee"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM1-calibration2Dof\\" 
+            reconstructedFilenameLabelledNoExt = "Left Knee"
 
             # for CGM2.3 to ...
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\" 
-            reconstructedFilenameLabelledNoExt = "Left Knee"
+            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\" 
+            #reconstructedFilenameLabelledNoExt = "Left Knee"
 
  
             NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
@@ -82,7 +82,8 @@ if __name__ == "__main__":
         subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
-        # --------------------pyCGM2 MODEL ------------------------------
+        # --------------------pyCGM2 MODEL - INIT ------------------------------
+        
         if not os.path.isfile(DATA_PATH + subject + "-pyCGM2-INIT.model"):
             raise Exception ("%s-pyCGM2-INIT.model file doesn't exist. Run Calibration operation"%subject)
         else:
@@ -106,11 +107,11 @@ if __name__ == "__main__":
         elif model.version == "CGM2.3":
                inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
         elif model.version == "CGM2.3e":
-               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
         elif model.version == "CGM2.4":
-               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
         elif model.version == "CGM2.4e":
-               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
         else:
             raise Exception ("model version not found [contact admin]")
@@ -146,6 +147,7 @@ if __name__ == "__main__":
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
             validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1LowerLimbs.MARKERS)
          
+        
         # static calibration procedure
         scp=modelFilters.StaticCalibrationProcedure(model)
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
@@ -167,7 +169,7 @@ if __name__ == "__main__":
             proximalSegmentLabel=str(side+" Thigh")
             distalSegmentLabel=str(side+" Shank")        
               
-            # Motion of only left 
+            # Motion 
             modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Sodervisk)
             modMotion.segmentalCompute([proximalSegmentLabel,distalSegmentLabel])
         
@@ -188,6 +190,24 @@ if __name__ == "__main__":
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
         
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
+
+        # --------------------------NEW MOTION FILTER - DISPLAY BONES---------
+        nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE0", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
+
+
+        if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
+            
+            modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Determinist)
+            modMotion.compute()
+
+        elif model.version in  ["CGM2.3","CGM2.3e","CGM2.3","CGM2.4e"]:
+         
+            # Motion  
+            modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Sodervisk)
+            modMotion.segmentalCompute([proximalSegmentLabel,distalSegmentLabel])
+        
+
+        nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE1", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
 
 
 
