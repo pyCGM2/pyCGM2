@@ -919,9 +919,9 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         # shortest distance                
         shortestDistance_prox =  np.linalg.norm(proxIntersect-pb1)
-        logging.info(" 3d line intersect : shortest distance beetween logidudinal axis and flexion axis sur Proximal  : %s  " % str(shortestDistance_prox))
+        logging.info(" 3d line intersect : shortest distance beetween logidudinal axis and flexion axis in Proximal  : %s  " % str(shortestDistance_prox))
         shortestDistance_dist =  np.linalg.norm(distIntersect-pb2)
-        logging.info( " 3d line intersect : shortest distance beetween logidudinal axis and flexion axis sur Distal  : %s  " % str(shortestDistance_dist))
+        logging.info( " 3d line intersect : shortest distance beetween logidudinal axis and flexion axis in Distal  : %s  " % str(shortestDistance_dist))
 
         # mean of the intersection point        
         center = np.mean((proxIntersect,distIntersect), axis=0)
