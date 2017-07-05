@@ -273,19 +273,19 @@ if __name__ == "__main__":
 
 
     # save pycgm2 -model
-    if os.path.isfile(DATA_PATH + "CGM1-pyCGM2.model"):
+    if os.path.isfile(DATA_PATH + "pyCGM2.model"):
         logging.warning("previous model removed")
-        os.remove(DATA_PATH + "CGM1-pyCGM2.model")
+        os.remove(DATA_PATH + "pyCGM2.model")
 
-    modelFile = open(DATA_PATH + "CGM1-pyCGM2.model", "w")
+    modelFile = open(DATA_PATH + "pyCGM2.model", "w")
     cPickle.dump(model, modelFile)
     modelFile.close()
 
     #pyCGM2.model - Intial Calibration
-    if os.path.isfile(DATA_PATH  + "CGM1-pyCGM2-INIT.model"):
-        os.remove(DATA_PATH  + "CGM1-pyCGM2-INIT.model")
+    if os.path.isfile(DATA_PATH  + "pyCGM2-INIT.model"):
+        os.remove(DATA_PATH  + "pyCGM2-INIT.model")
     
-    modelFile = open(DATA_PATH + "CGM1-pyCGM2-INIT.model", "w")
+    modelFile = open(DATA_PATH + "pyCGM2-INIT.model", "w")
     cPickle.dump(model, modelFile)
     modelFile.close()
 

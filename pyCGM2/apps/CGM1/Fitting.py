@@ -67,6 +67,8 @@ if __name__ == "__main__":
             momentProjection = pyCGM2Enums.MomentProjection.Proximal
         elif args.proj == "Global":
             momentProjection = pyCGM2Enums.MomentProjection.Global
+        elif args.proj == "JCS":
+            momentProjection = pyCGM2Enums.MomentProjection.JCS
         else:
             raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
@@ -77,6 +79,8 @@ if __name__ == "__main__":
             momentProjection = pyCGM2Enums.MomentProjection.Proximal
         elif inputs["Fitting"]["Moment Projection"] == "Global":
             momentProjection = pyCGM2Enums.MomentProjection.Global
+        elif inputs["Fitting"]["Moment Projection"] == "JCS":
+            momentProjection = pyCGM2Enums.MomentProjection.JCS
         else:
             raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
@@ -91,10 +95,10 @@ if __name__ == "__main__":
 
     # ------------------ pyCGM2 MODEL -----------------------------------
 
-    if not os.path.isfile(DATA_PATH +  "CGM1-pyCGM2.model"):
-        raise Exception ("CGM1-pyCGM2.model file doesn't exist. Run Calibration operation")
+    if not os.path.isfile(DATA_PATH +  "pyCGM2.model"):
+        raise Exception ("pyCGM2.model file doesn't exist. Run Calibration operation")
     else:
-        f = open(DATA_PATH + 'CGM1-pyCGM2.model', 'r')
+        f = open(DATA_PATH + 'pyCGM2.model', 'r')
         model = cPickle.load(f)
         f.close()
 
