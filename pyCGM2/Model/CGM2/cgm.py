@@ -2517,12 +2517,39 @@ class CGM1LowerLimbs(CGM):
 
         if "Left Thigh" in segments: 
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Thigh",originLabel = "LKJC")            
+            self._anatomical_motion(aqui,"Left Thigh",originLabel = "LKJC") 
+            
+            # if rotation offset from knee functional calibration
+            if self.mp_computed.has_key("LeftKneeFuncCalibrationOffset"):
+                logging.debug("SARA axis found from the left thigh")
+    
+                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
+                                        aqui)
+
+            # if 2Dof calibration offset
+            if self.mp_computed.has_key("LeftKnee2DofOffset"):
+                logging.debug("Left 2Dof offset found. Anatomical referential rotated ")
+                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKnee2DofOffset"],
+                                            aqui)
 
 
         if "Right Thigh" in segments: 
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Thigh",originLabel = "RKJC")
+            
+            # if rotation offset from knee functional calibration
+            if self.mp_computed.has_key("RightKneeFuncCalibrationOffset"):
+                logging.debug("SARA axis found from the right thigh")
+    
+                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
+                                        aqui)
+
+            # if 2Dof calibration offset
+            if self.mp_computed.has_key("RightKnee2DofOffset"):
+                logging.debug("Right 2Dof offset found. Anatomical referential rotated ")
+                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["RightKnee2DofOffset"],
+                                            aqui)
+            
 
         if "Left Shank" in segments: 
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
