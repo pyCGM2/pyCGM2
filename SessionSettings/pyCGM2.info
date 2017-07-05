@@ -1,4 +1,4 @@
-{ 
+{
   "Processing" : {
     "Point suffix" : "",
     "Normative data" : {
@@ -13,7 +13,11 @@
     "Trials": {
         "DataPath": "",
         "Static": "",
-        "Motion": []
+        "Motion": [],
+    }
+    "KneeCalibrationTrials": {
+        "SaraTrials":[],
+        "Knee2DofTrial":[]
     }
   },
   "MP" :{
@@ -39,5 +43,5 @@
         "RightThighRotation": 0,
         "RightShankRotation": 0
     }
-  }    
-}  
+  }
+}
