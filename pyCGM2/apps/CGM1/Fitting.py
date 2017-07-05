@@ -22,6 +22,8 @@ import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import  cgm,modelFilters, forceplates,bodySegmentParameters
 #
 
+from pyCGM2.Utils import fileManagement
+
 
 
 if __name__ == "__main__":
@@ -81,13 +83,11 @@ if __name__ == "__main__":
 
 
     # --------------------------TRANSLATORS ------------------------------------
-
-    if os.path.isfile( DATA_PATH + "CGM1.translators"):
-       logging.warning("local translator found")
-       sessionTranslators = json.loads(open(DATA_PATH + "CGM1.translators").read(),object_pairs_hook=OrderedDict)
-       translators = sessionTranslators["Translators"]
-    else:
+    #  translators management
+    translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+    if not translators:
        translators = inputs["Translators"]
+       
 
     # ------------------ pyCGM2 MODEL -----------------------------------
 
