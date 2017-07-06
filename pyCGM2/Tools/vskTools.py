@@ -6,6 +6,26 @@ Created on Tue Mar 28 15:40:22 2017
 """
 
 from bs4 import BeautifulSoup
+import string
+import logging
+
+
+def checkSetReadOnly(vskfilename):
+    file0 = open(vskfilename,'r')    
+    content = file0.read()
+    
+    flag=True  if content.find('READONLY="true"') !=-1 else False
+    print flag
+    
+    file0.close()
+
+    if flag:
+        logging.warning("read Only found")
+        content2 = string.replace(content, 'READONLY="true"', 'READONLY="false"')
+        
+        with open(vskfilename, "w") as text_file:
+            text_file.write(content2)
+
 
 
 class Vsk(object):
