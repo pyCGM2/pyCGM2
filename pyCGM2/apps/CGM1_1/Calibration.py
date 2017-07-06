@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
 
     if args.check:
-        pointSuffix="cgm1.0"
+        pointSuffix="cgm1.1"
     else:
         pointSuffix = inputs["Global"]["Point suffix"]
 

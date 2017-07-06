@@ -28,7 +28,7 @@ from pyCGM2.Utils import fileManagement
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='CGM1 Fitting')
+    parser = argparse.ArgumentParser(description='CGM1.1 Fitting')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : JCS, Distal, Proximal, Global')
