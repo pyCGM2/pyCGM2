@@ -45,6 +45,8 @@ if __name__ == "__main__":
 
     # --------------------CONFIGURATION ------------------------------
 
+    hjcMethod = inputs["Calibration"]["HJC regression"]
+
     # ---- configuration parameters ----
     if args.leftFlatFoot is not None:
         flag_leftFlatFoot = bool(args.leftFlatFoot)
