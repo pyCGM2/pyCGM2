@@ -20,7 +20,7 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,nexusTools
+from pyCGM2.Tools import btkTools,nexusTools,vskTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm,cgm2, modelFilters, modelDecorator
 from pyCGM2.Model.Opensim import opensimFilters
@@ -28,6 +28,7 @@ from pyCGM2.Model.Opensim import opensimFilters
 from pyCGM2 import viconInterface
 
 from pyCGM2.Utils import fileManagement
+
 
 if __name__ == "__main__":
 
@@ -79,6 +80,7 @@ if __name__ == "__main__":
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
         Parameters = NEXUS.GetSubjectParamNames(subject)
+
 
         required_mp={
         'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
