@@ -14,7 +14,7 @@
         "DataPath": "",
         "Static": "",
         "Motion": [],
-    }
+    },
     "KneeCalibrationTrials": {
         "SaraTrials":[],
         "Knee2DofTrial":[]
