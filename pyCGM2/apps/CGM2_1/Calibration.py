@@ -285,5 +285,5 @@ if __name__ == "__main__":
     modelFile.close()
 
 
-    # overwrite static file
-    btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled))
+    #  static file
+    btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled[:-4]+"-modelled.c3d"))

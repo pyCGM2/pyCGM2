@@ -306,5 +306,4 @@ if __name__ == "__main__":
         btkTools.applyValidFramesOnOutput(acqIK,validFrames)
 
         # ----------------------SAVE-------------------------------------------
-        # overwrite static file
-        btkTools.smartWriter(acqIK, str(DATA_PATH+trial))
+        btkTools.smartWriter(acqIK, str(DATA_PATH+trial[:-4]+"-modelled.c3d"))

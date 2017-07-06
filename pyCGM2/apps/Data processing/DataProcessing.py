@@ -61,6 +61,7 @@ if __name__ == "__main__":
     # --------------------------PROCESSING --------------------------------
 
     motionTrialFilenames = infoSettings["Modelling"]["Trials"]["Motion"]
+    motionTrialFilenames = [str(filename[:-4]+"-modelled.c3d") for filename in motionTrialFilenames]
 
     #---- NORMATIVE DATASET
     #--------------------------------------------------------------------------

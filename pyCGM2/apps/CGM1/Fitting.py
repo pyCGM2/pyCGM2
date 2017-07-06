@@ -183,4 +183,4 @@ if __name__ == "__main__":
 
         # ----------------------SAVE-------------------------------------------
         # overwrite static file
-        btkTools.smartWriter(acqGait, str(DATA_PATH+trial))
+        btkTools.smartWriter(acqGait, str(DATA_PATH+trial[:-4]+"-modelled.c3d"))

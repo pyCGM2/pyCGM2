@@ -180,5 +180,4 @@ if __name__ == "__main__":
         modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
         # ----------------------SAVE-------------------------------------------
-        # overwrite static file
-        btkTools.smartWriter(acqGait, str(DATA_PATH+trial))
+        btkTools.smartWriter(acqGait, str(DATA_PATH+trial[:-4]+"-modelled.c3d"))
