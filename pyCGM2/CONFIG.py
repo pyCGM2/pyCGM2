@@ -8,9 +8,9 @@ import generateSettings
 # ------------------- CONSTANTS ------------------------------------------------
 
 # [REQUIRED - if Vicon USer] configure if you want to run processes from Nexus   
-NEXUS_SDK_WIN32 = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Win32'
-NEXUS_SDK_PYTHON = 'C:/Program Files (x86)/Vicon/Nexus2.5/SDK/Python'
-PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.5\\Python'
+NEXUS_SDK_WIN32 = 'C:/Program Files (x86)/Vicon/Nexus2.6/SDK/Win32'
+NEXUS_SDK_PYTHON = 'C:/Program Files (x86)/Vicon/Nexus2.6/SDK/Python'
+PYTHON_NEXUS = 'C:\\Program Files (x86)\\Vicon\\Nexus2.6\\Python'
 
 
 APPDATA_FOLDER = os.getenv("PROGRAMDATA")
