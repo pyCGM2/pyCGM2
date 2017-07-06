@@ -170,7 +170,7 @@ if __name__ == "__main__":
         
         # ----------------------EXPORT-------------------------------------------
         # overwrite func file
-        btkTools.smartWriter(acqFunc, str(DATA_PATH+trial))
+        btkTools.smartWriter(acqFunc, str(DATA_PATH+trial[:-4]+"-modelled.c3d"))
 
         
 

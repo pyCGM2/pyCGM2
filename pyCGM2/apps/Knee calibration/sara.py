@@ -156,4 +156,4 @@ if __name__ == "__main__":
             btkTools.smartAppendPoint(acqFunc,side+"_KJC_Sara",meanOr_inThigh)
             btkTools.smartAppendPoint(acqFunc,side+"_KJC_SaraAxis",meanAxis_inThigh) 
 
-            btkTools.smartWriter(acqFunc, str(DATA_PATH+trial))
+            btkTools.smartWriter(acqFunc, str(DATA_PATH+trial[:-4]+"-modelled.c3d"))
