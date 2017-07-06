@@ -97,7 +97,10 @@ if __name__ == "__main__":
     'LeftAnkleWidth' : infoSettings["MP"]["Required"][ "LeftAnkleWidth"],
     'RightAnkleWidth' : infoSettings["MP"]["Required"][ "RightAnkleWidth"],
     'LeftSoleDelta' : infoSettings["MP"]["Required"][ "LeftSoleDelta"],
-    'RightSoleDelta' : infoSettings["MP"]["Required"]["RightSoleDelta"]
+    'RightSoleDelta' : infoSettings["MP"]["Required"]["RightSoleDelta"],
+    'LeftToeOffset' : 0,
+    'RightToeOffset' : 0
+
     }
 
     optional_mp={
