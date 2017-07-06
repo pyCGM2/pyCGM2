@@ -19,26 +19,26 @@ def updateNexusSubjectMp(NEXUS,model,subjectName):
 
     
 
-    NEXUS.SetSubjectParam( subjectName, "InterAsisDistance",model.mp_computed["InterAsisDistance"])
-    NEXUS.SetSubjectParam( subjectName, "LeftAsisTrocanterDistance",model.mp_computed["LeftAsisTrocanterDistance"])
-    NEXUS.SetSubjectParam( subjectName, "LeftThighRotation",th_l)
-    NEXUS.SetSubjectParam( subjectName, "LeftShankRotation",sh_l)
-    NEXUS.SetSubjectParam( subjectName, "LeftTibialTorsion",tt_l)
+    NEXUS.SetSubjectParam( subjectName, "InterAsisDistance",model.mp_computed["InterAsisDistance"],True)
+    NEXUS.SetSubjectParam( subjectName, "LeftAsisTrocanterDistance",model.mp_computed["LeftAsisTrocanterDistance"],True)
+    NEXUS.SetSubjectParam( subjectName, "LeftThighRotation",th_l,True)
+    NEXUS.SetSubjectParam( subjectName, "LeftShankRotation",sh_l,True)
+    NEXUS.SetSubjectParam( subjectName, "LeftTibialTorsion",tt_l,True)
 
 
-    NEXUS.SetSubjectParam( subjectName, "RightAsisTrocanterDistance",model.mp_computed["RightAsisTrocanterDistance"])
-    NEXUS.SetSubjectParam( subjectName, "RightThighRotation",th_r)
-    NEXUS.SetSubjectParam( subjectName, "RightShankRotation",sh_r)
-    NEXUS.SetSubjectParam( subjectName, "RightTibialTorsion",tt_r)
+    NEXUS.SetSubjectParam( subjectName, "RightAsisTrocanterDistance",model.mp_computed["RightAsisTrocanterDistance"],True)
+    NEXUS.SetSubjectParam( subjectName, "RightThighRotation",th_r,True)
+    NEXUS.SetSubjectParam( subjectName, "RightShankRotation",sh_r,True)
+    NEXUS.SetSubjectParam( subjectName, "RightTibialTorsion",tt_r,True)
 
 
-    NEXUS.SetSubjectParam( subjectName, "LeftStaticPlantFlex",spf_l)
-    NEXUS.SetSubjectParam( subjectName, "LeftStaticRotOff",sro_l)
-    NEXUS.SetSubjectParam( subjectName, "LeftAnkleAbAdd",abdAdd_l)
+    NEXUS.SetSubjectParam( subjectName, "LeftStaticPlantFlex",spf_l,True)
+    NEXUS.SetSubjectParam( subjectName, "LeftStaticRotOff",sro_l,True)
+    NEXUS.SetSubjectParam( subjectName, "LeftAnkleAbAdd",abdAdd_l,True)
 
-    NEXUS.SetSubjectParam( subjectName, "RightStaticPlantFlex",spf_r)
-    NEXUS.SetSubjectParam( subjectName, "RightStaticRotOff",sro_r)
-    NEXUS.SetSubjectParam( subjectName, "RightAnkleAbAdd",abdAdd_r)
+    NEXUS.SetSubjectParam( subjectName, "RightStaticPlantFlex",spf_r,True)
+    NEXUS.SetSubjectParam( subjectName, "RightStaticRotOff",sro_r,True)
+    NEXUS.SetSubjectParam( subjectName, "RightAnkleAbAdd",abdAdd_r,True)
 
 
 
