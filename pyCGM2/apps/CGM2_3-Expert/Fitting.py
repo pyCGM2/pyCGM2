@@ -367,4 +367,4 @@ if __name__ == "__main__":
 
         # ----------------------SAVE-------------------------------------------
         # overwrite static file
-        btkTools.smartWriter(acqIK, str(DATA_PATH+trial))
+        btkTools.smartWriter(finalAcqGait, str(DATA_PATH+trial))

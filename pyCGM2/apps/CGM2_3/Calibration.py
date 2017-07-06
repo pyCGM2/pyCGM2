@@ -352,4 +352,4 @@ if __name__ == "__main__":
 
 
     # overwrite static file
-    btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled))
+    btkTools.smartWriter(finalAcqStatic, str(DATA_PATH+calibrateFilenameLabelled))
