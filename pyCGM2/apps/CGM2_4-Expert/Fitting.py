@@ -103,6 +103,11 @@ if __name__ == "__main__":
         model = cPickle.load(f)
         f.close()
 
+    # --------------------------CHECKING -----------------------------------    
+    # check model is the CGM2.4e
+    logging.info("loaded model : %s" %(model.version ))
+    if model.version != "CGM2.4e":
+        raise Exception ("pyCGM2.model file was not calibrated from the CGM2.4e calibration pipeline"%model.version)
 
     # --------------------------MODELLLING--------------------------
     motionTrials = infoSettings["Modelling"]["Trials"]["Motion"]

@@ -230,6 +230,7 @@ if __name__ == "__main__":
 
     # ----------------------CGM MODELLING----------------------------------
     if args.ik:
+        
         # ---Marker decomp filter----
         mtf = modelFilters.TrackingMarkerDecompositionFilter(model,acqStatic)
         mtf.decompose()
