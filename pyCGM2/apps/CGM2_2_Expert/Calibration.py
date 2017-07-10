@@ -156,64 +156,54 @@ if __name__ == "__main__":
     useRightKJCnodeLabel = "RKJC_chord"
     useRightAJCnodeLabel = "RAJC_chord"
 
-    useLeftKJCmarkerLabel = "LKJC"
-    useLeftAJCmarkerLabel = "LAJC"
-    useRightKJCmarkerLabel = "RKJC"
-    useRightAJCmarkerLabel = "RAJC"
-
-
-    # case 1 : NO kad, NO medial ankle BUT thighRotation different from zero ( mean manual modification or new calibration from a previous one )
-    #  case not necessary - static PIG operation - dont consider any offsets
+   # case 1 : NO kad, NO medial ankle BUT thighRotation different from zero ( mean manual modification or new calibration from a previous one )
     if not staticMarkerConfiguration["leftKadFlag"]  and not staticMarkerConfiguration["leftMedialAnkleFlag"] and not staticMarkerConfiguration["leftMedialKneeFlag"] and optional_mp["LeftThighRotation"] !=0:
-        logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")
+        logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")            
         modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],markerDiameter,optional_mp["LeftTibialTorsion"],optional_mp["LeftShankRotation"])
         useLeftKJCnodeLabel = "LKJC_mo"
         useLeftAJCnodeLabel = "LAJC_mo"
-
-
     if not staticMarkerConfiguration["rightKadFlag"]  and not staticMarkerConfiguration["rightMedialAnkleFlag"] and not staticMarkerConfiguration["rightMedialKneeFlag"] and optional_mp["RightThighRotation"] !=0:
-        logging.warning("CASE FOUND ===> Right Side - CGM1 - Origine - manual offsets")
+        logging.warning("CASE FOUND ===> Right Side - CGM1 - Origine - manual offsets")            
         modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
         useRightKJCnodeLabel = "RKJC_mo"
         useRightAJCnodeLabel = "RAJC_mo"
 
-    # case 2 : kad FOUND and NO medial Ankle
+    # case 2 : kad FOUND and NO medial Ankle 
     if staticMarkerConfiguration["leftKadFlag"]:
         logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD variant")
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
         useLeftKJCnodeLabel = "LKJC_kad"
         useLeftAJCnodeLabel = "LAJC_kad"
-
-        useLeftKJCmarkerLabel = "LKJC_KAD"
-        useLeftAJCmarkerLabel = "LAJC_KAD"
-
     if staticMarkerConfiguration["rightKadFlag"]:
         logging.warning("CASE FOUND ===> Right Side - CGM1 - KAD variant")
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
         useRightKJCnodeLabel = "RKJC_kad"
         useRightAJCnodeLabel = "RAJC_kad"
 
-        useRightKJCmarkerLabel = "RKJC_KAD"
-        useRightAJCmarkerLabel = "RAJC_KAD"
+
+    # case 3 : medial knee FOUND 
+    # notice: cgm1Behaviour is enable mean effect on AJC location 
+    if staticMarkerConfiguration["leftMedialKneeFlag"]:
+        logging.warning("CASE FOUND ===> Left Side - CGM1 - medial knee ")
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="left",cgm1Behaviour=True)
+        useLeftKJCnodeLabel = "LKJC_mid"
+        useLeftAJCnodeLabel = "LAJC_midKnee"
+    if staticMarkerConfiguration["rightMedialKneeFlag"]:
+        logging.warning("CASE FOUND ===> Right Side - CGM1 - medial knee ")
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="right",cgm1Behaviour=True)
+        useRightKJCnodeLabel = "RKJC_mid"
+        useRightAJCnodeLabel = "RAJC_midKnee"
 
 
-    # case 3 : both kad and medial ankle FOUND
-    if staticMarkerConfiguration["leftKadFlag"]:
-        if staticMarkerConfiguration["leftMedialAnkleFlag"]:
-            logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD + medial ankle ")
-            modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
-            useLeftAJCnodeLabel = "LAJC_mid"
-
-            useLeftAJCmarkerLabel = "LAJC_MID"
-
-
-    if staticMarkerConfiguration["rightKadFlag"]:
-        if staticMarkerConfiguration["rightMedialAnkleFlag"]:
-            logging.warning("CASE FOUND ===> Right Side - CGM1 - KAD + medial ankle ")
-            modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
-            useRightAJCnodeLabel = "RAJC_mid"
-
-            useRightAJCmarkerLabel = "RAJC_MID"
+    # case 4 : medial ankle FOUND 
+    if staticMarkerConfiguration["leftMedialAnkleFlag"]:
+        logging.warning("CASE FOUND ===> Left Side - CGM1 - medial ankle ")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
+        useLeftAJCnodeLabel = "LAJC_mid"
+    if staticMarkerConfiguration["rightMedialAnkleFlag"]:
+        logging.warning("CASE FOUND ===> Right Side - CGM1 - medial ankle ")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
+        useRightAJCnodeLabel = "RAJC_mid"
 
 
     # ----Final Calibration filter if model previously decorated -----
