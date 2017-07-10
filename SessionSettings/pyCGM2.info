@@ -1,6 +1,5 @@
 {
   "Processing" : {
-    "Point suffix" : "",
     "Normative data" : {
       "Author" : "Schwartz2008",
       "Modality" : "Free"
@@ -13,7 +12,7 @@
     "Trials": {
         "DataPath": "",
         "Static": "",
-        "Motion": [],
+        "Motion": []
     },
     "KneeCalibrationTrials": {
         "SaraTrials":[],
