@@ -46,6 +46,7 @@ if __name__ == "__main__":
     DEBUG = False
 
     parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
+    parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -140,9 +141,12 @@ if __name__ == "__main__":
         btkTools.checkMultipleSubject(acqFunc)
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
         
-        # motion  
-        side = detectSide(acqFunc,"LANK","RANK")
-        logging.info("Detected motion side : %s" %(side) )
+        # motion
+        if args.side is None:
+            side = detectSide(acqFunc,"LANK","RANK")
+            logging.info("Detected motion side : %s" %(side) )
+        else:
+            side = args.side
         
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
             validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1LowerLimbs.MARKERS)

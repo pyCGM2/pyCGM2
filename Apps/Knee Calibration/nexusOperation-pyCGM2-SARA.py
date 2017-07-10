@@ -45,6 +45,7 @@ if __name__ == "__main__":
     DEBUG = False
 
     parser = argparse.ArgumentParser(description='SARA Functional Knee Calibration')
+    parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -118,8 +119,11 @@ if __name__ == "__main__":
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
          
         # motion side of the lower limb 
-        side = detectSide(acqFunc,"LANK","RANK")
-        logging.info("Detected motion side : %s" %(side) )
+        if args.side is None:
+            side = detectSide(acqFunc,"LANK","RANK")
+            logging.info("Detected motion side : %s" %(side) )
+        else:
+            side = args.side
 
         scp=modelFilters.StaticCalibrationProcedure(model)
         
