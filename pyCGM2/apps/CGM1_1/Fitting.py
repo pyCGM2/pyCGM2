@@ -65,7 +65,7 @@ if __name__ == "__main__":
     if args.check:
         pointSuffix="cgm1.1"
     else:
-        if args.pointSuffix is None:
+        if args.pointSuffix is not None:
             pointSuffix = args.pointSuffix
         else:
             pointSuffix = inputs["Global"]["Point suffix"]
