@@ -230,7 +230,7 @@ def applyTranslators(acq, translators):
     for it in translators.items():
        wantedLabel,initialLabel = it[0],it[1]
        if wantedLabel != initialLabel and initialLabel !="":
-           logging.debug("Initial point (%s) renamed (%s)  added into the c3d" %(str(wantedLabel), str(initialLabel)))
+           logging.debug("Initial point (%s) renamed (%s)  added into the c3d" %(str(initialLabel), str(wantedLabel)))
            smartAppendPoint(acqClone,str(wantedLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
            smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
     

@@ -27,11 +27,13 @@ from pyCGM2.Utils import fileManagement
 
 
 if __name__ == "__main__":
-
+    
+    DEBUG = False
     parser = argparse.ArgumentParser(description='CGM1 Fitting')
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     args = parser.parse_args()
 
@@ -44,8 +46,13 @@ if __name__ == "__main__":
     inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
     # --------------------SESSION SETTINGS ------------------------------
-    DATA_PATH =os.getcwd()+"\\"
-    infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+    if DEBUG:
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\Florent Moissenet\\sample\\"
+        infoSettings = json.loads(open(DATA_PATH + 'pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+
+    else:
+        DATA_PATH =os.getcwd()+"\\"
+        infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
 
     # --------------------CONFIGURATION ------------------------------
@@ -58,7 +65,10 @@ if __name__ == "__main__":
     if args.check:
         pointSuffix="cgm1.0"
     else:
-        pointSuffix = inputs["Global"]["Point suffix"]
+        if args.pointSuffix is not None:
+            pointSuffix = args.pointSuffix
+        else:
+            pointSuffix = inputs["Global"]["Point suffix"]
 
     if args.proj is not None:
         if args.proj == "Distal":

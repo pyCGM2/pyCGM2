@@ -12,7 +12,7 @@ import argparse
 
 # pyCGM2 settings
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
+pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
 
 
 
@@ -24,12 +24,14 @@ from pyCGM2.Utils import fileManagement
 
 if __name__ == "__main__":
 
+    DEBUG = False
     plt.close("all")
 
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix' )
     args = parser.parse_args()
 
@@ -41,8 +43,14 @@ if __name__ == "__main__":
 
 
     # --------------------SESSION  SETTINGS ------------------------------
-    DATA_PATH =os.getcwd()+"\\"
-    infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+    if DEBUG:
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\Florent Moissenet\\sample\\"
+        infoSettings = json.loads(open(DATA_PATH + 'pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+
+    else:
+        DATA_PATH =os.getcwd()+"\\"
+        infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+    
 
     # --------------------CONFIGURATION ------------------------------
 
@@ -71,7 +79,10 @@ if __name__ == "__main__":
     if args.check:
         pointSuffix="cgm1.0"
     else:
-        pointSuffix = inputs["Global"]["Point suffix"]
+        if args.pointSuffix is not None:
+            pointSuffix = args.pointSuffix
+        else:
+            pointSuffix = inputs["Global"]["Point suffix"]
 
     
 
@@ -122,7 +133,7 @@ if __name__ == "__main__":
     btkTools.checkMultipleSubject(acqStatic)
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
-
+    
 
     # ---definition---
     model=cgm.CGM1LowerLimbs()
@@ -132,6 +143,7 @@ if __name__ == "__main__":
 
     # ---check marker set used----
     staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
+    
 
 
     # --------------------------STATIC CALBRATION--------------------------
