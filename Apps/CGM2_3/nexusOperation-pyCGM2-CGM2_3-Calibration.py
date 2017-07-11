@@ -269,6 +269,7 @@ if __name__ == "__main__":
                                leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter).compute()
 
+        # set initial calibration as model property
         model.m_properties["CalibrationParameters0"] = properties_initialCalibration
         
         #----update subject mp----

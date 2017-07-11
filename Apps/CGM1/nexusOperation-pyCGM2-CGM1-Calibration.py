@@ -62,7 +62,7 @@ if __name__ == "__main__":
             calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
 
 #            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM1-calibration2Dof\\"
-#            calibrateFilenameLabelledNoExt = "Static" 
+#            calibrateFilenameLabelledNoExt = "Static"
 
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
@@ -173,6 +173,10 @@ if __name__ == "__main__":
         # Goal = modified calibration according the identified marker set or if offsets manually set
 
         # initialisation of node label and marker labels
+        # hip joint centres ---
+        useLeftHJCnodeLabel = "LHJC_cgm1"
+        useRightHJCnodeLabel = "RHJC_cgm1"
+
         useLeftKJCnodeLabel = "LKJC_chord"
         useLeftAJCnodeLabel = "LAJC_chord"
         useRightKJCnodeLabel = "RKJC_chord"
@@ -237,6 +241,17 @@ if __name__ == "__main__":
 
                 useRightAJCmarkerLabel = "RAJC_MID"
 
+        properties_initialCalibration=dict()
+        properties_initialCalibration["LHJC_node"] = useLeftHJCnodeLabel
+        properties_initialCalibration["RHJC_node"] = useRightHJCnodeLabel
+        properties_initialCalibration["LKJC_node"] = useLeftKJCnodeLabel
+        properties_initialCalibration["RKJC_node"] = useRightKJCnodeLabel
+        properties_initialCalibration["LAJC_node"] = useLeftAJCnodeLabel
+        properties_initialCalibration["RAJC_node"] = useRightAJCnodeLabel
+        properties_initialCalibration["rightFlatFoot"] = useRightAJCnodeLabel
+        properties_initialCalibration["leftFlatFoot"] = flag_rightFlatFoot
+        properties_initialCalibration["markerDiameter"] = markerDiameter
+
 
         # ----Final Calibration filter if model previously decorated -----
         if model.decoratedModel:
@@ -246,7 +261,10 @@ if __name__ == "__main__":
                                useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
                                leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter).compute()
-
+        
+        # set initial calibration as model property
+        model.m_properties["CalibrationParameters0"] = properties_initialCalibration
+        
         #----update subject mp----
         viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 
@@ -283,7 +301,7 @@ if __name__ == "__main__":
 
 
 
-        # ----------------------SAVE-------------------------------------------        
+        # ----------------------SAVE-------------------------------------------
 
 
         #pyCGM2.model
@@ -295,12 +313,6 @@ if __name__ == "__main__":
         cPickle.dump(model, modelFile)
         modelFile.close()
 
-        #pyCGM2.model - Intial Calibration
-        if os.path.isfile(DATA_PATH + subject + "-pyCGM2-INIT.model"):
-            os.remove(DATA_PATH + subject + "-pyCGM2-INIT.model")
-        modelFile = open(DATA_PATH + subject+"-pyCGM2-INIT.model", "w")
-        cPickle.dump(model, modelFile)
-        modelFile.close()
 
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,

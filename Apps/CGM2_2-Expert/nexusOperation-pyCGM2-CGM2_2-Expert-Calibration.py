@@ -242,6 +242,17 @@ if __name__ == "__main__":
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
             useRightAJCnodeLabel = "RAJC_mid"
 
+        properties_initialCalibration=dict()
+        properties_initialCalibration["LHJC_node"] = useLeftHJCnodeLabel
+        properties_initialCalibration["RHJC_node"] = useRightHJCnodeLabel
+        properties_initialCalibration["LKJC_node"] = useLeftKJCnodeLabel
+        properties_initialCalibration["RKJC_node"] = useRightKJCnodeLabel
+        properties_initialCalibration["LAJC_node"] = useLeftAJCnodeLabel
+        properties_initialCalibration["RAJC_node"] = useRightAJCnodeLabel
+        properties_initialCalibration["rightFlatFoot"] = useRightAJCnodeLabel
+        properties_initialCalibration["leftFlatFoot"] = flag_rightFlatFoot
+        properties_initialCalibration["markerDiameter"] = markerDiameter
+
         # ----Final Calibration filter if model previously decorated ----- 
         if model.decoratedModel:
             # initial static filter
@@ -252,7 +263,9 @@ if __name__ == "__main__":
                                leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter).compute()
 
-        
+        # set initial calibration as model property
+        model.m_properties["CalibrationParameters0"] = properties_initialCalibration        
+
         #----update subject mp----
         viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 
