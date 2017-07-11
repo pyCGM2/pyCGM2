@@ -53,12 +53,12 @@ if __name__ == "__main__":
     # --------------------CONFIGURATION ------------------------------
     # NA
 
-    # --------------------pyCGM2 MODEL - INIT ------------------------------
+    # --------------------pyCGM2 MODEL ------------------------------
     
-    if not os.path.isfile(DATA_PATH +  "pyCGM2-INIT.model"):
-        raise Exception ("pyCGM2-INIT.model file doesn't exist. Run Calibration operation")
+    if not os.path.isfile(DATA_PATH +  "pyCGM2.model"):
+        raise Exception ("pyCGM2.model file doesn't exist. Run Calibration operation")
     else:
-        f = open(DATA_PATH  + 'pyCGM2-INIT.model', 'r')
+        f = open(DATA_PATH  + 'pyCGM2.model', 'r')
         model = cPickle.load(f)
         f.close()
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     # --------------------CHECKING ------------------------------       
     if model.version in ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"] :
-        raise Exception ("Can t use SARA method with your model %s"%(model.version))
+        raise Exception ("Can t use SARA method with your model %s [minimal version : CGM2.3]"%(model.version))
     elif model.version == "CGM2.3":
            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
     elif model.version == "CGM2.3e":
@@ -89,19 +89,106 @@ if __name__ == "__main__":
        translators = inputs["Translators"]   
             
     # --------------------------ACQ WITH TRANSLATORS --------------------------------------
-    funcTrials = infoSettings["Modelling"]["KneeCalibrationTrials"]["SaraTrials"]
+    funcTrials = infoSettings["Modelling"]["KneeCalibrationTrials"]["Sara"]
 
-    for trial in funcTrials:
+    for it in funcTrials:
+        
+        trial = it["Trial"]
 
         # --- btk acquisition ----
         acqFunc = btkTools.smartReader(str(DATA_PATH + trial))
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
          
-        # motion side of the lower limb 
-        side = detectSide(acqFunc,"LANK","RANK")
-        logging.info("Detected motion side : %s" %(side) )
+        if it["Side"]=="":
+            side = detectSide(acqFunc,"LANK","RANK")
+            logging.info("Detected motion side : %s" %(side) )
+        else:
+            side = it["Side"] 
 
-        scp=modelFilters.StaticCalibrationProcedure(model)
+        # --------------------------RESET OF THE STATIC File---------
+ 
+        # load btkAcq from static file
+        staticFilename = model.m_staticFilename
+        acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilename))
+        btkTools.checkMultipleSubject(acqStatic)
+        acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+
+        # initial calibration ( i.e calibration from Calibration operation)
+        initialCalibration = model.m_properties["CalibrationParameters0"]
+        flag_leftFlatFoot = initialCalibration["leftFlatFoot"]
+        flag_rightFlatFoot = initialCalibration["rightFlatFoot"]
+        markerDiameter = initialCalibration["markerDiameter"]
+
+        if side == "Left":  
+            # remove other functional calibration
+            model.mp_computed["LeftKnee2DofOffset"] = 0
+            
+            # reinit node and func offset of the left side from initial calibration
+            useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
+            useLeftKJCnodeLabel = initialCalibration["LKJC_node"]
+            useLeftAJCnodeLabel = initialCalibration["LAJC_node"]
+            model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0   
+            
+
+            # opposite side - keep node from former calibration
+            if model.mp_computed["RightKneeFuncCalibrationOffset"]:
+                useRightHJCnodeLabel = model.m_properties["CalibrationParameters"]["RHJC_node"]
+                useRightKJCnodeLabel = model.m_properties["CalibrationParameters"]["RKJC_node"]
+                useRightAJCnodeLabel = model.m_properties["CalibrationParameters"]["RAJC_node"]
+                
+            else:
+                useRightHJCnodeLabel = initialCalibration["RHJC_node"]
+                useRightKJCnodeLabel = initialCalibration["RKJC_node"]
+                useRightAJCnodeLabel = initialCalibration["RAJC_node"]
+
+        if side == "Right":  
+            # remove other functional calibration
+            model.mp_computed["RightKnee2DofOffset"] = 0
+
+            # reinit node and func offset of the right side from initial calibration
+            useRightHJCnodeLabel = initialCalibration["RHJC_node"]
+            useRightKJCnodeLabel = initialCalibration["RKJC_node"]
+            useRightAJCnodeLabel = initialCalibration["RAJC_node"]
+            model.mp_computed["RightKneeFuncCalibrationOffset"] = 0   
+            
+            # opposite side - keep node from former calibration
+            if model.mp_computed["LeftKneeFuncCalibrationOffset"]:
+                useLeftHJCnodeLabel = model.m_properties["CalibrationParameters"]["LHJC_node"]
+                useLeftKJCnodeLabel = model.m_properties["CalibrationParameters"]["LKJC_node"]
+                useLeftAJCnodeLabel = model.m_properties["CalibrationParameters"]["LAJC_node"]
+                
+            else:
+                useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
+                useLeftKJCnodeLabel = initialCalibration["LKJC_node"]
+                useLeftAJCnodeLabel = initialCalibration["LAJC_node"]
+
+        
+        # ---- Reset Calibration
+        logging.debug("SARA --%s --- first Calibration"%(side) )
+        logging.debug(" node (LHJC) => %s" %(useLeftHJCnodeLabel))
+        logging.debug(" node (LKJC) => %s" %(useLeftKJCnodeLabel))
+        logging.debug(" node (LAJC) => %s" %(useLeftAJCnodeLabel))
+        logging.debug("-opposite side-" )
+        logging.debug(" node (RHJC) => %s" %(useRightHJCnodeLabel))
+        logging.debug(" node (RKJC) => %s" %(useRightKJCnodeLabel))
+        logging.debug(" node (RAJC) => %s" %(useRightAJCnodeLabel))
+
+
+
+        # no rotation of both thigh
+        scp=modelFilters.StaticCalibrationProcedure(model) 
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                               useLeftHJCnode=useLeftHJCnodeLabel, useRightHJCnode=useRightHJCnodeLabel,
+                               useLeftKJCnode=useLeftKJCnodeLabel, useLeftAJCnode=useLeftAJCnodeLabel,
+                               useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
+                               leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
+                               markerDiameter=markerDiameter,
+                               RotateLeftThighFlag = False,
+                               RotateRightThighFlag = False).compute()        
+        
+
+
+        btkTools.smartWriter(acqStatic, "acqStatic0-test.c3d")
         
         if model.version in  ["CGM2.3","CGM2.3e","CGM2.3","CGM2.4e"]:
             if side == "Left":
@@ -124,29 +211,45 @@ if __name__ == "__main__":
             # decorator
             modelDecorator.KneeCalibrationDecorator(model).sara(side)
 
-            # --------------------------NEW CALIBRATION OF THE STATIC File---------
-            # WRNING : STATIC FILE From member of model !!! ()
-    
-            staticFilename = model.m_staticFilename
-            acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilename))
-            btkTools.checkMultipleSubject(acqStatic)
-            acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+            # --------------------------FINAL CALIBRATION OF THE STATIC File---------
                
-            if side == "Left":        
-                modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftKJCnode="KJC_Sara").compute()
-            elif side == "Right":        
-                modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useRightKJCnode="KJC_Sara").compute()
-    
-            # ----------------------SAVE-------------------------------------------
-            if os.path.isfile(DATA_PATH + "pyCGM2.model"):
-                logging.warning("previous model removed")
-                os.remove(DATA_PATH +  "-pyCGM2.model")
-    
-            modelFile = open(DATA_PATH + "pyCGM2.model", "w")
-            cPickle.dump(model, modelFile)
-            modelFile.close()
-            logging.warning("model updated with a  %s knee calibrated with SARA method" %(side))
+            if side == "Left":
+                useLeftHJCnodeLabel = model.m_properties["CalibrationParameters"]["LHJC_node"]
+                useLeftKJCnodeLabel = "KJC_Sara"
+                useLeftAJCnodeLabel = model.m_properties["CalibrationParameters"]["LAJC_node"]
+                useRotateLeftThighFlag = True
+                useRotateRightThighFlag = False
+                
+            elif side == "Right":
+                useRightHJCnodeLabel = model.m_properties["CalibrationParameters"]["RHJC_node"]
+                useRightKJCnodeLabel = "KJC_Sara"
+                useRightAJCnodeLabel = model.m_properties["CalibrationParameters"]["RAJC_node"]
+                useRotateRightThighFlag = True
+                useRotateLeftThighFlag = False 
+
+                
+            # ----  Calibration
             
+            logging.debug("SARA --%s --- final Calibration"%(side) )
+            logging.debug(" node (LHJC) => %s" %(useLeftHJCnodeLabel))
+            logging.debug(" node (LKJC) => %s" %(useLeftKJCnodeLabel))
+            logging.debug(" node (LAJC) => %s" %(useLeftAJCnodeLabel))
+            logging.debug(" rotated Left Thigh => %s" %(str(useRotateLeftThighFlag)))
+            logging.debug("-opposite side-" )
+            logging.debug(" node (RHJC) => %s" %(useRightHJCnodeLabel))
+            logging.debug(" node (RKJC) => %s" %(useRightKJCnodeLabel))
+            logging.debug(" node (RAJC) => %s" %(useRightAJCnodeLabel))
+            logging.debug(" rotated Right Thigh => %s" %(str(useRotateRightThighFlag)))
+
+            
+            modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                               useLeftHJCnode=useLeftHJCnodeLabel, useRightHJCnode=useRightHJCnodeLabel,
+                               useLeftKJCnode=useLeftKJCnodeLabel, useLeftAJCnode=useLeftAJCnodeLabel,
+                               useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
+                               leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
+                               markerDiameter=markerDiameter,
+                               RotateLeftThighFlag = useRotateLeftThighFlag,
+                               RotateRightThighFlag = useRotateRightThighFlag).compute()
             
             # ----------------------EXPORT-------------------------------------------
             # add modelled markers
@@ -157,3 +260,17 @@ if __name__ == "__main__":
             btkTools.smartAppendPoint(acqFunc,side+"_KJC_SaraAxis",meanAxis_inThigh) 
 
             btkTools.smartWriter(acqFunc, str(DATA_PATH+trial[:-4]+"-modelled.c3d"))
+            logging.warning("model updated with a  %s knee calibrated with SARA method" %(side))
+
+        # ----------------------SAVE-------------------------------------------
+        if os.path.isfile(DATA_PATH + "pyCGM2.model"):
+            logging.warning("previous model removed")
+            os.remove(DATA_PATH +  "-pyCGM2.model")
+
+        modelFile = open(DATA_PATH + "pyCGM2.model", "w")
+        cPickle.dump(model, modelFile)
+        modelFile.close()
+            
+            
+            
+            
