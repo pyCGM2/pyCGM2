@@ -288,6 +288,14 @@ class CGM1LowerLimbs(CGM):
         
         self.version = "CGM1.0"
 
+        # init of few mp_computed
+        self.mp_computed["LeftKnee2DofOffset"] = 0
+        self.mp_computed["RightKnee2DofOffset"] = 0
+        self.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
+        self.mp_computed["RightKneeFuncCalibrationOffset"] = 0
+        self.mp_computed["FinalFuncLeftThighRotationOffset"] = 0
+        self.mp_computed["FinalFuncRightThighRotationOffset"] = 0
+        
     def setVersion(self,string):
         self.version = string
 
@@ -522,23 +530,24 @@ class CGM1LowerLimbs(CGM):
 
         else:
             self.getThighOffset(side="left")
-        
-        # if SARA axis - rotate around the lonitudinal plane
-        if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-            logging.debug("SARA axis found from the left thigh")
-        
-            self.getAngleOffsetFromFunctionalAxis("left","KJC_SaraAxis")
-                
-            self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
-            
-        # if 2dof offset
-        if self.mp_computed.has_key("LeftKnee2DofOffset"):
-            logging.debug("left 2Dof offset found. Anatomical referential rotated from 2Dof offset")
-            self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKnee2DofOffset"],
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
-                                        
 
+        # management of Functional method
+        
+        if options.has_key("RotateLeftThighFlag") and options["RotateLeftThighFlag"]:
+
+            # SARA
+            if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+                self.getAngleOffsetFromFunctionalAxis("left","KJC_SaraAxis")
+                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+            # 2DOF    
+            elif self.mp_computed["LeftKnee2DofOffset"]:
+                offset = self.mp_computed["LeftKnee2DofOffset"]
+            
+            self.mp_computed["FinalFuncRightThighRotationOffset"] = offset                     
+            self._rotateAnatomicalFrame("Left Thigh",offset,
+                                                     aquiStatic, dictAnatomic,frameInit,frameEnd)
+        
+            
 
         logging.debug(" ------Right-------")
         if self.mp.has_key("RightThighRotation") and self.mp["RightThighRotation"] != 0:
@@ -546,21 +555,20 @@ class CGM1LowerLimbs(CGM):
         else:
             self.getThighOffset(side="right")
 
+        # management of Functional method
+        if options.has_key("RotateRightThighFlag") and options["RotateRightThighFlag"]:
 
-        # if SARA axis - rotate around the lonitudinal plane
-        if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-            logging.debug("SARA axis found from the Right thigh")
-    
-            self.getAngleOffsetFromFunctionalAxis("right","KJC_SaraAxis")
-            
-            self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
-                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
+            # SARA
+            if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
+                self.getAngleOffsetFromFunctionalAxis("right","KJC_SaraAxis")
+                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+            # 2DOF    
+            elif self.mp_computed["RightKnee2DofOffset"]:
+                offset = self.mp_computed["RightKnee2DofOffset"]
 
-        # if 2dof offset
-        if self.mp_computed.has_key("RightKnee2DofOffset"):
-            logging.debug("Right 2Dof offset found. Anatomical referential rotated from 2Dof offset")
-            self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKnee2DofOffset"],
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
+            self.mp_computed["FinalFuncRightThighRotationOffset"] = offset                                
+            self._rotateAnatomicalFrame("Right Thigh",offset,
+                                                     aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
         logging.debug(" --- Left Shank - AF calibration ---")
@@ -788,9 +796,13 @@ class CGM1LowerLimbs(CGM):
             # native : btkpoints LHJC and RHJC append with description cgm1-- "
             val = tf.static.getNode_byLabel("LHJC_cgm1").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
             btkTools.smartAppendPoint(aquiStatic,"LHJC",val, desc="cgm1")
+            self.setCalibrationProperty( "LHJC_node",  "LHJC_cgm1")
+
 
             val = tf.static.getNode_byLabel("RHJC_cgm1").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
             btkTools.smartAppendPoint(aquiStatic,"RHJC",val, desc="cgm1")
+            self.setCalibrationProperty( "RHJC_node",  "RHJC_cgm1")
+            
         else:
             # native : btkpoints LHJC_cgm1 and RHJC_cgm1 append with description cgm1-- "
             val = tf.static.getNode_byLabel("LHJC_cgm1").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
@@ -807,6 +819,9 @@ class CGM1LowerLimbs(CGM):
 
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"LHJC",val,desc=desc)
+                self.setCalibrationProperty( "LHJC_node",  nodeLabel)
+                
+
 
 
             if "useRightHJCnode" in options.keys():
@@ -818,6 +833,8 @@ class CGM1LowerLimbs(CGM):
                 # construction of the btkPoint label (RHJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"RHJC",val,desc=desc)
+                self.setCalibrationProperty( "RHJC_node",  nodeLabel)
+
 
         # ---- final HJCs and mid point
         final_LHJC = aquiStatic.GetPoint("LHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -913,6 +930,8 @@ class CGM1LowerLimbs(CGM):
             #Native: btkpoint LKJC append with description cgm1
             val = tf.static.getNode_byLabel("LKJC_chord").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
             btkTools.smartAppendPoint(aquiStatic,"LKJC",val,desc="cgm1")
+            
+            self.setCalibrationProperty( "LKJC_node",  "LKJC_chord")
         else:
             val = LKJC * np.ones((aquiStatic.GetPointFrameNumber(),3))
             btkTools.smartAppendPoint(aquiStatic,"LKJC_chord",val,desc="")
@@ -926,7 +945,7 @@ class CGM1LowerLimbs(CGM):
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"LKJC",val,desc=desc)
 
-
+                self.setCalibrationProperty( "LKJC_node",  nodeLabel)
 
 
         # --- final LKJC
@@ -1017,6 +1036,11 @@ class CGM1LowerLimbs(CGM):
         if not self.decoratedModel:
             val = tf.static.getNode_byLabel("RKJC_chord").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
             btkTools.smartAppendPoint(aquiStatic,"RKJC",val,desc="cgm1")
+            
+            self.setCalibrationProperty( "RKJC_node",  "RKJC_chord")
+            
+
+
         else:
             val = RKJC * np.ones((aquiStatic.GetPointFrameNumber(),3))
             btkTools.smartAppendPoint(aquiStatic,"RKJC_chord",val,desc="")
@@ -1030,6 +1054,9 @@ class CGM1LowerLimbs(CGM):
                 # construction of the btkPoint label (LKJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"RKJC",val,desc=desc)
+
+                self.setCalibrationProperty( "RKJC_node",  nodeLabel)
+
 
             if "useRightKJCmarker" in options.keys():
                 RKJCvalues = aquiStatic.GetPoint(options["useRightKJCmarker"]).GetValues()[frameInit:frameEnd,:]
@@ -1124,6 +1151,9 @@ class CGM1LowerLimbs(CGM):
             #btkpoint LAJC append with description cgm1
             val = tf.static.getNode_byLabel("LAJC_chord").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
             btkTools.smartAppendPoint(aquiStatic,"LAJC",val,desc="cgm1")
+            
+            self.setCalibrationProperty( "LAJC_node",  "LAJC_chord")
+
         else:
             val = LAJC * np.ones((aquiStatic.GetPointFrameNumber(),3))
             btkTools.smartAppendPoint(aquiStatic,"LAJC_chord",val,desc="")
@@ -1137,6 +1167,9 @@ class CGM1LowerLimbs(CGM):
                 # construction of the btkPoint label (LAJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"LAJC",val,desc=desc)
+                
+                self.setCalibrationProperty( "LAJC_node",  nodeLabel)
+
             
         # --- final AJC
         final_LAJC = aquiStatic.GetPoint("LAJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -1222,6 +1255,9 @@ class CGM1LowerLimbs(CGM):
         if not self.decoratedModel:
             val = tf.static.getNode_byLabel("RAJC_chord").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
             btkTools.smartAppendPoint(aquiStatic,"RAJC",val,desc="cgm1")
+            
+            self.setCalibrationProperty( "RAJC_node",  "RAJC_chord")
+
         else:
             val = RAJC * np.ones((aquiStatic.GetPointFrameNumber(),3))
             btkTools.smartAppendPoint(aquiStatic,"RAJC_chord",val,desc="")
@@ -1234,6 +1270,9 @@ class CGM1LowerLimbs(CGM):
                 # construction of the btkPoint label (RAJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"RAJC",val,desc=desc)
+                
+                self.setCalibrationProperty( "RAJC_node",  nodeLabel)
+
             
 
 
@@ -2519,38 +2558,23 @@ class CGM1LowerLimbs(CGM):
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Thigh",originLabel = "LKJC") 
             
-            # if rotation offset from knee functional calibration
-            if self.mp_computed.has_key("LeftKneeFuncCalibrationOffset"):
-                logging.debug("SARA axis found from the left thigh")
-    
-                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
+            # if rotation offset from knee functional calibration methods
+            if self.mp_computed["FinalFuncLeftThighRotationOffset"]:
+                offset = self.mp_computed["FinalFuncLeftThighRotationOffset"]
+                self._rotate_anatomical_motion("Left Thigh",offset,
                                         aqui)
-
-            # if 2Dof calibration offset
-            if self.mp_computed.has_key("LeftKnee2DofOffset"):
-                logging.debug("Left 2Dof offset found. Anatomical referential rotated ")
-                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKnee2DofOffset"],
-                                            aqui)
 
 
         if "Right Thigh" in segments: 
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Thigh",originLabel = "RKJC")
             
-            # if rotation offset from knee functional calibration
-            if self.mp_computed.has_key("RightKneeFuncCalibrationOffset"):
-                logging.debug("SARA axis found from the right thigh")
-    
-                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
+            # if rotation offset from knee functional calibration methods
+            if self.mp_computed["FinalFuncRightThighRotationOffset"]:
+                offset = self.mp_computed["FinalFuncRightThighRotationOffset"]
+                self._rotate_anatomical_motion("Right Thigh",offset,
                                         aqui)
-
-            # if 2Dof calibration offset
-            if self.mp_computed.has_key("RightKnee2DofOffset"):
-                logging.debug("Right 2Dof offset found. Anatomical referential rotated ")
-                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["RightKnee2DofOffset"],
-                                            aqui)
             
-
         if "Left Shank" in segments: 
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Shank",originLabel = "LAJC")
@@ -2603,36 +2627,20 @@ class CGM1LowerLimbs(CGM):
             self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)            
             
             
-            # if rotation offset from knee functional calibration
-            if self.mp_computed.has_key("LeftKneeFuncCalibrationOffset") :
-                logging.debug("SARA axis found from the left thigh")
-    
-                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
+            # if rotation offset from knee functional calibration methods
+            if self.mp_computed["FinalFuncLeftThighRotationOffset"]:
+                offset = self.mp_computed["FinalFuncLeftThighRotationOffset"]
+                self._rotate_anatomical_motion("Left Thigh",offset,
                                         aqui,options=options)
-
-            # if dynaKad offset
-            if self.mp_computed.has_key("LeftKnee2DofOffset"):
-                logging.debug("Left 2DofCalibration offset found. Anatomical referential rotated ")
-                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKnee2DofOffset"],
-                                            aqui,options=options)
-
 
             logging.debug(" - Right Thigh - motion -")
             logging.debug(" ------------------------")
             self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
-            # if rotation offset from knee functional calibration
-            if self.mp_computed.has_key("RightKneeFuncCalibrationOffset") :
-                logging.debug("SARA axis found from the Right thigh")
-                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
+            if self.mp_computed["FinalFuncRightThighRotationOffset"]:
+                offset = self.mp_computed["FinalFuncRightThighRotationOffset"]
+                self._rotate_anatomical_motion("Right Thigh",offset,
                                         aqui,options=options)
-
-            # if 2DofCalibration offset
-            if self.mp_computed.has_key("RightKnee2DofOffset") :
-                logging.debug("Right 2DofCalibration offset found. Anatomical referential rotated")
-                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKnee2DofOffset"],
-                                            aqui,options=options)
-
 
             logging.debug(" - Left Shank - motion -")
             logging.debug(" -----------------------")
@@ -2687,34 +2695,20 @@ class CGM1LowerLimbs(CGM):
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
 
-            # if rotation offset from knee functional calibration
-            if self.mp_computed.has_key("LeftKneeFuncCalibrationOffset"):
-                logging.debug("SARA axis found from the left thigh")
-    
-                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
+            if self.mp_computed["FinalFuncLeftThighRotationOffset"]:
+                offset = self.mp_computed["FinalFuncLeftThighRotationOffset"]
+                self._rotate_anatomical_motion("Left Thigh",offset,
                                         aqui,options=options)
-
-            # if 2Dof calibration offset
-            if self.mp_computed.has_key("LeftKnee2DofOffset"):
-                logging.debug("Left 2Dof offset found. Anatomical referential rotated ")
-                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKnee2DofOffset"],
-                                            aqui,options=options)
 
 
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
 
 
-            # if rotation offset from knee functional calibration
-            if self.mp_computed.has_key("RightKneeFuncCalibrationOffset"):
-                logging.debug("SARA axis found from the Right thigh")
-                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
+            if self.mp_computed["FinalFuncRightThighRotationOffset"]:
+                offset = self.mp_computed["FinalFuncRightThighRotationOffset"]
+                self._rotate_anatomical_motion("Right Thigh",offset,
                                         aqui,options=options)
-            # if dynaKad offset
-            if self.mp_computed.has_key("RightKnee2DofOffset"):
-                logging.debug("Right 2Dof offset found. Anatomical referential rotated ")
-                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKnee2DofOffset"],
-                                            aqui,options=options)
 
 
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)

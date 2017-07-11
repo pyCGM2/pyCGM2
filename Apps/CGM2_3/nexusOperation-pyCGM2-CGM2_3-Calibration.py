@@ -33,7 +33,7 @@ from pyCGM2 import viconInterface
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = False
+    DEBUG = True
 
     parser = argparse.ArgumentParser(description='CGM2.3 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -60,8 +60,9 @@ if __name__ == "__main__":
 
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\c3dOnly\\" 
-            calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
+            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\c3dOnly\\"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\" 
+            calibrateFilenameLabelledNoExt = "Static" #"static Cal 01-noKAD-noAnkleMed" #
 
             #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\"
             #calibrateFilenameLabelledNoExt = "Static" 
@@ -182,6 +183,7 @@ if __name__ == "__main__":
         # hip joint centres ---
         useLeftHJCnodeLabel = "LHJC_cgm1"
         useRightHJCnodeLabel = "RHJC_cgm1"
+        
         if hjcMethod == "Hara":
             modelDecorator.HipJointCenterDecorator(model).hara()
             useLeftHJCnodeLabel = "LHJC_Hara"
@@ -245,6 +247,18 @@ if __name__ == "__main__":
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
             useRightAJCnodeLabel = "RAJC_mid"
 
+        properties_initialCalibration=dict()
+        properties_initialCalibration["LHJC_node"] = useLeftHJCnodeLabel
+        properties_initialCalibration["RHJC_node"] = useRightHJCnodeLabel
+        properties_initialCalibration["LKJC_node"] = useLeftKJCnodeLabel
+        properties_initialCalibration["RKJC_node"] = useRightKJCnodeLabel
+        properties_initialCalibration["LAJC_node"] = useLeftAJCnodeLabel
+        properties_initialCalibration["RAJC_node"] = useRightAJCnodeLabel
+        properties_initialCalibration["rightFlatFoot"] = useRightAJCnodeLabel
+        properties_initialCalibration["leftFlatFoot"] = flag_rightFlatFoot
+        properties_initialCalibration["markerDiameter"] = markerDiameter
+
+        
         # ----Final Calibration filter if model previously decorated -----
         if model.decoratedModel:
             # initial static filter
@@ -255,7 +269,8 @@ if __name__ == "__main__":
                                leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter).compute()
 
-
+        model.m_properties["CalibrationParameters0"] = properties_initialCalibration
+        
         #----update subject mp----
         viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 
@@ -353,6 +368,8 @@ if __name__ == "__main__":
                                                 eulerSequences=["TOR","TOR", "ROT"],
                                                 globalFrameOrientation = globalFrame,
                                                 forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
+
+
 
 
 
