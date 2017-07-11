@@ -33,7 +33,7 @@ from pyCGM2 import viconInterface
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = True
+    DEBUG = False
 
     parser = argparse.ArgumentParser(description='CGM2.3 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -61,11 +61,11 @@ if __name__ == "__main__":
         # --- acquisition file and path----
         if DEBUG:
             #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\c3dOnly\\"
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\" 
-            calibrateFilenameLabelledNoExt = "Static" #"static Cal 01-noKAD-noAnkleMed" #
+            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\" 
+            #calibrateFilenameLabelledNoExt = "Static" #"static Cal 01-noKAD-noAnkleMed" #
 
-            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\"
-            #calibrateFilenameLabelledNoExt = "Static" 
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\"
+            calibrateFilenameLabelledNoExt = "Static" 
 
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
@@ -381,14 +381,6 @@ if __name__ == "__main__":
         modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
-
-
-        if os.path.isfile(DATA_PATH + subject + "-pyCGM2-INIT.model"):
-            os.remove(DATA_PATH + subject + "-pyCGM2-INIT.model")
-        modelFile = open(DATA_PATH + subject+"-pyCGM2-INIT.model", "w")
-        cPickle.dump(model, modelFile)
-        modelFile.close()
-
 
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,

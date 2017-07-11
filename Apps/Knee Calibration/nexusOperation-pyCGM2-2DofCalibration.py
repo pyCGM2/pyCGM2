@@ -59,12 +59,12 @@ if __name__ == "__main__":
 
         if DEBUG:
             # for CGM1 to CGM2.2
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM1-calibration2Dof\\" 
-            reconstructedFilenameLabelledNoExt = "Left Knee"
+            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM1-calibration2Dof\\" 
+            #reconstructedFilenameLabelledNoExt = "Left Knee"
 
             # for CGM2.3 to ...
-            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\" 
-            #reconstructedFilenameLabelledNoExt = "Left Knee"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\" 
+            reconstructedFilenameLabelledNoExt = "Left Knee"
 
  
             NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
@@ -85,10 +85,10 @@ if __name__ == "__main__":
 
         # --------------------pyCGM2 MODEL - INIT ------------------------------
         
-        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2-INIT.model"):
-            raise Exception ("%s-pyCGM2-INIT.model file doesn't exist. Run Calibration operation"%subject)
+        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
+            raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
         else:
-            f = open(DATA_PATH + subject + '-pyCGM2-INIT.model', 'r')
+            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
             model = cPickle.load(f)
             f.close()
 
@@ -122,7 +122,9 @@ if __name__ == "__main__":
         infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
         
         #  translators management
-        if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
+        if model.version in  ["CGM1.0"]:
+            translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        elif model.version in  ["CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
             translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         elif model.version in  ["CGM2.3","CGM2.3e"]:
             translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM2-3.translators")
@@ -151,9 +153,97 @@ if __name__ == "__main__":
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
             validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1LowerLimbs.MARKERS)
          
+            
+        # --------------------------RESET OF THE STATIC File---------
+ 
+        # load btkAcq from static file
+        staticFilename = model.m_staticFilename
+        acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilename))
+        btkTools.checkMultipleSubject(acqStatic)
+        acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+
+        # initial calibration ( i.e calibration from Calibration operation)
+        initialCalibration = model.m_properties["CalibrationParameters0"]
+        flag_leftFlatFoot = initialCalibration["leftFlatFoot"]
+        flag_rightFlatFoot = initialCalibration["rightFlatFoot"]
+        markerDiameter = initialCalibration["markerDiameter"]            
+
+        if side == "Left":  
+            # remove other functional calibration
+            model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
+            
+            # reinit node and func offset of the left side from initial calibration
+            useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
+            useLeftKJCnodeLabel = initialCalibration["LKJC_node"]
+            useLeftAJCnodeLabel = initialCalibration["LAJC_node"]
+            model.mp_computed["LeftKnee2DofOffset"] = 0   
+            
+
+            # opposite side - keep node from former calibration
+            if model.mp_computed["RightKnee2DofOffset"]:
+                useRightHJCnodeLabel = model.m_properties["CalibrationParameters"]["RHJC_node"]
+                useRightKJCnodeLabel = model.m_properties["CalibrationParameters"]["RKJC_node"]
+                useRightAJCnodeLabel = model.m_properties["CalibrationParameters"]["RAJC_node"]
+                
+            else:
+                useRightHJCnodeLabel = initialCalibration["RHJC_node"]
+                useRightKJCnodeLabel = initialCalibration["RKJC_node"]
+                useRightAJCnodeLabel = initialCalibration["RAJC_node"]
+
+        if side == "Right":  
+            # remove other functional calibration
+            model.mp_computed["RightKneeFuncCalibrationOffset"] = 0 
+
+            # reinit node and func offset of the right side from initial calibration
+            useRightHJCnodeLabel = initialCalibration["RHJC_node"]
+            useRightKJCnodeLabel = initialCalibration["RKJC_node"]
+            useRightAJCnodeLabel = initialCalibration["RAJC_node"]
+            model.mp_computed["RightKnee2DofOffset"] = 0   
+            
+            # opposite side - keep node from former calibration
+            if model.mp_computed["LeftKnee2DofOffset"]:
+                useLeftHJCnodeLabel = model.m_properties["CalibrationParameters"]["LHJC_node"]
+                useLeftKJCnodeLabel = model.m_properties["CalibrationParameters"]["LKJC_node"]
+                useLeftAJCnodeLabel = model.m_properties["CalibrationParameters"]["LAJC_node"]
+                
+            else:
+                useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
+                useLeftKJCnodeLabel = initialCalibration["LKJC_node"]
+                useLeftAJCnodeLabel = initialCalibration["LAJC_node"]
+
+        
+        # ---- Reset Calibration
+        logging.debug("Calibration2Dof --%s --- first Calibration"%(side) )
+        logging.debug(" node (LHJC) => %s" %(useLeftHJCnodeLabel))
+        logging.debug(" node (LKJC) => %s" %(useLeftKJCnodeLabel))
+        logging.debug(" node (LAJC) => %s" %(useLeftAJCnodeLabel))
+        logging.debug("-opposite side-" )
+        logging.debug(" node (RHJC) => %s" %(useRightHJCnodeLabel))
+        logging.debug(" node (RKJC) => %s" %(useRightKJCnodeLabel))
+        logging.debug(" node (RAJC) => %s" %(useRightAJCnodeLabel))
+
+
+
+        # no rotation of both thigh
+        scp=modelFilters.StaticCalibrationProcedure(model) 
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                               useLeftHJCnode=useLeftHJCnodeLabel, useRightHJCnode=useRightHJCnodeLabel,
+                               useLeftKJCnode=useLeftKJCnodeLabel, useLeftAJCnode=useLeftAJCnodeLabel,
+                               useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
+                               leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
+                               markerDiameter=markerDiameter,
+                               RotateLeftThighFlag = False,
+                               RotateRightThighFlag = False).compute()        
+        
+
+
+        btkTools.smartWriter(acqStatic, "acqStatic0-test.c3d")
+
+
+
+            
         
         # static calibration procedure
-        scp=modelFilters.StaticCalibrationProcedure(model)
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
             
             modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Determinist)
@@ -185,20 +275,57 @@ if __name__ == "__main__":
             modelDecorator.KneeCalibrationDecorator(model).calibrate2dof("Right")
 
 
-        # --------------------------NEW CALIBRATION OF THE STATIC File---------
-        # WRNING : STATIC FILE From member of model !!! ()
+        # --------------------------FINAL CALIBRATION OF THE STATIC File---------
+               
+        if side == "Left":
+            useLeftHJCnodeLabel = model.m_properties["CalibrationParameters"]["LHJC_node"]
+            useLeftKJCnodeLabel = model.m_properties["CalibrationParameters"]["LKJC_node"]
+            useLeftAJCnodeLabel = model.m_properties["CalibrationParameters"]["LAJC_node"]
+            useRotateLeftThighFlag = True
+            useRotateRightThighFlag = False
+            
+        elif side == "Right":
+            useRightHJCnodeLabel = model.m_properties["CalibrationParameters"]["RHJC_node"]
+            useRightKJCnodeLabel = model.m_properties["CalibrationParameters"]["RKJC_node"]
+            useRightAJCnodeLabel = model.m_properties["CalibrationParameters"]["RAJC_node"]
+            useRotateRightThighFlag = True
+            useRotateLeftThighFlag = False 
 
-        staticFilename = model.m_staticFilename
-        acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilename))
-        btkTools.checkMultipleSubject(acqStatic)
-        acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+            
+        # ----  Calibration
         
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
+        logging.debug("Calibration2Dof --%s --- final Calibration"%(side) )
+        logging.debug(" node (LHJC) => %s" %(useLeftHJCnodeLabel))
+        logging.debug(" node (LKJC) => %s" %(useLeftKJCnodeLabel))
+        logging.debug(" node (LAJC) => %s" %(useLeftAJCnodeLabel))
+        logging.debug(" rotated Left Thigh => %s" %(str(useRotateLeftThighFlag)))
+        logging.debug("-opposite side-" )
+        logging.debug(" node (RHJC) => %s" %(useRightHJCnodeLabel))
+        logging.debug(" node (RKJC) => %s" %(useRightKJCnodeLabel))
+        logging.debug(" node (RAJC) => %s" %(useRightAJCnodeLabel))
+        logging.debug(" rotated Right Thigh => %s" %(str(useRotateRightThighFlag)))
 
-        # --------------------------NEW MOTION FILTER - DISPLAY BONES---------
-        nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE0", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
+        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                           useLeftHJCnode=useLeftHJCnodeLabel, useRightHJCnode=useRightHJCnodeLabel,
+                           useLeftKJCnode=useLeftKJCnodeLabel, useLeftAJCnode=useLeftAJCnodeLabel,
+                           useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
+                           leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
+                           markerDiameter=markerDiameter,
+                           RotateLeftThighFlag = useRotateLeftThighFlag,
+                           RotateRightThighFlag = useRotateRightThighFlag).compute() 
 
+        # ----------------------VICON INTERFACE-------------------------------------------
+        #--- update mp
+        
+        viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
+        
+        if side == "Left":
+            nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE0", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
+        elif side == "Right":
+            nexusTools.appendBones(NEXUS,subject,acqFunc,"RFE0", model.getSegment("Right Thigh"),OriginValues = acqFunc.GetPoint("RKJC").GetValues() )
 
+        # --------------------------NEW MOTION FILTER - DISPLAY BONES--------- 
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
             
             modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Determinist)
@@ -211,9 +338,11 @@ if __name__ == "__main__":
             modMotion.segmentalCompute([proximalSegmentLabel,distalSegmentLabel])
         
 
-        nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE1", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
-
-
+        # -- add nexus Bones
+        if side == "Left":
+            nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE1", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
+        elif side == "Right":
+            nexusTools.appendBones(NEXUS,subject,acqFunc,"RFE1", model.getSegment("Right Thigh"),OriginValues = acqFunc.GetPoint("RKJC").GetValues() )
 
         # ----------------------SAVE-------------------------------------------
 
@@ -226,10 +355,6 @@ if __name__ == "__main__":
         modelFile.close()
         logging.warning("model updated with a  %s knee calibrated with 2Dof method" %(side))
        
-       # ----------------------VICON INTERFACE-------------------------------------------
-
-        #--- update mp
-        viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 
 
         #btkTools.smartWriter(acqFunc, "acqFunc-test.c3d")

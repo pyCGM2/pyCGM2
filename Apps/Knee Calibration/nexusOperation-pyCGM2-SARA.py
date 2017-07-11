@@ -42,7 +42,7 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 if __name__ == "__main__":
    
     plt.close("all")
-    DEBUG = True
+    DEBUG = False
 
     parser = argparse.ArgumentParser(description='SARA Functional Knee Calibration')
     parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
