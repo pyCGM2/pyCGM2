@@ -28,6 +28,8 @@ from pyCGM2.Utils import fileManagement
 
 if __name__ == "__main__":
 
+    DEBUG = False
+    
     parser = argparse.ArgumentParser(description='CGM2.1 Fitting')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
@@ -44,8 +46,13 @@ if __name__ == "__main__":
     inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
     # --------------------SESSION SETTINGS ------------------------------
-    DATA_PATH =os.getcwd()+"\\"
-    infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+    if DEBUG:
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\Florent Moissenet\\sample\\"
+        infoSettings = json.loads(open(DATA_PATH + 'pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+
+    else:
+        DATA_PATH =os.getcwd()+"\\"
+        infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
 
     # --------------------CONFIGURATION ------------------------------

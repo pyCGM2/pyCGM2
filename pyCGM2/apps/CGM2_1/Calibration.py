@@ -24,6 +24,7 @@ from pyCGM2.Utils import fileManagement
 
 if __name__ == "__main__":
 
+    DEBUG = False
     plt.close("all")
 
     parser = argparse.ArgumentParser(description='CGM2.1 Calibration')
@@ -40,8 +41,13 @@ if __name__ == "__main__":
 
 
     # --------------------SESSION  SETTINGS ------------------------------
-    DATA_PATH =os.getcwd()+"\\"
-    infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+    if DEBUG:
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\Florent Moissenet\\sample\\"
+        infoSettings = json.loads(open(DATA_PATH + 'pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+
+    else:
+        DATA_PATH =os.getcwd()+"\\"
+        infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
     # --------------------CONFIGURATION ------------------------------
 
