@@ -232,10 +232,7 @@ if __name__ == "__main__":
         
 
         # calibration decorators
-        if side == "Left":
-            modelDecorator.KneeCalibrationDecorator(model).calibrate2dof("Left")
-        elif side == "Right":
-            modelDecorator.KneeCalibrationDecorator(model).calibrate2dof("Right")
+        modelDecorator.KneeCalibrationDecorator(model).calibrate2dof(side)
 
 
         # --------------------------FINAL CALIBRATION OF THE STATIC File---------
