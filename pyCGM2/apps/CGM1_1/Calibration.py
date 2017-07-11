@@ -88,7 +88,7 @@ if __name__ == "__main__":
     # --------------------------TRANSLATORS ------------------------------------
 
     #  translators management
-    translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+    translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1-1.translators")
     if not translators:
        translators = inputs["Translators"]
 
