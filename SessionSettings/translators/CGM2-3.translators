@@ -23,6 +23,10 @@
 		"LTIBAP":"LTIAP",
 		"LTIBAD":"LTIAD",
 		"LHEE":"",
-		"LTOE":""
+		"LTOE":"",
+		"RMEPI":"",
+        "LMEPI":"",
+        "RMED":"",
+        "LMED":""
 		}
 }

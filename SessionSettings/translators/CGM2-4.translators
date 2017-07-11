@@ -29,6 +29,10 @@
 		"LTOE":"",
 		"LCUN":"",
 		"LD1M":"",
-		"LD5M":""
+		"LD5M":"",
+		"RMEPI":"",
+        "LMEPI":"",
+        "RMED":"",
+        "LMED":""
 		}
 }
