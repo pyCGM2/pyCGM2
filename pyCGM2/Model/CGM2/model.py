@@ -36,9 +36,18 @@ class Model(object):
         self.mp_computed=dict()
         self.m_chains=dict()
         self.m_staticFilename=None
+        
+        self.m_properties=dict()
+        self.m_properties["CalibrationParameters"]=dict()
 
     def __repr__(self):
         return "Basis Model"        
+
+    def setProperty(self, propertyLabel,  value):
+        self.m_properties[propertyLabel] = value
+
+    def setCalibrationProperty(self, propertyLabel,  value):
+        self.m_properties["CalibrationParameters"][propertyLabel] = value
 
     def setStaticFilename(self,name):
         self.m_staticFilename=name
