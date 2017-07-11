@@ -15,8 +15,14 @@
         "Motion": []
     },
     "KneeCalibrationTrials": {
-        "SaraTrials":[],
-        "Knee2DofTrial":[]
+        "Sara": [
+        { "Trial":"", "Side": "" },
+		{ "Trial":"", "Side": "" }
+		],
+		"Calibration2Dof": [
+        { "Trial":"", "Side": "" },
+		{ "Trial":"", "Side": "" }
+		]
     }
   },
   "MP" :{
