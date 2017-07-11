@@ -147,25 +147,36 @@ if __name__ == "__main__":
     # ---- Decorators -----
     # Goal = modified calibration according the identified marker set or if offsets manually set
 
-    # initialisation of node label and marker labels
+    # hip joint centres ---
+    useLeftHJCnodeLabel = "LHJC_cgm1"
+    useRightHJCnodeLabel = "RHJC_cgm1"
+    if hjcMethod == "Hara":
+        modelDecorator.HipJointCenterDecorator(model).hara()
+        useLeftHJCnodeLabel = "LHJC_Hara"
+        useRightHJCnodeLabel = "RHJC_Hara"
+
+
+    # knee - ankle centres ---
+
+    # initialisation of node label
     useLeftKJCnodeLabel = "LKJC_chord"
     useLeftAJCnodeLabel = "LAJC_chord"
     useRightKJCnodeLabel = "RKJC_chord"
     useRightAJCnodeLabel = "RAJC_chord"
 
-   # case 1 : NO kad, NO medial ankle BUT thighRotation different from zero ( mean manual modification or new calibration from a previous one )
+    # case 1 : NO kad, NO medial ankle BUT thighRotation different from zero ( mean manual modification or new calibration from a previous one )
     if not staticMarkerConfiguration["leftKadFlag"]  and not staticMarkerConfiguration["leftMedialAnkleFlag"] and not staticMarkerConfiguration["leftMedialKneeFlag"] and optional_mp["LeftThighRotation"] !=0:
-        logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")            
+        logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")
         modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],markerDiameter,optional_mp["LeftTibialTorsion"],optional_mp["LeftShankRotation"])
         useLeftKJCnodeLabel = "LKJC_mo"
         useLeftAJCnodeLabel = "LAJC_mo"
     if not staticMarkerConfiguration["rightKadFlag"]  and not staticMarkerConfiguration["rightMedialAnkleFlag"] and not staticMarkerConfiguration["rightMedialKneeFlag"] and optional_mp["RightThighRotation"] !=0:
-        logging.warning("CASE FOUND ===> Right Side - CGM1 - Origine - manual offsets")            
+        logging.warning("CASE FOUND ===> Right Side - CGM1 - Origine - manual offsets")
         modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
         useRightKJCnodeLabel = "RKJC_mo"
         useRightAJCnodeLabel = "RAJC_mo"
 
-    # case 2 : kad FOUND and NO medial Ankle 
+    # case 2 : kad FOUND and NO medial Ankle
     if staticMarkerConfiguration["leftKadFlag"]:
         logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD variant")
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
@@ -178,8 +189,8 @@ if __name__ == "__main__":
         useRightAJCnodeLabel = "RAJC_kad"
 
 
-    # case 3 : medial knee FOUND 
-    # notice: cgm1Behaviour is enable mean effect on AJC location 
+    # case 3 : medial knee FOUND
+    # notice: cgm1Behaviour is enable mean effect on AJC location
     if staticMarkerConfiguration["leftMedialKneeFlag"]:
         logging.warning("CASE FOUND ===> Left Side - CGM1 - medial knee ")
         modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="left",cgm1Behaviour=True)
@@ -192,7 +203,7 @@ if __name__ == "__main__":
         useRightAJCnodeLabel = "RAJC_midKnee"
 
 
-    # case 4 : medial ankle FOUND 
+    # case 4 : medial ankle FOUND
     if staticMarkerConfiguration["leftMedialAnkleFlag"]:
         logging.warning("CASE FOUND ===> Left Side - CGM1 - medial ankle ")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
@@ -201,6 +212,17 @@ if __name__ == "__main__":
         logging.warning("CASE FOUND ===> Right Side - CGM1 - medial ankle ")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
         useRightAJCnodeLabel = "RAJC_mid"
+
+    properties_initialCalibration=dict()
+    properties_initialCalibration["LHJC_node"] = useLeftHJCnodeLabel
+    properties_initialCalibration["RHJC_node"] = useRightHJCnodeLabel
+    properties_initialCalibration["LKJC_node"] = useLeftKJCnodeLabel
+    properties_initialCalibration["RKJC_node"] = useRightKJCnodeLabel
+    properties_initialCalibration["LAJC_node"] = useLeftAJCnodeLabel
+    properties_initialCalibration["RAJC_node"] = useRightAJCnodeLabel
+    properties_initialCalibration["rightFlatFoot"] = useRightAJCnodeLabel
+    properties_initialCalibration["leftFlatFoot"] = flag_rightFlatFoot
+    properties_initialCalibration["markerDiameter"] = markerDiameter
 
 
     # ----Final Calibration filter if model previously decorated -----
@@ -212,7 +234,8 @@ if __name__ == "__main__":
                            leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                            markerDiameter=markerDiameter).compute()
 
-
+    # set initial calibration as model property
+    model.m_properties["CalibrationParameters0"] = properties_initialCalibration
 
 
     # ----------------------CGM MODELLING----------------------------------
@@ -266,13 +289,7 @@ if __name__ == "__main__":
     cPickle.dump(model, modelFile)
     modelFile.close()
 
-    #pyCGM2.model - Intial Calibration
-    if os.path.isfile(DATA_PATH  + "pyCGM2-INIT.model"):
-        os.remove(DATA_PATH  + "pyCGM2-INIT.model")
-    
-    modelFile = open(DATA_PATH + "pyCGM2-INIT.model", "w")
-    cPickle.dump(model, modelFile)
-    modelFile.close()
+
 
 
     #  static file
