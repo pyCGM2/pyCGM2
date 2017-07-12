@@ -562,6 +562,7 @@ class CGM1LowerLimbs(CGM):
             if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
                 self.getAngleOffsetFromFunctionalAxis("right","KJC_SaraAxis")
                 offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+                
             # 2DOF    
             elif self.mp_computed["RightKnee2DofOffset"]:
                 offset = self.mp_computed["RightKnee2DofOffset"]
@@ -570,6 +571,7 @@ class CGM1LowerLimbs(CGM):
             self._rotateAnatomicalFrame("Right Thigh",offset,
                                                      aquiStatic, dictAnatomic,frameInit,frameEnd)
 
+            
 
         logging.debug(" --- Left Shank - AF calibration ---")
         logging.debug(" -------------------------------")
@@ -2021,8 +2023,8 @@ class CGM1LowerLimbs(CGM):
         # Rotation of the static anatomical Referential by the tibial Torsion angle
         rotZ = np.eye(3,3)
         rotZ[0,0] = np.cos(angle)
-        rotZ[0,1] = np.sin(angle)
-        rotZ[1,0] = - np.sin(angle)
+        rotZ[0,1] = -np.sin(angle)
+        rotZ[1,0] = np.sin(angle)
         rotZ[1,1] = np.cos(angle)
 
         R = np.dot(seg.anatomicalFrame.static.getRotation(),rotZ) # apply rotation
@@ -2370,12 +2372,20 @@ class CGM1LowerLimbs(CGM):
             proj_saraAxis = np.array([ saraAxisLocal[0],
                                    saraAxisLocal[1],
                                      0])
+             
+            
             v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
 
             angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_saraAxis, self.getSegment("Left Thigh").anatomicalFrame.static.m_axisZ))
 
-            if angle > 60.0:
-                raise Exception ("[pyCGM2] : angle between the medio lateral axis of the CS and the functional flexion exceeds 60 degrees. check your data")  
+
+            if angle > 90.0:
+                logging.warning("left flexion axis point laterally")
+                angle = 180-angle
+            logging.warning(angle)
+                
+            if np.abs(angle) > 30.0:    
+                raise Exception ("[pyCGM2] : suspected left functional knee flexion axis. check Data")  
 
             self.mp_computed["LeftKneeFuncCalibrationOffset"]= angle 
             logging.debug(" left Function axis Offset => %s " % str(self.mp_computed["LeftKneeFuncCalibrationOffset"]))
@@ -2403,20 +2413,26 @@ class CGM1LowerLimbs(CGM):
             proj_saraAxis = np.array([ saraAxisLocal[0],
                                    saraAxisLocal[1],
                                      0])
+            
             v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
 
             angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_saraAxis, self.getSegment("Right Thigh").anatomicalFrame.static.m_axisZ))
 
 
-            if angle > 60.0:
-                raise Exception ("[pyCGM2] : angle between the medio lateral axis of the CS and the functional flexion exceeds 60 degrees. check your data")  
+            if angle > 90.0:
+                logging.warning("right flexion axis point laterally")
+                angle = 180-angle
+            logging.warning(angle)
+                
+            if np.abs(angle) > 30.0:    
+                raise Exception ("[pyCGM2] : suspected right functional knee flexion axis. check Data")  
 
 
             self.mp_computed["RightKneeFuncCalibrationOffset"]= angle # angle needed : Thi toward knee flexion
             logging.debug(" Right Function axis Offset => %s " % str(self.mp_computed["RightKneeFuncCalibrationOffset"]))
 
 
-
+           
 
 
     def getViconFootOffset(self, side):
@@ -4210,8 +4226,8 @@ class CGM1LowerLimbs(CGM):
         # computation
         rotZ = np.eye(3,3)
         rotZ[0,0] = np.cos(angle)
-        rotZ[0,1] = np.sin(angle)
-        rotZ[1,0] = - np.sin(angle)
+        rotZ[0,1] = -np.sin(angle)
+        rotZ[1,0] =  np.sin(angle)
         rotZ[1,1] = np.cos(angle)
 
         for i in range(0,aqui.GetPointFrameNumber()):

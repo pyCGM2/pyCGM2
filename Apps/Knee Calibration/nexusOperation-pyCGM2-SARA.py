@@ -13,7 +13,7 @@ import numpy as np
 
 # pyCGM2 settings
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
+pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 # vicon nexus
 import ViconNexus
@@ -42,10 +42,12 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 if __name__ == "__main__":
    
     plt.close("all")
-    DEBUG = False
+    DEBUG = True
 
     parser = argparse.ArgumentParser(description='SARA Functional Knee Calibration')
     parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
+    parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
+    parser.add_argument('-e','--endFrame', type=int, help="end frame")
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -60,6 +62,10 @@ if __name__ == "__main__":
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\" 
             reconstructedFilenameLabelledNoExt = "Right Knee"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
+
+            #args.beginFrame=300
+            #args.endFrame=400
+
         else:
             DATA_PATH, reconstructedFilenameLabelledNoExt = NEXUS.GetTrialName()
 
@@ -85,6 +91,9 @@ if __name__ == "__main__":
 
         logging.info("loaded model : %s" %(model.version ))
 
+        # --------------------------CONFIG ------------------------------------
+        
+            
         
 
         # --------------------CHECKING ------------------------------       
@@ -119,8 +128,19 @@ if __name__ == "__main__":
         acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
         btkTools.checkMultipleSubject(acqFunc)
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
-         
-        # motion side of the lower limb 
+        
+        #---get frame range of interest---
+        ff = acqFunc.GetFirstFrame()
+        lf = acqFunc.GetLastFrame()
+        
+        initFrame = args.beginFrame if args.beginFrame is not None else ff
+        endFrame = args.endFrame if args.endFrame is not None else lf    
+                
+        iff=initFrame-ff
+        ilf=endFrame-ff
+        
+        
+        #---motion side of the lower limb--- 
         if args.side is None:
             side = detectSide(acqFunc,"LANK","RANK")
             logging.info("Detected motion side : %s" %(side) )
@@ -149,7 +169,8 @@ if __name__ == "__main__":
             useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
             useLeftKJCnodeLabel = initialCalibration["LKJC_node"]
             useLeftAJCnodeLabel = initialCalibration["LAJC_node"]
-            model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0   
+            model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0 
+            model.mp_computed["FinalFuncLeftThighRotationOffset"] =0
             
 
             # opposite side - keep node from former calibration
@@ -171,7 +192,8 @@ if __name__ == "__main__":
             useRightHJCnodeLabel = initialCalibration["RHJC_node"]
             useRightKJCnodeLabel = initialCalibration["RKJC_node"]
             useRightAJCnodeLabel = initialCalibration["RAJC_node"]
-            model.mp_computed["RightKneeFuncCalibrationOffset"] = 0   
+            model.mp_computed["RightKneeFuncCalibrationOffset"] = 0
+            model.mp_computed["FinalFuncRightThighRotationOffset"] =0
             
             # opposite side - keep node from former calibration
             if model.mp_computed["LeftKneeFuncCalibrationOffset"]:
@@ -231,7 +253,10 @@ if __name__ == "__main__":
             modMotion.segmentalCompute([proximalSegmentLabel,distalSegmentLabel])
         
             # decorator
-            modelDecorator.KneeCalibrationDecorator(model).sara(side)
+            modelDecorator.KneeCalibrationDecorator(model).sara(side,
+                                                                indexFirstFrame = iff,
+                                                                indexLastFrame = ilf )
+
 
             # --------------------------FINAL CALIBRATION OF THE STATIC File---------
                
@@ -273,8 +298,7 @@ if __name__ == "__main__":
                                RotateLeftThighFlag = useRotateLeftThighFlag,
                                RotateRightThighFlag = useRotateRightThighFlag).compute()
                 
-                
-    
+            
             # ----------------------SAVE-------------------------------------------
             if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
                 logging.warning("previous model removed")
@@ -317,29 +341,8 @@ if __name__ == "__main__":
             elif side == "Right":
                 nexusTools.appendBones(NEXUS,subject,acqFunc,"RFE1", model.getSegment("Right Thigh"),OriginValues = acqFunc.GetPoint("RKJC").GetValues() )
         
-        
-            #--- Add modelled markers
-            #Or_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
-            #axis_inThigh = model.getSegment(proximalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
-            #Or_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionOri")
-            #axis_inShank = model.getSegment(distalSegmentLabel).getReferential("TF").getNodeTrajectory("KneeFlexionAxis")
-                           
-                    
-                    
-            #btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inThigh",Or_inThigh)
-            #btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inThigh",axis_inThigh) 
-                   
-            #btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexA_inShank",Or_inShank)
-            #btkTools.smartAppendPoint(acqFunc,side+"_KneeFlexB_inShank",axis_inShank) 
-            
-                    
-            #nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inThigh", acqFunc)
-            #nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inThigh", acqFunc)     
-            #nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexA_inShank", acqFunc)
-            #nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,side+"_KneeFlexB_inShank", acqFunc)     
-            
-            #btkTools.smartWriter(acqFunc, "acqFunc-test.c3d")
-        
+
+
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

@@ -44,23 +44,39 @@ def setDescription(nodeLabel):
 
 
 # ---- CONVENIENT FUNCTIONS ------
-def calibration2Dof(proxMotionRef,distMotionRef,sequence="YXZ",index=1):
+def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,sequence="YXZ",index=1):
 
     # onjective function : minimize variance of the knee varus valgus angle
-    def objFun(x, proxMotionRef, distMotionRef,sequence,index):
+    def objFun(x, proxMotionRef, distMotionRef,indexFirstFrame,indexLastFrame, sequence,index):
         nFrames= len(proxMotionRef) 
          
+        frames0 = range(0,len(proxMotionRef))
+
+        if indexFirstFrame and indexLastFrame:
+            frames = frames0[indexFirstFrame:indexLastFrame+1]
+    
+        elif  not indexFirstFrame and indexLastFrame:
+            frames = frames0[:indexLastFrame+1]
+    
+        elif  indexFirstFrame and not indexLastFrame:
+            frames = frames0[indexFirstFrame:]
+    
+        nFrames = len(frames)
+        
+        
         angle=np.deg2rad(x)     
         rotZ = np.eye(3,3)
         rotZ[0,0] = np.cos(angle)
-        rotZ[0,1] = np.sin(angle)
-        rotZ[1,0] = - np.sin(angle)
+        rotZ[0,1] = - np.sin(angle)
+        rotZ[1,0] = np.sin(angle)
         rotZ[1,1] = np.cos(angle)
     
         jointValues = np.zeros((nFrames,3))
-        for i in range(0,nFrames): 
-            Rprox = np.dot(proxMotionRef[i].getRotation(),rotZ) 
-            Rdist = distMotionRef[i].getRotation() 
+
+        i=0
+        for f in frames #range(0,nFrames): 
+            Rprox = np.dot(proxMotionRef[f].getRotation(),rotZ) 
+            Rdist = distMotionRef[f].getRotation() 
              
             Rrelative= np.dot(Rprox.T, Rdist)
     
@@ -81,7 +97,8 @@ def calibration2Dof(proxMotionRef,distMotionRef,sequence="YXZ",index=1):
 
             jointValues[i,0] = Euler1
             jointValues[i,1] = Euler2
-            jointValues[i,2] = Euler3    
+            jointValues[i,2] = Euler3
+            i+=1
     
         variance = np.var(jointValues[:,index])
           
@@ -95,7 +112,7 @@ def calibration2Dof(proxMotionRef,distMotionRef,sequence="YXZ",index=1):
 
 
 
-def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
+def saraCalibration(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame, gap = 100, method = "1"):
     """ 
     
         Computation of the hip joint center position from Harrington's regressions.         
@@ -126,21 +143,30 @@ def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
         Ehrig, R., Taylor, W. R., Duda, G., & Heller, M. (2007). A survey of formal methods for determining functional joint axes. Journal of Biomechanics, 40(10), 2150–7.
 
     """ 
-    
-    #TODO: Validate     
+    frames0 = range(0,len(proxMotionRef))
+
+    if indexFirstFrame and indexLastFrame:
+        frames = frames0[indexFirstFrame:indexLastFrame+1]
+
+    elif  not indexFirstFrame and indexLastFrame:
+        frames = frames0[:indexLastFrame+1]
+
+    elif  indexFirstFrame and not indexLastFrame:
+        frames = frames0[indexFirstFrame:]
+
+    nFrames = len(frames)    
     
     if method =="1": 
   
-        nFrames= len(proxMotionRef)  
-        
         A = np.zeros((nFrames*3,6))
         b = np.zeros((nFrames*3,1)) 
         
-        
-        for i in range(0,nFrames):
-            A[i*3:i*3+3,0:3] = proxMotionRef[i].getRotation()
-            A[i*3:i*3+3,3:6] = -1.0 * distMotionRef[i].getRotation()
-            b[i*3:i*3+3,:] = (distMotionRef[i].getTranslation() - proxMotionRef[i].getTranslation()).reshape(3,1)       
+        i=0
+        for f in frames:
+            A[i*3:i*3+3,0:3] = proxMotionRef[f].getRotation()
+            A[i*3:i*3+3,3:6] = -1.0 * distMotionRef[f].getRotation()
+            b[i*3:i*3+3,:] = (distMotionRef[f].getTranslation() - proxMotionRef[f].getTranslation()).reshape(3,1)       
+            i+=1
     
     
         
@@ -157,21 +183,20 @@ def saraCalibration(proxMotionRef,distMotionRef, gap = 100, method = "1"):
         
         
     elif method =="2": # idem programmation morgan
-        nFrames= len(proxMotionRef)  
-    
-    
+          
         SR = np.zeros((3,3))
         Sd = np.zeros((3,1))
         SRd = np.zeros((3,1))
     
         # For each frame compute the transformation matrix of the distal
         # segment in the proximal reference system
-        for i in range(0,nFrames): 
-            Rprox = proxMotionRef[i].getRotation() 
-            tprox = proxMotionRef[i].getTranslation()
+
+        for f in frames: 
+            Rprox = proxMotionRef[f].getRotation() 
+            tprox = proxMotionRef[f].getTranslation()
     
-            Rdist = distMotionRef[i].getRotation() 
-            tdist = distMotionRef[i].getTranslation() 
+            Rdist = distMotionRef[f].getRotation() 
+            tdist = distMotionRef[f].getTranslation() 
            
            
             P = np.concatenate((np.concatenate((Rprox,tprox.reshape(1,3).T),axis=1),np.array([[0,0,0,1]])),axis=0)
@@ -844,7 +869,7 @@ class KneeCalibrationDecorator(DecoratorModel):
             self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_midKnee",RAJCvalues.mean(axis =0),positionType="Global")
         
     
-    def sara(self,side):    
+    def sara(self,side,**kwargs):    
         """ 
             Compute Knee flexion axis and relocate knee joint centre from SARA functional calibration         
         
@@ -852,10 +877,12 @@ class KneeCalibrationDecorator(DecoratorModel):
                 - `side` (str) - lower limb side
 
         """
-         
-
         self.model.decoratedModel = True
-        
+
+        iff = kwargs["indexFirstFrame"] if kwargs.has_key("indexFirstFrame") else None
+        ilf = kwargs["indexLastFrame"] if kwargs.has_key("indexLastFrame") else None
+
+
         
 
         if side == "Left":
@@ -877,7 +904,7 @@ class KneeCalibrationDecorator(DecoratorModel):
         distMotion = self.model.getSegment(distSegmentlabel).getReferential("TF").motion
         
         # -- main function -----
-        prox_ori,prox_axisLim,dist_ori,dist_axisLim,axis_prox,axis_dist,quality = saraCalibration(proxMotion,distMotion,method="2")
+        prox_ori,prox_axisLim,dist_ori,dist_axisLim,axis_prox,axis_dist,quality = saraCalibration(proxMotion,distMotion,iff, ilf, method="2")
         # end function -----
 
 
@@ -942,9 +969,9 @@ class KneeCalibrationDecorator(DecoratorModel):
         saraKJC = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel("KJC_Sara").m_local
 
         logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (localKJC[0],localKJC[1],localKJC[2]))
-        logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (saraKJC[0],saraKJC[1],saraKJC[2]))
+        logging.info(" new KJC position in the proximal segment : [ %f, %f,%f]   " % (saraKJC[0],saraKJC[1],saraKJC[2]))
         
-    def calibrate2dof(self,side):    
+    def calibrate2dof(self,side,**kwargs):    
         """ 
             "2dof" knee calibration (similar to dynaKAD)
         
@@ -952,9 +979,10 @@ class KneeCalibrationDecorator(DecoratorModel):
                 - `side` (str) - lower limb side
 
         """
-         
-
         self.model.decoratedModel = True
+
+        iff = kwargs["indexFirstFrame"] if kwargs.has_key("indexFirstFrame") else None
+        ilf = kwargs["indexLastFrame"] if kwargs.has_key("indexLastFrame") else None
 
         if side == "Left":
             proxSegmentLabel = "Left Thigh"

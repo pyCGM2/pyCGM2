@@ -47,6 +47,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
     parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
+    parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
+    parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -143,6 +145,16 @@ if __name__ == "__main__":
         btkTools.checkMultipleSubject(acqFunc)
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
 
+        #---get frame range of interest---
+        ff = acqFunc.GetFirstFrame()
+        lf = acqFunc.GetLastFrame()
+        
+        initFrame = args.beginFrame if args.beginFrame is not None else ff
+        endFrame = args.endFrame if args.endFrame is not None else lf    
+                
+        iff=initFrame-ff
+        ilf=endFrame-ff
+
         # motion
         if args.side is None:
             side = detectSide(acqFunc,"LANK","RANK")
@@ -171,6 +183,7 @@ if __name__ == "__main__":
         if side == "Left":
             # remove other functional calibration
             model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
+            model.mp_computed["FinalFuncLeftThighRotationOffset"] =0
 
             # reinit node and func offset of the left side from initial calibration
             useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
@@ -193,6 +206,7 @@ if __name__ == "__main__":
         if side == "Right":
             # remove other functional calibration
             model.mp_computed["RightKneeFuncCalibrationOffset"] = 0
+            model.mp_computed["FinalFuncRightThighRotationOffset"] =0
 
             # reinit node and func offset of the right side from initial calibration
             useRightHJCnodeLabel = initialCalibration["RHJC_node"]
@@ -269,10 +283,9 @@ if __name__ == "__main__":
 
 
         # calibration decorators
-        if side == "Left":
-            modelDecorator.KneeCalibrationDecorator(model).calibrate2dof("Left")
-        elif side == "Right":
-            modelDecorator.KneeCalibrationDecorator(model).calibrate2dof("Right")
+        modelDecorator.KneeCalibrationDecorator(model).calibrate2dof(side,
+                                                            indexFirstFrame = iff,
+                                                            indexLastFrame = ilf )
 
 
         # --------------------------FINAL CALIBRATION OF THE STATIC File---------
