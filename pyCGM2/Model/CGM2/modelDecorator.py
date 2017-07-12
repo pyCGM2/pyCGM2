@@ -74,7 +74,7 @@ def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,s
         jointValues = np.zeros((nFrames,3))
 
         i=0
-        for f in frames #range(0,nFrames): 
+        for f in frames:  
             Rprox = np.dot(proxMotionRef[f].getRotation(),rotZ) 
             Rdist = distMotionRef[f].getRotation() 
              
