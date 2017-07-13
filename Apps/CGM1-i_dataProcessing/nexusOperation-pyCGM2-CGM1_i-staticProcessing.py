@@ -79,7 +79,7 @@ if __name__ == "__main__":
         if args.pointSuffix is not None:
             pointSuffix = args.pointSuffix
         else:
-            pointSuffix = infoSettings["Processing"]["Point suffix"]
+            pointSuffix = ""
 
         
 
