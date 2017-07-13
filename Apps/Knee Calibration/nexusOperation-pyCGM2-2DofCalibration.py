@@ -47,8 +47,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
     parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
-    parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
     parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
+    parser.add_argument('-e','--endFrame', type=int, help="end frame")
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -68,6 +68,8 @@ if __name__ == "__main__":
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\"
             reconstructedFilenameLabelledNoExt = "Left Knee"
 
+            args.beginFrame=500
+            args.endFrame=700
 
             NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
 

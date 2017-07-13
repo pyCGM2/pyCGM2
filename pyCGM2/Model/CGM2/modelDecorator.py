@@ -105,7 +105,7 @@ def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,s
         return variance
 
     x0 = 0.0 # deg
-    res = least_squares(objFun, x0, args=(proxMotionRef, distMotionRef,sequence,index), verbose=1)
+    res = least_squares(objFun, x0, args=(proxMotionRef, distMotionRef,indexFirstFrame,indexLastFrame,sequence,index), verbose=1)
 
     return res.x[0]
 
@@ -1001,7 +1001,7 @@ class KneeCalibrationDecorator(DecoratorModel):
         distMotion = self.model.getSegment(distSegmentlabel).getReferential("TF").motion
         
         # -- main function -----
-        longRot = calibration2Dof(proxMotion,distMotion)
+        longRot = calibration2Dof(proxMotion,distMotion,iff,ilf)
         # end function -----
         self.model.mp_computed[offsetLabel] = longRot
         
