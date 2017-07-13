@@ -44,7 +44,6 @@ if __name__ == "__main__":
     plt.close("all")
     DEBUG = False
 
-    pdb.set_trace()
     parser = argparse.ArgumentParser(description='SARA Functional Knee Calibration')
     parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
     parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
