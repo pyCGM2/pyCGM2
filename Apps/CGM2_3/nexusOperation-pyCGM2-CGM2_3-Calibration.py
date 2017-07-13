@@ -61,11 +61,11 @@ if __name__ == "__main__":
         # --- acquisition file and path----
         if DEBUG:
             #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\c3dOnly\\"
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\" 
-            calibrateFilenameLabelledNoExt = "Static" #"static Cal 01-noKAD-noAnkleMed" #
+            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\" 
+            #calibrateFilenameLabelledNoExt = "Static" #"static Cal 01-noKAD-noAnkleMed" #
 
-            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\"
-            #calibrateFilenameLabelledNoExt = "Static" 
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\"
+            calibrateFilenameLabelledNoExt = "Static" 
 
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
