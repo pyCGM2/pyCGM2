@@ -68,7 +68,10 @@ if __name__ == "__main__":
         if args.pointSuffix is not None:
             pointSuffix = args.pointSuffix
         else:
-            pointSuffix = inputs["Global"]["Point suffix"]
+            if args.pointSuffix is not None:
+                pointSuffix = args.pointSuffix
+            else:
+                pointSuffix = inputs["Global"]["Point suffix"]
 
     if args.proj is not None:
         if args.proj == "Distal":

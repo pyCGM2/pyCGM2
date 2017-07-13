@@ -32,6 +32,7 @@ if __name__ == "__main__":
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')    
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('--ik', action='store_true', help='inverse kinematic',default=True)
     args = parser.parse_args()
@@ -80,7 +81,10 @@ if __name__ == "__main__":
     if args.check:
         pointSuffix="cgm2.3e"
     else:
-        pointSuffix = inputs["Global"]["Point suffix"]
+        if args.pointSuffix is not None:
+            pointSuffix = args.pointSuffix
+        else:
+            pointSuffix = inputs["Global"]["Point suffix"]
 
     
 

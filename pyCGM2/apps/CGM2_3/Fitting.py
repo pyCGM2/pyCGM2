@@ -34,6 +34,7 @@ if __name__ == "__main__":
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('--ik', action='store_true', help='inverse kinematic',default=True)
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')    
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     args = parser.parse_args()
 
@@ -64,8 +65,11 @@ if __name__ == "__main__":
     if args.check:
         pointSuffix="cgm2.3"
     else:
-        pointSuffix = inputs["Global"]["Point suffix"]
-
+        if args.pointSuffix is not None:
+            pointSuffix = args.pointSuffix
+        else:
+            pointSuffix = inputs["Global"]["Point suffix"]
+            
     if args.proj is not None:
         if args.proj == "Distal":
             momentProjection = pyCGM2Enums.MomentProjection.Distal
