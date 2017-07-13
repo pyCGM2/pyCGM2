@@ -47,9 +47,13 @@ if __name__ == "__main__":
 
     
     # --------------------SESSION SETTINGS ------------------------------
-    DATA_PATH =os.getcwd()+"\\"
-    infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-
+    if DEBUG:
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\Florent Moissenet\\sample\\"
+        infoSettings = json.loads(open(DATA_PATH + 'pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+    else:
+        DATA_PATH =os.getcwd()+"\\"
+        infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)    
+    
     # --------------------CONFIGURATION ------------------------------
     # NA
 
@@ -94,10 +98,22 @@ if __name__ == "__main__":
     for it in funcTrials:
         
         trial = it["Trial"]
-
+        
         # --- btk acquisition ----
         acqFunc = btkTools.smartReader(str(DATA_PATH + trial))
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
+
+
+        #---get frame range of interest---
+        ff = acqFunc.GetFirstFrame()
+        lf = acqFunc.GetLastFrame()
+
+        initFrame = args.beginFrame if it["beginFrame"] is not "" else ff
+        endFrame = args.endFrame if it["endFrame"] is not "" else lf
+
+        iff=initFrame-ff
+        ilf=endFrame-ff
+
          
         if it["Side"]=="":
             side = detectSide(acqFunc,"LANK","RANK")
@@ -123,11 +139,13 @@ if __name__ == "__main__":
             # remove other functional calibration
             model.mp_computed["LeftKnee2DofOffset"] = 0
             
+            
             # reinit node and func offset of the left side from initial calibration
             useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
             useLeftKJCnodeLabel = initialCalibration["LKJC_node"]
             useLeftAJCnodeLabel = initialCalibration["LAJC_node"]
-            model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0   
+            model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
+            model.mp_computed["FinalFuncLeftThighRotationOffset"] =0
             
 
             # opposite side - keep node from former calibration
@@ -149,7 +167,8 @@ if __name__ == "__main__":
             useRightHJCnodeLabel = initialCalibration["RHJC_node"]
             useRightKJCnodeLabel = initialCalibration["RKJC_node"]
             useRightAJCnodeLabel = initialCalibration["RAJC_node"]
-            model.mp_computed["RightKneeFuncCalibrationOffset"] = 0   
+            model.mp_computed["RightKneeFuncCalibrationOffset"] = 0  
+            model.mp_computed["FinalFuncRightThighRotationOffset"] =0
             
             # opposite side - keep node from former calibration
             if model.mp_computed["LeftKneeFuncCalibrationOffset"]:
@@ -209,7 +228,9 @@ if __name__ == "__main__":
             modMotion.segmentalCompute([proximalSegmentLabel,distalSegmentLabel])
         
             # decorator
-            modelDecorator.KneeCalibrationDecorator(model).sara(side)
+            modelDecorator.KneeCalibrationDecorator(model).sara(side,
+                                                                indexFirstFrame = iff,
+                                                                indexLastFrame = ilf )
 
             # --------------------------FINAL CALIBRATION OF THE STATIC File---------
                

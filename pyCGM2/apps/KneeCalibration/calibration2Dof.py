@@ -44,8 +44,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # --------------------SESSION SETTINGS ------------------------------
-    DATA_PATH =os.getcwd()+"\\"
-    infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+    if DEBUG:
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\Florent Moissenet\\sample\\"
+        infoSettings = json.loads(open(DATA_PATH + 'pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+    else:
+        DATA_PATH =os.getcwd()+"\\"
+        infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)    
+
 
     # --------------------CONFIGURATION ------------------------------
     # NA
@@ -110,6 +115,16 @@ if __name__ == "__main__":
         acqFunc = btkTools.smartReader(str(DATA_PATH + trial))
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
         
+        #---get frame range of interest---
+        ff = acqFunc.GetFirstFrame()
+        lf = acqFunc.GetLastFrame()
+
+        initFrame = args.beginFrame if it["beginFrame"] is not "" else ff
+        endFrame = args.endFrame if it["endFrame"] is not "" else lf
+
+        iff=initFrame-ff
+        ilf=endFrame-ff
+        
         # motion  
         if it["Side"]=="":
             side = detectSide(acqFunc,"LANK","RANK")
@@ -144,7 +159,7 @@ if __name__ == "__main__":
             useLeftKJCnodeLabel = initialCalibration["LKJC_node"]
             useLeftAJCnodeLabel = initialCalibration["LAJC_node"]
             model.mp_computed["LeftKnee2DofOffset"] = 0
-
+            model.mp_computed["FinalFuncLeftThighRotationOffset"] =0
 
             # opposite side - keep node from former calibration
             if model.mp_computed["RightKnee2DofOffset"]:
@@ -166,6 +181,7 @@ if __name__ == "__main__":
             useRightKJCnodeLabel = initialCalibration["RKJC_node"]
             useRightAJCnodeLabel = initialCalibration["RAJC_node"]
             model.mp_computed["RightKnee2DofOffset"] = 0
+            model.mp_computed["FinalFuncRightThighRotationOffset"] =0            
 
             # opposite side - keep node from former calibration
             if model.mp_computed["LeftKnee2DofOffset"]:
@@ -232,7 +248,9 @@ if __name__ == "__main__":
         
 
         # calibration decorators
-        modelDecorator.KneeCalibrationDecorator(model).calibrate2dof(side)
+        modelDecorator.KneeCalibrationDecorator(model).calibrate2dof(side,
+                                                                       indexFirstFrame = iff,
+                                                                       indexLastFrame = ilf)
 
 
         # --------------------------FINAL CALIBRATION OF THE STATIC File---------
