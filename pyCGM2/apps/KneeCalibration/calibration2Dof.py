@@ -14,8 +14,8 @@ import numpy as np
 import pyCGM2
 pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
-    
-# pyCGM2 libraries    
+
+# pyCGM2 libraries
 from pyCGM2.Tools import btkTools,nexusTools
 from pyCGM2.Model.CGM2 import cgm,cgm2, modelFilters, modelDecorator
 import pyCGM2.enums as pyCGM2Enums
@@ -26,7 +26,7 @@ from pyCGM2 import viconInterface
 def detectSide(acq,left_markerLabel,right_markerLabel):
 
     flag,vff,vlf = btkTools.findValidFrames(acq,[left_markerLabel,right_markerLabel])
-    
+
     left = acq.GetPoint(left_markerLabel).GetValues()[vff:vlf,2]
     right = acq.GetPoint(right_markerLabel).GetValues()[vff:vlf,2]
 
@@ -34,9 +34,9 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 
     return side
 
-    
+
 if __name__ == "__main__":
-   
+
     plt.close("all")
     DEBUG = False
 
@@ -49,14 +49,14 @@ if __name__ == "__main__":
         infoSettings = json.loads(open(DATA_PATH + 'pyCGM2.info').read(),object_pairs_hook=OrderedDict)
     else:
         DATA_PATH =os.getcwd()+"\\"
-        infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)    
+        infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
 
 
     # --------------------CONFIGURATION ------------------------------
     # NA
 
     # --------------------pyCGM2 MODEL------------------------------
-    
+
     if not os.path.isfile(DATA_PATH +  "pyCGM2.model"):
         raise Exception ("pyCGM2.model file doesn't exist. Run Calibration operation")
     else:
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     logging.info("loaded model : %s" %(model.version ))
 
     # --------------------GLOBAL SETTNGS ------------------------------
-       
+
     if model.version == "CGM1.0":
            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
     elif model.version == "CGM1.1":
@@ -88,7 +88,7 @@ if __name__ == "__main__":
            inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
     else:
         raise Exception ("model version not found [contact admin]")
-        
+
     # --------------------------TRANSLATORS ------------------------------------
 
     #  translators management
@@ -102,42 +102,42 @@ if __name__ == "__main__":
         translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM2-4.translators")
 
     if not translators:
-       translators = inputs["Translators"]        
-            
+       translators = inputs["Translators"]
+
     # --------------------------ACQ WITH TRANSLATORS --------------------------------------
     funcTrials = infoSettings["Modelling"]["KneeCalibrationTrials"]["Calibration2Dof"]
 
     for it in funcTrials:
-        
+
         trial = it["Trial"]
 
         # --- btk acquisition ----
         acqFunc = btkTools.smartReader(str(DATA_PATH + trial))
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
-        
+
         #---get frame range of interest---
         ff = acqFunc.GetFirstFrame()
         lf = acqFunc.GetLastFrame()
 
-        initFrame = args.beginFrame if it["beginFrame"] is not "" else ff
-        endFrame = args.endFrame if it["endFrame"] is not "" else lf
+        initFrame = int(args.beginFrame) if it["beginFrame"] is not "" else ff
+        endFrame = int(args.endFrame) if it["endFrame"] is not "" else lf
 
         iff=initFrame-ff
         ilf=endFrame-ff
-        
-        # motion  
+
+        # motion
         if it["Side"]=="":
             side = detectSide(acqFunc,"LANK","RANK")
             logging.info("Detected motion side : %s" %(side) )
         else:
-            side = it["Side"] 
-    
+            side = it["Side"]
+
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
             validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1LowerLimbs.MARKERS)
 
 
         # --------------------------RESET OF THE STATIC File---------
-    
+
         # load btkAcq from static file
         staticFilename = model.m_staticFilename
         acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -181,7 +181,7 @@ if __name__ == "__main__":
             useRightKJCnodeLabel = initialCalibration["RKJC_node"]
             useRightAJCnodeLabel = initialCalibration["RAJC_node"]
             model.mp_computed["RightKnee2DofOffset"] = 0
-            model.mp_computed["FinalFuncRightThighRotationOffset"] =0            
+            model.mp_computed["FinalFuncRightThighRotationOffset"] =0
 
             # opposite side - keep node from former calibration
             if model.mp_computed["LeftKnee2DofOffset"]:
@@ -221,10 +221,10 @@ if __name__ == "__main__":
 
 
         btkTools.smartWriter(acqStatic, "acqStatic0-test.c3d")
-        
+
 
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
-            
+
             modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Determinist)
             modMotion.compute()
 
@@ -232,20 +232,20 @@ if __name__ == "__main__":
             if side == "Left":
                 thigh_markers = model.getSegment("Left Thigh").m_tracking_markers
                 shank_markers = model.getSegment("Left Shank").m_tracking_markers
- 
+
             elif side == "Right":
                 thigh_markers = model.getSegment("Right Thigh").m_tracking_markers
                 shank_markers = model.getSegment("Right Shank").m_tracking_markers
 
-            validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,thigh_markers+shank_markers) 
+            validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,thigh_markers+shank_markers)
 
             proximalSegmentLabel=str(side+" Thigh")
-            distalSegmentLabel=str(side+" Shank")        
-              
-            # Motion 
+            distalSegmentLabel=str(side+" Shank")
+
+            # Motion
             modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Sodervisk)
             modMotion.segmentalCompute([proximalSegmentLabel,distalSegmentLabel])
-        
+
 
         # calibration decorators
         modelDecorator.KneeCalibrationDecorator(model).calibrate2dof(side,
@@ -291,7 +291,7 @@ if __name__ == "__main__":
                            leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                            markerDiameter=markerDiameter,
                            RotateLeftThighFlag = useRotateLeftThighFlag,
-                           RotateRightThighFlag = useRotateRightThighFlag).compute() 
+                           RotateRightThighFlag = useRotateRightThighFlag).compute()
 
 
         logging.warning("model updated with a  %s knee calibrated with 2Dof method" %(side))
@@ -309,11 +309,3 @@ if __name__ == "__main__":
     modelFile = open(DATA_PATH + "pyCGM2.model", "w")
     cPickle.dump(model, modelFile)
     modelFile.close()
-    
-    
-        
-        
-
-        
-
- 
