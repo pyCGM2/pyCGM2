@@ -41,6 +41,7 @@ if __name__ == "__main__":
     DEBUG = False
 
     parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
+    parser.add_argument('--infoFile', type=str, help='infoFile')
     args = parser.parse_args()
 
     # --------------------SESSION SETTINGS ------------------------------
@@ -119,8 +120,8 @@ if __name__ == "__main__":
         ff = acqFunc.GetFirstFrame()
         lf = acqFunc.GetLastFrame()
 
-        initFrame = int(args.beginFrame) if it["beginFrame"] is not "" else ff
-        endFrame = int(args.endFrame) if it["endFrame"] is not "" else lf
+        initFrame = int(it["beginFrame"]) if it["beginFrame"] is not "" else ff
+        endFrame = int(it["endFrame"]) if it["endFrame"] is not "" else lf
 
         iff=initFrame-ff
         ilf=endFrame-ff
