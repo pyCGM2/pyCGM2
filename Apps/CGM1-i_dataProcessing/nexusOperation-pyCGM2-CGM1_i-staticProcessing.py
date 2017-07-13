@@ -31,8 +31,8 @@ if __name__ == "__main__":
     DEBUG = False
 
 
-    parser = argparse.ArgumentParser(description='CGM1 Calibration')
-    parser.add_argument('--pointSuffix', type=str, help='force suffix')
+    parser = argparse.ArgumentParser(description='CGM Static Processing')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()

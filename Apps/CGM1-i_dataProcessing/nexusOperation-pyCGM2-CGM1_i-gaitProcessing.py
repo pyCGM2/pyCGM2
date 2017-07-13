@@ -26,8 +26,8 @@ if __name__ == "__main__":
     plt.close("all")
     DEBUG = False
 
-    parser = argparse.ArgumentParser(description='Gait Processing')
-    parser.add_argument('--pointSuffix', type=str, help='force suffix')
+    parser = argparse.ArgumentParser(description='CGM Gait Processing')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         if args.pointSuffix is not None:
             pointSuffix = args.pointSuffix
         else:
-            pointSuffix = infoSettings["Processing"]["Point suffix"]        
+            pointSuffix = ""        
         
         normativeData = infoSettings["Processing"]["Normative data"]
 
