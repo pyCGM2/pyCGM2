@@ -300,7 +300,7 @@ if __name__ == "__main__":
     infoSettings["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
     infoSettings["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
 
-    with open('pyCGM2.info', 'w') as outfile:
+    with open(infoSettingsFilename, 'w') as outfile:
         json.dump(infoSettings, outfile,indent=4)
 
 
@@ -320,4 +320,3 @@ if __name__ == "__main__":
         btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled[:-4]+"-modelled-"+args.fileSuffix+".c3d"))
     else:
         btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled[:-4]+"-modelled.c3d"))
-        
