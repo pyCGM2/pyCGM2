@@ -27,7 +27,7 @@ from pyCGM2.Utils import fileManagement
 
 
 if __name__ == "__main__":
-    
+
     DEBUG = False
     parser = argparse.ArgumentParser(description='CGM1 Fitting')
     parser.add_argument('--infoFile', type=str, help='infoFile')
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     else:
         DATA_PATH =os.getcwd()+"\\"
         infoSettingsFilename = "pyCGM2.info" if args.infoFile is None else  args.infoFile
-            
+
         infoSettings = json.loads(open(infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
 
 
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
     if not translators:
        translators = inputs["Translators"]
-       
+
 
     # ------------------ pyCGM2 MODEL -----------------------------------
 
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         model = cPickle.load(f)
         f.close()
 
-    # --------------------------CHECKING -----------------------------------    
+    # --------------------------CHECKING -----------------------------------
     # check model is the CGM1
     logging.info("loaded model : %s" %(model.version ))
     if model.version != "CGM1.0":
@@ -201,7 +201,6 @@ if __name__ == "__main__":
         # ----------------------SAVE-------------------------------------------
         # new static file
         if args.fileSuffix is not None:
-            btkTools.smartWriter(acqGait, str(DATA_PATH+trial[:-4]+"-modelled.c3d"))
-        else:
             btkTools.smartWriter(acqGait, str(DATA_PATH+trial[:-4]+"-modelled-"+args.fileSuffix+".c3d"))
-            
+        else:
+            btkTools.smartWriter(acqGait, str(DATA_PATH+trial[:-4]+"-modelled.c3d"))

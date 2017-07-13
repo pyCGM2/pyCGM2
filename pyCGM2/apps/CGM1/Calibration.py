@@ -51,11 +51,11 @@ if __name__ == "__main__":
 
     else:
         DATA_PATH =os.getcwd()+"\\"
-        
+
         infoSettingsFilename = "pyCGM2.info" if args.infoFile is None else  args.infoFile
-            
+
         infoSettings = json.loads(open(infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
-    
+
 
     # --------------------CONFIGURATION ------------------------------
 
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         else:
             pointSuffix = inputs["Global"]["Point suffix"]
 
-    
+
 
     # --------------------------TRANSLATORS ------------------------------------
 
@@ -138,7 +138,7 @@ if __name__ == "__main__":
     btkTools.checkMultipleSubject(acqStatic)
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
-    
+
 
     # ---definition---
     model=cgm.CGM1LowerLimbs()
@@ -148,7 +148,7 @@ if __name__ == "__main__":
 
     # ---check marker set used----
     staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
-    
+
 
 
     # --------------------------STATIC CALBRATION--------------------------
@@ -167,7 +167,7 @@ if __name__ == "__main__":
 
     useLeftHJCnodeLabel = "LHJC_cgm1"
     useRightHJCnodeLabel = "RHJC_cgm1"
- 
+
     useLeftKJCnodeLabel = "LKJC_chord"
     useLeftAJCnodeLabel = "LAJC_chord"
     useRightKJCnodeLabel = "RKJC_chord"
@@ -317,6 +317,7 @@ if __name__ == "__main__":
 
     # new static file
     if args.fileSuffix is not None:
-        btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled[:-4]+"-modelled.c3d"))
-    else:
         btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled[:-4]+"-modelled-"+args.fileSuffix+".c3d"))
+    else:
+        btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled[:-4]+"-modelled.c3d"))
+        
