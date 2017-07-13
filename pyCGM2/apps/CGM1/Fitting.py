@@ -30,11 +30,13 @@ if __name__ == "__main__":
     
     DEBUG = False
     parser = argparse.ArgumentParser(description='CGM1 Fitting')
+    parser.add_argument('--infoFile', type=str, help='infoFile')
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
+    parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of output file')
     args = parser.parse_args()
 
 
@@ -52,7 +54,9 @@ if __name__ == "__main__":
 
     else:
         DATA_PATH =os.getcwd()+"\\"
-        infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+        infoSettingsFilename = "pyCGM2.info" if args.infoFile is None else  args.infoFile
+            
+        infoSettings = json.loads(open(infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
 
 
     # --------------------CONFIGURATION ------------------------------
@@ -195,5 +199,9 @@ if __name__ == "__main__":
         modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
         # ----------------------SAVE-------------------------------------------
-        # overwrite static file
-        btkTools.smartWriter(acqGait, str(DATA_PATH+trial[:-4]+"-modelled.c3d"))
+        # new static file
+        if args.fileSuffix is not None:
+            btkTools.smartWriter(acqGait, str(DATA_PATH+trial[:-4]+"-modelled.c3d"))
+        else:
+            btkTools.smartWriter(acqGait, str(DATA_PATH+trial[:-4]+"-modelled-"+args.fileSuffix+".c3d"))
+            
