@@ -185,13 +185,14 @@ if __name__ == "__main__":
         if side == "Left":
             # remove other functional calibration
             model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
-            model.mp_computed["FinalFuncLeftThighRotationOffset"] =0
+            
 
             # reinit node and func offset of the left side from initial calibration
             useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
             useLeftKJCnodeLabel = initialCalibration["LKJC_node"]
             useLeftAJCnodeLabel = initialCalibration["LAJC_node"]
             model.mp_computed["LeftKnee2DofOffset"] = 0
+            model.mp_computed["FinalFuncLeftThighRotationOffset"] =0
 
 
             # opposite side - keep node from former calibration
@@ -208,13 +209,14 @@ if __name__ == "__main__":
         if side == "Right":
             # remove other functional calibration
             model.mp_computed["RightKneeFuncCalibrationOffset"] = 0
-            model.mp_computed["FinalFuncRightThighRotationOffset"] =0
+            
 
             # reinit node and func offset of the right side from initial calibration
             useRightHJCnodeLabel = initialCalibration["RHJC_node"]
             useRightKJCnodeLabel = initialCalibration["RKJC_node"]
             useRightAJCnodeLabel = initialCalibration["RAJC_node"]
             model.mp_computed["RightKnee2DofOffset"] = 0
+            model.mp_computed["FinalFuncRightThighRotationOffset"] =0
 
             # opposite side - keep node from former calibration
             if model.mp_computed["LeftKnee2DofOffset"]:
