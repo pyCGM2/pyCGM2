@@ -16,12 +16,12 @@
     },
     "KneeCalibrationTrials": {
         "Sara": [
-        { "Trial":"", "Side": "" },
-		{ "Trial":"", "Side": "" }
+        { "Trial":"", "Side": "", "beginFrame" : "", "endFrame" : "" },
+		{ "Trial":"", "Side": "" , "beginFrame" : "", "endFrame" : ""}
 		],
 		"Calibration2Dof": [
-        { "Trial":"", "Side": "" },
-		{ "Trial":"", "Side": "" }
+        { "Trial":"", "Side": "", "beginFrame" : "", "endFrame" : ""  },
+		{ "Trial":"", "Side": "", "beginFrame" : "", "endFrame" : ""  }
 		]
     }
   },
