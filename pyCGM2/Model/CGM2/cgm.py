@@ -557,12 +557,14 @@ class CGM1LowerLimbs(CGM):
 
         # management of Functional method
         if options.has_key("RotateRightThighFlag") and options["RotateRightThighFlag"]:
-
+            
             # SARA
             if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
                 self.getAngleOffsetFromFunctionalAxis("right","KJC_SaraAxis")
                 offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
-                
+            
+            
+            
             # 2DOF    
             elif self.mp_computed["RightKnee2DofOffset"]:
                 offset = self.mp_computed["RightKnee2DofOffset"]
@@ -571,6 +573,7 @@ class CGM1LowerLimbs(CGM):
             self._rotateAnatomicalFrame("Right Thigh",offset,
                                                      aquiStatic, dictAnatomic,frameInit,frameEnd)
 
+            
             
 
         logging.debug(" --- Left Shank - AF calibration ---")
@@ -2030,7 +2033,10 @@ class CGM1LowerLimbs(CGM):
         R = np.dot(seg.anatomicalFrame.static.getRotation(),rotZ) # apply rotation
 
         
-        frame=cfr.Frame()
+        # get previous nodes
+        previous_nodes = seg.anatomicalFrame.static.getNodes()
+
+        frame=cfr.Frame() # NOTE : Creation of a new Frame remove all former node
         frame.update(R,seg.anatomicalFrame.static.getTranslation() )
         seg.anatomicalFrame.setStaticFrame(frame)
 
@@ -2038,10 +2044,15 @@ class CGM1LowerLimbs(CGM):
         tf=seg.getReferential("TF")
         tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
-        # node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        # add node
+        for node in previous_nodes:
+            globalPosition=node.m_global
+            seg.anatomicalFrame.static.addNode(node.m_name[:-5],globalPosition,positionType="Global")
+
+#        # node manager
+#        for label in seg.m_markerLabels:
+#            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+#            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
 
         # --- relative rotation Technical Anatomical
         tf=seg.getReferential("TF")
@@ -2373,6 +2384,7 @@ class CGM1LowerLimbs(CGM):
                                    saraAxisLocal[1],
                                      0])
              
+            self.getSegment("Left Thigh").anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
             
             v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
 
@@ -2395,6 +2407,8 @@ class CGM1LowerLimbs(CGM):
 
             # node SARA_axis add in the anatomic Frame
             saraAxisGlobal = self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel(axisPointName).m_global
+            
+        
             self.getSegment("Right Thigh").anatomicalFrame.static.addNode(axisPointName,saraAxisGlobal,positionType="Global")
 
             # knee flexion
@@ -2413,6 +2427,8 @@ class CGM1LowerLimbs(CGM):
             proj_saraAxis = np.array([ saraAxisLocal[0],
                                    saraAxisLocal[1],
                                      0])
+
+            self.getSegment("Right Thigh").anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
             
             v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
 
@@ -2574,23 +2590,12 @@ class CGM1LowerLimbs(CGM):
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Thigh",originLabel = "LKJC") 
             
-            # if rotation offset from knee functional calibration methods
-            if self.mp_computed["FinalFuncLeftThighRotationOffset"]:
-                offset = self.mp_computed["FinalFuncLeftThighRotationOffset"]
-                self._rotate_anatomical_motion("Left Thigh",offset,
-                                        aqui)
-
 
         if "Right Thigh" in segments: 
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Thigh",originLabel = "RKJC")
             
-            # if rotation offset from knee functional calibration methods
-            if self.mp_computed["FinalFuncRightThighRotationOffset"]:
-                offset = self.mp_computed["FinalFuncRightThighRotationOffset"]
-                self._rotate_anatomical_motion("Right Thigh",offset,
-                                        aqui)
-            
+           
         if "Left Shank" in segments: 
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Shank",originLabel = "LAJC")
@@ -2711,20 +2716,10 @@ class CGM1LowerLimbs(CGM):
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
 
-            if self.mp_computed["FinalFuncLeftThighRotationOffset"]:
-                offset = self.mp_computed["FinalFuncLeftThighRotationOffset"]
-                self._rotate_anatomical_motion("Left Thigh",offset,
-                                        aqui,options=options)
-
 
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
 
-
-            if self.mp_computed["FinalFuncRightThighRotationOffset"]:
-                offset = self.mp_computed["FinalFuncRightThighRotationOffset"]
-                self._rotate_anatomical_motion("Right Thigh",offset,
-                                        aqui,options=options)
 
 
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
