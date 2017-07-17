@@ -39,7 +39,7 @@ if __name__ == "__main__":
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')    
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('--ik', action='store_true', help='inverse kinematic',default=True)
     args = parser.parse_args()
@@ -62,11 +62,11 @@ if __name__ == "__main__":
         # --- acquisition file and path----
         if DEBUG:
             #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\c3dOnly\\"
-            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\" 
+            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\"
             #calibrateFilenameLabelledNoExt = "Static" #"static Cal 01-noKAD-noAnkleMed" #
 
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\"
-            calibrateFilenameLabelledNoExt = "Static" 
+            calibrateFilenameLabelledNoExt = "Static"
 
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
@@ -187,7 +187,7 @@ if __name__ == "__main__":
         # hip joint centres ---
         useLeftHJCnodeLabel = "LHJC_cgm1"
         useRightHJCnodeLabel = "RHJC_cgm1"
-        
+
         if hjcMethod == "Hara":
             modelDecorator.HipJointCenterDecorator(model).hara()
             useLeftHJCnodeLabel = "LHJC_Hara"
@@ -262,7 +262,7 @@ if __name__ == "__main__":
         properties_initialCalibration["leftFlatFoot"] = flag_rightFlatFoot
         properties_initialCalibration["markerDiameter"] = markerDiameter
 
-        
+
         # ----Final Calibration filter if model previously decorated -----
         if model.decoratedModel:
             # initial static filter
@@ -275,7 +275,7 @@ if __name__ == "__main__":
 
         # set initial calibration as model property
         model.m_properties["CalibrationParameters0"] = properties_initialCalibration
-        
+
         #----update subject mp----
         viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 

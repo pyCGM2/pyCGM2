@@ -150,10 +150,10 @@ if __name__ == "__main__":
         #---get frame range of interest---
         ff = acqFunc.GetFirstFrame()
         lf = acqFunc.GetLastFrame()
-        
+
         initFrame = args.beginFrame if args.beginFrame is not None else ff
-        endFrame = args.endFrame if args.endFrame is not None else lf    
-                
+        endFrame = args.endFrame if args.endFrame is not None else lf
+
         iff=initFrame-ff
         ilf=endFrame-ff
 
@@ -185,7 +185,7 @@ if __name__ == "__main__":
         if side == "Left":
             # remove other functional calibration
             model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
-            
+
 
             # reinit node and func offset of the left side from initial calibration
             useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
@@ -209,7 +209,7 @@ if __name__ == "__main__":
         if side == "Right":
             # remove other functional calibration
             model.mp_computed["RightKneeFuncCalibrationOffset"] = 0
-            
+
 
             # reinit node and func offset of the right side from initial calibration
             useRightHJCnodeLabel = initialCalibration["RHJC_node"]
