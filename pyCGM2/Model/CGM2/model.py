@@ -79,7 +79,7 @@ class Model(object):
         self.m_jointCollection.append(j)
 
 
-    def addSegment(self,label,index,sideEnum, lst_markerlabel=[], tracking_markers=[],):
+    def addSegment(self,label,index,sideEnum, calibration_markers=[], tracking_markers=[],):
         """
             Add a segment
             
@@ -92,7 +92,7 @@ class Model(object):
                     
         """
         
-        s=Segment(label,index,sideEnum,lst_markerlabel,tracking_markers)
+        s=Segment(label,index,sideEnum,calibration_markers,tracking_markers)
         self.m_segmentCollection.append(s)
 
 
@@ -412,7 +412,7 @@ class Segment(object):
     #       compute constant matrix rotation between each referential.static      
 
 
-    def __init__(self,label,index,sideEnum ,lst_markerlabel=[], tracking_markers = []):
+    def __init__(self,label,index,sideEnum,calibration_markers=[], tracking_markers = []):
         """ 
             :Parameters:
                 - `label` (str) - label of the segment
@@ -425,8 +425,11 @@ class Segment(object):
         self.name=label
         self.index=index
         self.side = sideEnum
-        self.m_markerLabels=lst_markerlabel
+        
         self.m_tracking_markers=tracking_markers
+        self.m_calibration_markers = calibration_markers
+        
+        self.m_markerLabels=calibration_markers+tracking_markers
         self.referentials=[]
         self.anatomicalFrame =AnatomicalReferential()
         
@@ -452,6 +455,60 @@ class Segment(object):
         self.m_proximalMomentContribution["distalSegmentForces"] = None
         self.m_proximalMomentContribution["distalSegmentMoments"] = None
 
+    def addTrackingMarkerLabel(self,label):
+        """ 
+            Add a tracking marker 
+
+            :Parameters:
+                - `label` (str) - marker label  
+        """
+        if label not in self.m_tracking_markers:
+            self.m_tracking_markers.append(label)
+            self.m_markerLabels.append(label)
+        else:
+            logging.debug("marker %s already in the tracking marker segment list" % label)
+
+    def addCalibrationMarkerLabel(self,label):
+        """ 
+            Add a calibration marker 
+
+            :Parameters:
+                - `label` (str) - marker label  
+        """
+        
+        if label not in self.m_calibration_markers:
+            self.m_calibration_markers.append(label)
+            self.m_markerLabels.append(label)
+        else:
+            logging.debug("marker %s already in the clibration marker segment list" % label)
+
+
+    def resetMarkerLabels(self):
+        self.m_markerLabels = list()
+        self.m_markerLabels = self.m_tracking_markers + self.m_calibration_markers
+
+
+    def addMarkerLabel(self,label):
+        """ 
+            Add a marker 
+
+            :Parameters:
+                - `label` (str) - marker label  
+        """
+        isFind=False
+        i=0
+        for marker in self.m_markerLabels:
+            if label in marker:
+                isFind=True
+                index = i
+            i+=1
+
+        if isFind:
+            logging.debug("marker %s already in the marker segment list" % label)
+
+
+        else:
+            self.m_markerLabels.append(label)
 
     def zeroingExternalDevice(self):
         """
@@ -562,49 +619,10 @@ class Segment(object):
         self.m_bsp["inertia"] = array33        
 
 
-    def addMarkerLabel(self,label):
-        """ 
-            Add a marker 
-
-            :Parameters:
-                - `label` (str) - marker label  
-        """
-        isFind=False
-        i=0
-        for marker in self.m_markerLabels:
-            if label in marker:
-                isFind=True
-                index = i
-            i+=1
-
-        if isFind:
-            logging.debug("marker %s already in the marker segment list" % label)
+    
 
 
-        else:
-            self.m_markerLabels.append(label)
-
-
-    def addTrackingMarkerLabel(self,label):
-        """ 
-            Add a tracking marker 
-
-            :Parameters:
-                - `label` (str) - marker label  
-        """
-        isFind=False
-        i=0
-        for marker in self.m_tracking_markers:
-            if label in marker:
-                isFind=True
-                index = i
-            i+=1
-
-        if isFind:
-            logging.debug("marker %s already in the tracking marker segment list" % label) 
-
-        else:
-            self.m_tracking_markers.append(label)
+    
 
 
 
