@@ -3165,7 +3165,7 @@ class CGM1LowerLimbs(CGM):
 
         # computation
         LAJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
-        logging.info(aqui.GetPointFrameNumber())
+
 
         frame=cfr.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
@@ -3313,10 +3313,6 @@ class CGM1LowerLimbs(CGM):
         LKJC = aqui.GetPoint(str(dictAnat["Left Shank"]['labels'][3]))
         plt.plot(LKJC.GetValues())
 
-
-        logging.info(aqui.GetPointFrameNumber())
-
-
         frame=cfr.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=LKJC.GetValues()[i,:]
@@ -3327,7 +3323,6 @@ class CGM1LowerLimbs(CGM):
             frame.update(R,ptOrigin)
             segProx.anatomicalFrame.addMotionFrame(copy.deepcopy(frame))
 
-            #logging.info(i)
 
 
     def _right_shank_motion(self,aqui, dictRef,dictAnat,options=None):
