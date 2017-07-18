@@ -143,11 +143,11 @@ if __name__ == "__main__":
 
         optional_mp={
         'InterAsisDistance'   : float(vsk.getStaticParameterValue("InterAsisDistance")),#0,
-        'LeftAsisTrocanterDistance' : float(vsk.getStaticParameterValue("LeftAsisTrocanterDistance")),#0,
+        'LeftAsisTrocanterDistance' : 0,#float(vsk.getStaticParameterValue("LeftAsisTrocanterDistance")),#0,
         'LeftTibialTorsion' : float(vsk.getStaticParameterValue("LeftTibialTorsion")),#0 ,
         'LeftThighRotation' : float(vsk.getStaticParameterValue("LeftThighRotation")),#0,
         'LeftShankRotation' : float(vsk.getStaticParameterValue("LeftShankRotation")),#0,
-        'RightAsisTrocanterDistance' : float(vsk.getStaticParameterValue("RightAsisTrocanterDistance")),#0,
+        'RightAsisTrocanterDistance' : 0,#float(vsk.getStaticParameterValue("RightAsisTrocanterDistance")),#0,
         'RightTibialTorsion' : float(vsk.getStaticParameterValue("RightTibialTorsion")),#0 ,
         'RightThighRotation' : float(vsk.getStaticParameterValue("RightThighRotation")),#0,
         'RightShankRotation' : float(vsk.getStaticParameterValue("RightShankRotation")),#0,
