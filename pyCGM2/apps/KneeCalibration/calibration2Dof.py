@@ -122,8 +122,6 @@ if __name__ == "__main__":
         acqFunc = btkTools.smartReader(str(DATA_PATH + trial))
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
 
-        btkTools.smartWriter(acqFunc, "acqFunc.c3d")
-
         #---get frame range of interest---
         ff = acqFunc.GetFirstFrame()
         lf = acqFunc.GetLastFrame()
@@ -143,7 +141,6 @@ if __name__ == "__main__":
 
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
             validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1LowerLimbs.MARKERS)
-            btkTools.smartWriter(acqFunc, "acqFunc0.c3d")
 
 
         # --------------------------RESET OF THE STATIC File---------
@@ -229,8 +226,6 @@ if __name__ == "__main__":
                                RotateRightThighFlag = False).compute()
 
 
-
-        btkTools.smartWriter(acqStatic, "acqStatic0-test.c3d")
 
 
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
