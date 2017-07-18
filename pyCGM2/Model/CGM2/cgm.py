@@ -2710,9 +2710,6 @@ class CGM1LowerLimbs(CGM):
             else:
                 self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
 
-            btkTools.smartWriter(aqui,"Test.c3d")
-
-
         if motionMethod == pyCGM2Enums.motionMethod.Sodervisk:
 
             # ---remove all  direction marker from tracking markers.
@@ -3278,7 +3275,6 @@ class CGM1LowerLimbs(CGM):
                - `options` (dict) - dictionnary use to pass options
 
         """
-        btkTools.smartWriter(aqui, "VERIF_aft2.c3d")
         seg=self.getSegment("Left Shank")
         segProx=self.getSegment("Left Shank Proximal")
 

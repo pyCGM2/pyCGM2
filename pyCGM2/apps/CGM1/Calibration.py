@@ -129,8 +129,6 @@ if __name__ == "__main__":
     else:
         vsk = vskTools.Vsk(str(DATA_PATH + args.vsk))
 
-        pdb.set_trace()
-
         required_mp={
         'Bodymass'   : float(vsk.getStaticParameterValue("Bodymass")),
         'LeftLegLength' :float(vsk.getStaticParameterValue("LeftLegLength")),
