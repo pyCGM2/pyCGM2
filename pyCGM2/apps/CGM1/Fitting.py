@@ -49,8 +49,10 @@ if __name__ == "__main__":
 
     # --------------------SESSION SETTINGS ------------------------------
     if DEBUG:
-        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\Florent Moissenet\\sample\\"
-        infoSettings = json.loads(open(DATA_PATH + 'pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+        DATA_PATH = "C:\\Users\\HLS501\\Google Drive\\Paper_for BJSM\\BJSM_trials\\FMS_Screening\\15KUFC01\\Session 2\\"
+        infoSettingsFilename = "pyCGM2.info"
+        infoSettings = json.loads(open(DATA_PATH + infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
+
 
     else:
         DATA_PATH =os.getcwd()+"\\"

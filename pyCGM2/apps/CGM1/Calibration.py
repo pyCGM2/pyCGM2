@@ -17,7 +17,7 @@ pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
 
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools
+from pyCGM2.Tools import btkTools,vskTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
 from pyCGM2.Utils import fileManagement
@@ -35,6 +35,7 @@ if __name__ == "__main__":
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix' )
     parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of output file')
+    parser.add_argument('--vsk', type=str, help='vicon skeleton filename')
     args = parser.parse_args()
 
 
@@ -46,9 +47,10 @@ if __name__ == "__main__":
 
     # --------------------SESSION  SETTINGS ------------------------------
     if DEBUG:
-        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\Florent Moissenet\\sample\\"
-        infoSettings = json.loads(open(DATA_PATH + 'pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-
+        DATA_PATH = "C:\\Users\\HLS501\\Google Drive\\Paper_for BJSM\\BJSM_trials\\FMS_Screening\\15KUFC01\\Session 2\\"
+        infoSettingsFilename = "pyCGM2.info"
+        infoSettings = json.loads(open(DATA_PATH + infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
+        args.vsk = "15KUFC01.vsk"
     else:
         DATA_PATH =os.getcwd()+"\\"
 
@@ -100,29 +102,57 @@ if __name__ == "__main__":
 
 
     # --------------------------SUBJECT ------------------------------------
+    if args.vsk is  None:
+        required_mp={
+        'Bodymass'   : infoSettings["MP"]["Required"]["Bodymass"],
+        'LeftLegLength' :infoSettings["MP"]["Required"]["LeftLegLength"],
+        'RightLegLength' : infoSettings["MP"]["Required"][ "RightLegLength"],
+        'LeftKneeWidth' : infoSettings["MP"]["Required"][ "LeftKneeWidth"],
+        'RightKneeWidth' : infoSettings["MP"]["Required"][ "RightKneeWidth"],
+        'LeftAnkleWidth' : infoSettings["MP"]["Required"][ "LeftAnkleWidth"],
+        'RightAnkleWidth' : infoSettings["MP"]["Required"][ "RightAnkleWidth"],
+        'LeftSoleDelta' : infoSettings["MP"]["Required"][ "LeftSoleDelta"],
+        'RightSoleDelta' : infoSettings["MP"]["Required"]["RightSoleDelta"]
+        }
 
-    required_mp={
-    'Bodymass'   : infoSettings["MP"]["Required"]["Bodymass"],
-    'LeftLegLength' :infoSettings["MP"]["Required"]["LeftLegLength"],
-    'RightLegLength' : infoSettings["MP"]["Required"][ "RightLegLength"],
-    'LeftKneeWidth' : infoSettings["MP"]["Required"][ "LeftKneeWidth"],
-    'RightKneeWidth' : infoSettings["MP"]["Required"][ "RightKneeWidth"],
-    'LeftAnkleWidth' : infoSettings["MP"]["Required"][ "LeftAnkleWidth"],
-    'RightAnkleWidth' : infoSettings["MP"]["Required"][ "RightAnkleWidth"],
-    'LeftSoleDelta' : infoSettings["MP"]["Required"][ "LeftSoleDelta"],
-    'RightSoleDelta' : infoSettings["MP"]["Required"]["RightSoleDelta"]
-    }
+        optional_mp={
+        'InterAsisDistance'   : infoSettings["MP"]["Optional"][ "InterAsisDistance"],#0,
+        'LeftAsisTrocanterDistance' : infoSettings["MP"]["Optional"][ "LeftAsisTrocanterDistance"],#0,
+        'LeftTibialTorsion' : infoSettings["MP"]["Optional"][ "LeftTibialTorsion"],#0 ,
+        'LeftThighRotation' : infoSettings["MP"]["Optional"][ "LeftThighRotation"],#0,
+        'LeftShankRotation' : infoSettings["MP"]["Optional"][ "LeftShankRotation"],#0,
+        'RightAsisTrocanterDistance' : infoSettings["MP"]["Optional"][ "RightAsisTrocanterDistance"],#0,
+        'RightTibialTorsion' : infoSettings["MP"]["Optional"][ "RightTibialTorsion"],#0 ,
+        'RightThighRotation' : infoSettings["MP"]["Optional"][ "RightThighRotation"],#0,
+        'RightShankRotation' : infoSettings["MP"]["Optional"][ "RightShankRotation"],#0,
+        }
+    else:
+        vsk = vskTools.Vsk(str(DATA_PATH + args.vsk))
 
-    optional_mp={
-    'InterAsisDistance'   : infoSettings["MP"]["Optional"][ "InterAsisDistance"],#0,
-    'LeftAsisTrocanterDistance' : infoSettings["MP"]["Optional"][ "LeftAsisTrocanterDistance"],#0,
-    'LeftTibialTorsion' : infoSettings["MP"]["Optional"][ "LeftTibialTorsion"],#0 ,
-    'LeftThighRotation' : infoSettings["MP"]["Optional"][ "LeftThighRotation"],#0,
-    'LeftShankRotation' : infoSettings["MP"]["Optional"][ "LeftShankRotation"],#0,
-    'RightAsisTrocanterDistance' : infoSettings["MP"]["Optional"][ "RightAsisTrocanterDistance"],#0,
-    'RightTibialTorsion' : infoSettings["MP"]["Optional"][ "RightTibialTorsion"],#0 ,
-    'RightThighRotation' : infoSettings["MP"]["Optional"][ "RightThighRotation"],#0,
-    'RightShankRotation' : infoSettings["MP"]["Optional"][ "RightShankRotation"],#0,
+        pdb.set_trace()
+
+        required_mp={
+        'Bodymass'   : float(vsk.getStaticParameterValue("Bodymass")),
+        'LeftLegLength' :float(vsk.getStaticParameterValue("LeftLegLength")),
+        'RightLegLength' : float(vsk.getStaticParameterValue("RightLegLength")),
+        'LeftKneeWidth' : float(vsk.getStaticParameterValue("LeftKneeWidth")),
+        'RightKneeWidth' : float(vsk.getStaticParameterValue("RightKneeWidth")),
+        'LeftAnkleWidth' : float(vsk.getStaticParameterValue("LeftAnkleWidth")),
+        'RightAnkleWidth' : float(vsk.getStaticParameterValue("RightAnkleWidth")),
+        'LeftSoleDelta' : float(vsk.getStaticParameterValue("LeftSoleDelta")),
+        'RightSoleDelta' : float(vsk.getStaticParameterValue("RightSoleDelta"))
+        }
+
+        optional_mp={
+        'InterAsisDistance'   : float(vsk.getStaticParameterValue("InterAsisDistance")),#0,
+        'LeftAsisTrocanterDistance' : float(vsk.getStaticParameterValue("LeftAsisTrocanterDistance")),#0,
+        'LeftTibialTorsion' : float(vsk.getStaticParameterValue("LeftTibialTorsion")),#0 ,
+        'LeftThighRotation' : float(vsk.getStaticParameterValue("LeftThighRotation")),#0,
+        'LeftShankRotation' : float(vsk.getStaticParameterValue("LeftShankRotation")),#0,
+        'RightAsisTrocanterDistance' : float(vsk.getStaticParameterValue("RightAsisTrocanterDistance")),#0,
+        'RightTibialTorsion' : float(vsk.getStaticParameterValue("RightTibialTorsion")),#0 ,
+        'RightThighRotation' : float(vsk.getStaticParameterValue("RightThighRotation")),#0,
+        'RightShankRotation' : float(vsk.getStaticParameterValue("RightShankRotation")),#0,
         }
 
 
@@ -144,7 +174,7 @@ if __name__ == "__main__":
     model=cgm.CGM1LowerLimbs()
     model.configure()
     model.addAnthropoInputParameters(required_mp,optional=optional_mp)
-
+    model.setStaticFilename(calibrateFilenameLabelled)
 
     # ---check marker set used----
     staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)

@@ -46,11 +46,16 @@ if __name__ == "__main__":
 
     # --------------------SESSION SETTINGS ------------------------------
     if DEBUG:
-        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\Florent Moissenet\\sample\\"
-        infoSettings = json.loads(open(DATA_PATH + 'pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+        DATA_PATH = "C:\\Users\\HLS501\\Google Drive\\Paper_for BJSM\\BJSM_trials\\FMS_Screening\\15KUFC01\\Session 2\\"
+        infoSettingsFilename = "pyCGM2.info"
+        infoSettings = json.loads(open(DATA_PATH + infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
+
     else:
         DATA_PATH =os.getcwd()+"\\"
-        infoSettings = json.loads(open('pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+        infoSettingsFilename = "pyCGM2.info" if args.infoFile is None else  args.infoFile
+
+        infoSettings = json.loads(open(infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
+
 
 
     # --------------------CONFIGURATION ------------------------------
@@ -113,8 +118,11 @@ if __name__ == "__main__":
         trial = it["Trial"]
 
         # --- btk acquisition ----
+        print str(DATA_PATH + trial)
         acqFunc = btkTools.smartReader(str(DATA_PATH + trial))
         acqFunc =  btkTools.applyTranslators(acqFunc,translators)
+
+        btkTools.smartWriter(acqFunc, "acqFunc.c3d")
 
         #---get frame range of interest---
         ff = acqFunc.GetFirstFrame()
@@ -135,6 +143,7 @@ if __name__ == "__main__":
 
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
             validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1LowerLimbs.MARKERS)
+            btkTools.smartWriter(acqFunc, "acqFunc0.c3d")
 
 
         # --------------------------RESET OF THE STATIC File---------
@@ -226,8 +235,13 @@ if __name__ == "__main__":
 
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
 
-            modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Determinist)
+            modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Determinist,
+                                                     markerDiameter=markerDiameter,
+                                                     viconCGM1compatible=True)
             modMotion.compute()
+
+
+
 
         elif model.version in  ["CGM2.3","CGM2.3e","CGM2.3","CGM2.4e"]:
             if side == "Left":
