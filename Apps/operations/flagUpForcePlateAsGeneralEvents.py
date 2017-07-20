@@ -52,7 +52,7 @@ if __name__ == "__main__":
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-01 - myProcess\\PIG\\"
             reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 16" #"static Cal 01-noKAD-noAnkleMed" #
-            
+
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
         else:
@@ -65,18 +65,18 @@ if __name__ == "__main__":
 
         # --- btk acquisition ----
         acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
-        
-        
+
+
         #   check if acq was saved with only one  activated subject
         if acqGait.GetPoint(0).GetLabel().count(":"):
-            raise Exception("[pyCGM2] Your Trial c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
+            raise Exception("[pyCGM2] Your Trial c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation")
 
 
         # --------------------------SUBJECT -----------------------------------
 
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
 
@@ -105,26 +105,26 @@ if __name__ == "__main__":
 #        enfFile = str(DATA_PATH+reconstructFilenameLabelledNoExt+".Trial.enf")
 #        configEnf.read(enfFile)
 #
-#        
+#
 #        indexFP=1
 #        for letter in mappedForcePlate:
-#            
-#            if letter =="L": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Left"  
-#            if letter =="R": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Right"  
-#            if letter =="X": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Invalid"  
-#         
+#
+#            if letter =="L": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Left"
+#            if letter =="R": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Right"
+#            if letter =="X": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Invalid"
+#
 #            indexFP+=1
 #
 #        tmpFile =str(DATA_PATH+reconstructFilenameLabelledNoExt+".Trial.enf-tmp")
 #        with open(tmpFile, 'w') as configfile:
 #            configEnf.write(configfile)
-#    
+#
 #        os.remove(enfFile)
 #        os.rename(tmpFile,enfFile)
 #        logging.warning("Enf file updated with Force plate assignement")
-        
 
-                
+
+
         # ----------------------DISPLAY ON VICON-------------------------------
 
         nexusTools.createGeneralEvents(NEXUS,subject,acqGait,["Left-FP","Right-FP"])
@@ -135,7 +135,7 @@ if __name__ == "__main__":
         if DEBUG:
 
             NEXUS.SaveTrial(30)
-    
-            
+
+
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
