@@ -88,21 +88,21 @@ class EventFilter(object):
         indexes_fs_left,indexes_fo_left,indexes_fs_right,indexes_fo_right =  self.m_procedure.detect(self.m_aqui)
 
         for ind in indexes_fs_left:
-            ev = btk.btkEvent('Foot Strike', (ind)/pf, 'Left', btk.btkEvent.Automatic, '', eventDescriptor)
+            ev = btk.btkEvent('Foot Strike', (ind-1)/pf, 'Left', btk.btkEvent.Automatic, '', eventDescriptor)
             ev.SetId(1)
             self.m_aqui.AppendEvent(ev)
 
         for ind in indexes_fo_left:
-            ev = btk.btkEvent('Foot Off', (ind)/pf, 'Left', btk.btkEvent.Automatic, '', eventDescriptor)
+            ev = btk.btkEvent('Foot Off', (ind-1)/pf, 'Left', btk.btkEvent.Automatic, '', eventDescriptor)
             ev.SetId(2)
             self.m_aqui.AppendEvent(ev)
 
         for ind in indexes_fs_right:
-            ev = btk.btkEvent('Foot Strike', (ind)/pf, 'Right', btk.btkEvent.Manual, '', eventDescriptor)
+            ev = btk.btkEvent('Foot Strike', (ind-1)/pf, 'Right', btk.btkEvent.Manual, '', eventDescriptor)
             ev.SetId(1)
             self.m_aqui.AppendEvent(ev)
 
         for ind in indexes_fo_right:
-            ev = btk.btkEvent('Foot Off', (ind)/pf, 'Right', btk.btkEvent.Manual, '', eventDescriptor)
+            ev = btk.btkEvent('Foot Off', (ind-1)/pf, 'Right', btk.btkEvent.Manual, '', eventDescriptor)
             ev.SetId(2)
             self.m_aqui.AppendEvent(ev)
