@@ -41,7 +41,7 @@ if __name__ == "__main__":
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
-    parser.add_argument('--ik', action='store_true', help='inverse kinematic',default=True)
+    parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     args = parser.parse_args()
 
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
-            args.ik=False
+            args.noIk=False
 
         else:
             DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
@@ -150,6 +150,8 @@ if __name__ == "__main__":
                 pointSuffix = args.pointSuffix
             else:
                 pointSuffix = inputs["Global"]["Point suffix"]
+
+        ik_flag = False if args.noIk else True
 
         # --------------------------STATIC FILE WITH TRANSLATORS --------------------------------------
         # ---btk acquisition---
@@ -288,7 +290,7 @@ if __name__ == "__main__":
         modMotion.compute()
 
 
-        if args.ik:
+        if ik_flag:
             #                        ---OPENSIM IK---
 
             # --- opensim calibration Filter ---
@@ -352,7 +354,7 @@ if __name__ == "__main__":
 
 
         # eventual static acquisition to consider for joint kinematics
-        finalAcqStatic = acqStaticIK if args.ik else acqStatic
+        finalAcqStatic = acqStaticIK if ik_flag else acqStatic
 
         # --- final pyCGM2 model motion Filter ---
         # use fitted markers
