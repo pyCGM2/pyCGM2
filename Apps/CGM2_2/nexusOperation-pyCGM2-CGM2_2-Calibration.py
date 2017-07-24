@@ -39,9 +39,9 @@ if __name__ == "__main__":
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')    
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
-    parser.add_argument('--ik', action='store_true', help='inverse kinematic',default=True)
+    parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     args = parser.parse_args()
 
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
             calibrateFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 02" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
-            args.ik=False
+            args.noIk=False
 
         else:
             DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
@@ -148,7 +148,7 @@ if __name__ == "__main__":
             else:
                 pointSuffix = inputs["Global"]["Point suffix"]
 
-
+        ik_flag = False if args.noIk else True
 
         # --------------------ACQUISITION------------------------------
 
@@ -162,9 +162,9 @@ if __name__ == "__main__":
         # ---definition---
         model=cgm2.CGM2_2LowerLimbs()
         model.configure()
-        
+
         model.setStaticFilename(calibrateFilenameLabelled)
-        
+
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
         # ---check marker set used----
@@ -288,7 +288,7 @@ if __name__ == "__main__":
         modMotion.compute()
 
 
-        if args.ik:
+        if ik_flag:
             #                        ---OPENSIM IK---
 
             # --- opensim calibration Filter ---
@@ -341,7 +341,7 @@ if __name__ == "__main__":
 
 
         # eventual static acquisition to consider for joint kinematics
-        finalAcqStatic = acqStaticIK if args.ik else acqStatic
+        finalAcqStatic = acqStaticIK if ik_flag else acqStatic
 
         #---- Joint kinematics----
         # relative angles
