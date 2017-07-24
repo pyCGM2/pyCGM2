@@ -39,9 +39,9 @@ if __name__ == "__main__":
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')    
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
-    parser.add_argument('--ik', action='store_true', help='inverse kinematic',default=True)
+    parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     args = parser.parse_args()
 
 
@@ -62,11 +62,11 @@ if __name__ == "__main__":
         # --- acquisition file and path----
         if DEBUG:
 
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\c3dOnly\\" 
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\c3dOnly\\"
             calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
-            args.ik=False
+            args.noIk=False
 
         else:
             DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
@@ -148,6 +148,8 @@ if __name__ == "__main__":
             else:
                 pointSuffix = inputs["Global"]["Point suffix"]
 
+        ik_flag = False if args.noIk else True
+
         # --------------------------STATIC FILE WITH TRANSLATORS --------------------------------------
         # ---btk acquisition---
         acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
@@ -156,7 +158,7 @@ if __name__ == "__main__":
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
         validFrames,vff,vlf = btkTools.findValidFrames(acqStatic,cgm2.CGM2_4LowerLimbs.MARKERS)
-        
+
         # --------------------------MODEL--------------------------------------
         # ---definition---
         model=cgm2.CGM2_4LowerLimbs()
@@ -286,7 +288,7 @@ if __name__ == "__main__":
         modMotion.compute()
 
 
-        if args.ik:
+        if ik_flag:
             #                        ---OPENSIM IK---
 
             # --- opensim calibration Filter ---
@@ -356,8 +358,8 @@ if __name__ == "__main__":
 
 
         # eventual static acquisition to consider for joint kinematics
-        finalAcqStatic = acqStaticIK if args.ik else acqStatic
-        
+        finalAcqStatic = acqStaticIK if ik_flag else acqStatic
+
         # --- final pyCGM2 model motion Filter ---
         # use fitted markers
         modMotionFitted=modelFilters.ModelMotionFilter(scp,finalAcqStatic,model,pyCGM2Enums.motionMethod.Sodervisk)

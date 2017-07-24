@@ -43,9 +43,9 @@ if __name__ == "__main__":
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')    
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
-    parser.add_argument('--ik', action='store_true', help='inverse kinematic',default=True)
+    parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     args = parser.parse_args()
 
 
@@ -62,7 +62,7 @@ if __name__ == "__main__":
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\c3dOnly\\"
             reconstructFilenameLabelledNoExt = "gait 01"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
-            args.ik = False
+            args.noIk = False
         else:
             DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
@@ -85,12 +85,12 @@ if __name__ == "__main__":
             f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
             model = cPickle.load(f)
             f.close()
-            
-        # --------------------------CHECKING -----------------------------------        
+
+        # --------------------------CHECKING -----------------------------------
         # check model
         logging.info("loaded model : %s" %(model.version))
         if model.version != "CGM2.4":
-            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.3e calibration pipeline"%subject)            
+            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.3e calibration pipeline"%subject)
 
         # --------------------------SESSION INFOS -----------------------------
         # info file
@@ -126,7 +126,7 @@ if __name__ == "__main__":
             elif args.proj == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
             elif args.proj == "JCS":
-                momentProjection = pyCGM2Enums.MomentProjection.JCS                
+                momentProjection = pyCGM2Enums.MomentProjection.JCS
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
@@ -138,10 +138,11 @@ if __name__ == "__main__":
             elif inputs["Fitting"]["Moment Projection"] == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
             elif inputs["Fitting"]["Moment Projection"] == "JCS":
-                momentProjection = pyCGM2Enums.MomentProjection.JCS                
+                momentProjection = pyCGM2Enums.MomentProjection.JCS
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
+        ik_flag = False if args.noIk else True
 
         # --------------------------ACQ WITH TRANSLATORS --------------------------------------
 
@@ -160,24 +161,24 @@ if __name__ == "__main__":
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
-        if args.ik:
+        if ik_flag:
             #                        ---OPENSIM IK---
-    
+
             # --- opensim calibration Filter ---
             osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
             markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-markerset.xml" # markerset
             cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
-    
+
             oscf = opensimFilters.opensimCalibrationFilter(osimfile,
                                                     model,
                                                     cgmCalibrationprocedure)
             oscf.addMarkerSet(markersetFile)
             scalingOsim = oscf.build()
-    
-    
+
+
             # --- opensim Fitting Filter ---
             iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-ikSetUp_template.xml" # ik tl file
-    
+
             cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
             cgmFittingProcedure.updateMarkerWeight("LASI",inputs["Fitting"]["Weight"]["LASI"])
             cgmFittingProcedure.updateMarkerWeight("RASI",inputs["Fitting"]["Weight"]["RASI"])
@@ -192,7 +193,7 @@ if __name__ == "__main__":
             cgmFittingProcedure.updateMarkerWeight("RCUN",inputs["Fitting"]["Weight"]["RCUN"])
             cgmFittingProcedure.updateMarkerWeight("RD1M",inputs["Fitting"]["Weight"]["RD1M"])
             cgmFittingProcedure.updateMarkerWeight("RD5M",inputs["Fitting"]["Weight"]["RD5M"])
-    
+
             cgmFittingProcedure.updateMarkerWeight("LTHI",inputs["Fitting"]["Weight"]["LTHI"])
             cgmFittingProcedure.updateMarkerWeight("LKNE",inputs["Fitting"]["Weight"]["LKNE"])
             cgmFittingProcedure.updateMarkerWeight("LTIB",inputs["Fitting"]["Weight"]["LTIB"])
@@ -202,8 +203,8 @@ if __name__ == "__main__":
             cgmFittingProcedure.updateMarkerWeight("LCUN",inputs["Fitting"]["Weight"]["LCUN"])
             cgmFittingProcedure.updateMarkerWeight("LD1M",inputs["Fitting"]["Weight"]["LD1M"])
             cgmFittingProcedure.updateMarkerWeight("LD5M",inputs["Fitting"]["Weight"]["LD5M"])
-            
-    
+
+
             cgmFittingProcedure.updateMarkerWeight("LTHIAP",inputs["Fitting"]["Weight"]["LTHIAP"])
             cgmFittingProcedure.updateMarkerWeight("LTHIAD",inputs["Fitting"]["Weight"]["LTHIAD"])
             cgmFittingProcedure.updateMarkerWeight("LTIBAP",inputs["Fitting"]["Weight"]["LTIBAP"])
@@ -212,7 +213,7 @@ if __name__ == "__main__":
             cgmFittingProcedure.updateMarkerWeight("RTHIAD",inputs["Fitting"]["Weight"]["RTHIAD"])
             cgmFittingProcedure.updateMarkerWeight("RTIBAP",inputs["Fitting"]["Weight"]["RTIBAP"])
             cgmFittingProcedure.updateMarkerWeight("RTIBAD",inputs["Fitting"]["Weight"]["RTIBAD"])
-    
+
     #       cgmFittingProcedure.updateMarkerWeight("LTHL",inputs["Fitting"]["Weight"]["LTHL"])
     #       cgmFittingProcedure.updateMarkerWeight("LTHLD",inputs["Fitting"]["Weight"]["LTHLD"])
     #       cgmFittingProcedure.updateMarkerWeight("LPAT",inputs["Fitting"]["Weight"]["LPAT"])
@@ -221,8 +222,8 @@ if __name__ == "__main__":
     #       cgmFittingProcedure.updateMarkerWeight("RTHLD",inputs["Fitting"]["Weight"]["RTHLD"])
     #       cgmFittingProcedure.updateMarkerWeight("RPAT",inputs["Fitting"]["Weight"]["RPAT"])
     #       cgmFittingProcedure.updateMarkerWeight("RTIBL",inputs["Fitting"]["Weight"]["RTIBL"])
-    
-    
+
+
             osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                               scalingOsim,
                                                               cgmFittingProcedure,
@@ -231,7 +232,7 @@ if __name__ == "__main__":
 
 
         # eventual gait acquisition to consider for joint kinematics
-        finalAcqGait = acqIK if args.ik else acqGait
+        finalAcqGait = acqIK if ik_flag else acqGait
 
         # --- final pyCGM2 model motion Filter ---
         # use fitted markers
