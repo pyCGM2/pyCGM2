@@ -8,7 +8,10 @@ import btk
 
 
 
-def ckeckActivatedSubject(NEXUS,subjectNames):
+def checkActivatedSubject(NEXUS,subjectNames):
+    """
+    Note : function should be improved in Nexus API by Vicon
+    """
 
     subjectMarkerWithTraj=dict()
     for subject in subjectNames:
@@ -21,6 +24,7 @@ def ckeckActivatedSubject(NEXUS,subjectNames):
                 subjectMarkerWithTraj[subject] = marker
                 break
 
+
     flags=list()
     for value in subjectMarkerWithTraj.itervalues():
         if value is not None:
@@ -32,9 +36,9 @@ def ckeckActivatedSubject(NEXUS,subjectNames):
         raise Exception("[pyCGM2] : two subjects are activated. Select one ony")
     else:
         index = flags.index(True)
-        logging.info("Active subject is %s"%(subjectNames[index]))
+        logging.info("Active subject is %s"%(subjectMarkerWithTraj.keys()[index]))
 
-    return subjectNames[index]
+    return subjectMarkerWithTraj.keys()[index]
 
 
 
