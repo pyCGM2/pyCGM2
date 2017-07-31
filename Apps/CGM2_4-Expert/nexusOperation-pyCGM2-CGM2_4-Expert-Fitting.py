@@ -82,7 +82,7 @@ if __name__ == "__main__":
         # --------------------------SUBJECT -----------------------------------
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
 

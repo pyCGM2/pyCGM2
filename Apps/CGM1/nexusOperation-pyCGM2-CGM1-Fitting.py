@@ -56,7 +56,7 @@ if __name__ == "__main__":
         if DEBUG:
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
             reconstructFilenameLabelledNoExt = "Gait Trial 01" #"static Cal 01-noKAD-noAnkleMed" #
-            
+
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
         else:
@@ -70,7 +70,7 @@ if __name__ == "__main__":
         # --------------------------SUBJECT ------------------------------------
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
@@ -78,28 +78,28 @@ if __name__ == "__main__":
             raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM1 Calibration operation"%subject)
         else:
             f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
-            
+
             model = cPickle.load(f)
             f.close()
-        
-        # --------------------------CHECKING -----------------------------------    
+
+        # --------------------------CHECKING -----------------------------------
         # check model is the CGM1
         logging.info("loaded model : %s" %(model.version ))
         if model.version != "CGM1.0":
             raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM1.0 calibration pipeline"%model.version)
-            
+
         # --------------------------SESSION INFOS ------------------------------------
         # info file
         infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
-        
+
         #  translators management
         translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         if not translators:
            translators = inputs["Translators"]
-           
+
         # --------------------------CONFIG ------------------------------------
 
-        if args.markerDiameter is not None: 
+        if args.markerDiameter is not None:
             markerDiameter = float(args.markerDiameter)
             logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
         else:
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             else:
                 pointSuffix = inputs["Global"]["Point suffix"]
 
-        if args.proj is not None:        
+        if args.proj is not None:
             if args.proj == "Distal":
                 momentProjection = pyCGM2Enums.MomentProjection.Distal
             elif args.proj == "Proximal":
@@ -123,7 +123,7 @@ if __name__ == "__main__":
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
-        else:        
+        else:
             if inputs["Fitting"]["Moment Projection"] == "Distal":
                 momentProjection = pyCGM2Enums.MomentProjection.Distal
             elif inputs["Fitting"]["Moment Projection"] == "Proximal":
@@ -135,17 +135,17 @@ if __name__ == "__main__":
 
         # --------------------------ACQUISITION ------------------------------------
 
-        # --- btk acquisition ----        
+        # --- btk acquisition ----
         acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
         btkTools.checkMultipleSubject(acqGait)
         acqGait =  btkTools.applyTranslators(acqGait,translators)
-        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)   
-           
-       
+        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)
+
+
         scp=modelFilters.StaticCalibrationProcedure(model) # procedure
-        
-        # ---Motion filter----    
+
+        # ---Motion filter----
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                   markerDiameter=markerDiameter,
                                                   viconCGM1compatible=True)
@@ -158,9 +158,9 @@ if __name__ == "__main__":
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
         # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"]) 
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
 
-        # absolute angles        
+        # absolute angles
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                                segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                                 angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -173,7 +173,7 @@ if __name__ == "__main__":
         bspModel.compute()
 
         # --- force plate handling----
-        # find foot  in contact        
+        # find foot  in contact
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
         forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
         logging.info("Force plate assignment : %s" %mappedForcePlate)
@@ -186,10 +186,10 @@ if __name__ == "__main__":
                 logging.warning("Force plates assign manually")
                 forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
 
-                
 
 
-        # assembly foot and force plate        
+
+        # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",
                                  rightSegmentLabel="Right Foot").compute()
@@ -208,11 +208,11 @@ if __name__ == "__main__":
         modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
         #---- zero unvalid frames ---
-        btkTools.applyValidFramesOnOutput(acqGait,validFrames)   
+        btkTools.applyValidFramesOnOutput(acqGait,validFrames)
 
 
         # ----------------------SAVE-------------------------------------------
-        # cpickle doesn t work. Incompatibility with Swig. ( see about BTK wrench) 
+        # cpickle doesn t work. Incompatibility with Swig. ( see about BTK wrench)
         #pyCGM2.model
 #        if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
 #            logging.warning("previous model removed")
@@ -221,13 +221,13 @@ if __name__ == "__main__":
 #        modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
 #        cPickle.dump(model, modelFile)
 #        modelFile.close()
-   
+
 
 
         # ----------------------DISPLAY ON VICON-------------------------------
 
         viconInterface.ViconInterface(NEXUS,model,acqGait,subject,pointSuffix).run()
-        
+
         nexusTools.createGeneralEvents(NEXUS,subject,acqGait,["Left-FP","Right-FP"])
 
 
@@ -236,7 +236,7 @@ if __name__ == "__main__":
         if DEBUG:
 
             NEXUS.SaveTrial(30)
-    
-            
+
+
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

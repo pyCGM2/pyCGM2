@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
         # ----------------------EVENT DETECTOR-------------------------------

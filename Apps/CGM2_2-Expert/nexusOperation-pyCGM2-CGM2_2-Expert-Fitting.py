@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')    
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     args = parser.parse_args()
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
             model = cPickle.load(f)
             f.close()
 
-        # --------------------------CHECKING -----------------------------------    
+        # --------------------------CHECKING -----------------------------------
 
         # check model
         logging.info("loaded model : %s" %(model.version))

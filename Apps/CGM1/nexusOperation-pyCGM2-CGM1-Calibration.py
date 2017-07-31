@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
         required_mp={
@@ -265,10 +265,10 @@ if __name__ == "__main__":
                                useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
                                leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter).compute()
-        
+
         # set initial calibration as model property
         model.m_properties["CalibrationParameters0"] = properties_initialCalibration
-        
+
         #----update subject mp----
         viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 

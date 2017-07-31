@@ -37,7 +37,7 @@ if __name__ == "__main__":
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')    
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     args = parser.parse_args()
 
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         # --------------------------SUBJECT ------------------------------------
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
         required_mp={
@@ -100,7 +100,7 @@ if __name__ == "__main__":
         # --------------------------SESSION INFOS ------------------------------------
         # info file
         infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
-        
+
         #  translators management
         translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         if not translators:
@@ -149,7 +149,7 @@ if __name__ == "__main__":
         # ---definition---
         model=cgm2.CGM2_1LowerLimbs()
         model.configure()
-        
+
         model.setStaticFilename(calibrateFilenameLabelled)
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 

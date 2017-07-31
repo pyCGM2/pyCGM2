@@ -20,13 +20,13 @@ import ViconNexus
 # openMA
 import ma.io
 import ma.body
-    
-# pyCGM2 libraries    
-from pyCGM2 import  smartFunctions 
+
+# pyCGM2 libraries
+from pyCGM2 import  smartFunctions
 from pyCGM2.Tools import btkTools,nexusTools
-    
+
 if __name__ == "__main__":
-   
+
     plt.close("all")
     DEBUG = False
 
@@ -59,9 +59,9 @@ if __name__ == "__main__":
 
 
         # ----- Subject -----
-        # need subject to find pycgm2 input files 
+        # need subject to find pycgm2 input files
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
         # ---- pyCGM2 input files ----
@@ -81,12 +81,12 @@ if __name__ == "__main__":
         else:
             pointSuffix = ""
 
-        
 
-        # -----infos--------     
-        model = None if  infoSettings["Modelling"]["Model"]=={} else infoSettings["Modelling"]["Model"]  
-        subject = None if infoSettings["Processing"]["Subject"]=={} else infoSettings["Processing"]["Subject"] 
-        experimental = None if infoSettings["Processing"]["Experimental conditions"]=={} else infoSettings["Processing"]["Experimental conditions"] 
+
+        # -----infos--------
+        model = None if  infoSettings["Modelling"]["Model"]=={} else infoSettings["Modelling"]["Model"]
+        subject = None if infoSettings["Processing"]["Subject"]=={} else infoSettings["Processing"]["Subject"]
+        experimental = None if infoSettings["Processing"]["Experimental conditions"]=={} else infoSettings["Processing"]["Experimental conditions"]
 
         # --------------------------PROCESSING --------------------------------
         # pycgm2-filter pipeline are gathered in a single function
@@ -98,5 +98,3 @@ if __name__ == "__main__":
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
-
-

@@ -86,7 +86,7 @@ if __name__ == "__main__":
         # ----- Subject -----
         # need subject to find input files
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
         # input files
@@ -99,7 +99,7 @@ if __name__ == "__main__":
                 f.close()
 
 
-        # --------------------------CHECKING -----------------------------------    
+        # --------------------------CHECKING -----------------------------------
         filename = filenameNoExt+".c3d"
 
         # ---------------METADATA PROCESSING-----------------------------------

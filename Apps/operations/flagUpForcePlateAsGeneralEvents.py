@@ -43,6 +43,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Flag Up Force plates')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
+    # parser.add_argument('--enfWriting', action='store_false', help='force model output suffix' )
     args = parser.parse_args()
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
@@ -76,7 +77,7 @@ if __name__ == "__main__":
 
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
 
@@ -95,33 +96,37 @@ if __name__ == "__main__":
                 forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
 
 
-#        # --------- ATTEMPT TO ALTER ENF FROM nexus operation -----------------
-#
-#        #  DONT WORk
-#
-#        # --------------------Modify ENF --------------------------------------
-#        configEnf = configparser.ConfigParser()
-#        configEnf.optionxform = str
-#        enfFile = str(DATA_PATH+reconstructFilenameLabelledNoExt+".Trial.enf")
-#        configEnf.read(enfFile)
-#
-#
-#        indexFP=1
-#        for letter in mappedForcePlate:
-#
-#            if letter =="L": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Left"
-#            if letter =="R": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Right"
-#            if letter =="X": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Invalid"
-#
-#            indexFP+=1
-#
-#        tmpFile =str(DATA_PATH+reconstructFilenameLabelledNoExt+".Trial.enf-tmp")
-#        with open(tmpFile, 'w') as configfile:
-#            configEnf.write(configfile)
-#
-#        os.remove(enfFile)
-#        os.rename(tmpFile,enfFile)
-#        logging.warning("Enf file updated with Force plate assignement")
+       # 31/07/2014 TODO - impossible to overwrite enf file since export from nexus will overwrite the in process c3d.
+       # solution is to set foot contact from nexus
+       # --------- ATTEMPT TO ALTER ENF FROM nexus operation -----------------
+
+
+        # if args.enfWriting:
+        #
+        #    # --------------------Modify ENF --------------------------------------
+        #    configEnf = configparser.ConfigParser()
+        #    configEnf.optionxform = str
+        #    enfFile = str(DATA_PATH+reconstructFilenameLabelledNoExt+".Trial.enf")
+        #    configEnf.read(enfFile)
+        #
+        #
+        #    indexFP=1
+        #    for letter in mappedForcePlate:
+        #
+        #        if letter =="L": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Left"
+        #        if letter =="R": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Right"
+        #        if letter =="X": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Invalid"
+        #
+        #        indexFP+=1
+        #
+        #    tmpFile =str(DATA_PATH+reconstructFilenameLabelledNoExt+".Trial.enf-tmp")
+        #    with open(tmpFile, 'w') as configfile:
+        #        configEnf.write(configfile)
+        #
+        #    os.remove(enfFile)
+        #    os.rename(tmpFile,enfFile)
+        #    logging.warning("Enf file updated with Force plate assignement")
+
 
 
 
