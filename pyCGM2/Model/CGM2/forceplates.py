@@ -209,7 +209,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
     return suffix
 
 
-def addForcePlateGeneralEvents (btkAcq,suffix ):
+def addForcePlateGeneralEvents (btkAcq,mappedForcePlate ):
     """
         Add General events from force plate assignmenet
     """
@@ -234,7 +234,7 @@ def addForcePlateGeneralEvents (btkAcq,suffix ):
 
     # add general events
     indexFP =0
-    for letter in suffix:
+    for letter in mappedForcePlate:
 
         force= grwc.GetItem(indexFP).GetForce().GetValues()
         force_downsample = force[0:(lf-ff+1)*appf:appf]   # downsample
