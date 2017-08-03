@@ -16,18 +16,18 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 # vicon nexus
 import ViconNexus
-    
-# pyCGM2 libraries    
-from pyCGM2 import  smartFunctions 
+
+# pyCGM2 libraries
+from pyCGM2 import  smartFunctions
 from pyCGM2.Tools import btkTools,nexusTools
-    
+
 if __name__ == "__main__":
-   
+
     plt.close("all")
     DEBUG = False
 
-    parser = argparse.ArgumentParser(description='CGM1 Calibration')
-    parser.add_argument('--pointSuffix', type=str, help='force suffix')
+    parser = argparse.ArgumentParser(description='CGM Gait Processing')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -54,16 +54,16 @@ if __name__ == "__main__":
         logging.info( "calibration file: "+ reconstructedFilenameLabelled)
 
         # ----- Subject -----
-        # need subject to find input files 
+        # need subject to find input files
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
         # ---- pyCGM2 input files ----
 
        # info file
         if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
+            copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
             logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
             infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
         else:
@@ -73,23 +73,23 @@ if __name__ == "__main__":
         if args.pointSuffix is not None:
             pointSuffix = args.pointSuffix
         else:
-            pointSuffix = infoSettings["Processing"]["Point suffix"]        
-        
+            pointSuffix = ""
+
         normativeData = infoSettings["Processing"]["Normative data"]
 
 
-        # -----infos--------     
-        model = None if  infoSettings["Processing"]["Model"]=={} else infoSettings["Processing"]["Model"]  
-        subject = None if infoSettings["Processing"]["Subject"]=={} else infoSettings["Processing"]["Subject"] 
-        experimental = None if infoSettings["Processing"]["Experimental conditions"]=={} else infoSettings["Processing"]["Experimental conditions"] 
+        # -----infos--------
+        model = None if  infoSettings["Modelling"]["Model"]=={} else infoSettings["Modelling"]["Model"]
+        subject = None if infoSettings["Processing"]["Subject"]=={} else infoSettings["Processing"]["Subject"]
+        experimental = None if infoSettings["Processing"]["Experimental conditions"]=={} else infoSettings["Processing"]["Experimental conditions"]
 
         # --------------------------PROCESSING --------------------------------
         # pycgm2-filter pipeline are gathered in a single function
-        
+
         smartFunctions.gaitProcessing_cgm1 (reconstructedFilenameLabelled, DATA_PATH,
                                model,  subject, experimental,
                                pointLabelSuffix = pointSuffix,
-                               plotFlag= True, 
+                               plotFlag= True,
                                exportBasicSpreadSheetFlag = False,
                                exportAdvancedSpreadSheetFlag = False,
                                exportAnalysisC3dFlag = False,
@@ -98,5 +98,3 @@ if __name__ == "__main__":
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
-
-

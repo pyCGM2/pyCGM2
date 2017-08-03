@@ -309,14 +309,24 @@ class CGMLowerlimbInverseDynamicProcedure(object):
         calcul segment par segment, j automatiserai plus tard ! 
     
         """
-        self.computeSegmental(model,"Left Foot",btkAcq, gravity, scaleToMeter)
-        self.computeSegmental(model,"Left Shank",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Left Foot")
+        if model.version in ["CGM2.4","CGM2.4e"]:
+            self.computeSegmental(model,"Left HindFoot",btkAcq, gravity, scaleToMeter)
+            self.computeSegmental(model,"Right HindFoot",btkAcq, gravity, scaleToMeter)
+            self.computeSegmental(model,"Left Shank",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Left HindFoot")
+            self.computeSegmental(model,"Right Shank",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Right HindFoot")            
+
+        else:
+            self.computeSegmental(model,"Left Foot",btkAcq, gravity, scaleToMeter)
+            self.computeSegmental(model,"Right Foot",btkAcq, gravity, scaleToMeter)
+
+            self.computeSegmental(model,"Left Shank",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Left Foot")
+            self.computeSegmental(model,"Right Shank",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Right Foot")            
+            
         model.getSegment("Left Shank Proximal").m_proximalWrench = model.getSegment("Left Shank").m_proximalWrench 
         model.getSegment("Left Shank Proximal").m_proximalMomentContribution = model.getSegment("Left Shank").m_proximalMomentContribution
         self.computeSegmental(model,"Left Thigh",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Left Shank")
 
-        self.computeSegmental(model,"Right Foot",btkAcq, gravity, scaleToMeter)
-        self.computeSegmental(model,"Right Shank",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Right Foot")
+
         model.getSegment("Right Shank Proximal").m_proximalWrench = model.getSegment("Right Shank").m_proximalWrench 
         model.getSegment("Right Shank Proximal").m_proximalMomentContribution = model.getSegment("Right Shank").m_proximalMomentContribution 
         self.computeSegmental(model,"Right Thigh",btkAcq, gravity, scaleToMeter,distalSegmentLabel = "Right Shank")
@@ -445,7 +455,17 @@ class ModelMotionFilter(object):
         self.m_method = method
         self.m_options = options
 
-
+    def segmentalCompute(self,segments):
+        if str(self.m_model) != "Basis Model":
+            self.m_model.computeOptimizedSegmentMotion(self.m_aqui,
+                                             segments,
+                                             self.m_procedure.definition[0],
+                                             self.m_procedure.definition[1],
+                                             self.m_method)
+        else:
+            pass
+                    
+        
     def compute(self):
         """
             Run the motion filter
@@ -506,6 +526,79 @@ class ModelMotionFilter(object):
                             frame.m_axisZ=R[:,2]
     
                         segPicked.getReferential(tfName).addMotionFrame(frame)
+
+
+
+
+class TrackingMarkerDecompositionFilter(object):
+    """
+        decomposition of tracking markers
+    """
+    def __init__(self,iModel,iAcq):
+        """
+            :Parameters:
+            
+               -- `` ( ) -   
+
+        """
+        self.m_model = iModel
+        self.m_acq = iAcq
+        
+    
+
+    def decompose(self):
+        """
+           Run decomposition. 
+           - add directionMarker as tracking markers
+           - add nodes to bth Technical and Anatomical CS
+           - decompose tracking marker in the motion trial
+           
+        TODO : revoir les suffix car depende de l orientation des referentiels           
+           
+        """ 
+        for seg in self.m_model.m_segmentCollection:
+            if  "Proximal" not in seg.name:                   
+                if "Foot" in seg.name:
+                    suffix = ["_supInf", "_medLat", "_proDis"]
+                elif "Pelvis" in seg.name:
+                    suffix = ["_posAnt", "_medLat", "_supInf"] 
+                else:
+                    suffix = ["_posAnt", "_medLat", "_proDis"]
+                            
+                copyTrackingMarkers = list(seg.m_tracking_markers) # copy of list  
+
+                # add direction point as tracking markers and copy node  
+                for marker in copyTrackingMarkers:
+                    globalNodePos = seg.anatomicalFrame.static.getNode_byLabel(marker).m_global
+                    
+                    seg.anatomicalFrame.static.addNode(marker+suffix[0],globalNodePos,positionType="Global")
+                    seg.getReferential("TF").static.addNode(marker+suffix[0],globalNodePos,positionType="Global")
+
+                    seg.anatomicalFrame.static.addNode(marker+suffix[1],globalNodePos,positionType="Global")
+                    seg.getReferential("TF").static.addNode(marker+suffix[1],globalNodePos,positionType="Global")
+
+                    seg.anatomicalFrame.static.addNode(marker+suffix[2],globalNodePos,positionType="Global")
+                    seg.getReferential("TF").static.addNode(marker+suffix[2],globalNodePos,positionType="Global")
+
+                    seg.addTrackingMarkerLabel(str(marker+suffix[0]))
+                    seg.addTrackingMarkerLabel(str(marker+suffix[1]))
+                    seg.addTrackingMarkerLabel(str(marker+suffix[2]))             
+            
+            
+                # decompose tracking marker in the acq 
+                for marker in copyTrackingMarkers:
+                    
+                    nodeTraj= seg.anatomicalFrame.getNodeTrajectory(marker)   
+                    markersTraj =self.m_acq.GetPoint(marker).GetValues()        
+                    
+                    markerTrajectoryX=np.array( [ markersTraj[:,0], nodeTraj[:,1],    nodeTraj[:,2]]).T
+                    markerTrajectoryY=np.array( [ nodeTraj[:,0],    markersTraj[:,1], nodeTraj[:,2]]).T
+                    markerTrajectoryZ=np.array( [ nodeTraj[:,0],    nodeTraj[:,1],    markersTraj[:,2]]).T
+
+                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[0],markerTrajectoryX,PointType=btk.btkPoint.Marker, desc="")            
+                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[1],markerTrajectoryY,PointType=btk.btkPoint.Marker, desc="")            
+                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[2],markerTrajectoryZ,PointType=btk.btkPoint.Marker, desc="")  
+
 
 
 # ----- Joint angles -----
@@ -812,7 +905,8 @@ class InverseDynamicFilter(object):
         Compute joint Force and moment from Inverse dynamics 
     """ 
 
-    def __init__(self, iMod, btkAcq, procedure = None, gravityVector = np.array([0,0,-1]), scaleToMeter =0.001, projection = pyCGM2Enums.MomentProjection.Distal, exportMomentContributions = False):
+    def __init__(self, iMod, btkAcq, procedure = None, gravityVector = np.array([0,0,-1]), scaleToMeter =0.001, 
+                 projection = pyCGM2Enums.MomentProjection.Distal, exportMomentContributions = False, **options):
         """
            :Parameters:
                - `btkAcq` (btkAcquisition) - btk acquisition instance of a dynamic trial
@@ -832,8 +926,9 @@ class InverseDynamicFilter(object):
         self.m_procedure = procedure
         self.m_projection = projection
         self.m_exportMomentContributions = exportMomentContributions
+        self.m_options = options        
         
-    def compute(self, pointLabelSuffix =""):
+    def compute(self, pointLabelSuffix ="" ):
         """
             Run`InverseDynamicFilter`
             
@@ -847,64 +942,149 @@ class InverseDynamicFilter(object):
         self.m_procedure.compute(self.m_model,self.m_aqui,self.m_gravity,self.m_scaleToMeter)        
         
 
-        for it in  self.m_model.m_jointCollection:            
-            logging.debug("kinetics of %s"  %(it.m_label)) 
-            logging.debug("proximal label :%s" %(it.m_proximalLabel))
-            logging.debug("distal label :%s" %(it.m_distalLabel))
+        for it in  self.m_model.m_jointCollection:
             
-            jointLabel = it.m_label
-            nFrames = self.m_aqui.GetPointFrameNumber() 
-            
-
-            if self.m_projection == pyCGM2Enums.MomentProjection.Distal:
-                mot = self.m_model.getSegment(it.m_distalLabel).anatomicalFrame.motion
-            elif self.m_projection == pyCGM2Enums.MomentProjection.Proximal:
-                mot = self.m_model.getSegment(it.m_proximalLabel).anatomicalFrame.motion
-            
-            forceValues = np.zeros((nFrames,3))
-            momentValues = np.zeros((nFrames,3))
-            for i in range(0,nFrames ):
-                if self.m_projection == pyCGM2Enums.MomentProjection.Global:
-                    forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:]
-                    momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:]
+            if "ForeFoot" not in it.m_label: # TODO : clumpsy... :-(  Think about a new method
+                logging.debug("kinetics of %s"  %(it.m_label)) 
+                logging.debug("proximal label :%s" %(it.m_proximalLabel))
+                logging.debug("distal label :%s" %(it.m_distalLabel))
+                
+                jointLabel = it.m_label
+                nFrames = self.m_aqui.GetPointFrameNumber() 
+    
+                if "viconCGM1compatible" in self.m_options.keys() and self.m_options["viconCGM1compatible"]:  
+                    if it.m_label == "LAnkle":
+                        proximalSegLabel = "Left Shank Proximal"
+                    elif it.m_label == "RAnkle": 
+                        proximalSegLabel = "Right Shank Proximal"
+                    else:
+                        proximalSegLabel = it.m_proximalLabel
+                
                 else:
-                    forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T, 
-                                                                            self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:].T) 
-                    momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T, 
-                                                                            self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:].T) 
-            
-            finalForceValues,finalMomentValues = self.m_model.finalizeKinetics(jointLabel,forceValues,momentValues,self.m_projection)
-
-
-
-            fulljointLabel_force  = jointLabel + "Force_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Force"
-            btkTools.smartAppendPoint(self.m_aqui,
-                             fulljointLabel_force,
-                             finalForceValues,PointType=btk.btkPoint.Force, desc="")
-
-            fulljointLabel_moment  = jointLabel + "Moment_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Moment"
-            btkTools.smartAppendPoint(self.m_aqui,
-                             fulljointLabel_moment,
-                             finalMomentValues,PointType=btk.btkPoint.Moment, desc="")               
-            
-            if self.m_exportMomentContributions:
-                forceValues = np.zeros((nFrames,3)) # need only for finalizeKinetics
-        
-                for contIt  in ["internal","external", "inertia", "linearAcceleration","gravity", "externalDevices", "distalSegments","distalSegmentForces","distalSegmentMoments"] :
+                    proximalSegLabel = it.m_proximalLabel                
+                    
+                if self.m_projection != pyCGM2Enums.MomentProjection.JCS and  self.m_projection != pyCGM2Enums.MomentProjection.JCS_Dual:
+    
+                    if self.m_projection == pyCGM2Enums.MomentProjection.Distal:
+                        mot = self.m_model.getSegment(it.m_distalLabel).anatomicalFrame.motion
+                    elif self.m_projection == pyCGM2Enums.MomentProjection.Proximal:
+                        mot = self.m_model.getSegment(proximalSegLabel).anatomicalFrame.motion
+                        
+                    
+                    forceValues = np.zeros((nFrames,3))
                     momentValues = np.zeros((nFrames,3))
                     for i in range(0,nFrames ):
                         if self.m_projection == pyCGM2Enums.MomentProjection.Global:
-                            momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:]
+                            forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:]
+                            momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:]
                         else:
+                            forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T, 
+                                                                                    self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:].T) 
                             momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T, 
-                                                                                    self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:].T) 
+                                                                                    self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:].T) 
+                    
+                    
+                else:
+    
+                    F = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()
+                    M = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()                
+                    
+                    proxSeg = self.m_model.getSegment(proximalSegLabel)
+                    distSeg = self.m_model.getSegment(it.m_distalLabel)
+                    
+                    # WARNING : I keep X-Y-Z sequence in output
+                    forceValues = np.zeros((nFrames,3))
+                    momentValues = np.zeros((nFrames,3))
+            
+                    for i in range(0,nFrames ):
+                    
+                        if it.m_sequence == "XYZ":
+                            e1 = proxSeg.anatomicalFrame.motion[i].m_axisX
+                            e3 = distSeg.anatomicalFrame.motion[i].m_axisZ
+                            order=[0,1,2]
+    
+                        elif it.m_sequence == "XZY":
+                            e1 = proxSeg.anatomicalFrame.motion[i].m_axisX
+                            e3 = distSeg.anatomicalFrame.motion[i].m_axisY
+                            order=[0,2,1]
+    
+                        elif it.m_sequence == "YXZ":
+                            e1 = proxSeg.anatomicalFrame.motion[i].m_axisY
+                            e3 = distSeg.anatomicalFrame.motion[i].m_axisZ
+                            order=[1,0,2]
+    
+                        elif it.m_sequence == "YZX":
+                            e1 = proxSeg.anatomicalFrame.motion[i].m_axisY
+                            e3 = distSeg.anatomicalFrame.motion[i].m_axisX
+                            order=[1,2,0]
+                            
+                        elif it.m_sequence == "ZXY":
+                            e1 = proxSeg.anatomicalFrame.motion[i].m_axisZ
+                            e3 = distSeg.anatomicalFrame.motion[i].m_axisY
+                            order=[2,0,1]
+    
+                        elif it.m_sequence == "ZYX":
+                            e1 = proxSeg.anatomicalFrame.motion[i].m_axisZ
+                            e3 = distSeg.anatomicalFrame.motion[i].m_axisX
+                            order=[2,1,0]
+    
+                        e2= np.cross(e3,e1)
+                        e2=np.divide(e2,np.linalg.norm(e2))
+                    
+                        if self.m_projection == pyCGM2Enums.MomentProjection.JCS_Dual:                
+                    
+                            forceValues[i,order[0]] = np.divide(np.dot(np.cross(e2,e3),F[i]), np.dot(np.cross(e1,e2),e3)) 
+                            forceValues[i,order[1]] = np.divide(np.dot(np.cross(e3,e1),F[i]), np.dot(np.cross(e1,e2),e3))
+                            forceValues[i,order[2]] = np.divide(np.dot(np.cross(e1,e2),F[i]), np.dot(np.cross(e1,e2),e3))
+                        
+                            momentValues[i,order[0]] = np.divide(np.dot(np.cross(e2,e3),M[i]), np.dot(np.cross(e1,e2),e3)) 
+                            momentValues[i,order[1]] = np.dot(M[i],e2) #np.divide(np.dot(np.cross(e3,e1),M[i]), np.dot(np.cross(e1,e2),e3))
+                            momentValues[i,order[2]] = np.divide(np.dot(np.cross(e1,e2),M[i]), np.dot(np.cross(e1,e2),e3))
+    
+                        if self.m_projection == pyCGM2Enums.MomentProjection.JCS:                
+                            
+                            forceValues[i,order[0]] = np.dot(F[i],e1) 
+                            forceValues[i,order[1]] = np.dot(F[i],e2)
+                            forceValues[i,order[2]] = np.dot(F[i],e3)
+                        
+                            momentValues[i,order[0]] = np.dot(M[i],e1) 
+                            momentValues[i,order[1]] = np.dot(M[i],e2) 
+                            momentValues[i,order[2]] = np.dot(M[i],e3) 
+    
+                        
+                        
+                finalForceValues,finalMomentValues = self.m_model.finalizeKinetics(jointLabel,forceValues,momentValues,self.m_projection)
+    
+    
+                fulljointLabel_force  = jointLabel + "Force_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Force"
+    
+                btkTools.smartAppendPoint(self.m_aqui,
+                                 fulljointLabel_force,
+                                 finalForceValues,PointType=btk.btkPoint.Force, desc="")
+    
+                fulljointLabel_moment  = jointLabel + "Moment_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Moment"
+                btkTools.smartAppendPoint(self.m_aqui,
+                                 fulljointLabel_moment,
+                                 finalMomentValues,PointType=btk.btkPoint.Moment, desc="")               
                 
-                    finalForceValues,finalMomentValues = self.m_model.finalizeKinetics(jointLabel,forceValues,momentValues,self.m_projection)
-        
-                    fulljointLabel_moment  = jointLabel + "Moment_" + pointLabelSuffix + "_" + contIt if pointLabelSuffix!="" else jointLabel+"Moment" + "_" + contIt
-                    btkTools.smartAppendPoint(self.m_aqui,
-                                     fulljointLabel_moment,
-                                     finalMomentValues,PointType=btk.btkPoint.Moment, desc= contIt + " Moment contribution")
+                if self.m_exportMomentContributions:
+                    forceValues = np.zeros((nFrames,3)) # need only for finalizeKinetics
+            
+                    for contIt  in ["internal","external", "inertia", "linearAcceleration","gravity", "externalDevices", "distalSegments","distalSegmentForces","distalSegmentMoments"] :
+                        momentValues = np.zeros((nFrames,3))
+                        for i in range(0,nFrames ):
+                            if self.m_projection == pyCGM2Enums.MomentProjection.Global:
+                                momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:]
+                            else:
+                                momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T, 
+                                                                                        self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:].T) 
+                    
+                        finalForceValues,finalMomentValues = self.m_model.finalizeKinetics(jointLabel,forceValues,momentValues,self.m_projection)
+            
+                        fulljointLabel_moment  = jointLabel + "Moment_" + pointLabelSuffix + "_" + contIt if pointLabelSuffix!="" else jointLabel+"Moment" + "_" + contIt
+                        btkTools.smartAppendPoint(self.m_aqui,
+                                         fulljointLabel_moment,
+                                         finalMomentValues,PointType=btk.btkPoint.Moment, desc= contIt + " Moment contribution")
 
 
 
@@ -936,26 +1116,27 @@ class JointPowerFilter(object):
         """
 
         for it in  self.m_model.m_jointCollection:
-            logging.debug("power of %s"  %(it.m_label)) 
-            logging.debug("proximal label :%s" %(it.m_proximalLabel))
-            logging.debug("distal label :%s" %(it.m_distalLabel))
-
-            jointLabel = it.m_label
-            
-            nFrames = self.m_aqui.GetPointFrameNumber() 
-           
-            prox_omegai = self.m_model.getSegment(it.m_proximalLabel).getAngularVelocity(self.m_aqui.GetPointFrequency())
-            dist_omegai = self.m_model.getSegment(it.m_distalLabel).getAngularVelocity(self.m_aqui.GetPointFrequency())
-
-            relativeOmega = prox_omegai - dist_omegai
-            
-            power = np.zeros((nFrames,3))
-            for i in range(0, nFrames):            
-                power[i,2] = -1.0*(1.0 / self.m_model.mp["Bodymass"]) * self.m_scale * np.dot(self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:] ,relativeOmega[i,:])# 
-
-
-            fulljointLabel  = jointLabel + "Power_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Power"
-            btkTools.smartAppendPoint(self.m_aqui,
-                             fulljointLabel,
-                             power,PointType=btk.btkPoint.Power, desc="") 
+            if "ForeFoot" not in it.m_label:
+                logging.debug("power of %s"  %(it.m_label)) 
+                logging.debug("proximal label :%s" %(it.m_proximalLabel))
+                logging.debug("distal label :%s" %(it.m_distalLabel))
+        
+                jointLabel = it.m_label
+                
+                nFrames = self.m_aqui.GetPointFrameNumber() 
+               
+                prox_omegai = self.m_model.getSegment(it.m_proximalLabel).getAngularVelocity(self.m_aqui.GetPointFrequency())
+                dist_omegai = self.m_model.getSegment(it.m_distalLabel).getAngularVelocity(self.m_aqui.GetPointFrequency())
+        
+                relativeOmega = prox_omegai - dist_omegai
+                
+                power = np.zeros((nFrames,3))
+                for i in range(0, nFrames):            
+                    power[i,2] = -1.0*(1.0 / self.m_model.mp["Bodymass"]) * self.m_scale * np.dot(self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:] ,relativeOmega[i,:])# 
+        
+        
+                fulljointLabel  = jointLabel + "Power_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Power"
+                btkTools.smartAppendPoint(self.m_aqui,
+                                 fulljointLabel,
+                                 power,PointType=btk.btkPoint.Power, desc="") 
       

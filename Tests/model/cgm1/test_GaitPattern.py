@@ -211,7 +211,7 @@ class CGM1_GaitPatternFullAnglesTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  markerDiameter=markerDiameter)
         modMotion.compute()
         

@@ -105,10 +105,52 @@
         <Marker label="LFootUncorrected_X" radius="1" colorR="1" colorG="1" colorB="1" visible="1" trajectory="0"/>
         <Marker label="LFootUncorrected_Y" radius="1" colorR="1" colorG="1" colorB="1" visible="1" trajectory="0"/>
         <Marker label="LFootUncorrected_Z" radius="1" colorR="1" colorG="1" colorB="1" visible="1" trajectory="0"/>
-
+        <Marker label="RTOE_m" radius="5" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTHI_m" radius="5" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LKNE_m" radius="5" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIB_m" radius="5" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LANK_m" radius="5" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LHEE_m" radius="5" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTOE_m" radius="5" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
         
         </MarkersList>
     <SegmentsList>
+        <Segment label="PIG-measured" colorR="0" colorG="0" colorB="0" visible="0" surface="0" description="">
+            <Point label="LASI_m"/>
+            <Point label="RASI_m"/>
+            <Point label="LPSI_m"/>
+            <Point label="RPSI_m"/>
+            <Point label="LTHI_m"/>
+            <Point label="LKNE_m"/>
+            <Point label="LTIB_m"/>
+            <Point label="LANK_m"/>
+            <Point label="LHEE_m"/>
+            <Point label="LTOE_m"/>
+            <Point label="RTHI_m"/>
+            <Point label="RKNE_m"/>
+            <Point label="RTIB_m"/>
+            <Point label="RANK_m"/>
+            <Point label="RHEE_m"/>
+            <Point label="RTOE"/>            
+            <Link pt1="LASI_m" pt2="LPSI_m"/>
+            <Link pt1="LASI_m" pt2="RASI_m"/>
+            <Link pt1="LPSI_m" pt2="RPSI_m"/>
+            <Link pt1="RASI_m" pt2="RPSI_m"/>
+            <Link pt1="RASI_m" pt2="RTHI_m"/>
+            <Link pt1="RKNE_m" pt2="RTHI_m"/>
+            <Link pt1="RANK_m" pt2="RTIB_m"/>
+            <Link pt1="RKNE_m" pt2="RTIB_m"/>
+            <Link pt1="RANK_m" pt2="RHEE_m"/>
+            <Link pt1="RANK_m" pt2="RTOE_m"/>
+            <Link pt1="RHEE_m" pt2="RTOE_m"/>
+            <Link pt1="LASI_m" pt2="LTHI_m"/>
+            <Link pt1="LKNE_m" pt2="LTHI_m"/>
+            <Link pt1="LANK_m" pt2="LTIB_m"/>
+            <Link pt1="LKNE_m" pt2="LTIB_m"/>
+            <Link pt1="LANK_m" pt2="LHEE_m"/>
+            <Link pt1="LANK_m" pt2="LTOE_m"/>
+            <Link pt1="LHEE_m" pt2="LTOE_m"/>
+        </Segment>
         <Segment label="Pelvis (cgm1-stick)" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
             <Point label="LASI"/>
             <Point label="RASI"/>

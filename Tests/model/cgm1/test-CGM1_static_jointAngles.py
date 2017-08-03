@@ -120,7 +120,7 @@ class CGM1_calibrationTest():
         # ---- on c3d processed vicon static-pig operation       
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Determinist,
                                                  markerDiameter=markerDiameter,
                                                  pigStatic=True,
                                                  viconCGM1compatible=False)
@@ -238,7 +238,7 @@ class CGM1_calibrationTest():
         # ---- on c3d processed vicon static-pig operation       
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Determinist,
                                                  markerDiameter=markerDiameter,
                                                  useLeftKJCmarker="LKJC_KAD", useLeftAJCmarker="LAJC_KAD",pigStatic=True,
                                                  useRightKJCmarker="RKJC_KAD", useRightAJCmarker="RAJC_KAD",
@@ -347,7 +347,7 @@ class CGM1_calibrationTest():
         # ---- on c3d processed vicon static-pig operation       
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Determinist,
                                                  markerDiameter=markerDiameter,
                                                  viconCGM1compatible = False,
                                                  useRightKJCmarker="RKJC_KAD", useRightAJCmarker="RAJC_KAD",

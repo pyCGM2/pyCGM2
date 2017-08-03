@@ -221,6 +221,6 @@ if __name__ == "__main__":
     plt.close("all")  
   
     PlotTest.OneDescriptiveGaitPlot()    
-    #PlotTest.GaitPlotPanelWithLimits()    
+    PlotTest.GaitPlotPanelWithLimits()    
 
     

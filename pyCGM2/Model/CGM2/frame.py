@@ -370,13 +370,18 @@ class Frame(object):
 
 
 
-    def printAllNodes(self):
+    def getNodeLabels(self,display=True ):
         """ 
             Display all node labels
     
         """
+        labels=list()
         for nodeIt in self._nodes:
-            print nodeIt.m_name
+            labels.append(nodeIt.m_name[:-5])
+            
+            if display: print nodeIt.m_name
+
+        return labels
 
     def eraseNodes(self):    
         """
@@ -384,3 +389,6 @@ class Frame(object):
         """
         self._nodes=[]
 
+    def getNodes(self):
+        
+        return self._nodes

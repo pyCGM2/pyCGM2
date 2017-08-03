@@ -19,6 +19,21 @@ from pyCGM2.Math import numeric
 
 plt.close("all")
 
+def plotMoment(acqGait,label1,label2,title):
+    plt.figure()
+    plt.suptitle(title)
+    ax1 = plt.subplot(1,3,1)
+    ax2 = plt.subplot(1,3,2)
+    ax3 = plt.subplot(1,3,3)
+    ax1.plot(acqGait.GetPoint(label1).GetValues()[:,0])
+    ax1.plot(acqGait.GetPoint(label2).GetValues()[:,0],"-r")
+        
+    ax2.plot(acqGait.GetPoint(label1).GetValues()[:,1])
+    ax2.plot(acqGait.GetPoint(label2).GetValues()[:,1],"-r")
+    
+    ax3.plot(acqGait.GetPoint(label1).GetValues()[:,2])
+    ax3.plot(acqGait.GetPoint(label2).GetValues()[:,2],"-r")
+
 def compareKinetics(acqGait, init, end, forceThreshold, momentThreshold, powerThreshold ):
 
     forceArrayThreshold = np.array([forceThreshold, forceThreshold, forceThreshold])
@@ -70,7 +85,7 @@ def compareKinetics(acqGait, init, end, forceThreshold, momentThreshold, powerTh
 class CGM1_motionInverseDynamicsTest(): 
 
     @classmethod
-    def basicCGM1_distal(cls):
+    def basicCGM1_distal(cls,plotFlag=False):
 
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
@@ -104,7 +119,7 @@ class CGM1_motionInverseDynamicsTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -117,7 +132,7 @@ class CGM1_motionInverseDynamicsTest():
         # force plate -- construction du wrench attribue au pied       
         forceplates.appendForcePlateCornerAsMarker(acqGait)       
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
-        modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
+        modelFilters.ForcePlateAssemblyFilter(model,acqGait,"LR",
                                  leftSegmentLabel="Left Foot", 
                                  rightSegmentLabel="Right Foot").compute()
         
@@ -126,24 +141,27 @@ class CGM1_motionInverseDynamicsTest():
         modelFilters.InverseDynamicFilter(model,
                              acqGait,
                              procedure = idp,
-                             projection = pyCGM2Enums.MomentProjection.Distal
+                             projection = pyCGM2Enums.MomentProjection.Distal,
+                             viconCGM1compatible=True
                              ).compute(pointLabelSuffix="cgm1_6dof")
                              
 
         modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix="cgm1_6dof")
 
         # writer        
-        btkTools.smartWriter(acqGait,"testInvDyn.c3d")
+        #btkTools.smartWriter(acqGait,"testInvDyn.c3d")
 
-
+        if plotFlag:
+            plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof")
+        
         # TEST ------
-        compareKinetics(acqGait, 5, -5, 0.2, 50.0, 0.2 )
+        #compareKinetics(acqGait, 5, -5, 0.2, 50.0, 0.2 )
 
 
     @classmethod
-    def basicCGM1_proximal(cls):
+    def basicCGM1_proximal(cls,plotFlag=False):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic-filtered\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -173,7 +191,7 @@ class CGM1_motionInverseDynamicsTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -186,7 +204,7 @@ class CGM1_motionInverseDynamicsTest():
         # force plate -- construction du wrench attribue au pied       
         forceplates.appendForcePlateCornerAsMarker(acqGait)       
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
-        modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
+        modelFilters.ForcePlateAssemblyFilter(model,acqGait,"RL",
                                  leftSegmentLabel="Left Foot", 
                                  rightSegmentLabel="Right Foot").compute()
         
@@ -195,22 +213,25 @@ class CGM1_motionInverseDynamicsTest():
         modelFilters.InverseDynamicFilter(model,
                              acqGait,
                              procedure = idp,
-                             projection = pyCGM2Enums.MomentProjection.Proximal
+                             projection = pyCGM2Enums.MomentProjection.Proximal,
+                             viconCGM1compatible=True
                              ).compute(pointLabelSuffix="cgm1_6dof")
                              
 
         modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix="cgm1_6dof")
 
         #btkTools.smartWriter(acqGait,"testInvDyn.c3d")
+        if plotFlag:
+            plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof")
 
         # TEST ------
-        compareKinetics(acqGait, 5, -5, 0.2, 40.0, 0.1 )
+        #compareKinetics(acqGait, 5, -5, 0.2, 40.0, 0.1 )
 
 
     @classmethod
-    def basicCGM1_global(cls):
+    def basicCGM1_global(cls,plotFlag=False):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic-filtered\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -240,7 +261,7 @@ class CGM1_motionInverseDynamicsTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -253,7 +274,7 @@ class CGM1_motionInverseDynamicsTest():
         # force plate -- construction du wrench attribue au pied       
         forceplates.appendForcePlateCornerAsMarker(acqGait)       
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
-        modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
+        modelFilters.ForcePlateAssemblyFilter(model,acqGait,"RL",
                                  leftSegmentLabel="Left Foot", 
                                  rightSegmentLabel="Right Foot").compute()
         
@@ -270,8 +291,343 @@ class CGM1_motionInverseDynamicsTest():
 
         #btkTools.smartWriter(acqGait,"testInvDyn.c3d")
 
+        if plotFlag:
+            plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof")
+            plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof")
+
         # TEST ------
         compareKinetics(acqGait, 5, -5, 0.2, 40.0, 0.1 )
+
+    @classmethod
+    def kadMedCGM1_distal(cls,plotFlag=False):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
+    
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
+        
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14                    
+        mp={
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,     
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
+        }        
+        model.addAnthropoInputParameters(mp)
+                                    
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
+
+        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute()
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
+        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+
+
+        # ------ Test 1 Motion Axe X -------
+        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"        
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        
+        # Motion FILTER 
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
+                                                 viconCGM1compatible=True)
+        modMotion.compute()
+
+        # Joint kinematics
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+        
+        # BSP model
+        bspModel = bodySegmentParameters.Bsp(model)
+        bspModel.compute()
+        
+        # force plate -- construction du wrench attribue au pied       
+        forceplates.appendForcePlateCornerAsMarker(acqGait)       
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        modelFilters.ForcePlateAssemblyFilter(model,acqGait,"RL",
+                                 leftSegmentLabel="Left Foot", 
+                                 rightSegmentLabel="Right Foot").compute()
+        
+        
+        idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
+        modelFilters.InverseDynamicFilter(model,
+                             acqGait,
+                             procedure = idp,
+                             projection = pyCGM2Enums.MomentProjection.Distal,
+                             viconCGM1compatible=True
+                             ).compute(pointLabelSuffix="cgm1_6dof")
+                             
+
+        modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix="cgm1_6dof")
+
+        # writer        
+        btkTools.smartWriter(acqGait,"testInvDyn_kadMed.c3d")
+        if plotFlag:
+            plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof","kadMedCGM1_distal-LAnkleMoment")
+            plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof","kadMedCGM1_distal-RAnkleMoment")
+
+        # TEST ------
+        #compareKinetics(acqGait, 5, -5, 0.2, 60.0, 0.2 )
+
+
+
+    @classmethod
+    def kadMedCGM1_proximal(cls,plotFlag=False):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
+    
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
+        
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14                    
+        mp={
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,     
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,            
+        }        
+        model.addAnthropoInputParameters(mp)
+                                    
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
+
+        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute()
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
+        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+
+
+        # ------ Test 1 Motion Axe X -------
+        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.Proximal.c3d"        
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        
+        # Motion FILTER 
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
+                                                 viconCGM1compatible=False)
+        modMotion.compute()
+
+        # Joint kinematics
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+        
+        # BSP model
+        bspModel = bodySegmentParameters.Bsp(model)
+        bspModel.compute()
+        
+        # force plate -- construction du wrench attribue au pied       
+        forceplates.appendForcePlateCornerAsMarker(acqGait)       
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        modelFilters.ForcePlateAssemblyFilter(model,acqGait,"RL",
+                                 leftSegmentLabel="Left Foot", 
+                                 rightSegmentLabel="Right Foot").compute()
+        
+        
+        idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
+        modelFilters.InverseDynamicFilter(model,
+                             acqGait,
+                             procedure = idp,
+                             projection = pyCGM2Enums.MomentProjection.Proximal,
+                             viconCGM1compatible=True
+                             ).compute(pointLabelSuffix="cgm1_6dof")
+                             
+
+        modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix="cgm1_6dof")
+
+        # writer        
+        btkTools.smartWriter(acqGait,"testInvDyn_kadMed.c3d")
+
+        if plotFlag:
+            plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof","kadMedCGM1_proximal-LAnkleMoment")
+            plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof","kadMedCGM1_proximal-RAnkleMoment")
+#
+
+
+        # TEST ------
+        #compareKinetics(acqGait, 5, -5, 0.2, 50.0, 0.2 )
+
+
+    @classmethod
+    def basicCGM1_JCS(cls,plotFlag=False):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic-filtered\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
+    
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
+        
+        model=cgm.CGM1LowerLimbs()
+        model.configure() 
+       
+        markerDiameter=14                    
+        mp={
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
+        }        
+        model.addAnthropoInputParameters(mp)
+                                    
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
+
+        # ------ Test 1 Motion Axe X -------
+        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.distal.c3d"        
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        
+        # Motion FILTER 
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
+                                                 usePyCGM2_coordinateSystem=True)
+        modMotion.compute()
+
+        # Joint kinematics
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+        
+        # BSP model
+        bspModel = bodySegmentParameters.Bsp(model)
+        bspModel.compute()
+        
+        # force plate -- construction du wrench attribue au pied       
+        forceplates.appendForcePlateCornerAsMarker(acqGait)       
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        modelFilters.ForcePlateAssemblyFilter(model,acqGait,"RL",
+                                 leftSegmentLabel="Left Foot", 
+                                 rightSegmentLabel="Right Foot").compute()
+        
+        
+        idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
+        modelFilters.InverseDynamicFilter(model,
+                             acqGait,
+                             procedure = idp,
+                             projection = pyCGM2Enums.MomentProjection.JCS,
+                             viconCGM1compatible=True
+                             ).compute(pointLabelSuffix="cgm1_6dof")
+                             
+
+        modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix="cgm1_6dof")
+
+        #btkTools.smartWriter(acqGait,"testInvDyn.c3d")
+        if plotFlag:
+            plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof","LAnkle")
+            plotMoment(acqGait,"LKneeMoment","LKneeMoment_cgm1_6dof","LKnee")
+            plotMoment(acqGait,"LHipMoment","LHipMoment_cgm1_6dof","LHip")
+#
+            plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof","RAnkle")
+            plotMoment(acqGait,"RKneeMoment","RKneeMoment_cgm1_6dof","RKnee")
+            plotMoment(acqGait,"RHipMoment","RHipMoment_cgm1_6dof","RHip")
+
+
+        btkTools.smartWriter(acqGait,"basicCGM1_JCS-test.c3d")
+
+        # TEST ------
+        #compareKinetics(acqGait, 5, -5, 0.2, 40.0, 0.1 )
+
+
+    @classmethod
+    def basicCGM1_JCS_Dual(cls,plotFlag=False):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic-filtered\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
+    
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
+        
+        model=cgm.CGM1LowerLimbs()
+        model.configure() 
+       
+        markerDiameter=14                    
+        mp={
+        'Bodymass'   : 71.0,                
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,       
+        }        
+        model.addAnthropoInputParameters(mp)
+                                    
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
+
+        # ------ Test 1 Motion Axe X -------
+        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.distal.c3d"        
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        
+        # Motion FILTER 
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
+                                                 usePyCGM2_coordinateSystem=True)
+        modMotion.compute()
+
+        # Joint kinematics
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+        
+        # BSP model
+        bspModel = bodySegmentParameters.Bsp(model)
+        bspModel.compute()
+        
+        # force plate -- construction du wrench attribue au pied       
+        forceplates.appendForcePlateCornerAsMarker(acqGait)       
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        modelFilters.ForcePlateAssemblyFilter(model,acqGait,"RL",
+                                 leftSegmentLabel="Left Foot", 
+                                 rightSegmentLabel="Right Foot").compute()
+        
+        
+        idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
+        modelFilters.InverseDynamicFilter(model,
+                             acqGait,
+                             procedure = idp,
+                             projection = pyCGM2Enums.MomentProjection.JCS_Dual,
+                             viconCGM1compatible=True
+                             ).compute(pointLabelSuffix="cgm1_6dof")
+                             
+
+        modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix="cgm1_6dof")
+
+        #btkTools.smartWriter(acqGait,"testInvDyn.c3d")
+        if plotFlag:
+            plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof","LAnkle")
+            plotMoment(acqGait,"LKneeMoment","LKneeMoment_cgm1_6dof","LKnee")
+            plotMoment(acqGait,"LHipMoment","LHipMoment_cgm1_6dof","LHip")
+#
+            plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof","RAnkle")
+            plotMoment(acqGait,"RKneeMoment","RKneeMoment_cgm1_6dof","RKnee")
+            plotMoment(acqGait,"RHipMoment","RHipMoment_cgm1_6dof","RHip")
+
+
+        btkTools.smartWriter(acqGait,"basicCGM1_JCS_Dual-test.c3d")
+
+        # TEST ------
+        #compareKinetics(acqGait, 5, -5, 0.2, 40.0, 0.1 )
 
 
 class CGM1_motionInverseDynamics_pathologicalSubjectTest(): 
@@ -279,7 +635,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
     @classmethod
     def basicCGM1_distal(cls):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic_pathologicalSubject\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic_pathologicalSubject\\"
         staticFilename = "BOVE Vincent Cal 01.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -311,7 +667,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -346,7 +702,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
     @classmethod
     def basicCGM1_proximal(cls):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic_pathologicalSubject\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic_pathologicalSubject\\"
         staticFilename = "BOVE Vincent Cal 01.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -376,7 +732,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -411,7 +767,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
     @classmethod
     def basicCGM1_global(cls):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic_pathologicalSubject\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic_pathologicalSubject\\"
         staticFilename = "BOVE Vincent Cal 01.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -441,7 +797,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
         
         # Motion FILTER 
         # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
         # Joint kinematics
@@ -479,7 +835,7 @@ class CGM1_motionInverseDynamics_batchprocessing_Test():
     @classmethod
     def basicCGM1_distal(cls):
 
-        MAIN_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGA-Data\\CGM1\\PIG standard\\basic-filtered\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\PIG standard\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
     
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
@@ -512,7 +868,7 @@ class CGM1_motionInverseDynamics_batchprocessing_Test():
             
             # Motion FILTER 
             # optimisation segmentaire et calibration fonctionnel
-            modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native)
+            modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
             modMotion.compute()
     
             # Joint kinematics
@@ -548,14 +904,19 @@ class CGM1_motionInverseDynamics_batchprocessing_Test():
 if __name__ == "__main__":
     
     logging.info("######## PROCESS CGM1 - InverseDynamics ######")    
-    CGM1_motionInverseDynamicsTest.basicCGM1_distal() 
-    CGM1_motionInverseDynamicsTest.basicCGM1_proximal()
-    CGM1_motionInverseDynamicsTest.basicCGM1_global()
+    CGM1_motionInverseDynamicsTest.basicCGM1_distal(plotFlag=False) 
+    CGM1_motionInverseDynamicsTest.basicCGM1_proximal(plotFlag=False)
+    CGM1_motionInverseDynamicsTest.basicCGM1_global(plotFlag=False)
+    CGM1_motionInverseDynamicsTest.kadMedCGM1_distal(plotFlag=True) # no tests
+    CGM1_motionInverseDynamicsTest.kadMedCGM1_proximal(plotFlag=True) # no tests
+    
+    CGM1_motionInverseDynamicsTest.basicCGM1_JCS(plotFlag=True) # no tests
+    CGM1_motionInverseDynamicsTest.basicCGM1_JCS_Dual(plotFlag=True) # no tests
     
     CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_distal()
     CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_proximal()
-    #CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_global() # No success -  TODO : with Y as traveling axis, i got inversion on X and Y Force Components
+#    ##CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_global() # No success -  TODO : with Y as traveling axis, i got inversion on X and Y Force Components
     
     
-    CGM1_motionInverseDynamics_batchprocessing_Test.basicCGM1_distal()
+    #CGM1_motionInverseDynamics_batchprocessing_Test.basicCGM1_distal()
     logging.info("######## PROCESS CGM1 - InverseDynamics ----> Done ######")    

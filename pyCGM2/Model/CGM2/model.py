@@ -35,9 +35,22 @@ class Model(object):
         self.mp=dict()
         self.mp_computed=dict()
         self.m_chains=dict()
+        self.m_staticFilename=None
+        
+        self.m_properties=dict()
+        self.m_properties["CalibrationParameters"]=dict()
 
     def __repr__(self):
         return "Basis Model"        
+
+    def setProperty(self, propertyLabel,  value):
+        self.m_properties[propertyLabel] = value
+
+    def setCalibrationProperty(self, propertyLabel,  value):
+        self.m_properties["CalibrationParameters"][propertyLabel] = value
+
+    def setStaticFilename(self,name):
+        self.m_staticFilename=name
 
     def addChain(self,label,indexSegmentList):
         """
@@ -66,7 +79,7 @@ class Model(object):
         self.m_jointCollection.append(j)
 
 
-    def addSegment(self,label,index,sideEnum, lst_markerlabel=[], tracking_markers=[],):
+    def addSegment(self,label,index,sideEnum, calibration_markers=[], tracking_markers=[],):
         """
             Add a segment
             
@@ -79,7 +92,7 @@ class Model(object):
                     
         """
         
-        s=Segment(label,index,sideEnum,lst_markerlabel,tracking_markers)
+        s=Segment(label,index,sideEnum,calibration_markers,tracking_markers)
         self.m_segmentCollection.append(s)
 
 
@@ -222,6 +235,77 @@ class Model(object):
                 btkTools.smartAppendPoint(acq,marker+"-Z",markerTrajectoryZ,PointType=btk.btkPoint.Marker, desc="")            
 
 
+    def displayStaticCoordinateSystem(self,aquiStatic,  segmentLabel, targetPointLabel, referential = "Anatomic" ):
+        """
+            Display a coordinate system. Its Axis are represented by 3 virtual markers suffixed by (_X,_Y,_Z)
+
+            :Parameters:
+                - `aquiStatic` (btkAcquisition) - btkAcquisition instance from a static c3d
+                - `segmentLabel` (str) - segment label
+                - `targetPointLabel` (str) - label of the point defining axis limits
+                - `referential` (str) - type of segment coordinate system you want dislay ( if other than *Anatomic*, Technical Coordinate system will be displayed )
+
+        """
+
+        seg=self.getSegment(segmentLabel)
+        if referential == "Anatomic":
+            ref =seg.anatomicalFrame
+        else:
+            ref = seg.getReferential("TF")
+
+        val =  np.dot(ref.static.getRotation() , np.array([100.0,0.0,0.0])) + ref.static.getTranslation()
+        btkTools.smartAppendPoint(aquiStatic,targetPointLabel+"_X",val*np.ones((aquiStatic.GetPointFrameNumber(),3)),desc="")
+        val =  np.dot(ref.static.getRotation() , np.array([0.0,100.0,0.0])) + ref.static.getTranslation()
+        btkTools.smartAppendPoint(aquiStatic,targetPointLabel+"_Y",val*np.ones((aquiStatic.GetPointFrameNumber(),3)),desc="")
+        val =  np.dot(ref.static.getRotation() , np.array([0.0,0,100.0])) + ref.static.getTranslation()
+        btkTools.smartAppendPoint(aquiStatic,targetPointLabel+"_Z",val*np.ones((aquiStatic.GetPointFrameNumber(),3)),desc="")
+
+    def displayMotionCoordinateSystem(self,acqui,  segmentLabel, targetPointLabel, referential = "Anatomic" ):
+        seg=self.getSegment(segmentLabel)
+        valX=np.zeros((acqui.GetPointFrameNumber(),3))
+        valY=np.zeros((acqui.GetPointFrameNumber(),3))
+        valZ=np.zeros((acqui.GetPointFrameNumber(),3))
+
+
+        if referential == "Anatomic":
+            ref =seg.anatomicalFrame
+        else:
+            ref = seg.getReferential("TF")
+
+        for i in range(0,acqui.GetPointFrameNumber()):
+            valX[i,:]= np.dot(ref.motion[i].getRotation() , np.array([100.0,0.0,0.0])) + ref.motion[i].getTranslation()
+            valY[i,:]= np.dot(ref.motion[i].getRotation() , np.array([0.0,100.0,0.0])) + ref.motion[i].getTranslation()
+            valZ[i,:]= np.dot(ref.motion[i].getRotation() , np.array([0.0,0.0,100.0])) + ref.motion[i].getTranslation()
+
+        btkTools.smartAppendPoint(acqui,targetPointLabel+"_X",valX,desc="")
+        btkTools.smartAppendPoint(acqui,targetPointLabel+"_Y",valY,desc="")
+        btkTools.smartAppendPoint(acqui,targetPointLabel+"_Z",valZ,desc="")
+
+
+    def displayMotionViconCoordinateSystem(self,acqui,  segmentLabel,targetPointLabelO,targetPointLabelX,targetPointLabelY,targetPointLabelZ, referential = "Anatomic" ):
+        seg=self.getSegment(segmentLabel)
+
+        origin=np.zeros((acqui.GetPointFrameNumber(),3))
+        valX=np.zeros((acqui.GetPointFrameNumber(),3))
+        valY=np.zeros((acqui.GetPointFrameNumber(),3))
+        valZ=np.zeros((acqui.GetPointFrameNumber(),3))
+
+
+        if referential == "Anatomic":
+            ref =seg.anatomicalFrame
+        else:
+            ref = seg.getReferential("TF")
+
+        for i in range(0,acqui.GetPointFrameNumber()):
+            origin[i,:] = ref.motion[i].getTranslation()
+            valX[i,:]= np.dot(ref.motion[i].getRotation() , np.array([100.0,0.0,0.0])) + ref.motion[i].getTranslation()
+            valY[i,:]= np.dot(ref.motion[i].getRotation() , np.array([0.0,100.0,0.0])) + ref.motion[i].getTranslation()
+            valZ[i,:]= np.dot(ref.motion[i].getRotation() , np.array([0.0,0.0,100.0])) + ref.motion[i].getTranslation()
+
+        btkTools.smartAppendPoint(acqui,targetPointLabelO,origin,desc="")
+        btkTools.smartAppendPoint(acqui,targetPointLabelX,valX,desc="")
+        btkTools.smartAppendPoint(acqui,targetPointLabelY,valY,desc="")
+        btkTools.smartAppendPoint(acqui,targetPointLabelZ,valZ,desc="")
 
         
 
@@ -328,7 +412,7 @@ class Segment(object):
     #       compute constant matrix rotation between each referential.static      
 
 
-    def __init__(self,label,index,sideEnum ,lst_markerlabel=[], tracking_markers = []):
+    def __init__(self,label,index,sideEnum,calibration_markers=[], tracking_markers = []):
         """ 
             :Parameters:
                 - `label` (str) - label of the segment
@@ -341,8 +425,11 @@ class Segment(object):
         self.name=label
         self.index=index
         self.side = sideEnum
-        self.m_markerLabels=lst_markerlabel
+        
         self.m_tracking_markers=tracking_markers
+        self.m_calibration_markers = calibration_markers
+        
+        self.m_markerLabels=calibration_markers+tracking_markers
         self.referentials=[]
         self.anatomicalFrame =AnatomicalReferential()
         
@@ -368,6 +455,60 @@ class Segment(object):
         self.m_proximalMomentContribution["distalSegmentForces"] = None
         self.m_proximalMomentContribution["distalSegmentMoments"] = None
 
+    def addTrackingMarkerLabel(self,label):
+        """ 
+            Add a tracking marker 
+
+            :Parameters:
+                - `label` (str) - marker label  
+        """
+        if label not in self.m_tracking_markers:
+            self.m_tracking_markers.append(label)
+            self.m_markerLabels.append(label)
+        else:
+            logging.debug("marker %s already in the tracking marker segment list" % label)
+
+    def addCalibrationMarkerLabel(self,label):
+        """ 
+            Add a calibration marker 
+
+            :Parameters:
+                - `label` (str) - marker label  
+        """
+        
+        if label not in self.m_calibration_markers:
+            self.m_calibration_markers.append(label)
+            self.m_markerLabels.append(label)
+        else:
+            logging.debug("marker %s already in the clibration marker segment list" % label)
+
+
+    def resetMarkerLabels(self):
+        self.m_markerLabels = list()
+        self.m_markerLabels = self.m_tracking_markers + self.m_calibration_markers
+
+
+    def addMarkerLabel(self,label):
+        """ 
+            Add a marker 
+
+            :Parameters:
+                - `label` (str) - marker label  
+        """
+        isFind=False
+        i=0
+        for marker in self.m_markerLabels:
+            if label in marker:
+                isFind=True
+                index = i
+            i+=1
+
+        if isFind:
+            logging.debug("marker %s already in the marker segment list" % label)
+
+
+        else:
+            self.m_markerLabels.append(label)
 
     def zeroingExternalDevice(self):
         """
@@ -478,49 +619,10 @@ class Segment(object):
         self.m_bsp["inertia"] = array33        
 
 
-    def addMarkerLabel(self,label):
-        """ 
-            Add a marker 
-
-            :Parameters:
-                - `label` (str) - marker label  
-        """
-        isFind=False
-        i=0
-        for marker in self.m_markerLabels:
-            if label in marker:
-                isFind=True
-                index = i
-            i+=1
-
-        if isFind:
-            logging.debug("marker %s already in the marker segment list" % label)
+    
 
 
-        else:
-            self.m_markerLabels.append(label)
-
-
-    def addTrackingMarkerLabel(self,label):
-        """ 
-            Add a tracking marker 
-
-            :Parameters:
-                - `label` (str) - marker label  
-        """
-        isFind=False
-        i=0
-        for marker in self.m_tracking_markers:
-            if label in marker:
-                isFind=True
-                index = i
-            i+=1
-
-        if isFind:
-            logging.debug("marker %s already in the tracking marker segment list" % label) 
-
-        else:
-            self.m_tracking_markers.append(label)
+    
 
 
 

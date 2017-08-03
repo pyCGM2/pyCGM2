@@ -1,0 +1,32 @@
+{
+	"Translators" : {
+		"LASI":"",
+		"RASI":"",
+		"LPSI":"",
+		"RPSI":"",
+		"RTHI":"",
+		"RKNE":"",
+		"RTHIAP":"RTHAP",
+		"RTHIAD":"RTHAD",
+		"RTIB":"",
+		"RANK":"",
+		"RTIBAP":"RTIAP",
+		"RTIBAD":"RTIAD",
+		"RHEE":"",
+		"RTOE":"",
+		"LTHI":"",
+		"LKNE":"",
+		"LTHIAP":"LTHAP",
+		"LTHIAD":"LTHAD",
+		"LTIB":"",
+		"LANK":"",
+		"LTIBAP":"LTIAP",
+		"LTIBAD":"LTIAD",
+		"LHEE":"",
+		"LTOE":"",
+		"RMEPI":"",
+        "LMEPI":"",
+        "RMED":"",
+        "LMED":""
+		}
+}

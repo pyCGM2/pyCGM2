@@ -18,13 +18,6 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 # vicon nexus
 import ViconNexus
 
-# openMA
-#import ma.io
-#import ma.body
-
-#btk
-import btk
-
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools,nexusTools
@@ -32,6 +25,7 @@ import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, forceplates,bodySegmentParameters
 #
 from pyCGM2 import viconInterface
+from pyCGM2.Utils import fileManagement
 
 
 
@@ -44,20 +38,24 @@ if __name__ == "__main__":
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
     parser = argparse.ArgumentParser(description='CGM1-1 Fitting')
-    parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
+    parser.add_argument('--proj', type=str, help='Moment Projection. Choice : JCS, Distal, Proximal, Global')
     parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     args = parser.parse_args()
 
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # ----------------------INPUTS-------------------------------------------
-        # --- acquisition file and path----
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        # global setting ( in user/AppData)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+
+        # --------------------------LOADING ------------------------------------
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\New Session 3\\"
-            reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 12"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
+            reconstructFilenameLabelledNoExt = "Gait Trial 01"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
         else:
@@ -68,84 +66,94 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ reconstructFilenameLabelled)
 
-
-        # --- btk acquisition ----
-        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
-
-        #   check if acq was saved with only one  activated subject
-        if acqGait.GetPoint(0).GetLabel().count(":"):
-            raise Exception("[pyCGM2] Your Trial c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
-
-
-        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)
-
-#        # --relabel PIG output if processing previously---
-#        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqGait)
-#        if any([n_angles,n_forces ,n_moments,  n_powers])==1:            
-#            cgm.CGM.reLabelOldOutputs(acqGait) 
-
-        # --------------------------SUBJECT -----------------------------------
+        # --------------------------SUBJECT ------------------------------------
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
-        # --------------------pyCGM2 INPUT FILES ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-CGM1_1-pyCGM2.model"):
-            raise Exception ("%s-CGM1_1-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
+        # --------------------pyCGM2 MODEL ------------------------------
+
+        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
+            raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
         else:
-            f = open(DATA_PATH + subject + '-CGM1_1-pyCGM2.model', 'r')
+            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
             model = cPickle.load(f)
             f.close()
 
-        # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1_1-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
+        # --------------------------CHECKING -----------------------------------
+        # check model is the CGM1_1
+        logging.info("loaded model : %s" %(model.version ))
+        if model.version != "CGM1.1":
+            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM1.1 calibration pipeline"%model.version)
 
+        # --------------------------SESSION INFOS ------------------------------------
         # info file
-        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
-            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-        else:
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+
+        #  translators management
+        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        if not translators:
+           translators = inputs["Translators"]
+
+
+        # --------------------------CONFIG ------------------------------------
 
         # ---- configuration parameters ----
-        if args.markerDiameter is not None: 
+        if args.markerDiameter is not None:
             markerDiameter = float(args.markerDiameter)
             logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
         else:
             markerDiameter = float(inputs["Global"]["Marker diameter"])
-            
-            
+
+
         if args.check:
             pointSuffix="cgm1.1"
         else:
-            pointSuffix = inputs["Global"]["Point suffix"]
+            if args.pointSuffix is not None:
+                pointSuffix = args.pointSuffix
+            else:
+                pointSuffix = inputs["Global"]["Point suffix"]
 
-        if args.proj is not None:        
+        if args.proj is not None:
             if args.proj == "Distal":
                 momentProjection = pyCGM2Enums.MomentProjection.Distal
             elif args.proj == "Proximal":
-                momentProjection = pyCGM2Enums.MomentProjection.Distal
+                momentProjection = pyCGM2Enums.MomentProjection.Proximal
             elif args.proj == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
+            elif args.proj == "JCS":
+                momentProjection = pyCGM2Enums.MomentProjection.JCS
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
 
-        else:        
+        else:
             if inputs["Fitting"]["Moment Projection"] == "Distal":
                 momentProjection = pyCGM2Enums.MomentProjection.Distal
             elif inputs["Fitting"]["Moment Projection"] == "Proximal":
-                momentProjection = pyCGM2Enums.MomentProjection.Distal
+                momentProjection = pyCGM2Enums.MomentProjection.Proximal
             elif inputs["Fitting"]["Moment Projection"] == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
+            elif inputs["Fitting"]["Moment Projection"] == "JCS":
+                momentProjection = pyCGM2Enums.MomentProjection.JCS
             else:
-                raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")      
-        
-        # --------------------------MODELLLING--------------------------
-        scp=modelFilters.StaticCalibrationProcedure(model) 
-        # ---Motion filter----    
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+                raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
+
+
+        # --------------------------ACQUISITION ------------------------------------
+
+        # --- btk acquisition ----
+        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+
+        btkTools.checkMultipleSubject(acqGait)
+        acqGait =  btkTools.applyTranslators(acqGait,translators)
+        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)
+
+
+
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        # ---Motion filter----
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                   markerDiameter=markerDiameter)
 
         modMotion.compute()
@@ -156,8 +164,9 @@ if __name__ == "__main__":
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
         # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","RASI","RPSI","LPSI"])
-        # absolute angles        
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+
+        # absolute angles
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                                segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                                 angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -170,8 +179,9 @@ if __name__ == "__main__":
         bspModel.compute()
 
         # --- force plate handling----
-        # find foot  in contact        
+        # find foot  in contact
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
         logging.info("Force plate assignment : %s" %mappedForcePlate)
 
         if args.mfpa is not None:
@@ -180,8 +190,9 @@ if __name__ == "__main__":
             else:
                 mappedForcePlate = args.mfpa
                 logging.warning("Force plates assign manually")
+                forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
 
-        # assembly foot and force plate        
+        # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",
                                  rightSegmentLabel="Right Foot").compute()
@@ -198,17 +209,19 @@ if __name__ == "__main__":
         modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
         #---- zero unvalid frames ---
-        btkTools.applyValidFramesOnOutput(acqGait,validFrames)  
+        btkTools.applyValidFramesOnOutput(acqGait,validFrames)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,model,acqGait,subject,pointSuffix).run()
+
+        nexusTools.createGeneralEvents(NEXUS,subject,acqGait,["Left-FP","Right-FP"])
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 
         if DEBUG:
 
             NEXUS.SaveTrial(30)
-    
-            
+
+
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

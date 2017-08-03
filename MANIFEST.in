@@ -1,0 +1,6 @@
+recursive-include Apps *
+recursive-include Data *
+recursive-include Extern *
+recursive-include NoViconApps *
+recursive-include SessionSettings *
+recursive-include thirdParty *

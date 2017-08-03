@@ -84,8 +84,16 @@ ENV/
 
 # Spyder project settings
 .spyderproject
+.spyproject
 
 *.c3d
 *.pyc
 
 *.pipeline
+*.xls
+*.xlsx
+
+# python visual studio
+*.pyproj
+*.sln
+*.suo

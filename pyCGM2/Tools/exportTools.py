@@ -25,7 +25,7 @@ def isColumnNameExist( dataframe, name):
     if name in dataframe.columns.values:
         logging.warning("column name : %s already in the dataFrame",name)
 
-
+# ---- Spatio temporal parameters -----
 def buid_df_descriptiveCycle1_1(analysis_outputStats):
 
     df_collection_L={"mean" : [], "std" : [], "median" : []}
@@ -136,10 +136,279 @@ def buid_df_cycles1_1(analysis_outputStats):
     return DF
 
 
+# ---- for Scores -----
+def buid_df_descriptiveCycle1_1_overall(analysis_outputStats,columnName):
+
+    df_collection=[]
+    
+    valuesMean=analysis_outputStats["mean"]
+    df=pd.DataFrame(valuesMean,  columns = [columnName])
+    df['Context']= "overall"
+    df['Stats type'] = "mean"
+    df_collection.append(df)
+
+    valuesStd=analysis_outputStats["std"]
+    df=pd.DataFrame(valuesStd,  columns = [columnName])
+    df['Context']= "overall"
+    df['Stats type'] = "std"
+    df_collection.append(df)
+
+    valuesMedian=analysis_outputStats["median"]
+    df=pd.DataFrame(valuesMedian,  columns = [columnName])
+    df['Context']= "overall"
+    df['Stats type'] = "median"
+    df_collection.append(df)
+    
+    df=pd.concat(df_collection,ignore_index=True)
+    
+    return df
+
+
+
+def buid_df_descriptiveCycle1_1_onlyContext(analysis_outputStats,columnName):
+
+
+    # "data" section 
+    df_collection_L=[]
+    df_collection_R=[]
+    
+    for context in analysis_outputStats.keys():
+             
+        if context == "Left":
+            valuesMean=analysis_outputStats[context]["mean"]
+            df=pd.DataFrame(valuesMean,  columns = [columnName])
+            df['Context']= context
+            df['Stats type'] = "mean"
+            df_collection_L.append(df)
+
+            valuesStd=analysis_outputStats[context]["std"]
+            df=pd.DataFrame(valuesStd,  columns= [columnName])
+            df['Context']= context
+            df['Stats type'] = "std"
+            df_collection_L.append(df)
+
+            valuesMedian=analysis_outputStats[context]["median"]
+            df=pd.DataFrame(valuesMedian,  columns= [columnName])
+            df['Context']= context
+            df['Stats type'] = "median"
+            df_collection_L.append(df)
+
+
+        if context == "Right":
+            valuesMean=analysis_outputStats[context]["mean"]
+            df=pd.DataFrame(valuesMean,  columns = [columnName])
+            df['Context']= context
+            df['Stats type'] = "mean"
+            df_collection_R.append(df)
+
+            valuesStd=analysis_outputStats[context]["std"]
+            df=pd.DataFrame(valuesStd,  columns= [columnName])
+            df['Context']= context
+            df['Stats type'] = "std"
+            df_collection_R.append(df)
+
+            valuesMedian=analysis_outputStats[context]["median"]
+            df=pd.DataFrame(valuesMedian,  columns= [columnName])
+            df['Context']= context
+            df['Stats type'] = "median"
+            df_collection_R.append(df)      
+
+    left_flag = len(df_collection_L)
+    right_flag = len(df_collection_R)
+
+    if left_flag:  df_L=pd.concat(df_collection_L,ignore_index=True)
+    if right_flag: df_R=pd.concat(df_collection_R,ignore_index=True)
+
+    if left_flag and right_flag:
+        DF = pd.concat([df_L,df_R],ignore_index=True)
+    if left_flag and not right_flag:
+        DF = df_L
+    if not left_flag and right_flag:
+        DF = df_R
+
+    return DF
+
+
+def buid_df_cycles1_1_onlyContext(analysis_outputStats, columnName):
+
+    # "data" section 
+    df_collection_L=[]
+    df_collection_R=[]
+
+    for context in analysis_outputStats.keys():
+        if context =="Left" : # FIXME TODO : if different form L and R
+            values = analysis_outputStats[context]["values"]
+            df=pd.DataFrame(values,  columns= [columnName])
+            df['Cycle']= 0 if  len(values) == 1 else range(0,len(values))
+            df['Context']= context
+            df_collection_L.append(df)
+
+        if context=="Right" :
+            values = analysis_outputStats[context]["values"]
+            df=pd.DataFrame(values,  columns= [columnName])
+            df['Cycle']= 0 if  len(values) == 1 else range(0,len(values))
+            df['Context']= context
+            df_collection_R.append(df)
+
+    left_flag = len(df_collection_L)
+    right_flag = len(df_collection_R)
+
+    if left_flag:
+        df_L=pd.concat(df_collection_L,ignore_index=True)
+
+    if right_flag:
+        df_R=pd.concat(df_collection_R,ignore_index=True)
+
+    if left_flag and right_flag:
+        df_cycles = pd.concat([df_L,df_R],ignore_index=True)
+
+    if left_flag and not right_flag:
+        df_cycles = df_L
+
+    if not left_flag and right_flag:
+        df_cycles = df_R
+
+    DF = df_cycles
+
+
+    return DF
 
 
 
 
+def buid_df_descriptiveCycle1_3(analysis_outputStats,columnName):
+
+
+    # "data" section 
+    df_collection_L=[]
+    df_collection_R=[]
+    
+    for key in analysis_outputStats.keys():
+        label = key[0]
+        context = key[1]        
+        if context == "Left":
+            valuesMean=analysis_outputStats[label,context]["mean"]
+            df=pd.DataFrame(valuesMean,  columns = [columnName])
+            df['Axe']=['X','Y','Z']
+            df['Label']=label
+            df['Context']= context
+            df['Stats type'] = "mean"
+            df_collection_L.append(df)
+
+            valuesStd=analysis_outputStats[label,context]["std"]
+            df=pd.DataFrame(valuesStd,  columns= [columnName])
+            df['Axe']=['X','Y','Z']
+            df['Label']=label
+            df['Context']= context
+            df['Stats type'] = "std"
+            df_collection_L.append(df)
+
+            valuesMedian=analysis_outputStats[label,context]["median"]
+            df=pd.DataFrame(valuesMedian,  columns= [columnName])
+            df['Axe']=['X','Y','Z']
+            df['Label']=label
+            df['Context']= context
+            df['Stats type'] = "median"
+            df_collection_L.append(df)
+
+
+        if context == "Right":
+            valuesMean=analysis_outputStats[label,context]["mean"]
+            df=pd.DataFrame(valuesMean,  columns= [columnName])
+            df['Axe']=['X','Y','Z']
+            df['Label']=label
+            df['Context']= context
+            df['Stats type'] = "mean"
+            df_collection_R.append(df)
+
+            valuesStd=analysis_outputStats[label,context]["std"]
+            df=pd.DataFrame(valuesStd,  columns= [columnName])
+            df['Axe']=['X','Y','Z']
+            df['Label']=label
+            df['Context']= context
+            df['Stats type'] = "std"
+            df_collection_R.append(df)
+
+            valuesMedian=analysis_outputStats[label,context]["median"]
+            df=pd.DataFrame(valuesMedian,  columns= [columnName])
+            df['Axe']=['X','Y','Z']
+            df['Label']=label
+            df['Context']= context
+            df['Stats type'] = "median"
+            df_collection_R.append(df)      
+
+    left_flag = len(df_collection_L)
+    right_flag = len(df_collection_R)
+
+    if left_flag:  df_L=pd.concat(df_collection_L,ignore_index=True)
+    if right_flag: df_R=pd.concat(df_collection_R,ignore_index=True)
+
+    if left_flag and right_flag:
+        DF = pd.concat([df_L,df_R],ignore_index=True)
+    if left_flag and not right_flag:
+        DF = df_L
+    if not left_flag and right_flag:
+        DF = df_R
+
+    return DF
+
+
+def buid_df_cycles1_3(analysis_outputStats, columnName):
+
+    # "data" section 
+    df_collection_L=[]
+    df_collection_R=[]
+    
+    for key in analysis_outputStats.keys():
+        label = key[0]
+        context = key[1]        
+        i_l=0
+        i_r=0
+        if context =="Left" : # FIXME TODO : if different form L and R
+            for itValues in analysis_outputStats[label,context]["values"]:
+                df=pd.DataFrame(itValues,  columns= [columnName])
+                df['Axis']=['X','Y','Z']
+                df['Label']=label
+                df['Cycle']= i_l
+                df['Context']= context
+                df_collection_L.append(df)
+                i_l+=1
+
+        if context=="Right" :
+            for itValues in analysis_outputStats[label,context]["values"]:
+                df=pd.DataFrame(itValues,  columns= [columnName])
+                df['Axis']=['X','Y','Z']
+                df['Label']=label
+                df['Cycle']= i_r
+                df['Context']= context
+                df_collection_R.append(df)
+                i_r+=1        
+
+    left_flag = len(df_collection_L)
+    right_flag = len(df_collection_R)
+
+    if left_flag:
+        df_L=pd.concat(df_collection_L,ignore_index=True)
+
+    if right_flag:
+        df_R=pd.concat(df_collection_R,ignore_index=True)
+
+    if left_flag and right_flag:
+        df_cycles = pd.concat([df_L,df_R],ignore_index=True)
+
+    if left_flag and not right_flag:
+        df_cycles = df_L
+
+    if not left_flag and right_flag:
+        df_cycles = df_R
+
+    DF = df_cycles
+
+
+    return DF
+
+
+# ---- for 101-frames data -----
 def buid_df_descriptiveCycle101_3(analysis_outputStats):
 
 

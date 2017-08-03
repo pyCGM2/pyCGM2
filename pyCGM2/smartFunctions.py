@@ -6,9 +6,9 @@ import pdb
 import os
 
 
-from pyCGM2.Processing import cycle,analysis
+from pyCGM2.Processing import cycle,analysis,scores,exporter,c3dManager   
 from pyCGM2.Report import plot,normativeDatabaseProcedure
-from pyCGM2.Tools import trialTools
+
 
 # openma
 import ma.io
@@ -95,14 +95,11 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                          plotFlag= True, 
                          exportBasicSpreadSheetFlag = True,
                          exportAdvancedSpreadSheetFlag = True,
-                         exportAnalysisC3dFlag = True,
+                         exportAnalysisC3dFlag = False,
                          consistencyOnly = False,
                          normativeDataDict = None,
                          name_out=None,
-                         DATA_PATH_OUT= None,
-                         longitudinal_axis=None,
-                         lateral_axis = None
-                         ):
+                         DATA_PATH_OUT= None  ):
     """
         Processing  of multiple gait c3d with lower limb CGM outputs
         
@@ -127,53 +124,40 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
            - better manage both longitudinal_axis and laterals_axis inputs. 
 
     """
-
-
-                             
-    #---- PRELIMINARY STAGE
+    
+    
+    #---- NORMATIVE DATASET
     #--------------------------------------------------------------------------
-    # check if modelledFilenames is string                          
+    if normativeDataDict is not None:
+        if normativeDataDict["Author"] == "Schwartz2008":
+            chosenModality = normativeDataDict["Modality"]
+            ndp = normativeDatabaseProcedure.Schwartz2008_normativeDataBases(chosenModality)    # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
+        elif normativeDataDict["Author"] == "Pinzone2014":
+            chosenModality = normativeDataDict["Modality"]
+            ndp = normativeDatabaseProcedure.Pinzone2014_normativeDataBases(chosenModality) # modalites : "Center One" ,"Center Two"
+
+    #---- Modelled File manager
+    #--------------------------------------------------------------------------
+    # preliminary check if modelledFilenames is string                          
     if isinstance(modelledFilenames,str) or isinstance(modelledFilenames,unicode):
         logging.info( "gait Processing on ONE file")        
         modelledFilenames = [modelledFilenames]
+
+
+
+    c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+    cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
+    cmf.enableEmg(False)
+    trialManager = cmf.generate()
     
 
-
-    # distinguishing trials for kinematic and kinetic processing                             
-    # - kinematic Trials      
-    kinematicTrials=[]
-    kinematicFilenames =[]
-    for kinematicFilename in modelledFilenames:
-        kinematicFileNode = ma.io.read(str(DATA_PATH + kinematicFilename))
-        kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
-        trialTools.sortedEvents(kinematicTrial)
-
-        if longitudinal_axis is None or lateral_axis is None:
-            logging.info("Automatic detection of Both longitudinal and lateral Axes")
-            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
-        else:    
-            if longitudinal_axis is None or lateral_axis is not None:
-                raise Exception("[pyCGM2] Longitudinal_axis has to be also defined")     
-            if longitudinal_axis is not None or lateral_axis is None:
-                raise Exception("[pyCGM2] Lateral_axis has to be also defined")     
-    
-            if longitudinal_axis is not None or lateral_axis is not None:
-                globalFrame[0] = longitudinal_axis
-                globalFrame[1] = lateral_axis
-
-        kinematicTrials.append(kinematicTrial)
-        kinematicFilenames.append(kinematicFilename)
-
-    # - kinetic Trials ( check if kinetic events)        
-    kineticTrials,kineticFilenames,flag_kinetics =  trialTools.automaticKineticDetection(DATA_PATH,modelledFilenames)                         
 
     #---- GAIT CYCLES FILTER
     #--------------------------------------------------------------------------
-    cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
-                                               kinematicTrials = kinematicTrials,
-                                               kineticTrials = kineticTrials,
-                                               emgTrials=None,
-                                               longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
+    cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=trialManager.spatioTemporal["Trials"],
+                                               kinematicTrials = trialManager.kinematic["Trials"],
+                                               kineticTrials = trialManager.kinetic["Trials"],
+                                               emgTrials=trialManager.emg["Trials"])
             
     cyclefilter = cycle.CyclesFilter()
     cyclefilter.setBuilder(cycleBuilder)
@@ -202,6 +186,12 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
     
+
+    ## --- GPS ----
+    gps =scores.CGM1_GPS()
+    scf = scores.ScoreFilter(gps,analysisFilter.analysis, ndp)
+    scf.compute()
+
     
     # export dataframe
     if DATA_PATH_OUT is None:
@@ -216,28 +206,27 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
         analysisFilter.exportAnalysisC3d(c3dAnalysisName, path=DATA_PATH_OUT)
 
     if exportBasicSpreadSheetFlag or exportAdvancedSpreadSheetFlag:
+        
+        xlsExport = exporter.XlsExportFilter()
+        xlsExport.setAnalysisInstance(analysisFilter.analysis)
+        xlsExport.setConcreteAnalysisBuilder(analysisBuilder)
+        
+        
+        
         if name_out  is None:
             spreadSheetName = modelledFilenames[0][:-4] if len(modelledFilenames) == 1 else  "MultiTrials"
         else:
             spreadSheetName = name_out
-
-        if exportBasicSpreadSheetFlag : analysisFilter.exportBasicDataFrame(spreadSheetName, path=DATA_PATH_OUT)
-        if exportAdvancedSpreadSheetFlag : analysisFilter.exportAdvancedDataFrame(spreadSheetName, path=DATA_PATH_OUT)
+        
+        if exportBasicSpreadSheetFlag : xlsExport.exportBasicDataFrame(spreadSheetName, path=DATA_PATH_OUT)
+        if exportAdvancedSpreadSheetFlag : xlsExport.exportAdvancedDataFrame(spreadSheetName, path=DATA_PATH_OUT)
 
     #---- GAIT PLOTTING FILTER
     #--------------------------------------------------------------------------
     if plotFlag:    
         
-        plotBuilder = plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=flag_kinetics, pointLabelSuffix= pointLabelSuffix)
-        
-        if normativeDataDict["Author"] == "Schwartz2008":
-            chosenModality = normativeDataDict["Modality"]
-            plotBuilder.setNormativeDataProcedure(normativeDatabaseProcedure.Schwartz2008_normativeDataBases(chosenModality)) # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
-        elif normativeDataDict["Author"] == "Pinzone2014":
-            chosenModality = normativeDataDict["Modality"]
-            plotBuilder.setNormativeDataProcedure(normativeDatabaseProcedure.Pinzone2014_normativeDataBases(chosenModality)) # modalites : "Center One" ,"Center Two"
-       
-      
+        plotBuilder = plot.GaitAnalysisPlotBuilder(analysisFilter.analysis , kineticFlag=trialManager.kineticFlag, pointLabelSuffix= pointLabelSuffix)
+        plotBuilder.setNormativeDataProcedure(ndp)
         plotBuilder.setConsistencyOnly(consistencyOnly)       
        
         # Filter
@@ -255,7 +244,7 @@ def gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
 
         if name_out  is None:
             os.startfile(DATA_PATH+"consistencyKinematics_"+ pdfName +".pdf")
-            if flag_kinetics: os.startfile(DATA_PATH+"consistencyKinetics_"+ pdfName+".pdf")
+            if trialManager.kineticFlag: os.startfile(DATA_PATH+"consistencyKinetics_"+ pdfName+".pdf")
 
 
         

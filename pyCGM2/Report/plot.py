@@ -1792,7 +1792,6 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
                             ylim = self.__ylimits["FootProgress.Angles","Rota"])
 
 
-
             if normativeData is not None:
                 ax1.fill_between(np.linspace(0,100,51), normativeData["Pelvis.Angles"]["mean"][:,0]-normativeData["Pelvis.Angles"]["sd"][:,0], normativeData["Pelvis.Angles"]["mean"][:,0]+normativeData["Pelvis.Angles"]["sd"][:,0], facecolor="green", alpha=0.5,linewidth=0)
                 ax2.fill_between(np.linspace(0,100,51), normativeData["Pelvis.Angles"]["mean"][:,1]-normativeData["Pelvis.Angles"]["sd"][:,1], normativeData["Pelvis.Angles"]["mean"][:,1]+normativeData["Pelvis.Angles"]["sd"][:,1], facecolor="green", alpha=0.5,linewidth=0)
@@ -1803,7 +1802,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
                 ax7.fill_between(np.linspace(0,100,51), normativeData["Knee.Angles"]["mean"][:,0]-normativeData["Knee.Angles"]["sd"][:,0], normativeData["Knee.Angles"]["mean"][:,0]+normativeData["Knee.Angles"]["sd"][:,0], facecolor="green", alpha=0.5,linewidth=0)
 
                 ax10.fill_between(np.linspace(0,100,51), normativeData["Ankle.Angles"]["mean"][:,0]-normativeData["Ankle.Angles"]["sd"][:,0], normativeData["Ankle.Angles"]["mean"][:,0]+normativeData["Ankle.Angles"]["sd"][:,0], facecolor="green", alpha=0.5,linewidth=0)
-                ax12.fill_between(np.linspace(0,100,51), normativeData["Ankle.Angles"]["mean"][:,2]-normativeData["Ankle.Angles"]["sd"][:,2], normativeData["Ankle.Angles"]["mean"][:,2]+normativeData["Ankle.Angles"]["sd"][:,2], facecolor="green", alpha=0.5,linewidth=0)
+                ax12.fill_between(np.linspace(0,100,51), normativeData["Foot.Angles"]["mean"][:,2]-normativeData["Foot.Angles"]["sd"][:,2], normativeData["Foot.Angles"]["mean"][:,2]+normativeData["Foot.Angles"]["sd"][:,2], facecolor="green", alpha=0.5,linewidth=0)
 
 
             pp = PdfPages(str(path+ "descriptiveKinematics"+pdfNamePlus+".pdf"))
@@ -1894,7 +1893,7 @@ class GaitAnalysisPlotBuilder(AbstractPlotBuilder):
             ax7.fill_between(np.linspace(0,100,51), normativeData["Knee.Angles"]["mean"][:,0]-normativeData["Knee.Angles"]["sd"][:,0], normativeData["Knee.Angles"]["mean"][:,0]+normativeData["Knee.Angles"]["sd"][:,0], facecolor="green", alpha=0.5,linewidth=0)
 
             ax10.fill_between(np.linspace(0,100,51), normativeData["Ankle.Angles"]["mean"][:,0]-normativeData["Ankle.Angles"]["sd"][:,0], normativeData["Ankle.Angles"]["mean"][:,0]+normativeData["Ankle.Angles"]["sd"][:,0], facecolor="green", alpha=0.5,linewidth=0)
-            ax12.fill_between(np.linspace(0,100,51), normativeData["Ankle.Angles"]["mean"][:,2]-normativeData["Ankle.Angles"]["sd"][:,2], normativeData["Ankle.Angles"]["mean"][:,2]+normativeData["Ankle.Angles"]["sd"][:,2], facecolor="green", alpha=0.5,linewidth=0)
+            ax12.fill_between(np.linspace(0,100,51), normativeData["Foot.Angles"]["mean"][:,2]-normativeData["Foot.Angles"]["sd"][:,2], normativeData["Foot.Angles"]["mean"][:,2]+normativeData["Foot.Angles"]["sd"][:,2], facecolor="green", alpha=0.5,linewidth=0)
 
 
         pp = PdfPages(str(path+ "consistencyKinematics"+pdfNamePlus+".pdf"))

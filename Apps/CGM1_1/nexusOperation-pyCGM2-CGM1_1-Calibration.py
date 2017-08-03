@@ -19,15 +19,6 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 # vicon nexus
 import ViconNexus
 
-# openMA
-#import ma.io
-#import ma.body
-
-#btk
-import btk
-import numpy as np
-
-
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools,nexusTools
@@ -36,6 +27,7 @@ from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
 
 from pyCGM2 import viconInterface
 
+from pyCGM2.Utils import fileManagement
 
 if __name__ == "__main__":
 
@@ -46,7 +38,9 @@ if __name__ == "__main__":
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
+    parser.add_argument('--resetMP', action='store_false', help='reset optional mass parameters')
     args = parser.parse_args()
 
 
@@ -56,12 +50,14 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # --------------------------INPUTS ------------------------------------
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        # global setting ( in user/AppData)
+        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
-        # --- acquisition file and path----
+        # --------------------------LOADING ------------------------------------
         if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\pyCGM2-Data\\CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
-            calibrateFilenameLabelledNoExt = "test" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
+            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -72,65 +68,11 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
 
-        # ---btk acquisition---
-        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
-
-        # check if acq was saved with only one  activated subject
-        if acqStatic.GetPoint(0).GetLabel().count(":"):
-            raise Exception("[pyCGM2] Your input static c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation") 
-
-#        # ---relabel PIG output if processing previously---
-#        n_angles,n_forces ,n_moments,  n_powers = btkTools.getNumberOfModelOutputs(acqStatic)
-#        if any([n_angles,n_forces ,n_moments,  n_powers])==1:               
-#            cgm.CGM.reLabelOldOutputs(acqStatic) 
-
-
-        # --------------------------SUBJECT -----------------------------------
+        # --------------------------SUBJECT ------------------------------------
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.ckeckActivatedSubject(NEXUS,subjects,"LASI")        
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         Parameters = NEXUS.GetSubjectParamNames(subject)
-
-
-        # --------------------pyCGM2 INPUT FILES ------------------------------
-
-        # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1_1-pyCGM2.inputs")).read(),object_pairs_hook=OrderedDict)
-
-        # info file
-        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
-            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-        else:
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-
-
-        # ---- configuration parameters ----
-        if args.leftFlatFoot is not None:      
-            flag_leftFlatFoot = bool(args.leftFlatFoot)
-        else:
-            flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
-               
-        if args.rightFlatFoot is not None:
-            flag_rightFlatFoot = bool(args.rightFlatFoot)
-        else:
-            flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
-
-
-        if args.markerDiameter is not None: 
-            markerDiameter = float(args.markerDiameter)
-            logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
-        else:
-            markerDiameter = float(inputs["Global"]["Marker diameter"])
-
-
-        if args.check:
-            pointSuffix="cgm1.1"
-        else:
-            pointSuffix = inputs["Global"]["Point suffix"]
-
-        # --------------------------MP DATA -----------------------------------
 
         required_mp={
         'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
@@ -141,48 +83,111 @@ if __name__ == "__main__":
         'LeftAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0],#75.3,
         'RightAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],#72.9,
         'LeftSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "LeftSoleDelta")[0],#75.3,
-        'RightSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "RightSoleDelta")[0],#72.9,        
+        'RightSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "RightSoleDelta")[0],#72.9,
         }
 
-        optional_mp={
-        'InterAsisDistance'   : NEXUS.GetSubjectParamDetails( subject, "InterAsisDistance")[0],#0,
-        'LeftAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "LeftAsisTrocanterDistance")[0],#0,
-        'LeftTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "LeftTibialTorsion")[0],#0 ,
-        'LeftThighRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftThighRotation")[0],#0,
-        'LeftShankRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftShankRotation")[0],#0,
-        'RightAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "RightAsisTrocanterDistance")[0],#0,
-        'RightTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "RightTibialTorsion")[0],#0 ,
-        'RightThighRotation' : NEXUS.GetSubjectParamDetails( subject, "RightThighRotation")[0],#0,
-        'RightShankRotation' : NEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
-        }
+        if args.resetMP:
+            optional_mp={
+            'InterAsisDistance'   : 0,
+            'LeftAsisTrocanterDistance' : 0,
+            'LeftTibialTorsion' : 0 ,
+            'LeftThighRotation' : 0,
+            'LeftShankRotation' : 0,
+            'RightAsisTrocanterDistance' : 0,
+            'RightTibialTorsion' :0 ,
+            'RightThighRotation' : 0,
+            'RightShankRotation' : 0
+            }
 
-        # --------------------------MODEL--------------------------------------
+        else:
+            optional_mp={
+            'InterAsisDistance'   : NEXUS.GetSubjectParamDetails( subject, "InterAsisDistance")[0],#0,
+            'LeftAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "LeftAsisTrocanterDistance")[0],#0,
+            'LeftTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "LeftTibialTorsion")[0],#0 ,
+            'LeftThighRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftThighRotation")[0],#0,
+            'LeftShankRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftShankRotation")[0],#0,
+            'RightAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "RightAsisTrocanterDistance")[0],#0,
+            'RightTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "RightTibialTorsion")[0],#0 ,
+            'RightThighRotation' : NEXUS.GetSubjectParamDetails( subject, "RightThighRotation")[0],#0,
+            'RightShankRotation' : NEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
+            }
+
+
+        # --------------------------SESSION INFOS ------------------------------------
+        # info file
+        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+
+        #  translators management
+        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        if not translators:
+           translators = inputs["Translators"]
+
+        # --------------------------CONFIG ------------------------------------
+
+        if args.leftFlatFoot is not None:
+            flag_leftFlatFoot = bool(args.leftFlatFoot)
+        else:
+            flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
+
+        if args.rightFlatFoot is not None:
+            flag_rightFlatFoot = bool(args.rightFlatFoot)
+        else:
+            flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
+
+
+        if args.markerDiameter is not None:
+            markerDiameter = float(args.markerDiameter)
+            logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
+        else:
+            markerDiameter = float(inputs["Global"]["Marker diameter"])
+
+        if args.check:
+            pointSuffix="cgm1.1"
+        else:
+            if args.pointSuffix is not None:
+                pointSuffix = args.pointSuffix
+            else:
+                pointSuffix = inputs["Global"]["Point suffix"]
+
+        # --------------------------ACQUISITION ------------------------------------
+
+        # ---btk acquisition---
+        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+        btkTools.checkMultipleSubject(acqStatic)
+
+        acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+
         # ---definition---
         model=cgm.CGM1LowerLimbs()
-        model.setCGM1Version("1.1")
+        model.setVersion("CGM1.1")
         model.configure()
+
+        model.setStaticFilename(calibrateFilenameLabelled)
+
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
         # ---check marker set used----
         staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
 
 
-        # --------------------------STATIC CALBRATION--------------------------                
+        # --------------------------STATIC CALBRATION--------------------------
         scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
-        
+
         # ---initial calibration filter----
-        # use if all optional mp are zero    
+        # use if all optional mp are zero
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                             leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                             markerDiameter=markerDiameter,
                                             ).compute()
 
         # ---- Decorators -----
-        # Goal = modified calibration according the identified marker set or if offsets manually set   
- 
+        # Goal = modified calibration according the identified marker set or if offsets manually set
 
+        # hip joint centres ---
+        useLeftHJCnodeLabel = "LHJC_cgm1"
+        useRightHJCnodeLabel = "RHJC_cgm1"
 
-        # initialisation of node label 
+        # initialisation of node label
         useLeftKJCnodeLabel = "LKJC_chord"
         useLeftAJCnodeLabel = "LAJC_chord"
         useRightKJCnodeLabel = "RKJC_chord"
@@ -190,17 +195,17 @@ if __name__ == "__main__":
 
         # case 1 : NO kad, NO medial ankle BUT thighRotation different from zero ( mean manual modification or new calibration from a previous one )
         if not staticMarkerConfiguration["leftKadFlag"]  and not staticMarkerConfiguration["leftMedialAnkleFlag"] and not staticMarkerConfiguration["leftMedialKneeFlag"] and optional_mp["LeftThighRotation"] !=0:
-            logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")            
+            logging.warning("CASE FOUND ===> Left Side - CGM1 - Origine - manual offsets")
             modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],markerDiameter,optional_mp["LeftTibialTorsion"],optional_mp["LeftShankRotation"])
             useLeftKJCnodeLabel = "LKJC_mo"
             useLeftAJCnodeLabel = "LAJC_mo"
         if not staticMarkerConfiguration["rightKadFlag"]  and not staticMarkerConfiguration["rightMedialAnkleFlag"] and not staticMarkerConfiguration["rightMedialKneeFlag"] and optional_mp["RightThighRotation"] !=0:
-            logging.warning("CASE FOUND ===> Right Side - CGM1 - Origine - manual offsets")            
+            logging.warning("CASE FOUND ===> Right Side - CGM1 - Origine - manual offsets")
             modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
             useRightKJCnodeLabel = "RKJC_mo"
             useRightAJCnodeLabel = "RAJC_mo"
 
-        # case 2 : kad FOUND and NO medial Ankle 
+        # case 2 : kad FOUND and NO medial Ankle
         if staticMarkerConfiguration["leftKadFlag"]:
             logging.warning("CASE FOUND ===> Left Side - CGM1 - KAD variant")
             modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
@@ -213,8 +218,8 @@ if __name__ == "__main__":
             useRightAJCnodeLabel = "RAJC_kad"
 
 
-        # case 3 : medial knee FOUND 
-        # notice: cgm1Behaviour is enable mean effect on AJC location 
+        # case 3 : medial knee FOUND
+        # notice: cgm1Behaviour is enable mean effect on AJC location
         if staticMarkerConfiguration["leftMedialKneeFlag"]:
             logging.warning("CASE FOUND ===> Left Side - CGM1 - medial knee ")
             modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="left",cgm1Behaviour=True)
@@ -227,7 +232,7 @@ if __name__ == "__main__":
             useRightAJCnodeLabel = "RAJC_midKnee"
 
 
-        # case 4 : medial ankle FOUND 
+        # case 4 : medial ankle FOUND
         if staticMarkerConfiguration["leftMedialAnkleFlag"]:
             logging.warning("CASE FOUND ===> Left Side - CGM1 - medial ankle ")
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
@@ -237,24 +242,38 @@ if __name__ == "__main__":
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
             useRightAJCnodeLabel = "RAJC_mid"
 
-        # ----Final Calibration filter if model previously decorated ----- 
+        properties_initialCalibration=dict()
+        properties_initialCalibration["LHJC_node"] = useLeftHJCnodeLabel
+        properties_initialCalibration["RHJC_node"] = useRightHJCnodeLabel
+        properties_initialCalibration["LKJC_node"] = useLeftKJCnodeLabel
+        properties_initialCalibration["RKJC_node"] = useRightKJCnodeLabel
+        properties_initialCalibration["LAJC_node"] = useLeftAJCnodeLabel
+        properties_initialCalibration["RAJC_node"] = useRightAJCnodeLabel
+        properties_initialCalibration["rightFlatFoot"] = useRightAJCnodeLabel
+        properties_initialCalibration["leftFlatFoot"] = flag_rightFlatFoot
+        properties_initialCalibration["markerDiameter"] = markerDiameter
+
+        # ----Final Calibration filter if model previously decorated -----
         if model.decoratedModel:
             # initial static filter
             modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                useLeftKJCnode=useLeftKJCnodeLabel, useLeftAJCnode=useLeftAJCnodeLabel,
                                useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
+                               leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter).compute()
 
-        
+        # set initial calibration as model property
+        model.m_properties["CalibrationParameters0"] = properties_initialCalibration
+
         #----update subject mp----
         viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
 
 
         # ----------------------CGM MODELLING----------------------------------
         # ----motion filter----
-        # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system         
-    
-        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Native,
+        # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system
+
+        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Determinist,
                                                   markerDiameter=markerDiameter)
 
         modMotion.compute()
@@ -275,12 +294,18 @@ if __name__ == "__main__":
                                                 globalFrameOrientation = globalFrame,
                                                 forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-        
+
 
         # ----------------------SAVE-------------------------------------------
-        modelFile = open(DATA_PATH + subject+"-CGM1_1-pyCGM2.model", "w")
+        if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
+            logging.warning("previous model removed")
+            os.remove(DATA_PATH + subject + "-pyCGM2.model")
+
+        modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
         cPickle.dump(model, modelFile)
         modelFile.close()
+
+
 
         # ----------------------DISPLAY ON VICON-------------------------------
         viconInterface.ViconInterface(NEXUS,
