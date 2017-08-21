@@ -27,7 +27,7 @@ print " ******* End alteration ******"
 
 
 setup(name = 'pyCGM2',
-    version = '1.0.0-beta',
+    version = '1.0.3',
     author = 'fabien Leboeuf',
     author_email = 'fabien.leboeuf@gmail.com',
     keywords = 'python Conventional Gait Model',
