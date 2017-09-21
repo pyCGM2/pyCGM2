@@ -18,12 +18,11 @@ from pyCGM2.Math import geometry
 from pyCGM2.Tools import  btkTools,nexusTools
 
 
-
-
 class CGM(cmb.Model):
     """
         Abstract Class of the Conventional Gait Model
     """
+
 
 
 
@@ -49,6 +48,9 @@ class CGM(cmb.Model):
     PIG_STATIC_POWER_LABELS= ["LAnklePower","RAnklePower",
                               "LHipPower","RHipPower",
                               "LKneePower","RKneePower",]
+
+
+
 
 
     def __init__(self):
@@ -283,10 +285,16 @@ class CGM1LowerLimbs(CGM):
 
     MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
+    ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles"],
+                           'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles"]}
+
+    ANALYSIS_KINETIC_LABELS_DICT ={ 'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
+                              'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
+
+
     def __init__(self):
         super(CGM1LowerLimbs, self).__init__()
         self.decoratedModel = False
-
         self.version = "CGM1.0"
 
         # init of few mp_computed
@@ -545,7 +553,7 @@ class CGM1LowerLimbs(CGM):
             elif self.mp_computed["LeftKnee2DofOffset"]:
                 offset = self.mp_computed["LeftKnee2DofOffset"]
 
-            self.mp_computed["FinalFuncRightThighRotationOffset"] = offset
+            self.mp_computed["FinalFuncLeftThighRotationOffset"] = offset
             self._rotateAnatomicalFrame("Left Thigh",offset,
                                                      aquiStatic, dictAnatomic,frameInit,frameEnd)
 
@@ -2660,21 +2668,21 @@ class CGM1LowerLimbs(CGM):
 
 
 
-#            # if rotation offset from knee functional calibration methods
-#            if self.mp_computed["FinalFuncLeftThighRotationOffset"]:
-#                offset = self.mp_computed["FinalFuncLeftThighRotationOffset"]
-#                self._rotate_anatomical_motion("Left Thigh",offset,
-#                                        aqui,options=options)
-#
+            # if rotation offset from knee functional calibration methods
+            if self.mp_computed["FinalFuncLeftThighRotationOffset"]:
+                offset = self.mp_computed["FinalFuncLeftThighRotationOffset"]
+                self._rotate_anatomical_motion("Left Thigh",offset,
+                                        aqui,options=options)
+
             logging.debug(" - Right Thigh - motion -")
             logging.debug(" ------------------------")
             self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
-#
-#            if self.mp_computed["FinalFuncRightThighRotationOffset"]:
-#                offset = self.mp_computed["FinalFuncRightThighRotationOffset"]
-#                self._rotate_anatomical_motion("Right Thigh",offset,
-#                                        aqui,options=options)
+
+            if  self.mp_computed["FinalFuncRightThighRotationOffset"]:
+                offset = self.mp_computed["FinalFuncRightThighRotationOffset"]
+                self._rotate_anatomical_motion("Right Thigh",offset,
+                                        aqui,options=options)
 
 
             logging.debug(" - Left Shank - motion -")

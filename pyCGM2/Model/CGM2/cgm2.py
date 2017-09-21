@@ -357,6 +357,12 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                "RTIB","RANK","RTIBAP","RTIBAD",
                "RHEE","RTOE","RCUN","RD1M","RD5M"]
 
+    ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles","LForeFoot"],
+                       'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles","LForeFoot"]}
+
+    ANALYSIS_KINETIC_LABELS_DICT ={ 'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
+                          'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
+
     def __init__(self):
         """Constructor
 
