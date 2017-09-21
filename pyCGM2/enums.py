@@ -22,7 +22,7 @@ class motionMethod(Enum):
     NoMotion = 0
     Determinist = 1
     Sodervisk = 2
-    
+
 
 
 class MomentProjection(Enum):
@@ -37,31 +37,34 @@ class MomentProjection(Enum):
 class HarringtonPredictor(Enum):
     """ Enum defining harrington's regression predictor"""
     Native = "full"
-    PelvisWidth = "PWonly"    
+    PelvisWidth = "PWonly"
     LegLength = "LLonly"
 
 class SegmentSide(Enum):
-    """ Enum defining segment side"""    
+    """ Enum defining segment side"""
     Central = 0
     Left = 1
     Right = 2
-    
 
+
+class PlotType(Enum):
+    """ Enum defining segment side"""
+    DESCRIPTIVE = 0
+    CONSISTENCY = 1
+    MEAN_ONLY = 2
 # --- enum used with Btk-Models
 # obsolete
 #class BspModel(Enum):
 #    Dempster = "Dempster"
-#    DempsterVicon = "DempsterVicon"    
+#    DempsterVicon = "DempsterVicon"
 #    DeLeva = "DeLeva"
 #
 #class Sex(Enum):
 #    Male = "M"
 #    Female = "F"
-#    
+#
 #
 #class InverseDynamicAlgo(Enum):
 #    Quaternion = "quaternion"
-#    Generic = "generic"    
+#    Generic = "generic"
 #    RotationMatrix = "rotationMatrix"
-    
-    
