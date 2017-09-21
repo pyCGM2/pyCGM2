@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
-import pdb
+import cPickle
+import ipdb
 import logging
 import matplotlib.pyplot as plt
 import argparse
@@ -25,6 +26,7 @@ import ma.body
 from pyCGM2 import  smartFunctions
 from pyCGM2.Tools import btkTools,nexusTools
 
+
 if __name__ == "__main__":
 
     plt.close("all")
@@ -44,7 +46,7 @@ if __name__ == "__main__":
         # --------------------------INPUTS ------------------------------------
 
         if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\c3dOnly\\"
             calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
@@ -64,6 +66,16 @@ if __name__ == "__main__":
         subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
+
+        # --------------------pyCGM2 MODEL ------------------------------
+        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
+            raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM1 Calibration operation"%subject)
+        else:
+            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
+
+            model = cPickle.load(f)
+            f.close()
+
         # ---- pyCGM2 input files ----
 
         # info file
@@ -81,19 +93,16 @@ if __name__ == "__main__":
         else:
             pointSuffix = ""
 
-
-
         # -----infos--------
-        model = None if  infoSettings["Modelling"]["Model"]=={} else infoSettings["Modelling"]["Model"]
-        subject = None if infoSettings["Processing"]["Subject"]=={} else infoSettings["Processing"]["Subject"]
-        experimental = None if infoSettings["Processing"]["Experimental conditions"]=={} else infoSettings["Processing"]["Experimental conditions"]
+        modelInfo = None if  infoSettings["Modelling"]["Model"]=={} else infoSettings["Modelling"]["Model"]
+        subjectInfo = None if infoSettings["Processing"]["Subject"]=={} else infoSettings["Processing"]["Subject"]
+        experimentalInfo = None if infoSettings["Processing"]["Experimental conditions"]=={} else infoSettings["Processing"]["Experimental conditions"]
 
         # --------------------------PROCESSING --------------------------------
-        # pycgm2-filter pipeline are gathered in a single function
-        smartFunctions.staticProcessing_cgm1(calibrateFilenameLabelled, DATA_PATH,
-                                             model,  subject, experimental,
-                                             pointLabelSuffix = pointSuffix,
-                                             exportSpreadSheet=False)
+        pdfFilename = calibrateFilenameLabelledNoExt
+        smartFunctions.cgm_staticPlot(model,calibrateFilenameLabelled,
+                                  DATA_PATH,pdfFilename,
+                                pointLabelSuffix = pointSuffix)
 
 
     else:
