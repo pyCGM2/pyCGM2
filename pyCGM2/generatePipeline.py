@@ -26,7 +26,7 @@ CALIBRATION_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
 
       <Entry DisplayName="Run pyCGM2-static Processing " Enabled="1" OperationId="107" OperationName="Python">
         <ParamList name="">
-          <Param name="Script" value="PATH_APPS/DataProcessing/nexusOperation-pyCGM2-staticProcessing"/>
+          <Param name="Script" value="PATH_APPS/DataProcessing/nexusOperation-pyCGM2-staticProcessing.py"/>
           <Param name="ScriptArgs"/>
           <Param name="UseNexusPython" value="false"/>
           <Param name="LaunchPython" value="false"/>
