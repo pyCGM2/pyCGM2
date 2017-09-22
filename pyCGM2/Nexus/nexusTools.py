@@ -145,7 +145,7 @@ def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
 
 
 
-def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
+def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=False):
 
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
@@ -156,6 +156,7 @@ def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
             NEXUS.CreateModelOutput( vskName, label, "Moments", ["X","Y","Z"], ["TorqueNormalized","TorqueNormalized","TorqueNormalized"])#
         else:
             NEXUS.CreateModelOutput( vskName, label, "Moments", ["X","Y","Z"], ["Torque","Torque","Torque"])
+
 
     values = acq.GetPoint(label).GetValues()
 
