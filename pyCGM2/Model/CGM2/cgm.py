@@ -15,7 +15,8 @@ import euler as ceuler
 
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Math import geometry
-from pyCGM2.Tools import  btkTools,nexusTools
+from pyCGM2.Tools import  btkTools
+from pyCGM2.Nexus import nexusTools
 
 
 class CGM(cmb.Model):

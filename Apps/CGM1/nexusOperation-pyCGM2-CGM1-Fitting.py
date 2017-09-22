@@ -22,12 +22,12 @@ import ViconNexus
 
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,nexusTools
+from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, forceplates,bodySegmentParameters
 from pyCGM2 import viconInterface
 from pyCGM2.Utils import fileManagement
-
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 if __name__ == "__main__":
 
@@ -74,13 +74,7 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-            raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM1 Calibration operation"%subject)
-        else:
-            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
-
-            model = cPickle.load(f)
-            f.close()
+        model = fileManagement.loadModel(DATA_PATH,subject)
 
         # --------------------------CHECKING -----------------------------------
         # check model is the CGM1
@@ -142,7 +136,6 @@ if __name__ == "__main__":
         acqGait =  btkTools.applyTranslators(acqGait,translators)
         validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)
 
-
         scp=modelFilters.StaticCalibrationProcedure(model) # procedure
 
         # ---Motion filter----
@@ -186,9 +179,6 @@ if __name__ == "__main__":
                 logging.warning("Force plates assign manually")
                 forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
 
-
-
-
         # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",
@@ -212,22 +202,12 @@ if __name__ == "__main__":
 
 
         # ----------------------SAVE-------------------------------------------
-        # cpickle doesn t work. Incompatibility with Swig. ( see about BTK wrench)
-        #pyCGM2.model
-#        if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-#            logging.warning("previous model removed")
-#            os.remove(DATA_PATH + subject + "-pyCGM2.model")
-#
-#        modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
-#        cPickle.dump(model, modelFile)
-#        modelFile.close()
-
+        # Todo: pyCGM2 model :  cpickle doesn t work. Incompatibility with Swig. ( see about BTK wrench)
 
 
         # ----------------------DISPLAY ON VICON-------------------------------
 
-        viconInterface.ViconInterface(NEXUS,model,acqGait,subject,pointSuffix).run()
-
+        nexusFilters.NexusModelFilter(NEXUS,model,acqGait,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,acqGait,["Left-FP","Right-FP"])
 
 

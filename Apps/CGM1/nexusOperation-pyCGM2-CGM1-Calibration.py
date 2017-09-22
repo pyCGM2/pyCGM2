@@ -3,33 +3,26 @@ import os
 import logging
 import matplotlib.pyplot as plt
 import json
-import pdb
+import ipdb
 import cPickle
 import json
 from shutil import copyfile
 from collections import OrderedDict
 import argparse
 
+# vicon nexus
+import ViconNexus
+
 # pyCGM2 settings
 import pyCGM2
 pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
-
-# vicon nexus
-import ViconNexus
-
-
-
-
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,nexusTools
+from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
-
-from pyCGM2 import viconInterface
-
 from pyCGM2.Utils import fileManagement
-
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 
 if __name__ == "__main__":
@@ -60,8 +53,8 @@ if __name__ == "__main__":
 
         if DEBUG:
 
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
-            calibrateFilenameLabelledNoExt = "static Cal 01-noKAD-noAnkleMed" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\pyCGM2- CGM1-KAD\\"
+            calibrateFilenameLabelledNoExt = "Gait Trial 02" #"static Cal 01-noKAD-noAnkleMed" #
 
 #            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM1-calibration2Dof\\"
 #            calibrateFilenameLabelledNoExt = "Static"
@@ -81,43 +74,7 @@ if __name__ == "__main__":
         subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
-        required_mp={
-        'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
-        'LeftLegLength' : NEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],#860.0,
-        'RightLegLength' : NEXUS.GetSubjectParamDetails( subject, "RightLegLength")[0],#865.0 ,
-        'LeftKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0],#102.0,
-        'RightKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "RightKneeWidth")[0],#103.4,
-        'LeftAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0],#75.3,
-        'RightAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],#72.9,
-        'LeftSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "LeftSoleDelta")[0],#75.3,
-        'RightSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "RightSoleDelta")[0],#72.9,
-        }
-
-        if args.resetMP:
-            optional_mp={
-            'InterAsisDistance'   : 0,
-            'LeftAsisTrocanterDistance' : 0,
-            'LeftTibialTorsion' : 0 ,
-            'LeftThighRotation' : 0,
-            'LeftShankRotation' : 0,
-            'RightAsisTrocanterDistance' : 0,
-            'RightTibialTorsion' :0 ,
-            'RightThighRotation' : 0,
-            'RightShankRotation' : 0
-            }
-
-        else:
-            optional_mp={
-            'InterAsisDistance'   : NEXUS.GetSubjectParamDetails( subject, "InterAsisDistance")[0],#0,
-            'LeftAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "LeftAsisTrocanterDistance")[0],#0,
-            'LeftTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "LeftTibialTorsion")[0],#0 ,
-            'LeftThighRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftThighRotation")[0],#0,
-            'LeftShankRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftShankRotation")[0],#0,
-            'RightAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "RightAsisTrocanterDistance")[0],#0,
-            'RightTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "RightTibialTorsion")[0],#0 ,
-            'RightThighRotation' : NEXUS.GetSubjectParamDetails( subject, "RightThighRotation")[0],#0,
-            'RightShankRotation' : NEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
-            }
+        required_mp,optional_mp = nexusUtils.getNexusSubjectMp(NEXUS,subject,resetFlag=args.resetMP)
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file
@@ -165,7 +122,6 @@ if __name__ == "__main__":
         btkTools.checkMultipleSubject(acqStatic)
 
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
-
 
         # ---definition---
         model=cgm.CGM1LowerLimbs()
@@ -285,7 +241,7 @@ if __name__ == "__main__":
         model.m_properties["CalibrationParameters0"] = properties_initialCalibration
 
         #----update subject mp----
-        viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
+        nexusUtils.updateNexusSubjectMp(NEXUS,model,subject)
 
 
 
@@ -321,20 +277,11 @@ if __name__ == "__main__":
 
 
         # ----------------------SAVE-------------------------------------------
-
-
         #pyCGM2.model
-        if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-            logging.warning("previous model removed")
-            os.remove(DATA_PATH + subject + "-pyCGM2.model")
-
-        modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
-        cPickle.dump(model, modelFile)
-        modelFile.close()
-
+        fileManagement.saveModel(model,DATA_PATH,subject)
 
         # ----------------------DISPLAY ON VICON-------------------------------
-        viconInterface.ViconInterface(NEXUS,
+        nexusFilters.NexusModelFilter(NEXUS,
                                       model,acqStatic,subject,
                                       pointSuffix,
                                       staticProcessing=True).run()

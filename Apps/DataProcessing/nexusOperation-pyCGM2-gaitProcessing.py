@@ -20,10 +20,12 @@ import ViconNexus
 
 # pyCGM2 libraries
 from pyCGM2 import  smartFunctions
-from pyCGM2.Tools import btkTools,nexusTools
-from pyCGM2.Report import normativeDatasets
+from pyCGM2.Tools import btkTools
+from pyCGM2.Report import normativeDatasets,plot
 from pyCGM2.Processing import c3dManager
 from pyCGM2.Model.CGM2 import  cgm,cgm2
+from pyCGM2.Nexus import  nexusTools
+from pyCGM2.Utils import fileManagement
 
 if __name__ == "__main__":
 
@@ -43,8 +45,8 @@ if __name__ == "__main__":
         # --------------------------INPUTS ------------------------------------
 
         if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\c3dOnly\\"
-            modelledFilenameNoExt = "gait Trial 01" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\pyCGM2- CGM1-KAD\\"
+            modelledFilenameNoExt = "Gait Trial 02" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+modelledFilenameNoExt), 30 )
 
 
@@ -64,23 +66,11 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-            raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM Calibration operation"%subject)
-        else:
-            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
-
-            model = cPickle.load(f)
-            f.close()
-
+        model = fileManagement.loadModel(DATA_PATH,subject)
 
         # ---- pyCGM2 input files ----
-       # info file
-        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
-            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-        else:
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+        # info file
+        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         # ---- configuration parameters ----
         if args.pointSuffix is not None:
@@ -127,6 +117,8 @@ if __name__ == "__main__":
 
         #---- plot panels
         #-----------------------------------------------------------------------
+
+
 
         smartFunctions.cgm_gaitPlots(model,analysis,trialManager.kineticFlag,
             DATA_PATH,modelledFilenameNoExt,

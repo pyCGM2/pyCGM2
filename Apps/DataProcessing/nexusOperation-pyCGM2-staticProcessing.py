@@ -24,7 +24,8 @@ import ma.body
 
 # pyCGM2 libraries
 from pyCGM2 import  smartFunctions
-from pyCGM2.Tools import btkTools,nexusTools
+from pyCGM2.Tools import btkTools
+from pyCGM2.NEXUS import  nexusTools
 
 
 if __name__ == "__main__":
@@ -68,23 +69,10 @@ if __name__ == "__main__":
 
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-            raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM1 Calibration operation"%subject)
-        else:
-            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
-
-            model = cPickle.load(f)
-            f.close()
-
+        model = fileManagement.loadModel(DATA_PATH,subject)
         # ---- pyCGM2 input files ----
-
         # info file
-        if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-            copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
-            logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
-        else:
-            infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
 
         # ---- configuration parameters ----
