@@ -93,6 +93,6 @@ if __name__ == "__main__":
                                   DATA_PATH,pdfFilename,
                                 pointLabelSuffix = pointSuffix)
 
-
+        plt.show()
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
