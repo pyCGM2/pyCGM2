@@ -21,12 +21,12 @@ import ViconNexus
 
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,nexusTools
+from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, forceplates,bodySegmentParameters
 #
-from pyCGM2 import viconInterface
-from pyCGM2.Utils import fileManagement
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
+from pyCGM2.Utils import files
 
 
 
@@ -52,6 +52,7 @@ if __name__ == "__main__":
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
         inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        inputs = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
 
         # --------------------------LOADING ------------------------------------
         # --- acquisition file and path----
@@ -75,12 +76,7 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-            raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
-        else:
-            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
-            model = cPickle.load(f)
-            f.close()
+        model = files.loadModel(DATA_PATH,subject)
 
         # --------------------------CHECKING -----------------------------------
         # check model
@@ -90,10 +86,10 @@ if __name__ == "__main__":
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file
-        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        infoSettings = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
-        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         if not translators:
            translators = inputs["Translators"]
 
@@ -210,7 +206,7 @@ if __name__ == "__main__":
         btkTools.applyValidFramesOnOutput(acqGait,validFrames)
 
         # ----------------------DISPLAY ON VICON-------------------------------
-        viconInterface.ViconInterface(NEXUS,model,acqGait,subject,pointSuffix).run()
+        nexusFilters.NexusModelFilter(NEXUS,model,acqGait,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,acqGait,["Left-FP","Right-FP"])
 
         # ========END of the nexus OPERATION if run from Nexus  =========
