@@ -146,43 +146,28 @@ def addBtk():
     sys.path.append(THIRDPARTY_PATH + "btk")
 
 
-def checkConfig():
-
-    for it in sys.path:
-        if "pyCGM2" in it:
-            print "OK"
-    try:
-        import pyCGM2
-        import pyCGM2.CONFIG
-        pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
-        logging.info("pyCGM2 ---> OK")
-    except ImportError:
-        raise Exception ("[pyCGM2] : pyCGM2 module not in your python path")
-
-
-    # vicon nexus
-    pyCGM2.CONFIG.addNexusPythonSdk()
-    try:
-        import ViconNexus
-        logging.info("vicon API ---> OK" )
-    except ImportError:
-        logging.error ("[pyCGM2] : viconNexus is not in your python path. Check CONFIG")
-
-
-    # openMA
-    pyCGM2.CONFIG.addOpenma()
-    try:
-        import ma.io
-        import ma.body
-        logging.info("openMA API ---> OK" )
-    except ImportError:
-        logging.error ("[pyCGM2] : openma is not in your python path. Check CONFIG")
-
-
-    # btk
-    pyCGM2.CONFIG.addBtk()
-    try:
-        import btk
-        logging.info("btk API ---> OK" )
-    except ImportError:
-        logging.error ("[pyCGM2] : btk is not in your python path. Check CONFIG")
+# def checkConfig():
+#     # vicon nexus
+#     pyCGM2.CONFIG.addNexusPythonSdk()
+#     try:
+#         import ViconNexus
+#         logging.info("vicon API ---> OK" )
+#     except ImportError:
+#         logging.error ("[pyCGM2] : viconNexus is not in your python path. Check CONFIG")
+#
+#     # openMA
+#     pyCGM2.CONFIG.addOpenma()
+#     try:
+#         import ma.io
+#         import ma.body
+#         logging.info("openMA API ---> OK" )
+#     except ImportError:
+#         logging.error ("[pyCGM2] : openma is not in your python path. Check CONFIG")
+#
+#     # btk
+#     pyCGM2.CONFIG.addBtk()
+#     try:
+#         import btk
+#         logging.info("btk API ---> OK" )
+#     except ImportError:
+#         logging.error ("[pyCGM2] : btk is not in your python path. Check CONFIG")
