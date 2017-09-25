@@ -104,14 +104,14 @@ def addNexusPythonSdk():
 
     if NEXUS_SDK_WIN32  not in sys.path:
         sys.path.append( NEXUS_SDK_WIN32)
-        print NEXUS_SDK_WIN32 + " added to the python path"
+        #print NEXUS_SDK_WIN32 + " added to the python path"
     if NEXUS_SDK_PYTHON  not in sys.path:
         sys.path.append( NEXUS_SDK_PYTHON)
-        print NEXUS_SDK_WIN32 + " added to the python path"
+        #print NEXUS_SDK_WIN32 + " added to the python path"
 
     NEXUS_PYTHON_USE = True if PYTHON_NEXUS in sys.path else False
     if NEXUS_PYTHON_USE:
-        raise Exception("untick Use nexus Python in your python pipeline operation. pyCGA apps recommand anaconda Packages ")
+        raise Exception("untick Use nexus Python in your python pipeline operation. pyCCGM2 apps recommand anaconda Packages ")
 
 
 def addOpenma(branch=None):
