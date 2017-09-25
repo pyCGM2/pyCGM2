@@ -31,6 +31,16 @@ def saveModel(model,path,FilenameNoExt):
     cPickle.dump(model, modelFile)
     modelFile.close()
 
+
+def openJson(path,filename):
+    try:
+        jsonStuct= json.loads(open(str(path+filename)).read(),object_pairs_hook=OrderedDict)
+        return jsonStuct
+    except :
+        raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
+
+
+
 def manage_pycgm2SessionInfos(DATA_PATH,subject):
 
     if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
