@@ -10,18 +10,19 @@ from shutil import copyfile
 from collections import OrderedDict
 import argparse
 
-# vicon nexus
-import ViconNexus
 
 # pyCGM2 settings
 import pyCGM2
 pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
+# vicon nexus
+import ViconNexus
+
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
-from pyCGM2.Utils import fileManagement
+from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 
@@ -47,18 +48,12 @@ if __name__ == "__main__":
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        inputs = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
 
         # --------------------------LOADING ------------------------------------
-
         if DEBUG:
-
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\pyCGM2- CGM1-KAD\\"
             calibrateFilenameLabelledNoExt = "Gait Trial 02" #"static Cal 01-noKAD-noAnkleMed" #
-
-#            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM1-calibration2Dof\\"
-#            calibrateFilenameLabelledNoExt = "Static"
-
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -78,10 +73,10 @@ if __name__ == "__main__":
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file
-        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        infoSettings = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
-        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         if not translators:
            translators = inputs["Translators"]
 
@@ -240,10 +235,6 @@ if __name__ == "__main__":
         # set initial calibration as model property
         model.m_properties["CalibrationParameters0"] = properties_initialCalibration
 
-        #----update subject mp----
-        nexusUtils.updateNexusSubjectMp(NEXUS,model,subject)
-
-
 
         # ----------------------CGM MODELLING----------------------------------
         # ----motion filter----
@@ -278,9 +269,10 @@ if __name__ == "__main__":
 
         # ----------------------SAVE-------------------------------------------
         #pyCGM2.model
-        fileManagement.saveModel(model,DATA_PATH,subject)
+        files.saveModel(model,DATA_PATH,subject)
 
         # ----------------------DISPLAY ON VICON-------------------------------
+        nexusUtils.updateNexusSubjectMp(NEXUS,model,subject)
         nexusFilters.NexusModelFilter(NEXUS,
                                       model,acqStatic,subject,
                                       pointSuffix,
@@ -288,11 +280,7 @@ if __name__ == "__main__":
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 
-
-
         if DEBUG:
-            btkTools.smartWriter(acqStatic, "testStatic.c3d")
             NEXUS.SaveTrial(30)
-
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

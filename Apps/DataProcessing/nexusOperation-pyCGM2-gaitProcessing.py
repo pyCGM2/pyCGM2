@@ -25,7 +25,7 @@ from pyCGM2.Report import normativeDatasets,plot
 from pyCGM2.Processing import c3dManager
 from pyCGM2.Model.CGM2 import  cgm,cgm2
 from pyCGM2.Nexus import  nexusTools
-from pyCGM2.Utils import fileManagement
+from pyCGM2.Utils import files
 
 if __name__ == "__main__":
 
@@ -66,11 +66,11 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        model = fileManagement.loadModel(DATA_PATH,subject)
+        model = files.loadModel(DATA_PATH,subject)
 
         # ---- pyCGM2 input files ----
         # info file
-        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        infoSettings = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         # ---- configuration parameters ----
         if args.pointSuffix is not None:
@@ -117,9 +117,6 @@ if __name__ == "__main__":
 
         #---- plot panels
         #-----------------------------------------------------------------------
-
-
-
         smartFunctions.cgm_gaitPlots(model,analysis,trialManager.kineticFlag,
             DATA_PATH,modelledFilenameNoExt,
             pointLabelSuffix=pointSuffix,

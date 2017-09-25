@@ -25,8 +25,8 @@ import ViconNexus
 from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import cgm, modelFilters, forceplates,bodySegmentParameters
-from pyCGM2 import viconInterface
-from pyCGM2.Utils import fileManagement
+
+from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 if __name__ == "__main__":
@@ -46,24 +46,18 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
-
-
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
-
+        inputs = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
         # --------------------------LOADING ------------------------------------
         if DEBUG:
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
             reconstructFilenameLabelledNoExt = "Gait Trial 01" #"static Cal 01-noKAD-noAnkleMed" #
-
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
-
         else:
             DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
-
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ reconstructFilenameLabelled)
 
@@ -74,7 +68,7 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        model = fileManagement.loadModel(DATA_PATH,subject)
+        model = files.loadModel(DATA_PATH,subject)
 
         # --------------------------CHECKING -----------------------------------
         # check model is the CGM1
@@ -84,13 +78,12 @@ if __name__ == "__main__":
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file
-        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        infoSettings = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
-        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         if not translators:
            translators = inputs["Translators"]
-
         # --------------------------CONFIG ------------------------------------
 
         if args.markerDiameter is not None:
@@ -200,21 +193,17 @@ if __name__ == "__main__":
         #---- zero unvalid frames ---
         btkTools.applyValidFramesOnOutput(acqGait,validFrames)
 
-
         # ----------------------SAVE-------------------------------------------
         # Todo: pyCGM2 model :  cpickle doesn t work. Incompatibility with Swig. ( see about BTK wrench)
 
 
         # ----------------------DISPLAY ON VICON-------------------------------
-
         nexusFilters.NexusModelFilter(NEXUS,model,acqGait,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,acqGait,["Left-FP","Right-FP"])
 
 
         # ========END of the nexus OPERATION if run from Nexus  =========
-
         if DEBUG:
-
             NEXUS.SaveTrial(30)
 
 

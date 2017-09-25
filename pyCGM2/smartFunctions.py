@@ -75,7 +75,6 @@ def make_analysis(trialManager, kinematicLabelsDict,kineticLabelsDict,
 
     return analysisFilter.analysis
 
-
 def cgm_staticPlot(model,modelledStaticFilename, DATA_PATH,pdfFilename,pointLabelSuffix=""):
 
     # check model is the CGM1
