@@ -26,8 +26,9 @@ import btk
 
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,nexusTools
+from pyCGM2.Tools import btkTools
 from pyCGM2.Events import events
+from pyCGM2.Nexus import nexusTools
 
 
 #
@@ -80,21 +81,14 @@ if __name__ == "__main__":
 
         # ----------------------EVENT DETECTOR-------------------------------
         evp = events.ZeniProcedure()
-
         evf = events.EventFilter(evp,acqGait)
         evf.detect()
 
-
-
         # ----------------------DISPLAY ON VICON-------------------------------
-
         nexusTools.createEvents(NEXUS,subject,acqGait,["Foot Strike","Foot Off"])
-
-
         # ========END of the nexus OPERATION if run from Nexus  =========
 
         if DEBUG:
-
             NEXUS.SaveTrial(30)
 
 

@@ -26,10 +26,11 @@ import btk
 import configparser
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,nexusTools
+from pyCGM2.Tools import btkTools
 
 from pyCGM2.Model.CGM2 import  forceplates
-#
+from pyCGM2.Nexus import nexusTools
+
 
 
 
@@ -53,9 +54,7 @@ if __name__ == "__main__":
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-01 - myProcess\\PIG\\"
             reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 16" #"static Cal 01-noKAD-noAnkleMed" #
-
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
-
         else:
             DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
@@ -82,7 +81,6 @@ if __name__ == "__main__":
 
 
         # ---------- FORCE PLATE HANDLING -------------------------------------
-
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
         forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
         logging.info("Force plate assignment : %s" %mappedForcePlate)
@@ -131,14 +129,10 @@ if __name__ == "__main__":
 
 
         # ----------------------DISPLAY ON VICON-------------------------------
-
         nexusTools.createGeneralEvents(NEXUS,subject,acqGait,["Left-FP","Right-FP"])
-
-
         # ========END of the nexus OPERATION if run from Nexus  =========
 
         if DEBUG:
-
             NEXUS.SaveTrial(30)
 
 
