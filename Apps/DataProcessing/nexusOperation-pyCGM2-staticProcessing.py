@@ -25,7 +25,8 @@ import ma.body
 # pyCGM2 libraries
 from pyCGM2 import  smartFunctions
 from pyCGM2.Tools import btkTools
-from pyCGM2.NEXUS import  nexusTools
+from pyCGM2.Nexus import  nexusTools
+from pyCGM2.Utils import files
 
 
 if __name__ == "__main__":
@@ -69,10 +70,10 @@ if __name__ == "__main__":
 
 
         # --------------------pyCGM2 MODEL ------------------------------
-        model = fileManagement.loadModel(DATA_PATH,subject)
+        model = files.loadModel(DATA_PATH,subject)
         # ---- pyCGM2 input files ----
         # info file
-        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        infoSettings = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
 
         # ---- configuration parameters ----
