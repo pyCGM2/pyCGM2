@@ -62,7 +62,7 @@ try:
     import ViconNexus
     logging.info("vicon API ---> OK" )
 except ImportError:
-    logging.error ("[pyCGM2] : viconNexus is not in your python path. Check CONFIG")
+    logging.error ("[pyCGM2] : viconNexus is not in your python path. Check and edit Nexus paths in file CONFIG.py")
 
 # openMA
 pyCGM2.CONFIG.addOpenma()
@@ -71,7 +71,7 @@ try:
     import ma.body
     logging.info("openMA API ---> OK" )
 except ImportError:
-    logging.error ("[pyCGM2] : openma is not in your python path. Check CONFIG")
+    logging.error ("[pyCGM2] : openma not imported")
 
 # btk
 pyCGM2.CONFIG.addBtk()
@@ -79,11 +79,11 @@ try:
     import btk
     logging.info("btk API ---> OK" )
 except ImportError:
-    logging.error ("[pyCGM2] : btk is not in your python path. Check CONFIG")
+    logging.error ("[pyCGM2] : btk not imported")
 
 # opensim
 try:
     import opensim
     logging.info("opensim API ---> OK" )
 except ImportError:
-    logging.error ("[pyCGM2] : Opensim API is not in your python path. Check CONFIG")
+    logging.error ("[pyCGM2] : Opensim API not imported. Can t run CGM version superior to Cgm2.1")
