@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os,sys
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -40,5 +41,3 @@ try:
     logging.info("opensim API ---> OK" )
 except ImportError:
     logging.error ("[pyCGM2] : Opensim API not imported. Can t run CGM version superior to Cgm2.1")
-
-raw_input("Press ENTER to exit")
