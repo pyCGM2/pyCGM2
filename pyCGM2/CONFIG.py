@@ -4,6 +4,7 @@ import sys
 import os
 import generatePipeline
 import generateSettings
+import ipdb
 
 # ------------------- CONSTANTS ------------------------------------------------
 
@@ -22,6 +23,7 @@ if not os.path.exists(PYCGM2_APPDATA_PATH[:-1]):
 
 # [OPTIONAL] ----------------------------------
 MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)) + "\\" #C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)
+
 
 # [Optional]: Apps path
 MAIN_PYCGM2_APPS_PATH = MAIN_PYCGM2_PATH+"Apps\\"
@@ -144,30 +146,3 @@ def addOpenma(branch=None):
 
 def addBtk():
     sys.path.append(THIRDPARTY_PATH + "btk")
-
-
-# def checkConfig():
-#     # vicon nexus
-#     pyCGM2.CONFIG.addNexusPythonSdk()
-#     try:
-#         import ViconNexus
-#         logging.info("vicon API ---> OK" )
-#     except ImportError:
-#         logging.error ("[pyCGM2] : viconNexus is not in your python path. Check CONFIG")
-#
-#     # openMA
-#     pyCGM2.CONFIG.addOpenma()
-#     try:
-#         import ma.io
-#         import ma.body
-#         logging.info("openMA API ---> OK" )
-#     except ImportError:
-#         logging.error ("[pyCGM2] : openma is not in your python path. Check CONFIG")
-#
-#     # btk
-#     pyCGM2.CONFIG.addBtk()
-#     try:
-#         import btk
-#         logging.info("btk API ---> OK" )
-#     except ImportError:
-#         logging.error ("[pyCGM2] : btk is not in your python path. Check CONFIG")
