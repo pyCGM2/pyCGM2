@@ -2,7 +2,7 @@
 
 import numpy as np
 import logging
-import pdb
+import ipdb
 import btk
 
 
@@ -41,8 +41,23 @@ def checkActivatedSubject(NEXUS,subjectNames):
     return subjectMarkerWithTraj.keys()[index]
 
 
+def setTrajectoryFromArray(NEXUS,vskName,label,array):
 
+    framecount = NEXUS.GetFrameCount()
+    n = array.shape[0]-1
 
+    data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
+    exists = [False]*framecount
+
+    j=0
+    for i in range(0,n+1):
+        exists[i] = True if array[j,0] !=0 else False
+        data[0][i] = array[j,0]
+        data[1][i] = array[j,1]
+        data[2][i] = array[j,2]
+        j+=1
+
+    NEXUS.SetTrajectory( vskName, label, data[0],data[1],data[2], exists )
 
 
 def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
