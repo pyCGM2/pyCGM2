@@ -19,9 +19,10 @@ def isEnumMember(member, enum):
 
 class motionMethod(Enum):
     """ Enum defining method uses for computing a segment pose """
-    NoMotion = 0
+    Unknown = 0
     Determinist = 1
     Sodervisk = 2
+
 
 
 
