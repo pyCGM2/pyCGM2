@@ -7,6 +7,7 @@ import copy
 
 import btk
 
+from pyCGM2 import enums
 from pyCGM2.Model import model, modelDecorator
 from pyCGM2.Model import frame
 from  pyCGM2.Model import motion
@@ -374,15 +375,15 @@ class CGM1LowerLimbs(CGM):
 
 
 
-        self.addSegment("Pelvis",0,pyCGM2Enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
-        self.addSegment("Left Thigh",1,pyCGM2Enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI"])
-        self.addSegment("Right Thigh",4,pyCGM2Enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI"])
-        self.addSegment("Left Shank",2,pyCGM2Enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LANK","LTIB"])
-        self.addSegment("Left Shank Proximal",7,pyCGM2Enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Right Shank",5,pyCGM2Enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB"])
-        self.addSegment("Right Shank Proximal",8,pyCGM2Enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Left Foot",3,pyCGM2Enums.SegmentSide.Left,calibration_markers=["LAJC"], tracking_markers = ["LHEE","LTOE"] )
-        self.addSegment("Right Foot",6,pyCGM2Enums.SegmentSide.Right,calibration_markers=["RAJC"], tracking_markers = ["RHEE","RTOE"])
+        self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
+        self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI"])
+        self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI"])
+        self.addSegment("Left Shank",2,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LANK","LTIB"])
+        self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB"])
+        self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Left Foot",3,enums.SegmentSide.Left,calibration_markers=["LAJC"], tracking_markers = ["LHEE","LTOE"] )
+        self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=["RAJC"], tracking_markers = ["RHEE","RTOE"])
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
@@ -2654,7 +2655,7 @@ class CGM1LowerLimbs(CGM):
         pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
 
 
-        if motionMethod == pyCGM2Enums.motionMethod.Determinist: #cmf.motionMethod.Native:
+        if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
 
 
             #if not pigStaticProcessing:
@@ -2718,7 +2719,7 @@ class CGM1LowerLimbs(CGM):
             else:
                 self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
 
-        if motionMethod == pyCGM2Enums.motionMethod.Sodervisk:
+        if motionMethod == enums.motionMethod.Sodervisk:
 
             # ---remove all  direction marker from tracking markers.
             for seg in self.m_segmentCollection:
@@ -3783,7 +3784,7 @@ class CGM1LowerLimbs(CGM):
                     dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
                     k+=1
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
@@ -3873,7 +3874,7 @@ class CGM1LowerLimbs(CGM):
                     k+=1
 
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
@@ -3947,7 +3948,7 @@ class CGM1LowerLimbs(CGM):
                     k+=1
 
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
@@ -4016,7 +4017,7 @@ class CGM1LowerLimbs(CGM):
                     k+=1
 
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
@@ -4090,7 +4091,7 @@ class CGM1LowerLimbs(CGM):
                     k+=1
 
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
@@ -4149,7 +4150,7 @@ class CGM1LowerLimbs(CGM):
                     dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
                     k+=1
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm= motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
@@ -4207,7 +4208,7 @@ class CGM1LowerLimbs(CGM):
                     dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
                     k+=1
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm= motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
@@ -4437,7 +4438,7 @@ class CGM1LowerLimbs(CGM):
         valuesM = np.zeros((momentValues.shape))
 
         if jointLabel == "LAnkle" :
-            if projection == pyCGM2Enums.MomentProjection.Distal :
+            if projection == enums.MomentProjection.Distal :
                 valuesF[:,0] = - forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] = - forceValues[:,2]
@@ -4446,7 +4447,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] =  - momentValues[:,2]
                 valuesM[:,2] = momentValues[:,0]
 
-            elif projection == pyCGM2Enums.MomentProjection.Proximal:
+            elif projection == enums.MomentProjection.Proximal:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4455,7 +4456,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,0]
                 valuesM[:,2] = momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.Global:
+            elif projection == enums.MomentProjection.Global:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4464,7 +4465,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,0]
                 valuesM[:,2] = momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.JCS_Dual:
+            elif projection == enums.MomentProjection.JCS_Dual:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4473,7 +4474,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,2] #WARNING ???
                 valuesM[:,2] = -momentValues[:,0]
 
-            elif projection == pyCGM2Enums.MomentProjection.JCS:
+            elif projection == enums.MomentProjection.JCS:
                 valuesF[:,0] = - forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] = - forceValues[:,2]
@@ -4484,7 +4485,7 @@ class CGM1LowerLimbs(CGM):
 
 
         if jointLabel == "RAnkle" :
-            if projection == pyCGM2Enums.MomentProjection.Distal :
+            if projection == enums.MomentProjection.Distal :
                 valuesF[:,0] = - forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] = - forceValues[:,2]
@@ -4493,7 +4494,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,2]
                 valuesM[:,2] = - momentValues[:,0]
 
-            elif projection == pyCGM2Enums.MomentProjection.Proximal:
+            elif projection == enums.MomentProjection.Proximal:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4502,7 +4503,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = - momentValues[:,0]
                 valuesM[:,2] = - momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.Global:
+            elif projection == enums.MomentProjection.Global:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4511,7 +4512,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = - momentValues[:,0]
                 valuesM[:,2] = - momentValues[:,2]
 
-            elif  projection == pyCGM2Enums.MomentProjection.JCS_Dual:
+            elif  projection == enums.MomentProjection.JCS_Dual:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4520,7 +4521,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,2] # dist = Foot Z
                 valuesM[:,2] = momentValues[:,0]
 
-            elif projection == pyCGM2Enums.MomentProjection.JCS:
+            elif projection == enums.MomentProjection.JCS:
                 valuesF[:,0] = - forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] = - forceValues[:,2]
@@ -4531,7 +4532,7 @@ class CGM1LowerLimbs(CGM):
 
 
         if jointLabel == "LKnee" :
-            if projection == pyCGM2Enums.MomentProjection.Distal :
+            if projection == enums.MomentProjection.Distal :
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4540,7 +4541,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,0]
                 valuesM[:,2] = momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.Proximal:
+            elif projection == enums.MomentProjection.Proximal:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4549,7 +4550,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,0]
                 valuesM[:,2] = momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.Global:
+            elif projection == enums.MomentProjection.Global:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4558,7 +4559,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,0]
                 valuesM[:,2] = momentValues[:,2]
 
-            elif  projection == pyCGM2Enums.MomentProjection.JCS_Dual:
+            elif  projection == enums.MomentProjection.JCS_Dual:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4568,7 +4569,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = - momentValues[:,0]
                 valuesM[:,2] = momentValues[:,2]
 
-            elif  projection == pyCGM2Enums.MomentProjection.JCS:
+            elif  projection == enums.MomentProjection.JCS:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4579,7 +4580,7 @@ class CGM1LowerLimbs(CGM):
 
 
         if jointLabel == "LHip" :
-            if projection == pyCGM2Enums.MomentProjection.Distal :
+            if projection == enums.MomentProjection.Distal :
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4588,7 +4589,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,0]
                 valuesM[:,2] = momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.Proximal:
+            elif projection == enums.MomentProjection.Proximal:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4597,7 +4598,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,0]
                 valuesM[:,2] = momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.Global:
+            elif projection == enums.MomentProjection.Global:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4606,7 +4607,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,0]
                 valuesM[:,2] = momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.JCS_Dual:
+            elif projection == enums.MomentProjection.JCS_Dual:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4615,7 +4616,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = - momentValues[:,0]
                 valuesM[:,2] = momentValues[:,2]
 
-            elif  projection == pyCGM2Enums.MomentProjection.JCS:
+            elif  projection == enums.MomentProjection.JCS:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4628,7 +4629,7 @@ class CGM1LowerLimbs(CGM):
 
 
         if jointLabel == "RKnee" :
-            if projection == pyCGM2Enums.MomentProjection.Distal:
+            if projection == enums.MomentProjection.Distal:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4638,7 +4639,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,2] = - momentValues[:,2]
 
 
-            elif projection == pyCGM2Enums.MomentProjection.Proximal:
+            elif projection == enums.MomentProjection.Proximal:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4647,7 +4648,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = -momentValues[:,0]
                 valuesM[:,2] = -momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.Global:
+            elif projection == enums.MomentProjection.Global:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4656,7 +4657,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = -momentValues[:,0]
                 valuesM[:,2] = -momentValues[:,2]
 
-            elif  projection == pyCGM2Enums.MomentProjection.JCS_Dual:
+            elif  projection == enums.MomentProjection.JCS_Dual:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4665,7 +4666,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,0]
                 valuesM[:,2] = - momentValues[:,2]
 
-            elif  projection == pyCGM2Enums.MomentProjection.JCS:
+            elif  projection == enums.MomentProjection.JCS:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4677,7 +4678,7 @@ class CGM1LowerLimbs(CGM):
 
 
         if jointLabel == "RHip" :
-            if projection == pyCGM2Enums.MomentProjection.Distal:
+            if projection == enums.MomentProjection.Distal:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4686,7 +4687,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = - momentValues[:,0]
                 valuesM[:,2] = - momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.Proximal:
+            elif projection == enums.MomentProjection.Proximal:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4695,7 +4696,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = -momentValues[:,0]
                 valuesM[:,2] = -momentValues[:,2]
 
-            elif projection == pyCGM2Enums.MomentProjection.Global:
+            elif projection == enums.MomentProjection.Global:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4704,7 +4705,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = -momentValues[:,0]
                 valuesM[:,2] = -momentValues[:,2]
 
-            elif  projection == pyCGM2Enums.MomentProjection.JCS_Dual:
+            elif  projection == enums.MomentProjection.JCS_Dual:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]
@@ -4713,7 +4714,7 @@ class CGM1LowerLimbs(CGM):
                 valuesM[:,1] = momentValues[:,0]
                 valuesM[:,2] = - momentValues[:,2]
 
-            elif  projection == pyCGM2Enums.MomentProjection.JCS:
+            elif  projection == enums.MomentProjection.JCS:
                 valuesF[:,0] =  forceValues[:,0]
                 valuesF[:,1] =  forceValues[:,1]
                 valuesF[:,2] =  forceValues[:,2]

@@ -8,11 +8,11 @@ import btk
 
 import cgm
 
+from pyCGM2 import enums
 from  pyCGM2.Model import frame
 from  pyCGM2.Model import motion
 from pyCGM2.Math import euler
 
-import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Math import geometry
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Nexus import nexusTools
@@ -89,15 +89,15 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         return "LowerLimb CGM2.3"
 
     def configure(self):
-        self.addSegment("Pelvis",0,pyCGM2Enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
-        self.addSegment("Left Thigh",1,pyCGM2Enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHIAP","LTHIAD"])
-        self.addSegment("Right Thigh",4,pyCGM2Enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHIAP","RTHIAD"])
-        self.addSegment("Left Shank",2,pyCGM2Enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LANK","LTIB","LTIBAP","LTIBAD"])
-        self.addSegment("Left Shank Proximal",7,pyCGM2Enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Right Shank",5,pyCGM2Enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB","RTIBAP","RTIBAD"])
-        self.addSegment("Right Shank Proximal",8,pyCGM2Enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Left Foot",3,pyCGM2Enums.SegmentSide.Left,calibration_markers=["LAJC"], tracking_markers = ["LHEE","LTOE"] )
-        self.addSegment("Right Foot",6,pyCGM2Enums.SegmentSide.Right,calibration_markers=["RAJC"], tracking_markers = ["RHEE","RTOE"])
+        self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
+        self.addSegment("Left Thigh",1,pyCGM2.enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHIAP","LTHIAD"])
+        self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHIAP","RTHIAD"])
+        self.addSegment("Left Shank",2,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LANK","LTIB","LTIBAP","LTIBAD"])
+        self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB","RTIBAP","RTIBAD"])
+        self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Left Foot",3,enums.SegmentSide.Left,calibration_markers=["LAJC"], tracking_markers = ["LHEE","LTOE"] )
+        self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=["RAJC"], tracking_markers = ["RHEE","RTOE"])
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
@@ -384,17 +384,17 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         return "LowerLimb CGM2.4"
 
     def configure(self):
-        self.addSegment("Pelvis",0,pyCGM2Enums.SegmentSide.Central,["LASI","RASI","LPSI","RPSI"], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
-        self.addSegment("Left Thigh",1,pyCGM2Enums.SegmentSide.Left,["LKNE","LTHI","LTHIAP","LTHIAD"], tracking_markers = ["LKNE","LTHI","LTHIAP","LTHIAD"])
-        self.addSegment("Right Thigh",4,pyCGM2Enums.SegmentSide.Right,["RKNE","RTHI","RTHIAP","RTHIAD"], tracking_markers = ["RKNE","RTHI","RTHIAP","RTHIAD"])
-        self.addSegment("Left Shank",2,pyCGM2Enums.SegmentSide.Left,["LANK","LTIB","LTIBAP","LTIBAD"], tracking_markers = ["LANK","LTIB","LTIBAP","LTIBAD"])
-        self.addSegment("Left Shank Proximal",7,pyCGM2Enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Right Shank",5,pyCGM2Enums.SegmentSide.Right,["RANK","RTIB","RTIBAP","RTIBAD"], tracking_markers = ["RANK","RTIB","RTIBAP","RTIBAD"])
-        self.addSegment("Right Shank Proximal",8,pyCGM2Enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Left HindFoot",6,pyCGM2Enums.SegmentSide.Left,["LHEE","LCUN","LANK"], tracking_markers = ["LHEE","LCUN"])
-        self.addSegment("Left ForeFoot",7,pyCGM2Enums.SegmentSide.Left,["LD1M","LD5M","LTOE"], tracking_markers = ["LD1M","LD5M","LTOE"])
-        self.addSegment("Right HindFoot",6,pyCGM2Enums.SegmentSide.Right,["RHEE","RCUN","RANK"], tracking_markers = ["RHEE","RCUN"])
-        self.addSegment("Right ForeFoot",7,pyCGM2Enums.SegmentSide.Right,["RD1M","RD5M","RTOE"], tracking_markers = ["RD1M","RD5M","RTOE"])
+        self.addSegment("Pelvis",0,enums.SegmentSide.Central,["LASI","RASI","LPSI","RPSI"], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
+        self.addSegment("Left Thigh",1,enums.SegmentSide.Left,["LKNE","LTHI","LTHIAP","LTHIAD"], tracking_markers = ["LKNE","LTHI","LTHIAP","LTHIAD"])
+        self.addSegment("Right Thigh",4,enums.SegmentSide.Right,["RKNE","RTHI","RTHIAP","RTHIAD"], tracking_markers = ["RKNE","RTHI","RTHIAP","RTHIAD"])
+        self.addSegment("Left Shank",2,enums.SegmentSide.Left,["LANK","LTIB","LTIBAP","LTIBAD"], tracking_markers = ["LANK","LTIB","LTIBAP","LTIBAD"])
+        self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Right Shank",5,enums.SegmentSide.Right,["RANK","RTIB","RTIBAP","RTIBAD"], tracking_markers = ["RANK","RTIB","RTIBAP","RTIBAD"])
+        self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Left HindFoot",6,enums.SegmentSide.Left,["LHEE","LCUN","LANK"], tracking_markers = ["LHEE","LCUN"])
+        self.addSegment("Left ForeFoot",7,enums.SegmentSide.Left,["LD1M","LD5M","LTOE"], tracking_markers = ["LD1M","LD5M","LTOE"])
+        self.addSegment("Right HindFoot",6,enums.SegmentSide.Right,["RHEE","RCUN","RANK"], tracking_markers = ["RHEE","RCUN"])
+        self.addSegment("Right ForeFoot",7,enums.SegmentSide.Right,["RD1M","RD5M","RTOE"], tracking_markers = ["RD1M","RD5M","RTOE"])
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
@@ -1377,7 +1377,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
 
 
-        if motionMethod == pyCGM2Enums.motionMethod.Determinist: #cmf.motionMethod.Native:
+        if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
 
             #if not pigStaticProcessing:
             logging.debug(" - Pelvis - motion -")
@@ -1454,7 +1454,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
 
-        if motionMethod == pyCGM2Enums.motionMethod.Sodervisk:
+        if motionMethod == enums.motionMethod.Sodervisk:
 
             # ---remove all  direction marker from tracking markers.
             for seg in self.m_segmentCollection:
@@ -1886,7 +1886,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                     dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
                     k+=1
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm= motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
@@ -1942,7 +1942,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                     dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
                     k+=1
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
@@ -1993,7 +1993,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                     dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
                     k+=1
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm= motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
@@ -2048,7 +2048,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                     dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
                     k+=1
 
-            if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
+            if motionMethod == enums.motionMethod.Sodervisk :
                 Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())

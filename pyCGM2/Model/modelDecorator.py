@@ -10,7 +10,7 @@ from scipy.optimize import least_squares
 import model
 import CGM2
 
-import pyCGM2.enums as pyCGM2Enums
+from pyCGM2 import enums
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Math import  numeric, geometry
 
@@ -685,7 +685,7 @@ class HipJointCenterDecorator(DecoratorModel):
 
 
 
-    def harrington(self,predictors= pyCGM2Enums.HarringtonPredictor.Native, side="both"):
+    def harrington(self,predictors= enums.HarringtonPredictor.Native, side="both"):
         """
             Use of the Harrington's regressions
 

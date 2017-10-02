@@ -7,10 +7,9 @@ import btk
 import frame
 import motion
 
+from pyCGM2 import enums
 from  pyCGM2.Math import euler
-
 import pyCGM2.Signal.signal_processing as pyCGM2signal
-import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Math import numeric
 from pyCGM2.Tools import  btkTools
 
@@ -478,7 +477,7 @@ class ModelMotionFilter(object):
             for segName in self.m_procedure.definition:
                 segPicked=self.m_model.getSegment(segName)
                 for tfName in self.m_procedure.definition[segName]:
-                    if self.m_method == pyCGM2Enums.motionMethod.Sodervisk :
+                    if self.m_method == pyCGM2.enums.motionMethod.Sodervisk :
                         pt1static=segPicked.getReferential(tfName).static.getNode_byLabel(self.m_procedure.definition[segName][tfName]['labels'][0]).m_global
                         pt2static=segPicked.getReferential(tfName).static.getNode_byLabel(self.m_procedure.definition[segName][tfName]['labels'][1]).m_global
                         pt3static=segPicked.getReferential(tfName).static.getNode_byLabel(self.m_procedure.definition[segName][tfName]['labels'][2]).m_global
@@ -490,7 +489,7 @@ class ModelMotionFilter(object):
 
                         ptOrigin=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName][tfName]['labels'][3])).GetValues()[i,:]
 
-                        if self.m_method == pyCGM2Enums.motionMethod.Unknown :
+                        if self.m_method == enums.motionMethod.Unknown :
 
                             a1=(pt2-pt1)
                             a1=np.divide(a1,np.linalg.norm(a1)) #a1/np.linalg.norm(a1)
@@ -510,7 +509,7 @@ class ModelMotionFilter(object):
                             frame.setRotation(R)
                             frame.setTranslation(ptOrigin)
 
-                        elif self.m_method == pyCGM2Enums.motionMethod.Sodervisk :
+                        elif self.m_method == enums.motionMethod.Sodervisk :
                             Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(np.array([pt1static,pt2static,pt3static]),
                                                                           np.array([pt1,pt2,pt3]))
                             R=np.dot(Ropt,segPicked.getReferential(tfName).static.getRotation())
@@ -812,7 +811,7 @@ class ModelAbsoluteAnglesFilter(object):
                 absoluteAngleValues[i,1] = obliquity
                 absoluteAngleValues[i,2] = rotation
 
-            if side == pyCGM2Enums.SegmentSide.Central:
+            if side == enums.SegmentSide.Central:
 
                 # Right
                 absoluteAngleValues_R = self.m_model.finalizeAbsoluteAngles("R"+self.m_segmentLabels[index],absoluteAngleValues)
@@ -904,7 +903,7 @@ class InverseDynamicFilter(object):
     """
 
     def __init__(self, iMod, btkAcq, procedure = None, gravityVector = np.array([0,0,-1]), scaleToMeter =0.001,
-                 projection = pyCGM2Enums.MomentProjection.Distal, exportMomentContributions = False, **options):
+                 projection = enums.MomentProjection.Distal, exportMomentContributions = False, **options):
         """
            :Parameters:
                - `btkAcq` (btkAcquisition) - btk acquisition instance of a dynamic trial
@@ -961,18 +960,18 @@ class InverseDynamicFilter(object):
                 else:
                     proximalSegLabel = it.m_proximalLabel
 
-                if self.m_projection != pyCGM2Enums.MomentProjection.JCS and  self.m_projection != pyCGM2Enums.MomentProjection.JCS_Dual:
+                if self.m_projection != enums.MomentProjection.JCS and  self.m_projection != enums.MomentProjection.JCS_Dual:
 
-                    if self.m_projection == pyCGM2Enums.MomentProjection.Distal:
+                    if self.m_projection == enums.MomentProjection.Distal:
                         mot = self.m_model.getSegment(it.m_distalLabel).anatomicalFrame.motion
-                    elif self.m_projection == pyCGM2Enums.MomentProjection.Proximal:
+                    elif self.m_projection == enums.MomentProjection.Proximal:
                         mot = self.m_model.getSegment(proximalSegLabel).anatomicalFrame.motion
 
 
                     forceValues = np.zeros((nFrames,3))
                     momentValues = np.zeros((nFrames,3))
                     for i in range(0,nFrames ):
-                        if self.m_projection == pyCGM2Enums.MomentProjection.Global:
+                        if self.m_projection == enums.MomentProjection.Global:
                             forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:]
                             momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:]
                         else:
@@ -1029,7 +1028,7 @@ class InverseDynamicFilter(object):
                         e2= np.cross(e3,e1)
                         e2=np.divide(e2,np.linalg.norm(e2))
 
-                        if self.m_projection == pyCGM2Enums.MomentProjection.JCS_Dual:
+                        if self.m_projection == enums.MomentProjection.JCS_Dual:
 
                             forceValues[i,order[0]] = np.divide(np.dot(np.cross(e2,e3),F[i]), np.dot(np.cross(e1,e2),e3))
                             forceValues[i,order[1]] = np.divide(np.dot(np.cross(e3,e1),F[i]), np.dot(np.cross(e1,e2),e3))
@@ -1039,7 +1038,7 @@ class InverseDynamicFilter(object):
                             momentValues[i,order[1]] = np.dot(M[i],e2) #np.divide(np.dot(np.cross(e3,e1),M[i]), np.dot(np.cross(e1,e2),e3))
                             momentValues[i,order[2]] = np.divide(np.dot(np.cross(e1,e2),M[i]), np.dot(np.cross(e1,e2),e3))
 
-                        if self.m_projection == pyCGM2Enums.MomentProjection.JCS:
+                        if self.m_projection == enums.MomentProjection.JCS:
 
                             forceValues[i,order[0]] = np.dot(F[i],e1)
                             forceValues[i,order[1]] = np.dot(F[i],e2)
@@ -1071,7 +1070,7 @@ class InverseDynamicFilter(object):
                     for contIt  in ["internal","external", "inertia", "linearAcceleration","gravity", "externalDevices", "distalSegments","distalSegmentForces","distalSegmentMoments"] :
                         momentValues = np.zeros((nFrames,3))
                         for i in range(0,nFrames ):
-                            if self.m_projection == pyCGM2Enums.MomentProjection.Global:
+                            if self.m_projection == enums.MomentProjection.Global:
                                 momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:]
                             else:
                                 momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T,

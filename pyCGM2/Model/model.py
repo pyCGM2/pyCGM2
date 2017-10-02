@@ -9,12 +9,12 @@ import btk
 import copy
 import logging
 
-import frame 
+import frame
 
 from  pyCGM2.Tools import  btkTools
 from pyCGM2.Math import  derivation
 
-import pyCGM2.Signal.signal_processing as pyCGM2signal
+from  pyCGM2.Signal import signal_processing
 
 
 
@@ -728,7 +728,7 @@ class Segment(object):
 
         valueCom = self.getComTrajectory()
         if "fc" in options.keys() and  "order" in options.keys():
-            valueCom = pyCGM2signal.arrayLowPassFiltering(valueCom,pointFrequency,options["order"],options["fc"]  )
+            valueCom = signal_processing.arrayLowPassFiltering(valueCom,pointFrequency,options["order"],options["fc"]  )
 
         if method == "spline":
             values = derivation.splineDerivation(valueCom,pointFrequency,order=2)
