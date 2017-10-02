@@ -23,7 +23,8 @@ import ViconNexus
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model import modelFilters, modelDecorator,CGM2
+from pyCGM2.Model import modelFilters, modelDecorator
+from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
@@ -121,7 +122,7 @@ if __name__ == "__main__":
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
         # ---definition---
-        model=CGM2.cgm.CGM1LowerLimbs()
+        model=cgm.CGM1LowerLimbs()
         model.setVersion("CGM1.1")
         model.configure()
 
@@ -130,7 +131,7 @@ if __name__ == "__main__":
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
         # ---check marker set used----
-        staticMarkerConfiguration= CGM2.cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
+        staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
 
         # --------------------------STATIC CALBRATION--------------------------
         scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure

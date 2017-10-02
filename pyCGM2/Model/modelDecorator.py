@@ -8,9 +8,8 @@ from scipy.optimize import least_squares
 
 
 import model
+import CGM2
 
-import pyCGM2
-from pyCGM2.Model.CGM2 import cgm
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Math import  numeric, geometry
@@ -389,7 +388,7 @@ class Kad(DecoratorModel):
     def __init__(self, iModel,iAcq):
         """
             :Parameters:
-                - `iModel` (pyCGM2.Model.CGM2.cgm.CGM) - a CGM instance
+                - `iModel` (CGM2.cgm.CGM) - a CGM instance
                 - `iAcq` (btkAcquisition) - btk aquisition inctance of a static c3d with the KAD
         """
 
@@ -425,7 +424,7 @@ class Kad(DecoratorModel):
 
         if side == "both" or side == "left":
 
-            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+            if isinstance(self.model,CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0 # look out, it's mp, not mp_computed.
                 if self.model.mp.has_key("LeftShankRotation") : self.model.mp["LeftShankRotation"] =0
@@ -453,13 +452,13 @@ class Kad(DecoratorModel):
     #            LKJC = LKNE + LKAXO * (self.model.mp["leftKneeWidth"]+markerDiameter )/2.0
                 if btkTools.isPointExist(self.acq,"LHJC"):
                     LHJC = self.acq.GetPoint("LHJC").GetValues()[i,:]
-                    LKJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,LKNEvalues[i,:],LHJC,LKAX, beta= 0.0 )
+                    LKJCvalues[i,:] = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,LKNEvalues[i,:],LHJC,LKAX, beta= 0.0 )
                 else:
                     LKJCvalues[i,:] = LKNEvalues[i,:] + LKAXO * (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0
 
                 # locate AJC
                 LANK = self.acq.GetPoint("LANK").GetValues()[i,:]
-                LAJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKAX,beta= 0.0 )
+                LAJCvalues[i,:] = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKAX,beta= 0.0 )
 
 
             # add nodes to referential
@@ -473,7 +472,7 @@ class Kad(DecoratorModel):
 
         if side == "both" or side == "right":
 
-            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+            if isinstance(self.model,CGM2.cgm.CGM):
 
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0 # look out, it's mp, not mp_computed.
@@ -505,13 +504,13 @@ class Kad(DecoratorModel):
     #            RKJC = RKNE + RKAXO * (self.model.mp["rightKneeWidth"]+markerDiameter )/2.0
                 if btkTools.isPointExist(self.acq,"RHJC"):
                     RHJC = self.acq.GetPoint("RHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    RKJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,RKNEvalues[i,:],RHJC,RKAX,beta= 0.0 )
+                    RKJCvalues[i,:] = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,RKNEvalues[i,:],RHJC,RKAX,beta= 0.0 )
                 else:
                     RKJCvalues[i,:] = RKNEvalues[i,:] + RKAXO * (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0
 
                 # locate AJC
                 RANK = self.acq.GetPoint("RANK").GetValues()[i,:]
-                RAJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKAX,beta= 0.0 )
+                RAJCvalues[i,:] = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKAX,beta= 0.0 )
 
             # add nodes to referential
             self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKNE_kad",RKNEvalues.mean(axis=0),positionType="Global")
@@ -543,7 +542,7 @@ class Cgm1ManualOffsets(DecoratorModel):
     def __init__(self, iModel):
         """
             :Parameters:
-              - `iModel` (pyCGM2.Model.CGM2.cgm.CGM) - a CGM instance
+              - `iModel` (CGM2.cgm.CGM) - a CGM instance
         """
         super(Cgm1ManualOffsets,self).__init__(iModel)
 
@@ -572,7 +571,7 @@ class Cgm1ManualOffsets(DecoratorModel):
 
             # zeroing of shankRotation if non-zero
             if shankoffset!=0:
-                if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+                if isinstance(self.model,CGM2.cgm.CGM):
                     if self.model.mp.has_key("LeftShankRotation") :
                         self.model.mp["LeftShankRotation"] = 0
                         logging.warning("Special CGM1 case - shank offset cancelled")
@@ -582,18 +581,18 @@ class Cgm1ManualOffsets(DecoratorModel):
             KNE = acq.GetPoint("LKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             THI = acq.GetPoint("LTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-            KJC = cgm.CGM1LowerLimbs.chord((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= -1*thighoffset )
+            KJC = CGM2.cgm.CGM1LowerLimbs.chord((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= -1*thighoffset )
 
 
             # locate AJC
             ANK = acq.GetPoint("LANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
             if thighoffset !=0 :
-                AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= -1.*tibialTorsion )
+                AJC = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= -1.*tibialTorsion )
 
             else:
                 TIB = acq.GetPoint("LTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
+                AJC = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
 
 
             # add nodes to referential
@@ -612,7 +611,7 @@ class Cgm1ManualOffsets(DecoratorModel):
 
             # zeroing of shankRotation if non-zero
             if shankoffset!=0:
-                if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+                if isinstance(self.model,CGM2.cgm.CGM):
                     if self.model.mp.has_key("RightShankRotation") :
                         self.model.mp["RightShankRotation"] = 0
                         logging.warning("Special CGM1 case - shank offset cancelled")
@@ -622,16 +621,16 @@ class Cgm1ManualOffsets(DecoratorModel):
             KNE = acq.GetPoint("RKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             THI = acq.GetPoint("RTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-            KJC = cgm.CGM1LowerLimbs.chord((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= thighoffset )
+            KJC = CGM2.cgCGM1LowerLimbs.chord((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= thighoffset )
 
             # locate AJC
             ANK = acq.GetPoint("RANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             if thighoffset != 0 :
-                AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
+                AJC = CGM2.cgCGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
             else:
 
                 TIB = acq.GetPoint("RTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                AJC = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
+                AJC = CGM2.cgCGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
 
 
             # create and add nodes to the technical referential
@@ -655,7 +654,7 @@ class HipJointCenterDecorator(DecoratorModel):
     def __init__(self, iModel):
         """
             :Parameters:
-              - `iModel` (pyCGM2.Model.CGM2.cgm.CGM) - a CGM instance
+              - `iModel` (CGM2.cgm.CGM) - a CGM instance
         """
         super(HipJointCenterDecorator,self).__init__(iModel)
 
@@ -762,7 +761,7 @@ class KneeCalibrationDecorator(DecoratorModel):
     def __init__(self, iModel):
         """
             :Parameters:
-              - `iModel` (pyCGM2.Model.CGM2.cgm.CGM) - a CGM instance
+              - `iModel` (CGM2.cgm.CGM) - a CGM instance
         """
 
         super(KneeCalibrationDecorator,self).__init__(iModel)
@@ -805,7 +804,7 @@ class KneeCalibrationDecorator(DecoratorModel):
         if side=="both" or side=="left":
 
             # CGM specification
-            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+            if isinstance(self.model,CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0
 
@@ -820,7 +819,7 @@ class KneeCalibrationDecorator(DecoratorModel):
 
                  # locate AJC
                 LANK = acq.GetPoint("LANK").GetValues()[i,:]
-                LAJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKNE,beta= 0.0 )
+                LAJCvalues[i,:] = CGM2.cgCGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKNE,beta= 0.0 )
 
 
             # nodes
@@ -840,7 +839,7 @@ class KneeCalibrationDecorator(DecoratorModel):
         if side=="both" or side=="right":
 
             # CGM specification
-            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+            if isinstance(self.model,CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0
 
@@ -856,7 +855,7 @@ class KneeCalibrationDecorator(DecoratorModel):
 
                 # locate AJC
                 RANK = acq.GetPoint("RANK").GetValues()[i,:]
-                RAJCvalues[i,:] = cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKNE,beta= 0.0 )
+                RAJCvalues[i,:] = CGM2.cgCGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKNE,beta= 0.0 )
 
             # nodes
             self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
@@ -1019,7 +1018,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
     def __init__(self, iModel):
         """
             :Parameters:
-              - `iModel` (pyCGM2.Model.CGM2.cgm.CGM) - a CGM instance
+              - `iModel` (CGM2.cgm.CGM) - a CGM instance
         """
         super(AnkleCalibrationDecorator,self).__init__(iModel)
 
@@ -1054,7 +1053,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
         if side=="both" or side=="left":
 
             # CGM specification
-            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+            if isinstance(self.model,CGM2.cgm.CGM):
                 self.model.m_useLeftTibialTorsion=True
                 if self.model.mp.has_key("LeftTibialTorsion") : self.model.mp["LeftTibialTorsion"] =0
 
@@ -1082,7 +1081,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
 
 
             # CGM specification
-            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+            if isinstance(self.model,CGM2.cgm.CGM):
                 self.model.m_useRightTibialTorsion=True
                 if self.model.mp.has_key("RightTibialTorsion") : self.model.mp["RightTibialTorsion"] =0
 

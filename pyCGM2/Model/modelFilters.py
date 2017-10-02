@@ -4,12 +4,10 @@ import logging
 import numpy as np
 import btk
 
+import frame
+import motion
 
-import frame as cfr
-import motion as cmot
-import pyCGM2.Math.euler as ceu
-
-
+from  pyCGM2.Math import euler
 
 import pyCGM2.Signal.signal_processing as pyCGM2signal
 import pyCGM2.enums as pyCGM2Enums
@@ -411,7 +409,7 @@ class ModelCalibrationFilter(object):
                     a2=np.cross(a1,v)
                     a2=np.divide(a2,np.linalg.norm(a2))
 
-                    x,y,z,R=cfr.setFrameData(a1,a2,self.m_procedure.definition[segName][tfName]['sequence'])
+                    x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName][tfName]['sequence'])
 
                     segPicked.referentials[-1].static.m_axisX=x # work on the last TF in the list : thus index -1
                     segPicked.referentials[-1].static.m_axisY=y
@@ -503,8 +501,8 @@ class ModelMotionFilter(object):
                             a2=np.cross(a1,v)
                             a2=np.divide(a2,np.linalg.norm(a2))#a2/np.linalg.norm(a2)
 
-                            x,y,z,R=cfr.setFrameData(a1,a2,self.m_procedure.definition[segName][tfName]['sequence'])
-                            frame=cfr.Frame()
+                            x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName][tfName]['sequence'])
+                            frame=frame.Frame()
 
                             frame.m_axisX=x
                             frame.m_axisY=y
@@ -513,12 +511,12 @@ class ModelMotionFilter(object):
                             frame.setTranslation(ptOrigin)
 
                         elif self.m_method == pyCGM2Enums.motionMethod.Sodervisk :
-                            Ropt, Lopt, RMSE, Am, Bm=cmot.segmentalLeastSquare(np.array([pt1static,pt2static,pt3static]),
+                            Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(np.array([pt1static,pt2static,pt3static]),
                                                                           np.array([pt1,pt2,pt3]))
                             R=np.dot(Ropt,segPicked.getReferential(tfName).static.getRotation())
                             tOri=np.dot(Ropt,segPicked.getReferential(tfName).static.getTranslation())+Lopt
 
-                            frame=cfr.Frame()
+                            frame=frame.Frame()
                             frame.setRotation(R)
                             frame.setTranslation(tOri)
                             frame.m_axisX=R[:,0]
@@ -664,17 +662,17 @@ class ModelJCSFilter(object):
 
 
                 if it.m_sequence == "XYZ":
-                    Euler1,Euler2,Euler3 = ceu.euler_xyz(Rrelative)
+                    Euler1,Euler2,Euler3 = euler.euler_xyz(Rrelative)
                 elif it.m_sequence == "XZY":
-                    Euler1,Euler2,Euler3 = ceu.euler_xzy(Rrelative)
+                    Euler1,Euler2,Euler3 = euler.euler_xzy(Rrelative)
                 elif it.m_sequence == "YXZ":
-                    Euler1,Euler2,Euler3 = ceu.euler_yxz(Rrelative)
+                    Euler1,Euler2,Euler3 = euler.euler_yxz(Rrelative)
                 elif it.m_sequence == "YZX":
-                    Euler1,Euler2,Euler3 = ceu.euler_yzx(Rrelative)
+                    Euler1,Euler2,Euler3 = euler.euler_yzx(Rrelative)
                 elif it.m_sequence == "ZXY":
-                    Euler1,Euler2,Euler3 = ceu.euler_zxy(Rrelative)
+                    Euler1,Euler2,Euler3 = euler.euler_zxy(Rrelative)
                 elif it.m_sequence == "ZYX":
-                    Euler1,Euler2,Euler3 = ceu.euler_zyx(Rrelative)
+                    Euler1,Euler2,Euler3 = euler.euler_zyx(Rrelative)
                 else:
                     raise Exception("[pycga] joint sequence unknown ")
 
@@ -753,7 +751,7 @@ class ModelAbsoluteAnglesFilter(object):
                 a1=(pt2-pt1)
                 v=(pt3-pt1)
                 a2=np.cross(a1,v)
-                x,y,z,Rglobal=cfr.setFrameData(a1,a2,"XYiZ")
+                x,y,z,Rglobal=frame.setFrameData(a1,a2,"XYiZ")
 
             if self.m_globalFrameOrientation == "YXZ":
                 if self.m_forwardProgression:
@@ -769,7 +767,7 @@ class ModelAbsoluteAnglesFilter(object):
                 a1=(pt2-pt1)
                 v=(pt3-pt1)
                 a2=np.cross(a1,v)
-                x,y,z,Rglobal=cfr.setFrameData(a1,a2,"XYiZ")
+                x,y,z,Rglobal=frame.setFrameData(a1,a2,"XYiZ")
 
             seg = self.m_model.getSegment(self.m_segmentLabels[index])
             side  = seg.side
@@ -796,19 +794,19 @@ class ModelAbsoluteAnglesFilter(object):
                 Rrelative= np.dot(Rglobal.T,Rseg)
 
                 if eulerSequence == "TOR":
-                    tilt,obliquity,rotation = ceu.euler_yxz(Rrelative,similarOrder =True)
+                    tilt,obliquity,rotation = euler.euler_yxz(Rrelative,similarOrder =True)
                 elif eulerSequence == "TRO":
-                    tilt,Euler2,obliquity = ceu.euler_yzx(Rrelative)
+                    tilt,Euler2,obliquity = euler.euler_yzx(Rrelative)
                 elif eulerSequence == "ROT":
-                    rotation,obliquity,tilt = ceu.euler_zxy(Rrelative)
+                    rotation,obliquity,tilt = euler.euler_zxy(Rrelative)
                 elif eulerSequence == "RTO":
-                    rotation,tilt,obliquity = ceu.euler_zyx(Rrelative)
+                    rotation,tilt,obliquity = euler.euler_zyx(Rrelative)
                 elif eulerSequence == "OTR":
-                    obliquity,tilt,rotation = ceu.euler_xyz(Rrelative)
+                    obliquity,tilt,rotation = euler.euler_xyz(Rrelative)
                 elif eulerSequence == "ORT":
-                    obliquity,rotation,tilt = ceu.euler_xzy(Rrelative)
+                    obliquity,rotation,tilt = euler.euler_xzy(Rrelative)
                 else:
-                    tilt,obliquity,rotation = ceu.euler_yxz(Rrelative)
+                    tilt,obliquity,rotation = euler.euler_yxz(Rrelative)
 
                 absoluteAngleValues[i,0] = tilt
                 absoluteAngleValues[i,1] = obliquity

@@ -6,18 +6,18 @@ import copy
 
 import btk
 
+import cgm
 
-import pyCGM2.Model as cmod
-import pyCGM2.Model.frame as cfr
-import pyCGM2.Model.motion as cmot
-import pyCGM2.Math.euler as ceuler
+from  pyCGM2.Model import frame
+from  pyCGM2.Model import motion
+from pyCGM2.Math import euler
 
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Math import geometry
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Nexus import nexusTools
 
-import cgm
+#import cgm
 
 
 class CGM2_1LowerLimbs(cgm.CGM1LowerLimbs):
@@ -776,7 +776,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Left HindFoot"]["TF"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left HindFoot"]["TF"]['sequence'])
 
         tf.static.m_axisX=x
         tf.static.m_axisY=y
@@ -835,7 +835,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Right HindFoot"]["TF"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right HindFoot"]["TF"]['sequence'])
 
         tf.static.m_axisX=x
         tf.static.m_axisY=y
@@ -899,7 +899,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Left ForeFoot"]["TF"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left ForeFoot"]["TF"]['sequence'])
 
         tf.static.m_axisX=x
         tf.static.m_axisY=y
@@ -960,7 +960,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Right ForeFoot"]["TF"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right ForeFoot"]["TF"]['sequence'])
 
         tf.static.m_axisX=x
         tf.static.m_axisY=y
@@ -1019,7 +1019,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=cfr.setFrameData(a1,a2,dictAnatomic["Left HindFoot"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left HindFoot"]['sequence'])
 
         seg.anatomicalFrame.static.m_axisX=x
         seg.anatomicalFrame.static.m_axisY=y
@@ -1036,7 +1036,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         trueRelativeMatrixAnatomic = np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation())
 
         # native CGM relative rotation
-        y,x,z = ceuler.euler_yxz(trueRelativeMatrixAnatomic)
+        y,x,z = euler.euler_yxz(trueRelativeMatrixAnatomic)
         rotX =np.array([[1,0,0],
                         [0,np.cos(x),-np.sin(x)],
                          [0,np.sin(x),np.cos(x)]])
@@ -1113,7 +1113,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=cfr.setFrameData(a1,a2,dictAnatomic["Right HindFoot"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right HindFoot"]['sequence'])
 
         seg.anatomicalFrame.static.m_axisX=x
         seg.anatomicalFrame.static.m_axisY=y
@@ -1130,7 +1130,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         trueRelativeMatrixAnatomic = np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation())
 
         # native CGM relative rotation
-        y,x,z = ceuler.euler_yxz(trueRelativeMatrixAnatomic)
+        y,x,z = euler.euler_yxz(trueRelativeMatrixAnatomic)
         rotX =np.array([[1,0,0],
                         [0,np.cos(x),-np.sin(x)],
                          [0,np.sin(x),np.cos(x)]])
@@ -1192,7 +1192,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=cfr.setFrameData(a1,a2,dictAnatomic["Left ForeFoot"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left ForeFoot"]['sequence'])
 
 
         seg.anatomicalFrame.static.m_axisX=x
@@ -1236,7 +1236,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=cfr.setFrameData(a1,a2,dictAnatomic["Right ForeFoot"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right ForeFoot"]['sequence'])
 
 
         seg.anatomicalFrame.static.m_axisX=x
@@ -1261,7 +1261,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         if side == "Both" or side == "Left" :
             R = self.getSegment("Left HindFoot").getReferential("TF").relativeMatrixAnatomic
-            y,x,z = ceuler.euler_yxz(R)
+            y,x,z = euler.euler_yxz(R)
 
 
             self.mp_computed["LeftStaticPlantFlexOffset"] = np.rad2deg(y)
@@ -1273,7 +1273,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         if side == "Both" or side == "Right" :
             R = self.getSegment("Right HindFoot").getReferential("TF").relativeMatrixAnatomic
-            y,x,z = ceuler.euler_yxz(R)
+            y,x,z = euler.euler_yxz(R)
 
 
             self.mp_computed["RightStaticPlantFlexOffset"] = np.rad2deg(y)
@@ -1587,7 +1587,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # NA
 
         # computation
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             pt1=aqui.GetPoint(str(dictRef["Left HindFoot"]["TF"]['labels'][0])).GetValues()[i,:] #cun
@@ -1612,7 +1612,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             a2=np.cross(a1,v)
             a2=a2/np.linalg.norm(a2)
 
-            x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Left HindFoot"]["TF"]['sequence'])
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left HindFoot"]["TF"]['sequence'])
 
             frame.m_axisX=x
             frame.m_axisY=y
@@ -1627,7 +1627,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # --- motion of the technical referential
         seg.anatomicalFrame.motion=[]
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Left HindFoot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
@@ -1656,7 +1656,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # NA
 
         #computation
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             pt1=aqui.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][0])).GetValues()[i,:]
@@ -1681,7 +1681,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             a2=np.cross(a1,v)
             a2=a2/np.linalg.norm(a2)
 
-            x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Left ForeFoot"]["TF"]['sequence'])
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left ForeFoot"]["TF"]['sequence'])
 
             frame.m_axisX=x
             frame.m_axisY=y
@@ -1701,7 +1701,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
         seg.anatomicalFrame.motion=[]
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Left ForeFoot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
@@ -1730,7 +1730,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # NA
 
         # computation
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             pt1=aqui.GetPoint(str(dictRef["Right HindFoot"]["TF"]['labels'][0])).GetValues()[i,:] #cun
@@ -1755,7 +1755,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             a2=np.cross(a1,v)
             a2=a2/np.linalg.norm(a2)
 
-            x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Right HindFoot"]["TF"]['sequence'])
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right HindFoot"]["TF"]['sequence'])
 
             frame.m_axisX=x
             frame.m_axisY=y
@@ -1770,7 +1770,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # --- motion of the technical referential
         seg.anatomicalFrame.motion=[]
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Right HindFoot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
@@ -1798,7 +1798,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # NA
 
         #computation
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             pt1=aqui.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][0])).GetValues()[i,:]
@@ -1823,7 +1823,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             a2=np.cross(a1,v)
             a2=a2/np.linalg.norm(a2)
 
-            x,y,z,R=cfr.setFrameData(a1,a2,dictRef["Right ForeFoot"]["TF"]['sequence'])
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right ForeFoot"]["TF"]['sequence'])
 
             frame.m_axisX=x
             frame.m_axisY=y
@@ -1843,7 +1843,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
         seg.anatomicalFrame.motion=[]
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Right ForeFoot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
@@ -1876,7 +1876,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 i+=1
 
         # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             if seg.m_tracking_markers != []: # work with traking markers
@@ -1887,7 +1887,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                     k+=1
 
             if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm= cmot.segmentalLeastSquare(staticPos,
+                Ropt, Lopt, RMSE, Am, Bm= motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
                 tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
@@ -1932,7 +1932,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 i+=1
 
         # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             if seg.m_tracking_markers != []: # work with traking markers
@@ -1943,7 +1943,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                     k+=1
 
             if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm=cmot.segmentalLeastSquare(staticPos,
+                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
                 tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
@@ -1983,7 +1983,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 i+=1
 
         # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             if seg.m_tracking_markers != []: # work with traking markers
@@ -1994,7 +1994,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                     k+=1
 
             if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm= cmot.segmentalLeastSquare(staticPos,
+                Ropt, Lopt, RMSE, Am, Bm= motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
                 tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
@@ -2038,7 +2038,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 i+=1
 
         # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        frame=cfr.Frame()
+        frame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             if seg.m_tracking_markers != []: # work with traking markers
@@ -2049,7 +2049,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                     k+=1
 
             if motionMethod == pyCGM2Enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm=cmot.segmentalLeastSquare(staticPos,
+                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
                                                               dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
                 tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
