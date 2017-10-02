@@ -13,7 +13,7 @@ pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
-from pyCGM2.Model.CGM2 import forceplates
+from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Events import events
 
 

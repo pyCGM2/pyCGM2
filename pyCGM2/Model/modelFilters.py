@@ -7,7 +7,7 @@ import btk
 
 import frame as cfr
 import motion as cmot
-import euler as ceu
+import pyCGM2.Math.euler as ceu
 
 
 

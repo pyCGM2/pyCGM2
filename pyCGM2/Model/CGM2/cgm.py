@@ -7,11 +7,12 @@ import copy
 
 import btk
 
-import model as cmb
-import modelDecorator as cmd
-import frame as cfr
-import motion as cmot
-import euler as ceuler
+import pyCGM2.Model as cmod
+#import pyCGM2.Model.model as cmod.model
+#from pyCGM2.Model.modelDecorator as cmd
+import pyCGM2.Model.frame as cfr
+import pyCGM2.Model.motion as cmot
+import pyCGM2.Math.euler as ceuler
 
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Math import geometry
@@ -19,7 +20,7 @@ from pyCGM2.Tools import  btkTools
 from pyCGM2.Nexus import nexusTools
 
 
-class CGM(cmb.Model):
+class CGM(cmod.model.Model):
     """
         Abstract Class of the Conventional Gait Model
     """
@@ -833,7 +834,7 @@ class CGM1LowerLimbs(CGM):
                 logging.info(" option (useLeftHJCnode) found ")
 
                 nodeLabel = options["useLeftHJCnode"]
-                desc = cmd.setDescription(nodeLabel)
+                desc = cmod.modelDecorator.setDescription(nodeLabel)
 
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
                 btkTools.smartAppendPoint(aquiStatic,"LHJC",val,desc=desc)
@@ -846,7 +847,7 @@ class CGM1LowerLimbs(CGM):
                 logging.info(" option (useRightHJCnode) found ")
 
                 nodeLabel = options["useRightHJCnode"]
-                desc = cmd.setDescription(nodeLabel)
+                desc = cmod.modelDecorator.setDescription(nodeLabel)
 
                 # construction of the btkPoint label (RHJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
@@ -958,7 +959,7 @@ class CGM1LowerLimbs(CGM):
             if "useLeftKJCnode" in options.keys():
                 logging.info(" option (useLeftKJCnode) found ")
                 nodeLabel = options["useLeftKJCnode"]
-                desc = cmd.setDescription(nodeLabel)
+                desc = cmod.modelDecorator.setDescription(nodeLabel)
 
                 # construction of the btkPoint label (LKJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
@@ -1069,7 +1070,7 @@ class CGM1LowerLimbs(CGM):
                 logging.info(" option (useRightKJCnode) found ")
 
                 nodeLabel = options["useRightKJCnode"]
-                desc = cmd.setDescription(nodeLabel)
+                desc = cmod.modelDecorator.setDescription(nodeLabel)
 
                 # construction of the btkPoint label (LKJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
@@ -1183,7 +1184,7 @@ class CGM1LowerLimbs(CGM):
                 logging.info(" option (useLeftAJCnode) found ")
 
                 nodeLabel = options["useLeftAJCnode"]
-                desc = cmd.setDescription(nodeLabel)
+                desc = cmod.modelDecorator.setDescription(nodeLabel)
 
                 # construction of the btkPoint label (LAJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
@@ -1287,7 +1288,7 @@ class CGM1LowerLimbs(CGM):
             if "useRightAJCnode" in options.keys():
                 logging.info(" option (useRightAJCnode) found ")
                 nodeLabel = options["useRightAJCnode"]
-                desc = cmd.setDescription(nodeLabel)
+                desc = cmod.modelDecorator.setDescription(nodeLabel)
 
                 # construction of the btkPoint label (RAJC)
                 val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))

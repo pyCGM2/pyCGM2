@@ -6,11 +6,11 @@ import copy
 
 import btk
 
-import model as cmb
-import modelDecorator as cmd
-import frame as cfr
-import motion as cmot
-import euler as ceuler
+
+import pyCGM2.Model as cmod
+import pyCGM2.Model.frame as cfr
+import pyCGM2.Model.motion as cmot
+import pyCGM2.Math.euler as ceuler
 
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Math import geometry

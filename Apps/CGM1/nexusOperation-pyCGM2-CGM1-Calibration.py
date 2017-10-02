@@ -21,10 +21,10 @@ import ViconNexus
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
+
+from pyCGM2.Model import modelFilters, modelDecorator,CGM2
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
-
 
 if __name__ == "__main__":
 
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
         # ---definition---
-        model=cgm.CGM1LowerLimbs()
+        model=CGM2.cgm.CGM1LowerLimbs()
         model.configure()
 
         model.setStaticFilename(calibrateFilenameLabelled)
@@ -127,7 +127,7 @@ if __name__ == "__main__":
 
 
         # ---check marker set used----
-        staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
+        staticMarkerConfiguration= CGM2.cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
 
 
         # --------------------------STATIC CALBRATION--------------------------

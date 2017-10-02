@@ -19,28 +19,29 @@ pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
-from pyCGM2.Model.CGM2 import cgm, modelFilters,modelDecorator
+from pyCGM2.Model.CGM2 import cgm
+from pyCGM2.Model import  modelFilters,modelDecorator, frame
 import pyCGM2.enums as pyCGM2Enums
 
 
 
-class CGM1_calibrationTest(): 
+class CGM1_calibrationTest():
 
     @classmethod
-    def basicCGM1(cls):  #def basicCGM1(self):    
-   
+    def basicCGM1(cls):  #def basicCGM1(self):
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
 
 
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
@@ -49,24 +50,24 @@ class CGM1_calibrationTest():
         'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }        
+        }
         model.addAnthropoInputParameters(mp)
-                                 
+
          # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
         spf_l,sro_l= model.getViconFootOffset("Left")
         spf_r,sro_r= model.getViconFootOffset("Right")
 
-        
-        #btkTools.smartWriter(acqStatic, "CGM1_calibrationTest-basicCGM1.c3d") 
+
+        #btkTools.smartWriter(acqStatic, "CGM1_calibrationTest-basicCGM1.c3d")
         # TESTS ------------------------------------------------
-        
-        np.testing.assert_equal(model.m_useRightTibialTorsion,False )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )          
-        
+
+        np.testing.assert_equal(model.m_useRightTibialTorsion,False )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
+
         # joint centres
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
@@ -74,7 +75,7 @@ class CGM1_calibrationTest():
 
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-       
+
         np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
 
@@ -95,23 +96,23 @@ class CGM1_calibrationTest():
         np.testing.assert_almost_equal(spf_r,vicon_spf_r , decimal = 3)
         np.testing.assert_almost_equal(sro_l,vicon_sro_l , decimal = 3)
         np.testing.assert_almost_equal(sro_r,vicon_sro_r , decimal = 3)
-        
-                
-        
+
+
+
 
     @classmethod
-    def basicCGM1_flatFoot(cls):    
-    
+    def basicCGM1_flatFoot(cls):
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic FlatFoot\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
-        model=cgm.CGM1LowerLimbs()     
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
@@ -120,20 +121,20 @@ class CGM1_calibrationTest():
         'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }        
+        }
         model.addAnthropoInputParameters(mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, leftFlatFoot = True, rightFlatFoot = True).compute() 
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, leftFlatFoot = True, rightFlatFoot = True).compute()
         spf_l,sro_l= model.getViconFootOffset("Left")
         spf_r,sro_r= model.getViconFootOffset("Right")
 
-        
+
         # TESTS ------------------------------------------------
-        np.testing.assert_equal(model.m_useRightTibialTorsion,False )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )           
-        
+        np.testing.assert_equal(model.m_useRightTibialTorsion,False )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
+
         # joint centres
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
@@ -141,7 +142,7 @@ class CGM1_calibrationTest():
 
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-       
+
         np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
 
@@ -158,20 +159,20 @@ class CGM1_calibrationTest():
         np.testing.assert_almost_equal(sro_l,vicon_sro_l , decimal = 3)
         np.testing.assert_almost_equal(sro_r,vicon_sro_r , decimal = 3)
 
-    
+
     @classmethod
-    def basicCGM1_soleDelta_FlatFoot(cls):  # notice : soleDelta has no influence with flatfoot disable     
-   
+    def basicCGM1_soleDelta_FlatFoot(cls):  # notice : soleDelta has no influence with flatfoot disable
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-SoleDelta-FlatFoot\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
@@ -180,24 +181,24 @@ class CGM1_calibrationTest():
         'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 10,
         'RightSoleDelta' : 10,
-        }        
+        }
         model.addAnthropoInputParameters(mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                            leftFlatFoot = True, rightFlatFoot = True).compute() 
-        
+                                            leftFlatFoot = True, rightFlatFoot = True).compute()
+
         spf_l,sro_l= model.getViconFootOffset("Left")
         spf_r,sro_r= model.getViconFootOffset("Right")
 
-        
-        #btkTools.smartWriter(acqStatic, "CGM1_calibrationTest-basicCGM1.c3d") 
+
+        #btkTools.smartWriter(acqStatic, "CGM1_calibrationTest-basicCGM1.c3d")
         # TESTS ------------------------------------------------
-        
-        np.testing.assert_equal(model.m_useRightTibialTorsion,False )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )          
-        
+
+        np.testing.assert_equal(model.m_useRightTibialTorsion,False )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
+
         # joint centres
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
@@ -205,7 +206,7 @@ class CGM1_calibrationTest():
 
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-       
+
         np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
 
@@ -228,102 +229,19 @@ class CGM1_calibrationTest():
         np.testing.assert_almost_equal(sro_r,vicon_sro_r , decimal = 3)
 
     @classmethod
-    def advancedCGM1_kad_noOptions(cls):  #def basicCGM1(self):    
+    def advancedCGM1_kad_noOptions(cls):  #def basicCGM1(self):
 
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
-        model=cgm.CGM1LowerLimbs()
-        model.configure()
-        
-        markerDiameter=14                    
-        mp={
-        'Bodymass'   : 71.0,                
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,
-        }        
-        model.addAnthropoInputParameters(mp)
-                                    
-        # -----------CGM STATIC CALIBRATION--------------------
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
-        # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute()
-        
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad", 
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        # TESTS ------------------------------------------------
-        np.testing.assert_equal(model.m_useRightTibialTorsion,False )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )   
-
-        # joint centres
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
-
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-       
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
-
-
-        # foot offsets
-        spf_l,sro_l= model.getViconFootOffset("Left")
-        spf_r,sro_r= model.getViconFootOffset("Right")
-
-        vicon_spf_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticPlantFlex").value().GetInfo().ToDouble()[0])
-        vicon_spf_r  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RStaticPlantFlex").value().GetInfo().ToDouble()[0])
-        vicon_sro_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticRotOff").value().GetInfo().ToDouble()[0])
-        vicon_sro_r  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RStaticRotOff").value().GetInfo().ToDouble()[0])
-
-
-        np.testing.assert_almost_equal(spf_l,vicon_spf_l , decimal = 3)
-        np.testing.assert_almost_equal(spf_r,vicon_spf_r , decimal = 3)
-        np.testing.assert_almost_equal(sro_l,vicon_sro_l , decimal = 3)
-        np.testing.assert_almost_equal(sro_r,vicon_sro_r , decimal = 3)
-        
-        
-        # thigh and shank Offsets        
-        lto = model.getViconThighOffset("Left")
-        lso = model.getViconShankOffset("Left")
-        rto = model.getViconThighOffset("Right")
-        rso = model.getViconShankOffset("Right")
-
-        
-        np.testing.assert_almost_equal(lto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
-        np.testing.assert_almost_equal(lso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
-
-        np.testing.assert_almost_equal(rto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
-        np.testing.assert_almost_equal(rso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
-
-
-    @classmethod
-    def advancedCGM1_kad_flatFoot(cls):  #def basicCGM1(self):    
-   
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-flatFoot\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
         model=cgm.CGM1LowerLimbs()
         model.configure()
 
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
@@ -332,25 +250,25 @@ class CGM1_calibrationTest():
         'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }        
+        }
         model.addAnthropoInputParameters(mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         # cgm decorator
         modelDecorator.Kad(model,acqStatic).compute()
-        
+
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   leftFlatFoot = True, rightFlatFoot = True,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad", 
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
                                    useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
 
-        
         # TESTS ------------------------------------------------
+        np.testing.assert_equal(model.m_useRightTibialTorsion,False )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
+
         # joint centres
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
@@ -358,7 +276,7 @@ class CGM1_calibrationTest():
 
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-       
+
         np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
 
@@ -366,7 +284,7 @@ class CGM1_calibrationTest():
         # foot offsets
         spf_l,sro_l= model.getViconFootOffset("Left")
         spf_r,sro_r= model.getViconFootOffset("Right")
-        
+
         vicon_spf_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticPlantFlex").value().GetInfo().ToDouble()[0])
         vicon_spf_r  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RStaticPlantFlex").value().GetInfo().ToDouble()[0])
         vicon_sro_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticRotOff").value().GetInfo().ToDouble()[0])
@@ -377,64 +295,63 @@ class CGM1_calibrationTest():
         np.testing.assert_almost_equal(spf_r,vicon_spf_r , decimal = 3)
         np.testing.assert_almost_equal(sro_l,vicon_sro_l , decimal = 3)
         np.testing.assert_almost_equal(sro_r,vicon_sro_r , decimal = 3)
-        
-        
-        # thigh and shank Offsets        
+
+
+        # thigh and shank Offsets
         lto = model.getViconThighOffset("Left")
         lso = model.getViconShankOffset("Left")
         rto = model.getViconThighOffset("Right")
         rso = model.getViconShankOffset("Right")
 
-        
-        np.testing.assert_almost_equal(lto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
-        np.testing.assert_almost_equal(lso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
 
-        np.testing.assert_almost_equal(rto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
-        np.testing.assert_almost_equal(rso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)               
-      
-        
+        np.testing.assert_almost_equal(lto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+        np.testing.assert_almost_equal(lso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+
+        np.testing.assert_almost_equal(rto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+        np.testing.assert_almost_equal(rso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+
+
     @classmethod
-    def advancedCGM1_kad_midMaleolus(cls):      
- 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+    def advancedCGM1_kad_flatFoot(cls):  #def basicCGM1(self):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-flatFoot\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
 
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }        
+        }
         model.addAnthropoInputParameters(mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+
+
         # cgm decorator
         modelDecorator.Kad(model,acqStatic).compute()
-        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
-        
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                   leftFlatFoot = True, rightFlatFoot = True,
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
 
 
         # TESTS ------------------------------------------------
-        np.testing.assert_equal(model.m_useRightTibialTorsion,True )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )   
-        
         # joint centres
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
@@ -442,7 +359,91 @@ class CGM1_calibrationTest():
 
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-       
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
+
+
+        # foot offsets
+        spf_l,sro_l= model.getViconFootOffset("Left")
+        spf_r,sro_r= model.getViconFootOffset("Right")
+
+        vicon_spf_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticPlantFlex").value().GetInfo().ToDouble()[0])
+        vicon_spf_r  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RStaticPlantFlex").value().GetInfo().ToDouble()[0])
+        vicon_sro_l  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LStaticRotOff").value().GetInfo().ToDouble()[0])
+        vicon_sro_r  = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RStaticRotOff").value().GetInfo().ToDouble()[0])
+
+
+        np.testing.assert_almost_equal(spf_l,vicon_spf_l , decimal = 3)
+        np.testing.assert_almost_equal(spf_r,vicon_spf_r , decimal = 3)
+        np.testing.assert_almost_equal(sro_l,vicon_sro_l , decimal = 3)
+        np.testing.assert_almost_equal(sro_r,vicon_sro_r , decimal = 3)
+
+
+        # thigh and shank Offsets
+        lto = model.getViconThighOffset("Left")
+        lso = model.getViconShankOffset("Left")
+        rto = model.getViconThighOffset("Right")
+        rso = model.getViconShankOffset("Right")
+
+
+        np.testing.assert_almost_equal(lto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+        np.testing.assert_almost_equal(lso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+
+        np.testing.assert_almost_equal(rto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+        np.testing.assert_almost_equal(rso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+
+
+    @classmethod
+    def advancedCGM1_kad_midMaleolus(cls):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        model.addAnthropoInputParameters(mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute()
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
+                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+
+
+        # TESTS ------------------------------------------------
+        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
+
+        # joint centres
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
+
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
+
         np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
 
@@ -454,7 +455,7 @@ class CGM1_calibrationTest():
 
 
         logging.info(" LTibialTorsion : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(ltt_vicon,model.mp_computed["LeftTibialTorsionOffset"]))
-        logging.info(" RTibialTorsion : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(rtt_vicon,model.mp_computed["RightTibialTorsionOffset"]))  
+        logging.info(" RTibialTorsion : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(rtt_vicon,model.mp_computed["RightTibialTorsionOffset"]))
 
         np.testing.assert_almost_equal(-ltt_vicon,model.mp_computed["LeftTibialTorsionOffset"] , decimal = 3)
         np.testing.assert_almost_equal(rtt_vicon,model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
@@ -480,26 +481,26 @@ class CGM1_calibrationTest():
         logging.info(" LStaticRotOff : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(vicon_sro_l, sro_l))
         logging.info(" RStaticRotOff : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(vicon_sro_r ,sro_r))
 
-        
-        
-        # thigh and shank Offsets        
+
+
+        # thigh and shank Offsets
         lto = model.getViconThighOffset("Left")
         lso = model.getViconShankOffset("Left")
         rto = model.getViconThighOffset("Right")
         rso = model.getViconShankOffset("Right")
 
-        lto_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0])        
+        lto_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0])
         lso_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0])
 
-        rto_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0])        
+        rto_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0])
         rso_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0])
 
-        
-        np.testing.assert_almost_equal(lto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
-        np.testing.assert_almost_equal(lso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
 
-        np.testing.assert_almost_equal(rto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
-        np.testing.assert_almost_equal(rso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
+        np.testing.assert_almost_equal(lto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+        np.testing.assert_almost_equal(lso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+
+        np.testing.assert_almost_equal(rto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+        np.testing.assert_almost_equal(rso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
 
 
         logging.info(" LThighRotation : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(lto_vicon,lto))
@@ -515,53 +516,53 @@ class CGM1_calibrationTest():
         np.testing.assert_almost_equal(abdAdd_l , np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LAnkleAbAdd").value().GetInfo().ToDouble()[0]) , decimal = 3)
         np.testing.assert_almost_equal(abdAdd_r , np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RAnkleAbAdd").value().GetInfo().ToDouble()[0]) , decimal = 3)
 
-        btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_midMaleolus.c3d") 
+        btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_midMaleolus.c3d")
 
     @classmethod
-    def advancedCGM1_kad_midMaleolus_markerDiameter(cls):      
- 
+    def advancedCGM1_kad_midMaleolus_markerDiameter(cls):
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion-markerDiameter\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
 
-        markerDiameter=25.0                    
+        markerDiameter=25.0
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }        
+        }
         model.addAnthropoInputParameters(mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,markerDiameter=markerDiameter,
-                                            leftFlatFoot = False, rightFlatFoot = False).compute() 
-        
+                                            leftFlatFoot = False, rightFlatFoot = False).compute()
+
         # cgm decorator
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="both")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic,markerDiameter=markerDiameter, side="both")
 
-        
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
                                    useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid",
                                    markerDiameter=markerDiameter).compute()
 
 
         # TESTS ------------------------------------------------
-        np.testing.assert_equal(model.m_useRightTibialTorsion,True )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )   
-        
+        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
+
         # joint centres
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
@@ -569,7 +570,7 @@ class CGM1_calibrationTest():
 
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-       
+
         np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
 
@@ -581,7 +582,7 @@ class CGM1_calibrationTest():
 
 
         logging.info(" LTibialTorsion : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(ltt_vicon,model.mp_computed["LeftTibialTorsionOffset"]))
-        logging.info(" RTibialTorsion : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(rtt_vicon,model.mp_computed["RightTibialTorsionOffset"]))  
+        logging.info(" RTibialTorsion : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(rtt_vicon,model.mp_computed["RightTibialTorsionOffset"]))
 
         np.testing.assert_almost_equal(-ltt_vicon,model.mp_computed["LeftTibialTorsionOffset"] , decimal = 3)
         np.testing.assert_almost_equal(rtt_vicon,model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
@@ -607,26 +608,26 @@ class CGM1_calibrationTest():
         logging.info(" LStaticRotOff : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(vicon_sro_l, sro_l))
         logging.info(" RStaticRotOff : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(vicon_sro_r ,sro_r))
 
-        
-        
-        # thigh and shank Offsets        
+
+
+        # thigh and shank Offsets
         lto = model.getViconThighOffset("Left")
         lso = model.getViconShankOffset("Left")
         rto = model.getViconThighOffset("Right")
         rso = model.getViconShankOffset("Right")
 
-        lto_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0])        
+        lto_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0])
         lso_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0])
 
-        rto_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0])        
+        rto_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0])
         rso_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0])
 
-        
-        np.testing.assert_almost_equal(lto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
-        np.testing.assert_almost_equal(lso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
 
-        np.testing.assert_almost_equal(rto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
-        np.testing.assert_almost_equal(rso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)        
+        np.testing.assert_almost_equal(lto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+        np.testing.assert_almost_equal(lso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+
+        np.testing.assert_almost_equal(rto, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
+        np.testing.assert_almost_equal(rso, np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0]) , decimal = 3)
 
 
         logging.info(" LThighRotation : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(lto_vicon,lto))
@@ -642,821 +643,821 @@ class CGM1_calibrationTest():
         np.testing.assert_almost_equal(abdAdd_l , np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LAnkleAbAdd").value().GetInfo().ToDouble()[0]) , decimal = 3)
         np.testing.assert_almost_equal(abdAdd_r , np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RAnkleAbAdd").value().GetInfo().ToDouble()[0]) , decimal = 3)
 
-        btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_midMaleolus_markerDiameter.c3d") 
+        btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_midMaleolus_markerDiameter.c3d")
 
-    
+
 
     @classmethod
-    def basicCGM1_manualOffset_thighRotationON_shankRotationOFF_tibialTorsionOFF(cls):      
+    def basicCGM1_manualOffset_thighRotationON_shankRotationOFF_tibialTorsionOFF(cls):
         """
-        CGM1 manual offset behaviour : 
-        => - Manual Thigh Rotation must modify ShankRotation. 
+        CGM1 manual offset behaviour :
+        => - Manual Thigh Rotation must modify ShankRotation.
            - If zero TibialTorsion inputs -> flag RightTibialTorsion must be off and TibialTorsion keep zero value
         """
-    
-    
+
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-manualOffsets\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }    
-        
+        }
+
         optional_mp={
-        'InterAsisDistance'   : 0,                
+        'InterAsisDistance'   : 0,
         'LeftAsisTrocanterDistance' : 0,
         'LeftThighRotation' : 5,
         'LeftShankRotation' : 0,
         'LeftTibialTorsion' : 0,
         'RightAsisTrocanterDistance' : 0,
         'RightThighRotation' : 5,
-        'RightShankRotation' : 0,        
-        'RightTibialTorsion' : 0 
+        'RightShankRotation' : 0,
+        'RightTibialTorsion' : 0
         }
-        
+
         model.addAnthropoInputParameters(mp,optional=optional_mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
-        # decorators    
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",model.mp["LeftThighRotation"],markerDiameter,model.mp["LeftTibialTorsion"],model.mp["LeftShankRotation"]) 
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"]) 
-        
-        # finql calibration        
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # decorators
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",model.mp["LeftThighRotation"],markerDiameter,model.mp["LeftTibialTorsion"],model.mp["LeftShankRotation"])
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"])
+
+        # finql calibration
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                    useLeftKJCnode="LKJC_mo", useLeftAJCnode="LAJC_mo",
-                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()        
+                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()
 
         # TESTS
-        np.testing.assert_equal(model.m_useRightTibialTorsion,False )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )  
+        np.testing.assert_equal(model.m_useRightTibialTorsion,False )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
 
-        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(10.7493,-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)        
+        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(10.7493,-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["LeftTibialTorsion"],-1.0*model.mp_computed["LeftTibialTorsionOffset"] , decimal = 3)
 #
-       
-        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(27.2738,model.mp_computed["RightShankRotationOffset"] , decimal = 3)        
+
+        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(27.2738,model.mp_computed["RightShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["RightTibialTorsion"],model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
 
-    
+
 
 
     @classmethod
-    def basicCGM1_manualOffset_thighRotationON_shankRotationOFF_tibialTorsionON(cls):      
+    def basicCGM1_manualOffset_thighRotationON_shankRotationOFF_tibialTorsionON(cls):
 
-        """        
-        CGM1 manual offset behaviour  : 
-        => - both Manual Thigh Rotation and Tibial torsion  must modify ShankRotation.
-           - flag RightTibialTorsion is ON and the computed TibialTorsion must be equal to tibialTorsion inputs             
         """
-    
+        CGM1 manual offset behaviour  :
+        => - both Manual Thigh Rotation and Tibial torsion  must modify ShankRotation.
+           - flag RightTibialTorsion is ON and the computed TibialTorsion must be equal to tibialTorsion inputs
+        """
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-manualOffsets\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,        
-        }    
-        
+        'RightSoleDelta' : 0,
+        }
+
         optional_mp={
-        'InterAsisDistance'   : 0,                
+        'InterAsisDistance'   : 0,
         'LeftAsisTrocanterDistance' : 0,
         'LeftThighRotation' : 5,
         'LeftShankRotation' : 0,
         'LeftTibialTorsion' : 3,
         'RightAsisTrocanterDistance' : 0,
         'RightThighRotation' : 5,
-        'RightShankRotation' : 0,        
-        'RightTibialTorsion' : 3 
+        'RightShankRotation' : 0,
+        'RightTibialTorsion' : 3
         }
-        
+
         model.addAnthropoInputParameters(mp,optional=optional_mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
-        # decorators    
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",model.mp["LeftThighRotation"],markerDiameter,model.mp["LeftTibialTorsion"],model.mp["LeftShankRotation"]) 
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"]) 
-        
-        # finql calibration        
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # decorators
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",model.mp["LeftThighRotation"],markerDiameter,model.mp["LeftTibialTorsion"],model.mp["LeftShankRotation"])
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"])
+
+        # finql calibration
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                    useLeftKJCnode="LKJC_mo", useLeftAJCnode="LAJC_mo",
-                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()        
+                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()
 
         # TESTS
-        np.testing.assert_equal(model.m_useRightTibialTorsion,True )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )  
+        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
 
-        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(13.288,-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)        
+        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(13.288,-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["LeftTibialTorsion"],-1.0*model.mp_computed["LeftTibialTorsionOffset"] , decimal = 3)
 #
-       
-        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(29.8147,model.mp_computed["RightShankRotationOffset"] , decimal = 3)        
+
+        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(29.8147,model.mp_computed["RightShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["RightTibialTorsion"],model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
-          
+
 
     @classmethod
-    def basicCGM1_manualOffset_thighRotationOFF_shankRotationON_tibialTorsionOFF(cls):      
+    def basicCGM1_manualOffset_thighRotationOFF_shankRotationON_tibialTorsionOFF(cls):
         """
-        CGM1 manual offset behaviour - SPECIAL CASE ! : 
-        => - Manual shank Rotation must have no influence. 
-           - ShankRotation must be cancelled            
+        CGM1 manual offset behaviour - SPECIAL CASE ! :
+        => - Manual shank Rotation must have no influence.
+           - ShankRotation must be cancelled
         """
-    
-    
+
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-manualOffsets\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,        
-        }    
-        
+        'RightSoleDelta' : 0,
+        }
+
         optional_mp={
-        'InterAsisDistance'   : 0,                
+        'InterAsisDistance'   : 0,
         'LeftAsisTrocanterDistance' : 0,
         'LeftThighRotation' : 0,
         'LeftShankRotation' : 5,
         'LeftTibialTorsion' : 0,
         'RightAsisTrocanterDistance' : 0,
         'RightThighRotation' : 0,
-        'RightShankRotation' : 5,        
-        'RightTibialTorsion' : 0 
+        'RightShankRotation' : 5,
+        'RightTibialTorsion' : 0
         }
-        
+
         model.addAnthropoInputParameters(mp,optional=optional_mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
-        # decorators 
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",model.mp["LeftThighRotation"],markerDiameter,model.mp["LeftTibialTorsion"],model.mp["LeftShankRotation"]) 
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"]) 
-        
+
+        # decorators
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",model.mp["LeftThighRotation"],markerDiameter,model.mp["LeftTibialTorsion"],model.mp["LeftShankRotation"])
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"])
+
         # final calibration
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                    useLeftKJCnode="LKJC_mo", useLeftAJCnode="LAJC_mo",
-                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()        
+                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()
 
         # TESTS
-        np.testing.assert_equal(model.m_useRightTibialTorsion,False )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )  
+        np.testing.assert_equal(model.m_useRightTibialTorsion,False )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
 
-        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(0.0,-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)        
+        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(0.0,-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["LeftTibialTorsion"],-1.0*model.mp_computed["LeftTibialTorsionOffset"] , decimal = 3)
 #
-       
-        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(0.0,model.mp_computed["RightShankRotationOffset"] , decimal = 3)        
+
+        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(0.0,model.mp_computed["RightShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["RightTibialTorsion"],model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
 
 
     @classmethod
-    def basicCGM1_manualOffset_thighRotationON_shankRotationON_tibialTorsionOFF(cls):      
+    def basicCGM1_manualOffset_thighRotationON_shankRotationON_tibialTorsionOFF(cls):
         """
-        CGM1 manual offset behaviour - SPECIAL CASE ! : 
-        => -manual shank Rotation must be ignored  
+        CGM1 manual offset behaviour - SPECIAL CASE ! :
+        => -manual shank Rotation must be ignored
 
         """
-    
-    
+
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-manualOffsets\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }    
-        
+        }
+
         optional_mp={
-        'InterAsisDistance'   : 0,                
+        'InterAsisDistance'   : 0,
         'LeftAsisTrocanterDistance' : 0,
         'LeftThighRotation' : 5,
         'LeftShankRotation' : 3,
         'LeftTibialTorsion' : 0,
         'RightAsisTrocanterDistance' : 0,
         'RightThighRotation' : 5,
-        'RightShankRotation' : 3,        
-        'RightTibialTorsion' : 0 
+        'RightShankRotation' : 3,
+        'RightTibialTorsion' : 0
         }
-        
+
         model.addAnthropoInputParameters(mp,optional=optional_mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
-        # decorators 
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",model.mp["LeftThighRotation"],markerDiameter,model.mp["LeftTibialTorsion"],model.mp["LeftShankRotation"]) 
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"]) 
-        
+
+        # decorators
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",model.mp["LeftThighRotation"],markerDiameter,model.mp["LeftTibialTorsion"],model.mp["LeftShankRotation"])
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"])
+
 
         # final calibration
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                    useLeftKJCnode="LKJC_mo", useLeftAJCnode="LAJC_mo",
-                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()        
+                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()
 
 
 
         # TESTS
-        np.testing.assert_equal(model.m_useRightTibialTorsion,False )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )  
+        np.testing.assert_equal(model.m_useRightTibialTorsion,False )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
 
-        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(10.7493,-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)        
+        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(10.7493,-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["LeftTibialTorsion"],-1.0*model.mp_computed["LeftTibialTorsionOffset"] , decimal = 3)
 #
-       
-        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(27.2738,model.mp_computed["RightShankRotationOffset"] , decimal = 3)        
+
+        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(27.2738,model.mp_computed["RightShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["RightTibialTorsion"],model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
 
     @classmethod
-    def basicCGM1_manualOffset_thighRotationON_shankRotationON_tibialTorsionON(cls):      
+    def basicCGM1_manualOffset_thighRotationON_shankRotationON_tibialTorsionON(cls):
         """
-        CGM1 manual offset behaviour - SPECIAL CASE ! : 
-        => -manual shank Rotation must be ignored  
+        CGM1 manual offset behaviour - SPECIAL CASE ! :
+        => -manual shank Rotation must be ignored
 
         """
-    
-    
+
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-manualOffsets\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }    
-        
+        }
+
         optional_mp={
-        'InterAsisDistance'   : 0,                
+        'InterAsisDistance'   : 0,
         'LeftAsisTrocanterDistance' : 0,
         'LeftThighRotation' : 5,
         'LeftShankRotation' : 3,
         'LeftTibialTorsion' : 5,
         'RightAsisTrocanterDistance' : 0,
         'RightThighRotation' : 5,
-        'RightShankRotation' : 3,        
-        'RightTibialTorsion' : 5 
+        'RightShankRotation' : 3,
+        'RightTibialTorsion' : 5
         }
-        
+
         model.addAnthropoInputParameters(mp,optional=optional_mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
-        # decorators 
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",model.mp["LeftThighRotation"],markerDiameter,model.mp["LeftTibialTorsion"],model.mp["LeftShankRotation"]) 
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"]) 
-        
+
+        # decorators
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",model.mp["LeftThighRotation"],markerDiameter,model.mp["LeftTibialTorsion"],model.mp["LeftShankRotation"])
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"])
+
 
         # final calibration
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                    useLeftKJCnode="LKJC_mo", useLeftAJCnode="LAJC_mo",
-                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()        
+                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()
 
 
 
         # TESTS
-        np.testing.assert_equal(model.m_useRightTibialTorsion,True )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )  
+        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
 
-        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(14.9835,-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)        
+        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(14.9835,-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["LeftTibialTorsion"],-1.0*model.mp_computed["LeftTibialTorsionOffset"] , decimal = 3)
 #
-       
-        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(31.5134,model.mp_computed["RightShankRotationOffset"] , decimal = 3)        
+
+        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(31.5134,model.mp_computed["RightShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["RightTibialTorsion"],model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
 
 
-    
 
-class CGM11_calibrationTest(): 
+
+class CGM11_calibrationTest():
 
     @classmethod
-    def basicCGM1_manualOffsets(cls):      
-  
+    def basicCGM1_manualOffsets(cls):
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }    
-        
+        }
+
         optional_mp={
-        'InterAsisDistance'   : 0,                
+        'InterAsisDistance'   : 0,
         'LeftAsisTrocanterDistance' : 0,
         'LeftThighRotation' : 8.95843387169,
         'LeftShankRotation' : 13.8726086688 ,
         'LeftTibialTorsion' : 5,
         'RightAsisTrocanterDistance' : 0,
         'RightThighRotation' : -10.0483956768,
-        'RightShankRotation' : 15.3638957089,        
-        'RightTibialTorsion' : 5 
+        'RightShankRotation' : 15.3638957089,
+        'RightTibialTorsion' : 5
         }
-        
+
         model.addAnthropoInputParameters(mp,optional=optional_mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
         # TESTS
-        np.testing.assert_equal(model.m_useRightTibialTorsion,True )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )  
+        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
 
-#        np.testing.assert_almost_equal(model.mp["InterAsisDistance"],model.mp_computed["InterAsisDistance"] , decimal = 3)        
-#        np.testing.assert_almost_equal(model.mp["LeftAsisTrocanterDistance"],model.mp_computed["LeftAsisTrocanterDistance"] , decimal = 3)        
+#        np.testing.assert_almost_equal(model.mp["InterAsisDistance"],model.mp_computed["InterAsisDistance"] , decimal = 3)
+#        np.testing.assert_almost_equal(model.mp["LeftAsisTrocanterDistance"],model.mp_computed["LeftAsisTrocanterDistance"] , decimal = 3)
 
-        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(model.mp["LeftShankRotation"],-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)        
+        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(model.mp["LeftShankRotation"],-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["LeftTibialTorsion"],-1.0*model.mp_computed["LeftTibialTorsionOffset"] , decimal = 3)
 
-#        np.testing.assert_almost_equal(model.mp["RightAsisTrocanterDistance"],model.mp_computed["RightAsisTrocanterDistance"] , decimal = 3)        
-        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(model.mp["RightShankRotation"],model.mp_computed["RightShankRotationOffset"] , decimal = 3)        
+#        np.testing.assert_almost_equal(model.mp["RightAsisTrocanterDistance"],model.mp_computed["RightAsisTrocanterDistance"] , decimal = 3)
+        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(model.mp["RightShankRotation"],model.mp_computed["RightShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["RightTibialTorsion"],model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
-    
+
 
     @classmethod
-    def basicCGM1_manualThighShankRotation(cls):      
-  
+    def basicCGM1_manualThighShankRotation(cls):
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,     
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,        
-        }    
-        
+        'RightSoleDelta' : 0,
+        }
+
         optional_mp={
-        'InterAsisDistance'   : 0,                
+        'InterAsisDistance'   : 0,
         'LeftAsisTrocanterDistance' : 0,
         'LeftThighRotation' : 8.95843387169,
         'LeftShankRotation' : 13.8726086688 ,
         'LeftTibialTorsion' : 0,
         'RightAsisTrocanterDistance' : 0,
         'RightThighRotation' : -10.0483956768,
-        'RightShankRotation' : 15.3638957089,        
-        'RightTibialTorsion' : 0 
+        'RightShankRotation' : 15.3638957089,
+        'RightTibialTorsion' : 0
         }
-        
+
         model.addAnthropoInputParameters(mp,optional=optional_mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
         # TESTS
-        np.testing.assert_equal(model.m_useRightTibialTorsion,False )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )  
+        np.testing.assert_equal(model.m_useRightTibialTorsion,False )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
 
-#        np.testing.assert_almost_equal(model.mp["InterAsisDistance"],model.mp_computed["InterAsisDistance"] , decimal = 3)        
-#        np.testing.assert_almost_equal(model.mp["LeftAsisTrocanterDistance"],model.mp_computed["LeftAsisTrocanterDistance"] , decimal = 3)        
+#        np.testing.assert_almost_equal(model.mp["InterAsisDistance"],model.mp_computed["InterAsisDistance"] , decimal = 3)
+#        np.testing.assert_almost_equal(model.mp["LeftAsisTrocanterDistance"],model.mp_computed["LeftAsisTrocanterDistance"] , decimal = 3)
 
-        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(model.mp["LeftShankRotation"],-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)        
+        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(model.mp["LeftShankRotation"],-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)
 #        np.testing.assert_almost_equal(model.mp["LeftTibialTorsion"],-1.0*model.mp_computed["LeftTibialTorsionOffset"] , decimal = 3)
 
-#        np.testing.assert_almost_equal(model.mp["RightAsisTrocanterDistance"],model.mp_computed["RightAsisTrocanterDistance"] , decimal = 3)        
-        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)        
-        np.testing.assert_almost_equal(model.mp["RightShankRotation"],model.mp_computed["RightShankRotationOffset"] , decimal = 3)        
+#        np.testing.assert_almost_equal(model.mp["RightAsisTrocanterDistance"],model.mp_computed["RightAsisTrocanterDistance"] , decimal = 3)
+        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)
+        np.testing.assert_almost_equal(model.mp["RightShankRotation"],model.mp_computed["RightShankRotationOffset"] , decimal = 3)
 #        np.testing.assert_almost_equal(model.mp["RightTibialTorsion"],model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
-     
+
     @classmethod
-    def basicCGM1_manualTibialTorsion(cls):      
-   
+    def basicCGM1_manualTibialTorsion(cls):
+
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,  
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,        
-        }    
-        
+        'RightSoleDelta' : 0,
+        }
+
         optional_mp={
-        'InterAsisDistance'   : 0,                
+        'InterAsisDistance'   : 0,
         'LeftAsisTrocanterDistance' : 0,
         'LeftThighRotation' : 0,
         'LeftShankRotation' : 0 ,
         'LeftTibialTorsion' : -10,
         'RightAsisTrocanterDistance' : 0,
         'RightThighRotation' : 0,
-        'RightShankRotation' : 0,        
-        'RightTibialTorsion' : 15 
+        'RightShankRotation' : 0,
+        'RightTibialTorsion' : 15
         }
-        
+
         model.addAnthropoInputParameters(mp,optional=optional_mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
         #TESTS
-        np.testing.assert_equal(model.m_useRightTibialTorsion,True )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )  
+        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
 
-        
-#        np.testing.assert_almost_equal(model.mp["InterAsisDistance"],model.mp_computed["InterAsisDistance"] , decimal = 3)        
-#        np.testing.assert_almost_equal(model.mp["LeftAsisTrocanterDistance"],model.mp_computed["LeftAsisTrocanterDistance"] , decimal = 3)        
 
-#        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)        
-#        np.testing.assert_almost_equal(model.mp["LeftShankRotation"],-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)        
+#        np.testing.assert_almost_equal(model.mp["InterAsisDistance"],model.mp_computed["InterAsisDistance"] , decimal = 3)
+#        np.testing.assert_almost_equal(model.mp["LeftAsisTrocanterDistance"],model.mp_computed["LeftAsisTrocanterDistance"] , decimal = 3)
+
+#        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)
+#        np.testing.assert_almost_equal(model.mp["LeftShankRotation"],-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["LeftTibialTorsion"],-1.0*model.mp_computed["LeftTibialTorsionOffset"] , decimal = 3)
 
-#        np.testing.assert_almost_equal(model.mp["RightAsisTrocanterDistance"],model.mp_computed["RightAsisTrocanterDistance"] , decimal = 3)        
-#        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)        
-#        np.testing.assert_almost_equal(model.mp["RightShankRotation"],model.mp_computed["RightShankRotationOffset"] , decimal = 3)        
+#        np.testing.assert_almost_equal(model.mp["RightAsisTrocanterDistance"],model.mp_computed["RightAsisTrocanterDistance"] , decimal = 3)
+#        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)
+#        np.testing.assert_almost_equal(model.mp["RightShankRotation"],model.mp_computed["RightShankRotationOffset"] , decimal = 3)
         np.testing.assert_almost_equal(model.mp["RightTibialTorsion"],model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
-     
+
 
     @classmethod
-    def advancedCGM1_kadMed_manualTibialTorsion(cls):      
+    def advancedCGM1_kadMed_manualTibialTorsion(cls):
         """
         - constraints on both tibial Torsion But application of a KAD-med calibration
         => tibial Torsion has to be udpated
-       
-        """    
+
+        """
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,   
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,        
-        }    
-        
+        'RightSoleDelta' : 0,
+        }
+
         optional_mp={
-        'InterAsisDistance'   : 0,                
+        'InterAsisDistance'   : 0,
         'LeftAsisTrocanterDistance' : 0,
         'LeftThighRotation' : 0,
         'LeftShankRotation' : 0 ,
         'LeftTibialTorsion' : -10,
         'RightAsisTrocanterDistance' : 0,
         'RightThighRotation' : 0,
-        'RightShankRotation' : 0,        
-        'RightTibialTorsion' : 15 
+        'RightShankRotation' : 0,
+        'RightTibialTorsion' : 15
         }
-        
+
         model.addAnthropoInputParameters(mp,optional=optional_mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
         # cgm decorator
         modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
-        
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, 
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid", 
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
                                    useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
-        
-                
-        np.testing.assert_equal(model.m_useRightTibialTorsion,True )                
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )    
+
+
+        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
         np.testing.assert_equal(model.mp["LeftTibialTorsion"],0 ) # cancel by the decorator
         np.testing.assert_equal(model.mp["RightTibialTorsion"],0)
-        
-        
+
+
         ltt_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LTibialTorsion").value().GetInfo().ToDouble()[0])
         rtt_vicon =np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RTibialTorsion").value().GetInfo().ToDouble()[0])
 
         np.testing.assert_almost_equal(-1.0*model.mp_computed["LeftTibialTorsionOffset"],ltt_vicon, decimal = 3)
         np.testing.assert_almost_equal(model.mp_computed["RightTibialTorsionOffset"],rtt_vicon, decimal = 3)
 
-#        np.testing.assert_almost_equal(model.mp["InterAsisDistance"],model.mp_computed["InterAsisDistance"] , decimal = 3)        
-#        np.testing.assert_almost_equal(model.mp["LeftAsisTrocanterDistance"],model.mp_computed["LeftAsisTrocanterDistance"] , decimal = 3)        
+#        np.testing.assert_almost_equal(model.mp["InterAsisDistance"],model.mp_computed["InterAsisDistance"] , decimal = 3)
+#        np.testing.assert_almost_equal(model.mp["LeftAsisTrocanterDistance"],model.mp_computed["LeftAsisTrocanterDistance"] , decimal = 3)
 
-#        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)        
-#        np.testing.assert_almost_equal(model.mp["LeftShankRotation"],-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)        
-        
+#        np.testing.assert_almost_equal(model.mp["LeftThighRotation"],-1.0*model.mp_computed["LeftThighRotationOffset"] , decimal = 3)
+#        np.testing.assert_almost_equal(model.mp["LeftShankRotation"],-1.0*model.mp_computed["LeftShankRotationOffset"] , decimal = 3)
 
-#        np.testing.assert_almost_equal(model.mp["RightAsisTrocanterDistance"],model.mp_computed["RightAsisTrocanterDistance"] , decimal = 3)        
-#        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)        
-#        np.testing.assert_almost_equal(model.mp["RightShankRotation"],model.mp_computed["RightShankRotationOffset"] , decimal = 3)        
+
+#        np.testing.assert_almost_equal(model.mp["RightAsisTrocanterDistance"],model.mp_computed["RightAsisTrocanterDistance"] , decimal = 3)
+#        np.testing.assert_almost_equal(model.mp["RightThighRotation"],model.mp_computed["RightThighRotationOffset"] , decimal = 3)
+#        np.testing.assert_almost_equal(model.mp["RightShankRotation"],model.mp_computed["RightShankRotationOffset"] , decimal = 3)
         #np.testing.assert_almost_equal(model.mp["RightTibialTorsion"],model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
-     
 
 
 
-class CGM1i_custom_calibrationTest(): 
+
+class CGM1i_custom_calibrationTest():
 
     @classmethod
-    def harrigton_fullPredictor(cls):      
+    def harrigton_fullPredictor(cls):
         """
         GOAL : compare Joint centres and foot Offset
-        
-        """    
+
+        """
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
 
-        markerDiameter=14                    
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
         'RightKneeWidth' : 103.4,
         'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,     
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,        
-        }        
-        model.addAnthropoInputParameters(mp)
-                                    
-        # -----------CGM STATIC CALIBRATION--------------------
-        # initial                            
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
-        # cgm decorator
-        modelDecorator.HipJointCenterDecorator(model).harrington()  
-        
-        # final
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_har", useRightHJCnode="RHJC_har").compute()
-
-
-        # tests
-        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame  
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_har").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
-
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_har").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
-        
-    @classmethod
-    def harrigton_pelvisWidthPredictor(cls):      
-        """
-        GOAL : compare Joint centres and foot Offset
-        
-        """    
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
-        model=cgm.CGM1LowerLimbs()
-        model.configure()
-
-        markerDiameter=14                    
-        mp={
-        'Bodymass'   : 71.0,                
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,        
-        }        
-        model.addAnthropoInputParameters(mp)
-                                    
-        # -----------CGM STATIC CALIBRATION--------------------
-        # initial                            
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
-         # cgm decorator
-        modelDecorator.HipJointCenterDecorator(model).harrington(predictors=pyCGM2Enums.HarringtonPredictor.PelvisWidth)  
-        
-        # final
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_har", useRightHJCnode="RHJC_har").compute()
-
-
-        # tests
-        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame  
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_har").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
-
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_har").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
-
-
-    @classmethod
-    def harrigton_legLengthPredictor(cls):      
-        """
-        GOAL : compare Joint centres and foot Offset
-        
-        """    
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
-        model=cgm.CGM1LowerLimbs()     
-        model.configure()
-        
-        markerDiameter=14                    
-        mp={
-        'Bodymass'   : 71.0,                
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,     
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,        
-        }        
-        model.addAnthropoInputParameters(mp)
-                                    
-        # -----------CGM STATIC CALIBRATION--------------------
-        # initial                            
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
-         # cgm decorator
-        modelDecorator.HipJointCenterDecorator(model).harrington(predictors=pyCGM2Enums.HarringtonPredictor.LegLength)  
-        
-        # final
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_har", useRightHJCnode="RHJC_har").compute()
-
-
-        # tests
-        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame  
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_har").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
-
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_har").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
-
-
-
-    @classmethod
-    def customLocalPosition(cls):      
-        """
-        GOAL : compare Joint centres and foot Offset
-        
-        """    
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
-        model=cgm.CGM1LowerLimbs()     
-        model.configure()
-        
-        markerDiameter=14                    
-        mp={
-        'Bodymass'   : 71.0,                
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
+        'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }        
+        }
         model.addAnthropoInputParameters(mp)
-                                    
+
         # -----------CGM STATIC CALIBRATION--------------------
-        # initial                            
+        # initial
         scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.HipJointCenterDecorator(model).harrington()
+
+        # final
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_har", useRightHJCnode="RHJC_har").compute()
+
+
+        # tests
+        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame
+        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_har").m_local,
+                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
+
+        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_har").m_local,
+                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
+
+    @classmethod
+    def harrigton_pelvisWidthPredictor(cls):
+        """
+        GOAL : compare Joint centres and foot Offset
+
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        model.addAnthropoInputParameters(mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        # initial
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+         # cgm decorator
+        modelDecorator.HipJointCenterDecorator(model).harrington(predictors=pyCGM2Enums.HarringtonPredictor.PelvisWidth)
+
+        # final
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_har", useRightHJCnode="RHJC_har").compute()
+
+
+        # tests
+        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame
+        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_har").m_local,
+                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
+
+        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_har").m_local,
+                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
+
+
+    @classmethod
+    def harrigton_legLengthPredictor(cls):
+        """
+        GOAL : compare Joint centres and foot Offset
+
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        model.addAnthropoInputParameters(mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        # initial
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+         # cgm decorator
+        modelDecorator.HipJointCenterDecorator(model).harrington(predictors=pyCGM2Enums.HarringtonPredictor.LegLength)
+
+        # final
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_har", useRightHJCnode="RHJC_har").compute()
+
+
+        # tests
+        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame
+        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_har").m_local,
+                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
+
+        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_har").m_local,
+                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
+
+
+
+    @classmethod
+    def customLocalPosition(cls):
+        """
+        GOAL : compare Joint centres and foot Offset
+
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        model.addAnthropoInputParameters(mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        # initial
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
         # cgm decorator
         modelDecorator.HipJointCenterDecorator(model).custom(position_Left = np.array([1,2,3]),
-                                                  position_Right = np.array([1,2,3]), methodDesc = "us") # add node to pelvis  
-        
+                                                  position_Right = np.array([1,2,3]), methodDesc = "us") # add node to pelvis
+
         # final
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_us", useRightHJCnode="RHJC_us").compute()
 
 
         # tests
-        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame  
+        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame
         np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_us").m_local,
                                       model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
 
@@ -1466,74 +1467,24 @@ class CGM1i_custom_calibrationTest():
 
 
     @classmethod
-    def hara_regressions(cls):      
+    def hara_regressions(cls):
         """
         GOAL : compare Joint centres and foot Offset
-        
-        """    
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
-        
-        
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
-        model=cgm.CGM1LowerLimbs()
-        model.configure()
-        
-        markerDiameter=14                    
-        mp={
-        'Bodymass'   : 71.0,                
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,       
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,        
-        }        
-        model.addAnthropoInputParameters(mp)
-                                    
-        # -----------CGM STATIC CALIBRATION--------------------
-        # initial                            
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute() 
-        
-        # cgm decorator
-        modelDecorator.HipJointCenterDecorator(model).hara()  
-        
-        # final
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_hara", useRightHJCnode="RHJC_hara").compute()
 
-        btkTools.smartWriter(acqStatic, "outStatic_Hara.c3d")
-
-        # tests
-        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame  
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_hara").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
-
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_hara").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
-
-
-    @classmethod
-    def basicCGM1_BodyBuilderFoot(cls):  #def basicCGM1(self):    
         """
-        goal : know  the differenece on foot offset of a foot referential built according a sequence metionned in some bodybuilder code:
-        LFoot = [LTOE,LAJC-LTOE,LAJC-LKJC,zyx]
-
-        """    
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d" 
-    
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))    
-        
+
+
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
         model=cgm.CGM1LowerLimbs()
         model.configure()
-        markerDiameter=14                    
+
+        markerDiameter=14
         mp={
-        'Bodymass'   : 71.0,                
+        'Bodymass'   : 71.0,
         'LeftLegLength' : 860.0,
         'RightLegLength' : 865.0 ,
         'LeftKneeWidth' : 102.0,
@@ -1542,20 +1493,70 @@ class CGM1i_custom_calibrationTest():
         'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
-        }        
+        }
         model.addAnthropoInputParameters(mp)
-                                
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        # initial
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.HipJointCenterDecorator(model).hara()
+
+        # final
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_hara", useRightHJCnode="RHJC_hara").compute()
+
+        btkTools.smartWriter(acqStatic, "outStatic_Hara.c3d")
+
+        # tests
+        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame
+        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_hara").m_local,
+                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
+
+        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_hara").m_local,
+                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
+
+
+    @classmethod
+    def basicCGM1_BodyBuilderFoot(cls):  #def basicCGM1(self):
+        """
+        goal : know  the differenece on foot offset of a foot referential built according a sequence metionned in some bodybuilder code:
+        LFoot = [LTOE,LAJC-LTOE,LAJC-LKJC,zyx]
+
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        model.addAnthropoInputParameters(mp)
+
         # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                            useBodyBuilderFoot=True).compute() 
-        
+                                            useBodyBuilderFoot=True).compute()
+
         spf_l,sro_l= model.getViconFootOffset("Left")
         spf_r,sro_r= model.getViconFootOffset("Right")
-        
-        btkTools.smartWriter(acqStatic, "CGM1_calibrationTest-basicCGM1.c3d") 
+
+        btkTools.smartWriter(acqStatic, "CGM1_calibrationTest-basicCGM1.c3d")
         # TESTS ------------------------------------------------
-        
+
         # joint centres
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
@@ -1563,7 +1564,7 @@ class CGM1i_custom_calibrationTest():
 
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-       
+
         np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
 
@@ -1586,44 +1587,42 @@ class CGM1i_custom_calibrationTest():
 #        np.testing.assert_almost_equal(sro_r,vicon_sro_r , decimal = 3)
 
 
-      
+
 if __name__ == "__main__":
-    
+
 
     # CGM 1
     logging.info("######## PROCESS CGM1 ######")
-    CGM1_calibrationTest.basicCGM1() 
-    CGM1_calibrationTest.basicCGM1_flatFoot() 
+    CGM1_calibrationTest.basicCGM1()
+    CGM1_calibrationTest.basicCGM1_flatFoot()
     CGM1_calibrationTest.basicCGM1_soleDelta_FlatFoot()
-    CGM1_calibrationTest.advancedCGM1_kad_noOptions()  
-    CGM1_calibrationTest.advancedCGM1_kad_flatFoot() 
-    CGM1_calibrationTest.advancedCGM1_kad_midMaleolus()  
+    CGM1_calibrationTest.advancedCGM1_kad_noOptions()
+    CGM1_calibrationTest.advancedCGM1_kad_flatFoot()
+    CGM1_calibrationTest.advancedCGM1_kad_midMaleolus()
     CGM1_calibrationTest.advancedCGM1_kad_midMaleolus_markerDiameter()
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationON_shankRotationOFF_tibialTorsionOFF()
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationON_shankRotationOFF_tibialTorsionON()
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationOFF_shankRotationON_tibialTorsionOFF()
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationON_shankRotationON_tibialTorsionOFF()
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationON_shankRotationON_tibialTorsionON()
-    logging.info("######## PROCESS CGM1 --> Done ######")        
+    logging.info("######## PROCESS CGM1 --> Done ######")
 
 #    logging.info("######## PROCESS CGM 1.1 --- MANUAL ######")
 #    CGM11_calibrationTest.basicCGM1_manualOffsets() # work
 #    CGM11_calibrationTest.basicCGM1_manualThighShankRotation() # work
 #    CGM11_calibrationTest.basicCGM1_manualTibialTorsion() # work
 #    CGM11_calibrationTest.advancedCGM1_kadMed_manualTibialTorsion() # work
-#    logging.info("######## PROCESS CGM 1.1 --- MANUAL --> Done ######")    
+#    logging.info("######## PROCESS CGM 1.1 --- MANUAL --> Done ######")
 
 
-#    
+#
 #    # CGM1 - custom
 #    logging.info("######## PROCESS custom CGM1 ######")
-#    CGM1i_custom_calibrationTest.harrigton_fullPredictor() 
+#    CGM1i_custom_calibrationTest.harrigton_fullPredictor()
 #    CGM1i_custom_calibrationTest.harrigton_pelvisWidthPredictor()
-#    CGM1i_custom_calibrationTest.harrigton_legLengthPredictor()  
-#    
+#    CGM1i_custom_calibrationTest.harrigton_legLengthPredictor()
+#
 #    CGM1i_custom_calibrationTest.customLocalPosition()
 #    CGM1i_custom_calibrationTest.hara_regressions()
 #    CGM1i_custom_calibrationTest.basicCGM1_BodyBuilderFoot() # not really a test
 #    logging.info("######## PROCESS custom CGM1 --> Done ######")
-
-

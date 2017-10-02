@@ -24,7 +24,8 @@ import ViconNexus
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model.CGM2 import cgm, modelFilters, forceplates,bodySegmentParameters
+from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters,CGM2
+from pyCGM2.ForcePlates import forceplates
 
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
@@ -127,7 +128,7 @@ if __name__ == "__main__":
 
         btkTools.checkMultipleSubject(acqGait)
         acqGait =  btkTools.applyTranslators(acqGait,translators)
-        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)
+        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,CGM2.cgm.CGM1LowerLimbs.MARKERS)
 
         scp=modelFilters.StaticCalibrationProcedure(model) # procedure
 

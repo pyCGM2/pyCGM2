@@ -6,16 +6,17 @@ import logging
 import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 
-import cgm
+
 import model
 
 import pyCGM2
+from pyCGM2.Model.CGM2 import cgm
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Math import  numeric, geometry
 
 
-import euler
+from  pyCGM2.Math import euler
 
 def setDescription(nodeLabel):
     """

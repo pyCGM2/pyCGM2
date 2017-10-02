@@ -28,7 +28,7 @@ import configparser
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 
-from pyCGM2.Model.CGM2 import  forceplates
+from pyCGM2.ForcePlates import  forceplates
 from pyCGM2.Nexus import nexusTools
 
 
