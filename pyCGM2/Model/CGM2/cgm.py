@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import logging
-import pdb
+import ipdb
 import matplotlib.pyplot as plt
 import copy
+import time
+#from numba import jit, autojit
 
 import btk
 
@@ -2984,7 +2986,6 @@ class CGM1LowerLimbs(CGM):
 
         # additional markers
         # NA
-
         # computation
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
@@ -3014,9 +3015,6 @@ class CGM1LowerLimbs(CGM):
             csFrame.setTranslation(ptOrigin)
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-
-
 
     def _right_thigh_motion(self,aqui, dictRef,dictAnat,options=None):
         """
