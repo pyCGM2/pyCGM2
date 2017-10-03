@@ -4,8 +4,7 @@ import sys
 import logging
 import matplotlib.pyplot as plt
 import argparse
-
-import ipdb
+# import ipdb
 
 # pyCGM2 settings
 import pyCGM2
