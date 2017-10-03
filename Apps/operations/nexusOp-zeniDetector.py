@@ -1,14 +1,9 @@
 
 # -*- coding: utf-8 -*-
-
 import os
 import logging
 import matplotlib.pyplot as plt
-
-import pdb
-
 import argparse
-
 
 # pyCGM2 settings
 import pyCGM2
@@ -17,23 +12,13 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 # vicon nexus
 import ViconNexus
 
-# openMA
-#import ma.io
-#import ma.body
-
 #btk
 import btk
-
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2.Events import events
 from pyCGM2.Nexus import nexusTools
-
-
-#
-
-
 
 if __name__ == "__main__":
 

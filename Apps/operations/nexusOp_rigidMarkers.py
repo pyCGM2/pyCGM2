@@ -8,8 +8,6 @@ import scipy as sp
 import argparse
 import copy
 
-import pdb
-
 # pyCGM2 settings
 import pyCGM2
 pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
@@ -17,16 +15,7 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 # vicon nexus
 import ViconNexus
 
-# openMA
-#import ma.io
-#import ma.body
-
-#btk
-#import btk
-
-
 # pyCGM2 libraries
-#...
 from pyCGM2.Model import model, modelFilters
 from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusTools
