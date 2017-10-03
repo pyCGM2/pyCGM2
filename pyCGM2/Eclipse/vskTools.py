@@ -45,3 +45,46 @@ class Vsk(object):
         for sp in staticParameters:
             if sp.attrs["NAME"] == label:
                 return sp.attrs["VALUE"]
+
+
+def getFromVskSubjectMp(vskInstance, resetFlag=False):
+
+    required_mp={
+    'Bodymass'   : float(vskInstance.getStaticParameterValue("Bodymass")),
+    'LeftLegLength' :float(vskInstance.getStaticParameterValue("LeftLegLength")),
+    'RightLegLength' : float(vskInstance.getStaticParameterValue("RightLegLength")),
+    'LeftKneeWidth' : float(vskInstance.getStaticParameterValue("LeftKneeWidth")),
+    'RightKneeWidth' : float(vskInstance.getStaticParameterValue("RightKneeWidth")),
+    'LeftAnkleWidth' : float(vskInstance.getStaticParameterValue("LeftAnkleWidth")),
+    'RightAnkleWidth' : float(vskInstance.getStaticParameterValue("RightAnkleWidth")),
+    'LeftSoleDelta' : float(vskInstance.getStaticParameterValue("LeftSoleDelta")),
+    'RightSoleDelta' : float(vskInstance.getStaticParameterValue("RightSoleDelta"))
+    }
+
+    if resetFlag:
+
+        optional_mp={
+        'InterAsisDistance'   : 0,
+        'LeftAsisTrocanterDistance' : 0,
+        'LeftTibialTorsion' : 0 ,
+        'LeftThighRotation' : 0,
+        'LeftShankRotation' : 0,
+        'RightAsisTrocanterDistance' : 0,
+        'RightTibialTorsion' :0 ,
+        'RightThighRotation' : 0,
+        'RightShankRotation' : 0
+        }
+    else:
+        optional_mp={
+        'InterAsisDistance'   : float(vskInstance.getStaticParameterValue("InterAsisDistance")),#0,
+        'LeftAsisTrocanterDistance' : 0,#float(vskInstance.getStaticParameterValue("LeftAsisTrocanterDistance")),#0,
+        'LeftTibialTorsion' : float(vskInstance.getStaticParameterValue("LeftTibialTorsion")),#0 ,
+        'LeftThighRotation' : float(vskInstance.getStaticParameterValue("LeftThighRotation")),#0,
+        'LeftShankRotation' : float(vskInstance.getStaticParameterValue("LeftShankRotation")),#0,
+        'RightAsisTrocanterDistance' : 0,#float(vskInstance.getStaticParameterValue("RightAsisTrocanterDistance")),#0,
+        'RightTibialTorsion' : float(vskInstance.getStaticParameterValue("RightTibialTorsion")),#0 ,
+        'RightThighRotation' : float(vskInstance.getStaticParameterValue("RightThighRotation")),#0,
+        'RightShankRotation' : float(vskInstance.getStaticParameterValue("RightShankRotation")),#0,
+        }
+
+    return required_mp,optional_mp
