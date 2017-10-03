@@ -11,25 +11,37 @@ import shutil
 
 
 def loadModel(path,FilenameNoExt):
-    # --------------------pyCGM2 MODEL ------------------------------
-    if not os.path.isfile(path + FilenameNoExt + "-pyCGM2.model"):
-        raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM1 Calibration operation"%FilenameNoExt)
+    if FilenameNoExt is not None:
+        filename = FilenameNoExt + "-pyCGM2.model"
     else:
-        f = open(path + FilenameNoExt + '-pyCGM2.model', 'r')
+        filename = "pyCGM2.model"
+
+    # --------------------pyCGM2 MODEL ------------------------------
+    if not os.path.isfile(path + filename):
+        raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM1 Calibration operation"%filename)
+    else:
+        f = open(path + filename, 'r')
         model = cPickle.load(f)
         f.close()
 
         return model
 
 def saveModel(model,path,FilenameNoExt):
-    #pyCGM2.model
-    if os.path.isfile(path + FilenameNoExt + "-pyCGM2.model"):
-        logging.warning("previous model removed")
-        os.remove(path + FilenameNoExt + "-pyCGM2.model")
 
-    modelFile = open(path + FilenameNoExt+"-pyCGM2.model", "w")
+    if FilenameNoExt is not None:
+        filename = FilenameNoExt + "-pyCGM2.model"
+    else:
+        filename = "pyCGM2.model"
+
+    #pyCGM2.model
+    if os.path.isfile(path + filename):
+        logging.warning("previous model removed")
+        os.remove(path + filename)
+
+    modelFile = open(path + filename, "w")
     cPickle.dump(model, modelFile)
     modelFile.close()
+
 
 
 def openJson(path,filename):
@@ -39,6 +51,9 @@ def openJson(path,filename):
     except :
         raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
 
+def saveJson(path, filename, content):
+        with open(str(path+filename), 'w') as outfile:
+            json.dump(content, outfile,indent=4)
 
 
 def manage_pycgm2SessionInfos(DATA_PATH,subject):
