@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        inputs = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
@@ -75,33 +75,33 @@ if __name__ == "__main__":
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file
-        infoSettings = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        info = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
         translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         if not translators:
-           translators = inputs["Translators"]
+           translators = settings["Translators"]
 
         # --------------------------CONFIG ------------------------------------
         if args.leftFlatFoot is not None:
             flag_leftFlatFoot = bool(args.leftFlatFoot)
             logging.warning("Left flat foot forces : %s"%(str(bool(args.leftFlatFoot))))
         else:
-            flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
+            flag_leftFlatFoot = bool(settings["Calibration"]["Left flat foot"])
 
 
         if args.rightFlatFoot is not None:
             flag_rightFlatFoot = bool(args.rightFlatFoot)
             logging.warning("Right flat foot forces : %s"%(str(bool(args.rightFlatFoot))))
         else:
-            flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
+            flag_rightFlatFoot =  bool(settings["Calibration"]["Right flat foot"])
 
 
         if args.markerDiameter is not None:
             markerDiameter = float(args.markerDiameter)
             logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
         else:
-            markerDiameter = float(inputs["Global"]["Marker diameter"])
+            markerDiameter = float(settings["Global"]["Marker diameter"])
 
 
         if args.check:
@@ -110,7 +110,7 @@ if __name__ == "__main__":
             if args.pointSuffix is not None:
                 pointSuffix = args.pointSuffix
             else:
-                pointSuffix = inputs["Global"]["Point suffix"]
+                pointSuffix = settings["Global"]["Point suffix"]
 
         # --------------------------ACQUISITION ------------------------------------
 

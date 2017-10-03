@@ -51,7 +51,7 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED: # run Operation
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        inputs = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
         # --------------------------LOADING ------------------------------------
         if DEBUG:
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\CGM1-Calibration\\"
@@ -81,19 +81,19 @@ if __name__ == "__main__":
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file
-        infoSettings = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        info = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
         translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         if not translators:
-           translators = inputs["Translators"]
+           translators = settings["Translators"]
         # --------------------------CONFIG ------------------------------------
 
         if args.markerDiameter is not None:
             markerDiameter = float(args.markerDiameter)
             logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
         else:
-            markerDiameter = float(inputs["Global"]["Marker diameter"])
+            markerDiameter = float(settings["Global"]["Marker diameter"])
 
         if args.check:
             pointSuffix="cgm1.0"
@@ -101,7 +101,7 @@ if __name__ == "__main__":
             if args.pointSuffix is not None:
                 pointSuffix = args.pointSuffix
             else:
-                pointSuffix = inputs["Global"]["Point suffix"]
+                pointSuffix = settings["Global"]["Point suffix"]
 
         if args.proj is not None:
             if args.proj == "Distal":
@@ -111,17 +111,17 @@ if __name__ == "__main__":
             elif args.proj == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
             else:
-                raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
+                raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
 
         else:
-            if inputs["Fitting"]["Moment Projection"] == "Distal":
+            if settings["Fitting"]["Moment Projection"] == "Distal":
                 momentProjection = pyCGM2Enums.MomentProjection.Distal
-            elif inputs["Fitting"]["Moment Projection"] == "Proximal":
+            elif settings["Fitting"]["Moment Projection"] == "Proximal":
                 momentProjection = pyCGM2Enums.MomentProjection.Proximal
-            elif inputs["Fitting"]["Moment Projection"] == "Global":
+            elif settings["Fitting"]["Moment Projection"] == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
             else:
-                raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
+                raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
 
         # --------------------------ACQUISITION ------------------------------------
 
