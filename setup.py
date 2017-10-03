@@ -154,7 +154,9 @@ setup(name = 'pyCGM2',
                         'scipy>=0.17.0',
                         'matplotlib>=1.5.3',
                         'pandas >=0.19.1',
-                        'enum34>=1.1.2'],
+                        'enum34>=1.1.2',
+                        'configparser>=3.5.0',
+                        'beautifulsoup4>=3.5.0'],
     cmdclass={'check': checkCommand,},
     )
 
