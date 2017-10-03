@@ -1,22 +1,14 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import logging
-import ipdb
-import matplotlib.pyplot as plt
 import copy
-import time
 #from numba import jit, autojit
 
 import btk
 
 from pyCGM2 import enums
-from pyCGM2.Model import model, modelDecorator
-from pyCGM2.Model import frame
-from  pyCGM2.Model import motion
-from pyCGM2.Math import euler
-
-import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Math import geometry
+from pyCGM2.Model import model, modelDecorator,frame,motion
+from pyCGM2.Math import euler,geometry
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Nexus import nexusTools
 

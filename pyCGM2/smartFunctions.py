@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
-
-# -- classic packages --
 import logging
-import ipdb
-import os
 
-import pyCGM2.enums as pyCGM2Enums
+from  pyCGM2 import enums
 from pyCGM2.Processing import cycle,analysis,scores,exporter,c3dManager
 from pyCGM2.Report import plot,plotFilters,plotViewers,normativeDatasets
 from pyCGM2.Tools import trialTools

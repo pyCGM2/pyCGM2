@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 class NexusModelFilter(object):
     def __init__(self,NEXUS,iModel, iAcq, vskName,pointSuffix, staticProcessing = False ):
         """

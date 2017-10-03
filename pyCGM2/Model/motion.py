@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
-import os
-import sys
-
-import btk
-import pdb
 import numpy as np
 import scipy as sp
-
-
 
 def segmentalLeastSquare(A, B):    
     """

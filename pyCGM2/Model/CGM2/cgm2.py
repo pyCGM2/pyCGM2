@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import logging
-import pdb
 import copy
 
 import btk
@@ -9,11 +8,8 @@ import btk
 import cgm
 
 from pyCGM2 import enums
-from  pyCGM2.Model import frame
-from  pyCGM2.Model import motion
-from pyCGM2.Math import euler
-
-from pyCGM2.Math import geometry
+from  pyCGM2.Model import frame, motion
+from pyCGM2.Math import euler,geometry
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Nexus import nexusTools
 

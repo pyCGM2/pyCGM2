@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-
 import os
 import logging
 import matplotlib.pyplot as plt
-import pdb
 import argparse
-
 
 # pyCGM2 settings
 import pyCGM2
@@ -18,7 +15,6 @@ import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Model.CGM2 import  cgm
 from pyCGM2.Model import modelFilters, bodySegmentParameters
 from pyCGM2.ForcePlates import forceplates
-
 from pyCGM2.Utils import files
 
 

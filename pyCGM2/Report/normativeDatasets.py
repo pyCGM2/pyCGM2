@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
-
-
-import pyCGM2
-
-
-import pdb
 import pandas as pd
 import numpy as np
+
+import pyCGM2
 
 class Pinzone2014(object):
 

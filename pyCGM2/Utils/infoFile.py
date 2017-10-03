@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-def getFromInfoSubjectMp(infoSettings):
+def getFromInfoSubjectMp(infoSettings,resetFlag=True):
 
     required_mp={
     'Bodymass'   : infoSettings["MP"]["Required"]["Bodymass"],

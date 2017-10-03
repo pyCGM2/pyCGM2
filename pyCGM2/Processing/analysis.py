@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-import pdb
+
 import numpy as np
 import pandas as pd
 import logging
 
-# pyCGM2
 
+# pyCGM2
 import pyCGM2.Processing.cycle as CGM2cycle
 from pyCGM2.Tools import exportTools 
 
 # openMA
-
 import ma.io
 import ma.body
 

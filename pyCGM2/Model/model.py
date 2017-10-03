@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jan 15 14:27:51 2015
-@author: fleboeuf
-"""
-
 import numpy as np
-import btk
 import copy
 import logging
+
+import btk
 
 import frame
 
 from  pyCGM2.Tools import  btkTools
 from pyCGM2.Math import  derivation
-
 from  pyCGM2.Signal import signal_processing
 
 

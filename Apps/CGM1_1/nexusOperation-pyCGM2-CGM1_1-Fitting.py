@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import os
+#import ipdb
 import logging
-import matplotlib.pyplot as plt
-import json
-import pdb
-import cPickle
-from shutil import copyfile
-import json
-from collections import OrderedDict
 import argparse
+import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
@@ -26,8 +20,6 @@ from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
-#
-
 from pyCGM2.Utils import files
 
 

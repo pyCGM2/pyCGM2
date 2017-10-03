@@ -2,10 +2,6 @@
 import os
 import logging
 import matplotlib.pyplot as plt
-import pdb
-import json
-
-#from collections import OrderedDict
 import argparse
 
 # pyCGM2 settings
@@ -16,7 +12,6 @@ pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
 from pyCGM2.Tools import btkTools
 from pyCGM2.Eclipse import vskTools
 import pyCGM2.enums as pyCGM2Enums
-
 from pyCGM2.Model import modelFilters, modelDecorator
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Utils import files,infoFile

@@ -1,21 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 01 14:52:00 2016
-
-@author: Fabien Leboeuf ( Salford Univ, UK)
-"""
-
 import os
 import numpy as np
 import logging
-import btk
 
+import btk
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.Opensim import osimProcessing
 
-import pdb
 
 
 # ---- PROCEDURES -----

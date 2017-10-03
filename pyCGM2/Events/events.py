@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import matplotlib.pyplot as plt
-import pdb
 import logging
 import numpy as np
-import btk
-from pyCGM2.Tools import  btkTools
 
+import btk
+
+from pyCGM2.Tools import  btkTools
 from pyCGM2.Signal import detect_peaks
 
 

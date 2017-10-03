@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
-import pdb
 import logging
 import numpy as np
+
 import btk
 
 import frame
 import motion
 
 from pyCGM2 import enums
-from  pyCGM2.Math import euler
+from  pyCGM2.Math import euler,numeric
 import pyCGM2.Signal.signal_processing as pyCGM2signal
-from pyCGM2.Math import numeric
 from pyCGM2.Tools import  btkTools
-
 
 
 #-------- MODEL PROCEDURE  ----------

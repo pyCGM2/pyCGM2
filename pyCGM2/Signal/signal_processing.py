@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-
-
-import pdb
 import numpy as np
 from scipy import signal, integrate
+
 import btk
 
 

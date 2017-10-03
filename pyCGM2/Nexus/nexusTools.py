@@ -2,7 +2,7 @@
 
 import numpy as np
 import logging
-import ipdb
+
 import btk
 
 

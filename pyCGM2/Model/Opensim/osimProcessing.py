@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-import opensim 
-import numpy as np
-import btk
-import pdb
 import logging
+import numpy as np
+
+import opensim 
+import btk
+
+
 
 R_OSIM_CGM = {"Pelvis" : np.array([[1,0,0],[0,0,1],[0,-1,0]]) ,
               "Left Thigh" : np.array([[1,0,0],[0,0,1],[0,-1,0]]),

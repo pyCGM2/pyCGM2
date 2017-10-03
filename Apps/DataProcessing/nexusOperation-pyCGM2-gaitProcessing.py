@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
-import sys
-import cPickle
-import ipdb
+#import ipdb
 import logging
-import matplotlib.pyplot as plt
 import argparse
-import json
-import os
-from collections import OrderedDict
-from shutil import copyfile
+import matplotlib.pyplot as plt
 
 
 # pyCGM2 settings

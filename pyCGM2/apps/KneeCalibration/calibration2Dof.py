@@ -6,8 +6,6 @@ import matplotlib.pyplot as plt
 import argparse
 import json
 import os
-from collections import OrderedDict
-import cPickle
 import numpy as np
 
 # pyCGM2 settings
@@ -20,7 +18,6 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Model import modelFilters, modelDecorator
 from pyCGM2.Model.CGM2 import cgm, cgm2
 import pyCGM2.enums as pyCGM2Enums
-
 from pyCGM2.Utils import files,infoFile
 
 def detectSide(acq,left_markerLabel,right_markerLabel):

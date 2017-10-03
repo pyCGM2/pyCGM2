@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import cPickle
-import pyCGM2
 import logging
-
 import json
 import os
 from shutil import copyfile
 from collections import OrderedDict
 import shutil
 
+import pyCGM2
 
 def loadModel(path,FilenameNoExt):
     if FilenameNoExt is not None:

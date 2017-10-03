@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 04 16:17:08 2016
-
-@author: fabien Leboeuf
-"""
 import numpy as np
-import pdb
+import matplotlib.pyplot as plt
+import logging
 
 # openMA
 import ma.io
 import ma.body
-import logging
 
-import matplotlib.pyplot as plt
+
+
 
 def isTimeSequenceExist(trial,label):
     """

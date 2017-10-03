@@ -3,8 +3,6 @@ import numpy as np
 import scipy as sp
 import logging
 
-import pdb
-
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.patches as mpatches
@@ -12,7 +10,6 @@ import matplotlib.patches as mpatches
 # pyCGM2
 #import pyCGM2
 import pyCGM2.Processing.analysis as CGM2analysis
-
 
 # openMA
 import ma.io

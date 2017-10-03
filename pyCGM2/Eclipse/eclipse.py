@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
-# pyCGM2 settings
 import logging
 import os
+import configparser
 
 import pyCGM2
 pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 from pyCGM2.Model.CGM2 import forceplates
 from pyCGM2.Tools import btkTools
-
-import configparser
 
 
 def enfForcePlateAssignment(c3dFullFilename,mappedForcePlate):

@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
+import numpy as np
+import logging
+import matplotlib.pyplot as plt
+from matplotlib.path import Path
+
+
 
 import btk
-import numpy as np
-import matplotlib.pyplot as plt
-import pdb
-import logging
 
 from pyCGM2.Tools import  btkTools
-from matplotlib.path import Path
+
 
 
 
