@@ -15,7 +15,7 @@ import ma.io
 import ma.body
 
 from pyCGM2 import  smartFunctions
-import pyCGM2.enums as pyCGM2Enums
+from pyCGM2 import enums 
 from pyCGM2.Processing import c3dManager
 from pyCGM2.Model.CGM2 import  cgm,cgm2
 
@@ -130,7 +130,7 @@ class oneAnalysis_PlotTest():
                                     modelInfo,subjectInfo,experimentalInfo)
 
         # viewer
-        kv = plotViewers.GaitKinematicsPlotViewer(analysis,plotType = pyCGM2Enums.PlotType.CONSISTENCY)
+        kv = plotViewers.GaitKinematicsPlotViewer(analysis,plotType = enums.PlotType.CONSISTENCY)
         kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
 
         # filter
@@ -258,7 +258,7 @@ class multipleAnalysis_PlotTest():
 
         kv = plotViewers.multipleAnalyses_GaitKinematicsPlotViewer([analysis1,analysis2],"left",
                                                                     ["ana1","ana2"],
-                                    plotType=pyCGM2Enums.PlotType.MEAN_ONLY)
+                                    plotType=enums.PlotType.MEAN_ONLY)
         kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
 
         # filter
@@ -304,7 +304,7 @@ class multipleAnalysis_PlotTest():
 
         kv = plotViewers.multipleAnalyses_GaitKineticsPlotViewer([analysis1,analysis2],"Right",
                                                                     ["ana1","ana2"],
-                                    plotType=pyCGM2Enums.PlotType.CONSISTENCY)
+                                    plotType=enums.PlotType.CONSISTENCY)
         kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
 
         # filter
@@ -349,7 +349,7 @@ class multipleAnalysis_PlotTest():
 
         kv = plotViewers.multipleAnalyses_GaitKineticsPlotViewer([analysis1,analysis2],"Right",
                                                                     ["ana1","ana2"],
-                                    plotType=pyCGM2Enums.PlotType.MEAN_ONLY)
+                                    plotType=enums.PlotType.MEAN_ONLY)
         kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
 
         # filter

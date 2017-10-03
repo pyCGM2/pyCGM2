@@ -16,7 +16,7 @@ import ma.body
 
 from pyCGM2 import  smartFunctions
 from pyCGM2.Model.CGM2 import  cgm,cgm2
-import pyCGM2.enums as pyCGM2Enums
+from pyCGM2 import enums 
 from pyCGM2.Processing import c3dManager
 
 from pyCGM2.Report import plot,normativeDatabaseProcedure
