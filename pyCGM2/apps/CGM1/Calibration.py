@@ -2,25 +2,24 @@
 import os
 import logging
 import matplotlib.pyplot as plt
-import json
 import pdb
-import cPickle
 import json
-from shutil import copyfile
-from collections import OrderedDict
+
+#from collections import OrderedDict
 import argparse
 
 # pyCGM2 settings
 import pyCGM2
 pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
 
-
-
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,vskTools
+from pyCGM2.Tools import btkTools
+from pyCGM2.Eclipse import vskTools
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model.CGM2 import cgm, modelFilters, modelDecorator
-from pyCGM2.Utils import fileManagement
+
+from pyCGM2.Model import modelFilters, modelDecorator
+from pyCGM2.Model.CGM2 import cgm
+from pyCGM2.Utils import files,infoFile
 
 if __name__ == "__main__":
 
@@ -36,28 +35,27 @@ if __name__ == "__main__":
     parser.add_argument('--check', action='store_true', help='force model output suffix' )
     parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of output file')
     parser.add_argument('--vsk', type=str, help='vicon skeleton filename')
+    parser.add_argument('--resetMP', action='store_false', help='reset optional mass parameters')
     args = parser.parse_args()
 
 
     # --------------------GLOBAL SETTINGS ------------------------------
 
     # global setting ( in user/AppData)
-    inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+    settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+    #json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
 
 
     # --------------------SESSION  SETTINGS ------------------------------
     if DEBUG:
         DATA_PATH = "C:\\Users\\HLS501\\Google Drive\\Paper_for BJSM\\BJSM_trials\\FMS_Screening\\15KUFC01\\Session 2\\"
-        infoSettingsFilename = "pyCGM2.info"
-        infoSettings = json.loads(open(DATA_PATH + infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
+        infoFilename = "pyCGM2.info"
+        info = files.openJson(DATA_PATH,infoFilename)
         args.vsk = "15KUFC01.vsk"
     else:
         DATA_PATH =os.getcwd()+"\\"
-
-        infoSettingsFilename = "pyCGM2.info" if args.infoFile is None else  args.infoFile
-
-        infoSettings = json.loads(open(infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
-
+        infoFilename = "pyCGM2.info" if args.infoFile is None else  args.infoFile
+        info = files.openJson(DATA_PATH,infoFilename)
 
     # --------------------CONFIGURATION ------------------------------
 
@@ -66,21 +64,21 @@ if __name__ == "__main__":
         flag_leftFlatFoot = bool(args.leftFlatFoot)
         logging.warning("Left flat foot forces : %s"%(str(bool(args.leftFlatFoot))))
     else:
-        flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
+        flag_leftFlatFoot = bool(settings["Calibration"]["Left flat foot"])
 
 
     if args.rightFlatFoot is not None:
         flag_rightFlatFoot = bool(args.rightFlatFoot)
         logging.warning("Right flat foot forces : %s"%(str(bool(args.rightFlatFoot))))
     else:
-        flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
+        flag_rightFlatFoot =  bool(settings["Calibration"]["Right flat foot"])
 
 
     if args.markerDiameter is not None:
         markerDiameter = float(args.markerDiameter)
         logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
     else:
-        markerDiameter = float(inputs["Global"]["Marker diameter"])
+        markerDiameter = float(settings["Global"]["Marker diameter"])
 
 
     if args.check:
@@ -89,74 +87,28 @@ if __name__ == "__main__":
         if args.pointSuffix is not None:
             pointSuffix = args.pointSuffix
         else:
-            pointSuffix = inputs["Global"]["Point suffix"]
+            pointSuffix = settings["Global"]["Point suffix"]
 
 
 
     # --------------------------TRANSLATORS ------------------------------------
 
     #  translators management
-    translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+    translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
     if not translators:
-       translators = inputs["Translators"]
+       translators = settings["Translators"]
 
 
     # --------------------------SUBJECT ------------------------------------
     if args.vsk is  None:
-        required_mp={
-        'Bodymass'   : infoSettings["MP"]["Required"]["Bodymass"],
-        'LeftLegLength' :infoSettings["MP"]["Required"]["LeftLegLength"],
-        'RightLegLength' : infoSettings["MP"]["Required"][ "RightLegLength"],
-        'LeftKneeWidth' : infoSettings["MP"]["Required"][ "LeftKneeWidth"],
-        'RightKneeWidth' : infoSettings["MP"]["Required"][ "RightKneeWidth"],
-        'LeftAnkleWidth' : infoSettings["MP"]["Required"][ "LeftAnkleWidth"],
-        'RightAnkleWidth' : infoSettings["MP"]["Required"][ "RightAnkleWidth"],
-        'LeftSoleDelta' : infoSettings["MP"]["Required"][ "LeftSoleDelta"],
-        'RightSoleDelta' : infoSettings["MP"]["Required"]["RightSoleDelta"]
-        }
-
-        optional_mp={
-        'InterAsisDistance'   : infoSettings["MP"]["Optional"][ "InterAsisDistance"],#0,
-        'LeftAsisTrocanterDistance' : infoSettings["MP"]["Optional"][ "LeftAsisTrocanterDistance"],#0,
-        'LeftTibialTorsion' : infoSettings["MP"]["Optional"][ "LeftTibialTorsion"],#0 ,
-        'LeftThighRotation' : infoSettings["MP"]["Optional"][ "LeftThighRotation"],#0,
-        'LeftShankRotation' : infoSettings["MP"]["Optional"][ "LeftShankRotation"],#0,
-        'RightAsisTrocanterDistance' : infoSettings["MP"]["Optional"][ "RightAsisTrocanterDistance"],#0,
-        'RightTibialTorsion' : infoSettings["MP"]["Optional"][ "RightTibialTorsion"],#0 ,
-        'RightThighRotation' : infoSettings["MP"]["Optional"][ "RightThighRotation"],#0,
-        'RightShankRotation' : infoSettings["MP"]["Optional"][ "RightShankRotation"],#0,
-        }
+        required_mp,optional_mp = infoFile.getFromInfoSubjectMp(info, resetFlag=args.resetMP)
     else:
         vsk = vskTools.Vsk(str(DATA_PATH + args.vsk))
-
-        required_mp={
-        'Bodymass'   : float(vsk.getStaticParameterValue("Bodymass")),
-        'LeftLegLength' :float(vsk.getStaticParameterValue("LeftLegLength")),
-        'RightLegLength' : float(vsk.getStaticParameterValue("RightLegLength")),
-        'LeftKneeWidth' : float(vsk.getStaticParameterValue("LeftKneeWidth")),
-        'RightKneeWidth' : float(vsk.getStaticParameterValue("RightKneeWidth")),
-        'LeftAnkleWidth' : float(vsk.getStaticParameterValue("LeftAnkleWidth")),
-        'RightAnkleWidth' : float(vsk.getStaticParameterValue("RightAnkleWidth")),
-        'LeftSoleDelta' : float(vsk.getStaticParameterValue("LeftSoleDelta")),
-        'RightSoleDelta' : float(vsk.getStaticParameterValue("RightSoleDelta"))
-        }
-
-        optional_mp={
-        'InterAsisDistance'   : float(vsk.getStaticParameterValue("InterAsisDistance")),#0,
-        'LeftAsisTrocanterDistance' : 0,#float(vsk.getStaticParameterValue("LeftAsisTrocanterDistance")),#0,
-        'LeftTibialTorsion' : float(vsk.getStaticParameterValue("LeftTibialTorsion")),#0 ,
-        'LeftThighRotation' : float(vsk.getStaticParameterValue("LeftThighRotation")),#0,
-        'LeftShankRotation' : float(vsk.getStaticParameterValue("LeftShankRotation")),#0,
-        'RightAsisTrocanterDistance' : 0,#float(vsk.getStaticParameterValue("RightAsisTrocanterDistance")),#0,
-        'RightTibialTorsion' : float(vsk.getStaticParameterValue("RightTibialTorsion")),#0 ,
-        'RightThighRotation' : float(vsk.getStaticParameterValue("RightThighRotation")),#0,
-        'RightShankRotation' : float(vsk.getStaticParameterValue("RightShankRotation")),#0,
-        }
-
+        required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=args.resetMP)
 
     # --------------------------ACQUISITION--------------------------------------
 
-    calibrateFilenameLabelled = infoSettings["Modelling"]["Trials"]["Static"]
+    calibrateFilenameLabelled = info["Modelling"]["Trials"]["Static"]
 
     logging.info( "data Path: "+ DATA_PATH )
     logging.info( "calibration file: "+ calibrateFilenameLabelled)
@@ -177,13 +129,10 @@ if __name__ == "__main__":
     # ---check marker set used----
     staticMarkerConfiguration= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
 
-
-
     # --------------------------STATIC CALBRATION--------------------------
     scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
 
     # ---initial calibration filter----
-    # use if all optional mp are zero
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                         leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                         markerDiameter=markerDiameter,
@@ -318,29 +267,21 @@ if __name__ == "__main__":
 
 
     # update optional mp and save a new info file
-    infoSettings["MP"]["Optional"][ "InterAsisDistance"] = model.mp_computed["InterAsisDistance"]
-    infoSettings["MP"]["Optional"][ "LeftAsisTrocanterDistance"] = model.mp_computed["LeftAsisTrocanterDistance"]
-    infoSettings["MP"]["Optional"][ "LeftTibialTorsion"] = model.mp_computed["LeftTibialTorsionOffset"]
-    infoSettings["MP"]["Optional"][ "LeftThighRotation"] = model.mp_computed["LeftThighRotationOffset"]
-    infoSettings["MP"]["Optional"][ "LeftShankRotation"] = model.mp_computed["LeftShankRotationOffset"]
-    infoSettings["MP"]["Optional"][ "RightAsisTrocanterDistance"] = model.mp_computed["RightAsisTrocanterDistance"]
-    infoSettings["MP"]["Optional"][ "RightTibialTorsion"] = model.mp_computed["RightTibialTorsionOffset"]
-    infoSettings["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
-    infoSettings["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
+    info["MP"]["Optional"][ "InterAsisDistance"] = model.mp_computed["InterAsisDistance"]
+    info["MP"]["Optional"][ "LeftAsisTrocanterDistance"] = model.mp_computed["LeftAsisTrocanterDistance"]
+    info["MP"]["Optional"][ "LeftTibialTorsion"] = model.mp_computed["LeftTibialTorsionOffset"]
+    info["MP"]["Optional"][ "LeftThighRotation"] = model.mp_computed["LeftThighRotationOffset"]
+    info["MP"]["Optional"][ "LeftShankRotation"] = model.mp_computed["LeftShankRotationOffset"]
+    info["MP"]["Optional"][ "RightAsisTrocanterDistance"] = model.mp_computed["RightAsisTrocanterDistance"]
+    info["MP"]["Optional"][ "RightTibialTorsion"] = model.mp_computed["RightTibialTorsionOffset"]
+    info["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
+    info["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
 
-    with open(infoSettingsFilename, 'w') as outfile:
-        json.dump(infoSettings, outfile,indent=4)
+    files.saveJson(DATA_PATH, infoFilename, info)
 
 
     # save pycgm2 -model
-    if os.path.isfile(DATA_PATH + "pyCGM2.model"):
-        logging.warning("previous model removed")
-        os.remove(DATA_PATH + "pyCGM2.model")
-
-    modelFile = open(DATA_PATH + "pyCGM2.model", "w")
-    cPickle.dump(model, modelFile)
-    modelFile.close()
-
+    files.saveModel(model,DATA_PATH,None)
 
 
     # new static file

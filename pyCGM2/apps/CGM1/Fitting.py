@@ -3,11 +3,7 @@
 import os
 import logging
 import matplotlib.pyplot as plt
-import json
 import pdb
-import cPickle
-import json
-from collections import OrderedDict
 import argparse
 
 
@@ -19,10 +15,11 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model.CGM2 import  cgm,modelFilters, forceplates,bodySegmentParameters
-#
+from pyCGM2.Model.CGM2 import  cgm
+from pyCGM2.Model import modelFilters, bodySegmentParameters
+from pyCGM2.ForcePlates import forceplates
 
-from pyCGM2.Utils import fileManagement
+from pyCGM2.Utils import files
 
 
 
@@ -45,20 +42,20 @@ if __name__ == "__main__":
     # --------------------GOBAL SETTINGS ------------------------------
 
     # global setting ( in user/AppData)
-    inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+    settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+
 
     # --------------------SESSION SETTINGS ------------------------------
     if DEBUG:
         DATA_PATH = "C:\\Users\\HLS501\\Google Drive\\Paper_for BJSM\\BJSM_trials\\FMS_Screening\\15KUFC01\\Session 2\\"
-        infoSettingsFilename = "pyCGM2.info"
-        infoSettings = json.loads(open(DATA_PATH + infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
+        infoFilename = "pyCGM2.info"
+        info = files.openJson(DATA_PATH,infoFilename)
 
 
     else:
         DATA_PATH =os.getcwd()+"\\"
-        infoSettingsFilename = "pyCGM2.info" if args.infoFile is None else  args.infoFile
-
-        infoSettings = json.loads(open(infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
+        infoFilename = "pyCGM2.info" if args.infoFile is None else  args.infoFile
+        info = files.openJson(DATA_PATH,infoFilename)
 
 
     # --------------------CONFIGURATION ------------------------------
@@ -66,7 +63,7 @@ if __name__ == "__main__":
         markerDiameter = float(args.markerDiameter)
         logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
     else:
-        markerDiameter = float(inputs["Global"]["Marker diameter"])
+        markerDiameter = float(settings["Global"]["Marker diameter"])
 
     if args.check:
         pointSuffix="cgm1.0"
@@ -77,7 +74,7 @@ if __name__ == "__main__":
             if args.pointSuffix is not None:
                 pointSuffix = args.pointSuffix
             else:
-                pointSuffix = inputs["Global"]["Point suffix"]
+                pointSuffix = settings["Global"]["Point suffix"]
 
     if args.proj is not None:
         if args.proj == "Distal":
@@ -86,40 +83,30 @@ if __name__ == "__main__":
             momentProjection = pyCGM2Enums.MomentProjection.Proximal
         elif args.proj == "Global":
             momentProjection = pyCGM2Enums.MomentProjection.Global
-        elif args.proj == "JCS":
-            momentProjection = pyCGM2Enums.MomentProjection.JCS
         else:
-            raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
-
+            raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
     else:
-        if inputs["Fitting"]["Moment Projection"] == "Distal":
+        if settings["Fitting"]["Moment Projection"] == "Distal":
             momentProjection = pyCGM2Enums.MomentProjection.Distal
-        elif inputs["Fitting"]["Moment Projection"] == "Proximal":
+        elif settings["Fitting"]["Moment Projection"] == "Proximal":
             momentProjection = pyCGM2Enums.MomentProjection.Proximal
-        elif inputs["Fitting"]["Moment Projection"] == "Global":
+        elif settings["Fitting"]["Moment Projection"] == "Global":
             momentProjection = pyCGM2Enums.MomentProjection.Global
-        elif inputs["Fitting"]["Moment Projection"] == "JCS":
-            momentProjection = pyCGM2Enums.MomentProjection.JCS
+
         else:
-            raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
+            raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
 
 
 
     # --------------------------TRANSLATORS ------------------------------------
     #  translators management
-    translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+    translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
     if not translators:
-       translators = inputs["Translators"]
+       translators = settings["Translators"]
 
 
     # ------------------ pyCGM2 MODEL -----------------------------------
-
-    if not os.path.isfile(DATA_PATH +  "pyCGM2.model"):
-        raise Exception ("pyCGM2.model file doesn't exist. Run Calibration operation")
-    else:
-        f = open(DATA_PATH + 'pyCGM2.model', 'r')
-        model = cPickle.load(f)
-        f.close()
+    model = files.loadModel(DATA_PATH,None)
 
     # --------------------------CHECKING -----------------------------------
     # check model is the CGM1
@@ -128,7 +115,7 @@ if __name__ == "__main__":
         raise Exception ("pyCGM2.model file was not calibrated from the CGM1.0 calibration pipeline"%model.version)
 
     # --------------------------MODELLLING--------------------------
-    motionTrials = infoSettings["Modelling"]["Trials"]["Motion"]
+    motionTrials = info["Modelling"]["Trials"]["Motion"]
 
 
     for trial in motionTrials:

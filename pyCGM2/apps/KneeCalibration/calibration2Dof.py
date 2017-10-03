@@ -16,12 +16,12 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,nexusTools
-from pyCGM2.Model.CGM2 import cgm,cgm2, modelFilters, modelDecorator
+from pyCGM2.Tools import btkTools
+from pyCGM2.Model import modelFilters, modelDecorator
+from pyCGM2.Model.CGM2 import cgm, cgm2
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Utils import fileManagement
 
-from pyCGM2 import viconInterface
+from pyCGM2.Utils import files,infoFile
 
 def detectSide(acq,left_markerLabel,right_markerLabel):
 
@@ -47,14 +47,13 @@ if __name__ == "__main__":
     # --------------------SESSION SETTINGS ------------------------------
     if DEBUG:
         DATA_PATH = "C:\\Users\\HLS501\\Google Drive\\Paper_for BJSM\\BJSM_trials\\FMS_Screening\\15KUFC01\\Session 2\\"
-        infoSettingsFilename = "pyCGM2.info"
-        infoSettings = json.loads(open(DATA_PATH + infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
+        infoFilename = "pyCGM2.info"
+        info = files.openJson(DATA_PATH,infoFilename)
 
     else:
         DATA_PATH =os.getcwd()+"\\"
-        infoSettingsFilename = "pyCGM2.info" if args.infoFile is None else  args.infoFile
-
-        infoSettings = json.loads(open(infoSettingsFilename).read(),object_pairs_hook=OrderedDict)
+        infoFilename = "pyCGM2.info" if args.infoFile is None else  args.infoFile
+        info = files.openJson(DATA_PATH,infoFilename)
 
 
 
@@ -63,35 +62,30 @@ if __name__ == "__main__":
 
     # --------------------pyCGM2 MODEL------------------------------
 
-    if not os.path.isfile(DATA_PATH +  "pyCGM2.model"):
-        raise Exception ("pyCGM2.model file doesn't exist. Run Calibration operation")
-    else:
-        f = open(DATA_PATH  + 'pyCGM2.model', 'r')
-        model = cPickle.load(f)
-        f.close()
+    model = files.loadModel(DATA_PATH,None)
 
     logging.info("loaded model : %s" %(model.version ))
 
     # --------------------GLOBAL SETTNGS ------------------------------
 
     if model.version == "CGM1.0":
-           inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
     elif model.version == "CGM1.1":
-           inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM1_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
     elif model.version == "CGM2.1":
-           inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
     elif model.version == "CGM2.2":
-           inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_2-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
     elif model.version == "CGM2.2e":
-           inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_2-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_2-Expert-pyCGM2.settings")
     elif model.version == "CGM2.3":
-           inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
     elif model.version == "CGM2.3e":
-           inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-Expert-pyCGM2.settings")
     elif model.version == "CGM2.4":
-           inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
     elif model.version == "CGM2.4e":
-           inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_4-Expert-pyCGM2.settings")
     else:
         raise Exception ("model version not found [contact admin]")
 
@@ -99,19 +93,19 @@ if __name__ == "__main__":
 
     #  translators management
     if model.version in  ["CGM1.0"]:
-        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
     elif model.version in  ["CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
-        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1-1.translators")
+        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1-1.translators")
     elif model.version in  ["CGM2.3","CGM2.3e"]:
-        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM2-3.translators")
+        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM2-3.translators")
     elif model.version in  ["CGM2.4","CGM2.4e"]:
-        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM2-4.translators")
+        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM2-4.translators")
 
     if not translators:
-       translators = inputs["Translators"]
+       translators = settings["Translators"]
 
     # --------------------------ACQ WITH TRANSLATORS --------------------------------------
-    funcTrials = infoSettings["Modelling"]["KneeCalibrationTrials"]["Calibration2Dof"]
+    funcTrials = info["Modelling"]["KneeCalibrationTrials"]["Calibration2Dof"]
 
     for it in funcTrials:
 
@@ -312,10 +306,18 @@ if __name__ == "__main__":
 
     # ----------------------SAVE-------------------------------------------
 
-    if os.path.isfile(DATA_PATH +  "pyCGM2.model"):
-        logging.warning("previous model removed")
-        os.remove(DATA_PATH +  "pyCGM2.model")
+    # update optional mp and save a new info file
+    info["MP"]["Optional"][ "InterAsisDistance"] = model.mp_computed["InterAsisDistance"]
+    info["MP"]["Optional"][ "LeftAsisTrocanterDistance"] = model.mp_computed["LeftAsisTrocanterDistance"]
+    info["MP"]["Optional"][ "LeftTibialTorsion"] = model.mp_computed["LeftTibialTorsionOffset"]
+    info["MP"]["Optional"][ "LeftThighRotation"] = model.mp_computed["LeftThighRotationOffset"]
+    info["MP"]["Optional"][ "LeftShankRotation"] = model.mp_computed["LeftShankRotationOffset"]
+    info["MP"]["Optional"][ "RightAsisTrocanterDistance"] = model.mp_computed["RightAsisTrocanterDistance"]
+    info["MP"]["Optional"][ "RightTibialTorsion"] = model.mp_computed["RightTibialTorsionOffset"]
+    info["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
+    info["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
 
-    modelFile = open(DATA_PATH + "pyCGM2.model", "w")
-    cPickle.dump(model, modelFile)
-    modelFile.close()
+    files.saveJson(DATA_PATH, infoFilename, info)
+
+    # save pycgm2 -model
+    files.saveModel(model,DATA_PATH,None)
