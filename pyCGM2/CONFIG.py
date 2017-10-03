@@ -23,6 +23,7 @@ if not os.path.exists(PYCGM2_APPDATA_PATH[:-1]):
 # [OPTIONAL] ----------------------------------
 MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)) + "\\" #C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)
 
+
 # [Optional]: Apps path
 MAIN_PYCGM2_APPS_PATH = MAIN_PYCGM2_PATH+"Apps\\"
 
@@ -104,14 +105,14 @@ def addNexusPythonSdk():
 
     if NEXUS_SDK_WIN32  not in sys.path:
         sys.path.append( NEXUS_SDK_WIN32)
-        print NEXUS_SDK_WIN32 + " added to the python path"
+        #print NEXUS_SDK_WIN32 + " added to the python path"
     if NEXUS_SDK_PYTHON  not in sys.path:
         sys.path.append( NEXUS_SDK_PYTHON)
-        print NEXUS_SDK_WIN32 + " added to the python path"
+        #print NEXUS_SDK_WIN32 + " added to the python path"
 
     NEXUS_PYTHON_USE = True if PYTHON_NEXUS in sys.path else False
     if NEXUS_PYTHON_USE:
-        raise Exception("untick Use nexus Python in your python pipeline operation. pyCGA apps recommand anaconda Packages ")
+        raise Exception("untick Use nexus Python in your python pipeline operation. pyCCGM2 apps recommand anaconda Packages ")
 
 
 def addOpenma(branch=None):
@@ -144,45 +145,3 @@ def addOpenma(branch=None):
 
 def addBtk():
     sys.path.append(THIRDPARTY_PATH + "btk")
-
-
-def checkConfig():
-
-    for it in sys.path:
-        if "pyCGM2" in it:
-            print "OK"
-    try:
-        import pyCGM2
-        import pyCGM2.CONFIG
-        pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
-        logging.info("pyCGM2 ---> OK")
-    except ImportError:
-        raise Exception ("[pyCGM2] : pyCGM2 module not in your python path")
-
-
-    # vicon nexus
-    pyCGM2.CONFIG.addNexusPythonSdk()
-    try:
-        import ViconNexus
-        logging.info("vicon API ---> OK" )
-    except ImportError:
-        logging.error ("[pyCGM2] : viconNexus is not in your python path. Check CONFIG")
-
-
-    # openMA
-    pyCGM2.CONFIG.addOpenma()
-    try:
-        import ma.io
-        import ma.body
-        logging.info("openMA API ---> OK" )
-    except ImportError:
-        logging.error ("[pyCGM2] : openma is not in your python path. Check CONFIG")
-
-
-    # btk
-    pyCGM2.CONFIG.addBtk()
-    try:
-        import btk
-        logging.info("btk API ---> OK" )
-    except ImportError:
-        logging.error ("[pyCGM2] : btk is not in your python path. Check CONFIG")

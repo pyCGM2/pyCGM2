@@ -1,15 +1,8 @@
 # -*- coding: utf-8 -*-
-import os
+#import ipdb
 import logging
-import matplotlib.pyplot as plt
-import json
-import pdb
-import cPickle
-import json
-from shutil import copyfile
-from collections import OrderedDict
 import argparse
-import sys
+import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
@@ -21,12 +14,13 @@ import ViconNexus
 
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,nexusTools
+from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model.CGM2 import cgm,cgm2, modelFilters, modelDecorator
+from pyCGM2.Model import modelFilters, modelDecorator
+from pyCGM2.Model.CGM2 import cgm,cgm2
+from pyCGM2.Utils import files
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
-from pyCGM2 import viconInterface
-from pyCGM2.Utils import fileManagement
 
 if __name__ == "__main__":
 
@@ -51,7 +45,7 @@ if __name__ == "__main__":
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_1-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
@@ -73,75 +67,39 @@ if __name__ == "__main__":
         subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
-        required_mp={
-        'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
-        'LeftLegLength' : NEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],#860.0,
-        'RightLegLength' : NEXUS.GetSubjectParamDetails( subject, "RightLegLength")[0],#865.0 ,
-        'LeftKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0],#102.0,
-        'RightKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "RightKneeWidth")[0],#103.4,
-        'LeftAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftAnkleWidth")[0],#75.3,
-        'RightAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],#72.9,
-        'LeftSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "LeftSoleDelta")[0],#75.3,
-        'RightSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "RightSoleDelta")[0],#72.9,
-        }
-
-        if args.resetMP:
-            optional_mp={
-            'InterAsisDistance'   : 0,
-            'LeftAsisTrocanterDistance' : 0,
-            'LeftTibialTorsion' : 0 ,
-            'LeftThighRotation' : 0,
-            'LeftShankRotation' : 0,
-            'RightAsisTrocanterDistance' : 0,
-            'RightTibialTorsion' :0 ,
-            'RightThighRotation' : 0,
-            'RightShankRotation' : 0
-            }
-
-        else:
-            optional_mp={
-            'InterAsisDistance'   : NEXUS.GetSubjectParamDetails( subject, "InterAsisDistance")[0],#0,
-            'LeftAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "LeftAsisTrocanterDistance")[0],#0,
-            'LeftTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "LeftTibialTorsion")[0],#0 ,
-            'LeftThighRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftThighRotation")[0],#0,
-            'LeftShankRotation' : NEXUS.GetSubjectParamDetails( subject, "LeftShankRotation")[0],#0,
-            'RightAsisTrocanterDistance' : NEXUS.GetSubjectParamDetails( subject, "RightAsisTrocanterDistance")[0],#0,
-            'RightTibialTorsion' : NEXUS.GetSubjectParamDetails( subject, "RightTibialTorsion")[0],#0 ,
-            'RightThighRotation' : NEXUS.GetSubjectParamDetails( subject, "RightThighRotation")[0],#0,
-            'RightShankRotation' : NEXUS.GetSubjectParamDetails( subject, "RightShankRotation")[0],#0,
-            }
+        required_mp,optional_mp = nexusUtils.getNexusSubjectMp(NEXUS,subject,resetFlag=args.resetMP)
 
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file
-        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        info = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
-        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         if not translators:
-           translators = inputs["Translators"]
+           translators = settings["Translators"]
 
 
         # --------------------------CONFIG ------------------------------------
 
-        hjcMethod = inputs["Calibration"]["HJC regression"]
+        hjcMethod = settings["Calibration"]["HJC regression"]
 
         if args.leftFlatFoot is not None:
             flag_leftFlatFoot = bool(args.leftFlatFoot)
         else:
-            flag_leftFlatFoot = bool(inputs["Calibration"]["Left flat foot"])
+            flag_leftFlatFoot = bool(settings["Calibration"]["Left flat foot"])
 
         if args.rightFlatFoot is not None:
             flag_rightFlatFoot = bool(args.rightFlatFoot)
         else:
-            flag_rightFlatFoot =  bool(inputs["Calibration"]["Right flat foot"])
+            flag_rightFlatFoot =  bool(settings["Calibration"]["Right flat foot"])
 
 
         if args.markerDiameter is not None:
             markerDiameter = float(args.markerDiameter)
             logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
         else:
-            markerDiameter = float(inputs["Global"]["Marker diameter"])
+            markerDiameter = float(settings["Global"]["Marker diameter"])
 
 
         if args.check:
@@ -150,7 +108,7 @@ if __name__ == "__main__":
             if args.pointSuffix is not None:
                 pointSuffix = args.pointSuffix
             else:
-                pointSuffix = inputs["Global"]["Point suffix"]
+                pointSuffix = settings["Global"]["Point suffix"]
 
         # --------------------------ACQUISITION ------------------------------------
 
@@ -277,10 +235,6 @@ if __name__ == "__main__":
         # set initial calibration as model property
         model.m_properties["CalibrationParameters0"] = properties_initialCalibration
 
-        #----update subject mp----
-        viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
-
-
         # ----------------------CGM MODELLING----------------------------------
         # ----motion filter----
         # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system
@@ -309,19 +263,14 @@ if __name__ == "__main__":
 
 
         # ----------------------SAVE-------------------------------------------
-        if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-            logging.warning("previous model removed")
-            os.remove(DATA_PATH + subject + "-pyCGM2.model")
-
-
-        modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
-        cPickle.dump(model, modelFile)
-        modelFile.close()
+        #pyCGM2.model
+        files.saveModel(model,DATA_PATH,subject)
 
 
 
         # ----------------------DISPLAY ON VICON-------------------------------
-        viconInterface.ViconInterface(NEXUS,
+        nexusUtils.updateNexusSubjectMp(NEXUS,model,subject)
+        nexusFilters.NexusModelFilter(NEXUS,
                                       model,acqStatic,subject,
                                       pointSuffix,
                                       staticProcessing=True).run()

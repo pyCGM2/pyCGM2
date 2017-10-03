@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import pdb
-from pyCGM2.Math import numeric 
-import pandas as pd
-from pyCGM2.Tools import exportTools 
 
+from pyCGM2.Math import numeric 
 
 
 class ScoreFilter(object):

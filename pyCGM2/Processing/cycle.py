@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import pdb
 import logging
-
-import ma.io
-import ma.body
 
 
 import pyCGM2.Tools.trialTools as CGM2trialTools
 import pyCGM2.Math.normalisation  as MathNormalisation
+
+import ma.io
+import ma.body
 
 #----module methods ------
 

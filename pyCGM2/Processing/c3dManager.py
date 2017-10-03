@@ -1,16 +1,12 @@
-
 # -*- coding: utf-8 -*-
-import pdb
 import numpy as np
 import pandas as pd
 import logging
 
 # pyCGM2
-
-
 from pyCGM2.Tools import trialTools
-# openMA
 
+# openMA
 import ma.io
 import ma.body
 

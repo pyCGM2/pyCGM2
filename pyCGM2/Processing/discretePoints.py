@@ -1,21 +1,14 @@
 # -*- coding: utf-8 -*-
-
-# -*- coding: utf-8 -*-
 import numpy as np
-import pdb
 import pandas as pd
-from pyCGM2.Tools import exportTools
+import matplotlib.pyplot as plt
 from collections import OrderedDict
+
+from pyCGM2.Tools import exportTools
 from pyCGM2.Signal.detect_peaks import detect_peaks    
 from pyCGM2.Math import derivation
 
-#            x= normalizedCycleValues["values"][0][:,2]
-#            plt.plot(x)            
-#            plt.plot(frameMin,x[frameMin], 'r+')
-#            print x[frameMin]
 
-
-import matplotlib.pyplot as plt
 # --- FILTER ----
 
 
