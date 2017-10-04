@@ -11,7 +11,6 @@ from collections import OrderedDict
 import pyCGM2
 pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
 
-
 import ViconNexus
 import btk
 
