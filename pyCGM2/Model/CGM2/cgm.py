@@ -3302,11 +3302,7 @@ class CGM1LowerLimbs(CGM):
         rotZ_tibRot[0,1] = np.sin(tibialTorsion)
         rotZ_tibRot[1,0] = - np.sin(tibialTorsion)
         rotZ_tibRot[1,1] = np.cos(tibialTorsion)
-
-
-
         LKJC = aqui.GetPoint(str(dictAnat["Left Shank"]['labels'][3]))
-        plt.plot(LKJC.GetValues())
 
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
