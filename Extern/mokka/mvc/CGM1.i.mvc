@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MokkaModelVisualConfiguration name="CGM-OFMRight-CGM2FootRight" version="1.0">
+    <MarkersList>
+        <Marker label="LASI" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RASI" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="LPSI" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RPSI" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="LTHI" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LKNE" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIB" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LANK" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LHEE" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTOE" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RTHI" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="RKNE" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="RTIB" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="RANK" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="RHEE" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="RTOE" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="SACR" radius="3" colorR="1" colorG="1" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="midASIS" radius="3" colorR="1" colorG="1" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="LHJC" radius="9" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RHJC" radius="8" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LKJC" radius="8" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RKJC" radius="8" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LAJC" radius="8" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RAJC" radius="8" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
+
+        <Marker label="LASI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RASI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LPSI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RPSI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTHI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LKNE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIB_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LANK_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LHEE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTOE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RTHI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RKNE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RTIB_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RANK_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RHEE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RTOE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+
+
+
+        </MarkersList>
+    <SegmentsList>
+        <Segment label="PIG-measured" colorR="0" colorG="0" colorB="0" visible="0" surface="0" description="">
+            <Point label="LASI_m"/>
+            <Point label="RASI_m"/>
+            <Point label="LPSI_m"/>
+            <Point label="RPSI_m"/>
+            <Point label="LTHI_m"/>
+            <Point label="LKNE_m"/>
+            <Point label="LTIB_m"/>
+            <Point label="LANK_m"/>
+            <Point label="LHEE_m"/>
+            <Point label="LTOE_m"/>
+            <Point label="RTHI_m"/>
+            <Point label="RKNE_m"/>
+            <Point label="RTIB_m"/>
+            <Point label="RANK_m"/>
+            <Point label="RHEE_m"/>
+            <Point label="RTOE"/>
+            <Link pt1="LASI_m" pt2="LPSI_m"/>
+            <Link pt1="LASI_m" pt2="RASI_m"/>
+            <Link pt1="LPSI_m" pt2="RPSI_m"/>
+            <Link pt1="RASI_m" pt2="RPSI_m"/>
+            <Link pt1="RASI_m" pt2="RTHI_m"/>
+            <Link pt1="RKNE_m" pt2="RTHI_m"/>
+            <Link pt1="RANK_m" pt2="RTIB_m"/>
+            <Link pt1="RKNE_m" pt2="RTIB_m"/>
+            <Link pt1="RANK_m" pt2="RHEE_m"/>
+            <Link pt1="RANK_m" pt2="RTOE_m"/>
+            <Link pt1="RHEE_m" pt2="RTOE_m"/>
+            <Link pt1="LASI_m" pt2="LTHI_m"/>
+            <Link pt1="LKNE_m" pt2="LTHI_m"/>
+            <Link pt1="LANK_m" pt2="LTIB_m"/>
+            <Link pt1="LKNE_m" pt2="LTIB_m"/>
+            <Link pt1="LANK_m" pt2="LHEE_m"/>
+            <Link pt1="LANK_m" pt2="LTOE_m"/>
+            <Link pt1="LHEE_m" pt2="LTOE_m"/>
+        </Segment>
+        <Segment label="Pelvis (cgm1-stick)" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LASI"/>
+            <Point label="RASI"/>
+            <Point label="LPSI"/>
+            <Point label="RPSI"/>
+            <Link pt1="LASI" pt2="LPSI"/>
+            <Link pt1="LASI" pt2="RASI"/>
+            <Link pt1="LPSI" pt2="RPSI"/>
+            <Link pt1="RASI" pt2="RPSI"/>
+        </Segment>
+        <Segment label="Right Thigh (cgm1-stick)" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="RASI"/>
+            <Point label="RTHI"/>
+            <Point label="RKNE"/>
+            <Link pt1="RASI" pt2="RTHI"/>
+            <Link pt1="RKNE" pt2="RTHI"/>
+        </Segment>
+        <Segment label="Right Tibia (cgm1-stick)" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="RKNE"/>
+            <Point label="RTIB"/>
+            <Point label="RANK"/>
+            <Link pt1="RANK" pt2="RTIB"/>
+            <Link pt1="RKNE" pt2="RTIB"/>
+        </Segment>
+        <Segment label="Left Thigh (cgm1-stick)" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LASI"/>
+            <Point label="LTHI"/>
+            <Point label="LKNE"/>
+            <Link pt1="LASI" pt2="LKNE"/>
+            <Link pt1="LASI" pt2="LTHI"/>
+            <Link pt1="LKNE" pt2="LTHI"/>
+        </Segment>
+        <Segment label="Left Tibia (cgm1-stick)" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LKNE"/>
+            <Point label="LTIB"/>
+            <Point label="LANK"/>
+            <Link pt1="LANK" pt2="LKNE"/>
+            <Link pt1="LANK" pt2="LTIB"/>
+            <Link pt1="LKNE" pt2="LTIB"/>
+        </Segment>
+        <Segment label="Left Foot (cgm1-stick)" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LANK"/>
+            <Point label="LHEE"/>
+            <Point label="LTOE"/>
+            <Link pt1="LANK" pt2="LHEE"/>
+            <Link pt1="LANK" pt2="LTOE"/>
+            <Link pt1="LHEE" pt2="LTOE"/>
+        </Segment>
+        <Segment label="Right Foot (cgm1-stick)" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="RANK"/>
+            <Point label="RHEE"/>
+            <Point label="RTOE"/>
+            <Link pt1="RANK" pt2="RHEE"/>
+            <Link pt1="RANK" pt2="RTOE"/>
+            <Link pt1="RHEE" pt2="RTOE"/>
+        </Segment>
+        <Segment label="Right Foot (ofm-stick)" colorR="1" colorG="1" colorB="0" visible="1" surface="0" description="">
+            <Point label="RHEE"/>
+            <Point label="RPCA"/>
+            <Point label="RLCA"/>
+            <Point label="RP5M"/>
+            <Point label="RD5M"/>
+            <Point label="RTOE"/>
+            <Point label="RD1M"/>
+            <Point label="RHLX"/>
+            <Point label="RP1M"/>
+            <Point label="RSTL"/>
+            <Link pt1="RHEE" pt2="RPCA"/>
+            <Link pt1="RHEE" pt2="RLCA"/>
+            <Link pt1="RLCA" pt2="RP5M"/>
+            <Link pt1="RP5M" pt2="RD5M"/>
+            <Link pt1="RD5M" pt2="RTOE"/>
+            <Link pt1="RTOE" pt2="RD1M"/>
+            <Link pt1="RD1M" pt2="RHLX"/>
+            <Link pt1="RD1M" pt2="RP1M"/>
+            <Link pt1="RP1M" pt2="RSTL"/>
+            <Link pt1="RSTL" pt2="RHEE"/>
+        </Segment>
+        <Segment label="Right Femur Plan" colorR="1" colorG="1" colorB="1" visible="1" surface="1" description="">
+            <Point label="RKNE"/>
+            <Point label="RHJC"/>
+            <Point label="RKJC"/>
+            <Link pt1="RHJC" pt2="RKJC"/>
+            <Link pt1="RHJC" pt2="RKNE"/>
+            <Link pt1="RKJC" pt2="RKNE"/>
+            <Face pt1="RHJC" pt2="RKJC" pt3="RKNE"/>
+        </Segment>
+        <Segment label="Left Femur (Plan)" colorR="1" colorG="1" colorB="1" visible="1" surface="1" description="">
+            <Point label="LKNE"/>
+            <Point label="LHJC"/>
+            <Point label="LKJC"/>
+            <Link pt1="LHJC" pt2="LKJC"/>
+            <Link pt1="LHJC" pt2="LKNE"/>
+            <Link pt1="LKJC" pt2="LKNE"/>
+            <Face pt1="LHJC" pt2="LKJC" pt3="LKNE"/>
+        </Segment>
+        <Segment label="Left tibia (Plan)" colorR="1" colorG="1" colorB="1" visible="1" surface="1" description="">
+            <Point label="LANK"/>
+            <Point label="LKJC"/>
+            <Point label="LAJC"/>
+            <Link pt1="LAJC" pt2="LANK"/>
+            <Link pt1="LAJC" pt2="LKJC"/>
+            <Link pt1="LANK" pt2="LKJC"/>
+            <Face pt1="LAJC" pt2="LANK" pt3="LKJC"/>
+        </Segment>
+        <Segment label="Right tibia (Plan)" colorR="1" colorG="1" colorB="1" visible="1" surface="1" description="">
+            <Point label="RANK"/>
+            <Point label="RAJC"/>
+            <Point label="RKJC"/>
+            <Link pt1="RAJC" pt2="RANK"/>
+            <Link pt1="RAJC" pt2="RKJC"/>
+            <Link pt1="RANK" pt2="RKJC"/>
+            <Face pt1="RAJC" pt2="RANK" pt3="RKJC"/>
+        </Segment>
+        <Segment label="Thorax (Plan)" colorR="1" colorG="1" colorB="1" visible="1" surface="1" description="">
+            <Point label="T2"/>
+            <Point label="T10"/>
+            <Point label="CLAV"/>
+            <Link pt1="CLAV" pt2="T10"/>
+            <Link pt1="CLAV" pt2="T2"/>
+            <Link pt1="T10" pt2="T2"/>
+            <Face pt1="CLAV" pt2="T10" pt3="T2"/>
+        </Segment>
+        <Segment label="Head (Plan)" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="GLAB"/>
+            <Point label="LMAS"/>
+            <Point label="RMAS"/>
+            <Link pt1="GLAB" pt2="LMAS"/>
+            <Link pt1="GLAB" pt2="RMAS"/>
+            <Link pt1="LMAS" pt2="RMAS"/>
+        </Segment>
+        <Segment label="Right ForeFoot (Tech-Plan)" colorR="0.329412" colorG="0.666667" colorB="1" visible="1" surface="1" description="">
+            <Point label="RCUN"/>
+            <Point label="RD5M"/>
+            <Point label="RD1M"/>
+            <Link pt1="RCUN" pt2="RD5M"/>
+            <Link pt1="RCUN" pt2="RD1M"/>
+            <Link pt1="RD1M" pt2="RD5M"/>
+            <Face pt1="RCUN" pt2="RD5M" pt3="RD1M"/>
+        </Segment>
+        <Segment label="Right HindFoot (Anat-Plan)" colorR="0.329412" colorG="0.666667" colorB="1" visible="1" surface="1" description="">
+            <Point label="RAJC"/>
+            <Point label="RHEE"/>
+            <Point label="RvCUN"/>
+            <Link pt1="RvCUN" pt2="RAJC"/>
+            <Link pt1="RvCUN" pt2="RHEE"/>
+            <Link pt1="RAJC" pt2="RHEE"/>
+            <Face pt1="RAJC" pt2="RHEE" pt3="RvCUN"/>
+        </Segment>
+        <Segment label="Right ForeFoot (Anat-Plan)" colorR="0" colorG="1" colorB="0" visible="1" surface="1" description="">
+            <Point label="RvCUN"/>
+            <Point label="RvTOE"/>
+            <Point label="RvD5M"/>
+            <Link pt1="RvCUN" pt2="RvD5M"/>
+            <Link pt1="RvCUN" pt2="RvTOE"/>
+            <Link pt1="RvD5M" pt2="RvTOE"/>
+            <Face pt1="RvCUN" pt2="RvD5M" pt3="RvTOE"/>
+        </Segment>
+
+
+        <Segment label="Pelvis (Anat-Ref)" colorR="0.329412" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="midASIS"/>
+            <Point label="Pelvis_X"/>
+            <Point label="Pelvis_Y"/>
+            <Point label="Pelvis_Z"/>
+            <Link pt1="midASIS" pt2="Pelvis_Z"/>
+            <Link pt1="midASIS" pt2="Pelvis_X"/>
+            <Link pt1="midASIS" pt2="Pelvis_Y"/>
+        </Segment>
+        <Segment label="Right Thigh (Anat-Ref)" colorR="0" colorG="0.666667" colorB="1" visible="1" surface="0" description="">
+            <Point label="RHJC"/>
+            <Point label="RThigh_X"/>
+            <Point label="RThigh_Y"/>
+            <Point label="RThigh_Z"/>
+            <Link pt1="RHJC" pt2="RThigh_Z"/>
+            <Link pt1="RHJC" pt2="RThigh_X"/>
+            <Link pt1="RHJC" pt2="RThigh_Y"/>
+        </Segment>
+        <Segment label="Right Shank (Anat-Ref)" colorR="0" colorG="0.666667" colorB="1" visible="1" surface="0" description="">
+            <Point label="RKJC"/>
+            <Point label="RShank_X"/>
+            <Point label="RShank_Y"/>
+            <Point label="RShank_Z"/>
+            <Link pt1="RKJC" pt2="RShank_X"/>
+            <Link pt1="RKJC" pt2="RShank_Y"/>
+            <Link pt1="RKJC" pt2="RShank_Z"/>
+        </Segment>
+        <Segment label="Right Shank Prox (Anat-Ref)" colorR="0" colorG="0.666667" colorB="1" visible="1" surface="0" description="">
+            <Point label="RKJC"/>
+            <Point label="RShankProx_X"/>
+            <Point label="RShankProx_Y"/>
+            <Point label="RShankProx_Z"/>
+            <Link pt1="RKJC" pt2="RShankProx_X"/>
+            <Link pt1="RKJC" pt2="RShankProx_Y"/>
+            <Link pt1="RKJC" pt2="RShankProx_Z"/>
+        </Segment>
+        <Segment label="Right Foot (Anat-Ref)(corrected)" colorR="0.329412" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="RAJC"/>
+            <Point label="RFoot_X"/>
+            <Point label="RFoot_Y"/>
+            <Point label="RFoot_Z"/>
+            <Link pt1="RAJC" pt2="RFoot_Z"/>
+            <Link pt1="RAJC" pt2="RFoot_X"/>
+            <Link pt1="RAJC" pt2="RFoot_Y"/>
+        </Segment>
+        <Segment label="Right Foot (Tech-Ref) (uncorrected)" colorR="0.329412" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="RAJC"/>
+            <Point label="RFootUncorrected_X"/>
+            <Point label="RFootUncorrected_Y"/>
+            <Point label="RFootUncorrected_Z"/>
+            <Link pt1="RAJC" pt2="RFootUncorrected_Z"/>
+            <Link pt1="RAJC" pt2="RFootUncorrected_X"/>
+            <Link pt1="RAJC" pt2="RFootUncorrected_Y"/>
+        </Segment>
+        <Segment label="Right HindFoot (Anat-Ref)" colorR="0" colorG="0.666667" colorB="1" visible="1" surface="0" description="">
+            <Point label="RAJC"/>
+            <Point label="RHindFoot_X"/>
+            <Point label="RHindFoot_Y"/>
+            <Point label="RHindFoot_Z"/>
+            <Link pt1="RAJC" pt2="RHindFoot_X"/>
+            <Link pt1="RAJC" pt2="RHindFoot_Y"/>
+            <Link pt1="RAJC" pt2="RHindFoot_Z"/>
+        </Segment>
+        <Segment label="Right ForeFoot (Anat-Ref)" colorR="0" colorG="0.666667" colorB="1" visible="1" surface="0" description="">
+            <Point label="RvTOE"/>
+            <Point label="RForeFoot_X"/>
+            <Point label="RForeFoot_Y"/>
+            <Point label="RForeFoot_Z"/>
+            <Link pt1="RvTOE" pt2="RForeFoot_X"/>
+            <Link pt1="RvTOE" pt2="RForeFoot_Y"/>
+            <Link pt1="RvTOE" pt2="RForeFoot_Z"/>
+        </Segment>
+        <Segment label="Left Thigh (Anat-Ref)" colorR="0.329412" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LHJC"/>
+            <Point label="LThigh_X"/>
+            <Point label="LThigh_Y"/>
+            <Point label="LThigh_Z"/>
+            <Link pt1="LHJC" pt2="LThigh_Z"/>
+            <Link pt1="LHJC" pt2="LThigh_X"/>
+            <Link pt1="LHJC" pt2="LThigh_Y"/>
+        </Segment>
+        <Segment label="Left Shank (Anat-Ref)" colorR="0.329412" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LKJC"/>
+            <Point label="LShank_X"/>
+            <Point label="LShank_Y"/>
+            <Point label="LShank_Z"/>
+            <Link pt1="LKJC" pt2="LShank_Z"/>
+            <Link pt1="LKJC" pt2="LShank_Y"/>
+            <Link pt1="LKJC" pt2="LShank_X"/>
+        </Segment>
+        <Segment label="Left Shank Prox (Anat-Ref)" colorR="0.329412" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LKJC"/>
+            <Point label="LShankProx_X"/>
+            <Point label="LShankProx_Y"/>
+            <Point label="LShankProx_Z"/>
+            <Link pt1="LKJC" pt2="LShankProx_Z"/>
+            <Link pt1="LKJC" pt2="LShankProx_Y"/>
+            <Link pt1="LKJC" pt2="LShankProx_X"/>
+        </Segment>
+
+        <Segment label="Left Foot (Anat-Ref)(corrected)" colorR="0.329412" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LAJC"/>
+            <Point label="LFoot_X"/>
+            <Point label="LFoot_Y"/>
+            <Point label="LFoot_Z"/>
+            <Link pt1="LAJC" pt2="LFoot_Z"/>
+            <Link pt1="LAJC" pt2="LFoot_X"/>
+            <Link pt1="LAJC" pt2="LFoot_Y"/>
+        </Segment>
+        <Segment label="Left Foot (Tech-Ref) (uncorrected)" colorR="0.329412" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LAJC"/>
+            <Point label="LFootUncorrected_X"/>
+            <Point label="LFootUncorrected_Y"/>
+            <Point label="LFootUncorrected_Z"/>
+            <Link pt1="LAJC" pt2="LFootUncorrected_Z"/>
+            <Link pt1="LAJC" pt2="LFootUncorrected_X"/>
+            <Link pt1="LAJC" pt2="LFootUncorrected_Y"/>
+        </Segment>
+    </SegmentsList>
+</MokkaModelVisualConfiguration>
