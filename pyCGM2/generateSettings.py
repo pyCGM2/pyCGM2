@@ -4,7 +4,7 @@ import json
 from collections import OrderedDict
 
 CONTENT_INPUTS_CGM1 ="""
-    {  
+    {
       "Global" : {
         "Marker diameter" : 14,
         "Point suffix" : ""
@@ -31,17 +31,17 @@ CONTENT_INPUTS_CGM1 ="""
 	},
       "Calibration" : {
         "Left flat foot" : 1 ,
-        "Right flat foot" : 1 
+        "Right flat foot" : 1
       },
       "Fitting" : {
         "Moment Projection" : "Distal"
-      }   
+      }
     }
     """
 
 
 CONTENT_INPUTS_CGM1_1 ="""
-    {  
+    {
       "Global" : {
         "Marker diameter" : 14,
         "Point suffix" : ""
@@ -53,15 +53,15 @@ CONTENT_INPUTS_CGM1_1 ="""
     	  "RPSI":"",
     	  "RTHI":"",
     	  "RKNE":"",
-    	  "RMEPI":"",
+    	  "RKNM":"",
         "RTIB":"",
     	  "RANK":"",
-        "RMED":"",  
+        "RMED":"",
     	  "RHEE":"",
     	  "RTOE":"",
     	  "LTHI":"",
     	  "LKNE":"",
-    	  "LMEPI":"",
+    	  "LKNM":"",
         "LTIB":"",
     	  "LANK":"",
     	  "LMED":"",
@@ -70,16 +70,16 @@ CONTENT_INPUTS_CGM1_1 ="""
 	},
       "Calibration" : {
         "Left flat foot" : 1 ,
-        "Right flat foot" : 1 
+        "Right flat foot" : 1
       },
       "Fitting" : {
         "Moment Projection" : "JCS"
-      }   
+      }
     }
     """
 
 CONTENT_INPUTS_CGM2_1 ="""
-    {  
+    {
       "Global" : {
         "Marker diameter" : 14,
         "Point suffix" : ""
@@ -91,34 +91,34 @@ CONTENT_INPUTS_CGM2_1 ="""
     	  "RPSI":"",
     	  "RTHI":"",
     	  "RKNE":"",
-    	  "RMEPI":"",
+    	  "RKNM":"",
         "RTIB":"",
     	  "RANK":"",
-        "RMED":"",  
+        "RMED":"",
     	  "RHEE":"",
     	  "RTOE":"",
     	  "LTHI":"",
     	  "LKNE":"",
-    	  "LMEPI":"",
+    	  "LKNM":"",
         "LTIB":"",
     	  "LANK":"",
     	  "LMED":"",
         "LHEE":"",
     	  "LTOE":""
-	   },      
+	   },
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
-        "Right flat foot" : 1 
+        "Right flat foot" : 1
       },
       "Fitting" : {
         "Moment Projection" : "JCS"
-      }   
+      }
     }
     """
 
 CONTENT_INPUTS_CGM2_2 ="""
-    {  
+    {
       "Global" : {
         "Marker diameter" : 14,
         "Point suffix" : ""
@@ -130,25 +130,25 @@ CONTENT_INPUTS_CGM2_2 ="""
     	  "RPSI":"",
     	  "RTHI":"",
     	  "RKNE":"",
-    	  "RMEPI":"",
+    	  "RKNM":"",
         "RTIB":"",
     	  "RANK":"",
-        "RMED":"",  
+        "RMED":"",
     	  "RHEE":"",
     	  "RTOE":"",
     	  "LTHI":"",
     	  "LKNE":"",
-    	  "LMEPI":"",
+    	  "LKNM":"",
         "LTIB":"",
     	  "LANK":"",
     	  "LMED":"",
         "LHEE":"",
     	  "LTOE":""
-	   },      
+	   },
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
-        "Right flat foot" : 1 
+        "Right flat foot" : 1
       },
       "Fitting" : {
         "Moment Projection" : "JCS",
@@ -162,7 +162,7 @@ CONTENT_INPUTS_CGM2_2 ="""
             "LTIB":  100,
             "LANK" : 100,
             "LHEE" : 100,
-            "LTOE" : 100,            
+            "LTOE" : 100,
             "RTHI" : 100,
             "RKNE" : 100,
             "RTIB":  100,
@@ -170,12 +170,12 @@ CONTENT_INPUTS_CGM2_2 ="""
             "RHEE" : 100,
             "RTOE" : 100
         }
-      }   
+      }
     }
     """
 
 CONTENT_INPUTS_CGM2_2_EXPERT ="""
-    {  
+    {
       "Global" : {
         "Marker diameter" : 14,
         "Point suffix" : ""
@@ -187,15 +187,15 @@ CONTENT_INPUTS_CGM2_2_EXPERT ="""
     	  "RPSI":"",
     	  "RTHI":"",
     	  "RKNE":"",
-    	  "RMEPI":"",
+    	  "RKNM":"",
         "RTIB":"",
     	  "RANK":"",
-        "RMED":"",  
+        "RMED":"",
     	  "RHEE":"",
     	  "RTOE":"",
     	  "LTHI":"",
     	  "LKNE":"",
-    	  "LMEPI":"",
+    	  "LKNM":"",
         "LTIB":"",
     	  "LANK":"",
     	  "LMED":"",
@@ -205,7 +205,7 @@ CONTENT_INPUTS_CGM2_2_EXPERT ="""
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
-        "Right flat foot" : 1 
+        "Right flat foot" : 1
       },
       "Fitting" : {
         "Moment Projection" : "JCS",
@@ -274,14 +274,14 @@ CONTENT_INPUTS_CGM2_2_EXPERT ="""
              "LTOE":0,
              "LTOE_supInf":100,
              "LTOE_medLat":100,
-             "LTOE_proDis":100  
+             "LTOE_proDis":100
         }
-      }   
+      }
     }
     """
-           
+
 CONTENT_INPUTS_CGM2_3 ="""
-    {  
+    {
       "Global" : {
         "Marker diameter" : 14,
         "Point suffix" : ""
@@ -293,7 +293,7 @@ CONTENT_INPUTS_CGM2_3 ="""
             "RPSI":"",
             "RTHI":"",
             "RKNE":"",
-            "RMEPI":"",
+            "RKNM":"",
             "RTHIAP":"",
             "RTHIAD":"",
             "RTIB":"",
@@ -305,7 +305,7 @@ CONTENT_INPUTS_CGM2_3 ="""
             "RTOE":"",
             "LTHI":"",
             "LKNE":"",
-            "LMEPI":"",
+            "LKNM":"",
             "LTHIAP":"",
             "LTHIAD":"",
             "LTIB":"",
@@ -319,7 +319,7 @@ CONTENT_INPUTS_CGM2_3 ="""
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
-        "Right flat foot" : 1 
+        "Right flat foot" : 1
       },
       "Fitting" : {
         "Moment Projection" : "JCS",
@@ -353,12 +353,12 @@ CONTENT_INPUTS_CGM2_3 ="""
             "LTHLD":0,
             "LPAT":0
         }
-      }   
+      }
     }
     """
 
 CONTENT_INPUTS_CGM2_3_EXPERT ="""
-    {  
+    {
       "Global" : {
         "Marker diameter" : 14,
         "Point suffix" : ""
@@ -388,15 +388,15 @@ CONTENT_INPUTS_CGM2_3_EXPERT ="""
             "LTIBAD":"",
             "LHEE":"",
             "LTOE":"",
-            "RMEPI":"",
-            "LMEPI":"",
+            "RKNM":"",
+            "LKNM":"",
             "RMED":"",
             "LMED":""
             },
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
-        "Right flat foot" : 1 
+        "Right flat foot" : 1
       },
       "Fitting" : {
         "Moment Projection" : "JCS",
@@ -416,7 +416,7 @@ CONTENT_INPUTS_CGM2_3_EXPERT ="""
              "RPSI":0,
              "RPSI_posAnt":100,
              "RPSI_medLat":100,
-             "RPSI_supInf":100,                 
+             "RPSI_supInf":100,
 
              "RTHI":0,
              "RTHI_posAnt":100,
@@ -467,11 +467,11 @@ CONTENT_INPUTS_CGM2_3_EXPERT ="""
              "LTOE_supInf":100,
              "LTOE_medLat":100,
              "LTOE_proDis":100,
-             
+
              "LTHIAP":0,
              "LTHIAP_posAnt":100,
              "LTHIAP_medLat":100,
-             "LTHIAP_proDis":100,                 
+             "LTHIAP_proDis":100,
              "LTHIAD":0,
              "LTHIAD_posAnt":100,
              "LTHIAD_medLat":100,
@@ -479,7 +479,7 @@ CONTENT_INPUTS_CGM2_3_EXPERT ="""
              "RTHIAP":0,
              "RTHIAP_posAnt":100,
              "RTHIAP_medLat":100,
-             "RTHIAP_proDis":100,                 
+             "RTHIAP_proDis":100,
              "RTHIAD":0,
              "RTHIAD_posAnt":100,
              "RTHIAD_medLat":100,
@@ -487,7 +487,7 @@ CONTENT_INPUTS_CGM2_3_EXPERT ="""
              "LTIBAP":0,
              "LTIBAP_posAnt":100,
              "LTIBAP_medLat":100,
-             "LTIBAP_proDis":100,                 
+             "LTIBAP_proDis":100,
              "LTIBAD":0,
              "LTIBAD_posAnt":100,
              "LTIBAD_medLat":100,
@@ -495,16 +495,16 @@ CONTENT_INPUTS_CGM2_3_EXPERT ="""
              "RTIBAP":0,
              "RTIBAP_posAnt":100,
              "RTIBAP_medLat":100,
-             "RTIBAP_proDis":100,                 
+             "RTIBAP_proDis":100,
              "RTIBAD":0,
              "RTIBAD_posAnt":100,
              "RTIBAD_medLat":100,
              "RTIBAD_proDis":100,
-             
+
              "LTHLD":0,
              "LTHLD_posAnt":0,
              "LTHLD_medLat":0,
-             "LTHLD_proDis":0, 
+             "LTHLD_proDis":0,
              "LPAT":0,
              "LPAT_posAnt":0,
              "LPAT_medLat":0,
@@ -512,18 +512,18 @@ CONTENT_INPUTS_CGM2_3_EXPERT ="""
              "RTHLD":0,
              "RTHLD_posAnt":0,
              "RTHLD_medLat":0,
-             "RTHLD_proDis":0, 
+             "RTHLD_proDis":0,
              "RPAT":0,
              "RPAT_posAnt":0,
              "RPAT_medLat":0,
              "RPAT_proDis":0
         }
-      }   
+      }
     }
     """
-    
+
 CONTENT_INPUTS_CGM2_4 ="""
-    {  
+    {
       "Global" : {
         "Marker diameter" : 14,
         "Point suffix" : ""
@@ -559,15 +559,15 @@ CONTENT_INPUTS_CGM2_4 ="""
             "LCUN":"",
             "LD1M":"",
             "LD5M":"",
-            "RMEPI":"",
-            "LMEPI":"",
+            "RKNM":"",
+            "LKNM":"",
             "RMED":"",
             "LMED":""
             },
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
-        "Right flat foot" : 1 
+        "Right flat foot" : 1
       },
       "Fitting" : {
         "Moment Projection" : "JCS",
@@ -607,13 +607,13 @@ CONTENT_INPUTS_CGM2_4 ="""
             "LTHLD":0,
             "LPAT": 0
         }
-      }   
+      }
     }
-    """    
+    """
 
 
 CONTENT_INPUTS_CGM2_4_EXPERT ="""
-    {  
+    {
       "Global" : {
         "Marker diameter" : 14,
         "Point suffix" : ""
@@ -649,15 +649,15 @@ CONTENT_INPUTS_CGM2_4_EXPERT ="""
             "LCUN":"",
             "LD1M":"",
             "LD5M":"",
-            "RMEPI":"",
-            "LMEPI":"",
+            "RKNM":"",
+            "LKNM":"",
             "RMED":"",
             "LMED":""
             },
       "Calibration" : {
         "HJC regression" : "Hara",
         "Left flat foot" : 1 ,
-        "Right flat foot" : 1 
+        "Right flat foot" : 1
       },
       "Fitting" : {
         "Moment Projection" : "JCS",
@@ -677,7 +677,7 @@ CONTENT_INPUTS_CGM2_4_EXPERT ="""
              "RPSI":0,
              "RPSI_posAnt":100,
              "RPSI_medLat":100,
-             "RPSI_supInf":100,                 
+             "RPSI_supInf":100,
 
              "RTHI":0,
              "RTHI_posAnt":100,
@@ -752,11 +752,11 @@ CONTENT_INPUTS_CGM2_4_EXPERT ="""
              "LD5M_supInf":100,
              "LD5M_medLat":100,
              "LD5M_proDis":100,
-             
+
              "LTHIAP":0,
              "LTHIAP_posAnt":100,
              "LTHIAP_medLat":100,
-             "LTHIAP_proDis":100,                 
+             "LTHIAP_proDis":100,
              "LTHIAD":0,
              "LTHIAD_posAnt":100,
              "LTHIAD_medLat":100,
@@ -764,7 +764,7 @@ CONTENT_INPUTS_CGM2_4_EXPERT ="""
              "RTHIAP":0,
              "RTHIAP_posAnt":100,
              "RTHIAP_medLat":100,
-             "RTHIAP_proDis":100,                 
+             "RTHIAP_proDis":100,
              "RTHIAD":0,
              "RTHIAD_posAnt":100,
              "RTHIAD_medLat":100,
@@ -772,7 +772,7 @@ CONTENT_INPUTS_CGM2_4_EXPERT ="""
              "LTIBAP":0,
              "LTIBAP_posAnt":100,
              "LTIBAP_medLat":100,
-             "LTIBAP_proDis":100,                 
+             "LTIBAP_proDis":100,
              "LTIBAD":0,
              "LTIBAD_posAnt":100,
              "LTIBAD_medLat":100,
@@ -780,16 +780,16 @@ CONTENT_INPUTS_CGM2_4_EXPERT ="""
              "RTIBAP":0,
              "RTIBAP_posAnt":100,
              "RTIBAP_medLat":100,
-             "RTIBAP_proDis":100,                 
+             "RTIBAP_proDis":100,
              "RTIBAD":0,
              "RTIBAD_posAnt":100,
              "RTIBAD_medLat":100,
              "RTIBAD_proDis":100,
-             
+
              "LTHLD":0,
              "LTHLD_posAnt":0,
              "LTHLD_medLat":0,
-             "LTHLD_proDis":0, 
+             "LTHLD_proDis":0,
              "LPAT":0,
              "LPAT_posAnt":0,
              "LPAT_medLat":0,
@@ -797,95 +797,95 @@ CONTENT_INPUTS_CGM2_4_EXPERT ="""
              "RTHLD":0,
              "RTHLD_posAnt":0,
              "RTHLD_medLat":0,
-             "RTHLD_proDis":0, 
+             "RTHLD_proDis":0,
              "RPAT":0,
              "RPAT_posAnt":0,
              "RPAT_medLat":0,
              "RPAT_proDis":0
         }
-      }   
+      }
     }
-    """    
+    """
 
 
 def generateCGM1_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM1-pyCGM2.settings"):    
+    if not os.path.isfile( userAppData_path + "CGM1-pyCGM2.settings"):
         inputs = json.loads(CONTENT_INPUTS_CGM1,object_pairs_hook=OrderedDict)
-        
-        F = open(str(userAppData_path+"CGM1-pyCGM2.settings"),"w") 
+
+        F = open(str(userAppData_path+"CGM1-pyCGM2.settings"),"w")
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()
-        
+
 def generateCGM1_1_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM1_1-pyCGM2.settings"):    
+    if not os.path.isfile( userAppData_path + "CGM1_1-pyCGM2.settings"):
         inputs = json.loads(CONTENT_INPUTS_CGM1_1,object_pairs_hook=OrderedDict)
-        
-        F = open(str(userAppData_path+"CGM1_1-pyCGM2.settings"),"w") 
+
+        F = open(str(userAppData_path+"CGM1_1-pyCGM2.settings"),"w")
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()
 
 def generateCGM2_1_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_1-pyCGM2.settings"):    
+    if not os.path.isfile( userAppData_path + "CGM2_1-pyCGM2.settings"):
         inputs = json.loads(CONTENT_INPUTS_CGM2_1,object_pairs_hook=OrderedDict)
-        
-        F = open(str(userAppData_path+"CGM2_1-pyCGM2.settings"),"w") 
+
+        F = open(str(userAppData_path+"CGM2_1-pyCGM2.settings"),"w")
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
-        F.close()        
-        
+        F.close()
+
 def generateCGM2_2_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_2-pyCGM2.settings"):    
+    if not os.path.isfile( userAppData_path + "CGM2_2-pyCGM2.settings"):
         inputs = json.loads(CONTENT_INPUTS_CGM2_2,object_pairs_hook=OrderedDict)
-        
-        F = open(str(userAppData_path+"CGM2_2-pyCGM2.settings"),"w") 
+
+        F = open(str(userAppData_path+"CGM2_2-pyCGM2.settings"),"w")
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
-        F.close()         
-        
+        F.close()
+
 def generateCGM2_2_Expert_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_2-Expert-pyCGM2.settings"):    
+    if not os.path.isfile( userAppData_path + "CGM2_2-Expert-pyCGM2.settings"):
         inputs = json.loads(CONTENT_INPUTS_CGM2_2_EXPERT,object_pairs_hook=OrderedDict)
-        
-        F = open(str(userAppData_path+"CGM2_2-Expert-pyCGM2.settings"),"w") 
+
+        F = open(str(userAppData_path+"CGM2_2-Expert-pyCGM2.settings"),"w")
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
-        F.close() 
+        F.close()
 
 def generateCGM2_3_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_3-pyCGM2.settings"):    
+    if not os.path.isfile( userAppData_path + "CGM2_3-pyCGM2.settings"):
         inputs = json.loads(CONTENT_INPUTS_CGM2_3,object_pairs_hook=OrderedDict)
-        
-        F = open(str(userAppData_path+"CGM2_3-pyCGM2.settings"),"w") 
+
+        F = open(str(userAppData_path+"CGM2_3-pyCGM2.settings"),"w")
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()
 
 def generateCGM2_3_Expert_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_3-Expert-pyCGM2.settings"):    
+    if not os.path.isfile( userAppData_path + "CGM2_3-Expert-pyCGM2.settings"):
         inputs = json.loads(CONTENT_INPUTS_CGM2_3_EXPERT,object_pairs_hook=OrderedDict)
-        
-        F = open(str(userAppData_path+"CGM2_3-Expert-pyCGM2.settings"),"w") 
+
+        F = open(str(userAppData_path+"CGM2_3-Expert-pyCGM2.settings"),"w")
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
-        F.close()             
-        
-        
+        F.close()
+
+
 def generateCGM2_4_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_4-pyCGM2.settings"):    
+    if not os.path.isfile( userAppData_path + "CGM2_4-pyCGM2.settings"):
         inputs = json.loads(CONTENT_INPUTS_CGM2_4,object_pairs_hook=OrderedDict)
-        
-        F = open(str(userAppData_path+"CGM2_4-pyCGM2.settings"),"w") 
+
+        F = open(str(userAppData_path+"CGM2_4-pyCGM2.settings"),"w")
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
         F.close()
 
 def generateCGM2_4_Expert_Settings(userAppData_path):
 
-    if not os.path.isfile( userAppData_path + "CGM2_4-Expert-pyCGM2.settings"):    
+    if not os.path.isfile( userAppData_path + "CGM2_4-Expert-pyCGM2.settings"):
         inputs = json.loads(CONTENT_INPUTS_CGM2_4_EXPERT,object_pairs_hook=OrderedDict)
-        
-        F = open(str(userAppData_path+"CGM2_4-Expert-pyCGM2.settings"),"w") 
+
+        F = open(str(userAppData_path+"CGM2_4-Expert-pyCGM2.settings"),"w")
         F.write( json.dumps(inputs, sort_keys=False,indent=2, separators=(',', ': ')))
-        F.close()  
+        F.close()
