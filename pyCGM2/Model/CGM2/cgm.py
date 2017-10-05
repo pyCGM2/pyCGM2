@@ -260,8 +260,8 @@ class CGM(model.Model):
         out["rightMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["RMED","RANK"]) else False
 
         # medial knee markers
-        out["leftMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["LMEPI","LKNE"]) else False
-        out["rightMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["RMEPI","RKNE"]) else False
+        out["leftMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["LKNM","LKNE"]) else False
+        out["rightMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["RKNM","RKNE"]) else False
 
 
         # kad

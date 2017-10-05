@@ -24,7 +24,7 @@ CALIBRATION_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
       </Entry>
 
 
-      <Entry DisplayName="Run pyCGM2-static Processing" Enabled="1" OperationId="107" OperationName="Python">
+      <Entry DisplayName="Run pyCGM2-static Processing" Enabled="0" OperationId="107" OperationName="Python">
         <ParamList name="">
           <Param name="Script" value="PATH_APPS/DataProcessing/nexusOperation-pyCGM2-staticProcessing.py"/>
           <Param name="ScriptArgs"/>
@@ -57,7 +57,7 @@ FITTING_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
       </Entry>
 
 
-      <Entry DisplayName="Run pyCGM2-Gait Processing" Enabled="1" OperationId="107" OperationName="Python">
+      <Entry DisplayName="Run pyCGM2-Gait Processing" Enabled="0" OperationId="107" OperationName="Python">
         <ParamList name="">
           <Param name="Script" value="PATH_APPS/DataProcessing/nexusOperation-pyCGM2-gaitProcessing.py"/>
           <Param name="ScriptArgs"/>
