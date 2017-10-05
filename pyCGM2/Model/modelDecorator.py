@@ -766,7 +766,7 @@ class KneeCalibrationDecorator(DecoratorModel):
 
 
     def midCondyles(self,acq, side="both",
-                    leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LMEPI",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RMEPI",
+                    leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LKNM",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RKNM",
                     markerDiameter = 14, withNoModelParameter=False, cgm1Behaviour=False):
         """
             Compute Knee joint centre from mid condyles.
@@ -807,9 +807,9 @@ class KneeCalibrationDecorator(DecoratorModel):
 
             for i in range(0,acq.GetPointFrameNumber()):
                 LKNE = acq.GetPoint(leftLateralKneeLabel).GetValues()[i,:]
-                LMEPI = acq.GetPoint(leftMedialKneeLabel).GetValues()[i,:]
+                LKNM = acq.GetPoint(leftMedialKneeLabel).GetValues()[i,:]
 
-                v = LMEPI-LKNE
+                v = LKNM-LKNE
                 v=v/np.linalg.norm(v)
 
                 LKJCvalues[i,:] = LKNE + ((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0)*v
@@ -843,9 +843,9 @@ class KneeCalibrationDecorator(DecoratorModel):
             for i in range(0,acq.GetPointFrameNumber()):
 
                 RKNE = acq.GetPoint(rightLateralKneeLabel).GetValues()[i,:]
-                RMEPI = acq.GetPoint(rightMedialKneeLabel).GetValues()[i,:]
+                RKNM = acq.GetPoint(rightMedialKneeLabel).GetValues()[i,:]
 
-                v = RMEPI-RKNE
+                v = RKNM-RKNE
                 v=v/np.linalg.norm(v)
 
                 RKJCvalues[i,:] = RKNE + ((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0)*v
