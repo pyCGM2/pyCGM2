@@ -1,15 +1,8 @@
 # -*- coding: utf-8 -*-
-
-import os
+#import ipdb
 import logging
-import matplotlib.pyplot as plt
-import json
-import pdb
-import cPickle
-from shutil import copyfile
-import json
-from collections import OrderedDict
 import argparse
+import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
@@ -19,14 +12,13 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,nexusTools
+from pyCGM2.Tools import btkTools
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model.CGM2 import cgm, modelFilters, forceplates,bodySegmentParameters
-from pyCGM2.Model.Opensim import opensimFilters
-#
-from pyCGM2 import viconInterface
-
-from pyCGM2.Utils import fileManagement
+from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters
+from pyCGM2.Model.CGM2 import cgm,cgm2
+from pyCGM2.ForcePlates import forceplates
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
+from pyCGM2.Utils import files
 
 
 if __name__ == "__main__":
@@ -51,7 +43,7 @@ if __name__ == "__main__":
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_2-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
@@ -75,12 +67,7 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-            raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
-        else:
-            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
-            model = cPickle.load(f)
-            f.close()
+        model = files.loadModel(DATA_PATH,subject)
 
         # --------------------------CHECKING -----------------------------------
         # check model
@@ -90,12 +77,12 @@ if __name__ == "__main__":
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file
-        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        info = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
-        translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM2-2.translators")
         if not translators:
-           translators = inputs["Translators"]
+           translators = settings["Translators"]
 
         # --------------------------CONFIG ------------------------------------
 
@@ -103,7 +90,7 @@ if __name__ == "__main__":
             markerDiameter = float(args.markerDiameter)
             logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
         else:
-            markerDiameter = float(inputs["Global"]["Marker diameter"])
+            markerDiameter = float(settings["Global"]["Marker diameter"])
 
 
         if args.check:
@@ -112,7 +99,7 @@ if __name__ == "__main__":
             if args.pointSuffix is not None:
                 pointSuffix = args.pointSuffix
             else:
-                pointSuffix = inputs["Global"]["Point suffix"]
+                pointSuffix = settings["Global"]["Point suffix"]
 
         if args.proj is not None:
             if args.proj == "Distal":
@@ -124,19 +111,19 @@ if __name__ == "__main__":
             elif args.proj == "JCS":
                 momentProjection = pyCGM2Enums.MomentProjection.JCS
             else:
-                raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
+                raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
 
         else:
-            if inputs["Fitting"]["Moment Projection"] == "Distal":
+            if settings["Fitting"]["Moment Projection"] == "Distal":
                 momentProjection = pyCGM2Enums.MomentProjection.Distal
-            elif inputs["Fitting"]["Moment Projection"] == "Proximal":
+            elif settings["Fitting"]["Moment Projection"] == "Proximal":
                 momentProjection = pyCGM2Enums.MomentProjection.Proximal
-            elif inputs["Fitting"]["Moment Projection"] == "Global":
+            elif settings["Fitting"]["Moment Projection"] == "Global":
                 momentProjection = pyCGM2Enums.MomentProjection.Global
-            elif inputs["Fitting"]["Moment Projection"] == "JCS":
+            elif settings["Fitting"]["Moment Projection"] == "JCS":
                 momentProjection = pyCGM2Enums.MomentProjection.JCS
             else:
-                raise Exception("[pyCGM2] Moment projection doesn t recognise in your inputs. choice is Proximal, Distal or Global")
+                raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
 
         # --------------------------ACQUISITION ------------------------------------
 
@@ -172,22 +159,22 @@ if __name__ == "__main__":
         iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
 
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
-        cgmFittingProcedure.updateMarkerWeight("LASI",inputs["Fitting"]["Weight"]["LASI"])
-        cgmFittingProcedure.updateMarkerWeight("RASI",inputs["Fitting"]["Weight"]["RASI"])
-        cgmFittingProcedure.updateMarkerWeight("LPSI",inputs["Fitting"]["Weight"]["LPSI"])
-        cgmFittingProcedure.updateMarkerWeight("RPSI",inputs["Fitting"]["Weight"]["RPSI"])
-        cgmFittingProcedure.updateMarkerWeight("RTHI",inputs["Fitting"]["Weight"]["RTHI"])
-        cgmFittingProcedure.updateMarkerWeight("RKNE",inputs["Fitting"]["Weight"]["RKNE"])
-        cgmFittingProcedure.updateMarkerWeight("RTIB",inputs["Fitting"]["Weight"]["RTIB"])
-        cgmFittingProcedure.updateMarkerWeight("RANK",inputs["Fitting"]["Weight"]["RANK"])
-        cgmFittingProcedure.updateMarkerWeight("RHEE",inputs["Fitting"]["Weight"]["RHEE"])
-        cgmFittingProcedure.updateMarkerWeight("RTOE",inputs["Fitting"]["Weight"]["RTOE"])
-        cgmFittingProcedure.updateMarkerWeight("LTHI",inputs["Fitting"]["Weight"]["LTHI"])
-        cgmFittingProcedure.updateMarkerWeight("LKNE",inputs["Fitting"]["Weight"]["LKNE"])
-        cgmFittingProcedure.updateMarkerWeight("LTIB",inputs["Fitting"]["Weight"]["LTIB"])
-        cgmFittingProcedure.updateMarkerWeight("LANK",inputs["Fitting"]["Weight"]["LANK"])
-        cgmFittingProcedure.updateMarkerWeight("LHEE",inputs["Fitting"]["Weight"]["LHEE"])
-        cgmFittingProcedure.updateMarkerWeight("LTOE",inputs["Fitting"]["Weight"]["LTOE"])
+        cgmFittingProcedure.updateMarkerWeight("LASI",settings["Fitting"]["Weight"]["LASI"])
+        cgmFittingProcedure.updateMarkerWeight("RASI",settings["Fitting"]["Weight"]["RASI"])
+        cgmFittingProcedure.updateMarkerWeight("LPSI",settings["Fitting"]["Weight"]["LPSI"])
+        cgmFittingProcedure.updateMarkerWeight("RPSI",settings["Fitting"]["Weight"]["RPSI"])
+        cgmFittingProcedure.updateMarkerWeight("RTHI",settings["Fitting"]["Weight"]["RTHI"])
+        cgmFittingProcedure.updateMarkerWeight("RKNE",settings["Fitting"]["Weight"]["RKNE"])
+        cgmFittingProcedure.updateMarkerWeight("RTIB",settings["Fitting"]["Weight"]["RTIB"])
+        cgmFittingProcedure.updateMarkerWeight("RANK",settings["Fitting"]["Weight"]["RANK"])
+        cgmFittingProcedure.updateMarkerWeight("RHEE",settings["Fitting"]["Weight"]["RHEE"])
+        cgmFittingProcedure.updateMarkerWeight("RTOE",settings["Fitting"]["Weight"]["RTOE"])
+        cgmFittingProcedure.updateMarkerWeight("LTHI",settings["Fitting"]["Weight"]["LTHI"])
+        cgmFittingProcedure.updateMarkerWeight("LKNE",settings["Fitting"]["Weight"]["LKNE"])
+        cgmFittingProcedure.updateMarkerWeight("LTIB",settings["Fitting"]["Weight"]["LTIB"])
+        cgmFittingProcedure.updateMarkerWeight("LANK",settings["Fitting"]["Weight"]["LANK"])
+        cgmFittingProcedure.updateMarkerWeight("LHEE",settings["Fitting"]["Weight"]["LHEE"])
+        cgmFittingProcedure.updateMarkerWeight("LTOE",settings["Fitting"]["Weight"]["LTOE"])
 
 
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
