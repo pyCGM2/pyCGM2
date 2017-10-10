@@ -331,7 +331,7 @@ if __name__ == "__main__":
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusUtils.updateNexusSubjectMp(NEXUS,model,subject)
         nexusFilters.NexusModelFilter(NEXUS,
-                                      model,acqStatic,subject,
+                                      model,finalAcqStatic,subject,
                                       pointSuffix,
                                       staticProcessing=True).run()
 
