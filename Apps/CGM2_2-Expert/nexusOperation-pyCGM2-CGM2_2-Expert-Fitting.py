@@ -321,7 +321,7 @@ if __name__ == "__main__":
         btkTools.applyValidFramesOnOutput(acqIK,validFrames)
 
         # ----------------------DISPLAY ON VICON-------------------------------
-        viconInterface.ViconInterface(NEXUS,model,acqIK,subject,pointSuffix).run()
+        nexusFilters.NexusModelFilter(NEXUS,model,acqIK,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,acqIK,["Left-FP","Right-FP"])
 
         # ========END of the nexus OPERATION if run from Nexus  =========
