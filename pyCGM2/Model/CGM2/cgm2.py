@@ -57,11 +57,11 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
     """
 
     MARKERS = ["LASI", "RASI","RPSI", "LPSI",
-               "LTHI","LKNE","LTHIAP","LTHIAD",
-               "LTIB","LANK","LTIBAP","LTIBAD",
+               "LTHI","LKNE","LTHAP","LTHAD",
+               "LTIB","LANK","LTIAP","LTIAD",
                "LHEE","LTOE",
-               "RTHI","RKNE","RTHIAP","RTHIAD",
-               "RTIB","RANK","RTIBAP","RTIBAD",
+               "RTHI","RKNE","RTHAP","RTHAD",
+               "RTIB","RANK","RTIAP","RTIAD",
                "RHEE","RTOE"]
 
     def __init__(self):
@@ -86,11 +86,11 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
     def configure(self):
         self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
-        self.addSegment("Left Thigh",1,pyCGM2.enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHIAP","LTHIAD"])
-        self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHIAP","RTHIAD"])
-        self.addSegment("Left Shank",2,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LANK","LTIB","LTIBAP","LTIBAD"])
+        self.addSegment("Left Thigh",1,pyCGM2.enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHAP","LTHAD"])
+        self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHAP","RTHAD"])
+        self.addSegment("Left Shank",2,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LANK","LTIB","LTIAP","LTIAD"])
         self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB","RTIBAP","RTIBAD"])
+        self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB","RTIAP","RTIAD"])
         self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
         self.addSegment("Left Foot",3,enums.SegmentSide.Left,calibration_markers=["LAJC"], tracking_markers = ["LHEE","LTOE"] )
         self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=["RAJC"], tracking_markers = ["RHEE","RTOE"])
@@ -262,38 +262,38 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
                  "LTOE_medLat":100,
                  "LTOE_proDis":100,
 
-                 "LTHIAP":0,
-                 "LTHIAP_posAnt":100,
-                 "LTHIAP_medLat":100,
-                 "LTHIAP_proDis":100,
-                 "LTHIAD":0,
-                 "LTHIAD_posAnt":100,
-                 "LTHIAD_medLat":100,
-                 "LTHIAD_proDis":100,
-                 "RTHIAP":0,
-                 "RTHIAP_posAnt":100,
-                 "RTHIAP_medLat":100,
-                 "RTHIAP_proDis":100,
-                 "RTHIAD":0,
-                 "RTHIAD_posAnt":100,
-                 "RTHIAD_medLat":100,
-                 "RTHIAD_proDis":100,
-                 "LTIBAP":0,
-                 "LTIBAP_posAnt":100,
-                 "LTIBAP_medLat":100,
-                 "LTIBAP_proDis":100,
-                 "LTIBAD":0,
-                 "LTIBAD_posAnt":100,
-                 "LTIBAD_medLat":100,
-                 "LTIBAD_proDis":100,
-                 "RTIBAP":0,
-                 "RTIBAP_posAnt":100,
-                 "RTIBAP_medLat":100,
-                 "RTIBAP_proDis":100,
-                 "RTIBAD":0,
-                 "RTIBAD_posAnt":100,
-                 "RTIBAD_medLat":100,
-                 "RTIBAD_proDis":100,
+                 "LTHAP":0,
+                 "LTHAP_posAnt":100,
+                 "LTHAP_medLat":100,
+                 "LTHAP_proDis":100,
+                 "LTHAD":0,
+                 "LTHAD_posAnt":100,
+                 "LTHAD_medLat":100,
+                 "LTHAD_proDis":100,
+                 "RTHAP":0,
+                 "RTHAP_posAnt":100,
+                 "RTHAP_medLat":100,
+                 "RTHAP_proDis":100,
+                 "RTHAD":0,
+                 "RTHAD_posAnt":100,
+                 "RTHAD_medLat":100,
+                 "RTHAD_proDis":100,
+                 "LTIAP":0,
+                 "LTIAP_posAnt":100,
+                 "LTIAP_medLat":100,
+                 "LTIAP_proDis":100,
+                 "LTIAD":0,
+                 "LTIAD_posAnt":100,
+                 "LTIAD_medLat":100,
+                 "LTIAD_proDis":100,
+                 "RTIAP":0,
+                 "RTIAP_posAnt":100,
+                 "RTIAP_medLat":100,
+                 "RTIAP_proDis":100,
+                 "RTIAD":0,
+                 "RTIAD_posAnt":100,
+                 "RTIAD_medLat":100,
+                 "RTIAD_proDis":100,
 
                  "LTHLD":0,
                  "LTHLD_posAnt":0,
@@ -320,22 +320,22 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
                  "RPSI":100,
                  "RTHI":100,
                  "RKNE":100,
-                 "RTHIAP":100,
-                 "RTHIAD":100,
+                 "RTHAP":100,
+                 "RTHAD":100,
                  "RTIB":100,
                  "RANK":100,
-                 "RTIBAP":100,
-                 "RTIBAD":100,
+                 "RTIAP":100,
+                 "RTIAD":100,
                  "RHEE":100,
                  "RTOE":100,
                  "LTHI":100,
                  "LKNE":100,
-                 "LTHIAP":100,
-                 "LTHIAD":100,
+                 "LTHAP":100,
+                 "LTHAD":100,
                  "LTIB":100,
                  "LANK":100,
-                 "LTIBAP":100,
-                 "LTIBAD":100,
+                 "LTIAP":100,
+                 "LTIAD":100,
                  "LHEE":100,
                  "LTOE":100,
                  "RTHLD":0,
