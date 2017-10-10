@@ -20,7 +20,7 @@ from pyCGM2.Model import modelFilters, modelDecorator
 from pyCGM2.Model.CGM2 import cgm,cgm2
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
-
+from pyCGM2.Model.Opensim import opensimFilters
 
 if __name__ == "__main__":
 
