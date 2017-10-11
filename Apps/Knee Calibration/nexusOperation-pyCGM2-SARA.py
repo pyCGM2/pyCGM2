@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
-import sys
-import pdb
+#import ipdb
 import logging
-import matplotlib.pyplot as plt
 import argparse
-import json
-import os
-from collections import OrderedDict
-from shutil import copyfile
-import cPickle
-import numpy as np
+import matplotlib.pyplot as plt
+
 
 # pyCGM2 settings
 import pyCGM2
@@ -19,14 +13,12 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools,nexusTools
+from pyCGM2.Tools import btkTools
 from pyCGM2.Model.CGM2 import cgm2
 from pyCGM2.Model import modelFilters, modelDecorator
 import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Utils import fileManagement
-
-
-from pyCGM2 import viconInterface
+from pyCGM2.Utils import files
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 def detectSide(acq,left_markerLabel,right_markerLabel):
 
@@ -82,45 +74,36 @@ if __name__ == "__main__":
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if not os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-            raise Exception ("%s-pyCGM2.model file doesn't exist. Run Calibration operation"%subject)
-        else:
-            f = open(DATA_PATH + subject + '-pyCGM2.model', 'r')
-            model = cPickle.load(f)
-
-            f.close()
+        model = files.loadModel(DATA_PATH,subject)
 
         logging.info("loaded model : %s" %(model.version ))
-
         # --------------------------CONFIG ------------------------------------
-
-
 
         # --------------------CHECKING ------------------------------
         if model.version in ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"] :
             raise Exception ("Can t use SARA method with your model %s [minimal version : CGM2.3]"%(model.version))
         elif model.version == "CGM2.3":
-               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
         elif model.version == "CGM2.3e":
-               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_3-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-Expert-pyCGM2.settings")
         elif model.version == "CGM2.4":
-               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
         elif model.version == "CGM2.4e":
-               inputs = json.loads(open(str(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH+"CGM2_4-Expert-pyCGM2.settings")).read(),object_pairs_hook=OrderedDict)
+            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_4-Expert-pyCGM2.settings")
         else:
             raise Exception ("model version not found [contact admin]")
 
         # --------------------------SESSION INFOS ------------------------------------
         # info file
-        infoSettings = fileManagement.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        info = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
         if model.version in  ["CGM2.3","CGM2.3e"]:
-            translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM2-3.translators")
+            translators = files.manage_pycgm2Translators(DATA_PATH,"CGM2-3.translators")
         elif model.version in  ["CGM2.4","CGM2.4e"]:
-            translators = fileManagement.manage_pycgm2Translators(DATA_PATH,"CGM2-4.translators")
+            translators = files.manage_pycgm2Translators(DATA_PATH,"CGM2-4.translators")
         if not translators:
-           translators = inputs["Translators"]
+           translators = settings["Translators"]
 
         # --------------------------ACQ WITH TRANSLATORS --------------------------------------
 
@@ -302,20 +285,15 @@ if __name__ == "__main__":
             #btkTools.smartWriter(acqStatic, "acqStatic1-test.c3d")
 
             # ----------------------SAVE-------------------------------------------
-            if os.path.isfile(DATA_PATH + subject + "-pyCGM2.model"):
-                logging.warning("previous model removed")
-                os.remove(DATA_PATH + subject + "-pyCGM2.model")
-
-            modelFile = open(DATA_PATH + subject+"-pyCGM2.model", "w")
-            cPickle.dump(model, modelFile)
-            modelFile.close()
+            files.saveModel(model,DATA_PATH,subject)
             logging.warning("model updated with a  %s knee calibrated with SARA method" %(side))
 
 
 
             # ----------------------VICON INTERFACE-------------------------------------------
             #--- update mp
-            viconInterface.updateNexusSubjectMp(NEXUS,model,subject)
+            nexusUtils.updateNexusSubjectMp(NEXUS,model,subject)
+
 
 
             #---points from first motio filter
