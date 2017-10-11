@@ -348,12 +348,12 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
 class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     MARKERS = ["LASI", "RASI","RPSI", "LPSI",
-               "LTHI","LKNE","LTHIAP","LTHIAD",
-               "LTIB","LANK","LTIBAP","LTIBAD",
-               "LHEE","LTOE","LCUN","LD1M","LD5M",
-               "RTHI","RKNE","RTHIAP","RTHIAD",
-               "RTIB","RANK","RTIBAP","RTIBAD",
-               "RHEE","RTOE","RCUN","RD1M","RD5M"]
+               "LTHI","LKNE","LTHAP","LTHAD",
+               "LTIB","LANK","LTIAP","LTIAD",
+               "LHEE","LTOE","LSMH","LFMH","LVMH",
+               "RTHI","RKNE","RTHAP","RTHAD",
+               "RTIB","RANK","RTIAP","RTIAD",
+               "RHEE","RTOE","RSMH","RFMH","RVMH"]
 
     ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles","LForeFoot"],
                        'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles","LForeFoot"]}
@@ -381,16 +381,16 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
     def configure(self):
         self.addSegment("Pelvis",0,enums.SegmentSide.Central,["LASI","RASI","LPSI","RPSI"], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
-        self.addSegment("Left Thigh",1,enums.SegmentSide.Left,["LKNE","LTHI","LTHIAP","LTHIAD"], tracking_markers = ["LKNE","LTHI","LTHIAP","LTHIAD"])
-        self.addSegment("Right Thigh",4,enums.SegmentSide.Right,["RKNE","RTHI","RTHIAP","RTHIAD"], tracking_markers = ["RKNE","RTHI","RTHIAP","RTHIAD"])
-        self.addSegment("Left Shank",2,enums.SegmentSide.Left,["LANK","LTIB","LTIBAP","LTIBAD"], tracking_markers = ["LANK","LTIB","LTIBAP","LTIBAD"])
+        self.addSegment("Left Thigh",1,enums.SegmentSide.Left,["LKNE","LTHI","LTHAP","LTHAD"], tracking_markers = ["LKNE","LTHI","LTHAP","LTHAD"])
+        self.addSegment("Right Thigh",4,enums.SegmentSide.Right,["RKNE","RTHI","RTHAP","RTHAD"], tracking_markers = ["RKNE","RTHI","RTHAP","RTHAD"])
+        self.addSegment("Left Shank",2,enums.SegmentSide.Left,["LANK","LTIB","LTIAP","LTIAD"], tracking_markers = ["LANK","LTIB","LTIAP","LTIAD"])
         self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Right Shank",5,enums.SegmentSide.Right,["RANK","RTIB","RTIBAP","RTIBAD"], tracking_markers = ["RANK","RTIB","RTIBAP","RTIBAD"])
+        self.addSegment("Right Shank",5,enums.SegmentSide.Right,["RANK","RTIB","RTIAP","RTIAD"], tracking_markers = ["RANK","RTIB","RTIAP","RTIAD"])
         self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Left HindFoot",6,enums.SegmentSide.Left,["LHEE","LCUN","LANK"], tracking_markers = ["LHEE","LCUN"])
-        self.addSegment("Left ForeFoot",7,enums.SegmentSide.Left,["LD1M","LD5M","LTOE"], tracking_markers = ["LD1M","LD5M","LTOE"])
-        self.addSegment("Right HindFoot",6,enums.SegmentSide.Right,["RHEE","RCUN","RANK"], tracking_markers = ["RHEE","RCUN"])
-        self.addSegment("Right ForeFoot",7,enums.SegmentSide.Right,["RD1M","RD5M","RTOE"], tracking_markers = ["RD1M","RD5M","RTOE"])
+        self.addSegment("Left HindFoot",6,enums.SegmentSide.Left,["LHEE","LTOE","LANK"], tracking_markers = ["LHEE","LTOE"])
+        self.addSegment("Left ForeFoot",7,enums.SegmentSide.Left,["LFMH","LVMH","LSMH"], tracking_markers = ["LFMH","LVMH","LSMH"])
+        self.addSegment("Right HindFoot",6,enums.SegmentSide.Right,["RHEE","RTOE","RANK"], tracking_markers = ["RHEE","RTOE"])
+        self.addSegment("Right ForeFoot",7,enums.SegmentSide.Right,["RFMH","RVMH","RSMH"], tracking_markers = ["RFMH","RVMH","RSMH"])
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
@@ -426,12 +426,12 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         dictRef["Right Shank"]={"TF" : {'sequence':"ZXY", 'labels':   ["RANK","RKJC","RTIB","RANK"]} }
 
         # left Foot
-        dictRef["Left HindFoot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LCUN","LAJC",None,"LAJC"]} }
-        dictRef["Left ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["LTOE","LvCUN","LD5M","LTOE"]} }
+        dictRef["Left HindFoot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LTOE","LAJC",None,"LAJC"]} }
+        dictRef["Left ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["LSMH","LvTOE","LVMH","LSMH"]} }
 
         # right foot
-        dictRef["Right HindFoot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RCUN","RAJC",None,"RAJC"]} }
-        dictRef["Right ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["RTOE","RvCUN","RD5M","RTOE"]} }
+        dictRef["Right HindFoot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RTOE","RAJC",None,"RAJC"]} }
+        dictRef["Right ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["RSMH","RvTOE","RVMH","RSMH"]} }
 
         dictRefAnatomical={}
         dictRefAnatomical["Pelvis"]= {'sequence':"YZX", 'labels':  ["RASI","LASI","SACR","midASIS"]} # normaly : midHJC
@@ -441,12 +441,12 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         dictRefAnatomical["Right Shank"]={'sequence':"ZXY", 'labels':  ["RAJC","RKJC","RANK","RKJC"]}
 
         # left Foot ( nothing yet)
-        dictRefAnatomical["Left HindFoot"]= {'sequence':"ZXiY", 'labels':   ["LCUN","LHEE",None,"LAJC"]}
-        dictRefAnatomical["Left ForeFoot"]= {'sequence':"ZYX", 'labels':   ["LvTOE","LvCUN",None,"LvTOE"]} # look out : use virtual Point
+        dictRefAnatomical["Left HindFoot"]= {'sequence':"ZXiY", 'labels':   ["LTOE","LHEE",None,"LAJC"]}
+        dictRefAnatomical["Left ForeFoot"]= {'sequence':"ZYX", 'labels':   ["LvSMH","LvTOE",None,"LvSMH"]} # look out : use virtual Point
 
         # right foot
-        dictRefAnatomical["Right HindFoot"]= {'sequence':"ZXiY", 'labels':   ["RCUN","RHEE",None,"RAJC"]}
-        dictRefAnatomical["Right ForeFoot"]= {'sequence':"ZYX", 'labels':   ["RvTOE","RvCUN",None,"RvTOE"]} # look out : use virtual Point
+        dictRefAnatomical["Right HindFoot"]= {'sequence':"ZXiY", 'labels':   ["RTOE","RHEE",None,"RAJC"]}
+        dictRefAnatomical["Right ForeFoot"]= {'sequence':"ZYX", 'labels':   ["RvSMH","RvTOE",None,"RvSMH"]} # look out : use virtual Point
 
         return dictRef,dictRefAnatomical
 
@@ -735,17 +735,17 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # new markers
 
-        # virtual CUN
-        cun =  aquiStatic.GetPoint("LCUN").GetValues()
+        # virtual TOE
+        cun =  aquiStatic.GetPoint("LTOE").GetValues()
         valuesVirtualCun = np.zeros((nFrames,3))
         for i in range(0,nFrames):
             valuesVirtualCun[i,:] = np.array([cun[i,0], cun[i,1], cun[i,2]-self.mp["LeftToeOffset"]])
 
-        btkTools.smartAppendPoint(aquiStatic,"LvCUN",valuesVirtualCun,desc="cun Registrate")
+        btkTools.smartAppendPoint(aquiStatic,"LvTOE",valuesVirtualCun,desc="cun Registrate")
 
         # update marker list
         seg.addMarkerLabel("LAJC")         # required markers
-        seg.addMarkerLabel("LvCUN")
+        seg.addMarkerLabel("LvTOE")
 
 
         # --- technical frame selection and construction
@@ -794,17 +794,17 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # new markers
 
-        # virtual CUN
-        cun =  aquiStatic.GetPoint("RCUN").GetValues()
+        # virtual TOE
+        cun =  aquiStatic.GetPoint("RTOE").GetValues()
         valuesVirtualCun = np.zeros((nFrames,3))
         for i in range(0,nFrames):
             valuesVirtualCun[i,:] = np.array([cun[i,0], cun[i,1], cun[i,2]-self.mp["RightToeOffset"]])
 
-        btkTools.smartAppendPoint(aquiStatic,"RvCUN",valuesVirtualCun,desc="cun Registrate")
+        btkTools.smartAppendPoint(aquiStatic,"RvTOE",valuesVirtualCun,desc="cun Registrate")
 
         # update marker list
         seg.addMarkerLabel("RAJC")         # required markers
-        seg.addMarkerLabel("RvCUN")
+        seg.addMarkerLabel("RvTOE")
 
 
         # --- technical frame selection and construction
@@ -854,9 +854,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # ---  additional markers and Update of the marker segment list
 
-        # new markers ( RvTOE - RvD5M)
-        toe =  aquiStatic.GetPoint("LTOE").GetValues()
-        d5 =  aquiStatic.GetPoint("LD5M").GetValues()
+        # new markers ( RvSMH - RvVMH)
+        toe =  aquiStatic.GetPoint("LSMH").GetValues()
+        d5 =  aquiStatic.GetPoint("LVMH").GetValues()
 
         valuesVirtualToe = np.zeros((nFrames,3))
         valuesVirtualD5 = np.zeros((nFrames,3))
@@ -864,13 +864,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             valuesVirtualToe[i,:] = np.array([toe[i,0], toe[i,1], toe[i,2]-self.mp["LeftToeOffset"] ])#valuesVirtualCun[i,2]])#
             valuesVirtualD5 [i,:]= np.array([d5[i,0], d5[i,1], valuesVirtualToe[i,2]])
 
-        btkTools.smartAppendPoint(aquiStatic,"LvTOE",valuesVirtualToe,desc="virtual")
-        btkTools.smartAppendPoint(aquiStatic,"LvD5M",valuesVirtualD5,desc="virtual-flat ")
+        btkTools.smartAppendPoint(aquiStatic,"LvSMH",valuesVirtualToe,desc="virtual")
+        btkTools.smartAppendPoint(aquiStatic,"LvVMH",valuesVirtualD5,desc="virtual-flat ")
 
         # update marker list
-        seg.addMarkerLabel("LvCUN")
         seg.addMarkerLabel("LvTOE")
-        seg.addMarkerLabel("LvD5M")
+        seg.addMarkerLabel("LvSMH")
+        seg.addMarkerLabel("LvVMH")
 
         # --- technical frame selection and construction
         tf=seg.getReferential("TF")
@@ -916,9 +916,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # ---  additional markers and Update of the marker segment list
 
-        # new markers ( RvTOE - RvD5M)
-        toe =  aquiStatic.GetPoint("RTOE").GetValues()
-        d5 =  aquiStatic.GetPoint("RD5M").GetValues()
+        # new markers ( RvSMH - RvVMH)
+        toe =  aquiStatic.GetPoint("RSMH").GetValues()
+        d5 =  aquiStatic.GetPoint("RVMH").GetValues()
 
         valuesVirtualToe = np.zeros((nFrames,3))
         valuesVirtualD5 = np.zeros((nFrames,3))
@@ -926,13 +926,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             valuesVirtualToe[i,:] = np.array([toe[i,0], toe[i,1], toe[i,2]-self.mp["RightToeOffset"] ])#valuesVirtualCun[i,2]])#
             valuesVirtualD5 [i,:]= np.array([d5[i,0], d5[i,1], valuesVirtualToe[i,2]])
 
-        btkTools.smartAppendPoint(aquiStatic,"RvTOE",valuesVirtualToe,desc="virtual")
-        btkTools.smartAppendPoint(aquiStatic,"RvD5M",valuesVirtualD5,desc="virtual-flat ")
+        btkTools.smartAppendPoint(aquiStatic,"RvSMH",valuesVirtualToe,desc="virtual")
+        btkTools.smartAppendPoint(aquiStatic,"RvVMH",valuesVirtualD5,desc="virtual-flat ")
 
         # update marker list
-        seg.addMarkerLabel("RvCUN")
         seg.addMarkerLabel("RvTOE")
-        seg.addMarkerLabel("RvD5M")
+        seg.addMarkerLabel("RvSMH")
+        seg.addMarkerLabel("RvVMH")
 
         # --- technical frame selection and construction
         tf=seg.getReferential("TF")
@@ -1049,19 +1049,19 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
 
-        # add TOE
-        toePosition=aquiStatic.GetPoint(str("LTOE")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        seg.anatomicalFrame.static.addNode("LTOE",toePosition,positionType="Global")
+        # add SMH
+        toePosition=aquiStatic.GetPoint(str("LSMH")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        seg.anatomicalFrame.static.addNode("LSMH",toePosition,positionType="Global")
 
 
         # --- compute amthropo
         # length
-        toe = seg.anatomicalFrame.static.getNode_byLabel("LTOE").m_local
+        toe = seg.anatomicalFrame.static.getNode_byLabel("LSMH").m_local
         hee = seg.anatomicalFrame.static.getNode_byLabel("LHEE").m_local
         seg.setLength(np.linalg.norm(toe-hee)- markerDiameter/2.0)
 
         # com
-        toe = seg.anatomicalFrame.static.getNode_byLabel("LTOE").m_global
+        toe = seg.anatomicalFrame.static.getNode_byLabel("LSMH").m_global
         hee = seg.anatomicalFrame.static.getNode_byLabel("LHEE").m_global
         footLongAxis = (toe-hee)/np.linalg.norm(toe-hee)
 
@@ -1143,19 +1143,19 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
 
-# add TOE
-        toePosition=aquiStatic.GetPoint(str("RTOE")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        seg.anatomicalFrame.static.addNode("RTOE",toePosition,positionType="Global")
+# add SMH
+        toePosition=aquiStatic.GetPoint(str("RSMH")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        seg.anatomicalFrame.static.addNode("RSMH",toePosition,positionType="Global")
 
 
         # --- compute amthropo
         # length
-        toe = seg.anatomicalFrame.static.getNode_byLabel("RTOE").m_local
+        toe = seg.anatomicalFrame.static.getNode_byLabel("RSMH").m_local
         hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_local
         seg.setLength(np.linalg.norm(toe-hee)- markerDiameter/2.0)
 
         # com
-        toe = seg.anatomicalFrame.static.getNode_byLabel("RTOE").m_global
+        toe = seg.anatomicalFrame.static.getNode_byLabel("RSMH").m_global
         hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_global
         footLongAxis = (toe-hee)/np.linalg.norm(toe-hee)
 
@@ -1618,8 +1618,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
 
-        # --- RvCUN
-        btkTools.smartAppendPoint(aqui,"LvCUN",seg.getReferential("TF").getNodeTrajectory("LvCUN"),desc="from hindFoot" )
+        # --- RvTOE
+        btkTools.smartAppendPoint(aqui,"LvTOE",seg.getReferential("TF").getNodeTrajectory("LvTOE"),desc="from hindFoot" )
 
         # --- motion of the technical referential
         seg.anatomicalFrame.motion=[]
@@ -1689,8 +1689,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
         # --- motion of new markers
-        btkTools.smartAppendPoint(aqui,"LvTOE",seg.getReferential("TF").getNodeTrajectory("LvTOE") )
-        btkTools.smartAppendPoint(aqui,"LvD5M",seg.getReferential("TF").getNodeTrajectory("LvD5M") )
+        btkTools.smartAppendPoint(aqui,"LvSMH",seg.getReferential("TF").getNodeTrajectory("LvSMH") )
+        btkTools.smartAppendPoint(aqui,"LvVMH",seg.getReferential("TF").getNodeTrajectory("LvVMH") )
 
         # --- motion of the anatomical referential
 
@@ -1761,8 +1761,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
 
-        # --- RvCUN
-        btkTools.smartAppendPoint(aqui,"RvCUN",seg.getReferential("TF").getNodeTrajectory("RvCUN"),desc="from hindFoot" )
+        # --- RvTOE
+        btkTools.smartAppendPoint(aqui,"RvTOE",seg.getReferential("TF").getNodeTrajectory("RvTOE"),desc="from hindFoot" )
 
         # --- motion of the technical referential
         seg.anatomicalFrame.motion=[]
@@ -1831,8 +1831,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
         # --- motion of new markers
-        btkTools.smartAppendPoint(aqui,"RvTOE",seg.getReferential("TF").getNodeTrajectory("RvTOE") )
-        btkTools.smartAppendPoint(aqui,"RvD5M",seg.getReferential("TF").getNodeTrajectory("RvD5M") )
+        btkTools.smartAppendPoint(aqui,"RvSMH",seg.getReferential("TF").getNodeTrajectory("RvSMH") )
+        btkTools.smartAppendPoint(aqui,"RvVMH",seg.getReferential("TF").getNodeTrajectory("RvVMH") )
 
         # --- motion of the anatomical referential
 
@@ -1897,9 +1897,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
 
-        # --- vCUN and AJC
+        # --- vTOE and AJC
         btkTools.smartAppendPoint(aqui,"LAJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("LAJC"),desc="opt from hindfoot" )
-        btkTools.smartAppendPoint(aqui,"LvCUN",seg.getReferential("TF").getNodeTrajectory("LvCUN"),desc="opt from hindfoot" )
+        btkTools.smartAppendPoint(aqui,"LvTOE",seg.getReferential("TF").getNodeTrajectory("LvTOE"),desc="opt from hindfoot" )
 
         # remove AJC from list of tracking markers
         if "LAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LAJC")
@@ -1909,12 +1909,12 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         seg=self.getSegment("Left ForeFoot")
 
-        #  --- add RvCUN if marker list < 2  - check presence of tracking markers in the acquisition
+        #  --- add RvTOE if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
             if len(seg.m_tracking_markers)==2:
-                if "LvCUN" not in seg.m_tracking_markers:
-                    seg.m_tracking_markers.append("LvCUN")
-                    logging.debug("LvCUN added to tracking marker list")
+                if "LvTOE" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("LvTOE")
+                    logging.debug("LvTOE added to tracking marker list")
 
         # --- Motion of the Technical frame
         seg.getReferential("TF").motion =[]
@@ -1953,8 +1953,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
 
         # --- motion of new markers
-        # --- vCUN and AJC
-        btkTools.smartAppendPoint(aqui,"LvCUN-ForeFoot",seg.getReferential("TF").getNodeTrajectory("LvCUN"),desc="opt from forefoot" )
+        # --- vTOE and AJC
+        btkTools.smartAppendPoint(aqui,"LvTOE-ForeFoot",seg.getReferential("TF").getNodeTrajectory("LvTOE"),desc="opt from forefoot" )
 
     def _rightHindFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
@@ -2003,9 +2003,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
 
-        # --- vCUN and AJC
+        # --- vTOE and AJC
         btkTools.smartAppendPoint(aqui,"RAJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("RAJC"),desc="opt from hindfoot" )
-        btkTools.smartAppendPoint(aqui,"RvCUN",seg.getReferential("TF").getNodeTrajectory("RvCUN"),desc="opt from hindfoot" )
+        btkTools.smartAppendPoint(aqui,"RvTOE",seg.getReferential("TF").getNodeTrajectory("RvTOE"),desc="opt from hindfoot" )
 
         # remove AJC from list of tracking markers
         if "RAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RAJC")
@@ -2015,12 +2015,12 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         seg=self.getSegment("Right ForeFoot")
 
-        #  --- add RvCUN if marker list < 2  - check presence of tracking markers in the acquisition
+        #  --- add RvTOE if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
             if len(seg.m_tracking_markers)==2:
-                if "RvCUN" not in seg.m_tracking_markers:
-                    seg.m_tracking_markers.append("RvCUN")
-                    logging.debug("RvCUN added to tracking marker list")
+                if "RvTOE" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("RvTOE")
+                    logging.debug("RvTOE added to tracking marker list")
 
         # --- Motion of the Technical frame
         seg.getReferential("TF").motion =[]
@@ -2059,8 +2059,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
 
         # --- motion of new markers
-        # --- vCUN and AJC
-        btkTools.smartAppendPoint(aqui,"RvCUN-ForeFoot",seg.getReferential("TF").getNodeTrajectory("RvCUN"),desc="opt from forefoot" )
+        # --- vTOE and AJC
+        btkTools.smartAppendPoint(aqui,"RvTOE-ForeFoot",seg.getReferential("TF").getNodeTrajectory("RvTOE"),desc="opt from forefoot" )
 
 
     # ---- finalize methods ------
@@ -2150,13 +2150,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         out["hip_r"]= {"joint label":"RHJC", "proximal segment label":"Pelvis", "distal segment label":"Right Thigh" }
         out["knee_r"]= {"joint label":"RKJC", "proximal segment label":"Right Thigh", "distal segment label":"Right Shank" }
         out["ankle_r"]= {"joint label":"RAJC", "proximal segment label":"Right Shank", "distal segment label":"Right HindFoot" }
-        out["mtp_r"]= {"joint label":"RvCUN", "proximal segment label":"Right HindFoot", "distal segment label":"Right ForeFoot" }
+        out["mtp_r"]= {"joint label":"RvTOE", "proximal segment label":"Right HindFoot", "distal segment label":"Right ForeFoot" }
 
 
         out["hip_l"]= {"joint label":"LHJC", "proximal segment label":"Pelvis", "distal segment label":"Left Thigh" }
         out["knee_l"]= {"joint label":"LKJC", "proximal segment label":"Left Thigh", "distal segment label":"Left Shank" }
         out["ankle_l"]= {"joint label":"LAJC", "proximal segment label":"Left Shank", "distal segment label":"Left HindFoot" }
-        out["mtp_l"]= {"joint label":"LvCUN", "proximal segment label":"Left HindFoot", "distal segment label":"Left ForeFoot" }
+        out["mtp_l"]= {"joint label":"LvTOE", "proximal segment label":"Left HindFoot", "distal segment label":"Left ForeFoot" }
 
         return out
 
@@ -2201,25 +2201,25 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "RHEE_supInf":100,
                  "RHEE_medLat":100,
                  "RHEE_proDis":100,
+                 "RSMH":0,
+                 "RSMH_supInf":100,
+                 "RSMH_medLat":100,
+                 "RSMH_proDis":100,
+
                  "RTOE":0,
                  "RTOE_supInf":100,
                  "RTOE_medLat":100,
                  "RTOE_proDis":100,
 
-                 "RCUN":0,
-                 "RCUN_supInf":100,
-                 "RCUN_medLat":100,
-                 "RCUN_proDis":100,
+                 "RFMH":0,
+                 "RFMH_supInf":100,
+                 "RFMH_medLat":100,
+                 "RFMH_proDis":100,
 
-                 "RD1M":0,
-                 "RD1M_supInf":100,
-                 "RD1M_medLat":100,
-                 "RD1M_proDis":100,
-
-                 "RD5M":0,
-                 "RD5M_supInf":100,
-                 "RD5M_medLat":100,
-                 "RD5M_proDis":100,
+                 "RVMH":0,
+                 "RVMH_supInf":100,
+                 "RVMH_medLat":100,
+                 "RVMH_proDis":100,
 
 
                  "LTHI":0,
@@ -2242,25 +2242,25 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "LHEE_supInf":100,
                  "LHEE_medLat":100,
                  "LHEE_proDis":100,
+                 "LSMH":0,
+                 "LSMH_supInf":100,
+                 "LSMH_medLat":100,
+                 "LSMH_proDis":100,
+
                  "LTOE":0,
                  "LTOE_supInf":100,
                  "LTOE_medLat":100,
                  "LTOE_proDis":100,
 
-                 "LCUN":0,
-                 "LCUN_supInf":100,
-                 "LCUN_medLat":100,
-                 "LCUN_proDis":100,
+                 "LFMH":0,
+                 "LFMH_supInf":100,
+                 "LFMH_medLat":100,
+                 "LFMH_proDis":100,
 
-                 "LD1M":0,
-                 "LD1M_supInf":100,
-                 "LD1M_medLat":100,
-                 "LD1M_proDis":100,
-
-                 "LD5M":0,
-                 "LD5M_supInf":100,
-                 "LD5M_medLat":100,
-                 "LD5M_proDis":100,
+                 "LVMH":0,
+                 "LVMH_supInf":100,
+                 "LVMH_medLat":100,
+                 "LVMH_proDis":100,
 
 
                  "LTHIAP":0,
@@ -2328,10 +2328,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "RTIBAP":100,
                  "RTIBAD":100,
                  "RHEE":100,
+                 "RSMH":100,
                  "RTOE":100,
-                 "RCUN":100,
-                 "RD1M":100,
-                 "RD5M":100,
+                 "RFMH":100,
+                 "RVMH":100,
                  "LTHI":100,
                  "LKNE":100,
                  "LTHIAP":100,
@@ -2341,10 +2341,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "LTIBAP":100,
                  "LTIBAD":100,
                  "LHEE":100,
+                 "LSMH":100,
                  "LTOE":100,
-                 "LCUN":100,
-                 "LD1M":100,
-                 "LD5M":100,
+                 "LFMH":100,
+                 "LVMH":100,
                  "RTHLD":0,
                  "RPAT":0,
                  "LTHLD":0,
@@ -2383,8 +2383,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq)
         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq)
         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LvCUN", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RvCUN", acq)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LvTOE", acq)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RvTOE", acq)
         logging.debug("jc over")
 
         # export angles
@@ -2406,13 +2406,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
         nexusTools.appendBones(NEXUS,vskName,acq,"LTI", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
         nexusTools.appendBones(NEXUS,vskName,acq,"LFO", self.getSegment("Left HindFoot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LTO", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LvCUN").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"LTO", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LvTOE").GetValues() )
 
         nexusTools.appendBones(NEXUS,vskName,acq,"RFE", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
         #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
         nexusTools.appendBones(NEXUS,vskName,acq,"RTI", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
         nexusTools.appendBones(NEXUS,vskName,acq,"RFO", self.getSegment("Right HindFoot") , OriginValues = acq.GetPoint("RHEE").GetValues()  )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RTO", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RvCUN").GetValues())
+        nexusTools.appendBones(NEXUS,vskName,acq,"RTO", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RvTOE").GetValues())
 
         logging.debug("bones over")
 
