@@ -45,7 +45,10 @@ def saveModel(model,path,FilenameNoExt):
 
 def openJson(path,filename):
     try:
-        jsonStuct= json.loads(open(str(path+filename)).read(),object_pairs_hook=OrderedDict)
+        if path is None:
+            jsonStuct= json.loads(open(str(filename)).read(),object_pairs_hook=OrderedDict)
+        else:
+            jsonStuct= json.loads(open(str(path+filename)).read(),object_pairs_hook=OrderedDict)
         return jsonStuct
     except :
         raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
