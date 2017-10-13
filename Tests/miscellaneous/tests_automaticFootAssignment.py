@@ -61,7 +61,7 @@ class tests():
             kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
             trialTools.sortedEvents(kinematicTrial)
 
-            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
+            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgression(kinematicTrial,"LHEE")
 
             kinematicTrials.append(kinematicTrial)
             kinematicFilenames.append(kinematicFilename)
@@ -74,8 +74,7 @@ class tests():
         cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
                                                kinematicTrials = kinematicTrials,
                                                kineticTrials = kineticTrials,
-                                               emgTrials=None,
-                                               longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
+                                               emgTrials=None)
 
         cyclefilter = cycle.CyclesFilter()
         cyclefilter.setBuilder(cycleBuilder)
@@ -116,7 +115,7 @@ class tests():
             kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
             trialTools.sortedEvents(kinematicTrial)
 
-            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
+            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgression(kinematicTrial,"LHEE")
 
             kinematicTrials.append(kinematicTrial)
             kinematicFilenames.append(kinematicFilename)
@@ -129,8 +128,7 @@ class tests():
         cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
                                                kinematicTrials = kinematicTrials,
                                                kineticTrials = kineticTrials,
-                                               emgTrials=None,
-                                               longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
+                                               emgTrials=None)
 
         cyclefilter = cycle.CyclesFilter()
         cyclefilter.setBuilder(cycleBuilder)
@@ -172,7 +170,7 @@ class tests():
             kinematicTrial = kinematicFileNode.findChild(ma.T_Trial)
             trialTools.sortedEvents(kinematicTrial)
 
-            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgressionFromPoints(kinematicTrial,"LPSI","LASI","RPSI")
+            longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgression(kinematicTrial,"LHEE")
 
             kinematicTrials.append(kinematicTrial)
             kinematicFilenames.append(kinematicFilename)
@@ -185,8 +183,7 @@ class tests():
         cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=kinematicTrials,
                                                kinematicTrials = kinematicTrials,
                                                kineticTrials = kineticTrials,
-                                               emgTrials=None,
-                                               longitudinal_axis= globalFrame[0],lateral_axis=globalFrame[1])
+                                               emgTrials=None)
 
         cyclefilter = cycle.CyclesFilter()
         cyclefilter.setBuilder(cycleBuilder)

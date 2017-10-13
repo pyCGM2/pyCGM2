@@ -62,7 +62,7 @@ class decomposeTrackingMarker_Test():
         gaitFilename="static.c3d"
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  useForMotionTest=True)
         modMotion.compute()
 
@@ -115,7 +115,7 @@ class decomposeTrackingMarker_Test():
         gaitFilename="gait trial 01.c3d"
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Native,
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
                                                  useForMotionTest=True)
         modMotion.compute()
 

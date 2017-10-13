@@ -34,22 +34,22 @@ class translator_tests():
                     "RPSI":"",
                     "RTHI":"RTHL",
                     "RKNE":"",
-                    "RTHIAP":"RTHAP",
-                    "RTHIAD":"RTHAD",
+                    "RTHAP":"RTHAP",
+                    "RTHAD":"RTHAD",
                     "RTIB":"RTIBL",
                     "RANK":"RANK",
-                    "RTIBAP":"RTIAP",
-                    "RTIBAD":"RTIAD",
+                    "RTIAP":"RTIAP",
+                    "RTIAD":"RTIAD",
                     "RHEE":"",
                     "RTOE":"",
                     "LTHI":"LTHL",
                     "LKNE":"",
-                    "LTHIAP":"LTHAP",
-                    "LTHIAD":"LTHAD",
+                    "LTHAP":"LTHAP",
+                    "LTHAD":"LTHAD",
                     "LTIB":"LTIBL",
                     "LANK":"",
-                    "LTIBAP":"LTIAP",
-                    "LTIBAD":"LTIAD",
+                    "LTIAP":"LTIAP",
+                    "LTIAD":"LTIAD",
                     "LHEE":"",
                     "LTOE":""
               }
@@ -65,7 +65,6 @@ class translator_tests():
 
 
         acqStatic2 =  btkTools.applyTranslators(acqStatic,translators)
-
 
 
         btkTools.smartWriter(acqStatic2,"test.c3d")
