@@ -23,29 +23,33 @@ import ma.body
 
 from pyCGM2 import smartFunctions
 
-class xlsExportTest(): 
+class xlsExportTest():
 
     @classmethod
     def gaitXlsExport_oneFile(cls):
-        
-        # ----DATA-----        
+
+        # ----DATA-----
 
         DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d" ] 
-                
-        # ----INFOS-----        
-        modelInfo=None  
+        modelledFilenames = ["gait Trial 03 - viconName.c3d" ]
+
+        # ----INFOS-----
+        modelInfo=None
         subjectInfo=None
-        experimentalInfo=None 
+        experimentalInfo=None
 
         normativeDataSet=dict()
         normativeDataSet["Author"] = "Schwartz2008"
         normativeDataSet["Modality"] = "Free"           
-        
-        smartFunctions.gaitProcessing_cgm1 (modelledFilenames, DATA_PATH, 
+
+
+
+
+
+        smartFunctions.gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                          modelInfo, subjectInfo, experimentalInfo,
                          pointLabelSuffix = "",
-                         plotFlag= False, 
+                         plotFlag= False,
                          exportBasicSpreadSheetFlag = True,
                          exportAdvancedSpreadSheetFlag = True,
                          exportAnalysisC3dFlag = False,
@@ -53,29 +57,29 @@ class xlsExportTest():
                          normativeDataDict = normativeDataSet,
                          name_out=None,
                          DATA_PATH_OUT= None)
-                         
+
 
     @classmethod
     def gaitXlsExport_twoFiles(cls):
-        
-        # ----DATA-----        
+
+        # ----DATA-----
 
         DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
-        modelledFilenames = ["gait Trial 01 - viconName.c3d","gait Trial 03 - viconName.c3d"  ] 
-                
-        # ----INFOS-----        
-        modelInfo=None  
+        modelledFilenames = ["gait Trial 01 - viconName.c3d","gait Trial 03 - viconName.c3d"  ]
+
+        # ----INFOS-----
+        modelInfo=None
         subjectInfo=None
-        experimentalInfo=None 
+        experimentalInfo=None
 
         normativeDataSet=dict()
         normativeDataSet["Author"] = "Schwartz2008"
-        normativeDataSet["Modality"] = "Free"           
-        
-        smartFunctions.gaitProcessing_cgm1 (modelledFilenames, DATA_PATH, 
+        normativeDataSet["Modality"] = "Free"
+
+        smartFunctions.gaitProcessing_cgm1 (modelledFilenames, DATA_PATH,
                          modelInfo, subjectInfo, experimentalInfo,
                          pointLabelSuffix = "",
-                         plotFlag= False, 
+                         plotFlag= False,
                          exportBasicSpreadSheetFlag = True,
                          exportAdvancedSpreadSheetFlag = True,
                          exportAnalysisC3dFlag = False,
@@ -86,7 +90,7 @@ class xlsExportTest():
 
 if __name__ == "__main__":
 
-    plt.close("all")  
-  
+    plt.close("all")
+
     xlsExportTest.gaitXlsExport_oneFile()
-    xlsExportTest.gaitXlsExport_twoFiles()   
+    xlsExportTest.gaitXlsExport_twoFiles()

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#import ipdb
 import logging
 
 from  pyCGM2 import enums
@@ -60,12 +61,10 @@ def make_analysis(trialManager, kinematicLabelsDict,kineticLabelsDict,
 
     analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
                                                   kinematicLabelsDict = kinematicLabelsDict,
-                                                  kineticLabelsDict = kineticLabelsDict,
-                                                  subjectInfos=subjectInfo,
-                                                  modelInfos=modelInfo,
-                                                  experimentalInfos=experimentalInfo)
+                                                  kineticLabelsDict = kineticLabelsDict)
 
     analysisFilter = analysis.AnalysisFilter()
+    analysisFilter.setInfo(subject=subjectInfo, model=modelInfo, experimental=experimentalInfo)
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
 
