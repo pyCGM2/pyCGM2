@@ -26,9 +26,9 @@ if __name__ == "__main__":
     plt.close("all")
 
 
-    MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.2\\native\\"
-    staticFilename = "static.c3d"
-    gaitFilename= "gait trial.c3d"
+    MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.2\\medial\\"
+    staticFilename = "static-all.c3d"
+    gaitFilename= "gait trial 01.c3d"
     markerDiameter=14
     mp={
     'Bodymass'   : 71.0,
@@ -57,9 +57,15 @@ if __name__ == "__main__":
 
     # cgm decorator
     modelDecorator.HipJointCenterDecorator(model).hara()
+    modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both",cgm1Behaviour=True)
+    modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="both")
 
     # final
-    modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara").compute()
+    modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                       seLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara",
+                       useLeftKJCnode="LKJC_mid", useLeftAJCnode="LAJC_mid",
+                       useRightKJCnode="RKJC_mid", useRightAJCnode="RAJC_mid",
+                       markerDiameter=markerDiameter).compute()
 
 
     # ------ Fitting -------
@@ -95,7 +101,7 @@ if __name__ == "__main__":
                                             model,
                                             cgmCalibrationprocedure)
     oscf.addMarkerSet(markersetFile)
-    scalingOsim = oscf.build()
+    scalingOsim = oscf.build(exportOsim=False)
 
 
     # --- fitting ---
@@ -106,7 +112,7 @@ if __name__ == "__main__":
                                                       scalingOsim,
                                                       cgmFittingProcedure,
                                                       MAIN_PATH )
-    acqIK = osrf.run(acqGait,str(MAIN_PATH + gaitFilename ))
+    acqIK = osrf.run(acqGait,str(MAIN_PATH + gaitFilename ),exportSetUp=False)
 
 
     # -------- NEW MOTION FILTER ON IK MARKERS ------------------
@@ -120,4 +126,4 @@ if __name__ == "__main__":
     finalJcs.compute(description="ik", pointLabelSuffix = "2_ik")#
 
 
-    btkTools.smartWriter(acqIK,"fitting-cgm2_2-angles.c3d")
+    #btkTools.smartWriter(acqIK,"fitting-cgm2_2-angles.c3d")
