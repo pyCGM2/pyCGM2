@@ -13,29 +13,15 @@ from pyCGM2.Tools import  btkTools
 from pyCGM2.Math import  numeric, geometry,euler
 
 
-
 def setDescription(nodeLabel):
     """
-        return a node description
+        return description from a node label
     """
-    if "kad" in nodeLabel:
-        return "kad"
-    elif "sara" in nodeLabel:
-        return "sara"
-    elif "Hara" in nodeLabel:
-        return "hara"
-    elif "Harrington" in nodeLabel:
-        return "Harrington"
-    elif "mid" in nodeLabel:
-        return "mid"
-    elif "us" in nodeLabel:
-        return "us"
-    elif "mri" in nodeLabel:
-        return "mri"
-
-
+    if nodeLabel.rfind("_") !=-1:
+        return nodeLabel[nodeLabel.rfind("_")+1:]
     else:
-        return "custom"
+        return ""
+
 
 
 
