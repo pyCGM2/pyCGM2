@@ -1583,7 +1583,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # NA
 
         # computation
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             pt1=aqui.GetPoint(str(dictRef["Left HindFoot"]["TF"]['labels'][0])).GetValues()[i,:] #cun
@@ -1610,27 +1610,27 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left HindFoot"]["TF"]['sequence'])
 
-            frame.m_axisX=x
-            frame.m_axisY=y
-            frame.m_axisZ=z
-            frame.setRotation(R)
-            frame.setTranslation(ptOrigin)
+            csFrame.m_axisX=x
+            csFrame.m_axisY=y
+            csFrame.m_axisZ=z
+            csFrame.setRotation(R)
+            csFrame.setTranslation(ptOrigin)
 
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
+            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- RvTOE
         btkTools.smartAppendPoint(aqui,"LvTOE",seg.getReferential("TF").getNodeTrajectory("LvTOE"),desc="from hindFoot" )
 
         # --- motion of the technical referential
         seg.anatomicalFrame.motion=[]
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Left HindFoot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
 
-            frame.update(R,ptOrigin)
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(frame))
+            csFrame.update(R,ptOrigin)
+            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
     def _left_foreFoot_motion(self,aqui, dictRef,dictAnat,options=None):
@@ -1652,7 +1652,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # NA
 
         #computation
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             pt1=aqui.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][0])).GetValues()[i,:]
@@ -1679,13 +1679,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left ForeFoot"]["TF"]['sequence'])
 
-            frame.m_axisX=x
-            frame.m_axisY=y
-            frame.m_axisZ=z
-            frame.setRotation(R)
-            frame.setTranslation(ptOrigin)
+            csFrame.m_axisX=x
+            csFrame.m_axisY=y
+            csFrame.m_axisZ=z
+            csFrame.setRotation(R)
+            csFrame.setTranslation(ptOrigin)
 
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
+            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
 
         # --- motion of new markers
@@ -1697,13 +1697,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
         seg.anatomicalFrame.motion=[]
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Left ForeFoot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
-            frame.update(R,ptOrigin)
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(frame))
+            csFrame.update(R,ptOrigin)
+            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
 
@@ -1726,7 +1726,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # NA
 
         # computation
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             pt1=aqui.GetPoint(str(dictRef["Right HindFoot"]["TF"]['labels'][0])).GetValues()[i,:] #cun
@@ -1753,26 +1753,26 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right HindFoot"]["TF"]['sequence'])
 
-            frame.m_axisX=x
-            frame.m_axisY=y
-            frame.m_axisZ=z
-            frame.setRotation(R)
-            frame.setTranslation(ptOrigin)
+            csFrame.m_axisX=x
+            csFrame.m_axisY=y
+            csFrame.m_axisZ=z
+            csFrame.setRotation(R)
+            csFrame.setTranslation(ptOrigin)
 
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
+            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- RvTOE
         btkTools.smartAppendPoint(aqui,"RvTOE",seg.getReferential("TF").getNodeTrajectory("RvTOE"),desc="from hindFoot" )
 
         # --- motion of the technical referential
         seg.anatomicalFrame.motion=[]
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Right HindFoot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
-            frame.update(R,ptOrigin)
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(frame))
+            csFrame.update(R,ptOrigin)
+            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
     def _right_foreFoot_motion(self,aqui, dictRef,dictAnat,options=None):
@@ -1794,7 +1794,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # NA
 
         #computation
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             pt1=aqui.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][0])).GetValues()[i,:]
@@ -1821,13 +1821,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right ForeFoot"]["TF"]['sequence'])
 
-            frame.m_axisX=x
-            frame.m_axisY=y
-            frame.m_axisZ=z
-            frame.setRotation(R)
-            frame.setTranslation(ptOrigin)
+            csFrame.m_axisX=x
+            csFrame.m_axisY=y
+            csFrame.m_axisZ=z
+            csFrame.setRotation(R)
+            csFrame.setTranslation(ptOrigin)
 
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
+            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
 
         # --- motion of new markers
@@ -1839,13 +1839,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
         seg.anatomicalFrame.motion=[]
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Right ForeFoot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
-            frame.update(R,ptOrigin)
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(frame))
+            csFrame.update(R,ptOrigin)
+            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
     # ----- least-square Segmental motion ------
@@ -1872,7 +1872,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 i+=1
 
         # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             if seg.m_tracking_markers != []: # work with traking markers
@@ -1889,13 +1889,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
 
 
-                frame.setRotation(R)
-                frame.setTranslation(tOri)
-                frame.m_axisX=R[:,0]
-                frame.m_axisY=R[:,1]
-                frame.m_axisZ=R[:,2]
+                csFrame.setRotation(R)
+                csFrame.setTranslation(tOri)
+                csFrame.m_axisX=R[:,0]
+                csFrame.m_axisY=R[:,1]
+                csFrame.m_axisZ=R[:,2]
 
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
+            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- vTOE and AJC
         btkTools.smartAppendPoint(aqui,"LAJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("LAJC"),desc="opt from hindfoot" )
@@ -1928,7 +1928,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 i+=1
 
         # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             if seg.m_tracking_markers != []: # work with traking markers
@@ -1944,13 +1944,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
                 tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
 
-                frame.setRotation(R)
-                frame.setTranslation(tOri)
-                frame.m_axisX=R[:,0]
-                frame.m_axisY=R[:,1]
-                frame.m_axisZ=R[:,2]
+                csFrame.setRotation(R)
+                csFrame.setTranslation(tOri)
+                csFrame.m_axisX=R[:,0]
+                csFrame.m_axisY=R[:,1]
+                csFrame.m_axisZ=R[:,2]
 
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
+            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- motion of new markers
         # --- vTOE and AJC
@@ -1979,7 +1979,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 i+=1
 
         # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             if seg.m_tracking_markers != []: # work with traking markers
@@ -1995,13 +1995,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
                 tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
 
-                frame.setRotation(R)
-                frame.setTranslation(tOri)
-                frame.m_axisX=R[:,0]
-                frame.m_axisY=R[:,1]
-                frame.m_axisZ=R[:,2]
+                csFrame.setRotation(R)
+                csFrame.setTranslation(tOri)
+                csFrame.m_axisX=R[:,0]
+                csFrame.m_axisY=R[:,1]
+                csFrame.m_axisZ=R[:,2]
 
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
+            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- vTOE and AJC
         btkTools.smartAppendPoint(aqui,"RAJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("RAJC"),desc="opt from hindfoot" )
@@ -2034,7 +2034,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 i+=1
 
         # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        frame=frame.Frame()
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
             if seg.m_tracking_markers != []: # work with traking markers
@@ -2050,13 +2050,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
                 tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
 
-                frame.setRotation(R)
-                frame.setTranslation(tOri)
-                frame.m_axisX=R[:,0]
-                frame.m_axisY=R[:,1]
-                frame.m_axisZ=R[:,2]
+                csFrame.setRotation(R)
+                csFrame.setTranslation(tOri)
+                csFrame.m_axisX=R[:,0]
+                csFrame.m_axisY=R[:,1]
+                csFrame.m_axisZ=R[:,2]
 
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(frame))
+            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- motion of new markers
         # --- vTOE and AJC
@@ -2263,38 +2263,38 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "LVMH_proDis":100,
 
 
-                 "LTHIAP":0,
-                 "LTHIAP_posAnt":100,
-                 "LTHIAP_medLat":100,
-                 "LTHIAP_proDis":100,
-                 "LTHIAD":0,
-                 "LTHIAD_posAnt":100,
-                 "LTHIAD_medLat":100,
-                 "LTHIAD_proDis":100,
-                 "RTHIAP":0,
-                 "RTHIAP_posAnt":100,
-                 "RTHIAP_medLat":100,
-                 "RTHIAP_proDis":100,
-                 "RTHIAD":0,
-                 "RTHIAD_posAnt":100,
-                 "RTHIAD_medLat":100,
-                 "RTHIAD_proDis":100,
-                 "LTIBAP":0,
-                 "LTIBAP_posAnt":100,
-                 "LTIBAP_medLat":100,
-                 "LTIBAP_proDis":100,
-                 "LTIBAD":0,
-                 "LTIBAD_posAnt":100,
-                 "LTIBAD_medLat":100,
-                 "LTIBAD_proDis":100,
-                 "RTIBAP":0,
-                 "RTIBAP_posAnt":100,
-                 "RTIBAP_medLat":100,
-                 "RTIBAP_proDis":100,
-                 "RTIBAD":0,
-                 "RTIBAD_posAnt":100,
-                 "RTIBAD_medLat":100,
-                 "RTIBAD_proDis":100,
+                 "LTHAP":0,
+                 "LTHAP_posAnt":100,
+                 "LTHAP_medLat":100,
+                 "LTHAP_proDis":100,
+                 "LTHAD":0,
+                 "LTHAD_posAnt":100,
+                 "LTHAD_medLat":100,
+                 "LTHAD_proDis":100,
+                 "RTHAP":0,
+                 "RTHAP_posAnt":100,
+                 "RTHAP_medLat":100,
+                 "RTHAP_proDis":100,
+                 "RTHAD":0,
+                 "RTHAD_posAnt":100,
+                 "RTHAD_medLat":100,
+                 "RTHAD_proDis":100,
+                 "LTIAP":0,
+                 "LTIAP_posAnt":100,
+                 "LTIAP_medLat":100,
+                 "LTIAP_proDis":100,
+                 "LTIAD":0,
+                 "LTIAD_posAnt":100,
+                 "LTIAD_medLat":100,
+                 "LTIAD_proDis":100,
+                 "RTIAP":0,
+                 "RTIAP_posAnt":100,
+                 "RTIAP_medLat":100,
+                 "RTIAP_proDis":100,
+                 "RTIAD":0,
+                 "RTIAD_posAnt":100,
+                 "RTIAD_medLat":100,
+                 "RTIAD_proDis":100,
 
                  "LTHLD":0,
                  "LTHLD_posAnt":0,
@@ -2321,12 +2321,12 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "RPSI":100,
                  "RTHI":100,
                  "RKNE":100,
-                 "RTHIAP":100,
-                 "RTHIAD":100,
+                 "RTHAP":100,
+                 "RTHAD":100,
                  "RTIB":100,
                  "RANK":100,
-                 "RTIBAP":100,
-                 "RTIBAD":100,
+                 "RTIAP":100,
+                 "RTIAD":100,
                  "RHEE":100,
                  "RSMH":100,
                  "RTOE":100,
@@ -2334,12 +2334,12 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "RVMH":100,
                  "LTHI":100,
                  "LKNE":100,
-                 "LTHIAP":100,
-                 "LTHIAD":100,
+                 "LTHAP":100,
+                 "LTHAD":100,
                  "LTIB":100,
                  "LANK":100,
-                 "LTIBAP":100,
-                 "LTIBAD":100,
+                 "LTIAP":100,
+                 "LTIAD":100,
                  "LHEE":100,
                  "LSMH":100,
                  "LTOE":100,
