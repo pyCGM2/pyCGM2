@@ -604,16 +604,16 @@ class Cgm1ManualOffsets(DecoratorModel):
             KNE = acq.GetPoint("RKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             THI = acq.GetPoint("RTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-            KJC = CGM2.cgCGM1LowerLimbs.chord((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= thighoffset )
+            KJC = CGM2.cgm.CGM.chord((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= thighoffset )
 
             # locate AJC
             ANK = acq.GetPoint("RANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             if thighoffset != 0 :
-                AJC = CGM2.cgCGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
+                AJC = CGM2.cgm.CGM.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
             else:
 
                 TIB = acq.GetPoint("RTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                AJC = CGM2.cgCGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
+                AJC = CGM2.cgm.CGM.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
 
 
             # create and add nodes to the technical referential
@@ -802,7 +802,7 @@ class KneeCalibrationDecorator(DecoratorModel):
 
                  # locate AJC
                 LANK = acq.GetPoint("LANK").GetValues()[i,:]
-                LAJCvalues[i,:] = CGM2.cgCGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKNE,beta= 0.0 )
+                LAJCvalues[i,:] = CGM2.cgm.CGM.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKNE,beta= 0.0 )
 
 
             # nodes
@@ -838,7 +838,7 @@ class KneeCalibrationDecorator(DecoratorModel):
 
                 # locate AJC
                 RANK = acq.GetPoint("RANK").GetValues()[i,:]
-                RAJCvalues[i,:] = CGM2.cgCGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKNE,beta= 0.0 )
+                RAJCvalues[i,:] = CGM2.cgm.CGM.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKNE,beta= 0.0 )
 
             # nodes
             self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
