@@ -24,88 +24,52 @@ from collections import OrderedDict
 
 if __name__ == "__main__":
 
-    MAIN_PATH = pyCGM2.CONFIG.MAIN_BENCHMARK_PATH + "True equinus\\S01\\CGM2.3Expert\\"
-    #MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\"
-
+    MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medial\\"
     staticFilename = "static.c3d"
-    gaitFilename= "gait trial 01.c3d"#"gait trial 01.c3d"
+    gaitFilename= "gait Trial 01.c3d"
+
+
     markerDiameter=14
     mp={
-    'Bodymass'   : 36.9,
-    'LeftLegLength' : 665.0,
-    'RightLegLength' : 655.0 ,
-    'LeftKneeWidth' : 102.7,
-    'RightKneeWidth' : 102.0,
-    'LeftAnkleWidth' : 64.5,
-    'RightAnkleWidth' : 63.0,
+    'Bodymass'   : 71.0,
+    'LeftLegLength' : 860.0,
+    'RightLegLength' : 865.0 ,
+    'LeftKneeWidth' : 102.0,
+    'RightKneeWidth' : 103.4,
+    'LeftAnkleWidth' : 75.3,
+    'RightAnkleWidth' : 72.9,
     'LeftSoleDelta' : 0,
     'RightSoleDelta' : 0,
     }
 
-    CONTENT_INPUTS_CGM2_3 ="""
-        {
-        "Translators" : {
-            "LASI":"",
-            "RASI":"",
-            "LPSI":"",
-            "RPSI":"",
-            "RTHI":"",
-            "RKNE":"",
-            "RTHIAP":"RTHAP",
-            "RTHIAD":"RTHAD",
-            "RTIB":"RTIBL",
-            "RANK":"",
-            "RTIBAP":"RTIAP",
-            "RTIBAD":"RTIAD",
-            "RHEE":"",
-            "RTOE":"",
-            "LTHI":"LTHL",
-            "LKNE":"",
-            "LTHIAP":"LTHAP",
-            "LTHIAD":"LTHAD",
-            "LTIB":"LTIBL",
-            "LANK":"",
-            "LTIBAP":"LTIAP",
-            "LTIBAD":"LTIAD",
-            "LHEE":"",
-            "LTOE":""
-            }
-        }
-      """
 
-
-    # --- Calibration ---
     acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
     model=cgm2.CGM2_3LowerLimbs()
     model.configure()
 
-    inputs = json.loads(CONTENT_INPUTS_CGM2_3,object_pairs_hook=OrderedDict)
-    translators = inputs["Translators"]
-
-
-    acqStatic =  btkTools.applyTranslators(acqStatic,translators)
-
-    btkTools.smartWriter(acqStatic, "calibration2.c3d")
-
     model.addAnthropoInputParameters(mp)
 
+    # ------ Calibration -------
     scp=modelFilters.StaticCalibrationProcedure(model)
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
-#    # cgm decorator
+    # cgm decorator
     modelDecorator.HipJointCenterDecorator(model).hara()
-#
-#    # final
-    modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara").compute()
+    modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both",cgm1Behaviour=True)
+    modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="both")
 
-    btkTools.smartWriter(acqStatic, "calibration.c3d")
+    # final
+    modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                       seLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara",
+                       useLeftKJCnode="LKJC_mid", useLeftAJCnode="LAJC_mid",
+                       useRightKJCnode="RKJC_mid", useRightAJCnode="RAJC_mid",
+                       markerDiameter=markerDiameter).compute()
 
     # ------ Fitting -------
     acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
-    acqGait =  btkTools.applyTranslators(acqGait,translators)
     # Motion FILTER
 
     modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
@@ -123,15 +87,9 @@ if __name__ == "__main__":
                                   globalFrameOrientation = globalFrame,
                                   forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
 
-
-    btkTools.smartWriter(acqGait, "fitting-cgm2_3e.c3d")
-
     # ---Marker decomp filter----
     mtf = modelFilters.TrackingMarkerDecompositionFilter(model,acqGait)
     mtf.decompose()
-
-    btkTools.smartWriter(acqGait, "fitting-cgm2_3e-decompose.c3d")
-
 
     # ------- OPENSIM IK --------------------------------------
 
@@ -146,13 +104,9 @@ if __name__ == "__main__":
                                             model,
                                             cgmCalibrationprocedure)
     oscf.addMarkerSet(markersetFile)
-    scalingOsim = oscf.build()
-    oscf.exportXml("OSIMTEST.osim")
-
+    scalingOsim = oscf.build(exportOsim=False)
 
     # --- fitting ---
-
-    #procedure
 
     cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model,expertMode = True)
 #    cgmFittingProcedure.updateMarkerWeight("LASI",100)
@@ -182,9 +136,7 @@ if __name__ == "__main__":
                                                       cgmFittingProcedure,
                                                       MAIN_PATH )
 
-    acqIK = osrf.run(acqGait,str(MAIN_PATH + gaitFilename ))
-
-    btkTools.smartWriter(acqIK,"fitting-cgm2_3e.c3d")
+    acqIK = osrf.run(acqGait,str(MAIN_PATH + gaitFilename ),exportSetUp=False)
 
     # -------- NEW MOTION FILTER ON IK MARKERS ------------------
 

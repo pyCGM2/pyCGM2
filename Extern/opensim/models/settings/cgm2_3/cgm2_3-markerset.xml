@@ -171,6 +171,14 @@
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
 				<fixed>false</fixed>
 			</Marker>
+			<Marker name="RTHAD">
+				<!--Body segment in the model on which the marker resides.-->
+				<body>femur_r</body>
+				<!--Location of a marker on the body segment.-->
+				<location> 0.0575402 -0.282133 -0.012113</location>
+				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
+				<fixed>false</fixed>
+			</Marker>
 			<Marker name="RTIAD">
 				<!--Body segment in the model on which the marker resides.-->
 				<body>femur_r</body>
