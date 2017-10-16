@@ -9,6 +9,9 @@ import os
 import numpy as np
 import logging
 import matplotlib.pyplot as plt
+
+import pyCGM2
+
 import btk
 import pdb
 
@@ -165,6 +168,7 @@ class CGM2_openSimTest():
 
         filename = config["dynamicTrial"][0]
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model)
+
         cgmFittingProcedure.updateMarkerWeight("LASI",100)
 
         iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\ikSetUp_template.xml"
@@ -354,5 +358,5 @@ class CGM2_openSimTest():
 if __name__ == "__main__":
 
     logging.info("######## PROCESS CGM2 ######")
-    #CGM2_openSimTest.kinematicFitting_oneFile_cgmProcedure()
-    CGM2_openSimTest.kinematicFitting_oneFile_generalProcedure()
+    CGM2_openSimTest.kinematicFitting_oneFile_cgmProcedure()
+    #CGM2_openSimTest.kinematicFitting_oneFile_generalProcedure()
