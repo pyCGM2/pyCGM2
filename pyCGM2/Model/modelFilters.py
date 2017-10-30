@@ -475,7 +475,7 @@ class ModelMotionFilter(object):
             for segName in self.m_procedure.definition:
                 segPicked=self.m_model.getSegment(segName)
                 for tfName in self.m_procedure.definition[segName]:
-                    if self.m_method == pyCGM2.enums.motionMethod.Sodervisk :
+                    if self.m_method == enums.motionMethod.Sodervisk :
                         pt1static=segPicked.getReferential(tfName).static.getNode_byLabel(self.m_procedure.definition[segName][tfName]['labels'][0]).m_global
                         pt2static=segPicked.getReferential(tfName).static.getNode_byLabel(self.m_procedure.definition[segName][tfName]['labels'][1]).m_global
                         pt3static=segPicked.getReferential(tfName).static.getNode_byLabel(self.m_procedure.definition[segName][tfName]['labels'][2]).m_global
@@ -499,13 +499,13 @@ class ModelMotionFilter(object):
                             a2=np.divide(a2,np.linalg.norm(a2))#a2/np.linalg.norm(a2)
 
                             x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName][tfName]['sequence'])
-                            frame=frame.Frame()
+                            cframe=frame.Frame()
 
-                            frame.m_axisX=x
-                            frame.m_axisY=y
-                            frame.m_axisZ=z
-                            frame.setRotation(R)
-                            frame.setTranslation(ptOrigin)
+                            cframe.m_axisX=x
+                            cframe.m_axisY=y
+                            cframe.m_axisZ=z
+                            cframe.setRotation(R)
+                            cframe.setTranslation(ptOrigin)
 
                         elif self.m_method == enums.motionMethod.Sodervisk :
                             Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(np.array([pt1static,pt2static,pt3static]),
@@ -513,14 +513,14 @@ class ModelMotionFilter(object):
                             R=np.dot(Ropt,segPicked.getReferential(tfName).static.getRotation())
                             tOri=np.dot(Ropt,segPicked.getReferential(tfName).static.getTranslation())+Lopt
 
-                            frame=frame.Frame()
-                            frame.setRotation(R)
-                            frame.setTranslation(tOri)
-                            frame.m_axisX=R[:,0]
-                            frame.m_axisY=R[:,1]
-                            frame.m_axisZ=R[:,2]
+                            cframe=frame.Frame()
+                            cframe.setRotation(R)
+                            cframe.setTranslation(tOri)
+                            cframe.m_axisX=R[:,0]
+                            cframe.m_axisY=R[:,1]
+                            cframe.m_axisZ=R[:,2]
 
-                        segPicked.getReferential(tfName).addMotionFrame(frame)
+                        segPicked.getReferential(tfName).addMotionFrame(cframe)
 
 
 
