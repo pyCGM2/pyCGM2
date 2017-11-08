@@ -263,13 +263,6 @@ class CGM2_1_calibrationTest():
         np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_us").m_local,
                                       model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
 
-
-
-
-
-
-
-
 if __name__ == "__main__":
 
     # CGM1 - custom

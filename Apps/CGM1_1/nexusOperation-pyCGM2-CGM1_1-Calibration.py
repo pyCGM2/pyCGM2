@@ -178,12 +178,12 @@ if __name__ == "__main__":
         # notice: cgm1Behaviour is enable mean effect on AJC location
         if staticMarkerConfiguration["leftMedialKneeFlag"]:
             logging.warning("CASE FOUND ===> Left Side - CGM1 - medial knee ")
-            modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="left",cgm1Behaviour=True)
+            modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic, markerDiameter=markerDiameter, side="left",cgm1Behaviour=True)
             useLeftKJCnodeLabel = "LKJC_mid"
             useLeftAJCnodeLabel = "LAJC_midKnee"
         if staticMarkerConfiguration["rightMedialKneeFlag"]:
             logging.warning("CASE FOUND ===> Right Side - CGM1 - medial knee ")
-            modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="right",cgm1Behaviour=True)
+            modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic, markerDiameter=markerDiameter, side="right",cgm1Behaviour=True)
             useRightKJCnodeLabel = "RKJC_mid"
             useRightAJCnodeLabel = "RAJC_midKnee"
 
