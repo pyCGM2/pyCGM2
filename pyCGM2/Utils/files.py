@@ -57,6 +57,9 @@ def saveJson(path, filename, content):
         with open(str(path+filename), 'w') as outfile:
             json.dump(content, outfile,indent=4)
 
+def openTranslators(DATA_PATH, translatorsFilename):
+    filename = openJson(DATA_PATH, translatorsFilename)
+    return filename["Translators"]
 
 def manage_pycgm2SessionInfos(DATA_PATH,subject):
 
