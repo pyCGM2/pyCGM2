@@ -44,10 +44,6 @@ class CGM(model.Model):
                               "LHipPower","RHipPower",
                               "LKneePower","RKneePower",]
 
-
-
-
-
     def __init__(self):
         super(CGM, self).__init__()
         self.m_useLeftTibialTorsion=False
@@ -366,9 +362,6 @@ class CGM1LowerLimbs(CGM):
         """
             Model configuration. Define Segment, joint, ...
         """
-
-
-
         self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
         self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI"])
         self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI"])
@@ -401,6 +394,103 @@ class CGM1LowerLimbs(CGM):
 
         #self.addJoint("RKneeAngles_cgm","Right Thigh", "Right Shank","YXZ")
         self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ")
+
+        # clinics
+        self.setClinicalDescriptor("LHip",enums.DataType.Angle, [0,1,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("LKnee",enums.DataType.Angle, [0,1,2],[+1.0,-1.0,-1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Angle, [0,2,1],[-1.0,-1.0,-1.0], [ np.radians(90),0.0,0.0])
+        self.setClinicalDescriptor("RHip",enums.DataType.Angle, [0,1,2],[-1.0,+1.0,+1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("RKnee",enums.DataType.Angle, [0,1,2],[+1.0,+1.0,+1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Angle, [0,2,1],[-1.0,+1.0,+1.0], [ np.radians(90),0.0,0.0])
+
+        self.setClinicalDescriptor("LPelvis",enums.DataType.Angle,[0,1,2],[1.0,1.0,-1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("RPelvis",enums.DataType.Angle,[0,1,2],[1.0,-1.0,+1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("Left Foot",enums.DataType.Angle,[0,2,1],[1.0,1.0,-1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("Right Foot",enums.DataType.Angle,[0,2,1],[1.0,-1.0,1.0], [0.0,0.0,0.0])
+
+        # distal Projection
+        self.setClinicalDescriptor("LHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("LHip",enums.DataType.Moment, [1,0,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RHip",enums.DataType.Moment, [1,0,2],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+
+        self.setClinicalDescriptor("LKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("LKnee",enums.DataType.Moment, [1,0,2],[-1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Moment, [1,0,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Force, [0,1,2],[-1.0,+1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Moment, [1,2,0],[1.0,-1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+
+        # proximal Projection
+        self.setClinicalDescriptor("LHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("LHip",enums.DataType.Moment, [1,0,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RHip",enums.DataType.Moment, [1,0,2],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+
+        self.setClinicalDescriptor("LKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("LKnee",enums.DataType.Moment, [1,0,2],[-1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Moment, [1,0,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Force, [0,1,2],[+1.0,+1.0,+1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Moment, [1,0,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,0,2],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+
+        # Global Projection
+        self.setClinicalDescriptor("LHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("LHip",enums.DataType.Moment, [1,0,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RHip",enums.DataType.Moment, [1,0,2],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+
+        self.setClinicalDescriptor("LKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("LKnee",enums.DataType.Moment, [1,0,2],[-1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Moment, [1,0,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Force, [0,1,2],[+1.0,+1.0,+1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Moment, [1,0,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,0,2],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+
+        # JCS Projection
+        self.setClinicalDescriptor("LHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("LHip",enums.DataType.Moment, [1,0,2],[1.0,-1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RHip",enums.DataType.Moment, [1,0,2],[1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+
+        self.setClinicalDescriptor("LKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("LKnee",enums.DataType.Moment, [1,0,2],[-1.0,-1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Moment, [1,0,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+
+
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Force, [0,1,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Moment, [1,2,0],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+
+        # JCS-dual Projection
+        self.setClinicalDescriptor("LHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("LHip",enums.DataType.Moment, [1,0,2],[1.0,-1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RHip",enums.DataType.Moment, [1,0,2],[1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+
+        self.setClinicalDescriptor("LKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("LKnee",enums.DataType.Moment, [1,0,2],[-1.0,-1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Moment, [1,0,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+
+
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+
+
 
 
     def calibrationProcedure(self):
@@ -2580,7 +2670,7 @@ class CGM1LowerLimbs(CGM):
             return val
 
     # ----- Motion --------------
-    def computeOptimizedSegmentMotion(self,aqui,segments, dictRef,dictAnat,motionMethod ):
+    def computeOptimizedSegmentMotion(self,aqui,segments, dictRef,dictAnat,motionMethod,options ):
         """
         warning : look at the origin, it s not the procimal joint ! this process break down the dependancy to other segment
         """
@@ -4318,399 +4408,6 @@ class CGM1LowerLimbs(CGM):
         finalRot= np.dot(R,rotAbdAdd)
 
         return  np.dot(finalRot,loc)+ank
-
-    # ---- finalize methods ------
-
-    def finalizeAbsoluteAngles(self,SegmentLabel,anglesValues):
-        """
-            Finalize absolute angles for clinical interpretation
-
-            :Parameters:
-               - `SegmentLabel` (str) - label of the segment
-               - `anglesValues` (numpy.array(:,3)) - angle values
-
-        """
-
-        values = np.zeros((anglesValues.shape))
-        if SegmentLabel == "Left Foot" :
-            values[:,0] =  np.rad2deg(  anglesValues[:,0])
-            values[:,1] =  np.rad2deg(  anglesValues[:,2])
-            values[:,2] = - np.rad2deg(  anglesValues[:,1])
-
-        elif SegmentLabel == "Right Foot" :
-            values[:,0] =  np.rad2deg(  anglesValues[:,0])
-            values[:,1] =  - np.rad2deg(  anglesValues[:,2])
-            values[:,2] =  np.rad2deg(  anglesValues[:,1])
-
-        elif SegmentLabel == "RPelvis" :
-            values[:,0] =  np.rad2deg(  anglesValues[:,0])
-            values[:,1] =  - np.rad2deg(  anglesValues[:,1])
-            values[:,2] =  np.rad2deg(  anglesValues[:,2])
-
-        elif SegmentLabel == "LPelvis" :
-            values[:,0] =  np.rad2deg(  anglesValues[:,0])
-            values[:,1] =  np.rad2deg(  anglesValues[:,1])
-            values[:,2] =  - np.rad2deg(  anglesValues[:,2])
-
-        return values
-
-
-
-    def finalizeJCS(self,jointLabel,jointValues):
-        """
-            Finalize joint angles for clinical interpretation
-
-            :Parameters:
-               - `SegmentLabel` (str) - label of the segment
-               - `jointValues` (numpy.array(:,3)) - angle values
-
-        """
-
-
-        values = np.zeros((jointValues.shape))
-
-
-        if jointLabel == "LHip" :  #LHPA=<-1(LHPA),-2(LHPA),-3(LHPA)> {*flexion, adduction, int. rot.			*}
-            values[:,0] = - np.rad2deg(  jointValues[:,0])
-            values[:,1] = - np.rad2deg(  jointValues[:,1])
-            values[:,2] = - np.rad2deg(  jointValues[:,2])
-
-        elif jointLabel == "LKnee" : # LKNA=<1(LKNA),-2(LKNA),-3(LKNA)-$LTibialTorsion>  {*flexion, varus, int. rot.		*}
-            values[:,0] = np.rad2deg(  jointValues[:,0])
-            values[:,1] = -np.rad2deg(  jointValues[:,1])
-            values[:,2] = -np.rad2deg(  jointValues[:,2])
-
-        elif jointLabel == "RHip" :  # RHPA=<-1(RHPA),2(RHPA),3(RHPA)>   {*flexion, adduction, int. rot.			*}
-            values[:,0] = - np.rad2deg(  jointValues[:,0])
-            values[:,1] =  np.rad2deg(  jointValues[:,1])
-            values[:,2] =  np.rad2deg(  jointValues[:,2])
-
-        elif jointLabel == "RKnee" : #  RKNA=<1(RKNA),2(RKNA),3(RKNA)-$RTibialTorsion>    {*flexion, varus, int. rot.		*}
-            values[:,0] = np.rad2deg(  jointValues[:,0])
-            values[:,1] = np.rad2deg(  jointValues[:,1])
-            values[:,2] = np.rad2deg(  jointValues[:,2])
-
-        elif jointLabel == "LAnkle":
-            values[:,0] = -1.0* np.rad2deg(  jointValues[:,0]  + np.radians(90))
-            values[:,1] = -1.0*np.rad2deg(  jointValues[:,2])
-            values[:,2] =  -1.0*np.rad2deg(  jointValues[:,1])
-
-        elif jointLabel == "RAnkle":
-            values[:,0] = -1.0* np.rad2deg(  jointValues[:,0]  + np.radians(90))
-            values[:,1] = np.rad2deg(  jointValues[:,2])
-            values[:,2] =  np.rad2deg(  jointValues[:,1])
-
-        else:
-            values[:,0] = np.rad2deg(  jointValues[:,0])
-            values[:,1] = np.rad2deg(  jointValues[:,1])
-            values[:,2] = np.rad2deg(  jointValues[:,2])
-
-        return values
-
-    def finalizeKinetics(self,jointLabel,forceValues,momentValues, projection):
-        """
-            Finalize kinetic ouputs for clinical interpretation
-
-            :Parameters:
-               - `jointLabel` (str) - label of the segment
-               - `forceValues` (numpy.array(:,3)) - global joint Force
-               - `momentValues` (numpy.array(:,3)) - global joint moment
-               - `projection` (pyCGM2.enums) - type of projection
-
-
-        """
-
-        valuesF = np.zeros((forceValues.shape))
-        valuesM = np.zeros((momentValues.shape))
-
-        if jointLabel == "LAnkle" :
-            if projection == enums.MomentProjection.Distal :
-                valuesF[:,0] = - forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] = - forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] =  - momentValues[:,2]
-                valuesM[:,2] = momentValues[:,0]
-
-            elif projection == enums.MomentProjection.Proximal:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-            elif projection == enums.MomentProjection.Global:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-            elif projection == enums.MomentProjection.JCS_Dual:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = momentValues[:,2] #WARNING ???
-                valuesM[:,2] = -momentValues[:,0]
-
-            elif projection == enums.MomentProjection.JCS:
-                valuesF[:,0] = - forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] = - forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] =  - momentValues[:,2]
-                valuesM[:,2] = - momentValues[:,0]
-
-
-        if jointLabel == "RAnkle" :
-            if projection == enums.MomentProjection.Distal :
-                valuesF[:,0] = - forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] = - forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = momentValues[:,2]
-                valuesM[:,2] = - momentValues[:,0]
-
-            elif projection == enums.MomentProjection.Proximal:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = - momentValues[:,0]
-                valuesM[:,2] = - momentValues[:,2]
-
-            elif projection == enums.MomentProjection.Global:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = - momentValues[:,0]
-                valuesM[:,2] = - momentValues[:,2]
-
-            elif  projection == enums.MomentProjection.JCS_Dual:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]  # prox = Tibia Y
-                valuesM[:,1] = momentValues[:,2] # dist = Foot Z
-                valuesM[:,2] = momentValues[:,0]
-
-            elif projection == enums.MomentProjection.JCS:
-                valuesF[:,0] = - forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] = - forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = momentValues[:,2]
-                valuesM[:,2] = momentValues[:,0]
-
-
-        if jointLabel == "LKnee" :
-            if projection == enums.MomentProjection.Distal :
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = - momentValues[:,1]
-                valuesM[:,1] = momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-            elif projection == enums.MomentProjection.Proximal:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = - momentValues[:,1]
-                valuesM[:,1] = momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-            elif projection == enums.MomentProjection.Global:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = - momentValues[:,1]
-                valuesM[:,1] = momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-            elif  projection == enums.MomentProjection.JCS_Dual:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-
-                valuesM[:,0] = - momentValues[:,1]
-                valuesM[:,1] = - momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-            elif  projection == enums.MomentProjection.JCS:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = - momentValues[:,1]
-                valuesM[:,1] = - momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-
-        if jointLabel == "LHip" :
-            if projection == enums.MomentProjection.Distal :
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-            elif projection == enums.MomentProjection.Proximal:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-            elif projection == enums.MomentProjection.Global:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-            elif projection == enums.MomentProjection.JCS_Dual:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = - momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-            elif  projection == enums.MomentProjection.JCS:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = - momentValues[:,0]
-                valuesM[:,2] = momentValues[:,2]
-
-
-
-
-        if jointLabel == "RKnee" :
-            if projection == enums.MomentProjection.Distal:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = - momentValues[:,1]
-                valuesM[:,1] = - momentValues[:,0]
-                valuesM[:,2] = - momentValues[:,2]
-
-
-            elif projection == enums.MomentProjection.Proximal:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = -momentValues[:,1]
-                valuesM[:,1] = -momentValues[:,0]
-                valuesM[:,2] = -momentValues[:,2]
-
-            elif projection == enums.MomentProjection.Global:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = -momentValues[:,1]
-                valuesM[:,1] = -momentValues[:,0]
-                valuesM[:,2] = -momentValues[:,2]
-
-            elif  projection == enums.MomentProjection.JCS_Dual:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = - momentValues[:,1]
-                valuesM[:,1] = momentValues[:,0]
-                valuesM[:,2] = - momentValues[:,2]
-
-            elif  projection == enums.MomentProjection.JCS:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = - momentValues[:,1]
-                valuesM[:,1] =  momentValues[:,0] # because cross (e3,e1) is a vector opposite to
-                valuesM[:,2] = - momentValues[:,2]
-
-
-
-        if jointLabel == "RHip" :
-            if projection == enums.MomentProjection.Distal:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = - momentValues[:,0]
-                valuesM[:,2] = - momentValues[:,2]
-
-            elif projection == enums.MomentProjection.Proximal:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = -momentValues[:,0]
-                valuesM[:,2] = -momentValues[:,2]
-
-            elif projection == enums.MomentProjection.Global:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = -momentValues[:,0]
-                valuesM[:,2] = -momentValues[:,2]
-
-            elif  projection == enums.MomentProjection.JCS_Dual:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] = momentValues[:,0]
-                valuesM[:,2] = - momentValues[:,2]
-
-            elif  projection == enums.MomentProjection.JCS:
-                valuesF[:,0] =  forceValues[:,0]
-                valuesF[:,1] =  forceValues[:,1]
-                valuesF[:,2] =  forceValues[:,2]
-
-                valuesM[:,0] = momentValues[:,1]
-                valuesM[:,1] =  momentValues[:,0]
-                valuesM[:,2] = - momentValues[:,2]
-
-
-        return valuesF,valuesM
 
 
     # --- opensim --------

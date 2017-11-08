@@ -7,10 +7,30 @@ import btk
 
 import frame
 
+from pyCGM2 import enums
+from pyCGM2.Model import motion
 from  pyCGM2.Tools import  btkTools
 from pyCGM2.Math import  derivation
 from  pyCGM2.Signal import signal_processing
 
+
+class ClinicalDescriptor(object):
+    def __init__(self,dataType,jointOrSegmentLabel, indexes,coefficients, offsets,**options):
+        self.type = dataType
+        self.label = jointOrSegmentLabel
+        self.infos = dict()
+        self.infos["SaggitalIndex"] = indexes[0]
+        self.infos["CoronalIndex"] = indexes[1]
+        self.infos["TransversalIndex"] = indexes[2]
+        self.infos["SaggitalCoeff"] = coefficients[0]
+        self.infos["CoronalCoeff"] = coefficients[1]
+        self.infos["TransversalCoeff"] = coefficients[2]
+        self.infos["SaggitalOffset"] = offsets[0]
+        self.infos["CoronalOffset"] = offsets[1]
+        self.infos["TransversalOffset"] = offsets[2]
+
+        if "projection" in options:
+            self.projection = options["projection"]
 
 
 # -------- ABSTRACT MODEL ---------
@@ -34,6 +54,7 @@ class Model(object):
 
         self.m_properties=dict()
         self.m_properties["CalibrationParameters"]=dict()
+        self.m_clinicalDescriptors= []
 
     def __repr__(self):
         return "Basis Model"
@@ -302,7 +323,173 @@ class Model(object):
         btkTools.smartAppendPoint(acqui,targetPointLabelY,valY,desc="")
         btkTools.smartAppendPoint(acqui,targetPointLabelZ,valZ,desc="")
 
+    def setClinicalDescriptor(self,jointOrSegmentLabel,dataType, indexes,coefficients, offsets,**options):
 
+
+        descriptor = ClinicalDescriptor(dataType, jointOrSegmentLabel, indexes,coefficients, offsets,**options)
+        self.m_clinicalDescriptors.append(descriptor)
+
+    def getClinicalDescriptor(self,dataType,jointOrSegmentLabel,projection=None):
+
+        for descriptor in self.m_clinicalDescriptors:
+            if projection is None:
+                if descriptor.type == dataType and descriptor.label ==jointOrSegmentLabel:
+                    infos= descriptor.infos
+                    break
+                else:
+                    infos = False
+            else:
+                if descriptor.type == dataType and descriptor.label ==jointOrSegmentLabel and descriptor.projection == projection:
+                    infos= descriptor.infos
+                    break
+                else:
+                    infos = False
+
+        if not infos:
+            logging.info("[pyCGM2] : descriptor [ type: %s - label: %s]  not found" %(dataType.name,jointOrSegmentLabel))
+
+        return infos
+
+
+
+
+
+class Model6Dof(Model):
+    """
+
+    """
+    def __init__(self):
+        super(Model6Dof, self).__init__()
+
+    def _calibrateTechnicalSegment(self,aquiStatic, segName, dictRef,frameInit,frameEnd, options=None):
+
+        segPicked=self.getSegment(segName)
+        for tfName in dictRef[segName]: # TF name
+
+            pt1=aquiStatic.GetPoint(str(dictRef[segName][tfName]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            pt2=aquiStatic.GetPoint(str(dictRef[segName][tfName]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            pt3=aquiStatic.GetPoint(str(dictRef[segName][tfName]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+            ptOrigin=aquiStatic.GetPoint(str(dictRef[segName][tfName]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+
+            a1=(pt2-pt1)
+            a1=np.divide(a1,np.linalg.norm(a1))
+
+            v=(pt3-pt1)
+            v=np.divide(v,np.linalg.norm(v))
+
+            a2=np.cross(a1,v)
+            a2=np.divide(a2,np.linalg.norm(a2))
+
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef[segName][tfName]['sequence'])
+
+            segPicked.referentials[-1].static.m_axisX=x # work on the last TF in the list : thus index -1
+            segPicked.referentials[-1].static.m_axisY=y
+            segPicked.referentials[-1].static.m_axisZ=z
+
+            segPicked.referentials[-1].static.setRotation(R)
+            segPicked.referentials[-1].static.setTranslation(ptOrigin)
+
+            #  - add Nodes in segmental static(technical)Frame -
+            for label in segPicked.m_markerLabels:
+                globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                segPicked.referentials[-1].static.addNode(label,globalPosition,positionType="Global")
+
+    def _calibrateAnatomicalSegment(self,aquiStatic, segName, dictAnatomic,frameInit,frameEnd, options=None):
+
+        # calibration of technical Frames
+        for segName in dictAnatomic:
+
+            segPicked=self.getSegment(segName)
+            tf=segPicked.getReferential("TF")
+
+            nd1 = str(dictAnatomic[segName]['labels'][0])
+            pt1 = tf.static.getNode_byLabel(nd1).m_global
+
+            nd2 = str(dictAnatomic[segName]['labels'][1])
+            pt2 = tf.static.getNode_byLabel(nd2).m_global
+
+            nd3 = str(dictAnatomic[segName]['labels'][2])
+            pt3 = tf.static.getNode_byLabel(nd3).m_global
+
+            ndO = str(dictAnatomic[segName]['labels'][3])
+            ptO = tf.static.getNode_byLabel(ndO).m_global
+
+            a1=(pt2-pt1)
+            a1=np.divide(a1,np.linalg.norm(a1))
+
+            v=(pt3-pt1)
+            v=np.divide(v,np.linalg.norm(v))
+
+            a2=np.cross(a1,v)
+            a2=np.divide(a2,np.linalg.norm(a2))
+
+            x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic[segName]['sequence'])
+
+            segPicked.anatomicalFrame.static.m_axisX=x # work on the last TF in the list : thus index -1
+            segPicked.anatomicalFrame.static.m_axisY=y
+            segPicked.anatomicalFrame.static.m_axisZ=z
+
+            segPicked.anatomicalFrame.static.setRotation(R)
+            segPicked.anatomicalFrame.static.setTranslation(ptO)
+
+            # --- relative rotation Technical Anatomical
+            tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,segPicked.anatomicalFrame.static.getRotation()))
+
+            # add tracking markers as node
+            for label in segPicked.m_markerLabels:
+                globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+                segPicked.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+
+
+    def computeMotionTechnicalFrame(self,aqui,segName,dictRef,method,options=None):
+        segPicked=self.getSegment(segName)
+        segPicked.getReferential("TF").motion =[]
+        if method == enums.motionMethod.Sodervisk :
+            tms= segPicked.m_tracking_markers
+            for i in range(0,aqui.GetPointFrameNumber()):
+                visibleMarkers = btkTools.getVisibleMarkersAtFrame(aqui,tms,i)
+
+                # constructuion of the input of sodervisk
+                arrayStatic = np.zeros((len(visibleMarkers),3))
+                arrayDynamic = np.zeros((len(visibleMarkers),3))
+
+                j=0
+                for vm in visibleMarkers:
+                    arrayStatic[j,:] = segPicked.getReferential("TF").static.getNode_byLabel(vm).m_global
+                    arrayDynamic[j,:] = aqui.GetPoint(vm).GetValues()[i,:]
+                    j+=1
+
+                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(arrayStatic,arrayDynamic)
+                R=np.dot(Ropt,segPicked.getReferential("TF").static.getRotation())
+                tOri=np.dot(Ropt,segPicked.getReferential("TF").static.getTranslation())+Lopt
+
+                cframe=frame.Frame()
+                cframe.setRotation(R)
+                cframe.setTranslation(tOri)
+                cframe.m_axisX=R[:,0]
+                cframe.m_axisY=R[:,1]
+                cframe.m_axisZ=R[:,2]
+
+                segPicked.getReferential("TF").addMotionFrame(copy.deepcopy(cframe) )
+        else:
+            raise Exception("[pyCGM2] : motion method doesn t exist")
+
+    def computeMotionAnatomicalFrame(self,aqui,segName,dictAnatomic,options=None):
+
+        segPicked=self.getSegment(segName)
+
+        segPicked.anatomicalFrame.motion=[]
+
+        ndO = str(dictAnatomic[segName]['labels'][3])
+        ptO = segPicked.getReferential("TF").getNodeTrajectory(ndO)
+
+        csFrame=frame.Frame()
+        for i in range(0,aqui.GetPointFrameNumber()):
+            R = np.dot(segPicked.getReferential("TF").motion[i].getRotation(), segPicked.getReferential("TF").relativeMatrixAnatomic)
+            csFrame.update(R,ptO)
+            segPicked.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
 # --------  MODEL COMPONANTS ---------

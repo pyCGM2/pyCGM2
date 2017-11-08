@@ -7,8 +7,6 @@ Created on Mon Oct 10 12:46:40 2016
 
 import numpy as np
 import scipy as sp
-
-import pdb
 import logging
 
 import pyCGM2
@@ -279,6 +277,114 @@ class CGM11_calibrationTest():
 #        np.testing.assert_almost_equal(model.mp["RightShankRotation"],model.mp_computed["RightShankRotationOffset"] , decimal = 3)
         #np.testing.assert_almost_equal(model.mp["RightTibialTorsion"],model.mp_computed["RightTibialTorsionOffset"] , decimal = 3)
 
+    @classmethod
+    def advancedCGM11_KneeMedKad(cls):
+        """
+
+
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\CGM1.1\medial\\"
+        staticFilename = "static-all.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+
+        optional_mp={
+        'InterAsisDistance'   : 0,
+        'LeftAsisTrocanterDistance' : 0,
+        'LeftThighRotation' : 0,
+        'LeftShankRotation' : 0 ,
+        'LeftTibialTorsion' : -10,
+        'RightAsisTrocanterDistance' : 0,
+        'RightThighRotation' : 0,
+        'RightShankRotation' : 0,
+        'RightTibialTorsion' : 15
+        }
+
+        model.addAnthropoInputParameters(mp,optional=optional_mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic)
+        #modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                   useLeftKJCnode="LKJC_mid", useLeftAJCnode="LAJC_midKnee",
+                                   useRightKJCnode="RKJC_mid", useRightAJCnode="RAJC_midKnee").compute()
+
+        btkTools.smartWriter(acqStatic,"advancedCGM11_KneeMedKad.c3d")
+
+    @classmethod
+    def advancedCGM11_KneeMedOnly(cls):
+        """
+
+
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\CGM1.1\medial\\"
+        staticFilename = "static-all.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+
+        optional_mp={
+        'InterAsisDistance'   : 0,
+        'LeftAsisTrocanterDistance' : 0,
+        'LeftThighRotation' : 0,
+        'LeftShankRotation' : 0 ,
+        'LeftTibialTorsion' : -10,
+        'RightAsisTrocanterDistance' : 0,
+        'RightThighRotation' : 0,
+        'RightShankRotation' : 0,
+        'RightTibialTorsion' : 15
+        }
+
+        model.addAnthropoInputParameters(mp,optional=optional_mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic)
+        #modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                   useLeftKJCnode="LKJC_mid",
+                                   useRightKJCnode="RKJC_mid").compute()
+
+        btkTools.smartWriter(acqStatic,"advancedCGM11_KneeMedOnly.c3d")
+
 
 
 if __name__ == "__main__":
@@ -289,4 +395,6 @@ if __name__ == "__main__":
     CGM11_calibrationTest.basicCGM1_manualThighShankRotation() # work
     CGM11_calibrationTest.basicCGM1_manualTibialTorsion() # work
     CGM11_calibrationTest.advancedCGM1_kadMed_manualTibialTorsion() # work
+    CGM11_calibrationTest.advancedCGM11_KneeMedKad()
+    CGM11_calibrationTest.advancedCGM11_KneeMedOnly()
     logging.info("######## PROCESS CGM 1.1 --- MANUAL --> Done ######")

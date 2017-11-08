@@ -90,18 +90,24 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
 
     values = np.nan_to_num(values)
 
-
-
     if isPointExist(acq,label):
         acq.GetPoint(label).SetValues(values)
         acq.GetPoint(label).SetDescription(desc)
         acq.GetPoint(label).SetType(PointType)
 
     else:
+        residuals = np.zeros((values.shape[0]))
+        for i in range(0, values.shape[0]):
+            if np.all(values[i,:] == np.zeros((3))):
+                residuals[i] = -1
+            else:
+                residuals[i] = 0
+
         new_btkPoint = btk.btkPoint(label,acq.GetPointFrameNumber())
         new_btkPoint.SetValues(values)
         new_btkPoint.SetDescription(desc)
         new_btkPoint.SetType(PointType)
+        new_btkPoint.SetResiduals(residuals)
         acq.AppendPoint(new_btkPoint)
 
 def clearPoints(acq, pointlabelList):
@@ -196,12 +202,21 @@ def checkMultipleSubject(acq):
 
 # --- Model -----
 
-def applyTranslators(acq, translators):
+def applyTranslators(acq, translators,keepInitial=False):
     """
     Rename marker from translators
     :Parameters:
         - `acq` (btkAcquisition) - a btk acquisition instance
         - `translators` (dict) - translators
+        - `keepInitial` (bool) - flag for avoiding to remove initial markers
+
+    example of translators :
+    	"Translators" : {
+		"LASI":"L_ASIS",
+		"RASI":"",
+          }
+
+        2nd line  means RASI is with the acq
 
     """
     acqClone = btk.btkAcquisition.Clone(acq)
@@ -226,11 +241,16 @@ def applyTranslators(acq, translators):
 
     # Add Modify markers to clone
     for it in translators.items():
-       wantedLabel,initialLabel = it[0],it[1]
-       if wantedLabel != initialLabel and initialLabel !="":
-           logging.debug("Initial point (%s) renamed (%s)  added into the c3d" %(str(initialLabel), str(wantedLabel)))
-           smartAppendPoint(acqClone,str(wantedLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
-           smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
+        wantedLabel,initialLabel = it[0],it[1]
+        logging.debug("wantedLabel (%s) initialLabel (%s)  " %(str(wantedLabel), str(initialLabel)))
+        if wantedLabel != initialLabel and initialLabel !="":
+            if isPointExist(acq,initialLabel):
+                logging.debug("Initial point (%s) renamed (%s)  added into the c3d" %(str(initialLabel), str(wantedLabel)))
+                smartAppendPoint(acqClone,str(wantedLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
+                if keepInitial:
+                    smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
+            else :
+                logging.warning("initialLabel (%s) doesn t exist  " %(str(initialLabel)))
 
     return acqClone
 
@@ -430,3 +450,11 @@ def hasChild(md,mdLabel):
             outMd = itMd
             break
     return outMd
+
+
+def getVisibleMarkersAtFrame(acq,markers,index):
+    visibleMarkers=[]
+    for marker in markers:
+        if acq.GetPoint(marker).GetResidual(index) !=-1:
+            visibleMarkers.append(marker)
+    return visibleMarkers

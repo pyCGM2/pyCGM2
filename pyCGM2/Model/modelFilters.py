@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import numpy as np
+import copy
 
 import btk
 
@@ -11,6 +12,7 @@ from pyCGM2 import enums
 from  pyCGM2.Math import euler,numeric
 import pyCGM2.Signal.signal_processing as pyCGM2signal
 from pyCGM2.Tools import  btkTools
+from pyCGM2.Utils import timer
 
 
 #-------- MODEL PROCEDURE  ----------
@@ -24,6 +26,7 @@ class GeneralCalibrationProcedure(object):
 
     def __init__(self):
        self.definition=dict()
+       self.anatomicalDefinition=dict()
 
     def setDefinition(self, segmentName,referentialLabel,
                       sequence=str(),
@@ -53,6 +56,20 @@ class GeneralCalibrationProcedure(object):
         else:
             self.definition[segmentName]=dict()
             self.definition[segmentName][referentialLabel]={'sequence':sequence, 'labels':[pointLabel1,pointLabel2,pointLabel3,pointLabelOrigin]}
+
+    def setAnatomicalDefinition(self, segmentName,
+                      sequence=str(),
+                      nodeLabel1=0,nodeLabel2=0, nodeLabel3=0,
+                      nodeLabelOrigin=0):
+        """
+            method defining how to construct a referential for a given segment
+
+        """
+        if segmentName in self.anatomicalDefinition:
+            self.anatomicalDefinition[segmentName]={'sequence':sequence, 'labels':[nodeLabel1,nodeLabel2,nodeLabel3,nodeLabelOrigin]}
+        else:
+            self.anatomicalDefinition[segmentName]=dict()
+            self.anatomicalDefinition[segmentName]={'sequence':sequence, 'labels':[nodeLabel1,nodeLabel2,nodeLabel3,nodeLabelOrigin]}
 
 
 class StaticCalibrationProcedure(object):
@@ -351,6 +368,11 @@ class ModelCalibrationFilter(object):
         self.m_model=iMod
         self.m_options=options
 
+    def setOption(self, label,value):
+        self.m_options[label] = value
+
+    def setBoolOption(self, label):
+        self.m_options[label] = True
 
 
     def compute(self, firstFrameOnly = True):
@@ -382,6 +404,12 @@ class ModelCalibrationFilter(object):
 
 
         else :
+            if "technicalReferentialOnly" in self.m_options.keys() and self.m_options["technicalReferentialOnly"]:
+                anatomicalCalibrationFlag = False
+            else:
+                anatomicalCalibrationFlag = True
+
+            # calibration of technical Frames
             for segName in self.m_procedure.definition:
 
 
@@ -415,14 +443,52 @@ class ModelCalibrationFilter(object):
                     segPicked.referentials[-1].static.setRotation(R)
                     segPicked.referentials[-1].static.setTranslation(ptOrigin)
 
-
-
                     #  - add Nodes in segmental static(technical)Frame -
                     for label in segPicked.m_markerLabels:
                         globalPosition=self.m_aqui.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-
                         segPicked.referentials[-1].static.addNode(label,globalPosition,positionType="Global")
+
+                # calibration of anatomicalFrame
+                if anatomicalCalibrationFlag:
+                    # calibration of technical Frames
+                    for segName in self.m_procedure.anatomicalDefinition:
+
+                        segPicked=self.m_model.getSegment(segName)
+                        tf=segPicked.getReferential("TF")
+
+                        nd1 = str(self.m_procedure.anatomicalDefinition[segName]['labels'][0])
+                        pt1 = tf.static.getNode_byLabel(nd1).m_global
+
+                        nd2 = str(self.m_procedure.anatomicalDefinition[segName]['labels'][1])
+                        pt2 = tf.static.getNode_byLabel(nd2).m_global
+
+                        nd3 = str(self.m_procedure.anatomicalDefinition[segName]['labels'][2])
+                        pt3 = tf.static.getNode_byLabel(nd3).m_global
+
+                        ndO = str(self.m_procedure.anatomicalDefinition[segName]['labels'][3])
+                        ptO = tf.static.getNode_byLabel(ndO).m_global
+
+                        a1=(pt2-pt1)
+                        a1=np.divide(a1,np.linalg.norm(a1))
+
+                        v=(pt3-pt1)
+                        v=np.divide(v,np.linalg.norm(v))
+
+                        a2=np.cross(a1,v)
+                        a2=np.divide(a2,np.linalg.norm(a2))
+
+                        x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.anatomicalDefinition[segName]['sequence'])
+
+                        segPicked.anatomicalFrame.static.m_axisX=x # work on the last TF in the list : thus index -1
+                        segPicked.anatomicalFrame.static.m_axisY=y
+                        segPicked.anatomicalFrame.static.m_axisZ=z
+
+                        segPicked.anatomicalFrame.static.setRotation(R)
+                        segPicked.anatomicalFrame.static.setTranslation(ptO)
+
+
+                        # --- relative rotation Technical Anatomical
+                        tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,segPicked.anatomicalFrame.static.getRotation()))
 
 
 #-------- MOTION FILTER  ----------
@@ -450,16 +516,73 @@ class ModelMotionFilter(object):
         self.m_method = method
         self.m_options = options
 
+
+    def setOption(self, label,value):
+        self.m_options[label] = value
+
+    def setBoolOption(self, label):
+        self.m_options[label] = True
+
+
     def segmentalCompute(self,segments):
+
         if str(self.m_model) != "Basis Model":
             self.m_model.computeOptimizedSegmentMotion(self.m_aqui,
                                              segments,
                                              self.m_procedure.definition[0],
                                              self.m_procedure.definition[1],
-                                             self.m_method)
+                                             self.m_method,
+                                             self.m_options)
         else:
-            pass
+            if "technicalReferentialOnly" in self.m_options.keys() and self.m_options["technicalReferentialOnly"]:
+                anatomicalCalibrationFlag = False
+            else:
+                anatomicalCalibrationFlag = True
 
+            for segName in segments:
+                segPicked=self.m_model.getSegment(segName)
+                segPicked.getReferential("TF").motion =[]
+                if self.m_method == enums.motionMethod.Sodervisk :
+                    tms= segPicked.m_tracking_markers
+                    for i in range(0,self.m_aqui.GetPointFrameNumber()):
+                        visibleMarkers = btkTools.getVisibleMarkersAtFrame(self.m_aqui,tms,i)
+
+                        arrayStatic = np.zeros((len(visibleMarkers),3))
+                        arrayDynamic = np.zeros((len(visibleMarkers),3))
+
+                        j=0
+                        for vm in visibleMarkers:
+                            arrayStatic[j,:] = segPicked.getReferential("TF").static.getNode_byLabel(vm).m_global
+                            arrayDynamic[j,:] = self.m_aqui.GetPoint(vm).GetValues()[i,:]
+                            j+=1
+
+                        Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(arrayStatic,arrayDynamic)
+                        R=np.dot(Ropt,segPicked.getReferential("TF").static.getRotation())
+                        tOri=np.dot(Ropt,segPicked.getReferential("TF").static.getTranslation())+Lopt
+
+                        cframe=frame.Frame()
+                        cframe.setRotation(R)
+                        cframe.setTranslation(tOri)
+                        cframe.m_axisX=R[:,0]
+                        cframe.m_axisY=R[:,1]
+                        cframe.m_axisZ=R[:,2]
+
+                        segPicked.getReferential("TF").addMotionFrame(copy.deepcopy(cframe) )
+
+            if anatomicalCalibrationFlag:
+                for segName in segments:
+                    segPicked=self.m_model.getSegment(segName)
+
+                    segPicked.anatomicalFrame.motion=[]
+
+                    ndO = str(self.m_procedure.anatomicalDefinition[segName]['labels'][3])
+                    ptO = segPicked.getReferential("TF").getNodeTrajectory(ndO)
+
+                    csFrame=frame.Frame()
+                    for i in range(0,self.m_aqui.GetPointFrameNumber()):
+                        R = np.dot(segPicked.getReferential("TF").motion[i].getRotation(), segPicked.getReferential("TF").relativeMatrixAnatomic)
+                        csFrame.update(R,ptO)
+                        segPicked.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
     def compute(self):
         """
@@ -472,46 +595,32 @@ class ModelMotionFilter(object):
                                       self.m_method,
                                       self.m_options)
         else :
-            for segName in self.m_procedure.definition:
-                segPicked=self.m_model.getSegment(segName)
-                for tfName in self.m_procedure.definition[segName]:
+            with timer.Timer("test"):
+                for segName in self.m_procedure.definition:
+
+                    segPicked=self.m_model.getSegment(segName)
+                    segPicked.getReferential("TF").motion =[]
+
                     if self.m_method == enums.motionMethod.Sodervisk :
-                        pt1static=segPicked.getReferential(tfName).static.getNode_byLabel(self.m_procedure.definition[segName][tfName]['labels'][0]).m_global
-                        pt2static=segPicked.getReferential(tfName).static.getNode_byLabel(self.m_procedure.definition[segName][tfName]['labels'][1]).m_global
-                        pt3static=segPicked.getReferential(tfName).static.getNode_byLabel(self.m_procedure.definition[segName][tfName]['labels'][2]).m_global
 
-                    for i in range(0,self.m_aqui.GetPointFrameNumber()):
-                        pt1=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName][tfName]['labels'][0])).GetValues()[i,:]
-                        pt2=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName][tfName]['labels'][1])).GetValues()[i,:]
-                        pt3=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName][tfName]['labels'][2])).GetValues()[i,:]
+                        tms= segPicked.m_tracking_markers
 
-                        ptOrigin=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName][tfName]['labels'][3])).GetValues()[i,:]
+                        for i in range(0,self.m_aqui.GetPointFrameNumber()):
+                            visibleMarkers = btkTools.getVisibleMarkersAtFrame(self.m_aqui,tms,i)
 
-                        if self.m_method == enums.motionMethod.Unknown :
+                            # constructuion of the input of sodervisk
+                            arrayStatic = np.zeros((len(visibleMarkers),3))
+                            arrayDynamic = np.zeros((len(visibleMarkers),3))
 
-                            a1=(pt2-pt1)
-                            a1=np.divide(a1,np.linalg.norm(a1)) #a1/np.linalg.norm(a1)
+                            j=0
+                            for vm in visibleMarkers:
+                                arrayStatic[j,:] = segPicked.getReferential("TF").static.getNode_byLabel(vm).m_global
+                                arrayDynamic[j,:] = self.m_aqui.GetPoint(vm).GetValues()[i,:]
+                                j+=1
 
-                            v=(pt3-pt1)
-                            v=np.divide(v,np.linalg.norm(v))#v/np.linalg.norm(v)
-
-                            a2=np.cross(a1,v)
-                            a2=np.divide(a2,np.linalg.norm(a2))#a2/np.linalg.norm(a2)
-
-                            x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName][tfName]['sequence'])
-                            cframe=frame.Frame()
-
-                            cframe.m_axisX=x
-                            cframe.m_axisY=y
-                            cframe.m_axisZ=z
-                            cframe.setRotation(R)
-                            cframe.setTranslation(ptOrigin)
-
-                        elif self.m_method == enums.motionMethod.Sodervisk :
-                            Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(np.array([pt1static,pt2static,pt3static]),
-                                                                          np.array([pt1,pt2,pt3]))
-                            R=np.dot(Ropt,segPicked.getReferential(tfName).static.getRotation())
-                            tOri=np.dot(Ropt,segPicked.getReferential(tfName).static.getTranslation())+Lopt
+                            Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(arrayStatic,arrayDynamic)
+                            R=np.dot(Ropt,segPicked.getReferential("TF").static.getRotation())
+                            tOri=np.dot(Ropt,segPicked.getReferential("TF").static.getTranslation())+Lopt
 
                             cframe=frame.Frame()
                             cframe.setRotation(R)
@@ -520,8 +629,27 @@ class ModelMotionFilter(object):
                             cframe.m_axisY=R[:,1]
                             cframe.m_axisZ=R[:,2]
 
-                        segPicked.getReferential(tfName).addMotionFrame(cframe)
+                            segPicked.getReferential("TF").addMotionFrame(copy.deepcopy(cframe) )
 
+                if "technicalReferentialOnly" in self.m_options.keys() and self.m_options["technicalReferentialOnly"]:
+                    anatomicalCalibrationFlag = False
+                else:
+                    anatomicalCalibrationFlag = True
+
+                if anatomicalCalibrationFlag:
+                    for segName in self.m_procedure.anatomicalDefinition:
+                        segPicked=self.m_model.getSegment(segName)
+
+                        segPicked.anatomicalFrame.motion=[]
+
+                        ndO = str(self.m_procedure.anatomicalDefinition[segName]['labels'][3])
+                        ptO = segPicked.getReferential("TF").getNodeTrajectory(ndO)
+
+                        csFrame=frame.Frame()
+                        for i in range(0,self.m_aqui.GetPointFrameNumber()):
+                            R = np.dot(segPicked.getReferential("TF").motion[i].getRotation(), segPicked.getReferential("TF").relativeMatrixAnatomic)
+                            csFrame.update(R,ptO)
+                            segPicked.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
 
@@ -683,8 +811,16 @@ class ModelJCSFilter(object):
                 jointValues = pyCGM2signal.lowPassFiltering(jointValues, self.m_aqui.GetPointFrequency(), order=order, fc = fc)
                 description = description + "lowPass filter"
 
-            jointFinalValues = self.m_model.finalizeJCS(jointLabel,jointValues)
-
+            descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,jointLabel)
+            if  descriptorInfos:
+                logging.info("joint label (%s) in clinical descriptors" %(jointLabel) )
+                jointFinalValues = np.zeros((jointValues.shape))
+                jointFinalValues[:,0] =  np.rad2deg(descriptorInfos["SaggitalCoeff"] * (jointValues[:,descriptorInfos["SaggitalIndex"]] + descriptorInfos["SaggitalOffset"]))
+                jointFinalValues[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (jointValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
+                jointFinalValues[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (jointValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
+            else:
+                logging.warning("no clinical descriptor for joint label (%s)" %(jointLabel) )
+                jointFinalValues = np.rad2deg(jointValues)
 
             fulljointLabel  = jointLabel + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Angles"
             btkTools.smartAppendPoint(self.m_aqui,
@@ -809,27 +945,59 @@ class ModelAbsoluteAnglesFilter(object):
                 absoluteAngleValues[i,1] = obliquity
                 absoluteAngleValues[i,2] = rotation
 
-            if side == enums.SegmentSide.Central:
+            segName = self.m_segmentLabels[index]
 
-                # Right
-                absoluteAngleValues_R = self.m_model.finalizeAbsoluteAngles("R"+self.m_segmentLabels[index],absoluteAngleValues)
-                fullAngleLabel  = "R" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "R" +self.m_angleLabels[index]+"Angles"
-                btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                     absoluteAngleValues_R,PointType=btk.btkPoint.Angle, desc=description)
 
-                # Left
-                absoluteAngleValues_L = self.m_model.finalizeAbsoluteAngles("L"+self.m_segmentLabels[index],absoluteAngleValues)
+            # case Left
+            descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,str("L"+segName))
+            if  descriptorInfos:
+                absoluteAngleValuesFinal = np.zeros((absoluteAngleValues.shape))
+                absoluteAngleValuesFinal[:,0] =  np.rad2deg(descriptorInfos["SaggitalCoeff"] * (absoluteAngleValues[:,descriptorInfos["SaggitalIndex"]] + descriptorInfos["SaggitalOffset"]))
+                absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
+                absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
+
                 fullAngleLabel  = "L" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "L" +self.m_angleLabels[index]+"Angles"
-                btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                     absoluteAngleValues_L,PointType=btk.btkPoint.Angle, desc=description)
-            else:
 
-                absoluteAngleValues = self.m_model.finalizeAbsoluteAngles(self.m_segmentLabels[index],absoluteAngleValues)
+                btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
+                                     absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+
+
+            # case Right
+            descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,str("R"+segName))
+            if  descriptorInfos:
+                absoluteAngleValuesFinal = np.zeros((absoluteAngleValues.shape))
+                absoluteAngleValuesFinal[:,0] =  np.rad2deg(descriptorInfos["SaggitalCoeff"] * (absoluteAngleValues[:,descriptorInfos["SaggitalIndex"]] + descriptorInfos["SaggitalOffset"]))
+                absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
+                absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
+
+                fullAngleLabel  = "R" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "R" +self.m_angleLabels[index]+"Angles"
+
+                btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
+                                     absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+
+
+            # no alteration of the segment name
+            descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,segName)
+            if  descriptorInfos:
+                absoluteAngleValuesFinal = np.zeros((absoluteAngleValues.shape))
+                absoluteAngleValuesFinal[:,0] =  np.rad2deg(descriptorInfos["SaggitalCoeff"] * (absoluteAngleValues[:,descriptorInfos["SaggitalIndex"]] + descriptorInfos["SaggitalOffset"]))
+                absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
+                absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
+
+                fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "L" +self.m_angleLabels[index]+"Angles"
+
+                btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
+                                     absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+
+            else:
+                logging.warning("no clinical descriptor for segment label (%s)" %(segName))
+                absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValues)
+
                 fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
                 btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                     absoluteAngleValues,PointType=btk.btkPoint.Angle, desc=description)
+                                     absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
-#        btkTools.smartWriter(self.m_aqui, "verifAbsAng.c3d")
+
 
 # ----- Force plates -----
 
@@ -1047,9 +1215,24 @@ class InverseDynamicFilter(object):
                             momentValues[i,order[2]] = np.dot(M[i],e3)
 
 
+                descriptorForceInfos = self.m_model.getClinicalDescriptor(enums.DataType.Force,jointLabel,projection = self.m_projection)
+                descriptorMomentInfos = self.m_model.getClinicalDescriptor(enums.DataType.Moment,jointLabel,projection = self.m_projection)
+                if descriptorForceInfos:
+                    finalForceValues = np.zeros((forceValues.shape))
+                    finalForceValues[:,0] =  descriptorForceInfos["SaggitalCoeff"] * (forceValues[:,descriptorForceInfos["SaggitalIndex"]] + descriptorForceInfos["SaggitalOffset"])
+                    finalForceValues[:,1] =  descriptorForceInfos["CoronalCoeff"] * (forceValues[:,descriptorForceInfos["CoronalIndex"]] + descriptorForceInfos["CoronalOffset"])
+                    finalForceValues[:,2] =  descriptorForceInfos["TransversalCoeff"] * (forceValues[:,descriptorForceInfos["TransversalIndex"]] + descriptorForceInfos["TransversalOffset"])
+                else:
+                    finalForceValues = forceValues
 
-                finalForceValues,finalMomentValues = self.m_model.finalizeKinetics(jointLabel,forceValues,momentValues,self.m_projection)
 
+                if descriptorMomentInfos:
+                    finalMomentValues = np.zeros((momentValues.shape))
+                    finalMomentValues[:,0] =  descriptorMomentInfos["SaggitalCoeff"] * (momentValues[:,descriptorMomentInfos["SaggitalIndex"]] + descriptorMomentInfos["SaggitalOffset"])
+                    finalMomentValues[:,1] =  descriptorMomentInfos["CoronalCoeff"] * (momentValues[:,descriptorMomentInfos["CoronalIndex"]] + descriptorMomentInfos["CoronalOffset"])
+                    finalMomentValues[:,2] =  descriptorMomentInfos["TransversalCoeff"] * (momentValues[:,descriptorMomentInfos["TransversalIndex"]] + descriptorMomentInfos["TransversalOffset"])
+                else:
+                    finalMomentValues = momentValues
 
                 fulljointLabel_force  = jointLabel + "Force_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Force"
 
@@ -1062,24 +1245,25 @@ class InverseDynamicFilter(object):
                                  fulljointLabel_moment,
                                  finalMomentValues,PointType=btk.btkPoint.Moment, desc="")
 
-                if self.m_exportMomentContributions:
-                    forceValues = np.zeros((nFrames,3)) # need only for finalizeKinetics
-
-                    for contIt  in ["internal","external", "inertia", "linearAcceleration","gravity", "externalDevices", "distalSegments","distalSegmentForces","distalSegmentMoments"] :
-                        momentValues = np.zeros((nFrames,3))
-                        for i in range(0,nFrames ):
-                            if self.m_projection == enums.MomentProjection.Global:
-                                momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:]
-                            else:
-                                momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T,
-                                                                                        self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:].T)
-
-                        finalForceValues,finalMomentValues = self.m_model.finalizeKinetics(jointLabel,forceValues,momentValues,self.m_projection)
-
-                        fulljointLabel_moment  = jointLabel + "Moment_" + pointLabelSuffix + "_" + contIt if pointLabelSuffix!="" else jointLabel+"Moment" + "_" + contIt
-                        btkTools.smartAppendPoint(self.m_aqui,
-                                         fulljointLabel_moment,
-                                         finalMomentValues,PointType=btk.btkPoint.Moment, desc= contIt + " Moment contribution")
+                # Todo - Validate
+                # if self.m_exportMomentContributions:
+                #     forceValues = np.zeros((nFrames,3)) # need only for finalizeKinetics
+                #
+                #     for contIt  in ["internal","external", "inertia", "linearAcceleration","gravity", "externalDevices", "distalSegments","distalSegmentForces","distalSegmentMoments"] :
+                #         momentValues = np.zeros((nFrames,3))
+                #         for i in range(0,nFrames ):
+                #             if self.m_projection == enums.MomentProjection.Global:
+                #                 momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:]
+                #             else:
+                #                 momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T,
+                #                                                                         self.m_model.getSegment(it.m_distalLabel).m_proximalMomentContribution[contIt][i,:].T)
+                #
+                #         finalForceValues,finalMomentValues = self.m_model.finalizeKinetics(jointLabel,forceValues,momentValues,self.m_projection)
+                #
+                #         fulljointLabel_moment  = jointLabel + "Moment_" + pointLabelSuffix + "_" + contIt if pointLabelSuffix!="" else jointLabel+"Moment" + "_" + contIt
+                #         btkTools.smartAppendPoint(self.m_aqui,
+                #                          fulljointLabel_moment,
+                #                          finalMomentValues,PointType=btk.btkPoint.Moment, desc= contIt + " Moment contribution")
 
 
 
@@ -1129,7 +1313,7 @@ class JointPowerFilter(object):
                 for i in range(0, nFrames):
                     power[i,2] = -1.0*(1.0 / self.m_model.mp["Bodymass"]) * self.m_scale * np.dot(self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:] ,relativeOmega[i,:])#
 
-
+                
                 fulljointLabel  = jointLabel + "Power_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Power"
                 btkTools.smartAppendPoint(self.m_aqui,
                                  fulljointLabel,

@@ -25,7 +25,7 @@ pyCGM2.CONFIG.addBtk()
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model import  modelFilters,modelDecorator, frame
-from pyCGM2.Model.CGM2 import cgm  
+from pyCGM2.Model.CGM2 import cgm
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Math import numeric
 

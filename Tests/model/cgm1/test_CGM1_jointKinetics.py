@@ -156,7 +156,14 @@ class CGM1_motionInverseDynamicsTest():
         #btkTools.smartWriter(acqGait,"testInvDyn.c3d")
 
         if plotFlag:
+            plotMoment(acqGait,"LHipMoment","LHipMoment_cgm1_6dof")
+            plotMoment(acqGait,"LKneeMoment","LKneeMoment_cgm1_6dof")
             plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof")
+
+            plotMoment(acqGait,"RHipMoment","RHipMoment_cgm1_6dof")
+            plotMoment(acqGait,"RKneeMoment","RKneeMoment_cgm1_6dof")
+            plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof")
+
             plt.show()
 
         # TEST ------
@@ -227,7 +234,14 @@ class CGM1_motionInverseDynamicsTest():
 
         #btkTools.smartWriter(acqGait,"testInvDyn.c3d")
         if plotFlag:
+            plotMoment(acqGait,"LHipMoment","LHipMoment_cgm1_6dof")
+            plotMoment(acqGait,"LKneeMoment","LKneeMoment_cgm1_6dof")
             plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof")
+
+            plotMoment(acqGait,"RHipMoment","RHipMoment_cgm1_6dof")
+            plotMoment(acqGait,"RKneeMoment","RKneeMoment_cgm1_6dof")
+            plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof")
+            plt.show()
 
         # TEST ------
         #compareKinetics(acqGait, 5, -5, 0.2, 40.0, 0.1 )
@@ -297,8 +311,14 @@ class CGM1_motionInverseDynamicsTest():
         #btkTools.smartWriter(acqGait,"testInvDyn.c3d")
 
         if plotFlag:
+            plotMoment(acqGait,"LHipMoment","LHipMoment_cgm1_6dof")
+            plotMoment(acqGait,"LKneeMoment","LKneeMoment_cgm1_6dof")
             plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof")
+
+            plotMoment(acqGait,"RHipMoment","RHipMoment_cgm1_6dof")
+            plotMoment(acqGait,"RKneeMoment","RKneeMoment_cgm1_6dof")
             plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof")
+            plt.show()
 
         # TEST ------
         compareKinetics(acqGait, 5, -5, 0.2, 40.0, 0.1 )
@@ -382,6 +402,7 @@ class CGM1_motionInverseDynamicsTest():
         if plotFlag:
             plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof","kadMedCGM1_distal-LAnkleMoment")
             plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof","kadMedCGM1_distal-RAnkleMoment")
+            plt.show()
 
         # TEST ------
         #compareKinetics(acqGait, 5, -5, 0.2, 60.0, 0.2 )
@@ -468,6 +489,7 @@ class CGM1_motionInverseDynamicsTest():
         if plotFlag:
             plotMoment(acqGait,"LAnkleMoment","LAnkleMoment_cgm1_6dof","kadMedCGM1_proximal-LAnkleMoment")
             plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof","kadMedCGM1_proximal-RAnkleMoment")
+            plt.show()
 #
 
 
@@ -547,6 +569,7 @@ class CGM1_motionInverseDynamicsTest():
             plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof","RAnkle")
             plotMoment(acqGait,"RKneeMoment","RKneeMoment_cgm1_6dof","RKnee")
             plotMoment(acqGait,"RHipMoment","RHipMoment_cgm1_6dof","RHip")
+            plt.show()
 
 
         btkTools.smartWriter(acqGait,"basicCGM1_JCS-test.c3d")
@@ -627,6 +650,7 @@ class CGM1_motionInverseDynamicsTest():
             plotMoment(acqGait,"RAnkleMoment","RAnkleMoment_cgm1_6dof","RAnkle")
             plotMoment(acqGait,"RKneeMoment","RKneeMoment_cgm1_6dof","RKnee")
             plotMoment(acqGait,"RHipMoment","RHipMoment_cgm1_6dof","RHip")
+            plt.show()
 
 
         btkTools.smartWriter(acqGait,"basicCGM1_JCS_Dual-test.c3d")
@@ -920,7 +944,7 @@ if __name__ == "__main__":
 
     CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_distal()
     CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_proximal()
-#    ##CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_global() # No success -  TODO : with Y as traveling axis, i got inversion on X and Y Force Components
+    #CGM1_motionInverseDynamics_pathologicalSubjectTest.basicCGM1_global() # No success -  TODO : with Y as traveling axis, i got inversion on X and Y Force Components
 
 
     #CGM1_motionInverseDynamics_batchprocessing_Test.basicCGM1_distal()

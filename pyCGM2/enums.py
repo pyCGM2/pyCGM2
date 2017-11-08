@@ -14,6 +14,14 @@ def isEnumMember(member, enum):
     return flag
 
 
+class DataType(Enum):
+    """  """
+    Marker = 0
+    Angle = 1
+    Segment = 3
+    Moment = 4
+    Force = 5
+    Power = 6
 
 
 class motionMethod(Enum):
@@ -21,8 +29,6 @@ class motionMethod(Enum):
     Unknown = 0
     Determinist = 1
     Sodervisk = 2
-
-
 
 
 class MomentProjection(Enum):

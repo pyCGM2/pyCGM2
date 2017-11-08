@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 
 
+import pyCGM2
 import model
-import CGM2
+
 
 from pyCGM2 import enums
 from pyCGM2.Tools import  btkTools
@@ -22,11 +23,184 @@ def setDescription(nodeLabel):
     else:
         return ""
 
+def chord (offset,A1,A2,A3,beta=0.0):
+    """
+        Modified Chord method
+
+        :Parameters:
+            - `offset` (double) - offset to apply from the base point
+            - `I` (double) - base point
+            - `J` (double) - top point
+            - `K` (double) - lateral point
+            - `beta` (double) - angle offset
+
+        .. note:: For locating Knee Joint centre, native CGM uses I=KNE, J=HJC and K=THI and offset = knee radius
+
+        **Reference**
+
+        Kabada, M., Ramakrishan, H., & Wooten, M. (1990). Measurement of lower extremity kinematics during level walking. Journal of Orthopaedic Research, 8, 383–392.
+
+    """
+
+    if (len(A1) != len(A2) or len(A1) != len(A3) or len(A2) != len(A3)):
+        raise exception ("length of input argument of chord function different")
+
+    arrayDim = len(A1.shape) # si 1 = array1d si 2 = array2d
+
+    if arrayDim == 2:
+        nrow = len(A1)
+        returnValues = np.zeros((nrow,3))
+    else:
+        nrow =1
+        returnValues = np.zeros((1,3))
 
 
+    for i in range(0,nrow):
+        I = A1[i,:] if arrayDim==2 else A1
+        J = A2[i,:] if arrayDim==2 else A2
+        K = A3[i,:] if arrayDim==2 else A3
+
+        if beta == 0.0:
+            y=np.divide((J-I),np.linalg.norm(J-I))
+            x=np.cross(y,K-I)
+            x=np.divide((x),np.linalg.norm(x))
+            z=np.cross(x,y)
+
+            matR=np.array([x,y,z]).T
+            ori=(J+I)/2.0
+
+            d=np.linalg.norm(I-J)
+            theta=np.arcsin(offset/d)*2.0
+            v_r=np.array([0, -d/2.0, 0])
+
+            rot=np.array([[1,0,0],[0,np.cos(theta),-1.0*np.sin(theta)],[0,np.sin(theta),np.cos(theta)] ])
+
+            P = np.dot(np.dot(matR,rot),v_r)+ori
+
+        else:
+
+            A=J
+            B=I
+            C=K
+            L=offset
+
+            eps =  0.001 #0.00000001
+
+            AB = np.linalg.norm(A-B)
+            alpha = np.arcsin(L/AB)
+            AO = np.sqrt(AB*AB-L*L*(1+np.cos(alpha)*np.cos(alpha)))
+
+            # chord avec beta nul
+            #P = chord(L,B,A,C,beta=0.0) # attention ma methode . attention au arg input
+
+            y=np.divide((J-I),np.linalg.norm(J-I))
+            x=np.cross(y,K-I)
+            x=np.divide((x),np.linalg.norm(x))
+            z=np.cross(x,y)
+
+            matR=np.array([x,y,z]).T
+            ori=(J+I)/2.0
+
+            d=np.linalg.norm(I-J)
+            theta=np.arcsin(offset/d)*2.0
+            v_r=np.array([0, -d/2.0, 0])
+
+            rot=np.array([[1,0,0],[0,np.cos(theta),-1.0*np.sin(theta)],[0,np.sin(theta),np.cos(theta)] ])
 
 
-# ---- CONVENIENT FUNCTIONS ------
+            P= np.dot(np.dot(matR,rot),v_r)+ori
+            # fin chord 0
+
+
+            Salpha = 0
+            diffBeta = np.abs(beta)
+            alphaincr = beta # in degree
+
+
+            # define P research circle in T plan
+            n = np.divide((A-B),AB)
+            O = A - np.dot(n, AO)
+            r = L*np.cos(alpha) #OK
+
+
+            # build segment
+            #T = BuildSegment(O,n,P-O,'zyx');
+            Z=np.divide(n,np.linalg.norm(n))
+            Y=np.divide(np.cross(Z,P-O),np.linalg.norm(np.cross(Z,P-O)))
+            X=np.divide(np.cross(Y,Z),np.linalg.norm(np.cross(Y,Z)))
+            Origin= O
+
+            # erreur ici, il manque les norm
+            T=np.array([[ X[0],Y[0],Z[0],Origin[0] ],
+                        [ X[1],Y[1],Z[1],Origin[1] ],
+                        [ X[2],Y[2],Z[2],Origin[2] ],
+                        [    0,   0,   0,       1.0  ]])
+
+            count = 0
+            while diffBeta > eps or count > 100:
+                if count > 100:
+                    logging.warning("count boundary achieve")
+
+
+                count = count + 1
+                idiff = diffBeta
+
+                Salpha = Salpha + alphaincr
+                Salpharad = Salpha * np.pi / 180.0
+                Pplan = np.array([  [r*np.cos(Salpharad)],
+                                    [ r*np.sin(Salpharad)],
+                                     [0],
+                                    [1]])
+                P = np.dot(T,Pplan)
+
+                P = P[0:3,0]
+                nBone = A-P
+
+                ProjC = np.cross(nBone,np.cross(C-P,nBone))
+                ProjB = np.cross(nBone,np.cross(B-P,nBone))
+
+
+                sens = np.dot(np.cross(ProjC,ProjB).T,nBone)
+
+
+                Betai = np.divide(sens,np.linalg.norm(sens))*np.arccos(np.divide((np.dot(ProjC.T,ProjB)),(np.linalg.norm(ProjC)*np.linalg.norm(ProjB))))*180.0/np.pi
+
+                diffBeta = np.abs(beta - Betai)
+
+                if (diffBeta - idiff) > 0:
+                    if count == 1:
+                        Salpha = Salpha - alphaincr
+                        alphaincr = -alphaincr
+                    else:
+                        alphaincr = -alphaincr / 2.0;
+
+        returnValues[i,:]=P
+
+    if arrayDim ==1:
+        out = returnValues[0,:]
+    else:
+        out = returnValues
+
+    return out
+
+def midPoint(acq,lateralMarkerLabel,medialMarkerLabel,offset=0):
+
+    midvalues = np.zeros((acq.GetPointFrameNumber(),3))
+
+    for i in range(0,acq.GetPointFrameNumber()):
+        lateral = acq.GetPoint(lateralMarkerLabel).GetValues()[i,:]
+        medial = acq.GetPoint(medialMarkerLabel).GetValues()[i,:]
+
+        if offset !=0:
+            v = medial-lateral
+            v=v/np.linalg.norm(v)
+
+            midvalues[i,:] = lateral + (offset)*v
+        else:
+            midvalues[i,:] = (lateral + medial)/2.0
+
+    return midvalues
+
 def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,sequence="YXZ",index=1):
 
     # onjective function : minimize variance of the knee varus valgus angle
@@ -354,6 +528,87 @@ def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0
     return HJC_L,HJC_R
 
 
+def davisRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0, basePlate = 2.0):
+    """
+        Hip joint centre regression according Davis et al, 1991
+
+        :Parameters:
+            - `mp_input` (dict) - dictionnary of anthropometric parameters inputed manually
+            - `mp_computed` (dict) - dictionnary of anthropometric parameters computed automatically by the CGM processing
+            - `markerDiameter` (double) - diameter of optoelectronic marker
+
+        .. Danger:: Don t use a marker set with different diameters.
+
+        **Reference**
+
+        Davis, R., Ounpuu, S., Tyburski, D., & Gage, J. (1991). A gait analysis data collection and reduction technique. Human Movement Science, 10, 575–587.
+
+
+    """
+
+    C=mp_computed["MeanlegLength"] * 0.115 - 15.3
+
+    HJCx_L= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2.0) * np.cos(0.314)
+    HJCy_L=-1*(C * np.sin(0.5) - (mp_computed["InterAsisDistance"] / 2.0))
+    HJCz_L= - C * np.cos(0.5) * np.cos(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2.0) * np.sin(0.314)
+
+    HJC_L=np.array([HJCx_L,HJCy_L,HJCz_L])
+
+    HJCx_R= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["RightAsisTrocanterDistance"] + markerDiameter/2.0) * np.cos(0.314)
+    HJCy_R=+1*(C * np.sin(0.5) - (mp_computed["InterAsisDistance"] / 2.0))
+    HJCz_R= -C * np.cos(0.5) * np.cos(0.314) - (mp_computed["RightAsisTrocanterDistance"] + markerDiameter/2.0) * np.sin(0.314)
+
+    HJC_R=np.array([HJCx_R,HJCy_R,HJCz_R])
+
+    return HJC_L,HJC_R
+
+def bellRegression(mp_input,mp_computed,  markerDiameter = 14.0, basePlate = 2.0, cgmReferential=True):
+    """
+        Hip joint centre regression from Bell and Brand et al, 2007
+
+        :Parameters:
+            - `mp_input` (dict) - dictionnary of the measured anthropometric parameters
+            - `mp_computed` (dict) - dictionnary of the cgm-computed anthropometric parameters
+            - `markerDiameter` (double) - diameter of the marker
+            - `basePlate` (double) - thickness of the base plate
+            - `cgmReferential` (bool) - flag indicating HJC position will be expressed in the CGM pelvis Coordinate system
+
+        Bell AL, Pederson DR, and Brand RA (1989) Prediction of hip joint center location from external landmarks.
+        Human Movement Science. 8:3-16:
+
+        Bell AL, Pedersen DR, Brand RA (1990) A Comparison of the Accuracy of Several hip Center Location Prediction Methods.
+        J Biomech. 23, 617-621.
+    """
+
+
+    HJCx_L= 0.36*mp_computed["InterAsisDistance"] # ML
+    HJCy_L= -0.19*mp_computed["InterAsisDistance"] #AP
+    HJCz_L=-0.19*mp_computed["InterAsisDistance"] # IS
+    HJC_L_bell=np.array([HJCx_L,HJCy_L,HJCz_L])
+
+    HJCx_R= -0.36*mp_computed["InterAsisDistance"] # ML
+    HJCy_R= -0.19*mp_computed["InterAsisDistance"] #AP
+    HJCz_R=-0.19*mp_computed["InterAsisDistance"] # IS
+    HJC_R_bell=np.array([HJCx_R,HJCy_R,HJCz_R])
+
+
+
+    if cgmReferential :
+        Rbell_cgm1=np.array([[0, 1, 0],
+                             [1, 0, 0],
+                             [0, 0, 1]])
+        HJC_L = np.dot(Rbell_cgm1,HJC_L_bell)
+        HJC_R = np.dot(Rbell_cgm1,HJC_R_bell)
+        logging.info("computation in cgm pelvis referential")
+        logging.info("Left HJC position from Bell [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2]))
+        logging.info("Right HJC position from Bell [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2]))
+    else:
+        HJC_L = HJC_L_bell
+        HJC_R = HJC_R_bell
+
+    return HJC_L,HJC_R
+
+
 # -------- ABSTRACT DECORATOR MODEL : INTERFACE ---------
 
 class DecoratorModel(model.Model):
@@ -407,7 +662,7 @@ class Kad(DecoratorModel):
 
         if side == "both" or side == "left":
 
-            if isinstance(self.model,CGM2.cgm.CGM):
+            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0 # look out, it's mp, not mp_computed.
                 if self.model.mp.has_key("LeftShankRotation") : self.model.mp["LeftShankRotation"] =0
@@ -435,13 +690,13 @@ class Kad(DecoratorModel):
     #            LKJC = LKNE + LKAXO * (self.model.mp["leftKneeWidth"]+markerDiameter )/2.0
                 if btkTools.isPointExist(self.acq,"LHJC"):
                     LHJC = self.acq.GetPoint("LHJC").GetValues()[i,:]
-                    LKJCvalues[i,:] = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,LKNEvalues[i,:],LHJC,LKAX, beta= 0.0 )
+                    LKJCvalues[i,:] = chord( (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,LKNEvalues[i,:],LHJC,LKAX, beta= 0.0 )
                 else:
                     LKJCvalues[i,:] = LKNEvalues[i,:] + LKAXO * (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0
 
                 # locate AJC
                 LANK = self.acq.GetPoint("LANK").GetValues()[i,:]
-                LAJCvalues[i,:] = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKAX,beta= 0.0 )
+                LAJCvalues[i,:] = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKAX,beta= 0.0 )
 
 
             # add nodes to referential
@@ -455,7 +710,7 @@ class Kad(DecoratorModel):
 
         if side == "both" or side == "right":
 
-            if isinstance(self.model,CGM2.cgm.CGM):
+            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
 
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0 # look out, it's mp, not mp_computed.
@@ -487,13 +742,13 @@ class Kad(DecoratorModel):
     #            RKJC = RKNE + RKAXO * (self.model.mp["rightKneeWidth"]+markerDiameter )/2.0
                 if btkTools.isPointExist(self.acq,"RHJC"):
                     RHJC = self.acq.GetPoint("RHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    RKJCvalues[i,:] = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,RKNEvalues[i,:],RHJC,RKAX,beta= 0.0 )
+                    RKJCvalues[i,:] = chord( (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,RKNEvalues[i,:],RHJC,RKAX,beta= 0.0 )
                 else:
                     RKJCvalues[i,:] = RKNEvalues[i,:] + RKAXO * (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0
 
                 # locate AJC
                 RANK = self.acq.GetPoint("RANK").GetValues()[i,:]
-                RAJCvalues[i,:] = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKAX,beta= 0.0 )
+                RAJCvalues[i,:] = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKAX,beta= 0.0 )
 
             # add nodes to referential
             self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKNE_kad",RKNEvalues.mean(axis=0),positionType="Global")
@@ -554,7 +809,7 @@ class Cgm1ManualOffsets(DecoratorModel):
 
             # zeroing of shankRotation if non-zero
             if shankoffset!=0:
-                if isinstance(self.model,CGM2.cgm.CGM):
+                if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                     if self.model.mp.has_key("LeftShankRotation") :
                         self.model.mp["LeftShankRotation"] = 0
                         logging.warning("Special CGM1 case - shank offset cancelled")
@@ -564,18 +819,18 @@ class Cgm1ManualOffsets(DecoratorModel):
             KNE = acq.GetPoint("LKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             THI = acq.GetPoint("LTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-            KJC = CGM2.cgm.CGM1LowerLimbs.chord((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= -1*thighoffset )
+            KJC = chord((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= -1*thighoffset )
 
 
             # locate AJC
             ANK = acq.GetPoint("LANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
             if thighoffset !=0 :
-                AJC = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= -1.*tibialTorsion )
+                AJC = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= -1.*tibialTorsion )
 
             else:
                 TIB = acq.GetPoint("LTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                AJC = CGM2.cgm.CGM1LowerLimbs.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
+                AJC = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
 
 
             # add nodes to referential
@@ -594,7 +849,7 @@ class Cgm1ManualOffsets(DecoratorModel):
 
             # zeroing of shankRotation if non-zero
             if shankoffset!=0:
-                if isinstance(self.model,CGM2.cgm.CGM):
+                if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                     if self.model.mp.has_key("RightShankRotation") :
                         self.model.mp["RightShankRotation"] = 0
                         logging.warning("Special CGM1 case - shank offset cancelled")
@@ -734,7 +989,122 @@ class HipJointCenterDecorator(DecoratorModel):
             pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Hara").m_global
             self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Hara",pos_R, positionType="Global")
 
+    def davis(self, side="both"):
+        """
+            Use of the Davis's regressions
 
+            :Parameters:
+               - `side` (str) - body side
+
+        """
+
+        self.model.decoratedModel = True
+
+        LHJC_dav,RHJC_dav=davisRegression(self.model.mp,self.model.mp_computed)
+
+        if side == "both":
+
+            # add nodes to pelvis
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Davis",LHJC_dav, positionType="Local")
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_Davis",RHJC_dav, positionType="Local")
+
+            # add nodes Thigh
+            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Davis").m_global
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Davis",pos_L, positionType="Global")
+
+            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Davis").m_global
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Davis",pos_R, positionType="Global")
+
+
+        elif side == "left":
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Davis",LHJC_dav, positionType="Local")
+            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Davis").m_global
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Davis",pos_L, positionType="Global")
+
+        elif side == "right":
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_Davis",RHJC_dav, positionType="Local")
+            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Davis").m_global
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Davis",pos_R, positionType="Global")
+
+    def bell(self, side="both"):
+        """
+            Use of the Bell's regressions
+
+            :Parameters:
+               - `side` (str) - body side
+
+        """
+
+        self.model.decoratedModel = True
+
+        LHJC_bell,RHJC_bell=bellRegression(self.model.mp,self.model.mp_computed)
+
+        if side == "both":
+
+            # add nodes to pelvis
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Bell",LHJC_bell, positionType="Local")
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Bell",RHJC_bell, positionType="Local")
+
+
+            # add nodes Thigh
+            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Bell").m_global
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Bell",pos_L, positionType="Global")
+
+            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Bell").m_global
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("LHJC_Bell",pos_R, positionType="Global")
+
+
+        elif side == "left":
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Bell",LHJC_bell, positionType="Local")
+            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Bell").m_global
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Bell",pos_L, positionType="Global")
+
+
+        elif side == "right":
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Bell",RHJC_bell, positionType="Local")
+            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Bell").m_global
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("LHJC_Bell",pos_R, positionType="Global")
+
+    def greatTrochanterOffset(self,acq, offset = 89.0,side="both",
+                    leftGreatTrochLabel="LGTR", rightGreatTrochLabel="LKNM",
+                    markerDiameter = 14):
+        """
+
+        """
+        # TODO : coding exception if label doesn t find.
+
+
+        self.model.decoratedModel = True
+
+        if side=="both" or side=="left":
+
+            LKNM = acq.GetPoint("LKNM").GetValues()
+            LKNE = acq.GetPoint("LKNE").GetValues()
+            LGTR = acq.GetPoint("LGTR").GetValues()
+
+            LHJCvalues = chord ((offset+markerDiameter/2.0),LGTR,LKNM,LKNE,beta=0.0)
+
+            # nodes
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_gt",LHJCvalues.mean(axis=0), positionType="Global")
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_gt",LHJCvalues.mean(axis=0), positionType="Global")
+
+            # marker
+            btkTools.smartAppendPoint(acq,"LHJC_GT",LHJCvalues, desc="GT")
+
+        if side=="both" or side=="right":
+
+            RKNM = acq.GetPoint("RKNM").GetValues()
+            RKNE = acq.GetPoint("RKNE").GetValues()
+            RGTR = acq.GetPoint("RGTR").GetValues()
+
+            RHJCvalues = chord ((offset+markerDiameter/2.0),RGTR,RKNM,RKNE,beta=0.0)
+
+            # nodes
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_gt",RHJCvalues.mean(axis=0), positionType="Global")
+            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_gt",RHJCvalues.mean(axis=0), positionType="Global")
+
+            # marker
+            btkTools.smartAppendPoint(acq,"RHJC_GT",RHJCvalues, desc="GT")
 
 
 class KneeCalibrationDecorator(DecoratorModel):
@@ -749,61 +1119,104 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         super(KneeCalibrationDecorator,self).__init__(iModel)
 
-
-
-    def midCondyles(self,acq, side="both",
+    def midCondyles_KAD(self,acq, side="both",
                     leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LKNM",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RKNM",
-                    markerDiameter = 14, withNoModelParameter=False, cgm1Behaviour=False):
+                    markerDiameter = 14):
         """
-            Compute Knee joint centre from mid condyles.
-
-            .. note:: AJC might be relocate, like KAD processing if cgm1Behaviour flag enable
+            Compute Knee joint centre from mid condyles and relocate AJC like KAD process.
 
             :Parameters:
                 - `acq` (btkAcquisition) - a btk acquisition instance of a static c3d
                 - `side` (str) - body side
                 - `leftLateralKneeLabel` (str) -  label of the left lateral knee marker
                 - `leftMedialKneeLabel` (str) -  label of the left medial knee marker
-                - `withNoModelParameter` (bool) -  use mid position directly instead of applying an offset along mediolateral axis
-                - `cgm1Behaviour` (bool) -  relocate AJC
+
 
         """
         # TODO : coding exception if label doesn t find.
 
-        ff = acq.GetFirstFrame()
 
-        frameInit =  acq.GetFirstFrame()-ff
-        frameEnd = acq.GetLastFrame()-ff+1
-
-        #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
-
-        LKJCvalues = np.zeros((acq.GetPointFrameNumber(),3))
-        RKJCvalues = np.zeros((acq.GetPointFrameNumber(),3))
-
-        LAJCvalues = np.zeros((acq.GetPointFrameNumber(),3))
-        RAJCvalues = np.zeros((acq.GetPointFrameNumber(),3))
 
         if side=="both" or side=="left":
 
             # CGM specification
-            if isinstance(self.model,CGM2.cgm.CGM):
+            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0
 
-            for i in range(0,acq.GetPointFrameNumber()):
-                LKNE = acq.GetPoint(leftLateralKneeLabel).GetValues()[i,:]
-                LKNM = acq.GetPoint(leftMedialKneeLabel).GetValues()[i,:]
+            LKJCvalues = midPoint(acq,leftLateralKneeLabel,leftMedialKneeLabel,offset=(self.model.mp["LeftKneeWidth"]+markerDiameter)/2.0)
 
-                v = LKNM-LKNE
-                v=v/np.linalg.norm(v)
+            LKNM = acq.GetPoint(leftMedialKneeLabel).GetValues()
+            LKNE = acq.GetPoint(leftLateralKneeLabel).GetValues()
+            LANK = acq.GetPoint("LANK").GetValues()
 
-                LKJCvalues[i,:] = LKNE + ((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0)*v
+            LAJCvalues = chord ((self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0,LANK,LKJCvalues,LKNE,beta=0.0)
 
-                 # locate AJC
-                LANK = acq.GetPoint("LANK").GetValues()[i,:]
-                LAJCvalues[i,:] = CGM2.cgm.CGM.chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKNE,beta= 0.0 )
+            # nodes
+            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
+            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
 
+            # marker
+            btkTools.smartAppendPoint(acq,"LKJC_MID",LKJCvalues, desc="MID")
+
+            # add nodes to referential
+            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_midKnee",LAJCvalues.mean(axis =0),positionType="Global")
+
+
+
+        if side=="both" or side=="right":
+
+            # CGM specification
+            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+                # cancel shankRotation and thighRotation offset if contain a previous non-zero values
+                if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0
+
+
+            RKJCvalues = midPoint(acq,rightLateralKneeLabel,rightMedialKneeLabel,offset=(self.model.mp["RightKneeWidth"]+markerDiameter)/2.0)
+
+            RKNM = acq.GetPoint(rightMedialKneeLabel).GetValues()
+            RKNE = acq.GetPoint(rightLateralKneeLabel).GetValues()
+            RANK = acq.GetPoint("RANK").GetValues()
+
+            RAJCvalues = chord ((self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0,RANK,RKJCvalues,RKNE,beta=0.0)
+
+            # nodes
+            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
+            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
+            #marker
+            btkTools.smartAppendPoint(acq,"RKJC_MID",RKJCvalues, desc="MID")
+
+            # add nodes to referential
+            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_midKnee",RAJCvalues.mean(axis =0),positionType="Global")
+
+    def midCondyles(self,acq, side="both",
+                    leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LKNM",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RKNM",
+                    markerDiameter = 14,noMp=False):
+        """
+            Compute Knee joint centre from mid condyles.
+
+
+            :Parameters:
+                - `acq` (btkAcquisition) - a btk acquisition instance of a static c3d
+                - `side` (str) - body side
+                - `leftLateralKneeLabel` (str) -  label of the left lateral knee marker
+                - `leftMedialKneeLabel` (str) -  label of the left medial knee marker
+
+
+        """
+        # TODO : coding exception if label doesn t find.
+
+        self.model.decoratedModel = True
+
+        if side=="both" or side=="left":
+
+            # CGM specification
+            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
+                # cancel shankRotation and thighRotation offset if contain a previous non-zero values
+                if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0
+
+            LKJCvalues = midPoint(acq,leftLateralKneeLabel,leftMedialKneeLabel,offset=(self.model.mp["LeftKneeWidth"]+markerDiameter)/2.0)
 
             # nodes
             self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
@@ -814,42 +1227,23 @@ class KneeCalibrationDecorator(DecoratorModel):
 
 
 
-            # add nodes to referential
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_midKnee",LAJCvalues.mean(axis =0),positionType="Global")
-
-
-
         if side=="both" or side=="right":
 
             # CGM specification
-            if isinstance(self.model,CGM2.cgm.CGM):
+            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0
 
-            for i in range(0,acq.GetPointFrameNumber()):
 
-                RKNE = acq.GetPoint(rightLateralKneeLabel).GetValues()[i,:]
-                RKNM = acq.GetPoint(rightMedialKneeLabel).GetValues()[i,:]
-
-                v = RKNM-RKNE
-                v=v/np.linalg.norm(v)
-
-                RKJCvalues[i,:] = RKNE + ((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0)*v
-
-                # locate AJC
-                RANK = acq.GetPoint("RANK").GetValues()[i,:]
-                RAJCvalues[i,:] = CGM2.cgm.CGM.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKNE,beta= 0.0 )
+            RKJCvalues = midPoint(acq,rightLateralKneeLabel,rightMedialKneeLabel,offset=(self.model.mp["RightKneeWidth"]+markerDiameter)/2.0)
 
             # nodes
             self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
             self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
+
             #marker
             btkTools.smartAppendPoint(acq,"RKJC_MID",RKJCvalues, desc="MID")
 
-
-
-            # add nodes to referential
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_midKnee",RAJCvalues.mean(axis =0),positionType="Global")
 
 
     def sara(self,side,**kwargs):
@@ -1022,65 +1416,42 @@ class AnkleCalibrationDecorator(DecoratorModel):
         """
 
 
-        ff = acq.GetFirstFrame()
-
-        frameInit =  acq.GetFirstFrame()-ff
-        frameEnd = acq.GetLastFrame()-ff+1
-
         #self.model.nativeCgm1 = False
         self.model.decoratedModel = True
 
-        LAJCvalues = np.zeros((acq.GetPointFrameNumber(),3))
-        RAJCvalues = np.zeros((acq.GetPointFrameNumber(),3))
 
         if side=="both" or side=="left":
 
             # CGM specification
-            if isinstance(self.model,CGM2.cgm.CGM):
+            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 self.model.m_useLeftTibialTorsion=True
                 if self.model.mp.has_key("LeftTibialTorsion") : self.model.mp["LeftTibialTorsion"] =0
 
-            for i in range(0,acq.GetPointFrameNumber()):
-                LANK = acq.GetPoint(leftLateralAnkleLabel).GetValues()[i,:]
-                LMED = acq.GetPoint(leftMedialAnkleLabel).GetValues()[i,:]
-
-                v = LMED-LANK
-                v=v/np.linalg.norm(v)
-
-                LAJCvalues[i,:] = LANK + ((self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0)*v
+            LAJCvalues = midPoint(acq,leftLateralAnkleLabel,leftMedialAnkleLabel,offset=(self.model.mp["LeftAnkleWidth"]+markerDiameter)/2.0)
 
             # add node
             self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
+            self.model.getSegment("Left Foot").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
 
-            if repr(self.model) == "LowerLimb CGM1":
-                self.model.getSegment("Left Foot").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
+            # if repr(self.model) == "LowerLimb CGM1":
+            #     self.model.getSegment("Left Foot").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
             #
             btkTools.smartAppendPoint(acq,"LAJC_MID",LAJCvalues, desc="MID")
 
-
-
-
         if side=="both" or side=="right":
 
-
             # CGM specification
-            if isinstance(self.model,CGM2.cgm.CGM):
+            if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 self.model.m_useRightTibialTorsion=True
                 if self.model.mp.has_key("RightTibialTorsion") : self.model.mp["RightTibialTorsion"] =0
 
-            for i in range(0,acq.GetPointFrameNumber()):
-                RANK = acq.GetPoint(rightLateralAnkleLabel).GetValues()[i,:]
-                RMED = acq.GetPoint(rightMedialAnkleLabel).GetValues()[i,:]
-
-                v = RMED-RANK
-                v=v/np.linalg.norm(v)
-
-                RAJCvalues[i,:] =  RANK + ((self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0)*v
-
+            RAJCvalues = midPoint(acq,rightLateralAnkleLabel,rightMedialAnkleLabel,offset=(self.model.mp["RightAnkleWidth"]+markerDiameter)/2.0)
 
             self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
-            if repr(self.model) == "LowerLimb CGM1":
-                self.model.getSegment("Right Foot").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
+            self.model.getSegment("Right Foot").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
+
+            # if repr(self.model) == "LowerLimb CGM1":
+            #     self.model.getSegment("Right Foot").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
 
             btkTools.smartAppendPoint(acq,"RAJC_MID",RAJCvalues, desc="MID")
 
