@@ -69,182 +69,6 @@ class CGM(model.Model):
                 logging.warning( "power (%s) suffixed (.OLD)" %(it.GetLabel()))
                 it.SetLabel(it.GetLabel()+".OLD")
 
-    @classmethod
-    def hipJointCenters(cls,mp_input,mp_computed,markerDiameter):
-        """
-            Hip joint centre regression according Davis et al, 1991
-
-            :Parameters:
-                - `mp_input` (dict) - dictionnary of anthropometric parameters inputed manually
-                - `mp_computed` (dict) - dictionnary of anthropometric parameters computed automatically by the CGM processing
-                - `markerDiameter` (double) - diameter of optoelectronic marker
-
-            .. Danger:: Don t use a marker set with different diameters.
-
-            **Reference**
-
-            Davis, R., Ounpuu, S., Tyburski, D., & Gage, J. (1991). A gait analysis data collection and reduction technique. Human Movement Science, 10, 575–587.
-
-
-        """
-
-        C=mp_computed["MeanlegLength"] * 0.115 - 15.3
-
-        HJCx_L= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2.0) * np.cos(0.314)
-        HJCy_L=-1*(C * np.sin(0.5) - (mp_computed["InterAsisDistance"] / 2.0))
-        HJCz_L= - C * np.cos(0.5) * np.cos(0.314) - (mp_computed["LeftAsisTrocanterDistance"] + markerDiameter/2.0) * np.sin(0.314)
-
-        HJC_L=np.array([HJCx_L,HJCy_L,HJCz_L])
-
-        HJCx_R= C * np.cos(0.5) * np.sin(0.314) - (mp_computed["RightAsisTrocanterDistance"] + markerDiameter/2.0) * np.cos(0.314)
-        HJCy_R=+1*(C * np.sin(0.5) - (mp_computed["InterAsisDistance"] / 2.0))
-        HJCz_R= -C * np.cos(0.5) * np.cos(0.314) - (mp_computed["RightAsisTrocanterDistance"] + markerDiameter/2.0) * np.sin(0.314)
-
-        HJC_R=np.array([HJCx_R,HJCy_R,HJCz_R])
-
-        return HJC_L,HJC_R
-
-    @classmethod
-    def chord (cls,offset,I,J,K,beta=0.0):
-        """
-            Modified Chord method
-
-            :Parameters:
-                - `offset` (double) - offset to apply from the base point
-                - `I` (double) - base point
-                - `J` (double) - top point
-                - `K` (double) - lateral point
-                - `beta` (double) - angle offset
-
-            .. note:: For locating Knee Joint centre, native CGM uses I=KNE, J=HJC and K=THI and offset = knee radius
-
-            **Reference**
-
-            Kabada, M., Ramakrishan, H., & Wooten, M. (1990). Measurement of lower extremity kinematics during level walking. Journal of Orthopaedic Research, 8, 383–392.
-
-        """
-
-        if beta == 0.0:
-            y=np.divide((J-I),np.linalg.norm(J-I))
-            x=np.cross(y,K-I)
-            x=np.divide((x),np.linalg.norm(x))
-            z=np.cross(x,y)
-
-            matR=np.array([x,y,z]).T
-            ori=(J+I)/2.0
-
-            d=np.linalg.norm(I-J)
-            theta=np.arcsin(offset/d)*2.0
-            v_r=np.array([0, -d/2.0, 0])
-
-            rot=np.array([[1,0,0],[0,np.cos(theta),-1.0*np.sin(theta)],[0,np.sin(theta),np.cos(theta)] ])
-
-
-            return np.dot(np.dot(matR,rot),v_r)+ori
-
-        else:
-
-            A=J
-            B=I
-            C=K
-            L=offset
-
-
-            eps =  0.001 #0.00000001
-
-
-            AB = np.linalg.norm(A-B)
-            alpha = np.arcsin(L/AB)
-            AO = np.sqrt(AB*AB-L*L*(1+np.cos(alpha)*np.cos(alpha)))
-
-            # chord avec beta nul
-            #P = chord(L,B,A,C,beta=0.0) # attention ma methode . attention au arg input
-
-            y=np.divide((J-I),np.linalg.norm(J-I))
-            x=np.cross(y,K-I)
-            x=np.divide((x),np.linalg.norm(x))
-            z=np.cross(x,y)
-
-            matR=np.array([x,y,z]).T
-            ori=(J+I)/2.0
-
-            d=np.linalg.norm(I-J)
-            theta=np.arcsin(offset/d)*2.0
-            v_r=np.array([0, -d/2.0, 0])
-
-            rot=np.array([[1,0,0],[0,np.cos(theta),-1.0*np.sin(theta)],[0,np.sin(theta),np.cos(theta)] ])
-
-
-            P= np.dot(np.dot(matR,rot),v_r)+ori
-            # fin chord 0
-
-
-            Salpha = 0
-            diffBeta = np.abs(beta)
-            alphaincr = beta # in degree
-
-
-            # define P research circle in T plan
-            n = np.divide((A-B),AB)
-            O = A - np.dot(n, AO)
-            r = L*np.cos(alpha) #OK
-
-
-            # build segment
-            #T = BuildSegment(O,n,P-O,'zyx');
-            Z=np.divide(n,np.linalg.norm(n))
-            Y=np.divide(np.cross(Z,P-O),np.linalg.norm(np.cross(Z,P-O)))
-            X=np.divide(np.cross(Y,Z),np.linalg.norm(np.cross(Y,Z)))
-            Origin= O
-
-            # erreur ici, il manque les norm
-            T=np.array([[ X[0],Y[0],Z[0],Origin[0] ],
-                        [ X[1],Y[1],Z[1],Origin[1] ],
-                        [ X[2],Y[2],Z[2],Origin[2] ],
-                        [    0,   0,   0,       1.0  ]])
-
-            count = 0
-            while diffBeta > eps or count > 100:
-                if count > 100:
-                    logging.warning("count boundary achieve")
-
-
-                count = count + 1
-                idiff = diffBeta
-
-                Salpha = Salpha + alphaincr
-                Salpharad = Salpha * np.pi / 180.0
-                Pplan = np.array([  [r*np.cos(Salpharad)],
-                                    [ r*np.sin(Salpharad)],
-                                     [0],
-                                    [1]])
-                P = np.dot(T,Pplan)
-
-                P = P[0:3,0]
-                nBone = A-P
-
-                ProjC = np.cross(nBone,np.cross(C-P,nBone))
-                ProjB = np.cross(nBone,np.cross(B-P,nBone))
-
-
-                sens = np.dot(np.cross(ProjC,ProjB).T,nBone)
-
-
-                Betai = np.divide(sens,np.linalg.norm(sens))*np.arccos(np.divide((np.dot(ProjC.T,ProjB)),(np.linalg.norm(ProjC)*np.linalg.norm(ProjB))))*180.0/np.pi
-
-                diffBeta = np.abs(beta - Betai)
-
-                if (diffBeta - idiff) > 0:
-                    if count == 1:
-                        Salpha = Salpha - alphaincr
-                        alphaincr = -alphaincr
-                    else:
-                        alphaincr = -alphaincr / 2.0;
-
-
-            return P
-
-
 
     @classmethod
     def checkCGM1_StaticMarkerConfig(cls,acqStatic):
@@ -258,7 +82,6 @@ class CGM(model.Model):
         # medial knee markers
         out["leftMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["LKNM","LKNE"]) else False
         out["rightMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["RKNM","RKNE"]) else False
-
 
         # kad
         out["leftKadFlag"] = True if btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) else False
@@ -880,7 +703,9 @@ class CGM1LowerLimbs(CGM):
 
         # local Position of the hip joint centers
 
-        LHJC_loc,RHJC_loc= CGM.hipJointCenters(self.mp,self.mp_computed,markerDiameter)
+        LHJC_loc,RHJC_loc= modelDecorator.davisRegression(self.mp,self.mp_computed,
+                                                    markerDiameter = markerDiameter,
+                                                    basePlate = basePlate)
 
         # --- nodes manager
         # add HJC
@@ -1019,7 +844,7 @@ class CGM1LowerLimbs(CGM):
         else:
             self.mp_computed["LeftThighRotationOffset"] = 0.0
 
-        LKJC = CGM.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
+        LKJC = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
 
         # --- node manager
         tf.static.addNode("LKJC_chord",LKJC,positionType="Global")
@@ -1125,7 +950,7 @@ class CGM1LowerLimbs(CGM):
         else:
             self.mp_computed["RightThighRotationOffset"] = 0.0
 
-        RKJC = CGM.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3,beta=self.mp_computed["RightThighRotationOffset"] ) # could consider a previous offset
+        RKJC = modelDecorator.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3,beta=self.mp_computed["RightThighRotationOffset"] ) # could consider a previous offset
 
         # --- node manager
         tf.static.addNode("RKJC_chord",RKJC,positionType="Global")
@@ -1240,7 +1065,7 @@ class CGM1LowerLimbs(CGM):
         else:
             self.mp_computed["LeftShankRotationOffset"]=0.0
 
-        LAJC = CGM.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
+        LAJC = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
 
         # --- node manager
         tf.static.addNode("LAJC_chord",LAJC,positionType="Global")
@@ -1348,7 +1173,7 @@ class CGM1LowerLimbs(CGM):
         else:
             self.mp_computed["RightShankRotationOffset"]=0.0
 
-        RAJC = CGM.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
+        RAJC = modelDecorator.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
 
         # --- node manager
         tf.static.addNode("RAJC_chord",RAJC,positionType="Global")
@@ -3046,7 +2871,7 @@ class CGM1LowerLimbs(CGM):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
-            LKJCvalues[i,:] = CGM.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
+            LKJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
 
         btkTools.smartAppendPoint(aqui,"LKJC_Chord",LKJCvalues,desc="chord")
 
@@ -3162,7 +2987,7 @@ class CGM1LowerLimbs(CGM):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
 
-            RKJCvalues[i,:] = CGM.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
+            RKJCvalues[i,:] = modelDecorator.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
 
         btkTools.smartAppendPoint(aqui,"RKJC_Chord",RKJCvalues,desc="chord")
 
@@ -3283,7 +3108,7 @@ class CGM1LowerLimbs(CGM):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
 
-            LAJCvalues[i,:] = CGM.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
+            LAJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
 
             # update of the AJC location with rotation around abdAddAxis
             LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,-self.mp_computed["LeftAnkleAbAddOffset"])
@@ -3471,7 +3296,7 @@ class CGM1LowerLimbs(CGM):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
             # ajc position from chord modified by shank offset
-            RAJCvalues[i,:] = CGM.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
+            RAJCvalues[i,:] = modelDecorator.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
 
             # update of the AJC location with rotation around abdAddAxis
             RAJCvalues[i,:] = self._rotateAjc(RAJCvalues[i,:],pt2,pt1,   self.mp_computed["RightAnkleAbAddOffset"])

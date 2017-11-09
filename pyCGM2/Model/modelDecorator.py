@@ -528,7 +528,7 @@ def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0
     return HJC_L,HJC_R
 
 
-def davisRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0, basePlate = 2.0):
+def davisRegression(mp_input,mp_computed, markerDiameter = 14.0, basePlate = 2.0):
     """
         Hip joint centre regression according Davis et al, 1991
 
@@ -859,16 +859,16 @@ class Cgm1ManualOffsets(DecoratorModel):
             KNE = acq.GetPoint("RKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             THI = acq.GetPoint("RTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-            KJC = CGM2.cgm.CGM.chord((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= thighoffset )
+            KJC = chord((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= thighoffset )
 
             # locate AJC
             ANK = acq.GetPoint("RANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             if thighoffset != 0 :
-                AJC = CGM2.cgm.CGM.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
+                AJC = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
             else:
 
                 TIB = acq.GetPoint("RTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                AJC = CGM2.cgm.CGM.chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
+                AJC = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
 
 
             # create and add nodes to the technical referential
