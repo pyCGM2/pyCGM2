@@ -521,7 +521,7 @@ class GaitKineticsPlotViewer(AbstractPlotViewer):
         ax11.set_title("Ankle Power " ,size=8)
 
         for ax in [self.fig.axes[0],self.fig.axes[1],self.fig.axes[2],
-                   self.fig.axes[4],self.fig.axes[5],self.fig.axes[0],
+                   self.fig.axes[4],self.fig.axes[5],self.fig.axes[6],
                    self.fig.axes[8],self.fig.axes[9],self.fig.axes[10]]:
             ax.set_ylabel("moment (N.mm.kg-1)",size=8)
 
