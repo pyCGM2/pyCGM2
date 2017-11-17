@@ -254,7 +254,7 @@ class GoldbergTest():
 
 
         #---- DISCRETE POINT FILTER
-        #--------------------------------------------------------------------------
+        #-----------------------------------------------------------------------
 
         # Benedetti Processing
         dpProcedure = discretePoints.GoldbergProcedure()
