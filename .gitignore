@@ -90,8 +90,7 @@ ENV/
 *.pyc
 
 *.pipeline
-*.xls
-*.xlsx
+
 
 # python visual studio
 *.pyproj
