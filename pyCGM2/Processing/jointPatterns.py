@@ -169,11 +169,22 @@ class XlsJointPatternProcedure(object):
             elif row["Domain"] == "Kinetics":
                 data = analysis.kineticStats
 
+
             value = "NA"
             if data.data!={}:
                 if (variable,context) in data.data:
+                    dataArray = data.data[variable,context]["mean"]
                     frames = self._getFrameLimits(cyclePeriod,context,data)
-                    values  = data.data[variable,context]["mean"][frames[0]:frames[1]+1,plan]
+
+                    if derivate == 0:
+                        values  = dataArray[frames[0]:frames[1]+1,plan]
+                    elif derivate == 1:
+                        der = derivation.firstOrderFiniteDifference(dataArray,1)
+                        values = der[frames[0]:frames[1]+1,plan]
+                    elif derivate == 2:
+                        der = derivation.secondOrderFiniteDifference(dataArray,1)
+                        values = der[frames[0]:frames[1]+1,plan]
+
                     value = self._applyMethod(values,method,args,frames[0])
                 else:
                     logging.warning("[pyGM2] :row (%i) -  key [%s,%s] not found in analysis data instance" %(index,variable,context) )
