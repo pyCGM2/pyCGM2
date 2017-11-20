@@ -156,8 +156,8 @@ class XlsJointPatternProcedure(object):
 
             context = row["Context"] # str
             variable = row["Variable"]+self.pointSuffix
-            plan = row["Plan"]
-            derivate = row["derivate"]
+            plan = int(row["Plan"])
+            derivate = int(row["derivate"])
             cyclePeriod = row["CyclePeriod"]
             method = row["Method"]
             args = row["MethodArgument"]
