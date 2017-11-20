@@ -85,17 +85,23 @@ class Nieuwenhuys2017_tests():
         analysisFilter.build()
 
 
-        #---- DISCRETE POINT FILTER
-        #--------------------------------------------------------------------------
-
+        #---- Joint patterns
+    
         # xls Processing
-        RULES_PATH = pyCGM2.CONFIG.MAIN_PYCGM2_PATH +"Data\\rules\\"
+        RULES_PATH = pyCGM2.CONFIG.MAIN_PYCGM2_PATH +"Data\\jointPatterns\\"
         rulesXls = RULES_PATH+"Nieuwenhuys2017.xlsx"
-        jpp = jointPatterns.XlsJointPatternProcedure(rulesXls, ruleEnable= True)
+        jpp = jointPatterns.XlsJointPatternProcedure(rulesXls)
         dpf = jointPatterns.JointPatternFilter(jpp, analysisFilter.analysis)
-        dataFrame = dpf.getOutput()
+        dataFrameValues = dpf.getValues()
+        dataFramePatterns = dpf.getPatterns()
 
+        xlsExport = exporter.XlsExportDataFrameFilter()
+        xlsExport.setDataFrames([dataFrameValues])
+        xlsExport.export("TestsPointData", path=DATA_PATH)
 
+        xlsExport = exporter.XlsExportDataFrameFilter()
+        xlsExport.setDataFrames([dataFramePatterns])
+        xlsExport.export("TestsPatternsData", path=DATA_PATH)
 
 if __name__ == "__main__":
 

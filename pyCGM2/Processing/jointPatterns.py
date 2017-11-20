@@ -22,40 +22,43 @@ class JointPatternFilter(object):
         self.m_analysis = analysis
 
 
-    def getOutput(self):
-        dataframeData = self.m_procedure.detect(self.m_analysis)
-        dataframePattern = self.m_procedure.pattern(self.m_analysis)
-        return dataframeData, dataframePattern
+    def getValues(self):
+        dataframeData = self.m_procedure.detectValue(self.m_analysis)
+        return dataframeData
+
+    def getPatterns(self):
+        data = self.m_procedure.detectValue(self.m_analysis)
+        dataframePattern = self.m_procedure.detectPattern()
+        return dataframePattern
 
 
 class XlsJointPatternProcedure(object):
 
 
-    def __init__(self,xlsFiles,ruleEnable=False,pointSuffix=None):
+    def __init__(self,xlsFiles,pointSuffix=None):
 
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
         self.m_xls = pd.ExcelFile(xlsFiles)
-
-
         self.data = None
-        self.pattern = None
+        self.patterns = None
 
-    def _getFrameLimits(self, cyclePeriod,context, data):
+    def _getFrameLimits(self,cyclePeriod,context,data):
 
         phases = analysisHandler.getPhases(data)
 
         if cyclePeriod == "CYCLE":
-            frameLimits= [0, 100]
+            frameLimits = [0, 100]
         elif cyclePeriod in ["ST","SW","DS1","SS","eSS","mSS","lSS","eSW","mSW","lSW"]:
-            frameLimits= phases[context,cyclePeriod]
+            frameLimits = phases[context,cyclePeriod]
         elif ("->" in cyclePeriod):
-            separator =  cyclePeriod.find("->")
-            before =cyclePeriod[:separator]
-            after =cyclePeriod[separator+2:]
-            frameLimits = [ phases[context,before][0], phases[context,after][1]]
+            separator = cyclePeriod.find("->")
+            before = cyclePeriod[:separator]
+            after = cyclePeriod[separator+2:]
+            frameLimits = [phases[context, before][0], phases[context, after][1]]
         return frameLimits
 
     def _applyStatus(self,value,limits,status):
+
         limits = limits.split(",")
         status = status.split(",")
 
@@ -67,7 +70,7 @@ class XlsJointPatternProcedure(object):
             return status[2]
 
 
-    def _applyMethod(self,values,method,iArgs):
+    def _applyMethod(self,values,method,iArgs,frame0):
         if method == "mean":
             val = np.mean(values)
         elif method == "range":
@@ -92,7 +95,7 @@ class XlsJointPatternProcedure(object):
             if idx.shape[0] == 0:
                 val = "NA"
             else:
-                val= idx[0]
+                val= frame0 + idx[0]
 
 
         elif method == "threshold":
@@ -117,10 +120,10 @@ class XlsJointPatternProcedure(object):
             val = values[index]
 
         elif method == "timing-min":
-            val = np.argmin(values)
+            val = frame0+np.argmin(values)
 
         elif method == "timing-max":
-            val = np.argmax(values)
+            val = frame0+ np.argmax(values)
 
         elif method == "slope":
             val = values[-1] - values[0]
@@ -133,16 +136,14 @@ class XlsJointPatternProcedure(object):
                 val = "True"
             else:
                 val = "False"
-
         else:
             val = "NA"
-
         return val
 
 
 
 
-    def detect(self,analysis):
+    def detectValue(self,analysis):
 
         xlsData = self.m_xls.parse("data")
 
@@ -151,7 +152,6 @@ class XlsJointPatternProcedure(object):
         xlsData["ValueStatus"] = "NA"
 
         for index in xlsData.index:
-
             row = xlsData.iloc[index,:]
 
             context = row["Context"] # str
@@ -174,13 +174,16 @@ class XlsJointPatternProcedure(object):
                 if (variable,context) in data.data:
                     frames = self._getFrameLimits(cyclePeriod,context,data)
                     values  = data.data[variable,context]["mean"][frames[0]:frames[1]+1,plan]
-                    value = self._applyMethod(values,method,args)
+                    value = self._applyMethod(values,method,args,frames[0])
                 else:
                     logging.warning("[pyGM2] :row (%i) -  key [%s,%s] not found in analysis data instance" %(index,variable,context) )
 
 
-            if value !="NA" and isinstance(limits,unicode): # if isnan doesn work with empty cell
-                valueStatus = self._applyStatus(value,limits,status)
+            if value is not "NA":
+                if (value == "False" or value == "True"):
+                    valueStatus = value
+                else:
+                    valueStatus = self._applyStatus(value,limits,status)
             else:
                 valueStatus = "NA"
 
@@ -191,7 +194,7 @@ class XlsJointPatternProcedure(object):
 
         return xlsData
 
-    def pattern(self):
+    def detectPattern(self):
 
         xlsPatterns = self.m_xls.parse("patterns")
         xlsPatterns["Success"] = "NA"
@@ -233,8 +236,7 @@ class XlsJointPatternProcedure(object):
                         flag1= False
                         break
 
-            flag2 = False
-            if not flag1:
+            if secondaries != []:
                 flag2 = True
                 for it in secondaries:
                     score = it["score"]
@@ -249,14 +251,28 @@ class XlsJointPatternProcedure(object):
                         break
 
             # final
-            if flag1 and flag2:
-                xlsPatterns.set_value(index,"Success", "TRUE")
-            if flag1 and not flag2:
-                xlsPatterns.set_value(index,"Success", "partial-primary")
-            if not flag1 and flag2:
-                xlsPatterns.set_value(index,"Success", "partial-secondary")
-            if not flag1 and not flag2:
-                xlsPatterns.set_value(index,"Success", "FALSE")
+            if secondaries == []:
+                if flag1:
+                    xlsPatterns.set_value(index,"Success", "TRUE")
+                else:
+                    xlsPatterns.set_value(index,"Success", "FALSE")
 
-        self.pattern = xlsPatterns
-        return  pattern
+            if primaries == []:
+                if flag2:
+                    xlsPatterns.set_value(index,"Success", "TRUE")
+                else:
+                    xlsPatterns.set_value(index,"Success", "FALSE")
+
+            if primaries != [] and secondaries != []:
+                if flag1 and flag2:
+                    xlsPatterns.set_value(index,"Success", "TRUE")
+                if flag1 and not flag2:
+                    xlsPatterns.set_value(index,"Success", "partial-primary")
+                if not flag1 and flag2:
+                    xlsPatterns.set_value(index,"Success", "partial-secondary")
+                if not flag1 and not flag2:
+                    xlsPatterns.set_value(index,"Success", "FALSE")
+
+        self.patterns = xlsPatterns
+
+        return  self.patterns
