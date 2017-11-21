@@ -68,12 +68,12 @@ class RCM(model.Model6Dof):
 
         dictRefAnatomical={}
         dictRefAnatomical["Pelvis"]= {'sequence':"YZX", 'labels':  ["RASI","LASI","SACR","midASIS"]}
-        dictRefAnatomical["Left Thigh"]= {'sequence':"ZXiY", 'labels':  ["LKJC_mid","LHJC_gt","LKNE","LHJC_gt"]}
-        dictRefAnatomical["Right Thigh"]= {'sequence':"ZXY", 'labels': ["RKJC_mid","RHJC_gt","RKNE","RHJC_gt"]}
-        dictRefAnatomical["Left Shank"]={'sequence':"ZXiY", 'labels':   ["LAJC_mid","LKJC_mid","LANK","LKJC_mid"]}
-        dictRefAnatomical["Right Shank"]={'sequence':"ZXY", 'labels':  ["RAJC_mid","RKJC_mid","RANK","RKJC_mid"]}
-        dictRefAnatomical["Left Foot"]={'sequence':"ZXiY", 'labels':  ["LMET","LAJC_mid","LVMH","LAJC_mid"]}
-        dictRefAnatomical["Right Foot"]={'sequence':"ZXiY", 'labels':  ["RMET","RAJC_mid","RVMH","RAJC_mid"]}
+        dictRefAnatomical["Left Thigh"]= {'sequence':"ZXiY", 'labels':  ["LKJC","LHJC","LKNE","LHJC"]}
+        dictRefAnatomical["Right Thigh"]= {'sequence':"ZXY", 'labels': ["RKJC","RHJC","RKNE","RHJC"]}
+        dictRefAnatomical["Left Shank"]={'sequence':"ZXiY", 'labels':   ["LAJC","LKJC","LANK","LKJC"]}
+        dictRefAnatomical["Right Shank"]={'sequence':"ZXY", 'labels':  ["RAJC","RKJC","RANK","RKJC"]}
+        dictRefAnatomical["Left Foot"]={'sequence':"ZXiY", 'labels':  ["LMET","LAJC","LVMH","LAJC"]}
+        dictRefAnatomical["Right Foot"]={'sequence':"ZXiY", 'labels':  ["RMET","RAJC","RVMH","RAJC"]}
 
 
         return dictRef,dictRefAnatomical
@@ -110,6 +110,8 @@ class RCM(model.Model6Dof):
         modelDecorator.HipJointCenterDecorator(self).greatTrochanterOffset(aquiStatic)
         modelDecorator.KneeCalibrationDecorator(self).midCondyles(aquiStatic)
         modelDecorator.AnkleCalibrationDecorator(self).midMaleolus(aquiStatic)
+
+
 
         # calibrate anatomic
         self._calibrateAnatomicalSegment(aquiStatic, "Pelvis", dictAnatomic,frameInit,frameEnd, options=options)

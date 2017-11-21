@@ -1084,6 +1084,16 @@ class HipJointCenterDecorator(DecoratorModel):
 
             LHJCvalues = chord ((offset+markerDiameter/2.0),LGTR,LKNM,LKNE,beta=0.0)
 
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Thigh").getReferential("TF")
+
+            # nodes
+            tf_dist.static.addNode("LHJC_gt",LHJCvalues.mean(axis=0), positionType="Global", desc = "from gt")
+            tf_prox.static.addNode("LHJC_gt",LHJCvalues.mean(axis=0), positionType="Global", desc = "from gt")
+
+            tf_dist.static.addNode("LHJC",LHJCvalues.mean(axis=0), positionType="Global", desc = "from gt")
+            tf_prox.static.addNode("LHJC",LHJCvalues.mean(axis=0), positionType="Global", desc = "from gt")
+
             # nodes
             self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_gt",LHJCvalues.mean(axis=0), positionType="Global")
             self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_gt",LHJCvalues.mean(axis=0), positionType="Global")
@@ -1099,9 +1109,17 @@ class HipJointCenterDecorator(DecoratorModel):
 
             RHJCvalues = chord ((offset+markerDiameter/2.0),RGTR,RKNM,RKNE,beta=0.0)
 
+
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Thigh").getReferential("TF")
+
+
             # nodes
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_gt",RHJCvalues.mean(axis=0), positionType="Global")
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_gt",RHJCvalues.mean(axis=0), positionType="Global")
+            tf_dist.static.addNode("RHJC_gt",RHJCvalues.mean(axis=0), positionType="Global", desc = "from gt")
+            tf_prox.static.addNode("RHJC_gt",RHJCvalues.mean(axis=0), positionType="Global", desc = "from gt")
+
+            tf_dist.static.addNode("RHJC",RHJCvalues.mean(axis=0), positionType="Global", desc = "from gt")
+            tf_prox.static.addNode("RHJC",RHJCvalues.mean(axis=0), positionType="Global", desc = "from gt")
 
             # marker
             btkTools.smartAppendPoint(acq,"RHJC_GT",RHJCvalues, desc="GT")
@@ -1218,9 +1236,16 @@ class KneeCalibrationDecorator(DecoratorModel):
 
             LKJCvalues = midPoint(acq,leftLateralKneeLabel,leftMedialKneeLabel,offset=(self.model.mp["LeftKneeWidth"]+markerDiameter)/2.0)
 
+
+            tf_prox = self.model.getSegment("Left Thigh").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Shank").getReferential("TF")
+
             # nodes
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
+            tf_prox.static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
+            tf_dist.static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+
+            tf_prox.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
+            tf_dist.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
 
             # marker
             btkTools.smartAppendPoint(acq,"LKJC_MID",LKJCvalues, desc="MID")
@@ -1237,12 +1262,15 @@ class KneeCalibrationDecorator(DecoratorModel):
 
             RKJCvalues = midPoint(acq,rightLateralKneeLabel,rightMedialKneeLabel,offset=(self.model.mp["RightKneeWidth"]+markerDiameter)/2.0)
 
-            # nodes
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
+            tf_prox = self.model.getSegment("Right Thigh").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
 
-            #marker
-            btkTools.smartAppendPoint(acq,"RKJC_MID",RKJCvalues, desc="MID")
+            # nodes
+            tf_prox.static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
+            tf_dist.static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+
+            tf_prox.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
+            tf_dist.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
 
 
 
@@ -1429,13 +1457,17 @@ class AnkleCalibrationDecorator(DecoratorModel):
 
             LAJCvalues = midPoint(acq,leftLateralAnkleLabel,leftMedialAnkleLabel,offset=(self.model.mp["LeftAnkleWidth"]+markerDiameter)/2.0)
 
-            # add node
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
-            self.model.getSegment("Left Foot").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
+            tf_prox = self.model.getSegment("Left Shank").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Foot").getReferential("TF")
 
-            # if repr(self.model) == "LowerLimb CGM1":
-            #     self.model.getSegment("Left Foot").getReferential("TF").static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global")
-            #
+            # nodes
+            tf_prox.static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
+            tf_dist.static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+
+            tf_prox.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
+            tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+
+
             btkTools.smartAppendPoint(acq,"LAJC_MID",LAJCvalues, desc="MID")
 
         if side=="both" or side=="right":
@@ -1447,8 +1479,16 @@ class AnkleCalibrationDecorator(DecoratorModel):
 
             RAJCvalues = midPoint(acq,rightLateralAnkleLabel,rightMedialAnkleLabel,offset=(self.model.mp["RightAnkleWidth"]+markerDiameter)/2.0)
 
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
-            self.model.getSegment("Right Foot").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
+            tf_prox = self.model.getSegment("Right Shank").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Foot").getReferential("TF")
+
+            # nodes
+            tf_prox.static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
+            tf_dist.static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+
+            tf_prox.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
+            tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+
 
             # if repr(self.model) == "LowerLimb CGM1":
             #     self.model.getSegment("Right Foot").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
