@@ -160,7 +160,7 @@ class Node(object):
         A node is a local position of a point in a Frame
     """
 
-    def __init__(self,label):
+    def __init__(self,label,desc = ""):
         """
             :Parameters:
                - `label` (str) - desired label of the node
@@ -171,6 +171,7 @@ class Node(object):
         self.m_name = label+"_node"
         self.m_global = np.zeros((1,3))
         self.m_local = np.zeros((1,3))
+        self.m_desc = desc
 
     def computeLocal(self,rot,t):
         """
@@ -195,6 +196,8 @@ class Node(object):
 
         self.m_global=np.dot(rot,self.m_local) +t
 
+    def setDescription(self, description):
+        self.m_desc = description
 
 class Frame(object):
     """
@@ -293,7 +296,7 @@ class Frame(object):
         self._translation = t
         self._matrixRot = R
 
-    def addNode(self,nodeLabel,position, positionType="Global"):
+    def addNode(self,nodeLabel,position, positionType="Global", desc =""):
         """
             Append a `Node` to a Frame
 
@@ -325,8 +328,14 @@ class Frame(object):
             else :
                 raise Exception("positionType not Known (Global or Local")
 
+            logging.warning("[pyCGM2] node (%s) values updated"%(nodeLabel))
+            previousDesc = self._nodes[index].m_desc
+            if previousDesc != desc:
+                logging.warning("[pyCGM2] node (%s) description updated [%s -> %s]"%(nodeLabel, previousDesc, desc))
+                self._nodes[index].m_desc = desc
+
         else:
-            node=Node(nodeLabel)
+            node=Node(nodeLabel,desc=desc)
             if positionType == "Global":
                 node.m_global=position
                 node.computeLocal(self._matrixRot,self._translation)
@@ -392,3 +401,58 @@ class Frame(object):
     def getNodes(self):
 
         return self._nodes
+
+    def isNodeExist(self,nodeLabel):
+
+        flag = False
+        for nodeIt in self._nodes:
+            if str(nodeLabel+"_node") == nodeIt.m_name:
+                logging.debug( " target label ( %s) - label find (%s) " %(nodeLabel,nodeIt.m_name) )
+                flag = True
+                break
+
+        if not flag:
+            logging.warning( " node label ( %s) doesn t exist " %(nodeLabel))
+
+        return flag
+
+
+    def getNodeIndex(self,nodeLabel):
+
+        if self.isNodeExist(nodeLabel):
+
+            for nodeIt in self._nodes:
+                if str(nodeLabel+"_node") == nodeIt.m_name:
+                    index = i
+                    break
+                i+=1
+            return i
+        else:
+            raise Exception("[pyCGM2] node label doesn t exist" )
+
+
+    def updateNode(self,nodeLabel,localArray,globalArray,desc=""):
+        """
+        update an existing node
+        """
+
+        index = self.getNodeIndex(nodeLabel)
+
+        self._nodes[index].m_global = globalArray
+        self._nodes[index].m_local = localArray
+        self._nodes[index].m_desc = desc
+
+    def copyNode(self,nodeLabel,nodeToCopy):
+
+        indexToCopy = self.getNodeIndex(nodeToCopy)
+        globalArray = self._nodes[indexToCopy].m_global
+        localArray = self._nodes[indexToCopy].m_local
+        desc = self._nodes[indexToCopy].m_desc
+
+        if self.isNodeExist(nodeLabel):
+            index =  self.getNodeIndex(nodeToCopy)
+            self._nodes[index].m_global = globalArray
+            self._nodes[index].m_local = localArray
+            self._nodes[index].m_desc = desc
+        else:
+            self.addNode(nodeLabel,globalArray, position = "Global",desc =  desc)
