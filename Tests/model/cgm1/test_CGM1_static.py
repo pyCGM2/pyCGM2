@@ -229,7 +229,7 @@ class CGM1_calibrationTest():
         np.testing.assert_almost_equal(sro_r,vicon_sro_r , decimal = 3)
 
     @classmethod
-    def advancedCGM1_kad_noOptions(cls):  #def basicCGM1(self):
+    def advancedCGM1_kad_noOptions(cls):
 
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
@@ -257,22 +257,34 @@ class CGM1_calibrationTest():
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
-
         # cgm decorator
         modelDecorator.Kad(model,acqStatic).compute()
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
+        # final calibration
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
         # TESTS ------------------------------------------------
+
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
+
         np.testing.assert_equal(model.m_useRightTibialTorsion,False )
         np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
 
         # joint centres
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
-
 
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
@@ -312,7 +324,7 @@ class CGM1_calibrationTest():
 
 
     @classmethod
-    def advancedCGM1_kad_flatFoot(cls):  #def basicCGM1(self):
+    def advancedCGM1_kad_flatFoot(cls):
 
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-flatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
@@ -346,12 +358,23 @@ class CGM1_calibrationTest():
         modelDecorator.Kad(model,acqStatic).compute()
 
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   leftFlatFoot = True, rightFlatFoot = True,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
+                                   leftFlatFoot = True, rightFlatFoot = True).compute()
 
 
         # TESTS ------------------------------------------------
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
+
         # joint centres
         np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
@@ -427,12 +450,24 @@ class CGM1_calibrationTest():
         modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         # TESTS ------------------------------------------------
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
+
         np.testing.assert_equal(model.m_useRightTibialTorsion,True )
         np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
 
@@ -554,12 +589,24 @@ class CGM1_calibrationTest():
 
 
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid",
-                                   markerDiameter=markerDiameter).compute()
+                                             markerDiameter=markerDiameter).compute()
 
 
         # TESTS ------------------------------------------------
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
+
         np.testing.assert_equal(model.m_useRightTibialTorsion,True )
         np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
 
@@ -699,11 +746,23 @@ class CGM1_calibrationTest():
         modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"])
 
         # finql calibration
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_mo", useLeftAJCnode="LAJC_mo",
-                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
         # TESTS
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"manual ThighOffset")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"manual ThighOffset")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"manual ThighOffset")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"manual ThighOffset")
+
         np.testing.assert_equal(model.m_useRightTibialTorsion,False )
         np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
 
@@ -771,11 +830,23 @@ class CGM1_calibrationTest():
         modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"])
 
         # finql calibration
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_mo", useLeftAJCnode="LAJC_mo",
-                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
         # TESTS
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"manual ThighOffset")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"manual ThighOffset")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"manual ThighOffset")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"manual ThighOffset")
+
         np.testing.assert_equal(model.m_useRightTibialTorsion,True )
         np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
 
@@ -842,11 +913,22 @@ class CGM1_calibrationTest():
         modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",model.mp["RightThighRotation"],markerDiameter,model.mp["RightTibialTorsion"],model.mp["RightShankRotation"])
 
         # final calibration
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_mo", useLeftAJCnode="LAJC_mo",
-                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
         # TESTS
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"manual ThighOffset")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"manual ThighOffset")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"manual ThighOffset")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"manual ThighOffset")
+
         np.testing.assert_equal(model.m_useRightTibialTorsion,False )
         np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
 
@@ -914,13 +996,27 @@ class CGM1_calibrationTest():
 
 
         # final calibration
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_mo", useLeftAJCnode="LAJC_mo",
-                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
 
         # TESTS
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"manual ThighOffset")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"manual ThighOffset")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"manual ThighOffset")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"manual ThighOffset")
+
+
+
         np.testing.assert_equal(model.m_useRightTibialTorsion,False )
         np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
 
@@ -987,13 +1083,25 @@ class CGM1_calibrationTest():
 
 
         # final calibration
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_mo", useLeftAJCnode="LAJC_mo",
-                                   useRightKJCnode="RKJC_mo", useRightAJCnode="RAJC_mo").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
 
         # TESTS
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"manual ThighOffset")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"manual ThighOffset")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"manual ThighOffset")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"manual ThighOffset")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"manual ThighOffset")
+
         np.testing.assert_equal(model.m_useRightTibialTorsion,True )
         np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
 
@@ -1012,13 +1120,16 @@ if __name__ == "__main__":
 
     # CGM 1
     logging.info("######## PROCESS CGM1 ######")
+
     CGM1_calibrationTest.basicCGM1()
     CGM1_calibrationTest.basicCGM1_flatFoot()
     CGM1_calibrationTest.basicCGM1_soleDelta_FlatFoot()
+
     CGM1_calibrationTest.advancedCGM1_kad_noOptions()
     CGM1_calibrationTest.advancedCGM1_kad_flatFoot()
     CGM1_calibrationTest.advancedCGM1_kad_midMaleolus()
     CGM1_calibrationTest.advancedCGM1_kad_midMaleolus_markerDiameter()
+
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationON_shankRotationOFF_tibialTorsionOFF()
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationON_shankRotationOFF_tibialTorsionON()
     CGM1_calibrationTest.basicCGM1_manualOffset_thighRotationOFF_shankRotationON_tibialTorsionOFF()

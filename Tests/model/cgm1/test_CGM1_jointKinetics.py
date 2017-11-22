@@ -355,9 +355,7 @@ class CGM1_motionInverseDynamicsTest():
         modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -441,9 +439,7 @@ class CGM1_motionInverseDynamicsTest():
         modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         # ------ Test 1 Motion Axe X -------

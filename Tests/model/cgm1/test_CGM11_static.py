@@ -248,9 +248,7 @@ class CGM11_calibrationTest():
         modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         np.testing.assert_equal(model.m_useRightTibialTorsion,True )
@@ -325,9 +323,7 @@ class CGM11_calibrationTest():
         modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic)
         #modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_mid", useLeftAJCnode="LAJC_midKnee",
-                                   useRightKJCnode="RKJC_mid", useRightAJCnode="RAJC_midKnee").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
         btkTools.smartWriter(acqStatic,"advancedCGM11_KneeMedKad.c3d")
 
@@ -379,9 +375,7 @@ class CGM11_calibrationTest():
         modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic)
         #modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_mid",
-                                   useRightKJCnode="RKJC_mid").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
         btkTools.smartWriter(acqStatic,"advancedCGM11_KneeMedOnly.c3d")
 

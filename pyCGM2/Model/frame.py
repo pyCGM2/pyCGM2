@@ -199,6 +199,26 @@ class Node(object):
     def setDescription(self, description):
         self.m_desc = description
 
+    def getLabel(self):
+        label = self.m_name
+        return label[0:label.find("_node")]
+
+
+    def getDescription(self):
+
+        return self.m_desc
+
+
+    def getLocal(self):
+
+        return self.m_local
+
+    def getGlobal(self):
+
+        return self.m_global
+
+
+
 class Frame(object):
     """
         A Frame defined a segment pose

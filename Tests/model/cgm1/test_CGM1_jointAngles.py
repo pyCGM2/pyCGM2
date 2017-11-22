@@ -285,9 +285,7 @@ class CGM1_motionJCSTest():
         # cgm decorator
         modelDecorator.Kad(model,acqStatic).compute()
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -395,9 +393,7 @@ class CGM1_motionJCSTest():
         modelDecorator.Kad(model,acqStatic).compute()
 
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   leftFlatFoot = True, rightFlatFoot = True,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
+                                   leftFlatFoot = True, rightFlatFoot = True).compute()
 
         # ------ Test 1 Motion Axe X -------
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"
@@ -897,9 +893,7 @@ class CGM1_motionFullAnglesTest():
         # cgm decorator
         modelDecorator.Kad(model,acqStatic).compute()
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -1044,9 +1038,7 @@ class CGM1_motionFullAnglesTest():
         modelDecorator.Kad(model,acqStatic).compute()
 
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   leftFlatFoot = True, rightFlatFoot = True,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
+                                   leftFlatFoot = True, rightFlatFoot = True).compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -1191,9 +1183,7 @@ class CGM1_motionFullAnglesTest():
         modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
         # tibial torsion
         ltt_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LTibialTorsion").value().GetInfo().ToDouble()[0])
@@ -1384,9 +1374,7 @@ class CGM1_motionFullAnglesTest():
         modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -1541,9 +1529,7 @@ class CGM1_motionFullAnglesTest():
         modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         # ------ Test 1 Motion Axe X -------

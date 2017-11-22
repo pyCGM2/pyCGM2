@@ -58,6 +58,17 @@ class PlotType(Enum):
     DESCRIPTIVE = 0
     CONSISTENCY = 1
     MEAN_ONLY = 2
+
+
+class CgmStaticMarkerConfig(Enum):
+    """ Enum defining harrington's regression predictor"""
+    Native = "Native"
+    KAD = "KAD"
+    KADmed = "KAD-med"
+    KneeMed = "Knee-med"
+    AnkleMed = "Ankle-med"
+    KneeAnkleMed = "Knee-Ankle-med "
+
 # --- enum used with Btk-Models
 # obsolete
 #class BspModel(Enum):

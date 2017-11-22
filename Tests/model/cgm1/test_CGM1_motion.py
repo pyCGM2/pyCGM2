@@ -38,7 +38,7 @@ def getViconRmatrix(frameVal, acq, originLabel, proximalLabel, lateralLabel, seq
 class CGM1_motionTest():
 
     @classmethod
-    def basicCGM1(cls):  #def basicCGM1(self):
+    def basicCGM1(cls):
         """
         GOAL : compare Joint centres and foot Offset
 
@@ -376,7 +376,7 @@ class CGM1_motionTest():
 
 
     @classmethod
-    def advancedCGM1_kad_noOptions(cls):  #def basicCGM1(self):
+    def advancedCGM1_kad_noOptions(cls):
         """
         GOAL : compare Joint centres and foot Offset
 
@@ -412,9 +412,7 @@ class CGM1_motionTest():
         # cgm decorator
         modelDecorator.Kad(model,acqStatic).compute()
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -552,7 +550,7 @@ class CGM1_motionTest():
                                         R_rightFootVicon, decimal =3)
 
     @classmethod
-    def advancedCGM1_kad_flatFoot(cls):  #def basicCGM1(self):
+    def advancedCGM1_kad_flatFoot(cls):
         """
         GOAL : compare Joint centres and foot Offset
 
@@ -589,9 +587,7 @@ class CGM1_motionTest():
         modelDecorator.Kad(model,acqStatic).compute()
 
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   leftFlatFoot = True, rightFlatFoot = True,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
+                                   leftFlatFoot = True, rightFlatFoot = True).compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -765,9 +761,7 @@ class CGM1_motionTest():
         modelDecorator.Kad(model,acqStatic).compute()
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
         # ------ Test 1 Motion Axe X -------
@@ -930,4 +924,4 @@ if __name__ == "__main__":
     CGM1_motionTest.advancedCGM1_kad_noOptions()
     CGM1_motionTest.advancedCGM1_kad_flatFoot()
     CGM1_motionTest.advancedCGM1_kad_midMaleolus()
-#    logging.info("######## PROCESS CGM1 --> Done######")
+    logging.info("######## PROCESS CGM1 --> Done######")

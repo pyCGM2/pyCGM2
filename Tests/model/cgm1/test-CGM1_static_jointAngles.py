@@ -186,9 +186,7 @@ class CGM1_calibrationTest():
         modelDecorator.Kad(model,acqStatic).compute()
 #
 #        # final calibration
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_kad",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_kad").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
 #        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
@@ -301,9 +299,7 @@ class CGM1_calibrationTest():
 
         # final calibration
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   leftFlatFoot = False, rightFlatFoot = False,
-                                   useLeftKJCnode="LKJC_kad", useLeftAJCnode="LAJC_mid",
-                                   useRightKJCnode="RKJC_kad", useRightAJCnode="RAJC_mid").compute()
+                                   leftFlatFoot = False, rightFlatFoot = False).compute()
 
 
         spf_l,sro_l= model.getViconFootOffset("Left")

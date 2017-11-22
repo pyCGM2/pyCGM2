@@ -75,17 +75,45 @@ class CGM(model.Model):
 
         out = dict()
 
-        # medial ankle markers
-        out["leftMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["LMED","LANK"]) else False
-        out["rightMedialAnkleFlag"] = True if btkTools.isPointsExist(acqStatic,["RMED","RANK"]) else False
+        #--Left--
+        leftKad = True if btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) else False
+        leftAnkleMed = True if btkTools.isPointsExist(acqStatic,["LMED","LANK"]) else False
+        leftKneeMed = True if btkTools.isPointsExist(acqStatic,["LKNM","LKNE"]) else False
 
-        # medial knee markers
-        out["leftMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["LKNM","LKNE"]) else False
-        out["rightMedialKneeFlag"] = True if btkTools.isPointsExist(acqStatic,["RKNM","RKNE"]) else False
+        if not leftKad and not leftAnkleMed and not leftKneeMed:
+            out["left"] = enums.CgmStaticMarkerConfig.Native
 
-        # kad
-        out["leftKadFlag"] = True if btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) else False
-        out["rightKadFlag"] = True if btkTools.isPointsExist(acqStatic,["RKAX","RKD1","RKD2"]) else False
+        if leftKad and not leftAnkleMed:
+            out["left"] = enums.CgmStaticMarkerConfig.KAD
+
+        if leftKad and leftAnkleMed:
+            out["left"] = enums.CgmStaticMarkerConfig.KADmed
+
+        if leftKneeMed and not leftAnkleMed:
+            out["left"] = enums.CgmStaticMarkerConfig.KneeMed
+
+        if leftKneeMed and leftAnkleMed:
+            out["left"] = enums.CgmStaticMarkerConfig.KneeAnkleMed
+
+        #--right--
+        rightKad = True if btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) else False
+        rightAnkleMed = True if btkTools.isPointsExist(acqStatic,["LMED","LANK"]) else False
+        rightKneeMed = True if btkTools.isPointsExist(acqStatic,["LKNM","LKNE"]) else False
+
+        if not rightKad and not rightAnkleMed and not rightKneeMed:
+            out["right"] = enums.CgmStaticMarkerConfig.Native
+
+        if rightKad and not rightAnkleMed:
+            out["right"] = enums.CgmStaticMarkerConfig.KAD
+
+        if rightKad and rightAnkleMed:
+            out["right"] = enums.CgmStaticMarkerConfig.KADmed
+
+        if rightKneeMed and not rightAnkleMed:
+            out["right"] = enums.CgmStaticMarkerConfig.KneeMed
+
+        if rightKneeMed and rightAnkleMed:
+            out["right"] = enums.CgmStaticMarkerConfig.KneeAnkleMed
 
         return out
 
@@ -192,8 +220,8 @@ class CGM1LowerLimbs(CGM):
         self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
         self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB"])
         self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Left Foot",3,enums.SegmentSide.Left,calibration_markers=["LAJC"], tracking_markers = ["LHEE","LTOE"] )
-        self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=["RAJC"], tracking_markers = ["RHEE","RTOE"])
+        self.addSegment("Left Foot",3,enums.SegmentSide.Left,calibration_markers=[""], tracking_markers = ["LHEE","LTOE"] )
+        self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=[""], tracking_markers = ["RHEE","RTOE"])
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
@@ -612,6 +640,8 @@ class CGM1LowerLimbs(CGM):
 
         """
 
+        pfn = aquiStatic.GetPointFrameNumber()
+
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
@@ -631,14 +661,13 @@ class CGM1LowerLimbs(CGM):
 
         # new markers
         valSACR=(aquiStatic.GetPoint("LPSI").GetValues() + aquiStatic.GetPoint("RPSI").GetValues()) / 2.0
-
         btkTools.smartAppendPoint(aquiStatic,"SACR",valSACR,desc="")
 
         valMidAsis=(aquiStatic.GetPoint("LASI").GetValues() + aquiStatic.GetPoint("RASI").GetValues()) / 2.0
         btkTools.smartAppendPoint(aquiStatic,"midASIS",valMidAsis,desc="")
 
-        seg.addMarkerLabel("SACR")
-        seg.addMarkerLabel("midASIS")
+        seg.addCalibrationMarkerLabel("SACR")
+        seg.addCalibrationMarkerLabel("midASIS")
 
         # new mp
         if self.mp.has_key("PelvisDepth") and self.mp["PelvisDepth"] != 0:
@@ -707,77 +736,48 @@ class CGM1LowerLimbs(CGM):
                                                     markerDiameter = markerDiameter,
                                                     basePlate = basePlate)
 
-        # --- nodes manager
-        # add HJC
-        tf.static.addNode("LHJC_cgm1",LHJC_loc,positionType="Local")
-        tf.static.addNode("RHJC_cgm1",RHJC_loc,positionType="Local")
 
-        # add all point in the list
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            tf.static.addNode(label,globalPosition,positionType="Global")
-
-
-        # --- Btk Points and decorator manager
-        if not self.decoratedModel:
-            # native : btkpoints LHJC and RHJC append with description cgm1-- "
-            val = tf.static.getNode_byLabel("LHJC_cgm1").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"LHJC",val, desc="cgm1")
-            self.setCalibrationProperty( "LHJC_node",  "LHJC_cgm1")
-
-
-            val = tf.static.getNode_byLabel("RHJC_cgm1").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"RHJC",val, desc="cgm1")
-            self.setCalibrationProperty( "RHJC_node",  "RHJC_cgm1")
-
+        # left
+        if tf.static.isNodeExist("LHJC"):
+            nodeLHJC = tf.static.getNode_byLabel("LHJC")
         else:
-            # native : btkpoints LHJC_cgm1 and RHJC_cgm1 append with description cgm1-- "
-            val = tf.static.getNode_byLabel("LHJC_cgm1").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"LHJC_cgm1",val,desc="")
+            tf.static.addNode("LHJC_cgm1",LHJC_loc,positionType="Local",desc = "Davis")
+            tf.static.addNode("LHJC",LHJC_loc,positionType="Local",desc = "Davis")
+            nodeLHJC = tf.static.getNode_byLabel("LHJC")
 
-            val = tf.static.getNode_byLabel("RHJC_cgm1").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"RHJC_cgm1",val,desc="")
+        btkTools.smartAppendPoint(aquiStatic,"LHJC",
+                    nodeLHJC.m_global* np.ones((pfn,3)),
+                    desc=nodeLHJC.m_desc)
 
-            if "useLeftHJCnode" in options.keys():
-                logging.info(" option (useLeftHJCnode) found ")
+        # right
+        if tf.static.isNodeExist("RHJC"):
+            nodeRHJC = tf.static.getNode_byLabel("RHJC")
+        else:
+            tf.static.addNode("RHJC_cgm1",RHJC_loc,positionType="Local",desc = "Davis")
+            tf.static.addNode("RHJC",RHJC_loc,positionType="Local",desc = "Davis")
+            nodeRHJC = tf.static.getNode_byLabel("RHJC")
 
-                nodeLabel = options["useLeftHJCnode"]
-                desc = modelDecorator.setDescription(nodeLabel)
-
-                val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-                btkTools.smartAppendPoint(aquiStatic,"LHJC",val,desc=desc)
-                self.setCalibrationProperty( "LHJC_node",  nodeLabel)
-
-
-
-
-            if "useRightHJCnode" in options.keys():
-                logging.info(" option (useRightHJCnode) found ")
-
-                nodeLabel = options["useRightHJCnode"]
-                desc = modelDecorator.setDescription(nodeLabel)
-
-                # construction of the btkPoint label (RHJC)
-                val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-                btkTools.smartAppendPoint(aquiStatic,"RHJC",val,desc=desc)
-                self.setCalibrationProperty( "RHJC_node",  nodeLabel)
-
-
-        # ---- final HJCs and mid point
-        final_LHJC = aquiStatic.GetPoint("LHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        tf.static.addNode("LHJC",final_LHJC,positionType="Global")
-
-        final_RHJC = aquiStatic.GetPoint("RHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        tf.static.addNode("RHJC",final_RHJC,positionType="Global")
-
-        seg.addMarkerLabel("LHJC")
-        seg.addMarkerLabel("RHJC")
+        btkTools.smartAppendPoint(aquiStatic,"RHJC",
+                    nodeRHJC.m_global*np.ones((pfn,3)),
+                    desc=nodeRHJC.m_desc)
 
         val=(aquiStatic.GetPoint("LHJC").GetValues() + aquiStatic.GetPoint("RHJC").GetValues()) / 2.0
         btkTools.smartAppendPoint(aquiStatic,"midHJC",val,desc="")
+        seg.addCalibrationMarkerLabel("midHJC")
 
+        #nodes
+        for label in seg.m_tracking_markers:
+            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            tf.static.addNode(label,globalPosition,positionType="Global")
 
+        for label in seg.m_calibration_markers:
+            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            tf.static.addNode(label,globalPosition,positionType="Global")
 
+        seg.addCalibrationMarkerLabel("LHJC")
+        seg.addCalibrationMarkerLabel("RHJC")
+
+        # TODO how to deal with self.setCalibrationProperty( "LHJC_node",  "LHJC_cgm1")
 
     def _left_thigh_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
         """
@@ -791,6 +791,7 @@ class CGM1LowerLimbs(CGM):
                - `options` (dict) - use to pass options
 
         """
+        pfn = aquiStatic.GetPointFrameNumber()
 
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
@@ -806,10 +807,6 @@ class CGM1LowerLimbs(CGM):
 
         seg = self.getSegment("Left Thigh")
         seg.resetMarkerLabels()
-
-
-        # ---  additional markers and Update of the marker segment list
-        seg.addMarkerLabel("LHJC")
 
         # --- Construction of the technical referential
         tf=seg.getReferential("TF")
@@ -846,40 +843,31 @@ class CGM1LowerLimbs(CGM):
 
         LKJC = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
 
-        # --- node manager
-        tf.static.addNode("LKJC_chord",LKJC,positionType="Global")
-        for label in seg.m_markerLabels:
+        if tf.static.isNodeExist("LKJC"):
+            nodeLKJC = tf.static.getNode_byLabel("LKJC")
+        else:
+            tf.static.addNode("LKJC_chord",LKJC,positionType="Global",desc = "Chord")
+            tf.static.addNode("LKJC",LKJC,positionType="Global",desc = "Chord")
+            nodeLKJC = tf.static.getNode_byLabel("LKJC")
+
+        btkTools.smartAppendPoint(aquiStatic,"LKJC",
+                    nodeLKJC.m_global* np.ones((pfn,3)),
+                    desc=nodeLKJC.m_desc)
+
+        # node for all markers
+        for label in seg.m_tracking_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
+        # for label in seg.m_calibration_markers:
+        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        #     tf.static.addNode(label,globalPosition,positionType="Global")
 
-        # --- Btk Points and decorator manager
-        if not self.decoratedModel:
-            #Native: btkpoint LKJC append with description cgm1
-            val = tf.static.getNode_byLabel("LKJC_chord").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"LKJC",val,desc="cgm1")
+        node_prox = self.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC")
+        tf.static.addNode("LHJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
-            self.setCalibrationProperty( "LKJC_node",  "LKJC_chord")
-        else:
-            val = LKJC * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"LKJC_chord",val,desc="")
-
-            if "useLeftKJCnode" in options.keys():
-                logging.info(" option (useLeftKJCnode) found ")
-                nodeLabel = options["useLeftKJCnode"]
-                desc = modelDecorator.setDescription(nodeLabel)
-
-                # construction of the btkPoint label (LKJC)
-                val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-                btkTools.smartAppendPoint(aquiStatic,"LKJC",val,desc=desc)
-
-                self.setCalibrationProperty( "LKJC_node",  nodeLabel)
-
-
-        # --- final LKJC
-        final_LKJC = aquiStatic.GetPoint("LKJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        tf.static.addNode("LKJC",final_LKJC,positionType="Global")
-        seg.addMarkerLabel("LKJC")
+        #seg.addTrackingMarkerLabel("LHJC")
+        #seg.addCalibrationMarkerLabel("LKJC")
 
 
     def _right_thigh_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
@@ -894,6 +882,8 @@ class CGM1LowerLimbs(CGM):
                - `options` (dict) - use to pass options
 
         """
+        pfn = aquiStatic.GetPointFrameNumber()
+
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
@@ -909,11 +899,6 @@ class CGM1LowerLimbs(CGM):
 
         seg = self.getSegment("Right Thigh")
         seg.resetMarkerLabels()
-
-
-        # ---  additional markers and Update of the marker segment list
-        seg.addMarkerLabel("RHJC")
-
 
 
         # --- Construction of the technical referential
@@ -952,53 +937,31 @@ class CGM1LowerLimbs(CGM):
 
         RKJC = modelDecorator.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3,beta=self.mp_computed["RightThighRotationOffset"] ) # could consider a previous offset
 
-        # --- node manager
-        tf.static.addNode("RKJC_chord",RKJC,positionType="Global")
+        if tf.static.isNodeExist("RKJC"):
+            nodeRKJC = tf.static.getNode_byLabel("RKJC")
+        else:
+            tf.static.addNode("RKJC_chord",RKJC,positionType="Global",desc = "Chord")
+            tf.static.addNode("RKJC",RKJC,positionType="Global",desc = "Chord")
+            nodeRKJC = tf.static.getNode_byLabel("RKJC")
 
-        for label in seg.m_markerLabels:
+        btkTools.smartAppendPoint(aquiStatic,"RKJC",
+                    nodeRKJC.m_global* np.ones((pfn,3)),
+                    desc=nodeRKJC.m_desc)
+
+
+        for label in seg.m_tracking_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
+        # for label in seg.m_calibration_markers:
+        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        #     tf.static.addNode(label,globalPosition,positionType="Global")
 
+        node_prox = self.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC")
+        tf.static.addNode("RHJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
-        # --- Btk Points and decorator manager
-        if not self.decoratedModel:
-            val = tf.static.getNode_byLabel("RKJC_chord").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"RKJC",val,desc="cgm1")
-
-            self.setCalibrationProperty( "RKJC_node",  "RKJC_chord")
-
-
-
-        else:
-            val = RKJC * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"RKJC_chord",val,desc="")
-
-            if "useRightKJCnode" in options.keys():
-                logging.info(" option (useRightKJCnode) found ")
-
-                nodeLabel = options["useRightKJCnode"]
-                desc = modelDecorator.setDescription(nodeLabel)
-
-                # construction of the btkPoint label (LKJC)
-                val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-                btkTools.smartAppendPoint(aquiStatic,"RKJC",val,desc=desc)
-
-                self.setCalibrationProperty( "RKJC_node",  nodeLabel)
-
-
-            if "useRightKJCmarker" in options.keys():
-                RKJCvalues = aquiStatic.GetPoint(options["useRightKJCmarker"]).GetValues()[frameInit:frameEnd,:]
-                desc = aquiStatic.GetPoint(options["useRightKJCmarker"]).GetDescription()
-                btkTools.smartAppendPoint(aquiStatic,"RKJC",RKJCvalues,desc=desc)
-
-
-
-        # --- final KJC
-        final_RKJC = aquiStatic.GetPoint("RKJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        tf.static.addNode("RKJC",final_RKJC,positionType="Global")
-        seg.addMarkerLabel("RKJC")
-
+        # seg.addTrackingMarkerLabel("RHJC")
+        # seg.addCalibrationMarkerLabel("RKJC")
 
     def _left_shank_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
         """
@@ -1012,6 +975,8 @@ class CGM1LowerLimbs(CGM):
                - `options` (dict) - use to pass options
 
         """
+        pfn = aquiStatic.GetPointFrameNumber()
+
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
@@ -1029,7 +994,7 @@ class CGM1LowerLimbs(CGM):
         seg.resetMarkerLabels()
 
         # ---  additional markers and Update of the marker segment list
-        seg.addMarkerLabel("LKJC")
+
 
         # --- Construction of the technical referential
         tf=seg.getReferential("TF")
@@ -1068,45 +1033,31 @@ class CGM1LowerLimbs(CGM):
         LAJC = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
 
         # --- node manager
-        tf.static.addNode("LAJC_chord",LAJC,positionType="Global")
+        if tf.static.isNodeExist("LAJC"):
+            nodeLAJC = tf.static.getNode_byLabel("LAJC")
+        else:
+            tf.static.addNode("LAJC_chord",LAJC,positionType="Global",desc = "Chord")
+            tf.static.addNode("LAJC",LAJC,positionType="Global",desc = "Chord")
+            nodeLAJC = tf.static.getNode_byLabel("LAJC")
 
-        for label in seg.m_markerLabels:
+        btkTools.smartAppendPoint(aquiStatic,"LAJC",
+                    nodeLAJC.m_global* np.ones((pfn,3)),
+                    desc=nodeLAJC.m_desc)
+
+
+        for label in seg.m_tracking_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
+        # for label in seg.m_calibration_markers:
+        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        #     tf.static.addNode(label,globalPosition,positionType="Global")
 
+        node_prox = self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC")
+        tf.static.addNode("LKJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
-        # --- Btk Points and decorator manager
-        if not self.decoratedModel:
-            #btkpoint LAJC append with description cgm1
-            val = tf.static.getNode_byLabel("LAJC_chord").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"LAJC",val,desc="cgm1")
-
-            self.setCalibrationProperty( "LAJC_node",  "LAJC_chord")
-
-        else:
-            val = LAJC * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"LAJC_chord",val,desc="")
-
-            if "useLeftAJCnode" in options.keys():
-                logging.info(" option (useLeftAJCnode) found ")
-
-                nodeLabel = options["useLeftAJCnode"]
-                desc = modelDecorator.setDescription(nodeLabel)
-
-                # construction of the btkPoint label (LAJC)
-                val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-                btkTools.smartAppendPoint(aquiStatic,"LAJC",val,desc=desc)
-
-                self.setCalibrationProperty( "LAJC_node",  nodeLabel)
-
-
-        # --- final AJC
-        final_LAJC = aquiStatic.GetPoint("LAJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        tf.static.addNode("LAJC",final_LAJC,positionType="Global")
-        seg.addMarkerLabel("LAJC")
-
-
+        # seg.addTrackingMarkerLabel("LKJC")
+        # seg.addCalibrationMarkerLabel("LAJC")
 
     def _right_shank_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
         """
@@ -1119,6 +1070,7 @@ class CGM1LowerLimbs(CGM):
                - `dictRef` (dict) - dictionnary reporting markers and sequence use for building Technical referentials
                - `options` (dict) - use to pass options
         """
+        pfn = aquiStatic.GetPointFrameNumber()
 
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
@@ -1137,8 +1089,6 @@ class CGM1LowerLimbs(CGM):
         seg = self.getSegment("Right Shank")
         seg.resetMarkerLabels()
 
-        # ---  additional markers and Update of the marker segment list
-        seg.addMarkerLabel("RKJC")
 
         # --- Construction of the technical Referential
         tf=seg.getReferential("TF")
@@ -1176,43 +1126,31 @@ class CGM1LowerLimbs(CGM):
         RAJC = modelDecorator.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
 
         # --- node manager
-        tf.static.addNode("RAJC_chord",RAJC,positionType="Global")
+        if tf.static.isNodeExist("RAJC"):
+            nodeRAJC = tf.static.getNode_byLabel("RAJC")
+        else:
+            tf.static.addNode("RAJC_chord",RAJC,positionType="Global",desc = "Chord")
+            tf.static.addNode("RAJC",RAJC,positionType="Global",desc = "Chord")
+            nodeRAJC = tf.static.getNode_byLabel("RAJC")
 
-        for label in seg.m_markerLabels:
+        btkTools.smartAppendPoint(aquiStatic,"RAJC",
+                    nodeRAJC.m_global* np.ones((pfn,3)),
+                    desc=nodeRAJC.m_desc)
+
+
+        for label in seg.m_tracking_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
-       #Btk Points and decorator manager
-        if not self.decoratedModel:
-            val = tf.static.getNode_byLabel("RAJC_chord").m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"RAJC",val,desc="cgm1")
+        # for label in seg.m_calibration_markers:
+        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        #     tf.static.addNode(label,globalPosition,positionType="Global")
 
-            self.setCalibrationProperty( "RAJC_node",  "RAJC_chord")
+        node_prox = self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC")
+        tf.static.addNode("RKJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
-        else:
-            val = RAJC * np.ones((aquiStatic.GetPointFrameNumber(),3))
-            btkTools.smartAppendPoint(aquiStatic,"RAJC_chord",val,desc="")
-
-            if "useRightAJCnode" in options.keys():
-                logging.info(" option (useRightAJCnode) found ")
-                nodeLabel = options["useRightAJCnode"]
-                desc = modelDecorator.setDescription(nodeLabel)
-
-                # construction of the btkPoint label (RAJC)
-                val = tf.static.getNode_byLabel(nodeLabel).m_global * np.ones((aquiStatic.GetPointFrameNumber(),3))
-                btkTools.smartAppendPoint(aquiStatic,"RAJC",val,desc=desc)
-
-                self.setCalibrationProperty( "RAJC_node",  nodeLabel)
-
-
-
-
-        # --- Final AJC
-        final_RAJC = aquiStatic.GetPoint("RAJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        tf.static.addNode("RAJC",final_RAJC,positionType="Global")
-        seg.addMarkerLabel("RAJC")
-
-
+        # seg.addTrackingMarkerLabel("RKJC")
+        # seg.addCalibrationMarkerLabel("RAJC")
 
     def _left_unCorrectedFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
         """
@@ -1230,12 +1168,11 @@ class CGM1LowerLimbs(CGM):
             .. warning:: Need shank anatomical Coordinate system
 
         """
-
         seg = self.getSegment("Left Foot")
-        seg.resetMarkerLabels()
+        #seg.resetMarkerLabels()
 
         # ---  additional markers and Update of the marker segment list
-        seg.addMarkerLabel("LKJC")
+        #seg.addMarkerLabel("LKJC") !!!
 
         if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
             logging.warning("You use a Left uncorrected foot sequence different than native CGM1")
@@ -1275,9 +1212,18 @@ class CGM1LowerLimbs(CGM):
         tf.static.setTranslation(ptOrigin)
 
         # --- node manager
-        for label in seg.m_markerLabels:
+        for label in seg.m_tracking_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
+
+        # for label in seg.m_calibration_markers:
+        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        #     tf.static.addNode(label,globalPosition,positionType="Global")
+
+        node_prox = self.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC")
+        tf.static.addNode("LAJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
+
+        # seg.addTrackingMarkerLabel("LAJC") # for LS fitting
 
 
     def _right_unCorrectedFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
@@ -1299,10 +1245,11 @@ class CGM1LowerLimbs(CGM):
 
 
         seg = self.getSegment("Right Foot")
+        seg.resetMarkerLabels()
 
         # ---  additional markers and Update of the marker segment list
-        seg.addMarkerLabel("RKJC")
-        seg.resetMarkerLabels()
+        #seg.addMarkerLabel("RKJC")
+
 
         if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
             logging.warning("You use a right uncorrected foot sequence different than native CGM1")
@@ -1343,11 +1290,18 @@ class CGM1LowerLimbs(CGM):
         tf.static.setTranslation(ptOrigin)
 
         # --- node manager
-        for label in seg.m_markerLabels:
+        for label in seg.m_tracking_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
-    # ---- Anatomical Referential Calibration -------
+        # for label in seg.m_calibration_markers:
+        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        #     tf.static.addNode(label,globalPosition,positionType="Global")
+
+        node_prox = self.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC")
+        tf.static.addNode("RAJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
+        # seg.addTrackingMarkerLabel("RAJC")
+
 
     def _pelvis_Anatomicalcalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
 
@@ -1397,9 +1351,8 @@ class CGM1LowerLimbs(CGM):
         tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
         # --- node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        for node in seg.getReferential("TF").static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
         # length
         lhjc = seg.anatomicalFrame.static.getNode_byLabel("LHJC").m_local
@@ -1453,9 +1406,8 @@ class CGM1LowerLimbs(CGM):
 
 
         # --- node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        for node in seg.getReferential("TF").static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
         # --- compute length
         hjc = seg.anatomicalFrame.static.getNode_byLabel("LHJC").m_local
@@ -1510,9 +1462,8 @@ class CGM1LowerLimbs(CGM):
         tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
         # --- node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        for node in seg.getReferential("TF").static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
         # --- compute lenght
         hjc = seg.anatomicalFrame.static.getNode_byLabel("RHJC").m_local
@@ -1561,10 +1512,9 @@ class CGM1LowerLimbs(CGM):
         tf=seg.getReferential("TF")
         tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
-        # --- Node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        # --- node manager
+        for node in seg.getReferential("TF").static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
         # --- compute length
         kjc = seg.anatomicalFrame.static.getNode_byLabel("LKJC").m_local
@@ -1611,10 +1561,9 @@ class CGM1LowerLimbs(CGM):
         tf=seg.getReferential("TF")
         tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
-
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        # --- node manager
+        for node in tf.static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
 
     def _right_shank_Anatomicalcalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
@@ -1659,9 +1608,8 @@ class CGM1LowerLimbs(CGM):
         tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
         # --- node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        for node in tf.static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
 
         # --- compute length
@@ -1801,10 +1749,8 @@ class CGM1LowerLimbs(CGM):
         tf.additionalInfos["trueRelativeMatrix"] = trueRelativeMatrixAnatomic
 
         # --- node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
-
+        for node in tf.static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
 
         # --- compute amthropo
@@ -1907,9 +1853,8 @@ class CGM1LowerLimbs(CGM):
         tf.setRelativeMatrixAnatomic(relativeMatrixAnatomic)
 
         # --- node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        for node in seg.getReferential("TF").static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
         # --- anthropo
         # length
@@ -1961,8 +1906,7 @@ class CGM1LowerLimbs(CGM):
         R = np.dot(seg.anatomicalFrame.static.getRotation(),rotZ) # apply rotation
 
 
-        # get previous nodes
-        previous_nodes = seg.anatomicalFrame.static.getNodes()
+
 
         csFrame=frame.Frame() # NOTE : Creation of a new Frame remove all former node
         csFrame.update(R,seg.anatomicalFrame.static.getTranslation() )
@@ -1973,9 +1917,12 @@ class CGM1LowerLimbs(CGM):
         tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
         # add node
+        # get previous nodes
+        previous_nodes = seg.anatomicalFrame.static.getNodes()
+
         for node in previous_nodes:
-            globalPosition=node.m_global
-            seg.anatomicalFrame.static.addNode(node.m_name[:-5],globalPosition,positionType="Global")
+            globalPosition=node.getGlobal()
+            seg.anatomicalFrame.static.addNode(node.getLabel(),globalPosition,positionType="Global",desc = node.getDescription())
 
 #        # node manager
 #        for label in seg.m_markerLabels:
@@ -2762,11 +2709,14 @@ class CGM1LowerLimbs(CGM):
 
 
         # --- HJCs
+        desc_L = seg.getReferential('TF').static.getNode_byLabel("LHJC").m_desc
+        desc_R = seg.getReferential('TF').static.getNode_byLabel("RHJC").m_desc
+
         values_LHJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
         values_RHJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
 
-        btkTools.smartAppendPoint(aqui,"LHJC",values_LHJCnode, desc="cgm1")
-        btkTools.smartAppendPoint(aqui,"RHJC",values_RHJCnode, desc="cgm1")
+        btkTools.smartAppendPoint(aqui,"LHJC",values_LHJCnode, desc=desc_L)
+        btkTools.smartAppendPoint(aqui,"RHJC",values_RHJCnode, desc=desc_R)
 
 
         # --- motion of the anatomical referential
@@ -2873,7 +2823,8 @@ class CGM1LowerLimbs(CGM):
 
             LKJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
 
-        btkTools.smartAppendPoint(aqui,"LKJC_Chord",LKJCvalues,desc="chord")
+
+        #btkTools.smartAppendPoint(aqui,"LKJC_Chord",LKJCvalues,desc="chord")
 
         # --- LKJC
         if  "useLeftKJCmarker" in options.keys():
@@ -2883,8 +2834,9 @@ class CGM1LowerLimbs(CGM):
 
         # final LKJC ( just check if KJC already exist)
         if not btkTools.isPointExist(aqui,"LKJC"):
-            LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
-            btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues,desc="Chord")
+            desc = seg.getReferential('TF').static.getNode_byLabel("LKJC").m_desc
+            #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
+            btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues,desc=str("Chord-"+desc))
 
 
 
@@ -2989,7 +2941,7 @@ class CGM1LowerLimbs(CGM):
 
             RKJCvalues[i,:] = modelDecorator.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
 
-        btkTools.smartAppendPoint(aqui,"RKJC_Chord",RKJCvalues,desc="chord")
+        #btkTools.smartAppendPoint(aqui,"RKJC_Chord",RKJCvalues,desc="chord")
 
         # --- RKJC
         if  "useRightKJCmarker" in options.keys():
@@ -2999,8 +2951,9 @@ class CGM1LowerLimbs(CGM):
 
         # final LKJC ( just check if KJC already exist)
         if not btkTools.isPointExist(aqui,"RKJC"):
-            RKJCvalues = aqui.GetPoint("RKJC_Chord").GetValues()
-            btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues,desc="Chord")
+            desc = seg.getReferential('TF').static.getNode_byLabel("RKJC").m_desc
+            #RKJCvalues = aqui.GetPoint("RKJC_Chord").GetValues()
+            btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues,desc=str("Chord-"+desc))
 
 
         # --- motion of the anatomical referential
@@ -3115,13 +3068,14 @@ class CGM1LowerLimbs(CGM):
 
 
         # --- LAJC
+        desc_node = seg.getReferential('TF').static.getNode_byLabel("LAJC").m_desc
         if self.mp_computed["LeftAnkleAbAddOffset"] > 0.01:
-            desc="chord+AbAdRot"
+            desc="chord+AbAdRot-"+desc_node
         else:
-            desc="chord"
+            desc="chord"+desc_node
 
 
-        btkTools.smartAppendPoint(aqui,"LAJC_Chord",LAJCvalues,desc=desc)
+        #btkTools.smartAppendPoint(aqui,"LAJC_Chord",LAJCvalues,desc=desc)
 
 
         # --- LAJC
@@ -3132,7 +3086,7 @@ class CGM1LowerLimbs(CGM):
 
         # final LKJC ( just check if KJC already exist)
         if not btkTools.isPointExist(aqui,"LAJC"):
-            LAJCvalues = aqui.GetPoint("LAJC_Chord").GetValues()
+            #LAJCvalues = aqui.GetPoint("LAJC_Chord").GetValues()
             btkTools.smartAppendPoint(aqui,"LAJC",LAJCvalues,desc=desc)
 
 
@@ -3302,12 +3256,13 @@ class CGM1LowerLimbs(CGM):
             RAJCvalues[i,:] = self._rotateAjc(RAJCvalues[i,:],pt2,pt1,   self.mp_computed["RightAnkleAbAddOffset"])
 
         # --- RAJC
+        desc_node = seg.getReferential('TF').static.getNode_byLabel("RAJC").m_desc
         if self.mp_computed["RightAnkleAbAddOffset"] >0.01:
-            desc="chord+AbAdRot"
+            desc="chord+AbAdRot-"+desc_node
         else:
-            desc="chord"
+            desc="chord"+desc_node
 
-        btkTools.smartAppendPoint(aqui,"RAJC_Chord",RAJCvalues,desc=desc)
+        #btkTools.smartAppendPoint(aqui,"RAJC_Chord",RAJCvalues,desc=desc)
 
         # --- LAJC
         if  "useRightAJCmarker" in options.keys():
@@ -3317,7 +3272,7 @@ class CGM1LowerLimbs(CGM):
 
         # final LKJC ( just check if KJC already exist)
         if not btkTools.isPointExist(aqui,"RAJC"):
-            RAJCvalues = aqui.GetPoint("RAJC_Chord").GetValues()
+            #RAJCvalues = aqui.GetPoint("RAJC_Chord").GetValues()
             btkTools.smartAppendPoint(aqui,"RAJC",RAJCvalues,desc=desc)
 
 
@@ -3704,11 +3659,13 @@ class CGM1LowerLimbs(CGM):
         values_LHJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
         values_RHJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
 
-        btkTools.smartAppendPoint(aqui,"LHJC",values_LHJCnode, desc="opt")
-        btkTools.smartAppendPoint(aqui,"RHJC",values_RHJCnode, desc="opt")
+        desc_L = seg.getReferential('TF').static.getNode_byLabel("LHJC").m_desc
+        desc_R = seg.getReferential('TF').static.getNode_byLabel("RHJC").m_desc
+        btkTools.smartAppendPoint(aqui,"LHJC",values_LHJCnode, desc=str("opt-"+desc_L))
+        btkTools.smartAppendPoint(aqui,"RHJC",values_RHJCnode, desc=str("opt-"+desc_R))
 
         # --- midASIS
-        values_midASISnode=seg.getReferential('TF').getNodeTrajectory("midASIS")
+        values_midASISnode = seg.getReferential('TF').getNodeTrajectory("midASIS")
         btkTools.smartAppendPoint(aqui,"midASIS",values_midASISnode, desc="opt")
 
 #        if anatomicalFrameMotionEnable:
@@ -3791,12 +3748,13 @@ class CGM1LowerLimbs(CGM):
                 seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- LKJC
+        desc = seg.getReferential('TF').static.getNode_byLabel("LKJC").m_desc
         values_LKJCnode=seg.getReferential('TF').getNodeTrajectory("LKJC")
-        btkTools.smartAppendPoint(aqui,"LKJC",values_LKJCnode, desc="opt")
+        btkTools.smartAppendPoint(aqui,"LKJC",values_LKJCnode, desc=str("opt-"+desc))
 
         # --- LHJC from Thigh
-        values_HJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
-        btkTools.smartAppendPoint(aqui,"LHJC-Thigh",values_HJCnode, desc="opt from Thigh")
+        #values_HJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
+        #btkTools.smartAppendPoint(aqui,"LHJC-Thigh",values_HJCnode, desc="opt from Thigh")
 
         # remove LHC from list of tracking markers
         if "LHJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LHJC")
@@ -3865,12 +3823,13 @@ class CGM1LowerLimbs(CGM):
                 seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- RKJC
+        desc = seg.getReferential('TF').static.getNode_byLabel("RKJC").m_desc
         values_RKJCnode=seg.getReferential('TF').getNodeTrajectory("RKJC")
-        btkTools.smartAppendPoint(aqui,"RKJC",values_RKJCnode, desc="opt")
+        btkTools.smartAppendPoint(aqui,"RKJC",values_RKJCnode, desc=str("opt-"+desc))
 
         # --- RHJC from Thigh
-        values_HJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
-        btkTools.smartAppendPoint(aqui,"RHJC-Thigh",values_HJCnode, desc="opt from Thigh")
+        #values_HJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
+        #btkTools.smartAppendPoint(aqui,"RHJC-Thigh",values_HJCnode, desc="opt from Thigh")
 
         # remove HJC from list of tracking markers
         if "RHJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RHJC")
@@ -3933,12 +3892,13 @@ class CGM1LowerLimbs(CGM):
                 seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- LAJC
+        desc = seg.getReferential('TF').static.getNode_byLabel("LAJC").m_desc
         values_LAJCnode=seg.getReferential('TF').getNodeTrajectory("LAJC")
-        btkTools.smartAppendPoint(aqui,"LAJC",values_LAJCnode, desc="opt")
+        btkTools.smartAppendPoint(aqui,"LAJC",values_LAJCnode, desc=str("opt"+desc))
 
         # --- KJC from Shank
-        values_KJCnode=seg.getReferential('TF').getNodeTrajectory("LKJC")
-        btkTools.smartAppendPoint(aqui,"LKJC-Shank",values_KJCnode, desc="opt from Shank")
+        #values_KJCnode=seg.getReferential('TF').getNodeTrajectory("LKJC")
+        #btkTools.smartAppendPoint(aqui,"LKJC-Shank",values_KJCnode, desc="opt from Shank")
 
 
         # remove KJC from list of tracking markers
@@ -4008,12 +3968,13 @@ class CGM1LowerLimbs(CGM):
                 seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # RAJC
+        desc = seg.getReferential('TF').static.getNode_byLabel("RAJC").m_desc
         values_RAJCnode=seg.getReferential('TF').getNodeTrajectory("RAJC")
-        btkTools.smartAppendPoint(aqui,"RAJC",values_RAJCnode, desc="opt")
+        btkTools.smartAppendPoint(aqui,"RAJC",values_RAJCnode, desc=str("opt-"+desc))
 
         # --- KJC from Shank
-        values_KJCnode=seg.getReferential('TF').getNodeTrajectory("RKJC")
-        btkTools.smartAppendPoint(aqui,"RKJC-Shank",values_KJCnode, desc="opt from Shank")
+        #values_KJCnode=seg.getReferential('TF').getNodeTrajectory("RKJC")
+        #btkTools.smartAppendPoint(aqui,"RKJC-Shank",values_KJCnode, desc="opt from Shank")
 
         # remove KJC from list of tracking markers
         if "RKJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RKJC")
@@ -4069,7 +4030,7 @@ class CGM1LowerLimbs(CGM):
 
         # --- AJC from Foot
         values_AJCnode=seg.getReferential('TF').getNodeTrajectory("LAJC")
-        btkTools.smartAppendPoint(aqui,"LAJC-Foot",values_AJCnode, desc="opt from Foot")
+        #btkTools.smartAppendPoint(aqui,"LAJC-Foot",values_AJCnode, desc="opt from Foot")
 
 
         # remove AJC from list of tracking markers
@@ -4127,7 +4088,7 @@ class CGM1LowerLimbs(CGM):
 
         # --- AJC from Foot
         values_AJCnode=seg.getReferential('TF').getNodeTrajectory("RAJC")
-        btkTools.smartAppendPoint(aqui,"RAJC-Foot",values_AJCnode, desc="opt from Foot")
+        #btkTools.smartAppendPoint(aqui,"RAJC-Foot",values_AJCnode, desc="opt from Foot")
 
 
         # remove AJC from list of tracking markers

@@ -698,14 +698,25 @@ class Kad(DecoratorModel):
                 LANK = self.acq.GetPoint("LANK").GetValues()[i,:]
                 LAJCvalues[i,:] = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKAX,beta= 0.0 )
 
+            tf_prox = self.model.getSegment("Left Thigh").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Shank").getReferential("TF")
+            tf_dist2 = self.model.getSegment("Left Foot").getReferential("TF")
+            # add nodes to referential
+
+            # nodes
+            tf_prox.static.addNode("LKNE_kad",LKNEvalues.mean(axis=0), positionType="Global", desc = "KAD" )
+            tf_prox.static.addNode("LKJC_kad",LKJCvalues.mean(axis=0), positionType="Global", desc = "KAD" )
+            tf_dist.static.addNode("LKJC_kad",LKJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+
+            tf_prox.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "KAD" )
+            tf_dist.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
 
             # add nodes to referential
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKNE_kad",LKNEvalues.mean(axis =0),positionType="Global")
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_kad",LKJCvalues.mean(axis =0),positionType="Global")
+            tf_dist.static.addNode("LAJC_kad",LAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+            tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
 
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKNE_kad",LKNEvalues.mean(axis =0),positionType="Global")
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_kad",LKJCvalues.mean(axis =0),positionType="Global")
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_kad",LAJCvalues.mean(axis =0),positionType="Global")
+            tf_dist2.static.addNode("LAJC_kad",LAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+            tf_dist2.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
 
 
         if side == "both" or side == "right":
@@ -750,13 +761,27 @@ class Kad(DecoratorModel):
                 RANK = self.acq.GetPoint("RANK").GetValues()[i,:]
                 RAJCvalues[i,:] = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKAX,beta= 0.0 )
 
+            tf_prox = self.model.getSegment("Right Thigh").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
+            tf_dist2 = self.model.getSegment("Right Foot").getReferential("TF")
             # add nodes to referential
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKNE_kad",RKNEvalues.mean(axis=0),positionType="Global")
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_kad",RKJCvalues.mean(axis=0),positionType="Global")
 
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKNE_kad",RKNEvalues.mean(axis=0),positionType="Global")
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_kad",RKJCvalues.mean(axis=0),positionType="Global")
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_kad",RAJCvalues.mean(axis=0),positionType="Global")
+            # nodes
+            tf_prox.static.addNode("RKNE_kad",RKNEvalues.mean(axis=0), positionType="Global", desc = "KAD" )
+            tf_prox.static.addNode("RKJC_kad",RKJCvalues.mean(axis=0), positionType="Global", desc = "KAD" )
+            tf_dist.static.addNode("RKJC_kad",RKJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+
+            tf_prox.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "KAD" )
+            tf_dist.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+
+
+
+            # add nodes to referential
+            tf_dist.static.addNode("RAJC_kad",RAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+            tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+
+            tf_dist2.static.addNode("RAJC_kad",RAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+            tf_dist2.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
 
         # add KNE markers to static c3d
         if side == "both" or side == "left":
@@ -802,7 +827,7 @@ class Cgm1ManualOffsets(DecoratorModel):
         self.model.decoratedModel = True
 
         ff = acq.GetFirstFrame()
-        frameInit =  acq.GetFirstFrame()-ff
+        frameInit = acq.GetFirstFrame()-ff
         frameEnd = acq.GetLastFrame()-ff+1
 
         if side == "left":
@@ -834,11 +859,26 @@ class Cgm1ManualOffsets(DecoratorModel):
 
 
             # add nodes to referential
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mo",KJC,positionType="Global")
+            # create and add nodes to the technical referential
+            tf_prox = self.model.getSegment("Left Thigh").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Shank").getReferential("TF")
+            tf_dist2 = self.model.getSegment("Left Foot").getReferential("TF")
+            # add nodes to referential
+
+            # nodes
+            tf_prox.static.addNode("LKJC_mto",KJC, positionType="Global", desc = "manual ThighOffset" )
+            tf_dist.static.addNode("LKJC_mto",KJC, positionType="Global", desc = "manual ThighOffset")
+
+            tf_prox.static.addNode("LKJC",KJC, positionType="Global", desc = "manual ThighOffset" )
+            tf_dist.static.addNode("LKJC",KJC, positionType="Global", desc = "manual ThighOffset")
 
 
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mo",KJC,positionType="Global")
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_mo",AJC,positionType="Global")
+            # add nodes to referential
+            tf_dist.static.addNode("LAJC_mto",AJC, positionType="Global", desc = "manual ThighOffset")
+            tf_dist.static.addNode("LAJC",AJC, positionType="Global", desc = "manual ThighOffset")
+
+            tf_dist2.static.addNode("LAJC_mto",AJC, positionType="Global", desc = "manual ThighOffset")
+            tf_dist2.static.addNode("LAJC",AJC, positionType="Global", desc = "manual ThighOffset")
 
             # enable tibialTorsion flag
             if thighoffset !=0 and tibialTorsion !=0:
@@ -872,10 +912,26 @@ class Cgm1ManualOffsets(DecoratorModel):
 
 
             # create and add nodes to the technical referential
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mo",KJC,positionType="Global")
+            tf_prox = self.model.getSegment("Right Thigh").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
+            tf_dist2 = self.model.getSegment("Right Foot").getReferential("TF")
+            # add nodes to referential
 
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_mo",KJC,positionType="Global")
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_mo",AJC,positionType="Global")
+            # nodes
+            tf_prox.static.addNode("RKJC_mto",KJC, positionType="Global", desc = "manual ThighOffset" )
+            tf_dist.static.addNode("RKJC_mto",KJC, positionType="Global", desc = "manual ThighOffset")
+
+            tf_prox.static.addNode("RKJC",KJC, positionType="Global", desc = "manual ThighOffset" )
+            tf_dist.static.addNode("RKJC",KJC, positionType="Global", desc = "manual ThighOffset")
+
+
+            # add nodes to referential
+            tf_dist.static.addNode("RAJC_mto",AJC, positionType="Global", desc = "manual ThighOffset")
+            tf_dist.static.addNode("RAJC",AJC, positionType="Global", desc = "manual ThighOffset")
+
+            tf_dist2.static.addNode("RAJC_mto",AJC, positionType="Global", desc = "manual ThighOffset")
+            tf_dist2.static.addNode("RAJC",AJC, positionType="Global", desc = "manual ThighOffset")
+
 
             # enable tibialTorsion flag
             if thighoffset !=0 and tibialTorsion!=0:
@@ -913,14 +969,36 @@ class HipJointCenterDecorator(DecoratorModel):
         self.model.decoratedModel = True
 
         if position_Left.shape ==(3,):
+            LHJC_pos = position_Left
+
             nodeLabel= "LHJC_"+ methodDesc
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode(nodeLabel,position_Left, positionType="Local")
-        if position_Left.shape ==(3,):
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Thigh").getReferential("TF")
+
+            # nodes
+            tf_prox.static.addNode("LHJC_"+ methodDesc ,LHJC_pos, positionType="Local", desc = methodDesc)
+            tf_prox.static.addNode("LHJC",LHJC_pos, positionType="Local", desc = methodDesc)
+
+            glob = tf_prox.static.getNode_byLabel("LHJC_"+ methodDesc).m_global
+            tf_dist.static.addNode("LHJC_"+ methodDesc, glob, positionType="Global", desc = methodDesc)
+            tf_dist.static.addNode("LHJC",glob, positionType="Global", desc = methodDesc)
+
+
+        if position_Right.shape ==(3,):
             nodeLabel= "RHJC_"+ methodDesc
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode(nodeLabel,position_Right, positionType="Local")
 
+            RHJC_pos = position_Right
 
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Thigh").getReferential("TF")
 
+            # nodes
+            tf_prox.static.addNode("RHJC_"+ methodDesc ,RHJC_pos, positionType="Local", desc = methodDesc)
+            tf_prox.static.addNode("RHJC",RHJC_pos, positionType="Local", desc = methodDesc)
+
+            glob = tf_prox.static.getNode_byLabel("RHJC_"+ methodDesc).m_global
+            tf_dist.static.addNode("RHJC_"+ methodDesc, glob, positionType="Global", desc = methodDesc)
+            tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = methodDesc)
 
 
     def harrington(self,predictors= enums.HarringtonPredictor.Native, side="both"):
@@ -935,33 +1013,33 @@ class HipJointCenterDecorator(DecoratorModel):
 
         self.model.decoratedModel = True
 
-        LHJC_har,RHJC_har=harringtonRegression(self.model.mp,self.model.mp_computed,predictors)
+        LHJC_pos,RHJC_pos = harringtonRegression(self.model.mp,self.model.mp_computed,predictors)
 
-        if side == "both":
+        if side == "both" or side == "left":
 
-            # add nodes to pelvis
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Harrington",LHJC_har, positionType="Local")
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_Harrington",RHJC_har, positionType="Local")
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Thigh").getReferential("TF")
+            # nodes
+            tf_prox.static.addNode("LHJC_Harrington",LHJC_pos, positionType="Local", desc = "Harrington")
+            tf_prox.static.addNode("LHJC",LHJC_pos, positionType="Local", desc = "Harrington")
 
-
-            # add nodes Thigh
-            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Harrington").m_global
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Harrington",pos_L, positionType="Global")
-
-            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Harrington").m_global
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Harrington",pos_R, positionType="Global")
+            glob = tf_prox.static.getNode_byLabel("LHJC_Harrington").m_global
+            tf_dist.static.addNode("LHJC_Harrington",glob, positionType="Global", desc = "Harrington")
+            tf_dist.static.addNode("LHJC",glob, positionType="Global", desc = "Harrington")
 
 
-        elif side == "left":
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Harrington",LHJC_har, positionType="Local")
-            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Harrington").m_global
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Harrington",pos_L, positionType="Global")
+        elif  side == "both" or side == "right":
 
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Thigh").getReferential("TF")
 
-        elif side == "right":
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_Harrington",RHJC_har, positionType="Local")
-            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Harrington").m_global
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Harrington",pos_R, positionType="Global")
+            # nodes
+            tf_prox.static.addNode("RHJC_Harrington",RHJC_pos, positionType="Local", desc = "Harrington")
+            tf_prox.static.addNode("RHJC",RHJC_pos, positionType="Local", desc = "Harrington")
+
+            glob = tf_prox.static.getNode_byLabel("RHJC_Harrington").m_global
+            tf_dist.static.addNode("RHJC_Harrington",glob, positionType="Global", desc = "Harrington")
+            tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = "Harrington")
 
     def hara(self, side="both"):
         """
@@ -974,20 +1052,33 @@ class HipJointCenterDecorator(DecoratorModel):
 
         self.model.decoratedModel = True
 
-        LHJC_hara,RHJC_hara=haraRegression(self.model.mp,self.model.mp_computed)
+        LHJC_pos,RHJC_pos = haraRegression(self.model.mp,self.model.mp_computed)
+
+        if side == "both" or side == "left":
+
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Thigh").getReferential("TF")
+            # nodes
+            tf_prox.static.addNode("LHJC_Hara",LHJC_pos, positionType="Local", desc = "Hara")
+            tf_prox.static.addNode("LHJC",LHJC_pos, positionType="Local", desc = "Hara")
+
+            glob = tf_prox.static.getNode_byLabel("LHJC_Hara").m_global
+            tf_dist.static.addNode("LHJC_Hara",glob, positionType="Global", desc = "Hara")
+            tf_dist.static.addNode("LHJC",glob, positionType="Global", desc = "Hara")
 
 
-        if side == "both":
-            # add nodes to pelvis
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Hara",LHJC_hara, positionType="Local")
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_Hara",RHJC_hara, positionType="Local")
+        elif  side == "both" or side == "right":
 
-            # add nodes Thigh
-            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Hara").m_global
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Hara",pos_L, positionType="Global")
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Thigh").getReferential("TF")
 
-            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Hara").m_global
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Hara",pos_R, positionType="Global")
+            # nodes
+            tf_prox.static.addNode("RHJC_Hara",RHJC_pos, positionType="Local", desc = "Hara")
+            tf_prox.static.addNode("RHJC",RHJC_pos, positionType="Local", desc = "Hara")
+
+            glob = tf_prox.static.getNode_byLabel("RHJC_Hara").m_global
+            tf_dist.static.addNode("RHJC_Hara",glob, positionType="Global", desc = "Hara")
+            tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = "Hara")
 
     def davis(self, side="both"):
         """
@@ -1000,31 +1091,33 @@ class HipJointCenterDecorator(DecoratorModel):
 
         self.model.decoratedModel = True
 
-        LHJC_dav,RHJC_dav=davisRegression(self.model.mp,self.model.mp_computed)
+        LHJC_pos,RHJC_pos = davisRegression(self.model.mp,self.model.mp_computed)
 
-        if side == "both":
+        if side == "both" or side == "left":
 
-            # add nodes to pelvis
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Davis",LHJC_dav, positionType="Local")
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_Davis",RHJC_dav, positionType="Local")
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Thigh").getReferential("TF")
+            # nodes
+            tf_prox.static.addNode("LHJC_Davis",LHJC_pos, positionType="Local", desc = "Davis")
+            tf_prox.static.addNode("LHJC",LHJC_pos, positionType="Local", desc = "Davis")
 
-            # add nodes Thigh
-            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Davis").m_global
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Davis",pos_L, positionType="Global")
-
-            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Davis").m_global
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Davis",pos_R, positionType="Global")
+            glob = tf_prox.static.getNode_byLabel("LHJC_Davis").m_global
+            tf_dist.static.addNode("LHJC_Davis",glob, positionType="Global", desc = "Davis")
+            tf_dist.static.addNode("LHJC",glob, positionType="Global", desc = "Davis")
 
 
-        elif side == "left":
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Davis",LHJC_dav, positionType="Local")
-            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Davis").m_global
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Davis",pos_L, positionType="Global")
+        elif  side == "both" or side == "right":
 
-        elif side == "right":
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("RHJC_Davis",RHJC_dav, positionType="Local")
-            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Davis").m_global
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RHJC_Davis",pos_R, positionType="Global")
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Thigh").getReferential("TF")
+
+            # nodes
+            tf_prox.static.addNode("RHJC_Davis",RHJC_pos, positionType="Local", desc = "Davis")
+            tf_prox.static.addNode("RHJC",RHJC_pos, positionType="Local", desc = "Davis")
+
+            glob = tf_prox.static.getNode_byLabel("RHJC_Davis").m_global
+            tf_dist.static.addNode("RHJC_Davis",glob, positionType="Global", desc = "Davis")
+            tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = "Davis")
 
     def bell(self, side="both"):
         """
@@ -1037,33 +1130,33 @@ class HipJointCenterDecorator(DecoratorModel):
 
         self.model.decoratedModel = True
 
-        LHJC_bell,RHJC_bell=bellRegression(self.model.mp,self.model.mp_computed)
+        LHJC_pos,RHJC_pos = bellRegression(self.model.mp,self.model.mp_computed)
 
-        if side == "both":
+        if side == "both" or side == "left":
 
-            # add nodes to pelvis
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Bell",LHJC_bell, positionType="Local")
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Bell",RHJC_bell, positionType="Local")
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Thigh").getReferential("TF")
+            # nodes
+            tf_prox.static.addNode("LHJC_Bell",LHJC_pos, positionType="Local", desc = "Bell")
+            tf_prox.static.addNode("LHJC",LHJC_pos, positionType="Local", desc = "Bell")
 
-
-            # add nodes Thigh
-            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Bell").m_global
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Bell",pos_L, positionType="Global")
-
-            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Bell").m_global
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("LHJC_Bell",pos_R, positionType="Global")
+            glob = tf_prox.static.getNode_byLabel("LHJC_Bell").m_global
+            tf_dist.static.addNode("LHJC_Bell",glob, positionType="Global", desc = "Bell")
+            tf_dist.static.addNode("LHJC",glob, positionType="Global", desc = "Bell")
 
 
-        elif side == "left":
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Bell",LHJC_bell, positionType="Local")
-            pos_L=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Bell").m_global
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LHJC_Bell",pos_L, positionType="Global")
+        elif  side == "both" or side == "right":
 
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Thigh").getReferential("TF")
 
-        elif side == "right":
-            self.model.getSegment("Pelvis").getReferential("TF").static.addNode("LHJC_Bell",RHJC_bell, positionType="Local")
-            pos_R=self.model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Bell").m_global
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("LHJC_Bell",pos_R, positionType="Global")
+            # nodes
+            tf_prox.static.addNode("RHJC_Bell",RHJC_pos, positionType="Local", desc = "Bell")
+            tf_prox.static.addNode("RHJC",RHJC_pos, positionType="Local", desc = "Bell")
+
+            glob = tf_prox.static.getNode_byLabel("RHJC_Bell").m_global
+            tf_dist.static.addNode("RHJC_Bell",glob, positionType="Global", desc = "Bell")
+            tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = "Bell")
 
     def greatTrochanterOffset(self,acq, offset = 89.0,side="both",
                     leftGreatTrochLabel="LGTR", rightGreatTrochLabel="LKNM",
@@ -1171,16 +1264,26 @@ class KneeCalibrationDecorator(DecoratorModel):
 
             LAJCvalues = chord ((self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0,LANK,LKJCvalues,LKNE,beta=0.0)
 
+            tf_prox = self.model.getSegment("Left Thigh").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Shank").getReferential("TF")
+            tf_dist2 = self.model.getSegment("Left Foot").getReferential("TF")
+
             # nodes
-            self.model.getSegment("Left Thigh").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global")
+            tf_prox.static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global", desc = "mid")
+
+            tf_prox.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
             # marker
             btkTools.smartAppendPoint(acq,"LKJC_MID",LKJCvalues, desc="MID")
 
             # add nodes to referential
-            self.model.getSegment("Left Shank").getReferential("TF").static.addNode("LAJC_midKnee",LAJCvalues.mean(axis =0),positionType="Global")
+            tf_dist.static.addNode("LAJC_midKnee",LAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
+            tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
 
+            tf_dist2.static.addNode("LAJC_midKnee",LAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
+            tf_dist2.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
 
 
         if side=="both" or side=="right":
@@ -1199,14 +1302,26 @@ class KneeCalibrationDecorator(DecoratorModel):
 
             RAJCvalues = chord ((self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0,RANK,RKJCvalues,RKNE,beta=0.0)
 
+            tf_prox = self.model.getSegment("Right Thigh").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
+            tf_dist2 = self.model.getSegment("Right Foot").getReferential("TF")
+
             # nodes
-            self.model.getSegment("Right Thigh").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global")
-            #marker
+            tf_prox.static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global", desc = "mid")
+
+            tf_prox.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "mid")
+
+            # marker
             btkTools.smartAppendPoint(acq,"RKJC_MID",RKJCvalues, desc="MID")
 
             # add nodes to referential
-            self.model.getSegment("Right Shank").getReferential("TF").static.addNode("RAJC_midKnee",RAJCvalues.mean(axis =0),positionType="Global")
+            tf_dist.static.addNode("RAJC_midKnee",RAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
+            tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
+
+            tf_dist2.static.addNode("RAJC_midKnee",RAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
+            tf_dist2.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
 
     def midCondyles(self,acq, side="both",
                     leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LKNM",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RKNM",
@@ -1241,11 +1356,11 @@ class KneeCalibrationDecorator(DecoratorModel):
             tf_dist = self.model.getSegment("Left Shank").getReferential("TF")
 
             # nodes
-            tf_prox.static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
-            tf_dist.static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+            tf_prox.static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("LKJC_mid",LKJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
-            tf_prox.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
-            tf_dist.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+            tf_prox.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
             # marker
             btkTools.smartAppendPoint(acq,"LKJC_MID",LKJCvalues, desc="MID")
@@ -1266,11 +1381,11 @@ class KneeCalibrationDecorator(DecoratorModel):
             tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
 
             # nodes
-            tf_prox.static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
-            tf_dist.static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+            tf_prox.static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("RKJC_mid",RKJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
-            tf_prox.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
-            tf_dist.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+            tf_prox.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
 
 
@@ -1461,11 +1576,11 @@ class AnkleCalibrationDecorator(DecoratorModel):
             tf_dist = self.model.getSegment("Left Foot").getReferential("TF")
 
             # nodes
-            tf_prox.static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
-            tf_dist.static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+            tf_prox.static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("LAJC_mid",LAJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
-            tf_prox.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
-            tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+            tf_prox.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
 
             btkTools.smartAppendPoint(acq,"LAJC_MID",LAJCvalues, desc="MID")
@@ -1483,15 +1598,12 @@ class AnkleCalibrationDecorator(DecoratorModel):
             tf_dist = self.model.getSegment("Right Foot").getReferential("TF")
 
             # nodes
-            tf_prox.static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
-            tf_dist.static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+            tf_prox.static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
-            tf_prox.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from mid" )
-            tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from mid")
+            tf_prox.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
+            tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
-
-            # if repr(self.model) == "LowerLimb CGM1":
-            #     self.model.getSegment("Right Foot").getReferential("TF").static.addNode("RAJC_mid",RAJCvalues.mean(axis=0), positionType="Global")
 
             btkTools.smartAppendPoint(acq,"RAJC_MID",RAJCvalues, desc="MID")
 
