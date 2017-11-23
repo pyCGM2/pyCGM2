@@ -23,6 +23,42 @@ def setDescription(nodeLabel):
     else:
         return ""
 
+
+def footJointCentreFromMet(acq,side,frameInit,frameEnd,markerDiameter =14, offset =0 ):
+
+    if side == "left":
+        met2_base=aquiStatic.GetPoint("LSMB")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        met5_head=aquiStatic.GetPoint("LVMH")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        met1_head=aquiStatic.GetPoint("LFMH")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+        v1=(met5_head-met2_base)
+        v1=v1/np.linalg.norm(v1)
+
+        v2=(met1_head-met2_base)
+        v2=v2/np.linalg.norm(v2)
+
+        z = - np.cross(v1,v2)
+
+        fjc = met2_base - (markerDiameter+offset) * z
+
+    elif side == "right":
+        met2_base=aquiStatic.GetPoint("RSMB")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        met5_head=aquiStatic.GetPoint("RVMH")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        met1_head=aquiStatic.GetPoint("RFMH")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+        v1=(met5_head-met2_base)
+        v1=v1/np.linalg.norm(v1)
+
+        v2=(met1_head-met2_base)
+        v2=v2/np.linalg.norm(v2)
+
+        z =  np.cross(v1,v2)
+
+        fjc = met2_base - (markerDiameter+offset) * z
+
+    return fjc
+
+
 def chord (offset,A1,A2,A3,beta=0.0):
     """
         Modified Chord method
@@ -1655,3 +1691,23 @@ class AnkleCalibrationDecorator(DecoratorModel):
 
             print "****** right Tibial Main **********"
             print np.sign(np.cross(v2,v1)[2])*angle*360.0/(2.0*np.pi)
+
+# class FootCalibrationDecorator(DecoratorModel):
+#     """
+#         Concrete cgm decorator altering the ankle joint
+#     """
+#     def __init__(self, iModel):
+#         """
+#             :Parameters:
+#               - `iModel` (CGM2.cgm.CGM) - a CGM instance
+#         """
+#         super(AnkleCalibrationDecorator,self).__init__(iModel)
+#
+#     def footJointCentreFromForeFoot(self,acq, side="both"):
+#
+#         """
+#         """
+#
+#
+#         #self.model.nativeCgm1 = False
+#         self.model.decoratedModel = True

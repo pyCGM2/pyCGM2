@@ -92,8 +92,8 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
         self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB","RTIAP","RTIAD"])
         self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Left Foot",3,enums.SegmentSide.Left,calibration_markers=["LAJC"], tracking_markers = ["LHEE","LTOE"] )
-        self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=["RAJC"], tracking_markers = ["RHEE","RTOE"])
+        self.addSegment("Left Foot",3,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LHEE","LTOE"] )
+        self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RHEE","RTOE"])
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
@@ -380,30 +380,30 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         return "LowerLimb CGM2.4"
 
     def configure(self):
-        self.addSegment("Pelvis",0,enums.SegmentSide.Central,["LASI","RASI","LPSI","RPSI"], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
-        self.addSegment("Left Thigh",1,enums.SegmentSide.Left,["LKNE","LTHI","LTHAP","LTHAD"], tracking_markers = ["LKNE","LTHI","LTHAP","LTHAD"])
-        self.addSegment("Right Thigh",4,enums.SegmentSide.Right,["RKNE","RTHI","RTHAP","RTHAD"], tracking_markers = ["RKNE","RTHI","RTHAP","RTHAD"])
-        self.addSegment("Left Shank",2,enums.SegmentSide.Left,["LANK","LTIB","LTIAP","LTIAD"], tracking_markers = ["LANK","LTIB","LTIAP","LTIAD"])
+        self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
+        self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHAP","LTHAD"])
+        self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHAP","RTHAD"])
+        self.addSegment("Left Shank",2,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LANK","LTIB","LTIAP","LTIAD"])
         self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Right Shank",5,enums.SegmentSide.Right,["RANK","RTIB","RTIAP","RTIAD"], tracking_markers = ["RANK","RTIB","RTIAP","RTIAD"])
+        self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB","RTIAP","RTIAD"])
         self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
-        self.addSegment("Left HindFoot",6,enums.SegmentSide.Left,["LHEE","LTOE","LANK"], tracking_markers = ["LHEE","LTOE"])
-        self.addSegment("Left ForeFoot",7,enums.SegmentSide.Left,["LFMH","LVMH","LSMH"], tracking_markers = ["LFMH","LVMH","LSMH"])
-        self.addSegment("Right HindFoot",6,enums.SegmentSide.Right,["RHEE","RTOE","RANK"], tracking_markers = ["RHEE","RTOE"])
-        self.addSegment("Right ForeFoot",7,enums.SegmentSide.Right,["RFMH","RVMH","RSMH"], tracking_markers = ["RFMH","RVMH","RSMH"])
+        self.addSegment("Left Foot",6,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LHEE","LTOE"])
+        self.addSegment("Left ForeFoot",7,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LFMH","LVMH","LSMH"])
+        self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RHEE","RTOE"])
+        self.addSegment("Right ForeFoot",7,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RFMH","RVMH","RSMH"])
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
 
         self.addJoint("LHip","Pelvis", "Left Thigh","YXZ")
         self.addJoint("LKnee","Left Thigh", "Left Shank","YXZ")
-        self.addJoint("LAnkle","Left Shank", "Left HindFoot","YXZ")
-        self.addJoint("LForeFoot","Left HindFoot", "Left ForeFoot","YXZ")
+        self.addJoint("LAnkle","Left Shank", "Left Foot","YXZ")
+        self.addJoint("LForeFoot","Left Foot", "Left ForeFoot","YXZ")
 
         self.addJoint("RHip","Pelvis", "Right Thigh","YXZ")
         self.addJoint("RKnee","Right Thigh", "Right Shank","YXZ")
-        self.addJoint("RAnkle","Right Shank", "Right HindFoot","YXZ")
-        self.addJoint("RForeFoot","Right HindFoot", "Right ForeFoot","YXZ")
+        self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ")
+        self.addJoint("RForeFoot","Right Foot", "Right ForeFoot","YXZ")
 
         # clinics
         self.setClinicalDescriptor("LHip",enums.DataType.Angle, [0,1,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0])
@@ -525,27 +525,27 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         dictRef["Right Shank"]={"TF" : {'sequence':"ZXY", 'labels':   ["RANK","RKJC","RTIB","RANK"]} }
 
         # left Foot
-        dictRef["Left HindFoot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LTOE","LAJC",None,"LAJC"]} }
-        dictRef["Left ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["LSMH","LvTOE","LVMH","LSMH"]} }
+        dictRef["Left Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LTOE","LAJC",None,"LAJC"]} }
+        dictRef["Left ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["LSMH","LTOE","LVMH","LSMH"]} }
 
         # right foot
-        dictRef["Right HindFoot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RTOE","RAJC",None,"RAJC"]} }
-        dictRef["Right ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["RSMH","RvTOE","RVMH","RSMH"]} }
+        dictRef["Right Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RTOE","RAJC",None,"RAJC"]} }
+        dictRef["Right ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["RSMH","RTOE","RVMH","RSMH"]} }
 
         dictRefAnatomical={}
-        dictRefAnatomical["Pelvis"]= {'sequence':"YZX", 'labels':  ["RASI","LASI","SACR","midASIS"]} # normaly : midHJC
-        dictRefAnatomical["Left Thigh"]= {'sequence':"ZXiY", 'labels':  ["LKJC","LHJC","LKNE","LHJC"]} # origin = Proximal ( differ from native)
+        dictRefAnatomical["Pelvis"]= {'sequence':"YZX", 'labels':  ["RASI","LASI","SACR","midASIS"]}
+        dictRefAnatomical["Left Thigh"]= {'sequence':"ZXiY", 'labels':  ["LKJC","LHJC","LKNE","LHJC"]}
         dictRefAnatomical["Right Thigh"]= {'sequence':"ZXY", 'labels': ["RKJC","RHJC","RKNE","RHJC"]}
         dictRefAnatomical["Left Shank"]={'sequence':"ZXiY", 'labels':   ["LAJC","LKJC","LANK","LKJC"]}
         dictRefAnatomical["Right Shank"]={'sequence':"ZXY", 'labels':  ["RAJC","RKJC","RANK","RKJC"]}
 
         # left Foot ( nothing yet)
-        dictRefAnatomical["Left HindFoot"]= {'sequence':"ZXiY", 'labels':   ["LTOE","LHEE",None,"LAJC"]}
-        dictRefAnatomical["Left ForeFoot"]= {'sequence':"ZYX", 'labels':   ["LvSMH","LvTOE",None,"LvSMH"]} # look out : use virtual Point
+        dictRefAnatomical["Left Foot"]= {'sequence':"ZXiY", 'labels':   ["LTOE","LHEE",None,"LAJC"]}
+        dictRefAnatomical["Left ForeFoot"]= {'sequence':"ZYX", 'labels':   ["LvSMH","LFJC",None,"LvSMH"]} # look out : use virtual Point
 
         # right foot
-        dictRefAnatomical["Right HindFoot"]= {'sequence':"ZXiY", 'labels':   ["RTOE","RHEE",None,"RAJC"]}
-        dictRefAnatomical["Right ForeFoot"]= {'sequence':"ZYX", 'labels':   ["RvSMH","RvTOE",None,"RvSMH"]} # look out : use virtual Point
+        dictRefAnatomical["Right Foot"]= {'sequence':"ZXiY", 'labels':   ["RTOE","RHEE",None,"RAJC"]}
+        dictRefAnatomical["Right ForeFoot"]= {'sequence':"ZYX", 'labels':   ["RvSMH","RFJC",None,"RvSMH"]} # look out : use virtual Point
 
         return dictRef,dictRefAnatomical
 
@@ -778,13 +778,12 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         logging.info(" -----------------------")
         self.getHindFootOffset(side = "Left")
 
-        # --- fore foot
-        # ----------------
         logging.info(" --- Left Fore Foot  - TF calibration ---")
         logging.info(" -----------------------------------------")
         self._leftForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Left ForeFoot","LTechnicForeFoot",referential = "Technical"  )
+
 
         logging.info(" --- Left Fore Foot  - AF calibration ---")
         logging.info(" -----------------------------------------")
@@ -826,42 +825,30 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
     # ---- Technical Referential Calibration
     def _leftHindFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
-        nFrames = aquiStatic.GetPointFrameNumber()
+        pfn = aquiStatic.GetPointFrameNumber()
 
-        seg=self.getSegment("Left HindFoot")
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0
 
-        # ---  additional markers and Update of the marker segment list
+        seg=self.getSegment("Left Foot")
 
-        # new markers
-
-        # virtual TOE
-        cun =  aquiStatic.GetPoint("LTOE").GetValues()
-        valuesVirtualCun = np.zeros((nFrames,3))
-        for i in range(0,nFrames):
-            valuesVirtualCun[i,:] = np.array([cun[i,0], cun[i,1], cun[i,2]-self.mp["LeftToeOffset"]])
-
-        btkTools.smartAppendPoint(aquiStatic,"LvTOE",valuesVirtualCun,desc="cun Registrate")
-
-        # update marker list
-        seg.addMarkerLabel("LAJC")         # required markers
-        seg.addMarkerLabel("LvTOE")
-
-
-        # --- technical frame selection and construction
+        # --- technical frame selection and construction ["LTOE","LAJC",None,"LAJC"]} }
         tf=seg.getReferential("TF")
 
+        pt1=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt2=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        pt1=aquiStatic.GetPoint(str(dictRef["Left HindFoot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictRef["Left HindFoot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        if dictRef["Left HindFoot"]["TF"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictRef["Left HindFoot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
+        if dictRef["Left Foot"]["TF"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
             v=(pt3-pt1)
         else:
             v=self.getSegment("Left Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
 
 
-        ptOrigin=aquiStatic.GetPoint(str(dictRef["Left HindFoot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        ptOrigin=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
@@ -871,7 +858,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left HindFoot"]["TF"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
 
         tf.static.m_axisX=x
         tf.static.m_axisY=y
@@ -880,109 +867,42 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         tf.static.setTranslation(ptOrigin)
 
         # --- node manager
-        for label in seg.m_markerLabels:
+        for label in seg.m_tracking_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
-    def _rightHindFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
-        nFrames = aquiStatic.GetPointFrameNumber()
+        # ajc
+        node_prox = self.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC")
+        tf.static.addNode("LAJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
-        seg=self.getSegment("Right HindFoot")
-
-        # ---  additional markers and Update of the marker segment list
-
-        # new markers
-
-        # virtual TOE
-        cun =  aquiStatic.GetPoint("RTOE").GetValues()
-        valuesVirtualCun = np.zeros((nFrames,3))
-        for i in range(0,nFrames):
-            valuesVirtualCun[i,:] = np.array([cun[i,0], cun[i,1], cun[i,2]-self.mp["RightToeOffset"]])
-
-        btkTools.smartAppendPoint(aquiStatic,"RvTOE",valuesVirtualCun,desc="cun Registrate")
-
-        # update marker list
-        seg.addMarkerLabel("RAJC")         # required markers
-        seg.addMarkerLabel("RvTOE")
-
-
-        # --- technical frame selection and construction
-        tf=seg.getReferential("TF")
-
-
-        pt1=aquiStatic.GetPoint(str(dictRef["Right HindFoot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictRef["Right HindFoot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        if dictRef["Right HindFoot"]["TF"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictRef["Right HindFoot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
-            v=(pt3-pt1)
+        if tf.static.isNodeExist("LFJC"):
+            nodeFJC = tf.static.getNode_byLabel("LFJC")
         else:
-            v=self.getSegment("Right Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
+            fjc = modelDecorator.footJointCentreFromMet(aquiStatic,"left",frameInit,frameEnd, markerDiameter = markerDiameter, offset = 0)
+            tf.static.addNode("LFJC",fjc,positionType="Global",desc = "MET")
+            nodeFJC = tf.static.getNode_byLabel("LFJC")
 
-
-        ptOrigin=aquiStatic.GetPoint(str(dictRef["Right HindFoot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
-
-        v=v/np.linalg.norm(v)
-
-        a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
-
-        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right HindFoot"]["TF"]['sequence'])
-
-        tf.static.m_axisX=x
-        tf.static.m_axisY=y
-        tf.static.m_axisZ=z
-        tf.static.setRotation(R)
-        tf.static.setTranslation(ptOrigin)
-
-        # --- node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            tf.static.addNode(label,globalPosition,positionType="Global")
-
+        btkTools.smartAppendPoint(aquiStatic,"LFJC",
+            nodeFJC.m_global* np.ones((pfn,3)),
+            desc=nodeFJC.m_desc)
 
 
     def _leftForeFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
-        nFrames = aquiStatic.GetPointFrameNumber()
+        pfn = aquiStatic.GetPointFrameNumber()
 
+        # new markers
+        valMidMet=(aquiStatic.GetPoint("LVMH").GetValues() + aquiStatic.GetPoint("LFMH").GetValues()) / 2.0
+        btkTools.smartAppendPoint(aquiStatic,"LMidMET",valMidMet,desc="")
+        seg.addCalibrationMarkerLabel("LMidMET")
 
         seg=self.getSegment("Left ForeFoot")
 
-        # ---  additional markers and Update of the marker segment list
-
-        # new markers ( RvSMH - RvVMH)
-        toe =  aquiStatic.GetPoint("LSMH").GetValues()
-        d5 =  aquiStatic.GetPoint("LVMH").GetValues()
-
-        valuesVirtualToe = np.zeros((nFrames,3))
-        valuesVirtualD5 = np.zeros((nFrames,3))
-        for i in range(0,nFrames):
-            valuesVirtualToe[i,:] = np.array([toe[i,0], toe[i,1], toe[i,2]-self.mp["LeftToeOffset"] ])#valuesVirtualCun[i,2]])#
-            valuesVirtualD5 [i,:]= np.array([d5[i,0], d5[i,1], valuesVirtualToe[i,2]])
-
-        btkTools.smartAppendPoint(aquiStatic,"LvSMH",valuesVirtualToe,desc="virtual")
-        btkTools.smartAppendPoint(aquiStatic,"LvVMH",valuesVirtualD5,desc="virtual-flat ")
-
-        # update marker list
-        seg.addMarkerLabel("LvTOE")
-        seg.addMarkerLabel("LvSMH")
-        seg.addMarkerLabel("LvVMH")
-
-        # --- technical frame selection and construction
+        # --- technical frame selection and construction ["LMidMET","LTOE","LVMH","LTOE"]
         tf=seg.getReferential("TF")
 
-
-        pt1=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # D5
-        pt2=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # Toe
-
-        if dictRef["Left ForeFoot"]["TF"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            v=(pt3-pt1)
-        else:
-           v= 100 * np.array([0.0, 0.0, 1.0])
+        pt1=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #LMidMET
+        pt2=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #LTOE
+        pt3=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #LVMH
 
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
@@ -1003,77 +923,32 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         tf.static.setTranslation(ptOrigin)
 
         # --- node manager
-        for label in seg.m_markerLabels:
+        for label in seg.m_tracking_markers: #["LFMH","LVMH","LSMH"]
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
-    def _rightForeFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
-        nFrames = aquiStatic.GetPointFrameNumber()
-
-
-        seg=self.getSegment("Right ForeFoot")
-
-        # ---  additional markers and Update of the marker segment list
-
-        # new markers ( RvSMH - RvVMH)
-        toe =  aquiStatic.GetPoint("RSMH").GetValues()
-        d5 =  aquiStatic.GetPoint("RVMH").GetValues()
-
-        valuesVirtualToe = np.zeros((nFrames,3))
-        valuesVirtualD5 = np.zeros((nFrames,3))
-        for i in range(0,nFrames):
-            valuesVirtualToe[i,:] = np.array([toe[i,0], toe[i,1], toe[i,2]-self.mp["RightToeOffset"] ])#valuesVirtualCun[i,2]])#
-            valuesVirtualD5 [i,:]= np.array([d5[i,0], d5[i,1], valuesVirtualToe[i,2]])
-
-        btkTools.smartAppendPoint(aquiStatic,"RvSMH",valuesVirtualToe,desc="virtual")
-        btkTools.smartAppendPoint(aquiStatic,"RvVMH",valuesVirtualD5,desc="virtual-flat ")
-
-        # update marker list
-        seg.addMarkerLabel("RvTOE")
-        seg.addMarkerLabel("RvSMH")
-        seg.addMarkerLabel("RvVMH")
-
-        # --- technical frame selection and construction
-        tf=seg.getReferential("TF")
-
-        pt1=aquiStatic.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # D5
-        pt2=aquiStatic.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # Toe
-
-        if dictRef["Right ForeFoot"]["TF"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            v=(pt3-pt1)
-        else:
-           v= 100 * np.array([0.0, 0.0, 1.0])
-
-        ptOrigin=aquiStatic.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
-
-        v=v/np.linalg.norm(v)
-
-        a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
-
-        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right ForeFoot"]["TF"]['sequence'])
-
-        tf.static.m_axisX=x
-        tf.static.m_axisY=y
-        tf.static.m_axisZ=z
-        tf.static.setRotation(R)
-        tf.static.setTranslation(ptOrigin)
-
-        # --- node manager
-        for label in seg.m_markerLabels:
+        for label in seg.m_calibration_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
+        # fjc from prox
+        node_prox = self.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LFJC")
+        tf.static.addNode("LFJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
+        # virtual LvSMH
+        local = tf.static.getNode_byLabel("LSMH").getLocal()
+        projSMH  = np.array([ 0.0,local[1],local[2] ] )
+        tf.static.addNode("LvSMH",projSMH,positionType="Local",desc = "proj (TOE-5-1) ")
 
+        btkTools.smartAppendPoint(aquiStatic,"LvSMH",
+        projSMH*np.ones((pfn,3)),desc="proj (TOE-5-1)")
 
 
 
     def _leftHindFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd, options = None):
+        """
+        idem foot of cgm1
+        """
 
         if "markerDiameter" in options.keys():
             logging.info(" option (markerDiameter) found ")
@@ -1081,40 +956,37 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         else:
             markerDiameter=14.0
 
+        seg=self.getSegment("Left Foot")
 
+        # --- Construction of the anatomical Referential ["LTOE","LHEE",None,"LAJC"]
+        pt1=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt2=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        seg=self.getSegment("Left HindFoot")
-
-        # --- Construction of the anatomical Referential
-        pt1=aquiStatic.GetPoint(str(dictAnatomic["Left HindFoot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictAnatomic["Left HindFoot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        if dictAnatomic["Left HindFoot"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictAnatomic["Left HindFoot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
+        if dictAnatomic["Left Foot"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
             v=(pt3-pt1)
         else:
             v=self.getSegment("Left Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
 
-        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left HindFoot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        if ("leftFlatHindFoot" in options.keys() and options["leftFlatHindFoot"]):
-            logging.warning("option (leftFlatHindFoot) enable")
+        if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
+            logging.warning("option (leftFlatFoot) enable")
             #pt2[2] = pt1[2]
             pt1[2] = pt2[2]
         else:
-            logging.warning("option (leftFlatHindFoot) disable")
+            logging.warning("option (leftFlatFoot) disable")
 
 
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
-
 
         v=v/np.linalg.norm(v)
 
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left HindFoot"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left Foot"]['sequence'])
 
         seg.anatomicalFrame.static.m_axisX=x
         seg.anatomicalFrame.static.m_axisY=y
@@ -1142,18 +1014,14 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         relativeMatrixAnatomic = np.dot(rotY,rotX)
         tf.setRelativeMatrixAnatomic( relativeMatrixAnatomic)
 
-
         # --- node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        for node in tf.static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
-        # add SMH
+        # --- compute amthropo
         toePosition=aquiStatic.GetPoint(str("LSMH")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         seg.anatomicalFrame.static.addNode("LSMH",toePosition,positionType="Global")
 
-
-        # --- compute amthropo
         # length
         toe = seg.anatomicalFrame.static.getNode_byLabel("LSMH").m_local
         hee = seg.anatomicalFrame.static.getNode_byLabel("LHEE").m_local
@@ -1168,106 +1036,14 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
 
-    def _rightHindFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd, options = None):
-
-        if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
-            markerDiameter = options["markerDiameter"]
-        else:
-            markerDiameter=14.0
-
-
-        seg=self.getSegment("Right HindFoot")
-
-        # --- Construction of the anatomical Referential
-        pt1=aquiStatic.GetPoint(str(dictAnatomic["Right HindFoot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictAnatomic["Right HindFoot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        if dictAnatomic["Right HindFoot"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictAnatomic["Right HindFoot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
-            v=(pt3-pt1)
-        else:
-            v=self.getSegment("Right Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
-
-        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right HindFoot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        if ("rightFlatHindFoot" in options.keys() and options["rightFlatHindFoot"]):
-            logging.warning("option (rightFlatHindFoot) enable")
-            #pt2[2] = pt1[2]
-            pt1[2] = pt2[2]
-        else:
-            logging.warning("option (rightFlatHindFoot) disable")
-
-
-        a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
-
-
-        v=v/np.linalg.norm(v)
-
-        a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
-
-        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right HindFoot"]['sequence'])
-
-        seg.anatomicalFrame.static.m_axisX=x
-        seg.anatomicalFrame.static.m_axisY=y
-        seg.anatomicalFrame.static.m_axisZ=z
-        seg.anatomicalFrame.static.setRotation(R)
-        seg.anatomicalFrame.static.setTranslation(ptOrigin)
-
-
-
-        # --- relative rotation Technical Anatomical
-        tf=seg.getReferential("TF")
-
-        # actual Relative Rotation
-        trueRelativeMatrixAnatomic = np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation())
-
-        # native CGM relative rotation
-        y,x,z = euler.euler_yxz(trueRelativeMatrixAnatomic)
-        rotX =np.array([[1,0,0],
-                        [0,np.cos(x),-np.sin(x)],
-                         [0,np.sin(x),np.cos(x)]])
-        rotY =np.array([[np.cos(y),0,np.sin(y)],
-                        [0,1,0],
-                         [-np.sin(y),0,np.cos(y)]])
-
-        relativeMatrixAnatomic = np.dot(rotY,rotX)
-        tf.setRelativeMatrixAnatomic( relativeMatrixAnatomic)
-
-
-        # --- node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
-
-# add SMH
-        toePosition=aquiStatic.GetPoint(str("RSMH")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        seg.anatomicalFrame.static.addNode("RSMH",toePosition,positionType="Global")
-
-
-        # --- compute amthropo
-        # length
-        toe = seg.anatomicalFrame.static.getNode_byLabel("RSMH").m_local
-        hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_local
-        seg.setLength(np.linalg.norm(toe-hee)- markerDiameter/2.0)
-
-        # com
-        toe = seg.anatomicalFrame.static.getNode_byLabel("RSMH").m_global
-        hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_global
-        footLongAxis = (toe-hee)/np.linalg.norm(toe-hee)
-
-        com = hee + 0.5 * seg.m_bsp["length"] * footLongAxis
-
-        seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
 
     def _leftForeFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
 
 
         seg=self.getSegment("Left ForeFoot")
 
-        # --- Construction of the anatomical Referential
+
+        # --- Construction of the anatomical Referential ["LvSMH","LFJC",None,"LvSMH"]
         pt1=aquiStatic.GetPoint(str(dictAnatomic["Left ForeFoot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         pt2=aquiStatic.GetPoint(str(dictAnatomic["Left ForeFoot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
@@ -1301,9 +1077,226 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         tf.setRelativeMatrixAnatomic (np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
         # --- node manager
-        for label in seg.m_markerLabels:
+        for node in tf.static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
+
+
+    def _rightHindFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
+        pfn = aquiStatic.GetPointFrameNumber()
+
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0
+
+        seg=self.getSegment("Right Foot")
+
+        # --- technical frame selection and construction ["RTOE","RAJC",None,"RAJC"]} }
+        tf=seg.getReferential("TF")
+
+        pt1=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt2=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+        if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
+            v=(pt3-pt1)
+        else:
+            v=self.getSegment("Right Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
+
+
+        ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+        a1=(pt2-pt1)
+        a1=a1/np.linalg.norm(a1)
+
+        v=v/np.linalg.norm(v)
+
+        a2=np.cross(a1,v)
+        a2=a2/np.linalg.norm(a2)
+
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
+
+        tf.static.m_axisX=x
+        tf.static.m_axisY=y
+        tf.static.m_axisZ=z
+        tf.static.setRotation(R)
+        tf.static.setTranslation(ptOrigin)
+
+        # --- node manager
+        for label in seg.m_tracking_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+            tf.static.addNode(label,globalPosition,positionType="Global")
+
+        # ajc
+        node_prox = self.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC")
+        tf.static.addNode("RAJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
+
+        if tf.static.isNodeExist("RFJC"):
+            nodeFJC = tf.static.getNode_byLabel("RFJC")
+        else:
+            fjc = modelDecorator.footJointCentreFromMet(aquiStatic,"right",frameInit,frameEnd, markerDiameter = markerDiameter, offset = 0)
+            tf.static.addNode("RFJC",fjc,positionType="Global",desc = "MET")
+            nodeFJC = tf.static.getNode_byLabel("RFJC")
+
+        btkTools.smartAppendPoint(aquiStatic,"RFJC",
+            nodeFJC.m_global* np.ones((pfn,3)),
+            desc=nodeFJC.m_desc)
+
+
+
+    def _rightForeFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
+        pfn = aquiStatic.GetPointFrameNumber()
+
+        # new markers
+        valMidMet=(aquiStatic.GetPoint("RVMH").GetValues() + aquiStatic.GetPoint("RFMH").GetValues()) / 2.0
+        btkTools.smartAppendPoint(aquiStatic,"RMidMET",valMidMet,desc="")
+        seg.addCalibrationMarkerLabel("RMidMET")
+
+        seg=self.getSegment("Right ForeFoot")
+
+        # --- technical frame selection and construction ["RMidMET","RTOE","RVMH","RTOE"]
+        tf=seg.getReferential("TF")
+
+        pt1=aquiStatic.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #RMidMET
+        pt2=aquiStatic.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #RTOE
+        pt3=aquiStatic.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #RVMH
+
+        ptOrigin=aquiStatic.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+        a1=(pt2-pt1)
+        a1=a1/np.linalg.norm(a1)
+
+        v=v/np.linalg.norm(v)
+
+        a2=np.cross(a1,v)
+        a2=a2/np.linalg.norm(a2)
+
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right ForeFoot"]["TF"]['sequence'])
+
+        tf.static.m_axisX=x
+        tf.static.m_axisY=y
+        tf.static.m_axisZ=z
+        tf.static.setRotation(R)
+        tf.static.setTranslation(ptOrigin)
+
+        # --- node manager
+        for label in seg.m_tracking_markers: #["RFMH","RVMH","RSMH"]
+            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            tf.static.addNode(label,globalPosition,positionType="Global")
+
+        for label in seg.m_calibration_markers:
+            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            tf.static.addNode(label,globalPosition,positionType="Global")
+
+        # fjc from prox
+        node_prox = self.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RFJC")
+        tf.static.addNode("RFJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
+
+        # virtual RvSMH
+        local = tf.static.getNode_byLabel("RSMH").getLocal()
+        projSMH  = np.array([ 0.0,local[1],local[2] ] )
+        tf.static.addNode("RvSMH",projSMH,positionType="Local",desc = "proj (TOE-5-1) ")
+
+        btkTools.smartAppendPoint(aquiStatic,"RvSMH",
+        projSMH*np.ones((pfn,3)),desc="proj (TOE-5-1)")
+
+
+
+    def _rightHindFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd, options = None):
+
+        if "markerDiameter" in options.keys():
+            logging.info(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0
+
+
+        seg=self.getSegment("Right Foot")
+
+        # --- Construction of the anatomical Referential
+        pt1=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt2=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+        if dictAnatomic["Right Foot"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
+            v=(pt3-pt1)
+        else:
+            v=self.getSegment("Right Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
+
+        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+        if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
+            logging.warning("option (rightFlatFoot) enable")
+            #pt2[2] = pt1[2]
+            pt1[2] = pt2[2]
+        else:
+            logging.warning("option (rightFlatFoot) disable")
+
+
+        a1=(pt2-pt1)
+        a1=a1/np.linalg.norm(a1)
+
+
+        v=v/np.linalg.norm(v)
+
+        a2=np.cross(a1,v)
+        a2=a2/np.linalg.norm(a2)
+
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Foot"]['sequence'])
+
+        seg.anatomicalFrame.static.m_axisX=x
+        seg.anatomicalFrame.static.m_axisY=y
+        seg.anatomicalFrame.static.m_axisZ=z
+        seg.anatomicalFrame.static.setRotation(R)
+        seg.anatomicalFrame.static.setTranslation(ptOrigin)
+
+
+
+        # --- relative rotation Technical Anatomical
+        tf=seg.getReferential("TF")
+
+        # actual Relative Rotation
+        trueRelativeMatrixAnatomic = np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation())
+
+        # native CGM relative rotation
+        y,x,z = euler.euler_yxz(trueRelativeMatrixAnatomic)
+        rotX =np.array([[1,0,0],
+                        [0,np.cos(x),-np.sin(x)],
+                         [0,np.sin(x),np.cos(x)]])
+        rotY =np.array([[np.cos(y),0,np.sin(y)],
+                        [0,1,0],
+                         [-np.sin(y),0,np.cos(y)]])
+
+        relativeMatrixAnatomic = np.dot(rotY,rotX)
+        tf.setRelativeMatrixAnatomic( relativeMatrixAnatomic)
+
+
+        # --- node manager
+        # --- node manager
+        for node in tf.static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
+
+
+        # --- compute amthropo
+        toePosition=aquiStatic.GetPoint(str("RSMH")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        seg.anatomicalFrame.static.addNode("RSMH",toePosition,positionType="Global")
+
+        # length
+        toe = seg.anatomicalFrame.static.getNode_byLabel("RSMH").m_local
+        hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_local
+        seg.setLength(np.linalg.norm(toe-hee)- markerDiameter/2.0)
+
+        # com
+        toe = seg.anatomicalFrame.static.getNode_byLabel("RSMH").m_global
+        hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_global
+        footLongAxis = (toe-hee)/np.linalg.norm(toe-hee)
+
+        com = hee + 0.5 * seg.m_bsp["length"] * footLongAxis
+
+        seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
+
+
 
 
     def _rightForeFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
@@ -1345,9 +1338,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         tf.setRelativeMatrixAnatomic (np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
         # --- node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        for node in tf.static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
 
     #---- Offsets -------
@@ -1671,7 +1663,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
            - `dictRef` (dict) - instance of Model
            - `frameInit` (int) - starting frame
         """
-        seg=self.getSegment("Left HindFoot")
+        seg=self.getSegment("Left Foot")
 
 
 
@@ -1685,18 +1677,18 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
-            pt1=aqui.GetPoint(str(dictRef["Left HindFoot"]["TF"]['labels'][0])).GetValues()[i,:] #cun
-            pt2=aqui.GetPoint(str(dictRef["Left HindFoot"]["TF"]['labels'][1])).GetValues()[i,:] #ajc
+            pt1=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][0])).GetValues()[i,:]
+            pt2=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][1])).GetValues()[i,:]
 
-            if dictRef["Left HindFoot"]["TF"]['labels'][2] is not None:
-                pt3=aqui.GetPoint(str(dictRef["Left HindFoot"]["TF"]['labels'][2])).GetValues()[i,:] # not used
+            if dictRef["Left Foot"]["TF"]['labels'][2] is not None:
+                pt3=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[i,:] # not used
                 v=(pt3-pt1)
             else:
                 v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY
 
 
 
-            ptOrigin=aqui.GetPoint(str(dictRef["Left HindFoot"]["TF"]['labels'][3])).GetValues()[i,:]
+            ptOrigin=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[i,:]
 
 
             a1=(pt2-pt1)
@@ -1707,7 +1699,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             a2=np.cross(a1,v)
             a2=a2/np.linalg.norm(a2)
 
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left HindFoot"]["TF"]['sequence'])
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
 
             csFrame.m_axisX=x
             csFrame.m_axisY=y
@@ -1717,14 +1709,14 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
-        # --- RvTOE
-        btkTools.smartAppendPoint(aqui,"LvTOE",seg.getReferential("TF").getNodeTrajectory("LvTOE"),desc="from hindFoot" )
+        # --- FJC
+        btkTools.smartAppendPoint(aqui,"LFJC",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="from hindFoot" )
 
         # --- motion of the technical referential
         seg.anatomicalFrame.motion=[]
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
-            ptOrigin=aqui.GetPoint(str(dictAnat["Left HindFoot"]['labels'][3])).GetValues()[i,:]
+            ptOrigin=aqui.GetPoint(str(dictAnat["Left Foot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
 
@@ -1758,14 +1750,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             pt2=aqui.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][1])).GetValues()[i,:]
             pt3=aqui.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][2])).GetValues()[i,:]
 
-            if dictRef["Left ForeFoot"]["TF"]['labels'][2] is not None:
-                pt3=aqui.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][2])).GetValues()[i,:] # not used
-                v=(pt3-pt1)
-            else:
-                v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY
-
             ptOrigin=aqui.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][3])).GetValues()[i,:]
-
 
             a1=(pt2-pt1)
             a1=a1/np.linalg.norm(a1)
@@ -1786,15 +1771,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
-
         # --- motion of new markers
         btkTools.smartAppendPoint(aqui,"LvSMH",seg.getReferential("TF").getNodeTrajectory("LvSMH") )
-        btkTools.smartAppendPoint(aqui,"LvVMH",seg.getReferential("TF").getNodeTrajectory("LvVMH") )
 
         # --- motion of the anatomical referential
-
-
-
         seg.anatomicalFrame.motion=[]
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
@@ -1828,18 +1808,18 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
-            pt1=aqui.GetPoint(str(dictRef["Right HindFoot"]["TF"]['labels'][0])).GetValues()[i,:] #cun
-            pt2=aqui.GetPoint(str(dictRef["Right HindFoot"]["TF"]['labels'][1])).GetValues()[i,:] #ajc
+            pt1=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][0])).GetValues()[i,:] #cun
+            pt2=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][1])).GetValues()[i,:] #ajc
 
-            if dictRef["Right HindFoot"]["TF"]['labels'][2] is not None:
-                pt3=aqui.GetPoint(str(dictRef["Right HindFoot"]["TF"]['labels'][2])).GetValues()[i,:] # not used
+            if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
+                pt3=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[i,:] # not used
                 v=(pt3-pt1)
             else:
                 v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY
 
 
 
-            ptOrigin=aqui.GetPoint(str(dictRef["Right HindFoot"]["TF"]['labels'][3])).GetValues()[i,:]
+            ptOrigin=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[i,:]
 
 
             a1=(pt2-pt1)
@@ -1850,7 +1830,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             a2=np.cross(a1,v)
             a2=a2/np.linalg.norm(a2)
 
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right HindFoot"]["TF"]['sequence'])
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
             csFrame.m_axisX=x
             csFrame.m_axisY=y
@@ -1861,13 +1841,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- RvTOE
-        btkTools.smartAppendPoint(aqui,"RvTOE",seg.getReferential("TF").getNodeTrajectory("RvTOE"),desc="from hindFoot" )
+        btkTools.smartAppendPoint(aqui,"RFJC",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="from hindFoot" )
 
         # --- motion of the technical referential
         seg.anatomicalFrame.motion=[]
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
-            ptOrigin=aqui.GetPoint(str(dictAnat["Right HindFoot"]['labels'][3])).GetValues()[i,:]
+            ptOrigin=aqui.GetPoint(str(dictAnat["Right Foot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
             csFrame.update(R,ptOrigin)
@@ -1900,12 +1880,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             pt2=aqui.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][1])).GetValues()[i,:]
             pt3=aqui.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][2])).GetValues()[i,:]
 
-            if dictRef["Right ForeFoot"]["TF"]['labels'][2] is not None:
-                pt3=aqui.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][2])).GetValues()[i,:] # not used
-                v=(pt3-pt1)
-            else:
-                v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY
-
             ptOrigin=aqui.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][3])).GetValues()[i,:]
 
 
@@ -1931,11 +1905,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # --- motion of new markers
         btkTools.smartAppendPoint(aqui,"RvSMH",seg.getReferential("TF").getNodeTrajectory("RvSMH") )
-        btkTools.smartAppendPoint(aqui,"RvVMH",seg.getReferential("TF").getNodeTrajectory("RvVMH") )
 
         # --- motion of the anatomical referential
-
-
 
         seg.anatomicalFrame.motion=[]
         csFrame=frame.Frame()
@@ -1950,7 +1921,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     # ----- least-square Segmental motion ------
     def _leftHindFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
-        seg=self.getSegment("Left HindFoot")
+        seg=self.getSegment("Left Foot")
 
         #  --- add RAJC if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -1998,7 +1969,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # --- vTOE and AJC
         btkTools.smartAppendPoint(aqui,"LAJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("LAJC"),desc="opt from hindfoot" )
-        btkTools.smartAppendPoint(aqui,"LvTOE",seg.getReferential("TF").getNodeTrajectory("LvTOE"),desc="opt from hindfoot" )
+        btkTools.smartAppendPoint(aqui,"LFJC",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="opt from hindfoot" )
 
         # remove AJC from list of tracking markers
         if "LAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LAJC")
@@ -2011,9 +1982,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         #  --- add RvTOE if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
             if len(seg.m_tracking_markers)==2:
-                if "LvTOE" not in seg.m_tracking_markers:
-                    seg.m_tracking_markers.append("LvTOE")
-                    logging.debug("LvTOE added to tracking marker list")
+                if "LFJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("LFJC")
+                    logging.debug("LFJC added to tracking marker list")
 
         # --- Motion of the Technical frame
         seg.getReferential("TF").motion =[]
@@ -2053,11 +2024,11 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # --- motion of new markers
         # --- vTOE and AJC
-        btkTools.smartAppendPoint(aqui,"LvTOE-ForeFoot",seg.getReferential("TF").getNodeTrajectory("LvTOE"),desc="opt from forefoot" )
+        btkTools.smartAppendPoint(aqui,"LFJC-ForeFoot",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="opt from forefoot" )
 
     def _rightHindFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
-        seg=self.getSegment("Right HindFoot")
+        seg=self.getSegment("Right Foot")
 
         #  --- add RAJC if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -2104,7 +2075,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # --- vTOE and AJC
         btkTools.smartAppendPoint(aqui,"RAJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("RAJC"),desc="opt from hindfoot" )
-        btkTools.smartAppendPoint(aqui,"RvTOE",seg.getReferential("TF").getNodeTrajectory("RvTOE"),desc="opt from hindfoot" )
+        btkTools.smartAppendPoint(aqui,"RFJC",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="opt from hindfoot" )
 
         # remove AJC from list of tracking markers
         if "RAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RAJC")
@@ -2117,9 +2088,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         #  --- add RvTOE if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
             if len(seg.m_tracking_markers)==2:
-                if "RvTOE" not in seg.m_tracking_markers:
-                    seg.m_tracking_markers.append("RvTOE")
-                    logging.debug("RvTOE added to tracking marker list")
+                if "RFJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append("RFJC")
+                    logging.debug("RFJC added to tracking marker list")
 
         # --- Motion of the Technical frame
         seg.getReferential("TF").motion =[]
@@ -2159,7 +2130,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # --- motion of new markers
         # --- vTOE and AJC
-        btkTools.smartAppendPoint(aqui,"RvTOE-ForeFoot",seg.getReferential("TF").getNodeTrajectory("RvTOE"),desc="opt from forefoot" )
+        btkTools.smartAppendPoint(aqui,"RFJC-ForeFoot",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="opt from forefoot" )
 
 
     # --- opensim --------
@@ -2175,13 +2146,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         out["hip_r"]= {"joint label":"RHJC", "proximal segment label":"Pelvis", "distal segment label":"Right Thigh" }
         out["knee_r"]= {"joint label":"RKJC", "proximal segment label":"Right Thigh", "distal segment label":"Right Shank" }
         out["ankle_r"]= {"joint label":"RAJC", "proximal segment label":"Right Shank", "distal segment label":"Right HindFoot" }
-        out["mtp_r"]= {"joint label":"RvTOE", "proximal segment label":"Right HindFoot", "distal segment label":"Right ForeFoot" }
+        out["mtp_r"]= {"joint label":"RFJC", "proximal segment label":"Right Foot", "distal segment label":"Right ForeFoot" }
 
 
         out["hip_l"]= {"joint label":"LHJC", "proximal segment label":"Pelvis", "distal segment label":"Left Thigh" }
         out["knee_l"]= {"joint label":"LKJC", "proximal segment label":"Left Thigh", "distal segment label":"Left Shank" }
         out["ankle_l"]= {"joint label":"LAJC", "proximal segment label":"Left Shank", "distal segment label":"Left HindFoot" }
-        out["mtp_l"]= {"joint label":"LvTOE", "proximal segment label":"Left HindFoot", "distal segment label":"Left ForeFoot" }
+        out["mtp_l"]= {"joint label":"LFJC", "proximal segment label":"Left Foot", "distal segment label":"Left ForeFoot" }
 
         return out
 
@@ -2408,8 +2379,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq)
         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq)
         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LvTOE", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RvTOE", acq)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LFJC", acq)
+        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RFJC", acq)
         logging.debug("jc over")
 
         # export angles
@@ -2431,13 +2402,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
         nexusTools.appendBones(NEXUS,vskName,acq,"LTI", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
         nexusTools.appendBones(NEXUS,vskName,acq,"LFO", self.getSegment("Left HindFoot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LTO", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LvTOE").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"LTO", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() )
 
         nexusTools.appendBones(NEXUS,vskName,acq,"RFE", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
         #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
         nexusTools.appendBones(NEXUS,vskName,acq,"RTI", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
         nexusTools.appendBones(NEXUS,vskName,acq,"RFO", self.getSegment("Right HindFoot") , OriginValues = acq.GetPoint("RHEE").GetValues()  )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RTO", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RvTOE").GetValues())
+        nexusTools.appendBones(NEXUS,vskName,acq,"RTO", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues())
 
         logging.debug("bones over")
 
