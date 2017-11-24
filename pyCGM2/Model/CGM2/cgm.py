@@ -96,9 +96,9 @@ class CGM(model.Model):
             out["left"] = enums.CgmStaticMarkerConfig.KneeAnkleMed
 
         #--right--
-        rightKad = True if btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]) else False
-        rightAnkleMed = True if btkTools.isPointsExist(acqStatic,["LMED","LANK"]) else False
-        rightKneeMed = True if btkTools.isPointsExist(acqStatic,["LKNM","LKNE"]) else False
+        rightKad = True if btkTools.isPointsExist(acqStatic,["RKAX","RKD1","RKD2"]) else False
+        rightAnkleMed = True if btkTools.isPointsExist(acqStatic,["RMED","RANK"]) else False
+        rightKneeMed = True if btkTools.isPointsExist(acqStatic,["RKNM","RKNE"]) else False
 
         if not rightKad and not rightAnkleMed and not rightKneeMed:
             out["right"] = enums.CgmStaticMarkerConfig.Native
