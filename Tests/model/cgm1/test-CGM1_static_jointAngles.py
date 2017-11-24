@@ -42,14 +42,13 @@ def plotComparison(acq,acqs,angleLabel):
     ax3.plot(acq.GetPoint(angleLabel).GetValues()[:,2],"-b")
     ax3.plot(acqs.GetPoint(angleLabel+"_cgm1_6dof").GetValues()[:,2],"-g")
 
-
+    plt.show()
 
 
 class CGM1_calibrationTest():
 
     @classmethod
-    def basicCGM1(cls):  #def basicCGM1(self):
-
+    def basicCGM1(cls):
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic_static_StaticVsDynamicAngles\\"
 
 
@@ -239,7 +238,8 @@ class CGM1_calibrationTest():
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Determinist,
                                                  markerDiameter=markerDiameter,
-                                                 useLeftKJCmarker="LKJC_KAD", useLeftAJCmarker="LAJC_KAD",pigStatic=True,
+                                                 pigStatic=True,
+                                                 useLeftKJCmarker="LKJC_KAD", useLeftAJCmarker="LAJC_KAD",
                                                  useRightKJCmarker="RKJC_KAD", useRightAJCmarker="RAJC_KAD",
                                                  viconCGM1compatible=False)
         modMotion.compute()
@@ -346,9 +346,10 @@ class CGM1_calibrationTest():
         # optimisation segmentaire et calibration fonctionnel
         modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Determinist,
                                                  markerDiameter=markerDiameter,
-                                                 viconCGM1compatible = False,
+                                                 pigStatic=True,
                                                  useRightKJCmarker="RKJC_KAD", useRightAJCmarker="RAJC_KAD",
-                                                 useLeftKJCmarker="LKJC_KAD", useLeftAJCmarker="LAJC_MID",pigStatic=True)
+                                                 useLeftKJCmarker="LKJC_KAD", useLeftAJCmarker="LAJC_MID",
+                                                 viconCGM1compatible = False)
         modMotion.compute()
 
         # relative angles
