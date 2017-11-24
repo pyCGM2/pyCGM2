@@ -52,7 +52,7 @@ if __name__ == "__main__":
         # --------------------------LOADING ------------------------------------
         if DEBUG:
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\kad-med\\"
-            calibrateFilenameLabelledNoExt = "Static Cal 01-both" #"static Cal 01-noKAD-noAnkleMed" #
+            calibrateFilenameLabelledNoExt = "Static Cal 01-onlyLeft" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -104,7 +104,6 @@ if __name__ == "__main__":
 
         # ---check marker set used----
         smc= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
-
         # --------------------------STATIC CALBRATION--------------------------
         scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
 
