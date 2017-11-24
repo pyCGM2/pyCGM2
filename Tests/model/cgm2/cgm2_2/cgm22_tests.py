@@ -57,15 +57,12 @@ if __name__ == "__main__":
 
     # cgm decorator
     modelDecorator.HipJointCenterDecorator(model).hara()
-    modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both",cgm1Behaviour=True)
+    modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both")
     modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="both")
 
     # final
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                       seLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara",
-                       useLeftKJCnode="LKJC_mid", useLeftAJCnode="LAJC_mid",
-                       useRightKJCnode="RKJC_mid", useRightAJCnode="RAJC_mid",
-                       markerDiameter=markerDiameter).compute()
+                                        markerDiameter=markerDiameter).compute()
 
 
     # ------ Fitting -------
