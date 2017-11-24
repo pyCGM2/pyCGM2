@@ -55,22 +55,26 @@ class CGM2_1_calibrationTest():
         scp=modelFilters.StaticCalibrationProcedure(model)
 
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+        pos0_L = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getLocal()
+        pos0_R = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getLocal()
 
         # cgm decorator
         modelDecorator.HipJointCenterDecorator(model).hara()
 
-
         # final
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara").compute()
-
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+        pos_L = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getLocal()
+        pos_R = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getLocal()
 
         # ---- tests ----
-        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Hara").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
+        np.testing.assert_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getDescription() ,"Hara")
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LHJC").getDescription() ,"Hara")
 
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Hara").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
+        np.testing.assert_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getDescription() ,"Hara")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RHJC").getDescription() ,"Hara")
+
+        np.testing.assert_equal(np.all(pos_L == pos0_L) == False, True)
+        np.testing.assert_equal(np.all(pos_R == pos0_R) ==False, True)
 
 
     @classmethod
@@ -104,20 +108,28 @@ class CGM2_1_calibrationTest():
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
+        pos0_L = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getLocal()
+        pos0_R = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getLocal()
+
         # cgm decorator
         modelDecorator.HipJointCenterDecorator(model).harrington()
 
         # final
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_Harrington", useRightHJCnode="RHJC_Harrington").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
-        # tests
-        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Harrington").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
+        pos_L = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getLocal()
+        pos_R = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getLocal()
 
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Harrington").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
+        # ---- tests ----
+        np.testing.assert_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getDescription() ,"Harrington")
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LHJC").getDescription() ,"Harrington")
+
+        np.testing.assert_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getDescription() ,"Harrington")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RHJC").getDescription() ,"Harrington")
+
+        np.testing.assert_equal(np.all(pos_L == pos0_L) == False, True)
+        np.testing.assert_equal(np.all(pos_R == pos0_R) ==False, True)
 
     @classmethod
     def harrigton_pelvisWidthPredictor(cls):
@@ -150,20 +162,28 @@ class CGM2_1_calibrationTest():
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
+        pos0_L = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getLocal()
+        pos0_R = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getLocal()
+
          # cgm decorator
         modelDecorator.HipJointCenterDecorator(model).harrington(predictors=pyCGM2Enums.HarringtonPredictor.PelvisWidth)
 
         # final
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_Harrington", useRightHJCnode="RHJC_Harrington").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
-        # tests
-        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Harrington").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
+        pos_L = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getLocal()
+        pos_R = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getLocal()
 
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Harrington").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
+        # ---- tests ----
+        np.testing.assert_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getDescription() ,"Harrington")
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LHJC").getDescription() ,"Harrington")
+
+        np.testing.assert_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getDescription() ,"Harrington")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RHJC").getDescription() ,"Harrington")
+
+        np.testing.assert_equal(np.all(pos_L == pos0_L) == False, True)
+        np.testing.assert_equal(np.all(pos_R == pos0_R) ==False, True)
 
 
     @classmethod
@@ -197,20 +217,28 @@ class CGM2_1_calibrationTest():
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
+        pos0_L = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getLocal()
+        pos0_R = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getLocal()
+
          # cgm decorator
         modelDecorator.HipJointCenterDecorator(model).harrington(predictors=pyCGM2Enums.HarringtonPredictor.LegLength)
 
         # final
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_Harrington", useRightHJCnode="RHJC_Harrington").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
-        # tests
-        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_Harrington").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
+        pos_L = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getLocal()
+        pos_R = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getLocal()
 
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_Harrington").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
+        # ---- tests ----
+        np.testing.assert_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getDescription() ,"Harrington")
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LHJC").getDescription() ,"Harrington")
+
+        np.testing.assert_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getDescription() ,"Harrington")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RHJC").getDescription() ,"Harrington")
+
+        np.testing.assert_equal(np.all(pos_L == pos0_L) == False, True)
+        np.testing.assert_equal(np.all(pos_R == pos0_R) ==False, True)
 
 
 
@@ -247,21 +275,29 @@ class CGM2_1_calibrationTest():
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
+        pos0_L = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getLocal()
+        pos0_R = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getLocal()
+
         # cgm decorator
         modelDecorator.HipJointCenterDecorator(model).custom(position_Left = np.array([1,2,3]),
                                                   position_Right = np.array([1,2,3]), methodDesc = "us") # add node to pelvis
 
         # final
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model, useLeftHJCnode="LHJC_us", useRightHJCnode="RHJC_us").compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
-        # tests
-        #  - altered HJC is explained firsly in the technical frame with the suffix ( har, ...) and subsquently  consider with no suffix in the anatomical frame
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC_us").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("RHJC").m_local, decimal=5)
+        pos_L = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getLocal()
+        pos_R = model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getLocal()
 
-        np.testing.assert_almost_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC_us").m_local,
-                                      model.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("LHJC").m_local, decimal=5)
+        # ---- tests ----
+        np.testing.assert_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC").getDescription() ,"us")
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LHJC").getDescription() ,"us")
+
+        np.testing.assert_equal(model.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC").getDescription() ,"us")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RHJC").getDescription() ,"us")
+
+        np.testing.assert_equal(np.all(pos_L == pos0_L) == False, True)
+        np.testing.assert_equal(np.all(pos_R == pos0_R) ==False, True)
 
 if __name__ == "__main__":
 

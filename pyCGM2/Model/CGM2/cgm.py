@@ -740,6 +740,7 @@ class CGM1LowerLimbs(CGM):
         # left
         if tf.static.isNodeExist("LHJC"):
             nodeLHJC = tf.static.getNode_byLabel("LHJC")
+
         else:
             tf.static.addNode("LHJC_cgm1",LHJC_loc,positionType="Local",desc = "Davis")
             tf.static.addNode("LHJC",LHJC_loc,positionType="Local",desc = "Davis")
@@ -774,8 +775,8 @@ class CGM1LowerLimbs(CGM):
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
-        seg.addCalibrationMarkerLabel("LHJC")
-        seg.addCalibrationMarkerLabel("RHJC")
+        # seg.addCalibrationMarkerLabel("LHJC")
+        # seg.addCalibrationMarkerLabel("RHJC")
 
         # TODO how to deal with self.setCalibrationProperty( "LHJC_node",  "LHJC_cgm1")
 
