@@ -1361,7 +1361,7 @@ class KneeCalibrationDecorator(DecoratorModel):
 
     def midCondyles(self,acq, side="both",
                     leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LKNM",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RKNM",
-                    markerDiameter = 14,noMp=False):
+                    markerDiameter = 14,widthFromMp=True):
         """
             Compute Knee joint centre from mid condyles.
 
@@ -1385,7 +1385,10 @@ class KneeCalibrationDecorator(DecoratorModel):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0
 
-            LKJCvalues = midPoint(acq,leftLateralKneeLabel,leftMedialKneeLabel,offset=(self.model.mp["LeftKneeWidth"]+markerDiameter)/2.0)
+            if widthFromMp:
+                LKJCvalues = midPoint(acq,leftLateralKneeLabel,leftMedialKneeLabel,offset=(self.model.mp["LeftKneeWidth"]+markerDiameter)/2.0)
+            else:
+                LKJCvalues = midPoint(acq,leftLateralKneeLabel,leftMedialKneeLabel)
 
 
             tf_prox = self.model.getSegment("Left Thigh").getReferential("TF")
@@ -1410,8 +1413,10 @@ class KneeCalibrationDecorator(DecoratorModel):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0
 
-
-            RKJCvalues = midPoint(acq,rightLateralKneeLabel,rightMedialKneeLabel,offset=(self.model.mp["RightKneeWidth"]+markerDiameter)/2.0)
+            if widthFromMp:
+                RKJCvalues = midPoint(acq,rightLateralKneeLabel,rightMedialKneeLabel,offset=(self.model.mp["RightKneeWidth"]+markerDiameter)/2.0)
+            else:
+                RKJCvalues = midPoint(acq,rightLateralKneeLabel,rightMedialKneeLabel)
 
             tf_prox = self.model.getSegment("Right Thigh").getReferential("TF")
             tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
@@ -1580,7 +1585,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
 
     def midMaleolus(self,acq, side="both",
                     leftLateralAnkleLabel="LANK", leftMedialAnkleLabel="LMED",
-                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14):
+                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14,widthFromMp=True):
 
         """
             Compute Ankle joint centre from mid malleoli
@@ -1606,7 +1611,10 @@ class AnkleCalibrationDecorator(DecoratorModel):
                 self.model.m_useLeftTibialTorsion=True
                 if self.model.mp.has_key("LeftTibialTorsion") : self.model.mp["LeftTibialTorsion"] =0
 
-            LAJCvalues = midPoint(acq,leftLateralAnkleLabel,leftMedialAnkleLabel,offset=(self.model.mp["LeftAnkleWidth"]+markerDiameter)/2.0)
+            if widthFromMp:
+                LAJCvalues = midPoint(acq,leftLateralAnkleLabel,leftMedialAnkleLabel,offset=(self.model.mp["LeftAnkleWidth"]+markerDiameter)/2.0)
+            else:
+                LAJCvalues = midPoint(acq,leftLateralAnkleLabel,leftMedialAnkleLabel)
 
             tf_prox = self.model.getSegment("Left Shank").getReferential("TF")
             tf_dist = self.model.getSegment("Left Foot").getReferential("TF")
@@ -1628,7 +1636,10 @@ class AnkleCalibrationDecorator(DecoratorModel):
                 self.model.m_useRightTibialTorsion=True
                 if self.model.mp.has_key("RightTibialTorsion") : self.model.mp["RightTibialTorsion"] =0
 
-            RAJCvalues = midPoint(acq,rightLateralAnkleLabel,rightMedialAnkleLabel,offset=(self.model.mp["RightAnkleWidth"]+markerDiameter)/2.0)
+            if widthFromMp:
+                RAJCvalues = midPoint(acq,rightLateralAnkleLabel,rightMedialAnkleLabel,offset=(self.model.mp["RightAnkleWidth"]+markerDiameter)/2.0)
+            else:
+                RAJCvalues = midPoint(acq,rightLateralAnkleLabel,rightMedialAnkleLabel)
 
             tf_prox = self.model.getSegment("Right Shank").getReferential("TF")
             tf_dist = self.model.getSegment("Right Foot").getReferential("TF")
@@ -1640,57 +1651,8 @@ class AnkleCalibrationDecorator(DecoratorModel):
             tf_prox.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
             tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
-
             btkTools.smartAppendPoint(acq,"RAJC_MID",RAJCvalues, desc="MID")
 
-    def midMaleolusAxis(self,acq, side="both",
-                    leftLateralAnkleLabel="LANK", leftMedialAnkleLabel="LMED",
-                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14, withNoModelParameter=False):
-
-
-        ff = acq.GetFirstFrame()
-
-        frameInit =  acq.GetFirstFrame()-ff
-        frameEnd = acq.GetLastFrame()-ff+1
-
-        #self.model.nativeCgm1 = False
-        self.model.decoratedModel = True
-
-        if side=="both" or side=="left":
-            pass
-
-
-
-        if side=="both" or side=="right":
-
-
-            pt1=acq.GetPoint("RANK").GetValues().mean(axis=0)
-            pt2=acq.GetPoint("RMED").GetValues().mean(axis=0)
-            a1=(pt2-pt1) #KJC-AJC
-            midMaleolusAxis=a1/np.linalg.norm(a1)
-
-            loc1=    np.dot(self.model.getSegment("Right Shank").anatomicalFrame.static.getRotation().T,
-                        midMaleolusAxis)
-
-            proj1 = np.array([ loc1[0],
-                               loc1[1],
-                                 0])
-
-            v1 = proj1/np.linalg.norm(proj1)
-
-            loc2=    np.dot(self.model.getSegment("Right Shank").anatomicalFrame.static.getRotation().T,
-                        self.model.getSegment("Right Thigh").anatomicalFrame.static.m_axisY)
-
-            proj2 = np.array([ loc2[0],
-                               loc2[1],
-                                 0])
-
-            v2 = proj2/np.linalg.norm(proj2)
-
-            angle= np.arccos(np.dot(v2,v1))
-
-            print "****** right Tibial Main **********"
-            print np.sign(np.cross(v2,v1)[2])*angle*360.0/(2.0*np.pi)
 
 # class FootCalibrationDecorator(DecoratorModel):
 #     """
