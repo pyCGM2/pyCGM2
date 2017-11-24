@@ -35,7 +35,7 @@ def get_markerLabelForPiGStatic(smc):
 
 
 
-class argsManager_cgm1(object):
+class argsManager_cgm(object):
     def __init__(self, settings, args):
         self.settings = settings
         self.args = args
@@ -71,6 +71,40 @@ class argsManager_cgm1(object):
             else:
                 return self.settings["Global"]["Point suffix"]
 
+
+    def getMomentProjection(self):
+        if self.args.proj is not None:
+            if self.args.proj == "Distal":
+                return  enums.MomentProjection.Distal
+            elif self.args.proj == "Proximal":
+                return  enums.MomentProjection.Proximal
+            elif self.args.proj == "Global":
+                return  enums.MomentProjection.Global
+            elif args.proj == "JCS":
+                return pyCGM2Enums.MomentProjection.JCS
+            else:
+                raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
+
+        else:
+            if self.settings["Fitting"]["Moment Projection"] == "Distal":
+                return  enums.MomentProjection.Distal
+            elif self.settings["Fitting"]["Moment Projection"] == "Proximal":
+                return  enums.MomentProjection.Proximal
+            elif self.settings["Fitting"]["Moment Projection"] == "Global":
+                return  enums.MomentProjection.Global
+            elif settings["Fitting"]["Moment Projection"] == "JCS":
+                return enums.MomentProjection.JCS
+
+            else:
+                raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
+
+    def getManualForcePlateAssign(self):
+        return self.args.mfpa
+
+class argsManager_cgm1(argsManager_cgm):
+    def __init__(self, settings, args):
+        super(argsManager_cgm1, self).__init__(settings, args)
+
     def getMomentProjection(self):
         if self.args.proj is not None:
             if self.args.proj == "Distal":
@@ -89,11 +123,11 @@ class argsManager_cgm1(object):
                 return  enums.MomentProjection.Proximal
             elif self.settings["Fitting"]["Moment Projection"] == "Global":
                 return  enums.MomentProjection.Global
+
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
 
-    def getManualForcePlateAssign(self):
-        return self.args.mfpa
+
 
 def applyDecorators_CGM1(smc, model,acqStatic,optional_mp,markerDiameter):
 
@@ -126,4 +160,57 @@ def applyDecorators_CGM1(smc, model,acqStatic,optional_mp,markerDiameter):
     if smc["right"] == enums.CgmStaticMarkerConfig.KADmed:
         logging.warning("CASE FOUND ===> Right Side = KAD+med")
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
+
+def applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter):
+
+    # native but thighRotation altered in mp
+    if smc["left"] == enums.CgmStaticMarkerConfig.Native and optional_mp["LeftThighRotation"] !=0:
+        logging.warning("CASE FOUND ===> Left Side = NATIVE CGM1 + manual Thigh  ")
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],
+            markerDiameter, optional_mp["LeftTibialTorsion"], optional_mp["LeftShankRotation"])
+
+    if smc["right"] == enums.CgmStaticMarkerConfig.Native and optional_mp["RightThighRotation"] !=0:
+        logging.warning("CASE FOUND ===> Right Side = NATIVE CGM1 + manual Thigh  ")
+        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],
+            markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
+
+    # KAD
+    if smc["left"] == enums.CgmStaticMarkerConfig.KAD:
+        logging.warning("CASE FOUND ===> Left Side = KAD")
+        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
+
+    if smc["right"] == enums.CgmStaticMarkerConfig.KAD:
+        logging.warning("CASE FOUND ===> Right Side = KAD")
+        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
+
+    # KADmed
+    if smc["left"] == enums.CgmStaticMarkerConfig.KADmed:
+        logging.warning("CASE FOUND ===> Right Side = KAD+med")
+        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
+
+    if smc["right"] == enums.CgmStaticMarkerConfig.KADmed:
+        logging.warning("CASE FOUND ===> Right Side = KAD+med")
+        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
+
+    # KneeMed
+    if smc["left"] == enums.CgmStaticMarkerConfig.KneeMed:
+        logging.warning("CASE FOUND ===> Right Side = KneeMed -  ankle for KJC")
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic, markerDiameter=markerDiameter, side="left")
+
+    if smc["right"] == enums.CgmStaticMarkerConfig.KneeMed:
+        logging.warning("CASE FOUND ===> Right Side = KneeMed -  ankle for KJC")
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic, markerDiameter=markerDiameter, side="right")
+
+    # KneeAnkleMed
+    if smc["left"] == enums.CgmStaticMarkerConfig.KneeAnkleMed:
+        logging.warning("CASE FOUND ===> Right Side = Knee and Ankle Medial")
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="left")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
+
+    if smc["right"] == enums.CgmStaticMarkerConfig.KneeAnkleMed:
+        logging.warning("CASE FOUND ===> Right Side = Knee and Ankle Medial")
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="right")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
