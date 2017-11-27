@@ -74,7 +74,7 @@ if __name__ == "__main__":
         info = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
 
         #  translators management
-        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
+        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1-1.translators")
         if not translators:
            translators = settings["Translators"]
 
