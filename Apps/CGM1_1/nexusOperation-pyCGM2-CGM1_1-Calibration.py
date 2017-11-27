@@ -129,8 +129,10 @@ if __name__ == "__main__":
         if model.decoratedModel:
             # initial static filter
             modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                               leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
-                               markerDiameter=markerDiameter).compute()
+                                                leftFlatFoot = leftFlatFoot,
+                                                rightFlatFoot = rightFlatFoot,
+                                                markerDiameter=markerDiameter,
+                                                ).compute()
 
         # ----------------------CGM MODELLING----------------------------------
         # ----motion filter----
