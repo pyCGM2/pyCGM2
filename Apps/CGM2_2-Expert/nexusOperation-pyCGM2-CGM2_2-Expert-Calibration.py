@@ -113,7 +113,7 @@ if __name__ == "__main__":
 
         # --store calibration parameters--
         model.setStaticFilename(calibrateFilenameLabelled)
-        model.setCalibrationProperty("LeftFlatFoot",leftFlatFoot)
+        model.setCalibrationProperty("leftFlatFoot",leftFlatFoot)
         model.setCalibrationProperty("rightFlatFoot",rightFlatFoot)
         model.setCalibrationProperty("markerDiameter",markerDiameter)
 
