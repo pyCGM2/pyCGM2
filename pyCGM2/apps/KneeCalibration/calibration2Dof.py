@@ -161,11 +161,7 @@ if __name__ == "__main__":
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
-                               markerDiameter=markerDiameter,
-                               RotateLeftThighFlag = False,
-                               RotateRightThighFlag = False).compute()
-
-
+                               markerDiameter=markerDiameter).compute()
 
 
         if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
@@ -173,8 +169,6 @@ if __name__ == "__main__":
             modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,pyCGM2Enums.motionMethod.Determinist,
                                                      markerDiameter=markerDiameter)
             modMotion.compute()
-
-
 
 
         elif model.version in  ["CGM2.3","CGM2.3e","CGM2.3","CGM2.4e"]:
@@ -206,9 +200,7 @@ if __name__ == "__main__":
 
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
-                           markerDiameter=markerDiameter,
-                           RotateLeftThighFlag = True,
-                           RotateRightThighFlag = True).compute()
+                           markerDiameter=markerDiameter).compute()
 
 
         logging.warning("model updated with a  %s knee calibrated with 2Dof method" %(side))
