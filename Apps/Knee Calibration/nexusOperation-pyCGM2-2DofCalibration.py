@@ -114,7 +114,7 @@ if __name__ == "__main__":
         #  translators management
         if model.version in  ["CGM1.0"]:
             translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
-        elif model.version in  ["CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
+        elif model.version in  ["CGM1.1"]:
             translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1-1.translators")
         elif model.version in  ["CGM2.1"]:
             translators = files.manage_pycgm2Translators(DATA_PATH,"CGM2-1.translators")
@@ -167,8 +167,8 @@ if __name__ == "__main__":
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
         # initial calibration ( i.e calibration from Calibration operation)
-        flag_leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
-        flag_rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
+        leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
+        rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
         markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]["markerDiameter"]
 
         if side == "Left":
@@ -181,7 +181,7 @@ if __name__ == "__main__":
         # no rotation on both thigh - re init anatonical frame
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                               leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
+                               leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
                                markerDiameter=markerDiameter,
                                RotateLeftThighFlag = False,
                                RotateRightThighFlag = False).compute()
@@ -223,6 +223,7 @@ if __name__ == "__main__":
 
         # ----  Calibration
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                           leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
                            markerDiameter=markerDiameter,
                            RotateLeftThighFlag = True,
                            RotateRightThighFlag = True).compute()

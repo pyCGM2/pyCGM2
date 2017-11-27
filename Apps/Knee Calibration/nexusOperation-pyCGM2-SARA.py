@@ -139,8 +139,8 @@ if __name__ == "__main__":
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
         # initial calibration ( i.e calibration from Calibration operation)
-        flag_leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
-        flag_rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
+        leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
+        rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
         markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]["markerDiameter"]
 
         if side == "Left":
@@ -155,7 +155,7 @@ if __name__ == "__main__":
         # no rotation of both thigh
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                               leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
+                               leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
                                markerDiameter=markerDiameter,
                                RotateLeftThighFlag = False,
                                RotateRightThighFlag = False).compute()
@@ -191,7 +191,7 @@ if __name__ == "__main__":
             # --------------------------FINAL CALIBRATION OF THE STATIC File---------
 
             modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                               leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
+                               leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
                                markerDiameter=markerDiameter,
                                RotateLeftThighFlag = True,
                                RotateRightThighFlag = True).compute()
