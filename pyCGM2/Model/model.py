@@ -65,6 +65,22 @@ class Model(object):
     def setCalibrationProperty(self, propertyLabel,  value):
         self.m_properties["CalibrationParameters"][propertyLabel] = value
 
+    def isProperty(self,label):
+        return True if label in self.m_properties.keys() else False
+
+    def isCalibrationProperty(self,label):
+        return True if label in self.m_properties["CalibrationParameters"].keys() else False
+
+    def checkCalibrationProperty(self,CalibrationParameterLabel,value):
+        if self.isCalibrationProperty(CalibrationParameterLabel):
+            if self.m_properties["CalibrationParameters"][CalibrationParameterLabel] == value:
+                return True
+            else:
+                return False
+        else:
+            return False
+            logging.warning("[pyCGM2] : CalibrationParameterLabel doesn t exist")
+
     def setStaticFilename(self,name):
         self.m_staticFilename=name
 
