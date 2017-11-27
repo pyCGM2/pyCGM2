@@ -20,6 +20,7 @@ from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 from pyCGM2.Utils import files
 from pyCGM2.Model.Opensim import opensimFilters
+from pyCGM2.apps import cgmUtils
 
 
 if __name__ == "__main__":
@@ -89,46 +90,12 @@ if __name__ == "__main__":
            translators = settings["Translators"]
 
 
-        # --------------------------CONFIG -----------------------------
-
-        if args.markerDiameter is not None:
-            markerDiameter = float(args.markerDiameter)
-            logging.warning("marker diameter forced : %s", str(float(args.markerDiameter)))
-        else:
-            markerDiameter = float(settings["Global"]["Marker diameter"])
-
-
-        if args.check:
-            pointSuffix="cgm2.3e"
-        else:
-            if args.pointSuffix is not None:
-                pointSuffix = args.pointSuffix
-            else:
-                pointSuffix = settings["Global"]["Point suffix"]
-
-        if args.proj is not None:
-            if args.proj == "Distal":
-                momentProjection = pyCGM2Enums.MomentProjection.Distal
-            elif args.proj == "Proximal":
-                momentProjection = pyCGM2Enums.MomentProjection.Proximal
-            elif args.proj == "Global":
-                momentProjection = pyCGM2Enums.MomentProjection.Global
-            elif args.proj == "JCS":
-                momentProjection = pyCGM2Enums.MomentProjection.JCS
-            else:
-                raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
-
-        else:
-            if settings["Fitting"]["Moment Projection"] == "Distal":
-                momentProjection = pyCGM2Enums.MomentProjection.Distal
-            elif settings["Fitting"]["Moment Projection"] == "Proximal":
-                momentProjection = pyCGM2Enums.MomentProjection.Proximal
-            elif settings["Fitting"]["Moment Projection"] == "Global":
-                momentProjection = pyCGM2Enums.MomentProjection.Global
-            elif settings["Fitting"]["Moment Projection"] == "JCS":
-                momentProjection = pyCGM2Enums.MomentProjection.JCS
-            else:
-                raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
+        # --------------------------CONFIG ------------------------------------
+        argsManager = cgmUtils.argsManager_cgm(settings,args)
+        markerDiameter = argsManager.getMarkerDiameter()
+        pointSuffix = argsManager.getPointSuffix("cgm2.3e")
+        momentProjection =  argsManager.getMomentProjection()
+        mfpa = argsManager.getManualForcePlateAssign()
 
         ik_flag = False if args.noIk else True
         # --------------------------ACQ WITH TRANSLATORS --------------------------------------
@@ -354,11 +321,11 @@ if __name__ == "__main__":
         forceplates.addForcePlateGeneralEvents(finalAcqGait,mappedForcePlate)
         logging.info("Force plate assignment : %s" %mappedForcePlate)
 
-        if args.mfpa is not None:
-            if len(args.mfpa) != len(mappedForcePlate):
+        if mfpa is not None:
+            if len(mfpa) != len(mappedForcePlate):
                 raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(mappedForcePlate))))
             else:
-                mappedForcePlate = args.mfpa
+                mappedForcePlate = mfpa
                 forceplates.addForcePlateGeneralEvents(finalAcqGait,mappedForcePlate)
                 logging.warning("Force plates assign manually")
 
