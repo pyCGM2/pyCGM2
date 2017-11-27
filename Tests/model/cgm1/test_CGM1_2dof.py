@@ -13,7 +13,8 @@ pyCGM2.CONFIG.addBtk()
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model import  modelFilters,modelDecorator, frame
 from pyCGM2.Model.CGM2 import cgm
-import pyCGM2.enums as pyCGM2Enums
+
+from pyCGM2 import enums
 
 
 
@@ -48,7 +49,6 @@ if __name__ == "__main__":
 
     # initial calibration
     scp=modelFilters.StaticCalibrationProcedure(model)
-
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
 
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"
     acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
-    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
+    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist,
                                              usePyCGM2_coordinateSystem=True)
     modMotion.compute()
 
@@ -65,11 +65,13 @@ if __name__ == "__main__":
     modelDecorator.KneeCalibrationDecorator(model).calibrate2dof("Right")
 
     # final calibration
-    modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+    modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                        RotateLeftThigh = True,
+                                        RotateRightThigh = True).compute()
 
     #----MOTION----
     # motion with dynakadOffset
-    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
+    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist,
                                              usePyCGM2_coordinateSystem=True)
     modMotion.compute()
 
