@@ -871,7 +871,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
-        # ajc
+        # ajc from prox
         node_prox = self.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC")
         tf.static.addNode("LAJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
@@ -909,6 +909,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
 
+        v = (pt3-pt1)
         v=v/np.linalg.norm(v)
 
         a2=np.cross(a1,v)
@@ -994,8 +995,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         seg.anatomicalFrame.static.setRotation(R)
         seg.anatomicalFrame.static.setTranslation(ptOrigin)
 
-
-
         # --- relative rotation Technical Anatomical
         tf=seg.getReferential("TF")
 
@@ -1039,9 +1038,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
     def _leftForeFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
 
-
         seg=self.getSegment("Left ForeFoot")
-
 
         # --- Construction of the anatomical Referential ["LvSMH","LFJC",None,"LvSMH"]
         pt1=aquiStatic.GetPoint(str(dictAnatomic["Left ForeFoot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -1064,7 +1061,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=a2/np.linalg.norm(a2)
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left ForeFoot"]['sequence'])
-
 
         seg.anatomicalFrame.static.m_axisX=x
         seg.anatomicalFrame.static.m_axisY=y
@@ -1167,6 +1163,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
 
+        v=(pt3-pt1)
         v=v/np.linalg.norm(v)
 
         a2=np.cross(a1,v)
@@ -1237,7 +1234,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
 
-
         v=v/np.linalg.norm(v)
 
         a2=np.cross(a1,v)
@@ -1250,8 +1246,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         seg.anatomicalFrame.static.m_axisZ=z
         seg.anatomicalFrame.static.setRotation(R)
         seg.anatomicalFrame.static.setTranslation(ptOrigin)
-
-
 
         # --- relative rotation Technical Anatomical
         tf=seg.getReferential("TF")
@@ -1417,17 +1411,17 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             if btkTools.isPointExist(aqui,originAnatomicalFrame):
                 self._anatomical_motion(aqui,"Right Shank",originLabel = originAnatomicalFrame)
 
-        if "Left HindFoot" in segments:
+        if "Left Foot" in segments:
             self._left_foot_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Left HindFoot"]['labels'][3])
+            originAnatomicalFrame = str(dictAnat["Left Foot"]['labels'][3])
             if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Left HindFoot",originLabel = originAnatomicalFrame)
+                self._anatomical_motion(aqui,"Left Foot",originLabel = originAnatomicalFrame)
 
-        if "Right HindFoot" in segments:
+        if "Right Foot" in segments:
             self._right_foot_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Right HindFoot"]['labels'][3])
+            originAnatomicalFrame = str(dictAnat["Right Foot"]['labels'][3])
             if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Right HindFoot",originLabel = originAnatomicalFrame)
+                self._anatomical_motion(aqui,"Right Foot",originLabel = originAnatomicalFrame)
 
         if "Left ForeFoot" in segments:
             self._left_foot_motion_optimize(aqui, dictRef,motionMethod)
@@ -1601,10 +1595,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             # hindFoot
             self._leftHindFoot_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left HindFoot",originLabel = str(dictAnat["Left HindFoot"]['labels'][3]))
+            self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
 
             self._rightHindFoot_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right HindFoot",originLabel = str(dictAnat["Right HindFoot"]['labels'][3]))
+            self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
 
             # foreFoot
             self._leftForeFoot_motion_optimize(aqui, dictRef,motionMethod)
@@ -1633,8 +1627,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 self.displayMotionCoordinateSystem( aqui,  "Right Shank Proximal" , "RShankProx" )
                 self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFoot" )
                 self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFoot" )
-                self.displayMotionCoordinateSystem( aqui,  "Left HindFoot" , "LHindFoot")
-                self.displayMotionCoordinateSystem( aqui,  "Right HindFoot" , "RHindFoot")
+                self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LHindFoot")
+                self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RHindFoot")
                 self.displayMotionCoordinateSystem( aqui,  "Left ForeFoot" , "LForeFoot")
                 self.displayMotionCoordinateSystem( aqui,  "Right ForeFoot" , "RForeFoot")
 
@@ -1648,8 +1642,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 self.displayMotionViconCoordinateSystem(aqui,"Left Shank Proximal","LTPO","LTPA","LTPL","LTPP")
                 self.displayMotionViconCoordinateSystem(aqui,"Right Shank","RTIO","RTIA","RTIL","RTIP")
                 self.displayMotionViconCoordinateSystem(aqui,"Right Shank Proximal","RTPO","RTPA","RTPL","RTPP")
-                self.displayMotionViconCoordinateSystem(aqui,"Left HindFoot","LFOO","LFOA","LFOL","LFOP")
-                self.displayMotionViconCoordinateSystem(aqui,"Right HindFoot","RFOO","RFOA","RFOL","RFOP")
+                self.displayMotionViconCoordinateSystem(aqui,"Left Foot","LFOO","LFOA","LFOL","LFOP")
+                self.displayMotionViconCoordinateSystem(aqui,"Right Foot","RFOO","RFOA","RFOL","RFOP")
                 self.displayMotionViconCoordinateSystem(aqui,"Left ForeFoot","LTOO","LTOA","LTOL","LTOP")
                 self.displayMotionViconCoordinateSystem(aqui,"Right ForeFoot","RTOO","RTOA","RTOL","RTOP")
 
@@ -1719,7 +1713,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             ptOrigin=aqui.GetPoint(str(dictAnat["Left Foot"]['labels'][3])).GetValues()[i,:]
             #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
-
             csFrame.update(R,ptOrigin)
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
