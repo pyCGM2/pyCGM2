@@ -140,12 +140,9 @@ class CGM1LowerLimbs(CGM):
         self.version = "CGM1.0"
 
         # init of few mp_computed
-        self.mp_computed["LeftKnee2DofOffset"] = 0
-        self.mp_computed["RightKnee2DofOffset"] = 0
         self.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
         self.mp_computed["RightKneeFuncCalibrationOffset"] = 0
-        self.mp_computed["FinalFuncLeftThighRotationOffset"] = 0
-        self.mp_computed["FinalFuncRightThighRotationOffset"] = 0
+
 
     def setVersion(self,string):
         self.version = string
@@ -479,19 +476,21 @@ class CGM1LowerLimbs(CGM):
 
         # management of Functional method
 
-        if options.has_key("RotateLeftThighFlag") and options["RotateLeftThighFlag"]:
+        if options.has_key("RotateLeftThigh") and options["RotateLeftThigh"]:
 
             # SARA
-            if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                self.getAngleOffsetFromFunctionalAxis("left","KJC_SaraAxis")
+            if self.checkCalibrationProperty("LeftFuncKneeMethod","SARA"):
                 offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
-            # 2DOF
-            elif self.mp_computed["LeftKnee2DofOffset"]:
-                offset = self.mp_computed["LeftKnee2DofOffset"]
 
-            self.mp_computed["FinalFuncLeftThighRotationOffset"] = offset
+            # 2DOF
+            elif self.checkCalibrationProperty("LeftFuncKneeMethod","2DOF"):
+                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+
+            else:
+                offset = 0
+
             self._rotateAnatomicalFrame("Left Thigh",offset,
-                                                     aquiStatic, dictAnatomic,frameInit,frameEnd)
+                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
 
@@ -502,22 +501,20 @@ class CGM1LowerLimbs(CGM):
             self.getThighOffset(side="right")
 
         # management of Functional method
-        if options.has_key("RotateRightThighFlag") and options["RotateRightThighFlag"]:
+        if options.has_key("RotateRightThigh") and options["RotateRightThigh"]:
 
             # SARA
-            if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                self.getAngleOffsetFromFunctionalAxis("right","KJC_SaraAxis")
+            if self.checkCalibrationProperty("RightFuncKneeMethod","SARA"):
                 offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
 
+            elif self.checkCalibrationProperty("RightFuncKneeMethod","2DOF"):
+                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
 
+            else:
+                offset = 0
 
-            # 2DOF
-            elif self.mp_computed["RightKnee2DofOffset"]:
-                offset = self.mp_computed["RightKnee2DofOffset"]
-
-            self.mp_computed["FinalFuncRightThighRotationOffset"] = offset
             self._rotateAnatomicalFrame("Right Thigh",offset,
-                                                     aquiStatic, dictAnatomic,frameInit,frameEnd)
+                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
 
@@ -2221,112 +2218,6 @@ class CGM1LowerLimbs(CGM):
 
 
 
-    def getAngleOffsetFromFunctionalAxis(self,side,axisPointName):
-        """
-             Angle between the projection of the lateral knee marker and the functional flexion axis
-
-            :Parameters:
-               - `side` (str) - body side  (both, left, right)
-
-               KJC_SaraAxis
-        """
-
-        if side == "both" or side=="left":
-
-            # Left --------
-
-            # node SARA_axis add in the anatomic Frame
-            saraAxisGlobal = self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel(axisPointName).m_global
-            self.getSegment("Left Thigh").anatomicalFrame.static.addNode(axisPointName,saraAxisGlobal,positionType="Global")
-
-
-            # projection of Knee flexion
-            kneeFlexionAxis=    np.dot(self.getSegment("Left Thigh").anatomicalFrame.static.getRotation().T,
-                                           self.getSegment("Left Thigh").anatomicalFrame.static.m_axisY)
-
-
-            proj_kneeFlexionAxis = np.array([ kneeFlexionAxis[0],
-                                   kneeFlexionAxis[1],
-                                     0])
-            v_kneeFlexionAxis = proj_kneeFlexionAxis/np.linalg.norm(proj_kneeFlexionAxis)
-
-
-
-
-            # projection of saraAxis
-            saraAxisLocal = self.getSegment("Left Thigh").anatomicalFrame.static.getNode_byLabel(axisPointName).m_local
-
-            proj_saraAxis = np.array([ saraAxisLocal[0],
-                                   saraAxisLocal[1],
-                                     0])
-
-            self.getSegment("Left Thigh").anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
-
-            v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
-
-            angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_saraAxis, self.getSegment("Left Thigh").anatomicalFrame.static.m_axisZ))
-
-
-            if angle > 90.0:
-                logging.warning("left flexion axis point laterally")
-                angle = 180-angle
-            logging.warning(angle)
-
-            if np.abs(angle) > 30.0:
-                raise Exception ("[pyCGM2] : suspected left functional knee flexion axis. check Data")
-
-            self.mp_computed["LeftKneeFuncCalibrationOffset"]= angle
-            logging.debug(" left Function axis Offset => %s " % str(self.mp_computed["LeftKneeFuncCalibrationOffset"]))
-
-
-        if side == "both" or side=="right":
-
-            # node SARA_axis add in the anatomic Frame
-            saraAxisGlobal = self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel(axisPointName).m_global
-
-
-            self.getSegment("Right Thigh").anatomicalFrame.static.addNode(axisPointName,saraAxisGlobal,positionType="Global")
-
-            # knee flexion
-            kneeFlexionAxis=    np.dot(self.getSegment("Right Thigh").anatomicalFrame.static.getRotation().T,
-                                           self.getSegment("Right Thigh").anatomicalFrame.static.m_axisY)
-
-
-            proj_kneeFlexionAxis = np.array([ kneeFlexionAxis[0],
-                                   kneeFlexionAxis[1],
-                                     0])
-            v_kneeFlexionAxis = proj_kneeFlexionAxis/np.linalg.norm(proj_kneeFlexionAxis)
-
-
-
-            saraAxisLocal = self.getSegment("Right Thigh").anatomicalFrame.static.getNode_byLabel(axisPointName).m_local
-            proj_saraAxis = np.array([ saraAxisLocal[0],
-                                   saraAxisLocal[1],
-                                     0])
-
-            self.getSegment("Right Thigh").anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
-
-            v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
-
-            angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_saraAxis, self.getSegment("Right Thigh").anatomicalFrame.static.m_axisZ))
-
-
-            if angle > 90.0:
-                logging.warning("right flexion axis point laterally")
-                angle = 180-angle
-            logging.warning(angle)
-
-            if np.abs(angle) > 30.0:
-                raise Exception ("[pyCGM2] : suspected right functional knee flexion axis. check Data")
-
-
-            self.mp_computed["RightKneeFuncCalibrationOffset"]= angle # angle needed : Thi toward knee flexion
-            logging.debug(" Right Function axis Offset => %s " % str(self.mp_computed["RightKneeFuncCalibrationOffset"]))
-
-
-
-
-
     def getViconFootOffset(self, side):
         """
             Get vicon compatible foot offsets :
@@ -2525,10 +2416,9 @@ class CGM1LowerLimbs(CGM):
             self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
 
-
             # if rotation offset from knee functional calibration methods
-            if self.mp_computed["FinalFuncLeftThighRotationOffset"]:
-                offset = self.mp_computed["FinalFuncLeftThighRotationOffset"]
+            if self.mp_computed["LeftKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
                 self._rotate_anatomical_motion("Left Thigh",offset,
                                         aqui,options=options)
 
@@ -2537,8 +2427,8 @@ class CGM1LowerLimbs(CGM):
             self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
 
-            if  self.mp_computed["FinalFuncRightThighRotationOffset"]:
-                offset = self.mp_computed["FinalFuncRightThighRotationOffset"]
+            if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
                 self._rotate_anatomical_motion("Right Thigh",offset,
                                         aqui,options=options)
 

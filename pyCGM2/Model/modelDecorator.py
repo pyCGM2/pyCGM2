@@ -241,7 +241,7 @@ def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,s
 
     # onjective function : minimize variance of the knee varus valgus angle
     def objFun(x, proxMotionRef, distMotionRef,indexFirstFrame,indexLastFrame, sequence,index):
-        nFrames= len(proxMotionRef)
+        #nFrames= len(proxMotionRef)
 
         frames0 = range(0,len(proxMotionRef))
 
@@ -253,6 +253,9 @@ def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,s
 
         elif  indexFirstFrame and not indexLastFrame:
             frames = frames0[indexFirstFrame:]
+
+        else:
+            frames = frames0
 
         nFrames = len(frames)
 
@@ -1443,19 +1446,20 @@ class KneeCalibrationDecorator(DecoratorModel):
         iff = kwargs["indexFirstFrame"] if kwargs.has_key("indexFirstFrame") else None
         ilf = kwargs["indexLastFrame"] if kwargs.has_key("indexLastFrame") else None
 
-
-
-
         if side == "Left":
             proxSegmentLabel = "Left Thigh"
             distSegmentlabel = "Left Shank"
             HJClabel = "LHJC"
             KJClabel = "LKJC"
+            KNElabel = "LKNE"
+            sequence = "ZXiY"
         elif side == "Right":
             proxSegmentLabel = "Right Thigh"
             distSegmentlabel = "Right Shank"
             HJClabel = "RHJC"
             KJClabel = "RKJC"
+            KNElabel = "RKNE"
+            sequence = "ZXY"
         else:
             raise Exception("[pyCGM2] side doesn t recongnize")
 
@@ -1487,13 +1491,13 @@ class KneeCalibrationDecorator(DecoratorModel):
         # --- registration of the Knee center ---
 
         # longitudinal axis of the femur
-        p1 = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(HJClabel).m_global
-        p2 = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(KJClabel).m_global
+        HJC = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(HJClabel).m_global
+        KJC0 = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(KJClabel).m_global
 
         # middle of origin in Global
         p_proxOri = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel("KneeFlexionOri").m_global
         p_distOri = self.model.getSegment(distSegmentlabel).getReferential("TF").static.getNode_byLabel("KneeFlexionOri").m_global
-        center = np.mean((p_distOri,p_proxOri),axis= 0)
+        meanOri = np.mean((p_distOri,p_proxOri),axis= 0)
 
         # axis lim
         p_proxAxis = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel("KneeFlexionAxis").m_global
@@ -1501,8 +1505,8 @@ class KneeCalibrationDecorator(DecoratorModel):
         meanAxis = np.mean((p_proxAxis,p_distAxis),axis= 0)
 
         # intersection beetween midcenter-axis and logitudinal axis
-        proxIntersect,pb1 = geometry.LineLineIntersect(center,p_proxAxis,p1,p2)
-        distIntersect,pb2 = geometry.LineLineIntersect(center,p_distAxis,p1,p2)#
+        proxIntersect,pb1 = geometry.LineLineIntersect(p_proxOri,p_proxAxis,HJC,KJC0)
+        distIntersect,pb2 = geometry.LineLineIntersect(p_distOri,p_distAxis,HJC,KJC0)#
 
 
         # shortest distance
@@ -1512,17 +1516,16 @@ class KneeCalibrationDecorator(DecoratorModel):
         logging.info( " 3d line intersect : shortest distance beetween logidudinal axis and flexion axis in Distal  : %s  " % str(shortestDistance_dist))
 
         # mean of the intersection point
-        center = np.mean((proxIntersect,distIntersect), axis=0)
+        KJC = np.mean((proxIntersect,distIntersect), axis=0)
 
         # Node manager
         #  the node KJC_sara is added in all "Referentials.
 
-        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KJC_Sara",center, positionType="Global")
-        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KJC_Sara",center, positionType="Global")
+        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KJC_Sara",KJC, positionType="Global", desc = "SARA")
+        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KJC_Sara",KJC, positionType="Global", desc = "SARA")
 
-
-        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KJC_SaraAxis",meanAxis, positionType="Global")
-        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KJC_SaraAxis",meanAxis, positionType="Global")
+        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode("KJC_SaraAxis",meanAxis, positionType="Global", desc = "SARA")
+        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode("KJC_SaraAxis",meanAxis, positionType="Global", desc = "SARA")
 
 
          # Comparison of local position of KJCs
@@ -1531,6 +1534,56 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (localKJC[0],localKJC[1],localKJC[2]))
         logging.info(" new KJC position in the proximal segment : [ %f, %f,%f]   " % (saraKJC[0],saraKJC[1],saraKJC[2]))
+
+        # update KJC node
+        self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode(KJClabel,KJC, positionType="Global", desc = "SARA")
+        self.model.getSegment(distSegmentlabel).getReferential("TF").static.addNode(KJClabel,KJC, positionType="Global", desc = "SARA")
+
+        # thight rotation offset
+        KNE = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(KNElabel).m_global
+
+        # --- Construction of the anatomical Referential
+        a1=(HJC-KJC)/np.linalg.norm((HJC-KJC))
+        v=(KNE-KJC)/np.linalg.norm((KNE-KJC))
+
+        a2=np.cross(a1,v)
+        a2=a2/np.linalg.norm(a2)
+
+        x,y,z,R=frame.setFrameData(a1,a2,sequence)
+
+        # projection of anatomical frame-constructed knee flexion
+        kneeFlexionAxis=    np.dot(R.T,y)
+        proj_kneeFlexionAxis = np.array([ kneeFlexionAxis[0],
+                                          kneeFlexionAxis[1],
+                                        0])
+        v_kneeFlexionAxis = proj_kneeFlexionAxis/np.linalg.norm(proj_kneeFlexionAxis)
+
+        # projection of saraAxis
+        saraAxisLocal =    np.dot(R.T,meanAxis)
+        proj_saraAxis = np.array([ saraAxisLocal[0],
+                                   saraAxisLocal[1],
+                                 0])
+
+        v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
+
+        angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_saraAxis, z))
+
+
+        if angle > 90.0:
+            logging.warning("left flexion axis point laterally")
+            angle = 180-angle
+        logging.warning(angle)
+
+        if np.abs(angle) > 30.0:
+            raise Exception ("[pyCGM2] : suspected left functional knee flexion axis. check Data")
+
+
+        if side == "Left":
+            self.model.setCalibrationProperty("LeftFuncKneeMethod","SARA")
+            self.mp_computed["LeftKneeFuncCalibrationOffset"] = angle
+        if side == "Right":
+            self.model.setCalibrationProperty("RightFuncKneeMethod","SARA")
+            self.mp_computed["RightKneeFuncCalibrationOffset"] = angle
 
     def calibrate2dof(self,side,**kwargs):
         """
@@ -1544,31 +1597,33 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         iff = kwargs["indexFirstFrame"] if kwargs.has_key("indexFirstFrame") else None
         ilf = kwargs["indexLastFrame"] if kwargs.has_key("indexLastFrame") else None
+        sequence = kwargs["sequence"] if kwargs.has_key("sequence") else None
 
         if side == "Left":
             proxSegmentLabel = "Left Thigh"
             distSegmentlabel = "Left Shank"
-            offsetLabel ="LeftKnee2DofOffset"
         elif side == "Right":
             proxSegmentLabel = "Right Thigh"
             distSegmentlabel = "Right Shank"
-            offsetLabel ="RightKnee2DofOffset"
         else:
             raise Exception("[pyCGM2] side doesn t recongnize")
 
-
-
-        proxMotion = self.model.getSegment(proxSegmentLabel).getReferential("TF").motion
-        distMotion = self.model.getSegment(distSegmentlabel).getReferential("TF").motion
+        proxMotion = self.model.getSegment(proxSegmentLabel).anatomicalFrame.motion
+        distMotion = self.model.getSegment(distSegmentlabel).anatomicalFrame.motion
 
         # -- main function -----
-        longRot = calibration2Dof(proxMotion,distMotion,iff,ilf)
+        if sequence is None:
+            longRot = calibration2Dof(proxMotion,distMotion,iff,ilf)
+        else:
+            longRot = calibration2Dof(proxMotion,distMotion,iff,ilf,sequence=sequence)
         # end function -----
-        self.model.mp_computed[offsetLabel] = longRot
 
-
-
-
+        if side == "Left":
+            self.model.setCalibrationProperty("LeftFuncKneeMethod","2DOF")
+            self.model.mp_computed["LeftKneeFuncCalibrationOffset"] = longRot
+        if side == "Right":
+            self.model.setCalibrationProperty("RightFuncKneeMethod","2DOF")
+            self.model.mp_computed["RightKneeFuncCalibrationOffset"] = longRot
 
 
 
