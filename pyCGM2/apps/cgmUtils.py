@@ -149,7 +149,7 @@ def applyDecorators_CGM1(smc, model,acqStatic,optional_mp,markerDiameter):
 
     if smc["right"] == enums.CgmStaticMarkerConfig.KAD:
         logging.warning("CASE FOUND ===> Right Side = KAD")
-        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
+        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
 
     # KADmed
     if smc["left"] == enums.CgmStaticMarkerConfig.KADmed:
@@ -182,7 +182,7 @@ def applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter):
 
     if smc["right"] == enums.CgmStaticMarkerConfig.KAD:
         logging.warning("CASE FOUND ===> Right Side = KAD")
-        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
+        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
 
     # KADmed
     if smc["left"] == enums.CgmStaticMarkerConfig.KADmed:
