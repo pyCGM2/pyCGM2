@@ -98,9 +98,15 @@ if __name__ == "__main__":
         # ---definition---
         model=cgm.CGM1LowerLimbs()
         model.configure()
-
-        model.setStaticFilename(calibrateFilenameLabelled)
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
+
+        # --store calibration parameters--
+        model.setStaticFilename(calibrateFilenameLabelled)
+        model.setCalibrationProperty("LeftFlatFoot",leftFlatFoot)
+        model.setCalibrationProperty("rightFlatFoot",rightFlatFoot)
+        model.setCalibrationProperty("markerDiameter",markerDiameter)
+
+
 
         # ---check marker set used----
         smc= cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
