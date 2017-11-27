@@ -476,18 +476,17 @@ class CGM1LowerLimbs(CGM):
 
         # management of Functional method
 
-        if options.has_key("RotateLeftThigh") and options["RotateLeftThigh"]:
+        if self.mp_computed["LeftKneeFuncCalibrationOffset"] != 0:
+
+            offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
 
             # SARA
             if self.checkCalibrationProperty("LeftFuncKneeMethod","SARA"):
-                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+                logging.info("Left knee functional calibration : SARA ")
 
             # 2DOF
             elif self.checkCalibrationProperty("LeftFuncKneeMethod","2DOF"):
-                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
-
-            else:
-                offset = 0
+                logging.info("Left knee functional calibration : 2Dof ")
 
             self._rotateAnatomicalFrame("Left Thigh",offset,
                                         aquiStatic, dictAnatomic,frameInit,frameEnd)
@@ -501,17 +500,17 @@ class CGM1LowerLimbs(CGM):
             self.getThighOffset(side="right")
 
         # management of Functional method
-        if options.has_key("RotateRightThigh") and options["RotateRightThigh"]:
+        if self.mp_computed["RightKneeFuncCalibrationOffset"] != 0:
+
+            offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
 
             # SARA
             if self.checkCalibrationProperty("RightFuncKneeMethod","SARA"):
-                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+                logging.info("Left knee functional calibration : SARA ")
 
+            # 2DOF
             elif self.checkCalibrationProperty("RightFuncKneeMethod","2DOF"):
-                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
-
-            else:
-                offset = 0
+                logging.info("Left knee functional calibration : 2Dof ")
 
             self._rotateAnatomicalFrame("Right Thigh",offset,
                                         aquiStatic, dictAnatomic,frameInit,frameEnd)
@@ -4239,7 +4238,14 @@ class CGM1LowerLimbs(CGM):
 
         """
 
-         # export JC
+
+        if staticProcessingFlag:
+            if self.checkCalibrationProperty("LeftKAD",True):
+                nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKNE", acq)
+            if self.checkCalibrationProperty("RightKAD",True):
+                nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKNE", acq)
+
+        # export JC
         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq)
         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHJC", acq)
         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKJC", acq)
