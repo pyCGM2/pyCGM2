@@ -11,7 +11,7 @@ pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2.Eclipse import vskTools
-import pyCGM2.enums as pyCGM2Enums
+from pyCGM2 import enums
 from pyCGM2.Model import modelFilters, modelDecorator
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Utils import files,infoFile
@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
     # --store calibration parameters--
     model.setStaticFilename(calibrateFilenameLabelled)
-    model.setCalibrationProperty("LeftFlatFoot",leftFlatFoot)
+    model.setCalibrationProperty("leftFlatFoot",leftFlatFoot)
     model.setCalibrationProperty("rightFlatFoot",rightFlatFoot)
     model.setCalibrationProperty("markerDiameter",markerDiameter)
 
@@ -166,10 +166,14 @@ if __name__ == "__main__":
     info["MP"]["Optional"][ "LeftTibialTorsion"] = model.mp_computed["LeftTibialTorsionOffset"]
     info["MP"]["Optional"][ "LeftThighRotation"] = model.mp_computed["LeftThighRotationOffset"]
     info["MP"]["Optional"][ "LeftShankRotation"] = model.mp_computed["LeftShankRotationOffset"]
+
     info["MP"]["Optional"][ "RightAsisTrocanterDistance"] = model.mp_computed["RightAsisTrocanterDistance"]
     info["MP"]["Optional"][ "RightTibialTorsion"] = model.mp_computed["RightTibialTorsionOffset"]
     info["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
     info["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
+
+    info["MP"]["Optional"][ "LeftKneeFuncCalibrationOffset"] = model.mp_computed["LeftKneeFuncCalibrationOffset"]
+    info["MP"]["Optional"][ "RightKneeFuncCalibrationOffset"] = model.mp_computed["RightKneeFuncCalibrationOffset"]
 
     files.saveJson(DATA_PATH, infoFilename, info)
 

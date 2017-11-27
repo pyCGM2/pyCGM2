@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+leftFlatFoot# -*- coding: utf-8 -*-
 import os
 import logging
 import matplotlib.pyplot as plt
@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     # global setting ( in user/AppData)
     settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
-    
+
 
 
     # --------------------SESSION  SETTINGS ------------------------------
@@ -99,7 +99,7 @@ if __name__ == "__main__":
 
     # --store calibration parameters--
     model.setStaticFilename(calibrateFilenameLabelled)
-    model.setCalibrationProperty("LeftFlatFoot",leftFlatFoot)
+    model.setCalibrationProperty("leftFlatFoot",leftFlatFoot)
     model.setCalibrationProperty("rightFlatFoot",rightFlatFoot)
     model.setCalibrationProperty("markerDiameter",markerDiameter)
 
@@ -166,6 +166,11 @@ if __name__ == "__main__":
     info["MP"]["Optional"][ "RightTibialTorsion"] = model.mp_computed["RightTibialTorsionOffset"]
     info["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
     info["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
+
+
+    info["MP"]["Optional"][ "LeftKneeFuncCalibrationOffset"] = model.mp_computed["LeftKneeFuncCalibrationOffset"]
+    info["MP"]["Optional"][ "RightKneeFuncCalibrationOffset"] = model.mp_computed["RightKneeFuncCalibrationOffset"]
+
 
     files.saveJson(DATA_PATH, infoFilename, info)
 
