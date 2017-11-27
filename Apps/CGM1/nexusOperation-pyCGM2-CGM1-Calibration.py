@@ -51,8 +51,8 @@ if __name__ == "__main__":
 
         # --------------------------LOADING ------------------------------------
         if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\kad-med\\"
-            calibrateFilenameLabelledNoExt = "Static Cal 01-onlyLeft" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "Datasets Tests\\fraser\\New Session\\"
+            calibrateFilenameLabelledNoExt = "15KUFC01_Trial03" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
