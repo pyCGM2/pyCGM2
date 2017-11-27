@@ -145,9 +145,9 @@ if __name__ == "__main__":
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
         # initial calibration ( i.e calibration from Calibration operation)
-        flag_leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
-        flag_rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
-        markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]["markerDiameter"]
+        leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
+        rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
+        markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]
 
         if side == "Left":
             # remove other functional calibration
@@ -207,8 +207,8 @@ if __name__ == "__main__":
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
                            markerDiameter=markerDiameter,
-                           RotateLeftThighFlag = useRotateLeftThighFlag,
-                           RotateRightThighFlag = useRotateRightThighFlag).compute()
+                           RotateLeftThighFlag = True,
+                           RotateRightThighFlag = True).compute()
 
 
         logging.warning("model updated with a  %s knee calibrated with 2Dof method" %(side))
@@ -229,6 +229,9 @@ if __name__ == "__main__":
     info["MP"]["Optional"][ "RightTibialTorsion"] = model.mp_computed["RightTibialTorsionOffset"]
     info["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
     info["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
+
+    info["MP"]["Optional"][ "LeftKneeFuncCalibrationOffset"] = model.mp_computed["LeftKneeFuncCalibrationOffset"]
+    info["MP"]["Optional"][ "RightKneeFuncCalibrationOffset"] = model.mp_computed["RightKneeFuncCalibrationOffset"]
 
     files.saveJson(DATA_PATH, infoFilename, info)
 
