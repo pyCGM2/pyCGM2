@@ -41,7 +41,6 @@ if __name__ == "__main__":
     settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
 
 
-
     # --------------------SESSION  SETTINGS ------------------------------
     if DEBUG:
         DATA_PATH = "C:\\Users\\HLS501\\Google Drive\\Paper_for BJSM\\BJSM_trials\\FMS_Screening\\15KUFC01\\Session 2\\"

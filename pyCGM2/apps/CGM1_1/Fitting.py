@@ -143,8 +143,7 @@ if __name__ == "__main__":
         modelFilters.InverseDynamicFilter(model,
                              acqGait,
                              procedure = idp,
-                             projection = momentProjection,
-                             viconCGM1compatible=True
+                             projection = momentProjection
                              ).compute(pointLabelSuffix=pointSuffix)
 
         #---- Joint energetics----
