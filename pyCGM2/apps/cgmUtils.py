@@ -214,3 +214,8 @@ def applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter):
         logging.warning("CASE FOUND ===> Right Side = Knee and Ankle Medial")
         modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="right")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
+
+def applyHJCDecorators(model,method,side="both"):
+
+    if method == "Hara":
+        modelDecorator.HipJointCenterDecorator(model).hara(side = side)
