@@ -3,7 +3,7 @@
 import logging
 import argparse
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 # pyCGM2 settings
 import pyCGM2
@@ -35,7 +35,7 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = False
+    DEBUG = True
 
     parser = argparse.ArgumentParser(description='SARA Functional Knee Calibration')
     parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
@@ -52,12 +52,13 @@ if __name__ == "__main__":
         # --------------------------PATH + FILE ------------------------------------
 
         if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\"
-            reconstructedFilenameLabelledNoExt = "Right Knee"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "pyCGM2-Data\\Datasets Tests\\fraser\\New Session\\"
+            reconstructedFilenameLabelledNoExt = "15KUFC01_Trial07"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
 
-            #args.beginFrame=300
-            #args.endFrame=400
+            side = "Left"
+            args.beginFrame=1073
+            args.endFrame=2961
 
         else:
             DATA_PATH, reconstructedFilenameLabelledNoExt = NEXUS.GetTrialName()
@@ -141,7 +142,7 @@ if __name__ == "__main__":
         # initial calibration ( i.e calibration from Calibration operation)
         leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
         rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
-        markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]["markerDiameter"]
+        markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]
 
         if side == "Left":
             # remove other functional calibration
@@ -152,13 +153,11 @@ if __name__ == "__main__":
 
 
 
-        # no rotation of both thigh
+        # initial calibration ( zero previous KneeFunc offset on considered side )
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
-                               markerDiameter=markerDiameter,
-                               RotateLeftThighFlag = False,
-                               RotateRightThighFlag = False).compute()
+                               markerDiameter=markerDiameter).compute()
 
 
 
@@ -192,9 +191,7 @@ if __name__ == "__main__":
 
             modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
-                               markerDiameter=markerDiameter,
-                               RotateLeftThighFlag = True,
-                               RotateRightThighFlag = True).compute()
+                               markerDiameter=markerDiameter).compute()
 
 
             #btkTools.smartWriter(acqStatic, "acqStatic1-test.c3d")

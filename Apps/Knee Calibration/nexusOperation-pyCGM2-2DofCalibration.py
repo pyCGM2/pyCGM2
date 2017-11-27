@@ -3,6 +3,7 @@
 import logging
 import argparse
 import matplotlib.pyplot as plt
+import numpy as np
 
 # pyCGM2 settings
 import pyCGM2
@@ -52,16 +53,13 @@ if __name__ == "__main__":
         # --------------------------PATH + FILE ------------------------------------
 
         if DEBUG:
-            # for CGM1 to CGM2.2
-            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM1-calibration2Dof\\"
-            #reconstructedFilenameLabelledNoExt = "Left Knee"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "pyCGM2-Data\\Datasets Tests\\fraser\\New Session\\"
+            reconstructedFilenameLabelledNoExt = "15KUFC01_Trial07"
+            NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
 
-            # for CGM2.3 to ...
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\"
-            reconstructedFilenameLabelledNoExt = "Left Knee"
-
-            args.beginFrame=500
-            args.endFrame=700
+            side = "Left"
+            args.beginFrame=1073
+            args.endFrame=2961
 
             NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
 
@@ -169,7 +167,7 @@ if __name__ == "__main__":
         # initial calibration ( i.e calibration from Calibration operation)
         leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
         rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
-        markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]["markerDiameter"]
+        markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]
 
         if side == "Left":
             # remove other functional calibration
@@ -182,9 +180,7 @@ if __name__ == "__main__":
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
-                               markerDiameter=markerDiameter,
-                               RotateLeftThighFlag = False,
-                               RotateRightThighFlag = False).compute()
+                               markerDiameter=markerDiameter).compute()
 
 
 
@@ -224,9 +220,7 @@ if __name__ == "__main__":
         # ----  Calibration
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
-                           markerDiameter=markerDiameter,
-                           RotateLeftThighFlag = True,
-                           RotateRightThighFlag = True).compute()
+                           markerDiameter=markerDiameter).compute()
 
 
         # ----------------------SAVE-------------------------------------------
