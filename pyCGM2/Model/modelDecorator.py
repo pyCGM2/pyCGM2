@@ -701,6 +701,8 @@ class Kad(DecoratorModel):
 
         if side == "both" or side == "left":
 
+            self.model.setCalibrationProperty("LeftKAD",True)
+
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
                 if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0 # look out, it's mp, not mp_computed.
@@ -759,6 +761,8 @@ class Kad(DecoratorModel):
 
 
         if side == "both" or side == "right":
+
+            self.model.setCalibrationProperty("RightKAD",True)
 
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
 
@@ -1568,6 +1572,8 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_saraAxis, z))
 
+        self.model.getSegment(proxSegmentLabel).anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
+        self.model.getSegment(distSegmentlabel).anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
 
         if angle > 90.0:
             logging.warning("left flexion axis point laterally")
@@ -1581,6 +1587,7 @@ class KneeCalibrationDecorator(DecoratorModel):
         if side == "Left":
             self.model.setCalibrationProperty("LeftFuncKneeMethod","SARA")
             self.mp_computed["LeftKneeFuncCalibrationOffset"] = angle
+            self.model.getSegment(proxSegmentLabel).anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
         if side == "Right":
             self.model.setCalibrationProperty("RightFuncKneeMethod","SARA")
             self.mp_computed["RightKneeFuncCalibrationOffset"] = angle
