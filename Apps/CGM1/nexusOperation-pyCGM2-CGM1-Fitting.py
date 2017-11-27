@@ -78,7 +78,7 @@ if __name__ == "__main__":
         translators = files.manage_pycgm2Translators(DATA_PATH,"CGM1.translators")
         if not translators:
            translators = settings["Translators"]
-        # --------------------------CONFIG ------------------------------------
+
         # --------------------------CONFIG ------------------------------------
         argsManager = cgmUtils.argsManager_cgm1(settings,args)
         markerDiameter = argsManager.getMarkerDiameter()
