@@ -87,7 +87,7 @@ if __name__ == "__main__":
         # --------------------------CONFIG ------------------------------------
         argsManager = cgmUtils.argsManager_cgm(settings,args)
         markerDiameter = argsManager.getMarkerDiameter()
-        pointSuffix = argsManager.getPointSuffix("cgm1.1")
+        pointSuffix = argsManager.getPointSuffix("cgm2.1")
         momentProjection =  argsManager.getMomentProjection()
         mfpa = argsManager.getManualForcePlateAssign()
 

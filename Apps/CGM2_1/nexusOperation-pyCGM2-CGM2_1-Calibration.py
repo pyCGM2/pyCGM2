@@ -128,6 +128,7 @@ if __name__ == "__main__":
 
         # ---- Decorators -----
         cgmUtils.applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter)
+        cgmUtils.applyHJCDecorators(model,hjcMethod)
 
 
         # ----Final Calibration filter if model previously decorated -----
