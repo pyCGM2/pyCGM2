@@ -139,75 +139,22 @@ if __name__ == "__main__":
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
         # initial calibration ( i.e calibration from Calibration operation)
-        initialCalibration = model.m_properties["CalibrationParameters0"]
-        flag_leftFlatFoot = initialCalibration["leftFlatFoot"]
-        flag_rightFlatFoot = initialCalibration["rightFlatFoot"]
-        markerDiameter = initialCalibration["markerDiameter"]
+        flag_leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
+        flag_rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
+        markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]["markerDiameter"]
 
         if side == "Left":
             # remove other functional calibration
-            model.mp_computed["LeftKnee2DofOffset"] = 0
-
-            # reinit node and func offset of the left side from initial calibration
-            useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
-            useLeftKJCnodeLabel = initialCalibration["LKJC_node"]
-            useLeftAJCnodeLabel = initialCalibration["LAJC_node"]
             model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
-            model.mp_computed["FinalFuncLeftThighRotationOffset"] =0
-
-
-            # opposite side - keep node from former calibration
-            if model.mp_computed["RightKneeFuncCalibrationOffset"]:
-                useRightHJCnodeLabel = model.m_properties["CalibrationParameters"]["RHJC_node"]
-                useRightKJCnodeLabel = model.m_properties["CalibrationParameters"]["RKJC_node"]
-                useRightAJCnodeLabel = model.m_properties["CalibrationParameters"]["RAJC_node"]
-
-            else:
-                useRightHJCnodeLabel = initialCalibration["RHJC_node"]
-                useRightKJCnodeLabel = initialCalibration["RKJC_node"]
-                useRightAJCnodeLabel = initialCalibration["RAJC_node"]
 
         if side == "Right":
-            # remove other functional calibration
-            model.mp_computed["RightKnee2DofOffset"] = 0
-
-            # reinit node and func offset of the right side from initial calibration
-            useRightHJCnodeLabel = initialCalibration["RHJC_node"]
-            useRightKJCnodeLabel = initialCalibration["RKJC_node"]
-            useRightAJCnodeLabel = initialCalibration["RAJC_node"]
             model.mp_computed["RightKneeFuncCalibrationOffset"] = 0
-            model.mp_computed["FinalFuncRightThighRotationOffset"] =0
-
-            # opposite side - keep node from former calibration
-            if model.mp_computed["LeftKneeFuncCalibrationOffset"]:
-                useLeftHJCnodeLabel = model.m_properties["CalibrationParameters"]["LHJC_node"]
-                useLeftKJCnodeLabel = model.m_properties["CalibrationParameters"]["LKJC_node"]
-                useLeftAJCnodeLabel = model.m_properties["CalibrationParameters"]["LAJC_node"]
-
-            else:
-                useLeftHJCnodeLabel = initialCalibration["LHJC_node"]
-                useLeftKJCnodeLabel = initialCalibration["LKJC_node"]
-                useLeftAJCnodeLabel = initialCalibration["LAJC_node"]
-
-
-        # ---- Reset Calibration
-        logging.debug("SARA --%s --- first Calibration"%(side) )
-        logging.debug(" node (LHJC) => %s" %(useLeftHJCnodeLabel))
-        logging.debug(" node (LKJC) => %s" %(useLeftKJCnodeLabel))
-        logging.debug(" node (LAJC) => %s" %(useLeftAJCnodeLabel))
-        logging.debug("-opposite side-" )
-        logging.debug(" node (RHJC) => %s" %(useRightHJCnodeLabel))
-        logging.debug(" node (RKJC) => %s" %(useRightKJCnodeLabel))
-        logging.debug(" node (RAJC) => %s" %(useRightAJCnodeLabel))
 
 
 
         # no rotation of both thigh
         scp=modelFilters.StaticCalibrationProcedure(model)
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                               useLeftHJCnode=useLeftHJCnodeLabel, useRightHJCnode=useRightHJCnodeLabel,
-                               useLeftKJCnode=useLeftKJCnodeLabel, useLeftAJCnode=useLeftAJCnodeLabel,
-                               useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
                                leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter,
                                RotateLeftThighFlag = False,
@@ -243,43 +190,11 @@ if __name__ == "__main__":
 
             # --------------------------FINAL CALIBRATION OF THE STATIC File---------
 
-            if side == "Left":
-                useLeftHJCnodeLabel = model.m_properties["CalibrationParameters"]["LHJC_node"]
-                useLeftKJCnodeLabel = "KJC_Sara"
-                useLeftAJCnodeLabel = model.m_properties["CalibrationParameters"]["LAJC_node"]
-                useRotateLeftThighFlag = True
-                useRotateRightThighFlag = False
-
-            elif side == "Right":
-                useRightHJCnodeLabel = model.m_properties["CalibrationParameters"]["RHJC_node"]
-                useRightKJCnodeLabel = "KJC_Sara"
-                useRightAJCnodeLabel = model.m_properties["CalibrationParameters"]["RAJC_node"]
-                useRotateRightThighFlag = True
-                useRotateLeftThighFlag = False
-
-
-            # ----  Calibration
-
-            logging.debug("SARA --%s --- final Calibration"%(side) )
-            logging.debug(" node (LHJC) => %s" %(useLeftHJCnodeLabel))
-            logging.debug(" node (LKJC) => %s" %(useLeftKJCnodeLabel))
-            logging.debug(" node (LAJC) => %s" %(useLeftAJCnodeLabel))
-            logging.debug(" rotated Left Thigh => %s" %(str(useRotateLeftThighFlag)))
-            logging.debug("-opposite side-" )
-            logging.debug(" node (RHJC) => %s" %(useRightHJCnodeLabel))
-            logging.debug(" node (RKJC) => %s" %(useRightKJCnodeLabel))
-            logging.debug(" node (RAJC) => %s" %(useRightAJCnodeLabel))
-            logging.debug(" rotated Right Thigh => %s" %(str(useRotateRightThighFlag)))
-
-
             modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                               useLeftHJCnode=useLeftHJCnodeLabel, useRightHJCnode=useRightHJCnodeLabel,
-                               useLeftKJCnode=useLeftKJCnodeLabel, useLeftAJCnode=useLeftAJCnodeLabel,
-                               useRightKJCnode=useRightKJCnodeLabel, useRightAJCnode=useRightAJCnodeLabel,
                                leftFlatFoot = flag_leftFlatFoot, rightFlatFoot = flag_rightFlatFoot,
                                markerDiameter=markerDiameter,
-                               RotateLeftThighFlag = useRotateLeftThighFlag,
-                               RotateRightThighFlag = useRotateRightThighFlag).compute()
+                               RotateLeftThighFlag = True,
+                               RotateRightThighFlag = True).compute()
 
 
             #btkTools.smartWriter(acqStatic, "acqStatic1-test.c3d")
