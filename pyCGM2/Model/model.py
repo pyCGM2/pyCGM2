@@ -95,7 +95,7 @@ class Model(object):
         """
         self.m_chains[label] = indexSegmentList
 
-    def addJoint(self,label,proxLabel, distLabel, sequence):
+    def addJoint(self,label,proxLabel, distLabel, sequence, nodeLabel):
         """
             Add a joint
 
@@ -107,7 +107,7 @@ class Model(object):
 
         """
 
-        j=Joint( label, proxLabel,distLabel,sequence)
+        j=Joint( label, proxLabel,distLabel,sequence,nodeLabel)
         self.m_jointCollection.append(j)
 
 
@@ -362,7 +362,7 @@ class Model(object):
                     infos = False
 
         if not infos:
-            logging.info("[pyCGM2] : descriptor [ type: %s - label: %s]  not found" %(dataType.name,jointOrSegmentLabel))
+            logging.debug("[pyCGM2] : descriptor [ type: %s - label: %s]  not found" %(dataType.name,jointOrSegmentLabel))
 
         return infos
 
@@ -1021,7 +1021,7 @@ class Joint(object):
         a Joint defines relative motion between a proximal and a distal segment
     """
 
-    def __init__(self, label, proxLabel,distLabel,sequence):
+    def __init__(self, label, proxLabel,distLabel,sequence,nodeLabel):
         """
             :Parameters:
                 - `label` (str) - label of the chain
@@ -1033,3 +1033,4 @@ class Joint(object):
         self.m_proximalLabel=proxLabel
         self.m_distalLabel=distLabel
         self.m_sequence=sequence
+        self.m_nodeLabel=nodeLabel

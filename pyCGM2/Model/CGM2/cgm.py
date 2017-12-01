@@ -223,25 +223,25 @@ class CGM1LowerLimbs(CGM):
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
 
-        self.addJoint("LHip","Pelvis", "Left Thigh","YXZ")
+        self.addJoint("LHip","Pelvis", "Left Thigh","YXZ","LHJC")
         if self.version == "CGM1.0":
-            self.addJoint("LKnee","Left Thigh", "Left Shank Proximal","YXZ")
+            self.addJoint("LKnee","Left Thigh", "Left Shank Proximal","YXZ","LKJC")
         else:
-            self.addJoint("LKnee","Left Thigh", "Left Shank","YXZ")
+            self.addJoint("LKnee","Left Thigh", "Left Shank","YXZ","LKJC")
 
 
         #self.addJoint("LKneeAngles_cgm","Left Thigh", "Left Shank","YXZ")
-        self.addJoint("LAnkle","Left Shank", "Left Foot","YXZ")
+        self.addJoint("LAnkle","Left Shank", "Left Foot","YXZ","LAJC")
 
-        self.addJoint("RHip","Pelvis", "Right Thigh","YXZ")
+        self.addJoint("RHip","Pelvis", "Right Thigh","YXZ","RHJC")
         if self.version == "CGM1.0":
-            self.addJoint("RKnee","Right Thigh", "Right Shank Proximal","YXZ")
+            self.addJoint("RKnee","Right Thigh", "Right Shank Proximal","YXZ","RKJC")
         else:
-            self.addJoint("RKnee","Right Thigh", "Right Shank","YXZ")
+            self.addJoint("RKnee","Right Thigh", "Right Shank","YXZ","RKJC")
 
 
         #self.addJoint("RKneeAngles_cgm","Right Thigh", "Right Shank","YXZ")
-        self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ")
+        self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ","RAJC")
 
         # clinics
         self.setClinicalDescriptor("LHip",enums.DataType.Angle, [0,1,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0])
@@ -352,6 +352,39 @@ class CGM1LowerLimbs(CGM):
 
         dictRef={}
         dictRef["Pelvis"]={"TF" : {'sequence':"YZX", 'labels':   ["RASI","LASI","SACR","midASIS"]} }
+        dictRef["Left Thigh"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LKNE","LHJC","LTHI","LKNE"]} }
+        dictRef["Right Thigh"]={"TF" : {'sequence':"ZXY", 'labels':   ["RKNE","RHJC","RTHI","RKNE"]} }
+        dictRef["Left Shank"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LANK","LKJC","LTIB","LANK"]} }
+        dictRef["Right Shank"]={"TF" : {'sequence':"ZXY", 'labels':   ["RANK","RKJC","RTIB","RANK"]} }
+
+        dictRef["Left Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LTOE","LAJC",None,"LAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
+        dictRef["Right Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RTOE","RAJC",None,"RAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
+
+
+        dictRefAnatomical={}
+        dictRefAnatomical["Pelvis"]= {'sequence':"YZX", 'labels':  ["RASI","LASI","SACR","midASIS"]} # normaly : midHJC
+        dictRefAnatomical["Left Thigh"]= {'sequence':"ZXiY", 'labels':  ["LKJC","LHJC","LKNE","LHJC"]} # origin = Proximal ( differ from native)
+        dictRefAnatomical["Right Thigh"]= {'sequence':"ZXY", 'labels': ["RKJC","RHJC","RKNE","RHJC"]}
+        dictRefAnatomical["Left Shank"]={'sequence':"ZXiY", 'labels':   ["LAJC","LKJC","LANK","LKJC"]}
+        dictRefAnatomical["Right Shank"]={'sequence':"ZXY", 'labels':  ["RAJC","RKJC","RANK","RKJC"]}
+
+        dictRefAnatomical["Left Foot"]={'sequence':"ZXiY", 'labels':  ["LTOE","LHEE",None,"LAJC"]}    # corrected foot
+        dictRefAnatomical["Right Foot"]={'sequence':"ZXiY", 'labels':  ["RTOE","RHEE",None,"RAJC"]}    # corrected foot
+
+
+        return dictRef,dictRefAnatomical
+
+    def scoreResidualProcedure(self):
+        """
+            Define the calibration Procedure
+
+            :Return:
+                - `dictRef` (dict) - dictionnary reporting markers and sequence use for building Technical coordinate system
+                - `dictRefAnatomical` (dict) - dictionnary reporting markers and sequence use for building Anatomical coordinate system
+        """
+
+        dict={}
+        dict["LHJC"]={"proximal": "Pelvis",  }
         dictRef["Left Thigh"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LKNE","LHJC","LTHI","LKNE"]} }
         dictRef["Right Thigh"]={"TF" : {'sequence':"ZXY", 'labels':   ["RKNE","RHJC","RTHI","RKNE"]} }
         dictRef["Left Shank"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LANK","LKJC","LTIB","LANK"]} }
@@ -1653,9 +1686,9 @@ class CGM1LowerLimbs(CGM):
         tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
         # node manager
-        for label in seg.m_markerLabels:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
+        # --- node manager
+        for node in tf.static.getNodes():
+            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
 
     def _left_foot_corrected_calibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd,options = None):
