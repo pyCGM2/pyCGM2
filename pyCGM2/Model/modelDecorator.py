@@ -175,7 +175,7 @@ def chord (offset,A1,A2,A3,beta=0.0):
             count = 0
             while diffBeta > eps or count > 100:
                 if count > 100:
-                    logging.warning("count boundary achieve")
+                    logging.debug("count boundary achieve")
 
 
                 count = count + 1
@@ -470,14 +470,14 @@ def haraRegression(mp_input,mp_computed,markerDiameter = 14.0,  basePlate = 2.0)
     HJCy_L=8.0+0.086*mp_input["LeftLegLength"]
     HJCz_L=-9.0-0.078*mp_input["LeftLegLength"]
 
-    logging.info("Left HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_L,HJCy_L,HJCz_L))
+    logging.debug("Left HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_L,HJCy_L,HJCz_L))
     HJC_L_hara=np.array([HJCx_L,HJCy_L,HJCz_L])
 
     HJCx_R= 11.0 -0.063*mp_input["RightLegLength"]- markerDiameter/2.0 - basePlate
     HJCy_R=-1.0*(8.0+0.086*mp_input["RightLegLength"])
     HJCz_R=-9.0-0.078*mp_input["RightLegLength"]
 
-    logging.info("Right HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_R,HJCy_R,HJCz_R))
+    logging.debug("Right HJC position from Hara [ X = %s, Y = %s, Z = %s]" %(HJCx_R,HJCy_R,HJCz_R))
     HJC_R_hara=np.array([HJCx_R,HJCy_R,HJCz_R])
 
     HJC_L = HJC_L_hara
@@ -557,9 +557,9 @@ def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0
         Rhar_cgm1=np.array([[1, 0, 0],[0, 0, -1], [0, 1, 0]])
         HJC_L = np.dot(Rhar_cgm1,HJC_L_har)
         HJC_R = np.dot(Rhar_cgm1,HJC_R_har)
-        logging.info("computation in cgm pelvis referential")
-        logging.info("Left HJC position from Harrington [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2]))
-        logging.info("Right HJC position from Harrington [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2]))
+        logging.debug("computation in cgm pelvis referential")
+        logging.debug("Left HJC position from Harrington [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2]))
+        logging.debug("Right HJC position from Harrington [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2]))
     else:
         HJC_L = HJC_L_har
         HJC_R = HJC_R_har
@@ -638,9 +638,9 @@ def bellRegression(mp_input,mp_computed,  markerDiameter = 14.0, basePlate = 2.0
                              [0, 0, 1]])
         HJC_L = np.dot(Rbell_cgm1,HJC_L_bell)
         HJC_R = np.dot(Rbell_cgm1,HJC_R_bell)
-        logging.info("computation in cgm pelvis referential")
-        logging.info("Left HJC position from Bell [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2]))
-        logging.info("Right HJC position from Bell [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2]))
+        logging.debug("computation in cgm pelvis referential")
+        logging.debug("Left HJC position from Bell [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2]))
+        logging.debug("Right HJC position from Bell [ X = %s, Y = %s, Z = %s]" %(HJC_L[0],HJC_L[1],HJC_L[2]))
     else:
         HJC_L = HJC_L_bell
         HJC_R = HJC_R_bell
@@ -880,7 +880,7 @@ class Cgm1ManualOffsets(DecoratorModel):
                 if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                     if self.model.mp.has_key("LeftShankRotation") :
                         self.model.mp["LeftShankRotation"] = 0
-                        logging.warning("Special CGM1 case - shank offset cancelled")
+                        logging.debug("Special CGM1 case - shank offset cancelled")
 
             # location of KJC and AJC depends on thighRotation and tibial torsion
             HJC = acq.GetPoint("LHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -935,7 +935,7 @@ class Cgm1ManualOffsets(DecoratorModel):
                 if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                     if self.model.mp.has_key("RightShankRotation") :
                         self.model.mp["RightShankRotation"] = 0
-                        logging.warning("Special CGM1 case - shank offset cancelled")
+                        logging.debug("Special CGM1 case - shank offset cancelled")
 
             # location of KJC and AJC depends on thighRotation and tibial torsion
             HJC = acq.GetPoint("RHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -1490,7 +1490,7 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         ferr = xp-xd
         Merr = numeric.rms(ferr)
-        logging.info( " sara rms error : %s " % str(Merr))
+        logging.debug( " sara rms error : %s " % str(Merr))
 
         # --- registration of the Knee center ---
 
@@ -1515,9 +1515,9 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         # shortest distance
         shortestDistance_prox =  np.linalg.norm(proxIntersect-pb1)
-        logging.info(" 3d line intersect : shortest distance beetween logidudinal axis and flexion axis in Proximal  : %s  " % str(shortestDistance_prox))
+        logging.debug(" 3d line intersect : shortest distance beetween logidudinal axis and flexion axis in Proximal  : %s  " % str(shortestDistance_prox))
         shortestDistance_dist =  np.linalg.norm(distIntersect-pb2)
-        logging.info( " 3d line intersect : shortest distance beetween logidudinal axis and flexion axis in Distal  : %s  " % str(shortestDistance_dist))
+        logging.debug( " 3d line intersect : shortest distance beetween logidudinal axis and flexion axis in Distal  : %s  " % str(shortestDistance_dist))
 
         # mean of the intersection point
         KJC = np.mean((proxIntersect,distIntersect), axis=0)
@@ -1536,8 +1536,8 @@ class KneeCalibrationDecorator(DecoratorModel):
         localKJC = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(KJClabel).m_local
         saraKJC = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel("KJC_Sara").m_local
 
-        logging.info(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (localKJC[0],localKJC[1],localKJC[2]))
-        logging.info(" new KJC position in the proximal segment : [ %f, %f,%f]   " % (saraKJC[0],saraKJC[1],saraKJC[2]))
+        logging.debug(" former KJC position in the proximal segment : [ %f, %f,%f]   " % (localKJC[0],localKJC[1],localKJC[2]))
+        logging.debug(" new KJC position in the proximal segment : [ %f, %f,%f]   " % (saraKJC[0],saraKJC[1],saraKJC[2]))
 
         # update KJC node
         self.model.getSegment(proxSegmentLabel).getReferential("TF").static.addNode(KJClabel,KJC, positionType="Global", desc = "SARA")
@@ -1576,9 +1576,9 @@ class KneeCalibrationDecorator(DecoratorModel):
         self.model.getSegment(distSegmentlabel).anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
 
         if angle > 90.0:
-            logging.warning("left flexion axis point laterally")
+            logging.debug("left flexion axis point laterally")
             angle = 180-angle
-        logging.warning(angle)
+        logging.debug(angle)
 
         if np.abs(angle) > 30.0:
             raise Exception ("[pyCGM2] : suspected left functional knee flexion axis. check Data")

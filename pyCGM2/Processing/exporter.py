@@ -315,7 +315,7 @@ class XlsAnalysisExportFilter(object):
         # spatio temporal parameters
         #---------------------------
 
-        if self.analysis.stpStats != {}:
+        if self.analysis.stpStats != {} and self.analysis.stpStats is not None :
 
             # stage 1 : get descriptive data
             # --------------------------------

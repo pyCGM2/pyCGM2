@@ -348,10 +348,10 @@ class Frame(object):
             else :
                 raise Exception("positionType not Known (Global or Local")
 
-            logging.warning("[pyCGM2] node (%s) values updated"%(nodeLabel))
+            logging.debug("[pyCGM2] node (%s) values updated"%(nodeLabel))
             previousDesc = self._nodes[index].m_desc
             if previousDesc != desc:
-                logging.warning("[pyCGM2] node (%s) description updated [%s -> %s]"%(nodeLabel, previousDesc, desc))
+                logging.debug("[pyCGM2] node (%s) description updated [%s -> %s]"%(nodeLabel, previousDesc, desc))
                 self._nodes[index].m_desc = desc
 
         else:
@@ -432,7 +432,7 @@ class Frame(object):
                 break
 
         if not flag:
-            logging.warning( " node label ( %s) doesn t exist " %(nodeLabel))
+            logging.debug( " node label ( %s) doesn t exist " %(nodeLabel))
 
         return flag
 

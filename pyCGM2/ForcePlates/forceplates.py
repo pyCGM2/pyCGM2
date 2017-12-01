@@ -122,7 +122,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
             logging.debug(" Force plate " + str(i) + " : right foot")
             suffix = suffix +  "R"
 
-    logging.info("Matched Force plate ===> %s", (suffix))
+    logging.debug("Matched Force plate ===> %s", (suffix))
 
     if enableRefine:
         # refinement of suffix
@@ -147,7 +147,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
                     break
 
             if not enableDataFlag:
-                logging.warning("PF #%s not activated. It provides no data superior to threshold"%(str(indexFP)) )
+                logging.debug("PF #%s not activated. It provides no data superior to threshold"%(str(indexFP)) )
                 li = list(suffix)
                 li[indexFP]="X"
                 suffix ="".join(li)
@@ -198,7 +198,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
 
 
                 if not all(containFlags) == True:
-                    logging.warning("PF #%s not activated. While Rz superior to threshold, foot markers are not contained in force plate geometry  "%(str(indexFP)) )
+                    logging.debug("PF #%s not activated. While Rz superior to threshold, foot markers are not contained in force plate geometry  "%(str(indexFP)) )
                     # replace only one character
                     li = list(suffix)
                     li[indexFP]="X"

@@ -813,13 +813,13 @@ class ModelJCSFilter(object):
 
             descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,jointLabel)
             if  descriptorInfos:
-                logging.info("joint label (%s) in clinical descriptors" %(jointLabel) )
+                logging.debug("joint label (%s) in clinical descriptors" %(jointLabel) )
                 jointFinalValues = np.zeros((jointValues.shape))
                 jointFinalValues[:,0] =  np.rad2deg(descriptorInfos["SaggitalCoeff"] * (jointValues[:,descriptorInfos["SaggitalIndex"]] + descriptorInfos["SaggitalOffset"]))
                 jointFinalValues[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (jointValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
                 jointFinalValues[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (jointValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
             else:
-                logging.warning("no clinical descriptor for joint label (%s)" %(jointLabel) )
+                logging.debug("no clinical descriptor for joint label (%s)" %(jointLabel) )
                 jointFinalValues = np.rad2deg(jointValues)
 
             fulljointLabel  = jointLabel + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Angles"
@@ -907,19 +907,19 @@ class ModelAbsoluteAnglesFilter(object):
             eulerSequence = self.m_eulerSequences[index]
 
             if eulerSequence == "TOR":
-                logging.info( "segment (%s) - sequence Tilt-Obliquity-Rotation used" %(seg.name) )
+                logging.debug( "segment (%s) - sequence Tilt-Obliquity-Rotation used" %(seg.name) )
             elif eulerSequence == "TRO":
-                logging.info( "segment (%s) - sequence Tilt-Rotation-Obliquity used" %(seg.name) )
+                logging.debug( "segment (%s) - sequence Tilt-Rotation-Obliquity used" %(seg.name) )
             elif eulerSequence == "ROT":
-                logging.info( "segment (%s) - sequence Rotation-Obliquity-Tilt used" %(seg.name) )
+                logging.debug( "segment (%s) - sequence Rotation-Obliquity-Tilt used" %(seg.name) )
             elif eulerSequence == "RTO":
-                logging.info( "segment (%s) - sequence Rotation-Tilt-Obliquity used" %(seg.name) )
+                logging.debug( "segment (%s) - sequence Rotation-Tilt-Obliquity used" %(seg.name) )
             elif eulerSequence == "OTR":
-                logging.info( "segment (%s) - sequence Obliquity-Tilt-Rotation used" %(seg.name) )
+                logging.debug( "segment (%s) - sequence Obliquity-Tilt-Rotation used" %(seg.name) )
             elif eulerSequence == "ORT":
-                logging.info( "segment (%s) - sequence Obliquity-Rotation-Tilt used" %(seg.name) )
+                logging.debug( "segment (%s) - sequence Obliquity-Rotation-Tilt used" %(seg.name) )
             else:
-                logging.warning( "segment (%s) - sequence doest recognize - sequence Tilt-Obliquity-Rotation used by default" %(seg.name) )
+                logging.debug( "segment (%s) - sequence doest recognize - sequence Tilt-Obliquity-Rotation used by default" %(seg.name) )
 
 
             for i in range (0, self.m_aqui.GetPointFrameNumber()):
@@ -990,7 +990,7 @@ class ModelAbsoluteAnglesFilter(object):
                                      absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
             else:
-                logging.warning("no clinical descriptor for segment label (%s)" %(segName))
+                logging.debug("no clinical descriptor for segment label (%s)" %(segName))
                 absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValues)
 
                 fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
@@ -1051,7 +1051,7 @@ class ForcePlateAssemblyFilter(object):
             elif l == "R":
                 self.m_model.getSegment(self.m_rightSeglabel).addExternalDeviceWrench(grwc.GetItem(i))
             else:
-                logging.warning("force plate %i sans donnees" %(i))
+                logging.debug("force plate %i sans donnees" %(i))
             i+=1
 
         if "L" in self.m_mappedForcePlate:
@@ -1313,7 +1313,7 @@ class JointPowerFilter(object):
                 for i in range(0, nFrames):
                     power[i,2] = -1.0*(1.0 / self.m_model.mp["Bodymass"]) * self.m_scale * np.dot(self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:] ,relativeOmega[i,:])#
 
-                
+
                 fulljointLabel  = jointLabel + "Power_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Power"
                 btkTools.smartAppendPoint(self.m_aqui,
                                  fulljointLabel,
