@@ -36,7 +36,7 @@ def checkActivatedSubject(NEXUS,subjectNames):
         raise Exception("[pyCGM2] : two subjects are activated. Select one ony")
     else:
         index = flags.index(True)
-        logging.info("Active subject is %s"%(subjectMarkerWithTraj.keys()[index]))
+        logging.debug("Active subject is %s"%(subjectMarkerWithTraj.keys()[index]))
 
     return subjectMarkerWithTraj.keys()[index]
 
