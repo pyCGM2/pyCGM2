@@ -59,7 +59,7 @@ def footJointCentreFromMet(acq,side,frameInit,frameEnd,markerDiameter =14, offse
     return fjc
 
 
-def chord (offset,A1,A2,A3,beta=0.0):
+def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
     """
         Modified Chord method
 
@@ -120,7 +120,7 @@ def chord (offset,A1,A2,A3,beta=0.0):
             C=K
             L=offset
 
-            eps =  0.001 #0.00000001
+            eps =  epsilon
 
             AB = np.linalg.norm(A-B)
             alpha = np.arcsin(L/AB)
