@@ -6,6 +6,7 @@ import copy
 
 import btk
 
+from pyCGM2 import Utils
 from pyCGM2 import enums
 from pyCGM2.Model import model, modelDecorator,frame,motion
 from pyCGM2.Math import euler,geometry

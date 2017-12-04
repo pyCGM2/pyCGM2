@@ -98,13 +98,13 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
 
-        self.addJoint("LHip","Pelvis", "Left Thigh","YXZ")
-        self.addJoint("LKnee","Left Thigh", "Left Shank","YXZ")
+        self.addJoint("LHip","Pelvis", "Left Thigh","YXZ","LHJC")
+        self.addJoint("LKnee","Left Thigh", "Left Shank","YXZ","LKJC")
         #self.addJoint("LKneeAngles_cgm","Left Thigh", "Left Shank","YXZ")
-        self.addJoint("LAnkle","Left Shank", "Left Foot","YXZ")
-        self.addJoint("RHip","Pelvis", "Right Thigh","YXZ")
-        self.addJoint("RKnee","Right Thigh", "Right Shank","YXZ")
-        self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ")
+        self.addJoint("LAnkle","Left Shank", "Left Foot","YXZ","LAJC")
+        self.addJoint("RHip","Pelvis", "Right Thigh","YXZ","RHJC")
+        self.addJoint("RKnee","Right Thigh", "Right Shank","YXZ","RKJC")
+        self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ","RAJC")
 
 
     def calibrationProcedure(self):
@@ -395,15 +395,15 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
 
-        self.addJoint("LHip","Pelvis", "Left Thigh","YXZ")
-        self.addJoint("LKnee","Left Thigh", "Left Shank","YXZ")
-        self.addJoint("LAnkle","Left Shank", "Left Foot","YXZ")
-        self.addJoint("LForeFoot","Left Foot", "Left ForeFoot","YXZ")
+        self.addJoint("LHip","Pelvis", "Left Thigh","YXZ","LHJC")
+        self.addJoint("LKnee","Left Thigh", "Left Shank","YXZ","LKJC")
+        self.addJoint("LAnkle","Left Shank", "Left Foot","YXZ","LAJC")
+        self.addJoint("LForeFoot","Left Foot", "Left ForeFoot","YXZ","LFJC")
 
-        self.addJoint("RHip","Pelvis", "Right Thigh","YXZ")
-        self.addJoint("RKnee","Right Thigh", "Right Shank","YXZ")
-        self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ")
-        self.addJoint("RForeFoot","Right Foot", "Right ForeFoot","YXZ")
+        self.addJoint("RHip","Pelvis", "Right Thigh","YXZ","RHJC")
+        self.addJoint("RKnee","Right Thigh", "Right Shank","YXZ","RKJC")
+        self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ","RAJC")
+        self.addJoint("RForeFoot","Right Foot", "Right ForeFoot","YXZ","RFJC")
 
         # clinics
         self.setClinicalDescriptor("LHip",enums.DataType.Angle, [0,1,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0])
