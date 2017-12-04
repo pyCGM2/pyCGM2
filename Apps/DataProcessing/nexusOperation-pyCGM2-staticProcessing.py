@@ -71,10 +71,7 @@ if __name__ == "__main__":
 
 
         # ---- configuration parameters ----
-        if args.pointSuffix is not None:
-            pointSuffix = args.pointSuffix
-        else:
-            pointSuffix = ""
+        pointSuffix = args.pointSuffix if args.pointSuffix is not None else ""
 
         # -----infos--------
         modelInfo = None if  infoSettings["Modelling"]["Model"]=={} else infoSettings["Modelling"]["Model"]
