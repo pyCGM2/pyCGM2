@@ -61,26 +61,126 @@ def openTranslators(DATA_PATH, translatorsFilename):
     filename = openJson(DATA_PATH, translatorsFilename)
     return filename["Translators"]
 
-def manage_pycgm2SessionInfos(DATA_PATH,subject):
 
-    if not os.path.isfile( DATA_PATH + subject+"-pyCGM2.info"):
-        copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + subject+"-pyCGM2.info"))
-        logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
-        infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+def getMpFile(DATA_PATH,subject):
+
+    if subject is not None:
+        mpJsonFile = subject+"-pyCGM2-mp.json"
     else:
-        infoSettings = json.loads(open(DATA_PATH +subject+'-pyCGM2.info').read(),object_pairs_hook=OrderedDict)
+        mpJsonFile = "pyCGM2-mp.json"
+
+
+    if not os.path.isfile( DATA_PATH + mpJsonFile):
+        copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2-mp.json"), str(DATA_PATH + mpJsonFile))
+        logging.warning("Copy of pyCGM2-mp.json from pyCGM2 Settings folder")
+
+    mpSettings = openJson(DATA_PATH,mpJsonFile)
+
+
+    return mpSettings
+
+
+
+def getSessioninfoFile(DATA_PATH,subject):
+
+    if subject is not None:
+        infoJsonFile = subject+"-pyCGM2.info"
+    else:
+        infoJsonFile = "pyCGM2.info"
+
+
+    if not os.path.isfile( DATA_PATH + infoJsonFile):
+        copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + infoJsonFile))
+        logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
+
+    infoSettings = openJson(DATA_PATH,infoJsonFile)
 
     return infoSettings
 
-def manage_pycgm2Translators(DATA_PATH, translatorType = "CGM1.translators"):
+def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
     #  translators management
     if os.path.isfile( DATA_PATH + translatorType):
        logging.warning("local translator found")
-       sessionTranslators = json.loads(open(DATA_PATH + translatorType).read(),object_pairs_hook=OrderedDict)
+       sessionTranslators = openJson(DATA_PATH,translatorType)
        translators = sessionTranslators["Translators"]
        return translators
     else:
        return False
+
+
+def getMp(mpInfo,resetFlag=True):
+
+    required_mp={
+    'Bodymass'   : mpInfo["MP"]["Required"]["Bodymass"],
+    'LeftLegLength' :mpInfo["MP"]["Required"]["LeftLegLength"],
+    'RightLegLength' : mpInfo["MP"]["Required"][ "RightLegLength"],
+    'LeftKneeWidth' : mpInfo["MP"]["Required"][ "LeftKneeWidth"],
+    'RightKneeWidth' : mpInfo["MP"]["Required"][ "RightKneeWidth"],
+    'LeftAnkleWidth' : mpInfo["MP"]["Required"][ "LeftAnkleWidth"],
+    'RightAnkleWidth' : mpInfo["MP"]["Required"][ "RightAnkleWidth"],
+    'LeftSoleDelta' : mpInfo["MP"]["Required"][ "LeftSoleDelta"],
+    'RightSoleDelta' : mpInfo["MP"]["Required"]["RightSoleDelta"]
+    }
+
+    if resetFlag:
+        optional_mp={
+        'InterAsisDistance'   : 0,
+        'LeftAsisTrocanterDistance' : 0,
+        'LeftTibialTorsion' : 0 ,
+        'LeftThighRotation' : 0,
+        'LeftShankRotation' : 0,
+        'RightAsisTrocanterDistance' : 0,
+        'RightTibialTorsion' :0 ,
+        'RightThighRotation' : 0,
+        'RightShankRotation' : 0
+        }
+    else:
+        optional_mp={
+        'InterAsisDistance'   : mpInfo["MP"]["Optional"][ "InterAsisDistance"],#0,
+        'LeftAsisTrocanterDistance' : mpInfo["MP"]["Optional"][ "LeftAsisTrocanterDistance"],#0,
+        'LeftTibialTorsion' : mpInfo["MP"]["Optional"][ "LeftTibialTorsion"],#0 ,
+        'LeftThighRotation' : mpInfo["MP"]["Optional"][ "LeftThighRotation"],#0,
+        'LeftShankRotation' : mpInfo["MP"]["Optional"][ "LeftShankRotation"],#0,
+        'RightAsisTrocanterDistance' : mpInfo["MP"]["Optional"][ "RightAsisTrocanterDistance"],#0,
+        'RightTibialTorsion' : mpInfo["MP"]["Optional"][ "RightTibialTorsion"],#0 ,
+        'RightThighRotation' : mpInfo["MP"]["Optional"][ "RightThighRotation"],#0,
+        'RightShankRotation' : mpInfo["MP"]["Optional"][ "RightShankRotation"],#0,
+        }
+
+    return required_mp,optional_mp
+
+
+
+def saveMp(mpInfo,model,DATA_PATH,mpFilename):
+
+    # update optional mp and save a new info file
+    mpInfo["MP"]["Required"][ "Bodymass"] = model.mp["Bodymass"]
+    mpInfo["MP"]["Required"][ "LeftLegLength"] = model.mp["LeftLegLength"]
+    mpInfo["MP"]["Required"][ "RightLegLength"] = model.mp["RightLegLength"]
+    mpInfo["MP"]["Required"][ "LeftKneeWidth"] = model.mp["LeftKneeWidth"]
+    mpInfo["MP"]["Required"][ "RightKneeWidth"] = model.mp["RightKneeWidth"]
+    mpInfo["MP"]["Required"][ "LeftAnkleWidth"] = model.mp["LeftAnkleWidth"]
+    mpInfo["MP"]["Required"][ "RightAnkleWidth"] = model.mp["RightAnkleWidth"]
+    mpInfo["MP"]["Required"][ "LeftSoleDelta"] = model.mp["LeftSoleDelta"]
+    mpInfo["MP"]["Required"][ "RightSoleDelta"] = model.mp["RightSoleDelta"]
+
+    mpInfo["MP"]["Optional"][ "InterAsisDistance"] = model.mp_computed["InterAsisDistance"]
+    mpInfo["MP"]["Optional"][ "LeftAsisTrocanterDistance"] = model.mp_computed["LeftAsisTrocanterDistance"]
+    mpInfo["MP"]["Optional"][ "LeftTibialTorsion"] = model.mp_computed["LeftTibialTorsionOffset"]
+    mpInfo["MP"]["Optional"][ "LeftThighRotation"] = model.mp_computed["LeftThighRotationOffset"]
+    mpInfo["MP"]["Optional"][ "LeftShankRotation"] = model.mp_computed["LeftShankRotationOffset"]
+
+    mpInfo["MP"]["Optional"][ "RightAsisTrocanterDistance"] = model.mp_computed["RightAsisTrocanterDistance"]
+    mpInfo["MP"]["Optional"][ "RightTibialTorsion"] = model.mp_computed["RightTibialTorsionOffset"]
+    mpInfo["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
+    mpInfo["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
+
+    mpInfo["MP"]["Optional"][ "LeftKneeFuncCalibrationOffset"] = model.mp_computed["LeftKneeFuncCalibrationOffset"]
+    mpInfo["MP"]["Optional"][ "RightKneeFuncCalibrationOffset"] = model.mp_computed["RightKneeFuncCalibrationOffset"]
+
+    saveJson(DATA_PATH, mpFilename, mpInfo)
+
+
 
 def getFiles(path, extension, ignore=None):
 
