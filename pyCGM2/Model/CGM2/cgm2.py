@@ -106,6 +106,101 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         self.addJoint("RKnee","Right Thigh", "Right Shank","YXZ","RKJC")
         self.addJoint("RAnkle","Right Shank", "Right Foot","YXZ","RAJC")
 
+        # clinics
+        self.setClinicalDescriptor("LHip",enums.DataType.Angle, [0,1,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("LKnee",enums.DataType.Angle, [0,1,2],[+1.0,-1.0,-1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Angle, [0,2,1],[-1.0,-1.0,-1.0], [ np.radians(90),0.0,0.0])
+        self.setClinicalDescriptor("RHip",enums.DataType.Angle, [0,1,2],[-1.0,+1.0,+1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("RKnee",enums.DataType.Angle, [0,1,2],[+1.0,+1.0,+1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Angle, [0,2,1],[-1.0,+1.0,+1.0], [ np.radians(90),0.0,0.0])
+
+        self.setClinicalDescriptor("LPelvis",enums.DataType.Angle,[0,1,2],[1.0,1.0,-1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("RPelvis",enums.DataType.Angle,[0,1,2],[1.0,-1.0,+1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("Left Foot",enums.DataType.Angle,[0,2,1],[1.0,1.0,-1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("Right Foot",enums.DataType.Angle,[0,2,1],[1.0,-1.0,1.0], [0.0,0.0,0.0])
+
+        # distal Projection
+        self.setClinicalDescriptor("LHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("LHip",enums.DataType.Moment, [1,0,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RHip",enums.DataType.Moment, [1,0,2],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+
+        self.setClinicalDescriptor("LKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("LKnee",enums.DataType.Moment, [1,0,2],[-1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Moment, [1,0,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Force, [0,1,2],[-1.0,+1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Moment, [1,2,0],[1.0,-1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Distal)
+
+        # proximal Projection
+        self.setClinicalDescriptor("LHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("LHip",enums.DataType.Moment, [1,0,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RHip",enums.DataType.Moment, [1,0,2],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+
+        self.setClinicalDescriptor("LKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("LKnee",enums.DataType.Moment, [1,0,2],[-1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Moment, [1,0,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Force, [0,1,2],[+1.0,+1.0,+1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Moment, [1,0,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,0,2],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Proximal)
+
+        # Global Projection
+        self.setClinicalDescriptor("LHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("LHip",enums.DataType.Moment, [1,0,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RHip",enums.DataType.Moment, [1,0,2],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+
+        self.setClinicalDescriptor("LKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("LKnee",enums.DataType.Moment, [1,0,2],[-1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Moment, [1,0,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Force, [0,1,2],[+1.0,+1.0,+1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Moment, [1,0,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,0,2],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.Global)
+
+        # JCS Projection
+        self.setClinicalDescriptor("LHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("LHip",enums.DataType.Moment, [1,0,2],[1.0,-1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RHip",enums.DataType.Moment, [1,0,2],[1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+
+        self.setClinicalDescriptor("LKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("LKnee",enums.DataType.Moment, [1,0,2],[-1.0,-1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Moment, [1,0,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+
+
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Force, [0,1,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Moment, [1,2,0],[1.0,-1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS)
+
+        # JCS-dual Projection
+        self.setClinicalDescriptor("LHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("LHip",enums.DataType.Moment, [1,0,2],[1.0,-1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RHip",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RHip",enums.DataType.Moment, [1,0,2],[1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+
+        self.setClinicalDescriptor("LKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("LKnee",enums.DataType.Moment, [1,0,2],[-1.0,-1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RKnee",enums.DataType.Moment, [1,0,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+
+
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("LAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,-1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+        self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
+
 
     def calibrationProcedure(self):
         """
@@ -576,14 +671,14 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         frameEnd=lf-ff+1
 
         if not self.decoratedModel:
-            logging.warning(" Native CGM")
+            logging.debug(" Native CGM")
             if not btkTools.isPointExist(aquiStatic,"LKNE"):
                 btkTools.smartAppendPoint(aquiStatic,"LKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
             if not btkTools.isPointExist(aquiStatic,"RKNE"):
                 btkTools.smartAppendPoint(aquiStatic,"RKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
 
         else:
-            logging.warning(" Decorated CGM")
+            logging.debug(" Decorated CGM")
 
         # ---- Pelvis-THIGH-SHANK CALIBRATION
         #-------------------------------------
@@ -762,62 +857,62 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # need anatomical flexion axis of the shank.
 
 
-        logging.info(" --- Left Hind Foot  - TF calibration ---")
-        logging.info(" -----------------------------------------")
+        logging.debug(" --- Left Hind Foot  - TF calibration ---")
+        logging.debug(" -----------------------------------------")
         self._leftHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Left HindFoot","LHindFootUncorrected",referential = "technic"  )
 
-        logging.info(" --- Left Hind Foot  - AF calibration ---")
-        logging.info(" -----------------------------------------")
+        logging.debug(" --- Left Hind Foot  - AF calibration ---")
+        logging.debug(" -----------------------------------------")
         self._leftHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Left HindFoot","LHindFoot",referential = "Anatomical"  )
 
-        logging.info(" --- Hind foot Offset---")
-        logging.info(" -----------------------")
+        logging.debug(" --- Hind foot Offset---")
+        logging.debug(" -----------------------")
         self.getHindFootOffset(side = "Left")
 
-        logging.info(" --- Left Fore Foot  - TF calibration ---")
-        logging.info(" -----------------------------------------")
+        logging.debug(" --- Left Fore Foot  - TF calibration ---")
+        logging.debug(" -----------------------------------------")
         self._leftForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Left ForeFoot","LTechnicForeFoot",referential = "Technical"  )
 
 
-        logging.info(" --- Left Fore Foot  - AF calibration ---")
-        logging.info(" -----------------------------------------")
+        logging.debug(" --- Left Fore Foot  - AF calibration ---")
+        logging.debug(" -----------------------------------------")
         self._leftForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Left ForeFoot","LForeFoot",referential = "Anatomical"  )
 
 
-        logging.info(" --- Right Hind Foot  - TF calibration ---")
-        logging.info(" -----------------------------------------")
+        logging.debug(" --- Right Hind Foot  - TF calibration ---")
+        logging.debug(" -----------------------------------------")
         self._rightHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Right HindFoot","RHindFootUncorrected",referential = "technic"  )
 
-        logging.info(" --- Right Hind Foot  - AF calibration ---")
-        logging.info(" -----------------------------------------")
+        logging.debug(" --- Right Hind Foot  - AF calibration ---")
+        logging.debug(" -----------------------------------------")
         self._rightHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Right HindFoot","RHindFoot",referential = "Anatomical"  )
 
-        logging.info(" --- Hind foot Offset---")
-        logging.info(" -----------------------")
+        logging.debug(" --- Hind foot Offset---")
+        logging.debug(" -----------------------")
         self.getHindFootOffset(side = "Right")
 
         # --- fore foot
         # ----------------
-        logging.info(" --- Right Fore Foot  - TF calibration ---")
-        logging.info(" -----------------------------------------")
+        logging.debug(" --- Right Fore Foot  - TF calibration ---")
+        logging.debug(" -----------------------------------------")
         self._rightForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Right ForeFoot","RTechnicForeFoot",referential = "Technical"  )
 
-        logging.info(" --- Right Fore Foot  - AF calibration ---")
-        logging.info(" -----------------------------------------")
+        logging.debug(" --- Right Fore Foot  - AF calibration ---")
+        logging.debug(" -----------------------------------------")
         self._rightForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Right ForeFoot","RForeFoot",referential = "Anatomical"  )
@@ -828,7 +923,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         pfn = aquiStatic.GetPointFrameNumber()
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
@@ -952,7 +1047,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         """
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
@@ -972,11 +1067,11 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
-            logging.warning("option (leftFlatFoot) enable")
+            logging.debug("option (leftFlatFoot) enable")
             #pt2[2] = pt1[2]
             pt1[2] = pt2[2]
         else:
-            logging.warning("option (leftFlatFoot) disable")
+            logging.debug("option (leftFlatFoot) disable")
 
 
         a1=(pt2-pt1)
@@ -1081,7 +1176,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         pfn = aquiStatic.GetPointFrameNumber()
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
@@ -1203,7 +1298,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     def _rightHindFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd, options = None):
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
@@ -1224,11 +1319,11 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
-            logging.warning("option (rightFlatFoot) enable")
+            logging.debug("option (rightFlatFoot) enable")
             #pt2[2] = pt1[2]
             pt1[2] = pt2[2]
         else:
-            logging.warning("option (rightFlatFoot) disable")
+            logging.debug("option (rightFlatFoot) disable")
 
 
         a1=(pt2-pt1)
@@ -1390,7 +1485,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             if btkTools.isPointExist(aqui,originAnatomicalFrame):
                 self._anatomical_motion(aqui,"Left Thigh",originLabel = originAnatomicalFrame)
             else:
-                logging.info("[pyCGM2] no motion of the left thigh Anatomical Referential. OriginLabel unknown")
+                logging.debug("[pyCGM2] no motion of the left thigh Anatomical Referential. OriginLabel unknown")
 
 
         if "Right Thigh" in segments:
@@ -1516,21 +1611,21 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             logging.debug(" ---------------------------------")
             self._right_shankProximal_motion(aqui,dictAnat,options=options)
 
-            logging.info(" - Left HindFoot - motion -")
-            logging.info(" ---------------------------")
+            logging.debug(" - Left HindFoot - motion -")
+            logging.debug(" ---------------------------")
             self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
 
-            logging.info(" - Left ForeFoot - motion -")
-            logging.info(" ---------------------------")
+            logging.debug(" - Left ForeFoot - motion -")
+            logging.debug(" ---------------------------")
             self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
 
 
-            logging.info(" - Right Hindfoot - motion -")
-            logging.info(" ---------------------------")
+            logging.debug(" - Right Hindfoot - motion -")
+            logging.debug(" ---------------------------")
             self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
 
-            logging.info(" - Right ForeFoot - motion -")
-            logging.info(" ---------------------------")
+            logging.debug(" - Right ForeFoot - motion -")
+            logging.debug(" ---------------------------")
             self._right_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
 
 
