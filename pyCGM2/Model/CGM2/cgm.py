@@ -54,20 +54,20 @@ class CGM(model.Model):
     def reLabelOldOutputs(cls,acq):
         for it in btk.Iterate(acq.GetPoints()):
             if it.GetType() == btk.btkPoint.Angle and  it.GetLabel() in CGM.PIG_STATIC_ANGLE_LABELS:
-                logging.warning( "angle (%s) suffixed (.OLD)" %(it.GetLabel()))
+                logging.debug( "angle (%s) suffixed (.OLD)" %(it.GetLabel()))
                 it.SetLabel(it.GetLabel()+".OLD")
 
             if it.GetType() == btk.btkPoint.Force and  it.GetLabel() in CGM.PIG_STATIC_FORCE_LABELS:
-                logging.warning( "force (%s) suffixed (.OLD)" %(it.GetLabel()))
+                logging.debug( "force (%s) suffixed (.OLD)" %(it.GetLabel()))
                 it.SetLabel(it.GetLabel()+".OLD")
 
             if it.GetType() == btk.btkPoint.Moment and  it.GetLabel() in CGM.PIG_STATIC_MOMENT_LABELS:
-                logging.warning( "moment (%s) suffixed (.OLD)" %(it.GetLabel()))
+                logging.debug( "moment (%s) suffixed (.OLD)" %(it.GetLabel()))
                 it.SetLabel(it.GetLabel()+".OLD")
 
 
             if it.GetType() == btk.btkPoint.Power and  it.GetLabel() in CGM.PIG_STATIC_POWER_LABELS:
-                logging.warning( "power (%s) suffixed (.OLD)" %(it.GetLabel()))
+                logging.debug( "power (%s) suffixed (.OLD)" %(it.GetLabel()))
                 it.SetLabel(it.GetLabel()+".OLD")
 
 
@@ -96,6 +96,9 @@ class CGM(model.Model):
         if leftKneeMed and leftAnkleMed:
             out["left"] = enums.CgmStaticMarkerConfig.KneeAnkleMed
 
+        if leftAnkleMed and not leftKad and not leftKneeMed:
+            out["left"] = enums.CgmStaticMarkerConfig.AnkleMed
+
         #--right--
         rightKad = True if btkTools.isPointsExist(acqStatic,["RKAX","RKD1","RKD2"]) else False
         rightAnkleMed = True if btkTools.isPointsExist(acqStatic,["RMED","RANK"]) else False
@@ -116,6 +119,8 @@ class CGM(model.Model):
         if rightKneeMed and rightAnkleMed:
             out["right"] = enums.CgmStaticMarkerConfig.KneeAnkleMed
 
+        if rightAnkleMed and not rightKad and not rightKneeMed:
+            out["right"] = enums.CgmStaticMarkerConfig.AnkleMed
         return out
 
 class CGM1LowerLimbs(CGM):
@@ -437,14 +442,14 @@ class CGM1LowerLimbs(CGM):
         frameEnd=lf-ff+1
 
         if not self.decoratedModel:
-            logging.warning(" Native CGM")
+            logging.debug(" Native CGM")
             if not btkTools.isPointExist(aquiStatic,"LKNE"):
                 btkTools.smartAppendPoint(aquiStatic,"LKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
             if not btkTools.isPointExist(aquiStatic,"RKNE"):
                 btkTools.smartAppendPoint(aquiStatic,"RKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
 
         else:
-            logging.warning(" Decorated CGM")
+            logging.debug(" Decorated CGM")
 
         # ---- Pelvis-THIGH-SHANK CALIBRATION
         #-------------------------------------
@@ -516,11 +521,11 @@ class CGM1LowerLimbs(CGM):
 
             # SARA
             if self.checkCalibrationProperty("LeftFuncKneeMethod","SARA"):
-                logging.info("Left knee functional calibration : SARA ")
+                logging.debug("Left knee functional calibration : SARA ")
 
             # 2DOF
             elif self.checkCalibrationProperty("LeftFuncKneeMethod","2DOF"):
-                logging.info("Left knee functional calibration : 2Dof ")
+                logging.debug("Left knee functional calibration : 2Dof ")
 
             self._rotateAnatomicalFrame("Left Thigh",offset,
                                         aquiStatic, dictAnatomic,frameInit,frameEnd)
@@ -540,11 +545,11 @@ class CGM1LowerLimbs(CGM):
 
             # SARA
             if self.checkCalibrationProperty("RightFuncKneeMethod","SARA"):
-                logging.info("Left knee functional calibration : SARA ")
+                logging.debug("Left knee functional calibration : SARA ")
 
             # 2DOF
             elif self.checkCalibrationProperty("RightFuncKneeMethod","2DOF"):
-                logging.info("Left knee functional calibration : 2Dof ")
+                logging.debug("Left knee functional calibration : 2Dof ")
 
             self._rotateAnatomicalFrame("Right Thigh",offset,
                                         aquiStatic, dictAnatomic,frameInit,frameEnd)
@@ -673,13 +678,13 @@ class CGM1LowerLimbs(CGM):
         pfn = aquiStatic.GetPointFrameNumber()
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
 
         if "basePlate" in options.keys():
-            logging.info(" option (basePlate) found ")
+            logging.debug(" option (basePlate) found ")
             basePlate = options["basePlate"]
         else:
             basePlate=2.0
@@ -701,17 +706,17 @@ class CGM1LowerLimbs(CGM):
 
         # new mp
         if self.mp.has_key("PelvisDepth") and self.mp["PelvisDepth"] != 0:
-            logging.warning("PelvisDepth defined from your vsk file")
+            logging.debug("PelvisDepth defined from your vsk file")
             self.mp_computed["PelvisDepth"] = self.mp["PelvisDepth"]
         else:
-            logging.warning("Pelvis Depth computed and added to model parameters")
+            logging.debug("Pelvis Depth computed and added to model parameters")
             self.mp_computed["PelvisDepth"] = np.linalg.norm( valMidAsis.mean(axis=0)-valSACR.mean(axis=0)) - 2.0* (markerDiameter/2.0) -2.0* (basePlate/2.0)
 
         if self.mp.has_key("InterAsisDistance") and self.mp["InterAsisDistance"] != 0:
-            logging.warning("InterAsisDistance defined from your vsk file")
+            logging.debug("InterAsisDistance defined from your vsk file")
             self.mp_computed["InterAsisDistance"] = self.mp["InterAsisDistance"]
         else:
-            logging.warning("asisDistance computed and added to model parameters")
+            logging.debug("asisDistance computed and added to model parameters")
             self.mp_computed["InterAsisDistance"] = np.linalg.norm( aquiStatic.GetPoint("LASI").GetValues().mean(axis=0) - aquiStatic.GetPoint("RASI").GetValues().mean(axis=0))
 
 
@@ -747,13 +752,13 @@ class CGM1LowerLimbs(CGM):
         # --- Hip Joint centers location
         # anthropometric parameter computed
         if self.mp.has_key("LeftAsisTrocanterDistance") and self.mp["LeftAsisTrocanterDistance"] != 0:
-            logging.warning("LeftAsisTrocanterDistance defined from your vsk file")
+            logging.debug("LeftAsisTrocanterDistance defined from your vsk file")
             self.mp_computed['LeftAsisTrocanterDistance'] = self.mp["LeftAsisTrocanterDistance"]
         else:
             self.mp_computed['LeftAsisTrocanterDistance'] = 0.1288*self.mp['LeftLegLength']-48.56
 
         if self.mp.has_key("RightAsisTrocanterDistance") and self.mp["RightAsisTrocanterDistance"] != 0:
-            logging.warning("RightAsisTrocanterDistance defined from your vsk file")
+            logging.debug("RightAsisTrocanterDistance defined from your vsk file")
             self.mp_computed['RightAsisTrocanterDistance'] = self.mp["RightAsisTrocanterDistance"]
         else:
             self.mp_computed['RightAsisTrocanterDistance'] = 0.1288*self.mp['RightLegLength']-48.56
@@ -825,13 +830,13 @@ class CGM1LowerLimbs(CGM):
         pfn = aquiStatic.GetPointFrameNumber()
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
 
         if "basePlate" in options.keys():
-            logging.info(" option (basePlate) found ")
+            logging.debug(" option (basePlate) found ")
             basePlate = options["basePlate"]
         else:
             basePlate=2.0
@@ -867,7 +872,7 @@ class CGM1LowerLimbs(CGM):
 
         # --- knee Joint centers location from chord method
         if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
-            logging.warning("LeftThighRotation defined from your vsk file")
+            logging.debug("LeftThighRotation defined from your vsk file")
             self.mp_computed["LeftThighRotationOffset"] = self.mp["LeftThighRotation"]* -1.0
         else:
             self.mp_computed["LeftThighRotationOffset"] = 0.0
@@ -916,13 +921,13 @@ class CGM1LowerLimbs(CGM):
         pfn = aquiStatic.GetPointFrameNumber()
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
 
         if "basePlate" in options.keys():
-            logging.info(" option (basePlate) found ")
+            logging.debug(" option (basePlate) found ")
             basePlate = options["basePlate"]
         else:
             basePlate=2.0
@@ -961,7 +966,7 @@ class CGM1LowerLimbs(CGM):
 
         # --- knee Joint centers location
         if self.mp.has_key("RightThighRotation") and self.mp["RightThighRotation"] != 0:
-            logging.warning("RightThighRotation defined from your vsk file")
+            logging.debug("RightThighRotation defined from your vsk file")
             self.mp_computed["RightThighRotationOffset"] = self.mp["RightThighRotation"]
         else:
             self.mp_computed["RightThighRotationOffset"] = 0.0
@@ -1009,13 +1014,13 @@ class CGM1LowerLimbs(CGM):
         pfn = aquiStatic.GetPointFrameNumber()
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
 
         if "basePlate" in options.keys():
-            logging.info(" option (basePlate) found ")
+            logging.debug(" option (basePlate) found ")
             basePlate = options["basePlate"]
         else:
             basePlate=2.0
@@ -1056,7 +1061,7 @@ class CGM1LowerLimbs(CGM):
 
         # --- ankle Joint centers location
         if self.mp.has_key("LeftShankRotation") and self.mp["LeftShankRotation"] != 0:
-            logging.warning("LeftShankRotation defined from your vsk file")
+            logging.debug("LeftShankRotation defined from your vsk file")
             self.mp_computed["LeftShankRotationOffset"] = self.mp["LeftShankRotation"]*-1.0
         else:
             self.mp_computed["LeftShankRotationOffset"]=0.0
@@ -1104,13 +1109,13 @@ class CGM1LowerLimbs(CGM):
         pfn = aquiStatic.GetPointFrameNumber()
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
 
         if "basePlate" in options.keys():
-            logging.info(" option (basePlate) found ")
+            logging.debug(" option (basePlate) found ")
             basePlate = options["basePlate"]
         else:
             basePlate=2.0
@@ -1149,7 +1154,7 @@ class CGM1LowerLimbs(CGM):
 
         # --- ankle Joint centers location
         if self.mp.has_key("RightShankRotation") and self.mp["RightShankRotation"] != 0:
-            logging.warning("RightShankRotation defined from your vsk file")
+            logging.debug("RightShankRotation defined from your vsk file")
             self.mp_computed["RightShankRotationOffset"] = self.mp["RightShankRotation"]
         else:
             self.mp_computed["RightShankRotationOffset"]=0.0
@@ -1206,7 +1211,7 @@ class CGM1LowerLimbs(CGM):
         #seg.addMarkerLabel("LKJC") !!!
 
         if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
-            logging.warning("You use a Left uncorrected foot sequence different than native CGM1")
+            logging.debug("You use a Left uncorrected foot sequence different than native CGM1")
             dictRef["Left Foot"]={"TF" : {'sequence':"ZYX", 'labels':   ["LTOE","LAJC","LKJC","LAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
 
 
@@ -1283,7 +1288,7 @@ class CGM1LowerLimbs(CGM):
 
 
         if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
-            logging.warning("You use a right uncorrected foot sequence different than native CGM1")
+            logging.debug("You use a right uncorrected foot sequence different than native CGM1")
             dictRef["Right Foot"]={"TF" : {'sequence':"ZYX", 'labels':   ["RTOE","RAJC","RKJC","RAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
 
 
@@ -1705,13 +1710,13 @@ class CGM1LowerLimbs(CGM):
         """
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
 
         if "basePlate" in options.keys():
-            logging.info(" option (basePlate) found ")
+            logging.debug(" option (basePlate) found ")
             basePlate = options["basePlate"]
         else:
             basePlate=2.0
@@ -1720,7 +1725,7 @@ class CGM1LowerLimbs(CGM):
         seg=self.getSegment("Left Foot")
 
         if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
-            logging.warning("You use a Left corrected foot sequence different than native CGM1")
+            logging.debug("You use a Left corrected foot sequence different than native CGM1")
             dictAnatomic["Left Foot"]={'sequence':"ZYX", 'labels':  ["LTOE","LHEE","LKJC","LAJC"]}    # corrected foot
 
 
@@ -1729,9 +1734,9 @@ class CGM1LowerLimbs(CGM):
         pt2=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # LHEE
 
         if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
-            logging.warning ("option (leftFlatFoot) enable")
+            logging.debug ("option (leftFlatFoot) enable")
             if ("LeftSoleDelta" in self.mp.keys() and self.mp["LeftSoleDelta"]!=0):
-                logging.warning ("option (LeftSoleDelta) compensation")
+                logging.debug ("option (LeftSoleDelta) compensation")
 
             pt2[2] = pt1[2]+self.mp['LeftSoleDelta']
 
@@ -1822,7 +1827,7 @@ class CGM1LowerLimbs(CGM):
         seg=self.getSegment("Right Foot")
 
         if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
-            logging.warning("You use a Right corrected foot sequence different than native CGM1")
+            logging.debug("You use a Right corrected foot sequence different than native CGM1")
             dictAnatomic["Right Foot"]={'sequence':"ZYX", 'labels':  ["RTOE","RHEE","RKJC","RAJC"]}    # corrected foot
 
         # --- Construction of the anatomical Referential
@@ -1831,10 +1836,10 @@ class CGM1LowerLimbs(CGM):
         #pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
-            logging.warning ("option (rightFlatFoot) enable")
+            logging.debug ("option (rightFlatFoot) enable")
 
             if ("RightSoleDelta" in self.mp.keys() and self.mp["RightSoleDelta"]!=0):
-                logging.warning ("option (RightSoleDelta) compensation")
+                logging.debug ("option (RightSoleDelta) compensation")
 
             pt2[2] = pt1[2]+self.mp['RightSoleDelta']
 
@@ -2068,7 +2073,7 @@ class CGM1LowerLimbs(CGM):
             angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_ank,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
 
             self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"] = angle
-            #logging.info(" left projection offset => %s " % str(self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"]))
+            #logging.debug(" left projection offset => %s " % str(self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"]))
 
 
 
@@ -2107,7 +2112,7 @@ class CGM1LowerLimbs(CGM):
             angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_ank,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
 
             self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"] = angle
-            #logging.info(" right projection offset => %s " % str(self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"]))
+            #logging.debug(" right projection offset => %s " % str(self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"]))
 
 
     def getTibialTorsionOffset(self, side = "both"):
@@ -2694,13 +2699,13 @@ class CGM1LowerLimbs(CGM):
         """
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
 
         if "basePlate" in options.keys():
-            logging.info(" option (basePlate) found ")
+            logging.debug(" option (basePlate) found ")
             basePlate = options["basePlate"]
         else:
             basePlate=2.0
@@ -2812,13 +2817,13 @@ class CGM1LowerLimbs(CGM):
         """
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
 
         if "basePlate" in options.keys():
-            logging.info(" option (basePlate) found ")
+            logging.debug(" option (basePlate) found ")
             basePlate = options["basePlate"]
         else:
             basePlate=2.0
@@ -2932,13 +2937,13 @@ class CGM1LowerLimbs(CGM):
         """
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
 
         if "basePlate" in options.keys():
-            logging.info(" option (basePlate) found ")
+            logging.debug(" option (basePlate) found ")
             basePlate = options["basePlate"]
         else:
             basePlate=2.0
@@ -3121,13 +3126,13 @@ class CGM1LowerLimbs(CGM):
         """
 
         if "markerDiameter" in options.keys():
-            logging.info(" option (markerDiameter) found ")
+            logging.debug(" option (markerDiameter) found ")
             markerDiameter = options["markerDiameter"]
         else:
             markerDiameter=14.0
 
         if "basePlate" in options.keys():
-            logging.info(" option (basePlate) found ")
+            logging.debug(" option (basePlate) found ")
             basePlate = options["basePlate"]
         else:
             basePlate=2.0

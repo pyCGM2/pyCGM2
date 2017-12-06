@@ -92,7 +92,7 @@ class argsManager_cgm(object):
                 return  enums.MomentProjection.Proximal
             elif self.settings["Fitting"]["Moment Projection"] == "Global":
                 return  enums.MomentProjection.Global
-            elif settings["Fitting"]["Moment Projection"] == "JCS":
+            elif self.settings["Fitting"]["Moment Projection"] == "JCS":
                 return enums.MomentProjection.JCS
 
             else:
@@ -214,6 +214,15 @@ def applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter):
         logging.warning("CASE FOUND ===> Right Side = Knee and Ankle Medial")
         modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="right")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
+
+    # AnkleMed
+    if smc["left"] == enums.CgmStaticMarkerConfig.AnkleMed:
+        logging.warning("CASE FOUND ===> Left Side = Ankle Medial")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
+
+    if smc["right"] == enums.CgmStaticMarkerConfig.AnkleMed:
+        logging.warning("CASE FOUND ===> Right Side = Ankle Medial")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")    
 
 def applyHJCDecorators(model,method,side="both"):
 
