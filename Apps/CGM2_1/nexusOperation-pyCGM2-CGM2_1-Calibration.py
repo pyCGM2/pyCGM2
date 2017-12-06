@@ -14,18 +14,15 @@ import ViconNexus
 
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools
-import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model import modelFilters, modelDecorator
-from pyCGM2.Model.CGM2 import cgm,cgm2
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
-from pyCGM2.apps import cgmUtils
+
+from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm2_1
 
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = False
+
 
     parser = argparse.ArgumentParser(description='CGM2.1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -34,6 +31,7 @@ if __name__ == "__main__":
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('--resetMP', action='store_false', help='reset optional mass parameters')
+    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
 
 
@@ -47,10 +45,20 @@ if __name__ == "__main__":
         # global setting ( in user/AppData)
         settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
 
+        # --------------------------CONFIG ------------------------------------
+        argsManager = cgmUtils.argsManager_cgm(settings,args)
+        leftFlatFoot = argsManager.getLeftFlatFoot()
+        rightFlatFoot = argsManager.getRightFlatFoot()
+        markerDiameter = argsManager.getMarkerDiameter()
+        pointSuffix = argsManager.getPointSuffix("cgm2.1")
+
+        hjcMethod = settings["Calibration"]["HJC regression"]
+
+
         # --------------------------LOADING ------------------------------------
-        if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM2\\cgm2.1\\cgm1\\"
-            calibrateFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 02" #"static Cal 01-noKAD-noAnkleMed" #
+        if args.DEBUG:
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM2\\cgm2.1\\medial\\"
+            calibrateFilenameLabelledNoExt = "static"
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -69,110 +77,25 @@ if __name__ == "__main__":
 
         required_mp,optional_mp = nexusUtils.getNexusSubjectMp(NEXUS,subject,resetFlag=args.resetMP)
 
-
-        # --------------------------SESSION INFOS ------------------------------------
-        # info file
-        info = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
+        # -------------------------- INFOS ------------------------------------
+        mpInfo,mpFilename = files.getJsonFileContent(DATA_PATH,"mp.pyCGM2",subject)
 
         #  translators management
-        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM2-1.translators")
-        if not translators:
-           translators = settings["Translators"]
+        translators = files.getTranslators(DATA_PATH,"CGM2_1.translators")
+        if not translators:  translators = settings["Translators"]
 
-
-        # --------------------------CONFIG ------------------------------------
-        argsManager = cgmUtils.argsManager_cgm(settings,args)
-        leftFlatFoot = argsManager.getLeftFlatFoot()
-        rightFlatFoot = argsManager.getRightFlatFoot()
-        markerDiameter = argsManager.getMarkerDiameter()
-        pointSuffix = argsManager.getPointSuffix("cgm2.1")
-
-        hjcMethod = settings["Calibration"]["HJC regression"]
-
-
-        # --------------------------ACQUISITION ------------------------------------
-
-        # ---btk acquisition---
-        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
-        btkTools.checkMultipleSubject(acqStatic)
-
-        acqStatic =  btkTools.applyTranslators(acqStatic,translators)
-
-
-        # ---definition---
-        model=cgm2.CGM2_1LowerLimbs()
-        model.configure()
-
-        model.addAnthropoInputParameters(required_mp,optional=optional_mp)
-
-        # --store calibration parameters--
-        model.setStaticFilename(calibrateFilenameLabelled)
-        model.setCalibrationProperty("leftFlatFoot",leftFlatFoot)
-        model.setCalibrationProperty("rightFlatFoot",rightFlatFoot)
-        model.setCalibrationProperty("markerDiameter",markerDiameter)
-
-
-        # ---check marker set used----
-        smc = cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
-
-
-        # --------------------------STATIC CALBRATION--------------------------
-        scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
-
-        # ---initial calibration filter----
-        # use if all optional mp are zero
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
-                                            markerDiameter=markerDiameter,
-                                            ).compute()
-
-        # ---- Decorators -----
-        cgmUtils.applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter)
-        cgmUtils.applyHJCDecorators(model,hjcMethod)
-
-
-        # ----Final Calibration filter if model previously decorated -----
-        if model.decoratedModel:
-            # initial static filter
-            modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                                leftFlatFoot = leftFlatFoot,
-                                                rightFlatFoot = rightFlatFoot,
-                                                markerDiameter=markerDiameter,
-                                                ).compute()
-
-
-        # ----------------------CGM MODELLING----------------------------------
-        # ----motion filter----
-        # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system
-
-        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Determinist,
-                                                  markerDiameter=markerDiameter)
-
-        modMotion.compute()
-
-
-        #---- Joint kinematics----
-        # relative angles
-        modelFilters.ModelJCSFilter(model,acqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
-
-        # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqStatic,["LASI","RASI","RPSI","LPSI"])
-
-        # absolute angles
-        modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
-                                               segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                                angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                                eulerSequences=["TOR","TOR", "ROT"],
-                                                globalFrameOrientation = globalFrame,
-                                                forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
-
-
+        # --------------------------MODELLING PROCESSING -----------------------
+        model,acqStatic = cgm2_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
+                      required_mp,optional_mp,
+                      leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
+                      pointSuffix)
 
         # ----------------------SAVE-------------------------------------------
         #pyCGM2.model
         files.saveModel(model,DATA_PATH,subject)
 
-
+        # save mp
+        files.saveMp(mpInfo,model,DATA_PATH,mpFilename)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusUtils.updateNexusSubjectMp(NEXUS,model,subject)
@@ -184,7 +107,7 @@ if __name__ == "__main__":
         # ========END of the nexus OPERATION if run from Nexus  =========
 
 
-        if DEBUG:
+        if args.DEBUG:
             NEXUS.SaveTrial(30)
 
     else:

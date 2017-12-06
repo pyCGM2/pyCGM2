@@ -12,21 +12,13 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2.Tools import btkTools
-import pyCGM2.enums as pyCGM2Enums
-from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters
-from pyCGM2.Model.CGM2 import cgm,cgm2
-from pyCGM2.ForcePlates import forceplates
-from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 from pyCGM2.Utils import files
-from pyCGM2.Model.Opensim import opensimFilters
-from pyCGM2.apps import cgmUtils
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
+
+from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm2_3
 
 
 if __name__ == "__main__":
-
-
-    DEBUG = False
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -38,6 +30,9 @@ if __name__ == "__main__":
     parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
+
+    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
+
     args = parser.parse_args()
 
 
@@ -45,13 +40,24 @@ if __name__ == "__main__":
 
         # --------------------GLOBAL SETTINGS ------------------------------
         # global setting ( in user/AppData)
-        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_2-Expert-pyCGM2.settings")
+        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+
+
+
+        # --------------------------CONFIG ------------------------------------
+        argsManager = cgmUtils.argsManager_cgm(settings,args)
+        markerDiameter = argsManager.getMarkerDiameter()
+        pointSuffix = argsManager.getPointSuffix("cgm2.3")
+        momentProjection =  argsManager.getMomentProjection()
+        mfpa = argsManager.getManualForcePlateAssign()
+
+        ik_flag = False if args.noIk else True
 
         # ----------------------LOADING-------------------------------------------
         # --- acquisition file and path----
-        if DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\c3dOnly\\"
-            reconstructFilenameLabelledNoExt = "gait trial 01"
+        if args.DEBUG:
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medial\\"
+            reconstructFilenameLabelledNoExt = "gait Trial 01"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
             args.noIk = False
@@ -81,153 +87,18 @@ if __name__ == "__main__":
             raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.3 calibration pipeline"%subject)
 
         # --------------------------SESSION INFOS ------------------------------------
-        info = files.manage_pycgm2SessionInfos(DATA_PATH,subject)
-
         #  translators management
-        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM2-3.translators")
-        if not translators:
-           translators = settings["Translators"]
+        translators = files.getTranslators(DATA_PATH,"CGM2_3.translators")
+        if not translators: translators = settings["Translators"]
 
-        # --------------------------CONFIG ------------------------------------
-        argsManager = cgmUtils.argsManager_cgm(settings,args)
-        markerDiameter = argsManager.getMarkerDiameter()
-        pointSuffix = argsManager.getPointSuffix("cgm2.3")
-        momentProjection =  argsManager.getMomentProjection()
-        mfpa = argsManager.getManualForcePlateAssign()
+        # --------------------------MODELLING PROCESSING -----------------------
+        finalAcqGait = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+            translators,settings,
+            ik_flag,markerDiameter,
+            pointSuffix,
+            mfpa,
+            momentProjection)
 
-        ik_flag = False if args.noIk else True
-
-        # --------------------------ACQ WITH TRANSLATORS --------------------------------------
-
-        # --- btk acquisition ----
-        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
-        btkTools.checkMultipleSubject(acqGait)
-
-        acqGait =  btkTools.applyTranslators(acqGait,translators)
-        validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm2.CGM2_3LowerLimbs.MARKERS)
-
-
-        # --- initial motion Filter ---
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        # section to remove : - copy motion of ProximalShank from Shank with Sodervisk
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
-        modMotion.compute()
-        # /section to remove
-
-        if ik_flag:
-            #                        ---OPENSIM IK---
-
-            # --- opensim calibration Filter ---
-            osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
-            markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml" # markerset
-            cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
-
-            oscf = opensimFilters.opensimCalibrationFilter(osimfile,
-                                                    model,
-                                                    cgmCalibrationprocedure)
-            oscf.addMarkerSet(markersetFile)
-            scalingOsim = oscf.build()
-
-
-            # --- opensim Fitting Filter ---
-            iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml" # ik tl file
-
-            cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
-            cgmFittingProcedure.updateMarkerWeight("LASI",settings["Fitting"]["Weight"]["LASI"])
-            cgmFittingProcedure.updateMarkerWeight("RASI",settings["Fitting"]["Weight"]["RASI"])
-            cgmFittingProcedure.updateMarkerWeight("LPSI",settings["Fitting"]["Weight"]["LPSI"])
-            cgmFittingProcedure.updateMarkerWeight("RPSI",settings["Fitting"]["Weight"]["RPSI"])
-            cgmFittingProcedure.updateMarkerWeight("RTHI",settings["Fitting"]["Weight"]["RTHI"])
-            cgmFittingProcedure.updateMarkerWeight("RKNE",settings["Fitting"]["Weight"]["RKNE"])
-            cgmFittingProcedure.updateMarkerWeight("RTIB",settings["Fitting"]["Weight"]["RTIB"])
-            cgmFittingProcedure.updateMarkerWeight("RANK",settings["Fitting"]["Weight"]["RANK"])
-            cgmFittingProcedure.updateMarkerWeight("RHEE",settings["Fitting"]["Weight"]["RHEE"])
-            cgmFittingProcedure.updateMarkerWeight("RTOE",settings["Fitting"]["Weight"]["RTOE"])
-            cgmFittingProcedure.updateMarkerWeight("LTHI",settings["Fitting"]["Weight"]["LTHI"])
-            cgmFittingProcedure.updateMarkerWeight("LKNE",settings["Fitting"]["Weight"]["LKNE"])
-            cgmFittingProcedure.updateMarkerWeight("LTIB",settings["Fitting"]["Weight"]["LTIB"])
-            cgmFittingProcedure.updateMarkerWeight("LANK",settings["Fitting"]["Weight"]["LANK"])
-            cgmFittingProcedure.updateMarkerWeight("LHEE",settings["Fitting"]["Weight"]["LHEE"])
-            cgmFittingProcedure.updateMarkerWeight("LTOE",settings["Fitting"]["Weight"]["LTOE"])
-
-            cgmFittingProcedure.updateMarkerWeight("LTHAP",settings["Fitting"]["Weight"]["LTHAP"])
-            cgmFittingProcedure.updateMarkerWeight("LTHAD",settings["Fitting"]["Weight"]["LTHAD"])
-            cgmFittingProcedure.updateMarkerWeight("LTIAP",settings["Fitting"]["Weight"]["LTIAP"])
-            cgmFittingProcedure.updateMarkerWeight("LTIAD",settings["Fitting"]["Weight"]["LTIAD"])
-            cgmFittingProcedure.updateMarkerWeight("RTHAP",settings["Fitting"]["Weight"]["RTHAP"])
-            cgmFittingProcedure.updateMarkerWeight("RTHAD",settings["Fitting"]["Weight"]["RTHAD"])
-            cgmFittingProcedure.updateMarkerWeight("RTIAP",settings["Fitting"]["Weight"]["RTIAP"])
-            cgmFittingProcedure.updateMarkerWeight("RTIAD",settings["Fitting"]["Weight"]["RTIAD"])
-
-            osrf = opensimFilters.opensimFittingFilter(iksetupFile,
-                                                              scalingOsim,
-                                                              cgmFittingProcedure,
-                                                              str(DATA_PATH) )
-            acqIK = osrf.run(acqGait,str(DATA_PATH + reconstructFilenameLabelled ))
-
-        # eventual gait acquisition to consider for joint kinematics
-        finalAcqGait = acqIK if ik_flag else acqGait
-
-        # --- final pyCGM2 model motion Filter ---
-        # use fitted markers
-        modMotionFitted=modelFilters.ModelMotionFilter(scp,finalAcqGait,model,pyCGM2Enums.motionMethod.Sodervisk ,
-                                                  markerDiameter=markerDiameter)
-
-        modMotionFitted.compute()
-
-
-        #---- Joint kinematics----
-        # relative angles
-        modelFilters.ModelJCSFilter(model,finalAcqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
-
-        # detection of traveling axis
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(finalAcqGait,["LASI","LPSI","RASI","RPSI"])
-
-
-        # absolute angles
-        modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqGait,
-                                               segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                                angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                                eulerSequences=["TOR","TOR", "ROT"],
-                                                globalFrameOrientation = globalFrame,
-                                                forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
-
-        #---- Body segment parameters----
-        bspModel = bodySegmentParameters.Bsp(model)
-        bspModel.compute()
-
-        # --- force plate handling----
-        # find foot  in contact
-        mappedForcePlate = forceplates.matchingFootSideOnForceplate(finalAcqGait)
-        forceplates.addForcePlateGeneralEvents(finalAcqGait,mappedForcePlate)
-        logging.info("Force plate assignment : %s" %mappedForcePlate)
-
-        if mfpa is not None:
-            if len(mfpa) != len(mappedForcePlate):
-                raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(mappedForcePlate))))
-            else:
-                mappedForcePlate = mfpa
-                forceplates.addForcePlateGeneralEvents(finalAcqGait,mappedForcePlate)
-                logging.warning("Force plates assign manually")
-
-        # assembly foot and force plate
-        modelFilters.ForcePlateAssemblyFilter(model,finalAcqGait,mappedForcePlate,
-                                 leftSegmentLabel="Left Foot",
-                                 rightSegmentLabel="Right Foot").compute()
-
-        #---- Joint kinetics----
-        idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
-        modelFilters.InverseDynamicFilter(model,
-                             finalAcqGait,
-                             procedure = idp,
-                             projection = momentProjection
-                             ).compute(pointLabelSuffix=pointSuffix)
-
-        #---- Joint energetics----
-        modelFilters.JointPowerFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
-
-        #---- zero unvalid frames ---
-        btkTools.applyValidFramesOnOutput(finalAcqGait,validFrames)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,finalAcqGait,subject,pointSuffix).run()
@@ -236,7 +107,7 @@ if __name__ == "__main__":
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 
-        if DEBUG:
+        if args.DEBUG:
 
             NEXUS.SaveTrial(30)
 

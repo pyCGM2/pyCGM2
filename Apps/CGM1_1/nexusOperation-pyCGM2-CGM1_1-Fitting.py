@@ -17,7 +17,6 @@ from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 if __name__ == "__main__":
-    DEBUG = False
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -28,6 +27,7 @@ if __name__ == "__main__":
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
+    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
@@ -36,14 +36,14 @@ if __name__ == "__main__":
         settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
 
         # --------------------------CONFIG ------------------------------------
-        argsManager = cgmUtils.argsManager_cgm1(settings,args)
+        argsManager = cgmUtils.argsManager_cgm(settings,args)
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm1_1")
         momentProjection =  argsManager.getMomentProjection()
         mfpa = argsManager.getManualForcePlateAssign()
 
         # --------------------------LOADING ------------------------------------
-        if DEBUG:
+        if args.DEBUG:
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
             reconstructFilenameLabelledNoExt = "gait Trial" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
 
         # ========END of the nexus OPERATION if run from Nexus  =========
-        if DEBUG:
+        if args.DEBUG:
             NEXUS.SaveTrial(30)
 
 

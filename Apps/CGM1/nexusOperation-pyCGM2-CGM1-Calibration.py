@@ -22,7 +22,6 @@ from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm1
 if __name__ == "__main__":
 
     plt.close("all")
-    DEBUG = False
 
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -31,6 +30,7 @@ if __name__ == "__main__":
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix' )
     parser.add_argument('--resetMP', action='store_false', help='reset optional mass parameters')
+    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
 
         # --------------------------LOADING ------------------------------------
-        if DEBUG:
+        if args.DEBUG:
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
             calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         required_mp,optional_mp = nexusUtils.getNexusSubjectMp(NEXUS,subject,resetFlag=args.resetMP)
 
         # -------------------------- INFOS ------------------------------------
-        mpInfo = files.getMpFile(DATA_PATH,subject)
+        mpInfo,mpFilename = files.getJsonFileContent(DATA_PATH,"mp.pyCGM2",subject)
 
         #  translators management
         translators = files.getTranslators(DATA_PATH,"CGM1.translators")
@@ -90,7 +90,7 @@ if __name__ == "__main__":
         files.saveModel(model,DATA_PATH,subject)
 
         # save mp
-        files.saveMp(mpInfo,model,DATA_PATH,str(subject+"-pyCGM2-mp.json"))
+        files.saveMp(mpInfo,model,DATA_PATH,mpFilename)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusUtils.updateNexusSubjectMp(NEXUS,model,subject)
@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 
-        if DEBUG:
+        if args.DEBUG:
             NEXUS.SaveTrial(30)
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
