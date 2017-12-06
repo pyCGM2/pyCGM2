@@ -17,7 +17,7 @@ def loadModel(path,FilenameNoExt):
 
     # --------------------pyCGM2 MODEL ------------------------------
     if not os.path.isfile(path + filename):
-        raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM1 Calibration operation"%filename)
+        raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM Calibration operation"%filename)
     else:
         f = open(path + filename, 'r')
         model = cPickle.load(f)
@@ -62,22 +62,24 @@ def openTranslators(DATA_PATH, translatorsFilename):
     return filename["Translators"]
 
 
-def getMpFile(DATA_PATH,subject):
+def getJsonFileContent(DATA_PATH,jsonfile,subject):
 
     if subject is not None:
-        mpJsonFile = subject+"-pyCGM2-mp.json"
+        outJson = subject+"-" + jsonfile
     else:
-        mpJsonFile = "pyCGM2-mp.json"
+        outJson = jsonfile
 
 
-    if not os.path.isfile( DATA_PATH + mpJsonFile):
-        copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2-mp.json"), str(DATA_PATH + mpJsonFile))
-        logging.warning("Copy of pyCGM2-mp.json from pyCGM2 Settings folder")
+    if not os.path.isfile( DATA_PATH + outJson):
+        copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+jsonfile), str(DATA_PATH + outJson))
+        logging.warning("Copy of %s from pyCGM2 Settings folder"%(jsonfile))
 
-    mpSettings = openJson(DATA_PATH,mpJsonFile)
+    content = openJson(DATA_PATH,outJson)
 
 
-    return mpSettings
+    return content,outJson
+
+
 
 
 

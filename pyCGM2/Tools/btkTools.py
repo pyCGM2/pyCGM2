@@ -250,7 +250,7 @@ def applyTranslators(acq, translators,keepInitial=False):
                 if keepInitial:
                     smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
             else :
-                logging.warning("initialLabel (%s) doesn t exist  " %(str(initialLabel)))
+                logging.debug("initialLabel (%s) doesn t exist  " %(str(initialLabel)))
 
     return acqClone
 
@@ -283,9 +283,9 @@ def findProgression(acq,marker):
 
     globalFrame = str(progressionAxis+lateralAxis+"Z")
 
-    logging.info("Progression axis : %s"%(progressionAxis))
-    logging.info("forwardProgression : %s"%(str(forwardProgression)))
-    logging.info("globalFrame : %s"%(str(globalFrame)))
+    logging.debug("Progression axis : %s"%(progressionAxis))
+    logging.debug("forwardProgression : %s"%(str(forwardProgression)))
+    logging.debug("globalFrame : %s"%(str(globalFrame)))
 
     return   progressionAxis,forwardProgression,globalFrame
 
@@ -343,9 +343,9 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
     if "Z" not in str(longitudinalAxis+lateralAxis):
         globalFrame = str(longitudinalAxis+lateralAxis+"Z")
 
-    logging.info("Longitudinal axis : %s"%(longitudinalAxis))
-    logging.info("forwardProgression : %s"%(str(forwardProgression)))
-    logging.info("globalFrame : %s"%(str(globalFrame)))
+    logging.debug("Longitudinal axis : %s"%(longitudinalAxis))
+    logging.debug("forwardProgression : %s"%(str(forwardProgression)))
+    logging.debug("globalFrame : %s"%(str(globalFrame)))
 
     return   longitudinalAxis,forwardProgression,globalFrame
 
