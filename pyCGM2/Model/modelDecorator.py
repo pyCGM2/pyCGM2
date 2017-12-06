@@ -12,7 +12,7 @@ import model
 from pyCGM2 import enums
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Math import  numeric, geometry,euler
-
+from pyCGM2.Model import frame
 
 def setDescription(nodeLabel):
     """
@@ -1547,30 +1547,30 @@ class KneeCalibrationDecorator(DecoratorModel):
         KNE = self.model.getSegment(proxSegmentLabel).getReferential("TF").static.getNode_byLabel(KNElabel).m_global
 
         # --- Construction of the anatomical Referential
-        a1=(HJC-KJC)/np.linalg.norm((HJC-KJC))
-        v=(KNE-KJC)/np.linalg.norm((KNE-KJC))
+
+        a1=(HJC-KJC)
+        a1=a1/np.linalg.norm(a1)
+
+        v=(KNE-KJC)
+        v=v/np.linalg.norm(v)
 
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
         x,y,z,R=frame.setFrameData(a1,a2,sequence)
 
-        # projection of anatomical frame-constructed knee flexion
-        kneeFlexionAxis=    np.dot(R.T,y)
-        proj_kneeFlexionAxis = np.array([ kneeFlexionAxis[0],
-                                          kneeFlexionAxis[1],
-                                        0])
-        v_kneeFlexionAxis = proj_kneeFlexionAxis/np.linalg.norm(proj_kneeFlexionAxis)
-
         # projection of saraAxis
-        saraAxisLocal =    np.dot(R.T,meanAxis)
+        y_sara = (meanAxis-KJC)
+        y_sara = y_sara / np.linalg.norm(y_sara)
+
+        saraAxisLocal =    np.dot(R.T,y_sara)
         proj_saraAxis = np.array([ saraAxisLocal[0],
                                    saraAxisLocal[1],
                                  0])
 
         v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
 
-        angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_saraAxis, z))
+        angle=np.rad2deg(geometry.angleFrom2Vectors(np.array([0,1,0]), v_saraAxis, z))
 
         self.model.getSegment(proxSegmentLabel).anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
         self.model.getSegment(distSegmentlabel).anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
@@ -1580,17 +1580,16 @@ class KneeCalibrationDecorator(DecoratorModel):
             angle = 180-angle
         logging.debug(angle)
 
-        if np.abs(angle) > 30.0:
-            raise Exception ("[pyCGM2] : suspected left functional knee flexion axis. check Data")
-
+        #if np.abs(angle) > 30.0:
+            #raise Exception ("[pyCGM2] : suspected left functional knee flexion axis. check Data")
 
         if side == "Left":
             self.model.setCalibrationProperty("LeftFuncKneeMethod","SARA")
-            self.mp_computed["LeftKneeFuncCalibrationOffset"] = angle
-            self.model.getSegment(proxSegmentLabel).anatomicalFrame.static.addNode("proj_saraAxis",proj_saraAxis, positionType="Local")
+            self.model.mp_computed["LeftKneeFuncCalibrationOffset"] = angle
         if side == "Right":
             self.model.setCalibrationProperty("RightFuncKneeMethod","SARA")
-            self.mp_computed["RightKneeFuncCalibrationOffset"] = angle
+            self.model.mp_computed["RightKneeFuncCalibrationOffset"] = angle
+
 
     def calibrate2dof(self,side,**kwargs):
         """
