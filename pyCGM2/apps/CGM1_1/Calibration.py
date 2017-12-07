@@ -14,14 +14,14 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 from pyCGM2.Eclipse import vskTools
 from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
-from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm2_3
+from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm1_1
 
 
 if __name__ == "__main__":
 
     plt.close("all")
 
-    parser = argparse.ArgumentParser(description='cgm2.3 Calibration')
+    parser = argparse.ArgumentParser(description='CGM1.1 Calibration')
 
     parser.add_argument('--trial', type=str, required=True,  help='static c3d')
     parser.add_argument('--subject',type=str, required=True, help='subject (vsk Name)')
@@ -31,7 +31,6 @@ if __name__ == "__main__":
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix' )
-    parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     parser.add_argument('--resetMP', action='store_false', help='reset optional mass parameters')
 
     parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of output file')
@@ -41,7 +40,7 @@ if __name__ == "__main__":
 
     # --------------------------GLOBAL SETTINGS ------------------------------------
     # global setting ( in user/AppData)
-    settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+    settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
 
     # --------------------------CONFIG ------------------------------------
     subject = args.subject
@@ -50,17 +49,14 @@ if __name__ == "__main__":
     leftFlatFoot = argsManager.getLeftFlatFoot()
     rightFlatFoot = argsManager.getRightFlatFoot()
     markerDiameter = argsManager.getMarkerDiameter()
-    pointSuffix = argsManager.getPointSuffix("cgm2_3")
-
-    hjcMethod = settings["Calibration"]["HJC regression"]
-    ik_flag = False if args.noIk else True
+    pointSuffix = argsManager.getPointSuffix("cgm1_1")
 
     # --------------------------LOADING ------------------------------------
     if args.DEBUG:
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medial\\"
+        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
         calibrateFilenameLabelled = "static.c3d"
         subject = "MRI-US-01 - Pig"
-        args.fileSuffix="cgm2_3"
+        args.fileSuffix="cgm1_1"
 
     else:
         DATA_PATH =os.getcwd()+"\\"
@@ -72,7 +68,7 @@ if __name__ == "__main__":
 
     # --------------------------SUBJECT ------------------------------------
     #  translators management
-    translators = files.getTranslators(DATA_PATH,"CGM2_3.translators")
+    translators = files.getTranslators(DATA_PATH,"CGM1_1.translators")
     if not translators: translators = settings["Translators"]
 
     # --------------------------SUBJECT ------------------------------------
@@ -88,10 +84,9 @@ if __name__ == "__main__":
 
     #---------------------------------------------------------------------------
     # --------------------------MODELLING PROCESSING ---------------------------
-    model,finalAcqStatic = cgm2_3.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
-                              required_mp,optional_mp,
-                              ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-                              pointSuffix)
+    model,acqStatic = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
+                  leftFlatFoot,rightFlatFoot,markerDiameter,
+                  pointSuffix)
 
     #---------------------------------------------------------------------------
     #---------------------------------------------------------------------------
@@ -105,6 +100,6 @@ if __name__ == "__main__":
 
     # ----------------------DISPLAY ON VICON---------------------
     if args.fileSuffix is not None:
-        btkTools.smartWriter(finalAcqStatic, str(DATA_PATH+calibrateFilenameLabelled[:-4]+"-modelled-"+args.fileSuffix+".c3d"))
+        btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled[:-4]+"-modelled-"+args.fileSuffix+".c3d"))
     else:
-        btkTools.smartWriter(finalAcqStatic, str(DATA_PATH+calibrateFilenameLabelled[:-4]+"-modelled.c3d"))
+        btkTools.smartWriter(acqStatic, str(DATA_PATH+calibrateFilenameLabelled[:-4]+"-modelled.c3d"))

@@ -14,14 +14,14 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 from pyCGM2.Eclipse import vskTools
 from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
-from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm2_3
+from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm2_3e
 
 
 if __name__ == "__main__":
 
     plt.close("all")
 
-    parser = argparse.ArgumentParser(description='cgm2.3 Calibration')
+    parser = argparse.ArgumentParser(description='cgm2.3e Calibration')
 
     parser.add_argument('--trial', type=str, required=True,  help='static c3d')
     parser.add_argument('--subject',type=str, required=True, help='subject (vsk Name)')
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # --------------------------GLOBAL SETTINGS ------------------------------------
     # global setting ( in user/AppData)
-    settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+    settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-Expert-pyCGM2.settings")
 
     # --------------------------CONFIG ------------------------------------
     subject = args.subject
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     leftFlatFoot = argsManager.getLeftFlatFoot()
     rightFlatFoot = argsManager.getRightFlatFoot()
     markerDiameter = argsManager.getMarkerDiameter()
-    pointSuffix = argsManager.getPointSuffix("cgm2_3")
+    pointSuffix = argsManager.getPointSuffix("cgm2_3e")
 
     hjcMethod = settings["Calibration"]["HJC regression"]
     ik_flag = False if args.noIk else True
@@ -60,7 +60,7 @@ if __name__ == "__main__":
         DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medial\\"
         calibrateFilenameLabelled = "static.c3d"
         subject = "MRI-US-01 - Pig"
-        args.fileSuffix="cgm2_3"
+        args.fileSuffix="cgm2_3e"
 
     else:
         DATA_PATH =os.getcwd()+"\\"
@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
     #---------------------------------------------------------------------------
     # --------------------------MODELLING PROCESSING ---------------------------
-    model,finalAcqStatic = cgm2_3.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+    model,finalAcqStatic = cgm2_3e.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                               required_mp,optional_mp,
                               ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                               pointSuffix)
