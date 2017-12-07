@@ -40,7 +40,6 @@ if __name__ == "__main__":
 
         # --------------------------PATH + FILE ------------------------------------
 
-        args.DEBUG = True
         if args.DEBUG:
             # CGM2.3--
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\"
