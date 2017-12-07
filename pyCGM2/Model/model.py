@@ -62,6 +62,12 @@ class Model(object):
     def setProperty(self, propertyLabel,  value):
         self.m_properties[propertyLabel] = value
 
+    def getProperty(self, propertyLabel):
+        try:
+            return self.m_properties[propertyLabel]
+        except:
+            raise ("property Label doesn t find")
+
     def setCalibrationProperty(self, propertyLabel,  value):
         self.m_properties["CalibrationParameters"][propertyLabel] = value
 
