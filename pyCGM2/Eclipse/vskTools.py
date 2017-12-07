@@ -44,7 +44,12 @@ class Vsk(object):
         staticParameters = self.m_soup.find_all('StaticParameter')
         for sp in staticParameters:
             if sp.attrs["NAME"] == label:
-                return sp.attrs["VALUE"]
+                try:
+                    val = sp.attrs["VALUE"]
+                except KeyError:
+                    logging.warning("static parameter (%s) has no value. Zero return"%(label))
+                    val=0
+                return val
 
 
 def getFromVskSubjectMp(vskInstance, resetFlag=False):
