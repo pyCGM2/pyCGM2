@@ -7,7 +7,6 @@ import argparse
 
 # pyCGM2 settings
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
@@ -15,7 +14,6 @@ from pyCGM2 import enums
 
 from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm
-from pyCGM2.apps import cgmUtils
 from pyCGM2.Model.CGM2.coreApps import cgmUtils
 from pyCGM2.ForcePlates import forceplates
 
@@ -142,14 +140,14 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     # find foot  in contact
     mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
     forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
-    logging.info("Force plate assignment : %s" %mappedForcePlate)
+    logging.debug("Force plate assignment : %s" %mappedForcePlate)
 
     if mfpa is not None:
         if len(mfpa) != len(mappedForcePlate):
             raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(mappedForcePlate))))
         else:
             mappedForcePlate = mfpa
-            logging.warning("Force plates assign manually")
+            logging.debug("Force plates assign manually")
             forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
 
     # assembly foot and force plate

@@ -7,7 +7,6 @@ import argparse
 
 # pyCGM2 settings
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
