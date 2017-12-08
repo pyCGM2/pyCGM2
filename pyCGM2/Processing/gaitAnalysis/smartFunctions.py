@@ -70,15 +70,16 @@ def make_analysis(trialManager, kinematicLabelsDict,kineticLabelsDict,
 
     return analysisFilter.analysis
 
-def cgm_staticPlot(model,modelledStaticFilename, DATA_PATH,pdfFilename,pointLabelSuffix=""):
+def cgm_staticPlot(modelVersion,modelledStaticFilename, DATA_PATH,
+    pdfFilename="staticProcessing",pointLabelSuffix=""):
 
     # check model is the CGM1
-    logging.info("loaded model : %s" %(model.version ))
+    logging.info("loaded model : %s" %(modelVersion ))
 
     trial =trialTools.smartTrialReader(DATA_PATH,modelledStaticFilename)
 
     #viewer
-    if model.version in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
+    if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
         kv = plotViewers.TemporalGaitKinematicsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix)
     else:
         raise Exception("[pyCGM2] Model version not known")
@@ -89,7 +90,7 @@ def cgm_staticPlot(model,modelledStaticFilename, DATA_PATH,pdfFilename,pointLabe
     pf.setPdfName(pdfFilename)
     pf.plot()
 
-def cgm_gaitPlots(model,analysis,kineticFlag,
+def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     DATA_PATH,pdfFilename,
     pointLabelSuffix="",
     normativeDataset=None ):
@@ -97,7 +98,7 @@ def cgm_gaitPlots(model,analysis,kineticFlag,
     # filter 1 - descriptive kinematic panel
     #-------------------------------------------
     # viewer
-    if model.version in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
+    if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
         kv = plotViewers.GaitKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
     if normativeDataset is not None:
         kv.setNormativeDataset(normativeDataset)
@@ -112,10 +113,10 @@ def cgm_gaitPlots(model,analysis,kineticFlag,
     # filter 2 - consistency kinematic panel
     #-------------------------------------------
     # viewer
-    if model.version in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
+    if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
         kv = plotViewers.GaitKinematicsPlotViewer(analysis,
                                 pointLabelSuffix=pointLabelSuffix,
-                                plotType = pyCGM2Enums.PlotType.CONSISTENCY)
+                                plotType = enums.PlotType.CONSISTENCY)
 
     if normativeDataset is not None:
         kv.setNormativeDataset(normativeDataset)
@@ -131,7 +132,7 @@ def cgm_gaitPlots(model,analysis,kineticFlag,
         # filter 1 - descriptive kinematic panel
         #-------------------------------------------
         # viewer
-        if model.version in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
+        if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
             kv = plotViewers.GaitKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
         if normativeDataset is not None:
             kv.setNormativeDataset(normativeDataset)
@@ -146,10 +147,10 @@ def cgm_gaitPlots(model,analysis,kineticFlag,
         # filter 2 - consistency kinematic panel
         #-------------------------------------------
         # viewer
-        if model.version in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
+        if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
             kv = plotViewers.GaitKineticsPlotViewer(analysis,
                                     pointLabelSuffix=pointLabelSuffix,
-                                    plotType = pyCGM2Enums.PlotType.CONSISTENCY)
+                                    plotType = enums.PlotType.CONSISTENCY)
 
         if normativeDataset is not None:
             kv.setNormativeDataset(normativeDataset)
