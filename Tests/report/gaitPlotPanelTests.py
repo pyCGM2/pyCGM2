@@ -1,21 +1,13 @@
-import ipdb
+# -*- coding: utf-8 -*-
 import logging
-
 
 import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
-
-# openMA
-pyCGM2.CONFIG.addOpenma()
-import ma.io
-import ma.body
-
-from pyCGM2 import  smartFunctions
-from pyCGM2 import enums 
+from pyCGM2.Processing.gaitAnalysis import smartFunctions
+from pyCGM2 import enums
 from pyCGM2.Processing import c3dManager
 from pyCGM2.Model.CGM2 import  cgm,cgm2
 
@@ -204,6 +196,7 @@ class multipleAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
+
         analysis1 = smartFunctions.make_analysis(trialManager,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
@@ -214,7 +207,7 @@ class multipleAnalysis_PlotTest():
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)
 
-        kv = plotViewers.multipleAnalyses_GaitKinematicsPlotViewer([analysis1,analysis2],"left",["ana1","ana2"])
+        kv = plotViewers.multipleAnalyses_GaitKinematicsPlotViewer([analysis1,analysis2],"Left",["ana1","ana2"])
         kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
 
         # filter
@@ -256,7 +249,7 @@ class multipleAnalysis_PlotTest():
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)
 
-        kv = plotViewers.multipleAnalyses_GaitKinematicsPlotViewer([analysis1,analysis2],"left",
+        kv = plotViewers.multipleAnalyses_GaitKinematicsPlotViewer([analysis1,analysis2],"Left",
                                                                     ["ana1","ana2"],
                                     plotType=enums.PlotType.MEAN_ONLY)
         kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
@@ -363,12 +356,12 @@ if __name__ == "__main__":
 
     plt.close("all")
 
-    #oneAnalysis_PlotTest.descriptiveKinematicPlotPanel()
-    #oneAnalysis_PlotTest.descriptiveKinematicPlotPanel_recorded()
-    #oneAnalysis_PlotTest.consistencyKinematicPlotPanel()
-    #oneAnalysis_PlotTest.descriptiveKineticPlotPanel()
+    oneAnalysis_PlotTest.descriptiveKinematicPlotPanel()
+    oneAnalysis_PlotTest.descriptiveKinematicPlotPanel_recorded()
+    oneAnalysis_PlotTest.consistencyKinematicPlotPanel()
+    oneAnalysis_PlotTest.descriptiveKineticPlotPanel()
 
-    #multipleAnalysis_PlotTest.consistencyKinematicPlotPanel()
-    #multipleAnalysis_PlotTest.meanOnlyKinematicPlotPanel()
+    multipleAnalysis_PlotTest.consistencyKinematicPlotPanel()
+    multipleAnalysis_PlotTest.meanOnlyKinematicPlotPanel()
     multipleAnalysis_PlotTest.consistencyKineticPlotPanel()
-    #multipleAnalysis_PlotTest.meanOnlyKineticPlotPanel()
+    multipleAnalysis_PlotTest.meanOnlyKineticPlotPanel()

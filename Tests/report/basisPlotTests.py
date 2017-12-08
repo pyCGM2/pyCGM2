@@ -1,25 +1,16 @@
-import ipdb
+# -*- coding: utf-8 -*-
 import logging
-
 import numpy as np
 import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 
-
-# openMA
-pyCGM2.CONFIG.addOpenma()
-import ma.io
-import ma.body
-
-from pyCGM2 import  smartFunctions
+from pyCGM2.Processing.gaitAnalysis import smartFunctions
 from pyCGM2.Model.CGM2 import  cgm,cgm2
-from pyCGM2 import enums 
 from pyCGM2.Processing import c3dManager
 
-from pyCGM2.Report import plot,normativeDatabaseProcedure
+from pyCGM2.Report import plot
 from pyCGM2.Tools import trialTools
 
 class oneTrial_PlotTest():
@@ -286,9 +277,9 @@ if __name__ == "__main__":
     plt.close("all")
 
     oneTrial_PlotTest.temporalPlot_OneModelOutputPlot()
-    #oneAnalysis_PlotTest.descriptivePlot_OneModelOutputPlot()
-    #oneAnalysis_PlotTest.consistencyPlot_OneModelOutputPlot()
-    # oneAnalysis_PlotTest.meanPlot_OneModelOutputPlot()
+    oneAnalysis_PlotTest.descriptivePlot_OneModelOutputPlot()
+    oneAnalysis_PlotTest.consistencyPlot_OneModelOutputPlot()
+    oneAnalysis_PlotTest.meanPlot_OneModelOutputPlot()
 
-    #multipleAnalysis_PlotTest.consistencyPlot_OneModelOutputPlot()
+    multipleAnalysis_PlotTest.consistencyPlot_OneModelOutputPlot()
     multipleAnalysis_PlotTest.meanPlot_OneModelOutputPlot()

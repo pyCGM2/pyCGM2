@@ -837,13 +837,14 @@ class multipleAnalyses_GaitKinematicsPlotViewer(AbstractPlotViewer):
             else:
                 logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
-
+        self.m_analysis = self.m_input
         self.m_context = context
         self.m_pointLabelSuffixes = pointLabelSuffix_lst
         self.m_normativeData = None
         self.m_flagConsistencyOnly = False
         self.m_legends = legends
         self.m_type = plotType
+
 
         if len(iAnalyses) != len(legends):
             raise Exception("legends don t match analysis. Must have same length")
@@ -929,6 +930,8 @@ class multipleAnalyses_GaitKinematicsPlotViewer(AbstractPlotViewer):
 
     def __setData(self):
 
+
+
         if self.m_type == pyCGM2Enums.PlotType.CONSISTENCY:
 
             if self.m_context == "Left":
@@ -948,6 +951,7 @@ class multipleAnalyses_GaitKinematicsPlotViewer(AbstractPlotViewer):
                     plot.gaitConsistencyPlot(self.fig.axes[0],analysis.kinematicStats,
                             "LPelvisAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None,
                     legendLabel=legend)
+
 
 
                     plot.gaitConsistencyPlot(self.fig.axes[1],analysis.kinematicStats,
@@ -1319,6 +1323,7 @@ class multipleAnalyses_GaitKineticsPlotViewer(AbstractPlotViewer):
     def __setData(self):
 
         if self.m_type == pyCGM2Enums.PlotType.CONSISTENCY:
+
 
             if self.m_context == "Left":
                 colormap = plt.cm.Reds
