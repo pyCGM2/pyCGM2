@@ -2215,12 +2215,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "RFMH_medLat":100,
                  "RFMH_proDis":100,
 
-                 "RVMH":0,
-                 "RVMH_supInf":100,
-                 "RVMH_medLat":100,
-                 "RVMH_proDis":100,
-
-
                  "LTHI":0,
                  "LTHI_posAnt":100,
                  "LTHI_medLat":100,
@@ -2241,10 +2235,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "LHEE_supInf":100,
                  "LHEE_medLat":100,
                  "LHEE_proDis":100,
-                 "LSMH":0,
-                 "LSMH_supInf":100,
-                 "LSMH_medLat":100,
-                 "LSMH_proDis":100,
 
                  "LTOE":0,
                  "LTOE_supInf":100,
@@ -2295,6 +2285,18 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "RTIAD_medLat":100,
                  "RTIAD_proDis":100,
 
+
+
+                 "LSMH":0,
+                 "LSMH_supInf":0,
+                 "LSMH_medLat":0,
+                 "LSMH_proDis":0,
+
+                 "RVMH":0,
+                 "RVMH_supInf":100,
+                 "RVMH_medLat":100,
+                 "RVMH_proDis":100,
+
                  "LTHLD":0,
                  "LTHLD_posAnt":0,
                  "LTHLD_medLat":0,
@@ -2327,7 +2329,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "RTIAP":100,
                  "RTIAD":100,
                  "RHEE":100,
-                 "RSMH":100,
+
                  "RTOE":100,
                  "RFMH":100,
                  "RVMH":100,
@@ -2340,12 +2342,15 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                  "LTIAP":100,
                  "LTIAD":100,
                  "LHEE":100,
-                 "LSMH":100,
+
                  "LTOE":100,
                  "LFMH":100,
                  "LVMH":100,
+
+                 "RSMH":0,
                  "RTHLD":0,
                  "RPAT":0,
+                 "LSMH":0,
                  "LTHLD":0,
                  "LPAT":0,
 

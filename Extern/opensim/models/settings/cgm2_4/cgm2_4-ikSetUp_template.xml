@@ -70,9 +70,9 @@
 				</IKMarkerTask>
 				<IKMarkerTask name="RSMH">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
+					<apply>false</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>100</weight>
+					<weight>0</weight>
 				</IKMarkerTask>
                 <IKMarkerTask name="LTHI">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
@@ -106,9 +106,9 @@
 				</IKMarkerTask>
 				<IKMarkerTask name="LSMH">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
+					<apply>false</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>100</weight>
+					<weight>0</weight>
 				</IKMarkerTask>
 
                 <IKMarkerTask name="LTHAP">

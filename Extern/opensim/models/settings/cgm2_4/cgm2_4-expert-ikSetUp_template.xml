@@ -251,21 +251,21 @@
 				</IKMarkerTask>
                 <IKMarkerTask name="RSMH_supInf">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
+					<apply>false</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>100</weight>
+					<weight>0</weight>
 				</IKMarkerTask>
 				<IKMarkerTask name="RSMH_medLat">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
+					<apply>false</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>100</weight>
+					<weight>0</weight>
 				</IKMarkerTask>
 				<IKMarkerTask name="RSMH_proDis">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
+					<apply>false</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>100</weight>
+					<weight>0</weight>
 				</IKMarkerTask>
 
 
@@ -404,21 +404,21 @@
 				</IKMarkerTask>
                 <IKMarkerTask name="LSMH_supInf">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
+					<apply>false</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>100</weight>
+					<weight>0</weight>
 				</IKMarkerTask>
 				<IKMarkerTask name="LSMH_medLat">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
+					<apply>false</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>100</weight>
+					<weight>0</weight>
 				</IKMarkerTask>
 				<IKMarkerTask name="LSMH_proDis">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
-					<apply>true</apply>
+					<apply>false</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
-					<weight>100</weight>
+					<weight>0</weight>
 				</IKMarkerTask>
 
                 <IKMarkerTask name="LTHAP">
