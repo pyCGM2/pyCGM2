@@ -24,7 +24,7 @@ from collections import OrderedDict
 class CGM2_4_Tests():
 
     @classmethod
-    def noIK(cls):
+    def noIK_determinist(cls):
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
         staticFilename = "static.c3d"
         gaitFilename= "gait Trial 01.c3d"
@@ -81,14 +81,83 @@ class CGM2_4_Tests():
         # absolute angles
         longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","RASI","RPSI","LPSI"])
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
-                                      segmentLabels=["Left HindFoot","Right HindFoot","Pelvis"],
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
                                       eulerSequences=["TOR","TOR", "ROT"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
 
+        btkTools.smartWriter(acqGait,"cgm24_noIK_deter.c3d")
+
     @classmethod
-    def IK(cls):
+    def noIK_6dof(cls):
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
+        staticFilename = "static.c3d"
+        gaitFilename= "gait Trial 01.c3d"
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 69.0,
+        'LeftLegLength' : 930.0,
+        'RightLegLength' : 930.0 ,
+        'LeftKneeWidth' : 94.0,
+        'RightKneeWidth' : 64.0,
+        'LeftAnkleWidth' : 67.0,
+        'RightAnkleWidth' : 62.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        "LeftToeOffset" : 0,
+        "RightToeOffset" : 0,
+        }
+
+
+        # --- Calibration ---
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm2.CGM2_4LowerLimbs()
+        model.configure()
+
+        model.addAnthropoInputParameters(mp)
+
+        # ---- Calibration ----
+
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.HipJointCenterDecorator(model).hara()
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="both")
+
+        # final
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                           markerDiameter=markerDiameter).compute()
+
+
+        # ------ Fitting -------
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        # Motion FILTER
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Sodervisk)
+        modMotion.compute()
+
+        # relative angles
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+
+        # absolute angles
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","RASI","RPSI","LPSI"])
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "ROT"],
+                                      globalFrameOrientation = globalFrame,
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+
+        btkTools.smartWriter(acqGait,"cgm24_noIK_6dof.c3d")
+
+
+    @classmethod
+    def full_IK(cls):
 
         MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
         staticFilename = "static.c3d"
@@ -130,9 +199,6 @@ class CGM2_4_Tests():
 
         # final
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                           seLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara",
-                           useLeftKJCnode="LKJC_mid", useLeftAJCnode="LAJC_mid",
-                           useRightKJCnode="RKJC_mid", useRightAJCnode="RAJC_mid",
                            markerDiameter=markerDiameter).compute()
 
 
@@ -141,7 +207,7 @@ class CGM2_4_Tests():
 
 
         # Motion FILTER
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Sodervisk)
         modMotion.compute()
 
         # relative angles
@@ -150,7 +216,7 @@ class CGM2_4_Tests():
         # absolute angles
         longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","RASI","RPSI","LPSI"])
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
-                                      segmentLabels=["Left HindFoot","Right HindFoot","Pelvis"],
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
                                       eulerSequences=["TOR","TOR", "ROT"],
                                       globalFrameOrientation = globalFrame,
@@ -168,7 +234,8 @@ class CGM2_4_Tests():
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
                                                 model,
-                                                cgmCalibrationprocedure)
+                                                cgmCalibrationprocedure,
+                                                MAIN_PATH)
         oscf.addMarkerSet(markersetFile)
         scalingOsim = oscf.build(exportOsim=False)
 
@@ -197,7 +264,7 @@ class CGM2_4_Tests():
         finalJcs.setFilterBool(False)
         finalJcs.compute(description="ik", pointLabelSuffix = "2_ik")#
 
-        btkTools.smartWriter(acqIK,"fitting-cgm2_4-angles.c3d")
+        btkTools.smartWriter(acqIK,"cgm24_fullIK.c3d")
 
 
         #
@@ -228,5 +295,6 @@ class CGM2_4_Tests():
 
 if __name__ == "__main__":
 
-    #CGM2_4_Tests.noIK()
-    CGM2_4_Tests.IK()
+    #CGM2_4_Tests.noIK_determinist()
+    #CGM2_4_Tests.noIK_6dof()
+    CGM2_4_Tests.full_IK()

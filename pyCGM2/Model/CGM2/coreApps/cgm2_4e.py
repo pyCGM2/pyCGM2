@@ -35,8 +35,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     # --------------------------MODEL--------------------------------------
     # ---definition---
-    model=cgm2.CGM2_3LowerLimbs()
-    model.setVersion("CGM2.3e")
+    model=cgm2.CGM2_4LowerLimbs()
+    model.setVersion("CGM2.4e")
     model.configure()
     model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
@@ -77,7 +77,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     # ----------------------CGM MODELLING----------------------------------
     # ----motion filter----
-    modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,pyCGM2Enums.motionMethod.Determinist,
+    modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,enums.motionMethod.Sodervisk,
                                               markerDiameter=markerDiameter)
 
     modMotion.compute()
@@ -94,7 +94,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
         # --- opensim calibration Filter ---
         osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
-        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset - expert.xml" # markerset
+        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-markerset.xml" # markerset
         cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -106,7 +106,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
 
         # --- opensim Fitting Filter ---
-        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-expert-ikSetUp_template.xml" # ik tool file
+        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-ikSetUp_template.xml" # ik tl file
 
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model,expertMode = True) # procedure
         cgmFittingProcedure.updateMarkerWeight("LASI",settings["Fitting"]["Weight"]["LASI"])
@@ -227,25 +227,44 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
         cgmFittingProcedure.updateMarkerWeight("RTIAD_medLat",settings["Fitting"]["Weight"]["RTIAD_medLat"])
         cgmFittingProcedure.updateMarkerWeight("RTIAD_proDis",settings["Fitting"]["Weight"]["RTIAD_proDis"])
 
-#            cgmFittingProcedure.updateMarkerWeight("LPAT",settings["Fitting"]["Weight"]["LPAT"])
-#            cgmFittingProcedure.updateMarkerWeight("LPAT_posAnt",settings["Fitting"]["Weight"]["LPAT_posAnt"])
-#            cgmFittingProcedure.updateMarkerWeight("LPAT_medLat",settings["Fitting"]["Weight"]["LPAT_medLat"])
-#            cgmFittingProcedure.updateMarkerWeight("LPAT_proDis",settings["Fitting"]["Weight"]["LPAT_proDis"])
-#
-#            cgmFittingProcedure.updateMarkerWeight("RPAT",settings["Fitting"]["Weight"]["RPAT"])
-#            cgmFittingProcedure.updateMarkerWeight("RPAT_posAnt",settings["Fitting"]["Weight"]["RPAT_posAnt"])
-#            cgmFittingProcedure.updateMarkerWeight("RPAT_medLat",settings["Fitting"]["Weight"]["RPAT_medLat"])
-#            cgmFittingProcedure.updateMarkerWeight("RPAT_proDis",settings["Fitting"]["Weight"]["RPAT_proDis"])
 
-#            cgmFittingProcedure.updateMarkerWeight("LTHLD",settings["Fitting"]["Weight"]["LTHLD"])
-#            cgmFittingProcedure.updateMarkerWeight("LTHLD_posAnt",settings["Fitting"]["Weight"]["LTHLD_posAnt"])
-#            cgmFittingProcedure.updateMarkerWeight("LTHLD_medLat",settings["Fitting"]["Weight"]["LTHLD_medLat"])
-#            cgmFittingProcedure.updateMarkerWeight("LTHLD_proDis",settings["Fitting"]["Weight"]["LTHLD_proDis"])
-#
-#            cgmFittingProcedure.updateMarkerWeight("RTHLD",settings["Fitting"]["Weight"]["RTHLD"])
-#            cgmFittingProcedure.updateMarkerWeight("RTHLD_posAnt",settings["Fitting"]["Weight"]["RTHLD_posAnt"])
-#            cgmFittingProcedure.updateMarkerWeight("RTHLD_medLat",settings["Fitting"]["Weight"]["RTHLD_medLat"])
-#            cgmFittingProcedure.updateMarkerWeight("RTHLD_proDis",settings["Fitting"]["Weight"]["RTHLD_proDis"])
+        cgmFittingProcedure.updateMarkerWeight("LSMH_supInf",settings["Fitting"]["Weight"]["LSMH_supInf"])
+        cgmFittingProcedure.updateMarkerWeight("LFMH_supInf",settings["Fitting"]["Weight"]["LFMH_supInf"])
+        cgmFittingProcedure.updateMarkerWeight("LVMH_supInf",settings["Fitting"]["Weight"]["LVMH_supInf"])
+
+        cgmFittingProcedure.updateMarkerWeight("LSMH_medLat",settings["Fitting"]["Weight"]["LSMH_medLat"])
+        cgmFittingProcedure.updateMarkerWeight("LFMH_medLat",settings["Fitting"]["Weight"]["LFMH_medLat"])
+        cgmFittingProcedure.updateMarkerWeight("LVMH_medLat",settings["Fitting"]["Weight"]["LVMH_medLat"])
+
+
+        cgmFittingProcedure.updateMarkerWeight("LSMH_proDis",settings["Fitting"]["Weight"]["LSMH_proDis"])
+        cgmFittingProcedure.updateMarkerWeight("LFMH_proDis",settings["Fitting"]["Weight"]["LFMH_proDis"])
+        cgmFittingProcedure.updateMarkerWeight("LVMH_proDis",settings["Fitting"]["Weight"]["LVMH_proDis"])
+
+
+        cgmFittingProcedure.updateMarkerWeight("RSMH_supInf",settings["Fitting"]["Weight"]["RSMH_supInf"])
+        cgmFittingProcedure.updateMarkerWeight("RFMH_supInf",settings["Fitting"]["Weight"]["RFMH_supInf"])
+        cgmFittingProcedure.updateMarkerWeight("RVMH_supInf",settings["Fitting"]["Weight"]["RVMH_supInf"])
+
+        cgmFittingProcedure.updateMarkerWeight("RSMH_medLat",settings["Fitting"]["Weight"]["RSMH_medLat"])
+        cgmFittingProcedure.updateMarkerWeight("RFMH_medLat",settings["Fitting"]["Weight"]["RFMH_medLat"])
+        cgmFittingProcedure.updateMarkerWeight("RVMH_medLat",settings["Fitting"]["Weight"]["RVMH_medLat"])
+
+
+        cgmFittingProcedure.updateMarkerWeight("RSMH_proDis",settings["Fitting"]["Weight"]["RSMH_proDis"])
+        cgmFittingProcedure.updateMarkerWeight("RFMH_proDis",settings["Fitting"]["Weight"]["RFMH_proDis"])
+        cgmFittingProcedure.updateMarkerWeight("RVMH_proDis",settings["Fitting"]["Weight"]["RVMH_proDis"])
+
+        # cgmFittingProcedure.updateMarkerWeight("LPAT",settings["Fitting"]["Weight"]["LPAT"])
+        # cgmFittingProcedure.updateMarkerWeight("LPAT_posAnt",settings["Fitting"]["Weight"]["LPAT_posAnt"])
+        # cgmFittingProcedure.updateMarkerWeight("LPAT_medLat",settings["Fitting"]["Weight"]["LPAT_medLat"])
+        # cgmFittingProcedure.updateMarkerWeight("LPAT_proDis",settings["Fitting"]["Weight"]["LPAT_proDis"])
+        #
+        # cgmFittingProcedure.updateMarkerWeight("RPAT",settings["Fitting"]["Weight"]["RPAT"])
+        # cgmFittingProcedure.updateMarkerWeight("RPAT_posAnt",settings["Fitting"]["Weight"]["RPAT_posAnt"])
+        # cgmFittingProcedure.updateMarkerWeight("RPAT_medLat",settings["Fitting"]["Weight"]["RPAT_medLat"])
+        # cgmFittingProcedure.updateMarkerWeight("RPAT_proDis",settings["Fitting"]["Weight"]["RPAT_proDis"])
+
 
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           scalingOsim,
@@ -260,7 +279,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     # --- final pyCGM2 model motion Filter ---
     # use fitted markers
-    modMotionFitted=modelFilters.ModelMotionFilter(scp,finalAcqStatic,model,pyCGM2Enums.motionMethod.Sodervisk)
+    modMotionFitted=modelFilters.ModelMotionFilter(scp,finalAcqStatic,model,enums.motionMethod.Sodervisk)
     modMotionFitted.compute()
 
     #---- Joint kinematics----
@@ -295,12 +314,12 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     btkTools.checkMultipleSubject(acqGait)
     acqGait =  btkTools.applyTranslators(acqGait,translators)
-    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm2.CGM2_3LowerLimbs.MARKERS)
+    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm2.CGM2_4LowerLimbs.MARKERS)
 
 
     # --- initial motion Filter ---
     scp=modelFilters.StaticCalibrationProcedure(model)
-    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
+    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist)
     modMotion.compute()
 
     if ik_flag:
@@ -313,7 +332,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         # --- opensim calibration Filter ---
         osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
-        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset - expert.xml" # markerset
+        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-markerset.xml" # markerset
         cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -324,7 +343,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         scalingOsim = oscf.build()
 
         # --- opensim Fitting Filter ---
-        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-expert-ikSetUp_template.xml" # ik tl file
+        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-ikSetUp_template.xml" # ik tl file
 
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model,expertMode = True) # procedure
         cgmFittingProcedure.updateMarkerWeight("LASI",settings["Fitting"]["Weight"]["LASI"])
@@ -445,25 +464,43 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         cgmFittingProcedure.updateMarkerWeight("RTIAD_medLat",settings["Fitting"]["Weight"]["RTIAD_medLat"])
         cgmFittingProcedure.updateMarkerWeight("RTIAD_proDis",settings["Fitting"]["Weight"]["RTIAD_proDis"])
 
-#            cgmFittingProcedure.updateMarkerWeight("LPAT",settings["Fitting"]["Weight"]["LPAT"])
-#            cgmFittingProcedure.updateMarkerWeight("LPAT_posAnt",settings["Fitting"]["Weight"]["LPAT_posAnt"])
-#            cgmFittingProcedure.updateMarkerWeight("LPAT_medLat",settings["Fitting"]["Weight"]["LPAT_medLat"])
-#            cgmFittingProcedure.updateMarkerWeight("LPAT_proDis",settings["Fitting"]["Weight"]["LPAT_proDis"])
-#
-#            cgmFittingProcedure.updateMarkerWeight("RPAT",settings["Fitting"]["Weight"]["RPAT"])
-#            cgmFittingProcedure.updateMarkerWeight("RPAT_posAnt",settings["Fitting"]["Weight"]["RPAT_posAnt"])
-#            cgmFittingProcedure.updateMarkerWeight("RPAT_medLat",settings["Fitting"]["Weight"]["RPAT_medLat"])
-#            cgmFittingProcedure.updateMarkerWeight("RPAT_proDis",settings["Fitting"]["Weight"]["RPAT_proDis"])
-#
-#            cgmFittingProcedure.updateMarkerWeight("LTHLD",settings["Fitting"]["Weight"]["LTHLD"])
-#            cgmFittingProcedure.updateMarkerWeight("LTHLD_posAnt",settings["Fitting"]["Weight"]["LTHLD_posAnt"])
-#            cgmFittingProcedure.updateMarkerWeight("LTHLD_medLat",settings["Fitting"]["Weight"]["LTHLD_medLat"])
-#            cgmFittingProcedure.updateMarkerWeight("LTHLD_proDis",settings["Fitting"]["Weight"]["LTHLD_proDis"])
-#
-#            cgmFittingProcedure.updateMarkerWeight("RTHLD",settings["Fitting"]["Weight"]["RTHLD"])
-#            cgmFittingProcedure.updateMarkerWeight("RTHLD_posAnt",settings["Fitting"]["Weight"]["RTHLD_posAnt"])
-#            cgmFittingProcedure.updateMarkerWeight("RTHLD_medLat",settings["Fitting"]["Weight"]["RTHLD_medLat"])
-#            cgmFittingProcedure.updateMarkerWeight("RTHLD_proDis",settings["Fitting"]["Weight"]["RTHLD_proDis"])
+
+        cgmFittingProcedure.updateMarkerWeight("LSMH_supInf",settings["Fitting"]["Weight"]["LSMH_supInf"])
+        cgmFittingProcedure.updateMarkerWeight("LFMH_supInf",settings["Fitting"]["Weight"]["LFMH_supInf"])
+        cgmFittingProcedure.updateMarkerWeight("LVMH_supInf",settings["Fitting"]["Weight"]["LVMH_supInf"])
+
+        cgmFittingProcedure.updateMarkerWeight("LSMH_medLat",settings["Fitting"]["Weight"]["LSMH_medLat"])
+        cgmFittingProcedure.updateMarkerWeight("LFMH_medLat",settings["Fitting"]["Weight"]["LFMH_medLat"])
+        cgmFittingProcedure.updateMarkerWeight("LVMH_medLat",settings["Fitting"]["Weight"]["LVMH_medLat"])
+
+
+        cgmFittingProcedure.updateMarkerWeight("LSMH_proDis",settings["Fitting"]["Weight"]["LSMH_proDis"])
+        cgmFittingProcedure.updateMarkerWeight("LFMH_proDis",settings["Fitting"]["Weight"]["LFMH_proDis"])
+        cgmFittingProcedure.updateMarkerWeight("LVMH_proDis",settings["Fitting"]["Weight"]["LVMH_proDis"])
+
+
+        cgmFittingProcedure.updateMarkerWeight("RSMH_supInf",settings["Fitting"]["Weight"]["RSMH_supInf"])
+        cgmFittingProcedure.updateMarkerWeight("RFMH_supInf",settings["Fitting"]["Weight"]["RFMH_supInf"])
+        cgmFittingProcedure.updateMarkerWeight("RVMH_supInf",settings["Fitting"]["Weight"]["RVMH_supInf"])
+
+        cgmFittingProcedure.updateMarkerWeight("RSMH_medLat",settings["Fitting"]["Weight"]["RSMH_medLat"])
+        cgmFittingProcedure.updateMarkerWeight("RFMH_medLat",settings["Fitting"]["Weight"]["RFMH_medLat"])
+        cgmFittingProcedure.updateMarkerWeight("RVMH_medLat",settings["Fitting"]["Weight"]["RVMH_medLat"])
+
+
+        cgmFittingProcedure.updateMarkerWeight("RSMH_proDis",settings["Fitting"]["Weight"]["RSMH_proDis"])
+        cgmFittingProcedure.updateMarkerWeight("RFMH_proDis",settings["Fitting"]["Weight"]["RFMH_proDis"])
+        cgmFittingProcedure.updateMarkerWeight("RVMH_proDis",settings["Fitting"]["Weight"]["RVMH_proDis"])
+
+        # cgmFittingProcedure.updateMarkerWeight("LPAT",settings["Fitting"]["Weight"]["LPAT"])
+        # cgmFittingProcedure.updateMarkerWeight("LPAT_posAnt",settings["Fitting"]["Weight"]["LPAT_posAnt"])
+        # cgmFittingProcedure.updateMarkerWeight("LPAT_medLat",settings["Fitting"]["Weight"]["LPAT_medLat"])
+        # cgmFittingProcedure.updateMarkerWeight("LPAT_proDis",settings["Fitting"]["Weight"]["LPAT_proDis"])
+        #
+        # cgmFittingProcedure.updateMarkerWeight("RPAT",settings["Fitting"]["Weight"]["RPAT"])
+        # cgmFittingProcedure.updateMarkerWeight("RPAT_posAnt",settings["Fitting"]["Weight"]["RPAT_posAnt"])
+        # cgmFittingProcedure.updateMarkerWeight("RPAT_medLat",settings["Fitting"]["Weight"]["RPAT_medLat"])
+        # cgmFittingProcedure.updateMarkerWeight("RPAT_proDis",settings["Fitting"]["Weight"]["RPAT_proDis"])
 
 
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
@@ -480,7 +517,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     # --- final pyCGM2 model motion Filter ---
     # use fitted markers
-    modMotionFitted=modelFilters.ModelMotionFilter(scp,finalAcqGait,model,pyCGM2Enums.motionMethod.Sodervisk ,
+    modMotionFitted=modelFilters.ModelMotionFilter(scp,finalAcqGait,model,enums.motionMethod.Sodervisk ,
                                               markerDiameter=markerDiameter)
 
     modMotionFitted.compute()

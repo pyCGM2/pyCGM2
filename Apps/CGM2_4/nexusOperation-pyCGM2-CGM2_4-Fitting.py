@@ -79,7 +79,7 @@ if __name__ == "__main__":
         # check model
         logging.info("loaded model : %s" %(model.version))
         if model.version != "CGM2.4":
-            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.3e calibration pipeline"%subject)
+            raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.4e calibration pipeline"%subject)
 
         # --------------------------SESSION INFOS -----------------------------
         #  translators management

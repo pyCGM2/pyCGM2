@@ -75,7 +75,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     # ----------------------CGM MODELLING----------------------------------
     # ----motion filter----
-    modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,enums.motionMethod.Determinist,
+    modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,enums.motionMethod.Sodervisk,
                                               markerDiameter=markerDiameter)
 
     modMotion.compute()
@@ -171,7 +171,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     # absolute angles
     modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqStatic,
-                                           segmentLabels=["Left HindFoot","Right HindFoot","Pelvis"],
+                                           segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                             angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
                                             eulerSequences=["TOR","TOR", "ROT"],
                                             globalFrameOrientation = globalFrame,
@@ -201,7 +201,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     # --- initial motion Filter ---
     scp=modelFilters.StaticCalibrationProcedure(model)
-    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist)
+    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Sodervisk)
     modMotion.compute()
 
     if ik_flag:
@@ -299,7 +299,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     # absolute angles
     modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqGait,
-                                           segmentLabels=["Left HindFoot","Right HindFoot","Pelvis"],
+                                           segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                             angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
                                             eulerSequences=["TOR","TOR", "ROT"],
                                             globalFrameOrientation = globalFrame,
@@ -325,8 +325,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     # assembly foot and force plate
     modelFilters.ForcePlateAssemblyFilter(model,finalAcqGait,mappedForcePlate,
-                             leftSegmentLabel="Left HindFoot",
-                             rightSegmentLabel="Right HindFoot").compute()
+                             leftSegmentLabel="Left Foot",
+                             rightSegmentLabel="Right Foot").compute()
 
     #---- Joint kinetics----
     idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()

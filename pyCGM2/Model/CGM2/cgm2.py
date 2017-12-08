@@ -979,7 +979,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
         seg=self.getSegment("Left ForeFoot")
-        
+
         tf=seg.getReferential("TF")
 
         pt1=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #LMidMET
@@ -1550,17 +1550,11 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             logging.debug(" - Left Shank - motion -")
             logging.debug(" -----------------------")
             self._left_shank_motion(aqui, dictRef, dictAnat,options=options)
-            logging.debug(" - Left Shank-proximal - motion -")
-            logging.debug(" --------------------------------")
-            self._left_shankProximal_motion(aqui,dictAnat,options=options)
 
             logging.debug(" - Right Shank - motion -")
             logging.debug(" ------------------------")
             self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
 
-            logging.debug(" - Right Shank-proximal - motion -")
-            logging.debug(" ---------------------------------")
-            self._right_shankProximal_motion(aqui,dictAnat,options=options)
 
             logging.debug(" - Left HindFoot - motion -")
             logging.debug(" ---------------------------")
@@ -1602,9 +1596,12 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
 
+            self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
 
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
+
 
             self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
@@ -1633,26 +1630,19 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                 self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
                 self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
                 self.displayMotionCoordinateSystem( aqui,  "Left Shank" , "LShank" )
-                self.displayMotionCoordinateSystem( aqui,  "Left Shank Proximal" , "LShankProx" )
                 self.displayMotionCoordinateSystem( aqui,  "Right Shank" , "RShank" )
-                self.displayMotionCoordinateSystem( aqui,  "Right Shank Proximal" , "RShankProx" )
                 self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFoot" )
                 self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFoot" )
                 self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LHindFoot")
                 self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RHindFoot")
                 self.displayMotionCoordinateSystem( aqui,  "Left ForeFoot" , "LForeFoot")
                 self.displayMotionCoordinateSystem( aqui,  "Right ForeFoot" , "RForeFoot")
-
-
             else:
-
                 self.displayMotionViconCoordinateSystem(aqui,"Pelvis","PELO","PELA","PELL","PELP")
                 self.displayMotionViconCoordinateSystem(aqui,"Left Thigh","LFEO","LFEA","LFEL","LFEP")
                 self.displayMotionViconCoordinateSystem(aqui,"Right Thigh","RFEO","RFEA","RFEL","RFEP")
                 self.displayMotionViconCoordinateSystem(aqui,"Left Shank","LTIO","LTIA","LTIL","LTIP")
-                self.displayMotionViconCoordinateSystem(aqui,"Left Shank Proximal","LTPO","LTPA","LTPL","LTPP")
                 self.displayMotionViconCoordinateSystem(aqui,"Right Shank","RTIO","RTIA","RTIL","RTIP")
-                self.displayMotionViconCoordinateSystem(aqui,"Right Shank Proximal","RTPO","RTPA","RTPL","RTPP")
                 self.displayMotionViconCoordinateSystem(aqui,"Left Foot","LFOO","LFOA","LFOL","LFOP")
                 self.displayMotionViconCoordinateSystem(aqui,"Right Foot","RFOO","RFOA","RFOL","RFOP")
                 self.displayMotionViconCoordinateSystem(aqui,"Left ForeFoot","LTOO","LTOA","LTOL","LTOP")
@@ -1798,7 +1788,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
            - `dictRef` (dict) - instance of Model
            - `frameInit` (int) - starting frame
         """
-        seg=self.getSegment("Right HindFoot")
+        seg=self.getSegment("Right Foot")
 
 
 
@@ -2026,8 +2016,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
+
         # --- motion of new markers
-        # --- vTOE and AJC
+        # --- LvSMH
+        desc = seg.getReferential('TF').static.getNode_byLabel("LvSMH").m_desc
+        values_vSMHnode=seg.getReferential('TF').getNodeTrajectory("LvSMH")
+        btkTools.smartAppendPoint(aqui,"LvSMH",values_vSMHnode, desc=str("opt-"+desc))
+
         btkTools.smartAppendPoint(aqui,"LFJC-ForeFoot",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="opt from forefoot" )
 
     def _rightHindFoot_motion_optimize(self,aqui, dictRef, motionMethod):
@@ -2133,7 +2128,11 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- motion of new markers
-        # --- vTOE and AJC
+        # --- LvSMH
+        desc = seg.getReferential('TF').static.getNode_byLabel("RvSMH").m_desc
+        values_vSMHnode=seg.getReferential('TF').getNodeTrajectory("RvSMH")
+        btkTools.smartAppendPoint(aqui,"RvSMH",values_vSMHnode, desc=str("opt-"+desc))
+
         btkTools.smartAppendPoint(aqui,"RFJC-ForeFoot",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="opt from forefoot" )
 
 
@@ -2149,13 +2148,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         out={}
         out["hip_r"]= {"joint label":"RHJC", "proximal segment label":"Pelvis", "distal segment label":"Right Thigh" }
         out["knee_r"]= {"joint label":"RKJC", "proximal segment label":"Right Thigh", "distal segment label":"Right Shank" }
-        out["ankle_r"]= {"joint label":"RAJC", "proximal segment label":"Right Shank", "distal segment label":"Right HindFoot" }
+        out["ankle_r"]= {"joint label":"RAJC", "proximal segment label":"Right Shank", "distal segment label":"Right Foot" }
         out["mtp_r"]= {"joint label":"RFJC", "proximal segment label":"Right Foot", "distal segment label":"Right ForeFoot" }
 
 
         out["hip_l"]= {"joint label":"LHJC", "proximal segment label":"Pelvis", "distal segment label":"Left Thigh" }
         out["knee_l"]= {"joint label":"LKJC", "proximal segment label":"Left Thigh", "distal segment label":"Left Shank" }
-        out["ankle_l"]= {"joint label":"LAJC", "proximal segment label":"Left Shank", "distal segment label":"Left HindFoot" }
+        out["ankle_l"]= {"joint label":"LAJC", "proximal segment label":"Left Shank", "distal segment label":"Left Foot" }
         out["mtp_l"]= {"joint label":"LFJC", "proximal segment label":"Left Foot", "distal segment label":"Left ForeFoot" }
 
         return out
@@ -2405,13 +2404,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         nexusTools.appendBones(NEXUS,vskName,acq,"LFE", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
         #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
         nexusTools.appendBones(NEXUS,vskName,acq,"LTI", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LFO", self.getSegment("Left HindFoot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"LFO", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
         nexusTools.appendBones(NEXUS,vskName,acq,"LTO", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() )
 
         nexusTools.appendBones(NEXUS,vskName,acq,"RFE", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
         #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
         nexusTools.appendBones(NEXUS,vskName,acq,"RTI", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RFO", self.getSegment("Right HindFoot") , OriginValues = acq.GetPoint("RHEE").GetValues()  )
+        nexusTools.appendBones(NEXUS,vskName,acq,"RFO", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RHEE").GetValues()  )
         nexusTools.appendBones(NEXUS,vskName,acq,"RTO", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues())
 
         logging.debug("bones over")

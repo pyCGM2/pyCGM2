@@ -53,7 +53,7 @@ if __name__ == "__main__":
         # ----------------------LOADING-------------------------------------------
         # --- acquisition file and path----
         if args.DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medial\\"
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
             reconstructFilenameLabelledNoExt = "gait Trial 01"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
             args.noIk = False
