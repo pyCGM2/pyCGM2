@@ -476,3 +476,9 @@ class Frame(object):
             self._nodes[index].m_desc = desc
         else:
             self.addNode(nodeLabel,globalArray, position = "Global",desc =  desc)
+
+    def getGlobalPosition(self,nodeLabel):
+
+        node = self.getNode_byLabel(nodeLabel)
+
+        return np.dot(self.getRotation(),node.getLocal())+ self.getTranslation()

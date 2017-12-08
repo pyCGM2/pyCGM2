@@ -8,7 +8,7 @@ import btk
 import cgm
 
 from pyCGM2 import enums
-from  pyCGM2.Model import frame, motion
+from  pyCGM2.Model import frame, motion,modelDecorator
 from pyCGM2.Math import euler,geometry
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Nexus import nexusTools
@@ -621,11 +621,11 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # left Foot
         dictRef["Left Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LTOE","LAJC",None,"LAJC"]} }
-        dictRef["Left ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["LSMH","LTOE","LVMH","LSMH"]} }
+        dictRef["Left ForeFoot"]={"TF" : {'sequence':"ZXiY", 'labels':    ["LFMH","LTOE","LVMH","LTOE"]} }
 
         # right foot
         dictRef["Right Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RTOE","RAJC",None,"RAJC"]} }
-        dictRef["Right ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["RSMH","RTOE","RVMH","RSMH"]} }
+        dictRef["Right ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["RFMH","RTOE","RVMH","RTOE"]} }
 
         dictRefAnatomical={}
         dictRefAnatomical["Pelvis"]= {'sequence':"YZX", 'labels':  ["RASI","LASI","SACR","midASIS"]}
@@ -636,11 +636,11 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # left Foot ( nothing yet)
         dictRefAnatomical["Left Foot"]= {'sequence':"ZXiY", 'labels':   ["LTOE","LHEE",None,"LAJC"]}
-        dictRefAnatomical["Left ForeFoot"]= {'sequence':"ZYX", 'labels':   ["LvSMH","LFJC",None,"LvSMH"]} # look out : use virtual Point
+        dictRefAnatomical["Left ForeFoot"]= {'sequence':"ZXiY", 'labels':   ["LvSMH","LFJC","LVMH","LvSMH"]}
 
         # right foot
         dictRefAnatomical["Right Foot"]= {'sequence':"ZXiY", 'labels':   ["RTOE","RHEE",None,"RAJC"]}
-        dictRefAnatomical["Right ForeFoot"]= {'sequence':"ZYX", 'labels':   ["RvSMH","RFJC",None,"RvSMH"]} # look out : use virtual Point
+        dictRefAnatomical["Right ForeFoot"]= {'sequence':"ZXY", 'labels':   ["RvSMH","RFJC","RVMH","RvSMH"]} # look out : use virtual Point
 
         return dictRef,dictRefAnatomical
 
@@ -741,21 +741,17 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         else:
             self.getThighOffset(side="left")
 
-        # if SARA axis
-        if "enableLongitudinalRotation" in options.keys():
-            if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                logging.debug("SARA axis found from the left thigh")
-
-                self.getAngleOffsetFromFunctionalSaraAxis("left")
-
-                self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-        # if dynaKad offset
-        if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0:
-            logging.debug("left DynaKad offset found. Anatomical referential rotated from dynaKad offset")
-            self._rotateAnatomicalFrame("Left Thigh",self.mp_computed["LeftKneeDynaKadOffset"],
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
+        # management of Functional method
+        if self.mp_computed["LeftKneeFuncCalibrationOffset"] != 0:
+            offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+            # SARA
+            if self.checkCalibrationProperty("LeftFuncKneeMethod","SARA"):
+                logging.debug("Left knee functional calibration : SARA ")
+            # 2DOF
+            elif self.checkCalibrationProperty("LeftFuncKneeMethod","2DOF"):
+                logging.debug("Left knee functional calibration : 2Dof ")
+            self._rotateAnatomicalFrame("Left Thigh",offset,
+                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
         logging.debug(" ------Right-------")
@@ -764,21 +760,17 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         else:
             self.getThighOffset(side="right")
 
-        if "enableLongitudinalRotation" in options.keys():
-            if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                logging.debug("SARA axis found from the Right thigh")
-
-                self.getAngleOffsetFromFunctionalSaraAxis("right")
-
-                self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-
-        # if dynaKad offset
-        if self.mp_computed.has_key("RightKneeDynaKadOffset") and self.mp_computed["RightKneeDynaKadOffset"] != 0:
-            logging.debug("Right DynaKad offset found. Anatomical referential rotated from dynaKad offset")
-            self._rotateAnatomicalFrame("Right Thigh",self.mp_computed["RightKneeDynaKadOffset"],
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
+        # management of Functional method
+        if self.mp_computed["RightKneeFuncCalibrationOffset"] != 0:
+            offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+            # SARA
+            if self.checkCalibrationProperty("RightFuncKneeMethod","SARA"):
+                logging.debug("Left knee functional calibration : SARA ")
+            # 2DOF
+            elif self.checkCalibrationProperty("RightFuncKneeMethod","2DOF"):
+                logging.debug("Left knee functional calibration : 2Dof ")
+            self._rotateAnatomicalFrame("Right Thigh",offset,
+                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
 
@@ -852,8 +844,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Right Shank Proximal","RShankProx",referential = "Anatomic"  )
 
-        # ---  FOOT segments
-        # ---------------
+        # ---  FOOT segments ----
+        # -----------------------
         # need anatomical flexion axis of the shank.
 
 
@@ -861,13 +853,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         logging.debug(" -----------------------------------------")
         self._leftHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Left HindFoot","LHindFootUncorrected",referential = "technic"  )
+            self.displayStaticCoordinateSystem( aquiStatic, "Left Foot","LHindFootUncorrected",referential = "technic"  )
 
         logging.debug(" --- Left Hind Foot  - AF calibration ---")
         logging.debug(" -----------------------------------------")
         self._leftHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Left HindFoot","LHindFoot",referential = "Anatomical"  )
+            self.displayStaticCoordinateSystem( aquiStatic, "Left Foot","LHindFoot",referential = "Anatomical"  )
 
         logging.debug(" --- Hind foot Offset---")
         logging.debug(" -----------------------")
@@ -882,7 +874,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         logging.debug(" --- Left Fore Foot  - AF calibration ---")
         logging.debug(" -----------------------------------------")
-        self._leftForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self._leftForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Left ForeFoot","LForeFoot",referential = "Anatomical"  )
 
@@ -891,13 +883,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         logging.debug(" -----------------------------------------")
         self._rightHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Right HindFoot","RHindFootUncorrected",referential = "technic"  )
+            self.displayStaticCoordinateSystem( aquiStatic, "Right Foot","RHindFootUncorrected",referential = "technic"  )
 
         logging.debug(" --- Right Hind Foot  - AF calibration ---")
         logging.debug(" -----------------------------------------")
         self._rightHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Right HindFoot","RHindFoot",referential = "Anatomical"  )
+            self.displayStaticCoordinateSystem( aquiStatic, "Right Foot","RHindFoot",referential = "Anatomical"  )
 
         logging.debug(" --- Hind foot Offset---")
         logging.debug(" -----------------------")
@@ -913,7 +905,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         logging.debug(" --- Right Fore Foot  - AF calibration ---")
         logging.debug(" -----------------------------------------")
-        self._rightForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self._rightForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
         if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
             self.displayStaticCoordinateSystem( aquiStatic, "Right ForeFoot","RForeFoot",referential = "Anatomical"  )
 
@@ -985,18 +977,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     def _leftForeFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
         pfn = aquiStatic.GetPointFrameNumber()
 
-        # new markers
-        valMidMet=(aquiStatic.GetPoint("LVMH").GetValues() + aquiStatic.GetPoint("LFMH").GetValues()) / 2.0
-        btkTools.smartAppendPoint(aquiStatic,"LMidMET",valMidMet,desc="")
-        seg.addCalibrationMarkerLabel("LMidMET")
 
         seg=self.getSegment("Left ForeFoot")
-
-        # --- technical frame selection and construction ["LMidMET","LTOE","LVMH","LTOE"]
+        
         tf=seg.getReferential("TF")
 
         pt1=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #LMidMET
-        pt2=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #LTOE
+        pt2=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #LTOE = CUN
         pt3=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #LVMH
 
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -1036,9 +1023,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         projSMH  = np.array([ 0.0,local[1],local[2] ] )
         tf.static.addNode("LvSMH",projSMH,positionType="Local",desc = "proj (TOE-5-1) ")
 
+        global_projSMH = tf.static.getGlobalPosition("LvSMH")
         btkTools.smartAppendPoint(aquiStatic,"LvSMH",
-        projSMH*np.ones((pfn,3)),desc="proj (TOE-5-1)")
-
+        global_projSMH*np.ones((pfn,3)),desc="proj (TOE-5-1)")
 
 
     def _leftHindFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd, options = None):
@@ -1054,7 +1041,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         seg=self.getSegment("Left Foot")
 
-        # --- Construction of the anatomical Referential ["LTOE","LHEE",None,"LAJC"]
+        # --- Construction of the anatomical Referential ["LTOE","LHEE",None,"LAJC"ZXiY]
         pt1=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         pt2=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
@@ -1131,19 +1118,21 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
 
 
-    def _leftForeFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
+    def _leftForeFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd,options = None):
 
         seg=self.getSegment("Left ForeFoot")
 
-        # --- Construction of the anatomical Referential ["LvSMH","LFJC",None,"LvSMH"]
+        # --- Construction of the anatomical Referential ["LvSMH","LFJC",None,"LvSMH", ZYX]
         pt1=aquiStatic.GetPoint(str(dictAnatomic["Left ForeFoot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         pt2=aquiStatic.GetPoint(str(dictAnatomic["Left ForeFoot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        if dictAnatomic["Left ForeFoot"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictAnatomic["Left ForeFoot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
-            v=(pt3-pt1)
-        else:
+        if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
+            sequence = "ZYX"
             v= 100 * np.array([0.0, 0.0, 1.0])
+        else:
+            sequence = dictAnatomic["Left ForeFoot"]['sequence']
+            pt3=aquiStatic.GetPoint(str(dictAnatomic["Left ForeFoot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            v=(pt3-pt1)
 
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left ForeFoot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
@@ -1155,7 +1144,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left ForeFoot"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,sequence)
 
         seg.anatomicalFrame.static.m_axisX=x
         seg.anatomicalFrame.static.m_axisY=y
@@ -1239,11 +1228,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     def _rightForeFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
         pfn = aquiStatic.GetPointFrameNumber()
 
-        # new markers
-        valMidMet=(aquiStatic.GetPoint("RVMH").GetValues() + aquiStatic.GetPoint("RFMH").GetValues()) / 2.0
-        btkTools.smartAppendPoint(aquiStatic,"RMidMET",valMidMet,desc="")
-        seg.addCalibrationMarkerLabel("RMidMET")
-
         seg=self.getSegment("Right ForeFoot")
 
         # --- technical frame selection and construction ["RMidMET","RTOE","RVMH","RTOE"]
@@ -1290,10 +1274,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         projSMH  = np.array([ 0.0,local[1],local[2] ] )
         tf.static.addNode("RvSMH",projSMH,positionType="Local",desc = "proj (TOE-5-1) ")
 
+        global_projSMH = tf.static.getGlobalPosition("RvSMH")
         btkTools.smartAppendPoint(aquiStatic,"RvSMH",
-        projSMH*np.ones((pfn,3)),desc="proj (TOE-5-1)")
-
-
+        global_projSMH*np.ones((pfn,3)),desc="proj (TOE-5-1)")
 
     def _rightHindFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd, options = None):
 
@@ -1388,7 +1371,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
 
-    def _rightForeFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
+    def _rightForeFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd,options = None):
 
 
         seg=self.getSegment("Right ForeFoot")
@@ -1397,11 +1380,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         pt1=aquiStatic.GetPoint(str(dictAnatomic["Right ForeFoot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         pt2=aquiStatic.GetPoint(str(dictAnatomic["Right ForeFoot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        if dictAnatomic["Right ForeFoot"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictAnatomic["Right ForeFoot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # not used
-            v=(pt3-pt1)
-        else:
+        if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
+            sequence = "ZYX"
             v= 100 * np.array([0.0, 0.0, 1.0])
+        else:
+            sequence = dictAnatomic["Right ForeFoot"]['sequence']
+            pt3=aquiStatic.GetPoint(str(dictAnatomic["Right ForeFoot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            v=(pt3-pt1)
 
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right ForeFoot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
@@ -1413,7 +1398,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         a2=np.cross(a1,v)
         a2=a2/np.linalg.norm(a2)
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right ForeFoot"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,sequence)
 
 
         seg.anatomicalFrame.static.m_axisX=x
@@ -1436,7 +1421,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
         if side == "Both" or side == "Left" :
-            R = self.getSegment("Left HindFoot").getReferential("TF").relativeMatrixAnatomic
+            R = self.getSegment("Left Foot").getReferential("TF").relativeMatrixAnatomic
             y,x,z = euler.euler_yxz(R)
 
 
@@ -1448,7 +1433,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             logging.debug(" LeftStaticRotOffset => %s " % str(self.mp_computed["LeftStaticRotOffset"]))
 
         if side == "Both" or side == "Right" :
-            R = self.getSegment("Right HindFoot").getReferential("TF").relativeMatrixAnatomic
+            R = self.getSegment("Right Foot").getReferential("TF").relativeMatrixAnatomic
             y,x,z = euler.euler_yxz(R)
 
 
@@ -1476,61 +1461,42 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         logging.debug("--- Segmental Least-square motion process ---")
         if "Pelvis" in segments:
-            self._pelvis_motion(aqui, dictRef, motionMethod)
+            self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
             self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
 
         if "Left Thigh" in segments:
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Left Thigh"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Left Thigh",originLabel = originAnatomicalFrame)
-            else:
-                logging.debug("[pyCGM2] no motion of the left thigh Anatomical Referential. OriginLabel unknown")
+            self._anatomical_motion(aqui,"Left Thigh",originLabel = "LKJC")
 
 
         if "Right Thigh" in segments:
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Right Thigh"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Right Thigh",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Right Thigh",originLabel = "RKJC")
+
 
         if "Left Shank" in segments:
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Left Shank"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Left Shank",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Left Shank",originLabel = "LAJC")
 
         if "Right Shank" in segments:
             self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Right Shank"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Right Shank",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Right Shank",originLabel = "RAJC")
 
         if "Left Foot" in segments:
             self._left_foot_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Left Foot"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Left Foot",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Left Foot",originLabel = "LHEE")
 
         if "Right Foot" in segments:
             self._right_foot_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Right Foot"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Right Foot",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Right Foot",originLabel = "RHEE")
 
         if "Left ForeFoot" in segments:
             self._left_foot_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Left ForeFoot"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Left ForeFoot",originLabel = originAnatomicalFrame)
+            self._anatomical_motion(aqui,"Left ForeFoot",originLabel = "LFJC")
 
         if "Right ForeFoot" in segments:
             self._right_foot_motion_optimize(aqui, dictRef,motionMethod)
-            originAnatomicalFrame = str(dictAnat["Right ForeFoot"]['labels'][3])
-            if btkTools.isPointExist(aqui,originAnatomicalFrame):
-                self._anatomical_motion(aqui,"Right ForeFoot",originLabel = originAnatomicalFrame)
-
-
+            self._anatomical_motion(aqui,"Right ForeFoot",originLabel = "RFJC")
 
 
     def computeMotion(self,aqui, dictRef,dictAnat, motionMethod,options=None ):
@@ -1564,36 +1530,21 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             logging.debug(" -----------------------")
             self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
-            if "enableLongitudinalRotation" in options.keys() and options["enableLongitudinalRotation"]:
-                if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                    logging.debug("SARA axis found from the left thigh")
-
-                    self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
-                                            aqui,options=options)
-
-            # if dynaKad offset
-            if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0:
-                logging.debug("Left DynaKad offset found. Anatomical referential rotated from dynaKad offset")
-                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeDynaKadOffset"],
-                                            aqui,options=options)
+            # if rotation offset from knee functional calibration methods
+            if self.mp_computed["LeftKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+                self._rotate_anatomical_motion("Left Thigh",offset,
+                                        aqui,options=options)
 
 
             logging.debug(" - Right Thigh - motion -")
             logging.debug(" ------------------------")
             self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
-            if "enableLongitudinalRotation" in options.keys() and options["enableLongitudinalRotation"]:
-                if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                    logging.debug("SARA axis found from the Right thigh")
-
-                    self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
-                                            aqui,options=options)
-
-            # if dynaKad offset
-            if self.mp_computed.has_key("RightKneeDynaKadOffset") and self.mp_computed["RightKneeDynaKadOffset"] != 0:
-                logging.debug("Right DynaKad offset found. Anatomical referential rotated from dynaKad offset")
-                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeDynaKadOffset"],
-                                            aqui,options=options)
+            if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+                self._rotate_anatomical_motion("Right Thigh",offset,
+                                        aqui,options=options)
 
 
             logging.debug(" - Left Shank - motion -")
@@ -1651,36 +1602,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
 
-            if "enableLongitudinalRotation" in options.keys() and options["enableLongitudinalRotation"]:
-                if self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                    logging.debug("SARA axis found from the left thigh")
-
-                    self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeFuncCalibrationOffset"],
-                                            aqui,options=options)
-
-            # if dynaKad offset
-            if self.mp_computed.has_key("LeftKneeDynaKadOffset") and self.mp_computed["LeftKneeDynaKadOffset"] != 0:
-                logging.debug("Left DynaKad offset found. Anatomical referential rotated from dynaKad offset")
-                self._rotate_anatomical_motion("Left Thigh",self.mp_computed["LeftKneeDynaKadOffset"],
-                                            aqui,options=options)
-
-            self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
-
-
-            if "enableLongitudinalRotation" in options.keys() and options["enableLongitudinalRotation"]:
-                if self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("KJC_SaraAxis"):
-                    logging.debug("SARA axis found from the Right thigh")
-
-                    self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeFuncCalibrationOffset"],
-                                            aqui,options=options)
-
-            # if dynaKad offset
-            if self.mp_computed.has_key("RightKneeDynaKadOffset") and self.mp_computed["RightKneeDynaKadOffset"] != 0:
-                logging.debug("Right DynaKad offset found. Anatomical referential rotated from dynaKad offset")
-                self._rotate_anatomical_motion("Right Thigh",self.mp_computed["RightKneeDynaKadOffset"],
-                                            aqui,options=options)
-
 
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
@@ -1703,13 +1624,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
 
 
-
-
-
         logging.debug("--- Display Coordinate system ---")
         logging.debug(" --------------------------------")
-
-
 
         if not pigStaticProcessing:
             if "usePyCGM2_coordinateSystem" in options.keys() and options["usePyCGM2_coordinateSystem"]:

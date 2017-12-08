@@ -27,9 +27,9 @@ def setDescription(nodeLabel):
 def footJointCentreFromMet(acq,side,frameInit,frameEnd,markerDiameter =14, offset =0 ):
 
     if side == "left":
-        met2_base=aquiStatic.GetPoint("LSMB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        met5_head=aquiStatic.GetPoint("LVMH").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        met1_head=aquiStatic.GetPoint("LFMH").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        met2_base=acq.GetPoint("LTOE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        met5_head=acq.GetPoint("LVMH").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        met1_head=acq.GetPoint("LFMH").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         v1=(met5_head-met2_base)
         v1=v1/np.linalg.norm(v1)
@@ -42,9 +42,9 @@ def footJointCentreFromMet(acq,side,frameInit,frameEnd,markerDiameter =14, offse
         fjc = met2_base - (markerDiameter+offset) * z
 
     elif side == "right":
-        met2_base=aquiStatic.GetPoint("RSMB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        met5_head=aquiStatic.GetPoint("RVMH").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        met1_head=aquiStatic.GetPoint("RFMH").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        met2_base=acq.GetPoint("RTOE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        met5_head=acq.GetPoint("RVMH").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        met1_head=acq.GetPoint("RFMH").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         v1=(met5_head-met2_base)
         v1=v1/np.linalg.norm(v1)
