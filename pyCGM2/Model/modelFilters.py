@@ -927,9 +927,9 @@ class ModelAbsoluteAnglesFilter(object):
                 Rrelative= np.dot(Rglobal.T,Rseg)
 
                 if eulerSequence == "TOR":
-                    tilt,obliquity,rotation = euler.euler_yxz(Rrelative,similarOrder =True)
+                    tilt,obliquity,rotation = euler.euler_yxz(Rrelative)
                 elif eulerSequence == "TRO":
-                    tilt,Euler2,obliquity = euler.euler_yzx(Rrelative)
+                    tilt,rotation,obliquity = euler.euler_yzx(Rrelative)
                 elif eulerSequence == "ROT":
                     rotation,obliquity,tilt = euler.euler_zxy(Rrelative)
                 elif eulerSequence == "RTO":
@@ -938,7 +938,20 @@ class ModelAbsoluteAnglesFilter(object):
                     obliquity,tilt,rotation = euler.euler_xyz(Rrelative)
                 elif eulerSequence == "ORT":
                     obliquity,rotation,tilt = euler.euler_xzy(Rrelative)
+                elif eulerSequence == "YXZ":
+                    tilt,obliquity,rotation = euler.euler_yxz(Rrelative,similarOrder = False)
+                elif eulerSequence == "YZX":
+                    tilt,obliquity,rotation = euler.euler_yzx(Rrelative,similarOrder = False)
+                elif eulerSequence == "ZXY":
+                    tilt,obliquity,rotation = euler.euler_zxy(Rrelative,similarOrder = False)
+                elif eulerSequence == "ZYX":
+                    tilt,obliquity,rotation = euler.euler_zyx(Rrelative,similarOrder = False)
+                elif eulerSequence == "XYZ":
+                    tilt,obliquity,rotation = euler.euler_xyz(Rrelative,similarOrder = False)
+                elif eulerSequence == "XZY":
+                    tilt,obliquity,rotation = euler.euler_xzy(Rrelative,similarOrder = False)
                 else:
+                    logging.debug("no sequence defined for absolute angles. sequence YXZ selected by default" )
                     tilt,obliquity,rotation = euler.euler_yxz(Rrelative)
 
                 absoluteAngleValues[i,0] = tilt
@@ -947,55 +960,75 @@ class ModelAbsoluteAnglesFilter(object):
 
             segName = self.m_segmentLabels[index]
 
+            if side == enums.SegmentSide.Left or side == enums.SegmentSide.Right:
+                # no alteration of the segment name
+                if  self.m_model.getClinicalDescriptor(enums.DataType.Angle,segName):
+                    descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,segName)
+                    absoluteAngleValuesFinal = np.zeros((absoluteAngleValues.shape))
+                    absoluteAngleValuesFinal[:,0] =  np.rad2deg(descriptorInfos["SaggitalCoeff"] * (absoluteAngleValues[:,descriptorInfos["SaggitalIndex"]] + descriptorInfos["SaggitalOffset"]))
+                    absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
+                    absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
 
-            # case Left
-            descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,str("L"+segName))
-            if  descriptorInfos:
-                absoluteAngleValuesFinal = np.zeros((absoluteAngleValues.shape))
-                absoluteAngleValuesFinal[:,0] =  np.rad2deg(descriptorInfos["SaggitalCoeff"] * (absoluteAngleValues[:,descriptorInfos["SaggitalIndex"]] + descriptorInfos["SaggitalOffset"]))
-                absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
-                absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
+                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
 
-                fullAngleLabel  = "L" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "L" +self.m_angleLabels[index]+"Angles"
+                    btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
+                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
-                btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                     absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+                else:
+                    logging.debug("no clinical descriptor for segment label (%s)" %(segName))
+                    absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValues)
+
+                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
+                    btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
+                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+
+            if side == enums.SegmentSide.Central:
+                descriptorInfos1 = self.m_model.getClinicalDescriptor(enums.DataType.Angle,segName)
+                if  descriptorInfos1:
+                    absoluteAngleValuesFinal = np.zeros((absoluteAngleValues.shape))
+                    absoluteAngleValuesFinal[:,0] =  np.rad2deg(descriptorInfos1["SaggitalCoeff"] * (absoluteAngleValues[:,descriptorInfos1["SaggitalIndex"]] + descriptorInfos1["SaggitalOffset"]))
+                    absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos1["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos1["CoronalIndex"]] + descriptorInfos1["CoronalOffset"]))
+                    absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos1["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos1["TransversalIndex"]] + descriptorInfos1["TransversalOffset"]))
+
+                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
+
+                    btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
+                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+
+                # case Left
+                descriptorInfos2 = self.m_model.getClinicalDescriptor(enums.DataType.Angle,str("L"+segName))
+                if  descriptorInfos2:
+                    absoluteAngleValuesFinal = np.zeros((absoluteAngleValues.shape))
+                    absoluteAngleValuesFinal[:,0] =  np.rad2deg(descriptorInfos2["SaggitalCoeff"] * (absoluteAngleValues[:,descriptorInfos2["SaggitalIndex"]] + descriptorInfos2["SaggitalOffset"]))
+                    absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos2["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos2["CoronalIndex"]] + descriptorInfos2["CoronalOffset"]))
+                    absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos2["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos2["TransversalIndex"]] + descriptorInfos2["TransversalOffset"]))
+
+                    fullAngleLabel  = "L" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "L" +self.m_angleLabels[index]+"Angles"
+
+                    btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
+                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
 
-            # case Right
-            descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,str("R"+segName))
-            if  descriptorInfos:
-                absoluteAngleValuesFinal = np.zeros((absoluteAngleValues.shape))
-                absoluteAngleValuesFinal[:,0] =  np.rad2deg(descriptorInfos["SaggitalCoeff"] * (absoluteAngleValues[:,descriptorInfos["SaggitalIndex"]] + descriptorInfos["SaggitalOffset"]))
-                absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
-                absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
+                # case Right
+                descriptorInfos3 = self.m_model.getClinicalDescriptor(enums.DataType.Angle,str("R"+segName))
+                if descriptorInfos3 :
+                    absoluteAngleValuesFinal = np.zeros((absoluteAngleValues.shape))
+                    absoluteAngleValuesFinal[:,0] =  np.rad2deg(descriptorInfos3["SaggitalCoeff"] * (absoluteAngleValues[:,descriptorInfos3["SaggitalIndex"]] + descriptorInfos3["SaggitalOffset"]))
+                    absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos3["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos3["CoronalIndex"]] + descriptorInfos3["CoronalOffset"]))
+                    absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos3["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos3["TransversalIndex"]] + descriptorInfos3["TransversalOffset"]))
 
-                fullAngleLabel  = "R" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "R" +self.m_angleLabels[index]+"Angles"
+                    fullAngleLabel  = "R" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "R" +self.m_angleLabels[index]+"Angles"
 
-                btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                     absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+                    btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
+                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
+                if not descriptorInfos1 and not descriptorInfos2 and not descriptorInfos3:
+                    logging.debug("no clinical descriptor for segment label (%s)" %(segName))
+                    absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValues)
 
-            # no alteration of the segment name
-            descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,segName)
-            if  descriptorInfos:
-                absoluteAngleValuesFinal = np.zeros((absoluteAngleValues.shape))
-                absoluteAngleValuesFinal[:,0] =  np.rad2deg(descriptorInfos["SaggitalCoeff"] * (absoluteAngleValues[:,descriptorInfos["SaggitalIndex"]] + descriptorInfos["SaggitalOffset"]))
-                absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
-                absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
-
-                fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "L" +self.m_angleLabels[index]+"Angles"
-
-                btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                     absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
-
-            else:
-                logging.debug("no clinical descriptor for segment label (%s)" %(segName))
-                absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValues)
-
-                fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
-                btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                     absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
+                    btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
+                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
 
 

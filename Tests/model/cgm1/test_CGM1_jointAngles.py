@@ -465,7 +465,7 @@ class CGM1_motionJCSTest():
 class CGM1_motionAbsoluteAnglesTest():
 
     @classmethod
-    def basicCGM1_absoluteAngles_lowerLimb(cls):  #def basicCGM1(self):
+    def basicCGM1_absoluteAngles_lowerLimb(cls):
         """
 
         """
@@ -512,7 +512,7 @@ class CGM1_motionAbsoluteAnglesTest():
                               globalFrameOrientation = globalFrame,
                               forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
 
-        #btkTools.smartWriter(acqGait, "verifX.c3d")
+        btkTools.smartWriter(acqGait, "verifX.c3d")
         # ---   tests on angles
         np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
                                         acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
