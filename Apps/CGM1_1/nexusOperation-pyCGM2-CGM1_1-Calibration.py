@@ -55,7 +55,7 @@ if __name__ == "__main__":
         # --------------------------LOADING ------------------------------------
         if args.DEBUG:
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            calibrateFilenameLabelledNoExt = "static" 
+            calibrateFilenameLabelledNoExt = "static"
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
