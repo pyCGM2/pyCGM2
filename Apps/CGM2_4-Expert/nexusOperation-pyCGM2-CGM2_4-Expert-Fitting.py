@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
         # --------------------------SESSION INFOS -----------------------------
         #  translators management
-        translators = files.manage_pycgm2Translators(DATA_PATH,"CGM2-4.translators")
+        translators = files.getTranslators(DATA_PATH,"CGM2_4.translators")
         if not translators: translators = settings["Translators"]
 
         # --------------------------MODELLING PROCESSING -----------------------
