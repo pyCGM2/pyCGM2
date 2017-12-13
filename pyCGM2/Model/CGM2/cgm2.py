@@ -201,6 +201,8 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
         self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
 
+        self.__coordinateSystemDefinitions()
+
 
     def calibrationProcedure(self):
         """
@@ -213,10 +215,10 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
         dictRef={}
         dictRef["Pelvis"]={"TF" : {'sequence':"YZX", 'labels':   ["RASI","LASI","SACR","midASIS"]} }
-        dictRef["Left Thigh"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LKNE","LHJC","LTHI","LKNE"]} }
-        dictRef["Right Thigh"]={"TF" : {'sequence':"ZXY", 'labels':   ["RKNE","RHJC","RTHI","RKNE"]} }
-        dictRef["Left Shank"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LANK","LKJC","LTIB","LANK"]} }
-        dictRef["Right Shank"]={"TF" : {'sequence':"ZXY", 'labels':   ["RANK","RKJC","RTIB","RANK"]} }
+        dictRef["Left Thigh"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LKNE","LTHAP","LTHI","LKNE"]} }
+        dictRef["Right Thigh"]={"TF" : {'sequence':"ZXY", 'labels':   ["RKNE","RTHAP","RTHI","RKNE"]} }
+        dictRef["Left Shank"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LANK","LTIAP","LTIB","LANK"]} }
+        dictRef["Right Shank"]={"TF" : {'sequence':"ZXY", 'labels':   ["RANK","RTIAP","RTIB","RANK"]} }
 
         dictRef["Left Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LTOE","LAJC",None,"LAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
         dictRef["Right Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RTOE","RAJC",None,"RAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
@@ -235,21 +237,18 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
         return dictRef,dictRefAnatomical
 
+    def __coordinateSystemDefinitions(self):
+        self.setCoordinateSystemDefinition( "Pelvis", "PELVIS", "Anatomic")
+        self.setCoordinateSystemDefinition( "Left Thigh", "LFEMUR", "Anatomic")
+        self.setCoordinateSystemDefinition( "Right Thigh", "RFEMUR", "Anatomic")
+        self.setCoordinateSystemDefinition( "Left Shank", "LTIBIA", "Anatomic")
+        self.setCoordinateSystemDefinition( "Right Shank", "RTIBIA", "Anatomic")
+        self.setCoordinateSystemDefinition( "Left Foot", "LFOOT", "Anatomic")
+        self.setCoordinateSystemDefinition( "Right Foot", "RFOOT", "Anatomic")
 
     def calibrate(self,aquiStatic, dictRef, dictAnatomic,  options=None): #
 
         super(CGM2_3LowerLimbs, self).calibrate(aquiStatic, dictRef, dictAnatomic,  options=options)
-
-
-    # --- motion --------
-
-
-
-
-#    def computeMotion(self,aqui, dictRef,dictAnat, motionMethod,options=None ):
-#
-#        super(CGM2_3LowerLimbs, self).computeMotion(aqui, dictRef,dictAnat, motionMethod, options=options)
-
 
 
     # --- opensim --------
@@ -599,6 +598,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
         self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
 
+        self.__coordinateSystemDefinitions()
 
     def calibrationProcedure(self):
 
@@ -643,6 +643,18 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         dictRefAnatomical["Right ForeFoot"]= {'sequence':"ZXY", 'labels':   ["RvSMH","RFJC","RVMH","RvSMH"]} # look out : use virtual Point
 
         return dictRef,dictRefAnatomical
+
+    def __coordinateSystemDefinitions(self):
+        self.setCoordinateSystemDefinition( "Pelvis", "PELVIS", "Anatomic")
+        self.setCoordinateSystemDefinition( "Left Thigh", "LFEMUR", "Anatomic")
+        self.setCoordinateSystemDefinition( "Right Thigh", "RFEMUR", "Anatomic")
+        self.setCoordinateSystemDefinition( "Left Shank", "LTIBIA", "Anatomic")
+        self.setCoordinateSystemDefinition( "Right Shank", "RTIBIA", "Anatomic")
+        self.setCoordinateSystemDefinition( "Left Foot", "LFOOT", "Anatomic")
+        self.setCoordinateSystemDefinition( "Right Foot", "RFOOT", "Anatomic")
+        self.setCoordinateSystemDefinition( "Left ForeFoot", "LFOREFOOT", "Anatomic")
+        self.setCoordinateSystemDefinition( "Right ForeFoot", "RFOREFOOT", "Anatomic")
+
 
     def calibrate(self,aquiStatic, dictRef, dictAnatomic,  options=None):
         """
@@ -704,31 +716,18 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         logging.debug(" ------------------------------------")
         self._right_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
 
-
-
         # calibration of anatomical Referentials
         logging.debug(" --- Pelvis - AF calibration ---")
         logging.debug(" -------------------------------")
         self._pelvis_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Pelvis","Pelvis",referential = "Anatomic"  )
-
         logging.debug(" --- Left Thigh - AF calibration ---")
         logging.debug(" -----------------------------------")
         self._left_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-             self.displayStaticCoordinateSystem( aquiStatic, "Left Thigh","LThigh",referential = "Anatomic"  )
-
-
         logging.debug(" --- Right Thigh - AF calibration ---")
         logging.debug(" ------------------------------------")
         self._right_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-             self.displayStaticCoordinateSystem( aquiStatic, "Right Thigh","RThigh",referential = "Anatomic"  )
-
 
         logging.debug(" --- Thigh Offsets ---")
         logging.debug(" --------------------")
@@ -777,16 +776,11 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         logging.debug(" --- Left Shank - AF calibration ---")
         logging.debug(" -------------------------------")
         self._left_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Left Shank","LShank",referential = "Anatomic"  )
 
 
         logging.debug(" --- Right Shank - AF calibration ---")
         logging.debug(" -------------------------------")
         self._right_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Right Shank","RShank",referential = "Anatomic"  )
-
 
         logging.debug(" ---Shank  Offsets ---")
         logging.debug(" ---------------------")
@@ -834,15 +828,11 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         #   shank Prox ( copy )
         self.updateSegmentFromCopy("Left Shank Proximal", self.getSegment("Left Shank")) # look out . I copied the shank instance and rename it
         self._left_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Left Shank Proximal","LShankProx",referential = "Anatomic"  )
 
         logging.debug(" --- Right Shank Proximal- AF calibration ---")
         logging.debug(" --------------------------------------------")
         self.updateSegmentFromCopy("Right Shank Proximal", self.getSegment("Right Shank"))
         self._right_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Right Shank Proximal","RShankProx",referential = "Anatomic"  )
 
         # ---  FOOT segments ----
         # -----------------------
@@ -852,14 +842,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         logging.debug(" --- Left Hind Foot  - TF calibration ---")
         logging.debug(" -----------------------------------------")
         self._leftHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Left Foot","LHindFootUncorrected",referential = "technic"  )
 
         logging.debug(" --- Left Hind Foot  - AF calibration ---")
         logging.debug(" -----------------------------------------")
         self._leftHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Left Foot","LHindFoot",referential = "Anatomical"  )
 
         logging.debug(" --- Hind foot Offset---")
         logging.debug(" -----------------------")
@@ -868,28 +854,20 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         logging.debug(" --- Left Fore Foot  - TF calibration ---")
         logging.debug(" -----------------------------------------")
         self._leftForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Left ForeFoot","LTechnicForeFoot",referential = "Technical"  )
 
 
         logging.debug(" --- Left Fore Foot  - AF calibration ---")
         logging.debug(" -----------------------------------------")
         self._leftForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Left ForeFoot","LForeFoot",referential = "Anatomical"  )
 
 
         logging.debug(" --- Right Hind Foot  - TF calibration ---")
         logging.debug(" -----------------------------------------")
         self._rightHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Right Foot","RHindFootUncorrected",referential = "technic"  )
 
         logging.debug(" --- Right Hind Foot  - AF calibration ---")
         logging.debug(" -----------------------------------------")
         self._rightHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Right Foot","RHindFoot",referential = "Anatomical"  )
 
         logging.debug(" --- Hind foot Offset---")
         logging.debug(" -----------------------")
@@ -900,14 +878,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         logging.debug(" --- Right Fore Foot  - TF calibration ---")
         logging.debug(" -----------------------------------------")
         self._rightForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Right ForeFoot","RTechnicForeFoot",referential = "Technical"  )
 
         logging.debug(" --- Right Fore Foot  - AF calibration ---")
         logging.debug(" -----------------------------------------")
         self._rightForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
-        if "useDisplayPyCGM2_CoordinateSystem" in options.keys():
-            self.displayStaticCoordinateSystem( aquiStatic, "Right ForeFoot","RForeFoot",referential = "Anatomical"  )
 
 
     # ---- Technical Referential Calibration
@@ -1574,7 +1548,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             self._right_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
 
 
-
         if motionMethod == enums.motionMethod.Sodervisk:
 
             # ---remove all  direction marker from tracking markers.
@@ -1620,33 +1593,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             self._rightForeFoot_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
 
-
-        logging.debug("--- Display Coordinate system ---")
-        logging.debug(" --------------------------------")
-
-        if not pigStaticProcessing:
-            if "usePyCGM2_coordinateSystem" in options.keys() and options["usePyCGM2_coordinateSystem"]:
-                self.displayMotionCoordinateSystem( aqui,  "Pelvis" , "Pelvis" )
-                self.displayMotionCoordinateSystem( aqui,  "Left Thigh" , "LThigh" )
-                self.displayMotionCoordinateSystem( aqui,  "Right Thigh" , "RThigh" )
-                self.displayMotionCoordinateSystem( aqui,  "Left Shank" , "LShank" )
-                self.displayMotionCoordinateSystem( aqui,  "Right Shank" , "RShank" )
-                self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LFoot" )
-                self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RFoot" )
-                self.displayMotionCoordinateSystem( aqui,  "Left Foot" , "LHindFoot")
-                self.displayMotionCoordinateSystem( aqui,  "Right Foot" , "RHindFoot")
-                self.displayMotionCoordinateSystem( aqui,  "Left ForeFoot" , "LForeFoot")
-                self.displayMotionCoordinateSystem( aqui,  "Right ForeFoot" , "RForeFoot")
-            else:
-                self.displayMotionViconCoordinateSystem(aqui,"Pelvis","PELO","PELA","PELL","PELP")
-                self.displayMotionViconCoordinateSystem(aqui,"Left Thigh","LFEO","LFEA","LFEL","LFEP")
-                self.displayMotionViconCoordinateSystem(aqui,"Right Thigh","RFEO","RFEA","RFEL","RFEP")
-                self.displayMotionViconCoordinateSystem(aqui,"Left Shank","LTIO","LTIA","LTIL","LTIP")
-                self.displayMotionViconCoordinateSystem(aqui,"Right Shank","RTIO","RTIA","RTIL","RTIP")
-                self.displayMotionViconCoordinateSystem(aqui,"Left Foot","LFOO","LFOA","LFOL","LFOP")
-                self.displayMotionViconCoordinateSystem(aqui,"Right Foot","RFOO","RFOA","RFOL","RFOP")
-                self.displayMotionViconCoordinateSystem(aqui,"Left ForeFoot","LTOO","LTOA","LTOL","LTOP")
-                self.displayMotionViconCoordinateSystem(aqui,"Right ForeFoot","RTOO","RTOA","RTOL","RTOP")
 
 
     # ----- native motion ------
@@ -2404,19 +2350,19 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # bones
         # -------------
-        nexusTools.appendBones(NEXUS,vskName,acq,"PEL", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() )
 
-        nexusTools.appendBones(NEXUS,vskName,acq,"LFE", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
         #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LTI", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LFO", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LTO", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() )
 
-        nexusTools.appendBones(NEXUS,vskName,acq,"RFE", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
         #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RTI", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RFO", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RHEE").GetValues()  )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RTO", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues())
+        nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
+        nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RHEE").GetValues()  )
+        nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues())
 
         logging.debug("bones over")
 

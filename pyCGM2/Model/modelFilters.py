@@ -1351,3 +1351,48 @@ class JointPowerFilter(object):
                 btkTools.smartAppendPoint(self.m_aqui,
                                  fulljointLabel,
                                  power,PointType=btk.btkPoint.Power, desc="")
+
+
+class GeneralCoordinateSystemProcedure(object):
+    def __init__(self):
+        self.definitions=list()
+
+    def setDefinition(self, segmentLabel, coordinateSystemLabel, referentialType):
+        dic = {"segmentLabel": segmentLabel,"coordinateSystemLabel": coordinateSystemLabel,"referentialType": referentialType}
+        self.definitions.append(dic)
+
+class ModelCoordinateSystemProcedure(object):
+    def __init__(self,iMod):
+        self.definitions = iMod.m_csDefinitions
+
+class CoordinateSystemDisplayFilter(object):
+    """
+        display Coordinate system
+    """
+
+    def __init__(self,iProc, iMod, btkAcq):
+
+        self.m_procedure = iProc
+        self.model = iMod
+        self.aqui = btkAcq
+        self.static = False
+
+    def setStatic(self,boolean):
+        self.static = boolean
+
+    def display(self):
+        definitions = self.m_procedure.definitions
+
+        if self.static:
+            for definition in definitions:
+                self.model.displayStaticCoordinateSystem( self.aqui,
+                                                    definition["segmentLabel"],
+                                                    definition["coordinateSystemLabel"],
+                                                    referential = definition["referentialType"] )
+
+        else:
+            for definition in definitions:
+                self.model.displayMotionCoordinateSystem( self.aqui,
+                                                    definition["segmentLabel"],
+                                                    definition["coordinateSystemLabel"],
+                                                    referential = definition["referentialType"] )

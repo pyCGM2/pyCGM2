@@ -55,6 +55,7 @@ class Model(object):
         self.m_properties=dict()
         self.m_properties["CalibrationParameters"]=dict()
         self.m_clinicalDescriptors= []
+        self.m_csDefinitions = []
 
     def __repr__(self):
         return "Basis Model"
@@ -372,8 +373,9 @@ class Model(object):
 
         return infos
 
-
-
+    def setCoordinateSystemDefinition(self,segmentLabel,coordinateSystemLabel, referentialType):
+        dic = {"segmentLabel": segmentLabel,"coordinateSystemLabel": coordinateSystemLabel,"referentialType": referentialType}
+        self.m_csDefinitions.append(dic)
 
 
 class Model6Dof(Model):
