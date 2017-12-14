@@ -62,6 +62,10 @@ if __name__ == "__main__":
         if args.DEBUG:
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH +"CGM2\\cgm2.2\\native\\"
             calibrateFilenameLabelledNoExt = "static"
+
+            #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH +"CGM3\\Salford_healthy_DataCollection\\PN01OP01S01\\"
+            #calibrateFilenameLabelledNoExt = "PN01OP01S01STAT"
+
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
             args.noIk=False
 
