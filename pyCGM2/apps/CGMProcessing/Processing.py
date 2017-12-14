@@ -52,7 +52,7 @@ if __name__ == "__main__":
         modelledFilenames = [str(x) for x in modelledFilenames]
 
         pointSuffix= task["PointSuffix"]
-        pdfFilename = task["Type"]
+        pdfFilename = task["outputFilenameNoExt"]+ ".pdf"
 
         # --------------------------PROCESSING --------------------------------
         cgmProcessing.gaitprocessing(DATA_PATH,modelledFilenames,"CGM1.0",
