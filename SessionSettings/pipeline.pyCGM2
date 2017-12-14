@@ -1,0 +1,84 @@
+{
+    "Subject": {"Id" : "15KUFC01" },
+    "ExperimentalContext": {
+        "sessionName":"",
+        "AssessorName":""
+        },
+    "Modelling": {
+        "Model": {"CGM": "CGM1.0"},
+        "fileSuffix" : "",
+        "pointSuffix": "",
+        "MarkerDiameter": 14,
+        "MP" :{
+            "Required": {
+                "Bodymass": 71,
+                "Height": 1755,
+                "LeftLegLength": 860,
+                "RightLegLength": 865,
+                "LeftKneeWidth": 102,
+                "RightKneeWidth": 103.4,
+                "LeftAnkleWidth": 75.3,
+                "RightAnkleWidth": 72.9,
+                "LeftSoleDelta": 0,
+                "RightSoleDelta": 0
+            },
+            "Optional": {
+                "InterAsisDistance": 0,
+                "LeftAsisTrocanterDistance": 0,
+                "LeftTibialTorsion": 0,
+                "LeftThighRotation": 0,
+                "LeftShankRotation": 0,
+                "RightAsisTrocanterDistance": 0,
+                "RightTibialTorsion": 0,
+                "RightThighRotation": 0,
+                "RightShankRotation": 0
+            }
+        },
+        "Calibration": {
+            "LeftFlatFoot": 1,
+            "RightFlatFoot": 1,
+            "Trial": "static.c3d"
+         },
+        "KneeCalibrationTrials": {
+            "Left" : {
+                "Method" : "",
+                "Trial": "",
+                "BeginFrame": 0,
+                "EndFrame": 0
+                },
+            "Right": {
+                "Method" : "",
+                "Trial": "",
+                "BeginFrame": 0,
+                "EndFrame": 0
+            }
+        },
+        "Fitting": {
+            "NoIK":0,
+            "Trials": [
+                {"File": "gait Trial.c3d", "Mfpa": "Auto"}
+             ],
+            "Projection":"JCS"
+            }
+    },
+    "Processing": {
+        "Tasks" : [
+            {
+             "outputFilenameNoExt" : "output",
+             "Type" : "",
+             "Conditions" : {
+                "Foot" : "",
+                "Orthosis" : "",
+                "Prothesis" : "",
+                "ExternalHelp" : "",
+                "Assistance" :""
+                },
+            "Trials" : ["gait Trial.c3d"],
+            "Normative data": {
+                "Author": "Schwartz2008",
+                "Modality": "Free"
+                }
+            }
+        ]
+    }
+}
