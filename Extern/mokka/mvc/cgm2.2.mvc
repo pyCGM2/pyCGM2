@@ -63,7 +63,23 @@
         <Marker label="RTIBIAPROX_X" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
         <Marker label="RTIBIAPROX_Y" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
         <Marker label="RTIBIAPROX_Z" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
-  
+
+        <Marker label="LASI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RASI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LPSI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RPSI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTHI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LKNE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIB_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LANK_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LHEE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTOE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RTHI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RKNE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RTIB_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RANK_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RHEE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RTOE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
         
         </MarkersList>
     <SegmentsList>

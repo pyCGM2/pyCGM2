@@ -5,7 +5,6 @@
         <Marker label="RASI" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
         <Marker label="LPSI" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
         <Marker label="RPSI" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
-        <Marker label="midASIS" radius="6" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
         
         <Marker label="LTHI" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
         <Marker label="LKNE" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
@@ -25,8 +24,17 @@
         <Marker label="RHEE" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
         <Marker label="RTOE" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
 
+        <Marker label="LTHAP" radius="8" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTHAD" radius="8" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIAP" radius="8" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIAD" radius="8" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
         
-  
+        <Marker label="RTHAP" radius="8" colorR="0.329412" colorG="0.666667" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="RTHAD" radius="8" colorR="0.329412" colorG="0.666667" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="RTIAP" radius="8" colorR="0.329412" colorG="0.666667" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="RTIAD" radius="8" colorR="0.329412" colorG="0.666667" colorB="1" visible="1" trajectory="0"/>
+
+        <Marker label="midASIS" radius="6" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
         <Marker label="LHJC" radius="9" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
         <Marker label="RHJC" radius="8" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
         <Marker label="LKJC" radius="8" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
@@ -56,14 +64,27 @@
         <Marker label="RFOOT_X" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
         <Marker label="RFOOT_Y" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
         <Marker label="RFOOT_Z" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
-        
-        <Marker label="LTIBIAPROX_X" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
-        <Marker label="LTIBIAPROX_Y" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
-        <Marker label="LTIBIAPROX_Z" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
-        <Marker label="RTIBIAPROX_X" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
-        <Marker label="RTIBIAPROX_Y" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
-        <Marker label="RTIBIAPROX_Z" radius="2" colorR="0" colorG="1" colorB="0" visible="1" trajectory="0"/>
-  
+
+        <Marker label="LASI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RASI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LPSI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RPSI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTHI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LKNE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIB_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LANK_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LHEE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTOE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RTHI_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RKNE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RTIB_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RANK_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RHEE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RTOE_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTHAP_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTHAD_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIAP_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIAD_m" radius="10" colorR="0" colorG="0" colorB="0" visible="1" trajectory="0"/>        
         
         </MarkersList>
     <SegmentsList>
@@ -83,11 +104,14 @@
             <Point label="RTHI"/>
             <Point label="RKNE"/>
             <Point label="RKNM"/>
+            <Point label="RTHAP"/>
+            <Point label="RTHAD"/>
             <Point label="RHJC"/>
             <Point label="RKJC"/>
             <Link pt1="RASI" pt2="RTHI"/>
             <Link pt1="RKNE" pt2="RTHI"/>
             <Link pt1="RKNE" pt2="RKNM"/>
+            <Link pt1="RTHAP" pt2="RTHAD"/>
             <Face pt1="RHJC" pt2="RKJC" pt3="RKNE"/>
         </Segment>
         <Segment label="Left Thigh" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
@@ -95,11 +119,14 @@
             <Point label="LTHI"/>
             <Point label="LKNE"/>
             <Point label="LKNM"/>
+            <Point label="LTHAP"/>
+            <Point label="LTHAD"/>
             <Point label="LHJC"/>
             <Point label="LKJC"/>
             <Link pt1="LASI" pt2="LTHI"/>
             <Link pt1="LKNE" pt2="LTHI"/>
             <Link pt1="LKNE" pt2="LKNM"/>
+            <Link pt1="LTHAP" pt2="LTHAD"/>
             <Face pt1="LHJC" pt2="LKJC" pt3="LKNE"/>
         </Segment>
 
@@ -108,11 +135,14 @@
             <Point label="RTIB"/>
             <Point label="RANK"/>
             <Point label="RMED"/>
+            <Point label="RTIAP"/>
+            <Point label="RTIAD"/>
             <Point label="RKJC"/>
             <Point label="RAJC"/>
             <Link pt1="RKNE" pt2="RTIB"/>
             <Link pt1="RANK" pt2="RTIB"/>
             <Link pt1="RANK" pt2="RMED"/>
+            <Link pt1="RTIAP" pt2="RTIAD"/>
             <Face pt1="RKJC" pt2="RAJC" pt3="RANK"/>
         </Segment>
         <Segment label="Left Shank" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
@@ -120,11 +150,14 @@
             <Point label="LTIB"/>
             <Point label="LANK"/>
             <Point label="LMED"/>
+            <Point label="LTIAP"/>
+            <Point label="LTIAD"/>
             <Point label="LKJC"/>
             <Point label="LAJC"/>
             <Link pt1="LKNE" pt2="LTIB"/>
             <Link pt1="LANK" pt2="LTIB"/>
             <Link pt1="LANK" pt2="LMED"/>
+            <Link pt1="LTIAP" pt2="LTIAD"/>
             <Face pt1="LAJC" pt2="LKJC" pt3="LANK"/>
         </Segment>
         <Segment label="Left Foot" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
@@ -189,24 +222,6 @@
             <Link pt1="RKJC" pt2="RTIBIA_X"/>
             <Link pt1="RKJC" pt2="RTIBIA_Y"/>
             <Link pt1="RKJC" pt2="RTIBIA_Z"/>
-        </Segment>
-        <Segment label="Left Tibia Prox ACS" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
-            <Point label="LKJC"/>
-            <Point label="LTIBIAPROX_X"/>
-            <Point label="LTIBIAPROX_Y"/>
-            <Point label="LTIBIAPROX_Z"/>
-            <Link pt1="LKJC" pt2="LTIBIAPROX_X"/>
-            <Link pt1="LKJC" pt2="LTIBIAPROX_Y"/>
-            <Link pt1="LKJC" pt2="LTIBIAPROX_Z"/>
-        </Segment>
-        <Segment label="Right Tibia Prox ACS" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
-            <Point label="RKJC"/>
-            <Point label="RTIBIAPROX_X"/>
-            <Point label="RTIBIAPROX_Y"/>
-            <Point label="RTIBIAPROX_Z"/>
-            <Link pt1="RKJC" pt2="RTIBIAPROX_X"/>
-            <Link pt1="RKJC" pt2="RTIBIAPROX_Y"/>
-            <Link pt1="RKJC" pt2="RTIBIAPROX_Z"/>
         </Segment>
         <Segment label="Left Foot ACS" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
             <Point label="LAJC"/>
