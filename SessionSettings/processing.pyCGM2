@@ -1,0 +1,28 @@
+{
+    "Subject": {"Id" : ""},
+    "Model": {"CGM" : ""},
+    "ExperimentalContext": {
+        "sessionName":"",
+        "AssessorName":""
+        },
+    "Processing": {
+
+        "Tasks" : [
+            {"Type" : "",
+             "Conditions" : {
+                "Foot" : "",
+                "Orthosis" : "",
+                "Prothesis" : "",
+                "ExternalHelp" : "",
+                "Assistance" :""
+                },
+            "Trials" : ["", ""],
+            "PointSuffix":"",
+            "Normative data": {
+                "Author": "Schwartz2008",
+                "Modality": "Free"
+                }
+            }
+        ]
+    }
+}
