@@ -17,15 +17,18 @@ from pyCGM2.Model.CGM2 import  cgm,cgm2
 from pyCGM2.Utils import files
 
 
-def gaitprocessing(DATA_PATH, modelledFilename, modelVersion,
+def gaitprocessing(DATA_PATH, modelledFilenames, modelVersion,
     modelInfo, subjectInfo, experimentalInfo,
     normativeData,
     pointSuffix,
     pdfname="gaitProcessing"):
 
+    if isinstance(modelledFilenames,str):
+        modelledFilenames = [modelledFilenames]
+
     #---- c3d manager
     #--------------------------------------------------------------------------
-    c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,[modelledFilename])
+    c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
     cmf.enableEmg(False)
     trialManager = cmf.generate()
