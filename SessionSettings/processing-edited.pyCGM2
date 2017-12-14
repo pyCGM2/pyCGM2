@@ -8,7 +8,8 @@
     "Processing": {
 
         "Tasks" : [
-            {"Type" : "Spontaneous Gait",
+            {"outputFilenameNoExt" : "sponGait",
+            "Type" : "Spontaneous Gait",
              "Conditions" : {
                 "Foot" : "Bare",
                 "Orthosis" : "No",
