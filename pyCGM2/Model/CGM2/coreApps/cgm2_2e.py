@@ -198,7 +198,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
         # --- final pyCGM2 model motion Filter ---
         # use fitted markers
-        modMotionFitted=modelFilters.ModelMotionFilter(scp,acqStaticIK,model,enums.motionMethod.Sodervisk)
+        modMotionFitted=modelFilters.ModelMotionFilter(scp,acqStaticIK,model,enums.motionMethod.Determinist)
 
         modMotionFitted.compute()
 
@@ -364,7 +364,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     # --- final pyCGM2 model motion Filter ---
     # use fitted markers
-    modMotionFitted=modelFilters.ModelMotionFilter(scp,acqIK,model,enums.motionMethod.Sodervisk ,
+    modMotionFitted=modelFilters.ModelMotionFilter(scp,acqIK,model,enums.motionMethod.Determinist ,
                                               markerDiameter=markerDiameter)
 
     modMotionFitted.compute()
