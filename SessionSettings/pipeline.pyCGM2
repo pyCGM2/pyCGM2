@@ -34,7 +34,9 @@
                 "RightShankRotation": 0
             }
         },
+        "NoIK":0,
         "Calibration": {
+            "HJC_method": "Hara",
             "LeftFlatFoot": 1,
             "RightFlatFoot": 1,
             "Trial": "static.c3d"
@@ -54,7 +56,6 @@
             }
         },
         "Fitting": {
-            "NoIK":0,
             "Trials": [
                 {"File": "gait Trial.c3d", "Mfpa": "Auto"}
              ],
