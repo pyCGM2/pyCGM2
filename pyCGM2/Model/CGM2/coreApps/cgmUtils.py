@@ -153,7 +153,7 @@ def applyDecorators_CGM1(smc, model,acqStatic,optional_mp,markerDiameter):
 
     # KADmed
     if smc["left"] == enums.CgmStaticMarkerConfig.KADmed:
-        logging.warning("CASE FOUND ===> Right Side = KAD+med")
+        logging.warning("CASE FOUND ===> Left Side = KAD+med")
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
 
@@ -186,7 +186,7 @@ def applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter):
 
     # KADmed
     if smc["left"] == enums.CgmStaticMarkerConfig.KADmed:
-        logging.warning("CASE FOUND ===> Right Side = KAD+med")
+        logging.warning("CASE FOUND ===> Left Side = KAD+med")
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
 
@@ -197,7 +197,7 @@ def applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter):
 
     # KneeMed
     if smc["left"] == enums.CgmStaticMarkerConfig.KneeMed:
-        logging.warning("CASE FOUND ===> Right Side = KneeMed -  ankle for KJC")
+        logging.warning("CASE FOUND ===> Left Side = KneeMed -  ankle for KJC")
         modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic, markerDiameter=markerDiameter, side="left")
 
     if smc["right"] == enums.CgmStaticMarkerConfig.KneeMed:
@@ -206,7 +206,7 @@ def applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter):
 
     # KneeAnkleMed
     if smc["left"] == enums.CgmStaticMarkerConfig.KneeAnkleMed:
-        logging.warning("CASE FOUND ===> Right Side = Knee and Ankle Medial")
+        logging.warning("CASE FOUND ===> Left Side = Knee and Ankle Medial")
         modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="left")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
 
@@ -222,7 +222,7 @@ def applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter):
 
     if smc["right"] == enums.CgmStaticMarkerConfig.AnkleMed:
         logging.warning("CASE FOUND ===> Right Side = Ankle Medial")
-        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")    
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
 
 def applyHJCDecorators(model,method,side="both"):
 
