@@ -16,32 +16,32 @@ class C3dManager:
     kinematic={"Trials":None , "Filenames":None}
     kinetic={"Trials": None, "Filenames":None }
     kineticFlag = False
-    emg={"Trials":None , "Filenames":None}    
-    
+    emg={"Trials":None , "Filenames":None}
+
 
 class UniqueC3dSetProcedure(object):
-    
-    
+
+
     def __init__(self, data_path, fileLst):
         self.m_files = fileLst
         self.m_data_path = data_path
 
 
     def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag):
-        
-       
+
+
         #---spatioTemporalTrials
         if spatioTempFlag:
             c3dManager.spatioTemporal["Trials"],c3dManager.spatioTemporal["Filenames"] = trialTools.buildTrials(self.m_data_path,self.m_files)
-    
+
 
         # ----kinematic trials---
-        if kinematicFlag:        
+        if kinematicFlag:
             c3dManager.kinematic["Trials"],c3dManager.kinematic["Filenames"], = trialTools.buildTrials(self.m_data_path,self.m_files)
 
-        #---kinetic Trials--- ( check if kinetic events) 
-        if kineticFlag:       
-            c3dManager.kinetic["Trials"],c3dManager.kinetic["Filenames"],C3dManager.kineticFlag =  trialTools.automaticKineticDetection(self.m_data_path,self.m_files)                         
+        #---kinetic Trials--- ( check if kinetic events)
+        if kineticFlag:
+            c3dManager.kinetic["Trials"],c3dManager.kinetic["Filenames"],C3dManager.kineticFlag =  trialTools.automaticKineticDetection(self.m_data_path,self.m_files)
 
 
         #----emgTrials
@@ -52,8 +52,8 @@ class UniqueC3dSetProcedure(object):
 
 
 class DistinctC3dSetProcedure(object):
-    
-    
+
+
     def __init__(self, data_path, stp_fileLst, kinematic_fileLst, kinetic_fileLst, emg_fileLst):
 
         self.m_data_path = data_path
@@ -64,20 +64,20 @@ class DistinctC3dSetProcedure(object):
         self.m_files_emg = emg_fileLst
 
     def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag):
-        
-       
+
+
         #---spatioTemporalTrials
         if spatioTempFlag:
             c3dManager.spatioTemporal["Trials"],c3dManager.spatioTemporal["Filenames"] = trialTools.buildTrials(self.m_data_path,self.m_files_stp)
-    
+
 
         # ----kinematic trials---
-        if kinematicFlag:        
+        if kinematicFlag:
             c3dManager.kinematic["Trials"],c3dManager.kinematic["Filenames"], = trialTools.buildTrials(self.m_data_path,self.m_files_kinematic)
 
-        #---kinetic Trials--- ( check if kinetic events) 
-        if kineticFlag:       
-            c3dManager.kinetic["Trials"],c3dManager.kinetic["Filenames"],C3dManager.kineticFlag =  trialTools.automaticKineticDetection(self.m_data_path,self.m_files_kinetic)                         
+        #---kinetic Trials--- ( check if kinetic events)
+        if kineticFlag:
+            c3dManager.kinetic["Trials"],c3dManager.kinetic["Filenames"],C3dManager.kineticFlag =  trialTools.automaticKineticDetection(self.m_data_path,self.m_files_kinetic)
 
 
         #----emgTrials
@@ -90,7 +90,7 @@ class DistinctC3dSetProcedure(object):
 class C3dManagerFilter(object):
     """
 
-    """            
+    """
 
     def __init__(self,procedure):
 
@@ -106,7 +106,7 @@ class C3dManagerFilter(object):
     def enableKinematic(self, boolean):
         self.m_kinematicFlag = boolean
 
-    def enablemKinetic(self, boolean):
+    def enableKinetic(self, boolean):
         self.m_kineticFlag = boolean
 
     def enableEmg(self, boolean):
@@ -118,6 +118,6 @@ class C3dManagerFilter(object):
 
         c3dManager = C3dManager()
 
-        self.m_procedure.generate(c3dManager,self.m_spatioTempFlag, self.m_kinematicFlag, self.m_kineticFlag, self.m_emgFlag) 
+        self.m_procedure.generate(c3dManager,self.m_spatioTempFlag, self.m_kinematicFlag, self.m_kineticFlag, self.m_emgFlag)
 
         return c3dManager

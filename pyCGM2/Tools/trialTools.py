@@ -142,6 +142,8 @@ def automaticKineticDetection(dataPath,filenames):
                 kineticTrials.append(trial)
 
     kineticTrials = None if kineticTrials ==[] else kineticTrials
+    flag_kinetics = False if kineticTrials ==[] else True
+
 
     return kineticTrials,kineticFilenames,flag_kinetics
 
