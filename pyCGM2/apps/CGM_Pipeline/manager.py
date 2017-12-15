@@ -25,6 +25,9 @@ class pipelineFileManager(object):
         return self.pipSettings["Modelling"]["MarkerDiameter"]
 
     # calibration
+    def getHJCmethod(self):
+        return self.pipSettings["Modelling"]["Calibration"]["HJC_method"]
+
     def getLeftFlatFoot(self):
         return bool(self.pipSettings["Modelling"]["Calibration"]["LeftFlatFoot"])
 
@@ -67,7 +70,7 @@ class pipelineFileManager(object):
             return enums.MomentProjection.JCS
 
     def isIkFitting(self):
-        return bool(self.pipSettings["Modelling"]["Fitting"]["NoIK"])
+        return bool(self.pipSettings["Modelling"]["NoIK"])
 
     # processing
     def getSubjectInfo(self):
