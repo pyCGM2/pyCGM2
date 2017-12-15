@@ -11,7 +11,7 @@ import pyCGM2
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2.Report import normativeDatasets,plot
-from pyCGM2.Processing import c3dManager
+from pyCGM2.Processing import c3dManager,exporter
 from pyCGM2.Processing.gaitAnalysis import smartFunctions
 from pyCGM2.Model.CGM2 import  cgm,cgm2
 from pyCGM2.Utils import files
@@ -21,7 +21,8 @@ def gaitprocessing(DATA_PATH, modelledFilenames, modelVersion,
     modelInfo, subjectInfo, experimentalInfo,
     normativeData,
     pointSuffix,
-    pdfname="gaitProcessing"):
+    outputFilename="gaitProcessing",
+    exportXls=False):
 
     if isinstance(modelledFilenames,str):
         modelledFilenames = [modelledFilenames]
@@ -53,10 +54,18 @@ def gaitprocessing(DATA_PATH, modelledFilenames, modelVersion,
         chosenModality = normativeData["Modality"]
         nds = normativeDatasets.Pinzone2014(chosenModality) # modalites : "Center One" ,"Center Two"
 
+    #---- export
+    #-----------------------------------------------------------------------
+    if exportXls:
+        exportFilter = exporter.XlsAnalysisExportFilter()
+        exportFilter.setAnalysisInstance(analysis)
+        exportFilter.export(outputFilename, path=DATA_PATH,excelFormat = "xls",mode="Advanced")
+
+
     #---- plot panels
     #-----------------------------------------------------------------------
     smartFunctions.cgm_gaitPlots(modelVersion,analysis,trialManager.kineticFlag,
-        DATA_PATH,pdfname,
+        DATA_PATH,outputFilename,
         pointLabelSuffix=pointSuffix,
         normativeDataset=nds )
 

@@ -20,9 +20,11 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='CGM Gait Processing')
     parser.add_argument('-f','--file', type=str, help='processing file', default="processing.pyCGM2")
+    parser.add_argument('--export', action='store_true', help='xls export')
     parser.add_argument('--DEBUG', action='store_true', help='debug model')
 
     args = parser.parse_args()
+    xlsExport_flag = args.export
 
 
     # --------------------------INPUTS ------------------------------------
@@ -52,11 +54,12 @@ if __name__ == "__main__":
         modelledFilenames = [str(x) for x in modelledFilenames]
 
         pointSuffix= task["PointSuffix"]
-        pdfFilename = task["outputFilenameNoExt"]+ ".pdf"
+        outputFilenameNoExt = task["outputFilenameNoExt"]
 
         # --------------------------PROCESSING --------------------------------
         cgmProcessing.gaitprocessing(DATA_PATH,modelledFilenames,"CGM1.0",
              modelInfo, subjectInfo, experimentalInfo,
              normativeData,
              pointSuffix,
-             pdfname = pdfFilename)
+             outputFilename = outputFilenameNoExt,
+             exportXls=xlsExport_flag)

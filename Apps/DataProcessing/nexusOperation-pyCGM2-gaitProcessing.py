@@ -28,6 +28,7 @@ if __name__ == "__main__":
                         help="if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
                         default="Free")
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+    parser.add_argument('--export', action='store_true', help='xls export')
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -38,7 +39,7 @@ if __name__ == "__main__":
         #-----------------------SETTINGS---------------------------------------
         pointSuffix = args.pointSuffix if args.pointSuffix is not None else ""
         normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
-
+        xlsExport_flag = args.export
         # --------------------------INPUTS ------------------------------------
         if args.DEBUG:
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
@@ -75,7 +76,8 @@ if __name__ == "__main__":
             modelInfo, subjectInfo, experimentalInfo,
             normativeData,
             pointSuffix,
-            pdfname = modelledFilenameNoExt)
+            outputFilenameNoExt = modelledFilenameNoExt,
+            exportXls=xlsExport_flag)
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

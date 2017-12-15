@@ -24,9 +24,11 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='CGM Pipeline')
     parser.add_argument('-f','--file', type=str, help='pipeline file', default="pipeline.pyCGM2")
+    parser.add_argument('--export', action='store_true', help='xls export')
     parser.add_argument('--DEBUG', action='store_true', help='debug mode')
 
     args = parser.parse_args()
+    xlsExport_flag = args.export
 
     pipelineFile = args.file
 
@@ -274,11 +276,12 @@ if __name__ == "__main__":
         else:
             modelledFilenames = [str(x[:-4]+"-modelled.c3d") for x in modelledFilenames]
 
-        pdfFilename = task["outputFilenameNoExt"]+ ".pdf"
+        outputFilenameNoExt = task["outputFilenameNoExt"]
 
         # --------------------------PROCESSING --------------------------------
         cgmProcessing.gaitprocessing(DATA_PATH,modelledFilenames,modelVersion,
              modelInfo, subjectInfo, experimentalInfo,
              normativeData,
              pointSuffix,
-             pdfname = pdfFilename)
+             outputFilename = outputFilenameNoExt,
+             exportXls=xlsExport_flag)
