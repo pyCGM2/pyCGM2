@@ -87,7 +87,7 @@ if __name__ == "__main__":
     #---------------------------------------------------------------------------
     # --------------------------MODELLING PROCESSING ---------------------------
     model,acqStatic = cgm2_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
-                  leftFlatFoot,rightFlatFoot,markerDiameter,
+                  leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                   pointSuffix)
 
     #---------------------------------------------------------------------------
