@@ -3507,18 +3507,9 @@ class CGM1LowerLimbs(CGM):
         values_midASISnode = seg.getReferential('TF').getNodeTrajectory("midASIS")
         btkTools.smartAppendPoint(aqui,"midASIS",values_midASISnode, desc="opt")
 
-#        if anatomicalFrameMotionEnable:
-#            # --- Motion of the Anatomical frame
-#            seg.anatomicalFrame.motion=[]
-#
-#              # computation
-#            for i in range(0,aqui.GetPointFrameNumber()):
-#                ptOrigin=aqui.GetPoint(str(dictAnat["Pelvis"]['labels'][3])).GetValues()[i,:]
-#                #R = np.dot(seg.getReferential("TF").motion[i].getRotation(),relativeSegTech )
-#                R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
-#                frame=frame.Frame()
-#                frame.update(R,ptOrigin)
-#                seg.anatomicalFrame.addMotionFrame(frame)
+        # midHJC
+        val=(aqui.GetPoint("LHJC").GetValues() + aqui.GetPoint("RHJC").GetValues()) / 2.0
+        btkTools.smartAppendPoint(aqui,"midHJC",val,desc="opt")
 
 
 
