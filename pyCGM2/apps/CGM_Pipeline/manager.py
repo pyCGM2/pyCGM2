@@ -8,25 +8,29 @@ class pipelineFileManager(object):
     def __init__(self,DATA_PATH,pipelineFile):
         self.pipSettings = files.openJson(DATA_PATH,pipelineFile)
 
+    def getPipelineSetttings(self):
+        return self.pipSettings
+
+
     def getCGMVersion(self):
-        return self.pipSettings["Modelling"]["Model"]["CGM"]
+        return str(self.pipSettings["Modelling"]["Model"]["CGM"])
 
     def getMP(self):
-        required_mp,optional_mp = files.getMp(self.pipSettings["Modelling"])
+        required_mp,optional_mp = files.getMp(self.pipSettings["Modelling"],resetFlag=True)
         return required_mp,optional_mp
 
     def getPointSuffix(self):
-        return self.pipSettings["Modelling"]["pointSuffix"]
+        return str(self.pipSettings["Modelling"]["pointSuffix"])
 
     def getFileSuffix(self):
-        return None if self.pipSettings["Modelling"]["fileSuffix"]=="" else self.pipSettings["Modelling"]["fileSuffix"]
+        return None if self.pipSettings["Modelling"]["fileSuffix"]=="" else str(self.pipSettings["Modelling"]["fileSuffix"])
 
     def getMarkerDiameter(self):
         return self.pipSettings["Modelling"]["MarkerDiameter"]
 
     # calibration
     def getHJCmethod(self):
-        return self.pipSettings["Modelling"]["Calibration"]["HJC_method"]
+        return str(self.pipSettings["Modelling"]["Calibration"]["HJC_method"])
 
     def getLeftFlatFoot(self):
         return bool(self.pipSettings["Modelling"]["Calibration"]["LeftFlatFoot"])
@@ -40,7 +44,7 @@ class pipelineFileManager(object):
     #KneeCalibrationTrials
     def isKneeCalibrationEnable(self,side):
         kc_dict = self.pipSettings["Modelling"]["KneeCalibrationTrials"][side]
-        method = kc_dict["Method"]
+        method = str(kc_dict["Method"])
         if method == "Calibration2Dof" or method == "SARA":
             return True
         else:
@@ -48,7 +52,7 @@ class pipelineFileManager(object):
 
     def getKneeCalibration(self,side):
         kc_dict = self.pipSettings["Modelling"]["KneeCalibrationTrials"][side]
-        method = kc_dict["Method"]
+        method = str(kc_dict["Method"])
         trial = str(kc_dict["Trial"])
         begin = None if kc_dict["BeginFrame"]==0 else kc_dict["BeginFrame"]
         end = None if kc_dict["EndFrame"]==0 else kc_dict["EndFrame"]
@@ -60,13 +64,13 @@ class pipelineFileManager(object):
         return self.pipSettings["Modelling"]["Fitting"]["Trials"]
 
     def getMomentProjection(self):
-        if self.pipSettings["Modelling"]["Fitting"]["Projection"] == "Distal":
+        if str(self.pipSettings["Modelling"]["Fitting"]["Projection"]) == "Distal":
             return  enums.MomentProjection.Distal
-        elif self.pipSettings["Modelling"]["Fitting"]["Projection"] == "Proximal":
+        elif str(self.pipSettings["Modelling"]["Fitting"]["Projection"]) == "Proximal":
             return  enums.MomentProjection.Proximal
-        elif self.pipSettings["Modelling"]["Fitting"]["Projection"] == "Global":
+        elif str(self.pipSettings["Modelling"]["Fitting"]["Projection"]) == "Global":
             return  enums.MomentProjection.Global
-        elif self.pipSettings["Modelling"]["Fitting"]["Projection"] == "JCS":
+        elif str(self.pipSettings["Modelling"]["Fitting"]["Projection"]) == "JCS":
             return enums.MomentProjection.JCS
 
     def isIkFitting(self):
@@ -81,3 +85,23 @@ class pipelineFileManager(object):
         return self.pipSettings["Modelling"]["Model"]
     def getProcessingTasks(self):
         return self.pipSettings["Processing"]["Tasks"]
+
+
+    def updateOptionalMp(self,model):
+        # update optional mp and save a new info file
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "InterAsisDistance"] = model.mp_computed["InterAsisDistance"]
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftAsisTrocanterDistance"] = model.mp_computed["LeftAsisTrocanterDistance"]
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftTibialTorsion"] = model.mp_computed["LeftTibialTorsionOffset"]
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftThighRotation"] = model.mp_computed["LeftThighRotationOffset"]
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftShankRotation"] = model.mp_computed["LeftShankRotationOffset"]
+
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "RightAsisTrocanterDistance"] = model.mp_computed["RightAsisTrocanterDistance"]
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "RightTibialTorsion"] = model.mp_computed["RightTibialTorsionOffset"]
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
+
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftKneeFuncCalibrationOffset"] = model.mp_computed["LeftKneeFuncCalibrationOffset"]
+        self.pipSettings["Modelling"]["MP"]["Optional"][ "RightKneeFuncCalibrationOffset"] = model.mp_computed["RightKneeFuncCalibrationOffset"]
+
+    def save(self,DATA_PATH,pipelineFilename):
+        files.saveJson(DATA_PATH, pipelineFilename, self.pipSettings)

@@ -9,7 +9,8 @@
 
         "Tasks" : [
             {"outputFilenameNoExt" : "output",
-            "Type" : "",
+            "TaskTitle": "Gait analysis",
+            "AnalysisType": "Gait", 
              "Conditions" : {
                 "Foot" : "",
                 "Orthosis" : "",

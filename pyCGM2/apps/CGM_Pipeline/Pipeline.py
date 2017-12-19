@@ -15,6 +15,7 @@ from pyCGM2.Model.CGM2.coreApps import cgmProcessing, kneeCalibration
 from pyCGM2.Model.CGM2.coreApps import cgm1,cgm1_1,cgm2_1,cgm2_2,cgm2_2e,cgm2_3,cgm2_3e,cgm2_4,cgm2_4e
 from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
+from pyCGM2.Eclipse import vskTools
 
 from  manager import *
 
@@ -24,23 +25,31 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='CGM Pipeline')
     parser.add_argument('-f','--file', type=str, help='pipeline file', default="pipeline.pyCGM2")
+    parser.add_argument('--vsk', type=str, help='vicon skeleton filename')
     parser.add_argument('--export', action='store_true', help='xls export')
+    parser.add_argument('--plot', action='store_true', help='enable Gait Plot')
+    parser.add_argument('-dp','--disableProcessing', action='store_true', help='disable modelling processing')
     parser.add_argument('--DEBUG', action='store_true', help='debug mode')
 
     args = parser.parse_args()
     xlsExport_flag = args.export
-
     pipelineFile = args.file
+    processingFlag = True if not args.disableProcessing else False
+    plotFlag = True if  args.plot else False
 
     #args.DEBUG = True
     if args.DEBUG:
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
+        #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
+        DATA_PATH = "C:\\Users\\HLS501\\Google Drive\\Paper_for BJSM\\BJSM_trials\\FMS_Screening\\15KUFC01\\Session 2\\"
+        pipelineFile = "pipeline_method1.pyCGM2"
+
     else:
         DATA_PATH = os.getcwd()+"\\"
 
     manager = pipelineFileManager(DATA_PATH,pipelineFile)
     modelVersion = manager.getCGMVersion()
+    logging.info("model version : %s" %(modelVersion))
 
     # --------------------------MODELLING ------------------------------------
 
@@ -81,17 +90,24 @@ if __name__ == "__main__":
     if not translators: translators = settings["Translators"]
 
     # mp file
-    required_mp,optional_mp = manager.getMP()
+    if args.vsk is None:
+        logging.info("mp from pipeline file")
+        required_mp,optional_mp = manager.getMP()
+    else:
+        logging.warning("mp from vsk file")
+        vsk = vskTools.Vsk(str(DATA_PATH + args.vsk))
+        required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
     fileSuffix = manager.getFileSuffix()
     ik_flag = manager.isIkFitting()
 
-    # calibration
+    #------calibration--------
     leftFlatFoot = manager.getLeftFlatFoot()
     rightFlatFoot = manager.getRightFlatFoot()
     markerDiameter = manager.getMarkerDiameter()
     pointSuffix = manager.getPointSuffix()
     calibrateFilenameLabelled = manager.getStaticTial()
+
 
     if modelVersion == "CGM1.0":
         model,acqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
@@ -149,6 +165,7 @@ if __name__ == "__main__":
                                   ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                                   pointSuffix)
 
+    logging.info("Static Calibration -----> Done")
 
     # knee calibration
     leftEnable = manager.isKneeCalibrationEnable("Left")
@@ -160,20 +177,30 @@ if __name__ == "__main__":
             model,acqFunc,side = kneeCalibration.calibration2Dof(model,
                 DATA_PATH,trial,translators,
                 "Left",begin,end)
+            logging.info("Left knee Calibration (Calibration2Dof) -----> Done")
         elif method == "SARA":
             model,acqFunc,side = kneeCalibration.sara(model,
                 DATA_PATH,trial,translators,
                 "Left",begin,end)
+            logging.info("Left knee Calibration (SARA) -----> Done")
     if rightEnable:
         method, trial,begin,end = manager.getKneeCalibration("Right")
         if method == "Calibration2Dof":
             model,acqFunc,side = kneeCalibration.calibration2Dof(model,
                 DATA_PATH,trial,translators,
                 "Right",begin,end)
+            logging.info("Right knee Calibration (Calibration2Dof) -----> Done")
         elif method == "SARA":
             model,acqFunc,side = kneeCalibration.sara(model,
                 DATA_PATH,trial,translators,
                 "Right",begin,end)
+            logging.info("Right knee Calibration (SARA) -----> Done")
+
+    # update optional mp
+    manager.updateOptionalMp(model)
+    # save settings
+    manager.save(DATA_PATH,str(pipelineFile+"-saved"))
+    logging.info("pipeline file -----> Save")
 
     # Fitting
     trials = manager.getFittingTrials()
@@ -253,37 +280,58 @@ if __name__ == "__main__":
                     mfpa,
                     momentProjection)
 
+        logging.info("Fitting -----> Done")
+
 
         if fileSuffix is not None:
-            btkTools.smartWriter(acqGait, str(DATA_PATH+reconstructFilenameLabelled[:-4]+"-modelled-"+fileSuffix+".c3d"))
+            c3dFilename = str(reconstructFilenameLabelled[:-4]+"-modelled-"+fileSuffix+".c3d")
         else:
-            btkTools.smartWriter(acqGait, str(DATA_PATH+reconstructFilenameLabelled[:-4]+"-modelled.c3d"))
+            c3dFilename = str(reconstructFilenameLabelled[:-4]+"-modelled.c3d")
 
-    # Processing
-    modelInfo = manager.getModelInfo()
-    subjectInfo = manager.getSubjectInfo()
-    experimentalInfo = manager.getSubjectInfo()
+        btkTools.smartWriter(acqGait, str(DATA_PATH+c3dFilename))
+        logging.info("c3d file (%s) generated" %(c3dFilename) )
 
-    tasks = manager.getProcessingTasks()
+    #----------------Processing -----------------------
+    if processingFlag:
 
-    for task in tasks:
-        experimentalInfo["Type"] = task["Type"]
-        experimentalInfo.update(task["Conditions"])
+        modelInfo = manager.getModelInfo()
+        subjectInfo = manager.getSubjectInfo()
+        experimentalInfo = manager.getExpInfo()
 
-        normativeData = task["Normative data"]
+        tasks = manager.getProcessingTasks()
 
-        modelledFilenames= task["Trials"]
-        if fileSuffix is not None:
-            modelledFilenames = [str(x[:-4]+"-modelled-"+fileSuffix+".c3d") for x in modelledFilenames]
-        else:
-            modelledFilenames = [str(x[:-4]+"-modelled.c3d") for x in modelledFilenames]
+        for task in tasks:
+            logging.info(" Processing ----- Task : %s ------------" %(task["TaskTitle"]))
 
-        outputFilenameNoExt = task["outputFilenameNoExt"]
+            analyseType = str(task["AnalysisType"])
 
-        # --------------------------PROCESSING --------------------------------
-        cgmProcessing.gaitprocessing(DATA_PATH,modelledFilenames,modelVersion,
-             modelInfo, subjectInfo, experimentalInfo,
-             normativeData,
-             pointSuffix,
-             outputFilename = outputFilenameNoExt,
-             exportXls=xlsExport_flag)
+            experimentalInfo["TaskTitle"] = task["TaskTitle"]
+            experimentalInfo.update(task["Conditions"])
+
+            normativeData = task["Normative data"]
+
+            modelledFilenames= task["Trials"]
+            if fileSuffix is not None:
+                modelledFilenames = [str(x[:-4]+"-modelled-"+fileSuffix+".c3d") for x in modelledFilenames]
+            else:
+                modelledFilenames = [str(x[:-4]+"-modelled.c3d") for x in modelledFilenames]
+
+            outputFilenameNoExt = task["outputFilenameNoExt"]
+
+            # --------------------------PROCESSING --------------------------------
+            if analyseType == "Gait":
+                cgmProcessing.gaitProcessing(DATA_PATH,modelledFilenames,modelVersion,
+                     modelInfo, subjectInfo, experimentalInfo,
+                     normativeData,
+                     pointSuffix,
+                     outputFilename = outputFilenameNoExt,
+                     exportXls=xlsExport_flag,
+                     plot=plotFlag)
+            else:
+                cgmProcessing.standardProcessing(DATA_PATH,modelledFilenames,modelVersion,
+                     modelInfo, subjectInfo, experimentalInfo,
+                     pointSuffix,
+                     outputFilename = outputFilenameNoExt,
+                     exportXls=xlsExport_flag)
+
+            logging.info("Task : %s -----> processed" %(task["TaskTitle"]))

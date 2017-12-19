@@ -21,6 +21,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CGM Gait Processing')
     parser.add_argument('-f','--file', type=str, help='processing file', default="processing.pyCGM2")
     parser.add_argument('--export', action='store_true', help='xls export')
+    parser.add_argument('--plot', action='store_true', help='enable Gait Plot')
     parser.add_argument('--DEBUG', action='store_true', help='debug model')
 
     args = parser.parse_args()
@@ -45,9 +46,10 @@ if __name__ == "__main__":
     experimentalInfo = processingSettings["ExperimentalContext"]
 
     for task in processingSettings["Processing"]["Tasks"]:
-        experimentalInfo["Type"] = task["Type"]
-        experimentalInfo.update(task["Conditions"])
+        analyseType = str(task["AnalysisType"])
 
+        experimentalInfo["TaskTitle"] = task["TaskTitle"]
+        experimentalInfo.update(task["Conditions"])
         normativeData = task["Normative data"]
 
         modelledFilenames= task["Trials"]
@@ -57,9 +59,17 @@ if __name__ == "__main__":
         outputFilenameNoExt = task["outputFilenameNoExt"]
 
         # --------------------------PROCESSING --------------------------------
-        cgmProcessing.gaitprocessing(DATA_PATH,modelledFilenames,"CGM1.0",
-             modelInfo, subjectInfo, experimentalInfo,
-             normativeData,
-             pointSuffix,
-             outputFilename = outputFilenameNoExt,
-             exportXls=xlsExport_flag)
+        if analyseType == "Gait":
+            cgmProcessing.gaitprocessing(DATA_PATH,modelledFilenames,"CGM1.0",
+                 modelInfo, subjectInfo, experimentalInfo,
+                 normativeData,
+                 pointSuffix,
+                 outputFilename = outputFilenameNoExt,
+                 exportXls=xlsExport_flag,
+                 plot=plotFlag)
+        else:
+            cgmProcessing.standardProcessing(DATA_PATH,modelledFilenames,modelVersion,
+                 modelInfo, subjectInfo, experimentalInfo,
+                 pointSuffix,
+                 outputFilename = outputFilenameNoExt,
+                 exportXls=xlsExport_flag)
