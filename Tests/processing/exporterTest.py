@@ -12,7 +12,7 @@ import ma.body
 
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Processing import exporter,c3dManager
-from pyCGM2 import smartFunctions
+from pyCGM2.Processing.highLevel import standardSmartFunctions,gaitSmartFunctions
 
 
 
@@ -41,7 +41,7 @@ class ExportTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysis = smartFunctions.make_analysis(trialManager,
+        analysis = gaitSmartFunctions.make_analysis(trialManager,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)
@@ -74,7 +74,7 @@ class ExportTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysis = smartFunctions.make_analysis(trialManager,
+        analysis = gaitSmartFunctions.make_analysis(trialManager,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)

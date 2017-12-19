@@ -72,11 +72,11 @@ if __name__ == "__main__":
 
         # --------------------------PROCESSING --------------------------------
 
-        cgmProcessing.gaitprocessing(DATA_PATH,modelledFilename,modelVersion,
+        cgmProcessing.gaitProcessing(DATA_PATH,modelledFilename,modelVersion,
             modelInfo, subjectInfo, experimentalInfo,
             normativeData,
             pointSuffix,
-            outputFilenameNoExt = modelledFilenameNoExt,
+            outputFilename = modelledFilenameNoExt,
             exportXls=xlsExport_flag)
 
     else:

@@ -47,21 +47,10 @@ def make_analysis(trialManager, kinematicLabelsDict,kineticLabelsDict,
     #---- GAIT ANALYSIS FILTER
     #--------------------------------------------------------------------------
 
-    pointLabelSuffixPlus  = pointLabelSuffix   if pointLabelSuffix =="" else "_"+pointLabelSuffix
-
-    if pointLabelSuffix is not "":
-    	for key in kinematicLabelsDict.keys():
-    		for i in range(0, len(kinematicLabelsDict[key])):
-    			kinematicLabelsDict[key][i] = str(kinematicLabelsDict[key][i]+pointLabelSuffixPlus)
-
-    	for key in kineticLabelsDict.keys():
-    		for i in range(0, len(kineticLabelsDict[key])):
-    			kineticLabelsDict[key][i] = str(kineticLabelsDict[key][i]+pointLabelSuffixPlus)
-
-
     analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
                                                   kinematicLabelsDict = kinematicLabelsDict,
-                                                  kineticLabelsDict = kineticLabelsDict)
+                                                  kineticLabelsDict = kineticLabelsDict,
+                                                  pointlabelSuffix = pointLabelSuffix)
 
     analysisFilter = analysis.AnalysisFilter()
     analysisFilter.setInfo(subject=subjectInfo, model=modelInfo, experimental=experimentalInfo)
