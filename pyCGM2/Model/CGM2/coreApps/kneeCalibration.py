@@ -46,8 +46,6 @@ def calibration2Dof(model,
     if side is None:
         side = detectSide(acqFunc,"LANK","RANK")
         logging.info("Detected motion side : %s" %(side) )
-    else:
-        side = args.side
 
     if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
         validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1LowerLimbs.MARKERS)
@@ -144,8 +142,6 @@ def sara(model,
     if side is None:
         side = detectSide(acqFunc,"LANK","RANK")
         logging.info("Detected motion side : %s" %(side) )
-    else:
-        side = args.side
 
     # --------------------------RESET OF THE STATIC File---------
 
