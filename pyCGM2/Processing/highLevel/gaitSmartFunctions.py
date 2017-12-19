@@ -6,6 +6,7 @@ from  pyCGM2 import enums
 from pyCGM2.Processing import cycle,analysis,scores,exporter,c3dManager
 from pyCGM2.Report import plot,plotFilters,plotViewers,normativeDatasets
 from pyCGM2.Tools import trialTools
+from pyCGM2.Report import plot
 
 # openma
 import ma.io
@@ -88,7 +89,8 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     #-------------------------------------------
     # viewer
     if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
-        kv = plotViewers.GaitKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
+        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
+        kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
     if normativeDataset is not None:
         kv.setNormativeDataset(normativeDataset)
 
@@ -103,9 +105,9 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     #-------------------------------------------
     # viewer
     if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
-        kv = plotViewers.GaitKinematicsPlotViewer(analysis,
-                                pointLabelSuffix=pointLabelSuffix,
-                                plotType = enums.PlotType.CONSISTENCY)
+        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis,
+                                pointLabelSuffix=pointLabelSuffix)
+        kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
 
     if normativeDataset is not None:
         kv.setNormativeDataset(normativeDataset)
@@ -122,7 +124,8 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
         #-------------------------------------------
         # viewer
         if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
-            kv = plotViewers.GaitKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
+            kv = plotViewers.LowerLimbKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
+            kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
         if normativeDataset is not None:
             kv.setNormativeDataset(normativeDataset)
 
@@ -137,9 +140,9 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
         #-------------------------------------------
         # viewer
         if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
-            kv = plotViewers.GaitKineticsPlotViewer(analysis,
-                                    pointLabelSuffix=pointLabelSuffix,
-                                    plotType = enums.PlotType.CONSISTENCY)
+            kv = plotViewers.LowerLimbKineticsPlotViewer(analysis,
+                                    pointLabelSuffix=pointLabelSuffix)
+            kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
 
         if normativeDataset is not None:
             kv.setNormativeDataset(normativeDataset)
