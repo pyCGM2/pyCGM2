@@ -82,11 +82,11 @@ def getFromVskSubjectMp(vskInstance, resetFlag=False):
     else:
         optional_mp={
         'InterAsisDistance'   : float(vskInstance.getStaticParameterValue("InterAsisDistance")),#0,
-        'LeftAsisTrocanterDistance' : 0,#float(vskInstance.getStaticParameterValue("LeftAsisTrocanterDistance")),#0,
+        'LeftAsisTrocanterDistance' : float(vskInstance.getStaticParameterValue("LeftAsisTrocanterDistance")),#0,
         'LeftTibialTorsion' : float(vskInstance.getStaticParameterValue("LeftTibialTorsion")),#0 ,
         'LeftThighRotation' : float(vskInstance.getStaticParameterValue("LeftThighRotation")),#0,
         'LeftShankRotation' : float(vskInstance.getStaticParameterValue("LeftShankRotation")),#0,
-        'RightAsisTrocanterDistance' : 0,#float(vskInstance.getStaticParameterValue("RightAsisTrocanterDistance")),#0,
+        'RightAsisTrocanterDistance' : float(vskInstance.getStaticParameterValue("RightAsisTrocanterDistance")),#0,
         'RightTibialTorsion' : float(vskInstance.getStaticParameterValue("RightTibialTorsion")),#0 ,
         'RightThighRotation' : float(vskInstance.getStaticParameterValue("RightThighRotation")),#0,
         'RightShankRotation' : float(vskInstance.getStaticParameterValue("RightShankRotation")),#0,

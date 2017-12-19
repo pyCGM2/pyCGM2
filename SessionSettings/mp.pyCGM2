@@ -9,7 +9,7 @@
         "LeftAnkleWidth": 0,
         "RightAnkleWidth": 0,
         "LeftSoleDelta": 0,
-        "RightSoleDelta": 0
+        "RightSoleDelta": 0,
     },
     "Optional": {
         "InterAsisDistance": 0,
