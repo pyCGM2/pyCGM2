@@ -9,7 +9,6 @@ import matplotlib.patches as mpatches
 
 # pyCGM2
 import pyCGM2
-import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Report import plot
 
 # openMA
@@ -35,7 +34,7 @@ class AbstractPlotViewer(object):
     def plotPanel(self):
         pass
 
-class GaitKinematicsPlotViewer(AbstractPlotViewer):
+class LowerLimbKinematicsPlotViewer(AbstractPlotViewer):
     """
         **Description :** Constructor of gait plot panel.
 
@@ -74,7 +73,7 @@ class GaitKinematicsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix="",plotType=pyCGM2Enums.PlotType.DESCRIPTIVE):
+    def __init__(self,iAnalysis,pointLabelSuffix=""):
 
         """
             :Parameters:
@@ -83,7 +82,7 @@ class GaitKinematicsPlotViewer(AbstractPlotViewer):
     """
 
 
-        super(GaitKinematicsPlotViewer, self).__init__(iAnalysis)
+        super(LowerLimbKinematicsPlotViewer, self).__init__(iAnalysis)
 
         self.m_analysis = self.m_input
         if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
@@ -92,10 +91,14 @@ class GaitKinematicsPlotViewer(AbstractPlotViewer):
             logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
 
-        self.m_type = plotType
         self.m_pointLabelSuffix = pointLabelSuffix
         self.m_normativeData = None
         self.m_flagConsistencyOnly = False
+        self.m_concretePlotFunction = None
+
+    def setConcretePlotFunction(self, concreteplotFunction):
+        self.m_concretePlotFunction = concreteplotFunction
+
 
     def __setLayer(self):
 
@@ -133,9 +136,9 @@ class GaitKinematicsPlotViewer(AbstractPlotViewer):
         for ax in self.fig.axes:
             ax.set_ylabel("angle (deg)",size=8)
 
-        ax9.set_xlabel("Gait cycle %",size=8)
-        ax10.set_xlabel("Gait cycle %",size=8)
-        ax11.set_xlabel("Gait cycle %",size=8)
+        ax9.set_xlabel("Cycle %",size=8)
+        ax10.set_xlabel("Cycle %",size=8)
+        ax11.set_xlabel("Cycle %",size=8)
 
         ax0.set_ylim([0,60])
         ax1.set_ylim([-30,30])
@@ -168,205 +171,76 @@ class GaitKinematicsPlotViewer(AbstractPlotViewer):
     def __setData(self):
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
 
-        if self.m_type == pyCGM2Enums.PlotType.DESCRIPTIVE:
-            # pelvis
-            plot.gaitDescriptivePlot(self.fig.axes[0],self.m_analysis.kinematicStats,
-                    "LPelvisAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[0],self.m_analysis.kinematicStats,
-                    "RPelvisAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
+        # pelvis
+        self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kinematicStats,
+                "LPelvisAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kinematicStats,
+                "RPelvisAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[1],self.m_analysis.kinematicStats,
-                    "LPelvisAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[1],self.m_analysis.kinematicStats,
-                    "RPelvisAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[1],self.m_analysis.kinematicStats,
+                "LPelvisAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[1],self.m_analysis.kinematicStats,
+                "RPelvisAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[2],self.m_analysis.kinematicStats,
-                    "LPelvisAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[2],self.m_analysis.kinematicStats,
-                    "RPelvisAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[2],self.m_analysis.kinematicStats,
+                "LPelvisAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[2],self.m_analysis.kinematicStats,
+                "RPelvisAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
 
-            # hip
-            plot.gaitDescriptivePlot(self.fig.axes[3],self.m_analysis.kinematicStats,
-                    "LHipAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[3],self.m_analysis.kinematicStats,
-                    "RHipAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
+        # hip
+        self.m_concretePlotFunction(self.fig.axes[3],self.m_analysis.kinematicStats,
+                "LHipAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[3],self.m_analysis.kinematicStats,
+                "RHipAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[4],self.m_analysis.kinematicStats,
-                    "LHipAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[4],self.m_analysis.kinematicStats,
-                    "RHipAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[4],self.m_analysis.kinematicStats,
+                "LHipAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[4],self.m_analysis.kinematicStats,
+                "RHipAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[5],self.m_analysis.kinematicStats,
-                    "LHipAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[5],self.m_analysis.kinematicStats,
-                    "RHipAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[5],self.m_analysis.kinematicStats,
+                "LHipAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[5],self.m_analysis.kinematicStats,
+                "RHipAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
 
-            # knee
-            plot.gaitDescriptivePlot(self.fig.axes[6],self.m_analysis.kinematicStats,
-                    "LKneeAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[6],self.m_analysis.kinematicStats,
-                    "RKneeAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
+        # knee
+        self.m_concretePlotFunction(self.fig.axes[6],self.m_analysis.kinematicStats,
+                "LKneeAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[6],self.m_analysis.kinematicStats,
+                "RKneeAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[7],self.m_analysis.kinematicStats,
-                    "LKneeAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[7],self.m_analysis.kinematicStats,
-                    "RKneeAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[7],self.m_analysis.kinematicStats,
+                "LKneeAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[7],self.m_analysis.kinematicStats,
+                "RKneeAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[8],self.m_analysis.kinematicStats,
-                    "LKneeAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[8],self.m_analysis.kinematicStats,
-                    "RKneeAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[8],self.m_analysis.kinematicStats,
+                "LKneeAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[8],self.m_analysis.kinematicStats,
+                "RKneeAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
 
-            # ankle
-            plot.gaitDescriptivePlot(self.fig.axes[9],self.m_analysis.kinematicStats,
-                    "LAnkleAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[9],self.m_analysis.kinematicStats,
-                    "RAnkleAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
+        # ankle
+        self.m_concretePlotFunction(self.fig.axes[9],self.m_analysis.kinematicStats,
+                "LAnkleAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[9],self.m_analysis.kinematicStats,
+                "RAnkleAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[10],self.m_analysis.kinematicStats,
-                    "LAnkleAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[10],self.m_analysis.kinematicStats,
-                    "RAnkleAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[10],self.m_analysis.kinematicStats,
+                "LAnkleAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[10],self.m_analysis.kinematicStats,
+                "RAnkleAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
 
-            # foot progress
-            plot.gaitDescriptivePlot(self.fig.axes[11],self.m_analysis.kinematicStats,
-                    "LFootProgressAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[11],self.m_analysis.kinematicStats,
-                    "RFootProgressAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
+        # foot progress
+        self.m_concretePlotFunction(self.fig.axes[11],self.m_analysis.kinematicStats,
+                "LFootProgressAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[11],self.m_analysis.kinematicStats,
+                "RFootProgressAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
 
-        elif self.m_type == pyCGM2Enums.PlotType.CONSISTENCY:
-            # pelvis
-            plot.gaitConsistencyPlot(self.fig.axes[0],self.m_analysis.kinematicStats,
-                    "LPelvisAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[0],self.m_analysis.kinematicStats,
-                    "RPelvisAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[1],self.m_analysis.kinematicStats,
-                    "LPelvisAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[1],self.m_analysis.kinematicStats,
-                    "RPelvisAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[2],self.m_analysis.kinematicStats,
-                    "LPelvisAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[2],self.m_analysis.kinematicStats,
-                    "RPelvisAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # hip
-            plot.gaitConsistencyPlot(self.fig.axes[3],self.m_analysis.kinematicStats,
-                    "LHipAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[3],self.m_analysis.kinematicStats,
-                    "RHipAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[4],self.m_analysis.kinematicStats,
-                    "LHipAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[4],self.m_analysis.kinematicStats,
-                    "RHipAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[5],self.m_analysis.kinematicStats,
-                    "LHipAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[5],self.m_analysis.kinematicStats,
-                    "RHipAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # knee
-            plot.gaitConsistencyPlot(self.fig.axes[6],self.m_analysis.kinematicStats,
-                    "LKneeAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[6],self.m_analysis.kinematicStats,
-                    "RKneeAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[7],self.m_analysis.kinematicStats,
-                    "LKneeAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[7],self.m_analysis.kinematicStats,
-                    "RKneeAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[8],self.m_analysis.kinematicStats,
-                    "LKneeAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[8],self.m_analysis.kinematicStats,
-                    "RKneeAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # ankle
-            plot.gaitConsistencyPlot(self.fig.axes[9],self.m_analysis.kinematicStats,
-                    "LAnkleAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[9],self.m_analysis.kinematicStats,
-                    "RAnkleAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[10],self.m_analysis.kinematicStats,
-                    "LAnkleAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[10],self.m_analysis.kinematicStats,
-                    "RAnkleAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # foot progress
-            plot.gaitConsistencyPlot(self.fig.axes[11],self.m_analysis.kinematicStats,
-                    "LFootProgressAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[11],self.m_analysis.kinematicStats,
-                    "RFootProgressAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-        elif self.m_type == pyCGM2Enums.PlotType.MEAN_ONLY:
-            # pelvis
-            plot.gaitMeanPlot(self.fig.axes[0],self.m_analysis.kinematicStats,
-                    "LPelvisAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[0],self.m_analysis.kinematicStats,
-                    "RPelvisAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[1],self.m_analysis.kinematicStats,
-                    "LPelvisAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[1],self.m_analysis.kinematicStats,
-                    "RPelvisAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[2],self.m_analysis.kinematicStats,
-                    "LPelvisAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[2],self.m_analysis.kinematicStats,
-                    "RPelvisAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # hip
-            plot.gaitMeanPlot(self.fig.axes[3],self.m_analysis.kinematicStats,
-                    "LHipAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[3],self.m_analysis.kinematicStats,
-                    "RHipAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[4],self.m_analysis.kinematicStats,
-                    "LHipAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[4],self.m_analysis.kinematicStats,
-                    "RHipAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[5],self.m_analysis.kinematicStats,
-                    "LHipAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[5],self.m_analysis.kinematicStats,
-                    "RHipAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # knee
-            plot.gaitMeanPlot(self.fig.axes[6],self.m_analysis.kinematicStats,
-                    "LKneeAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[6],self.m_analysis.kinematicStats,
-                    "RKneeAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[7],self.m_analysis.kinematicStats,
-                    "LKneeAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[7],self.m_analysis.kinematicStats,
-                    "RKneeAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[8],self.m_analysis.kinematicStats,
-                    "LKneeAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[8],self.m_analysis.kinematicStats,
-                    "RKneeAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # ankle
-            plot.gaitMeanPlot(self.fig.axes[9],self.m_analysis.kinematicStats,
-                    "LAnkleAngles"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[9],self.m_analysis.kinematicStats,
-                    "RAnkleAngles"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[10],self.m_analysis.kinematicStats,
-                    "LAnkleAngles"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[10],self.m_analysis.kinematicStats,
-                    "RAnkleAngles"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # foot progress
-            plot.gaitMeanPlot(self.fig.axes[11],self.m_analysis.kinematicStats,
-                    "LFootProgressAngles"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[11],self.m_analysis.kinematicStats,
-                    "RFootProgressAngles"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
 #
     def plotPanel(self):
+
+        if self.m_concretePlotFunction is None:
+            raise Exception ("[pyCGM2] need definition of the concrete plot function")
 
         self.__setLayer()
         self.__setData()
@@ -420,7 +294,7 @@ class GaitKinematicsPlotViewer(AbstractPlotViewer):
 
         return self.fig
 
-class GaitKineticsPlotViewer(AbstractPlotViewer):
+class LowerLimbKineticsPlotViewer(AbstractPlotViewer):
     """
         **Description :** Constructor of gait plot panel.
 
@@ -460,7 +334,7 @@ class GaitKineticsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix="",plotType=pyCGM2Enums.PlotType.DESCRIPTIVE):
+    def __init__(self,iAnalysis,pointLabelSuffix=""):
 
         """
             :Parameters:
@@ -469,7 +343,7 @@ class GaitKineticsPlotViewer(AbstractPlotViewer):
     """
 
 
-        super(GaitKineticsPlotViewer, self).__init__(iAnalysis)
+        super(LowerLimbKineticsPlotViewer, self).__init__(iAnalysis)
 
         self.m_analysis = self.m_input
         if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
@@ -478,10 +352,13 @@ class GaitKineticsPlotViewer(AbstractPlotViewer):
             logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
 
-        self.m_type = plotType
         self.m_pointLabelSuffix = pointLabelSuffix
         self.m_normativeData = None
         self.m_flagConsistencyOnly = False
+        self.m_concretePlotFunction = None
+
+    def setConcretePlotFunction(self, concreteplotFunction):
+        self.m_concretePlotFunction = concreteplotFunction
 
     def __setLayer(self):
 
@@ -528,9 +405,10 @@ class GaitKineticsPlotViewer(AbstractPlotViewer):
         for ax in [self.fig.axes[3],self.fig.axes[7],self.fig.axes[8]]:
             ax.set_ylabel("power (W.Kg-1)",size=8)
 
-        ax9.set_xlabel("Gait cycle %",size=8)
-        ax10.set_xlabel("Gait cycle %",size=8)
-        ax11.set_xlabel("Gait cycle %",size=8)
+        ax8.set_xlabel("Cycle %",size=8)
+        ax9.set_xlabel("Cycle %",size=8)
+        ax10.set_xlabel("Cycle %",size=8)
+        ax11.set_xlabel("Cycle %",size=8)
 
         ax0.set_ylim([-2.0 *1000.0, 3.0*1000.0])
         ax1.set_ylim([-2.0*1000.0, 1.0*1000.0])
@@ -562,199 +440,74 @@ class GaitKineticsPlotViewer(AbstractPlotViewer):
     def __setData(self):
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
 
-        if self.m_type == pyCGM2Enums.PlotType.DESCRIPTIVE:
-            # hip
-            plot.gaitDescriptivePlot(self.fig.axes[0],self.m_analysis.kineticStats,
-                    "LHipMoment"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[0],self.m_analysis.kineticStats,
-                    "RHipMoment"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
+        # hip
+        self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kineticStats,
+                "LHipMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kineticStats,
+                "RHipMoment"+suffixPlus,"Right",0, color="blue", customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[1],self.m_analysis.kineticStats,
-                    "LHipMoment"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[1],self.m_analysis.kineticStats,
-                    "RHipMoment"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[1],self.m_analysis.kineticStats,
+                "LHipMoment"+suffixPlus,"Left",1, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[1],self.m_analysis.kineticStats,
+                "RHipMoment"+suffixPlus,"Right",1, color="blue", customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[2],self.m_analysis.kineticStats,
-                    "LHipMoment"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[2],self.m_analysis.kineticStats,
-                    "RHipMoment"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[2],self.m_analysis.kineticStats,
+                "LHipMoment"+suffixPlus,"Left",2, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[2],self.m_analysis.kineticStats,
+                "RHipMoment"+suffixPlus,"Right",2, color="blue", customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[3],self.m_analysis.kineticStats,
-                    "LHipPower"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[3],self.m_analysis.kineticStats,
-                    "RHipPower"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[3],self.m_analysis.kineticStats,
+                "LHipPower"+suffixPlus,"Left",2, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[3],self.m_analysis.kineticStats,
+                "RHipPower"+suffixPlus,"Right",2, color="blue", customLimits=None)
 
-            # knee
-            plot.gaitDescriptivePlot(self.fig.axes[4],self.m_analysis.kineticStats,
-                    "LKneeMoment"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[4],self.m_analysis.kineticStats,
-                    "RKneeMoment"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
+        # knee
+        self.m_concretePlotFunction(self.fig.axes[4],self.m_analysis.kineticStats,
+                "LKneeMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[4],self.m_analysis.kineticStats,
+                "RKneeMoment"+suffixPlus,"Right",0, color="blue", customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[5],self.m_analysis.kineticStats,
-                    "LKneeMoment"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[5],self.m_analysis.kineticStats,
-                    "RKneeMoment"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[5],self.m_analysis.kineticStats,
+                "LKneeMoment"+suffixPlus,"Left",1, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[5],self.m_analysis.kineticStats,
+                "RKneeMoment"+suffixPlus,"Right",1, color="blue", customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[6],self.m_analysis.kineticStats,
-                    "LKneeMoment"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[6],self.m_analysis.kineticStats,
-                    "RKneeMoment"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[6],self.m_analysis.kineticStats,
+                "LKneeMoment"+suffixPlus,"Left",2, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[6],self.m_analysis.kineticStats,
+                "RKneeMoment"+suffixPlus,"Right",2, color="blue", customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[7],self.m_analysis.kineticStats,
-                    "LKneePower"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[7],self.m_analysis.kineticStats,
-                    "RKneePower"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[7],self.m_analysis.kineticStats,
+                "LKneePower"+suffixPlus,"Left",2, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[7],self.m_analysis.kineticStats,
+                "RKneePower"+suffixPlus,"Right",2, color="blue", customLimits=None)
 
-            # ankle
-            plot.gaitDescriptivePlot(self.fig.axes[8],self.m_analysis.kineticStats,
-                    "LAnkleMoment"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[8],self.m_analysis.kineticStats,
-                    "RAnkleMoment"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
+        # ankle
+        self.m_concretePlotFunction(self.fig.axes[8],self.m_analysis.kineticStats,
+                "LAnkleMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[8],self.m_analysis.kineticStats,
+                "RAnkleMoment"+suffixPlus,"Right",0, color="blue", customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[9],self.m_analysis.kineticStats,
-                    "LAnkleMoment"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[9],self.m_analysis.kineticStats,
-                    "RAnkleMoment"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[9],self.m_analysis.kineticStats,
+                "LAnkleMoment"+suffixPlus,"Left",1, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[9],self.m_analysis.kineticStats,
+                "RAnkleMoment"+suffixPlus,"Right",1, color="blue", customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[10],self.m_analysis.kineticStats,
-                    "LAnkleMoment"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[10],self.m_analysis.kineticStats,
-                    "RAnkleMoment"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[10],self.m_analysis.kineticStats,
+                "LAnkleMoment"+suffixPlus,"Left",2, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[10],self.m_analysis.kineticStats,
+                "RAnkleMoment"+suffixPlus,"Right",2, color="blue", customLimits=None)
 
-            plot.gaitDescriptivePlot(self.fig.axes[11],self.m_analysis.kineticStats,
-                    "LAnklePower"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitDescriptivePlot(self.fig.axes[11],self.m_analysis.kineticStats,
-                    "RAnklePower"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[11],self.m_analysis.kineticStats,
+                "LAnklePower"+suffixPlus,"Left",2, color="red", customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[11],self.m_analysis.kineticStats,
+                "RAnklePower"+suffixPlus,"Right",2, color="blue", customLimits=None)
 
-        elif self.m_type == pyCGM2Enums.PlotType.CONSISTENCY:
-            # hip
-            plot.gaitConsistencyPlot(self.fig.axes[0],self.m_analysis.kineticStats,
-                    "LHipMoment"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[0],self.m_analysis.kineticStats,
-                    "RHipMoment"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[1],self.m_analysis.kineticStats,
-                    "LHipMoment"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[1],self.m_analysis.kineticStats,
-                    "RHipMoment"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[2],self.m_analysis.kineticStats,
-                    "LHipMoment"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[2],self.m_analysis.kineticStats,
-                    "RHipMoment"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[3],self.m_analysis.kineticStats,
-                    "LHipPower"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[3],self.m_analysis.kineticStats,
-                    "RHipPower"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # knee
-            plot.gaitConsistencyPlot(self.fig.axes[4],self.m_analysis.kineticStats,
-                    "LKneeMoment"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[4],self.m_analysis.kineticStats,
-                    "RKneeMoment"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[5],self.m_analysis.kineticStats,
-                    "LKneeMoment"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[5],self.m_analysis.kineticStats,
-                    "RKneeMoment"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[6],self.m_analysis.kineticStats,
-                    "LKneeMoment"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[6],self.m_analysis.kineticStats,
-                    "RKneeMoment"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[7],self.m_analysis.kineticStats,
-                    "LKneePower"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[7],self.m_analysis.kineticStats,
-                    "RKneePower"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # ankle
-            plot.gaitConsistencyPlot(self.fig.axes[8],self.m_analysis.kineticStats,
-                    "LAnkleMoment"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[8],self.m_analysis.kineticStats,
-                    "RAnkleMoment"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[9],self.m_analysis.kineticStats,
-                    "LAnkleMoment"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[9],self.m_analysis.kineticStats,
-                    "RAnkleMoment"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[10],self.m_analysis.kineticStats,
-                    "LAnkleMoment"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[10],self.m_analysis.kineticStats,
-                    "RAnkleMoment"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitConsistencyPlot(self.fig.axes[11],self.m_analysis.kineticStats,
-                    "LAnklePower"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitConsistencyPlot(self.fig.axes[11],self.m_analysis.kineticStats,
-                    "RAnklePower"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-        elif self.m_type == pyCGM2Enums.PlotType.MEAN_ONLY:
-            # hip
-            plot.gaitMeanPlot(self.fig.axes[0],self.m_analysis.kineticStats,
-                    "LHipMoment"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[0],self.m_analysis.kineticStats,
-                    "RHipMoment"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[1],self.m_analysis.kineticStats,
-                    "LHipMoment"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[1],self.m_analysis.kineticStats,
-                    "RHipMoment"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[2],self.m_analysis.kineticStats,
-                    "LHipMoment"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[2],self.m_analysis.kineticStats,
-                    "RHipMoment"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[3],self.m_analysis.kineticStats,
-                    "LHipPower"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[3],self.m_analysis.kineticStats,
-                    "RHipPower"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # knee
-            plot.gaitMeanPlot(self.fig.axes[4],self.m_analysis.kineticStats,
-                    "LKneeMoment"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[4],self.m_analysis.kineticStats,
-                    "RKneeMoment"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[5],self.m_analysis.kineticStats,
-                    "LKneeMoment"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[5],self.m_analysis.kineticStats,
-                    "RKneeMoment"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[6],self.m_analysis.kineticStats,
-                    "LKneeMoment"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[6],self.m_analysis.kineticStats,
-                    "RKneeMoment"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[7],self.m_analysis.kineticStats,
-                    "LKneePower"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[7],self.m_analysis.kineticStats,
-                    "RKneePower"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            # ankle
-            plot.gaitMeanPlot(self.fig.axes[8],self.m_analysis.kineticStats,
-                    "LAnkleMoment"+suffixPlus,"Left",0, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[8],self.m_analysis.kineticStats,
-                    "RAnkleMoment"+suffixPlus,"Right",0, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[9],self.m_analysis.kineticStats,
-                    "LAnkleMoment"+suffixPlus,"Left",1, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[9],self.m_analysis.kineticStats,
-                    "RAnkleMoment"+suffixPlus,"Right",1, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[10],self.m_analysis.kineticStats,
-                    "LAnkleMoment"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[10],self.m_analysis.kineticStats,
-                    "RAnkleMoment"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
-
-            plot.gaitMeanPlot(self.fig.axes[11],self.m_analysis.kineticStats,
-                    "LAnklePower"+suffixPlus,"Left",2, color="red", addPhaseFlag=True,customLimits=None)
-            plot.gaitMeanPlot(self.fig.axes[11],self.m_analysis.kineticStats,
-                    "RAnklePower"+suffixPlus,"Right",2, color="blue", addPhaseFlag=True,customLimits=None)
 #
     def plotPanel(self):
+
+        if self.m_concretePlotFunction is None:
+            raise Exception ("[pyCGM2] need definition of the concrete plot function")
 
         self.__setLayer()
         self.__setData()
@@ -811,14 +564,13 @@ class GaitKineticsPlotViewer(AbstractPlotViewer):
 
         return self.fig
 
-class multipleAnalyses_GaitKinematicsPlotViewer(AbstractPlotViewer):
+class multipleAnalyses_LowerLimbKinematicsPlotViewer(AbstractPlotViewer):
     """
 
 
     """
 
-    def __init__(self,iAnalyses,context,legends,pointLabelSuffix_lst=None,
-                plotType=pyCGM2Enums.PlotType.CONSISTENCY):
+    def __init__(self,iAnalyses,context,legends,pointLabelSuffix_lst=None):
 
         """
             :Parameters:
@@ -828,7 +580,7 @@ class multipleAnalyses_GaitKinematicsPlotViewer(AbstractPlotViewer):
     """
 
 
-        super(multipleAnalyses_GaitKinematicsPlotViewer, self).__init__(iAnalyses)
+        super(multipleAnalyses_LowerLimbKinematicsPlotViewer, self).__init__(iAnalyses)
 
 
         for itAnalysis in iAnalyses:
@@ -843,7 +595,6 @@ class multipleAnalyses_GaitKinematicsPlotViewer(AbstractPlotViewer):
         self.m_normativeData = None
         self.m_flagConsistencyOnly = False
         self.m_legends = legends
-        self.m_type = plotType
 
 
         if len(iAnalyses) != len(legends):
@@ -852,7 +603,10 @@ class multipleAnalyses_GaitKinematicsPlotViewer(AbstractPlotViewer):
             if len(iAnalyses) != len(pointLabelSuffix_lst):
                 raise Exception("list of point label suffix don t match analysis. Must have same length")
 
+        self.m_concretePlotFunction = None
 
+    def setConcretePlotFunction(self, concreteplotFunction):
+        self.m_concretePlotFunction = concreteplotFunction
 
     def __setLayer(self):
 
@@ -891,9 +645,9 @@ class multipleAnalyses_GaitKinematicsPlotViewer(AbstractPlotViewer):
             ax.set_ylabel("angle (deg)",size=8)
 
 
-        ax9.set_xlabel("Gait cycle %",size=8)
-        ax10.set_xlabel("Gait cycle %",size=8)
-        ax11.set_xlabel("Gait cycle %",size=8)
+        ax9.set_xlabel("Cycle %",size=8)
+        ax10.set_xlabel("Cycle %",size=8)
+        ax11.set_xlabel("Cycle %",size=8)
 
         ax0.set_ylim([0,60])
         ax1.set_ylim([-30,30])
@@ -931,220 +685,116 @@ class multipleAnalyses_GaitKinematicsPlotViewer(AbstractPlotViewer):
     def __setData(self):
 
 
+        if self.m_context == "Left":
+            colormap = plt.cm.Reds
+            colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
 
-        if self.m_type == pyCGM2Enums.PlotType.CONSISTENCY:
+            i = 0
+            for analysis in self.m_analysis:
 
-            if self.m_context == "Left":
-                colormap = plt.cm.Reds
-                colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+                if self.m_pointLabelSuffixes is not None:
+                    suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
+                else:
+                    suffixPlus=""
 
-                i = 0
-                for analysis in self.m_analysis:
+                legend= self.m_legends[i]
 
-                    if self.m_pointLabelSuffixes is not None:
-                        suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
-                    else:
-                        suffixPlus=""
-
-                    legend= self.m_legends[i]
-
-                    plot.gaitConsistencyPlot(self.fig.axes[0],analysis.kinematicStats,
-                            "LPelvisAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None,
-                    legendLabel=legend)
+                self.m_concretePlotFunction(self.fig.axes[0],analysis.kinematicStats,
+                        "LPelvisAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None,
+                legendLabel=legend)
 
 
 
-                    plot.gaitConsistencyPlot(self.fig.axes[1],analysis.kinematicStats,
-                            "LPelvisAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[2],analysis.kinematicStats,
-                            "LPelvisAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[1],analysis.kinematicStats,
+                        "LPelvisAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[2],analysis.kinematicStats,
+                        "LPelvisAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
 
-                    # hip
-                    plot.gaitConsistencyPlot(self.fig.axes[3],analysis.kinematicStats,
-                            "LHipAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[4],analysis.kinematicStats,
-                            "LHipAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[5],analysis.kinematicStats,
-                            "LHipAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # hip
+                self.m_concretePlotFunction(self.fig.axes[3],analysis.kinematicStats,
+                        "LHipAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[4],analysis.kinematicStats,
+                        "LHipAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[5],analysis.kinematicStats,
+                        "LHipAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
 
-                    # knee
-                    plot.gaitConsistencyPlot(self.fig.axes[6],analysis.kinematicStats,
-                            "LKneeAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[7],analysis.kinematicStats,
-                            "LKneeAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[8],analysis.kinematicStats,
-                            "LKneeAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # knee
+                self.m_concretePlotFunction(self.fig.axes[6],analysis.kinematicStats,
+                        "LKneeAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[7],analysis.kinematicStats,
+                        "LKneeAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[8],analysis.kinematicStats,
+                        "LKneeAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
 
-                    # ankle
-                    plot.gaitConsistencyPlot(self.fig.axes[9],analysis.kinematicStats,
-                            "LAnkleAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[10],analysis.kinematicStats,
-                            "LAnkleAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # ankle
+                self.m_concretePlotFunction(self.fig.axes[9],analysis.kinematicStats,
+                        "LAnkleAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[10],analysis.kinematicStats,
+                        "LAnkleAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None)
 
-                    # foot progress
-                    plot.gaitConsistencyPlot(self.fig.axes[11],analysis.kinematicStats,
-                            "LFootProgressAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # foot progress
+                self.m_concretePlotFunction(self.fig.axes[11],analysis.kinematicStats,
+                        "LFootProgressAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
 #
-                    i+=1
-            if self.m_context == "Right":
-                colormap = plt.cm.Blues
-                colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+                i+=1
 
-                i = 0
-                for analysis in self.m_analysis:
+        if self.m_context == "Right":
+            colormap = plt.cm.Blues
+            colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
 
-                    if self.m_pointLabelSuffixes is not None:
-                        suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
-                    else:
-                        suffixPlus=""
+            i = 0
+            for analysis in self.m_analysis:
 
-                    legend= self.m_legends[i]
+                if self.m_pointLabelSuffixes is not None:
+                    suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
+                else:
+                    suffixPlus=""
 
-                    plot.gaitConsistencyPlot(self.fig.axes[0],analysis.kinematicStats,
-                            "RPelvisAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None,
-                    legendLabel=legend)
+                legend= self.m_legends[i]
 
-
-                    plot.gaitConsistencyPlot(self.fig.axes[1],analysis.kinematicStats,
-                            "RPelvisAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[2],analysis.kinematicStats,
-                            "RPelvisAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # hip
-                    plot.gaitConsistencyPlot(self.fig.axes[3],analysis.kinematicStats,
-                            "RHipAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[4],analysis.kinematicStats,
-                            "RHipAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[5],analysis.kinematicStats,
-                            "RHipAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # knee
-                    plot.gaitConsistencyPlot(self.fig.axes[6],analysis.kinematicStats,
-                            "RKneeAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[7],analysis.kinematicStats,
-                            "RKneeAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[8],analysis.kinematicStats,
-                            "RKneeAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # ankle
-                    plot.gaitConsistencyPlot(self.fig.axes[9],analysis.kinematicStats,
-                            "RAnkleAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitConsistencyPlot(self.fig.axes[10],analysis.kinematicStats,
-                            "RAnkleAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # foot progress
-                    plot.gaitConsistencyPlot(self.fig.axes[11],analysis.kinematicStats,
-                            "RFootProgressAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-            #
-                    i+=1
-
-        if self.m_type == pyCGM2Enums.PlotType.MEAN_ONLY:
-
-            if self.m_context == "Left":
-                colormap = plt.cm.Reds
-                colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
-
-                i = 0
-                for analysis in self.m_analysis:
-
-                    if self.m_pointLabelSuffixes is not None:
-                        suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
-                    else:
-                        suffixPlus=""
-
-                    legend= self.m_legends[i]
-
-                    plot.gaitMeanPlot(self.fig.axes[0],analysis.kinematicStats,
-                            "LPelvisAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None,
-                    legendLabel=legend)
+                self.m_concretePlotFunction(self.fig.axes[0],analysis.kinematicStats,
+                        "RPelvisAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None,
+                legendLabel=legend)
 
 
-                    plot.gaitMeanPlot(self.fig.axes[1],analysis.kinematicStats,
-                            "LPelvisAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[2],analysis.kinematicStats,
-                            "LPelvisAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[1],analysis.kinematicStats,
+                        "RPelvisAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[2],analysis.kinematicStats,
+                        "RPelvisAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
 
-                    # hip
-                    plot.gaitMeanPlot(self.fig.axes[3],analysis.kinematicStats,
-                            "LHipAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[4],analysis.kinematicStats,
-                            "LHipAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[5],analysis.kinematicStats,
-                            "LHipAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # hip
+                self.m_concretePlotFunction(self.fig.axes[3],analysis.kinematicStats,
+                        "RHipAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[4],analysis.kinematicStats,
+                        "RHipAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[5],analysis.kinematicStats,
+                        "RHipAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
 
-                    # knee
-                    plot.gaitMeanPlot(self.fig.axes[6],analysis.kinematicStats,
-                            "LKneeAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[7],analysis.kinematicStats,
-                            "LKneeAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[8],analysis.kinematicStats,
-                            "LKneeAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # knee
+                self.m_concretePlotFunction(self.fig.axes[6],analysis.kinematicStats,
+                        "RKneeAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[7],analysis.kinematicStats,
+                        "RKneeAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[8],analysis.kinematicStats,
+                        "RKneeAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
 
-                    # ankle
-                    plot.gaitMeanPlot(self.fig.axes[9],analysis.kinematicStats,
-                            "LAnkleAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[10],analysis.kinematicStats,
-                            "LAnkleAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # ankle
+                self.m_concretePlotFunction(self.fig.axes[9],analysis.kinematicStats,
+                        "RAnkleAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[10],analysis.kinematicStats,
+                        "RAnkleAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None)
 
-                    # foot progress
-                    plot.gaitMeanPlot(self.fig.axes[11],analysis.kinematicStats,
-                            "LFootProgressAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-#
-                    i+=1
-            if self.m_context == "Right":
-                colormap = plt.cm.Blues
-                colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+                # foot progress
+                self.m_concretePlotFunction(self.fig.axes[11],analysis.kinematicStats,
+                        "RFootProgressAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
+        #
+                i+=1
 
-                i = 0
-                for analysis in self.m_analysis:
-
-                    if self.m_pointLabelSuffixes is not None:
-                        suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
-                    else:
-                        suffixPlus=""
-
-                    legend= self.m_legends[i]
-
-                    plot.gaitMeanPlot(self.fig.axes[0],analysis.kinematicStats,
-                            "RPelvisAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None,
-                    legendLabel=legend)
-
-
-                    plot.gaitMeanPlot(self.fig.axes[1],analysis.kinematicStats,
-                            "RPelvisAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[2],analysis.kinematicStats,
-                            "RPelvisAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # hip
-                    plot.gaitMeanPlot(self.fig.axes[3],analysis.kinematicStats,
-                            "RHipAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[4],analysis.kinematicStats,
-                            "RHipAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[5],analysis.kinematicStats,
-                            "RHipAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # knee
-                    plot.gaitMeanPlot(self.fig.axes[6],analysis.kinematicStats,
-                            "RKneeAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[7],analysis.kinematicStats,
-                            "RKneeAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[8],analysis.kinematicStats,
-                            "RKneeAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # ankle
-                    plot.gaitMeanPlot(self.fig.axes[9],analysis.kinematicStats,
-                            "RAnkleAngles"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    plot.gaitMeanPlot(self.fig.axes[10],analysis.kinematicStats,
-                            "RAnkleAngles"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # foot progress
-                    plot.gaitMeanPlot(self.fig.axes[11],analysis.kinematicStats,
-                            "RFootProgressAngles"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-            #
-                    i+=1
-
-#
     def plotPanel(self):
+
+        if self.m_concretePlotFunction is None:
+            raise Exception ("[pyCGM2] need definition of the concrete plot function")
+
 
         self.__setLayer()
         self.__setData()
@@ -1199,14 +849,13 @@ class multipleAnalyses_GaitKinematicsPlotViewer(AbstractPlotViewer):
 
         return self.fig
 
-class multipleAnalyses_GaitKineticsPlotViewer(AbstractPlotViewer):
+class multipleAnalyses_LowerLimbKineticsPlotViewer(AbstractPlotViewer):
     """
 
 
     """
 
-    def __init__(self,iAnalyses,context,legends,pointLabelSuffix_lst=None,
-                plotType=pyCGM2Enums.PlotType.CONSISTENCY):
+    def __init__(self,iAnalyses,context,legends,pointLabelSuffix_lst=None):
 
         """
             :Parameters:
@@ -1216,7 +865,7 @@ class multipleAnalyses_GaitKineticsPlotViewer(AbstractPlotViewer):
     """
 
 
-        super(multipleAnalyses_GaitKineticsPlotViewer, self).__init__(iAnalyses)
+        super(multipleAnalyses_LowerLimbKineticsPlotViewer, self).__init__(iAnalyses)
 
         for itAnalysis in iAnalyses:
             if isinstance(itAnalysis,pyCGM2.Processing.analysis.Analysis):
@@ -1230,7 +879,6 @@ class multipleAnalyses_GaitKineticsPlotViewer(AbstractPlotViewer):
         self.m_normativeData = None
         self.m_flagConsistencyOnly = False
         self.m_legends = legends
-        self.m_type = plotType
 
         if len(iAnalyses) != len(legends):
             raise Exception("legends don t match analysis. Must have same length")
@@ -1238,7 +886,10 @@ class multipleAnalyses_GaitKineticsPlotViewer(AbstractPlotViewer):
             if len(iAnalyses) != len(pointLabelSuffix_lst):
                 raise Exception("list of point label suffix don t match analysis. Must have same length")
 
+        self.m_concretePlotFunction = None
 
+    def setConcretePlotFunction(self, concreteplotFunction):
+        self.m_concretePlotFunction = concreteplotFunction
 
     def __setLayer(self):
 
@@ -1285,9 +936,10 @@ class multipleAnalyses_GaitKineticsPlotViewer(AbstractPlotViewer):
         for ax in [self.fig.axes[3],self.fig.axes[7],self.fig.axes[8]]:
             ax.set_ylabel("power (W.Kg-1)",size=8)
 
-        ax9.set_xlabel("Gait cycle %",size=8)
-        ax10.set_xlabel("Gait cycle %",size=8)
-        ax11.set_xlabel("Gait cycle %",size=8)
+        ax8.set_xlabel("Cycle %",size=8)
+        ax9.set_xlabel("Cycle %",size=8)
+        ax10.set_xlabel("Cycle %",size=8)
+        ax11.set_xlabel("Cycle %",size=8)
 
         ax0.set_ylim([-2.0 *1000.0, 3.0*1000.0])
         ax1.set_ylim([-2.0*1000.0, 1.0*1000.0])
@@ -1322,240 +974,124 @@ class multipleAnalyses_GaitKineticsPlotViewer(AbstractPlotViewer):
 
     def __setData(self):
 
-        if self.m_type == pyCGM2Enums.PlotType.CONSISTENCY:
+        if self.m_context == "Left":
+            colormap = plt.cm.Reds
+            colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
 
+            i = 0
+            for analysis in self.m_analysis:
 
-            if self.m_context == "Left":
-                colormap = plt.cm.Reds
-                colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+                if self.m_pointLabelSuffixes is not None:
+                    suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
+                else:
+                    suffixPlus=""
 
-                i = 0
-                for analysis in self.m_analysis:
+                legend= self.m_legends[i]
 
-                    if self.m_pointLabelSuffixes is not None:
-                        suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
-                    else:
-                        suffixPlus=""
+                # hip
+                self.m_concretePlotFunction(self.fig.axes[0],analysis.kineticStats,
+                        "LHipMoment"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None,
+                        legendLabel=legend)
 
-                    legend= self.m_legends[i]
+                self.m_concretePlotFunction(self.fig.axes[1],analysis.kineticStats,
+                        "LHipMoment"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None)
 
-                    # hip
-                    plot.gaitConsistencyPlot(self.fig.axes[0],analysis.kineticStats,
-                            "LHipMoment"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None,
-                            legendLabel=legend)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[1],analysis.kineticStats,
-                            "LHipMoment"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[2],analysis.kineticStats,
+                        "LHipMoment"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
 
+                self.m_concretePlotFunction(self.fig.axes[3],analysis.kineticStats,
+                        "LHipPower"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[2],analysis.kineticStats,
-                            "LHipMoment"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # knee
+                self.m_concretePlotFunction(self.fig.axes[4],analysis.kineticStats,
+                        "LKneeMoment"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[3],analysis.kineticStats,
-                            "LHipPower"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[5],analysis.kineticStats,
+                        "LKneeMoment"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None)
 
-                    # knee
-                    plot.gaitConsistencyPlot(self.fig.axes[4],analysis.kineticStats,
-                            "LKneeMoment"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[6],analysis.kineticStats,
+                        "LKneeMoment"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[5],analysis.kineticStats,
-                            "LKneeMoment"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[7],analysis.kineticStats,
+                        "LKneePower"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[6],analysis.kineticStats,
-                            "LKneeMoment"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # ankle
+                self.m_concretePlotFunction(self.fig.axes[8],analysis.kineticStats,
+                        "LAnkleMoment"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[7],analysis.kineticStats,
-                            "LKneePower"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[9],analysis.kineticStats,
+                        "LAnkleMoment"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None)
 
-                    # ankle
-                    plot.gaitConsistencyPlot(self.fig.axes[8],analysis.kineticStats,
-                            "LAnkleMoment"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[10],analysis.kineticStats,
+                        "LAnkleMoment"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[9],analysis.kineticStats,
-                            "LAnkleMoment"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[11],analysis.kineticStats,
+                        "LAnklePower"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
+                i+=1
 
-                    plot.gaitConsistencyPlot(self.fig.axes[10],analysis.kineticStats,
-                            "LAnkleMoment"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+        if self.m_context == "Right":
+            colormap = plt.cm.Blues
+            colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
 
-                    plot.gaitConsistencyPlot(self.fig.axes[11],analysis.kineticStats,
-                            "LAnklePower"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-                    i+=1
+            i = 0
+            for analysis in self.m_analysis:
 
-            if self.m_context == "Right":
-                colormap = plt.cm.Blues
-                colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+                if self.m_pointLabelSuffixes is not None:
+                    suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
+                else:
+                    suffixPlus=""
 
-                i = 0
-                for analysis in self.m_analysis:
+                legend= self.m_legends[i]
 
-                    if self.m_pointLabelSuffixes is not None:
-                        suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
-                    else:
-                        suffixPlus=""
+                # hip
+                self.m_concretePlotFunction(self.fig.axes[0],analysis.kineticStats,
+                        "RHipMoment"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None,
+                        legendLabel=legend)
 
-                    legend= self.m_legends[i]
+                self.m_concretePlotFunction(self.fig.axes[1],analysis.kineticStats,
+                        "RHipMoment"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None)
 
-                    # hip
-                    plot.gaitConsistencyPlot(self.fig.axes[0],analysis.kineticStats,
-                            "RHipMoment"+suffixPlus,"Right",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None,
-                            legendLabel=legend)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[1],analysis.kineticStats,
-                            "RHipMoment"+suffixPlus,"Right",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[2],analysis.kineticStats,
+                        "RHipMoment"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
 
+                self.m_concretePlotFunction(self.fig.axes[3],analysis.kineticStats,
+                        "RHipPower"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[2],analysis.kineticStats,
-                            "RHipMoment"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # knee
+                self.m_concretePlotFunction(self.fig.axes[4],analysis.kineticStats,
+                        "RKneeMoment"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[3],analysis.kineticStats,
-                            "RHipPower"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[5],analysis.kineticStats,
+                        "RKneeMoment"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None)
 
-                    # knee
-                    plot.gaitConsistencyPlot(self.fig.axes[4],analysis.kineticStats,
-                            "RKneeMoment"+suffixPlus,"Right",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[6],analysis.kineticStats,
+                        "RKneeMoment"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[5],analysis.kineticStats,
-                            "RKneeMoment"+suffixPlus,"Right",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[7],analysis.kineticStats,
+                        "RKneePower"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[6],analysis.kineticStats,
-                            "RKneeMoment"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                # ankle
+                self.m_concretePlotFunction(self.fig.axes[8],analysis.kineticStats,
+                        "RAnkleMoment"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[7],analysis.kineticStats,
-                            "RKneePower"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[9],analysis.kineticStats,
+                        "RAnkleMoment"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None)
 
-                    # ankle
-                    plot.gaitConsistencyPlot(self.fig.axes[8],analysis.kineticStats,
-                            "RAnkleMoment"+suffixPlus,"Right",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[10],analysis.kineticStats,
+                        "RAnkleMoment"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[9],analysis.kineticStats,
-                            "RAnkleMoment"+suffixPlus,"Right",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                self.m_concretePlotFunction(self.fig.axes[11],analysis.kineticStats,
+                        "RAnklePower"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
 
-                    plot.gaitConsistencyPlot(self.fig.axes[10],analysis.kineticStats,
-                            "RAnkleMoment"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
+                i+=1
 
-                    plot.gaitConsistencyPlot(self.fig.axes[11],analysis.kineticStats,
-                            "RAnklePower"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    i+=1
-
-        if self.m_type == pyCGM2Enums.PlotType.MEAN_ONLY:
-
-            if self.m_context == "Left":
-                colormap = plt.cm.Reds
-                colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
-
-                i = 0
-                for analysis in self.m_analysis:
-
-                    if self.m_pointLabelSuffixes is not None:
-                        suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
-                    else:
-                        suffixPlus=""
-
-                    legend= self.m_legends[i]
-
-                    # hip
-                    plot.gaitMeanPlot(self.fig.axes[0],analysis.kineticStats,
-                            "LHipMoment"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None,
-                            legendLabel=legend)
-
-                    plot.gaitMeanPlot(self.fig.axes[1],analysis.kineticStats,
-                            "LHipMoment"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-
-                    plot.gaitMeanPlot(self.fig.axes[2],analysis.kineticStats,
-                            "LHipMoment"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[3],analysis.kineticStats,
-                            "LHipPower"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # knee
-                    plot.gaitMeanPlot(self.fig.axes[4],analysis.kineticStats,
-                            "LKneeMoment"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[5],analysis.kineticStats,
-                            "LKneeMoment"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[6],analysis.kineticStats,
-                            "LKneeMoment"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[7],analysis.kineticStats,
-                            "LKneePower"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # ankle
-                    plot.gaitMeanPlot(self.fig.axes[8],analysis.kineticStats,
-                            "LAnkleMoment"+suffixPlus,"Left",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[9],analysis.kineticStats,
-                            "LAnkleMoment"+suffixPlus,"Left",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[10],analysis.kineticStats,
-                            "LAnkleMoment"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[11],analysis.kineticStats,
-                            "LAnklePower"+suffixPlus,"Left",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    i+=1
-
-
-            if self.m_context == "Right":
-                colormap = plt.cm.Blues
-                colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
-
-                i = 0
-                for analysis in self.m_analysis:
-
-                    if self.m_pointLabelSuffixes is not None:
-                        suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
-                    else:
-                        suffixPlus=""
-
-                    legend= self.m_legends[i]
-
-                    # hip
-                    plot.gaitMeanPlot(self.fig.axes[0],analysis.kineticStats,
-                            "RHipMoment"+suffixPlus,"Right",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None,
-                            legendLabel=legend)
-
-                    plot.gaitMeanPlot(self.fig.axes[1],analysis.kineticStats,
-                            "RHipMoment"+suffixPlus,"Right",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-
-                    plot.gaitMeanPlot(self.fig.axes[2],analysis.kineticStats,
-                            "RHipMoment"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[3],analysis.kineticStats,
-                            "RHipPower"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # knee
-                    plot.gaitMeanPlot(self.fig.axes[4],analysis.kineticStats,
-                            "RKneeMoment"+suffixPlus,"Right",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[5],analysis.kineticStats,
-                            "RKneeMoment"+suffixPlus,"Right",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[6],analysis.kineticStats,
-                            "RKneeMoment"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[7],analysis.kineticStats,
-                            "RKneePower"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    # ankle
-                    plot.gaitMeanPlot(self.fig.axes[8],analysis.kineticStats,
-                            "RAnkleMoment"+suffixPlus,"Right",0, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[9],analysis.kineticStats,
-                            "RAnkleMoment"+suffixPlus,"Right",1, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[10],analysis.kineticStats,
-                            "RAnkleMoment"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    plot.gaitMeanPlot(self.fig.axes[11],analysis.kineticStats,
-                            "RAnklePower"+suffixPlus,"Right",2, color=colormap_i[i], addPhaseFlag=True,customLimits=None)
-
-                    i+=1
-#
+        #
     def plotPanel(self):
+
+        if self.m_concretePlotFunction is None:
+            raise Exception ("[pyCGM2] need definition of the concrete plot function")
 
         self.__setLayer()
         self.__setData()

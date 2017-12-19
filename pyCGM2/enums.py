@@ -53,12 +53,6 @@ class SegmentSide(Enum):
     Right = 2
 
 
-class PlotType(Enum):
-    """ Enum defining segment side"""
-    DESCRIPTIVE = 0
-    CONSISTENCY = 1
-    MEAN_ONLY = 2
-
 
 class CgmStaticMarkerConfig(Enum):
     """ Enum defining harrington's regression predictor"""

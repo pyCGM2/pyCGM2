@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # pyCGM2 settings
 import pyCGM2
 
-from pyCGM2.Processing.gaitAnalysis import smartFunctions
+from pyCGM2.Processing.highLevel import standardSmartFunctions,gaitSmartFunctions
 from pyCGM2.Model.CGM2 import  cgm,cgm2
 from pyCGM2.Processing import c3dManager
 
@@ -61,7 +61,7 @@ class oneAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = smartFunctions.make_analysis(trialManager,
+        analysis = gaitSmartFunctions.make_analysis(trialManager,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)
@@ -71,7 +71,6 @@ class oneAnalysis_PlotTest():
         plot.gaitDescriptivePlot(ax,analysis.kinematicStats,
                                 "LPelvisAngles","Left",0,
                                 color="blue",
-                                addPhaseFlag=True,
                                 title="", xlabel="", ylabel="",ylim=None,
                                 customLimits=None)
         plt.show()
@@ -101,7 +100,7 @@ class oneAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = smartFunctions.make_analysis(trialManager,
+        analysis = gaitSmartFunctions.make_analysis(trialManager,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)
@@ -111,7 +110,6 @@ class oneAnalysis_PlotTest():
         plot.gaitConsistencyPlot(ax,analysis.kinematicStats,
                                 "LPelvisAngles","Left",0,
                                 color="blue",
-                                addPhaseFlag=True,
                                 title="", xlabel="", ylabel="",ylim=None,
                                 customLimits=None)
         plt.show()
@@ -141,7 +139,7 @@ class oneAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = smartFunctions.make_analysis(trialManager,
+        analysis = gaitSmartFunctions.make_analysis(trialManager,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)
@@ -151,7 +149,6 @@ class oneAnalysis_PlotTest():
         plot.gaitMeanPlot(ax,analysis.kinematicStats,
                                 "LPelvisAngles","Left",0,
                                 color="blue",
-                                addPhaseFlag=True,
                                 title="", xlabel="", ylabel="",ylim=None,
                                 customLimits=None)
         plt.show()
@@ -183,12 +180,12 @@ class multipleAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis1 = smartFunctions.make_analysis(trialManager,
+        analysis1 = gaitSmartFunctions.make_analysis(trialManager,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)
 
-        analysis2 = smartFunctions.make_analysis(trialManager,
+        analysis2 = gaitSmartFunctions.make_analysis(trialManager,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)
@@ -202,7 +199,6 @@ class multipleAnalysis_PlotTest():
         plot.gaitConsistencyPlot(ax,analysis1.kinematicStats,
                                 "LPelvisAngles","Left",0,
                                 color=colormap_i[0],
-                                addPhaseFlag=True,
                                 legendLabel="analysis1",
                                 customLimits=None)
 
@@ -210,7 +206,6 @@ class multipleAnalysis_PlotTest():
                                  "LKneeAngles","Left",0,
                                  color=colormap_i[1],
                                  legendLabel="analysis2",
-                                 addPhaseFlag=True,
                                  customLimits=None)
         ax.legend()
         plt.show()
@@ -240,12 +235,12 @@ class multipleAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis1 = smartFunctions.make_analysis(trialManager,
+        analysis1 = gaitSmartFunctions.make_analysis(trialManager,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)
 
-        analysis2 = smartFunctions.make_analysis(trialManager,
+        analysis2 = gaitSmartFunctions.make_analysis(trialManager,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                                                 cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
                                     modelInfo,subjectInfo,experimentalInfo)
@@ -259,7 +254,6 @@ class multipleAnalysis_PlotTest():
         plot.gaitMeanPlot(ax,analysis1.kinematicStats,
                                 "LPelvisAngles","Left",0,
                                 color=colormap_i[0],
-                                addPhaseFlag=True,
                                 legendLabel="analysis1",
                                 customLimits=None)
 
@@ -267,7 +261,6 @@ class multipleAnalysis_PlotTest():
                                  "LKneeAngles","Left",0,
                                  color=colormap_i[1],
                                  legendLabel="analysis2",
-                                 addPhaseFlag=True,
                                  customLimits=None)
         ax.legend()
         plt.show()
