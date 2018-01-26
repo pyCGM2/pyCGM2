@@ -1909,14 +1909,6 @@ class CGM1LowerLimbs(CGM):
             globalPosition=node.getGlobal()
             seg.anatomicalFrame.static.addNode(node.getLabel(),globalPosition,positionType="Global",desc = node.getDescription())
 
-#        # node manager
-#        for label in seg.m_markerLabels:
-#            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-#            seg.anatomicalFrame.static.addNode(label,globalPosition,positionType="Global")
-
-        # --- relative rotation Technical Anatomical
-        tf=seg.getReferential("TF")
-        tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
     # ---- Offsets -------
 
