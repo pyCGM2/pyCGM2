@@ -79,10 +79,10 @@ SARA_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
         </ParamList>
       </Entry>
 
-      <Entry DisplayName="Run Python Operation" Enabled="1" OperationId="50" OperationName="Python">
+      <Entry DisplayName="Run SARA calibration" Enabled="1" OperationId="50" OperationName="Python">
         <ParamList name="">
           <Param name="Script" value="PATH_APPS/Knee Calibration/nexusOperation-pyCGM2-SARA.py"/>
-          <Param name="ScriptArgs" value="version =2.3"/>
+          <Param name="--side= -b= -e=" value="version =2.3"/>
           <Param name="UseNexusPython" value="false"/>
           <Param name="LaunchPython" value="false"/>
         </ParamList>
@@ -107,10 +107,10 @@ CALIBRATION2DOF_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" 
         </ParamList>
       </Entry>
 
-      <Entry DisplayName="Run Python Operation" Enabled="1" OperationId="50" OperationName="Python">
+      <Entry DisplayName="Run Calibration2Dof" Enabled="1" OperationId="50" OperationName="Python">
         <ParamList name="">
           <Param name="Script" value="PATH_APPS/Knee Calibration/nexusOperation-pyCGM2-2DofCalibration.py"/>
-          <Param name="ScriptArgs" value="version =2.3"/>
+          <Param name="ScriptArgs" value="--side= -b= -e="/>
           <Param name="UseNexusPython" value="false"/>
           <Param name="LaunchPython" value="false"/>
         </ParamList>
