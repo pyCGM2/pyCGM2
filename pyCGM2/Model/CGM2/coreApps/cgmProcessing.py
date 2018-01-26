@@ -36,7 +36,12 @@ def standardProcessing(DATA_PATH, modelledFilenames, modelVersion,
     #---- make analysis
     #-----------------------------------------------------------------------
             # pycgm2-filter pipeline are gathered in a single function
-    if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
+    if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e","CGM2.4","CGM2.4e"]:
+
+        if modelVersion in ["CGM2.4","CGM2.4e"]:
+            cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT["Left"].append("LForeFoot")
+            cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT["Right"].append("RForeFoot")
+
         analysis = standardSmartFunctions.make_analysis(trialManager,
                   cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
                   cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
@@ -71,13 +76,17 @@ def gaitProcessing(DATA_PATH, modelledFilenames, modelVersion,
     #---- make analysis
     #-----------------------------------------------------------------------
             # pycgm2-filter pipeline are gathered in a single function
-    if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
+    if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e","CGM2.4","CGM2.4e"]:
+
+        if modelVersion in ["CGM2.4","CGM2.4e"]:
+            cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT["Left"].append("LForeFootAngles")
+            cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT["Right"].append("RForeFootAngles")
 
         analysis = gaitSmartFunctions.make_analysis(trialManager,
-                  cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                  cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                  modelInfo, subjectInfo, experimentalInfo,
-                  pointLabelSuffix=pointSuffix)
+              cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
+              cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
+              modelInfo, subjectInfo, experimentalInfo,
+              pointLabelSuffix=pointSuffix)
 
     #---- normative dataset
     #-----------------------------------------------------------------------

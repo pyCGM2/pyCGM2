@@ -37,12 +37,14 @@ if __name__ == "__main__":
     processingFlag = True if not args.disableProcessing else False
     plotFlag = True if  args.plot else False
 
-    #args.DEBUG = True
+    args.DEBUG = False
     if args.DEBUG:
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
-        DATA_PATH = "C:\\Users\\HLS501\\Google Drive\\Paper_for BJSM\\BJSM_trials\\FMS_Screening\\15KUFC01\\Session 2\\"
-        pipelineFile = "pipeline_method1.pyCGM2"
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2-Analyses\\CGM3-dataCollection\\CGM24_preAnalysis_3DMA\\dataS01OP1\\"
+        pipelineFile = "pipeline2_4.pyCGM2"
+        xlsExport_flag =  True
+        plotFlag= True
 
     else:
         DATA_PATH = os.getcwd()+"\\"
@@ -100,6 +102,7 @@ if __name__ == "__main__":
 
     fileSuffix = manager.getFileSuffix()
     ik_flag = manager.isIkFitting()
+
 
     #------calibration--------
     leftFlatFoot = manager.getLeftFlatFoot()
