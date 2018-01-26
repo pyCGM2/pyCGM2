@@ -74,7 +74,7 @@ class pipelineFileManager(object):
             return enums.MomentProjection.JCS
 
     def isIkFitting(self):
-        return bool(self.pipSettings["Modelling"]["NoIK"])
+        return True if not bool(self.pipSettings["Modelling"]["NoIK"]) else False
 
     # processing
     def getSubjectInfo(self):

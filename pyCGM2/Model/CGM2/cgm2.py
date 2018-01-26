@@ -508,7 +508,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         self.setClinicalDescriptor("RAnkle",enums.DataType.Angle, [0,2,1],[-1.0,+1.0,+1.0], [ np.radians(90),0.0,0.0])
 
         self.setClinicalDescriptor("LForeFoot",enums.DataType.Angle, [0,2,1],[-1.0,-1.0,-1.0], [0.0,0.0,0.0]) # TODO check
-        self.setClinicalDescriptor("RForeFoot",enums.DataType.Angle, [0,2,1],[-1.0,+1.0,+1.0], [ np.radians(90),0.0,0.0])
+        self.setClinicalDescriptor("RForeFoot",enums.DataType.Angle, [0,2,1],[-1.0,+1.0,+1.0], [ 0.0,0.0,0.0])
 
 
         self.setClinicalDescriptor("LPelvis",enums.DataType.Angle,[0,1,2],[1.0,1.0,-1.0], [0.0,0.0,0.0])
@@ -1419,11 +1419,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
 
     #---- Motion -------
-    def computeOptimizedSegmentMotion(self,aqui,segments, dictRef,dictAnat,motionMethod ):
+    def computeOptimizedSegmentMotion(self,aqui,segments, dictRef,dictAnat,motionMethod,options):
         """
 
         """
-
         # ---remove all  direction marker from tracking markers.
         for seg in self.m_segmentCollection:
             selectedTrackingMarkers=list()
@@ -1441,6 +1440,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         if "Left Thigh" in segments:
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Thigh",originLabel = "LKJC")
+
+            print "in compute"
+            print self.getSegment("Left Thigh").getReferential("TF").relativeMatrixAnatomic
 
 
         if "Right Thigh" in segments:
