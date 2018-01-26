@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import logging
+import copy
 
 import pyCGM2
 
@@ -82,7 +83,7 @@ def calibration2Dof(model,
         modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,enums.motionMethod.Determinist)
         modMotion.compute()
 
-    elif model.version in  ["CGM2.3","CGM2.3e","CGM2.3","CGM2.4e"]:
+    elif model.version in  ["CGM2.3","CGM2.3e","CGM2.4","CGM2.4e"]:
         if side == "Left":
             thigh_markers = model.getSegment("Left Thigh").m_tracking_markers
             shank_markers = model.getSegment("Left Shank").m_tracking_markers

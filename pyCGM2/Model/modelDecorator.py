@@ -242,7 +242,6 @@ def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,s
     # onjective function : minimize variance of the knee varus valgus angle
     def objFun(x, proxMotionRef, distMotionRef,indexFirstFrame,indexLastFrame, sequence,index):
         #nFrames= len(proxMotionRef)
-
         frames0 = range(0,len(proxMotionRef))
 
         if indexFirstFrame and indexLastFrame:
@@ -258,7 +257,6 @@ def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,s
             frames = frames0
 
         nFrames = len(frames)
-
 
         angle=np.deg2rad(x)
         rotZ = np.eye(3,3)
@@ -1613,6 +1611,7 @@ class KneeCalibrationDecorator(DecoratorModel):
             distSegmentlabel = "Right Shank"
         else:
             raise Exception("[pyCGM2] side doesn t recongnize")
+
 
         proxMotion = self.model.getSegment(proxSegmentLabel).anatomicalFrame.motion
         distMotion = self.model.getSegment(distSegmentlabel).anatomicalFrame.motion

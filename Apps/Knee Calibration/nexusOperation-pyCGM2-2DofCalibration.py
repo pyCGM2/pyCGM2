@@ -37,16 +37,14 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
+        args.DEBUG = False
         if args.DEBUG:
             # CGM2.3--
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibration2Dof\\"
-            reconstructedFilenameLabelledNoExt = "Left Knee"
-
-            NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
-
-            #side = "Left"
-            #args.beginFrame=1073
-            #args.endFrame=2961
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.4-calibration2Dof\\"
+            reconstructedFilenameLabelledNoExt = "PN01OP01S01FUNC01"
+            args.side = "Left"
+            args.beginFrame=932
+            args.endFrame=1278
 
             NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
 
@@ -66,7 +64,6 @@ if __name__ == "__main__":
 
         # --------------------pyCGM2 MODEL - INIT ------------------------------
         model = files.loadModel(DATA_PATH,subject)
-
         logging.info("loaded model : %s" %(model.version ))
 
         if model.version == "CGM1.0":
@@ -137,7 +134,7 @@ if __name__ == "__main__":
             modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,enums.motionMethod.Determinist)
             modMotion.compute()
 
-        elif model.version in  ["CGM2.3","CGM2.3e","CGM2.3","CGM2.4e"]:
+        elif model.version in  ["CGM2.3","CGM2.3e","CGM2.4","CGM2.4e"]:
 
             proximalSegmentLabel=str(side+" Thigh")
             distalSegmentLabel=str(side+" Shank")

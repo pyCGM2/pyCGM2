@@ -519,7 +519,7 @@ class ModelMotionFilter(object):
 
 
     def segmentalCompute(self,segments):
-
+        
         if str(self.m_model) != "Basis Model":
             self.m_model.computeOptimizedSegmentMotion(self.m_aqui,
                                              segments,
