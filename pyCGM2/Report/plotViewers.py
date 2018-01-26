@@ -294,6 +294,301 @@ class LowerLimbKinematicsPlotViewer(AbstractPlotViewer):
 
         return self.fig
 
+class LowerLimbMultiFootKinematicsPlotViewer(AbstractPlotViewer):
+    """
+        **Description :** Constructor of gait plot panel.
+
+        .. note::
+
+            The kinematic panel is made of 12 subplots
+
+            ================  ==============================  =======  ===========
+            matplotlib Axis   model outputs                   context  Axis label
+            ================  ==============================  =======  ===========
+            ax1               "LPelvisProgressAngles"         left     Tilt
+                              "RPelvisProgressAngles"         right
+            ax2               "LPelvisProgress.Angles"        left     Obli
+                              "RPelvisProgress.Angles"        right
+            ax3               "LPelvisProgress.Angles"        left     Rota
+                              "RPelvisProgress.Angles"        right
+            ax4               "LHipAngles"                    left     Flex
+                              "RHipAngles"                    right
+            ax5               "LHipAngles"                    left     Addu
+                              "RHipAngles"                    right
+            ax6               "LHipAngles"                    left    Rota
+                              "RHipAngles"                    right
+            ax7               "LKneeAngles"                   left     Flex
+                              "RKneeAngles"                   right
+            ax8               "LKneeAngles"                   left     Addu
+                              "RKneeAngles"                   right
+            ax9               "LKneeAngles"                   left     Rota
+                              "RKneeAngles"                   right
+            ax10              "LAnkleAngles"                  left     Flex
+                              "RAnkleAngles"                  right
+            ax11              "LAnkleAngles"                  left     Eve
+                              "RAnkleAngles"                  right
+            ax12              "LFootProgressAngles"           left
+                              "RFootProgressAngles"           right
+            ax13              "LForeFoot"                     left      Flex
+                               "RForeFoot"                   right
+            ax14              "LForeFoot"                     left      Rota
+                               "RForeFoot"                   right
+            ax15              "LForeFoot"                     left      Addu
+                               "RForeFoot"                   right
+            ================  ==============================  =======  ===========
+
+    """
+
+    def __init__(self,iAnalysis,pointLabelSuffix=""):
+
+        """
+            :Parameters:
+                 - `iAnalysis` (pyCGM2.Processing.analysis.Analysis ) - Analysis instance built from AnalysisFilter
+                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
+    """
+
+
+        super(LowerLimbMultiFootKinematicsPlotViewer, self).__init__(iAnalysis)
+
+        self.m_analysis = self.m_input
+        if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
+            pass
+        else:
+            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+
+
+        self.m_pointLabelSuffix = pointLabelSuffix
+        self.m_normativeData = None
+        self.m_flagConsistencyOnly = False
+        self.m_concretePlotFunction = None
+
+    def setConcretePlotFunction(self, concreteplotFunction):
+        self.m_concretePlotFunction = concreteplotFunction
+
+
+    def __setLayer(self):
+
+        self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+        title=u""" Descriptive Time-normalized Kinematics \n """
+        self.fig.suptitle(title)
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+
+        ax0 = plt.subplot(6,3,1)# Pelvis X
+        ax1 = plt.subplot(6,3,2)# Pelvis Y
+        ax2 = plt.subplot(6,3,3)# Pelvis Z
+        ax3 = plt.subplot(6,3,4)# Hip X
+        ax4 = plt.subplot(6,3,5)# Hip Y
+        ax5 = plt.subplot(6,3,6)# Hip Z
+        ax6 = plt.subplot(6,3,7)# Knee X
+        ax7 = plt.subplot(6,3,8)# Knee Y
+        ax8 = plt.subplot(6,3,9)# Knee Z
+        ax9 = plt.subplot(6,3,10)# Ankle X
+        ax10 = plt.subplot(6,3,11)# Ankle Z
+        ax11 = plt.subplot(6,3,12)# Footprogress Z
+        ax12 = plt.subplot(6,3,13)# ForeFoot X
+        ax13 = plt.subplot(6,3,14)# ForeFoot Z
+        ax14 = plt.subplot(6,3,15)# ForeFoot Y
+
+        ax0.set_title("Pelvis Tilt" ,size=8)
+        ax1.set_title("Pelvis Obliquity" ,size=8)
+        ax2.set_title("Pelvis Rotation" ,size=8)
+        ax3.set_title("Hip Flexion" ,size=8)
+        ax4.set_title("Hip Adduction" ,size=8)
+        ax5.set_title("Hip Rotation" ,size=8)
+        ax6.set_title("Knee Flexion" ,size=8)
+        ax7.set_title("Knee Adduction" ,size=8)
+        ax8.set_title("Knee Rotation" ,size=8)
+        ax9.set_title("Ankle dorsiflexion" ,size=8)
+        ax10.set_title("Ankle eversion" ,size=8)
+        ax11.set_title("Foot Progression " ,size=8)
+        ax12.set_title("ForeFoot dorsiflexion " ,size=8)
+        ax13.set_title("ForeFoot eversion " ,size=8)
+        ax14.set_title("ForeFoot Adduction " ,size=8)
+
+        for ax in self.fig.axes:
+            ax.set_ylabel("angle (deg)",size=8)
+
+        ax12.set_xlabel("Cycle %",size=8)
+        ax13.set_xlabel("Cycle %",size=8)
+        ax14.set_xlabel("Cycle %",size=8)
+
+        ax0.set_ylim([0,60])
+        ax1.set_ylim([-30,30])
+        ax2.set_ylim([-30,30])
+
+        ax3.set_ylim( [-20,70])
+        ax4.set_ylim([-30,30])
+        ax5.set_ylim([-30,30])
+
+        ax6.set_ylim([-15,75])
+        ax7.set_ylim([-30,30])
+        ax8.set_ylim([-30,30])
+
+        ax9.set_ylim([-30,30])
+        ax10.set_ylim([-30,30])
+        ax11.set_ylim([-30,30])
+
+        ax12.set_ylim([-50,30])
+        ax13.set_ylim([-30,30])
+        ax14.set_ylim([-30,30])
+
+    def setNormativeDataset(self,iNormativeDataSet):
+        """
+            **Description :** set a normative gait dataset
+
+            :Parameters:
+                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
+
+        """
+        iNormativeDataSet.constructNormativeData()
+        self.m_normativeData = iNormativeDataSet.data
+
+    def __setData(self):
+        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
+
+        # pelvis
+        self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kinematicStats,
+                "LPelvisAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kinematicStats,
+                "RPelvisAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
+
+        self.m_concretePlotFunction(self.fig.axes[1],self.m_analysis.kinematicStats,
+                "LPelvisAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[1],self.m_analysis.kinematicStats,
+                "RPelvisAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
+
+        self.m_concretePlotFunction(self.fig.axes[2],self.m_analysis.kinematicStats,
+                "LPelvisAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[2],self.m_analysis.kinematicStats,
+                "RPelvisAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
+
+        # hip
+        self.m_concretePlotFunction(self.fig.axes[3],self.m_analysis.kinematicStats,
+                "LHipAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[3],self.m_analysis.kinematicStats,
+                "RHipAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
+
+        self.m_concretePlotFunction(self.fig.axes[4],self.m_analysis.kinematicStats,
+                "LHipAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[4],self.m_analysis.kinematicStats,
+                "RHipAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
+
+        self.m_concretePlotFunction(self.fig.axes[5],self.m_analysis.kinematicStats,
+                "LHipAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[5],self.m_analysis.kinematicStats,
+                "RHipAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
+
+        # knee
+        self.m_concretePlotFunction(self.fig.axes[6],self.m_analysis.kinematicStats,
+                "LKneeAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[6],self.m_analysis.kinematicStats,
+                "RKneeAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
+
+        self.m_concretePlotFunction(self.fig.axes[7],self.m_analysis.kinematicStats,
+                "LKneeAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[7],self.m_analysis.kinematicStats,
+                "RKneeAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
+
+        self.m_concretePlotFunction(self.fig.axes[8],self.m_analysis.kinematicStats,
+                "LKneeAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[8],self.m_analysis.kinematicStats,
+                "RKneeAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
+
+        # ankle
+        self.m_concretePlotFunction(self.fig.axes[9],self.m_analysis.kinematicStats,
+                "LAnkleAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[9],self.m_analysis.kinematicStats,
+                "RAnkleAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
+
+        self.m_concretePlotFunction(self.fig.axes[10],self.m_analysis.kinematicStats,
+                "LAnkleAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[10],self.m_analysis.kinematicStats,
+                "RAnkleAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
+
+        # foot progress
+        self.m_concretePlotFunction(self.fig.axes[11],self.m_analysis.kinematicStats,
+                "LFootProgressAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[11],self.m_analysis.kinematicStats,
+                "RFootProgressAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
+
+        # ForeFoot
+        self.m_concretePlotFunction(self.fig.axes[12],self.m_analysis.kinematicStats,
+                "LForeFootAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[12],self.m_analysis.kinematicStats,
+                "RForeFootAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
+
+        self.m_concretePlotFunction(self.fig.axes[13],self.m_analysis.kinematicStats,
+                "LForeFootAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[13],self.m_analysis.kinematicStats,
+                "RForeFootAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
+
+        self.m_concretePlotFunction(self.fig.axes[14],self.m_analysis.kinematicStats,
+                "LForeFootAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+        self.m_concretePlotFunction(self.fig.axes[14],self.m_analysis.kinematicStats,
+                "RForeFootAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
+
+
+    def plotPanel(self):
+
+        if self.m_concretePlotFunction is None:
+            raise Exception ("[pyCGM2] need definition of the concrete plot function")
+
+        self.__setLayer()
+        self.__setData()
+
+        if self.m_normativeData is not None:
+            self.fig.axes[0].fill_between(np.linspace(0,100,51),
+                self.m_normativeData["Pelvis.Angles"]["mean"][:,0]-self.m_normativeData["Pelvis.Angles"]["sd"][:,0],
+                self.m_normativeData["Pelvis.Angles"]["mean"][:,0]+self.m_normativeData["Pelvis.Angles"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[1].fill_between(np.linspace(0,100,51),
+                self.m_normativeData["Pelvis.Angles"]["mean"][:,1]-self.m_normativeData["Pelvis.Angles"]["sd"][:,1],
+                self.m_normativeData["Pelvis.Angles"]["mean"][:,1]+self.m_normativeData["Pelvis.Angles"]["sd"][:,1],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[2].fill_between(np.linspace(0,100,51),
+                self.m_normativeData["Pelvis.Angles"]["mean"][:,2]-self.m_normativeData["Pelvis.Angles"]["sd"][:,2],
+                self.m_normativeData["Pelvis.Angles"]["mean"][:,2]+self.m_normativeData["Pelvis.Angles"]["sd"][:,2],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+
+            self.fig.axes[3].fill_between(np.linspace(0,100,51),
+                self.m_normativeData["Hip.Angles"]["mean"][:,0]-self.m_normativeData["Hip.Angles"]["sd"][:,0],
+                self.m_normativeData["Hip.Angles"]["mean"][:,0]+self.m_normativeData["Hip.Angles"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[4].fill_between(np.linspace(0,100,51),
+                self.m_normativeData["Hip.Angles"]["mean"][:,1]-self.m_normativeData["Hip.Angles"]["sd"][:,1],
+                self.m_normativeData["Hip.Angles"]["mean"][:,1]+self.m_normativeData["Hip.Angles"]["sd"][:,1],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[5].fill_between(np.linspace(0,100,51),
+                self.m_normativeData["Hip.Angles"]["mean"][:,2]-self.m_normativeData["Hip.Angles"]["sd"][:,2],
+                self.m_normativeData["Hip.Angles"]["mean"][:,2]+self.m_normativeData["Hip.Angles"]["sd"][:,2],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[6].fill_between(np.linspace(0,100,51),
+                self.m_normativeData["Knee.Angles"]["mean"][:,0]-self.m_normativeData["Knee.Angles"]["sd"][:,0],
+                self.m_normativeData["Knee.Angles"]["mean"][:,0]+self.m_normativeData["Knee.Angles"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[9].fill_between(np.linspace(0,100,51),
+                self.m_normativeData["Ankle.Angles"]["mean"][:,0]-self.m_normativeData["Ankle.Angles"]["sd"][:,0],
+                self.m_normativeData["Ankle.Angles"]["mean"][:,0]+self.m_normativeData["Ankle.Angles"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[11].fill_between(np.linspace(0,100,51),
+                self.m_normativeData["Foot.Angles"]["mean"][:,2]-self.m_normativeData["Ankle.Angles"]["sd"][:,2],
+                self.m_normativeData["Foot.Angles"]["mean"][:,2]+self.m_normativeData["Ankle.Angles"]["sd"][:,2],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+        return self.fig
+
+
+
+
+
 class LowerLimbKineticsPlotViewer(AbstractPlotViewer):
     """
         **Description :** Constructor of gait plot panel.

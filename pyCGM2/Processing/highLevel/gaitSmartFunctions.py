@@ -90,7 +90,14 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     # viewer
     if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
         kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
-        kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
+    elif modelVersion in ["CGM2.4","CGM2.4e"]:
+        kv = plotViewers.LowerLimbMultiFootKinematicsPlotViewer(analysis,
+                            pointLabelSuffix=pointLabelSuffix)
+    else:
+        raise Exception("[pyCGM2] Model version not known")
+
+    kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
+
     if normativeDataset is not None:
         kv.setNormativeDataset(normativeDataset)
 
@@ -107,7 +114,14 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
         kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis,
                                 pointLabelSuffix=pointLabelSuffix)
-        kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
+    elif modelVersion in ["CGM2.4","CGM2.4e"]:
+        kv = plotViewers.LowerLimbMultiFootKinematicsPlotViewer(analysis,
+                                pointLabelSuffix=pointLabelSuffix)
+    else:
+        raise Exception("[pyCGM2] Model version not known")
+
+
+    kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
 
     if normativeDataset is not None:
         kv.setNormativeDataset(normativeDataset)
@@ -123,7 +137,7 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
         # filter 1 - descriptive kinematic panel
         #-------------------------------------------
         # viewer
-        if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
+        if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e","CGM2.4","CGM2.4e"]:
             kv = plotViewers.LowerLimbKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
             kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
         if normativeDataset is not None:
@@ -139,7 +153,7 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
         # filter 2 - consistency kinematic panel
         #-------------------------------------------
         # viewer
-        if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
+        if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e","CGM2.4","CGM2.4e"]:
             kv = plotViewers.LowerLimbKineticsPlotViewer(analysis,
                                     pointLabelSuffix=pointLabelSuffix)
             kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
