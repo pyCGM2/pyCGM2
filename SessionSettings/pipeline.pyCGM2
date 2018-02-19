@@ -1,24 +1,32 @@
 {
-    "Subject": {"Id" : "15KUFC01" },
+    "PipelineVersion": "pipe-V-1.0",
+    "DATA_PATH":"C:\\Users\\HLS501\\Documents\\VICON DATA\\Salford\\CGM3\\PN01\\PN01OP01S01\\",
+    "OutDataPath":"C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2-Analyses\\CGM3-dataCollection\\CGM2.4-analysis\\results\\PN01S01OP01\\",
+    "Subject": {
+        "Id": "PN01"
+    },
     "ExperimentalContext": {
-        "sessionName":"",
-        "AssessorName":""
-        },
+        "sessionName": "S01",
+        "AssessorName": "O01"
+    },
     "Modelling": {
-        "Model": {"CGM": "CGM1.0"},
-        "fileSuffix" : "",
+        "Model": {
+            "Model": "CGM1.1",
+            "CGM": "CGM1.1"
+        },
+        "fileSuffix": "cgm11",
         "pointSuffix": "",
         "MarkerDiameter": 14,
-        "MP" :{
+        "MP": {
             "Required": {
-                "Bodymass": 71,
-                "Height": 1755,
-                "LeftLegLength": 860,
-                "RightLegLength": 865,
-                "LeftKneeWidth": 102,
-                "RightKneeWidth": 103.4,
-                "LeftAnkleWidth": 75.3,
-                "RightAnkleWidth": 72.9,
+                "Bodymass": 0,
+                "Height": 0,
+                "LeftLegLength": 0,
+                "RightLegLength": 0,
+                "LeftKneeWidth": 0,
+                "RightKneeWidth": 0,
+                "LeftAnkleWidth": 0,
+                "RightAnkleWidth": 0,
                 "LeftSoleDelta": 0,
                 "RightSoleDelta": 0
             },
@@ -31,54 +39,65 @@
                 "RightAsisTrocanterDistance": 0,
                 "RightTibialTorsion": 0,
                 "RightThighRotation": 0,
-                "RightShankRotation": 0
+                "RightShankRotation": 0,
+                "LeftKneeFuncCalibrationOffset": 0,
+                "RightKneeFuncCalibrationOffset": 0
             }
         },
-        "NoIK":0,
+        "NoIK": 0,
         "Calibration": {
-            "HJC_method": "Hara",
+            "HJC_method": "",
             "LeftFlatFoot": 1,
             "RightFlatFoot": 1,
-            "Trial": "static.c3d"
-         },
+            "Trial": "PN01OP01S01STAT.c3d"
+        },
         "KneeCalibrationTrials": {
-            "Left" : {
-                "Method" : "",
-                "Trial": "",
-                "BeginFrame": 0,
-                "EndFrame": 0
-                },
+            "Left": {
+                "Method": "NONE",
+                "Trial": "PN01OP01S01FUNC01.c3d",
+                "BeginFrame": 983,
+                "EndFrame": 1372
+            },
             "Right": {
-                "Method" : "",
-                "Trial": "",
-                "BeginFrame": 0,
-                "EndFrame": 0
+                "Method": "NONE",
+                "Trial": "PN01OP01S01FUNC01.c3d",
+                "BeginFrame": 377,
+                "EndFrame": 673
             }
         },
         "Fitting": {
+            "IkweightFile":"",
             "Trials": [
-                {"File": "gait Trial.c3d", "Mfpa": "Auto"}
-             ],
-            "Projection":"JCS"
-            }
+                {   "File": "PN01OP01S01SS01.c3d", "Mfpa": "LRXX"},
+                {    "File": "PN01OP01S01SS02.c3d", "Mfpa": "XRXX"},
+                {    "File": "PN01OP01S01SS03.c3d", "Mfpa": "LRXX"},
+                {    "File": "PN01OP01S01SS07.c3d", "Mfpa": "LRXX"},
+                {    "File": "PN01OP01S01SS05.c3d", "Mfpa": "LRXX"}
+                    ],
+            "Projection": "JCS"
+        }
     },
     "Processing": {
-        "Tasks" : [
+        "Tasks": [
             {
-             "outputFilenameNoExt" : "output",
-             "TaskTitle": "",
-             "AnalysisType": "Gait",
-             "Conditions" : {
-                "Foot" : "",
-                "Orthosis" : "",
-                "Prothesis" : "",
-                "ExternalHelp" : "",
-                "Assistance" :""
+                "outputFilenameNoExt": "gait_CGM11",
+                "TaskTitle": "Gait analysis",
+                "AnalysisType": "Gait",
+                "Conditions": {
+                    "Foot": "",
+                    "Orthosis": "",
+                    "Prothesis": "",
+                    "ExternalHelp": "",
+                    "Assistance": ""
                 },
-            "Trials" : ["gait Trial.c3d"],
-            "Normative data": {
-                "Author": "Schwartz2008",
-                "Modality": "Free"
+                "Trials": ["PN01OP01S01SS01.c3d",
+                           "PN01OP01S01SS02.c3d",
+                           "PN01OP01S01SS03.c3d",
+                           "PN01OP01S01SS07.c3d",
+                           "PN01OP01S01SS05.c3d"],
+                "Normative data": {
+                    "Author": "Schwartz2008",
+                    "Modality": "Free"
                 }
             }
         ]

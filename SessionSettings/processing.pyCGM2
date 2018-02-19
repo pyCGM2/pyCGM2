@@ -1,28 +1,35 @@
 {
-    "Subject": {"Id" : ""},
-    "Model": {"CGM" : ""},
+    "PipelineVersion": "pipe-V-1.0",
+    "DATA_PATH":"C:\\Users\\HLS501\\Documents\\VICON DATA\\Salford\\CGM3\\PN01\\PN01OP01S01\\",
+    "OutDataPath":"C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2-Analyses\\CGM3-dataCollection\\CGM2.4-analysis\\results\\PN01S01OP01\\",
+    "Subject": {
+        "Id": "PN01"
+    },
     "ExperimentalContext": {
-        "sessionName":"",
-        "AssessorName":""
-        },
+        "sessionName": "S01",
+        "AssessorName": "O01"
+    },
     "Processing": {
-
-        "Tasks" : [
-            {"outputFilenameNoExt" : "output",
-            "TaskTitle": "Gait analysis",
-            "AnalysisType": "Gait", 
-             "Conditions" : {
-                "Foot" : "",
-                "Orthosis" : "",
-                "Prothesis" : "",
-                "ExternalHelp" : "",
-                "Assistance" :""
+        "Tasks": [
+            {
+                "outputFilenameNoExt": "gait_CGM24",
+                "TaskTitle": "Gait analysis",
+                "AnalysisType": "Gait",
+                "Conditions": {
+                    "Foot": "",
+                    "Orthosis": "",
+                    "Prothesis": "",
+                    "ExternalHelp": "",
+                    "Assistance": ""
                 },
-            "Trials" : ["", ""],
-            "PointSuffix":"",
-            "Normative data": {
-                "Author": "Schwartz2008",
-                "Modality": "Free"
+                "Trials": ["PN01OP01S01SS01.c3d",
+                           "PN01OP01S01SS02.c3d",
+                           "PN01OP01S01SS03.c3d",
+                           "PN01OP01S01SS07.c3d",
+                           "PN01OP01S01SS05.c3d"],
+                "Normative data": {
+                    "Author": "Schwartz2008",
+                    "Modality": "Free"
                 }
             }
         ]
