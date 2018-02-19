@@ -73,7 +73,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     # ----------------------CGM MODELLING----------------------------------
     # ----motion filter----
-    modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,enums.motionMethod.Determinist,
+    modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,enums.motionMethod.Sodervisk,
                                               markerDiameter=markerDiameter)
 
     modMotion.compute()
@@ -181,7 +181,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     # --- initial motion Filter ---
     scp=modelFilters.StaticCalibrationProcedure(model)
     # section to remove : - copy motion of ProximalShank from Shank with Sodervisk
-    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist)
+    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Sodervisk)
     modMotion.compute()
     # /section to remove
 

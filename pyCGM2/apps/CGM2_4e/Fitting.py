@@ -28,6 +28,7 @@ if __name__ == "__main__":
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of output file')
+    parser.add_argument('-ikwf','--ikWeightFile', type=str, help='file of ik weight setting')
     parser.add_argument('--DEBUG', action='store_true', help='debug model')
     args = parser.parse_args()
 
@@ -35,14 +36,17 @@ if __name__ == "__main__":
     # global setting ( in user/AppData)
     settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_4-Expert-pyCGM2.settings")
 
+
     # --------------------------CONFIG ------------------------------------
     subject = args.subject
+
 
     argsManager = cgmUtils.argsManager_cgm(settings,args)
     markerDiameter = argsManager.getMarkerDiameter()
     pointSuffix = argsManager.getPointSuffix("cgm2_4e")
     momentProjection =  argsManager.getMomentProjection()
     mfpa = argsManager.getManualForcePlateAssign()
+    ikwf = argsManager.getIkWeightFile()
 
     # --------------------------LOADING ------------------------------------
     if args.DEBUG:
@@ -56,6 +60,8 @@ if __name__ == "__main__":
 
     logging.info( "data Path: "+ DATA_PATH )
     logging.info( "calibration file: "+ reconstructFilenameLabelled)
+
+
 
     # --------------------pyCGM2 MODEL ------------------------------
     model = files.loadModel(DATA_PATH,subject)
@@ -71,6 +77,12 @@ if __name__ == "__main__":
     #  translators management
     translators = files.getTranslators(DATA_PATH,"CGM2_4.translators")
     if not translators:  translators = settings["Translators"]
+
+    #  ikweight
+    if ikwf is not None:
+        ikWeight = files.openJson(DATA_PATH,ikwf)
+        settings["Fitting"]["Weight"]=ikWeight["Weight"]
+
 
     # --------------------------MODELLING PROCESSING -----------------------
     finalAcqGait = cgm2_4e.fitting(model,DATA_PATH, reconstructFilenameLabelled,
