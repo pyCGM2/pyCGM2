@@ -11,7 +11,7 @@ import pyCGM2
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2.Report import normativeDatasets,plot
-from pyCGM2.Processing import c3dManager,exporter
+from pyCGM2.Processing import c3dManager,exporter,scores
 from pyCGM2.Processing.highLevel import standardSmartFunctions,gaitSmartFunctions
 from pyCGM2.Model.CGM2 import  cgm,cgm2
 from pyCGM2.Utils import files
@@ -20,8 +20,12 @@ from pyCGM2.Utils import files
 def standardProcessing(DATA_PATH, modelledFilenames, modelVersion,
     modelInfo, subjectInfo, experimentalInfo,
     pointSuffix,
+    outputPath=None,
     outputFilename="standardProcessing",
     exportXls=False):
+
+    if outputPath is None:
+        outputPath= DATA_PATH
 
     if isinstance(modelledFilenames,str):
         modelledFilenames = [modelledFilenames]
@@ -53,15 +57,20 @@ def standardProcessing(DATA_PATH, modelledFilenames, modelVersion,
     if exportXls:
         exportFilter = exporter.XlsAnalysisExportFilter()
         exportFilter.setAnalysisInstance(analysis)
-        exportFilter.export(outputFilename, path=DATA_PATH,excelFormat = "xls",mode="Advanced")
+        exportFilter.export(outputFilename, path=outputPath,excelFormat = "xls",mode="Advanced")
 
 def gaitProcessing(DATA_PATH, modelledFilenames, modelVersion,
     modelInfo, subjectInfo, experimentalInfo,
     normativeData,
     pointSuffix,
+    outputPath=None,
     outputFilename="gaitProcessing",
     exportXls=False,
     plot=True):
+
+    if outputPath is None:
+        outputPath= DATA_PATH
+
 
     if isinstance(modelledFilenames,str):
         modelledFilenames = [modelledFilenames]
@@ -97,19 +106,26 @@ def gaitProcessing(DATA_PATH, modelledFilenames, modelVersion,
         chosenModality = normativeData["Modality"]
         nds = normativeDatasets.Pinzone2014(chosenModality) # modalites : "Center One" ,"Center Two"
 
+    #---- GPS
+    gps =scores.CGM1_GPS(pointSuffix= pointSuffix)
+    scf = scores.ScoreFilter(gps,analysis, nds)
+    scf.compute()
+
     #---- export
     #-----------------------------------------------------------------------
+    files.saveAnalysis(analysis,outputPath,outputFilename)
+
     if exportXls:
         exportFilter = exporter.XlsAnalysisExportFilter()
         exportFilter.setAnalysisInstance(analysis)
-        exportFilter.export(outputFilename, path=DATA_PATH,excelFormat = "xls",mode="Advanced")
+        exportFilter.export(outputFilename, path=outputPath,excelFormat = "xls",mode="Advanced")
 
 
     #---- plot panels
     #-----------------------------------------------------------------------
     if plot:
         gaitSmartFunctions.cgm_gaitPlots(modelVersion,analysis,trialManager.kineticFlag,
-            DATA_PATH,outputFilename,
+            outputPath,outputFilename,
             pointLabelSuffix=pointSuffix,
             normativeDataset=nds )
 

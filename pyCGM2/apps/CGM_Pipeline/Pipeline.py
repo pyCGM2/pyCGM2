@@ -28,14 +28,17 @@ if __name__ == "__main__":
     parser.add_argument('--vsk', type=str, help='vicon skeleton filename')
     parser.add_argument('--export', action='store_true', help='xls export')
     parser.add_argument('--plot', action='store_true', help='enable Gait Plot')
-    parser.add_argument('-dp','--disableProcessing', action='store_true', help='disable modelling processing')
+    parser.add_argument('-dm','--disableModelling', action='store_true', help='disable  modelling')
+    parser.add_argument('-dp','--disableProcessing', action='store_true', help='disable  processing')
     parser.add_argument('--DEBUG', action='store_true', help='debug mode')
 
     args = parser.parse_args()
     xlsExport_flag = args.export
     pipelineFile = args.file
+    modellingFlag = True if not args.disableModelling else False
     processingFlag = True if not args.disableProcessing else False
     plotFlag = True if  args.plot else False
+
 
     args.DEBUG = False
     if args.DEBUG:
@@ -47,11 +50,19 @@ if __name__ == "__main__":
         plotFlag= True
 
     else:
-        DATA_PATH = os.getcwd()+"\\"
+        wd = os.getcwd()+"\\"
 
-    manager = pipelineFileManager(DATA_PATH,pipelineFile)
+    manager = pipelineFileManager(wd,pipelineFile)
     modelVersion = manager.getCGMVersion()
     logging.info("model version : %s" %(modelVersion))
+
+    DATA_PATH = wd if manager.getDataPath() is None else manager.getDataPath()
+
+    DATA_PATH_OUT = DATA_PATH if manager.getOutDataPath() is None else manager.getOutDataPath()
+    if manager.getOutDataPath() is not None:
+        files.createDir(DATA_PATH_OUT)
+
+
 
     # --------------------------MODELLING ------------------------------------
 
@@ -100,199 +111,207 @@ if __name__ == "__main__":
         vsk = vskTools.Vsk(str(DATA_PATH + args.vsk))
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
+
     fileSuffix = manager.getFileSuffix()
+    pointSuffix = manager.getPointSuffix()
     ik_flag = manager.isIkFitting()
 
+    if modellingFlag:
+        #------calibration--------
+        leftFlatFoot = manager.getLeftFlatFoot()
+        rightFlatFoot = manager.getRightFlatFoot()
+        markerDiameter = manager.getMarkerDiameter()
+        calibrateFilenameLabelled = manager.getStaticTial()
 
-    #------calibration--------
-    leftFlatFoot = manager.getLeftFlatFoot()
-    rightFlatFoot = manager.getRightFlatFoot()
-    markerDiameter = manager.getMarkerDiameter()
-    pointSuffix = manager.getPointSuffix()
-    calibrateFilenameLabelled = manager.getStaticTial()
-
-
-    if modelVersion == "CGM1.0":
-        model,acqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
-               leftFlatFoot,rightFlatFoot,markerDiameter,
-               pointSuffix)
-    elif modelVersion == "CGM1.1":
-        model,acqStatic = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
-               leftFlatFoot,rightFlatFoot,markerDiameter,
-               pointSuffix)
-    elif modelVersion == "CGM2.1":
-        hjcMethod = manager.getHJCmethod()
-        model,acqStatic = cgm2_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
-                      leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-                      pointSuffix)
-
-    elif modelVersion == "CGM2.2":
-        hjcMethod = manager.getHJCmethod()
-        model,finalAcqStatic = cgm2_2.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
-                          required_mp,optional_mp,
-                          True,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-                          pointSuffix)
-
-    elif modelVersion == "CGM2.2e":
-        hjcMethod = manager.getHJCmethod()
-        model,finalAcqStatic = cgm2_2e.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
-                          required_mp,optional_mp,
-                          True,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-                          pointSuffix)
-
-    elif modelVersion == "CGM2.3":
-        hjcMethod = manager.getHJCmethod()
-        model,finalAcqStatic = cgm2_3.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
-                                  required_mp,optional_mp,
-                                  ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-                                  pointSuffix)
-
-    elif modelVersion == "CGM2.3e":
-        hjcMethod = manager.getHJCmethod()
-        model,finalAcqStatic = cgm2_3e.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
-                                  required_mp,optional_mp,
-                                  ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-                                  pointSuffix)
-
-    elif modelVersion == "CGM2.4":
-        hjcMethod = manager.getHJCmethod()
-        model,finalAcqStatic = cgm2_4.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
-                                  required_mp,optional_mp,
-                                  ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-                                  pointSuffix)
-
-    elif modelVersion == "CGM2.4e":
-        hjcMethod = manager.getHJCmethod()
-        model,finalAcqStatic = cgm2_4e.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
-                                  required_mp,optional_mp,
-                                  ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-                                  pointSuffix)
-
-    logging.info("Static Calibration -----> Done")
-
-    # knee calibration
-    leftEnable = manager.isKneeCalibrationEnable("Left")
-    rightEnable = manager.isKneeCalibrationEnable("Right")
-
-    if leftEnable:
-        method, trial,begin,end = manager.getKneeCalibration("Left")
-        if method == "Calibration2Dof":
-            model,acqFunc,side = kneeCalibration.calibration2Dof(model,
-                DATA_PATH,trial,translators,
-                "Left",begin,end)
-            logging.info("Left knee Calibration (Calibration2Dof) -----> Done")
-        elif method == "SARA":
-            model,acqFunc,side = kneeCalibration.sara(model,
-                DATA_PATH,trial,translators,
-                "Left",begin,end)
-            logging.info("Left knee Calibration (SARA) -----> Done")
-    if rightEnable:
-        method, trial,begin,end = manager.getKneeCalibration("Right")
-        if method == "Calibration2Dof":
-            model,acqFunc,side = kneeCalibration.calibration2Dof(model,
-                DATA_PATH,trial,translators,
-                "Right",begin,end)
-            logging.info("Right knee Calibration (Calibration2Dof) -----> Done")
-        elif method == "SARA":
-            model,acqFunc,side = kneeCalibration.sara(model,
-                DATA_PATH,trial,translators,
-                "Right",begin,end)
-            logging.info("Right knee Calibration (SARA) -----> Done")
-
-    # update optional mp
-    manager.updateOptionalMp(model)
-    # save settings
-    manager.save(DATA_PATH,str(pipelineFile+"-saved"))
-    logging.info("pipeline file -----> Save")
-
-    # Fitting
-    trials = manager.getFittingTrials()
-
-    momentProjection = manager.getMomentProjection()
-
-    for trial in trials:
-        mfpa = None if trial["Mfpa"] == "Auto" else trial["Mfpa"]
-
-        reconstructFilenameLabelled = trial["File"]
 
         if modelVersion == "CGM1.0":
-            acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                translators,
-                markerDiameter,
-                pointSuffix,
-                mfpa,momentProjection)
+            model,acqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
+                   leftFlatFoot,rightFlatFoot,markerDiameter,
+                   pointSuffix)
         elif modelVersion == "CGM1.1":
-            acqGait = cgm1_1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                translators,
-                markerDiameter,
-                pointSuffix,
-                mfpa,momentProjection)
-
+            model,acqStatic = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
+                   leftFlatFoot,rightFlatFoot,markerDiameter,
+                   pointSuffix)
         elif modelVersion == "CGM2.1":
-            acqGait = cgm2_1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                translators,
-                markerDiameter,
-                pointSuffix,
-                mfpa,momentProjection)
+            hjcMethod = manager.getHJCmethod()
+            model,acqStatic = cgm2_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
+                          leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
+                          pointSuffix)
 
         elif modelVersion == "CGM2.2":
-            acqGait = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                    translators,settings,
-                    markerDiameter,
-                    pointSuffix,
-                    mfpa,
-                    momentProjection)
+            hjcMethod = manager.getHJCmethod()
+            model,finalAcqStatic = cgm2_2.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+                              required_mp,optional_mp,
+                              True,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
+                              pointSuffix)
 
         elif modelVersion == "CGM2.2e":
-            acqGait = cgm2_2e.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                    translators,settings,
-                    markerDiameter,
-                    pointSuffix,
-                    mfpa,
-                    momentProjection)
+            hjcMethod = manager.getHJCmethod()
+            model,finalAcqStatic = cgm2_2e.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+                              required_mp,optional_mp,
+                              True,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
+                              pointSuffix)
 
         elif modelVersion == "CGM2.3":
-            acqGait = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                    translators,settings,
-                    ik_flag,markerDiameter,
-                    pointSuffix,
-                    mfpa,
-                    momentProjection)
+            hjcMethod = manager.getHJCmethod()
+            model,finalAcqStatic = cgm2_3.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+                                      required_mp,optional_mp,
+                                      ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
+                                      pointSuffix)
 
         elif modelVersion == "CGM2.3e":
-            acqGait = cgm2_3e.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                    translators,settings,
-                    ik_flag,markerDiameter,
-                    pointSuffix,
-                    mfpa,
-                    momentProjection)
+            hjcMethod = manager.getHJCmethod()
+            model,finalAcqStatic = cgm2_3e.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+                                      required_mp,optional_mp,
+                                      ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
+                                      pointSuffix)
 
         elif modelVersion == "CGM2.4":
-            acqGait = cgm2_4.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                    translators,settings,
-                    ik_flag,markerDiameter,
-                    pointSuffix,
-                    mfpa,
-                    momentProjection)
+            hjcMethod = manager.getHJCmethod()
+            model,finalAcqStatic = cgm2_4.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+                                      required_mp,optional_mp,
+                                      ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
+                                      pointSuffix)
 
         elif modelVersion == "CGM2.4e":
-            acqGait = cgm2_4e.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                    translators,settings,
-                    ik_flag,markerDiameter,
+            hjcMethod = manager.getHJCmethod()
+            model,finalAcqStatic = cgm2_4e.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+                                      required_mp,optional_mp,
+                                      ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
+                                      pointSuffix)
+
+        logging.info("Static Calibration -----> Done")
+
+        # knee calibration
+        leftEnable = manager.isKneeCalibrationEnable("Left")
+        rightEnable = manager.isKneeCalibrationEnable("Right")
+
+        if leftEnable:
+            method, trial,begin,end = manager.getKneeCalibration("Left")
+            if method == "Calibration2Dof":
+                model,acqFunc,side = kneeCalibration.calibration2Dof(model,
+                    DATA_PATH,trial,translators,
+                    "Left",begin,end)
+                logging.info("Left knee Calibration (Calibration2Dof) -----> Done")
+            elif method == "SARA":
+                model,acqFunc,side = kneeCalibration.sara(model,
+                    DATA_PATH,trial,translators,
+                    "Left",begin,end)
+                logging.info("Left knee Calibration (SARA) -----> Done")
+        if rightEnable:
+            method, trial,begin,end = manager.getKneeCalibration("Right")
+            if method == "Calibration2Dof":
+                model,acqFunc,side = kneeCalibration.calibration2Dof(model,
+                    DATA_PATH,trial,translators,
+                    "Right",begin,end)
+                logging.info("Right knee Calibration (Calibration2Dof) -----> Done")
+            elif method == "SARA":
+                model,acqFunc,side = kneeCalibration.sara(model,
+                    DATA_PATH,trial,translators,
+                    "Right",begin,end)
+                logging.info("Right knee Calibration (SARA) -----> Done")
+
+        # update mp
+        manager.updateMp(model)
+        # save settings
+        manager.save(DATA_PATH,str(pipelineFile+"-saved"))
+        logging.info("pipeline file -----> Save")
+
+        # Fitting
+        trials = manager.getFittingTrials()
+        momentProjection = manager.getMomentProjection()
+
+        if modelVersion not in ["CGM1.0", "CGM1.1", "CGM2.1"]:
+            ikwf = manager.getIkWeightFile()
+            if ikwf is not None:
+                ikWeight = files.openJson(DATA_PATH,ikwf)
+                settings["Fitting"]["Weight"]=ikWeight["Weight"]
+
+
+        for trial in trials:
+            mfpa = None if trial["Mfpa"] == "Auto" else trial["Mfpa"]
+
+            reconstructFilenameLabelled = trial["File"]
+
+
+            if modelVersion == "CGM1.0":
+                acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                    translators,
+                    markerDiameter,
                     pointSuffix,
-                    mfpa,
-                    momentProjection)
+                    mfpa,momentProjection)
+            elif modelVersion == "CGM1.1":
+                acqGait = cgm1_1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                    translators,
+                    markerDiameter,
+                    pointSuffix,
+                    mfpa,momentProjection)
 
-        logging.info("Fitting -----> Done")
+            elif modelVersion == "CGM2.1":
+                acqGait = cgm2_1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                    translators,
+                    markerDiameter,
+                    pointSuffix,
+                    mfpa,momentProjection)
+
+            elif modelVersion == "CGM2.2":
+                acqGait = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                        translators,settings,
+                        markerDiameter,
+                        pointSuffix,
+                        mfpa,
+                        momentProjection)
+
+            elif modelVersion == "CGM2.2e":
+                acqGait = cgm2_2e.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                        translators,settings,
+                        markerDiameter,
+                        pointSuffix,
+                        mfpa,
+                        momentProjection)
+
+            elif modelVersion == "CGM2.3":
+                acqGait = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                        translators,settings,
+                        ik_flag,markerDiameter,
+                        pointSuffix,
+                        mfpa,
+                        momentProjection)
+
+            elif modelVersion == "CGM2.3e":
+                acqGait = cgm2_3e.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                        translators,settings,
+                        ik_flag,markerDiameter,
+                        pointSuffix,
+                        mfpa,
+                        momentProjection)
+
+            elif modelVersion == "CGM2.4":
+                acqGait = cgm2_4.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                        translators,settings,
+                        ik_flag,markerDiameter,
+                        pointSuffix,
+                        mfpa,
+                        momentProjection)
+
+            elif modelVersion == "CGM2.4e":
+                acqGait = cgm2_4e.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                        translators,settings,
+                        ik_flag,markerDiameter,
+                        pointSuffix,
+                        mfpa,
+                        momentProjection)
+
+            logging.info("Fitting -----> Done")
 
 
-        if fileSuffix is not None:
-            c3dFilename = str(reconstructFilenameLabelled[:-4]+"-modelled-"+fileSuffix+".c3d")
-        else:
-            c3dFilename = str(reconstructFilenameLabelled[:-4]+"-modelled.c3d")
+            if fileSuffix is not None:
+                c3dFilename = str(reconstructFilenameLabelled[:-4]+"-modelled-"+fileSuffix+".c3d")
+            else:
+                c3dFilename = str(reconstructFilenameLabelled[:-4]+"-modelled.c3d")
 
-        btkTools.smartWriter(acqGait, str(DATA_PATH+c3dFilename))
-        logging.info("c3d file (%s) generated" %(c3dFilename) )
+            btkTools.smartWriter(acqGait, str(DATA_PATH_OUT+c3dFilename))
+            logging.info("c3d file (%s) generated" %(c3dFilename) )
 
     #----------------Processing -----------------------
     if processingFlag:
@@ -323,17 +342,19 @@ if __name__ == "__main__":
 
             # --------------------------PROCESSING --------------------------------
             if analyseType == "Gait":
-                cgmProcessing.gaitProcessing(DATA_PATH,modelledFilenames,modelVersion,
+                cgmProcessing.gaitProcessing(DATA_PATH_OUT,modelledFilenames,modelVersion,
                      modelInfo, subjectInfo, experimentalInfo,
                      normativeData,
                      pointSuffix,
+                     outputPath=DATA_PATH_OUT,
                      outputFilename = outputFilenameNoExt,
                      exportXls=xlsExport_flag,
                      plot=plotFlag)
             else:
-                cgmProcessing.standardProcessing(DATA_PATH,modelledFilenames,modelVersion,
+                cgmProcessing.standardProcessing(DATA_PATH_OUT,modelledFilenames,modelVersion,
                      modelInfo, subjectInfo, experimentalInfo,
                      pointSuffix,
+                     outputPath=DATA_PATH_OUT,
                      outputFilename = outputFilenameNoExt,
                      exportXls=xlsExport_flag)
 
