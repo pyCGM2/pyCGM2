@@ -3,9 +3,23 @@ import string
 import os
 
 
-
-CALIBRATION_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
+CALIBRATION_CONTENT = """<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
     <Pipeline>
+      <Entry DisplayName="Export C3D" Enabled="1" OperationId="0" OperationName="Exportc3d">
+        <ParamList name="">
+          <Param macro="CURRENT_TRIAL" name="Filename"/>
+          <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+          <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+          <Param name="Postfix" value=""/>
+          <Param name="IntegerFormat" value="false"/>
+          <Param name="SubjectPrefix" value="1"/>
+          <Param name="XAxis" value="4"/>
+          <Param name="YAxis" value="2"/>
+          <Param name="ZAxis" value="0"/>
+          <Param name="ProcessingClip" value=""/>
+          <Param name="CopyToClip" value=""/>
+        </ParamList>
+      </Entry>
 
       <Entry DisplayName="Run pyCGM2-iMODEL- Calibration " Enabled="1" OperationId="104" OperationName="Python">
         <ParamList name="">
@@ -40,6 +54,22 @@ CALIBRATION_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
 FITTING_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
     <Pipeline>
 
+      <Entry DisplayName="Export C3D" Enabled="1" OperationId="0" OperationName="Exportc3d">
+        <ParamList name="">
+          <Param macro="CURRENT_TRIAL" name="Filename"/>
+          <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+          <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+          <Param name="Postfix" value=""/>
+          <Param name="IntegerFormat" value="false"/>
+          <Param name="SubjectPrefix" value="1"/>
+          <Param name="XAxis" value="4"/>
+          <Param name="YAxis" value="2"/>
+          <Param name="ZAxis" value="0"/>
+          <Param name="ProcessingClip" value=""/>
+          <Param name="CopyToClip" value=""/>
+        </ParamList>
+      </Entry>
+
       <Entry DisplayName="Run pyCGM2-iMODEL- Fitting " Enabled="1" OperationId="104" OperationName="Python">
         <ParamList name="">
           <Param name="Script" value="PATH_APPS/iMODEL/nexusOperation-pyCGM2-iMODEL-Fitting.py"/>
@@ -72,12 +102,21 @@ FITTING_CONTENT ="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
 SARA_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
     <Pipeline>
 
-      <Entry DisplayName="Save Trial - C3D + VSK" Enabled="1" OperationId="49" OperationName="SaveOperation">
-        <ParamList name="">
-          <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
-          <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
-        </ParamList>
-      </Entry>
+    <Entry DisplayName="Export C3D" Enabled="1" OperationId="0" OperationName="Exportc3d">
+      <ParamList name="">
+        <Param macro="CURRENT_TRIAL" name="Filename"/>
+        <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+        <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+        <Param name="Postfix" value=""/>
+        <Param name="IntegerFormat" value="false"/>
+        <Param name="SubjectPrefix" value="1"/>
+        <Param name="XAxis" value="4"/>
+        <Param name="YAxis" value="2"/>
+        <Param name="ZAxis" value="0"/>
+        <Param name="ProcessingClip" value=""/>
+        <Param name="CopyToClip" value=""/>
+      </ParamList>
+    </Entry>
 
       <Entry DisplayName="Run SARA calibration" Enabled="1" OperationId="50" OperationName="Python">
         <ParamList name="">
@@ -100,12 +139,22 @@ SARA_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
 CALIBRATION2DOF_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
     <Pipeline>
 
-      <Entry DisplayName="Save Trial - C3D + VSK" Enabled="1" OperationId="49" OperationName="SaveOperation">
-        <ParamList name="">
-          <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
-          <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
-        </ParamList>
-      </Entry>
+    <Entry DisplayName="Export C3D" Enabled="1" OperationId="0" OperationName="Exportc3d">
+      <ParamList name="">
+        <Param macro="CURRENT_TRIAL" name="Filename"/>
+        <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+        <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+        <Param name="Postfix" value=""/>
+        <Param name="IntegerFormat" value="false"/>
+        <Param name="SubjectPrefix" value="1"/>
+        <Param name="XAxis" value="4"/>
+        <Param name="YAxis" value="2"/>
+        <Param name="ZAxis" value="0"/>
+        <Param name="ProcessingClip" value=""/>
+        <Param name="CopyToClip" value=""/>
+      </ParamList>
+    </Entry>
+
 
       <Entry DisplayName="Run Calibration2Dof" Enabled="1" OperationId="50" OperationName="Python">
         <ParamList name="">

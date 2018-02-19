@@ -1,0 +1,35 @@
+{
+  "Global" : {
+    "Marker diameter" : 14,
+    "Point suffix" : ""
+  },
+  "Translators" : {
+    "LASI":"",
+      "RASI":"",
+      "LPSI":"",
+      "RPSI":"",
+      "RTHI":"",
+      "RKNE":"",
+      "RKNM":"",
+    "RTIB":"",
+      "RANK":"",
+    "RMED":"",
+      "RHEE":"",
+      "RTOE":"",
+      "LTHI":"",
+      "LKNE":"",
+      "LKNM":"",
+    "LTIB":"",
+      "LANK":"",
+      "LMED":"",
+    "LHEE":"",
+      "LTOE":""
+  },
+  "Calibration" : {
+    "Left flat foot" : 1 ,
+    "Right flat foot" : 1
+  },
+  "Fitting" : {
+    "Moment Projection" : "JCS"
+  }
+}

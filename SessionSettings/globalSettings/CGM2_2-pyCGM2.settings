@@ -1,0 +1,54 @@
+{
+  "Global" : {
+    "Marker diameter" : 14,
+    "Point suffix" : ""
+  },
+  "Translators" : {
+    "LASI":"",
+      "RASI":"",
+      "LPSI":"",
+      "RPSI":"",
+      "RTHI":"",
+      "RKNE":"",
+      "RKNM":"",
+      "RTIB":"",
+      "RANK":"",
+      "RMED":"",
+      "RHEE":"",
+      "RTOE":"",
+      "LTHI":"",
+      "LKNE":"",
+      "LKNM":"",
+      "LTIB":"",
+      "LANK":"",
+      "LMED":"",
+      "LHEE":"",
+      "LTOE":""
+   },
+  "Calibration" : {
+    "HJC regression" : "Hara",
+    "Left flat foot" : 1 ,
+    "Right flat foot" : 1
+  },
+  "Fitting" : {
+    "Moment Projection" : "JCS",
+    "Weight" :{
+        "LASI" : 100,
+        "RASI" : 100,
+        "LPSI" : 100,
+        "RPSI" : 100,
+        "LTHI" : 100,
+        "LKNE" : 100,
+        "LTIB":  100,
+        "LANK" : 100,
+        "LHEE" : 100,
+        "LTOE" : 100,
+        "RTHI" : 100,
+        "RKNE" : 100,
+        "RTIB":  100,
+        "RANK" : 100,
+        "RHEE" : 100,
+        "RTOE" : 100
+    }
+  }
+}
