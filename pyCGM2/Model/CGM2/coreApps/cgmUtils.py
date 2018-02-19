@@ -101,6 +101,9 @@ class argsManager_cgm(object):
     def getManualForcePlateAssign(self):
         return self.args.mfpa
 
+    def getIkWeightFile(self):
+        return self.args.ikWeightFile
+
 class argsManager_cgm1(argsManager_cgm):
     def __init__(self, settings, args):
         super(argsManager_cgm1, self).__init__(settings, args)
