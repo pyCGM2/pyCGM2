@@ -56,6 +56,7 @@ def getFromVskSubjectMp(vskInstance, resetFlag=False):
 
     required_mp={
     'Bodymass'   : float(vskInstance.getStaticParameterValue("Bodymass")),
+    'Height'   : float(vskInstance.getStaticParameterValue("Height")),
     'LeftLegLength' :float(vskInstance.getStaticParameterValue("LeftLegLength")),
     'RightLegLength' : float(vskInstance.getStaticParameterValue("RightLegLength")),
     'LeftKneeWidth' : float(vskInstance.getStaticParameterValue("LeftKneeWidth")),
