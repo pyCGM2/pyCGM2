@@ -60,11 +60,15 @@ def make_analysis(trialManager, kinematicLabelsDict,kineticLabelsDict,
 
     return analysisFilter.analysis
 
-def cgm_staticPlot(modelVersion,modelledStaticFilename, DATA_PATH,
+def cgm_staticPlot(modelVersion,modelledStaticFilename, DATA_PATH,outputPath=None,
     pdfFilename="staticProcessing",pointLabelSuffix=""):
 
     # check model is the CGM1
     logging.info("loaded model : %s" %(modelVersion ))
+
+    if outputPath is None:
+        outputPath= DATA_PATH
+
 
     trial =trialTools.smartTrialReader(DATA_PATH,modelledStaticFilename)
 
@@ -76,12 +80,12 @@ def cgm_staticPlot(modelVersion,modelledStaticFilename, DATA_PATH,
 
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    pf.setPath(DATA_PATH)
+    pf.setPath(outputPath)
     pf.setPdfName(pdfFilename)
     pf.plot()
 
 def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
-    DATA_PATH,pdfFilename,
+    outputPath,pdfFilename,
     pointLabelSuffix="",
     normativeDataset=None ):
 
@@ -104,7 +108,7 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    pf.setPath(DATA_PATH)
+    pf.setPath(outputPath)
     pf.setPdfName(str(pdfFilename+"-descriptive Kinematics"))
     pf.plot()
 
@@ -129,7 +133,7 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    pf.setPath(DATA_PATH)
+    pf.setPath(outputPath)
     pf.setPdfName(str(pdfFilename+"-consistency Kinematics"))
     pf.plot()
 
@@ -146,7 +150,7 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
         # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
-        pf.setPath(DATA_PATH)
+        pf.setPath(outputPath)
         pf.setPdfName(str(pdfFilename+"-descriptive  Kinetics"))
         pf.plot()
 
@@ -164,6 +168,6 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
         # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
-        pf.setPath(DATA_PATH)
+        pf.setPath(outputPath)
         pf.setPdfName(str(pdfFilename+"-consistency  Kinetics"))
         pf.plot()
