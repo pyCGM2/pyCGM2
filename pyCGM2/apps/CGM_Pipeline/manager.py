@@ -11,6 +11,17 @@ class pipelineFileManager(object):
     def getPipelineSetttings(self):
         return self.pipSettings
 
+    def getDataPath(self):
+        out_path = str(self.pipSettings["DATA_PATH"])
+        return out_path if out_path!="" else None
+
+    def getOutDataPath(self):
+        out_path = str(self.pipSettings["OutDataPath"])
+        return out_path if out_path!="" else None
+
+    def getIkWeightFile(self):
+        ikwf = str(self.pipSettings["Modelling"]["Fitting"]["IkweightFile"])
+        return ikwf if ikwf !="" else None
 
     def getCGMVersion(self):
         return str(self.pipSettings["Modelling"]["Model"]["CGM"])
@@ -87,7 +98,19 @@ class pipelineFileManager(object):
         return self.pipSettings["Processing"]["Tasks"]
 
 
-    def updateOptionalMp(self,model):
+    def updateMp(self,model):
+
+        self.pipSettings["Modelling"]["MP"]["Required"][ "Bodymass"] = model.mp["Bodymass"]
+        self.pipSettings["Modelling"]["MP"]["Required"][ "Height"] = model.mp["Height"]
+        self.pipSettings["Modelling"]["MP"]["Required"][ "LeftLegLength"] = model.mp["LeftLegLength"]
+        self.pipSettings["Modelling"]["MP"]["Required"][ "LeftKneeeWidth"] = model.mp["LeftKneeWidth"]
+        self.pipSettings["Modelling"]["MP"]["Required"][ "LeftAnkleWidth"] = model.mp["LeftAnkleWidth"]
+        self.pipSettings["Modelling"]["MP"]["Required"][ "LeftSoleDelta"] = model.mp["LeftSoleDelta"]
+        self.pipSettings["Modelling"]["MP"]["Required"][ "RightLegLength"] = model.mp["RightLegLength"]
+        self.pipSettings["Modelling"]["MP"]["Required"][ "RightKneeeWidth"] = model.mp["RightKneeWidth"]
+        self.pipSettings["Modelling"]["MP"]["Required"][ "RightAnkleWidth"] = model.mp["RightAnkleWidth"]
+        self.pipSettings["Modelling"]["MP"]["Required"][ "RightSoleDelta"] = model.mp["RightSoleDelta"]
+
         # update optional mp and save a new info file
         self.pipSettings["Modelling"]["MP"]["Optional"][ "InterAsisDistance"] = model.mp_computed["InterAsisDistance"]
         self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftAsisTrocanterDistance"] = model.mp_computed["LeftAsisTrocanterDistance"]
