@@ -149,21 +149,21 @@ if "install" in sys.argv or "develop" in sys.argv:
     logging.info( " *******Third party package installation******")
 
     btkFlag = raw_input("Do you want to use your own Btk package (y/N) ")
-    PYCGM2_BTK = True if  not btkFlag in ["n", "N"] else False
+    PYCGM2_BTK = True if  btkFlag in ["y", "Y"] else False
     if PYCGM2_BTK:
         logging.info("Btk installed from pyCGM2")
     else:
         logging.info("Custom Btk package")
 
     openmaFlag = raw_input("Do you want to use your own openMA package (y/N) ")
-    PYCGM2_OPENMA = True if  not openmaFlag in ["n", "N"] else False
+    PYCGM2_OPENMA = True if   openmaFlag in ["y", "Y"] else False
     if PYCGM2_OPENMA:
         logging.info("OpenMA installed from pyCGM2")
     else:
         logging.info("Custom OpenMA package")
 
     opensimFlag = raw_input("Do you want to use your own opensim package (y/N) ")
-    PYCGM2_OPENSIM = True if  not opensimFlag in ["n", "N"] else False
+    PYCGM2_OPENSIM = True if   opensimFlag in ["y", "Y"] else False
     if PYCGM2_OPENSIM:
         logging.info("OpenSim installed from pyCGM2")
     else:
