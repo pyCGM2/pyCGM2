@@ -42,6 +42,38 @@ def saveModel(model,path,FilenameNoExt):
     modelFile.close()
 
 
+def loadAnalysis(path,FilenameNoExt):
+    if FilenameNoExt is not None:
+        filename = FilenameNoExt + "-pyCGM2.analysis"
+    else:
+        filename = "pyCGM2.analysis"
+
+    # --------------------pyCGM2 MODEL ------------------------------
+    if not os.path.isfile(path + filename):
+        raise Exception ("%s-pyCGM2.analysis file doesn't exist"%filename)
+    else:
+        f = open(path + filename, 'r')
+        analysis = cPickle.load(f)
+        f.close()
+
+        return analysis
+
+def saveAnalysis(analysisInstance,path,FilenameNoExt):
+
+    if FilenameNoExt is not None:
+        filename = FilenameNoExt + "-pyCGM2.analysis"
+    else:
+        filename = "pyCGM2.analysis"
+
+    #pyCGM2.model
+    if os.path.isfile(path + filename):
+        logging.warning("previous model removed")
+        os.remove(path + filename)
+
+    analysisFile = open(path + filename, "w")
+    cPickle.dump(analysisInstance, analysisFile)
+    analysisFile.close()
+
 
 def openJson(path,filename):
     try:
@@ -242,3 +274,10 @@ def copySessionFolder(folderPath, folder2copy, newFolder, selectedFiles=None):
                     dst = folderPath+"\\"+newFolder+"\\" + fileToCopy
 
                     shutil.copyfile(src, dst)
+
+def createDir(fullPathName):
+    pathOut = fullPathName[:-1] if fullPathName[-1:]=="\\" else fullPathName
+    if not os.path.isdir(str(pathOut)):
+        os.makedirs(str(pathOut))
+    else:
+        logging.warning("directory already exists")
