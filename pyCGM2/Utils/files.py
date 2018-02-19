@@ -141,6 +141,17 @@ def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
     else:
        return False
 
+def getIKweightSet(DATA_PATH, ikwf):
+    #  translators management
+    if os.path.isfile( DATA_PATH + ikwf):
+       logging.warning("local ik weightSet file found")
+       ikWeight = files.openJson(DATA_PATH,ikwf)
+       return ikWeight
+    else:
+       return False
+
+
+
 
 def getMp(mpInfo,resetFlag=True):
 

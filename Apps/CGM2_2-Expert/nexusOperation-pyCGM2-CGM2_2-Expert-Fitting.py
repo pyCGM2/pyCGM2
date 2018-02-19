@@ -30,7 +30,6 @@ if __name__ == "__main__":
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
-    parser.add_argument('-ikwf','--ikWeightFile', type=str, help='file of ik weight setting')
 
     parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
@@ -49,7 +48,6 @@ if __name__ == "__main__":
         pointSuffix = argsManager.getPointSuffix("cgm2.2e")
         momentProjection =  argsManager.getMomentProjection()
         mfpa = argsManager.getManualForcePlateAssign()
-        ikwf = argsManager.getIkWeightFile()
 
         # --------------------------LOADING ------------------------------------
         if args.DEBUG:
@@ -85,9 +83,8 @@ if __name__ == "__main__":
         if not translators: translators = settings["Translators"]
 
         #  ikweight
-        if ikwf is not None:
-            ikWeight = files.openJson(DATA_PATH,ikwf)
-            settings["Fitting"]["Weight"]=ikWeight["Weight"]
+        ikWeight = files.getIKweightSet(DATA_PATH,"CGM2_2e.ikw")
+        if not ikWeight: translators = settings["Fitting"]["Weight"]=ikWeight["Weight"]
 
         # --------------------------MODELLING PROCESSING -----------------------
         acqIK = cgm2_2e.fitting(model,DATA_PATH, reconstructFilenameLabelled,
