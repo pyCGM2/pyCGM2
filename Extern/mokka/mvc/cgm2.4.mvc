@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<MokkaModelVisualConfiguration name="CGM2.3" version="1.0">
+<MokkaModelVisualConfiguration name="CGM2.4" version="1.0">
     <MarkersList>
         <Marker label="LASI" radius="10" colorR="1" colorG="0" colorB="0" visible="1" trajectory="0"/>
         <Marker label="RASI" radius="10" colorR="0" colorG="0" colorB="1" visible="1" trajectory="0"/>
