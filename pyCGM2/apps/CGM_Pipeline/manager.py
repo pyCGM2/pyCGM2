@@ -99,7 +99,7 @@ class pipelineFileManager(object):
 
 
     def updateMp(self,model):
-
+        
         self.pipSettings["Modelling"]["MP"]["Required"][ "Bodymass"] = model.mp["Bodymass"]
         self.pipSettings["Modelling"]["MP"]["Required"][ "Height"] = model.mp["Height"]
         self.pipSettings["Modelling"]["MP"]["Required"][ "LeftLegLength"] = model.mp["LeftLegLength"]

@@ -3,7 +3,7 @@ import os
 import logging
 import argparse
 import matplotlib.pyplot as plt
-
+from matplotlib.backends.backend_pdf import PdfPages
 
 # pyCGM2 settings
 import pyCGM2
@@ -33,6 +33,7 @@ if __name__ == "__main__":
     parser.add_argument('--DEBUG', action='store_true', help='debug mode')
 
     args = parser.parse_args()
+    vskFile = args.vsk
     xlsExport_flag = args.export
     pipelineFile = args.file
     modellingFlag = True if not args.disableModelling else False
@@ -44,10 +45,11 @@ if __name__ == "__main__":
     if args.DEBUG:
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
-        DATA_PATH = "C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2-Analyses\\CGM3-dataCollection\\CGM24_preAnalysis_3DMA\\dataS01OP1\\"
-        pipelineFile = "pipeline2_4.pyCGM2"
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
+        pipelineFile = "pipeline.pyCGM2"
         xlsExport_flag =  True
         plotFlag= True
+        wd= DATA_PATH
 
     else:
         wd = os.getcwd()+"\\"
@@ -57,6 +59,7 @@ if __name__ == "__main__":
     logging.info("model version : %s" %(modelVersion))
 
     DATA_PATH = wd if manager.getDataPath() is None else manager.getDataPath()
+    print  DATA_PATH
 
     DATA_PATH_OUT = DATA_PATH if manager.getOutDataPath() is None else manager.getOutDataPath()
     if manager.getOutDataPath() is not None:
@@ -103,12 +106,12 @@ if __name__ == "__main__":
     if not translators: translators = settings["Translators"]
 
     # mp file
-    if args.vsk is None:
+    if vskFile is None:
         logging.info("mp from pipeline file")
         required_mp,optional_mp = manager.getMP()
     else:
         logging.warning("mp from vsk file")
-        vsk = vskTools.Vsk(str(DATA_PATH + args.vsk))
+        vsk = vskTools.Vsk(str(DATA_PATH + vskFile))
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
 
@@ -179,6 +182,8 @@ if __name__ == "__main__":
                                       required_mp,optional_mp,
                                       ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                                       pointSuffix)
+
+        btkTools.smartWriter(finalAcqStatic, str(DATA_PATH_OUT+"calibrated.c3d"))
 
         logging.info("Static Calibration -----> Done")
 
