@@ -109,6 +109,16 @@ def setGlobalTransormation_lab_osim(axis,forwardProgression):
         else:
             R_LAB_OSIM=np.array([[-1,0,0],[0,0,1],[0,1,0]])
 
+    elif axis =="Y":
+        if forwardProgression:
+            R_LAB_OSIM=np.array([[0,1,0],[0,0,1],[1,0,0]])
+        else:
+            R_LAB_OSIM=np.array([[0,-1,0],[0,0,1],[-1,0,0]])
+
+    else:
+        raise Exception("[pyCGM2] - Global Referential not configured yet")
+
+
     return R_LAB_OSIM
 
 

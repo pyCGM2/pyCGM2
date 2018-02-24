@@ -134,6 +134,61 @@ class CGM2_4_calibration():
         btkTools.smartWriter(acqStatic,"cgm2.4_FlatFoot.c3d")
 
 
+    @classmethod
+    def calibration_GarchesFlatFoot(cls):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
+        staticFilename = "08_02_18_Vincent_Pere_Statique_000_MOKKA.c3d"
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 70.0,
+        'LeftLegLength' : 890.0,
+        'RightLegLength' : 890.0 ,
+        'LeftKneeWidth' : 150.0,
+        'RightKneeWidth' : 150.0,
+        'LeftAnkleWidth' : 88.0,
+        'RightAnkleWidth' : 99.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        "LeftToeOffset" : 0,
+        "RightToeOffset" : 0,
+        }
+
+
+        # --- Calibration ---
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm2.CGM2_4LowerLimbs()
+        model.configure()
+
+        model.addAnthropoInputParameters(mp)
+
+        # ---- Calibration ----
+
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.HipJointCenterDecorator(model).hara()
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="both")
+
+        # final
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                           markerDiameter=markerDiameter,
+                           leftFlatFoot = True, rightFlatFoot = True).compute()
+
+
+        # display CS
+        csp = modelFilters.ModelCoordinateSystemProcedure(model)
+        csf = modelFilters.CoordinateSystemDisplayFilter(csp,model,acqStatic)
+        csf.setStatic(True)
+        csf.display()
+
+        btkTools.smartWriter(acqStatic,"cgm2.4_GarchesFlatFoot.c3d")
+
+
 
 class CGM2_4_staticFitting():
 
@@ -358,11 +413,135 @@ class CGM2_4_staticFitting():
 
         btkTools.smartWriter(acqIK,"cgm24_fullIK_staticMotion.c3d")
 
+
+
+    @classmethod
+    def noIK_determinist_Garches(cls):
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
+        staticFilename = "08_02_18_Vincent_Pere_Statique_000_MOKKA.c3d"
+        gaitFilename= "08_02_18_Vincent_Pere_Statique_000_MOKKA.c3d"
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 70.0,
+        'LeftLegLength' : 890.0,
+        'RightLegLength' : 890.0 ,
+        'LeftKneeWidth' : 150.0,
+        'RightKneeWidth' : 150.0,
+        'LeftAnkleWidth' : 88.0,
+        'RightAnkleWidth' : 99.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+
+
+        # --- Calibration ---
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+
+        model=cgm2.CGM2_4LowerLimbs()
+        model.configure()
+
+        model.addAnthropoInputParameters(mp)
+
+        # ---- Calibration ----
+
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        print "----"
+        print model.getSegment("Left Shank").getReferential("TF").relativeMatrixAnatomic
+        print "----"
+
+        # # cgm decorator
+        modelDecorator.HipJointCenterDecorator(model).hara()
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="both")
+        #
+        # # final
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                            markerDiameter=markerDiameter).compute()
+
+
+        #import ipdb; ipdb.set_trace()
+        # ------ Fitting -------
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        # Motion FILTER
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist)
+        modMotion.compute()
+
+        btkTools.smartWriter(acqGait,"cgm24_noIKDeter_staticMotion_Garches.c3d")
+
+    @classmethod
+    def noIK_6dof_Garches(cls):
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
+        staticFilename = "08_02_18_Vincent_Pere_Statique_000_MOKKA.c3d"
+        gaitFilename= "08_02_18_Vincent_Pere_Statique_000_MOKKA.c3d"
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 70.0,
+        'LeftLegLength' : 890.0,
+        'RightLegLength' : 890.0 ,
+        'LeftKneeWidth' : 150.0,
+        'RightKneeWidth' : 150.0,
+        'LeftAnkleWidth' : 88.0,
+        'RightAnkleWidth' : 99.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+
+
+        # --- Calibration ---
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+
+        model=cgm2.CGM2_4LowerLimbs()
+        model.configure()
+
+        model.addAnthropoInputParameters(mp)
+
+        # ---- Calibration ----
+
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        print "----"
+        print model.getSegment("Left Shank").getReferential("TF").relativeMatrixAnatomic
+        print "----"
+
+        # # cgm decorator
+        modelDecorator.HipJointCenterDecorator(model).hara()
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="both")
+        #
+        # # final
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                            markerDiameter=markerDiameter).compute()
+
+
+        #import ipdb; ipdb.set_trace()
+        # ------ Fitting -------
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        # Motion FILTER
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Sodervisk)
+        modMotion.compute()
+
+        btkTools.smartWriter(acqGait,"cgm24_noIK6dof_staticMotion_Garches.c3d")
+
+
 if __name__ == "__main__":
 
-    CGM2_4_calibration.calibration_noFlatFoot()
-    CGM2_4_calibration.calibration_FlatFoot()
+    # CGM2_4_calibration.calibration_noFlatFoot()
+    # CGM2_4_calibration.calibration_FlatFoot()
 
     #CGM2_4_staticFitting.noIK_determinist()
-    CGM2_4_staticFitting.noIK_6dof()
+    # CGM2_4_staticFitting.noIK_6dof()
     #CGM2_4_staticFitting.full_IK()
+
+    # tests on Garches Data
+    CGM2_4_calibration.calibration_GarchesFlatFoot()
+    CGM2_4_staticFitting.noIK_6dof_Garches()
+    CGM2_4_staticFitting.noIK_determinist_Garches()

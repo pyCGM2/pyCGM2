@@ -1581,12 +1581,14 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
 
-            # hindFoot
-            self._leftHindFoot_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
+            # hindFoot ( because of singularities AJC- TOE and HEE align)
+            self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+            self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
 
-            self._rightHindFoot_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
+            #self._leftHindFoot_motion_optimize(aqui, dictRef,motionMethod)
+            #self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
+            #self._rightHindFoot_motion_optimize(aqui, dictRef,motionMethod)
+            #self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
 
             # foreFoot
             self._leftForeFoot_motion_optimize(aqui, dictRef,motionMethod)
@@ -1594,8 +1596,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             self._rightForeFoot_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
-
-
 
     # ----- native motion ------
     def _left_hindFoot_motion(self,aqui, dictRef,dictAnat,options=None):
@@ -1653,9 +1653,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- FJC
-        btkTools.smartAppendPoint(aqui,"LFJC",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="from hindFoot" )
+        # btkTools.smartAppendPoint(aqui,"LFJC",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="from hindFoot" ) # put in ForefootMotion
+        btkTools.smartAppendPoint(aqui,"LFJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="from hindFoot" )
 
-        # --- motion of the technical referential
+        # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
@@ -1674,6 +1675,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
            - `dictRef` (dict) - instance of Model
            - `frameInit` (int) - starting frame
         """
+
+        btkTools.smartAppendPoint(aqui,"LFJC",self.getSegment("Left Foot").getReferential("TF").getNodeTrajectory("LFJC"),desc="from hindFoot" )
+
         seg=self.getSegment("Left ForeFoot")
 
 
@@ -1783,7 +1787,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
         # --- RvTOE
-        btkTools.smartAppendPoint(aqui,"RFJC",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="from hindFoot" )
+        btkTools.smartAppendPoint(aqui,"RFJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="from hindFoot" )
 
         # --- motion of the technical referential
         seg.anatomicalFrame.motion=[]
@@ -1804,6 +1808,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
            - `dictRef` (dict) - instance of Model
            - `frameInit` (int) - starting frame
         """
+
+        btkTools.smartAppendPoint(aqui,"RFJC",self.getSegment("Right Foot").getReferential("TF").getNodeTrajectory("RFJC"),desc="from hindFoot" )
+
         seg=self.getSegment("Right ForeFoot")
 
 
@@ -1911,7 +1918,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # --- vTOE and AJC
         btkTools.smartAppendPoint(aqui,"LAJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("LAJC"),desc="opt from hindfoot" )
-        btkTools.smartAppendPoint(aqui,"LFJC",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="opt from hindfoot" )
+        btkTools.smartAppendPoint(aqui,"LFJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="opt from hindfoot" )
 
         # remove AJC from list of tracking markers
         if "LAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LAJC")
@@ -1971,7 +1978,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         values_vSMHnode=seg.getReferential('TF').getNodeTrajectory("LvSMH")
         btkTools.smartAppendPoint(aqui,"LvSMH",values_vSMHnode, desc=str("opt-"+desc))
 
-        btkTools.smartAppendPoint(aqui,"LFJC-ForeFoot",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="opt from forefoot" )
+        btkTools.smartAppendPoint(aqui,"LFJC",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="opt from forefoot" )
 
     def _rightHindFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
@@ -2022,7 +2029,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # --- vTOE and AJC
         btkTools.smartAppendPoint(aqui,"RAJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("RAJC"),desc="opt from hindfoot" )
-        btkTools.smartAppendPoint(aqui,"RFJC",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="opt from hindfoot" )
+        btkTools.smartAppendPoint(aqui,"RFJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="opt from hindfoot" )
 
         # remove AJC from list of tracking markers
         if "RAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RAJC")
@@ -2081,7 +2088,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         values_vSMHnode=seg.getReferential('TF').getNodeTrajectory("RvSMH")
         btkTools.smartAppendPoint(aqui,"RvSMH",values_vSMHnode, desc=str("opt-"+desc))
 
-        btkTools.smartAppendPoint(aqui,"RFJC-ForeFoot",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="opt from forefoot" )
+        btkTools.smartAppendPoint(aqui,"RFJC",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="opt from forefoot" )
 
 
     # --- opensim --------
