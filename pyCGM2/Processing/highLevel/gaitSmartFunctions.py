@@ -7,14 +7,15 @@ from pyCGM2.Processing import cycle,analysis,scores,exporter,c3dManager
 from pyCGM2.Report import plot,plotFilters,plotViewers,normativeDatasets
 from pyCGM2.Tools import trialTools
 from pyCGM2.Report import plot
+from pyCGM2.Model.CGM2 import  cgm,cgm2
 
 # openma
 import ma.io
 
 
-def make_analysis(trialManager, kinematicLabelsDict,kineticLabelsDict,
+def make_analysis(trialManager,kinematicLabelsDict,kineticLabelsDict,
                   modelInfo, subjectInfo, experimentalInfo,
-                  pointLabelSuffix=""):
+                  modelVersion=None,pointLabelSuffix=""):
     """
     build a Analysis instance
 
@@ -30,7 +31,14 @@ def make_analysis(trialManager, kinematicLabelsDict,kineticLabelsDict,
        - `NoName` (pyCGM2.Processing.analysis.Analysis) - Analysis instance
 
     """
+    if modelVersion is not None:
+        if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e","CGM2.4","CGM2.4e"]:
+            if modelVersion in ["CGM2.4","CGM2.4e"]:
+                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT["Left"].append("LForeFootAngles")
+                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT["Right"].append("RForeFootAngles")
 
+            kinematicLabelsDict = cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT
+            kineticLabelsDict = cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT
 
     #---- GAIT CYCLES FILTER
     #--------------------------------------------------------------------------
@@ -60,6 +68,9 @@ def make_analysis(trialManager, kinematicLabelsDict,kineticLabelsDict,
 
     return analysisFilter.analysis
 
+
+
+
 def cgm_staticPlot(modelVersion,modelledStaticFilename, DATA_PATH,outputPath=None,
     pdfFilename="staticProcessing",pointLabelSuffix=""):
 
@@ -88,6 +99,20 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     outputPath,pdfFilename,
     pointLabelSuffix="",
     normativeDataset=None ):
+
+    # filter 0 - stp panel
+    #-------------------------------------------
+    # pstViewer
+    stpv = plotViewers.SpatioTemporalPlotViewer(analysis)
+    stpv.setNormativeDataset(normativeDatasets.NormalSTP())
+
+    # filter
+    stppf = plotFilters.PlottingFilter()
+    stppf.setViewer(stpv)
+    stppf.setPath(outputPath)
+    stppf.setPdfName(str(pdfFilename+"-stp"))
+    stppf.plot()
+
 
     # filter 1 - descriptive kinematic panel
     #-------------------------------------------
