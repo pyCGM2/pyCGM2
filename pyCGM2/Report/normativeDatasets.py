@@ -5,6 +5,32 @@ import numpy as np
 
 import pyCGM2
 
+
+class NormalSTP(object):
+
+    def __init__(self):
+        """
+        """
+
+        self.m_filename = pyCGM2.CONFIG.NORMATIVE_DATABASE_PATH+"stp\\normal_stp.xlsx"
+        self.data = dict()
+
+    def constructNormativeData(self):
+
+        """
+            **Description :**  Read initial xls file and construct the member dictionnary (data)
+        """
+
+        values =pd.read_excel(self.m_filename,sheetname = "Nantes")
+
+        for index, row in values.iterrows():
+            self.data[row["Label"]]={}
+            self.data[row["Label"]]["Mean"] = row["Mean"]
+            self.data[row["Label"]]["Std"] = row["Std"]
+
+
+
+
 class Pinzone2014(object):
 
     def __init__(self,centre):

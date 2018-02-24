@@ -387,3 +387,36 @@ def gaitMeanPlot(figAxis,analysisStructureItem,
     if xlabel is not None: figAxis.set_xlabel(xlabel,size=8)
     if ylabel is not None: figAxis.set_ylabel(ylabel,size=8)
     if ylim is not None: figAxis.set_ylim(ylim)
+
+def stpHorizontalHistogram(figAxis,analysisStructureItem,
+                        stpLabel,
+                        overall= False,
+                        title=None, xlabel=None,xlim=None):
+
+
+    if overall:
+        overallData = np.concatenate([analysisStructureItem[stpLabel,"Left"]["values"],analysisStructureItem[stpLabel,"Right"]["values"]] )
+        mean = np.mean(overallData)
+        err = np.std(overallData)
+        figAxis.barh([0], [ mean], color='purple', xerr=[err])
+
+        figAxis.set_ylabel("Overall",size=8)
+        figAxis.set_yticklabels( [""])
+
+    else:
+        mean_L = analysisStructureItem[stpLabel,"Left"]["mean"]
+        err_L = analysisStructureItem[stpLabel,"Left"]["std"]
+        mean_R = analysisStructureItem[stpLabel,"Right"]["mean"]
+        err_R = analysisStructureItem[stpLabel,"Right"]["std"]
+
+        figAxis.barh([0,1], [mean_L,mean_R],  xerr=[err_L,err_R], color=["red","blue"])
+        figAxis.set_yticks([0,1])
+        figAxis.set_yticklabels(["L","R"],size=8)
+
+    if title is not None: figAxis.set_title(title ,size=8)
+    if xlabel is not None: figAxis.set_xlabel(xlabel,size=8)
+    if xlim is not None: figAxis.set_xlim(xlim)
+
+    figAxis.tick_params(axis='x', which='major', labelsize=6)
+
+    

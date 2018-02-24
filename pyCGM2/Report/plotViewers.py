@@ -34,6 +34,214 @@ class AbstractPlotViewer(object):
     def plotPanel(self):
         pass
 
+class SpatioTemporalPlotViewer(AbstractPlotViewer):
+    """
+
+
+    """
+
+    def __init__(self,iAnalysis):
+
+        """
+            :Parameters:
+                 - `iAnalysis` (pyCGM2.Processing.analysis.Analysis ) - Analysis instance built from AnalysisFilter
+        """
+
+        super(SpatioTemporalPlotViewer, self).__init__(iAnalysis)
+
+        self.m_analysis = self.m_input
+        if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
+            pass
+        else:
+            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+
+    def setNormativeDataset(self,iNormativeDataSet):
+        """
+            **Description :** set a normative gait dataset
+
+            :Parameters:
+                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
+
+        """
+        iNormativeDataSet.constructNormativeData()
+        self.m_normativeData = iNormativeDataSet.data
+
+    def __setLayer(self):
+        self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+        title=u""" Spatio temporal Gait Parameters \n """
+        self.fig.suptitle(title)
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+
+        ax0 = plt.subplot(8,1,1)# speed overall (speed)
+        ax1 = plt.subplot(8,1,2)# length overall (strideLength)
+        ax2 = plt.subplot(8,1,3)# width overall (strideWidth
+        ax3 = plt.subplot(8,1,4)# cadence overall (cadence)
+
+        ax4 = plt.subplot(8,1,5)# Step length  steplength
+        ax5 = plt.subplot(8,1,6)# SStep time (s) duration
+        ax6 = plt.subplot(8,1,7)# Stance time (% of gait cycle) stancePhase
+        ax7 = plt.subplot(8,1,8)# Initial double limb support (s) doubleStance1
+
+
+    def __setData(self):
+
+        plot.stpHorizontalHistogram(self.fig.axes[0],self.m_analysis.stpStats,
+                                "speed",
+                                overall= True,
+                                title="speed (m.s-1)", xlabel=None,xlim=None)
+
+        plot.stpHorizontalHistogram(self.fig.axes[1],self.m_analysis.stpStats,
+                                "strideLength",
+                                overall= True,
+                                title="stride length (m)", xlabel=None,xlim=None)
+
+        plot.stpHorizontalHistogram(self.fig.axes[2],self.m_analysis.stpStats,
+                                "strideWidth",
+                                overall= True,
+                                title="stride width (m)", xlabel=None,xlim=None)
+
+        plot.stpHorizontalHistogram(self.fig.axes[3],self.m_analysis.stpStats,
+                                "cadence",
+                                overall= True,
+                                title="cadence", xlabel=None,xlim=None)
+
+        plot.stpHorizontalHistogram(self.fig.axes[4],self.m_analysis.stpStats,
+                                "stepLength",
+                                overall= False,
+                                title="Step length", xlabel=None,xlim=None)
+
+        plot.stpHorizontalHistogram(self.fig.axes[5],self.m_analysis.stpStats,
+                                "duration",
+                                overall= False,
+                                title="Step time", xlabel=None,xlim=None)
+
+        plot.stpHorizontalHistogram(self.fig.axes[6],self.m_analysis.stpStats,
+                                "stancePhase",
+                                overall= False,
+                                title="Stance time (% of gait cycle)", xlabel=None,xlim=None)
+
+        plot.stpHorizontalHistogram(self.fig.axes[7],self.m_analysis.stpStats,
+                                "doubleStance1",
+                                overall= False,
+                                title="Initial double limb support (% of gait cycle)", xlabel=None,xlim=None)
+
+
+    def plotPanel(self):
+        self.__setLayer()
+        self.__setData()
+
+        if self.m_normativeData is not None:
+            labels = ["speed", "stride length", "stride width", "cadence", "step length ","step time", "stance phase","initial double stance"]
+
+            i=0
+            for label in labels:
+                minusStd = self.m_normativeData[label]["Mean"]-self.m_normativeData[label]["Std"]
+                plusStd = self.m_normativeData[label]["Mean"]+self.m_normativeData[label]["Std"]
+                self.fig.axes[i].axvline(x=(minusStd), color= "green", linestyle = "dashed")
+                self.fig.axes[i].axvline(x=(plusStd), color= "green", linestyle = "dashed")
+                i+=1
+
+
+
+class GpsMapPlotViewer(AbstractPlotViewer):
+    """
+
+
+    """
+
+    def __init__(self,iAnalysis):
+
+        """
+            :Parameters:
+                 - `iAnalysis` (pyCGM2.Processing.analysis.Analysis ) - Analysis instance built from AnalysisFilter
+        """
+
+        super(GpsMapPlotViewer, self).__init__(iAnalysis)
+
+        self.m_analysis = self.m_input
+        if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
+            pass
+        else:
+            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+
+    def setNormativeDataset(self,iNormativeDataSet):
+        """
+            **Description :** set a normative gait dataset
+
+            :Parameters:
+                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
+
+        """
+        pass
+
+    def __setLayer(self):
+        self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+        title=u"""Mouvement  Analysis Profile \n """
+        self.fig.suptitle(title)
+        plt.subplots_adjust(left=None, bottom=0.5, right=None, top=None, wspace=0.5, hspace=0.5)
+
+        ax0 = plt.subplot(1,1,1)
+
+
+    def __setData(self):
+
+        N = 9
+        overall = (self.m_analysis.gvs["LPelvisAngles","Left"]["mean"][0],
+                     0,
+                     0,
+                     self.m_analysis.gvs["LPelvisAngles","Left"]["mean"][1],
+                     0,
+                     self.m_analysis.gvs["LPelvisAngles","Left"]["mean"][2],
+                     0,
+                     0,
+                      self.m_analysis.gps["Overall"]["mean"][0])
+        left = (0,
+                 self.m_analysis.gvs["LHipAngles","Left"]["mean"][0],
+                 self.m_analysis.gvs["LKneeAngles","Left"]["mean"][0],
+                  0,
+                  self.m_analysis.gvs["LHipAngles","Left"]["mean"][1],
+                  0,
+                  self.m_analysis.gvs["LHipAngles","Left"]["mean"][2],
+                  self.m_analysis.gvs["LFootProgressAngles","Left"]["mean"][2],
+                  self.m_analysis.gps["Context"]["Left"]["mean"][0])
+
+        right = (0,
+                 self.m_analysis.gvs["RHipAngles","Right"]["mean"][0],
+                 self.m_analysis.gvs["RKneeAngles","Right"]["mean"][0],
+                  0,
+                  self.m_analysis.gvs["RHipAngles","Right"]["mean"][1],
+                  0,
+                  self.m_analysis.gvs["RHipAngles","Right"]["mean"][2],
+                  self.m_analysis.gvs["RFootProgressAngles","Right"]["mean"][2],
+                  self.m_analysis.gps["Context"]["Right"]["mean"][0])
+
+        width = 0.35
+        y_pos = [0,2,4,6,8,10,12,14,16]
+        y_pos1 = [i+0.35 for i in y_pos]
+        y_pos2 =  [i+0.7 for i in y_pos]
+        self.fig.axes[0].bar(y_pos, overall, width, label='Overall',color='purple')
+        self.fig.axes[0].bar(y_pos1 , left, width,  label='Left', color='red')
+        self.fig.axes[0].bar(y_pos2 , right, width,  label='Right',color='blue')
+
+        self.fig.axes[0].set_ylabel('Scores (deg)')
+
+        tickLabels = [i+width / 3.0 for i in y_pos]
+        self.fig.axes[0].set_xticks(tickLabels)
+        self.fig.axes[0].set_xticklabels(('Pelvis Ant/ret', 'Hip Flex',  'Knee Flex',
+                                       'Pelvis Up/Down', 'Hip Abd',
+                                       'Pelvis Rot', 'Hip Rot',"Foot Prog",
+                                       "GPS"), rotation=45)
+        self.fig.axes[0].legend(loc='best')
+
+
+
+    def plotPanel(self):
+        self.__setLayer()
+        self.__setData()
+
+
+
+
 class LowerLimbKinematicsPlotViewer(AbstractPlotViewer):
     """
         **Description :** Constructor of gait plot panel.
