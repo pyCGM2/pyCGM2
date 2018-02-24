@@ -89,6 +89,9 @@ def saveJson(path, filename, content):
         with open(str(path+filename), 'w') as outfile:
             json.dump(content, outfile,indent=4)
 
+def prettyJsonDisplay(parsedContent):
+    print json.dumps(parsedContent, indent=4, sort_keys=True)
+
 def openTranslators(DATA_PATH, translatorsFilename):
     filename = openJson(DATA_PATH, translatorsFilename)
     return filename["Translators"]
@@ -157,6 +160,7 @@ def getMp(mpInfo,resetFlag=True):
 
     required_mp={
     'Bodymass'   : mpInfo["MP"]["Required"]["Bodymass"],
+    'Height'   : mpInfo["MP"]["Required"]["Height"],
     'LeftLegLength' :mpInfo["MP"]["Required"]["LeftLegLength"],
     'RightLegLength' : mpInfo["MP"]["Required"][ "RightLegLength"],
     'LeftKneeWidth' : mpInfo["MP"]["Required"][ "LeftKneeWidth"],
