@@ -136,48 +136,48 @@ if __name__ == "__main__":
                    leftFlatFoot,rightFlatFoot,markerDiameter,
                    pointSuffix)
         elif modelVersion == "CGM2.1":
-            hjcMethod = manager.getHJCmethod()
+            hjcMethod = "Hara"
             model,acqStatic = cgm2_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
                           leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                           pointSuffix)
 
         elif modelVersion == "CGM2.2":
-            hjcMethod = manager.getHJCmethod()
+            hjcMethod = "Hara"
             model,finalAcqStatic = cgm2_2.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                               required_mp,optional_mp,
                               True,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                               pointSuffix)
 
         elif modelVersion == "CGM2.2e":
-            hjcMethod = manager.getHJCmethod()
+            hjcMethod = "Hara"
             model,finalAcqStatic = cgm2_2e.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                               required_mp,optional_mp,
                               True,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                               pointSuffix)
 
         elif modelVersion == "CGM2.3":
-            hjcMethod = manager.getHJCmethod()
+            hjcMethod = "Hara"
             model,finalAcqStatic = cgm2_3.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                                       required_mp,optional_mp,
                                       ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                                       pointSuffix)
 
         elif modelVersion == "CGM2.3e":
-            hjcMethod = manager.getHJCmethod()
+            hjcMethod = "Hara"
             model,finalAcqStatic = cgm2_3e.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                                       required_mp,optional_mp,
                                       ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                                       pointSuffix)
 
         elif modelVersion == "CGM2.4":
-            hjcMethod = manager.getHJCmethod()
+            hjcMethod = "Hara"
             model,finalAcqStatic = cgm2_4.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                                       required_mp,optional_mp,
                                       ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                                       pointSuffix)
 
         elif modelVersion == "CGM2.4e":
-            hjcMethod = manager.getHJCmethod()
+            hjcMethod = "Hara"
             model,finalAcqStatic = cgm2_4e.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                                       required_mp,optional_mp,
                                       ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
