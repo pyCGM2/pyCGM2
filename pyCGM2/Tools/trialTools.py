@@ -19,7 +19,7 @@ def isTimeSequenceExist(trial,label):
             - `label` (str) - label of the time sequence
     """
     try:
-        trial.findChild(ma.T_TimeSequence,label)
+        ts = trial.findChild(ma.T_TimeSequence,label)
         return True
     except ValueError:
         return False
@@ -312,7 +312,11 @@ def buildTrials(dataPath,trialfilenames):
 
 
 def smartTrialReader(dataPath,trialfilename):
-    fileNode = ma.io.read(str(dataPath + trialfilename))
+    if dataPath is None:
+        fileNode = ma.io.read(str(trialfilename))
+    else:
+        fileNode = ma.io.read(str(dataPath + trialfilename))
+
     trial = fileNode.findChild(ma.T_Trial)
     sortedEvents(trial)
 
