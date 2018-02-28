@@ -150,26 +150,27 @@ if "install" in sys.argv or "develop" in sys.argv:
 
     btkFlag = raw_input("Do you want to use your own Btk package (y/N) ")
     PYCGM2_BTK = True if  btkFlag in ["y", "Y"] else False
-    if PYCGM2_BTK:
+    if not PYCGM2_BTK:
         logging.info("Btk installed from pyCGM2")
     else:
         logging.info("Custom Btk package")
 
     openmaFlag = raw_input("Do you want to use your own openMA package (y/N) ")
     PYCGM2_OPENMA = True if   openmaFlag in ["y", "Y"] else False
-    if PYCGM2_OPENMA:
+    if not PYCGM2_OPENMA:
         logging.info("OpenMA installed from pyCGM2")
     else:
         logging.info("Custom OpenMA package")
 
     opensimFlag = raw_input("Do you want to use your own opensim package (y/N) ")
     PYCGM2_OPENSIM = True if   opensimFlag in ["y", "Y"] else False
-    if PYCGM2_OPENSIM:
+    if not PYCGM2_OPENSIM:
         logging.info("OpenSim installed from pyCGM2")
     else:
         logging.info("Custom OpenSim package")
 
-
+    nexusUserFlag = raw_input("Do you want to use Vicon Nexus API (Y/n) ")
+    PYCGM2_NEXUS = False if   nexusUserFlag in ["n", "N"] else True
 
 if "install" in sys.argv or "develop" in sys.argv:
 
@@ -180,15 +181,15 @@ if "install" in sys.argv or "develop" in sys.argv:
     _PYTHONEXE = runPythonExe
     _COMPATIBLENEXUSKEY = "\""+ _PYTHONEXE+"\"  \"%1\" %*" # HERE IS the COMPATIBLE NEXUS python executable command
 
-
-    reg_key = registry.getPythonExeRegisterKey()
-    logging.info("******* Alteration of your python registry key fo Nexus ******")
-    if reg_key != _COMPATIBLENEXUSKEY:
-        logging.warning( "Python registry key ---> incompatible")
-        registry.setPythonExeRegisterKey(_COMPATIBLENEXUSKEY)
-        logging.warning( "Python registry key ---> altered")
-    else:
-        logging.info("Python registry key ---> compatible")
+    if PYCGM2_NEXUS:
+        reg_key = registry.getPythonExeRegisterKey()
+        logging.info("******* Alteration of your python registry key fo Nexus ******")
+        if reg_key != _COMPATIBLENEXUSKEY:
+            logging.warning( "Python registry key ---> incompatible")
+            registry.setPythonExeRegisterKey(_COMPATIBLENEXUSKEY)
+            logging.warning( "Python registry key ---> altered")
+        else:
+            logging.info("Python registry key ---> compatible")
 
     # check if 64 bits
     logging.info( " ******* Detection of your python version ******")
