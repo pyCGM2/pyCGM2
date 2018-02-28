@@ -46,7 +46,6 @@
         },
         "NoIK": 0,
         "Calibration": {
-            "HJC_method": "",
             "LeftFlatFoot": 1,
             "RightFlatFoot": 1,
             "Trial": "PN01OP01S01STAT.c3d"
