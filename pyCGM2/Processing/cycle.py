@@ -96,7 +96,7 @@ def point_descriptiveStats(cycles,label,context):
     medianData[:,2]=np.median(z,axis=1)
 
 
-    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues }
+    outDict = {'mean':meanData.reshape((101,1)), 'median':medianData.reshape((101,1)), 'std':stdData.reshape((101,1)), 'values': listOfPointValues }
 
 
 
@@ -126,32 +126,57 @@ def analog_descriptiveStats(cycles,label,context):
 
     n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle
 
-    x=np.empty((1001,n))
+    listOfPointValues=list()
+    x=np.empty((101,n))
 
     i=0
     for cycle in cycles:
         if cycle.enableFlag and cycle.context==context:
             tmp = cycle.getAnalogTimeSequenceDataNormalized(label)
             x[:,i]=tmp[:,0]
-
-
             i+=1
+            listOfPointValues.append(tmp)
 
-    x_resize=x[0:1001:10,:]
+    #x_resize=x[0:1001:10,:]
 
     meanData=np.array(np.zeros((101,1)))
-    meanData[:,0]=np.mean(x_resize,axis=1)
+    meanData[:,0]=np.mean(x,axis=1)
 
     stdData=np.array(np.zeros((101,1)))
-    stdData[:,0]=np.std(x_resize,axis=1)
+    stdData[:,0]=np.std(x,axis=1)
 
     medianData=np.array(np.zeros((101,1)))
-    medianData[:,0]=np.median(x_resize,axis=1)
+    medianData[:,0]=np.median(x,axis=1)
 
+    maximalValues = np.max(x,axis=0)
 
-    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': x_resize }
+    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues, 'maxs': maximalValues }
 
     return outDict
+
+
+def construcGaitCycle(trial):
+    gaitCycles=list()
+
+    context = "Left"
+    left_fs_times=list()
+    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
+        left_fs_times.append(ev.time())
+
+    for i in range(0, len(left_fs_times)-1):
+        gaitCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
+                                       context))
+
+    context = "Right"
+    right_fs_times=list()
+    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
+        right_fs_times.append(ev.time())
+
+    for i in range(0, len(right_fs_times)-1):
+        gaitCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
+                                       context))
+
+    return gaitCycles
 
 #----module classes ------
 
@@ -253,8 +278,9 @@ class Cycle(ma.Node):
                 - `analogLabel` (str) - analog Label
 
         """
+
         if CGM2trialTools.isTimeSequenceExist(self.trial,analogLabel):
-            return  self.trial.findChild(ma.T_TimeSequence, analogLabel).data()[(self.begin-self.firstFrame) * self.appf : (self.end-self.firstFrame+1) * self.appf,:]
+            return  self.trial.findChild(ma.T_TimeSequence, analogLabel).data()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
         else:
             raise Exception("[pyCGM2] Analog %s doesn t exist"% analogLabel )
 

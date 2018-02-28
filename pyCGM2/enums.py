@@ -63,6 +63,16 @@ class CgmStaticMarkerConfig(Enum):
     AnkleMed = "Ankle-med"
     KneeAnkleMed = "Knee-Ankle-med "
 
+
+class EmgAmplitudeNormalization(Enum):
+    """ Enum defining harrington's regression predictor"""
+    MaxMax = "MaxMax"
+    MeanMax = "MeanMax"
+    MedianMax = "MedianMax"
+    Threshold = "Threshold"
+
+
+
 # --- enum used with Btk-Models
 # obsolete
 #class BspModel(Enum):

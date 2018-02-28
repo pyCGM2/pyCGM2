@@ -11,12 +11,31 @@ import matplotlib.patches as mpatches
 # pyCGM2
 #import pyCGM2
 import pyCGM2.Processing.analysis as CGM2analysis
+from pyCGM2.Processing import cycle
 from pyCGM2.Tools import trialTools
+from pyCGM2.Report import plotUtils
+from pyCGM2.EMG import normalActivation
 
 # openMA
 import ma.io
 import ma.body
 
+def addNormalActivationLayer(figAxis,normalActivationLabel,fo):
+    pos,burstDuration=normalActivation.getNormalBurstActivity(normalActivationLabel,fo)
+    for j in range(0,len(pos)):
+        figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , color='g',alpha=0.1))
+
+
+
+def addTemporalNormalActivationLayer(figAxis,trial,normalActivationLabel,context):
+    if normalActivationLabel:
+        gaitCycles = cycle.construcGaitCycle(trial)
+
+        for cycleIt  in gaitCycles:
+            if cycleIt.context == context:
+                pos,burstDuration=normalActivation.getNormalBurstActivity_fromCycles(normalActivationLabel,cycleIt.firstFrame,cycleIt.begin, cycleIt.m_contraFO, cycleIt.end, cycleIt.appf)
+                for j in range(0,len(pos)):
+                    figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , color='g',alpha=0.1))
 
 # ---- convenient plot functions
 def temporalPlot(figAxis,trial,
@@ -44,7 +63,8 @@ def temporalPlot(figAxis,trial,
 
     if flag:
         suffixPlus = "_" + pointLabelSuffix if pointLabelSuffix!="" else ""
-        lines=figAxis.plot(trial.findChild(ma.T_TimeSequence,str(pointLabel+suffixPlus)).data()[:,axis], '-', color= color)
+        timeseq = trial.findChild(ma.T_TimeSequence,str(pointLabel+suffixPlus))
+        lines=figAxis.plot(timeseq.data()[:,axis], '-', color= color)
 
     if legendLabel is not None  and flag: lines[0].set_label(legendLabel)
     if title is not None: figAxis.set_title(title ,size=8)
@@ -53,6 +73,13 @@ def temporalPlot(figAxis,trial,
     if xlabel is not None: figAxis.set_xlabel(xlabel,size=8)
     if ylabel is not None: figAxis.set_ylabel(ylabel,size=8)
     if ylim is not None: figAxis.set_ylim(ylim)
+
+    for ev in trial.findChildren(ma.T_Event):
+        colorContext = plotUtils.colorContext(ev.context())
+        if ev.name() == "Foot Strike":
+            figAxis.axvline( x= (ev.time()-timeseq.startTime())*timeseq.sampleRate(), color = colorContext, linestyle = "-")
+        elif ev.name() == "Foot Off":
+            figAxis.axvline( x= (ev.time()-timeseq.startTime())*timeseq.sampleRate(), color = colorContext, linestyle = "--")
 
 
 def descriptivePlot(figAxis,analysisStructureItem,
@@ -241,7 +268,6 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
         if key[0] == pointLabel and key[1] == contextPointLabel:
             flag = True if analysisStructureItem.data[pointLabel,contextPointLabel]["values"] != [] else False
 
-
     # plot
     if flag:
         mean=analysisStructureItem.data[pointLabel,contextPointLabel]["mean"][:,axis]
@@ -418,5 +444,3 @@ def stpHorizontalHistogram(figAxis,analysisStructureItem,
     if xlim is not None: figAxis.set_xlim(xlim)
 
     figAxis.tick_params(axis='x', which='major', labelsize=6)
-
-    

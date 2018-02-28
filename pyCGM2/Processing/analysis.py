@@ -53,7 +53,7 @@ class Analysis():
         self.emgStats=Analysis.Structure()
         self.gps= None
         self.gvs = None
-        self.coactivations=[]
+        self.coactivations=dict()
         self.subjectInfo=None
         self.experimentalInfo=None
         self.modelInfo=None
@@ -103,6 +103,9 @@ class Analysis():
                 n_rightCycles = self.kinematicStats.data[label, context]["values"].__len__()
                 break
         return n_leftCycles, n_rightCycles
+
+    def setCoactivation(self, labelEmg1,labelEmg2,context,res):
+        self.coactivations[labelEmg1,labelEmg2,context]=res
 
 # --- BUILDERS-----
 class AbstractBuilder(object):
@@ -343,7 +346,6 @@ class GaitAnalysisBuilder(AbstractBuilder):
         self.m_kineticLabelsDict = kineticLabelsDict
         self.m_pointlabelSuffix = pointlabelSuffix
         self.m_emgLabelList = emgLabelList
-        self.m_emgs = emgs
 
 
     def computeSpatioTemporel(self):
@@ -502,13 +504,10 @@ class GaitAnalysisBuilder(AbstractBuilder):
         logging.info("--emg computation--")
         if self.m_cycles.emgCycles is not None:
 
-            for rawLabel,muscleDict in zip(self.m_emgLabelList,self.m_emgs):
+            for rawLabel in self.m_emgLabelList:
+                out[rawLabel,"Left"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Left")
+                out[rawLabel,"Right"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Right")
 
-                muscleLabel = muscleDict["label"]
-                muscleSide = muscleDict["side"]
-
-                out[muscleLabel,muscleSide,"Left"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Left")
-                out[muscleLabel,muscleSide,"Right"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Right")
 
             for label in CGM2cycle.GaitCycle.STP_LABELS:
                 outPst[label,"Left"]= CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Left")
@@ -574,7 +573,7 @@ class AnalysisFilter(object):
         kineticOut,matchPst_kinetic,matchKinematic = self.__concreteAnalysisBuilder.computeKinetics()
         self.analysis.setKinetic(kineticOut, pst= matchPst_kinetic, optionalData=matchKinematic)
 
-        if self.__concreteAnalysisBuilder.m_emgs :
+        if self.__concreteAnalysisBuilder.m_emgLabelList :
             emgOut,matchPst_emg = self.__concreteAnalysisBuilder.computeEmgEnvelopes()
             self.analysis.setEmg(emgOut, pst = matchPst_emg)
 
