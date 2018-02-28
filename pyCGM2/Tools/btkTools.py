@@ -458,3 +458,44 @@ def getVisibleMarkersAtFrame(acq,markers,index):
         if acq.GetPoint(marker).GetResidual(index) !=-1:
             visibleMarkers.append(marker)
     return visibleMarkers
+
+
+
+
+def isAnalogExist(acq,label):
+    """
+        Check if a point label exists inside an acquisition
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `label` (str) - point label
+    """
+    #TODO : replace by btkIterate
+    i = acq.GetAnalogs().Begin()
+    while i != acq.GetAnalogs().End():
+        if i.value().GetLabel()==label:
+            flag= True
+            break
+        else:
+            i.incr()
+            flag= False
+
+    if flag:
+        return True
+    else:
+        return False
+
+
+
+def smartAppendAnalog(acq,label,values,desc="" ):
+
+    if isAnalogExist(acq,label):
+        acq.GetAnalog(label).SetValues(values)
+        acq.GetAnalog(label).SetDescription(desc)
+        acq.GetAnalog(label).SetType(PointType)
+
+    else:
+        newAnalog=btk.btkAnalog(acq.GetAnalogFrameNumber())
+        newAnalog.SetValues(values)
+        newAnalog.SetLabel(label)
+        acq.AppendAnalog(newAnalog)
