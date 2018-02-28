@@ -95,8 +95,7 @@ def point_descriptiveStats(cycles,label,context):
     medianData[:,1]=np.median(y,axis=1)
     medianData[:,2]=np.median(z,axis=1)
 
-
-    outDict = {'mean':meanData.reshape((101,1)), 'median':medianData.reshape((101,1)), 'std':stdData.reshape((101,1)), 'values': listOfPointValues }
+    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues }
 
 
 
