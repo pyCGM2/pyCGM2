@@ -183,7 +183,6 @@ if __name__ == "__main__":
                                       pointSuffix)
 
         btkTools.smartWriter(finalAcqStatic, str(DATA_PATH_OUT+"calibrated.c3d"))
-        import ipdb; ipdb.set_trace()
         logging.info("Static Calibration -----> Done")
 
         # knee calibration
