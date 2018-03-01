@@ -41,7 +41,7 @@ if __name__ == "__main__":
     plotFlag = True if  args.plot else False
 
 
-    args.DEBUG = False
+    args.DEBUG = True
     if args.DEBUG:
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         wd = os.getcwd()+"\\"
 
     manager = pipelineFileManager(wd,pipelineFile)
-    modelVersion = manager.getCGMVersion()
+    modelVersion = manager.getModelVersion()
     logging.info("model version : %s" %(modelVersion))
 
     DATA_PATH = wd if manager.getDataPath() is None else manager.getDataPath()

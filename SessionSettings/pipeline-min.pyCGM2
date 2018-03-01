@@ -1,20 +1,15 @@
 {
     "PipelineVersion": "pipe-V-1.0",
-    "DATA_PATH":"C:\\Users\\HLS501\\Documents\\VICON DATA\\Salford\\CGM3\\PN01\\PN01OP01S01\\",
-    "OutDataPath":"C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2-Analyses\\CGM3-dataCollection\\CGM2.4-analysis\\results\\PN01S01OP01\\",
-    "Subject": {
-        "Id": "PN01"
-    },
-    "ExperimentalContext": {
-        "sessionName": "S01",
-        "AssessorName": "O01"
-    },
+    "DATA_PATH":"",
+    "OutDataPath":"",
+    "Subject": {},
+    "ExperimentalContext": { },
     "Modelling": {
-        "ModelVersion": "CGM1.1",
+        "ModelVersion":"CGM1.1",
         "ModelInfo": {
-            "Model": "CGM1.1"
+            "CGM": "CGM1.1"
         },
-        "fileSuffix": "cgm11",
+        "fileSuffix": "",
         "pointSuffix": "",
         "MarkerDiameter": 14,
         "MP": {
@@ -48,7 +43,7 @@
         "Calibration": {
             "LeftFlatFoot": 1,
             "RightFlatFoot": 1,
-            "Trial": "PN01OP01S01STAT.c3d"
+            "Trial": "static.c3d"
         },
         "KneeCalibrationTrials": {
             "Left": {

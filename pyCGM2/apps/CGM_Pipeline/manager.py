@@ -23,8 +23,8 @@ class pipelineFileManager(object):
         ikwf = str(self.pipSettings["Modelling"]["Fitting"]["IkweightFile"])
         return ikwf if ikwf !="" else None
 
-    def getCGMVersion(self):
-        return str(self.pipSettings["Modelling"]["Model"]["CGM"])
+    def getModelVersion(self):
+        return str(self.pipSettings["Modelling"]["ModelVersion"])
 
     def getMP(self):
         required_mp,optional_mp = files.getMp(self.pipSettings["Modelling"],resetFlag=True)
@@ -90,7 +90,7 @@ class pipelineFileManager(object):
     def getExpInfo(self):
         return self.pipSettings["ExperimentalContext"]
     def getModelInfo(self):
-        return self.pipSettings["Modelling"]["Model"]
+        return self.pipSettings["Modelling"]["ModelInfo"]
     def getProcessingTasks(self):
         return self.pipSettings["Processing"]["Tasks"]
 
