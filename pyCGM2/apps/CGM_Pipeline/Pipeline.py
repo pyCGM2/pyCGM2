@@ -13,7 +13,7 @@ pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
 from pyCGM2 import enums
 from pyCGM2.Model.CGM2.coreApps import cgmProcessing, kneeCalibration
 from pyCGM2.Model.CGM2.coreApps import cgm1,cgm1_1,cgm2_1,cgm2_2,cgm2_2e,cgm2_3,cgm2_3e,cgm2_4,cgm2_4e
-from pyCGM2.Tools import btkTools
+from pyCGM2.Tools import btkTools,trialTools
 from pyCGM2.Utils import files
 from pyCGM2.Eclipse import vskTools
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     if args.DEBUG:
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
-        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\didier\\test\\"
         pipelineFile = "pipeline.pyCGM2"
         xlsExport_flag =  True
         plotFlag= True
@@ -126,18 +126,17 @@ if __name__ == "__main__":
         markerDiameter = manager.getMarkerDiameter()
         calibrateFilenameLabelled = manager.getStaticTial()
 
-
         if modelVersion == "CGM1.0":
-            model,acqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
+            model,finalAcqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
                    leftFlatFoot,rightFlatFoot,markerDiameter,
                    pointSuffix)
         elif modelVersion == "CGM1.1":
-            model,acqStatic = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
+            model,finalAcqStatic = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
                    leftFlatFoot,rightFlatFoot,markerDiameter,
                    pointSuffix)
         elif modelVersion == "CGM2.1":
             hjcMethod = "Hara"
-            model,acqStatic = cgm2_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
+            model,finalAcqStatic = cgm2_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,required_mp,optional_mp,
                           leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
                           pointSuffix)
 
@@ -184,7 +183,7 @@ if __name__ == "__main__":
                                       pointSuffix)
 
         btkTools.smartWriter(finalAcqStatic, str(DATA_PATH_OUT+"calibrated.c3d"))
-
+        import ipdb; ipdb.set_trace()
         logging.info("Static Calibration -----> Done")
 
         # knee calibration

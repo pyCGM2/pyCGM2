@@ -499,3 +499,9 @@ def smartAppendAnalog(acq,label,values,desc="" ):
         newAnalog.SetValues(values)
         newAnalog.SetLabel(label)
         acq.AppendAnalog(newAnalog)
+
+def markerUnitConverter(acq,unitOffset):
+    for it in btk.Iterate(acq.GetPoints()):
+        if it.GetType() == btk.btkPoint.Marker:
+            values = it.GetValues()
+            it.SetValues(values*unitOffset)
