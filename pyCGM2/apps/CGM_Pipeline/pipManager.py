@@ -4,9 +4,13 @@
 from pyCGM2 import enums
 from pyCGM2.Utils import files
 
-class pipelineFileManager(object):
-    def __init__(self,DATA_PATH,pipelineFile):
-        self.pipSettings = files.openJson(DATA_PATH,pipelineFile)
+class PipelineFileManager(object):
+    def __init__(self,DATA_PATH,pipelineFile, stringContent=None ):
+        self.m_DATA_PATH = DATA_PATH
+        self.m_pipelineFile = pipelineFile
+
+
+        self.pipSettings = files.openJson(DATA_PATH,pipelineFile,stringContent=stringContent)
 
     def getPipelineSetttings(self):
         return self.pipSettings
