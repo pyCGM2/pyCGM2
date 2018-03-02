@@ -17,7 +17,7 @@ class UnithanCoActivationProcedure(object):
 
 
         out = list()
-        for c1,c2 in zip(emg1.T,emg2.T): # iterate along column
+        for c1,c2 in zip(emg1,emg2): # iterate along column
             commonEmg=np.zeros(((101,1)))
             for i in range(0,101):
                 commonEmg[i,:]=np.minimum(c1[i],c2[i])
@@ -38,7 +38,7 @@ class FalconerCoActivationProcedure(object):
 
 
         out = list()
-        for c1,c2 in zip(emg1.T,emg2.T): # iterate along column
+        for c1,c2 in zip(emg1,emg2): # iterate along column
 
             import matplotlib.pyplot as plt
             plt.plot(c1)

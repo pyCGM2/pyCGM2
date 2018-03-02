@@ -172,7 +172,6 @@ class test_ca():
         caf.setEMG2("EMG2")
         caf.setCoactivationMethod(cap)
         caf.run()
-        #print analysisInstance.emgStats.data.keys()
 
 
 if __name__ == "__main__":

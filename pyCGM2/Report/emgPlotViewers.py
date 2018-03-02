@@ -130,10 +130,10 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
 
         self.m_analysis = self.m_input
-        if isinstance(self.m_input,ma.Trial):
+        if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
             pass
         else:
-            logging.error( "[pyCGM2] error input object type. must be a ma.Trial")
+            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
         self.m_pointLabelSuffix = pointLabelSuffix
 
@@ -278,8 +278,6 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
             context = self.emgs[i]["Context"]
             colorContext = plotUtils.colorContext(context)
 
-            print label
-            print context
             self.m_concretePlotFunction(self.fig.axes[i],self.m_analysis.emgStats,
                             label,context,0,color=colorContext)
 

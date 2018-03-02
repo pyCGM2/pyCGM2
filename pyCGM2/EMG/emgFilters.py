@@ -127,7 +127,6 @@ class EmgNormalisationProcessingFilter(object):
 
         i=0
         for val in values:
-            print i
             valuesNorm.append( val / self.m_threshold)
             i+=1
 
