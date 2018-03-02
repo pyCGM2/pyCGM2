@@ -75,15 +75,24 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
     analysisFile.close()
 
 
-def openJson(path,filename):
-    try:
-        if path is None:
-            jsonStuct= json.loads(open(str(filename)).read(),object_pairs_hook=OrderedDict)
-        else:
-            jsonStuct= json.loads(open(str(path+filename)).read(),object_pairs_hook=OrderedDict)
+def openJson(path,filename,stringContent=None):
+
+    if stringContent is None:
+        try:
+            if path is None:
+                jsonStuct= json.loads(open(str(filename)).read(),object_pairs_hook=OrderedDict)
+            else:
+                jsonStuct= json.loads(open(str(path+filename)).read(),object_pairs_hook=OrderedDict)
+            return jsonStuct
+        except :
+            raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
+    else:
+        jsonStuct = json.loads(stringContent,object_pairs_hook=OrderedDict)
         return jsonStuct
-    except :
-        raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
+
+
+
+
 
 def saveJson(path, filename, content):
         with open(str(path+filename), 'w') as outfile:
