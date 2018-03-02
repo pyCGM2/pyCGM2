@@ -1,5 +1,5 @@
 {
-    "PipelineVersion": "pipe-V-1.0",
+    "PipelineVersion": "pipe-V-1.0.1",
     "DATA_PATH":"",
     "OutDataPath":"",
     "Subject": {},
@@ -72,11 +72,11 @@
         }
     },
     "Processing": {
-        "Tasks": [
+        "Analyses": [
             {
                 "outputFilenameNoExt": "gait_CGM11",
-                "TaskTitle": "Gait analysis",
-                "AnalysisType": "Gait",
+                "AnalysisTitle": "Gait analysis",
+                "TaskType": "Gait",
                 "Conditions": {
                     "Foot": "",
                     "Orthosis": "",

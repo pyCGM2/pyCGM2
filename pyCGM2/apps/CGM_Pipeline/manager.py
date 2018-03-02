@@ -91,8 +91,8 @@ class pipelineFileManager(object):
         return self.pipSettings["ExperimentalContext"]
     def getModelInfo(self):
         return self.pipSettings["Modelling"]["ModelInfo"]
-    def getProcessingTasks(self):
-        return self.pipSettings["Processing"]["Tasks"]
+    def getProcessingAnalyses(self):
+        return self.pipSettings["Processing"]["Analyses"]
 
 
     def updateMp(self,model):

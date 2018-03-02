@@ -19,51 +19,11 @@ from pyCGM2.Eclipse import vskTools
 
 from  manager import *
 
-if __name__ == "__main__":
-
-    plt.close("all")
-
-    parser = argparse.ArgumentParser(description='CGM Pipeline')
-    parser.add_argument('-f','--file', type=str, help='pipeline file', default="pipeline.pyCGM2")
-    parser.add_argument('--vsk', type=str, help='vicon skeleton filename')
-    parser.add_argument('--export', action='store_true', help='xls export')
-    parser.add_argument('--plot', action='store_true', help='enable Gait Plot')
-    parser.add_argument('-dm','--disableModelling', action='store_true', help='disable  modelling')
-    parser.add_argument('-dp','--disableProcessing', action='store_true', help='disable  processing')
-    parser.add_argument('--DEBUG', action='store_true', help='debug mode')
-
-    args = parser.parse_args()
-    vskFile = args.vsk
-    xlsExport_flag = args.export
-    pipelineFile = args.file
-    modellingFlag = True if not args.disableModelling else False
-    processingFlag = True if not args.disableProcessing else False
-    plotFlag = True if  args.plot else False
-
-
-    args.DEBUG = False
-    if args.DEBUG:
-        #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
-        #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
-        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\didier\\test\\"
-        pipelineFile = "pipeline.pyCGM2"
-        xlsExport_flag =  True
-        plotFlag= True
-        wd= DATA_PATH
-
-    else:
-        wd = os.getcwd()+"\\"
-
-    manager = pipelineFileManager(wd,pipelineFile)
+def modelling(manager,DATA_PATH,DATA_PATH_OUT,vskFile=None):
     modelVersion = manager.getModelVersion()
     logging.info("model version : %s" %(modelVersion))
 
-    DATA_PATH = wd if manager.getDataPath() is None else manager.getDataPath()
-    print  DATA_PATH
 
-    DATA_PATH_OUT = DATA_PATH if manager.getOutDataPath() is None else manager.getOutDataPath()
-    if manager.getOutDataPath() is not None:
-        files.createDir(DATA_PATH_OUT)
 
 
 
@@ -316,49 +276,106 @@ if __name__ == "__main__":
             btkTools.smartWriter(acqGait, str(DATA_PATH_OUT+c3dFilename))
             logging.info("c3d file (%s) generated" %(c3dFilename) )
 
+
+def processing(manager,DATA_PATH,DATA_PATH_OUT,plotFlag=True, exportFlag = True):
+    fileSuffix = manager.getFileSuffix()
+    pointSuffix = manager.getPointSuffix()
+    modelVersion = manager.getModelVersion()
+
+    modelInfo = manager.getModelInfo()
+    subjectInfo = manager.getSubjectInfo()
+    experimentalInfo = manager.getExpInfo()
+
+    analyses = manager.getProcessingAnalyses()
+
+    for analysisIt in analyses:
+        logging.info(" Processing ----- Analysis : %s ------------" %(analysisIt["AnalysisTitle"]))
+
+        taskType = str(analysisIt["TaskType"])
+
+        experimentalInfo["AnalysesTitle"] = analysisIt["AnalysisTitle"]
+        experimentalInfo.update(analysisIt["Conditions"])
+
+        normativeData = analysisIt["Normative data"]
+
+        modelledFilenames= analysisIt["Trials"]
+        if fileSuffix is not None:
+            modelledFilenames = [str(x[:-4]+"-modelled-"+fileSuffix+".c3d") for x in modelledFilenames]
+        else:
+            modelledFilenames = [str(x[:-4]+"-modelled.c3d") for x in modelledFilenames]
+
+        outputFilenameNoExt = analysisIt["outputFilenameNoExt"]
+
+        # --------------------------PROCESSING --------------------------------
+        if taskType == "Gait":
+            cgmProcessing.gaitProcessing(DATA_PATH_OUT,modelledFilenames,modelVersion,
+                 modelInfo, subjectInfo, experimentalInfo,
+                 normativeData,
+                 pointSuffix,
+                 outputPath=DATA_PATH_OUT,
+                 outputFilename = outputFilenameNoExt,
+                 exportXls=exportFlag,
+                 plot=plotFlag)
+        else:
+            cgmProcessing.standardProcessing(DATA_PATH_OUT,modelledFilenames,modelVersion,
+                 modelInfo, subjectInfo, experimentalInfo,
+                 pointSuffix,
+                 outputPath=DATA_PATH_OUT,
+                 outputFilename = outputFilenameNoExt,
+                 exportXls=exportFlag)
+
+        logging.info("Analysis : %s -----> processed" %(analysisIt["AnalysisTitle"]))
+
+
+if __name__ == "__main__":
+
+    plt.close("all")
+
+    parser = argparse.ArgumentParser(description='CGM Pipeline')
+    parser.add_argument('-f','--file', type=str, help='pipeline file', default="pipeline.pyCGM2")
+    parser.add_argument('--vsk', type=str, help='vicon skeleton filename')
+    parser.add_argument('-dm','--disableModelling', action='store_true', help='disable  modelling')
+    parser.add_argument('-dp','--disableProcessing', action='store_true', help='disable  processing')
+    parser.add_argument('--noExport', action='store_true', help='xls export')
+    parser.add_argument('--noPlot', action='store_true', help='enable Gait Plot')
+    parser.add_argument('--DEBUG', action='store_true', help='debug mode')
+
+    args = parser.parse_args()
+    pipelineFile = args.file
+    modellingFlag = True if not args.disableModelling else False
+    vskFile = args.vsk
+    processingFlag = True if not args.disableProcessing else False
+    xlsExport_flag = False if  args.noExport else True
+    plotFlag = False if  args.noPlot else True
+
+
+    args.DEBUG = False
+    if args.DEBUG:
+        #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
+        #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
+        pipelineFile = "pipeline.pyCGM2"
+        xlsExport_flag =  True
+        plotFlag= True
+        wd= DATA_PATH
+
+    else:
+        wd = os.getcwd()+"\\"
+
+
+    # ----------------setting manager----------------
+    manager = pipelineFileManager(wd,pipelineFile)
+
+
+    DATA_PATH = wd if manager.getDataPath() is None else manager.getDataPath()
+    print  DATA_PATH
+
+    DATA_PATH_OUT = DATA_PATH if manager.getOutDataPath() is None else manager.getOutDataPath()
+    if manager.getOutDataPath() is not None:
+        files.createDir(DATA_PATH_OUT)
+
+    #----------------Modelling -----------------------
+    modelling(manager,DATA_PATH,DATA_PATH_OUT,vskFile=vskFile)
     #----------------Processing -----------------------
     if processingFlag:
-
-        modelInfo = manager.getModelInfo()
-        subjectInfo = manager.getSubjectInfo()
-        experimentalInfo = manager.getExpInfo()
-
-        tasks = manager.getProcessingTasks()
-
-        for task in tasks:
-            logging.info(" Processing ----- Task : %s ------------" %(task["TaskTitle"]))
-
-            analyseType = str(task["AnalysisType"])
-
-            experimentalInfo["TaskTitle"] = task["TaskTitle"]
-            experimentalInfo.update(task["Conditions"])
-
-            normativeData = task["Normative data"]
-
-            modelledFilenames= task["Trials"]
-            if fileSuffix is not None:
-                modelledFilenames = [str(x[:-4]+"-modelled-"+fileSuffix+".c3d") for x in modelledFilenames]
-            else:
-                modelledFilenames = [str(x[:-4]+"-modelled.c3d") for x in modelledFilenames]
-
-            outputFilenameNoExt = task["outputFilenameNoExt"]
-
-            # --------------------------PROCESSING --------------------------------
-            if analyseType == "Gait":
-                cgmProcessing.gaitProcessing(DATA_PATH_OUT,modelledFilenames,modelVersion,
-                     modelInfo, subjectInfo, experimentalInfo,
-                     normativeData,
-                     pointSuffix,
-                     outputPath=DATA_PATH_OUT,
-                     outputFilename = outputFilenameNoExt,
-                     exportXls=xlsExport_flag,
-                     plot=plotFlag)
-            else:
-                cgmProcessing.standardProcessing(DATA_PATH_OUT,modelledFilenames,modelVersion,
-                     modelInfo, subjectInfo, experimentalInfo,
-                     pointSuffix,
-                     outputPath=DATA_PATH_OUT,
-                     outputFilename = outputFilenameNoExt,
-                     exportXls=xlsExport_flag)
-
-            logging.info("Task : %s -----> processed" %(task["TaskTitle"]))
+        processing(manager,DATA_PATH,DATA_PATH_OUT,plotFlag=plotFlag, exportFlag = xlsExport_flag)
