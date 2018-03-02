@@ -213,7 +213,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         """
 
 
-        super(EnvEmgPanelPlotViewer, self).__init__(iAnalysis)
+        super(EnvEmgGaitPlotPanelViewer, self).__init__(iAnalysis)
 
         self.emgs = list()
         self.m_normalActivEmgs = list()

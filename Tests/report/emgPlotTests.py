@@ -70,7 +70,7 @@ class emgPlotTests():
         kv = emgPlotViewers.TemporalEmgPlotViewer(trial)
         kv.setEmgs([["EMG1","Left"],["EMG2","Right"],["EMG3","Left"],["EMG4","Right"]])
         kv.setNormalActivationLabels(["RECFEM","RECFEM",None,"VASLAT"])
-        kv. setEmgRectify(False)
+        kv. setEmgRectify(True)
 
         # # filter
         pf = plotFilters.PlottingFilter()
