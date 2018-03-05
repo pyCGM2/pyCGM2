@@ -311,7 +311,12 @@ class LowerLimbKinematicsPlotViewer(AbstractPlotViewer):
     def __setLayer(self):
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-        title=u""" Descriptive Time-normalized Kinematics \n """
+        if self.m_concretePlotFunction.func_name in ["descriptivePlot","gaitDescriptivePlot"]:
+            title=u""" Descriptive Time-normalized Kinematics \n """
+        elif self.m_concretePlotFunction.func_name in ["consistencyPlot","gaitConsistencyPlot"]:
+            title=u""" Consistency Time-normalized Kinematics \n """
+        else :
+            title=u"""\n"""
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -577,7 +582,14 @@ class LowerLimbMultiFootKinematicsPlotViewer(AbstractPlotViewer):
     def __setLayer(self):
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-        title=u""" Descriptive Time-normalized Kinematics \n """
+
+        if self.m_concretePlotFunction.func_name in ["descriptivePlot","gaitDescriptivePlot"]:
+            title=u""" Descriptive Time-normalized Kinematics \n """
+        elif self.m_concretePlotFunction.func_name in ["consistencyPlot","gaitConsistencyPlot"]:
+            title=u""" Consistency Time-normalized Kinematics \n """
+        else :
+            title=u"""\n"""
+
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -866,7 +878,12 @@ class LowerLimbKineticsPlotViewer(AbstractPlotViewer):
     def __setLayer(self):
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-        title=u""" Descriptive Time-normalized Kinetics \n """
+        if self.m_concretePlotFunction.func_name in ["descriptivePlot","gaitDescriptivePlot"]:
+            title=u""" Descriptive Time-normalized Kinetics \n """
+        elif self.m_concretePlotFunction.func_name in ["consistencyPlot","gaitConsistencyPlot"]:
+            title=u""" Consistency Time-normalized Kinetics \n """
+        else :
+            title=u"""\n"""
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -1114,7 +1131,14 @@ class multipleAnalyses_LowerLimbKinematicsPlotViewer(AbstractPlotViewer):
     def __setLayer(self):
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-        title=u""" Descriptive Time-normalized Kinematics \n """
+
+        if self.m_concretePlotFunction.func_name in ["descriptivePlot","gaitDescriptivePlot"]:
+            title=u""" Descriptive Time-normalized Kinematics \n """
+        elif self.m_concretePlotFunction.func_name in ["consistencyPlot","gaitConsistencyPlot"]:
+            title=u""" Consistency Time-normalized Kinematics \n """
+        else :
+            title=u"""\n"""
+
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
@@ -1397,7 +1421,14 @@ class multipleAnalyses_LowerLimbKineticsPlotViewer(AbstractPlotViewer):
     def __setLayer(self):
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-        title=u""" Descriptive Time-normalized Kinetics \n """
+
+        if self.m_concretePlotFunction.func_name in ["descriptivePlot","gaitDescriptivePlot"]:
+            title=u""" Descriptive Time-normalized Kinetics \n """
+        elif self.m_concretePlotFunction.func_name in ["consistencyPlot","gaitConsistencyPlot"]:
+            title=u""" Consistency Time-normalized Kinetics \n """
+        else :
+            title=u"""\n"""
+
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 

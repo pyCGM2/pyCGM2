@@ -155,7 +155,7 @@ class emgPlotTests():
         plot.gaitDescriptivePlot(ax,analysisInstance.emgStats,
                                 "EMG1_Rectify_Env","Left",0,
                                 color=None,
-                                title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
+                                title="title", xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                                 customLimits=None)
 
         footOff = analysisInstance.emgStats.pst['stancePhase', "Left"]["mean"]

@@ -56,7 +56,7 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         title=u""" Temporal EMG \n """
         self.fig.suptitle(title)
-        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=1)
 
         ax0 = plt.subplot(10,1,1)
         ax1 = plt.subplot(10,1,2)
@@ -69,8 +69,13 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         ax8 = plt.subplot(10,1,9)
         ax9 = plt.subplot(10,1,10)
 
-        ax0.set_title("EMG1" ,size=8)
+        for i in range(0, len(self.emgs)):
+            label = self.emgs[i]["Label"]
+            context = self.emgs[i]["Context"]
 
+            muscle = self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
+
+            self.fig.axes[i].set_title(label +"["+ muscle+"]" +"-"+context ,size=6)
 
 
         for ax in self.fig.axes:
@@ -252,6 +257,15 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         ax9 = plt.subplot(5,3,10)
         ax10 = plt.subplot(5,3,11)
         ax11 = plt.subplot(5,3,12)
+
+        for i in range(0, len(self.emgs)):
+            label = self.emgs[i]["Label"]
+            context = self.emgs[i]["Context"]
+
+            muscle = self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
+
+            self.fig.axes[i].set_title(label +"["+ muscle+"]" +"-"+context ,size=6)
+
 
         for ax in self.fig.axes:
             ax.tick_params(axis='x', which='major', labelsize=6)
