@@ -50,6 +50,11 @@ class PipelineFileManager(object):
     def getRightFlatFoot(self):
         return bool(self.pipSettings["Modelling"]["Calibration"]["RightFlatFoot"])
 
+    def getHJC(self):
+        return self.pipSettings["Modelling"]["Calibration"]["HJC"]
+
+
+
     def getStaticTial(self):
         return str(self.pipSettings["Modelling"]["Calibration"]["Trial"])
 

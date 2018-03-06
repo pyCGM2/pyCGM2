@@ -107,7 +107,7 @@ CONTENT_INPUTS_CGM2_1 ="""
     	  "LTOE":""
 	   },
       "Calibration" : {
-        "HJC regression" : "Hara",
+        "HJC" : {"Left": "Hara","Right": "Hara"},
         "Left flat foot" : 1 ,
         "Right flat foot" : 1
       },
@@ -146,7 +146,7 @@ CONTENT_INPUTS_CGM2_2 ="""
     	  "LTOE":""
 	   },
       "Calibration" : {
-        "HJC regression" : "Hara",
+        "HJC" : {"Left": "Hara","Right": "Hara"},
         "Left flat foot" : 1 ,
         "Right flat foot" : 1
       },
@@ -203,7 +203,7 @@ CONTENT_INPUTS_CGM2_2_EXPERT ="""
     	  "LTOE":""
 	   },
       "Calibration" : {
-        "HJC regression" : "Hara",
+        "HJC" : {"Left": "Hara","Right": "Hara"},
         "Left flat foot" : 1 ,
         "Right flat foot" : 1
       },
@@ -317,7 +317,7 @@ CONTENT_INPUTS_CGM2_3 ="""
             "LTOE":""
             },
       "Calibration" : {
-        "HJC regression" : "Hara",
+        "HJC" : {"Left": "Hara","Right": "Hara"},
         "Left flat foot" : 1 ,
         "Right flat foot" : 1
       },
@@ -394,7 +394,7 @@ CONTENT_INPUTS_CGM2_3_EXPERT ="""
             "LMED":""
             },
       "Calibration" : {
-        "HJC regression" : "Hara",
+        "HJC" : {"Left": "Hara","Right": "Hara"},
         "Left flat foot" : 1 ,
         "Right flat foot" : 1
       },
@@ -565,7 +565,7 @@ CONTENT_INPUTS_CGM2_4 ="""
             "LMED":""
             },
       "Calibration" : {
-        "HJC regression" : "Hara",
+        "HJC" : {"Left": "Hara","Right": "Hara"},
         "Left flat foot" : 1 ,
         "Right flat foot" : 1
       },
@@ -655,7 +655,7 @@ CONTENT_INPUTS_CGM2_4_EXPERT ="""
             "LMED":""
             },
       "Calibration" : {
-        "HJC regression" : "Hara",
+        "HJC" : {"Left": "Hara","Right": "Hara"},
         "Left flat foot" : 1 ,
         "Right flat foot" : 1
       },

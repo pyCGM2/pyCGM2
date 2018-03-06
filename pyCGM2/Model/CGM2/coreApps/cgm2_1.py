@@ -61,6 +61,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
 
     # ---- Decorators -----
     cgmUtils.applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter)
+
     cgmUtils.applyHJCDecorators(model,hjcMethod)
 
 

@@ -993,7 +993,7 @@ class HipJointCenterDecorator(DecoratorModel):
         """
         super(HipJointCenterDecorator,self).__init__(iModel)
 
-    def custom(self,position_Left=0,position_Right=0,methodDesc="custom"):
+    def custom(self,position_Left=0,position_Right=0,side = "both", methodDesc="custom"):
         """
 
             Locate hip joint centres manually
@@ -1009,37 +1009,38 @@ class HipJointCenterDecorator(DecoratorModel):
 
         self.model.decoratedModel = True
 
-        if position_Left.shape ==(3,):
-            LHJC_pos = position_Left
+        if side == "both" or side == "left":
+            if position_Left.shape ==(3,):
+                LHJC_pos = position_Left
 
-            nodeLabel= "LHJC_"+ methodDesc
-            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
-            tf_dist = self.model.getSegment("Left Thigh").getReferential("TF")
+                nodeLabel= "LHJC_"+ methodDesc
+                tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+                tf_dist = self.model.getSegment("Left Thigh").getReferential("TF")
 
-            # nodes
-            tf_prox.static.addNode("LHJC_"+ methodDesc ,LHJC_pos, positionType="Local", desc = methodDesc)
-            tf_prox.static.addNode("LHJC",LHJC_pos, positionType="Local", desc = methodDesc)
+                # nodes
+                tf_prox.static.addNode("LHJC_"+ methodDesc ,LHJC_pos, positionType="Local", desc = methodDesc)
+                tf_prox.static.addNode("LHJC",LHJC_pos, positionType="Local", desc = methodDesc)
 
-            glob = tf_prox.static.getNode_byLabel("LHJC_"+ methodDesc).m_global
-            tf_dist.static.addNode("LHJC_"+ methodDesc, glob, positionType="Global", desc = methodDesc)
-            tf_dist.static.addNode("LHJC",glob, positionType="Global", desc = methodDesc)
+                glob = tf_prox.static.getNode_byLabel("LHJC_"+ methodDesc).m_global
+                tf_dist.static.addNode("LHJC_"+ methodDesc, glob, positionType="Global", desc = methodDesc)
+                tf_dist.static.addNode("LHJC",glob, positionType="Global", desc = methodDesc)
 
+        if side == "both" or side == "right":
+            if position_Right.shape ==(3,):
+                nodeLabel= "RHJC_"+ methodDesc
 
-        if position_Right.shape ==(3,):
-            nodeLabel= "RHJC_"+ methodDesc
+                RHJC_pos = position_Right
 
-            RHJC_pos = position_Right
+                tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+                tf_dist = self.model.getSegment("Right Thigh").getReferential("TF")
 
-            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
-            tf_dist = self.model.getSegment("Right Thigh").getReferential("TF")
+                # nodes
+                tf_prox.static.addNode("RHJC_"+ methodDesc ,RHJC_pos, positionType="Local", desc = methodDesc)
+                tf_prox.static.addNode("RHJC",RHJC_pos, positionType="Local", desc = methodDesc)
 
-            # nodes
-            tf_prox.static.addNode("RHJC_"+ methodDesc ,RHJC_pos, positionType="Local", desc = methodDesc)
-            tf_prox.static.addNode("RHJC",RHJC_pos, positionType="Local", desc = methodDesc)
-
-            glob = tf_prox.static.getNode_byLabel("RHJC_"+ methodDesc).m_global
-            tf_dist.static.addNode("RHJC_"+ methodDesc, glob, positionType="Global", desc = methodDesc)
-            tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = methodDesc)
+                glob = tf_prox.static.getNode_byLabel("RHJC_"+ methodDesc).m_global
+                tf_dist.static.addNode("RHJC_"+ methodDesc, glob, positionType="Global", desc = methodDesc)
+                tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = methodDesc)
 
 
     def harrington(self,predictors= enums.HarringtonPredictor.Native, side="both"):

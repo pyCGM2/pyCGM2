@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import numpy as np
 import logging
 from pyCGM2 import enums
 from pyCGM2.Model import modelFilters, modelDecorator
@@ -227,7 +227,20 @@ def applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter):
         logging.warning("CASE FOUND ===> Right Side = Ankle Medial")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
 
-def applyHJCDecorators(model,method,side="both"):
+def applyHJCDecorators(model,method):
 
-    if method == "Hara":
-        modelDecorator.HipJointCenterDecorator(model).hara(side = side)
+    if method["Left"] == "Hara":
+        logging.info("[pyCGM2] Left HJC : Hara")
+        modelDecorator.HipJointCenterDecorator(model).hara(side = "left")
+    elif len(method["Left"]) == 3:
+        logging.info("[pyCGM2] Left HJC : Custom")
+        logging.warning(method["Left"])
+        modelDecorator.HipJointCenterDecorator(model).custom(position_Left =  np.array(method["Left"]), methodDesc = "custom",side="left")
+
+    if method["Right"] == "Hara":
+        logging.info("[pyCGM2] Right HJC : Hara")
+        modelDecorator.HipJointCenterDecorator(model).hara(side = "right")
+    elif len(method["Right"]) == 3:
+        logging.info("[pyCGM2] Right HJC : Custom")
+        logging.warning(method["Right"])
+        modelDecorator.HipJointCenterDecorator(model).custom(position_Right =  np.array(method["Right"]), methodDesc = "custom",side="right")

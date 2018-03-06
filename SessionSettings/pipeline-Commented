@@ -114,12 +114,29 @@ Modelling
 
     Calibration
     -----------
-
     "Calibration": {
+        "HJC":{"Left":[],"Right":[]}, [REQUIRED][hjc local pos] see below
         "LeftFlatFoot": 1, [REQUIRED][Choice:0 or 1][left flat foot option]
         "RightFlatFoot": 1, [REQUIRED][Choice:0 or 1][right flat foot option]
         "Trial": "PN01OP01S01STAT.c3d" [REQUIRED][name of the static trial]
     },
+
+
+        HJC
+        -----------
+        HJC is a dictionnary that allows to enable custom Local position of either Left or Right Joint Centre
+
+        Custom HJC alteration works for all CGM2.i model not CGM1.i.
+        By default, Hara s equations are selected. if you want to input a custom HJC on the right side,
+        edit :
+            "HJC":{"Left":[],"Right":[10,5,7]},
+        10,5,7 stand for local position in the Pelvic Coordinate system ( see PiG doc )
+
+
+
+
+
+
 
     KneeCalibrationTrials
     -----------------------
