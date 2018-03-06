@@ -364,7 +364,7 @@ if __name__ == "__main__":
     plotFlag = False if  args.noPlot else True
 
 
-    args.DEBUG = True
+    args.DEBUG = False
     if args.DEBUG:
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
