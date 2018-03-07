@@ -585,6 +585,7 @@ class TechnicalReferential(Referential):
 
 
         self.label=label
+        self.relativeMatrixAnatomic=np.eye(3,3)
 
 
     def setRelativeMatrixAnatomic(self, array):
