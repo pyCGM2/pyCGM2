@@ -1260,6 +1260,49 @@ class HipJointCenterDecorator(DecoratorModel):
             btkTools.smartAppendPoint(acq,"RHJC_GT",RHJCvalues, desc="GT")
 
 
+    def fromHjcMarker(self,acq, leftHJC_label = "LHJC",rightHJC_label = "RHJC" ,side="both"):
+        """
+
+        """
+        # TODO : coding exception if label doesn t find.
+
+
+        self.model.decoratedModel = True
+
+        if side=="both" or side=="left":
+
+            LHJCvalues = acq.GetPoint(leftHJC_label).GetValues()
+
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Thigh").getReferential("TF")
+
+            # nodes
+            tf_dist.static.addNode("LHJC_mrk",LHJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("LHJC_mrk",LHJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+            tf_dist.static.addNode("LHJC",LHJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("LHJC",LHJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+            # marker
+            #btkTools.smartAppendPoint(acq,"LHJC_MRK",LHJCvalues, desc="fromMarker")
+
+        if side=="both" or side=="right":
+
+            RHJCvalues = acq.GetPoint(rightHJC_label).GetValues()
+
+            tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Thigh").getReferential("TF")
+
+            # nodes
+            tf_dist.static.addNode("RHJC_mkr",RHJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("RHJC_mkr",RHJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+            tf_dist.static.addNode("RHJC",RHJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("RHJC",RHJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+            # marker
+            #btkTools.smartAppendPoint(acq,"LHJC_MRK",RHJCvalues, desc="from marker")
+
 class KneeCalibrationDecorator(DecoratorModel):
     """
         Concrete cgm decorator altering the knee joint
@@ -1631,7 +1674,48 @@ class KneeCalibrationDecorator(DecoratorModel):
             self.model.setCalibrationProperty("RightFuncKneeMethod","2DOF")
             self.model.mp_computed["RightKneeFuncCalibrationOffset"] = longRot
 
+    def fromKjcMarker(self,acq, leftKJC_label = "LKJC",rightKJC_label = "RKJC" ,side="both"):
+        """
 
+        """
+        # TODO : coding exception if label doesn t find.
+
+
+        self.model.decoratedModel = True
+
+        if side=="both" or side=="left":
+
+            LKJCvalues = acq.GetPoint(leftKJC_label).GetValues()
+
+            tf_prox = self.model.getSegment("Left Thigh").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Shank").getReferential("TF")
+
+            # nodes
+            tf_dist.static.addNode("LKJC_mrk",LKJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("LKJC_mrk",LKJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+            tf_dist.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+            # marker
+            #btkTools.smartAppendPoint(acq,"LKJC_MRK",LKJCvalues, desc="fromMarker")
+
+        if side=="both" or side=="right":
+
+            RKJCvalues = acq.GetPoint(rightKJC_label).GetValues()
+
+            tf_prox = self.model.getSegment("Right Thigh").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
+
+            # nodes
+            tf_dist.static.addNode("RKJC_mkr",RKJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("RKJC_mkr",RKJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+            tf_dist.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+            # marker
+            #btkTools.smartAppendPoint(acq,"RHJC_MRK",RKJCvalues, desc="from marker")
 
 class AnkleCalibrationDecorator(DecoratorModel):
     """
@@ -1713,6 +1797,50 @@ class AnkleCalibrationDecorator(DecoratorModel):
             tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
             btkTools.smartAppendPoint(acq,"RAJC_MID",RAJCvalues, desc="MID")
+
+def fromAJCMarker(self,acq, leftAJC_label = "LAJC",rightAJC_label = "RAJC" ,side="both"):
+    """
+
+    """
+    # TODO : coding exception if label doesn t find.
+
+
+    self.model.decoratedModel = True
+
+    if side=="both" or side=="left":
+
+        LAJCvalues = acq.GetPoint(leftAJC_label).GetValues()
+
+        tf_prox = self.model.getSegment("Left Shank").getReferential("TF")
+        tf_dist = self.model.getSegment("Left Foot").getReferential("TF")
+
+        # nodes
+        tf_dist.static.addNode("LAJC_mrk",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+        tf_prox.static.addNode("LAJC_mrk",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+        tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+        tf_prox.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+        # marker
+        #btkTools.smartAppendPoint(acq,"LAJC_MRK",LAJCvalues, desc="fromMarker")
+
+    if side=="both" or side=="right":
+
+        RAJCvalues = acq.GetPoint(rightAJC_label).GetValues()
+
+        tf_prox = self.model.getSegment("Right Shank").getReferential("TF")
+        tf_dist = self.model.getSegment("Right Foot").getReferential("TF")
+
+        # nodes
+        tf_dist.static.addNode("RAJC_mkr",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+        tf_prox.static.addNode("RAJC_mkr",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+        tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+        tf_prox.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+
+        # marker
+        #btkTools.smartAppendPoint(acq,"RHJC_MRK",RAJCvalues, desc="from marker")
+
 
 
 # class FootCalibrationDecorator(DecoratorModel):
