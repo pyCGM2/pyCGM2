@@ -505,3 +505,28 @@ def markerUnitConverter(acq,unitOffset):
         if it.GetType() == btk.btkPoint.Marker:
             values = it.GetValues()
             it.SetValues(values*unitOffset)
+
+def constructMarker(acq,label,markers,numpyMethod=np.mean,desc=""):
+    nFrames = acq.GetPointFrameNumber()
+
+    x=np.zeros((nFrames, len(markers)))
+    y=np.zeros((nFrames, len(markers)))
+    z=np.zeros((nFrames, len(markers)))
+
+    i=0
+    for marker in markers:
+        x[:,i] = acq.GetPoint(marker).GetValues()[:,0]
+        y[:,i] = acq.GetPoint(marker).GetValues()[:,1]
+        z[:,i] = acq.GetPoint(marker).GetValues()[:,2]
+        i+=1
+
+    values = np.zeros((nFrames,3))
+    values[:,0] = numpyMethod(x, axis=1)
+    values[:,1] = numpyMethod(y, axis=1)
+    values[:,2] = numpyMethod(z, axis=1)
+    smartAppendPoint(acq,label,values,desc=desc)
+
+def constructEmptyMarker(acq,label,desc=""):
+    nFrames = acq.GetPointFrameNumber()
+    values = np.zeros((nFrames,3))
+    smartAppendPoint(acq,label,values,desc=desc)
