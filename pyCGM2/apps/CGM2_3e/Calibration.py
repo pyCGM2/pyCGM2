@@ -52,7 +52,7 @@ if __name__ == "__main__":
     markerDiameter = argsManager.getMarkerDiameter()
     pointSuffix = argsManager.getPointSuffix("cgm2_3e")
 
-    hjcMethod = settings["Calibration"]["HJC regression"]
+    hjcMethod = settings["Calibration"]["HJC"]
     ik_flag = False if args.noIk else True
 
     # --------------------------LOADING ------------------------------------
