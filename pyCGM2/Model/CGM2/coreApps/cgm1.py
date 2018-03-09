@@ -152,7 +152,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
             raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(mappedForcePlate))))
         else:
             mappedForcePlate = mfpa
-            logging.debug("Force plates assign manually")
+            logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
             forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
 
     # assembly foot and force plate

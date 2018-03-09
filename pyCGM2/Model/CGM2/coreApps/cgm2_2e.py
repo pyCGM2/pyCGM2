@@ -402,7 +402,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         else:
             mappedForcePlate = mfpa
             forceplates.addForcePlateGeneralEvents(acqIK,mappedForcePlate)
-            logging.warning("Force plates assign manually")
+            logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
     # assembly foot and force plate
     modelFilters.ForcePlateAssemblyFilter(model,acqIK,mappedForcePlate,

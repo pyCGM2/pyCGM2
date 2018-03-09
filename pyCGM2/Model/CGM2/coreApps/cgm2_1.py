@@ -152,7 +152,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     # find foot  in contact
     mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
     forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
-    logging.info("Force plate assignment : %s" %mappedForcePlate)
+    logging.info("Automatic Force plate assignment : %s" %mappedForcePlate)
 
     if mfpa is not None:
         if len(mfpa) != len(mappedForcePlate):
@@ -160,7 +160,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         else:
             mappedForcePlate = mfpa
             forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
-            logging.warning("Force plates assign manually")
+            logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+            
 
     # assembly foot and force plate
     modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
