@@ -530,3 +530,8 @@ def constructEmptyMarker(acq,label,desc=""):
     nFrames = acq.GetPointFrameNumber()
     values = np.zeros((nFrames,3))
     smartAppendPoint(acq,label,values,desc=desc)
+
+
+def createZeros(acq, markerLabels):
+    for label in markerLabels:
+        constructEmptyMarker(acq,label,desc="")
