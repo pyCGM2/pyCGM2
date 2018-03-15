@@ -175,7 +175,7 @@ def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
             count = 0
             while diffBeta > eps or count > 100:
                 if count > 100:
-                    logging.debug("count boundary achieve")
+                    raise Exception("count boundary of Chord achieve")
 
 
                 count = count + 1
@@ -1798,48 +1798,48 @@ class AnkleCalibrationDecorator(DecoratorModel):
 
             btkTools.smartAppendPoint(acq,"RAJC_MID",RAJCvalues, desc="MID")
 
-def fromAJCMarker(self,acq, leftAJC_label = "LAJC",rightAJC_label = "RAJC" ,side="both"):
-    """
+    def fromAjcMarker(self,acq, leftAJC_label = "LAJC",rightAJC_label = "RAJC" ,side="both"):
+        """
 
-    """
-    # TODO : coding exception if label doesn t find.
+        """
+        # TODO : coding exception if label doesn t find.
 
 
-    self.model.decoratedModel = True
+        self.model.decoratedModel = True
 
-    if side=="both" or side=="left":
+        if side=="both" or side=="left":
 
-        LAJCvalues = acq.GetPoint(leftAJC_label).GetValues()
+            LAJCvalues = acq.GetPoint(leftAJC_label).GetValues()
 
-        tf_prox = self.model.getSegment("Left Shank").getReferential("TF")
-        tf_dist = self.model.getSegment("Left Foot").getReferential("TF")
+            tf_prox = self.model.getSegment("Left Shank").getReferential("TF")
+            tf_dist = self.model.getSegment("Left Foot").getReferential("TF")
 
-        # nodes
-        tf_dist.static.addNode("LAJC_mrk",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
-        tf_prox.static.addNode("LAJC_mrk",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            # nodes
+            tf_dist.static.addNode("LAJC_mrk",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("LAJC_mrk",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
 
-        tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
-        tf_prox.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
 
-        # marker
-        #btkTools.smartAppendPoint(acq,"LAJC_MRK",LAJCvalues, desc="fromMarker")
+            # marker
+            #btkTools.smartAppendPoint(acq,"LAJC_MRK",LAJCvalues, desc="fromMarker")
 
-    if side=="both" or side=="right":
+        if side=="both" or side=="right":
 
-        RAJCvalues = acq.GetPoint(rightAJC_label).GetValues()
+            RAJCvalues = acq.GetPoint(rightAJC_label).GetValues()
 
-        tf_prox = self.model.getSegment("Right Shank").getReferential("TF")
-        tf_dist = self.model.getSegment("Right Foot").getReferential("TF")
+            tf_prox = self.model.getSegment("Right Shank").getReferential("TF")
+            tf_dist = self.model.getSegment("Right Foot").getReferential("TF")
 
-        # nodes
-        tf_dist.static.addNode("RAJC_mkr",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
-        tf_prox.static.addNode("RAJC_mkr",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            # nodes
+            tf_dist.static.addNode("RAJC_mkr",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("RAJC_mkr",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
 
-        tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
-        tf_prox.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
+            tf_prox.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
 
-        # marker
-        #btkTools.smartAppendPoint(acq,"RHJC_MRK",RAJCvalues, desc="from marker")
+            # marker
+            #btkTools.smartAppendPoint(acq,"RHJC_MRK",RAJCvalues, desc="from marker")
 
 
 
