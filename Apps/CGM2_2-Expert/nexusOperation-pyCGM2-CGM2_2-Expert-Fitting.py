@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
         #  ikweight
         ikWeight = files.getIKweightSet(DATA_PATH,"CGM2_2e.ikw")
-        if not ikWeight: translators = settings["Fitting"]["Weight"]=ikWeight["Weight"]
+        if not ikWeight: ikWeight = settings["Fitting"]["Weight"]
 
         # --------------------------MODELLING PROCESSING -----------------------
         acqIK = cgm2_2e.fitting(model,DATA_PATH, reconstructFilenameLabelled,
