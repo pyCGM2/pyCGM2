@@ -104,6 +104,28 @@ class argsManager_cgm(object):
     def getIkWeightFile(self):
         return self.args.ikWeightFile
 
+    def forceHjc(self,side):
+        if side == "left":
+            if self.args.forceLHJC is not None:
+                if len(self.args.forceLHJC) == 3:
+                    lhjc = [float(i) for i in self.args.forceLHJC]
+                else:
+                    raise Exception("[pyCGM2] : left hjc position must have 3 components")
+                return lhjc
+            else:
+                return None
+
+        if side == "right":
+            if self.args.forceRHJC is not None:
+                if len(self.args.forceRHJC) == 3:
+                    rhjc = [float(i) for i in self.args.forceRHJC]
+                else:
+                    raise Exception("[pyCGM2] : right hjc position must have 3 components")
+                return rhjc
+            else:
+                return None
+
+
 class argsManager_cgm1(argsManager_cgm):
     def __init__(self, settings, args):
         super(argsManager_cgm1, self).__init__(settings, args)
