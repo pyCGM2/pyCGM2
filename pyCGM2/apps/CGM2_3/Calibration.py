@@ -36,6 +36,10 @@ if __name__ == "__main__":
 
     parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of output file')
 
+    parser.add_argument('--forceLHJC', nargs='+')
+    parser.add_argument('--forceRHJC', nargs='+')
+
+
     parser.add_argument('--DEBUG', action='store_true', help='debug model')
     args = parser.parse_args()
 
@@ -53,6 +57,13 @@ if __name__ == "__main__":
     pointSuffix = argsManager.getPointSuffix("cgm2_3")
 
     hjcMethod = settings["Calibration"]["HJC"]
+    lhjc = argsManager.forceHjc("left")
+    rhjc = argsManager.forceHjc("right")
+    if  lhjc is not None:
+        hjcMethod["Left"] = lhjc
+    if  rhjc is not None:
+        hjcMethod["Right"] = rhjc
+
     ik_flag = False if args.noIk else True
 
     # --------------------------LOADING ------------------------------------
