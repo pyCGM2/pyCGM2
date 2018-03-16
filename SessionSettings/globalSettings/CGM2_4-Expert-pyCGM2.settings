@@ -40,7 +40,7 @@
         "LMED":""
         },
   "Calibration" : {
-    "HJC regression" : "Hara",
+    "HJC" : {"Left": "Hara","Right": "Hara"},
     "Left flat foot" : 1 ,
     "Right flat foot" : 1
   },
