@@ -535,3 +535,13 @@ def constructEmptyMarker(acq,label,desc=""):
 def createZeros(acq, markerLabels):
     for label in markerLabels:
         constructEmptyMarker(acq,label,desc="")
+
+
+def getNumberOfForcePlate(btkAcq):
+
+    pfe = btk.btkForcePlatformsExtractor()
+    pfe.SetInput(btkAcq)
+    pfc = pfe.GetOutput()
+    pfc.Update()
+
+    return pfc.GetItemNumber()
