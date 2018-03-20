@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ColumnTypes>
+  <ColumnType Width="150" Label="Name" Type="Name" />
+  <ColumnType Width="100" Label="Files" Type="Files" />
+  <ColumnType Width="120" Label="Created" Type="Created" />
+  <ColumnType Width="120" Label="Modified" Type="Modified" />
+  <ColumnType Width="200" Label="Description" Type="Metadata Free" Key="DESCRIPTION" />
+  <ColumnType Width="150" Label="Notes" Type="Metadata Free" Key="NOTES" />
+  <ColumnType Width="200" Label="Path" Type="Path" />
+  <ColumnType Width="100" Label="Session_shortName" Description="shortname of the session" Key="SESSION_SHORTNAME" Type="Metadata Free"></ColumnType>
+  <ColumnType Width="100" Label="Operator" Description="operator" Key="OPERATOR" Type="Metadata Free"></ColumnType>
+  <ColumnType Width="100" Label="Classification" Description="Classification of trial" Type="Metadata List" Key="STAGES">
+    <MetaDataValue Value="Good Left" />
+    <MetaDataValue Value="Good Right" />
+    <MetaDataValue Value="Good Both" />
+    <MetaDataValue Value="DO NOT USE" />
+  </ColumnType>
+  <ColumnType Width="82" Label="ForcePlate#1" Description="" Key="FP1" Type="Metadata Button">
+    <MetaDataValue Colour="255 255 255 255" Value="Auto" />
+    <MetaDataValue Colour="255 255 0 0" Value="Left" />
+    <MetaDataValue Colour="255 0 255 0" Value="Right" />
+    <MetaDataValue Colour="255 128 128 128" Value="Invalid" />
+  </ColumnType>
+  <ColumnType Width="100" Label="ForcePlate#2" Description="" Key="FP2" Type="Metadata Button">
+    <MetaDataValue Colour="255 255 255 255" Value="Auto" />
+    <MetaDataValue Colour="255 255 0 0" Value="Left" />
+    <MetaDataValue Colour="255 0 255 0" Value="Right" />
+    <MetaDataValue Colour="255 128 128 128" Value="Invalid" />
+  </ColumnType>
+  <ColumnType Width="100" Label="ForcePlate#3" Description="" Key="FP3" Type="Metadata Button">
+    <MetaDataValue Colour="255 255 255 255" Value="Auto" />
+    <MetaDataValue Colour="255 255 0 0" Value="Left" />
+    <MetaDataValue Colour="255 0 255 0" Value="Right" />
+    <MetaDataValue Colour="255 128 128 128" Value="Invalid" />
+  </ColumnType>
+  <ColumnType Width="100" Label="ForcePlate#4" Description="" Key="FP4" Type="Metadata Button">
+    <MetaDataValue Colour="255 255 255 255" Value="Auto" />
+    <MetaDataValue Colour="255 255 0 0" Value="Left" />
+    <MetaDataValue Colour="255 0 255 0" Value="Right" />
+    <MetaDataValue Colour="255 128 128 128" Value="Invalid" />
+  </ColumnType>
+  <ColumnType Width="100" Label="ForcePlate#5" Description="" Key="FP5" Type="Metadata Button">
+    <MetaDataValue Colour="255 255 255 255" Value="Auto" />
+    <MetaDataValue Colour="255 255 0 0" Value="Left" />
+    <MetaDataValue Colour="255 0 255 0" Value="Right" />
+    <MetaDataValue Colour="255 128 128 128" Value="Invalid" />
+  </ColumnType>
+  <ColumnType Width="100" Label="Activity" Description="The activity relevant for the experiment" Key="ACTIVITY" Type="Metadata Free"></ColumnType>
+  <ColumnType Width="100" Label="Pathology" Description="The patient's pathology" Key="PATHOLOGY" Type="Metadata Free"></ColumnType>
+  <ColumnType Width="100" Label="Injury" Description="Patient's injury" Key="INJURY" Type="Metadata Free"></ColumnType>
+  <ColumnType Width="100" Label="Diagnosis" Description="Patient's diagnosis" Key="DIAGNOSIS" Type="Metadata Free"></ColumnType>
+  <ColumnType Width="58" Label="Side" Description="Affected side" Key="SIDE" Type="Metadata Free"></ColumnType>
+  <ColumnType Width="74" Label="Type" Description="Trial type" Key="TYPE" Type="Metadata Free" HeaderText="Type"></ColumnType>
+  <ColumnType Width="200" Label="Gender" HeaderText="Gender" Type="Metadata Free" Key="GENDER"></ColumnType>
+  <ColumnType Width="60" Label="Trial_Type" HeaderText="Trial Type" Type="Metadata List" Key="TRIAL_TYPE" MutuallyExclusive="False">
+    <MetaDataValue Colour="255 128 255 128" Value="Static" />
+    <MetaDataValue Colour="255 0 128 255" Value="Motion" />
+    <MetaDataValue Colour="255 128 128 192" Value="KneeCalibration" />
+    <MetaDataValue Colour="255 255 0 255" Value="HipCalibration" />
+    <MetaDataValue Colour="0 255 255 255" Value="NONE" />
+  </ColumnType>
+  <ColumnType Width="86" Label="Valid_Frames" HeaderText="Valid Frames" Type="Metadata Free" Key="VALIDFRAMES"></ColumnType>
+  <ColumnType Width="84" Label="Processing" HeaderText="Processing" Type="Metadata List" Key="PROCESSING">
+    <MetaDataValue Colour="255 0 255 0" Value="Ready" />
+    <MetaDataValue Colour="255 255 128 0" Value="Check" />
+    <MetaDataValue Colour="255 255 0 0" Value="Error" />
+    <MetaDataValue Colour="0 255 255 255" Value="none" />
+  </ColumnType>
+  <ColumnType Width="200" Label="Context" HeaderText="Context" Type="Metadata Free" Key="CONTEXT"></ColumnType>
+  <ColumnType Width="95" Label="Task" HeaderText="Task" Type="Metadata Free" Key="TASK"></ColumnType>
+  <ColumnType Width="53" Label="Condition" HeaderText="Condition" Type="Metadata Free" Key="CONDITION"></ColumnType>
+</ColumnTypes>
