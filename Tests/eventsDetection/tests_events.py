@@ -5,7 +5,7 @@ import logging
 import matplotlib.pyplot as plt
 
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
+from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 # btk
 pyCGM2.CONFIG.addBtk()

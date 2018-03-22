@@ -5,7 +5,7 @@ import logging
 import json
 
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
+from pyCGM2 import log; log.setLoggingLevel(logging.DEBUG)
 
 # btk
 pyCGM2.CONFIG.addBtk()

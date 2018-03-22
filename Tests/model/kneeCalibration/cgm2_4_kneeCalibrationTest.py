@@ -5,7 +5,7 @@ import logging
 
 
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
+from pyCGM2 import log; log.setLoggingLevel(logging.DEBUG)
 
 import pyCGM2
 # btk

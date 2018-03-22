@@ -154,10 +154,6 @@ for file_name in src_files:
 
 # ------------------- METHODS ------------------------------------------------
 
-def setLoggingLevel(level):
-    logging.basicConfig(format = "[pyCGM2-%(levelname)s]-%(module)s-%(funcName)s : %(message)s",level = level)
-
-
 
 def addNexusPythonSdk():
 

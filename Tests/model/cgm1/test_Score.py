@@ -4,7 +4,7 @@ import numpy as np
 import logging
 
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
+from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 import pyCGM2
 # btk

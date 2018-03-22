@@ -3,7 +3,7 @@ import logging
 import numpy as np
 
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.DEBUG)
+from pyCGM2 import log; log.setLoggingLevel(logging.DEBUG)
 
 from pyCGM2.Model import modelFilters,model,modelDecorator,anthropometricMeasurement
 from pyCGM2.Model.CGM2 import cgm

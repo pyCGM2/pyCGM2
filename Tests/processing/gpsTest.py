@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
-pyCGM2.CONFIG.setLoggingLevel(logging.INFO)
+from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 
 # openMA
