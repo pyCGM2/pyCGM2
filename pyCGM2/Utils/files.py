@@ -305,3 +305,8 @@ def createDir(fullPathName):
         os.makedirs(str(pathOut))
     else:
         logging.warning("directory already exists")
+
+def getDirs(folderPath):
+    pathOut = folderPath[:-1] if folderPath[-1:]=="\\" else folderPath
+    dirs = [ name for name in os.listdir(pathOut) if os.path.isdir(os.path.join(pathOut, name)) ]
+    return ( dirs)

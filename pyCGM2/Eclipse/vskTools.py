@@ -2,6 +2,15 @@
 from bs4 import BeautifulSoup
 import string
 import logging
+from pyCGM2.Utils import files
+
+
+def getVskFiles(path):
+    path = path[:-1] if path[-1:]=="\\" else path
+    vskFile = files.getFiles(path+"\\",".vsk")
+    logging.warning("Folder with several vsk. %s selected"%(vskFile[0]))
+
+    return vskFile[0]
 
 
 def checkSetReadOnly(vskfilename):

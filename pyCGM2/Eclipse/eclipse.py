@@ -6,6 +6,7 @@ import ConfigParser
 import pyCGM2
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Tools import btkTools
+from pyCGM2.Utils import files
 
 
 # Module compatible with the pyCGM2 eclipse scheme
@@ -50,9 +51,32 @@ def InitConfigParser(path,enf):
         Config.read(path+enf)
     return Config
 
+# get files---------
 
+def getEnfTrials(path):
+    path = path[:-1] if path[-1:]=="\\" else path
+    enfFiles = files.getFiles(path+"\\","Trial.enf")
+    return enfFiles
+
+def getEnfSession(path):
+    path = path[:-1] if path[-1:]=="\\" else path
+    enfFile = files.getFiles(path+"\\","Session.enf")
+    if len(enfFile)>1:
+        raise Exception ("Vicon Eclipse badly configured. Two session enf found")
+    return enfFile[0]
 
 # ---- High Levels -----
+def getSessionInfos(path,sessionEnf):
+    Config = InitConfigParser(path,sessionEnf)
+    nodeinfos =  ConfigSectionMap(Config,"SESSION_INFO")
+    return nodeinfos
+
+def getTrialInfos(path,trialEnf):
+    Config = InitConfigParser(path,trialEnf)
+    nodeinfos =  ConfigSectionMap(Config,"TRIAL_INFO")
+    return nodeinfos
+
+
 def findCalibrationFromEnfs(path, enfs):
 
     for enf in enfs:
