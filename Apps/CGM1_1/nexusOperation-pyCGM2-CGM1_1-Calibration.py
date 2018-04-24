@@ -29,7 +29,7 @@ if __name__ == "__main__":
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix' )
-    parser.add_argument('--resetMP', action='store_false', help='reset optional mass parameters')
+    parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
     parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
 
@@ -56,6 +56,9 @@ if __name__ == "__main__":
         if args.DEBUG:
             DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
             calibrateFilenameLabelledNoExt = "static"
+
+            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "Datasets Tests\\Oswestry\\nc604\\"
+            calibrateFilenameLabelledNoExt = "nc60403"
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
@@ -72,7 +75,6 @@ if __name__ == "__main__":
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
         required_mp,optional_mp = nexusUtils.getNexusSubjectMp(NEXUS,subject,resetFlag=args.resetMP)
-
         # -------------------------- INFOS ------------------------------------
         mpInfo,mpFilename = files.getJsonFileContent(DATA_PATH,"mp.pyCGM2",subject)
 

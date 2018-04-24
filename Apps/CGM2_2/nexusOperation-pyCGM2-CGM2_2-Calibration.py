@@ -32,7 +32,7 @@ if __name__ == "__main__":
     parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     parser.add_argument('--forceLHJC', nargs='+')
     parser.add_argument('--forceRHJC', nargs='+')
-    parser.add_argument('--resetMP', action='store_false', help='reset optional mass parameters')
+    parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
 
     parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
