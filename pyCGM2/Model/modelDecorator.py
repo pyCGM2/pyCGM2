@@ -734,8 +734,15 @@ class Kad(DecoratorModel):
                     LKJCvalues[i,:] = LKNEvalues[i,:] + LKAXO * (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0
 
                 # locate AJC
+                beta = 0
+                ajcDesc = "KAD"
+                if self.model.mp.has_key("LeftTibialTorsion") and self.model.mp["LeftTibialTorsion"] !=0:
+                    beta = -1.0 * self.model.mp["LeftTibialTorsion"]
+                    ajcDesc = "KAD-manualTT"
+
+
                 LANK = self.acq.GetPoint("LANK").GetValues()[i,:]
-                LAJCvalues[i,:] = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKAX,beta= 0.0 )
+                LAJCvalues[i,:] = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKAX,beta= beta )
 
             tf_prox = self.model.getSegment("Left Thigh").getReferential("TF")
             tf_dist = self.model.getSegment("Left Shank").getReferential("TF")
@@ -751,11 +758,11 @@ class Kad(DecoratorModel):
             tf_dist.static.addNode("LKJC",LKJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
 
             # add nodes to referential
-            tf_dist.static.addNode("LAJC_kad",LAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
-            tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+            tf_dist.static.addNode("LAJC_kad",LAJCvalues.mean(axis=0), positionType="Global", desc = ajcDesc)
+            tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = ajcDesc)
 
-            tf_dist2.static.addNode("LAJC_kad",LAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
-            tf_dist2.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+            tf_dist2.static.addNode("LAJC_kad",LAJCvalues.mean(axis=0), positionType="Global", desc = ajcDesc)
+            tf_dist2.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = ajcDesc)
 
 
         if side == "both" or side == "right":
@@ -798,9 +805,15 @@ class Kad(DecoratorModel):
                 else:
                     RKJCvalues[i,:] = RKNEvalues[i,:] + RKAXO * (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0
 
+                beta = 0
+                ajcDesc = "KAD"
+                if self.model.mp.has_key("RightTibialTorsion") and self.model.mp["RightTibialTorsion"] !=0:
+                    beta = self.model.mp["RightTibialTorsion"]
+                    ajcDesc = "KAD-manualTT"
+
                 # locate AJC
                 RANK = self.acq.GetPoint("RANK").GetValues()[i,:]
-                RAJCvalues[i,:] = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKAX,beta= 0.0 )
+                RAJCvalues[i,:] = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKAX,beta= beta )
 
             tf_prox = self.model.getSegment("Right Thigh").getReferential("TF")
             tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
@@ -818,11 +831,11 @@ class Kad(DecoratorModel):
 
 
             # add nodes to referential
-            tf_dist.static.addNode("RAJC_kad",RAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
-            tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+            tf_dist.static.addNode("RAJC_kad",RAJCvalues.mean(axis=0), positionType="Global", desc = ajcDesc)
+            tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = ajcDesc)
 
-            tf_dist2.static.addNode("RAJC_kad",RAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
-            tf_dist2.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "KAD")
+            tf_dist2.static.addNode("RAJC_kad",RAJCvalues.mean(axis=0), positionType="Global", desc = ajcDesc)
+            tf_dist2.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = ajcDesc)
 
         # add KNE markers to static c3d
         if side == "both" or side == "left":
@@ -892,12 +905,13 @@ class Cgm1ManualOffsets(DecoratorModel):
             ANK = acq.GetPoint("LANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
             if thighoffset !=0 :
+                ajcDesc = "manual ThighOffset" if tibialTorsion == 0 else "manualTHIoffset-manualTT"
                 AJC = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= -1.*tibialTorsion )
 
             else:
                 TIB = acq.GetPoint("LTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
                 AJC = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
-
+                ajcDesc = ""
 
             # add nodes to referential
             # create and add nodes to the technical referential
@@ -915,11 +929,11 @@ class Cgm1ManualOffsets(DecoratorModel):
 
 
             # add nodes to referential
-            tf_dist.static.addNode("LAJC_mto",AJC, positionType="Global", desc = "manual ThighOffset")
-            tf_dist.static.addNode("LAJC",AJC, positionType="Global", desc = "manual ThighOffset")
+            tf_dist.static.addNode("LAJC_mto",AJC, positionType="Global", desc = ajcDesc)
+            tf_dist.static.addNode("LAJC",AJC, positionType="Global", desc = ajcDesc)
 
-            tf_dist2.static.addNode("LAJC_mto",AJC, positionType="Global", desc = "manual ThighOffset")
-            tf_dist2.static.addNode("LAJC",AJC, positionType="Global", desc = "manual ThighOffset")
+            tf_dist2.static.addNode("LAJC_mto",AJC, positionType="Global", desc = ajcDesc)
+            tf_dist2.static.addNode("LAJC",AJC, positionType="Global", desc = ajcDesc)
 
             # enable tibialTorsion flag
             if thighoffset !=0 and tibialTorsion !=0:
@@ -946,10 +960,12 @@ class Cgm1ManualOffsets(DecoratorModel):
             ANK = acq.GetPoint("RANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             if thighoffset != 0 :
                 AJC = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
+                ajcDesc = "manual ThighOffset" if tibialTorsion == 0 else "manualTHIoffset-manualTT"
             else:
 
                 TIB = acq.GetPoint("RTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
                 AJC = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
+                ajcDesc = ""
 
 
             # create and add nodes to the technical referential
@@ -967,11 +983,11 @@ class Cgm1ManualOffsets(DecoratorModel):
 
 
             # add nodes to referential
-            tf_dist.static.addNode("RAJC_mto",AJC, positionType="Global", desc = "manual ThighOffset")
-            tf_dist.static.addNode("RAJC",AJC, positionType="Global", desc = "manual ThighOffset")
+            tf_dist.static.addNode("RAJC_mto",AJC, positionType="Global", desc = ajcDesc)
+            tf_dist.static.addNode("RAJC",AJC, positionType="Global", desc = ajcDesc)
 
-            tf_dist2.static.addNode("RAJC_mto",AJC, positionType="Global", desc = "manual ThighOffset")
-            tf_dist2.static.addNode("RAJC",AJC, positionType="Global", desc = "manual ThighOffset")
+            tf_dist2.static.addNode("RAJC_mto",AJC, positionType="Global", desc = ajcDesc)
+            tf_dist2.static.addNode("RAJC",AJC, positionType="Global", desc = ajcDesc)
 
 
             # enable tibialTorsion flag

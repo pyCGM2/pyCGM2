@@ -51,7 +51,7 @@ def getViconRmatrix(frameVal, acq, originLabel, proximalLabel, lateralLabel, seq
 class CGM1_motionJCSTest():
 
     @classmethod
-    def basicCGM1(cls):  #def basicCGM1(self):
+    def basicCGM1(cls):
         """
         GOAL : compare Joint centres and foot Offset
 
@@ -149,7 +149,7 @@ class CGM1_motionJCSTest():
 
 
     @classmethod
-    def basicCGM1_flatFoot(cls):  #def basicCGM1(self):
+    def basicCGM1_flatFoot(cls):
         """
         GOAL : compare Joint centres and foot Offset
 
@@ -355,7 +355,7 @@ class CGM1_motionJCSTest():
                                         acqGait.GetPoint("LAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
 
     @classmethod
-    def advancedCGM1_kad_flatFoot(cls):  #def basicCGM1(self):
+    def advancedCGM1_kad_flatFoot(cls):
         """
         GOAL : compare Joint centres and foot Offset
 
@@ -861,6 +861,151 @@ class CGM1_motionFullAnglesTest():
 
 
     @classmethod
+    def basicCGM1_manualTibialTorsion(cls):
+        """
+
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-tibialTorsion\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+
+        optional_mp={
+        'LeftTibialTorsion' : -30.0,
+        'RightTibialTorsion' : -30.0
+        }
+        model.addAnthropoInputParameters(mp,optional=optional_mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                            viconCGM1compatible=True).compute()
+
+        # ------ Test 1 Motion Axe X -------
+        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+
+        # Motion FILTER
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,viconCGM1compatible=True)
+        modMotion.compute()
+
+        # relative angles
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+
+        # absolute angles
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
+                                      globalFrameOrientation = globalFrame,
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+
+        #btkTools.smartWriter(acqGait, "test.c3d")
+
+        # tests on joint angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("RHipAngles").GetValues(),
+                                        acqGait.GetPoint("RHipAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LHipAngles").GetValues(),
+                                        acqGait.GetPoint("LHipAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RKneeAngles").GetValues(),
+                                        acqGait.GetPoint("RKneeAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LKneeAngles").GetValues(),
+                                        acqGait.GetPoint("LKneeAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RAnkleAngles").GetValues(),
+                                        acqGait.GetPoint("RAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LAnkleAngles").GetValues(),
+                                        acqGait.GetPoint("LAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
+
+
+        # tests on absolute angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        # ------ Test 2 Motion Axe -X -------
+        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 12.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+
+        # Motion FILTER
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,viconCGM1compatible=True)
+        modMotion.compute()
+
+         # relative angles
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+
+        # absolute angles
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
+                                      globalFrameOrientation = globalFrame,
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+
+        #btkTools.smartWriter(acqGait, "test.c3d")
+
+        # tests on joint angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("RHipAngles").GetValues(),
+                                        acqGait.GetPoint("RHipAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LHipAngles").GetValues(),
+                                        acqGait.GetPoint("LHipAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RKneeAngles").GetValues(),
+                                        acqGait.GetPoint("RKneeAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LKneeAngles").GetValues(),
+                                        acqGait.GetPoint("LKneeAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RAnkleAngles").GetValues(),
+                                        acqGait.GetPoint("RAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LAnkleAngles").GetValues(),
+                                        acqGait.GetPoint("LAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        # tests on absolute angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
+
+
+    @classmethod
     def advancedCGM1_kad_noOptions(cls):
         """
 
@@ -1149,6 +1294,260 @@ class CGM1_motionFullAnglesTest():
                                         acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
 
 
+
+    @classmethod
+    def advancedCGM1_kad_midMaleolus(cls):
+        """
+
+        """
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        model.addAnthropoInputParameters(mp)
+
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute()
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+
+        # ------ Test 1 Motion Axe X -------
+        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+
+        # Motion FILTER
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
+                                        viconCGM1compatible = True)
+        modMotion.compute()
+
+        # relative angles
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+
+
+        # absolute angles
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
+                                      globalFrameOrientation = globalFrame,
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+
+        #btkTools.smartWriter(acqGait, "advancedCGM1_kad_midMaleolus_viconComaptible-14.c3d")
+
+        # tests on joint angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("RHipAngles").GetValues(),
+                                        acqGait.GetPoint("RHipAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LHipAngles").GetValues(),
+                                        acqGait.GetPoint("LHipAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RKneeAngles").GetValues(),
+                                        acqGait.GetPoint("RKneeAngles_cgm1_6dof").GetValues(), decimal =2)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LKneeAngles").GetValues(),
+                                        acqGait.GetPoint("LKneeAngles_cgm1_6dof").GetValues(), decimal =2)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RAnkleAngles").GetValues(),
+                                        acqGait.GetPoint("RAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LAnkleAngles").GetValues(),
+                                        acqGait.GetPoint("LAnkleAngles_cgm1_6dof").GetValues(), decimal =2)
+
+
+        # tests on absolute angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        # ------ Test 2 Motion Axe -X -------
+        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 12.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+
+        # Motion FILTER
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
+                                                 viconCGM1compatible = True)
+        modMotion.compute()
+
+         # relative angles
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+
+        # absolute angles
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
+                                      globalFrameOrientation = globalFrame,
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+
+        #btkTools.smartWriter(acqGait, "test.c3d")
+
+        # tests on joint angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("RHipAngles").GetValues(),
+                                        acqGait.GetPoint("RHipAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LHipAngles").GetValues(),
+                                        acqGait.GetPoint("LHipAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RKneeAngles").GetValues(),
+                                        acqGait.GetPoint("RKneeAngles_cgm1_6dof").GetValues(), decimal =2)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LKneeAngles").GetValues(),
+                                        acqGait.GetPoint("LKneeAngles_cgm1_6dof").GetValues(), decimal =2)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RAnkleAngles").GetValues(),
+                                        acqGait.GetPoint("RAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LAnkleAngles").GetValues(),
+                                        acqGait.GetPoint("LAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        # tests on absolute angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
+        np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
+
+
+    @classmethod
+    def advancedCGM1_kad_manualTibialTorsion(cls):
+        """
+
+        """
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-manualTibialTorsion\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+
+        optional_mp={
+        'LeftTibialTorsion' : -30,
+        'RightTibialTorsion' : -30
+        }
+
+        model.addAnthropoInputParameters(mp,optional=optional_mp)
+
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute()
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                            viconCGM1compatible=True).compute()
+
+
+        # ------ Test 1 Motion Axe X -------
+        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+
+        # Motion FILTER
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
+                                                 viconCGM1compatible = True)
+        modMotion.compute()
+
+        # relative angles
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+
+
+        # absolute angles
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
+                                      globalFrameOrientation = globalFrame,
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+
+        btkTools.smartWriter(acqGait, "advancedCGM1_kad_manualTibialTorsion_viconCompatible-14.c3d")
+
+        # tests on joint angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("RHipAngles").GetValues(),
+                                        acqGait.GetPoint("RHipAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LHipAngles").GetValues(),
+                                        acqGait.GetPoint("LHipAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RKneeAngles").GetValues(),
+                                        acqGait.GetPoint("RKneeAngles_cgm1_6dof").GetValues(), decimal =2)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LKneeAngles").GetValues(),
+                                        acqGait.GetPoint("LKneeAngles_cgm1_6dof").GetValues(), decimal =2)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RAnkleAngles").GetValues(),
+                                        acqGait.GetPoint("RAnkleAngles_cgm1_6dof").GetValues(), decimal =2)
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("LAnkleAngles").GetValues(),
+                                        acqGait.GetPoint("LAnkleAngles_cgm1_6dof").GetValues(), decimal =2)
+
+
+        # tests on absolute angles
+        np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =2)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
+                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =2)
+        np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =2)
+        np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
+                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =2)
+
+
+
+#
+class CGM11_motionFullAnglesTest():
+
     @classmethod
     def advancedCGM1_kad_midMaleolus(cls):
         """
@@ -1340,259 +1739,6 @@ class CGM1_motionFullAnglesTest():
 #                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
 
 
-    @classmethod
-    def advancedCGM1_kad_midMaleolus_viconCompatible(cls):
-        """
-
-        """
-
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
-
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
-
-        model=cgm.CGM1LowerLimbs()
-        model.configure()
-
-        mp={
-        'Bodymass'   : 71.0,
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,
-        }
-        model.addAnthropoInputParameters(mp)
-
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
-
-        # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute()
-        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
-
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
-
-
-        # ------ Test 1 Motion Axe X -------
-        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"
-        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
-
-
-        # Motion FILTER
-        # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
-                                        viconCGM1compatible = True)
-        modMotion.compute()
-
-        # relative angles
-        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
-
-
-        # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
-        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
-                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                      eulerSequences=["TOR","TOR", "TOR"],
-                                      globalFrameOrientation = globalFrame,
-                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
-
-        #btkTools.smartWriter(acqGait, "advancedCGM1_kad_midMaleolus_viconComaptible-14.c3d")
-
-        # tests on joint angles
-        np.testing.assert_almost_equal( acqGait.GetPoint("RHipAngles").GetValues(),
-                                        acqGait.GetPoint("RHipAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("LHipAngles").GetValues(),
-                                        acqGait.GetPoint("LHipAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("RKneeAngles").GetValues(),
-                                        acqGait.GetPoint("RKneeAngles_cgm1_6dof").GetValues(), decimal =2)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("LKneeAngles").GetValues(),
-                                        acqGait.GetPoint("LKneeAngles_cgm1_6dof").GetValues(), decimal =2)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("RAnkleAngles").GetValues(),
-                                        acqGait.GetPoint("RAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("LAnkleAngles").GetValues(),
-                                        acqGait.GetPoint("LAnkleAngles_cgm1_6dof").GetValues(), decimal =2)
-
-
-        # tests on absolute angles
-        np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
-                                        acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
-        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
-                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
-        np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
-                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
-        np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
-                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        # ------ Test 2 Motion Axe -X -------
-        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 12.c3d"
-        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
-
-
-        # Motion FILTER
-        # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
-                                                 viconCGM1compatible = True)
-        modMotion.compute()
-
-         # relative angles
-        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
-
-        # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
-        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
-                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                      eulerSequences=["TOR","TOR", "TOR"],
-                                      globalFrameOrientation = globalFrame,
-                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
-
-        #btkTools.smartWriter(acqGait, "test.c3d")
-
-        # tests on joint angles
-        np.testing.assert_almost_equal( acqGait.GetPoint("RHipAngles").GetValues(),
-                                        acqGait.GetPoint("RHipAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("LHipAngles").GetValues(),
-                                        acqGait.GetPoint("LHipAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("RKneeAngles").GetValues(),
-                                        acqGait.GetPoint("RKneeAngles_cgm1_6dof").GetValues(), decimal =2)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("LKneeAngles").GetValues(),
-                                        acqGait.GetPoint("LKneeAngles_cgm1_6dof").GetValues(), decimal =2)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("RAnkleAngles").GetValues(),
-                                        acqGait.GetPoint("RAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("LAnkleAngles").GetValues(),
-                                        acqGait.GetPoint("LAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        # tests on absolute angles
-        np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
-                                        acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
-        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
-                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
-        np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
-                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
-        np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
-                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
-
-
-    @classmethod
-    def advancedCGM1_kad_midMaleolus_viconCompatible_tibialTorsionManually(cls):
-        """
-
-        """
-
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
-
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
-
-        model=cgm.CGM1LowerLimbs()
-        model.configure()
-
-
-        mp={
-        'Bodymass'   : 71.0,
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,
-        }
-
-        optional_mp={
-        'LeftTibialTorsion' : -12.0031,
-        'RightTibialTorsion' : -17.7351
-        }
-
-        model.addAnthropoInputParameters(mp,optional=optional_mp)
-
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
-
-        # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute()
-        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
-
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
-
-
-        # ------ Test 1 Motion Axe X -------
-        gaitFilename="MRI-US-01, 2008-08-08, 3DGA 14.c3d"
-        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
-
-
-        # Motion FILTER
-        # optimisation segmentaire et calibration fonctionnel
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist,
-                                                 viconCGM1compatible = True)
-        modMotion.compute()
-
-        # relative angles
-        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
-
-
-        # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
-        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
-                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                      eulerSequences=["TOR","TOR", "TOR"],
-                                      globalFrameOrientation = globalFrame,
-                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
-
-        #btkTools.smartWriter(acqGait, "advancedCGM1_kad_midMaleolus_viconComaptible-14.c3d")
-
-        # tests on joint angles
-        np.testing.assert_almost_equal( acqGait.GetPoint("RHipAngles").GetValues(),
-                                        acqGait.GetPoint("RHipAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("LHipAngles").GetValues(),
-                                        acqGait.GetPoint("LHipAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("RKneeAngles").GetValues(),
-                                        acqGait.GetPoint("RKneeAngles_cgm1_6dof").GetValues(), decimal =2)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("LKneeAngles").GetValues(),
-                                        acqGait.GetPoint("LKneeAngles_cgm1_6dof").GetValues(), decimal =2)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("RAnkleAngles").GetValues(),
-                                        acqGait.GetPoint("RAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
-
-        np.testing.assert_almost_equal( acqGait.GetPoint("LAnkleAngles").GetValues(),
-                                        acqGait.GetPoint("LAnkleAngles_cgm1_6dof").GetValues(), decimal =3)
-
-
-        # tests on absolute angles
-        np.testing.assert_almost_equal( acqGait.GetPoint("LFootProgressAngles").GetValues(),
-                                        acqGait.GetPoint("LFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
-        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
-                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
-        np.testing.assert_almost_equal( acqGait.GetPoint("RPelvisAngles").GetValues(),
-                                        acqGait.GetPoint("RPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
-        np.testing.assert_almost_equal( acqGait.GetPoint("LPelvisAngles").GetValues(),
-                                        acqGait.GetPoint("LPelvisAngles_cgm1_6dof").GetValues(), decimal =3)
-
-
-
-#
-
-
 class CGM1_motionFullAnglesTest_customApproach():
     @classmethod
     def basicCGM1_bodyBuilderFoot(cls):
@@ -1661,7 +1807,7 @@ class CGM1_motionFullAnglesTest_customApproach():
 if __name__ == "__main__":
 
 
-#    plt.close("all")
+   plt.close("all")
 
 #    logging.info("######## PROCESS CGM1 - JCSK ######")
     CGM1_motionJCSTest.basicCGM1()
@@ -1676,12 +1822,17 @@ if __name__ == "__main__":
     CGM1_motionAbsoluteAnglesTest.basicCGM1_absoluteAngles_pelikin()
 #    logging.info("######## PROCESS CGM1 - Absolute ---> Done ######")
 
-#    logging.info("######## PROCESS CGM1 - Full angles ######")
+    logging.info("######## PROCESS CGM1 - Full angles ######")
     CGM1_motionFullAnglesTest.basicCGM1()
+    CGM1_motionFullAnglesTest.basicCGM1_manualTibialTorsion()  # reproduce vicon error
     CGM1_motionFullAnglesTest.advancedCGM1_kad_noOptions()
     CGM1_motionFullAnglesTest.advancedCGM1_kad_flatFoot()
-    CGM1_motionFullAnglesTest.advancedCGM1_kad_midMaleolus_viconCompatible() # reproduce vicon error
-    CGM1_motionFullAnglesTest.advancedCGM1_kad_midMaleolus() # with fixed vicon error  -->  look inside some tests fail for ankle angle and foot progress
+    CGM1_motionFullAnglesTest.advancedCGM1_kad_midMaleolus() # reproduce vicon error
+    CGM1_motionFullAnglesTest.advancedCGM1_kad_manualTibialTorsion()
+
+    logging.info("######## PROCESS CGM11 - Full angles ######")
+    #CGM11_motionFullAnglesTest.advancedCGM1_kad_midMaleolus() # fix vicon error
+
 
 #
 #    logging.info("######## PROCESS CGM1 - Full angles - CUSTOM APPROACHES ######")

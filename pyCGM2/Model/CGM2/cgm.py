@@ -551,10 +551,10 @@ class CGM1LowerLimbs(CGM):
             self.getShankOffsets(side="right")
 
         # tibial Torsion
-
         if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0: #   - check if TibialTorsion whithin main mp
             self.mp_computed["LeftTibialTorsionOffset"]= -self.mp["LeftTibialTorsion"]
             self.m_useLeftTibialTorsion=True
+
         else:
             if self.m_useLeftTibialTorsion: # if useTibialTorsion flag enable from a decorator
                 self.getTibialTorsionOffset(side="left")
@@ -575,7 +575,6 @@ class CGM1LowerLimbs(CGM):
         # AbdAdd offset
         self.getAbdAddAnkleJointOffset(side="left")
         self.getAbdAddAnkleJointOffset(side="right")
-
 
         logging.debug(" --- Left Shank Proximal- AF calibration ---")
         logging.debug(" -------------------------------------------")
@@ -1175,7 +1174,15 @@ class CGM1LowerLimbs(CGM):
             pt3=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             v=(pt3-pt1)
         else:
-            v=self.getSegment("Left Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
+            distalShank = self.getSegment("Left Shank")
+            proximalShank = self.getSegment("Left Shank Proximal")
+            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
+                if distalShank.getReferential("TF").static.getNode_byLabel("LAJC").m_desc != "mid":
+                    v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+                else:
+                    v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+            else:
+                v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
 
 
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -1252,7 +1259,15 @@ class CGM1LowerLimbs(CGM):
             pt3=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             v=(pt3-pt1)
         else:
-            v=self.getSegment("Right Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
+            distalShank = self.getSegment("Right Shank")
+            proximalShank = self.getSegment("Right Shank Proximal")
+            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
+                if distalShank.getReferential("TF").static.getNode_byLabel("RAJC").m_desc != "mid":
+                    v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+                else:
+                    v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+            else:
+                v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
 
 
 
@@ -1694,7 +1709,15 @@ class CGM1LowerLimbs(CGM):
             pt3=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             v=(pt3-pt1)
         else:
-            v=self.getSegment("Left Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
+            distalShank = self.getSegment("Left Shank")
+            proximalShank = self.getSegment("Left Shank Proximal")
+            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
+                if distalShank.getReferential("TF").static.getNode_byLabel("LAJC").m_desc != "mid":
+                    v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+                else:
+                    v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+            else:
+                v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
 
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
@@ -1797,7 +1820,15 @@ class CGM1LowerLimbs(CGM):
             pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             v=(pt3-pt1)
         else:
-            v=self.getSegment("Right Shank").anatomicalFrame.static.m_axisY #(pt3-pt1)
+            distalShank = self.getSegment("Right Shank")
+            proximalShank = self.getSegment("Right Shank Proximal")
+            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
+                if distalShank.getReferential("TF").static.getNode_byLabel("RAJC").m_desc != "mid":
+                    v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+                else:
+                    v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+            else:
+                v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
 
 
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)

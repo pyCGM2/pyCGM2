@@ -52,6 +52,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                                         leftFlatFoot = leftFlatFoot,
                                         rightFlatFoot = rightFlatFoot,
                                         markerDiameter = markerDiameter,
+                                        viconCGM1compatible=True
                                         ).compute()
     # ---- Decorators -----
     cgmUtils.applyDecorators_CGM1(smc, model,acqStatic,optional_mp,markerDiameter)
@@ -62,7 +63,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
         # initial static filter
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
-                           markerDiameter=markerDiameter).compute()
+                           markerDiameter=markerDiameter,
+                           viconCGM1compatible=True).compute()
 
 
     # ----------------------CGM MODELLING----------------------------------
