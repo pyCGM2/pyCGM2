@@ -66,7 +66,8 @@ def gaitProcessing(DATA_PATH, modelledFilenames, modelVersion,
     outputPath=None,
     outputFilename="gaitProcessing",
     exportXls=False,
-    plot=True):
+    plot=True,
+    plotDisplay=True):
 
     if outputPath is None:
         outputPath= DATA_PATH
@@ -128,5 +129,5 @@ def gaitProcessing(DATA_PATH, modelledFilenames, modelVersion,
             outputPath,outputFilename,
             pointLabelSuffix=pointSuffix,
             normativeDataset=nds )
-
-        plt.show()
+        if plotDisplay:
+            plt.show()
