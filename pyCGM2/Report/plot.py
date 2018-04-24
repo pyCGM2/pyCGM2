@@ -125,7 +125,7 @@ def descriptivePlot(figAxis,analysisStructureItem,
                 figAxis.axhline(value,color=color,ls='dashed')
 
 
-    if legendLabel is not None: line.set_label(legendLabel)
+    if legendLabel is not None: line[0].set_label(legendLabel)
     if title is not None: figAxis.set_title(title ,size=8)
     figAxis.set_xlim([0.0,100])
     figAxis.tick_params(axis='x', which='major', labelsize=6)
