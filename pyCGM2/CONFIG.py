@@ -136,6 +136,13 @@ generatePipeline.pipeline_pyCGM2_SARA_kneeCalibration(MAIN_PYCGM2_APPS_PATH,PYCG
 # 2DOF
 generatePipeline.pipeline_pyCGM2_2dof_kneeCalibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
 
+# Event detector
+generatePipeline.pipeline_pyCGM2_eventDetector(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+
+# MoGapFill
+generatePipeline.pipeline_pyCGM2_mogapfill(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+
+
 
 # translators
 src_files = os.listdir(PYCGM2_SESSION_SETTINGS_FOLDER+"translators")

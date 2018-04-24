@@ -174,7 +174,100 @@ CALIBRATION2DOF_CONTENT="""<?xml version="1.1" encoding="UTF-8" standalone="no" 
 
     </Pipeline>"""
 
+EVENTS_CONTENT="""
+    <?xml version="1.1" encoding="UTF-8" standalone="no" ?>
+    <Pipeline>
 
+      <Entry DisplayName="Export C3D" Enabled="1" OperationId="0" OperationName="Exportc3d">
+        <ParamList name="">
+          <Param macro="CURRENT_TRIAL" name="Filename"/>
+          <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+          <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+          <Param name="Postfix" value=""/>
+          <Param name="IntegerFormat" value="false"/>
+          <Param name="SubjectPrefix" value="1"/>
+          <Param name="XAxis" value="4"/>
+          <Param name="YAxis" value="2"/>
+          <Param name="ZAxis" value="0"/>
+          <Param name="ProcessingClip" value=""/>
+          <Param name="CopyToClip" value=""/>
+        </ParamList>
+      </Entry>
+
+      <Entry DisplayName="zeni event detectors" Enabled="1" OperationId="18" OperationName="Python">
+        <ParamList name="">
+          <Param name="Script" value="PATH_APPS/operations/nexusOp-zeniDetector.py"/>
+          <Param name="ScriptArgs" value=""/>
+          <Param name="UseNexusPython" value="false"/>
+          <Param name="LaunchPython" value="false"/>
+        </ParamList>
+      </Entry>
+
+      <Entry DisplayName="Export C3D" Enabled="1" OperationId="0" OperationName="Exportc3d">
+        <ParamList name="">
+          <Param macro="CURRENT_TRIAL" name="Filename"/>
+          <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+          <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+          <Param name="Postfix" value=""/>
+          <Param name="IntegerFormat" value="false"/>
+          <Param name="SubjectPrefix" value="1"/>
+          <Param name="XAxis" value="4"/>
+          <Param name="YAxis" value="2"/>
+          <Param name="ZAxis" value="0"/>
+          <Param name="ProcessingClip" value=""/>
+          <Param name="CopyToClip" value=""/>
+        </ParamList>
+      </Entry>
+
+    </Pipeline>"""
+
+MOGAPFILL_CONTENT="""
+<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
+<Pipeline>
+
+  <Entry DisplayName="Export C3D" Enabled="1" OperationId="0" OperationName="Exportc3d">
+    <ParamList name="">
+      <Param macro="CURRENT_TRIAL" name="Filename"/>
+      <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+      <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+      <Param name="Postfix" value=""/>
+      <Param name="IntegerFormat" value="false"/>
+      <Param name="SubjectPrefix" value="1"/>
+      <Param name="XAxis" value="4"/>
+      <Param name="YAxis" value="2"/>
+      <Param name="ZAxis" value="0"/>
+      <Param name="ProcessingClip" value=""/>
+      <Param name="CopyToClip" value=""/>
+    </ParamList>
+  </Entry>
+
+  <Entry DisplayName="MoGapFill-Kalman" Enabled="1" OperationId="856" OperationName="Python">
+    <ParamList name="">
+      <Param name="Script" value="PATH_APPS/MoGapFill/nexusOperation_KalmanGapFilling.py"/>
+      <Param name="ScriptArgs" value=""/>
+      <Param name="UseNexusPython" value="false"/>
+      <Param name="LaunchPython" value="false"/>
+    </ParamList>
+  </Entry>
+
+  <Entry DisplayName="Export C3D" Enabled="1" OperationId="0" OperationName="Exportc3d">
+    <ParamList name="">
+      <Param macro="CURRENT_TRIAL" name="Filename"/>
+      <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+      <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+      <Param name="Postfix" value=""/>
+      <Param name="IntegerFormat" value="false"/>
+      <Param name="SubjectPrefix" value="1"/>
+      <Param name="XAxis" value="4"/>
+      <Param name="YAxis" value="2"/>
+      <Param name="ZAxis" value="0"/>
+      <Param name="ProcessingClip" value=""/>
+      <Param name="CopyToClip" value=""/>
+    </ParamList>
+  </Entry>
+
+</Pipeline>
+"""
 # ------------------- CGM1 ------------------------------------------------------
 def pipeline_pyCGM2_CGM1_Calibration(myAppFolder_path,userAppData_path):
 
@@ -424,4 +517,28 @@ def pipeline_pyCGM2_2dof_kneeCalibration(myAppFolder_path,userAppData_path):
 
     if not os.path.isfile( userAppData_path + "pyCGM2-Knee2Dof.Pipeline"):
         with open(userAppData_path + "pyCGM2-Knee2Dof.Pipeline", "w") as text_file:
+            text_file.write(content)
+
+#------------------------EVENTS method------------------------------------------
+def pipeline_pyCGM2_eventDetector(myAppFolder_path,userAppData_path):
+
+
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+
+    content = string.replace(EVENTS_CONTENT, 'PATH_APPS', myAppFolder_path_slash[:-1])
+
+    if not os.path.isfile( userAppData_path + "pyCGM2-EventsDetector.Pipeline"):
+        with open(userAppData_path + "pyCGM2-EventsDetector.Pipeline", "w") as text_file:
+            text_file.write(content)
+
+#------------------------MOGAPFILL method------------------------------------------
+def pipeline_pyCGM2_mogapfill(myAppFolder_path,userAppData_path):
+
+
+    myAppFolder_path_slash = string.replace(myAppFolder_path, '\\', '/')
+
+    content = string.replace(MOGAPFILL_CONTENT, 'PATH_APPS', myAppFolder_path_slash[:-1])
+
+    if not os.path.isfile( userAppData_path + "pyCGM2-MoGapFill.Pipeline"):
+        with open(userAppData_path + "pyCGM2-MoGapFill.Pipeline", "w") as text_file:
             text_file.write(content)
