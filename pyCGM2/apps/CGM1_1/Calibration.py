@@ -31,7 +31,7 @@ if __name__ == "__main__":
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix' )
-    parser.add_argument('--resetMP', action='store_false', help='reset optional mass parameters')
+    parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
 
     parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of output file')
 
