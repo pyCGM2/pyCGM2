@@ -47,7 +47,7 @@ def loadAnalysis(path,FilenameNoExt):
         filename = FilenameNoExt + "-pyCGM2.analysis"
     else:
         filename = "pyCGM2.analysis"
-
+    
     # --------------------pyCGM2 MODEL ------------------------------
     if not os.path.isfile(path + filename):
         raise Exception ("%s-pyCGM2.analysis file doesn't exist"%filename)
@@ -67,7 +67,7 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
 
     #pyCGM2.model
     if os.path.isfile(path + filename):
-        logging.warning("previous model removed")
+        logging.warning("previous analysis removed")
         os.remove(path + filename)
 
     analysisFile = open(path + filename, "w")
