@@ -103,7 +103,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -155,7 +155,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1_flatFoot(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic FlatFoot\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic FlatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -203,7 +203,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1_soleDelta_FlatFoot(cls):  # notice : soleDelta has no influence with flatfoot disable
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-SoleDelta-FlatFoot\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-SoleDelta-FlatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -247,361 +247,10 @@ class CGM1_calibrationTest():
         np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
         np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
 
-
-    @classmethod
-    def advancedCGM1_kad_noOptions(cls):
-
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-basic\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
-
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
-
-        model=cgm.CGM1LowerLimbs()
-        model.configure()
-
-        markerDiameter=14
-        mp={
-        'Bodymass'   : 71.0,
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,
-        }
-        model.addAnthropoInputParameters(mp)
-
-        # -----------CGM STATIC CALIBRATION--------------------
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
-
-        # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute()
-
-        # final calibration
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
-
-        # TESTS ------------------------------------------------
-        offsetTesting(acqStatic,model,display = True, unitTesting=True)
-
-        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
-
-        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
-
-
-        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
-
-        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
-
-        np.testing.assert_equal(model.m_useRightTibialTorsion,False )
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
-
-        # joint centres
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
-
-
-    @classmethod
-    def advancedCGM1_kad_flatFoot(cls):
-
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-flatFoot\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
-
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
-
-        model=cgm.CGM1LowerLimbs()
-        model.configure()
-
-        markerDiameter=14
-        mp={
-        'Bodymass'   : 71.0,
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,
-        }
-        model.addAnthropoInputParameters(mp)
-
-        # -----------CGM STATIC CALIBRATION--------------------
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
-
-
-
-        # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute()
-
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                   leftFlatFoot = True, rightFlatFoot = True).compute()
-
-
-        # TESTS ------------------------------------------------
-        offsetTesting(acqStatic,model,display = True, unitTesting=True)
-
-        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
-
-        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
-
-
-        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
-
-        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
-
-        # joint centres
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
-
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
-
-
-    @classmethod
-    def advancedCGM1_kad_midMaleolus(cls):
-
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
-
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
-
-        model=cgm.CGM1LowerLimbs()
-        model.configure()
-
-        markerDiameter=14
-        mp={
-        'Bodymass'   : 71.0,
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,
-        }
-        model.addAnthropoInputParameters(mp)
-
-        # -----------CGM STATIC CALIBRATION--------------------
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
-
-        # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute()
-        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
-
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
-
-
-        # TESTS ------------------------------------------------
-        offsetTesting(acqStatic,model,display = True, unitTesting=True)
-
-        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
-
-        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
-
-
-        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
-        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
-
-        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
-        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
-
-        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
-
-        # joint centres
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
-
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
-
-        btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_midMaleolus.c3d")
-
-
-
-
-    @classmethod
-    def advancedCGM1_kad_midMaleolus_markerDiameter(cls):
-
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-tibialTorsion-markerDiameter\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
-
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
-
-        model=cgm.CGM1LowerLimbs()
-        model.configure()
-
-        markerDiameter=25.0
-        mp={
-        'Bodymass'   : 71.0,
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,
-        }
-        model.addAnthropoInputParameters(mp)
-
-        # -----------CGM STATIC CALIBRATION--------------------
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,markerDiameter=markerDiameter,
-                                            leftFlatFoot = False, rightFlatFoot = False).compute()
-
-        # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="both")
-        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic,markerDiameter=markerDiameter, side="both")
-
-
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                             markerDiameter=markerDiameter).compute()
-
-
-        # TESTS ------------------------------------------------
-        offsetTesting(acqStatic,model,display = True, unitTesting=True)
-
-        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
-
-        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
-
-
-        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
-        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
-
-        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
-        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
-
-        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
-
-        # joint centres
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
-
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
-
-        btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_midMaleolus_markerDiameter.c3d")
-
-    @classmethod
-    def advancedCGM1_kad_manualTibialTorsion(cls):
-
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\KAD-manualTibialTorsion\\"
-        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
-
-        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
-
-        model=cgm.CGM1LowerLimbs()
-        model.configure()
-
-        markerDiameter=14
-        mp={
-        'Bodymass'   : 71.0,
-        'LeftLegLength' : 860.0,
-        'RightLegLength' : 865.0 ,
-        'LeftKneeWidth' : 102.0,
-        'RightKneeWidth' : 103.4,
-        'LeftAnkleWidth' : 75.3,
-        'RightAnkleWidth' : 72.9,
-        'LeftSoleDelta' : 0,
-        'RightSoleDelta' : 0,
-        }
-
-        optional_mp={
-        'LeftTibialTorsion' : -30.0,
-        'RightTibialTorsion' : -30.0
-        }
-        model.addAnthropoInputParameters(mp,optional=optional_mp)
-
-        # -----------CGM STATIC CALIBRATION--------------------
-        scp=modelFilters.StaticCalibrationProcedure(model)
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
-
-        # cgm decorator
-        modelDecorator.Kad(model,acqStatic).compute()
-
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
-                                            viconCGM1compatible=True).compute()
-
-        # TESTS ------------------------------------------------
-        # offset testing
-        offsetTesting(acqStatic,model,display =True, unitTesting=True)
-
-
-        # node description
-        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
-
-        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
-        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
-
-
-        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD-manualTT")
-        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD-manualTT")
-
-        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD-manualTT")
-        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD-manualTT")
-
-        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
-        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
-
-        # joint centres
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
-
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
-
-        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
-        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
-
-
-
-        btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_manualTibial.c3d")
-
     @classmethod
     def basicCGM1_manualTibialTorsion(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-tibialTorsion\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-tibialTorsion\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -663,7 +312,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1_manualTibialTorsion_withDecorator(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-tibialTorsion\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-tibialTorsion\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -747,7 +396,7 @@ class CGM1_calibrationTest():
         """
 
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-manualOffsets-thiON_shaOFF_torsionOFF\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiON_shaOFF_torsionOFF\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -822,7 +471,7 @@ class CGM1_calibrationTest():
         """
 
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-manualOffsets-thiON_shaOFF_torsionON\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiON_shaOFF_torsionON\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -896,7 +545,7 @@ class CGM1_calibrationTest():
         """
 
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-manualOffsets-thiOFF_shaON_torsionOFF\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiOFF_shaON_torsionOFF\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -959,7 +608,7 @@ class CGM1_calibrationTest():
         """
 
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\basic-manualOffsets-thiOFF_shaON_torsionON\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiOFF_shaON_torsionON\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -1010,6 +659,359 @@ class CGM1_calibrationTest():
 
         np.testing.assert_almost_equal(model.mp_computed["LeftShankRotationOffset"] ,0, decimal = 3)
         np.testing.assert_almost_equal(model.mp_computed["RightShankRotationOffset"] ,0, decimal = 3)
+
+
+    @classmethod
+    def advancedCGM1_kad_noOptions(cls):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        model.addAnthropoInputParameters(mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute()
+
+        # final calibration
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # TESTS ------------------------------------------------
+        offsetTesting(acqStatic,model,display = True, unitTesting=True)
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.m_useRightTibialTorsion,False )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,False )
+
+        # joint centres
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
+
+
+    @classmethod
+    def advancedCGM1_kad_flatFoot(cls):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-flatFoot\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        model.addAnthropoInputParameters(mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+
+
+        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute()
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                   leftFlatFoot = True, rightFlatFoot = True).compute()
+
+
+        # TESTS ------------------------------------------------
+        offsetTesting(acqStatic,model,display = True, unitTesting=True)
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
+
+        # joint centres
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
+
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
+
+
+    @classmethod
+    def advancedCGM1_kad_midMaleolus(cls):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-Med\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        model.addAnthropoInputParameters(mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute()
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+
+        # TESTS ------------------------------------------------
+        offsetTesting(acqStatic,model,display = True, unitTesting=True)
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
+
+        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
+
+        # joint centres
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
+
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
+
+        btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_midMaleolus.c3d")
+
+
+
+
+    @classmethod
+    def advancedCGM1_kad_midMaleolus_markerDiameter(cls):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-Med-markerDiameter\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=25.0
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        model.addAnthropoInputParameters(mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,markerDiameter=markerDiameter,
+                                            leftFlatFoot = False, rightFlatFoot = False).compute()
+
+        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="both")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic,markerDiameter=markerDiameter, side="both")
+
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                             markerDiameter=markerDiameter).compute()
+
+
+        # TESTS ------------------------------------------------
+        offsetTesting(acqStatic,model,display = True, unitTesting=True)
+
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"mid")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
+
+        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
+
+        # joint centres
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
+
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
+
+        btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_midMaleolus_markerDiameter.c3d")
+
+    @classmethod
+    def advancedCGM1_kad_manualTibialTorsion(cls):
+
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-manualTibialTorsion\\"
+        staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+
+        optional_mp={
+        'LeftTibialTorsion' : -30.0,
+        'RightTibialTorsion' : -30.0
+        }
+        model.addAnthropoInputParameters(mp,optional=optional_mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.Kad(model,acqStatic).compute()
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                            viconCGM1compatible=True).compute()
+
+        # TESTS ------------------------------------------------
+        # offset testing
+        offsetTesting(acqStatic,model,display =True, unitTesting=True)
+
+
+        # node description
+        np.testing.assert_equal(model.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LKJC").m_desc ,"KAD")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RKJC").m_desc ,"KAD")
+
+
+        np.testing.assert_equal(model.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD-manualTT")
+        np.testing.assert_equal(model.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD-manualTT")
+
+        np.testing.assert_equal(model.getSegment("Left Foot").getReferential("TF").static.getNode_byLabel("LAJC").m_desc ,"KAD-manualTT")
+        np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD-manualTT")
+
+        np.testing.assert_equal(model.m_useRightTibialTorsion,True )
+        np.testing.assert_equal(model.m_useLeftTibialTorsion,True )
+
+        # joint centres
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEP").GetValues().mean(axis=0),acqStatic.GetPoint("LHJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEP").GetValues().mean(axis=0),acqStatic.GetPoint("RHJC").GetValues().mean(axis=0),decimal = 3)
+
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LFEO").GetValues().mean(axis=0),acqStatic.GetPoint("LKJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RFEO").GetValues().mean(axis=0),acqStatic.GetPoint("RKJC").GetValues().mean(axis=0),decimal = 3)
+
+        np.testing.assert_almost_equal(acqStatic.GetPoint("LTIO").GetValues().mean(axis=0),acqStatic.GetPoint("LAJC").GetValues().mean(axis=0),decimal = 3)
+        np.testing.assert_almost_equal(acqStatic.GetPoint("RTIO").GetValues().mean(axis=0),acqStatic.GetPoint("RAJC").GetValues().mean(axis=0),decimal = 3)
+
+
+
+        btkTools.smartWriter(acqStatic, "outStatic_advancedCGM1_kad_manualTibial.c3d")
+
+
 
 
 

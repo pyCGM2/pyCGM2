@@ -28,7 +28,7 @@ class decomposeTrackingMarker_Test():
         GOAL : compare Joint centres and foot Offset
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\decomposeTracking\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\markerDecomposition\\CGM1decomposeTracking\\"
 #
 
         staticFilename = "static.c3d"
@@ -81,7 +81,7 @@ class decomposeTrackingMarker_Test():
         GOAL : compare Joint centres and foot Offset
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG standard\\decomposeTracking\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\markerDecomposition\\CGM1decomposeTracking\\"
 #
 
         staticFilename = "static.c3d"
@@ -131,7 +131,7 @@ class decomposeTrackingMarker_Test():
         """
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\decompose markers\\"
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\markerDecomposition\\CGM24decomposeTracking\\"
     #
 
         staticFilename = "PN01OP01S01STAT.c3d"
@@ -193,8 +193,8 @@ class decomposeTrackingMarker_Test():
 if __name__ == "__main__":
 
     logging.info("######## PROCESS CGM1 ######")
-    #decomposeTrackingMarker_Test.cgm1_static()
-    #decomposeTrackingMarker_Test.cgm1()
+    decomposeTrackingMarker_Test.cgm1_static()
+    decomposeTrackingMarker_Test.cgm1()
     logging.info("######## PROCESS CGM1 --> Done######")
 
     decomposeTrackingMarker_Test.cgm24()
