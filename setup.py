@@ -183,9 +183,12 @@ if "install" in sys.argv or "develop" in sys.argv:
     _COMPATIBLENEXUSKEY = "\""+ _PYTHONEXE+"\"  \"%1\" %*" # HERE IS the COMPATIBLE NEXUS python executable command
 
     if PYCGM2_NEXUS:
-        reg_key = registry.getPythonExeRegisterKey()
+        if not registry.checkPythonRegistryKeyInRegistry():
+            logging.error("[pyCGM2] python.exe not in registry key !!")
+            registry.createPythonExeRegisterKey(_PYTHONEXE) # may need admin right
+
         logging.info("******* Alteration of your python registry key fo Nexus ******")
-        if reg_key != _COMPATIBLENEXUSKEY:
+        if registry.compatiblePythonExeRegisterKey(_COMPATIBLENEXUSKEY):
             logging.warning( "Python registry key ---> incompatible")
             registry.setPythonExeRegisterKey(_COMPATIBLENEXUSKEY)
             logging.warning( "Python registry key ---> altered")
