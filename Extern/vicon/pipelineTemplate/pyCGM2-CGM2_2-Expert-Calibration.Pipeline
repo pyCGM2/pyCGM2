@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
+<Pipeline>
+
+  <Entry DisplayName="Export C3D" Enabled="1" OperationId="0" OperationName="Exportc3d">
+    <ParamList name="">
+      <Param macro="CURRENT_TRIAL" name="Filename"/>
+      <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+      <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+      <Param name="Postfix" value=""/>
+      <Param name="IntegerFormat" value="false"/>
+      <Param name="SubjectPrefix" value="1"/>
+      <Param name="XAxis" value="4"/>
+      <Param name="YAxis" value="2"/>
+      <Param name="ZAxis" value="0"/>
+      <Param name="ProcessingClip" value=""/>
+      <Param name="CopyToClip" value=""/>
+    </ParamList>
+  </Entry>
+
+  <Entry DisplayName="Run pyCGM2-CGM2_2-Expert- Calibration " Enabled="1" OperationId="104" OperationName="Python">
+    <ParamList name="">
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/CGM2_2-Expert/nexusOperation-pyCGM2-CGM2_2-Expert-Calibration.py"/>
+      <Param name="ScriptArgs" value=""/>
+      <Param name="UseNexusPython" value="false"/>
+      <Param name="LaunchPython" value="false"/>
+    </ParamList>
+  </Entry>
+
+  <Entry DisplayName="Save Trial - C3D + VSK" Enabled="1" OperationId="105" OperationName="SaveOperation">
+    <ParamList name="">
+      <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
+      <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
+    </ParamList>
+  </Entry>
+
+  <Entry DisplayName="Run pyCGM2-CGM1-i- static Processing " Enabled="1" OperationId="107" OperationName="Python">
+    <ParamList name="">
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-pyCGM2-staticProcessing.py"/>
+      <Param name="ScriptArgs" value=""/>
+      <Param name="UseNexusPython" value="false"/>
+      <Param name="LaunchPython" value="false"/>
+    </ParamList>
+  </Entry>
+
+</Pipeline>

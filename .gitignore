@@ -89,7 +89,6 @@ ENV/
 *.c3d
 *.pyc
 
-*.pipeline
 
 
 # python visual studio
