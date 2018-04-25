@@ -5,6 +5,10 @@ import os
 import generatePipeline
 import json
 import shutil
+import glob
+import re
+
+
 
 # ------------------- CONSTANTS ------------------------------------------------
 
@@ -34,8 +38,10 @@ if not os.path.exists(dirname):
     os.makedirs(dirname)
 
 # [OPTIONAL] ----------------------------------
-MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)) + "\\" #C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)
 
+cased_path = glob.glob(re.sub(r'([^:])(?=[/\\]|$)', r'[\1]', __file__))[0]
+MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(cased_path), os.pardir)) + "\\"
+#MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)) + "\\" #C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\" # path toward your pyCGM2 folder ( dont forget \\ ending)
 
 # [Optional]: Apps path
 MAIN_PYCGM2_APPS_PATH = MAIN_PYCGM2_PATH+"Apps\\"
@@ -49,6 +55,9 @@ NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"Data\\normativeData\\"  # By defaul
 
 # [Optional] main folder containing osim model
 OPENSIM_PREBUILD_MODEL_PATH = MAIN_PYCGM2_PATH + "Extern\\opensim\\"
+
+# [Optional] path to vicon template pipeline
+NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "Extern\\vicon\\pipelineTemplate\\"
 
 # [Optional] path pointing at Data Folders used for Tests
 TEST_DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\"
@@ -102,45 +111,53 @@ if not os.path.isfile( PYCGM2_APPDATA_PATH + cgmFileGlobalSettings):
 
 
 # pipeline generation
-# cgm1
-generatePipeline.pipeline_pyCGM2_CGM1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-generatePipeline.pipeline_pyCGM2_CGM1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# cgm1.1
-generatePipeline.pipeline_pyCGM2_CGM1_1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-generatePipeline.pipeline_pyCGM2_CGM1_1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# cgm2.1
-generatePipeline.pipeline_pyCGM2_CGM2_1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-generatePipeline.pipeline_pyCGM2_CGM2_1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# cgm2.2
-generatePipeline.pipeline_pyCGM2_CGM2_2_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-generatePipeline.pipeline_pyCGM2_CGM2_2_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# cgm2.2-Expert
-generatePipeline.pipeline_pyCGM2_CGM2_2_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-generatePipeline.pipeline_pyCGM2_CGM2_2_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# cgm2.3
-generatePipeline.pipeline_pyCGM2_CGM2_3_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-generatePipeline.pipeline_pyCGM2_CGM2_3_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# cgm2.3-Expert
-generatePipeline.pipeline_pyCGM2_CGM2_3_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-generatePipeline.pipeline_pyCGM2_CGM2_3_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
 
-# cgm2.3
-generatePipeline.pipeline_pyCGM2_CGM2_4_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-generatePipeline.pipeline_pyCGM2_CGM2_4_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# cgm2.4-Expert
-generatePipeline.pipeline_pyCGM2_CGM2_4_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-generatePipeline.pipeline_pyCGM2_CGM2_4_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+generatePipeline.scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
+                                            PYCGM2_APPDATA_PATH+"viconPipelines",
+                                            MAIN_PYCGM2_APPS_PATH)
 
-# Sara
-generatePipeline.pipeline_pyCGM2_SARA_kneeCalibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# 2DOF
-generatePipeline.pipeline_pyCGM2_2dof_kneeCalibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-
-# Event detector
-generatePipeline.pipeline_pyCGM2_eventDetector(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-
-# MoGapFill
-generatePipeline.pipeline_pyCGM2_mogapfill(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# #generatePipeline.pipeline_pyCGM2_CGMi_Calibration(MAIN_PYCGM2_APPS_PATH,NEXUS_PIPELINE_TEMPLATE_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\", "CGM1")
+# #generatePipeline.pipeline_pyCGM2_CGMi_Fitting(MAIN_PYCGM2_APPS_PATH,NEXUS_PIPELINE_TEMPLATE_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\", "CGM1")
+#
+# # cgm1
+# generatePipeline.pipeline_pyCGM2_CGM1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# generatePipeline.pipeline_pyCGM2_CGM1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# # cgm1.1
+# generatePipeline.pipeline_pyCGM2_CGM1_1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# generatePipeline.pipeline_pyCGM2_CGM1_1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# # cgm2.1
+# generatePipeline.pipeline_pyCGM2_CGM2_1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# generatePipeline.pipeline_pyCGM2_CGM2_1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# # cgm2.2
+# generatePipeline.pipeline_pyCGM2_CGM2_2_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# generatePipeline.pipeline_pyCGM2_CGM2_2_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# # cgm2.2-Expert
+# generatePipeline.pipeline_pyCGM2_CGM2_2_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# generatePipeline.pipeline_pyCGM2_CGM2_2_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# # cgm2.3
+# generatePipeline.pipeline_pyCGM2_CGM2_3_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# generatePipeline.pipeline_pyCGM2_CGM2_3_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# # cgm2.3-Expert
+# generatePipeline.pipeline_pyCGM2_CGM2_3_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# generatePipeline.pipeline_pyCGM2_CGM2_3_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+#
+# # cgm2.3
+# generatePipeline.pipeline_pyCGM2_CGM2_4_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# generatePipeline.pipeline_pyCGM2_CGM2_4_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# # cgm2.4-Expert
+# generatePipeline.pipeline_pyCGM2_CGM2_4_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# generatePipeline.pipeline_pyCGM2_CGM2_4_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+#
+# # Sara
+# generatePipeline.pipeline_pyCGM2_SARA_kneeCalibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+# # 2DOF
+# generatePipeline.pipeline_pyCGM2_2dof_kneeCalibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+#
+# # Event detector
+# generatePipeline.pipeline_pyCGM2_eventDetector(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+#
+# # MoGapFill
+# generatePipeline.pipeline_pyCGM2_mogapfill(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
 
 
 
