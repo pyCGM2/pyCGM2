@@ -126,6 +126,65 @@ class BtkProgressionTest_gaitTrial():
         np.testing.assert_equal( forwardProgression,False)
         np.testing.assert_equal( globalFrame,"YXZ")
 
+    @classmethod
+    def gaitTrialGarches(cls):
+        """
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\progression\\"
+
+        translators = {
+        		"LASI":"L.ASIS",
+        		"RASI":"R.ASIS",
+        		"LPSI":"L.PSIS",
+        		"RPSI":"R.PSIS",
+        		"RTHI":"R.Thigh",
+        		"RKNE":"R.Knee",
+        		"RTHAP":"R.THAP",
+        		"RTHAD":"R.THAD",
+        		"RTIB":"R.Shank",
+        		"RANK":"R.Ankle",
+        		"RTIAP":"R.TIAP",
+        		"RTIAD":"R.TIAD",
+        		"RHEE":"R.Heel",
+        		"RSMH":"R.SMH",
+        		"RTOE":"R.Toe",
+        		"RFMH":"R.FMH",
+        		"RVMH":"R.VMH",
+        		"LTHI":"L.Thigh",
+        		"LKNE":"L.Knee",
+        		"LTHAP":"L.THAP",
+        		"LTHAD":"L.THAD",
+        		"LTIB":"L.Shank",
+        		"LANK":"L.Ankle",
+        		"LTIAP":"L.TIAP",
+        		"LTIAD":"L.TIAD",
+        		"LHEE":"L.Heel",
+        		"LSMH":"L.SMH",
+        		"LTOE":"L.Toe",
+        		"LFMH":"L.FMH",
+        		"LVMH":"L.VMH",
+        		"RKNM":"R.Knee.Medial",
+                "LKNM":"L.Knee.Medial",
+                "RMED":"R.Ankle.Medial",
+                "LMED":"L.Ankle.Medial"
+        		}
+
+        gaitFilename="gait_garches_issue.c3d"
+
+        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename),translators =translators )
+
+        valSACR=(acq.GetPoint("RPSI").GetValues() + acq.GetPoint("LPSI").GetValues()) / 2.0
+        btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
+
+        valMidAsis=(acq.GetPoint("RASI").GetValues() + acq.GetPoint("LASI").GetValues()) / 2.0
+        btkTools.smartAppendPoint(acq,"midASIS",valMidAsis,desc="")
+
+
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgression(acq,"LASI")
+        longitudinalAxis2,forwardProgression2,globalFrame2 = btkTools.findProgressionAxisFromPelvicMarkers(acq,["LASI","LPSI","RASI","RPSI"])
+
+        np.testing.assert_equal( longitudinalAxis,"Y")
+        np.testing.assert_equal( longitudinalAxis2,"Y")
 #--- static
 class BtkProgressionTest_static():
 
@@ -298,20 +357,41 @@ class OpenmaProgressionTest_gaitTrial():
         np.testing.assert_equal( forwardProgression,False)
         np.testing.assert_equal( globalFrame,"YXZ")
 
+    @classmethod
+    def gaitTrialGarches(cls):
+        """
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\progression\\"
+
+        gaitFilename="gait_garches_issue2.c3d"
+        trial = trialTools.smartTrialReader(MAIN_PATH,gaitFilename)
+
+        longitudinalAxis,forwardProgression,globalFrame = trialTools.findProgression(trial,"RHEE")
+
+        np.testing.assert_equal( longitudinalAxis,"Y")
+        np.testing.assert_equal( forwardProgression,False)
+        np.testing.assert_equal( globalFrame,"YXZ")
+
+
 
 if __name__ == "__main__":
 
-    BtkProgressionTest_gaitTrial.gaitTrialProgressionX_forward_lateralY()
-    BtkProgressionTest_gaitTrial.gaitTrialProgressionX_backward_lateralY()
-    BtkProgressionTest_gaitTrial.gaitTrialProgressionY_forward_lateralX() # issue with residual !! (FIXME)
-    BtkProgressionTest_gaitTrial.gaitTrialProgressionY_backward_lateralX()
-
-    BtkProgressionTest_static.gaitTrialProgressionX_forward_lateralY_static()
-    BtkProgressionTest_static.gaitTrialProgressionX_backward_lateralY_static()
-    BtkProgressionTest_static.gaitTrialProgressionY_backward_lateralX_static()
 
 
-    OpenmaProgressionTest_gaitTrial.gaitTrialProgressionX_forward_lateralY()
-    OpenmaProgressionTest_gaitTrial.gaitTrialProgressionX_backward_lateralY()
-    OpenmaProgressionTest_gaitTrial.gaitTrialProgressionY_forward_lateralX()
-    OpenmaProgressionTest_gaitTrial.gaitTrialProgressionY_backward_lateralX()
+
+    # BtkProgressionTest_gaitTrial.gaitTrialProgressionX_forward_lateralY()
+    # BtkProgressionTest_gaitTrial.gaitTrialProgressionX_backward_lateralY()
+    # BtkProgressionTest_gaitTrial.gaitTrialProgressionY_forward_lateralX() # issue with residual !! (FIXME)
+    # BtkProgressionTest_gaitTrial.gaitTrialProgressionY_backward_lateralX()
+    # BtkProgressionTest_gaitTrial.gaitTrialGarches()
+    #
+    # BtkProgressionTest_static.gaitTrialProgressionX_forward_lateralY_static()
+    # BtkProgressionTest_static.gaitTrialProgressionX_backward_lateralY_static()
+    # BtkProgressionTest_static.gaitTrialProgressionY_backward_lateralX_static()
+    #
+    #
+    # OpenmaProgressionTest_gaitTrial.gaitTrialProgressionX_forward_lateralY()
+    # OpenmaProgressionTest_gaitTrial.gaitTrialProgressionX_backward_lateralY()
+    # OpenmaProgressionTest_gaitTrial.gaitTrialProgressionY_forward_lateralX()
+    # OpenmaProgressionTest_gaitTrial.gaitTrialProgressionY_backward_lateralX()
+    OpenmaProgressionTest_gaitTrial.gaitTrialGarches()

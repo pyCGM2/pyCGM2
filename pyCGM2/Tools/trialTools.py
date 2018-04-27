@@ -10,6 +10,7 @@ import ma.body
 
 
 
+
 def isTimeSequenceExist(trial,label):
     """
         Check if a Time sequence exists inside a trial
@@ -153,7 +154,9 @@ def findProgression(trial,pointLabel):
     if not isTimeSequenceExist(trial,pointLabel):
         raise Exception( "[pyCGM2] : origin point doesnt exist")
 
-    values = trial.findChild(ma.T_TimeSequence,pointLabel).data()[:,0:3]
+    f,ff,lf = findValidFrames(trial,[pointLabel])
+
+    values = trial.findChild(ma.T_TimeSequence,pointLabel).data()[ff:lf,0:3]
 
     MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
     absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
@@ -197,9 +200,10 @@ def findProgressionFromPelvicMarkers(trial,LASI="LASI",RASI="RASI", LPSI="LPSI",
     if not isTimeSequenceExist(trial,RASI):
         raise Exception( "[pyCGM2] : RASI  doesnt exist")
 
+    f,ff,lf = findValidFrames(trial,[LASI,RASI,LPSI,RPSI])
 
-    LASIvalues = trial.findChild(ma.T_TimeSequence,LASI).data()[0,0:3]
-    RASIvalues = trial.findChild(ma.T_TimeSequence,RASI).data()[0,0:3]
+    LASIvalues = trial.findChild(ma.T_TimeSequence,LASI).data()[ff,0:3]
+    RASIvalues = trial.findChild(ma.T_TimeSequence,RASI).data()[ff,0:3]
 
     midASISvalues =   (LASIvalues+RASIvalues)/2.0
 
@@ -211,14 +215,14 @@ def findProgressionFromPelvicMarkers(trial,LASI="LASI",RASI="RASI", LPSI="LPSI",
             raise Exception( "[pyCGM2] : RPSI  doesnt exist")
 
 
-        LPSIvalues = trial.findChild(ma.T_TimeSequence,LPSI).data()[0,0:3]
-        RPSIvalues = trial.findChild(ma.T_TimeSequence,LPSI).data()[0,0:3]
+        LPSIvalues = trial.findChild(ma.T_TimeSequence,LPSI).data()[ff,0:3]
+        RPSIvalues = trial.findChild(ma.T_TimeSequence,LPSI).data()[ff,0:3]
         midPSISvalues =   (LPSIvalues+RPSIvalues)/2.0
     else:
         if not isTimeSequenceExist(trial,SACR):
             raise Exception( "[pyCGM2] : SACR  doesnt exist")
 
-        midPSISvalues = trial.findChild(ma.T_TimeSequence,SACR).data()[0,0:3]
+        midPSISvalues = trial.findChild(ma.T_TimeSequence,SACR).data()[ff,0:3]
 
     a1=(midASISvalues-midPSISvalues)
     a1=a1/np.linalg.norm(a1)
@@ -321,3 +325,27 @@ def smartTrialReader(dataPath,trialfilename):
     sortedEvents(trial)
 
     return trial
+
+
+def findValidFrames(trial,markerLabels):
+
+    flag = list()
+    pfn = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).samples()
+    for i in range(0,pfn):
+        pointFlag=list()
+        for marker in markerLabels:
+            residue = trial.findChild(ma.T_TimeSequence,marker).data()[i,3]
+            if residue >= 0 :
+                pointFlag.append(1)
+            else:
+                pointFlag.append(0)
+
+        if all(pointFlag)==1:
+            flag.append(1)
+        else:
+            flag.append(0)
+
+    firstValidFrame = flag.index(1)
+    lastValidFrame = len(flag) - flag[::-1].index(1) - 1
+
+    return flag,firstValidFrame,lastValidFrame
