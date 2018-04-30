@@ -145,6 +145,10 @@ if "install" in sys.argv or "develop" in sys.argv:
     if not os.path.exists(dirname):
         os.makedirs(dirname)
 
+    dirname = pd+"\\pyCGM2\\viconVst"
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+
 
     # thirdparty questions
     logging.info( " *******Third party package installation******")

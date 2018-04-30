@@ -57,7 +57,9 @@ NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"Data\\normativeData\\"  # By defaul
 OPENSIM_PREBUILD_MODEL_PATH = MAIN_PYCGM2_PATH + "Extern\\opensim\\"
 
 # [Optional] path to vicon template pipeline
-NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "Extern\\vicon\\pipelineTemplate\\"
+NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "installData\\pipelineTemplate\\"
+NEXUS_PYCGM2_VST_PATH = MAIN_PYCGM2_PATH + "Extern\\vicon\\vst\\non-official\\"
+
 
 # [Optional] path pointing at Data Folders used for Tests
 TEST_DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\"
@@ -116,48 +118,7 @@ generatePipeline.scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
                                             PYCGM2_APPDATA_PATH+"viconPipelines",
                                             MAIN_PYCGM2_APPS_PATH)
 
-# #generatePipeline.pipeline_pyCGM2_CGMi_Calibration(MAIN_PYCGM2_APPS_PATH,NEXUS_PIPELINE_TEMPLATE_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\", "CGM1")
-# #generatePipeline.pipeline_pyCGM2_CGMi_Fitting(MAIN_PYCGM2_APPS_PATH,NEXUS_PIPELINE_TEMPLATE_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\", "CGM1")
-#
-# # cgm1
-# generatePipeline.pipeline_pyCGM2_CGM1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# generatePipeline.pipeline_pyCGM2_CGM1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# # cgm1.1
-# generatePipeline.pipeline_pyCGM2_CGM1_1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# generatePipeline.pipeline_pyCGM2_CGM1_1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# # cgm2.1
-# generatePipeline.pipeline_pyCGM2_CGM2_1_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# generatePipeline.pipeline_pyCGM2_CGM2_1_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# # cgm2.2
-# generatePipeline.pipeline_pyCGM2_CGM2_2_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# generatePipeline.pipeline_pyCGM2_CGM2_2_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# # cgm2.2-Expert
-# generatePipeline.pipeline_pyCGM2_CGM2_2_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# generatePipeline.pipeline_pyCGM2_CGM2_2_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# # cgm2.3
-# generatePipeline.pipeline_pyCGM2_CGM2_3_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# generatePipeline.pipeline_pyCGM2_CGM2_3_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# # cgm2.3-Expert
-# generatePipeline.pipeline_pyCGM2_CGM2_3_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# generatePipeline.pipeline_pyCGM2_CGM2_3_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-#
-# # cgm2.3
-# generatePipeline.pipeline_pyCGM2_CGM2_4_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# generatePipeline.pipeline_pyCGM2_CGM2_4_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# # cgm2.4-Expert
-# generatePipeline.pipeline_pyCGM2_CGM2_4_Expert_Calibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# generatePipeline.pipeline_pyCGM2_CGM2_4_Expert_Fitting(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-#
-# # Sara
-# generatePipeline.pipeline_pyCGM2_SARA_kneeCalibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-# # 2DOF
-# generatePipeline.pipeline_pyCGM2_2dof_kneeCalibration(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-#
-# # Event detector
-# generatePipeline.pipeline_pyCGM2_eventDetector(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
-#
-# # MoGapFill
-# generatePipeline.pipeline_pyCGM2_mogapfill(MAIN_PYCGM2_APPS_PATH,PYCGM2_APPDATA_PATH+"viconPipelines\\")
+
 
 
 
@@ -174,6 +135,14 @@ for file_name in src_files:
     full_file_name = os.path.join(PYCGM2_SESSION_SETTINGS_FOLDER+"IkWeightSets", file_name)
     if not (os.path.isfile(PYCGM2_APPDATA_PATH +"IkWeightSets\\"+file_name)):
         shutil.copy(full_file_name, PYCGM2_APPDATA_PATH +"IkWeightSets\\"+file_name)
+
+
+# vst
+src_files = os.listdir(NEXUS_PYCGM2_VST_PATH[:-1])
+for file_name in src_files:
+    full_file_name = os.path.join(NEXUS_PYCGM2_VST_PATH, file_name)
+    if not (os.path.isfile(PYCGM2_APPDATA_PATH +"viconVst\\"+file_name)):
+        shutil.copy(full_file_name, PYCGM2_APPDATA_PATH +"viconVst\\"+file_name)
 
 
 # ------------------- METHODS ------------------------------------------------
