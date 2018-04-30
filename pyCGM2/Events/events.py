@@ -20,7 +20,16 @@ class ZeniProcedure(object):
 
     def __init__(self):
         self.description = "Zeni (2008)"
+        self.footStrikeOffset = 0
+        self.footOffOffset = 0
 
+    def setFootStrikeOffset(self,value):
+        print value
+        self.footStrikeOffset = value
+
+    def setFootOffOffset(self,value):
+        print value
+        self.footOffOffset = value
 
     def detect(self,acq):
         """
@@ -62,7 +71,9 @@ class ZeniProcedure(object):
             indexes_fs_right = detect_peaks.detect_peaks(-diffHeel_right[:,longAxisIndex])+ff
             indexes_fo_right = detect_peaks.detect_peaks(diffToe_right[:,longAxisIndex])+ff
 
-        return indexes_fs_left ,indexes_fo_left,indexes_fs_right,indexes_fo_right
+        print  indexes_fs_left
+        print  indexes_fs_left+self.footStrikeOffset
+        return indexes_fs_left+self.footStrikeOffset,indexes_fo_left+self.footOffOffset, indexes_fs_right+self.footStrikeOffset, indexes_fo_right+self.footOffOffset
 
 
 class EventFilter(object):

@@ -29,8 +29,11 @@ if __name__ == "__main__":
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
     parser = argparse.ArgumentParser(description='ZeniDetector')
+    parser.add_argument('-fso','--footStrikeOffset', type=int, help='systenatic foot strike offset on both side')
+    parser.add_argument('-foo','--footOffOffset', type=int, help='systenatic foot off offset on both side')
     args = parser.parse_args()
 
+    print args
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
         # ----------------------INPUTS-------------------------------------------
@@ -66,6 +69,12 @@ if __name__ == "__main__":
 
         # ----------------------EVENT DETECTOR-------------------------------
         evp = events.ZeniProcedure()
+        if args.footStrikeOffset is not None:
+            evp.setFootStrikeOffset(args.footStrikeOffset)
+        if args.footOffOffset is not None:
+            evp.setFootOffOffset(args.footOffOffset)
+
+
         evf = events.EventFilter(evp,acqGait)
         evf.detect()
 
