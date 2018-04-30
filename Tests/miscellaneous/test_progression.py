@@ -376,22 +376,19 @@ class OpenmaProgressionTest_gaitTrial():
 
 if __name__ == "__main__":
 
+    BtkProgressionTest_gaitTrial.gaitTrialProgressionX_forward_lateralY()
+    BtkProgressionTest_gaitTrial.gaitTrialProgressionX_backward_lateralY()
+    #BtkProgressionTest_gaitTrial.gaitTrialProgressionY_forward_lateralX() # issue with residual !! (FIXME)
+    BtkProgressionTest_gaitTrial.gaitTrialProgressionY_backward_lateralX()
+    BtkProgressionTest_gaitTrial.gaitTrialGarches()
+
+    BtkProgressionTest_static.gaitTrialProgressionX_forward_lateralY_static()
+    BtkProgressionTest_static.gaitTrialProgressionX_backward_lateralY_static()
+    BtkProgressionTest_static.gaitTrialProgressionY_backward_lateralX_static()
 
 
-
-    # BtkProgressionTest_gaitTrial.gaitTrialProgressionX_forward_lateralY()
-    # BtkProgressionTest_gaitTrial.gaitTrialProgressionX_backward_lateralY()
-    # BtkProgressionTest_gaitTrial.gaitTrialProgressionY_forward_lateralX() # issue with residual !! (FIXME)
-    # BtkProgressionTest_gaitTrial.gaitTrialProgressionY_backward_lateralX()
-    # BtkProgressionTest_gaitTrial.gaitTrialGarches()
-    #
-    # BtkProgressionTest_static.gaitTrialProgressionX_forward_lateralY_static()
-    # BtkProgressionTest_static.gaitTrialProgressionX_backward_lateralY_static()
-    # BtkProgressionTest_static.gaitTrialProgressionY_backward_lateralX_static()
-    #
-    #
-    # OpenmaProgressionTest_gaitTrial.gaitTrialProgressionX_forward_lateralY()
-    # OpenmaProgressionTest_gaitTrial.gaitTrialProgressionX_backward_lateralY()
-    # OpenmaProgressionTest_gaitTrial.gaitTrialProgressionY_forward_lateralX()
-    # OpenmaProgressionTest_gaitTrial.gaitTrialProgressionY_backward_lateralX()
+    OpenmaProgressionTest_gaitTrial.gaitTrialProgressionX_forward_lateralY()
+    OpenmaProgressionTest_gaitTrial.gaitTrialProgressionX_backward_lateralY()
+    OpenmaProgressionTest_gaitTrial.gaitTrialProgressionY_forward_lateralX()
+    OpenmaProgressionTest_gaitTrial.gaitTrialProgressionY_backward_lateralX()
     OpenmaProgressionTest_gaitTrial.gaitTrialGarches()
