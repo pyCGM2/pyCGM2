@@ -1,7 +1,9 @@
 {
-    "PipelineVersion": "pipe-V-1.0.1",
+    "PipelineVersion": "pipe-V-1.1.0",
     "DATA_PATH":"C:\\Users\\HLS501\\Documents\\VICON DATA\\Salford\\CGM3\\PN01\\PN01OP01S01\\",
     "OutDataPath":"C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2-Analyses\\CGM3-dataCollection\\CGM2.4-analysis\\results\\PN01S01OP01\\",
+    "ModelVersion": "CGM1.1",
+    "fileSuffix": "cgm11",
     "Subject": {
         "Id": "PN01"
     },
@@ -10,12 +12,8 @@
         "AssessorName": "O01"
     },
     "Modelling": {
-        "ModelVersion": "CGM1.1",
-        "ModelInfo": {
-            "Model": "CGM1.1"
-        },
-        "fileSuffix": "cgm11",
         "pointSuffix": "",
+        "ModelInfo": {},
         "MarkerDiameter": 14,
         "MP": {
             "Required": {

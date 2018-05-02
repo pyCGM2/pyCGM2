@@ -23,10 +23,6 @@ def modelling(manager,DATA_PATH,DATA_PATH_OUT,vskFile=None):
     modelVersion = manager.getModelVersion()
     logging.info("model version : %s" %(modelVersion))
 
-
-
-
-
     # --------------------------MODELLING ------------------------------------
 
     # manage global settings and translators
@@ -297,7 +293,7 @@ def processing(manager,DATA_PATH,DATA_PATH_OUT,plotFlag=True, exportFlag = True)
     pointSuffix = manager.getPointSuffix()
     modelVersion = manager.getModelVersion()
 
-    modelInfo = manager.getModelInfo()
+    modelInfo = manager.getModelInfo(modelVersion = modelVersion)
     subjectInfo = manager.getSubjectInfo()
     experimentalInfo = manager.getExpInfo()
 
@@ -364,7 +360,7 @@ if __name__ == "__main__":
     plotFlag = False if  args.noPlot else True
 
 
-    args.DEBUG = False
+    args.DEBUG = True
     if args.DEBUG:
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
         #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
@@ -378,7 +374,9 @@ if __name__ == "__main__":
 
 
     # ----------------setting manager----------------
+
     manager = pipManager.PipelineFileManager(wd,pipelineFile)
+
 
     # data path configurations
     DATA_PATH = wd if manager.getDataPath() is None else manager.getDataPath()

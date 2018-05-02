@@ -12,6 +12,7 @@ class PipelineFileManager(object):
 
         self.pipSettings = files.openJson(DATA_PATH,pipelineFile,stringContent=stringContent)
 
+
     def getPipelineSetttings(self):
         return self.pipSettings
 
@@ -28,7 +29,7 @@ class PipelineFileManager(object):
         return ikwf if ikwf !="" else None
 
     def getModelVersion(self):
-        return str(self.pipSettings["Modelling"]["ModelVersion"])
+        return str(self.pipSettings["ModelVersion"])
 
     def getMP(self):
         required_mp,optional_mp = files.getMp(self.pipSettings["Modelling"],resetFlag=True)
@@ -38,7 +39,7 @@ class PipelineFileManager(object):
         return str(self.pipSettings["Modelling"]["pointSuffix"])
 
     def getFileSuffix(self):
-        return None if self.pipSettings["Modelling"]["fileSuffix"]=="" else str(self.pipSettings["Modelling"]["fileSuffix"])
+        return None if self.pipSettings["fileSuffix"]=="" else str(self.pipSettings["fileSuffix"])
 
     def getMarkerDiameter(self):
         return self.pipSettings["Modelling"]["MarkerDiameter"]
@@ -98,8 +99,14 @@ class PipelineFileManager(object):
         return self.pipSettings["Subject"]
     def getExpInfo(self):
         return self.pipSettings["ExperimentalContext"]
-    def getModelInfo(self):
-        return self.pipSettings["Modelling"]["ModelInfo"]
+
+    def getModelInfo(self,modelVersion=None):
+        dict = self.pipSettings["Modelling"]["ModelInfo"]
+        if modelVersion is not None:
+            dict2 = {"Model": modelVersion}
+            dict.update(dict2)
+        return dict
+
     def getProcessingAnalyses(self):
         return self.pipSettings["Processing"]["Analyses"]
 
