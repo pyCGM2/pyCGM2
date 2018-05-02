@@ -100,12 +100,27 @@ class PipelineFileManager(object):
     def getExpInfo(self):
         return self.pipSettings["ExperimentalContext"]
 
-    def getModelInfo(self,modelVersion=None):
+
+    def getModelInfo(self):
+
         dict = self.pipSettings["Modelling"]["ModelInfo"]
-        if modelVersion is not None:
-            dict2 = {"Model": modelVersion}
-            dict.update(dict2)
+
+        version = self.pipSettings["ModelVersion"]
+        left_knee = self.pipSettings["Modelling"]["KneeCalibrationTrials"]["Left"]["Method"]
+        right_knee = self.pipSettings["Modelling"]["KneeCalibrationTrials"]["Right"]["Method"]
+        ik = bool(self.pipSettings["Modelling"]["NoIK"])
+
+        dict2 = {"ModelVersion": version ,
+                "LeftKnee" : left_knee,
+                "RightKnee" : right_knee,
+                "IK" : ik}
+
+
+        dict.update(dict2)
+
         return dict
+
+
 
     def getProcessingAnalyses(self):
         return self.pipSettings["Processing"]["Analyses"]
