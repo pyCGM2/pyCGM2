@@ -13,6 +13,12 @@ from pyCGM2.Tools import exportTools
 import ma.io
 import ma.body
 
+class AnalysisStructure:
+    data = dict()
+    pst = dict()
+    optionalData = dict()
+
+
 
 # ---- PATTERN BUILDER ------
 
@@ -40,17 +46,14 @@ class Analysis():
 
     """
 
-    class Structure:
-        data = dict()
-        pst = dict()
-        optionalData = dict()
+
 
     def __init__(self):
 
         self.stpStats=dict()
-        self.kinematicStats = Analysis.Structure()
-        self.kineticStats=Analysis.Structure()
-        self.emgStats=Analysis.Structure()
+        self.kinematicStats = AnalysisStructure()
+        self.kineticStats=AnalysisStructure()
+        self.emgStats=AnalysisStructure()
         self.gps= None
         self.gvs = None
         self.coactivations=dict()

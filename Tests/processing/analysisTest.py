@@ -13,7 +13,7 @@ import ma.body
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Processing import exporter,c3dManager
 from pyCGM2.Processing.highLevel import standardSmartFunctions,gaitSmartFunctions
-
+from pyCGM2.Utils import files
 
 
 class AnalysisTest():
@@ -139,11 +139,42 @@ class AnalysisTest():
                                     modelInfo,subjectInfo,experimentalInfo)
 
 
+    @classmethod
+    def Save_and_openAnalysis(cls):
+        # ----DATA-----
 
+        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        modelledFilenames = ["gait Trial 03 - viconName.c3d" ]
+
+
+
+        #---- c3d manager
+        #--------------------------------------------------------------------------
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
+        cmf.enableEmg(False)
+        trialManager = cmf.generate()
+
+        #---- Analysis
+        #--------------------------------------------------------------------------
+
+        # ----INFOS-----
+        modelInfo={"Type":"cgm2", "hjc":"hara"}
+        subjectInfo={"Id":"1", "Name":"Lecter"}
+        experimentalInfo={"Condition":"Barefoot", "context":"block"}
+
+        analysis = gaitSmartFunctions.make_analysis(trialManager,
+                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
+                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
+                                    modelInfo,subjectInfo,experimentalInfo)
+
+        files.saveAnalysis(analysis,DATA_PATH,"Save_and_openAnalysis")
+        analysis2 = files.loadAnalysis(DATA_PATH,"Save_and_openAnalysis")
 
 if __name__ == "__main__":
 
     plt.close("all")
 
-    #AnalysisTest.makeAnalysis_oneFile_noInfo()
-    #AnalysisTest.makeAnalysis_oneFile_withInfo()
+    AnalysisTest.makeAnalysis_oneFile_noInfo()
+    AnalysisTest.makeAnalysis_oneFile_withInfo()
+    AnalysisTest.Save_and_openAnalysis()

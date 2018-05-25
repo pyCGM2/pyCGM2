@@ -47,7 +47,7 @@ def loadAnalysis(path,FilenameNoExt):
         filename = FilenameNoExt + "-pyCGM2.analysis"
     else:
         filename = "pyCGM2.analysis"
-    
+
     # --------------------pyCGM2 MODEL ------------------------------
     if not os.path.isfile(path + filename):
         raise Exception ("%s-pyCGM2.analysis file doesn't exist"%filename)
@@ -95,8 +95,8 @@ def openJson(path,filename,stringContent=None):
 
 
 def saveJson(path, filename, content):
-        with open(str(path+filename), 'w') as outfile:
-            json.dump(content, outfile,indent=4)
+    with open(str(path+filename), 'w') as outfile:
+        json.dump(content, outfile,indent=4)
 
 def prettyJsonDisplay(parsedContent):
     print json.dumps(parsedContent, indent=4, sort_keys=True)
