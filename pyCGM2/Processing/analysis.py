@@ -32,13 +32,13 @@ class Analysis():
        Attributes :
 
           - `stpStats` (dict)  - descritive statictics of stapiotemporal parameters
-          - `kinematicStats` (Analysis.Structure)  - descritive statictics of kinematics data.
-          - `kineticStats` (Analysis.Structure)  - descritive statictics of kinetics data.
-          - `emgStats` (Analysis.Structure)  - descritive statictics of emg data.
+          - `kinematicStats` (AnalysisStructure)  - descritive statictics of kinematics data.
+          - `kineticStats` (AnalysisStructure)  - descritive statictics of kinetics data.
+          - `emgStats` (AnalysisStructure)  - descritive statictics of emg data.
 
        .. note:
 
-           Notice kinematicStats, kineticStats and emgStats are `Analysis.Structure object`. This object implies two dictionnary as sublevels.
+           Notice kinematicStats, kineticStats and emgStats are `AnalysisStructure object`. This object implies two dictionnary as sublevels.
 
              - `data` collect descriptive statistics of either kinematics, kinetics or emg.
              - `pst` returns the spatiotemporal parameters of all cycles involved in either kinematics, kinetics or emg processing.
