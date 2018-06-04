@@ -377,10 +377,10 @@ if __name__ == "__main__":
 
     manager = pipManager.PipelineFileManager(wd,pipelineFile)
 
-
     # data path configurations
-    DATA_PATH = wd if manager.getDataPath() is None else manager.getDataPath()
-    print  DATA_PATH
+    if not args.DEBUG:
+        DATA_PATH = wd if manager.getDataPath() is None else manager.getDataPath()
+        print  DATA_PATH
 
     DATA_PATH_OUT = DATA_PATH if manager.getOutDataPath() is None else manager.getOutDataPath()
     if manager.getOutDataPath() is not None:

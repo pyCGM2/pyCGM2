@@ -6,6 +6,7 @@ import os
 from shutil import copyfile
 from collections import OrderedDict
 import shutil
+import yaml
 
 import pyCGM2
 
@@ -90,13 +91,52 @@ def openJson(path,filename,stringContent=None):
         jsonStuct = json.loads(stringContent,object_pairs_hook=OrderedDict)
         return jsonStuct
 
-
-
-
-
 def saveJson(path, filename, content):
     with open(str(path+filename), 'w') as outfile:
         json.dump(content, outfile,indent=4)
+
+def openYaml(path,filename,stringContent=None):
+    if stringContent is None:
+        try:
+            if path is None:
+                struct = yaml.load(open(str(filename)).read())
+            else:
+                struct= yaml.load(open(str(path+filename)).read())
+            return struct
+        except :
+            raise Exception ("[pyCGM2] : yaml syntax of file (%s) is incorrect. check it" %(filename))
+    else:
+        struct = yaml.load(stringContent)
+        return struct
+
+def openPipelineFile(path,filename,stringContent=None):
+    if stringContent is None:
+        try:
+            if path is None:
+                content = open(str(filename)).read()
+            else:
+                content = open(str(path+filename)).read()
+        except :
+            pass
+    else:
+        content = stringContent
+
+    jsonFlag = is_json(content)
+
+    if jsonFlag:
+        logging.info("your config file agree json syntax")
+        struct = openJson(None,None,stringContent=content)
+    else:
+        yamlFlag = is_yaml(content)
+
+        if yamlFlag:
+            logging.info("your config file agree yaml syntax")
+            struct = openYaml(path,filename,stringContent=content)
+        else:
+            raise Exception("[pYCGM2]: pipeline config file is neither a json file nor a yaml file")
+
+    return struct
+
 
 def prettyJsonDisplay(parsedContent):
     print json.dumps(parsedContent, indent=4, sort_keys=True)
@@ -310,3 +350,16 @@ def getDirs(folderPath):
     pathOut = folderPath[:-1] if folderPath[-1:]=="\\" else folderPath
     dirs = [ name for name in os.listdir(pathOut) if os.path.isdir(os.path.join(pathOut, name)) ]
     return ( dirs)
+
+def try_as(loader, s, on_error):
+    try:
+        loader(s)
+        return True
+    except on_error:
+        return False
+
+def is_json(s):
+    return try_as(json.loads, s, ValueError)
+
+def is_yaml(s):
+    return try_as(yaml.safe_load, s, yaml.scanner.ScannerError)

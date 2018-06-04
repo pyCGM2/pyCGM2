@@ -1,0 +1,101 @@
+PipelineVersion: pipe-V-1.1.0
+DATA_PATH: C:\Users\HLS501\Documents\VICON DATA\Salford\CGM3\PN01\PN01OP01S01\
+OutDataPath: C:\Users\HLS501\Documents\Programming\API\pyCGM2\pyCGM2-Analyses\CGM3-dataCollection\CGM2.4-analysis\results\PN01S01OP01\
+ModelVersion: CGM1.1
+fileSuffix: cgm11
+Subject:
+  Id: PN01
+ExperimentalContext:
+  sessionName: S01
+  AssessorName: O01
+
+Modelling:
+    pointSuffix: None
+    ModelInfo: None
+    MarkerDiameter: 14
+    MP:
+        Required:
+            Bodymass: 0
+            Height: 0
+            LeftLegLength: 0
+            RightLegLength: 0
+            LeftKneeWidth: 0
+            RightKneeWidth: 0
+            LeftAnkleWidth: 0
+            RightAnkleWidth: 0
+            LeftSoleDelta: 0
+            RightSoleDelta: 0
+        Optional:
+            InterAsisDistance: 0
+            LeftAsisTrocanterDistance: 0
+            LeftTibialTorsion: 0
+            LeftThighRotation: 0
+            LeftShankRotation: 0
+            RightAsisTrocanterDistance: 0
+            RightTibialTorsion: 0
+            RightThighRotation: 0
+            RightShankRotation: 0
+            LeftKneeFuncCalibrationOffset: 0
+            RightKneeFuncCalibrationOffset: 0
+    NoIK: 0
+    Calibration:
+        HJC:
+            Left: []
+            Right: []
+        LeftFlatFoot: 1
+        RightFlatFoot: 1
+        Trial: PN01OP01S01STAT.c3d
+
+    KneeCalibrationTrials:
+        Left:
+            Method: None
+            Trial: PN01OP01S01FUNC01.c3d
+            BeginFrame: 983
+            EndFrame: 1372
+        Right:
+            Method: None
+            Trial: PN01OP01S01FUNC01.c3d
+            BeginFrame: 983
+            EndFrame: 1372
+    Fitting:
+        IkweightFile: None
+        Trials:
+            - File: PN01OP01S01SS01.c3d
+              Mfpa: LRXX
+            - File: PN01OP01S01SS01.c3d
+              Mfpa: LRXX
+        Projection: JCS
+
+Processing:
+    Analyses:
+        - outputFilenameNoExt:  gait_CGM1
+          AnalysisTitle: spontaneous Gait
+          TaskType: Gait
+          Conditions:
+              Foot: barefoot
+              Orthosis: None
+              Prothesis: None
+              External help: None
+              Assistance: None
+          Trials:
+            - PN01OP01S01SS01.c3d
+            - PN01OP01S01SS02.c3d
+          Normative data:
+            Author: Schwartz2008
+            Modality: "Free"
+
+        - outputFilenameNoExt:  fastGait_CGM1
+          AnalysisTitle: fast Gait
+          TaskType: Gait
+          Conditions:
+            Foot: barefoot
+            Orthosis: None
+            Prothesis: None
+            External help: None
+            Assistance: None
+          Trials:
+            - PN01OP01S01SS01.c3d
+            - PN01OP01S01SS02.c3d
+          Normative data:
+            Author: Schwartz2008
+            Modality: "Free"

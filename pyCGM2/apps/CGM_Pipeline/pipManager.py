@@ -10,23 +10,26 @@ class PipelineFileManager(object):
         self.m_pipelineFile = pipelineFile
 
 
-        self.pipSettings = files.openJson(DATA_PATH,pipelineFile,stringContent=stringContent)
+        self.pipSettings = files.openPipelineFile(DATA_PATH,pipelineFile,stringContent=stringContent)
 
 
     def getPipelineSetttings(self):
         return self.pipSettings
 
     def getDataPath(self):
+
         out_path = str(self.pipSettings["DATA_PATH"])
-        return out_path if out_path!="" else None
+        return "" if  out_path == "None" else out_path
 
     def getOutDataPath(self):
         out_path = str(self.pipSettings["OutDataPath"])
-        return out_path if out_path!="" else None
+
+        return None if  out_path == "None" else out_path
 
     def getIkWeightFile(self):
         ikwf = str(self.pipSettings["Modelling"]["Fitting"]["IkweightFile"])
-        return ikwf if ikwf !="" else None
+        if ikwf == "None": ikwf = None
+        return None if ikwf is None else ikwf
 
     def getModelVersion(self):
         return str(self.pipSettings["ModelVersion"])
@@ -36,13 +39,16 @@ class PipelineFileManager(object):
         return required_mp,optional_mp
 
     def getPointSuffix(self):
-        return str(self.pipSettings["Modelling"]["pointSuffix"])
+        ps = str(self.pipSettings["Modelling"]["pointSuffix"])
+        return "" if ps == "None" else ps
 
     def getFileSuffix(self):
-        return None if self.pipSettings["fileSuffix"]=="" else str(self.pipSettings["fileSuffix"])
+        fs = self.pipSettings["fileSuffix"]
+        return None if fs=="None" else fs
 
     def getMarkerDiameter(self):
-        return self.pipSettings["Modelling"]["MarkerDiameter"]
+        md = self.pipSettings["Modelling"]["MarkerDiameter"]
+        return md
 
     # calibration
     def getLeftFlatFoot(self):
@@ -53,8 +59,6 @@ class PipelineFileManager(object):
 
     def getHJC(self):
         return self.pipSettings["Modelling"]["Calibration"]["HJC"]
-
-
 
     def getStaticTial(self):
         return str(self.pipSettings["Modelling"]["Calibration"]["Trial"])
@@ -100,10 +104,12 @@ class PipelineFileManager(object):
     def getExpInfo(self):
         return self.pipSettings["ExperimentalContext"]
 
-
     def getModelInfo(self):
 
-        dict = self.pipSettings["Modelling"]["ModelInfo"]
+        if self.pipSettings["Modelling"]["ModelInfo"] is None:
+            dict = {}
+        else:
+            dict = self.pipSettings["Modelling"]["ModelInfo"]
 
         version = self.pipSettings["ModelVersion"]
         left_knee = self.pipSettings["Modelling"]["KneeCalibrationTrials"]["Left"]["Method"]
@@ -114,7 +120,6 @@ class PipelineFileManager(object):
                 "LeftKnee" : left_knee,
                 "RightKnee" : right_knee,
                 "IK" : ik}
-
 
         dict.update(dict2)
 

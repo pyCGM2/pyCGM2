@@ -12,7 +12,7 @@
         "AssessorName": "O01"
     },
     "Modelling": {
-        "pointSuffix": "",
+        "pointSuffix": "None",
         "ModelInfo": {},
         "MarkerDiameter": 14,
         "MP": {
@@ -51,13 +51,13 @@
         },
         "KneeCalibrationTrials": {
             "Left": {
-                "Method": "NONE",
+                "Method": "None",
                 "Trial": "PN01OP01S01FUNC01.c3d",
                 "BeginFrame": 983,
                 "EndFrame": 1372
             },
             "Right": {
-                "Method": "NONE",
+                "Method": "None",
                 "Trial": "PN01OP01S01FUNC01.c3d",
                 "BeginFrame": 377,
                 "EndFrame": 673
@@ -82,11 +82,11 @@
                 "AnalysisTitle": "Gait analysis",
                 "TaskType": "Gait",
                 "Conditions": {
-                    "Foot": "",
-                    "Orthosis": "",
-                    "Prothesis": "",
-                    "ExternalHelp": "",
-                    "Assistance": ""
+                    "Foot": "None",
+                    "Orthosis": "None",
+                    "Prothesis": "None",
+                    "ExternalHelp": "None",
+                    "Assistance": "None"
                 },
                 "Trials": ["PN01OP01S01SS01.c3d",
                            "PN01OP01S01SS02.c3d",
