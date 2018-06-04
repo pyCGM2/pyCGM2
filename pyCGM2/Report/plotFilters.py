@@ -71,10 +71,14 @@ class PlottingFilter(object):
         '''
 
         #self.__concretePlotViewer.plotPanel(self.m_path,self.m_pdfName)
-        fig = self.__concretePlotViewer.plotPanel()
+        self.fig = self.__concretePlotViewer.plotPanel()
 
 
         if self.m_path is not None and self.m_pdfName is not None:
             pp = PdfPages(str(self.m_path+ self.m_pdfName+".pdf"))
-            pp.savefig(fig)
+            pp.savefig(self.fig)
             pp.close()
+
+    def setYlimits(self, axisIndex, min, max):
+        self.__concretePlotViewer.fig.axes[axisIndex].set_ylim([min,max])
+        #pf.fig.axes[0].set_ylim([-20,10])
