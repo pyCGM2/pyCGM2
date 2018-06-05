@@ -81,4 +81,6 @@ class PlottingFilter(object):
 
     def setYlimits(self, axisIndex, min, max):
         self.__concretePlotViewer.fig.axes[axisIndex].set_ylim([min,max])
-        #pf.fig.axes[0].set_ylim([-20,10])
+
+    def setHorizontalLine(self, axisIndex, value,color= "black"):
+        self.__concretePlotViewer.fig.axes[axisIndex].axhline(value,color=color,ls='dashed')
