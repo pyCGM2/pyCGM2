@@ -354,19 +354,22 @@ class Model(object):
 
     def getClinicalDescriptor(self,dataType,jointOrSegmentLabel,projection=None):
 
-        for descriptor in self.m_clinicalDescriptors:
-            if projection is None:
-                if descriptor.type == dataType and descriptor.label ==jointOrSegmentLabel:
-                    infos= descriptor.infos
-                    break
+        if self.m_clinicalDescriptors !=[]:
+            for descriptor in self.m_clinicalDescriptors:
+                if projection is None:
+                    if descriptor.type == dataType and descriptor.label ==jointOrSegmentLabel:
+                        infos= descriptor.infos
+                        break
+                    else:
+                        infos = False
                 else:
-                    infos = False
-            else:
-                if descriptor.type == dataType and descriptor.label ==jointOrSegmentLabel and descriptor.projection == projection:
-                    infos= descriptor.infos
-                    break
-                else:
-                    infos = False
+                    if descriptor.type == dataType and descriptor.label ==jointOrSegmentLabel and descriptor.projection == projection:
+                        infos= descriptor.infos
+                        break
+                    else:
+                        infos = False
+        else:
+            infos=False
 
         if not infos:
             logging.debug("[pyCGM2] : descriptor [ type: %s - label: %s]  not found" %(dataType.name,jointOrSegmentLabel))
