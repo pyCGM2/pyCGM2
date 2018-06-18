@@ -223,29 +223,37 @@ class XlsJointPatternProcedure(object):
             for it in criterias:
                 if  "(" not in it:
                     status = re.findall( "\[(.*?)\]" ,it )[0]
-                    ide = re.findall("\#(\d)",it)[0]
+                    ide = re.findall("\#(\d{0,100})",it)[0]
                     primaries.append({'status': status, 'ide': int(ide)})
                 else:
                     bracket =  re.findall( "\((.*?)\)" ,it )[0]
-                    score = re.findall(",(\d)", bracket)[0]
+                    score = re.findall(",(\d{0,100})", bracket)[0]
                     dict2 = {"score":int(score), "case" : list()}
                     casesStr = re.findall("(.*?),",bracket)[0]
                     cases = casesStr.split("|")
                     for case in cases:
-                        status = re.findall( "\[(.*?)\]" ,it )[0]
-                        ide = re.findall("\#(\d)",it)[0]
+                        status = re.findall( "\[(.*?)\]" ,case )[0]
+                        ide = re.findall("\#(\d{0,100})",case)[0]
                         dict2["case"].append( {'status': status, 'ide': int(ide)})
                     secondaries.append(dict2)
+
+
 
             # criteria test
             flag1=True
             if primaries != []:
+                count =0
+                nb_primaries = len(primaries)
                 for dict1It in primaries:
                     rowData = self.data[self.data["Id"] == dict1It["ide"]]
                     indexSelect = rowData.index[0]
-                    if not rowData["ValueStatus"][indexSelect] !=  dict1It["status"]:
-                        flag1= False
-                        break
+                    if rowData["ValueStatus"][indexSelect] ==  dict1It["status"]:
+                        count +=1
+                if count == nb_primaries:
+                    flag1 = True
+                else:
+                    flag1 = False
+
 
             if secondaries != []:
                 flag2 = True
