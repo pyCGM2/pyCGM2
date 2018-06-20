@@ -10,6 +10,7 @@ from pyCGM2.Signal.detect_peaks import detect_peaks
 from pyCGM2.Math import derivation
 
 from pyCGM2.Processing import analysisHandler
+from pyCGM2.Tools import exportTools
 # --- FILTER ----
 
 
@@ -17,16 +18,45 @@ class DiscretePointsFilter(object):
     """
     """
 
-    def __init__(self, discretePointProcedure, analysis):
+    def __init__(self, discretePointProcedure, analysis,modelInfo=None,subjInfo=None,condExpInfo=None):
 
         self.m_procedure = discretePointProcedure
         self.m_analysis=analysis
-
         self.dataframe =  None
+
+        self.m_modelInfo = modelInfo
+        self.m_subjInfo = subjInfo
+        self.m_condExpInfo = condExpInfo
+
+    def setModelInfo(self, modelInfo):
+        self.m_modelInfo = modelInfo
+
+    def setSubjInfo(self, subjInfo):
+        self.m_subjInfo = subjInfo
+
+    def setCondExpInf(self, condExpInfo):
+        self.m_condExpInfo = condExpInfo
 
 
     def getOutput(self):
         self.dataframe = self.m_procedure.detect(self.m_analysis)
+
+        # add infos
+        if self.m_modelInfo is not None:
+            for key,value in self.m_modelInfo.items():
+                exportTools.isColumnNameExist( self.dataframe, key)
+                self.dataframe[key] = value
+
+        if self.m_subjInfo is not None:
+            for key,value in self.m_subjInfo.items():
+                exportTools.isColumnNameExist( self.dataframe, key)
+                self.dataframe[key] = value
+
+        if self.m_condExpInfo is not None:
+            for key,value in self.m_condExpInfo.items():
+                exportTools.isColumnNameExist( self.dataframe, key)
+                self.dataframe[key] = value
+
         return self.dataframe
 
 
