@@ -131,3 +131,5 @@ def gaitProcessing(DATA_PATH, modelledFilenames, modelVersion,
             normativeDataset=nds )
         if plotDisplay:
             plt.show()
+
+    return analysis
