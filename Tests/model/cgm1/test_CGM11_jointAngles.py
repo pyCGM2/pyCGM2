@@ -323,6 +323,109 @@ class CGM11_motionFullAnglesTest():
 #        np.testing.assert_almost_equal( acqGait.GetPoint("RFootProgressAngles").GetValues(),
 #                                        acqGait.GetPoint("RFootProgressAngles_cgm1_6dof").GetValues(), decimal =3)
 
+    @classmethod
+    def advancedCGM11_KadMed_TrueEquinus(cls):
+        """
+
+
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\kad-med-TrueEquinus\\"
+        staticFilename = "static.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 36.9,
+        'LeftLegLength' : 665.0,
+        'RightLegLength' : 655.0 ,
+        'LeftKneeWidth' : 102.7,
+        'RightKneeWidth' : 100.2,
+        'LeftAnkleWidth' : 64.5,
+        'RightAnkleWidth' : 63.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+
+        optional_mp={
+        'InterAsisDistance'   : 0,
+        'LeftAsisTrocanterDistance' : 0,
+        'LeftThighRotation' : 0,
+        'LeftShankRotation' : 0 ,
+        'LeftTibialTorsion' : 0,
+        'RightAsisTrocanterDistance' : 0,
+        'RightThighRotation' : 0,
+        'RightShankRotation' : 0,
+        'RightTibialTorsion' : 0
+        }
+
+        model.addAnthropoInputParameters(mp,optional=optional_mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+
+        modelDecorator.Kad(model,acqStatic).compute()
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # tibial torsion
+        ltt_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LTibialTorsion").value().GetInfo().ToDouble()[0])
+        rtt_vicon =np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RTibialTorsion").value().GetInfo().ToDouble()[0])
+
+
+        logging.info(" LTibialTorsion : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(ltt_vicon,model.mp_computed["LeftTibialTorsionOffset"]))
+        logging.info(" RTibialTorsion : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(rtt_vicon,model.mp_computed["RightTibialTorsionOffset"]))
+
+         # thigh and shank Offsets
+        lto = model.getViconThighOffset("Left")
+        lso = model.getViconShankOffset("Left")
+        rto = model.getViconThighOffset("Right")
+        rso = model.getViconShankOffset("Right")
+
+        lto_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LThighRotation").value().GetInfo().ToDouble()[0])
+        lso_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("LShankRotation").value().GetInfo().ToDouble()[0])
+
+        rto_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RThighRotation").value().GetInfo().ToDouble()[0])
+        rso_vicon = np.rad2deg(acqStatic.GetMetaData().FindChild("PROCESSING").value().FindChild("RShankRotation").value().GetInfo().ToDouble()[0])
+
+        logging.info(" LThighRotation : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(lto_vicon,lto))
+        logging.info(" LShankRotation : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(lso_vicon,lso))
+        logging.info(" RThighRotation : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(rto_vicon,rto))
+        logging.info(" RShankRotation : Vicon (%.6f)  Vs pyCGM2 (%.6f)" %(rso_vicon,rso))
+
+        btkTools.smartWriter(acqStatic,"Kad-med-TrueEquinus.c3d")
+
+
+        gaitFilename="gait trial 01.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+
+        # Motion FILTER
+        # optimisation segmentaire et calibration fonctionnel
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
+        modMotion.compute()
+
+        # relative angles
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+
+
+        # absolute angles
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                      eulerSequences=["TOR","TOR", "TOR"],
+                                      globalFrameOrientation = globalFrame,
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+
+        btkTools.smartWriter(acqGait, "Kad-med-TrueEquinus-angles.c3d")
+
 
 class CGM1_motionFullAnglesTest_customApproach():
     @classmethod
@@ -392,31 +495,32 @@ class CGM1_motionFullAnglesTest_customApproach():
 if __name__ == "__main__":
 
 
-   plt.close("all")
+    plt.close("all")
 
-#    logging.info("######## PROCESS CGM1 - JCSK ######")
+    logging.info("######## PROCESS CGM1 - JCSK ######")
     CGM1_motionJCSTest.basicCGM1()
     CGM1_motionJCSTest.basicCGM1_flatFoot()
     CGM1_motionJCSTest.advancedCGM1_kad_noOptions()
     CGM1_motionJCSTest.advancedCGM1_kad_flatFoot()
-#    logging.info("######## PROCESS CGM1 - JCSK --> Done ######")
+    logging.info("######## PROCESS CGM1 - JCSK --> Done ######")
 
-#    #logging.info("######## PROCESS CGM1 - Absolute ######")
+    logging.info("######## PROCESS CGM1 - Absolute ######")
     CGM1_motionAbsoluteAnglesTest.basicCGM1_absoluteAngles_lowerLimb()
     CGM1_motionAbsoluteAnglesTest.basicCGM1_absoluteAngles_lowerLimb_AxisY()
     CGM1_motionAbsoluteAnglesTest.basicCGM1_absoluteAngles_pelikin()
-#    logging.info("######## PROCESS CGM1 - Absolute ---> Done ######")
+    logging.info("######## PROCESS CGM1 - Absolute ---> Done ######")
 
     logging.info("######## PROCESS CGM1 - Full angles ######")
     CGM1_motionFullAnglesTest.basicCGM1()
     CGM1_motionFullAnglesTest.basicCGM1_manualTibialTorsion()  # reproduce vicon error
     CGM1_motionFullAnglesTest.advancedCGM1_kad_noOptions()
     CGM1_motionFullAnglesTest.advancedCGM1_kad_flatFoot()
-    CGM1_motionFullAnglesTest.advancedCGM1_kad_midMaleolus() # reproduce vicon error
-    CGM1_motionFullAnglesTest.advancedCGM1_kad_manualTibialTorsion()
+    CGM11_motionFullAnglesTest.kad_midMaleolus() # reproduce vicon error
+    CGM11_motionFullAnglesTest.advancedCGM11_KadMed_TrueEquinus()
+    #CGM1_motionFullAnglesTest.advancedCGM1_kad_manualTibialTorsion()
 
     logging.info("######## PROCESS CGM11 - Full angles ######")
-    #CGM11_motionFullAnglesTest.advancedCGM1_kad_midMaleolus() # fix vicon error
+    CGM11_motionFullAnglesTest.advancedCGM1_kad_midMaleolus() # fix vicon error
 
 
 #

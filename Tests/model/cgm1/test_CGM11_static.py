@@ -379,7 +379,58 @@ class CGM11_calibrationTest():
 
         btkTools.smartWriter(acqStatic,"advancedCGM11_KneeMedOnly.c3d")
 
+    @classmethod
+    def advancedCGM11_KneeMedKad_TrueEquinus(cls):
+        """
 
+
+        """
+        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\kad-med-TrueEquinus\\"
+        staticFilename = "static.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1LowerLimbs()
+        model.configure()
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 36.9,
+        'LeftLegLength' : 665.0,
+        'RightLegLength' : 655.0 ,
+        'LeftKneeWidth' : 102.7,
+        'RightKneeWidth' : 100.2,
+        'LeftAnkleWidth' : 64.5,
+        'RightAnkleWidth' : 63.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+
+        optional_mp={
+        'InterAsisDistance'   : 0,
+        'LeftAsisTrocanterDistance' : 0,
+        'LeftThighRotation' : 0,
+        'LeftShankRotation' : 0 ,
+        'LeftTibialTorsion' : 0,
+        'RightAsisTrocanterDistance' : 0,
+        'RightThighRotation' : 0,
+        'RightShankRotation' : 0,
+        'RightTibialTorsion' : 0
+        }
+
+        model.addAnthropoInputParameters(mp,optional=optional_mp)
+
+        # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+
+        modelDecorator.Kad(model,acqStatic).compute()
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, side="both")
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        btkTools.smartWriter(acqStatic,"Kad-med-TrueEquinus.c3d")
 
 if __name__ == "__main__":
 
@@ -391,4 +442,5 @@ if __name__ == "__main__":
     CGM11_calibrationTest.advancedCGM1_kadMed_manualTibialTorsion() # work
     CGM11_calibrationTest.advancedCGM11_KneeMedKad()
     CGM11_calibrationTest.advancedCGM11_KneeMedOnly()
+    CGM11_calibrationTest.advancedCGM11_KneeMedKad_TrueEquinus()
     logging.info("######## PROCESS CGM 1.1 --- MANUAL --> Done ######")
