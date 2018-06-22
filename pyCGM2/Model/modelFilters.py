@@ -812,20 +812,10 @@ class ModelJCSFilter(object):
         """
         self.m_aqui = acq
         self.m_model = iMod
-        self.m_filter = False
+        self.m_fixEuler = True
 
-    def setFilterBool(self, boolValue):
-        if boolValue:
-            self.m_filter = True
-            self.setLowPassFilterParameters()
-        else:
-            self.m_filter = False
-
-
-    def setLowPassFilterParameters(self,order = 2, fc = 6):
-        self._filterOrder = order
-        self._filterCutOffFrequency = fc
-
+    def setFixEuler(self,bool):
+        self.m_fixEuler =  bool
 
     def compute(self,description="", pointLabelSuffix =""):
         """
@@ -878,12 +868,6 @@ class ModelJCSFilter(object):
                 jointValues[i,1] = Euler2
                 jointValues[i,2] = Euler3
 
-            if self.m_filter :
-                fc = self._filterCutOffFrequency
-                order = self._filterOrder
-                jointValues = pyCGM2signal.lowPassFiltering(jointValues, self.m_aqui.GetPointFrequency(), order=order, fc = fc)
-                description = description + "lowPass filter"
-
             descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,jointLabel)
             if  descriptorInfos:
                 logging.debug("joint label (%s) in clinical descriptors" %(jointLabel) )
@@ -894,6 +878,16 @@ class ModelJCSFilter(object):
             else:
                 logging.debug("no clinical descriptor for joint label (%s)" %(jointLabel) )
                 jointFinalValues = np.rad2deg(jointValues)
+
+            #fixEuler
+            if self.m_fixEuler:
+                dest = np.array([0,0,0])
+                for i in range (0, self.m_aqui.GetPointFrameNumber()):
+                    jointFinalValues[i,:] = euler.wrapEulerTo(np.deg2rad(jointFinalValues[i,:]), dest)
+                    dest = jointFinalValues[i,:]
+
+                jointFinalValues = np.rad2deg(jointFinalValues)
+
 
             fulljointLabel  = jointLabel + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Angles"
             btkTools.smartAppendPoint(self.m_aqui,
