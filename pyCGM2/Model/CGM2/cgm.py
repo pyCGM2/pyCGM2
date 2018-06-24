@@ -149,6 +149,8 @@ class CGM1LowerLimbs(CGM):
         self.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
         self.mp_computed["RightKneeFuncCalibrationOffset"] = 0
 
+        self._R_leftUnCorrfoot_dist_prox = np.eye(3,3)
+        self._R_rightUnCorrfoot_dist_prox = np.eye(3,3)
 
     def setVersion(self,string):
         self.version = string
@@ -1169,33 +1171,47 @@ class CGM1LowerLimbs(CGM):
         pt1=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#LTOE
         pt2=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#AJC
 
+        a1=(pt2-pt1)
+        a1=a1/np.linalg.norm(a1)
 
         if dictRef["Left Foot"]["TF"]['labels'][2] is not None:
             pt3=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             v=(pt3-pt1)
+
+            v=v/np.linalg.norm(v)
+            a2=np.cross(a1,v)
+            a2=a2/np.linalg.norm(a2)
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
+
         else:
             distalShank = self.getSegment("Left Shank")
             proximalShank = self.getSegment("Left Shank Proximal")
+
+            # uncorrected Refrence with dist shank
+            v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+            v=v/np.linalg.norm(v)
+            a2=np.cross(a1,v)
+            a2=a2/np.linalg.norm(a2)
+            x_dist,y_dist,z_dist,R_dist=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
+
+            # uncorrected Refrence with prox shank
+            v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+            v=v/np.linalg.norm(v)
+            a2=np.cross(a1,v)
+            a2=a2/np.linalg.norm(a2)
+            x_prox,y_prox,z_prox,R_prox=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
+
+            self._R_leftUnCorrfoot_dist_prox = np.dot(R_prox.T,R_dist) # will be used for placing the foot uncorrected RF
+
             if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
                 if distalShank.getReferential("TF").static.getNode_byLabel("LAJC").m_desc != "mid":
-                    v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+                    x,y,z,R = x_prox,y_prox,z_prox,R_prox
                 else:
-                    v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+                    x,y,z,R = x_dist,y_dist,z_dist,R_dist
             else:
-                v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-
+                x,y,z,R = x_dist,y_dist,z_dist,R_dist
 
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
-
-        v=v/np.linalg.norm(v)
-
-        a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
-
-        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
 
         tf.static.m_axisX=x
         tf.static.m_axisY=y
@@ -1216,6 +1232,8 @@ class CGM1LowerLimbs(CGM):
         tf.static.addNode("LAJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
         # seg.addTrackingMarkerLabel("LAJC") # for LS fitting
+
+
 
 
     def _right_unCorrectedFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
@@ -1255,33 +1273,47 @@ class CGM1LowerLimbs(CGM):
         pt1=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         pt2=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            v=(pt3-pt1)
-        else:
-            distalShank = self.getSegment("Right Shank")
-            proximalShank = self.getSegment("Right Shank Proximal")
-            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
-                if distalShank.getReferential("TF").static.getNode_byLabel("RAJC").m_desc != "mid":
-                    v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-                else:
-                    v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-            else:
-                v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-
-
-
-        ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
 
-        v=v/np.linalg.norm(v)
+        if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            v=(pt3-pt1)
 
-        a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+            v=v/np.linalg.norm(v)
+            a2=np.cross(a1,v)
+            a2=a2/np.linalg.norm(a2)
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
+        else:
+            distalShank = self.getSegment("Right Shank")
+            proximalShank = self.getSegment("Right Shank Proximal")
+
+            # uncorrected Refrence with dist shank
+            v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+            v=v/np.linalg.norm(v)
+            a2=np.cross(a1,v)
+            a2=a2/np.linalg.norm(a2)
+            x_dist,y_dist,z_dist,R_dist=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
+
+            # uncorrected Refrence with prox shank
+            v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+            v=v/np.linalg.norm(v)
+            a2=np.cross(a1,v)
+            a2=a2/np.linalg.norm(a2)
+            x_prox,y_prox,z_prox,R_prox=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
+
+            self._R_rightUnCorrfoot_dist_prox = np.dot(R_prox.T,R_dist)
+
+            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
+                if distalShank.getReferential("TF").static.getNode_byLabel("RAJC").m_desc != "mid":
+                    x,y,z,R = x_prox,y_prox,z_prox,R_prox
+                else:
+                    x,y,z,R = x_dist,y_dist,z_dist,R_dist
+            else:
+                x,y,z,R = x_dist,y_dist,z_dist,R_dist
+
+        ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         tf.static.m_axisX=x
         tf.static.m_axisY=y
@@ -3234,6 +3266,14 @@ class CGM1LowerLimbs(CGM):
                - `dictAnat` (dict) - dictionnary reporting markers and sequence use for building Anatomical coordinate system
                - `options` (dict) - dictionnary use to pass options
 
+             ..note:
+
+                there is less change to come across an aligment TOE-AJC-medio shank Axis if we choose the proximal shankself.
+                In case we work with the piG we keep the proximal shank axis.
+                With CGM1.1 we affect the relative Rotation so to mimic construction of the foot TF with the medio distal shank axis.   
+                so we
+
+
         """
         seg=self.getSegment("Left Foot")
 
@@ -3254,12 +3294,7 @@ class CGM1LowerLimbs(CGM):
                 pt3=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[i,:]
                 v=(pt3-pt1)
             else:
-                if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
-                    v=self.getSegment("Left Shank Proximal").anatomicalFrame.motion[i].m_axisY
-
-                else:
-                    v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY
-
+                v=self.getSegment("Left Shank Proximal").anatomicalFrame.motion[i].m_axisY
 
             ptOrigin=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[i,:]
 
@@ -3272,13 +3307,18 @@ class CGM1LowerLimbs(CGM):
             a2=np.cross(a1,v)
             a2=np.divide(a2,np.linalg.norm(a2))
 
-
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
 
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
+
+            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
+                R2 = R
+            else:
+                R2 = np.dot(R,self._R_leftUnCorrfoot_dist_prox)
+
+            csFrame.m_axisX=R2[:,0]
+            csFrame.m_axisY=R2[:,1]
+            csFrame.m_axisZ=R2[:,2]
+            csFrame.setRotation(R2)
             csFrame.setTranslation(ptOrigin)
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
@@ -3335,13 +3375,10 @@ class CGM1LowerLimbs(CGM):
                 pt3=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[i,:]
                 v=(pt3-pt1)
             else:
-                if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"] :
-                    v=self.getSegment("Right Shank Proximal").anatomicalFrame.motion[i].m_axisY
-
-                else:
-                    v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY
+                v=self.getSegment("Right Shank Proximal").anatomicalFrame.motion[i].m_axisY
 
             ptOrigin=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[i,:]
+
 
             a1=(pt2-pt1)
             a1=np.divide(a1,np.linalg.norm(a1))
@@ -3351,13 +3388,17 @@ class CGM1LowerLimbs(CGM):
             a2=np.cross(a1,v)
             a2=np.divide(a2,np.linalg.norm(a2))
 
-
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
+            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
+                R2 = R # e.g from proximal shank
+            else:
+                R2 = np.dot(R,self._R_rightUnCorrfoot_dist_prox) # e.g from distal shank Y axis
+
+            csFrame.m_axisX=R2[:,0]
+            csFrame.m_axisY=R2[:,1]
+            csFrame.m_axisZ=R2[:,2]
+            csFrame.setRotation(R2)
             csFrame.setTranslation(ptOrigin)
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
