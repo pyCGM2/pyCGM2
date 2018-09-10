@@ -41,7 +41,7 @@ def checkActivatedSubject(NEXUS,subjectNames):
     return subjectMarkerWithTraj.keys()[index]
 
 
-def setTrajectoryFromArray(NEXUS,vskName,label,array):
+def setTrajectoryFromArray(NEXUS,vskName,label,array,firstFrame = 0):
 
     framecount = NEXUS.GetFrameCount()
     n = array.shape[0]-1
@@ -51,10 +51,10 @@ def setTrajectoryFromArray(NEXUS,vskName,label,array):
 
     j=0
     for i in range(0,n+1):
-        exists[i] = True if array[j,0] !=0 else False
-        data[0][i] = array[j,0]
-        data[1][i] = array[j,1]
-        data[2][i] = array[j,2]
+        exists[firstFrame+i] = True if array[j,0] !=0 else False
+        data[0][firstFrame+i] = array[j,0]
+        data[1][firstFrame+i] = array[j,1]
+        data[2][firstFrame+i] = array[j,2]
         j+=1
 
     NEXUS.SetTrajectory( vskName, label, data[0],data[1],data[2], exists )
