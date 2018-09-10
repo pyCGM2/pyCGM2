@@ -26,7 +26,7 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 
 def calibration2Dof(model,
     DATA_PATH,reconstructFilenameLabelled,translators,
-    side,beginFrame,endFrame):
+    side,beginFrame,endFrame,jointRange):
 
     acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
@@ -105,7 +105,8 @@ def calibration2Dof(model,
     # calibration decorators
     modelDecorator.KneeCalibrationDecorator(model).calibrate2dof(side,
                                                         indexFirstFrame = iff,
-                                                        indexLastFrame = ilf )
+                                                        indexLastFrame = ilf,
+                                                        jointRange =  jointRange)
 
 
 

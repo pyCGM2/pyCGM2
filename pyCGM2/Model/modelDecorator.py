@@ -237,10 +237,10 @@ def midPoint(acq,lateralMarkerLabel,medialMarkerLabel,offset=0):
 
     return midvalues
 
-def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,sequence="YXZ",index=1):
+def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,jointRange,sequence="YXZ",index=1,flexInd=0):
 
     # onjective function : minimize variance of the knee varus valgus angle
-    def objFun(x, proxMotionRef, distMotionRef,indexFirstFrame,indexLastFrame, sequence,index):
+    def objFun(x, proxMotionRef, distMotionRef,indexFirstFrame,indexLastFrame, sequence,index,jointRange):
         #nFrames= len(proxMotionRef)
         frames0 = range(0,len(proxMotionRef))
 
@@ -294,12 +294,26 @@ def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,s
             jointValues[i,2] = Euler3
             i+=1
 
-        variance = np.var(jointValues[:,index])
+        if  jointRange is None:
+            variance = np.var(jointValues[:,index])
+        else:
+            flexExt = jointValues[:,flexInd]
+            indexes = np.where(np.logical_and(flexExt>=np.deg2rad(jointRange[0]), flexExt<=np.deg2rad(jointRange[1])))[0].tolist()
+
+            if indexes == []:
+                raise Exception ("[pyCGM2]. Calibration2-dof : There is no frames included in inputed joint limits")
+
+            varVal = jointValues[:,index]
+            varValExtract = varVal[indexes]
+
+            variance = np.var(varValExtract)
+
+
 
         return variance
 
     x0 = 0.0 # deg
-    res = least_squares(objFun, x0, args=(proxMotionRef, distMotionRef,indexFirstFrame,indexLastFrame,sequence,index), verbose=2)
+    res = least_squares(objFun, x0, args=(proxMotionRef, distMotionRef,indexFirstFrame,indexLastFrame,sequence,index,jointRange), verbose=2)
 
     return res.x[0]
 
@@ -1658,10 +1672,10 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         """
         self.model.decoratedModel = True
-
         iff = kwargs["indexFirstFrame"] if kwargs.has_key("indexFirstFrame") else None
         ilf = kwargs["indexLastFrame"] if kwargs.has_key("indexLastFrame") else None
         sequence = kwargs["sequence"] if kwargs.has_key("sequence") else None
+        jointRange = kwargs["jointRange"] if kwargs.has_key("jointRange") else None
 
         if side == "Left":
             proxSegmentLabel = "Left Thigh"
@@ -1678,9 +1692,9 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         # -- main function -----
         if sequence is None:
-            longRot = calibration2Dof(proxMotion,distMotion,iff,ilf)
+            longRot = calibration2Dof(proxMotion,distMotion,iff,ilf,jointRange=jointRange)
         else:
-            longRot = calibration2Dof(proxMotion,distMotion,iff,ilf,sequence=sequence)
+            longRot = calibration2Dof(proxMotion,distMotion,iff,ilf,jointRange,sequence=sequence)
         # end function -----
 
         if side == "Left":
