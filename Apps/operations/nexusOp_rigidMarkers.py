@@ -7,6 +7,7 @@ import numpy as np
 import scipy as sp
 import argparse
 import copy
+from pyCGM2.Eclipse import vskTools,eclipse
 
 # pyCGM2 settings
 import pyCGM2
@@ -51,21 +52,21 @@ if __name__ == "__main__":
         # ----------------------INPUTS-------------------------------------------
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH =pyCGM2.CONFIG.TEST_DATA_PATH +"operations\\miscellaneous\\rigid_labelling_pyCGM2\\"
-            reconstructFilenameLabelledNoExt ="KevinAki-VSR1-2"
+            DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\Nantes\\REM_AVC\\Patient 3\\Session 2\\" #pyCGM2.CONFIG.TEST_DATA_PATH +"operations\\miscellaneous\\rigid_labelling_pyCGM2\\"
+            reconstructFilenameLabelledNoExt ="19-02-PE-PA-J30-08-06-2012 ProcheBas03"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 
-
-            acqStatic = btkTools.smartReader(str(DATA_PATH+"Kevin Cal 01.c3d"))
-            targetMarker = "RASI"
-            trackingMarkers = ["LASI","RPSI","LPSI"]
-            selectInitialFrame = 3589
-            selectLastFrame = 3600
-
+            acqStatic = btkTools.smartReader(str(DATA_PATH+"19-02-PE-PA-J30-08-06-2012 S03.c3d"))
+            targetMarker = "PX"
+            trackingMarkers = ["IJ","C7","T8","PX"]
+            selectInitialFrame = 149
+            selectLastFrame = 802
 
 
         else:
             DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+
+        enfFiles = eclipse.getEnfTrials(DATA_PATH)
 
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
@@ -74,12 +75,17 @@ if __name__ == "__main__":
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
         acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
-        ff = acqGait.GetFirstFrame()
-        lf = acqGait.GetLastFrame()
+        ff = acqGait.GetFirstFrame()-1
+        lf = acqGait.GetLastFrame()-1
 
+        print ff
+        print lf
 
         # input arguments management
         if not DEBUG:
+            print "----"
+            print eclipse.findCalibrationFromEnfs(DATA_PATH,enfFiles)
+
             staticFilenameNoExt = args.static
             acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilenameNoExt+".c3d"))
 
@@ -88,17 +94,17 @@ if __name__ == "__main__":
             trackingMarkers.append(targetMarker)
 
             if args.begin is None and args.last is None: # reconstrution on full frames
-                selectInitialFrame = ff-ff
-                selectLastFrame = lf-ff
+                selectInitialFrame = ff
+                selectLastFrame = lf
             elif args.begin is not None and args.last is not None: # reconstrution from both selected begin and end frame
-                selectInitialFrame = args.begin-ff
-                selectLastFrame = args.last-ff
+                selectInitialFrame = args.begin-1
+                selectLastFrame = args.last-1
             elif args.begin is not None and args.last is None: # reconstrution from  selected begin and last frame
-                selectInitialFrame = args.begin-ff
-                selectLastFrame = lf-ff
+                selectInitialFrame = args.begin-1
+                selectLastFrame = lf
             elif args.begin is None and args.last is not None: # reconstrution from  first frame and to selected last frame
-                selectInitialFrame = ff-ff
-                selectLastFrame = args.last-ff
+                selectInitialFrame = ff
+                selectLastFrame = args.last-1
 
 
         mod=model.Model()
@@ -117,17 +123,28 @@ if __name__ == "__main__":
         modCal=modelFilters.ModelCalibrationFilter(gcp,acqStatic,mod)
         modCal.compute()
 
+        if not btkTools.isPointExist(acqGait,targetMarker):
+            print "targer Marker not in the c3d"
+            mod.getSegment("segment").m_tracking_markers.remove(targetMarker)
+
         modMotion=modelFilters.ModelMotionFilter(gcp,acqGait,mod,enums.motionMethod.Sodervisk)
         modMotion.compute()
 
+
         #populate values
         valReconstruct=mod.getSegment('segment').getReferential('TF').getNodeTrajectory(targetMarker)
-        val0 = acqGait.GetPoint(targetMarker).GetValues()
-        val_final = copy.deepcopy(val0)
-        val_final[selectInitialFrame:selectLastFrame+1,:] = valReconstruct[selectInitialFrame:selectLastFrame+1,:]
+
+        if btkTools.isPointExist(acqGait,targetMarker):
+            val0 = acqGait.GetPoint(targetMarker).GetValues()
+            val_final = copy.deepcopy(val0)
+            val_final[selectInitialFrame-ff:selectLastFrame+1-ff,:] = valReconstruct[selectInitialFrame-ff:selectLastFrame+1-ff,:]
+        else:
+            val_final = valReconstruct
+
 
         # nexus display
-        nexusTools.setTrajectoryFromArray(NEXUS,subject,targetMarker,val_final)
+        print selectInitialFrame
+        nexusTools.setTrajectoryFromArray(NEXUS,subject,targetMarker,val_final,firstFrame = ff)
 
         # btk methods
         # btkTools.smartAppendPoint(acqGait,labelMarkerToreconstruct,val_final)
