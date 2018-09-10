@@ -116,21 +116,21 @@ def openPipelineFile(path,filename,stringContent=None):
                 content = open(str(filename)).read()
             else:
                 content = open(str(path+filename)).read()
-        except :
-            pass
+        except "IOError":
+            print "Don t find your pipeline file"
     else:
         content = stringContent
 
     jsonFlag = is_json(content)
 
     if jsonFlag:
-        logging.info("your config file agree json syntax")
+        logging.info("your config file matches json syntax")
         struct = openJson(None,None,stringContent=content)
     else:
         yamlFlag = is_yaml(content)
 
         if yamlFlag:
-            logging.info("your config file agree yaml syntax")
+            logging.info("your config file matches yaml syntax")
             struct = openYaml(path,filename,stringContent=content)
         else:
             raise Exception("[pYCGM2]: pipeline config file is neither a json file nor a yaml file")
