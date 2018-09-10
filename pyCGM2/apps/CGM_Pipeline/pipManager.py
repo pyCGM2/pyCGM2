@@ -23,8 +23,7 @@ class PipelineFileManager(object):
 
     def getOutDataPath(self):
         out_path = str(self.pipSettings["OutDataPath"])
-
-        return None if  out_path == "None" else out_path
+        return None if  out_path == "" else out_path
 
     def getIkWeightFile(self):
         ikwf = str(self.pipSettings["Modelling"]["Fitting"]["IkweightFile"])
@@ -78,8 +77,9 @@ class PipelineFileManager(object):
         trial = str(kc_dict["Trial"])
         begin = None if kc_dict["BeginFrame"]==0 else kc_dict["BeginFrame"]
         end = None if kc_dict["EndFrame"]==0 else kc_dict["EndFrame"]
+        jointRange = None if kc_dict["JointRange"]==[] else kc_dict["JointRange"]
 
-        return method, trial,begin,end
+        return method, trial,begin,end,jointRange
 
     # fitting
     def getFittingTrials(self):
