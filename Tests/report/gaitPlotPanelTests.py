@@ -138,8 +138,7 @@ class oneAnalysis_GaitPlotTest():
         # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
-        pf.setPath("C:\\Users\\HLS501\\Desktop\\")
-        pf.setPdfName("test")
+        pf.setExport("C:\\Users\\HLS501\\Desktop\\","test","png")
         pf.plot()
 
         plt.show()
@@ -456,10 +455,10 @@ if __name__ == "__main__":
 
     plt.close("all")
 
-    oneAnalysis_StandardPlotTest.descriptiveKinematicPlotPanel()
+    #oneAnalysis_StandardPlotTest.descriptiveKinematicPlotPanel()
 
     # oneAnalysis_GaitPlotTest.gaitDescriptiveKinematicPlotPanel()
-    # oneAnalysis_GaitPlotTest.gaitDescriptiveKinematicPlotPanel_recorded()
+    oneAnalysis_GaitPlotTest.gaitDescriptiveKinematicPlotPanel_recorded()
     # oneAnalysis_GaitPlotTest.gaitConsistencyKinematicPlotPanel()
     # oneAnalysis_GaitPlotTest.gaitDescriptiveKineticPlotPanel()
     #

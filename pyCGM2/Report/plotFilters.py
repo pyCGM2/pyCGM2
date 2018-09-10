@@ -25,31 +25,22 @@ class PlottingFilter(object):
 
         self.__concretePlotViewer = None
         self.m_path = None
-        self.m_pdfName = None
-
-    def setPath(self,path):
-        '''
-            **Description :** define path  of the desired output folder
-
-            :Parameters:
-             - `path` (str) - path must end with \\
+        self.m_fileName = None
+        self.m_format = None
 
 
-        '''
-
-        self.m_path = path
-
-    def setPdfName(self,name):
+    def setExport(self,path,filename,format):
         '''
             **Description :** set filename of the pdf
 
             :Parameters:
-             - `name` (str)
+             - `format` (str) : image format
 
 
         '''
-
-        self.m_pdfName = name
+        self.m_path = path
+        self.m_fileName = filename
+        self.m_format = format
 
 
 
@@ -74,10 +65,13 @@ class PlottingFilter(object):
         self.fig = self.__concretePlotViewer.plotPanel()
 
 
-        if self.m_path is not None and self.m_pdfName is not None:
-            pp = PdfPages(str(self.m_path+ self.m_pdfName+".pdf"))
-            pp.savefig(self.fig)
-            pp.close()
+        if self.m_path is not None and self.m_fileName is not None:
+            if self.m_format is "pdf":
+                pp = PdfPages(str(self.m_path+ self.m_fileName+".pdf"))
+                pp.savefig(self.fig)
+                pp.close()
+            else:
+                plt.savefig(str(self.m_path+ self.m_fileName+"."+self.m_format))
 
     def setYlimits(self, axisIndex, min, max):
         self.__concretePlotViewer.fig.axes[axisIndex].set_ylim([min,max])

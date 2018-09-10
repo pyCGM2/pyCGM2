@@ -109,8 +109,7 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     # filter
     stppf = plotFilters.PlottingFilter()
     stppf.setViewer(stpv)
-    stppf.setPath(outputPath)
-    stppf.setPdfName(str(pdfFilename+"-stp"))
+    pf.setExport(outputPath,str(pdfFilename+"-stp"),"pdf")
     stppf.plot()
 
 
@@ -133,8 +132,7 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    pf.setPath(outputPath)
-    pf.setPdfName(str(pdfFilename+"-descriptive Kinematics"))
+    pf.setExport(outputPath,str(pdfFilename+"-descriptive  Kinematics"),"pdf")
     pf.plot()
 
     # filter 2 - consistency kinematic panel
@@ -158,8 +156,7 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    pf.setPath(outputPath)
-    pf.setPdfName(str(pdfFilename+"-consistency Kinematics"))
+    pf.setExport(outputPath,str(pdfFilename+"-consistency  Kinematics"),"pdf")
     pf.plot()
 
     if kineticFlag:
@@ -175,8 +172,7 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
         # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
-        pf.setPath(outputPath)
-        pf.setPdfName(str(pdfFilename+"-descriptive  Kinetics"))
+        pf.setExport(outputPath,str(pdfFilename+"-descriptive  Kinetics"),"pdf")
         pf.plot()
 
         # filter 2 - consistency kinematic panel
@@ -193,6 +189,5 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
         # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
-        pf.setPath(outputPath)
-        pf.setPdfName(str(pdfFilename+"-consistency  Kinetics"))
+        pf.setExport(outputPath,str(pdfFilename+"-consistency  Kinetics"),"pdf")
         pf.plot()

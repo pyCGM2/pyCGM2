@@ -54,8 +54,7 @@ class stpPlotTest():
         # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
-        pf.setPath(DATA_PATH)
-        pf.setPdfName(str("stp"))
+        pf.setExport(DATA_PATH,"stp","pdf")
         pf.plot()
 
         plt.show()
