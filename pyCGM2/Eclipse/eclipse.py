@@ -87,6 +87,8 @@ def findCalibrationFromEnfs(path, enfs):
         if "processing" in nodeinfos.keys() and "trial_type" in nodeinfos.keys():
             if nodeinfos["processing"] == "Ready" and nodeinfos["trial_type"] == "Static":
                 return enf.replace(".Trial.enf",".c3d")
+            else:
+                logging.error("No calibration enf found")
 
 
 def findMotionFromEnfs(path, enfs):
