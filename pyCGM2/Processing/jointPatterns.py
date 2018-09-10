@@ -26,10 +26,18 @@ class JointPatternFilter(object):
         dataframeData = self.m_procedure.detectValue(self.m_analysis)
         return dataframeData
 
-    def getPatterns(self):
+    def getPatterns(self,filter=False):
         data = self.m_procedure.detectValue(self.m_analysis)
         dataframePattern = self.m_procedure.detectPattern()
-        return dataframePattern
+
+        if not filter:
+            return dataframePattern
+        else:
+
+            filteredDataPattern = dataframePattern.loc[dataframePattern['Success'].isin(['TRUE','partial-primary','partial-secondary'])]
+
+            return filteredDataPattern[['Context','Pattern']]
+
 
 
 class XlsJointPatternProcedure(object):
