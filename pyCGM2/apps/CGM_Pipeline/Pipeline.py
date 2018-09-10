@@ -160,11 +160,12 @@ def modelling(manager,DATA_PATH,DATA_PATH_OUT,vskFile=None):
     rightEnable = manager.isKneeCalibrationEnable("Right")
 
     if leftEnable:
-        method, trial,begin,end = manager.getKneeCalibration("Left")
+        method, trial,begin,end,jointRange = manager.getKneeCalibration("Left")
         if method == "Calibration2Dof":
             model,acqFunc,side = kneeCalibration.calibration2Dof(model,
                 DATA_PATH,trial,translators,
-                "Left",begin,end)
+                "Left",begin,end,jointRange)
+
             logging.info("Left knee Calibration (Calibration2Dof) -----> Done")
         elif method == "SARA":
             model,acqFunc,side = kneeCalibration.sara(model,
@@ -172,11 +173,11 @@ def modelling(manager,DATA_PATH,DATA_PATH_OUT,vskFile=None):
                 "Left",begin,end)
             logging.info("Left knee Calibration (SARA) -----> Done")
     if rightEnable:
-        method, trial,begin,end = manager.getKneeCalibration("Right")
+        method, trial,begin,end,jointRange = manager.getKneeCalibration("Right")
         if method == "Calibration2Dof":
             model,acqFunc,side = kneeCalibration.calibration2Dof(model,
                 DATA_PATH,trial,translators,
-                "Right",begin,end)
+                "Right",begin,end,jointRange)
             logging.info("Right knee Calibration (Calibration2Dof) -----> Done")
         elif method == "SARA":
             model,acqFunc,side = kneeCalibration.sara(model,
