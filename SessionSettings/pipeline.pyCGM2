@@ -54,13 +54,15 @@
                 "Method": "None",
                 "Trial": "PN01OP01S01FUNC01.c3d",
                 "BeginFrame": 983,
-                "EndFrame": 1372
+                "EndFrame": 1372,
+                "JointRange" :[20,90]
             },
             "Right": {
                 "Method": "None",
                 "Trial": "PN01OP01S01FUNC01.c3d",
                 "BeginFrame": 377,
-                "EndFrame": 673
+                "EndFrame": 673,
+                "JointRange" :[20,90]
             }
         },
         "Fitting": {
