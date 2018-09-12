@@ -12,9 +12,6 @@ import logging
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
-# btk
-pyCGM2.CONFIG.addBtk()
-
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.CGM2 import cgm,cgm2
@@ -28,7 +25,7 @@ class CGM2_1_calibrationTest():
     def hara_regressions(cls):
         """
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.1\\native\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.1\\native\\"
         staticFilename = "static.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -81,7 +78,7 @@ class CGM2_1_calibrationTest():
     def harrigton_fullPredictor(cls):
         """
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.1\\native\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.1\\native\\"
         staticFilename = "static.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -135,7 +132,7 @@ class CGM2_1_calibrationTest():
     def harrigton_pelvisWidthPredictor(cls):
         """
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.1\\native\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.1\\native\\"
         staticFilename = "static.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -190,7 +187,7 @@ class CGM2_1_calibrationTest():
     def harrigton_legLengthPredictor(cls):
         """
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.1\\native\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.1\\native\\"
         staticFilename = "static.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -248,7 +245,7 @@ class CGM2_1_calibrationTest():
         GOAL : compare Joint centres and foot Offset
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.1\\native\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.1\\native\\"
         staticFilename = "static.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))

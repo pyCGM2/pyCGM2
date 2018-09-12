@@ -30,6 +30,7 @@ if __name__ == "__main__":
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--export', action='store_true', help='xls export')
     args = parser.parse_args()
+    args.DEBUG = False
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -42,8 +43,8 @@ if __name__ == "__main__":
         xlsExport_flag = args.export
         # --------------------------INPUTS ------------------------------------
         if args.DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            modelledFilenameNoExt = "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Release Tests\CGM2.2\medial\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
+            modelledFilenameNoExt = "Gait Trial 01"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+modelledFilenameNoExt), 30 )
         else:
             DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()

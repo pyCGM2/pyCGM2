@@ -8,8 +8,6 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.DEBUG)
 
 import pyCGM2
-# btk
-pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
 from pyCGM2.Utils import files
@@ -26,7 +24,7 @@ class CGM2_3_staticFitting():
 
     @classmethod
     def noIK_determinist(cls):
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\fullBody\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.3\\fullBody\\"
         staticFilename = "PN01OP01S01STAT.c3d"
         gaitFilename= "PN01OP01S01STAT.c3d"
 
@@ -90,7 +88,7 @@ class CGM2_3_staticFitting():
 
     @classmethod
     def noIK_6dof(cls):
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\fullBody\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.3\\fullBody\\"
         staticFilename = "PN01OP01S01STAT.c3d"
         gaitFilename= "PN01OP01S01STAT.c3d"
 
@@ -156,7 +154,7 @@ class CGM2_3_staticFitting():
     @classmethod
     def full_IK(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\fullBody\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.3\\fullBody\\"
         staticFilename = "PN01OP01S01STAT.c3d"
         gaitFilename= "PN01OP01S01STAT.c3d"
 
@@ -212,9 +210,9 @@ class CGM2_3_staticFitting():
         # ------- OPENSIM IK --------------------------------------
         # --- osim builder ---
         cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
-        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml"
+        markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml"
 
-        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
+        osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
 
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -228,7 +226,7 @@ class CGM2_3_staticFitting():
         #procedure
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model)
 
-        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml"
+        iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml"
 
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           scalingOsim,

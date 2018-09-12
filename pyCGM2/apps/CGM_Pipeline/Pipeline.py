@@ -57,7 +57,7 @@ def modelling(manager,DATA_PATH,DATA_PATH_OUT,vskFile=None):
     else:
         raise Exception( "model version not known")
 
-    settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,globalPyCGM2settingFile)
+    settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,globalPyCGM2settingFile)
     translators = files.getTranslators(DATA_PATH,translatorFiles)
     if not translators: translators = settings["Translators"]
 
@@ -363,8 +363,8 @@ if __name__ == "__main__":
 
     args.DEBUG = False
     if args.DEBUG:
-        #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
-        #DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
+        #DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\pipeline\\"
+        #DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.3\\medialPipeline\\"
         DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
         pipelineFile = "pipeline.pyCGM2"
         xlsExport_flag =  True

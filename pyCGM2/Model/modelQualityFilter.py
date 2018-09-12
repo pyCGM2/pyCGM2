@@ -2,7 +2,7 @@
 import logging
 import numpy as np
 
-import btk
+from pyCGM2 import btk
 
 
 from  pyCGM2.Math import numeric

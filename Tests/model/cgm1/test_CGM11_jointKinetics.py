@@ -8,9 +8,6 @@ import logging
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
-# btk
-pyCGM2.CONFIG.addBtk()
-
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 
@@ -91,7 +88,7 @@ class CGM1_motionInverseDynamicsTest():
     @classmethod
     def basicCGM1_JCS(cls,plotFlag=False):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\CGM1-TESTS\\basic-filtered\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH+"CGM1\\CGM1-TESTS\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -172,7 +169,7 @@ class CGM1_motionInverseDynamicsTest():
     @classmethod
     def basicCGM1_JCS_Dual(cls,plotFlag=False):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\\\basic-filtered\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH+"CGM1\\\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -258,7 +255,7 @@ class CGM1_motionInverseDynamics_batchprocessing_Test():
     @classmethod
     def basicCGM1_distal(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"CGM1\\\\basic-filtered\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH+"CGM1\\\\basic-filtered\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))

@@ -2,7 +2,7 @@
 import numpy as np
 from scipy import signal, integrate
 import matplotlib.pyplot as plt
-import btk
+from pyCGM2 import btk
 
 
 

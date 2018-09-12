@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
+        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
 
         # --------------------------CONFIG ------------------------------------
         argsManager = cgmUtils.argsManager_cgm1(settings,args)
@@ -54,10 +54,10 @@ if __name__ == "__main__":
 
         # --------------------------LOADING ------------------------------------
         if args.DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
+            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
             calibrateFilenameLabelledNoExt = "static"
 
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "Datasets Tests\\Oswestry\\nc604\\"
+            DATA_PATH = pyCGM2.TEST_DATA_PATH + "Datasets Tests\\Oswestry\\nc604\\"
             calibrateFilenameLabelledNoExt = "nc60403"
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 

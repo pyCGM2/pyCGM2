@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import logging
 
 # openMA
-import ma.io
-import ma.body
-
+from pyCGM2 import ma
+from pyCGM2.ma import io
+from pyCGM2.ma import body
 
 
 
@@ -305,6 +305,10 @@ def buildTrials(dataPath,trialfilenames):
     trials=[]
     filenames =[]
     for filename in trialfilenames:
+        print "------------------"
+        print dataPath
+        print filename
+        print "------------------"
         fileNode = ma.io.read(str(dataPath + filename))
         trial = fileNode.findChild(ma.T_Trial)
         sortedEvents(trial)

@@ -3,7 +3,7 @@
 import numpy as np
 import logging
 
-import btk
+from pyCGM2 import btk
 
 
 
@@ -74,14 +74,15 @@ def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
     #ff,lf = NEXUS.GetTrialRange()
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
-    framecount = NEXUS.GetFrameCount()
+    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
 
 
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
     exists = [False]*framecount
 
     j=0
-    for i in range(ff-1,lf):
+    for i in range(0,lf-ff+1):
+        #print i
         exists[i] = True
         data[0][i] = values[j,0]
         data[1][i] = values[j,1]
@@ -114,7 +115,7 @@ def appendAngleFromAcq(NEXUS,vskName,label, acq):
     exists = [False]*framecount
 
     j=0
-    for i in range(ff-1,lf):
+    for i in range(0,lf-ff+1):
         exists[i] = True
         data[0][i] = values[j,0]
         data[1][i] = values[j,1]
@@ -149,7 +150,7 @@ def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     exists = [False]*framecount
 
     j=0
-    for i in range(ff-1,lf):
+    for i in range(0,lf-ff+1):
         exists[i] = True
         data[0][i] = values[j,0]
         data[1][i] = values[j,1]
@@ -185,7 +186,7 @@ def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=False):
     exists = [False]*framecount
 
     j=0
-    for i in range(ff-1,lf):
+    for i in range(0,lf-ff+1):
         exists[i] = True
         data[0][i] = values[j,0]
         data[1][i] = values[j,1]
@@ -219,7 +220,7 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     exists = [False]*framecount
 
     j=0
-    for i in range(ff-1,lf):
+    for i in range(0,lf-ff+1):
         exists[i] = True
         data[0][i] = values[j,0]
         data[1][i] = values[j,1]
@@ -249,7 +250,7 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
     exists = [False]*framecount
 
     j=0
-    for i in range(ff-1,lf):
+    for i in range(0,lf-ff+1):
         if OriginValues is None:
             T= segment.anatomicalFrame.motion[j].getTranslation()
         else:

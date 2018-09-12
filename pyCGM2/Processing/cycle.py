@@ -3,11 +3,11 @@ import numpy as np
 import logging
 
 
-import pyCGM2.Tools.trialTools as CGM2trialTools
+from pyCGM2.Tools import trialTools
 import pyCGM2.Math.normalisation  as MathNormalisation
 
-import ma.io
-import ma.body
+from pyCGM2 import ma
+
 
 #----module methods ------
 
@@ -251,7 +251,7 @@ class Cycle(ma.Node):
 
         """
 
-        if CGM2trialTools.isTimeSequenceExist(self.trial,pointLabel):
+        if trialTools.isTimeSequenceExist(self.trial,pointLabel):
             return self.trial.findChild(ma.T_TimeSequence, pointLabel).data()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
         else:
             raise Exception("[pyCGM2] marker %s doesn t exist"% pointLabel )
@@ -278,7 +278,7 @@ class Cycle(ma.Node):
 
         """
 
-        if CGM2trialTools.isTimeSequenceExist(self.trial,analogLabel):
+        if trialTools.isTimeSequenceExist(self.trial,analogLabel):
             return  self.trial.findChild(ma.T_TimeSequence, analogLabel).data()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
         else:
             raise Exception("[pyCGM2] Analog %s doesn t exist"% analogLabel )
@@ -403,10 +403,10 @@ class GaitCycle(Cycle):
 
         if self.context == "Left":
 
-            if CGM2trialTools.isTimeSequenceExist(self.trial,"LHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"RHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"LTOE"):
+            if trialTools.isTimeSequenceExist(self.trial,"LHEE") and trialTools.isTimeSequenceExist(self.trial,"RHEE") and trialTools.isTimeSequenceExist(self.trial,"LTOE"):
 
 
-                progressionAxis,forwardProgression,globalFrame = CGM2trialTools.findProgression(self.trial,"LHEE")
+                progressionAxis,forwardProgression,globalFrame = trialTools.findProgression(self.trial,"LHEE")
 
                 longitudinal_axis=0  if progressionAxis =="X" else 1
                 lateral_axis=1  if progressionAxis =="X" else 0
@@ -429,9 +429,9 @@ class GaitCycle(Cycle):
 
         if self.context == "Right":
 
-            if CGM2trialTools.isTimeSequenceExist(self.trial,"RHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"LHEE") and CGM2trialTools.isTimeSequenceExist(self.trial,"RTOE"):
+            if trialTools.isTimeSequenceExist(self.trial,"RHEE") and trialTools.isTimeSequenceExist(self.trial,"LHEE") and trialTools.isTimeSequenceExist(self.trial,"RTOE"):
 
-                progressionAxis,forwardProgression,globalFrame = CGM2trialTools.findProgression(self.trial,"RHEE")
+                progressionAxis,forwardProgression,globalFrame = trialTools.findProgression(self.trial,"RHEE")
 
                 longitudinal_axis=0  if progressionAxis =="X" else 1
                 lateral_axis=1  if progressionAxis =="X" else 0
@@ -615,7 +615,7 @@ class CyclesBuilder(object):
             kineticCycles=list()
             for trial in  self.kineticTrials:
 
-                flag_kinetics,times,times_left,times_right = CGM2trialTools.isKineticFlag(trial)
+                flag_kinetics,times,times_left,times_right = trialTools.isKineticFlag(trial)
 
                 if flag_kinetics:
                     context = "Left"
@@ -795,7 +795,7 @@ class GaitCyclesBuilder(CyclesBuilder):
             kineticCycles=list()
             for trial in  self.kineticTrials:
 
-                flag_kinetics,times,times_left,times_right = CGM2trialTools.isKineticFlag(trial)
+                flag_kinetics,times,times_left,times_right = trialTools.isKineticFlag(trial)
 
                 if flag_kinetics:
                     context = "Left"

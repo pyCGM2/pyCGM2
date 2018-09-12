@@ -5,7 +5,7 @@ import logging
 
 import pyCGM2
 
-import btk
+from pyCGM2 import btk
 
 import cgm
 

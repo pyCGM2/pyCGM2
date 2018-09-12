@@ -52,7 +52,7 @@ if __name__ == "__main__":
         # ----------------------INPUTS-------------------------------------------
         # --- acquisition file and path----
         if DEBUG:
-            DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\Nantes\\REM_AVC\\Patient 3\\Session 2\\" #pyCGM2.CONFIG.TEST_DATA_PATH +"operations\\miscellaneous\\rigid_labelling_pyCGM2\\"
+            DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\Nantes\\REM_AVC\\Patient 3\\Session 2\\" #pyCGM2.TEST_DATA_PATH +"operations\\miscellaneous\\rigid_labelling_pyCGM2\\"
             reconstructFilenameLabelledNoExt ="19-02-PE-PA-J30-08-06-2012 ProcheBas03"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 

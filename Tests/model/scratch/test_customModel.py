@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
 
 
-    DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "MODEL\\Custom\\sample0\\"
+    DATA_PATH = pyCGM2.TEST_DATA_PATH + "MODEL\\Custom\\sample0\\"
     staticFilename = "static.c3d"
     dynamicFilename = "dynamic.c3d"
 

@@ -27,7 +27,7 @@ def standardProcessing(DATA_PATH, modelledFilenames, modelVersion,
     if outputPath is None:
         outputPath= DATA_PATH
 
-    if isinstance(modelledFilenames,str):
+    if isinstance(modelledFilenames,str) or isinstance(modelledFilenames,unicode):
         modelledFilenames = [modelledFilenames]
 
     #---- c3d manager
@@ -72,8 +72,7 @@ def gaitProcessing(DATA_PATH, modelledFilenames, modelVersion,
     if outputPath is None:
         outputPath= DATA_PATH
 
-
-    if isinstance(modelledFilenames,str):
+    if isinstance(modelledFilenames,str) or isinstance(modelledFilenames,unicode):
         modelledFilenames = [modelledFilenames]
 
     #---- c3d manager

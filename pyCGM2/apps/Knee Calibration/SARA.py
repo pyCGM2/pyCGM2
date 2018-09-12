@@ -37,7 +37,7 @@ if __name__ == "__main__":
     subject = args.subject
 
     if args.DEBUG:
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\"
         reconstructFilenameLabelled = "Left Knee.c3d"
         subject = "MRI-US-01"
         args.fileSuffix="sara"
@@ -59,13 +59,13 @@ if __name__ == "__main__":
     if model.version in ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"] :
         raise Exception ("Can t use SARA method with your model %s [minimal version : CGM2.3]"%(model.version))
     elif model.version == "CGM2.3":
-        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
     elif model.version == "CGM2.3e":
-        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-Expert-pyCGM2.settings")
+        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-Expert-pyCGM2.settings")
     elif model.version == "CGM2.4":
-        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
     elif model.version == "CGM2.4e":
-        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_4-Expert-pyCGM2.settings")
+        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-Expert-pyCGM2.settings")
     else:
         raise Exception ("model version not found [contact admin]")
 

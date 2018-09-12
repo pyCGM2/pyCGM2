@@ -26,7 +26,7 @@ if __name__ == "__main__":
     plt.close("all")
 
 
-    MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.2\\medial\\"
+    MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.2\\medial\\"
     staticFilename = "static-all.c3d"
     gaitFilename= "gait trial 01.c3d"
     markerDiameter=14
@@ -89,9 +89,9 @@ if __name__ == "__main__":
 
     # --- osim builder ---
     cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
-    markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-markerset.xml"
+    markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-markerset.xml"
 
-    osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
+    osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
 
 
     oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
     # --- fitting ---
     cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model)
-    iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml"
+    iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml"
 
     osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                       scalingOsim,

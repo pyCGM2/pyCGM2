@@ -2,7 +2,7 @@
 import numpy as np
 import logging
 
-import btk
+from pyCGM2 import btk
 
 # --- acquisition -----
 def smartReader(filename,translators=None):
@@ -304,7 +304,7 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
     flag,vff,vlf = findValidFrames(acq,markers)
     index = vff
 
-    
+
     originValues = (acq.GetPoint("LPSI").GetValues()[index,:] + acq.GetPoint("RPSI").GetValues()[index,:])/2.0
     longitudinal_extremityValues = (acq.GetPoint("LASI").GetValues()[index,:] + acq.GetPoint("RASI").GetValues()[index,:])/2.0
     lateral_extremityValues = acq.GetPoint("LPSI").GetValues()[index,:]

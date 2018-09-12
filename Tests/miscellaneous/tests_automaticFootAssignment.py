@@ -14,8 +14,8 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 # btk
-pyCGM2.CONFIG.addBtk()
-import btk
+
+from pyCGM2 import btk
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools,trialTools
@@ -23,11 +23,8 @@ from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Processing import cycle,analysis
 
 
-pyCGM2.CONFIG.addOpenma()
-import ma.io
-import ma.body
-
-
+from pyCGM2 import ma
+from pyCGM2.ma import io
 
 
 class tests():
@@ -35,7 +32,7 @@ class tests():
     @classmethod
     def twoPF_FP1none_FP2none(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\forceplates\\FootAssignementAutoamticGeneralEvent\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\FootAssignementAutoamticGeneralEvent\\"
 
         # --- Motion 1
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 13.c3d"
@@ -89,7 +86,7 @@ class tests():
     @classmethod
     def twoPF_FP1left_FP2none(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\forceplates\\FootAssignementAutoamticGeneralEvent\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\FootAssignementAutoamticGeneralEvent\\"
 
         # --- Motion 1
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 13.c3d"
@@ -144,7 +141,7 @@ class tests():
     @classmethod
     def twoPF_FP1left_FP2right(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\forceplates\\FootAssignementAutoamticGeneralEvent\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\FootAssignementAutoamticGeneralEvent\\"
 
         # --- Motion 1
         gaitFilename="MRI-US-01, 2008-08-08, 3DGA 13.c3d"

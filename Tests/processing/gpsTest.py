@@ -16,11 +16,6 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 
-# openMA
-pyCGM2.CONFIG.addOpenma()
-import ma.io
-import ma.body
-
 from pyCGM2.Processing import cycle,analysis,scores,exporter,c3dManager
 from pyCGM2.Report import normativeDatasets
 from pyCGM2.Tools import trialTools
@@ -33,7 +28,7 @@ class GpsTest():
     @classmethod
     def GpsCGM1Test(cls):
          # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gps\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gps\\"
 
         reconstructedFilenameLabelledNoExt ="gait Trial 03 - viconName"
         reconstructedFilenameLabelled = reconstructedFilenameLabelledNoExt+".c3d"

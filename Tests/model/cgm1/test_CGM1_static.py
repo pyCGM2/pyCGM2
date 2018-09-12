@@ -14,9 +14,6 @@ import logging
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
-# btk
-pyCGM2.CONFIG.addBtk()
-
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.CGM2 import cgm
@@ -103,7 +100,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -155,7 +152,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1_flatFoot(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic FlatFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic FlatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -203,7 +200,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1_soleDelta_FlatFoot(cls):  # notice : soleDelta has no influence with flatfoot disable
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-SoleDelta-FlatFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-SoleDelta-FlatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -250,7 +247,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1_manualTibialTorsion(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-tibialTorsion\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-tibialTorsion\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -312,7 +309,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1_manualTibialTorsion_withDecorator(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-tibialTorsion\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-tibialTorsion\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -396,7 +393,7 @@ class CGM1_calibrationTest():
         """
 
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiON_shaOFF_torsionOFF\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiON_shaOFF_torsionOFF\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -471,7 +468,7 @@ class CGM1_calibrationTest():
         """
 
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiON_shaOFF_torsionON\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiON_shaOFF_torsionON\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -545,7 +542,7 @@ class CGM1_calibrationTest():
         """
 
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiOFF_shaON_torsionOFF\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiOFF_shaON_torsionOFF\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -608,7 +605,7 @@ class CGM1_calibrationTest():
         """
 
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiOFF_shaON_torsionON\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-manualOffsets-thiOFF_shaON_torsionON\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -664,7 +661,7 @@ class CGM1_calibrationTest():
     @classmethod
     def advancedCGM1_kad_noOptions(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -729,7 +726,7 @@ class CGM1_calibrationTest():
     @classmethod
     def advancedCGM1_kad_flatFoot(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-flatFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-flatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -795,7 +792,7 @@ class CGM1_calibrationTest():
     @classmethod
     def advancedCGM1_kad_midMaleolus(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-Med\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-Med\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -866,7 +863,7 @@ class CGM1_calibrationTest():
     @classmethod
     def advancedCGM1_kad_midMaleolus_markerDiameter(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-Med-markerDiameter\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-Med-markerDiameter\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -937,7 +934,7 @@ class CGM1_calibrationTest():
     @classmethod
     def advancedCGM1_kad_manualTibialTorsion(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-manualTibialTorsion\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-manualTibialTorsion\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))

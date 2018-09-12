@@ -18,7 +18,7 @@ class test_ca():
     def UnithanTest(cls):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"EMG\\SampleNantes\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes\\"
         gaitTrial = "gait.c3d"
         restTrial = "repos.c3d"
 
@@ -98,7 +98,7 @@ class test_ca():
     def FalconerTest(cls):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"EMG\\SampleNantes\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes\\"
         gaitTrial = "gait.c3d"
         restTrial = "repos.c3d"
 

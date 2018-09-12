@@ -5,11 +5,6 @@ import logging
 
 import pyCGM2
 
-# openMA
-pyCGM2.CONFIG.addOpenma()
-import ma.io
-import ma.body
-
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Processing import exporter,c3dManager
 from pyCGM2.Processing.highLevel import standardSmartFunctions,gaitSmartFunctions
@@ -22,7 +17,7 @@ class AnalysisTest():
     @classmethod
     def detailedProcess(cls):
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d" ]
 
         #---- c3d manager
@@ -86,7 +81,7 @@ class AnalysisTest():
 
         # ----DATA-----
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d" ]
 
         #---- c3d manager
@@ -113,7 +108,7 @@ class AnalysisTest():
 
         # ----DATA-----
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d" ]
 
 
@@ -143,7 +138,7 @@ class AnalysisTest():
     def Save_and_openAnalysis(cls):
         # ----DATA-----
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d" ]
 
 

@@ -7,9 +7,6 @@ import logging
 import pyCGM2.Processing.cycle as CGM2cycle
 from pyCGM2.Tools import exportTools
 
-# openMA
-import ma.io
-import ma.body
 
 class XlsExportDataFrameFilter(object):
     """

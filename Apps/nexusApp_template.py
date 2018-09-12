@@ -18,7 +18,7 @@ import ViconNexus
 #import ma.body
 
 #btk
-#import btk
+#from pyCGM2 import btk
 
 
 # pyCGM2 libraries

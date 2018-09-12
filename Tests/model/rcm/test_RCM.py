@@ -17,7 +17,7 @@ from pyCGM2.Utils import files
 
 if __name__ == "__main__":
 
-    DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "RCM\\Qualisys\\subject297\\"
+    DATA_PATH = pyCGM2.TEST_DATA_PATH + "RCM\\Qualisys\\subject297\\"
     staticFilename = "subject_297_static_0001.c3d"
     translators = files.openTranslators(DATA_PATH,"RCM.translators")
 

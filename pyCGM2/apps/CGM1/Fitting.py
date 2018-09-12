@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     # --------------------------GLOBAL SETTINGS ------------------------------------
     # global setting ( in user/AppData)
-    settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+    settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
 
     # --------------------------CONFIG ------------------------------------
     subject = args.subject
@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     # --------------------------LOADING ------------------------------------
     if args.DEBUG:
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
         reconstructFilenameLabelled = "gait Trial.c3d"
         args.fileSuffix="cgm1"
 

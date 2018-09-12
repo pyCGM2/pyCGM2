@@ -11,9 +11,6 @@ import matplotlib.pyplot as plt
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
-# btk
-pyCGM2.CONFIG.addBtk()
-
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 from pyCGM2.ForcePlates import forceplates
@@ -26,7 +23,7 @@ class test_matchedFootPlatForm():
     @classmethod
     def twoPF(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
 
         # --- Motion 1
         gaitFilename="walking_oppositeX_2pf.c3d"
@@ -51,7 +48,7 @@ class test_matchedFootPlatForm():
     @classmethod
     def threePF(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
 
         # --- Motion 1
         gaitFilename="walking_Y_3pf.c3d"
@@ -66,7 +63,7 @@ class test_matchedFootPlatForm():
     @classmethod
     def threePF_patho(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
 
         # --- Motion 1
         gaitFilename="walking_pathoY_onlyRight.c3d"
@@ -86,7 +83,7 @@ class test_matchedFootPlatForm_difficultCases():
         FP#3 misfunction. Zeroing was not performed. Thus an offset superior to the threshold occurs from the beggining
         """
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
 
         # --- Motion 1
         gaitFilename="walking-X-4pf.c3d"
@@ -109,7 +106,7 @@ class test_matchedFootPlatForm_difficultCases():
         """
 
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\forceplates\\footAssignement\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\footAssignement\\"
 
         # --- Motion 1
         gaitFilename="gait trial 01.c3d"

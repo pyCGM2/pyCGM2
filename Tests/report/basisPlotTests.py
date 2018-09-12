@@ -22,7 +22,7 @@ class oneTrial_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d"]
 
         trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames[0])
@@ -43,7 +43,7 @@ class oneAnalysis_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d"]
 
 
@@ -82,7 +82,7 @@ class oneAnalysis_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d"]
 
 
@@ -121,7 +121,7 @@ class oneAnalysis_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d"]
 
 
@@ -162,7 +162,7 @@ class multipleAnalysis_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d"]
 
 
@@ -217,7 +217,7 @@ class multipleAnalysis_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d"]
 
 

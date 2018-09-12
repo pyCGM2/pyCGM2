@@ -18,7 +18,7 @@ if __name__ == "__main__":
     # check if behaviour of vicon MomentTypes : Torque or TorqueNormalized.
     # after saving, all mmoments from TorqueNormalized are multiply by 1000 !
 
-    DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\pyCGM2- CGM1-KAD\\"
+    DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-NexusPlugin\\pyCGM2- CGM1-KAD\\"
     modelledFilenameNoExt = "Gait Trial 02" #"static Cal 01-noKAD-noAnkleMed" #
     NEXUS.OpenTrial( str(DATA_PATH+modelledFilenameNoExt), 30 )
 

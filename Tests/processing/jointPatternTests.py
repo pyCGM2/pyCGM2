@@ -8,11 +8,6 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 
-# openMA
-pyCGM2.CONFIG.addOpenma()
-import ma.io
-import ma.body
-
 from pyCGM2.Processing import cycle,analysis,exporter,c3dManager
 from pyCGM2.Tools import trialTools
 from pyCGM2.Processing import jointPatterns
@@ -25,7 +20,7 @@ class Nieuwenhuys2017_tests():
 
         # ----DATA-----
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 01 - viconName.c3d","gait Trial 03 - viconName.c3d"  ]
 
         # ----INFOS-----
@@ -86,9 +81,9 @@ class Nieuwenhuys2017_tests():
 
 
         #---- Joint patterns
-    
+
         # xls Processing
-        RULES_PATH = pyCGM2.CONFIG.MAIN_PYCGM2_PATH +"Data\\jointPatterns\\"
+        RULES_PATH = pyCGM2.MAIN_PYCGM2_PATH +"Data\\jointPatterns\\"
         rulesXls = RULES_PATH+"Nieuwenhuys2017.xlsx"
         jpp = jointPatterns.XlsJointPatternProcedure(rulesXls)
         dpf = jointPatterns.JointPatternFilter(jpp, analysisFilter.analysis)

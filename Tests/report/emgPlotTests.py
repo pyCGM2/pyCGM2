@@ -20,7 +20,7 @@ class emgPlotTests():
     def temporalPlotSingleEmg(cls):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"EMG\\SampleNantes\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes\\"
         gaitTrial = "gait.c3d"
         restTrial = "repos.c3d"
 
@@ -50,7 +50,7 @@ class emgPlotTests():
     def temporalPlotPanel(cls):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"EMG\\SampleNantes\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes\\"
         gaitTrial = "gait.c3d"
         restTrial = "repos.c3d"
 
@@ -84,7 +84,7 @@ class emgPlotTests():
     def EnvelopPlotSingleEmg(cls):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"EMG\\SampleNantes\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes\\"
         gaitTrial = "gait.c3d"
         restTrial = "repos.c3d"
 
@@ -167,7 +167,7 @@ class emgPlotTests():
     def EnvelopCoactivationPlot(cls):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"EMG\\SampleNantes\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes\\"
         gaitTrial = "gait.c3d"
         restTrial = "repos.c3d"
 
@@ -254,7 +254,7 @@ class emgPlotTests():
     def EnvelopGaitPlotPanel(cls):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"EMG\\SampleNantes\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes\\"
         gaitTrial = "gait.c3d"
         restTrial = "repos.c3d"
 

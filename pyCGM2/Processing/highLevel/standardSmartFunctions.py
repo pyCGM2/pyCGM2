@@ -7,10 +7,6 @@ from pyCGM2.Processing import cycle,analysis,scores,exporter,c3dManager
 from pyCGM2.Report import plot,plotFilters,plotViewers,normativeDatasets
 from pyCGM2.Tools import trialTools
 
-# openma
-import ma.io
-
-
 def make_analysis(trialManager, kinematicLabelsDict,kineticLabelsDict,
                   modelInfo, subjectInfo, experimentalInfo,
                   pointLabelSuffix=""):

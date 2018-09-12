@@ -16,9 +16,6 @@ from pyCGM2.Tools import trialTools
 from pyCGM2.Report import plotUtils
 from pyCGM2.EMG import normalActivation
 
-# openMA
-import ma.io
-import ma.body
 
 def addNormalActivationLayer(figAxis,normalActivationLabel,fo):
     pos,burstDuration=normalActivation.getNormalBurstActivity(normalActivationLabel,fo)

@@ -2,8 +2,8 @@
 import logging
 import numpy as np
 
-import opensim
-import btk
+from pyCGM2 import opensim3 as opensim
+from pyCGM2 import btk
 
 
 

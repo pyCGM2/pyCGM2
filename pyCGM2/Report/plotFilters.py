@@ -11,9 +11,6 @@ import matplotlib.patches as mpatches
 #import pyCGM2
 import pyCGM2.Processing.analysis as CGM2analysis
 
-# openMA
-import ma.io
-import ma.body
 
 # ------ FILTER -----------
 class PlottingFilter(object):

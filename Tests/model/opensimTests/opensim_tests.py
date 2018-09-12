@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 import pyCGM2
 
-import btk
+from pyCGM2 import btk
 import pdb
 
 import pyCGM2
@@ -62,7 +62,7 @@ class CGM2_openSimTest():
     @classmethod
     def kinematicFitting_oneFile_cgmProcedure(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\LowerLimb\\subject10_S1A1_julieDataSet_noModelOutputs\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\LowerLimb\\subject10_S1A1_julieDataSet_noModelOutputs\\"
 
         config=dict()
         config["static"] = "StaticR010S1A1.c3d"
@@ -155,9 +155,9 @@ class CGM2_openSimTest():
 
         # ------- OPENSIM IK --------------------------------------
         cgmprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
-        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-markerset.xml"
+        markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-markerset.xml"
 
-        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-model.osim"
+        osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-model.osim"
 
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -171,7 +171,7 @@ class CGM2_openSimTest():
 
         cgmFittingProcedure.updateMarkerWeight("LASI",100)
 
-        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\ikSetUp_template.xml"
+        iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\ikSetUp_template.xml"
 
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           fittingOsim,
@@ -199,7 +199,7 @@ class CGM2_openSimTest():
     @classmethod
     def kinematicFitting_oneFile_generalProcedure(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\LowerLimb\\subject10_S1A1_julieDataSet_noModelOutputs\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\LowerLimb\\subject10_S1A1_julieDataSet_noModelOutputs\\"
 
         config=dict()
         config["static"] = "StaticR010S1A1.c3d"
@@ -303,8 +303,8 @@ class CGM2_openSimTest():
         generalprocedure.setGeometry("ankle_r","RAJC","Right Shank","Right Hindfoot")
         generalprocedure.setGeometry("mtp_r","RvCUN","Right Hindfoot","Right Forefoot")
 
-        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-model.osim"
-        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-markerset.xml"
+        osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-model.osim"
+        markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\cgm2-markerset.xml"
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
                                                 model,
@@ -332,7 +332,7 @@ class CGM2_openSimTest():
         generalMotionProcedure.setMarkerWeight("RD1M",100)
         generalMotionProcedure.setMarkerWeight("RD5M",100)
 
-        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\ikSetUp_template.xml"
+        iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\draft-opensimPreProcessing\\ikSetUp_template.xml"
 
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           fittingOsim,

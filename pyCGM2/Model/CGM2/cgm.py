@@ -4,7 +4,7 @@ import logging
 import copy
 #from numba import jit, autojit
 
-import btk
+from pyCGM2 import btk
 
 from pyCGM2 import Utils
 from pyCGM2 import enums

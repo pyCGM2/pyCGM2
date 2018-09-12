@@ -5,7 +5,7 @@ import copy
 import ipdb
 
 
-import btk
+from pyCGM2 import btk
 
 from pyCGM2 import enums
 from pyCGM2.Model import model, modelDecorator,frame,motion

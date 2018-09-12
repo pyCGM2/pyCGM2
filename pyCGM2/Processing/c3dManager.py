@@ -6,10 +6,6 @@ import logging
 # pyCGM2
 from pyCGM2.Tools import trialTools
 
-# openMA
-import ma.io
-import ma.body
-
 
 class C3dManager:
     spatioTemporal={"Trials":None , "Filenames":None}

@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     # --------------------------GLOBAL SETTINGS ------------------------------------
     # global setting ( in user/AppData)
-    settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+    settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
 
     # --------------------------CONFIG ------------------------------------
     subject = args.subject
@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
     # --------------------------LOADING ------------------------------------
     if args.DEBUG:
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
         calibrateFilenameLabelled = "static.c3d"
         subject = "MRI-US-01 - Pig"
         args.fileSuffix="cgm2_4"

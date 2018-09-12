@@ -6,8 +6,6 @@ import logging
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.DEBUG)
 
-# btk
-pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
 from pyCGM2 import enums

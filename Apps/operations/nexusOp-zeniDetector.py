@@ -13,7 +13,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 #btk
-import btk
+from pyCGM2 import btk
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools

@@ -7,9 +7,6 @@ import matplotlib.pyplot as plt
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
-# btk
-pyCGM2.CONFIG.addBtk()
-
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
@@ -23,7 +20,7 @@ class test_Zeni():
     @classmethod
     def detection(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\event detection\\events\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\event detection\\events\\"
 
         # --- Motion 1
         gaitFilename="gait-noEvents.c3d"

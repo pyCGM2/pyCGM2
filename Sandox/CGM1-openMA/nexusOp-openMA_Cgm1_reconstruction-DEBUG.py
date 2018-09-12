@@ -16,11 +16,11 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 
 # vicon
-pyCGM2.CONFIG.addNexusPythonSdk()
+pyCGM2.addNexusPythonSdk()
 import ViconNexus
 
 # openMA
-pyCGM2.CONFIG.addOpenma()
+pyCGM2.addOpenma()
 import ma.io
 import ma.body
    

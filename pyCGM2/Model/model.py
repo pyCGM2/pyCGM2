@@ -3,7 +3,7 @@ import numpy as np
 import copy
 import logging
 
-import btk
+from pyCGM2 import btk
 
 import frame
 

@@ -8,8 +8,6 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 import pyCGM2
-# btk
-pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
@@ -26,7 +24,7 @@ class CGM2_4_Tests():
     @classmethod
     def full_IK(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
         staticFilename = "static.c3d"
         gaitFilename= "gait Trial 01.c3d"
 
@@ -96,9 +94,9 @@ class CGM2_4_Tests():
 
         # --- osim builder ---
         cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
-        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-markerset - expert.xml"
+        markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-markerset - expert.xml"
 
-        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
+        osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
 
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -112,7 +110,7 @@ class CGM2_4_Tests():
         #procedure
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model,expertMode = True)
 
-        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-expert-ikSetUp_template.xml"
+        iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-expert-ikSetUp_template.xml"
 
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           scalingOsim,

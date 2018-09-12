@@ -12,8 +12,6 @@ import logging
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
-# btk
-pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
@@ -28,7 +26,7 @@ class CGM11_calibrationTest():
     @classmethod
     def basicCGM1_manualOffsets(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -86,7 +84,7 @@ class CGM11_calibrationTest():
     @classmethod
     def basicCGM1_manualThighShankRotation(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -143,7 +141,7 @@ class CGM11_calibrationTest():
     @classmethod
     def basicCGM1_manualTibialTorsion(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -206,7 +204,7 @@ class CGM11_calibrationTest():
         => tibial Torsion has to be udpated
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-Med\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-Med\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -281,7 +279,7 @@ class CGM11_calibrationTest():
 
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\CGM1.1\medial\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\CGM1.1\medial\\"
         staticFilename = "static-all.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -333,7 +331,7 @@ class CGM11_calibrationTest():
 
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\CGM1.1\medial\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\CGM1.1\medial\\"
         staticFilename = "static-all.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -385,7 +383,7 @@ class CGM11_calibrationTest():
 
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\kad-med-TrueEquinus\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\kad-med-TrueEquinus\\"
         staticFilename = "static.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))

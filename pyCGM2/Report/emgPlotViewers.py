@@ -12,9 +12,6 @@ import pyCGM2
 from pyCGM2.Report import plot, plotViewers,plotUtils
 from pyCGM2.EMG import normalActivation
 from pyCGM2.Processing import cycle
-# openMA
-import ma.io
-import ma.body
 
 
 

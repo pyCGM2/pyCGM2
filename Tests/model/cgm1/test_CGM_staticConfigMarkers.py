@@ -13,7 +13,7 @@ class tests():
     @classmethod
     def nativeCGM(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "native.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -25,7 +25,7 @@ class tests():
     @classmethod
     def KADs(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "KAD-both.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -37,7 +37,7 @@ class tests():
     @classmethod
     def KAD_left(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "KAD-onlyLeft.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -49,7 +49,7 @@ class tests():
     @classmethod
     def KAD_right(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "KAD-onlyRight.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -62,7 +62,7 @@ class tests():
     @classmethod
     def KADmeds(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "KADmed-both.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -74,7 +74,7 @@ class tests():
     @classmethod
     def KADmed_left(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "KADmed-onlyLeft.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -86,7 +86,7 @@ class tests():
     @classmethod
     def KADmed_right(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "KADmed-onlyRight.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -99,7 +99,7 @@ class tests():
     @classmethod
     def Meds(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "medMed.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -111,7 +111,7 @@ class tests():
     @classmethod
     def Meds_left(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "medMed-onlyLeft.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -123,7 +123,7 @@ class tests():
     @classmethod
     def Meds_right(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "medMed-onlyRight.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))
@@ -136,7 +136,7 @@ class tests():
     @classmethod
     def KneeMeds(cls):
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "operations\\staticMarkerConfig\\CGM\\"
         staticFilename = "medKnee.c3d"
 
         acq = btkTools.smartReader(str(DATA_PATH+staticFilename))

@@ -11,9 +11,6 @@ import matplotlib.patches as mpatches
 import pyCGM2
 from pyCGM2.Report import plot
 
-# openMA
-import ma.io
-import ma.body
 
 class AbstractPlotViewer(object):
     """

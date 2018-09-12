@@ -9,9 +9,6 @@ from pyCGM2.Tools import trialTools
 from pyCGM2.Report import plot
 from pyCGM2.Model.CGM2 import  cgm,cgm2
 
-# openma
-import ma.io
-
 
 def make_analysis(trialManager,kinematicLabelsDict,kineticLabelsDict,
                   modelInfo, subjectInfo, experimentalInfo,
@@ -109,7 +106,7 @@ def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
     # filter
     stppf = plotFilters.PlottingFilter()
     stppf.setViewer(stpv)
-    pf.setExport(outputPath,str(pdfFilename+"-stp"),"pdf")
+    stppf.setExport(outputPath,str(pdfFilename+"-stp"),"pdf")
     stppf.plot()
 
 

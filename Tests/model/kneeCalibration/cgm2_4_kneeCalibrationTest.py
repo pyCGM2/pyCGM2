@@ -8,9 +8,9 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.DEBUG)
 
 import pyCGM2
+
 # btk
-pyCGM2.CONFIG.addBtk()
-import btk
+from pyCGM2 import btk
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
@@ -26,7 +26,7 @@ class CGM2_SARA_test():
 
     @classmethod
     def CGM2_4_SARA_test(cls):
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\Knee Calibration\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\Knee Calibration\\"
         staticFilename = "static.c3d"
 
         funcFilename = "functional.c3d"
@@ -149,9 +149,9 @@ class CGM2_SARA_test():
 
         # --- osim builder ---
         cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
-        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-markerset.xml"
+        markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-markerset.xml"
 
-        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
+        osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
 
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -164,7 +164,7 @@ class CGM2_SARA_test():
         # --- fitting ---
         #procedure
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model)
-        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-ikSetUp_template.xml"
+        iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-ikSetUp_template.xml"
 
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           scalingOsim,

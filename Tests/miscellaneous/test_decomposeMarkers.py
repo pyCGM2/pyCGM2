@@ -6,9 +6,6 @@ import logging
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
-# btk
-pyCGM2.CONFIG.addBtk()
-
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model import  modelFilters,modelDecorator, frame
@@ -28,7 +25,7 @@ class decomposeTrackingMarker_Test():
         GOAL : compare Joint centres and foot Offset
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\markerDecomposition\\CGM1decomposeTracking\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\markerDecomposition\\CGM1decomposeTracking\\"
 #
 
         staticFilename = "static.c3d"
@@ -81,7 +78,7 @@ class decomposeTrackingMarker_Test():
         GOAL : compare Joint centres and foot Offset
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\markerDecomposition\\CGM1decomposeTracking\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\markerDecomposition\\CGM1decomposeTracking\\"
 #
 
         staticFilename = "static.c3d"
@@ -131,7 +128,7 @@ class decomposeTrackingMarker_Test():
         """
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "operations\\markerDecomposition\\CGM24decomposeTracking\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\markerDecomposition\\CGM24decomposeTracking\\"
     #
 
         staticFilename = "PN01OP01S01STAT.c3d"

@@ -5,10 +5,6 @@ import logging
 
 import pyCGM2
 
-# openMA
-pyCGM2.CONFIG.addOpenma()
-import ma.io
-import ma.body
 
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Processing import exporter,c3dManager
@@ -23,7 +19,7 @@ class ExportTest():
 
         # ----DATA-----
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d" ]
 
         #---- c3d manager
@@ -56,7 +52,7 @@ class ExportTest():
 
         # ----DATA-----
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d" ]
 
         #---- c3d manager

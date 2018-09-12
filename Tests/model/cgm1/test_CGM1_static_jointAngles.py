@@ -9,8 +9,6 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.DEBUG)
 
 import pyCGM2
-# btk
-pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
@@ -49,7 +47,7 @@ class CGM1_calibrationTest():
 
     @classmethod
     def basicCGM1(cls):
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic_static_StaticVsDynamicAngles\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic_static_StaticVsDynamicAngles\\"
 
 
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
@@ -154,7 +152,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1_KAD(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic_static_StaticVsDynamicAngles\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic_static_StaticVsDynamicAngles\\"
 
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
@@ -265,7 +263,7 @@ class CGM1_calibrationTest():
     @classmethod
     def basicCGM1_KAD_tibialTorsion(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-tibialTorsion-static_StaticVsDynamicAngles\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-tibialTorsion-static_StaticVsDynamicAngles\\"
 
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 

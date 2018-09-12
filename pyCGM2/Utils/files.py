@@ -155,7 +155,7 @@ def getJsonFileContent(DATA_PATH,jsonfile,subject):
 
 
     if not os.path.isfile( DATA_PATH + outJson):
-        copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+jsonfile), str(DATA_PATH + outJson))
+        copyfile(str(pyCGM2.PYCGM2_SESSION_SETTINGS_FOLDER+jsonfile), str(DATA_PATH + outJson))
         logging.warning("Copy of %s from pyCGM2 Settings folder"%(jsonfile))
 
     content = openJson(DATA_PATH,outJson)
@@ -176,7 +176,7 @@ def getSessioninfoFile(DATA_PATH,subject):
 
 
     if not os.path.isfile( DATA_PATH + infoJsonFile):
-        copyfile(str(pyCGM2.CONFIG.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + infoJsonFile))
+        copyfile(str(pyCGM2.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + infoJsonFile))
         logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
 
     infoSettings = openJson(DATA_PATH,infoJsonFile)

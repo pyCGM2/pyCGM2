@@ -40,7 +40,7 @@ if __name__ == "__main__":
         args.DEBUG = False
         if args.DEBUG:
             # CGM2.3--
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.4-calibration2Dof\\"
+            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.4-calibration2Dof\\"
             reconstructedFilenameLabelledNoExt = "PN01OP01S01FUNC01"
             args.side = "Left"
             args.beginFrame=932
@@ -67,23 +67,23 @@ if __name__ == "__main__":
         logging.info("loaded model : %s" %(model.version ))
 
         if model.version == "CGM1.0":
-            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
         elif model.version == "CGM1.1":
-            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
+            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
         elif model.version == "CGM2.1":
-            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
+            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
         elif model.version == "CGM2.2":
-            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
+            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
         elif model.version == "CGM2.2e":
-            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_2-Expert-pyCGM2.settings")
+            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-Expert-pyCGM2.settings")
         elif model.version == "CGM2.3":
-            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
         elif model.version == "CGM2.3e":
-            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_3-Expert-pyCGM2.settings")
+            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-Expert-pyCGM2.settings")
         elif model.version == "CGM2.4":
-            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
         elif model.version == "CGM2.4e":
-            settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_4-Expert-pyCGM2.settings")
+            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-Expert-pyCGM2.settings")
         else:
             raise Exception ("model version not found [contact admin]")
 

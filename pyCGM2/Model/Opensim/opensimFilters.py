@@ -3,7 +3,7 @@ import os
 import numpy as np
 import logging
 
-import btk
+from pyCGM2 import btk
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools

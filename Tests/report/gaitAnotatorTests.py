@@ -23,7 +23,7 @@ class oneAnalysis_GaitPlotTest():
     def gaitDescriptiveKinematicPlotPanel(cls):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d"]
 
 

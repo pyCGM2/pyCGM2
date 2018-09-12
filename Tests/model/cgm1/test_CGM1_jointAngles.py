@@ -19,8 +19,6 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 import pyCGM2
-# btk
-pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
@@ -56,7 +54,7 @@ class CGM1_motionJCSTest():
         GOAL : compare Joint centres and foot Offset
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -154,7 +152,7 @@ class CGM1_motionJCSTest():
         GOAL : compare Joint centres and foot Offset
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic FlatFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic FlatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -253,7 +251,7 @@ class CGM1_motionJCSTest():
         GOAL : compare Joint centres and foot Offset
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -360,7 +358,7 @@ class CGM1_motionJCSTest():
         GOAL : compare Joint centres and foot Offset
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-flatFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-flatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -469,7 +467,7 @@ class CGM1_motionAbsoluteAnglesTest():
         """
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -558,7 +556,7 @@ class CGM1_motionAbsoluteAnglesTest():
         """
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-Y axis\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-Y axis\\"
         staticFilename = "sujet 1 Cal 01.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -649,7 +647,7 @@ class CGM1_motionFullAnglesTest():
         """
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -787,7 +785,7 @@ class CGM1_motionFullAnglesTest():
         """
 
         """
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-tibialTorsion\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\basic-tibialTorsion\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -933,7 +931,7 @@ class CGM1_motionFullAnglesTest():
 
         """
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-basic\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -1077,7 +1075,7 @@ class CGM1_motionFullAnglesTest():
 
         """
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-flatFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-flatFoot\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -1223,7 +1221,7 @@ class CGM1_motionFullAnglesTest():
 
         """
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-Med\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-Med\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -1371,7 +1369,7 @@ class CGM1_motionFullAnglesTest():
 
         """
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-manualTibialTorsion\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\KAD-manualTibialTorsion\\"
         staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))

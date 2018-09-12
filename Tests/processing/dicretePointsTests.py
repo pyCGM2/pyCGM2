@@ -16,12 +16,6 @@ import matplotlib.pyplot as plt
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
-
-# openMA
-pyCGM2.CONFIG.addOpenma()
-import ma.io
-import ma.body
-
 from pyCGM2.Processing import cycle,analysis, discretePoints,exporter,c3dManager
 from pyCGM2.Tools import trialTools
 
@@ -33,7 +27,7 @@ class BenedettiTest():
 
         # ----DATA-----
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 01 - viconName.c3d","gait Trial 03 - viconName.c3d"  ]
 
         # ----INFOS-----
@@ -115,7 +109,7 @@ class MaxMinTest():
 
         # ----DATA-----
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 01 - viconName.c3d","gait Trial 03 - viconName.c3d"  ]
 
         # ----INFOS-----
@@ -193,7 +187,7 @@ class GoldbergTest():
 
         # ----DATA-----
 
-        DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 01 - viconName.c3d","gait Trial 03 - viconName.c3d"  ]
 
         # ----INFOS-----

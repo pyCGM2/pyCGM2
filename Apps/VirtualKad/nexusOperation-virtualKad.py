@@ -5,29 +5,24 @@ import logging
 import  argparse
 
 # pyCGM2 settings
-import pyCGM2 
+import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 # vicon
-pyCGM2.CONFIG.addNexusPythonSdk()
 import ViconNexus
 
-# openMA
-pyCGM2.CONFIG.addOpenma()
-import ma.io
-import ma.body
 
 
 #local lib
 import lib.functions  as libf
 
-    
 
 
-    
+
+
 if __name__ == "__main__":
-    
-    print "======== [pyCGM2-Virtual KAD] ========="    
+
+    print "======== [pyCGM2-Virtual KAD] ========="
 
     # ---- INPUTS ----
     parser = argparse.ArgumentParser(description='CGM')
@@ -35,20 +30,20 @@ if __name__ == "__main__":
     parser.add_argument('--verticalGlobalAxis', default="Z", type=str)
     parser.add_argument('--leftMedialKneeMarker', default="LMEPI", type=str)
     parser.add_argument('--rightMedialKneeMarker', default="RMEPI", type=str)
-     
+
     args = parser.parse_args()
     logging.info(args)
-    
-    pyNEXUS = ViconNexus.ViconNexus()    
+
+    pyNEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = pyNEXUS.Client.IsConnected()
-    
-     
-    if NEXUS_PYTHON_CONNECTED: 
+
+
+    if NEXUS_PYTHON_CONNECTED:
 
         # --- INPUTS -----
-        vertical_global_axis = args.verticalGlobalAxis 
-        left_medial_knee_marker = args.leftMedialKneeMarker 
-        right_medial_knee_marker = args.rightMedialKneeMarker      
+        vertical_global_axis = args.verticalGlobalAxis
+        left_medial_knee_marker = args.leftMedialKneeMarker
+        right_medial_knee_marker = args.rightMedialKneeMarker
         updateC3d = args.overwrite
 
         print left_medial_knee_marker
@@ -57,19 +52,15 @@ if __name__ == "__main__":
         filename = filenameNoExt+".c3d"
         print "Name: "+ filename
         print "Path: "+ DATA_PATH
-        
 
-        
+
+
         # ---- PROCESSING ----
-        fullFilenameVirtualKad = libf.virtualKAD (filename,DATA_PATH, 
-                    vertical_global_axis = vertical_global_axis, 
-                    left_medial_knee_marker = left_medial_knee_marker, 
-                    right_medial_knee_marker = right_medial_knee_marker, 
+        fullFilenameVirtualKad = libf.virtualKAD (filename,DATA_PATH,
+                    vertical_global_axis = vertical_global_axis,
+                    left_medial_knee_marker = left_medial_knee_marker,
+                    right_medial_knee_marker = right_medial_knee_marker,
                     updateC3d = updateC3d)
 
     else:
         logging.error("[[pyCGM2-virtual Kad]] : Nexus Not Connected")
-        
-
-        
-         

@@ -81,8 +81,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
         #                        ---OPENSIM IK---
 
         # --- opensim calibration Filter ---
-        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
-        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-markerset.xml" # markerset
+        osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
+        markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-markerset.xml" # markerset
         cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -94,7 +94,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
 
         # --- opensim Fitting Filter ---
-        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
+        iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
 
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
         cgmFittingProcedure.updateMarkerWeight("LASI",settings["Fitting"]["Weight"]["LASI"])
@@ -179,8 +179,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     #                        ---OPENSIM IK---
 
     # --- opensim calibration Filter ---
-    osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
-    markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-markerset.xml" # markerset
+    osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
+    markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-markerset.xml" # markerset
     cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
 
     oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -192,7 +192,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
 
     # --- opensim Fitting Filter ---
-    iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
+    iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
 
     cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
     cgmFittingProcedure.updateMarkerWeight("LASI",settings["Fitting"]["Weight"]["LASI"])

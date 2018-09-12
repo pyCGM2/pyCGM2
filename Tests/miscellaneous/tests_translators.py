@@ -7,9 +7,6 @@ import json
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.DEBUG)
 
-# btk
-pyCGM2.CONFIG.addBtk()
-import btk
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
@@ -58,7 +55,7 @@ class translator_tests():
         inputs = json.loads(CONTENT_INPUTS_CGM2_3,object_pairs_hook=OrderedDict)
         translators = inputs["Translators"]
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.3\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.3\\"
         staticFilename = "static.c3d"
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))

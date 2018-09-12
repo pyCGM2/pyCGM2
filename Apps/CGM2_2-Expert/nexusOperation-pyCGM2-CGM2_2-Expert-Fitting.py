@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        settings = files.openJson(pyCGM2.CONFIG.PYCGM2_APPDATA_PATH,"CGM2_2-Expert-pyCGM2.settings")
+        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-Expert-pyCGM2.settings")
 
         # --------------------------CONFIG ------------------------------------
         argsManager = cgmUtils.argsManager_cgm(settings,args)
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
         # --------------------------LOADING ------------------------------------
         if args.DEBUG:
-            DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.2\\native\\"
+            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.2\\native\\"
             reconstructFilenameLabelledNoExt = "gait trial"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
 

@@ -6,7 +6,7 @@ from matplotlib.path import Path
 
 
 
-import btk
+from pyCGM2 import btk
 
 from pyCGM2.Tools import  btkTools
 

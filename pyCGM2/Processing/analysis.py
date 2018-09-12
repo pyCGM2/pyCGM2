@@ -9,9 +9,10 @@ import logging
 import pyCGM2.Processing.cycle as CGM2cycle
 from pyCGM2.Tools import exportTools
 
-# openMA
-import ma.io
-import ma.body
+# openMA ( TODO -  generate single c3d)
+from pyCGM2 import ma
+from pyCGM2.ma import io
+
 
 class AnalysisStructure:
     data = dict()

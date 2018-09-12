@@ -5,7 +5,7 @@ from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 from pyCGM2.EMG import coactivation
 
-import btk
+from pyCGM2 import btk
 
 class BasicEmgProcessingFilter(object):
     """

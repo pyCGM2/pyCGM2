@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import copy
 
-import btk
+from pyCGM2 import btk
 
 import frame
 import motion

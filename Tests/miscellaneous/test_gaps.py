@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from pyCGM2.Tools import  btkTools
 
-DATA_PATH = pyCGM2.CONFIG.TEST_DATA_PATH+"operations\\gapFilling\\checkResiduals\\"
+DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\gapFilling\\checkResiduals\\"
 
 raw = btkTools.smartReader(DATA_PATH+"PN01OP01S01SS01-raw.c3d")
 tiapRaw = raw.GetPoint("LTIAP")

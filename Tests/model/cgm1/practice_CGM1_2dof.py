@@ -6,9 +6,6 @@ import logging
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
-# btk
-pyCGM2.CONFIG.addBtk()
-
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model import  modelFilters,modelDecorator, frame
@@ -23,7 +20,7 @@ if __name__ == "__main__":
 
 
 
-    MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM1\\PIG advanced\\dynaKAD\\"
+    MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\PIG advanced\\dynaKAD\\"
     staticFilename = "MRI-US-01, 2008-08-08, 3DGA 02.c3d"
 
     acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))

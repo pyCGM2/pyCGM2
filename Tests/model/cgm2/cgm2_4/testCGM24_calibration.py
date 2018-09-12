@@ -8,8 +8,6 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.DEBUG)
 
 import pyCGM2
-# btk
-pyCGM2.CONFIG.addBtk()
 
 # pyCGM2
 from pyCGM2.Utils import files
@@ -29,7 +27,7 @@ class CGM2_4_calibration():
     @classmethod
     def calibration_noFlatFoot(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
         staticFilename = "static.c3d"
 
         markerDiameter=14
@@ -82,7 +80,7 @@ class CGM2_4_calibration():
     @classmethod
     def calibration_FlatFoot(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
         staticFilename = "static.c3d"
 
         markerDiameter=14
@@ -137,7 +135,7 @@ class CGM2_4_calibration():
     @classmethod
     def calibration_GarchesFlatFoot(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
         staticFilename = "08_02_18_Vincent_Pere_Statique_000_MOKKA.c3d"
 
         markerDiameter=14
@@ -194,7 +192,7 @@ class CGM2_4_staticFitting():
 
     @classmethod
     def noIK_determinist(cls):
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\fullBody\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\fullBody\\"
         staticFilename = "PN01OP01S01STAT.c3d"
         gaitFilename= "PN01OP01S01STAT.c3d"
 
@@ -255,7 +253,7 @@ class CGM2_4_staticFitting():
 
     @classmethod
     def noIK_6dof(cls):
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\fullBody\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\fullBody\\"
         staticFilename = "PN01OP01S01STAT.c3d"
         gaitFilename= "PN01OP01S01STAT.c3d"
 
@@ -318,7 +316,7 @@ class CGM2_4_staticFitting():
     @classmethod
     def full_IK(cls):
 
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "CGM2\\cgm2.4\\fullBody\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\fullBody\\"
         staticFilename = "PN01OP01S01STAT.c3d"
         gaitFilename= "PN01OP01S01STAT.c3d"
 
@@ -374,9 +372,9 @@ class CGM2_4_staticFitting():
         # ------- OPENSIM IK --------------------------------------
         # --- osim builder ---
         cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
-        markersetFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-markerset.xml"
+        markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-markerset.xml"
 
-        osimfile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
+        osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
 
 
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -390,7 +388,7 @@ class CGM2_4_staticFitting():
         #procedure
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model)
 
-        iksetupFile = pyCGM2.CONFIG.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-ikSetUp_template.xml"
+        iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-ikSetUp_template.xml"
 
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           scalingOsim,
@@ -417,7 +415,7 @@ class CGM2_4_staticFitting():
 
     @classmethod
     def noIK_determinist_Garches(cls):
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
         staticFilename = "08_02_18_Vincent_Pere_Statique_000_MOKKA.c3d"
         gaitFilename= "08_02_18_Vincent_Pere_Statique_000_MOKKA.c3d"
 
@@ -475,7 +473,7 @@ class CGM2_4_staticFitting():
 
     @classmethod
     def noIK_6dof_Garches(cls):
-        MAIN_PATH = pyCGM2.CONFIG.TEST_DATA_PATH + "Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Datasets Tests\\didier\\08_02_18_Vincent Pere\\"
         staticFilename = "08_02_18_Vincent_Pere_Statique_000_MOKKA.c3d"
         gaitFilename= "08_02_18_Vincent_Pere_Statique_000_MOKKA.c3d"
 
