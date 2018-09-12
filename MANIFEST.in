@@ -1,6 +1,20 @@
 recursive-include Apps *
 recursive-include Data *
 recursive-include Extern *
-recursive-include NoViconApps *
 recursive-include SessionSettings *
-recursive-include thirdParty *
+recursive-include installData*
+recursive-include pyCGM2\ma *.pyd
+recursive-include pyCGM2\ma *.dll
+recursive-include pyCGM2\ma *.pyo
+recursive-include pyCGM2\ma *.py
+recursive-include pyCGM2\ma *.pyc
+recursive-include pyCGM2\btk *.pyd
+recursive-include pyCGM2\btk *.pyo
+recursive-include pyCGM2\btk *.py
+recursive-include pyCGM2\btk *.pyc
+recursive-include pyCGM2\opensim3 *.pyd
+recursive-include pyCGM2\opensim3 *.dll
+recursive-include pyCGM2\opensim3 *.pyo
+recursive-include pyCGM2\opensim3 *.py
+recursive-include pyCGM2\opensim3 *.pyc
+recursive-include pyCGM2\opensim3 *.lib
