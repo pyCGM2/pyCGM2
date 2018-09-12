@@ -88,10 +88,16 @@ ENV/
 
 *.c3d
 *.pyc
-
+*.dll
+*.pyd
+*.pyo
 
 
 # python visual studio
 *.pyproj
 *.sln
 *.suo
+
+pyCGM2/ma
+pyCGM2/btk
+pyCGM2/opensim3
