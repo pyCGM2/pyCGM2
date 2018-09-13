@@ -84,11 +84,11 @@ if "pyCGM2.egg-link" in os.listdir(SITE_PACKAGE_PATH[:-1]):
     os.remove(SITE_PACKAGE_PATH+"pyCGM2.egg-link")
 
 # remove Build/dist/egg info in the downloaded folder
-localDirPath = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
-localDirPathDirs = getSubDirectories(localDirPath+"\\pyCGM2")
-if "build" in  localDirPathDirs:    shutil.rmtree(localDirPath+"\\pyCGM2\\build")
-if "dist" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\pyCGM2\\dist")
-if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\pyCGM2\\pyCGM2.egg-info")
+localDirPath = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
+localDirPathDirs = getSubDirectories(localDirPath)
+if "build" in  localDirPathDirs:    shutil.rmtree(localDirPath+"\\build")
+if "dist" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\dist")
+if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\pyCGM2.egg-info")
 
 
 # delete everything in programData
