@@ -11,7 +11,7 @@ import shutil
 import site
 
 
-if "64-bit" in sys.version:
+if sys.maxsize > 2**32:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
 
 VERSION ="3.0.0"
@@ -72,6 +72,8 @@ def getSubDirectories(dir):
     subdirs = [d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
     return subdirs
 
+def getFiles(dir):
+    return  [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
 
 #------------------------- UNINSTALL--------------------------------------------
 
@@ -99,13 +101,23 @@ if "pyCGM2" in  pddirs:
     logging.info("pprogramData/pyCGM2---> remove")
 
 # delete all previous vst and pipelines in Nexus Public Documents
-dirs = getSubDirectories(NEXUS_PUBLIC_DOCUMENT_VST_PATH)
-if "pyCGM2" in dirs:
-    shutil.rmtree(NEXUS_PUBLIC_DOCUMENT_VST_PATH+"pyCGM2")
+files = getFiles(NEXUS_PUBLIC_DOCUMENT_VST_PATH)
+for file in files:
+    if "pyCGM2" in file[0:6]: # check 6 first letters
+        os.remove(os.path.join(NEXUS_PUBLIC_DOCUMENT_VST_PATH,file))
 
-dirs = getSubDirectories(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH)
-if "pyCGM2" in dirs:
-    shutil.rmtree(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH+"pyCGM2")
+files = getFiles(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH)
+for file in files:
+    if "pyCGM2" in file[0:6]:
+        os.remove(os.path.join(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,file))
+
+
+
+
+#
+# dirs = getSubDirectories(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH)
+# if "pyCGM2" in dirs:
+#     shutil.rmtree(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH+"pyCGM2")
 #------------------------------------------------------------------
 
 
@@ -166,16 +178,13 @@ for filename in src_files:
 
 
 # vst
-os.makedirs(NEXUS_PUBLIC_DOCUMENT_VST_PATH+"pyCGM2")
-src_files = os.listdir(NEXUS_PYCGM2_VST_PATH[:-1])
-for filename in src_files:
-    full_filename = os.path.join(NEXUS_PYCGM2_VST_PATH, filename)
-    shutil.copyfile(full_filename, NEXUS_PUBLIC_DOCUMENT_VST_PATH +"pyCGM2\\"+filename)
+
+content = os.listdir(NEXUS_PYCGM2_VST_PATH[:-1])
+for item in content:
+    full_filename = os.path.join(NEXUS_PYCGM2_VST_PATH, item)
+    shutil.copyfile(full_filename,  os.path.join(NEXUS_PUBLIC_DOCUMENT_VST_PATH,item))
 
 
-
-
-os.makedirs(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH+"pyCGM2")
 scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
-                                            NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH+"pyCGM2",
+                                            NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,
                                             MAIN_PYCGM2_PATH)
