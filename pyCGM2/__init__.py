@@ -9,7 +9,7 @@ def getLastNexusVersion():
     dirs = os.listdir(nexusDir)
     li =[]
     for it in dirs:
-        if "Nexus" in it:
+        if "Nexus2" in it:
             version = int(it[it.find(".")+1:])
             li.append(version)
     last = max(li)
