@@ -217,8 +217,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                                       scalingOsim,
                                                       cgmFittingProcedure,
                                                       str(DATA_PATH) )
-    acqIK = osrf.run(acqGait,str(DATA_PATH + reconstructFilenameLabelled ))
 
+    logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
+    acqIK = osrf.run(acqGait,str(DATA_PATH + reconstructFilenameLabelled ))
+    logging.info("-------INVERSE KINEMATICS DONE-----------------")
 
 
     # --- final pyCGM2 model motion Filter ---

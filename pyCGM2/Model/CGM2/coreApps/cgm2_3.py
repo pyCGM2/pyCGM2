@@ -235,7 +235,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                                           scalingOsim,
                                                           cgmFittingProcedure,
                                                           str(DATA_PATH) )
+
+        logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
         acqIK = osrf.run(acqGait,str(DATA_PATH + reconstructFilenameLabelled ))
+        logging.info("-------INVERSE KINEMATICS DONE-----------------")
+
 
     # eventual gait acquisition to consider for joint kinematics
     finalAcqGait = acqIK if ik_flag else acqGait
