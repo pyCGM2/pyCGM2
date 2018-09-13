@@ -14,7 +14,7 @@ import site
 if "64-bit" in sys.version:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
 
-VERSION ="2.2.0"
+VERSION ="3.0.0"
 
 
 
@@ -114,17 +114,23 @@ setup(name = 'pyCGM2',
     version = VERSION,
     author = 'fabien Leboeuf',
     author_email = 'fabien.leboeuf@gmail.com',
-    keywords = 'python Conventional Gait Model 2',
+    keywords = 'python CGM Vicon PluginGait',
     packages=find_packages(),
     data_files = gen_data_files("Apps","Data","Extern","SessionSettings","installData"),
 	include_package_data=True,
+    license='CC-BY-SA',
 	install_requires = ['numpy>=1.11.0',
                         'scipy>=0.17.0',
                         'matplotlib>=1.5.3',
                         'pandas >=0.19.1',
                         'enum34>=1.1.2',
                         'configparser>=3.5.0',
-                        'beautifulsoup4>=3.5.0']
+                        'beautifulsoup4>=3.5.0'],
+    classifiers=['Programming Language :: Python',
+                 'Programming Language :: Python :: 2.7',
+                 'Operating System :: Windows OS',
+                 'Natural Language :: English-French',
+                 'Topic :: Clinical Gait Analysis']
     )
 #------------------------------------------------------------------------------
 
