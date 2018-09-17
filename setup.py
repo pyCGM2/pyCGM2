@@ -35,8 +35,8 @@ NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "installData\\pipelineTemplate
 
 
 user_folder = pd = os.getenv("PUBLIC")
-NEXUS_PUBLIC_DOCUMENT_VST_PATH = user_folder+"/Documents/Vicon/Nexus2.x/ModelTemplates/"
-NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = user_folder+"/Documents/Vicon/Nexus2.x/Configurations/Pipelines/"
+NEXUS_PUBLIC_DOCUMENT_VST_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\ModelTemplates\\"
+NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = user_folder+"\\Documents\\Vicon/Nexus2.x\\Configurations\\Pipelines\\"
 
 
 
