@@ -52,7 +52,7 @@ class DetectFootEvents:
       # retrieve the marker data that we are going to need
       FrameCount = vicon.GetFrameCount()
       self.MarkerDataExists = [[False]*FrameCount for x in xrange(4)]
-      self.MarkerData = [[[0]*FrameCount]*3]*4
+      self.MarkerData = [[[0 for x in xrange(FrameCount)] for y in xrange(3)] for z in xrange(4)]
       for i in range(4):
         #print str(i)
         #print vicon.GetTrajectory(subject,self.MarkerNames[i])[0]
@@ -199,7 +199,7 @@ class DetectFootEvents:
     RefPointY = (UpperBoundsY + LowerBoundsY) / 2
     RefPointZ = (UpperBoundsZ + LowerBoundsZ) / 2
     RefPoint = [RefPointX, RefPointY, RefPointZ]
-    
+
     if (frame - self.LastFrameAboveThreshold) <= 1:
       # However, if the last sample that had an above threshold reading
       # is either the current sample or the one before, use the position
@@ -225,10 +225,10 @@ class DetectFootEvents:
             
     # Globalise the reference point
     RefPoint = utils.Globalise(RefPoint, ForcePlate.WorldR, ForcePlate.WorldT)
-            
+   
     # Find the marker that is closest to the plate 
     MinDist = -1.0
-    ClosestMarkerIndex = 0
+    ClosestMarkerIndex = -1
             
     for i in range(4):
       if self.MarkerDataExists[i][frame]:
