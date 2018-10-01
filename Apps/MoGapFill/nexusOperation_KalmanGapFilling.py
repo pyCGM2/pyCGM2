@@ -18,13 +18,19 @@ if __name__ == "__main__":
         subject = NEXUS.GetSubjectNames()[0]
         print "Gap filling for subject ", subject
 
-        markers = NEXUS.GetMarkerNames(subject)
+        markersLoaded = NEXUS.GetMarkerNames(subject) # nexus2.7 return all makers, even calibration only
         frames = NEXUS.GetFrameCount()
 
-        # Get data from nexus
+        markers =[]
+        for i in range(0,len(markersLoaded)):
+            data = NEXUS.GetTrajectory(subject,markersLoaded[i])
+            if data != ([],[],[],[]):
+                markers.append(markersLoaded[i])
+
         print "Populating data matrix"
         rawData = np.zeros((frames,len(markers)*3))
         for i in range(0,len(markers)):
+            print i
             rawData[:,3*i-3], rawData[:,3*i-2], rawData[:,3*i-1], E = NEXUS.GetTrajectory(subject,markers[i])
             rawData[np.asarray(E)==0,3*i-3] = np.nan
             rawData[np.asarray(E)==0,3*i-2] = np.nan
