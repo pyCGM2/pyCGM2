@@ -111,7 +111,7 @@ class CGM1LowerLimbs(CGM):
 
     #nativeCgm1 = True
 
-    MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
+    TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
     ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles"],
                            'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles"]}
@@ -120,10 +120,11 @@ class CGM1LowerLimbs(CGM):
                               'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
 
 
-    def __init__(self):
+    def __init__(self,staExpert=False):
         super(CGM1LowerLimbs, self).__init__()
         self.decoratedModel = False
         self.version = "CGM1.0"
+        self.staExpert=staExpert
 
         # init of few mp_computed
         self.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
@@ -2362,12 +2363,13 @@ class CGM1LowerLimbs(CGM):
         """
 
         # ---remove all  direction marker from tracking markers.
-        for seg in self.m_segmentCollection:
-            selectedTrackingMarkers=list()
-            for marker in seg.m_tracking_markers:
-                if marker in self.__class__.MARKERS : # get class variable MARKER even from child
-                    selectedTrackingMarkers.append(marker)
-            seg.m_tracking_markers= selectedTrackingMarkers
+        if self.staExpert
+            for seg in self.m_segmentCollection:
+                selectedTrackingMarkers=list()
+                for marker in seg.m_tracking_markers:
+                    if marker in self.__class__.TRACKING_MARKERS : # get class variable MARKER even from child
+                        selectedTrackingMarkers.append(marker)
+                seg.m_tracking_markers= selectedTrackingMarkers
 
 
         logging.debug("--- Segmental Least-square motion process ---")
@@ -2491,15 +2493,13 @@ class CGM1LowerLimbs(CGM):
         if motionMethod == enums.motionMethod.Sodervisk:
 
             # ---remove all  direction marker from tracking markers.
-            for seg in self.m_segmentCollection:
-
-                selectedTrackingMarkers=list()
-
-                for marker in seg.m_tracking_markers:
-                    if marker in self.__class__.MARKERS :
-                        selectedTrackingMarkers.append(marker)
-
-                seg.m_tracking_markers= selectedTrackingMarkers
+            if self.staExpert
+                for seg in self.m_segmentCollection:
+                    selectedTrackingMarkers=list()
+                    for marker in seg.m_tracking_markers:
+                        if marker in self.__class__.TRACKING_MARKERS :
+                            selectedTrackingMarkers.append(marker)
+                    seg.m_tracking_markers= selectedTrackingMarkers
 
 
             logging.debug("--- Segmental Least-square motion process ---")
@@ -4174,10 +4174,10 @@ class CGM1LowerLimbs(CGM):
 
         return out
 
-    def opensimIkTask(self,expert=False):
+    def opensimIkTask(self):
         out={}
 
-        if expert:
+        if self.staExpert:
 
             out={"LASI":0,
                  "LASI_posAnt":100,
