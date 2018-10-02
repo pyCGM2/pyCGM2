@@ -2363,7 +2363,7 @@ class CGM1LowerLimbs(CGM):
         """
 
         # ---remove all  direction marker from tracking markers.
-        if self.staExpert
+        if self.staExpert:
             for seg in self.m_segmentCollection:
                 selectedTrackingMarkers=list()
                 for marker in seg.m_tracking_markers:
@@ -2493,7 +2493,7 @@ class CGM1LowerLimbs(CGM):
         if motionMethod == enums.motionMethod.Sodervisk:
 
             # ---remove all  direction marker from tracking markers.
-            if self.staExpert
+            if self.staExpert:
                 for seg in self.m_segmentCollection:
                     selectedTrackingMarkers=list()
                     for marker in seg.m_tracking_markers:
