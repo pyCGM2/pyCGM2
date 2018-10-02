@@ -1,7 +1,8 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
+*.py[c]
 *$py.class
+
 
 # C extensions
 *.so
@@ -94,3 +95,8 @@ ENV/
 *.pyproj
 *.sln
 *.suo
+
+
+!/pyCGM2/ma/*.dll
+!/pyCGM2/opensim3/*.dll
+!/pyCGM2/opensim3/*.lib
