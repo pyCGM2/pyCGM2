@@ -36,7 +36,7 @@ if __name__ == "__main__":
         settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
 
         # --------------------------CONFIG ------------------------------------
-        argsManager = cgmUtils.argsManager_cgm1(settings,args)
+        argsManager = CgmArgsManager.argsManager_cgm1(settings,args)
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm1")
         momentProjection =  argsManager.getMomentProjection()
