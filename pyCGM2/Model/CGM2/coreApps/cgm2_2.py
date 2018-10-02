@@ -167,7 +167,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     btkTools.checkMultipleSubject(acqGait)
     acqGait =  btkTools.applyTranslators(acqGait,translators)
-    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.MARKERS)
+    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.TRACKING_MARKERS)
 
 
     # --- initial motion Filter ---
