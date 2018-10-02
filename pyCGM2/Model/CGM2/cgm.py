@@ -50,26 +50,6 @@ class CGM(model.Model):
         self.m_useLeftTibialTorsion=False
         self.m_useRightTibialTorsion=False
 
-    @classmethod
-    def reLabelOldOutputs(cls,acq):
-        for it in btk.Iterate(acq.GetPoints()):
-            if it.GetType() == btk.btkPoint.Angle and  it.GetLabel() in CGM.PIG_STATIC_ANGLE_LABELS:
-                logging.debug( "angle (%s) suffixed (.OLD)" %(it.GetLabel()))
-                it.SetLabel(it.GetLabel()+".OLD")
-
-            if it.GetType() == btk.btkPoint.Force and  it.GetLabel() in CGM.PIG_STATIC_FORCE_LABELS:
-                logging.debug( "force (%s) suffixed (.OLD)" %(it.GetLabel()))
-                it.SetLabel(it.GetLabel()+".OLD")
-
-            if it.GetType() == btk.btkPoint.Moment and  it.GetLabel() in CGM.PIG_STATIC_MOMENT_LABELS:
-                logging.debug( "moment (%s) suffixed (.OLD)" %(it.GetLabel()))
-                it.SetLabel(it.GetLabel()+".OLD")
-
-
-            if it.GetType() == btk.btkPoint.Power and  it.GetLabel() in CGM.PIG_STATIC_POWER_LABELS:
-                logging.debug( "power (%s) suffixed (.OLD)" %(it.GetLabel()))
-                it.SetLabel(it.GetLabel()+".OLD")
-
 
     @classmethod
     def checkCGM1_StaticMarkerConfig(cls,acqStatic):
@@ -3270,7 +3250,7 @@ class CGM1LowerLimbs(CGM):
 
                 there is less change to come across an aligment TOE-AJC-medio shank Axis if we choose the proximal shankself.
                 In case we work with the piG we keep the proximal shank axis.
-                With CGM1.1 we affect the relative Rotation so to mimic construction of the foot TF with the medio distal shank axis.   
+                With CGM1.1 we affect the relative Rotation so to mimic construction of the foot TF with the medio distal shank axis.
                 so we
 
 
