@@ -31,7 +31,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
-    validFrames,vff,vlf = btkTools.findValidFrames(acqStatic,cgm2.CGM2_4LowerLimbs.MARKERS)
+    validFrames,vff,vlf = btkTools.findValidFrames(acqStatic,cgm2.CGM2_4LowerLimbs.TRACKING_MARKERS) 
 
     # --------------------------MODEL--------------------------------------
     # ---definition---
@@ -195,7 +195,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     btkTools.checkMultipleSubject(acqGait)
 
     acqGait =  btkTools.applyTranslators(acqGait,translators)
-    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm2.CGM2_4LowerLimbs.MARKERS)
+    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm2.CGM2_4LowerLimbs.TRACKING_MARKERS)
 
 
 

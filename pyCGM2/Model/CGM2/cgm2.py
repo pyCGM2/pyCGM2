@@ -23,7 +23,7 @@ class CGM2_1LowerLimbs(cgm.CGM1LowerLimbs):
 
     #nativeCgm1 = True
 
-    MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
+    TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
     def __init__(self):
         super(CGM2_1LowerLimbs, self).__init__()
@@ -39,7 +39,7 @@ class CGM2_2LowerLimbs(cgm.CGM1LowerLimbs):
 
     """
 
-    MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
+    TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
     def __init__(self):
         super(CGM2_2LowerLimbs, self).__init__()
@@ -56,7 +56,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         implementation of the cgm2.3 skin marker added
     """
 
-    MARKERS = ["LASI", "RASI","RPSI", "LPSI",
+    TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI",
                "LTHI","LKNE","LTHAP","LTHAD",
                "LTIB","LANK","LTIAP","LTIAD",
                "LHEE","LTOE",
@@ -64,7 +64,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
                "RTIB","RANK","RTIAP","RTIAD",
                "RHEE","RTOE"]
 
-    def __init__(self):
+    def __init__(self,staExpert=False):
         """Constructor
 
            - Run configuration internally
@@ -77,6 +77,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
 
         self.version = "CGM2.3"
+        self.staExpert=staExpert
 
         #self.__configure()
 
@@ -285,10 +286,10 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
         return out
 
-    def opensimIkTask(self,expert=False):
+    def opensimIkTask(self):
         out={}
 
-        if expert:
+        if self.staExpert:
           out={"LASI":0,
                  "LASI_posAnt":100,
                  "LASI_medLat":100,
@@ -441,13 +442,13 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         return out
 
 class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
-    MARKERS = ["LASI", "RASI","RPSI", "LPSI",
+    TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI",
                "LTHI","LKNE","LTHAP","LTHAD",
                "LTIB","LANK","LTIAP","LTIAD",
-               "LHEE","LTOE","LSMH","LFMH","LVMH",
+               "LHEE","LTOE","LFMH","LVMH",
                "RTHI","RKNE","RTHAP","RTHAD",
                "RTIB","RANK","RTIAP","RTIAD",
-               "RHEE","RTOE","RSMH","RFMH","RVMH"]
+               "RHEE","RTOE","RFMH","RVMH"]
 
     ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles","LForeFoot"],
                        'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles","LForeFoot"]}
@@ -455,7 +456,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     ANALYSIS_KINETIC_LABELS_DICT ={ 'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
                           'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
 
-    def __init__(self):
+    def __init__(self,staExpert=False):
         """Constructor
 
            - Run configuration internally
@@ -467,6 +468,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         self.decoratedModel = False
 
         self.version = "CGM2.4"
+        self.staExpert=staExpert
 
         #self.__configure()
 
@@ -482,9 +484,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB","RTIAP","RTIAD"])
         self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
         self.addSegment("Left Foot",6,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LHEE","LTOE"])
-        self.addSegment("Left ForeFoot",7,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LFMH","LVMH","LSMH"])
+        self.addSegment("Left ForeFoot",7,enums.SegmentSide.Left,calibration_markers=["LSMH"], tracking_markers = ["LFMH","LVMH"])
         self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RHEE","RTOE"])
-        self.addSegment("Right ForeFoot",7,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RFMH","RVMH","RSMH"])
+        self.addSegment("Right ForeFoot",7,enums.SegmentSide.Right,calibration_markers=["RSMH"], tracking_markers = ["RFMH","RVMH"])
 
         self.addChain("Left Lower Limb", [3,2,1,0]) # Dist ->Prox Todo Improve
         self.addChain("Right Lower Limb", [6,5,4,0])
@@ -1424,12 +1426,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         """
         # ---remove all  direction marker from tracking markers.
-        for seg in self.m_segmentCollection:
-            selectedTrackingMarkers=list()
-            for marker in seg.m_tracking_markers:
-                if marker in self.__class__.MARKERS : # get class variable MARKER even from child
-                    selectedTrackingMarkers.append(marker)
-            seg.m_tracking_markers= selectedTrackingMarkers
+        if self.staExpert:
+            for seg in self.m_segmentCollection:
+                selectedTrackingMarkers=list()
+                for marker in seg.m_tracking_markers:
+                    if marker in self.__class__.TRACKING_MARKERS : # get class variable MARKER even from child
+                        selectedTrackingMarkers.append(marker)
+                seg.m_tracking_markers= selectedTrackingMarkers
 
 
         logging.debug("--- Segmental Least-square motion process ---")
@@ -1553,15 +1556,13 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         if motionMethod == enums.motionMethod.Sodervisk:
 
             # ---remove all  direction marker from tracking markers.
-            for seg in self.m_segmentCollection:
-
-                selectedTrackingMarkers=list()
-
-                for marker in seg.m_tracking_markers:
-                    if marker in self.__class__.MARKERS :
-                        selectedTrackingMarkers.append(marker)
-
-                seg.m_tracking_markers= selectedTrackingMarkers
+            if self.staExpert:
+                for seg in self.m_segmentCollection:
+                    selectedTrackingMarkers=list()
+                    for marker in seg.m_tracking_markers:
+                        if marker in self.__class__.TRACKING_MARKERS : # get class variable MARKER even from child
+                            selectedTrackingMarkers.append(marker)
+                    seg.m_tracking_markers= selectedTrackingMarkers
 
 
             logging.debug("--- Segmental Least-square motion process ---")
@@ -1655,6 +1656,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # --- FJC
         # btkTools.smartAppendPoint(aqui,"LFJC",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="from hindFoot" ) # put in ForefootMotion
         btkTools.smartAppendPoint(aqui,"LFJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="from hindFoot" )
+        btkTools.smartAppendPoint(aqui,"LFJC",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="from hindFoot" )
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
@@ -1788,6 +1790,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # --- RvTOE
         btkTools.smartAppendPoint(aqui,"RFJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="from hindFoot" )
+        btkTools.smartAppendPoint(aqui,"RFJC",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="from hindFoot" )
 
         # --- motion of the technical referential
         seg.anatomicalFrame.motion=[]
@@ -1919,6 +1922,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # --- vTOE and AJC
         btkTools.smartAppendPoint(aqui,"LAJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("LAJC"),desc="opt from hindfoot" )
         btkTools.smartAppendPoint(aqui,"LFJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="opt from hindfoot" )
+        btkTools.smartAppendPoint(aqui,"LFJC",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="from hindFoot" )
 
         # remove AJC from list of tracking markers
         if "LAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LAJC")
@@ -1978,7 +1982,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         values_vSMHnode=seg.getReferential('TF').getNodeTrajectory("LvSMH")
         btkTools.smartAppendPoint(aqui,"LvSMH",values_vSMHnode, desc=str("opt-"+desc))
 
-        btkTools.smartAppendPoint(aqui,"LFJC",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="opt from forefoot" )
+        btkTools.smartAppendPoint(aqui,"LFJC_ForeFoot",seg.getReferential("TF").getNodeTrajectory("LFJC"),desc="opt from forefoot" )
+
+        # remove FJC from list of tracking markers
+        if "LFJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LFJC")
 
     def _rightHindFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
@@ -2030,6 +2037,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         # --- vTOE and AJC
         btkTools.smartAppendPoint(aqui,"RAJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("RAJC"),desc="opt from hindfoot" )
         btkTools.smartAppendPoint(aqui,"RFJC-HindFoot",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="opt from hindfoot" )
+        btkTools.smartAppendPoint(aqui,"RFJC",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="from hindFoot" )
 
         # remove AJC from list of tracking markers
         if "RAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RAJC")
@@ -2088,8 +2096,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         values_vSMHnode=seg.getReferential('TF').getNodeTrajectory("RvSMH")
         btkTools.smartAppendPoint(aqui,"RvSMH",values_vSMHnode, desc=str("opt-"+desc))
 
-        btkTools.smartAppendPoint(aqui,"RFJC",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="opt from forefoot" )
+        btkTools.smartAppendPoint(aqui,"RFJC_ForeFoot",seg.getReferential("TF").getNodeTrajectory("RFJC"),desc="opt from forefoot" )
 
+        # remove FJC from list of tracking markers
+        if "RFJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RFJC")
 
     # --- opensim --------
     def opensimGeometry(self):
@@ -2114,10 +2124,10 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         return out
 
-    def opensimIkTask(self,expert=False):
+    def opensimIkTask(self):
         out={}
 
-        if expert:
+        if self.staExpert:
           out={"LASI":0,
                  "LASI_posAnt":100,
                  "LASI_medLat":100,
