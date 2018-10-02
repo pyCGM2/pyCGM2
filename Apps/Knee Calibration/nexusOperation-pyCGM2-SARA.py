@@ -17,7 +17,7 @@ from pyCGM2 import enums
 from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
-from pyCGM2.Model.CGM2.coreApps import cgmUtils, kneeCalibration
+from pyCGM2.Model.CGM2.coreApps import CgmArgsManager, kneeCalibration
 from pyCGM2.Model import  modelFilters
 
 

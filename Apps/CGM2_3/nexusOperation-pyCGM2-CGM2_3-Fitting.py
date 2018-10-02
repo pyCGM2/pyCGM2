@@ -15,7 +15,7 @@ import ViconNexus
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
-from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm2_3
+from pyCGM2.Model.CGM2.coreApps import CgmArgsManager, cgm2_3
 
 
 if __name__ == "__main__":
@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
 
         # --------------------------CONFIG ------------------------------------
-        argsManager = cgmUtils.argsManager_cgm(settings,args)
+        argsManager = CgmArgsManager.argsManager_cgm(settings,args)
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm2.3")
         momentProjection =  argsManager.getMomentProjection()

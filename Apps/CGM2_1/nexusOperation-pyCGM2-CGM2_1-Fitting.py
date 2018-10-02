@@ -12,7 +12,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm2_1
+from pyCGM2.Model.CGM2.coreApps import CgmArgsManager, cgm2_1
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
 
         # --------------------------CONFIG ------------------------------------
-        argsManager = cgmUtils.argsManager_cgm(settings,args)
+        argsManager = CgmArgsManager.argsManager_cgm(settings,args)
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm2.1")
         momentProjection =  argsManager.getMomentProjection()

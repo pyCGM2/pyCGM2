@@ -12,7 +12,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
-from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm2_2
+from pyCGM2.Model.CGM2.coreApps import CgmArgsManager, cgm2_2
 from pyCGM2.Utils import files
 
 if __name__ == "__main__":
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     # --------------------------CONFIG ------------------------------------
     subject = args.subject
 
-    argsManager = cgmUtils.argsManager_cgm(settings,args)
+    argsManager = CgmArgsManager.argsManager_cgm(settings,args)
     markerDiameter = argsManager.getMarkerDiameter()
     pointSuffix = argsManager.getPointSuffix("cgm2_2")
     momentProjection =  argsManager.getMomentProjection()

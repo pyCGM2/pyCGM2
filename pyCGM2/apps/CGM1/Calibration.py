@@ -14,7 +14,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 from pyCGM2.Eclipse import vskTools
 from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
-from pyCGM2.Model.CGM2.coreApps import cgmUtils, cgm1
+from pyCGM2.Model.CGM2.coreApps import CgmArgsManager, cgm1
 
 
 if __name__ == "__main__":
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     # --------------------------CONFIG ------------------------------------
     subject = args.subject
 
-    argsManager = cgmUtils.argsManager_cgm1(settings,args)
+    argsManager = CgmArgsManager.argsManager_cgm1(settings,args)
     leftFlatFoot = argsManager.getLeftFlatFoot()
     rightFlatFoot = argsManager.getRightFlatFoot()
     markerDiameter = argsManager.getMarkerDiameter()
