@@ -20,8 +20,6 @@ class CGM(model.Model):
     """
 
 
-
-
     PIG_STATIC_ANGLE_LABELS= ["LPelvisAngles","RPelvisAngles",
                               "LHipAngles","RHipAngles",
                               "LKneeAngles","RKneeAngles",
@@ -111,7 +109,7 @@ class CGM1LowerLimbs(CGM):
 
     #nativeCgm1 = True
 
-    MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
+    TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
     ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles"],
                            'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles"]}
