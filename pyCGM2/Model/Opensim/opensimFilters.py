@@ -101,7 +101,7 @@ class CgmOpensimCalibrationProcedures(object):
 class CgmOpensimFittingProcedure(object):
     """ Model-embedded Procedure for fitting an opensim model """
 
-    def __init__(self,model,expertMode = False):
+    def __init__(self,model):
         """
             :Parameters:
            - `model` (Model) - instance of Model
@@ -109,13 +109,12 @@ class CgmOpensimFittingProcedure(object):
         """
         self.model=model
         self.ikTags=dict()#
-        self.m_expertMode = expertMode
-
+        
         self.__setIkTags()
 
 
     def __setIkTags(self):
-        self.ikTags=self.model.opensimIkTask(expert=self.m_expertMode)
+        self.ikTags=self.model.opensimIkTask()
 
     def updateMarkerWeight(self,markerLabel,weight):
         """
