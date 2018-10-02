@@ -14,7 +14,7 @@ from pyCGM2 import enums
 
 from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm
-from pyCGM2.Model.CGM2.coreApps import cgmUtils
+from pyCGM2.Model.CGM2.coreApps import decorators
 from pyCGM2.ForcePlates import forceplates
 
 
@@ -55,7 +55,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                                         markerDiameter = markerDiameter,
                                         ).compute()
     # ---- Decorators -----
-    cgmUtils.applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter)
+    decorators.applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter)
 
     # ----Final Calibration filter if model previously decorated -----
     if model.decoratedModel:

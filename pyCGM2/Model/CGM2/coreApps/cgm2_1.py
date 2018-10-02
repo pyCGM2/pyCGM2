@@ -14,7 +14,7 @@ from pyCGM2 import enums
 
 from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm,cgm2
-from pyCGM2.Model.CGM2.coreApps import cgmUtils
+from pyCGM2.Model.CGM2.coreApps import decorators
 from pyCGM2.ForcePlates import forceplates
 
 
@@ -60,9 +60,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                                         ).compute()
 
     # ---- Decorators -----
-    cgmUtils.applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter)
+    decorators.applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter)
 
-    cgmUtils.applyHJCDecorators(model,hjcMethod)
+    decorators.applyHJCDecorators(model,hjcMethod)
 
 
     # ----Final Calibration filter if model previously decorated -----
@@ -161,7 +161,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
             mappedForcePlate = mfpa
             forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
             logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
-            
+
 
     # assembly foot and force plate
     modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,

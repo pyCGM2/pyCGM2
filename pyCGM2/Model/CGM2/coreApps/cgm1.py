@@ -14,8 +14,40 @@ from pyCGM2 import enums
 
 from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm
-from pyCGM2.Model.CGM2.coreApps import cgmUtils
+from pyCGM2.Model.CGM2.coreApps import decorators
 from pyCGM2.ForcePlates import forceplates
+
+
+def get_markerLabelForPiGStatic(smc):
+
+    useLeftKJCmarkerLabel = "LKJC"
+    useLeftAJCmarkerLabel = "LAJC"
+    useRightKJCmarkerLabel = "RKJC"
+    useRightAJCmarkerLabel = "RAJC"
+
+
+    # KAD
+    if smc["left"] == enums.CgmStaticMarkerConfig.KAD:
+        useLeftKJCmarkerLabel = "LKJC_KAD"
+        useLeftAJCmarkerLabel = "LAJC_KAD"
+
+    if smc["right"] == enums.CgmStaticMarkerConfig.KAD:
+        useRightKJCmarkerLabel = "RKJC_KAD"
+        useRightAJCmarkerLabel = "RAJC_KAD"
+
+    # KADmed
+    if smc["left"] == enums.CgmStaticMarkerConfig.KADmed:
+        useLeftKJCmarkerLabel = "LKJC_KAD"
+        useLeftAJCmarkerLabel = "LAJC_MID"
+
+    if smc["right"] == enums.CgmStaticMarkerConfig.KADmed:
+        useRightKJCmarkerLabel = "RKJC_KAD"
+        useRightAJCmarkerLabel = "RAJC_MID"
+
+    return [useLeftKJCmarkerLabel,useLeftAJCmarkerLabel,useRightKJCmarkerLabel,useRightAJCmarkerLabel]
+
+
+
 
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
@@ -55,8 +87,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                                         viconCGM1compatible=True
                                         ).compute()
     # ---- Decorators -----
-    cgmUtils.applyDecorators_CGM1(smc, model,acqStatic,optional_mp,markerDiameter)
-    pigStaticMarkers = cgmUtils.get_markerLabelForPiGStatic(smc)
+    decorators.applyDecorators_CGM1(smc, model,acqStatic,optional_mp,markerDiameter)
+    pigStaticMarkers = get_markerLabelForPiGStatic(smc)
 
     # ----Final Calibration filter if model previously decorated -----
     if model.decoratedModel:
