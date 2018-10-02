@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
-
+    args.DEBUG=False
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
@@ -51,14 +51,14 @@ if __name__ == "__main__":
 
         ik_flag = False if args.noIk else True
 
-        #args.DEBUG=True
+
         # ----------------------LOADING-------------------------------------------
         # --- acquisition file and path----
         if args.DEBUG:
             #DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
             #reconstructFilenameLabelledNoExt = "gait Trial 01"
-            DATA_PATH = pyCGM2.TEST_DATA_PATH +  "CGM3\\Salford_healthy_DataCollection\\PN01OP01S01\\"
-            reconstructFilenameLabelledNoExt = "PN01OP01S01SS01"
+            DATA_PATH = pyCGM2.TEST_DATA_PATH + "Datasets Tests\\Tomas Klein\\New Session\\"
+            reconstructFilenameLabelledNoExt = "chuze_bez_SMS_03"
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
             args.noIk = False
 

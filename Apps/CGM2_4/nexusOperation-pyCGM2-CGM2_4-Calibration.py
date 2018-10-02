@@ -36,6 +36,7 @@ if __name__ == "__main__":
     parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
 
     args = parser.parse_args()
+    args.DEBUG = False
 
 
     NEXUS = ViconNexus.ViconNexus()
@@ -69,8 +70,8 @@ if __name__ == "__main__":
 
         # --- acquisition file and path----
         if args.DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
-            calibrateFilenameLabelledNoExt = "static"
+            DATA_PATH = pyCGM2.TEST_DATA_PATH + "Datasets Tests\\Tomas Klein\\New Session\\"
+            calibrateFilenameLabelledNoExt = "sttaic_03"
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
             args.noIk=False
