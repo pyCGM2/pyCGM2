@@ -2517,9 +2517,11 @@ class CGM1LowerLimbs(CGM):
             #self._left_shank_motion2(aqui, dictRef, dictAnat,options=options)
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
+            self._left_shankProximal_motion(aqui,dictAnat,options=options)
 
             self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
+            self._right_shankProximal_motion(aqui,dictAnat,options=options)
 
             # foot
             # issue with least-square optimization :  AJC - HEE and TOE may be inline -> singularities !!
@@ -3294,6 +3296,7 @@ class CGM1LowerLimbs(CGM):
                 R2 = R
             else:
                 R2 = np.dot(R,self._R_leftUnCorrfoot_dist_prox)
+                
 
             csFrame.m_axisX=R2[:,0]
             csFrame.m_axisY=R2[:,1]
