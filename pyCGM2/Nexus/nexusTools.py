@@ -7,6 +7,29 @@ from pyCGM2 import btk
 
 
 
+def _setPointData(framecount,pfn,ff,lf,values):
+    if framecount > pfn:
+        beg = ff
+        end = lf+1
+    else:
+        beg = 0
+        end = lf-ff+1
+
+    data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
+    exists = [False]*framecount
+
+    j=0
+    for i in range(beg,end):
+        #print i
+        exists[i] = True
+        data[0][i] = values[j,0]
+        data[1][i] = values[j,1]
+        data[2][i] = values[j,2]
+        j+=1
+
+    return data,exists
+
+
 
 def checkActivatedSubject(NEXUS,subjectNames):
     """
@@ -75,19 +98,8 @@ def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
     framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
-
-
-    data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
-    exists = [False]*framecount
-
-    j=0
-    for i in range(0,lf-ff+1):
-        #print i
-        exists[i] = True
-        data[0][i] = values[j,0]
-        data[1][i] = values[j,1]
-        data[2][i] = values[j,2]
-        j+=1
+    pfn = acq.GetPointFrameNumber()
+    data,exists = _setPointData(framecount,pfn,ff,lf,values)
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
@@ -110,17 +122,8 @@ def appendAngleFromAcq(NEXUS,vskName,label, acq):
     lf = acq.GetLastFrame()
 
     framecount = NEXUS.GetFrameCount()
-
-    data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
-    exists = [False]*framecount
-
-    j=0
-    for i in range(0,lf-ff+1):
-        exists[i] = True
-        data[0][i] = values[j,0]
-        data[1][i] = values[j,1]
-        data[2][i] = values[j,2]
-        j+=1
+    pfn = acq.GetPointFrameNumber()
+    data,exists = _setPointData(framecount,pfn,ff,lf,values)
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
@@ -144,18 +147,8 @@ def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
     framecount = NEXUS.GetFrameCount()
-
-
-    data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
-    exists = [False]*framecount
-
-    j=0
-    for i in range(0,lf-ff+1):
-        exists[i] = True
-        data[0][i] = values[j,0]
-        data[1][i] = values[j,1]
-        data[2][i] = values[j,2]
-        j+=1
+    pfn = acq.GetPointFrameNumber()
+    data,exists = _setPointData(framecount,pfn,ff,lf,values)
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
@@ -180,18 +173,8 @@ def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=False):
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
     framecount = NEXUS.GetFrameCount()
-
-
-    data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
-    exists = [False]*framecount
-
-    j=0
-    for i in range(0,lf-ff+1):
-        exists[i] = True
-        data[0][i] = values[j,0]
-        data[1][i] = values[j,1]
-        data[2][i] = values[j,2]
-        j+=1
+    pfn = acq.GetPointFrameNumber()
+    data,exists = _setPointData(framecount,pfn,ff,lf,values)
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
@@ -214,18 +197,8 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
     framecount = NEXUS.GetFrameCount()
-
-
-    data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
-    exists = [False]*framecount
-
-    j=0
-    for i in range(0,lf-ff+1):
-        exists[i] = True
-        data[0][i] = values[j,0]
-        data[1][i] = values[j,1]
-        data[2][i] = values[j,2]
-        j+=1
+    pfn = acq.GetPointFrameNumber()
+    data,exists = _setPointData(framecount,pfn,ff,lf,values)
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
@@ -240,8 +213,15 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
     #ff,lf = NEXUS.GetTrialRange()
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
-
+    pfn = acq.GetPointFrameNumber()
     framecount = NEXUS.GetFrameCount()
+
+    if framecount > pfn:
+        beg = ff
+        end = lf+1
+    else:
+        beg = 0
+        end = lf-ff+1
 
 
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount))),
@@ -250,7 +230,7 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
     exists = [False]*framecount
 
     j=0
-    for i in range(0,lf-ff+1):
+    for i in range(beg,end):
         if OriginValues is None:
             T= segment.anatomicalFrame.motion[j].getTranslation()
         else:
