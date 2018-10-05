@@ -41,8 +41,8 @@ class CGM2_2LowerLimbs(cgm.CGM1LowerLimbs):
 
     TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
-    def __init__(self):
-        super(CGM2_2LowerLimbs, self).__init__()
+    def __init__(self,staExpert=False):
+        super(CGM2_2LowerLimbs, self).__init__(staExpert=staExpert)
         self.decoratedModel = False
 
         self.version = "CGM2.2"
@@ -77,7 +77,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
 
         self.version = "CGM2.3"
-        self.staExpert=staExpert
+        self.staExpert= staExpert
 
         #self.__configure()
 
@@ -468,7 +468,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         self.decoratedModel = False
 
         self.version = "CGM2.4"
-        self.staExpert=staExpert
+        self.staExpert = staExpert
 
         #self.__configure()
 
