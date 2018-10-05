@@ -2,15 +2,13 @@
 import numpy as np
 import logging
 import copy
-#from numba import jit, autojit
 
 from pyCGM2 import btk
 
-from pyCGM2 import Utils
 from pyCGM2 import enums
-from pyCGM2.Model import model, modelDecorator,frame,motion
-from pyCGM2.Math import euler,geometry
-from pyCGM2.Tools import  btkTools
+from pyCGM2.Model import model, modelDecorator, frame, motion
+from pyCGM2.Math import euler, geometry
+from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusTools
 
 
@@ -3296,7 +3294,7 @@ class CGM1LowerLimbs(CGM):
                 R2 = R
             else:
                 R2 = np.dot(R,self._R_leftUnCorrfoot_dist_prox)
-                
+
 
             csFrame.m_axisX=R2[:,0]
             csFrame.m_axisY=R2[:,1]
