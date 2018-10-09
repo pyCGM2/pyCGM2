@@ -133,10 +133,9 @@ def analog_descriptiveStats(cycles,label,context):
         if cycle.enableFlag and cycle.context==context:
             tmp = cycle.getAnalogTimeSequenceDataNormalized(label)
             x[:,i]=tmp[:,0]
-            i+=1
             listOfPointValues.append(tmp)
+            i+=1
 
-    #x_resize=x[0:1001:10,:]
 
     meanData=np.array(np.zeros((101,1)))
     meanData[:,0]=np.mean(x,axis=1)
