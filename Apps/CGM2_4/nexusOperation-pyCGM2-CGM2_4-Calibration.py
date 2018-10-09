@@ -67,11 +67,11 @@ if __name__ == "__main__":
         ik_flag = False if args.noIk else True
 
         # --------------------------LOADING------------------------------
-
+        args.DEBUG=False
         # --- acquisition file and path----
         if args.DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "Datasets Tests\\Tomas Klein\\New Session\\"
-            calibrateFilenameLabelledNoExt = "sttaic_03"
+            DATA_PATH = pyCGM2.TEST_DATA_PATH + "Release Tests\\CGM2.4\\medial\\"
+            calibrateFilenameLabelledNoExt = "static"
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
             args.noIk=False
