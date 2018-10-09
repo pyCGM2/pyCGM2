@@ -8,12 +8,10 @@ from pyCGM2 import btk
 import cgm
 
 from pyCGM2 import enums
-from  pyCGM2.Model import frame, motion,modelDecorator
-from pyCGM2.Math import euler,geometry
-from pyCGM2.Tools import  btkTools
+from  pyCGM2.Model import frame, motion, modelDecorator
+from pyCGM2.Math import euler
+from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusTools
-
-#import cgm
 
 
 class CGM2_1LowerLimbs(cgm.CGM1LowerLimbs):
