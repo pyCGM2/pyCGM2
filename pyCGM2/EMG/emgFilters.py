@@ -82,62 +82,77 @@ class EmgNormalisationProcessingFilter(object):
         self.m_context= context
         self.m_threshold = dict()
 
+        self.m_thresholdFromAnalysis = None
+
+        self.__c3dProcess = False
+
+
+    def setC3ds(self,datPath,c3ds,fileSuffix=None):
+
+        self.__c3dProcess = True
+        self.m_c3dPath = datPath
+        self.m_c3ds = c3ds
+        self.m_fileSuffix=fileSuffix
+
+
+    def setThresholdFromOtherAnalysis(self,analysis):
+        self.m_thresholdFromAnalysis = analysis
 
     def setMaxMethod(self,EnumEmgNorm, Value=None):
 
+        if self.m_thresholdFromAnalysis is None:
+            value = self.m_analysis.emgStats.data[self.m_label,self.m_context]
+        else:
+             value = self.m_thresholdFromAnalysis.emgStats.data[self.m_label,self.m_context]
 
         if EnumEmgNorm == enums.EmgAmplitudeNormalization.MaxMax:
-            self.m_threshold = np.max(self.m_analysis.emgStats.data[self.m_label,self.m_context]["maxs"])
+            self.m_threshold = np.max(value["maxs"])
 
         elif EnumEmgNorm == enums.EmgAmplitudeNormalization.MeanMax:
-            self.m_threshold = np.mean(self.m_analysis.emgStats.data[self.m_label,self.m_context]["maxs"])
+            import ipdb; ipdb.set_trace()
+            self.m_threshold = np.mean(value["maxs"])
 
         elif EnumEmgNorm == enums.EmgAmplitudeNormalization.MedianMax:
-            self.m_threshold = np.median(self.m_analysis.emgStats.data[self.m_label,self.m_context]["maxs"])
+            self.m_threshold = np.median(value["maxs"])
 
-        elif EnumEmgNorm == enums.EmgAmplitudeNormalization.Threshold:
 
-            if Value is None:
-                raise Exception ("[pyCGM2] : You need to input a Threhsold value")
 
-            self.m_threshold = Value
-
-    def processC3d(self,c3ds,fileSuffix=None):
-        for c3d in c3ds:
-            if fileSuffix is not None:
-                fileSuffix
-
-            filenameOut  = c3d[:-4] + "_" + fileSuffix+".c3d" if fileSuffix is not None else c3d
-            acq = btkTools.smartReader(str(c3d))
+    def processC3d(self):
+        for c3d in self.m_c3ds:
+            filenameOut  = c3d[:-4] + "_" + self.m_fileSuffix+".c3d" if self.m_fileSuffix is not None else c3d
+            acq = btkTools.smartReader(str(self.m_c3dPath+c3d))
 
             values =  acq.GetAnalog(self.m_label).GetValues()
             valuesNorm = values / self.m_threshold
 
             btkTools.smartAppendAnalog(acq,self.m_label+"_Norm",valuesNorm, desc= "Normalization)")
 
-            btkTools.smartWriter(acq, str(filenameOut))
+            btkTools.smartWriter(acq, str(self.m_c3dPath+filenameOut))
 
 
-    def run(self):
+    def processAnalysis(self):
 
         values = self.m_analysis.emgStats.data[self.m_label,self.m_context]["values"]
 
-        n = len(values)
         valuesNorm = list()
 
-        i=0
         for val in values:
             valuesNorm.append( val / self.m_threshold)
-            i+=1
-
-        valuesNormArray = np.asarray(valuesNorm).reshape((101,n))
 
 
         self.m_analysis.emgStats.data[self.m_label+"_Norm",self.m_context] = {
-                'mean':np.mean(valuesNormArray,axis=1).reshape((101,1)),
-                'median':np.median(valuesNormArray,axis=1).reshape((101,1)),
-                'std':np.std(valuesNormArray,axis=1).reshape((101,1)),
+                'mean':np.mean(valuesNorm,axis=0),
+                'median':np.median(valuesNorm,axis=0),
+                'std':np.std(valuesNorm,axis=0),
                 'values': valuesNorm}
+
+
+    def run(self):
+        if self.__c3dProcess:
+            self.processC3d()
+        self.processAnalysis()
+
+
 
 
 class EmgCoActivationFilter(object):
