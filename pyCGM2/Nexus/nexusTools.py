@@ -8,7 +8,7 @@ from pyCGM2 import btk
 
 
 def _setPointData(framecount,pfn,ff,lf,values):
-    if framecount >= pfn:
+    if framecount > pfn:
         beg = ff-1
         end = lf
     else:
@@ -219,7 +219,7 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
     pfn = acq.GetPointFrameNumber()
     framecount = NEXUS.GetFrameCount()
 
-    if framecount >= pfn:
+    if framecount > pfn:
         beg = ff-1
         end = lf
     else:
