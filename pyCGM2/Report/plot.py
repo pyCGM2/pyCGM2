@@ -17,6 +17,10 @@ from pyCGM2.Report import plotUtils
 from pyCGM2.EMG import normalActivation
 
 
+from pyCGM2 import ma
+from pyCGM2.ma import io
+
+
 def addNormalActivationLayer(figAxis,normalActivationLabel,fo):
     pos,burstDuration=normalActivation.getNormalBurstActivity(normalActivationLabel,fo)
     for j in range(0,len(pos)):
@@ -259,11 +263,12 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
 
    '''
 
+
     # check if [ pointlabel , context ] in keys of analysisStructureItem
     flag = False
     for key in analysisStructureItem.data.keys():
         if key[0] == pointLabel and key[1] == contextPointLabel:
-            flag = True if analysisStructureItem.data[pointLabel,contextPointLabel]["values"] != [] else False
+            flag = True if analysisStructureItem.data[pointLabel,contextPointLabel]["values"]!=[]  else False
 
     # plot
     if flag:
@@ -320,15 +325,17 @@ def gaitConsistencyPlot(figAxis,analysisStructureItem,
     for key in analysisStructureItem.data.keys():
         if key[0] == pointLabel and key[1] == contextPointLabel:
             n = len(analysisStructureItem.data[pointLabel,contextPointLabel]["values"])
-            flag = True if analysisStructureItem.data[pointLabel,contextPointLabel]["values"] != [] else False
+            flag = True if analysisStructureItem.data[pointLabel,contextPointLabel]["values"]!=[] else False
 
     # plot
     if flag:
         values= np.zeros((101,n))
         i=0
         for val in analysisStructureItem.data[pointLabel,contextPointLabel]["values"]:
-           values[:,i] = val[:,axis]
-           i+=1
+
+            values[:,i] = val[:,axis]
+
+            i+=1
 
         lines = figAxis.plot(np.linspace(0,100,101), values, color=color)
 
