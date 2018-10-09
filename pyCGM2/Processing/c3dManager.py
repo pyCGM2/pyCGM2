@@ -7,12 +7,13 @@ import logging
 from pyCGM2.Tools import trialTools
 
 
-class C3dManager:
-    spatioTemporal={"Trials":None , "Filenames":None}
-    kinematic={"Trials":None , "Filenames":None}
-    kinetic={"Trials": None, "Filenames":None }
-    kineticFlag = False
-    emg={"Trials":None , "Filenames":None}
+class C3dManager(object):
+    def __init__ (self):
+        self.spatioTemporal={"Trials":None , "Filenames":None}
+        self.kinematic={"Trials":None , "Filenames":None}
+        self.kineticFlag = False
+        self.kinetic={"Trials": None, "Filenames":None }
+        self.emg={"Trials":None , "Filenames":None}
 
 
 class UniqueC3dSetProcedure(object):
@@ -113,6 +114,7 @@ class C3dManagerFilter(object):
     def generate(self):
 
         c3dManager = C3dManager()
+
 
         self.m_procedure.generate(c3dManager,self.m_spatioTempFlag, self.m_kinematicFlag, self.m_kineticFlag, self.m_emgFlag)
 
