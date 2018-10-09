@@ -47,6 +47,10 @@ class CGM(model.Model):
         super(CGM, self).__init__()
         self.m_useLeftTibialTorsion=False
         self.m_useRightTibialTorsion=False
+        self.staExpert= False
+
+    def setSTAexpertMode(boolFlag):
+        self.staExpert= boolFlag
 
 
     @classmethod
@@ -118,11 +122,11 @@ class CGM1LowerLimbs(CGM):
                               'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
 
 
-    def __init__(self,staExpert=False):
+    def __init__(self):
         super(CGM1LowerLimbs, self).__init__()
         self.decoratedModel = False
         self.version = "CGM1.0"
-        self.staExpert=staExpert
+
 
         # init of few mp_computed
         self.mp_computed["LeftKneeFuncCalibrationOffset"] = 0

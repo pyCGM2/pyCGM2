@@ -39,8 +39,8 @@ class CGM2_2LowerLimbs(cgm.CGM1LowerLimbs):
 
     TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
-    def __init__(self,staExpert=False):
-        super(CGM2_2LowerLimbs, self).__init__(staExpert=staExpert)
+    def __init__(self):
+        super(CGM2_2LowerLimbs, self).__init__()
         self.decoratedModel = False
 
         self.version = "CGM2.2"
@@ -62,7 +62,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
                "RTIB","RANK","RTIAP","RTIAD",
                "RHEE","RTOE"]
 
-    def __init__(self,staExpert=False):
+    def __init__(self):
         """Constructor
 
            - Run configuration internally
@@ -75,7 +75,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
 
         self.version = "CGM2.3"
-        self.staExpert= staExpert
+
 
         #self.__configure()
 
@@ -454,7 +454,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     ANALYSIS_KINETIC_LABELS_DICT ={ 'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
                           'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
 
-    def __init__(self,staExpert=False):
+    def __init__(self):
         """Constructor
 
            - Run configuration internally
@@ -466,7 +466,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         self.decoratedModel = False
 
         self.version = "CGM2.4"
-        self.staExpert = staExpert
 
         #self.__configure()
 
@@ -1589,12 +1588,16 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             #self._rightHindFoot_motion_optimize(aqui, dictRef,motionMethod)
             #self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
 
-            # foreFoot
-            self._leftForeFoot_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left ForeFoot",originLabel = str(dictAnat["Left ForeFoot"]['labels'][3]))
+            # foreFoot (more robust than Sodervisk)
+            self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
+            self._right_foreFoot_motion(aqui, dictRef,dictAnat, options=options)
 
-            self._rightForeFoot_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
+            #self._leftForeFoot_motion(aqui, dictRef,motionMethod)
+            #self._anatomical_motion(aqui,"Left ForeFoot",originLabel = str(dictAnat["Left ForeFoot"]['labels'][3]))
+
+
+            #self._rightForeFoot_motion(aqui, dictRef,motionMethod)
+            #self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
 
     # ----- native motion ------
     def _left_hindFoot_motion(self,aqui, dictRef,dictAnat,options=None):
