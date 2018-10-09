@@ -80,8 +80,14 @@ def getFiles(dir):
 
 # remove pyCGM2 folder or egg-link
 dirSitepackage = getSubDirectories(SITE_PACKAGE_PATH[:-1])
-if NAME_IN_SITEPACKAGE in dirSitepackage:
-    shutil.rmtree(PATH_IN_SITEPACKAGE[:-1])
+for folder in  dirSitepackage:
+    if "pyCGM2" in folder:
+        shutil.rmtree(SITE_PACKAGE_PATH+folder)
+        logging.info("package pyCGM2 (%s) removed"%(folder))
+
+
+# if NAME_IN_SITEPACKAGE in dirSitepackage:
+#     shutil.rmtree(PATH_IN_SITEPACKAGE[:-1])
 
 if "pyCGM2.egg-link" in os.listdir(SITE_PACKAGE_PATH[:-1]):
     os.remove(SITE_PACKAGE_PATH+"pyCGM2.egg-link")
