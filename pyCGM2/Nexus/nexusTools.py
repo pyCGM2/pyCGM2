@@ -8,9 +8,9 @@ from pyCGM2 import btk
 
 
 def _setPointData(framecount,pfn,ff,lf,values):
-    if framecount > pfn:
-        beg = ff
-        end = lf+1
+    if framecount >= pfn:
+        beg = ff-1
+        end = lf
     else:
         beg = 0
         end = lf-ff+1
@@ -27,6 +27,7 @@ def _setPointData(framecount,pfn,ff,lf,values):
         data[2][i] = values[j,2]
         j+=1
 
+    #import ipdb; ipdb.set_trace()
     return data,exists
 
 
@@ -99,6 +100,8 @@ def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
     lf = acq.GetLastFrame()
     framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
     pfn = acq.GetPointFrameNumber()
+
+
     data,exists = _setPointData(framecount,pfn,ff,lf,values)
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
@@ -216,9 +219,9 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
     pfn = acq.GetPointFrameNumber()
     framecount = NEXUS.GetFrameCount()
 
-    if framecount > pfn:
-        beg = ff
-        end = lf+1
+    if framecount >= pfn:
+        beg = ff-1
+        end = lf
     else:
         beg = 0
         end = lf-ff+1
