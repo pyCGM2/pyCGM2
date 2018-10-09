@@ -493,7 +493,7 @@ def smartAppendAnalog(acq,label,values,desc="" ):
     if isAnalogExist(acq,label):
         acq.GetAnalog(label).SetValues(values)
         acq.GetAnalog(label).SetDescription(desc)
-        acq.GetAnalog(label).SetType(PointType)
+        #acq.GetAnalog(label).SetType(PointType)
 
     else:
         newAnalog=btk.btkAnalog(acq.GetAnalogFrameNumber())
