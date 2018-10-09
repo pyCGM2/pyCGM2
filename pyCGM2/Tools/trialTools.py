@@ -305,10 +305,10 @@ def buildTrials(dataPath,trialfilenames):
     trials=[]
     filenames =[]
     for filename in trialfilenames:
-        print "------------------"
-        print dataPath
-        print filename
-        print "------------------"
+        logging.debug( dataPath)
+        logging.debug( filename)
+        logging.debug( "------------------")
+
         fileNode = ma.io.read(str(dataPath + filename))
         trial = fileNode.findChild(ma.T_Trial)
         sortedEvents(trial)
