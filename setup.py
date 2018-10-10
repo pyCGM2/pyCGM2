@@ -194,4 +194,4 @@ for item in content:
 
 scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
                                             NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,
-                                            MAIN_PYCGM2_PATH)
+                                            PATH_IN_SITEPACKAGE)
