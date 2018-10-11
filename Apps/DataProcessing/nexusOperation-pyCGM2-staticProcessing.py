@@ -12,7 +12,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2.Processing.gaitAnalysis import smartFunctions
+from pyCGM2.Processing.highLevel import gaitSmartFunctions
 from pyCGM2.Nexus import  nexusTools
 from pyCGM2.Utils import files
 
