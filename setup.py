@@ -42,7 +42,7 @@ NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = user_folder+"\\Documents\\Vicon/Nexus2.x\\
 
 def scanViconTemplatePipeline(sourcePath,desPath,pyCGM2nexusAppsPath):
 
-    toreplace= "C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps"
+    toreplace= "C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2"
 
     sourcePath = sourcePath[:-1] if sourcePath[-1:]=="\\" else sourcePath
     desPath = desPath[:-1] if desPath[-1:]=="\\" else desPath
@@ -131,7 +131,7 @@ for file in files:
 #------------------------- INSTALL--------------------------------------------
 setup(name = 'pyCGM2',
     version = VERSION,
-    author = 'fabien Leboeuf',
+    author = 'Fabien Leboeuf',
     author_email = 'fabien.leboeuf@gmail.com',
     keywords = 'python CGM Vicon PluginGait',
     packages=find_packages(),
@@ -144,7 +144,8 @@ setup(name = 'pyCGM2',
                         'pandas >=0.19.1',
                         'enum34>=1.1.2',
                         'configparser>=3.5.0',
-                        'beautifulsoup4>=3.5.0'],
+                        'beautifulsoup4>=3.5.0',
+                        'pyyaml>=3.13.0'],
     classifiers=['Programming Language :: Python',
                  'Programming Language :: Python :: 2.7',
                  'Operating System :: Windows OS',

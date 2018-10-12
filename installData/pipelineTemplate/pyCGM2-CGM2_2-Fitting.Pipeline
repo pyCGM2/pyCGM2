@@ -17,7 +17,7 @@
     </ParamList>
   </Entry>
 
-  <Entry DisplayName="Run pyCGM2-CGM2_2- Fitting " Enabled="1" OperationId="104" OperationName="Python">
+  <Entry DisplayName="Run pyCGM2-CGM2_2-Fitting " Enabled="1" OperationId="104" OperationName="Python">
     <ParamList name="">
       <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/CGM2_2/nexusOperation-pyCGM2-CGM2_2-Fitting.py"/>
       <Param name="ScriptArgs" value=""/>
@@ -33,9 +33,9 @@
     </ParamList>
   </Entry>
 
-  <Entry DisplayName="Run pyCGM2-CGM1-i- Gait Processing " Enabled="0" OperationId="107" OperationName="Python">
+  <Entry DisplayName="Run pyCGM2-gaitProcessing " Enabled="0" OperationId="107" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="c:/users/hls501/documents/programming/api/pycgm2/pycgm2/Apps/CGM1-i_dataProcessing/nexusOperation-pyCGM2-CGM1_i-gaitProcessing.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/DataProcessing/nexusOperation-pyCGM2-gaitProcessing.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>

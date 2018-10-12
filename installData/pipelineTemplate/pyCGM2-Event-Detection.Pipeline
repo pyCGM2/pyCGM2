@@ -17,7 +17,7 @@
     </ParamList>
   </Entry>
 
-  <Entry DisplayName="zeni event detectors" Enabled="1" OperationId="18" OperationName="Python">
+  <Entry DisplayName="Zeni Event Detector" Enabled="1" OperationId="18" OperationName="Python">
     <ParamList name="">
       <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/operations/nexusOp-zeniDetector.py"/>
       <Param name="ScriptArgs" value=""/>
