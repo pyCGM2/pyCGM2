@@ -110,7 +110,7 @@ if __name__ == "__main__":
         # --------------------------MODEL PROCESSING----------------------------
         model,acqFunc,side = kneeCalibration.calibration2Dof(model,
             DATA_PATH,reconstructFilenameLabelled,translators,
-            args.side,args.beginFrame,args.endFrame)
+            args.side,args.beginFrame,args.endFrame,None)
 
         # ----------------------SAVE-------------------------------------------
         files.saveModel(model,DATA_PATH,subject)
