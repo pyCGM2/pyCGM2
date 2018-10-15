@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
         # --------------------------PROCESSING --------------------------------
         # call processing.gaitAnalysis.processing directly
-        smartFunctions.cgm_staticPlot(modelVersion,calibrateFilenameLabelled,
+        gaitSmartFunctions.cgm_staticPlot(modelVersion,calibrateFilenameLabelled,
                                   DATA_PATH,
                                   pdfFilename = calibrateFilenameLabelledNoExt,
                                   pointLabelSuffix = pointSuffix)
