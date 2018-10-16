@@ -10,6 +10,8 @@ import matplotlib.patches as mpatches
 # pyCGM2
 import pyCGM2
 from pyCGM2.Report import plot
+from pyCGM2 import ma
+
 
 
 class AbstractPlotViewer(object):
