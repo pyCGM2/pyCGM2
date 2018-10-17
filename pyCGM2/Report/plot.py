@@ -14,29 +14,11 @@ import pyCGM2.Processing.analysis as CGM2analysis
 from pyCGM2.Processing import cycle
 from pyCGM2.Tools import trialTools
 from pyCGM2.Report import plotUtils
-from pyCGM2.EMG import normalActivation
 
 
 from pyCGM2 import ma
 from pyCGM2.ma import io
 
-
-def addNormalActivationLayer(figAxis,normalActivationLabel,fo):
-    pos,burstDuration=normalActivation.getNormalBurstActivity(normalActivationLabel,fo)
-    for j in range(0,len(pos)):
-        figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , color='g',alpha=0.1))
-
-
-
-def addTemporalNormalActivationLayer(figAxis,trial,normalActivationLabel,context):
-    if normalActivationLabel:
-        gaitCycles = cycle.construcGaitCycle(trial)
-
-        for cycleIt  in gaitCycles:
-            if cycleIt.context == context:
-                pos,burstDuration=normalActivation.getNormalBurstActivity_fromCycles(normalActivationLabel,cycleIt.firstFrame,cycleIt.begin, cycleIt.m_contraFO, cycleIt.end, cycleIt.appf)
-                for j in range(0,len(pos)):
-                    figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , color='g',alpha=0.1))
 
 # ---- convenient plot functions
 def temporalPlot(figAxis,trial,

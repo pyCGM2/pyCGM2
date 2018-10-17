@@ -81,15 +81,14 @@ def cgm_staticPlot(modelVersion,modelledStaticFilename, DATA_PATH,outputPath=Non
     trial =trialTools.smartTrialReader(DATA_PATH,modelledStaticFilename)
 
     #viewer
-    if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e","CGM2.3","CGM2.3e"]:
+    if modelVersion in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
         kv = plotViewers.TemporalGaitKinematicsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix)
     else:
         raise Exception("[pyCGM2] Model version not known")
 
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    pf.setPath(outputPath)
-    pf.setPdfName(pdfFilename)
+    pf.setExport(outputPath,str(pdfFilename+"-Temporal Kinematics"),"pdf")
     pf.plot()
 
 def cgm_gaitPlots(modelVersion,analysis,kineticFlag,
