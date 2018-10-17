@@ -14,7 +14,7 @@ import site
 if sys.maxsize > 2**32:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
 
-VERSION ="3.0.6"
+VERSION ="3.0.7"
 
 
 for it in site.getsitepackages():
@@ -145,7 +145,8 @@ setup(name = 'pyCGM2',
                         'enum34>=1.1.2',
                         'configparser>=3.5.0',
                         'beautifulsoup4>=3.5.0',
-                        'pyyaml>=3.13.0'],
+                        'pyyaml>=3.13.0',
+                        'xlrd >=0.9.0'],
     classifiers=['Programming Language :: Python',
                  'Programming Language :: Python :: 2.7',
                  'Operating System :: Windows OS',
