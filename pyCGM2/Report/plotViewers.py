@@ -342,7 +342,7 @@ class LowerLimbKinematicsPlotViewer(AbstractPlotViewer):
         ax7.set_title("Knee Adduction" ,size=8)
         ax8.set_title("Knee Rotation" ,size=8)
         ax9.set_title("Ankle dorsiflexion" ,size=8)
-        ax10.set_title("Ankle eversion" ,size=8)
+        ax10.set_title("Ankle supination" ,size=8)
         ax11.set_title("Foot Progression " ,size=8)
 
         for ax in self.fig.axes:
@@ -618,7 +618,7 @@ class LowerLimbMultiFootKinematicsPlotViewer(AbstractPlotViewer):
         ax7.set_title("Knee Adduction" ,size=8)
         ax8.set_title("Knee Rotation" ,size=8)
         ax9.set_title("Ankle dorsiflexion" ,size=8)
-        ax10.set_title("Ankle eversion" ,size=8)
+        ax10.set_title("Ankle supination" ,size=8)
         ax11.set_title("Foot Progression " ,size=8)
         ax12.set_title("ForeFoot dorsiflexion " ,size=8)
         ax13.set_title("ForeFoot eversion " ,size=8)
@@ -1164,7 +1164,7 @@ class multipleAnalyses_LowerLimbKinematicsPlotViewer(AbstractPlotViewer):
         ax7.set_title("Knee Adduction" ,size=8)
         ax8.set_title("Knee Rotation" ,size=8)
         ax9.set_title("Ankle dorsiflexion" ,size=8)
-        ax10.set_title("Ankle eversion" ,size=8)
+        ax10.set_title("Ankle supination" ,size=8)
         ax11.set_title("Foot Progression " ,size=8)
 
         for ax in self.fig.axes:
@@ -1772,7 +1772,7 @@ class TemporalGaitKinematicsPlotViewer(AbstractPlotViewer):
         ax7.set_title("Knee Adduction" ,size=8)
         ax8.set_title("Knee Rotation" ,size=8)
         ax9.set_title("Ankle dorsiflexion" ,size=8)
-        ax10.set_title("Ankle eversion" ,size=8)
+        ax10.set_title("Ankle supination" ,size=8)
         ax11.set_title("Foot Progression " ,size=8)
 
         for ax in self.fig.axes:
