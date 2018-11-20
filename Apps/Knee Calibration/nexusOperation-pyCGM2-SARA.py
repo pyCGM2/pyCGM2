@@ -67,16 +67,13 @@ if __name__ == "__main__":
         # --------------------------CONFIG ------------------------------------
 
         # --------------------CHECKING ------------------------------
-        if model.version in ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"] :
+        if model.version in ["CGM1.0","CGM1.1","CGM2.1","CGM2.2"] :
             raise Exception ("Can t use SARA method with your model %s [minimal version : CGM2.3]"%(model.version))
         elif model.version == "CGM2.3":
             settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
-        elif model.version == "CGM2.3e":
-            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-Expert-pyCGM2.settings")
-        elif model.version == "CGM2.4":
+        elif model.version in  ["CGM2.4","CGM2.5"]:
+            if model.version == "CGM2.5": model.setVersion("CGM2.4)
             settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
-        elif model.version == "CGM2.4e":
-            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-Expert-pyCGM2.settings")
         else:
             raise Exception ("model version not found [contact admin]")
 
@@ -84,9 +81,9 @@ if __name__ == "__main__":
         mpInfo,mpFilename = files.getJsonFileContent(DATA_PATH,"mp.pyCGM2",subject)
 
         #  translators management
-        if model.version in  ["CGM2.3","CGM2.3e"]:
+        if model.version in  ["CGM2.3"]:
             translators = files.getTranslators(DATA_PATH,"CGM2-3.translators")
-        elif model.version in  ["CGM2.4","CGM2.4e"]:
+        elif model.version in  ["CGM2.4"]:
             translators = files.getTranslators(DATA_PATH,"CGM2-4.translators")
         if not translators:
            translators = settings["Translators"]
@@ -96,9 +93,14 @@ if __name__ == "__main__":
             DATA_PATH,reconstructFilenameLabelled,translators,
             args.side,args.beginFrame,args.endFrame)
 
+        # update Model version if CGM2.4
+        if model.version == "CGM2.4":
+            model.setVersion("CGM2.5")
+
         # ----------------------SAVE-------------------------------------------
         files.saveModel(model,DATA_PATH,subject)
         logging.warning("model updated with a  %s knee calibrated with SARA method" %(side))
+
 
         # save mp
         files.saveMp(mpInfo,model,DATA_PATH,mpFilename)
