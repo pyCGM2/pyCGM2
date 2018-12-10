@@ -17,6 +17,9 @@ from pyCGM2.Tools import  btkTools
 from pyCGM2.Model import  modelFilters,modelDecorator
 from pyCGM2.Model.CGM2 import cgm2
 from pyCGM2 import enums
+from pyCGM2.Model.CGM2.coreApps import kneeCalibration
+from pyCGM2.Utils import files
+
 
 from pyCGM2.Model.Opensim import opensimFilters
 
@@ -272,8 +275,115 @@ class CGM2_Knee_test():
         # print functional Offsets
         print model.mp_computed["LeftKneeFuncCalibrationOffset"]
         print model.mp_computed["RightKneeFuncCalibrationOffset"]
-        
+
+
+
+
+class CGM2_Knee_coreApp_tests():
+
+    @classmethod
+    def CGM2_4_Calibration2Dof_test(cls):
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\Knee Calibration\\"
+        staticFilename = "static.c3d"
+
+        funcFilename = "functional.c3d"
+        gaitFilename= "gait trial 01.c3d"
+
+        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+        translators = settings["Translators"]
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 69.0,
+        'LeftLegLength' : 930.0,
+        'RightLegLength' : 930.0 ,
+        'LeftKneeWidth' : 94.0,
+        'RightKneeWidth' : 64.0,
+        'LeftAnkleWidth' : 67.0,
+        'RightAnkleWidth' : 62.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        "LeftToeOffset" : 0,
+        "RightToeOffset" : 0,
+        }
+
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+
+        model=cgm2.CGM2_4LowerLimbs()
+        model.configure()
+
+        model.addAnthropoInputParameters(mp)
+
+        # --store calibration parameters--
+        model.setStaticFilename(staticFilename)
+        model.setCalibrationProperty("leftFlatFoot",True)
+        model.setCalibrationProperty("rightFlatFoot",True)
+        model.setCalibrationProperty("markerDiameter",14)
+
+        # test -  no joint Range
+        model,acqFunc,side = kneeCalibration.calibration2Dof(model,
+            MAIN_PATH,funcFilename,translators,
+            "Left",831,1280,None)
+        # test with joint range of [20-90]
+        model,acqFunc,side = kneeCalibration.calibration2Dof(model,
+            MAIN_PATH,funcFilename,translators,
+            "Left",831,1280,[20,90])
+
+    @classmethod
+    def CGM2_4_SARA_test(cls):
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\Knee Calibration\\"
+        staticFilename = "static.c3d"
+
+        funcFilename = "functional.c3d"
+        gaitFilename= "gait trial 01.c3d"
+
+        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+        translators = settings["Translators"]
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 69.0,
+        'LeftLegLength' : 930.0,
+        'RightLegLength' : 930.0 ,
+        'LeftKneeWidth' : 94.0,
+        'RightKneeWidth' : 64.0,
+        'LeftAnkleWidth' : 67.0,
+        'RightAnkleWidth' : 62.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        "LeftToeOffset" : 0,
+        "RightToeOffset" : 0,
+        }
+
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+
+        model=cgm2.CGM2_4LowerLimbs()
+        model.configure()
+
+        model.addAnthropoInputParameters(mp)
+
+        # --store calibration parameters--
+        model.setStaticFilename(staticFilename)
+        model.setCalibrationProperty("leftFlatFoot",True)
+        model.setCalibrationProperty("rightFlatFoot",True)
+        model.setCalibrationProperty("markerDiameter",14)
+
+        # test -  no joint Range
+        model,acqFunc,side = kneeCalibration.sara(model,
+            MAIN_PATH,funcFilename,translators,
+            "Left",831,1280)
+
+        import ipdb; ipdb.set_trace()
+
 if __name__ == "__main__":
 
-    #CGM2_Knee_test.CGM2_4_SARA_test()
+    CGM2_Knee_test.CGM2_4_SARA_test()
     CGM2_Knee_test.CGM2_4_Calibration2Dof_test()
+
+    # coreApps tests
+    CGM2_Knee_coreApp_tests.CGM2_4_CoreApps_Calibration2Dof_test()
+    CGM2_Knee_coreApp_tests.CGM2_4_SARA_test()
