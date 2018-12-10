@@ -2516,7 +2516,6 @@ class CGM1LowerLimbs(CGM):
             self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
 
 
-            #self._left_shank_motion2(aqui, dictRef, dictAnat,options=options)
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
             self._left_shankProximal_motion(aqui,dictAnat,options=options)
@@ -3712,73 +3711,6 @@ class CGM1LowerLimbs(CGM):
 
         # remove HJC from list of tracking markers
         if "RHJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RHJC")
-
-
-    def _left_shank_motion2(self,aqui, dictRef,dictAnat,options=None):
-        """
-            Compute Motion of both Technical and Anatomical coordinate systems of the left shank
-
-            :Parameters:
-               - `aqui` (btkAcquisition) - acquisition instance of a dynamic trial
-               - `dictRef` (dict) - dictionnary reporting markers and sequence use for building Technical coordinate system
-               - `dictAnat` (dict) - dictionnary reporting markers and sequence use for building Anatomical coordinate system
-               - `options` (dict) - dictionnary use to pass options
-
-        """
-
-        if "markerDiameter" in options.keys():
-            logging.debug(" option (markerDiameter) found ")
-            markerDiameter = options["markerDiameter"]
-        else:
-            markerDiameter=14.0
-
-        if "basePlate" in options.keys():
-            logging.debug(" option (basePlate) found ")
-            basePlate = options["basePlate"]
-        else:
-            basePlate=2.0
-
-        seg=self.getSegment("Left Shank")
-
-        # --- motion of the technical referential
-        seg.getReferential("TF").motion =[]
-
-        # additional markers
-        # NA
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
-
-            v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
-
-            a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Shank"]["TF"]['sequence'])
-
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-        # --- LAJC
-        desc = seg.getReferential('TF').static.getNode_byLabel("LAJC").m_desc
-        values_LAJCnode=seg.getReferential('TF').getNodeTrajectory("LAJC")
-        btkTools.smartAppendPoint(aqui,"LAJC",values_LAJCnode, desc=str("opt "+desc))
 
 
     def _left_shank_motion_optimize(self,aqui, dictRef,  motionMethod):
