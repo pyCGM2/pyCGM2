@@ -71,8 +71,7 @@ if __name__ == "__main__":
             raise Exception ("Can t use SARA method with your model %s [minimal version : CGM2.3]"%(model.version))
         elif model.version == "CGM2.3":
             settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
-        elif model.version in  ["CGM2.4","CGM2.5"]:
-            if model.version == "CGM2.5": model.setVersion("CGM2.4)
+        elif model.version in  ["CGM2.4"]:
             settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
         else:
             raise Exception ("model version not found [contact admin]")
@@ -93,18 +92,12 @@ if __name__ == "__main__":
             DATA_PATH,reconstructFilenameLabelled,translators,
             args.side,args.beginFrame,args.endFrame)
 
-        # update Model version if CGM2.4
-        if model.version == "CGM2.4":
-            model.setVersion("CGM2.5")
-
         # ----------------------SAVE-------------------------------------------
         files.saveModel(model,DATA_PATH,subject)
         logging.warning("model updated with a  %s knee calibrated with SARA method" %(side))
 
-
         # save mp
         files.saveMp(mpInfo,model,DATA_PATH,mpFilename)
-
         # ----------------------VICON INTERFACE-------------------------------------------
         #--- update mp
         nexusUtils.updateNexusSubjectMp(NEXUS,model,subject)

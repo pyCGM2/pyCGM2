@@ -76,8 +76,7 @@ if __name__ == "__main__":
             settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
         elif model.version == "CGM2.3":
             settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
-        elif model.version in  ["CGM2.4","CGM2.5"]:
-            if model.version == "CGM2.5": model.setVersion("CGM2.4)
+        elif model.version in  ["CGM2.4"]:
             settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
         else:
             raise Exception ("model version not found [contact admin]")
@@ -106,10 +105,6 @@ if __name__ == "__main__":
         model,acqFunc,side = kneeCalibration.calibration2Dof(model,
             DATA_PATH,reconstructFilenameLabelled,translators,
             args.side,args.beginFrame,args.endFrame,None)
-
-        # update Model version if CGM2.4
-        if model.version == "CGM2.4":
-            model.setVersion("CGM2.5")
 
         # ----------------------SAVE-------------------------------------------
         files.saveModel(model,DATA_PATH,subject)
