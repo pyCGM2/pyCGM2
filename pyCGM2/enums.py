@@ -53,23 +53,25 @@ class SegmentSide(Enum):
     Right = 2
 
 
-
-class CgmStaticMarkerConfig(Enum):
-    """ Enum defining harrington's regression predictor"""
-    Native = "Native"
-    KAD = "KAD"
-    KADmed = "KAD-med"
-    KneeMed = "Knee-med"
-    AnkleMed = "Ankle-med"
-    KneeAnkleMed = "Knee-Ankle-med "
-
-
 class EmgAmplitudeNormalization(Enum):
     """ Enum defining harrington's regression predictor"""
     MaxMax = "MaxMax"
     MeanMax = "MeanMax"
     MedianMax = "MedianMax"
     Threshold = "Threshold"
+
+class BodyPart(Enum):
+    LowerLimb=0
+    LowerLimbTrunk=1
+    FullBody=2
+    UpperLimb=3
+
+
+class JointCalibrationMethod(Enum):
+    Basic = "lateralMarker"
+    KAD = "KAD"
+    Medial = "medial"
+
 
 
 
