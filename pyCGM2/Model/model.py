@@ -56,9 +56,14 @@ class Model(object):
         self.m_properties["CalibrationParameters"]=dict()
         self.m_clinicalDescriptors= []
         self.m_csDefinitions = []
+        self.m_bodypart=None
 
     def __repr__(self):
         return "Basis Model"
+
+    def setBodyPart(self, bodypart):
+        self.m_bodypart = bodypart
+
 
     def setProperty(self, propertyLabel,  value):
         self.m_properties[propertyLabel] = value
