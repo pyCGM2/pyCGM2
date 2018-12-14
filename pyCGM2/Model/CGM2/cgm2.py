@@ -83,7 +83,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
     def __repr__(self):
         return "LowerLimb CGM2.3"
 
-    def configure(self):
+    def __lowerlimbConfigure(self):
         self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
         self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHAP","LTHAD"])
         self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHAP","RTHAD"])
@@ -200,19 +200,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
         self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
 
-        self.__coordinateSystemDefinitions()
-
-
-    def calibrationProcedure(self):
-        """
-            Define the calibration Procedure
-
-            :Return:
-                - `dictRef` (dict) - dictionnary reporting markers and sequence use for building Technical coordinate system
-                - `dictRefAnatomical` (dict) - dictionnary reporting markers and sequence use for building Anatomical coordinate system
-        """
-
-        dictRef={}
+    def __lowerLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
         dictRef["Pelvis"]={"TF" : {'sequence':"YZX", 'labels':   ["RASI","LASI","SACR","midASIS"]} }
         dictRef["Left Thigh"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LKNE","LTHAP","LTHI","LKNE"]} }
         dictRef["Right Thigh"]={"TF" : {'sequence':"ZXY", 'labels':   ["RKNE","RTHAP","RTHI","RKNE"]} }
@@ -223,7 +211,6 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         dictRef["Right Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RTOE","RAJC",None,"RAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
 
 
-        dictRefAnatomical={}
         dictRefAnatomical["Pelvis"]= {'sequence':"YZX", 'labels':  ["RASI","LASI","SACR","midASIS"]} # normaly : midHJC
         dictRefAnatomical["Left Thigh"]= {'sequence':"ZXiY", 'labels':  ["LKJC","LHJC","LKNE","LHJC"]} # origin = Proximal ( differ from native)
         dictRefAnatomical["Right Thigh"]= {'sequence':"ZXY", 'labels': ["RKJC","RHJC","RKNE","RHJC"]}
@@ -234,9 +221,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         dictRefAnatomical["Right Foot"]={'sequence':"ZXiY", 'labels':  ["RTOE","RHEE",None,"RAJC"]}    # corrected foot
 
 
-        return dictRef,dictRefAnatomical
-
-    def __coordinateSystemDefinitions(self):
+    def __lowerLimbCoordinateSystemDefinitions(self):
         self.setCoordinateSystemDefinition( "Pelvis", "PELVIS", "Anatomic")
         self.setCoordinateSystemDefinition( "Left Thigh", "LFEMUR", "Anatomic")
         self.setCoordinateSystemDefinition( "Right Thigh", "RFEMUR", "Anatomic")
@@ -472,7 +457,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     def __repr__(self):
         return "LowerLimb CGM2.4"
 
-    def configure(self):
+    def __lowerlimbConfigure(self):
         self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
         self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHAP","LTHAD"])
         self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHAP","RTHAD"])
@@ -597,20 +582,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
         self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
 
-        self.__coordinateSystemDefinitions()
 
-    def calibrationProcedure(self):
+    def __lowerLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
 
-        """ calibration procedure of the cgm1
-
-        .. note : call from staticCalibration procedure
-
-        .. warning : output TWO dictionary. One for Referentials. One for Anatomical frame
-
-        .. todo :: Include Foot
-
-
-        """
         dictRef={}
         dictRef["Pelvis"]={"TF" : {'sequence':"YZX", 'labels':   ["RASI","LASI","SACR","midASIS"]} }
         dictRef["Left Thigh"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LKNE","LTHAP","LTHI","LKNE"]} }
@@ -641,9 +615,8 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         dictRefAnatomical["Right Foot"]= {'sequence':"ZXiY", 'labels':   ["RTOE","RHEE",None,"RAJC"]}
         dictRefAnatomical["Right ForeFoot"]= {'sequence':"ZXY", 'labels':   ["RvSMH","RFJC","RVMH","RvSMH"]} # look out : use virtual Point
 
-        return dictRef,dictRefAnatomical
 
-    def __coordinateSystemDefinitions(self):
+    def __lowerLimbCoordinateSystemDefinitions(self):
         self.setCoordinateSystemDefinition( "Pelvis", "PELVIS", "Anatomic")
         self.setCoordinateSystemDefinition( "Left Thigh", "LFEMUR", "Anatomic")
         self.setCoordinateSystemDefinition( "Right Thigh", "RFEMUR", "Anatomic")
