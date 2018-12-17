@@ -21,8 +21,6 @@ class CGM2_1LowerLimbs(cgm.CGM1LowerLimbs):
 
     #nativeCgm1 = True
 
-    TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
-
     def __init__(self):
         super(CGM2_1LowerLimbs, self).__init__()
         self.decoratedModel = False
@@ -37,7 +35,6 @@ class CGM2_2LowerLimbs(cgm.CGM1LowerLimbs):
 
     """
 
-    TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
     def __init__(self):
         super(CGM2_2LowerLimbs, self).__init__()
@@ -54,13 +51,6 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         implementation of the cgm2.3 skin marker added
     """
 
-    TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI",
-               "LTHI","LKNE","LTHAP","LTHAD",
-               "LTIB","LANK","LTIAP","LTIAD",
-               "LHEE","LTOE",
-               "RTHI","RKNE","RTHAP","RTHAD",
-               "RTIB","RANK","RTIAP","RTIAD",
-               "RHEE","RTOE"]
 
     def __init__(self):
         """Constructor
@@ -83,7 +73,17 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
     def __repr__(self):
         return "LowerLimb CGM2.3"
 
-    def __lowerlimbConfigure(self):
+    def _lowerlimbTrackingMarkers(self):
+        return ["LASI", "RASI","RPSI", "LPSI",
+                   "LTHI","LKNE","LTHAP","LTHAD",
+                   "LTIB","LANK","LTIAP","LTIAD",
+                   "LHEE","LTOE",
+                   "RTHI","RKNE","RTHAP","RTHAD",
+                   "RTIB","RANK","RTIAP","RTIAD",
+                   "RHEE","RTOE"]
+
+
+    def _lowerlimbConfigure(self):
         self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
         self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHAP","LTHAD"])
         self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHAP","RTHAD"])
@@ -200,7 +200,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
         self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
 
-    def __lowerLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
+    def _lowerLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
         dictRef["Pelvis"]={"TF" : {'sequence':"YZX", 'labels':   ["RASI","LASI","SACR","midASIS"]} }
         dictRef["Left Thigh"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LKNE","LTHAP","LTHI","LKNE"]} }
         dictRef["Right Thigh"]={"TF" : {'sequence':"ZXY", 'labels':   ["RKNE","RTHAP","RTHI","RKNE"]} }
@@ -221,7 +221,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         dictRefAnatomical["Right Foot"]={'sequence':"ZXiY", 'labels':  ["RTOE","RHEE",None,"RAJC"]}    # corrected foot
 
 
-    def __lowerLimbCoordinateSystemDefinitions(self):
+    def _lowerLimbCoordinateSystemDefinitions(self):
         self.setCoordinateSystemDefinition( "Pelvis", "PELVIS", "Anatomic")
         self.setCoordinateSystemDefinition( "Left Thigh", "LFEMUR", "Anatomic")
         self.setCoordinateSystemDefinition( "Right Thigh", "RFEMUR", "Anatomic")
@@ -425,13 +425,6 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         return out
 
 class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
-    TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI",
-               "LTHI","LKNE","LTHAP","LTHAD",
-               "LTIB","LANK","LTIAP","LTIAD",
-               "LHEE","LTOE","LFMH","LVMH",
-               "RTHI","RKNE","RTHAP","RTHAD",
-               "RTIB","RANK","RTIAP","RTIAD",
-               "RHEE","RTOE","RFMH","RVMH"]
 
     ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles","LForeFoot"],
                        'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles","LForeFoot"]}
@@ -457,7 +450,16 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     def __repr__(self):
         return "LowerLimb CGM2.4"
 
-    def __lowerlimbConfigure(self):
+    def _lowerlimbTrackingMarkers(self):
+        return ["LASI", "RASI","RPSI", "LPSI",
+                   "LTHI","LKNE","LTHAP","LTHAD",
+                   "LTIB","LANK","LTIAP","LTIAD",
+                   "LHEE","LTOE","LFMH","LVMH",
+                   "RTHI","RKNE","RTHAP","RTHAD",
+                   "RTIB","RANK","RTIAP","RTIAD",
+                   "RHEE","RTOE","RFMH","RVMH"]
+
+    def _lowerlimbConfigure(self):
         self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
         self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHAP","LTHAD"])
         self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHAP","RTHAD"])
@@ -583,7 +585,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
 
 
-    def __lowerLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
+    def _lowerLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
 
         dictRef={}
         dictRef["Pelvis"]={"TF" : {'sequence':"YZX", 'labels':   ["RASI","LASI","SACR","midASIS"]} }
@@ -616,7 +618,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         dictRefAnatomical["Right ForeFoot"]= {'sequence':"ZXY", 'labels':   ["RvSMH","RFJC","RVMH","RvSMH"]} # look out : use virtual Point
 
 
-    def __lowerLimbCoordinateSystemDefinitions(self):
+    def _lowerLimbCoordinateSystemDefinitions(self):
         self.setCoordinateSystemDefinition( "Pelvis", "PELVIS", "Anatomic")
         self.setCoordinateSystemDefinition( "Left Thigh", "LFEMUR", "Anatomic")
         self.setCoordinateSystemDefinition( "Right Thigh", "RFEMUR", "Anatomic")

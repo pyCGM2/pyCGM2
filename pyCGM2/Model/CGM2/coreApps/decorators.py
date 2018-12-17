@@ -6,7 +6,7 @@ from pyCGM2.Model import modelFilters, modelDecorator
 
 
 
-def applyDecorators_fromDetectedCalibrations(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1only=False):
+def applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1only=False):
 
     # native but thighRotation altered in mp
     if dcm["Left Knee"] == enums.JointCalibrationMethod.Basic and  dcm["Left Ankle"] == enums.JointCalibrationMethod.Basic and optional_mp["LeftThighRotation"] !=0:

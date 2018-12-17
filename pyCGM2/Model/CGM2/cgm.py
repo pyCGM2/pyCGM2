@@ -97,23 +97,23 @@ class CGM1LowerLimbs(CGM):
     def __repr__(self):
         return "LowerLimb CGM1.0"
 
-    def __lowerlimbTrackingMarkers(self):
+    def _lowerlimbTrackingMarkers(self):
         return ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
-    def __trunkTrackingMarkers(self):
+    def _trunkTrackingMarkers(self):
         return ["C7", "T10","CLAV", "STRN"]
 
-    def __upperLimbMarkers(self):
+    def _upperLimbMarkers(self):
         return ["C7", "T10","CLAV", "STRN", "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN"]
 
     def getTrackingMarkers(self):
         tracking_markers=[]
         if self.m_bodypart != enums.BodyPart.UpperLimb:
-            tracking_markers.append(self.__lowerlimbTrackingMarkers())
+            tracking_markers = tracking_markers + self._lowerlimbTrackingMarkers()
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            tracking_markers.append(self.__trunkTrackingMarkers())
+            tracking_markers = tracking_markers +self._trunkTrackingMarkers()
         if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            tracking_markers.append(self.__upperLimbMarkers())
+            tracking_markers =  tracking_markers + self._upperLimbMarkers()
         return tracking_markers
 
     def getStaticMarkers(self,dcm):
@@ -121,13 +121,13 @@ class CGM1LowerLimbs(CGM):
 
         if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD:
             static_markers.remove("LKNE")
-            static_markers.append(CGM.KAD_MARKERS["Left"])
+            static_markers = static_markers + CGM.KAD_MARKERS["Left"]
         elif dcm["Left Knee"] == enums.JointCalibrationMethod.Medial:
             static_markers.append("LMED")
 
         if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD:
             static_markers.remove("RKNM")
-            static_markers.append(CGM.KAD_MARKERS["Right"])
+            static_markers = static_markers + CGM.KAD_MARKERS["Right"]
         elif dcm["Right Knee"] == enums.JointCalibrationMethod.Medial:
             static_markers.append("RKNM")
 
@@ -146,15 +146,15 @@ class CGM1LowerLimbs(CGM):
         self.setBodyPart(bodyPart)
 
         if bodyPart != enums.BodyPart.UpperLimb:
-            self.__lowerlimbConfigure()
+            self._lowerlimbConfigure()
         if bodyPart == enums.BodyPart.LowerLimbTrunk:
-            self.__trunkConfigure()
+            self._trunkConfigure()
         if bodyPart == enums.BodyPart.UpperLimb or bodyPart == enums.BodyPart.FullBody:
-            self.__upperLimbConfigure()
+            self._upperLimbConfigure()
 
-        self.__coordinateSystemDefinitions()
+        self._coordinateSystemDefinitions()
 
-    def __lowerlimbConfigure(self):
+    def _lowerlimbConfigure(self):
         self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
         self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI"])
         self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI"])
@@ -283,7 +283,7 @@ class CGM1LowerLimbs(CGM):
         self.setClinicalDescriptor("RAnkle",enums.DataType.Force, [0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
         self.setClinicalDescriptor("RAnkle",enums.DataType.Moment, [1,2,0],[1.0,1.0,1.0], [0.0,0.0,0.0],projection = enums.MomentProjection.JCS_Dual)
 
-    def __trunkConfigure(self):
+    def _trunkConfigure(self):
         self.addSegment("Thorax",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["CLAV","C7","T10","STRN"])
 
         self.addJoint("LSpine","Pelvis","Thorax", "YXZ","LSJC")
@@ -293,7 +293,7 @@ class CGM1LowerLimbs(CGM):
         self.setClinicalDescriptor("RSpine",enums.DataType.Angle, [0,1,2],[1.0,1.0,-1.0], [np.radians(-180),0.0,0.0])
 
 
-    def __upperLimbConfigure(self):
+    def _upperLimbConfigure(self):
         self.addSegment("Head",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LFHD","RFHD","LBHD","RBHD"])
         self.addSegment("Thorax",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["CLAV","C7","T10","STRN"])
         self.addSegment("Left Clavicle",0,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = [])
@@ -347,17 +347,17 @@ class CGM1LowerLimbs(CGM):
         dictRefAnatomical={}
 
         if self.m_bodypart != enums.BodyPart.UpperLimb:
-            self.__lowerLimbCalibrationProcedure(dictRef,dictRefAnatomical)
+            self._lowerLimbCalibrationProcedure(dictRef,dictRefAnatomical)
 
 
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            self.__trunkLimbCalibrationProcedure(dictRef,dictRefAnatomical)
+            self._trunkLimbCalibrationProcedure(dictRef,dictRefAnatomical)
         if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            self.__upperLimbCalibrationProcedure(dictRef,dictRefAnatomical)
+            self._upperLimbCalibrationProcedure(dictRef,dictRefAnatomical)
 
         return dictRef,dictRefAnatomical
 
-    def __lowerLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
+    def _lowerLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
         dictRef["Pelvis"]={"TF" : {'sequence':"YZX", 'labels':   ["RASI","LASI","SACR","midASIS"]} }
         dictRef["Left Thigh"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LKNE","LHJC","LTHI","LKNE"]} }
         dictRef["Right Thigh"]={"TF" : {'sequence':"ZXY", 'labels':   ["RKNE","RHJC","RTHI","RKNE"]} }
@@ -376,11 +376,11 @@ class CGM1LowerLimbs(CGM):
         dictRefAnatomical["Left Foot"]={'sequence':"ZXiY", 'labels':  ["LTOE","LHEE",None,"LAJC"]}    # corrected foot
         dictRefAnatomical["Right Foot"]={'sequence':"ZXiY", 'labels':  ["RTOE","RHEE",None,"RAJC"]}    # corrected foot
 
-    def __trunkCalibrationProcedure(self,dictRef,dictRefAnatomical):
+    def _trunkCalibrationProcedure(self,dictRef,dictRefAnatomical):
         dictRef["Thorax"]={"TF" : {'sequence':"ZYX", 'labels':   ["midTop","midBottom","midFront","CLAV"]} }
         dictRefAnatomical["Thorax"]= {'sequence':"ZYX", 'labels':  ["midTop","midBottom","midFront","OT"]}
 
-    def __upperLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
+    def _upperLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
         dictRef["Thorax"]={"TF" : {'sequence':"ZYX", 'labels':   ["midTop","midBottom","midFront","CLAV"]} }
         dictRef["Left Clavicle"]={"TF" : {'sequence':"ZXY", 'labels':   ["LSJC","OT","LVWM","LSJC"]} } # OT and LWM from thorax
         dictRef["Right Clavicle"]={"TF" : {'sequence':"ZXY", 'labels':   ["RSJC","OT","RVWM","RSJC"]} } # OT and LWM from thorax
@@ -403,7 +403,7 @@ class CGM1LowerLimbs(CGM):
         dictRefAnatomical["Right ForeArm"]={'sequence':"ZXiY", 'labels':   ["RWJC","REJC",None,"RWJC"]} # used y axis of upper
         dictRefAnatomical["Right Hand"]={'sequence':"ZYX", 'labels':   ["RHO","RWJC","RMWP","RHO"]}
 
-    def __lowerLimbCoordinateSystemDefinitions(self):
+    def _lowerLimbCoordinateSystemDefinitions(self):
         self.setCoordinateSystemDefinition( "Pelvis", "PELVIS", "Anatomic")
         self.setCoordinateSystemDefinition( "Left Thigh", "LFEMUR", "Anatomic")
         self.setCoordinateSystemDefinition( "Right Thigh", "RFEMUR", "Anatomic")
@@ -414,10 +414,10 @@ class CGM1LowerLimbs(CGM):
         self.setCoordinateSystemDefinition( "Left Foot", "LFOOT", "Anatomic")
         self.setCoordinateSystemDefinition( "Right Foot", "RFOOT", "Anatomic")
 
-    def __trunkCoordinateSystemDefinitions(self):
+    def _trunkCoordinateSystemDefinitions(self):
         self.setCoordinateSystemDefinition( "Thorax", "THORAX", "Anatomic")
 
-    def __upperLimbCoordinateSystemDefinitions(self):
+    def _upperLimbCoordinateSystemDefinitions(self):
         self.setCoordinateSystemDefinition( "Thorax", "THORAX", "Anatomic")
         self.setCoordinateSystemDefinition( "Left Clavicle", "LCLAVICLE", "Anatomic")
         self.setCoordinateSystemDefinition( "Right Clavicle", "RCLAVICLE", "Anatomic")
@@ -430,16 +430,16 @@ class CGM1LowerLimbs(CGM):
         self.setCoordinateSystemDefinition( "Right Hand", "RHANDARM", "Anatomic")
 
 
-    def __coordinateSystemDefinitions(self):
+    def _coordinateSystemDefinitions(self):
 
         if self.m_bodypart != enums.BodyPart.UpperLimb:
-            self.__lowerLimbCoordinateSystemDefinitions()
+            self._lowerLimbCoordinateSystemDefinitions()
 
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            self.__trunkCoordinateSystemDefinitions()
+            self._trunkCoordinateSystemDefinitions()
 
         if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            self.__upperLimbCoordinateSystemDefinitions()
+            self._upperLimbCoordinateSystemDefinitions()
 
     def calibrate(self,aquiStatic, dictRef, dictAnatomic,  options=None):
         """
