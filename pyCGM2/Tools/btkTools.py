@@ -350,6 +350,70 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
 
     return   longitudinalAxis,forwardProgression,globalFrame
 
+def findProgressionAxisFromLongAxis(acq,originMarker,frontMarker):
+
+    markers = [originMarker,frontMarker]
+
+    if not isPointsExist(acq,markers):
+        raise Exception( "[pyCGM2] : one of the  marker set  doesn't exist")
+
+    # default
+    longitudinalAxis="X"
+    globalFrame="XYZ"
+    forwardProgression = True
+
+    # find valid frames and get the first one
+    flag,vff,vlf = findValidFrames(acq,markers)
+    index = vff
+
+
+    origin = acq.GetPoint(originMarker).GetValues()[index,:]
+    front = acq.GetPoint(frontMarker).GetValues()[index,:]
+    z=np.array([0,0,1])
+
+
+    lateral_extremityValues = acq.GetPoint("LPSI").GetValues()[index,:]
+
+
+    a1=(front-origin)
+    a1=a1/np.linalg.norm(a1)
+
+    a2=np.cross(a1,z)
+    a2=a2/np.linalg.norm(a2)
+
+    globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
+
+    # longitudinal axis
+    tmp=[]
+    for axis in globalAxes.keys():
+        res = np.dot(a1,globalAxes[axis])
+        tmp.append(res)
+    maxIndex = np.argmax(np.abs(tmp))
+    longitudinalAxis =  globalAxes.keys()[maxIndex]
+    forwardProgression = True if tmp[maxIndex]>0 else False
+
+    # lateral axis
+    tmp=[]
+    for axis in globalAxes.keys():
+        res = np.dot(a2,globalAxes[axis])
+        tmp.append(res)
+    maxIndex = np.argmax(np.abs(tmp))
+    lateralAxis =  globalAxes.keys()[maxIndex]
+
+
+    # global frame
+    if "X" not in str(longitudinalAxis+lateralAxis):
+        globalFrame = str(longitudinalAxis+lateralAxis+"X")
+    if "Y" not in str(longitudinalAxis+lateralAxis):
+        globalFrame = str(longitudinalAxis+lateralAxis+"Y")
+    if "Z" not in str(longitudinalAxis+lateralAxis):
+        globalFrame = str(longitudinalAxis+lateralAxis+"Z")
+
+    logging.debug("Longitudinal axis : %s"%(longitudinalAxis))
+    logging.debug("forwardProgression : %s"%(str(forwardProgression)))
+    logging.debug("globalFrame : %s"%(str(globalFrame)))
+
+    return   longitudinalAxis,forwardProgression,globalFrame
 
 def checkMarkers( acq, markerList):
     """

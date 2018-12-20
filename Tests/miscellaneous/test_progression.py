@@ -208,6 +208,14 @@ class BtkProgressionTest_static():
         np.testing.assert_equal( forwardProgression,True)
         np.testing.assert_equal( globalFrame,"XYZ")
 
+        longitudinalAxis2,forwardProgression2,globalFrame2 = btkTools.findProgressionAxisFromLongAxis(acq,"LPSI","LASI")
+
+        np.testing.assert_equal( longitudinalAxis2,"X")
+        np.testing.assert_equal( forwardProgression2,True)
+        np.testing.assert_equal( globalFrame2,"XYZ")
+
+
+
 
     @classmethod
     def gaitTrialProgressionX_backward_lateralY_static(cls):
@@ -232,6 +240,11 @@ class BtkProgressionTest_static():
         np.testing.assert_equal( forwardProgression,False)
         np.testing.assert_equal( globalFrame,"XYZ")
 
+        longitudinalAxis2,forwardProgression2,globalFrame2 = btkTools.findProgressionAxisFromLongAxis(acq,"LPSI","LASI")
+
+        np.testing.assert_equal( longitudinalAxis2,"X")
+        np.testing.assert_equal( forwardProgression2,False)
+        np.testing.assert_equal( globalFrame2,"XYZ")
 
 
     @classmethod
@@ -257,6 +270,11 @@ class BtkProgressionTest_static():
         np.testing.assert_equal( forwardProgression,False)
         np.testing.assert_equal( globalFrame,"YXZ")
 
+        longitudinalAxis2,forwardProgression2,globalFrame2 = btkTools.findProgressionAxisFromLongAxis(acq,"LPSI","LASI")
+
+        np.testing.assert_equal( longitudinalAxis2,"Y")
+        np.testing.assert_equal( forwardProgression2,False)
+        np.testing.assert_equal( globalFrame2,"YXZ")
 
 #---- OPENMA -----
 
