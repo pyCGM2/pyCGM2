@@ -117,7 +117,7 @@ class CGM1LowerLimbs(CGM):
         return tracking_markers
 
     def getStaticMarkers(self,dcm):
-        static_markers = getTrackingMarkers() # initiate with tracking
+        static_markers = self.getTrackingMarkers() # initiate with tracking
 
         if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD:
             static_markers.remove("LKNE")
@@ -126,7 +126,7 @@ class CGM1LowerLimbs(CGM):
             static_markers.append("LMED")
 
         if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD:
-            static_markers.remove("RKNM")
+            static_markers.remove("RKNE")
             static_markers = static_markers + CGM.KAD_MARKERS["Right"]
         elif dcm["Right Knee"] == enums.JointCalibrationMethod.Medial:
             static_markers.append("RKNM")
@@ -294,7 +294,7 @@ class CGM1LowerLimbs(CGM):
 
 
     def _upperLimbConfigure(self):
-        self.addSegment("Head",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LFHD","RFHD","LBHD","RBHD"])
+        self.addSegment("Head",0,enums.SegmentSide.Central,calibration_markers=["C7"], tracking_markers = ["LFHD","RFHD","LBHD","RBHD"])
         self.addSegment("Thorax",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["CLAV","C7","T10","STRN"])
         self.addSegment("Left Clavicle",0,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = [])
         self.addSegment("Left UpperArm",0,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LSJC","LELB"])
@@ -306,33 +306,40 @@ class CGM1LowerLimbs(CGM):
         self.addSegment("Right ForeArm",0,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RWRA","RWRB","RFRM","REJC"])
         self.addSegment("Right Hand",0,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RWRA","RWRB","RFIN","RWJC"])
 
-        #self.addJoint("LSpine","Pelvis","Thorax", "YXZ","LSJC")
-        #self.addJoint("RSpine","Pelvis","Thorax", "YXZ","LSJC")
+        if self.m_bodypart == enums.BodyPart.FullBody:
+            self.addJoint("LSpine","Thorax","Pelvis", "YXZ","LSJC")
+            self.addJoint("RSpine","Thorax","Pelvis", "YXZ","LSJC")
 
         self.addJoint("LShoulder","Thorax", "Left UpperArm","XYZ","LSJC")
         self.addJoint("LElbow","Left UpperArm", "Left ForeArm","YXZ","LEJC")
         self.addJoint("LWrist","Left ForeArm", "Left Hand","YXZ","LWJC")
-        self.addJoint("LNeck","Thorax", "Head","YXZ","OT")
+        self.addJoint("LNeck","Head", "Thorax","YXZ","OT")
 
         self.addJoint("RShoulder","Thorax", "Right UpperArm","XYZ","RSJC")
         self.addJoint("RElbow","Right UpperArm", "Right ForeArm","YXZ","REJC")
         self.addJoint("RWrist","Right ForeArm", "Right Hand","YXZ","RWJC")
-        self.addJoint("RNeck","Thorax", "Head","YXZ","OT")
+        self.addJoint("RNeck","Head", "Thorax","YXZ","OT")
 
 
         # clinics
-        self.setClinicalDescriptor("LSpine",enums.DataType.Angle, [0,1,2],[1.0,-1.0,1.0], [np.radians(-180),0.0,0.0])
-        self.setClinicalDescriptor("RSpine",enums.DataType.Angle, [0,1,2],[1.0,1.0,-1.0], [np.radians(-180),0.0,0.0])
+        self.setClinicalDescriptor("LSpine",enums.DataType.Angle, [0,1,2],[1.0,-1.0,-1.0], [np.radians(-180),0.0,np.radians(180)])
+        self.setClinicalDescriptor("RSpine",enums.DataType.Angle, [0,1,2],[1.0,1.0,1.0], [np.radians(-180),0.0,np.radians(180)])
 
         self.setClinicalDescriptor("LShoulder",enums.DataType.Angle, [1,0,2],[-1.0,1.0,-1.0], [0.0,np.radians(180),np.radians(-180)])
         self.setClinicalDescriptor("LElbow",enums.DataType.Angle, [0,2,1],[1.0,1.0,1.0], [0.0,0.0,0.0])
         self.setClinicalDescriptor("LWrist",enums.DataType.Angle, [0,1,2],[1.0,-1.0,-1.0], [0.0,0,0.0])
-        self.setClinicalDescriptor("LNeck",enums.DataType.Angle, [0,2,1],[-1.0,1.0,1.0], [-np.radians(180),np.radians(180),0.0])
+        self.setClinicalDescriptor("LNeck",enums.DataType.Angle, [0,1,2],[-1.0,1.0,1.0], [0,np.radians(180),0.0])
 
-        self.setClinicalDescriptor("RShoulder",enums.DataType.Angle, [1,0,2],[-1.0,-1.0,1.0], [0.0,-np.radians(180),[np.radians(180),-np.radians(180)]]) # warning. i got offset on the int/ext rotation i fixed with a special behaviour of ClinicalDescriptor
+        self.setClinicalDescriptor("RShoulder",enums.DataType.Angle, [1,0,2],[-1.0,-1.0,1.0], [0.0,-np.radians(180),np.radians(180)]) # warning. i got offset on the int/ext rotation i fixed with a special behaviour of ClinicalDescriptor
         self.setClinicalDescriptor("RElbow",enums.DataType.Angle, [0,2,1],[1.0,1.0,1.0], [0.0,0.0,0.0])
         self.setClinicalDescriptor("RWrist",enums.DataType.Angle, [0,1,2],[1.0,1.0,1.0], [0.0,0,0.0])
-        self.setClinicalDescriptor("RNeck",enums.DataType.Angle, [0,2,1],[-1.0,1.0,1.0], [-np.radians(180),np.radians(180),0.0])
+        self.setClinicalDescriptor("RNeck",enums.DataType.Angle, [0,1,2],[-1.0,1.0,-1.0], [-np.radians(180),0,np.radians(180)])
+
+        #self.setClinicalDescriptor("LThorax",enums.DataType.Angle,[0,1,2],[1.0,1.0,1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("LThorax",enums.DataType.Angle,[0,1,2],[1.0,-1.0,1.0], [-np.radians(180),0.0,-np.radians(180)])
+        self.setClinicalDescriptor("RThorax",enums.DataType.Angle,[0,1,2],[1.0,1.0,-1.0], [-np.radians(180),0.0,-np.radians(180)])
+        self.setClinicalDescriptor("LHead",enums.DataType.Angle,[0,1,2],[-1.0,1.0,-1.0], [0.0,0.0,0.0])
+        self.setClinicalDescriptor("RHead",enums.DataType.Angle,[0,1,2],[-1.0,-1.0,1.0], [0.0,0.0,0.0])
 
     def calibrationProcedure(self):
         """
@@ -384,7 +391,7 @@ class CGM1LowerLimbs(CGM):
         dictRef["Thorax"]={"TF" : {'sequence':"ZYX", 'labels':   ["midTop","midBottom","midFront","CLAV"]} }
         dictRef["Left Clavicle"]={"TF" : {'sequence':"ZXY", 'labels':   ["LSJC","OT","LVWM","LSJC"]} } # OT and LWM from thorax
         dictRef["Right Clavicle"]={"TF" : {'sequence':"ZXY", 'labels':   ["RSJC","OT","RVWM","RSJC"]} } # OT and LWM from thorax
-        dictRef["Head"]={"TF" : {'sequence':"XZY", 'labels':   ["midBH","midFH","LBHD","HC"]} }
+        dictRef["Head"]={"TF" : {'sequence':"XZY", 'labels':   ["HC","midFH","LBHD","midFH"]} }
         dictRef["Left UpperArm"]={"TF" : {'sequence':"ZYiX", 'labels':   ["LELB","LSJC","LCVM","LELB"]} }
         dictRef["Left ForeArm"]={"TF" : {'sequence':"ZXY", 'labels':   ["LWRA","LEJC","LWRB","LWRB"]} }
         dictRef["Left Hand"]={"TF" : {'sequence':"ZYX", 'labels':   ["LFIN","LWJC","LMWP","LFIN"]} }
@@ -395,7 +402,7 @@ class CGM1LowerLimbs(CGM):
         dictRefAnatomical["Thorax"]= {'sequence':"ZYX", 'labels':  ["midTop","midBottom","midFront","OT"]}
         dictRefAnatomical["Left Clavicle"]={'sequence':"ZXY", 'labels':   ["LSJC","OT","LVWM","LSJC"]} # idem technical
         dictRefAnatomical["Right Clavicle"]={'sequence':"ZXY", 'labels':   ["RSJC","OT","RVWM","RSJC"]} # idem technical
-        dictRefAnatomical["Head"]={'sequence':"XZY", 'labels':   ["midBH","midFH","LBHD","HC"]}
+        dictRefAnatomical["Head"]={'sequence':"XZY", 'labels':   ["HC","midFH","LBHD","midFH"]}
         dictRefAnatomical["Left UpperArm"]={'sequence':"ZYiX", 'labels':   ["LEJC","LSJC","LWJC","LEJC"]}
         dictRefAnatomical["Left ForeArm"]={'sequence':"ZXiY", 'labels':   ["LWJC","LEJC",None,"LWJC"]} # used y axis of upper
         dictRefAnatomical["Left Hand"]={'sequence':"ZYX", 'labels':   ["LHO","LWJC","LMWP","LHO"]}
@@ -667,6 +674,7 @@ class CGM1LowerLimbs(CGM):
             self._torso_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
 
         if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+
             self._torso_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
             self._torso_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
 
@@ -850,6 +858,20 @@ class CGM1LowerLimbs(CGM):
         for label in seg.m_calibration_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
+
+        # add lumbar5
+
+        pelvisScale = np.linalg.norm(nodeLHJC.m_local-nodeRHJC.m_local)
+        offset = (nodeLHJC.m_local+nodeRHJC.m_local)/2.0
+
+        TopLumbar5 = offset +  (np.array([ 0, 0, 0.925* pelvisScale]))
+        tf.static.addNode("TL5",TopLumbar5,positionType="Local")
+
+        #nodeL5 = tf.static.getNode_byLabel("TL5")
+        #btkTools.smartAppendPoint(aquiStatic,"TL5",
+        #            nodeL5.m_global*np.ones((pfn,3)),
+        #            desc="")
+
 
 
     def _left_thigh_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
@@ -4278,12 +4300,20 @@ class CGM1LowerLimbs(CGM):
         tf.static.setRotation(R)
         tf.static.setTranslation(ptOrigin)
 
-        y,x,z = euler.euler_yxz(R)
+        # head straight
+        y2=y
+        x2 = np.cross(y,np.array([0,0,1]))
+        z2 = np.cross(x2,y)
+        straightHead=np.array([x2,y2,z2]).T
+        relativeR = np.dot(R.T,straightHead)
+        angle_y,angle_x,angle_z = euler.euler_yxz(relativeR)
+        self.mp_computed["HeadOffset"] =  np.rad2deg(angle_y)
 
-        if ("headHorizontal" in options.keys() and options["headHorizontal"]):
-            self.mp_computed["HeadOffset"] =  np.rad2deg(y)
-        else:
-            self.mp_computed["HeadOffset"] = 0.0
+
+        # if ("headHorizontal" in options.keys() and options["headHorizontal"]):
+        #     self.mp_computed["HeadOffset"] =  np.rad2deg(y)
+        # else:
+        #     self.mp_computed["HeadOffset"] = 0.0
 
 
         #nodes
@@ -4295,7 +4325,24 @@ class CGM1LowerLimbs(CGM):
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
+        lfhd = tf.static.getNode_byLabel("LFHD").m_local
+        rfhd = tf.static.getNode_byLabel("RFHD").m_local
+        headScaleAdjustment = 2
+        headScale = (np.linalg.norm(lfhd-rfhd) - markerDiameter) * headScaleAdjustment
+
+        headCoM = np.array([ headScale*0.52,0,0])
+        SkullOriginOffset = np.array([ -0.84, 0, -0.3 ])
+        headCoM = headCoM + SkullOriginOffset * headScale
+
+        tf.static.addNode("headCom",headCoM,positionType="Local")
+
+        headcomglobal = tf.static.getNode_byLabel("headCom").m_global
+
+        btkTools.smartAppendPoint(aquiStatic,"headCoM", headcomglobal* np.ones((pfn,3)),  desc="tes")
+
     def _head_AnatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd, options=None):
+
+
 
         seg=self.getSegment("Head")
 
@@ -4325,7 +4372,7 @@ class CGM1LowerLimbs(CGM):
 
         # # --- relative rotation Technical Anatomical
 
-        offset =  -1.0*np.deg2rad(self.mp_computed["HeadOffset"])
+        offset =  1.0*np.deg2rad(self.mp_computed["HeadOffset"])
 
         rot = np.eye(3,3)
         rot[0,0] = np.cos(offset)
@@ -4345,10 +4392,13 @@ class CGM1LowerLimbs(CGM):
         for node in seg.getReferential("TF").static.getNodes():
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
-        # length
-        top = seg.anatomicalFrame.static.getNode_byLabel("midFH").m_local
-        bottom = seg.anatomicalFrame.static.getNode_byLabel("midBH").m_local
-        seg.setLength(np.linalg.norm(top-bottom))
+        # length - com
+        c7 = seg.anatomicalFrame.static.getNode_byLabel("C7").m_local
+        headCom_node = seg.anatomicalFrame.static.getNode_byLabel("headCom")
+        seg.setLength(np.linalg.norm(c7-headCom_node.m_local))
+        seg.anatomicalFrame.static.addNode("com",headCom_node.m_global,positionType="Global")
+
+
 
     def _torso_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
         """
@@ -4424,7 +4474,7 @@ class CGM1LowerLimbs(CGM):
         tf.static.setRotation(R)
         tf.static.setTranslation(ptOrigin)
 
-        OT = ptOrigin + -1.0*(markerDiameter/2.0)* tf.static.m_axisX # see AGWF
+        OT = ptOrigin + -1.0*(markerDiameter/2.0)* tf.static.m_axisX
         btkTools.smartAppendPoint(aquiStatic,"OT", OT* np.ones((pfn,3)), desc="")
 
          # shoulder joints
@@ -4472,6 +4522,14 @@ class CGM1LowerLimbs(CGM):
         for label in seg.m_calibration_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
+
+        # TL5
+        if self.m_bodypart !=  enums.BodyPart.UpperLimb:
+            TL5 = self.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("TL5").getGlobal()
+            tf.static.addNode("TL5",TL5,positionType="Global")
+
+
+
 
 
     def _torso_Anatomicalcalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
@@ -4524,9 +4582,14 @@ class CGM1LowerLimbs(CGM):
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
         # length
-        top = seg.anatomicalFrame.static.getNode_byLabel("midTop").m_local
-        bottom = seg.anatomicalFrame.static.getNode_byLabel("midBottom").m_local
-        seg.setLength(np.linalg.norm(top-bottom))
+        if self.m_bodypart !=  enums.BodyPart.UpperLimb:
+            l5 = seg.anatomicalFrame.static.getNode_byLabel("TL5").m_local
+            c7 = seg.anatomicalFrame.static.getNode_byLabel("C7").m_local
+            seg.setLength(np.linalg.norm(l5-c7))
+        else:
+            top = seg.anatomicalFrame.static.getNode_byLabel("midTop").m_local
+            bottom = seg.anatomicalFrame.static.getNode_byLabel("midBottom").m_local
+            seg.setLength(np.linalg.norm(top-bottom))
 
     def _clavicle_calibrate(self,side, aquiStatic, dictRef,frameInit,frameEnd, options=None):
 

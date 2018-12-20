@@ -13,6 +13,8 @@ from  pyCGM2.Math import euler,numeric
 import pyCGM2.Signal.signal_processing as pyCGM2signal
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Utils import timer
+import matplotlib.pyplot as plt
+
 
 
 #-------- MODEL PROCEDURE  ----------
@@ -868,6 +870,8 @@ class ModelJCSFilter(object):
                 jointValues[i,1] = Euler2
                 jointValues[i,2] = Euler3
 
+
+
             descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,jointLabel)
             if  descriptorInfos:
                 logging.debug("joint label (%s) in clinical descriptors" %(jointLabel) )
@@ -879,15 +883,19 @@ class ModelJCSFilter(object):
                 logging.debug("no clinical descriptor for joint label (%s)" %(jointLabel) )
                 jointFinalValues = np.rad2deg(jointValues)
 
-            #fixEuler
+
+
+            #if jointLabel=="RNeck": import ipdb; ipdb.set_trace()
+            #np.rad2deg(euler.wrapEulerTo(np.deg2rad(jointFinalValues[0,:]), np.array([0,0,0])))
+
+
             if self.m_fixEuler:
-                dest = np.array([0,0,0])
+                dest = np.deg2rad(np.array([0,0,0]))
                 for i in range (0, self.m_aqui.GetPointFrameNumber()):
                     jointFinalValues[i,:] = euler.wrapEulerTo(np.deg2rad(jointFinalValues[i,:]), dest)
                     dest = jointFinalValues[i,:]
 
                 jointFinalValues = np.rad2deg(jointFinalValues)
-
 
             fulljointLabel  = jointLabel + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Angles"
             btkTools.smartAppendPoint(self.m_aqui,
@@ -1006,17 +1014,17 @@ class ModelAbsoluteAnglesFilter(object):
                 elif eulerSequence == "ORT":
                     obliquity,rotation,tilt = euler.euler_xzy(Rrelative)
                 elif eulerSequence == "YXZ":
-                    tilt,obliquity,rotation = euler.euler_yxz(Rrelative,similarOrder = False)
+                    tilt,obliquity,rotation = euler.euler_yxz(Rrelative)#,similarOrder = False)
                 elif eulerSequence == "YZX":
-                    tilt,obliquity,rotation = euler.euler_yzx(Rrelative,similarOrder = False)
+                    tilt,obliquity,rotation = euler.euler_yzx(Rrelative)#,similarOrder = False)
                 elif eulerSequence == "ZXY":
-                    tilt,obliquity,rotation = euler.euler_zxy(Rrelative,similarOrder = False)
+                    tilt,obliquity,rotation = euler.euler_zxy(Rrelative)#,similarOrder = False)
                 elif eulerSequence == "ZYX":
-                    tilt,obliquity,rotation = euler.euler_zyx(Rrelative,similarOrder = False)
+                    tilt,obliquity,rotation = euler.euler_zyx(Rrelative)#,similarOrder = False)
                 elif eulerSequence == "XYZ":
-                    tilt,obliquity,rotation = euler.euler_xyz(Rrelative,similarOrder = False)
+                    tilt,obliquity,rotation = euler.euler_xyz(Rrelative)#,similarOrder = False)
                 elif eulerSequence == "XZY":
-                    tilt,obliquity,rotation = euler.euler_xzy(Rrelative,similarOrder = False)
+                    tilt,obliquity,rotation = euler.euler_xzy(Rrelative)#,similarOrder = False)
                 else:
                     logging.debug("no sequence defined for absolute angles. sequence YXZ selected by default" )
                     tilt,obliquity,rotation = euler.euler_yxz(Rrelative)
@@ -1038,6 +1046,12 @@ class ModelAbsoluteAnglesFilter(object):
 
                     fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
 
+                    dest = np.deg2rad(np.array([0,0,0]))
+                    for i in range (0, self.m_aqui.GetPointFrameNumber()):
+                         absoluteAngleValuesFinal[i,:] = euler.wrapEulerTo(np.deg2rad(absoluteAngleValuesFinal[i,:]), dest)
+                         dest = absoluteAngleValuesFinal[i,:]
+                    absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValuesFinal)
+
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
                                          absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
@@ -1046,6 +1060,8 @@ class ModelAbsoluteAnglesFilter(object):
                     absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValues)
 
                     fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
+
+
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
                                          absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
@@ -1058,6 +1074,13 @@ class ModelAbsoluteAnglesFilter(object):
                     absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos1["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos1["TransversalIndex"]] + descriptorInfos1["TransversalOffset"]))
 
                     fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
+
+                    dest = np.deg2rad(np.array([0,0,0]))
+                    for i in range (0, self.m_aqui.GetPointFrameNumber()):
+                         absoluteAngleValuesFinal[i,:] = euler.wrapEulerTo(np.deg2rad(absoluteAngleValuesFinal[i,:]), dest)
+                         dest = absoluteAngleValuesFinal[i,:]
+                    absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValuesFinal)
+
 
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
                                          absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
@@ -1072,6 +1095,15 @@ class ModelAbsoluteAnglesFilter(object):
 
                     fullAngleLabel  = "L" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "L" +self.m_angleLabels[index]+"Angles"
 
+
+                    dest = np.deg2rad(np.array([0,0,0]))
+                    for i in range (0, self.m_aqui.GetPointFrameNumber()):
+                         absoluteAngleValuesFinal[i,:] = euler.wrapEulerTo(np.deg2rad(absoluteAngleValuesFinal[i,:]), dest)
+                         dest = absoluteAngleValuesFinal[i,:]
+                    absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValuesFinal)
+
+
+
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
                                          absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
@@ -1085,6 +1117,12 @@ class ModelAbsoluteAnglesFilter(object):
                     absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos3["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos3["TransversalIndex"]] + descriptorInfos3["TransversalOffset"]))
 
                     fullAngleLabel  = "R" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "R" +self.m_angleLabels[index]+"Angles"
+
+                    dest = np.deg2rad(np.array([0,0,0]))
+                    for i in range (0, self.m_aqui.GetPointFrameNumber()):
+                         absoluteAngleValuesFinal[i,:] = euler.wrapEulerTo(np.deg2rad(absoluteAngleValuesFinal[i,:]), dest)
+                         dest = absoluteAngleValuesFinal[i,:]
+                    absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValuesFinal)
 
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
                                          absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
