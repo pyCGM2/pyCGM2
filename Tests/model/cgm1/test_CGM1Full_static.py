@@ -105,8 +105,9 @@ class CGM1():
         'RightHandThickness' : 30}
 
         model=cgm.CGM1LowerLimbs()
-        model.configure(bodyPart=enums.BodyPart.FullBody)
+        model.configure(acq= acqStatic, bodyPart=None)
         model.addAnthropoInputParameters(mp)
+
 
         scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
 
