@@ -71,6 +71,13 @@ class CGM1LowerLimbs(CGM):
 
     #nativeCgm1 = True
 
+    LOWERLIMB_TRACKING_MARKERS=["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
+
+    THORAX_TRACKING_MARKERS=["C7", "T10","CLAV", "STRN"]
+
+    UPPERLIMB_TRACKING_MARKERS=[ "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN"]
+
+
     ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles"],
                            'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles"]}
 
@@ -98,13 +105,13 @@ class CGM1LowerLimbs(CGM):
         return "LowerLimb CGM1.0"
 
     def _lowerlimbTrackingMarkers(self):
-        return ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
+        return CGM1LowerLimbs.LOWERLIMB_TRACKING_MARKERS#["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
     def _trunkTrackingMarkers(self):
-        return ["C7", "T10","CLAV", "STRN"]
+        return CGM1LowerLimbs.THORAX_TRACKING_MARKERS#["C7", "T10","CLAV", "STRN"]
 
     def _upperLimbMarkers(self):
-        return ["C7", "T10","CLAV", "STRN", "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN"]
+        return CGM1LowerLimbs.THORAX_TRACKING_MARKER+CGM1LowerLimbs.UPPERLIMB_TRACKING_MARKERS#S#["C7", "T10","CLAV", "STRN", "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN"]
 
     def getTrackingMarkers(self):
         tracking_markers=[]

@@ -51,6 +51,13 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         implementation of the cgm2.3 skin marker added
     """
 
+    LOWERLIMB_TRACKING_MARKERS= ["LASI", "RASI","RPSI", "LPSI",
+               "LTHI","LKNE","LTHAP","LTHAD",
+               "LTIB","LANK","LTIAP","LTIAD",
+               "LHEE","LTOE",
+               "RTHI","RKNE","RTHAP","RTHAD",
+               "RTIB","RANK","RTIAP","RTIAD",
+               "RHEE","RTOE"]
 
     def __init__(self):
         """Constructor
@@ -61,9 +68,8 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         """
         super(CGM2_3LowerLimbs, self).__init__()
 
+
         self.decoratedModel = False
-
-
         self.version = "CGM2.3"
 
 
@@ -74,13 +80,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         return "LowerLimb CGM2.3"
 
     def _lowerlimbTrackingMarkers(self):
-        return ["LASI", "RASI","RPSI", "LPSI",
-                   "LTHI","LKNE","LTHAP","LTHAD",
-                   "LTIB","LANK","LTIAP","LTIAD",
-                   "LHEE","LTOE",
-                   "RTHI","RKNE","RTHAP","RTHAD",
-                   "RTIB","RANK","RTIAP","RTIAD",
-                   "RHEE","RTOE"]
+        return CGM2_3LowerLimbs.LOWERLIMB_TRACKING_MARKERS
 
 
     def _lowerlimbConfigure(self):
@@ -432,6 +432,15 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     ANALYSIS_KINETIC_LABELS_DICT ={ 'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
                           'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
 
+    LOWERLIMB_TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI",
+               "LTHI","LKNE","LTHAP","LTHAD",
+               "LTIB","LANK","LTIAP","LTIAD",
+               "LHEE","LTOE","LFMH","LVMH",
+               "RTHI","RKNE","RTHAP","RTHAD",
+               "RTIB","RANK","RTIAP","RTIAD",
+               "RHEE","RTOE","RFMH","RVMH"]
+
+
     def __init__(self):
         """Constructor
 
@@ -451,13 +460,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         return "LowerLimb CGM2.4"
 
     def _lowerlimbTrackingMarkers(self):
-        return ["LASI", "RASI","RPSI", "LPSI",
-                   "LTHI","LKNE","LTHAP","LTHAD",
-                   "LTIB","LANK","LTIAP","LTIAD",
-                   "LHEE","LTOE","LFMH","LVMH",
-                   "RTHI","RKNE","RTHAP","RTHAD",
-                   "RTIB","RANK","RTIAP","RTIAD",
-                   "RHEE","RTOE","RFMH","RVMH"]
+        return CGM2_4LowerLimbs.LOWERLIMB_TRACKING_MARKERS
 
     def _lowerlimbConfigure(self):
         self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
