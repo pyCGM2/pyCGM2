@@ -79,7 +79,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
     def __repr__(self):
         return "LowerLimb CGM2.3"
 
-    def _lowerlimbTrackingMarkers(self):
+    def _lowerLimbTrackingMarkers(self):
         return CGM2_3LowerLimbs.LOWERLIMB_TRACKING_MARKERS
 
 
@@ -459,7 +459,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
     def __repr__(self):
         return "LowerLimb CGM2.4"
 
-    def _lowerlimbTrackingMarkers(self):
+    def _lowerLimbTrackingMarkers(self):
         return CGM2_4LowerLimbs.LOWERLIMB_TRACKING_MARKERS
 
     def _lowerlimbConfigure(self):

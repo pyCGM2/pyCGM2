@@ -104,23 +104,23 @@ class CGM1LowerLimbs(CGM):
     def __repr__(self):
         return "LowerLimb CGM1.0"
 
-    def _lowerlimbTrackingMarkers(self):
+    def _lowerLimbTrackingMarkers(self):
         return CGM1LowerLimbs.LOWERLIMB_TRACKING_MARKERS#["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
     def _trunkTrackingMarkers(self):
         return CGM1LowerLimbs.THORAX_TRACKING_MARKERS#["C7", "T10","CLAV", "STRN"]
 
-    def _upperLimbMarkers(self):
-        return CGM1LowerLimbs.THORAX_TRACKING_MARKER+CGM1LowerLimbs.UPPERLIMB_TRACKING_MARKERS#S#["C7", "T10","CLAV", "STRN", "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN"]
+    def _upperLimbTrackingMarkers(self):
+        return CGM1LowerLimbs.THORAX_TRACKING_MARKERS+CGM1LowerLimbs.UPPERLIMB_TRACKING_MARKERS#S#["C7", "T10","CLAV", "STRN", "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN"]
 
     def getTrackingMarkers(self):
         tracking_markers=[]
         if self.m_bodypart != enums.BodyPart.UpperLimb:
-            tracking_markers = tracking_markers + self._lowerlimbTrackingMarkers()
+            tracking_markers = tracking_markers + self._lowerLimbTrackingMarkers()
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
             tracking_markers = tracking_markers +self._trunkTrackingMarkers()
         if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            tracking_markers =  tracking_markers + self._upperLimbMarkers()
+            tracking_markers =  tracking_markers + self._upperLimbTrackingMarkers()
         return tracking_markers
 
     def getStaticMarkers(self,dcm):
@@ -146,11 +146,30 @@ class CGM1LowerLimbs(CGM):
         return static_markers
 
 
-    def configure(self,bodyPart=enums.BodyPart.LowerLimb):
+    def configure(self,acq=None,bodyPart=None):
         """
             Model configuration. Define Segment, joint, ...
         """
-        self.setBodyPart(bodyPart)
+
+        if bodyPart is None:
+            if acq is None:
+                raise Exception ("[pyCGM2] You must indicate a static acquisition or a bodyPart ")
+
+            if btkTools.isPointsExist(acq,self._lowerLimbTrackingMarkers()):
+                bodyPart = enums.BodyPart.LowerLimb
+
+            if btkTools.isPointsExist(acq,self._upperLimbTrackingMarkers()):
+                bodyPart = enums.BodyPart.UpperLimb
+
+            if btkTools.isPointsExist(acq,self._lowerLimbTrackingMarkers()+self._trunkTrackingMarkers()):
+                bodyPart = enums.BodyPart.LowerLimbTrunk
+
+            if btkTools.isPointsExist(acq,self._lowerLimbTrackingMarkers()+self._upperLimbTrackingMarkers()):
+                bodyPart = enums.BodyPart.FullBody
+
+            self.setBodyPart(bodyPart)
+        else:
+            self.setBodyPart(bodyPart)
 
         if bodyPart != enums.BodyPart.UpperLimb:
             self._lowerlimbConfigure()
@@ -158,6 +177,7 @@ class CGM1LowerLimbs(CGM):
             self._trunkConfigure()
         if bodyPart == enums.BodyPart.UpperLimb or bodyPart == enums.BodyPart.FullBody:
             self._upperLimbConfigure()
+
 
         self._coordinateSystemDefinitions()
 
