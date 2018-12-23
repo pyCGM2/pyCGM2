@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from pyCGM2 import enums
+
 
 def getNexusSubjectMp(NEXUS,subject, resetFlag=False):
+
     required_mp={
     'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0],#71.0,
     'LeftLegLength' : NEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0],#860.0,
@@ -12,6 +15,14 @@ def getNexusSubjectMp(NEXUS,subject, resetFlag=False):
     'RightAnkleWidth' : NEXUS.GetSubjectParamDetails( subject, "RightAnkleWidth")[0],#72.9,
     'LeftSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "LeftSoleDelta")[0],#75.3,
     'RightSoleDelta' : NEXUS.GetSubjectParamDetails( subject, "RightSoleDelta")[0],#72.9,
+    'LeftShoulderOffset' : NEXUS.GetSubjectParamDetails( subject, "LeftShoulderOffset")[0],#72.9,
+    'RightShoulderOffset' : NEXUS.GetSubjectParamDetails( subject, "RightShoulderOffset")[0],#72.9,
+    'LeftElbowWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftElbowWidth")[0],#72.9,
+    'LeftWristWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftWristWidth")[0],#72.9,
+    'LeftHandThickness' : NEXUS.GetSubjectParamDetails( subject, "LeftHandThickness")[0],#72.9,
+    'RightElbowWidth' : NEXUS.GetSubjectParamDetails( subject, "RightElbowWidth")[0],#72.9,
+    'RightWristWidth' : NEXUS.GetSubjectParamDetails( subject, "RightWristWidth")[0],#72.9,
+    'RightHandThickness' : NEXUS.GetSubjectParamDetails( subject, "RightHandThickness")[0],#72.9,
     }
 
     if resetFlag:
