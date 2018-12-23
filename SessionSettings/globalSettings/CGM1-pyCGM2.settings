@@ -20,8 +20,26 @@
       "LTIB":"",
       "LANK":"",
       "LMED":"",
-    "LHEE":"",
-      "LTOE":""
+      "LHEE":"",
+      "LTOE":"",
+      "C7":"",
+      "T10":"",
+      "CLAV":"",
+      "STRN":"",
+      "LFHD":"",
+      "LBHD":"",
+      "RFHD":"",
+      "RBHD":""
+      "LSHO":"",
+      "LELB":"",
+      "LWRB":"",
+      "LWRA":"",
+      "LFIN":"",
+      "RSHO":"",
+      "RELB":"",
+      "RWRB":"",
+      "RWRA":"",
+      "RFIN":""
   },
   "Calibration" : {
     "Left flat foot" : 1 ,
