@@ -42,10 +42,13 @@ if __name__ == "__main__":
         momentProjection =  argsManager.getMomentProjection()
         mfpa = argsManager.getManualForcePlateAssign()
 
+        args.DEBUG=False
         # --------------------------LOADING ------------------------------------
         if args.DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            reconstructFilenameLabelledNoExt = "gait Trial" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\fullBody\\" #+ "CGM1\\CGM1\\native\\"
+            reconstructFilenameLabelledNoExt = "PN01NORMSS01" #"static Cal 01-noKAD-noAnkleMed" #
+            # DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
+            # reconstructFilenameLabelledNoExt = "gait Trial" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
         else:
             DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()

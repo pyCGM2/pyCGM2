@@ -51,10 +51,11 @@ if __name__ == "__main__":
         pointSuffix = argsManager.getPointSuffix("cgm1")
 
 
+        args.DEBUG = False
         # --------------------------LOADING ------------------------------------
         if args.DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            calibrateFilenameLabelledNoExt = "static" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\fullBody\\" #+ "CGM1\\CGM1\\native\\"
+            calibrateFilenameLabelledNoExt = "PN01NORMSTAT" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
         else:
