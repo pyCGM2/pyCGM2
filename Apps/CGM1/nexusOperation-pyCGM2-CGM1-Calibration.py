@@ -54,7 +54,7 @@ if __name__ == "__main__":
         args.DEBUG = False
         # --------------------------LOADING ------------------------------------
         if args.DEBUG:
-            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\fullBody\\" #+ "CGM1\\CGM1\\native\\"
+            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\FullBody\\" #+ "CGM1\\CGM1\\native\\"
             calibrateFilenameLabelledNoExt = "PN01NORMSTAT" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
@@ -66,6 +66,7 @@ if __name__ == "__main__":
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
 
+
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
@@ -73,18 +74,22 @@ if __name__ == "__main__":
 
         required_mp,optional_mp = nexusUtils.getNexusSubjectMp(NEXUS,subject,resetFlag=args.resetMP)
 
+
         # -------------------------- INFOS ------------------------------------
         mpInfo,mpFilename = files.getJsonFileContent(DATA_PATH,"mp.pyCGM2",subject)
+
 
         #  translators management
         translators = files.getTranslators(DATA_PATH,"CGM1.translators")
         if not translators:  translators = settings["Translators"]
+
 
         # --------------------------MODELLING PROCESSING -----------------------
         model,acqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                       required_mp,optional_mp,
                       leftFlatFoot,rightFlatFoot,markerDiameter,
                       pointSuffix)
+
 
         # ----------------------SAVE-------------------------------------------
         #pyCGM2.model
