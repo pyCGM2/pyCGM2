@@ -171,6 +171,8 @@ class CGM1LowerLimbs(CGM):
         else:
             self.setBodyPart(bodyPart)
 
+        logging.info("BodyPart found : %s" %(bodyPart.name))
+
         if bodyPart != enums.BodyPart.UpperLimb:
             self._lowerlimbConfigure()
         if bodyPart == enums.BodyPart.LowerLimbTrunk:
@@ -385,7 +387,7 @@ class CGM1LowerLimbs(CGM):
 
 
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            self._trunkLimbCalibrationProcedure(dictRef,dictRefAnatomical)
+            self._trunkCalibrationProcedure(dictRef,dictRefAnatomical)
         if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
             self._upperLimbCalibrationProcedure(dictRef,dictRefAnatomical)
 
@@ -4504,41 +4506,42 @@ class CGM1LowerLimbs(CGM):
         OT = ptOrigin + -1.0*(markerDiameter/2.0)* tf.static.m_axisX
         btkTools.smartAppendPoint(aquiStatic,"OT", OT* np.ones((pfn,3)), desc="")
 
-         # shoulder joints
-        LSHO=aquiStatic.GetPoint(str("LSHO")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        LVWM = np.cross((LSHO - OT ),tf.static.m_axisX ) + LSHO
+        if self.m_bodypart is not enums.BodyPart.LowerLimbTrunk:
+            # shoulder joints
+            LSHO=aquiStatic.GetPoint(str("LSHO")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            LVWM = np.cross((LSHO - OT ),tf.static.m_axisX ) + LSHO
 
-        btkTools.smartAppendPoint(aquiStatic,"LVWM", LVWM* np.ones((pfn,3)),desc="")
-        LSJC = modelDecorator.chord( -1.0* (self.mp["LeftShoulderOffset"]+ markerDiameter/2.0),LSHO,OT,LVWM, beta=0 )
+            btkTools.smartAppendPoint(aquiStatic,"LVWM", LVWM* np.ones((pfn,3)),desc="")
+            LSJC = modelDecorator.chord( -1.0* (self.mp["LeftShoulderOffset"]+ markerDiameter/2.0),LSHO,OT,LVWM, beta=0 )
 
-        RSHO=aquiStatic.GetPoint(str("RSHO")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        RVWM = np.cross(( tf.static.m_axisX ),( OT-RSHO )) + RSHO
-        btkTools.smartAppendPoint(aquiStatic,"RVWM", RVWM* np.ones((pfn,3)),desc="")
-        RSJC =  modelDecorator.chord( self.mp["RightShoulderOffset"]+ markerDiameter/2.0 ,RSHO,OT,RVWM, beta=0 )
+            RSHO=aquiStatic.GetPoint(str("RSHO")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+            RVWM = np.cross(( tf.static.m_axisX ),( OT-RSHO )) + RSHO
+            btkTools.smartAppendPoint(aquiStatic,"RVWM", RVWM* np.ones((pfn,3)),desc="")
+            RSJC =  modelDecorator.chord( self.mp["RightShoulderOffset"]+ markerDiameter/2.0 ,RSHO,OT,RVWM, beta=0 )
 
-        # left
-        if tf.static.isNodeExist("LSJC"):
-            nodeLSJC = tf.static.getNode_byLabel("LSJC")
-        else:
-            tf.static.addNode("LSJC_cgm1",LSJC,positionType="Global",desc = "chord")
-            tf.static.addNode("LSJC",LSJC,positionType="Global",desc = "chord")
-            nodeLSJC = tf.static.getNode_byLabel("LSJC")
+            # left
+            if tf.static.isNodeExist("LSJC"):
+                nodeLSJC = tf.static.getNode_byLabel("LSJC")
+            else:
+                tf.static.addNode("LSJC_cgm1",LSJC,positionType="Global",desc = "chord")
+                tf.static.addNode("LSJC",LSJC,positionType="Global",desc = "chord")
+                nodeLSJC = tf.static.getNode_byLabel("LSJC")
 
-        btkTools.smartAppendPoint(aquiStatic,"LSJC",
-                    nodeLSJC.m_global* np.ones((pfn,3)),
-                    desc=nodeLSJC.m_desc)
+            btkTools.smartAppendPoint(aquiStatic,"LSJC",
+                        nodeLSJC.m_global* np.ones((pfn,3)),
+                        desc=nodeLSJC.m_desc)
 
-        # right
-        if tf.static.isNodeExist("RSJC"):
-            nodeRSJC = tf.static.getNode_byLabel("RSJC")
-        else:
-            tf.static.addNode("RSJC_cgm1",RSJC,positionType="Global",desc = "chord")
-            tf.static.addNode("RSJC",RSJC,positionType="Global",desc = "chord")
-            nodeRSJC = tf.static.getNode_byLabel("RSJC")
+            # right
+            if tf.static.isNodeExist("RSJC"):
+                nodeRSJC = tf.static.getNode_byLabel("RSJC")
+            else:
+                tf.static.addNode("RSJC_cgm1",RSJC,positionType="Global",desc = "chord")
+                tf.static.addNode("RSJC",RSJC,positionType="Global",desc = "chord")
+                nodeRSJC = tf.static.getNode_byLabel("RSJC")
 
-        btkTools.smartAppendPoint(aquiStatic,"RSJC",
-                    nodeRSJC.m_global* np.ones((pfn,3)),
-                    desc=nodeRSJC.m_desc)
+            btkTools.smartAppendPoint(aquiStatic,"RSJC",
+                        nodeRSJC.m_global* np.ones((pfn,3)),
+                        desc=nodeRSJC.m_desc)
 
 
         #nodes
@@ -5235,44 +5238,46 @@ class CGM1LowerLimbs(CGM):
             OT = ptOrigin + -1.0*(markerDiameter/2.0)*csFrame.m_axisX #
             OTvalues[i,:] = OT
 
-            LSHO = aqui.GetPoint(str("LSHO")).GetValues()[i,:]
-            LVWM = np.cross((LSHO - OT ), csFrame.m_axisX ) + LSHO
+            if self.m_bodypart is not enums.BodyPart.LowerLimbTrunk:
+                LSHO = aqui.GetPoint(str("LSHO")).GetValues()[i,:]
+                LVWM = np.cross((LSHO - OT ), csFrame.m_axisX ) + LSHO
 
-            LSJCvalues[i,:] = modelDecorator.chord( -1.0*(self.mp["LeftShoulderOffset"]+ markerDiameter/2.0) ,LSHO,OT,LVWM, beta=0 )
-            LVWMvalues[i,:] = LVWM
+                LSJCvalues[i,:] = modelDecorator.chord( -1.0*(self.mp["LeftShoulderOffset"]+ markerDiameter/2.0) ,LSHO,OT,LVWM, beta=0 )
+                LVWMvalues[i,:] = LVWM
 
-            RSHO = aqui.GetPoint(str("RSHO")).GetValues()[i,:]
-            RVWM = np.cross((RSHO - OT ), csFrame.m_axisX ) + RSHO
+                RSHO = aqui.GetPoint(str("RSHO")).GetValues()[i,:]
+                RVWM = np.cross((RSHO - OT ), csFrame.m_axisX ) + RSHO
 
-            RSJCvalues[i,:] = modelDecorator.chord( 1.0*(self.mp["RightShoulderOffset"]+ markerDiameter/2.0) ,RSHO,OT,RVWM, beta=0 )
-            RVWMvalues[i,:] = RVWM
+                RSJCvalues[i,:] = modelDecorator.chord( 1.0*(self.mp["RightShoulderOffset"]+ markerDiameter/2.0) ,RSHO,OT,RVWM, beta=0 )
+                RVWMvalues[i,:] = RVWM
 
         btkTools.smartAppendPoint(aqui,"OT",OTvalues,desc="")
-        btkTools.smartAppendPoint(aqui,"LVWM",LVWMvalues,desc="")
-        btkTools.smartAppendPoint(aqui,"RVWM",RVWMvalues,desc="")
-        #btkTools.smartAppendPoint(aqui,"LKJC_Chord",LKJCvalues,desc="chord")
 
-        # --- LKJC
-        if  "useLeftSJCmarker" in options.keys():
-            LSJCvalues = aqui.GetPoint(options["useLeftSJCmarker"]).GetValues()
-            desc = aqui.GetPoint(options["useLeftSJCmarker"]).GetDescription()
-            btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=desc)
+        if self.m_bodypart is not enums.BodyPart.LowerLimbTrunk:
+            btkTools.smartAppendPoint(aqui,"LVWM",LVWMvalues,desc="")
+            btkTools.smartAppendPoint(aqui,"RVWM",RVWMvalues,desc="")
 
-        if  "useRightSJCmarker" in options.keys():
-            RSJCvalues = aqui.GetPoint(options["useRightSJCmarker"]).GetValues()
-            desc = aqui.GetPoint(options["useRightSJCmarker"]).GetDescription()
-            btkTools.smartAppendPoint(aqui,"RSJC",RSJCvalues,desc=desc)
+            # --- LKJC
+            if  "useLeftSJCmarker" in options.keys():
+                LSJCvalues = aqui.GetPoint(options["useLeftSJCmarker"]).GetValues()
+                desc = aqui.GetPoint(options["useLeftSJCmarker"]).GetDescription()
+                btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=desc)
 
-        # final LKJC ( just check if KJC already exist)
-        if not btkTools.isPointExist(aqui,"LSJC"):
-            desc = seg.getReferential('TF').static.getNode_byLabel("LSJC").m_desc
-            #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
-            btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=str("Chord-"+desc))
+            if  "useRightSJCmarker" in options.keys():
+                RSJCvalues = aqui.GetPoint(options["useRightSJCmarker"]).GetValues()
+                desc = aqui.GetPoint(options["useRightSJCmarker"]).GetDescription()
+                btkTools.smartAppendPoint(aqui,"RSJC",RSJCvalues,desc=desc)
 
-        if not btkTools.isPointExist(aqui,"RSJC"):
-            desc = seg.getReferential('TF').static.getNode_byLabel("RSJC").m_desc
-            #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
-            btkTools.smartAppendPoint(aqui,"RSJC",RSJCvalues,desc=str("Chord-"+desc))
+            # final LKJC ( just check if KJC already exist)
+            if not btkTools.isPointExist(aqui,"LSJC"):
+                desc = seg.getReferential('TF').static.getNode_byLabel("LSJC").m_desc
+                #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
+                btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=str("Chord-"+desc))
+
+            if not btkTools.isPointExist(aqui,"RSJC"):
+                desc = seg.getReferential('TF').static.getNode_byLabel("RSJC").m_desc
+                #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
+                btkTools.smartAppendPoint(aqui,"RSJC",RSJCvalues,desc=str("Chord-"+desc))
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
