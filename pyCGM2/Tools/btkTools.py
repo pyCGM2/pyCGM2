@@ -372,9 +372,6 @@ def findProgressionAxisFromLongAxis(acq,originMarker,frontMarker):
     z=np.array([0,0,1])
 
 
-    lateral_extremityValues = acq.GetPoint("LPSI").GetValues()[index,:]
-
-
     a1=(front-origin)
     a1=a1/np.linalg.norm(a1)
 
