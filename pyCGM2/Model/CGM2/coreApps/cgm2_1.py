@@ -46,7 +46,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
 
 
     # ---check marker set used----
-    smc = cgm.CGM.checkCGM1_StaticMarkerConfig(acqStatic)
+    dcm = cgm.CGM.detectCalibrationMethods(acqStatic)
 
 
     # --------------------------STATIC CALBRATION--------------------------
@@ -60,8 +60,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                                         ).compute()
 
     # ---- Decorators -----
-    decorators.applyDecorators_CGM(smc, model,acqStatic,optional_mp,markerDiameter)
-
+    decorators.applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter)
     decorators.applyHJCDecorators(model,hjcMethod)
 
 
@@ -118,7 +117,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     btkTools.checkMultipleSubject(acqGait)
     acqGait =  btkTools.applyTranslators(acqGait,translators)
-    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,cgm.CGM1LowerLimbs.TRACKING_MARKERS)
+    trackingMarkers = model.getTrackingMarkers()
+    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
 
 
     scp=modelFilters.StaticCalibrationProcedure(model)
