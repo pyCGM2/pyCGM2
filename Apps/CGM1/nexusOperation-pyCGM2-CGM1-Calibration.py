@@ -54,7 +54,7 @@ if __name__ == "__main__":
         args.DEBUG = False
         # --------------------------LOADING ------------------------------------
         if args.DEBUG:
-            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\FullBody\\" #+ "CGM1\\CGM1\\native\\"
+            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\upperLimb\\" #+ "CGM1\\CGM1\\native\\"
             calibrateFilenameLabelledNoExt = "PN01NORMSTAT" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
 
