@@ -57,12 +57,18 @@ class Model(object):
         self.m_clinicalDescriptors= []
         self.m_csDefinitions = []
         self.m_bodypart=None
+        self.m_centreOfMass=None
 
     def __repr__(self):
         return "Basis Model"
 
     def setBodyPart(self, bodypart):
         self.m_bodypart = bodypart
+
+    def setCentreOfMass(self,com):
+        self.m_centreOfMass = com
+    def getCentreOfMass(self):
+        return self.m_centreOfMass
 
 
     def setProperty(self, propertyLabel,  value):
@@ -123,7 +129,7 @@ class Model(object):
         self.m_jointCollection.append(j)
 
 
-    def addSegment(self,label,index,sideEnum, calibration_markers=[], tracking_markers=[],):
+    def addSegment(self,label,index,sideEnum, calibration_markers=[], tracking_markers=[],cloneOf=False):
         """
             Add a segment
 
@@ -136,8 +142,10 @@ class Model(object):
 
         """
 
-        s=Segment(label,index,sideEnum,calibration_markers,tracking_markers)
-        self.m_segmentCollection.append(s)
+        seg=Segment(label,index,sideEnum,calibration_markers,tracking_markers)
+        if cloneOf is True:
+            seg.m_isCloneOf = True
+        self.m_segmentCollection.append(seg)
 
 
     def updateSegmentFromCopy(self,targetLabel, segmentToCopy):
@@ -151,9 +159,12 @@ class Model(object):
         """
         copiedSegment = copy.deepcopy(segmentToCopy)
         copiedSegment.name = targetLabel
+
+        isClone = True if self.getSegment(targetLabel).m_isCloneOf else False
         for i in range(0, len(self.m_segmentCollection)):
             if self.m_segmentCollection[i].name == targetLabel:
                 self.m_segmentCollection[i] = copiedSegment
+                self.m_segmentCollection[i].m_isCloneOf = isClone
 
 
     def getSegment(self,label):
@@ -670,6 +681,8 @@ class Segment(object):
         self.m_proximalMomentContribution["distalSegmentForces"] = None
         self.m_proximalMomentContribution["distalSegmentMoments"] = None
 
+        self.m_info = dict()
+        self.m_isCloneOf = False
     def addTrackingMarkerLabel(self,label):
         """
             Add a tracking marker
