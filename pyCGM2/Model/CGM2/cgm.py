@@ -6185,3 +6185,7 @@ class CGM1LowerLimbs(CGM):
                     else:
                         nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
             logging.debug("power over")
+
+        # centre of mass
+        if self.m_centreOfMass is not None:
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str("centreOfMass"+pointSuffix), acq)

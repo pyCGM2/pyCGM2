@@ -1502,3 +1502,30 @@ class CoordinateSystemDisplayFilter(object):
                                                     definition["segmentLabel"],
                                                     definition["coordinateSystemLabel"],
                                                     referential = definition["referentialType"] )
+
+
+class CentreOfMassFilter(object):
+    """
+        display Coordinate system
+    """
+
+    def __init__(self, iMod, btkAcq):
+
+        self.model = iMod
+        self.aqui = btkAcq
+
+    def compute(self, pointLabelSuffix=""):
+
+        count = 0
+        bodymass= 0
+        for itSegment in self.model.m_segmentCollection:
+            if itSegment.m_bsp["mass"] != 0 and not itSegment.m_isCloneOf:
+                count = count + itSegment.m_bsp["mass"]  *  self.model.getSegment(itSegment.name).getComTrajectory()
+                bodymass = bodymass + itSegment.m_bsp["mass"]
+
+        com = count / bodymass
+
+        self.model.setCentreOfMass(com)
+
+        outLabel  = "CentreOfMass_" + pointLabelSuffix if pointLabelSuffix!="" else "CentreOfMass"
+        btkTools.smartAppendPoint(self.aqui,outLabel,self.model.getCentreOfMass())
