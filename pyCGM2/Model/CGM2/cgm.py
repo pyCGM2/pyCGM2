@@ -188,9 +188,9 @@ class CGM1LowerLimbs(CGM):
         self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI"])
         self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI"])
         self.addSegment("Left Shank",2,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LANK","LTIB"])
-        self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left,cloneOf=True) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
         self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB"])
-        self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right,cloneOf=True)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
         self.addSegment("Left Foot",3,enums.SegmentSide.Left,calibration_markers=[""], tracking_markers = ["LHEE","LTOE"] )
         self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=[""], tracking_markers = ["RHEE","RTOE"])
 
@@ -432,9 +432,9 @@ class CGM1LowerLimbs(CGM):
         dictRefAnatomical["Left Clavicle"]={'sequence':"ZXY", 'labels':   ["LSJC","OT","LVWM","LSJC"]} # idem technical
         dictRefAnatomical["Right Clavicle"]={'sequence':"ZXY", 'labels':   ["RSJC","OT","RVWM","RSJC"]} # idem technical
         dictRefAnatomical["Head"]={'sequence':"XZY", 'labels':   ["HC","midFH","LBHD","midFH"]}
-        dictRefAnatomical["Left UpperArm"]={'sequence':"ZYiX", 'labels':   ["LEJC","LSJC","LWJC","LEJC"]}
-        dictRefAnatomical["Left ForeArm"]={'sequence':"ZXiY", 'labels':   ["LWJC","LEJC",None,"LWJC"]} # used y axis of upper
-        dictRefAnatomical["Left Hand"]={'sequence':"ZYX", 'labels':   ["LHO","LWJC","LMWP","LHO"]}
+        dictRefAnatomical["Left UpperArm"]={'sequence':"ZYiX", 'labels':   ["LEJC","LSJC","LWJC","LSJC"]}
+        dictRefAnatomical["Left ForeArm"]={'sequence':"ZXiY", 'labels':   ["LWJC","LEJC",None,"LEJC"]} # used y axis of upper
+        dictRefAnatomical["Left Hand"]={'sequence':"ZYX", 'labels':   ["LHO","LWJC","LMWP","LWJC"]}
         dictRefAnatomical["Right UpperArm"]={'sequence':"ZYiX", 'labels':   ["REJC","RSJC","RWJC","REJC"]}
         dictRefAnatomical["Right ForeArm"]={'sequence':"ZXiY", 'labels':   ["RWJC","REJC",None,"RWJC"]} # used y axis of upper
         dictRefAnatomical["Right Hand"]={'sequence':"ZYX", 'labels':   ["RHO","RWJC","RMWP","RHO"]}
@@ -888,13 +888,16 @@ class CGM1LowerLimbs(CGM):
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
-        # add lumbar5
+        # # add lumbar5
+        # pelvisScale = np.linalg.norm(nodeLHJC.m_local-nodeRHJC.m_local)
+        # offset = (nodeLHJC.m_local+nodeRHJC.m_local)/2.0
+        #
+        # TopLumbar5 = offset +  (np.array([ 0, 0, 0.925* pelvisScale]))
+        # tf.static.addNode("TL5",TopLumbar5,positionType="Local")
+        #
+        # com = offset + (TopLumbar5-offset)*0.895
 
-        pelvisScale = np.linalg.norm(nodeLHJC.m_local-nodeRHJC.m_local)
-        offset = (nodeLHJC.m_local+nodeRHJC.m_local)/2.0
 
-        TopLumbar5 = offset +  (np.array([ 0, 0, 0.925* pelvisScale]))
-        tf.static.addNode("TL5",TopLumbar5,positionType="Local")
 
         #nodeL5 = tf.static.getNode_byLabel("TL5")
         #btkTools.smartAppendPoint(aquiStatic,"TL5",
@@ -1529,6 +1532,14 @@ class CGM1LowerLimbs(CGM):
         rhjc = seg.anatomicalFrame.static.getNode_byLabel("RHJC").m_local
         seg.setLength(np.linalg.norm(lhjc-rhjc))
 
+        pelvisScale = np.linalg.norm(lhjc-rhjc)
+        offset = (lhjc+rhjc)/2.0
+
+        TopLumbar5 = offset +  (np.array([ 0, 0, 0.925* pelvisScale]))
+        seg.anatomicalFrame.static.addNode("TL5",TopLumbar5,positionType="Local")
+
+        com = offset + (TopLumbar5-offset)*0.895
+        seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
 
     def _left_thigh_Anatomicalcalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
         """
@@ -4356,18 +4367,9 @@ class CGM1LowerLimbs(CGM):
 
         lfhd = tf.static.getNode_byLabel("LFHD").m_local
         rfhd = tf.static.getNode_byLabel("RFHD").m_local
-        headScaleAdjustment = 2
-        headScale = (np.linalg.norm(lfhd-rfhd) - markerDiameter) * headScaleAdjustment
 
-        headCoM = np.array([ headScale*0.52,0,0])
-        SkullOriginOffset = np.array([ -0.84, 0, -0.3 ])
-        headCoM = headCoM + SkullOriginOffset * headScale
-
-        tf.static.addNode("headCom",headCoM,positionType="Local")
-
-        headcomglobal = tf.static.getNode_byLabel("headCom").m_global
-
-        btkTools.smartAppendPoint(aquiStatic,"headCoM", headcomglobal* np.ones((pfn,3)),  desc="tes")
+        seg.m_info["headScaleAdjustment"] =2
+        seg.m_info["headScale"] =(np.linalg.norm(lfhd-rfhd) - markerDiameter) * seg.m_info["headScaleAdjustment"]
 
     def _head_AnatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd, options=None):
 
@@ -4421,11 +4423,14 @@ class CGM1LowerLimbs(CGM):
         for node in seg.getReferential("TF").static.getNodes():
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
+        headCoM = np.array([ seg.m_info["headScale"]*0.52,0.0,0.0])
+        SkullOriginOffset = np.array([ -0.84, 0, -0.3 ])
+        headCoM = headCoM + SkullOriginOffset * seg.m_info["headScale"]
+
         # length - com
         c7 = seg.anatomicalFrame.static.getNode_byLabel("C7").m_local
-        headCom_node = seg.anatomicalFrame.static.getNode_byLabel("headCom")
-        seg.setLength(np.linalg.norm(c7-headCom_node.m_local))
-        seg.anatomicalFrame.static.addNode("com",headCom_node.m_global,positionType="Global")
+        seg.setLength(np.linalg.norm(c7-headCoM))
+        seg.anatomicalFrame.static.addNode("com",headCoM,positionType="Local")
 
 
 
@@ -4504,7 +4509,18 @@ class CGM1LowerLimbs(CGM):
         tf.static.setTranslation(ptOrigin)
 
         OT = ptOrigin + -1.0*(markerDiameter/2.0)* tf.static.m_axisX
+        clav = aquiStatic.GetPoint("CLAV").GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        offset =( clav - OT)*1.05
+        c7 = aquiStatic.GetPoint(str("C7")).GetValues()[frameInit:frameEnd,:].mean(axis=0) - offset
+
         btkTools.smartAppendPoint(aquiStatic,"OT", OT* np.ones((pfn,3)), desc="")
+        btkTools.smartAppendPoint(aquiStatic,"C7o", c7* np.ones((pfn,3)), desc="")
+
+
+        seg.addCalibrationMarkerLabel("OT")
+        seg.addCalibrationMarkerLabel("C7o")
+        #tf.static.addNode("C7o",c7,positionType="Global",desc ="")
+
 
         if self.m_bodypart is not enums.BodyPart.LowerLimbTrunk:
             # shoulder joints
@@ -4583,7 +4599,7 @@ class CGM1LowerLimbs(CGM):
         pt2=aquiStatic.GetPoint(str(dictAnatomic["Thorax"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         pt3=aquiStatic.GetPoint(str(dictAnatomic["Thorax"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Thorax"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Thorax"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #c7o
 
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
@@ -4613,9 +4629,25 @@ class CGM1LowerLimbs(CGM):
 
         # length
         if self.m_bodypart !=  enums.BodyPart.UpperLimb:
+            c7o = seg.anatomicalFrame.static.getNode_byLabel("C7o").m_local
             l5 = seg.anatomicalFrame.static.getNode_byLabel("TL5").m_local
-            c7 = seg.anatomicalFrame.static.getNode_byLabel("C7").m_local
-            seg.setLength(np.linalg.norm(l5-c7))
+            length = np.linalg.norm(l5-c7o)
+            seg.setLength(length)
+
+            com = (c7o + ( l5 - c7o ) * 0.63 )
+            seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
+
+
+            # l5 = seg.anatomicalFrame.static.getNode_byLabel("TL5").m_local
+            # c7 = seg.anatomicalFrame.static.getNode_byLabel("C7").m_local
+            # seg.setLength(np.linalg.norm(l5-c7))
+            #
+            # l5global = seg.anatomicalFrame.static.getNode_byLabel("TL5").m_global
+            # c7o = seg.anatomicalFrame.static.getNode_byLabel("C7o").m_global
+            # c7global = seg.anatomicalFrame.static.getNode_byLabel("C7").m_global
+            # com = (c7o + ( l5global - c7o ) * 0.63 )
+            # seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
+
         else:
             top = seg.anatomicalFrame.static.getNode_byLabel("midTop").m_local
             bottom = seg.anatomicalFrame.static.getNode_byLabel("midBottom").m_local
@@ -5253,6 +5285,11 @@ class CGM1LowerLimbs(CGM):
 
         btkTools.smartAppendPoint(aqui,"OT",OTvalues,desc="")
 
+        c7o =  seg.getReferential("TF").getNodeTrajectory("C7o")
+        btkTools.smartAppendPoint(aqui,"C7o",c7o)
+
+
+
         if self.m_bodypart is not enums.BodyPart.LowerLimbTrunk:
             btkTools.smartAppendPoint(aqui,"LVWM",LVWMvalues,desc="")
             btkTools.smartAppendPoint(aqui,"RVWM",RVWMvalues,desc="")
@@ -5286,6 +5323,7 @@ class CGM1LowerLimbs(CGM):
         # NA
         # computation
         csFrame=frame.Frame()
+        te=np.zeros((aqui.GetPointFrameNumber(),3))
         for i in range(0,aqui.GetPointFrameNumber()):
 
             pt1=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][0])).GetValues()[i,:]
@@ -5314,7 +5352,7 @@ class CGM1LowerLimbs(CGM):
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
-
+        btkTools.smartAppendPoint(aqui,"te",te)
 
     def _clavicle_motion(self,side,aqui, dictRef,dictAnat,options=None):
         """
@@ -5882,14 +5920,13 @@ class CGM1LowerLimbs(CGM):
         # NA
 
         # computation
+        csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
-            csFrame=frame.Frame()
-            for i in range(0,aqui.GetPointFrameNumber()):
-                ptOrigin=aqui.GetPoint(str(dictAnat["Head"]['labels'][3])).GetValues()[i,:]
-                R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
+            ptOrigin=aqui.GetPoint(str(dictAnat["Head"]['labels'][3])).GetValues()[i,:]
+            R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
 
-                csFrame.update(R,ptOrigin)
-                seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+            csFrame.update(R,ptOrigin)
+            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
     # --- opensim --------
@@ -6072,6 +6109,7 @@ class CGM1LowerLimbs(CGM):
             nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHO", acq)
 
             logging.debug("jc over")
+
 
         # export angles
         for it in btk.Iterate(acq.GetPoints()):

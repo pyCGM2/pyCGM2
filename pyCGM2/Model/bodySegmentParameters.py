@@ -18,7 +18,16 @@ class Bsp(object):
     TABLE["Foot"] = dict()
     TABLE["Shank"] = dict()
     TABLE["Thigh"] = dict()
-    #TABLE["Pelvis"] = dict()
+    TABLE["Thorax"] = dict()
+    TABLE["UpperArm"] = dict()
+    TABLE["ForeArm"] = dict()
+    TABLE["Hand"] = dict()
+    TABLE["Head"] = dict()
+    TABLE["Pelvis"] = dict()
+
+    TABLE["Pelvis"]["mass"] = 14.2
+    TABLE["Pelvis"]["com"] = np.array([ 0.0 ,0.0 , 50.0]) # sagittal - transversal - longitudinal
+    TABLE["Pelvis"]["inertia"] = np.array([ 69.0 ,69.0, 0]) # sagittal - transversal - longitudinal
 
     TABLE["Foot"]["mass"] = 1.45
     TABLE["Foot"]["com"] = np.array([ 0.0 ,0.0 , 50.0]) # sagittal - transversal - longitudinal
@@ -31,6 +40,26 @@ class Bsp(object):
     TABLE["Thigh"]["mass"] = 10.0
     TABLE["Thigh"]["com"] = np.array([ 0 ,0, 43.3]) # sagittal - transversal - longitudinal
     TABLE["Thigh"]["inertia"] = np.array([ 54.0 ,54.0, 0]) # sagittal - transversal - longitudinal
+
+    TABLE["Thorax"]["mass"] = 35.5
+    TABLE["Thorax"]["com"] = np.array([ 0 ,0, 63.0]) # sagittal - transversal - longitudinal
+    TABLE["Thorax"]["inertia"] = np.array([ 0.0 ,0.0, 0.0]) # sagittal - transversal - longitudinal
+
+    TABLE["UpperArm"]["mass"] = 2.8
+    TABLE["UpperArm"]["com"] = np.array([ 0 ,0, 43.6]) # sagittal - transversal - longitudinal
+    TABLE["UpperArm"]["inertia"] = np.array([ 54.2 ,54.2, 0.0]) # sagittal - transversal - longitudinal
+
+    TABLE["ForeArm"]["mass"] = 1.6
+    TABLE["ForeArm"]["com"] = np.array([ 0 ,0, 43.0]) # sagittal - transversal - longitudinal
+    TABLE["ForeArm"]["inertia"] = np.array([ 52.6 ,52.6, 0.0]) # sagittal - transversal - longitudinal
+
+    TABLE["Hand"]["mass"] = 0.6
+    TABLE["Hand"]["com"] = np.array([ 0 ,0, (( 0.506 )*0.75)*100.0]) # sagittal - transversal - longitudinal 0.75:Knuckle_II_Proportion
+    TABLE["Hand"]["inertia"] = np.array([  (0.587*0.75)*100.0 ,(0.587*0.75)*100.0, 0.0]) # sagittal - transversal - longitudinal
+
+    TABLE["Head"]["mass"] = 8.1
+    TABLE["Head"]["com"] = np.array([ 0 ,0, (( 0.506 )*0.75)*100.0]) # sagittal - transversal - longitudinal 0.75:Knuckle_II_Proportion
+    TABLE["Head"]["inertia"] = np.array([  (0.587*0.75)*100.0 ,(0.587*0.75)*100.0, 0.0]) # sagittal - transversal - longitudinal
 
     @classmethod
     def setParameters(cls, bspSegmentLabel,segmentLength, bodymass):
@@ -104,6 +133,7 @@ class Bsp(object):
                     if self.m_model.getSegment(itSegment.name).anatomicalFrame.static.getNode_byLabel("com"): # update com if defined during calibration.
                         logging.debug("segment %s -- com already defined during calibration. " %(itSegment.name) )
                         com = self.m_model.getSegment(itSegment.name).anatomicalFrame.static.getNode_byLabel("com").m_local
+
                     self.m_model.getSegment(itSegment.name).setMass( mass)
                     self.m_model.getSegment(itSegment.name).setComPosition (com)
                     self.m_model.getSegment(itSegment.name).setInertiaTensor (np.array([[Ixx,0.0,0.0],[0.0,Iyy,0.0],[0.0,0.0,Izz]]))
