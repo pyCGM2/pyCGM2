@@ -6188,4 +6188,4 @@ class CGM1LowerLimbs(CGM):
 
         # centre of mass
         if self.m_centreOfMass is not None:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str("centreOfMass"+pointSuffix), acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str("CentreOfMass"+pointSuffix), acq)
