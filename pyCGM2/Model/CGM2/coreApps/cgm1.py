@@ -198,37 +198,40 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     if  model.m_bodypart == enums.BodyPart.FullBody:
         modelFilters.CentreOfMassFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
-    # --- force plate handling----
-    # find foot  in contact
-    mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
-    forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
-    logging.debug("Force plate assignment : %s" %mappedForcePlate)
+    # Inverse dynamics
+    if model.m_bodypart != enums.BodyPart.UpperLimb:
+        # --- force plate handling----
+        # find foot  in contact
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+        forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
+        logging.debug("Force plate assignment : %s" %mappedForcePlate)
 
-    if mfpa is not None:
-        if len(mfpa) != len(mappedForcePlate):
-            raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(mappedForcePlate))))
-        else:
-            mappedForcePlate = mfpa
-            logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
-            forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
+        if mfpa is not None:
+            if len(mfpa) != len(mappedForcePlate):
+                raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(mappedForcePlate))))
+            else:
+                mappedForcePlate = mfpa
+                logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+                forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
 
-    # assembly foot and force plate
-    modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
-                             leftSegmentLabel="Left Foot",
-                             rightSegmentLabel="Right Foot").compute()
-
-    #---- Joint kinetics----
-    idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
-    modelFilters.InverseDynamicFilter(model,
-                         acqGait,
-                         procedure = idp,
-                         projection = momentProjection,
-                         viconCGM1compatible=True
-                         ).compute(pointLabelSuffix=pointSuffix)
+        # assembly foot and force plate
+        modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
+                                 leftSegmentLabel="Left Foot",
+                                 rightSegmentLabel="Right Foot").compute()
 
 
-    #---- Joint energetics----
-    modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
+        #---- Joint kinetics----
+        idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
+        modelFilters.InverseDynamicFilter(model,
+                             acqGait,
+                             procedure = idp,
+                             projection = momentProjection,
+                             viconCGM1compatible=True
+                             ).compute(pointLabelSuffix=pointSuffix)
+
+
+        #---- Joint energetics----
+        modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
     #---- zero unvalid frames ---
     btkTools.applyValidFramesOnOutput(acqGait,validFrames)
