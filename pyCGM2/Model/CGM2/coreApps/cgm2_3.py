@@ -321,7 +321,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     bspModel.compute()
 
     if  model.m_bodypart == enums.BodyPart.FullBody:
-    modelFilters.CentreOfMassFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
+        modelFilters.CentreOfMassFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
 
     # Inverse dynamics
     if model.m_bodypart != enums.BodyPart.UpperLimb:
