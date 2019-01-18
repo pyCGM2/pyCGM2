@@ -45,7 +45,8 @@ if __name__ == "__main__":
         args.DEBUG=False
         # --------------------------LOADING ------------------------------------
         if args.DEBUG:
-            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\lowerLimbTrunk\\" #+ "CGM1\\CGM1\\native\\"
+            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\FullBody\\" #+ "CGM1\\CGM1\\native\\"
+            #DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\lowerLimbTrunk\\" #+ "CGM1\\CGM1\\native\\"
             reconstructFilenameLabelledNoExt = "PN01NORMSS01" #"static Cal 01-noKAD-noAnkleMed" #
             # DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
             # reconstructFilenameLabelledNoExt = "gait Trial" #"static Cal 01-noKAD-noAnkleMed" #

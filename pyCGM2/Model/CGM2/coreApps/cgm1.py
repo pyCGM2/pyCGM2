@@ -141,6 +141,12 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                                           eulerSequences=["YXZ","TOR"],
                                           globalFrameOrientation = globalFrame,
                                           forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
+    # BSP model
+    bspModel = bodySegmentParameters.Bsp(model)
+    bspModel.compute()
+
+    if  model.m_bodypart == enums.BodyPart.FullBody:
+        modelFilters.CentreOfMassFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
     return model, acqStatic
 
@@ -210,6 +216,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     #---- Body segment parameters----
     bspModel = bodySegmentParameters.Bsp(model)
     bspModel.compute()
+
+    #---- CentreOfMass----
+    if  model.m_bodypart == enums.BodyPart.FullBody:
+        modelFilters.CentreOfMassFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
     # --- force plate handling----
     # find foot  in contact
