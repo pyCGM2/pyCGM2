@@ -860,6 +860,48 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         logging.debug(" -----------------------------------------")
         self._rightForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
 
+        #------_upperLimb
+        if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
+            self._torso_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+            self._torso_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+        if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+
+            self._torso_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+            self._torso_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+            self._head_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+            self._head_AnatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+            self._clavicle_calibrate("Left",aquiStatic,dictRef,frameInit,frameEnd,options=options)
+            self._clavicle_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+            self._constructArmVirtualMarkers("Left", aquiStatic)
+
+            self._upperArm_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd, options=options)
+            self._foreArm_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd, options=options)
+
+            self._upperArm_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
+            self._foreArm_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+            self._hand_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd, options=options)
+            self._hand_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+            self._clavicle_calibrate("Right",aquiStatic,dictRef,frameInit,frameEnd,options=options)
+            self._clavicle_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+            self._constructArmVirtualMarkers("Right", aquiStatic)
+
+            self._upperArm_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd, options=options)
+            self._foreArm_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd, options=options)
+
+            self._upperArm_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
+            self._foreArm_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+            self._hand_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd, options=options)
+            self._hand_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+
 
     # ---- Technical Referential Calibration
     def _leftHindFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
@@ -1527,6 +1569,28 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
             logging.debug(" ---------------------------")
             self._right_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
 
+            if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
+                self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+
+            if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+                self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+                self._head_motion(aqui, dictRef,dictAnat,options=options)
+
+                self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
+                self._constructArmVirtualMarkers("Left", aqui)
+                self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+                self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+                self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+                self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+                self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+
+                self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
+                self._constructArmVirtualMarkers("Right", aqui)
+                self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+                self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+                self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+                self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+                self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
 
         if motionMethod == enums.motionMethod.Sodervisk:
 
