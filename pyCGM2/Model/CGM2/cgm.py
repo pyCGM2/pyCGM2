@@ -100,7 +100,7 @@ class CGM1LowerLimbs(CGM):
 
     THORAX_TRACKING_MARKERS=["C7", "T10","CLAV", "STRN"]
 
-    UPPERLIMB_TRACKING_MARKERS=[ "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN"]
+    UPPERLIMB_TRACKING_MARKERS=[ "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN", "LFHD","LBHD","RFHD","RBHD"]
 
 
     ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles"],
@@ -202,7 +202,6 @@ class CGM1LowerLimbs(CGM):
             self.setBodyPart(bodyPart)
 
         self._lowerLimbTrackingMarkers()+["LKNE","RKNE"]
-
 
         logging.info("BodyPart found : %s" %(bodyPart.name))
 
@@ -829,7 +828,6 @@ class CGM1LowerLimbs(CGM):
         else:
             logging.debug("asisDistance computed and added to model parameters")
             self.mp_computed["InterAsisDistance"] = np.linalg.norm( aquiStatic.GetPoint("LASI").GetValues().mean(axis=0) - aquiStatic.GetPoint("RASI").GetValues().mean(axis=0))
-
 
 
         # --- Construction of the technical referential
@@ -2756,6 +2754,28 @@ class CGM1LowerLimbs(CGM):
             self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
             self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
 
+            if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
+                self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+
+            if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+                self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+                self._head_motion(aqui, dictRef,dictAnat,options=options)
+
+                self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
+                self._constructArmVirtualMarkers("Left", aqui)
+                self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+                self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+                self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+                self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+                self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+
+                self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
+                self._constructArmVirtualMarkers("Right", aqui)
+                self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+                self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+                self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+                self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+                self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
 
     def _pelvis_motion(self,aqui, dictRef,dictAnat):
         """
@@ -4866,7 +4886,7 @@ class CGM1LowerLimbs(CGM):
         EJC =  modelDecorator.chord( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=0 ) #ELB,SJC,CVM
 
         if tf.static.isNodeExist(prefix +"EJC"):
-            nodeLEJC = tf.static.getNode_byLabel(prefix+"EJC")
+            nodeEJC = tf.static.getNode_byLabel(prefix+"EJC")
         else:
             tf.static.addNode(prefix+"EJC_cgm1",EJC,positionType="Global",desc = "chord")
             tf.static.addNode(prefix+"EJC",EJC,positionType="Global",desc = "chord")
@@ -5011,7 +5031,7 @@ class CGM1LowerLimbs(CGM):
         WJC =MWP +  (s*(self.mp[side +"WristWidth"]+markerDiameter)/2.0)*WJCaxis
 
         if tf.static.isNodeExist(prefix+"WJC"):
-            nodeLWJC = tf.static.getNode_byLabel(prefix+"WJC")
+            nodeWJC = tf.static.getNode_byLabel(prefix+"WJC")
         else:
             tf.static.addNode(prefix+"WJC_cgm1",WJC,positionType="Global",desc = "midCgm1")
             tf.static.addNode(prefix+"WJC",WJC,positionType="Global",desc = "midCgm1")
@@ -5965,10 +5985,14 @@ class CGM1LowerLimbs(CGM):
     # --- opensim --------
     def opensimTrackingMarkers(self):
 
+        excluded = ["Thorax","Head","Left Clavicle", "Left UpperArm", "Left ForeArm",
+                    "Left Hand", "Right Clavicle", "Right UpperArm", "Right ForeArm",
+                     "Right Hand"] # TODO : not nice . dont enale Upper and trunck IK for now
+
 
         out={}
         for segIt in self.m_segmentCollection:
-            if "Proximal" not in segIt.name:
+            if not segIt.m_isCloneOf and segIt.name not in excluded:
                 out[segIt.name] = segIt.m_tracking_markers
 
         return out
