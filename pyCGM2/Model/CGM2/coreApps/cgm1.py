@@ -18,31 +18,6 @@ from pyCGM2.Model.CGM2.coreApps import decorators
 from pyCGM2.ForcePlates import forceplates
 
 
-def get_markerLabelForPiGStatic(dcm):
-
-    useLeftKJCmarkerLabel = "LKJC"
-    useLeftAJCmarkerLabel = "LAJC"
-    useRightKJCmarkerLabel = "RKJC"
-    useRightAJCmarkerLabel = "RAJC"
-
-
-    # KAD - kadMed
-    if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD:
-        useLeftKJCmarkerLabel = "LKJC_KAD"
-        useLeftAJCmarkerLabel = "LAJC_KAD"
-        if  dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
-            useLeftAJCmarkerLabel = "LAJC_MID"
-
-    if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD:
-        useRightKJCmarkerLabel = "RKJC_KAD"
-        useRightAJCmarkerLabel = "RAJC_KAD"
-        if  dcm["Right Ankle"] == enums.JointCalibrationMethod.Medial:
-            useRightAJCmarkerLabel = "RAJC_MID"
-
-
-    return [useLeftKJCmarkerLabel,useLeftAJCmarkerLabel,useRightKJCmarkerLabel,useRightAJCmarkerLabel]
-
-
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
               required_mp,optional_mp,
@@ -57,9 +32,12 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
+    # ---check marker set used----
+    dcm= cgm.CGM.detectCalibrationMethods(acqStatic)
+
     # ---definition---
     model=cgm.CGM1LowerLimbs()
-    model.configure(acq=acqStatic)
+    model.configure(acq=acqStatic,detectedCalibrationMethods=dcm)
     model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
     # --store calibration parameters--
@@ -68,8 +46,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     model.setCalibrationProperty("rightFlatFoot",rightFlatFoot)
     model.setCalibrationProperty("markerDiameter",markerDiameter)
 
-    # ---check marker set used----
-    dcm= cgm.CGM.detectCalibrationMethods(acqStatic)
+
     # --------------------------STATIC CALBRATION--------------------------
     scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
 
@@ -82,7 +59,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                                         ).compute()
     # ---- Decorators -----
     decorators.applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1only=True)
-    pigStaticMarkers = get_markerLabelForPiGStatic(dcm)
+    pigStaticMarkers = cgm.CGM.get_markerLabelForPiGStatic(dcm)
 
     # ----Final Calibration filter if model previously decorated -----
     if model.decoratedModel:
@@ -146,7 +123,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     bspModel.compute()
 
     if  model.m_bodypart == enums.BodyPart.FullBody:
-        modelFilters.CentreOfMassFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
+        modelFilters.CentreOfMassFilter(model,acqStatic).compute(pointLabelSuffix=pointSuffix)
 
     return model, acqStatic
 

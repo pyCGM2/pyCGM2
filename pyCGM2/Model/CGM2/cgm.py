@@ -62,6 +62,31 @@ class CGM(model.Model):
 
         return dectectedCalibrationMethods
 
+    @classmethod
+    def get_markerLabelForPiGStatic(cls,dcm):
+
+        useLeftKJCmarkerLabel = "LKJC"
+        useLeftAJCmarkerLabel = "LAJC"
+        useRightKJCmarkerLabel = "RKJC"
+        useRightAJCmarkerLabel = "RAJC"
+
+
+        # KAD - kadMed
+        if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD:
+            useLeftKJCmarkerLabel = "LKJC_KAD"
+            useLeftAJCmarkerLabel = "LAJC_KAD"
+            if  dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
+                useLeftAJCmarkerLabel = "LAJC_MID"
+
+        if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD:
+            useRightKJCmarkerLabel = "RKJC_KAD"
+            useRightAJCmarkerLabel = "RAJC_KAD"
+            if  dcm["Right Ankle"] == enums.JointCalibrationMethod.Medial:
+                useRightAJCmarkerLabel = "RAJC_MID"
+
+
+        return [useLeftKJCmarkerLabel,useLeftAJCmarkerLabel,useRightKJCmarkerLabel,useRightAJCmarkerLabel]
+
 
 class CGM1LowerLimbs(CGM):
     """
@@ -146,7 +171,7 @@ class CGM1LowerLimbs(CGM):
         return static_markers
 
 
-    def configure(self,acq=None,bodyPart=None):
+    def configure(self,acq=None,bodyPart=None,detectedCalibrationMethods=None):
         """
             Model configuration. Define Segment, joint, ...
         """
@@ -154,6 +179,11 @@ class CGM1LowerLimbs(CGM):
         if bodyPart is None:
             if acq is None:
                 raise Exception ("[pyCGM2] You must indicate a static acquisition or a bodyPart ")
+
+            if detectedCalibrationMethods["Left Knee"] == enums.JointCalibrationMethod.KAD:
+                self._lowerLimbTrackingMarkers().remove("LKNE")
+            if detectedCalibrationMethods["Right Knee"] == enums.JointCalibrationMethod.KAD:
+                self._lowerLimbTrackingMarkers().remove("RKNE")
 
             if btkTools.isPointsExist(acq,self._lowerLimbTrackingMarkers()):
                 bodyPart = enums.BodyPart.LowerLimb
@@ -170,6 +200,9 @@ class CGM1LowerLimbs(CGM):
             self.setBodyPart(bodyPart)
         else:
             self.setBodyPart(bodyPart)
+
+        self._lowerLimbTrackingMarkers()+["LKNE","RKNE"]
+
 
         logging.info("BodyPart found : %s" %(bodyPart.name))
 
