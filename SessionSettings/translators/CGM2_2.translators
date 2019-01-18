@@ -1,6 +1,6 @@
 {
 	"Translators" : {
-		"LASI":"",
+	  "LASI":"",
 		"RASI":"",
 		"LPSI":"",
 		"RPSI":"",
@@ -19,6 +19,24 @@
 		"LANK":"",
 		"LMED":"",
 		"LHEE":"",
-		"LTOE":""
-		}
+		"LTOE":"",
+		"C7":"",
+		"T10":"",
+		"CLAV":"",
+		"STRN":"",
+		"LFHD":"",
+		"LBHD":"",
+		"RFHD":"",
+		"RBHD":"",
+		"LSHO":"",
+		"LELB":"",
+		"LWRB":"",
+		"LWRA":"",
+		"LFIN":"",
+		"RSHO":"",
+		"RELB":"",
+		"RWRB":"",
+		"RWRA":"",
+		"RFIN":""
+	}
 }
