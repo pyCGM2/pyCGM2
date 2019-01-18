@@ -109,7 +109,7 @@ class CgmOpensimFittingProcedure(object):
         """
         self.model=model
         self.ikTags=dict()#
-        
+
         self.__setIkTags()
 
 
@@ -167,6 +167,7 @@ class opensimCalibrationFilter(object):
 
 
         # IMPORTANT update marker from procedure ( need markers in osim)
+
         for segName in self.m_procedure.markers.keys():
             for marker in self.m_procedure.markers[segName]:
                 self._osimModel.updateMarkerInMarkerSet( marker, modelSegmentLabel = segName, rotation_osim_model=osimProcessing.R_OSIM_CGM[segName], toMeter=self.m_toMeter)

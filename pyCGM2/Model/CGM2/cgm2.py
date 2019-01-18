@@ -88,9 +88,9 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHAP","LTHAD"])
         self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHAP","RTHAD"])
         self.addSegment("Left Shank",2,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LANK","LTIB","LTIAP","LTIAD"])
-        self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left,cloneOf=True) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
         self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB","RTIAP","RTIAD"])
-        self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right,cloneOf=True)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
         self.addSegment("Left Foot",3,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LHEE","LTOE"] )
         self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RHEE","RTOE"])
 
@@ -234,40 +234,6 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
         super(CGM2_3LowerLimbs, self).calibrate(aquiStatic, dictRef, dictAnatomic,  options=options)
 
-
-    # --- opensim --------
-    def opensimTrackingMarkers(self):
-
-
-        out={}
-        for segIt in self.m_segmentCollection:
-            if "Proximal" not in segIt.name:
-                out[segIt.name] = segIt.m_tracking_markers
-
-        return out
-
-
-
-    def opensimGeometry(self):
-        """
-        TODO require : joint name from opensim -> find alternative
-
-        rather a class method than a method instance
-        """
-
-        out={}
-        out["hip_r"]= {"joint label":"RHJC", "proximal segment label":"Pelvis", "distal segment label":"Right Thigh" }
-        out["knee_r"]= {"joint label":"RKJC", "proximal segment label":"Right Thigh", "distal segment label":"Right Shank" }
-        out["ankle_r"]= {"joint label":"RAJC", "proximal segment label":"Right Shank", "distal segment label":"Right Foot" }
-        #out["mtp_r"]=
-
-
-        out["hip_l"]= {"joint label":"LHJC", "proximal segment label":"Pelvis", "distal segment label":"Left Thigh" }
-        out["knee_l"]= {"joint label":"LKJC", "proximal segment label":"Left Thigh", "distal segment label":"Left Shank" }
-        out["ankle_l"]= {"joint label":"LAJC", "proximal segment label":"Left Shank", "distal segment label":"Left Foot" }
-        #out["mtp_l"]=
-
-        return out
 
     def opensimIkTask(self):
         out={}
@@ -467,9 +433,9 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         self.addSegment("Left Thigh",1,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LKNE","LTHI","LTHAP","LTHAD"])
         self.addSegment("Right Thigh",4,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RKNE","RTHI","RTHAP","RTHAD"])
         self.addSegment("Left Shank",2,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LANK","LTIB","LTIAP","LTIAD"])
-        self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Left Shank Proximal",7,enums.SegmentSide.Left,cloneOf=True) # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
         self.addSegment("Right Shank",5,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RANK","RTIB","RTIAP","RTIAD"])
-        self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
+        self.addSegment("Right Shank Proximal",8,enums.SegmentSide.Right,cloneOf=True)        # copy of Left Shank with anatomical frame modified by a tibial Rotation Value ( see calibration)
         self.addSegment("Left Foot",6,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LHEE","LTOE"])
         self.addSegment("Left ForeFoot",7,enums.SegmentSide.Left,calibration_markers=["LSMH"], tracking_markers = ["LFMH","LVMH"])
         self.addSegment("Right Foot",6,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RHEE","RTOE"])
@@ -590,7 +556,6 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
     def _lowerLimbCalibrationProcedure(self,dictRef,dictRefAnatomical):
 
-        dictRef={}
         dictRef["Pelvis"]={"TF" : {'sequence':"YZX", 'labels':   ["RASI","LASI","SACR","midASIS"]} }
         dictRef["Left Thigh"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LKNE","LTHAP","LTHI","LKNE"]} }
         dictRef["Right Thigh"]={"TF" : {'sequence':"ZXY", 'labels':   ["RKNE","RTHAP","RTHI","RKNE"]} }
@@ -605,7 +570,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         dictRef["Right Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RTOE","RAJC",None,"RAJC"]} }
         dictRef["Right ForeFoot"]={"TF" : {'sequence':"ZXY", 'labels':    ["RFMH","RTOE","RVMH","RTOE"]} }
 
-        dictRefAnatomical={}
+
         dictRefAnatomical["Pelvis"]= {'sequence':"YZX", 'labels':  ["RASI","LASI","SACR","midASIS"]}
         dictRefAnatomical["Left Thigh"]= {'sequence':"ZXiY", 'labels':  ["LKJC","LHJC","LKNE","LHJC"]}
         dictRefAnatomical["Right Thigh"]= {'sequence':"ZXY", 'labels': ["RKJC","RHJC","RKNE","RHJC"]}
@@ -1640,6 +1605,28 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
             #self._rightForeFoot_motion(aqui, dictRef,motionMethod)
             #self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
+            if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
+                self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+
+            if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+                self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+                self._head_motion(aqui, dictRef,dictAnat,options=options)
+
+                self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
+                self._constructArmVirtualMarkers("Left", aqui)
+                self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+                self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+                self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+                self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+                self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+
+                self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
+                self._constructArmVirtualMarkers("Right", aqui)
+                self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+                self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+                self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+                self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+                self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
 
     # ----- native motion ------
     def _left_hindFoot_motion(self,aqui, dictRef,dictAnat,options=None):
@@ -2366,7 +2353,100 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         return out
 
-    # ----- vicon API -------
+    # # ----- vicon API -------
+    # def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):
+    #     """
+    #         method exporting model outputs to Nexus UI
+    #
+    #         This method exports :
+    #
+    #             - joint centres as modelled-marker
+    #             - angles
+    #             - moment
+    #             - force
+    #             - power
+    #             - bones
+    #
+    #
+    #         :Parameters:
+    #             - `NEXUS` () - Nexus environment
+    #             - `vskName` (str) - name of the subject created in Nexus
+    #             - `staticProcessingFlag` (bool`) : flag indicating only static model ouput will be export
+    #
+    #     """
+    #
+    #      # export JC
+    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq)
+    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHJC", acq)
+    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKJC", acq)
+    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq)
+    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq)
+    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq)
+    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LFJC", acq)
+    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RFJC", acq)
+    #     logging.debug("jc over")
+    #
+    #     # export angles
+    #     for it in btk.Iterate(acq.GetPoints()):
+    #         if it.GetType() == btk.btkPoint.Angle:
+    #             if pointSuffix!="":
+    #                 if pointSuffix in it.GetLabel():
+    #                     nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+    #             else:
+    #                 nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+    #
+    #     logging.debug("angles over")
+    #
+    #     # bones
+    #     # -------------
+    #     nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() )
+    #
+    #     nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
+    #     #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
+    #     nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
+    #     nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
+    #     nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() )
+    #
+    #     nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
+    #     #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
+    #     nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
+    #     nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RHEE").GetValues()  )
+    #     nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues())
+    #
+    #     logging.debug("bones over")
+    #
+    #     if not staticProcessingFlag:
+    #         # export Force
+    #         for it in btk.Iterate(acq.GetPoints()):
+    #             if it.GetType() == btk.btkPoint.Force:
+    #                 if pointSuffix!="":
+    #                     if pointSuffix in it.GetLabel():
+    #                         nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+    #                 else:
+    #                     nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+    #         logging.debug("force over")
+    #
+    #         # export Moment
+    #         for it in btk.Iterate(acq.GetPoints()):
+    #             if it.GetType() == btk.btkPoint.Moment:
+    #                 if pointSuffix!="":
+    #                     if pointSuffix in it.GetLabel():
+    #                         nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+    #                 else:
+    #                     nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+    #         logging.debug("Moment over")
+    #
+    #         # export Moment
+    #         for it in btk.Iterate(acq.GetPoints()):
+    #             if it.GetType() == btk.btkPoint.Power:
+    #                 if pointSuffix!="":
+    #                     if pointSuffix in it.GetLabel():
+    #                         nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+    #                 else:
+    #                     nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+    #         logging.debug("power over")
+
+
     def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):
         """
             method exporting model outputs to Nexus UI
@@ -2388,16 +2468,37 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         """
 
-         # export JC
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LFJC", acq)
-        nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RFJC", acq)
-        logging.debug("jc over")
+
+        if staticProcessingFlag:
+            if self.checkCalibrationProperty("LeftKAD",True):
+                nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKNE", acq)
+            if self.checkCalibrationProperty("RightKAD",True):
+                nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKNE", acq)
+
+        # export JC
+        if self.m_bodypart != enums.BodyPart.UpperLimb:
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LFJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RFJC", acq)
+
+        if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
+            pass
+
+        if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LSJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RSJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LEJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"REJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHO", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHO", acq)
+
+            logging.debug("jc over")
+
 
         # export angles
         for it in btk.Iterate(acq.GetPoints()):
@@ -2412,20 +2513,36 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
 
         # bones
         # -------------
-        nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() )
+        if self.m_bodypart != enums.BodyPart.UpperLimb:
+            nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() )
 
-        nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
-        #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
+            #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() )
 
-        nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
-        #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RHEE").GetValues()  )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues())
 
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
+            #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RHEE").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues())
+
+        if self.m_bodypart == enums.BodyPart.LowerLimbTrunk :
+            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues() )
+
+        if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues() )
+
+            nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),OriginValues = acq.GetPoint("LEJC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFOREARM", self.getSegment("Left ForeArm"),OriginValues = acq.GetPoint("LWJC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LHAND", self.getSegment("Left Hand"),OriginValues = acq.GetPoint("LHO").GetValues() )
+
+            nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm"),OriginValues = acq.GetPoint("REJC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFOREARM", self.getSegment("Right ForeArm"),OriginValues = acq.GetPoint("RWJC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),OriginValues = acq.GetPoint("RHO").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),OriginValues = acq.GetPoint("HC").GetValues() )
         logging.debug("bones over")
 
         if not staticProcessingFlag:
@@ -2458,3 +2575,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
                     else:
                         nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
             logging.debug("power over")
+
+        # centre of mass
+        if self.m_centreOfMass is not None:
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str("CentreOfMass"+pointSuffix), acq)

@@ -838,9 +838,9 @@ class ModelJCSFilter(object):
 
 
             jointLabel = it.m_label
+
             proxSeg = self.m_model.getSegment(it.m_proximalLabel)
             distSeg = self.m_model.getSegment(it.m_distalLabel)
-
 
             jointValues = np.zeros((self.m_aqui.GetPointFrameNumber(),3))
             for i in range (0, self.m_aqui.GetPointFrameNumber()):
