@@ -97,6 +97,7 @@ ENV/
 *.suo
 
 
-!/pyCGM2/ma/*.dll
+Sandbox
 !/pyCGM2/opensim3/*.dll
 !/pyCGM2/opensim3/*.lib
+!/pyCGM2/ma/*.dll
