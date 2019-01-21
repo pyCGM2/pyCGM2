@@ -33,11 +33,7 @@ if __name__ == "__main__":
     parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
     parser.add_argument('--forceLHJC', nargs='+')
     parser.add_argument('--forceRHJC', nargs='+')
-    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
-
     args = parser.parse_args()
-    args.DEBUG = True
-
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -67,9 +63,8 @@ if __name__ == "__main__":
         ik_flag = False if args.noIk else True
 
         # --------------------------LOADING------------------------------
-        args.DEBUG=False
-        # --- acquisition file and path----
-        if args.DEBUG:
+        DEBUG= False
+        if DEBUG:
             DATA_PATH = pyCGM2.TEST_DATA_PATH + "Release Tests\\CGM2.4\\medial_LowerTrunk\\"
             calibrateFilenameLabelledNoExt = "static"
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )

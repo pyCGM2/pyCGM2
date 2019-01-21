@@ -23,7 +23,7 @@ from pyCGM2.Nexus import nexusTools
 if __name__ == "__main__":
 
 
-    DEBUG = False
+
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -38,6 +38,7 @@ if __name__ == "__main__":
 
         # ----------------------INPUTS-------------------------------------------
         # --- acquisition file and path----
+        DEBUG = False
         if DEBUG:
             DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-01 - myProcess\\PIG\\"
             reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 16" #"static Cal 01-noKAD-noAnkleMed" #

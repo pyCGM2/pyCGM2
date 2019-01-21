@@ -30,7 +30,7 @@ if __name__ == "__main__":
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix' )
     parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
-    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
+
     args = parser.parse_args()
 
 
@@ -53,7 +53,8 @@ if __name__ == "__main__":
 
 
         # --------------------------LOADING ------------------------------------
-        if args.DEBUG:
+        DEBUG= False
+        if DEBUG:
             DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
             calibrateFilenameLabelledNoExt = "static"
 

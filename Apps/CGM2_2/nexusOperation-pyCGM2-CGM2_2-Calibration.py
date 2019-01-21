@@ -33,8 +33,6 @@ if __name__ == "__main__":
     parser.add_argument('--forceLHJC', nargs='+')
     parser.add_argument('--forceRHJC', nargs='+')
     parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
-
-    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
 
 
@@ -67,9 +65,8 @@ if __name__ == "__main__":
         ik_flag = False if args.noIk else True
 
         # --------------------------LOADING ------------------------------------
-
-        # --- acquisition file and path----
-        if args.DEBUG:
+        DEBUG= False
+        if DEBUG:
             DATA_PATH = pyCGM2.TEST_DATA_PATH +"CGM2\\cgm2.2\\native\\"
             calibrateFilenameLabelledNoExt = "static"
 

@@ -30,10 +30,7 @@ if __name__ == "__main__":
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
-
-    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
-    args.DEBUG=False
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
@@ -51,10 +48,8 @@ if __name__ == "__main__":
 
         ik_flag = False if args.noIk else True
 
-        args.DEBUG=False
-        # ----------------------LOADING-------------------------------------------
-        # --- acquisition file and path----
-        if args.DEBUG:
+        DEBUG= False
+        if DEBUG:
             #DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
             #reconstructFilenameLabelledNoExt = "gait Trial 01"
             DATA_PATH = pyCGM2.TEST_DATA_PATH + "Release Tests\\CGM2.4\\medial\\"

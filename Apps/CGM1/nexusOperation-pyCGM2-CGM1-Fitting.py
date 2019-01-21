@@ -27,7 +27,7 @@ if __name__ == "__main__":
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
-    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
+
     args = parser.parse_args()
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
@@ -42,9 +42,9 @@ if __name__ == "__main__":
         momentProjection =  argsManager.getMomentProjection()
         mfpa = argsManager.getManualForcePlateAssign()
 
-        args.DEBUG=False
+        DEBUG=False
         # --------------------------LOADING ------------------------------------
-        if args.DEBUG:
+        if DEBUG:
             DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\FullBody\\" #+ "CGM1\\CGM1\\native\\"
             #DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\lowerLimbTrunk\\" #+ "CGM1\\CGM1\\native\\"
             reconstructFilenameLabelledNoExt = "PN01NORMSS01" #"static Cal 01-noKAD-noAnkleMed" #

@@ -23,7 +23,6 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='CGM Static Processing')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
-    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -35,7 +34,8 @@ if __name__ == "__main__":
         pointSuffix = args.pointSuffix if args.pointSuffix is not None else ""
 
         # --------------------------INPUTS ------------------------------------
-        if args.DEBUG:
+        DEBUG= False
+        if DEBUG:
             DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
             calibrateFilenameLabelledNoExt = "static"
             NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )

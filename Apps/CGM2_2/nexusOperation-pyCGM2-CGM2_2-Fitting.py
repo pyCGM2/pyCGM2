@@ -30,8 +30,6 @@ if __name__ == "__main__":
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
-    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
-
     args = parser.parse_args()
 
 
@@ -51,10 +49,8 @@ if __name__ == "__main__":
         mfpa = argsManager.getManualForcePlateAssign()
 
         # --------------------------LOADING ------------------------------------
-        if args.DEBUG:
-            #DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.2\\native\\"
-            #reconstructFilenameLabelledNoExt = "gait trial"
-
+        DEBUG= False
+        if DEBUG:
             DATA_PATH = pyCGM2.TEST_DATA_PATH +"CGM3\\Salford_healthy_DataCollection\\PN01OP01S01\\"
             reconstructFilenameLabelledNoExt = "PN01OP01S01STAT-copy"
 
