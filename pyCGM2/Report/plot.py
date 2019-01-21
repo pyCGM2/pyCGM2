@@ -18,7 +18,7 @@ from pyCGM2.Report import plotUtils
 
 from pyCGM2 import ma
 from pyCGM2.ma import io
-
+from pyCGM2.EMG import normalActivation
 
 # ---- convenient plot functions
 def temporalPlot(figAxis,trial,
@@ -430,3 +430,21 @@ def stpHorizontalHistogram(figAxis,analysisStructureItem,
     if xlim is not None: figAxis.set_xlim(xlim)
 
     figAxis.tick_params(axis='x', which='major', labelsize=6)
+
+
+def addNormalActivationLayer(figAxis,normalActivationLabel,fo):
+    pos,burstDuration=normalActivation.getNormalBurstActivity(normalActivationLabel,fo)
+    for j in range(0,len(pos)):
+        figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , color='g',alpha=0.1))
+
+
+
+def addTemporalNormalActivationLayer(figAxis,trial,normalActivationLabel,context):
+    if normalActivationLabel:
+        gaitCycles = cycle.construcGaitCycle(trial)
+
+        for cycleIt  in gaitCycles:
+            if cycleIt.context == context:
+                pos,burstDuration=normalActivation.getNormalBurstActivity_fromCycles(normalActivationLabel,cycleIt.firstFrame,cycleIt.begin, cycleIt.m_contraFO, cycleIt.end, cycleIt.appf)
+                for j in range(0,len(pos)):
+                    figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , color='g',alpha=0.1))
