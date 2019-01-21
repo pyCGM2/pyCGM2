@@ -2737,7 +2737,6 @@ class CGM1LowerLimbs(CGM):
             self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
 
 
-            #self._left_shank_motion2(aqui, dictRef, dictAnat,options=options)
             self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
             self._left_shankProximal_motion(aqui,dictAnat,options=options)

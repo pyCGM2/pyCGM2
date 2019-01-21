@@ -48,7 +48,7 @@ def calibration2Dof(model,
         side = detectSide(acqFunc,"LANK","RANK")
         logging.info("Detected motion side : %s" %(side) )
 
-    if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
+    if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2"]:
         validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1LowerLimbs.TRACKING_MARKERS)
 
     # --------------------------RESET OF THE STATIC File---------
@@ -78,12 +78,12 @@ def calibration2Dof(model,
                            markerDiameter=markerDiameter).compute()
 
 
-    if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.2e"]:
+    if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2"]:
 
         modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,enums.motionMethod.Determinist)
         modMotion.compute()
 
-    elif model.version in  ["CGM2.3","CGM2.3e","CGM2.4","CGM2.4e"]:
+    elif model.version in  ["CGM2.3","CGM2.4"]:
         if side == "Left":
             thigh_markers = model.getSegment("Left Thigh").m_tracking_markers
             shank_markers = model.getSegment("Left Shank").m_tracking_markers
@@ -172,9 +172,7 @@ def sara(model,
                            markerDiameter=markerDiameter).compute()
 
 
-
-
-    if model.version in  ["CGM2.3","CGM2.3e","CGM2.3","CGM2.4e"]:
+    if model.version in  ["CGM2.3","CGM2.4"]:
         if side == "Left":
             thigh_markers = model.getSegment("Left Thigh").m_tracking_markers
             shank_markers = model.getSegment("Left Shank").m_tracking_markers

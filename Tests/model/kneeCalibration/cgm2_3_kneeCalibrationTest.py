@@ -15,16 +15,16 @@ from pyCGM2 import btk
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model import  modelFilters,modelDecorator
 from pyCGM2.Model.CGM2 import cgm2
-import pyCGM2.enums as pyCGM2Enums
+from pyCGM2 import enums
 
 from pyCGM2.Model.Opensim import opensimFilters
 
 
 # enableLongitudinalRotation in Static and Motion filter rotate along Z
-class CGM2_SARA_test():
+class CGM2_Knee_test():
 
     @classmethod
-    def CGM2_3_SARA_test(cls):
+    def CGM23_SARA_test(cls):
         MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.3\\Knee Calibration\\"
         staticFilename = "Static.c3d"
 
@@ -61,7 +61,7 @@ class CGM2_SARA_test():
 
         # cgm decorator
         modelDecorator.HipJointCenterDecorator(model).hara()
-        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both",cgm1Behaviour=True)
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both")
         modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="both")
 
         # final
@@ -76,7 +76,7 @@ class CGM2_SARA_test():
         acqLeftKnee = btkTools.smartReader(str(MAIN_PATH +  leftKneeFilename))
 
         # Motion of only left
-        modMotionLeftKnee=modelFilters.ModelMotionFilter(scp,acqLeftKnee,model,pyCGM2Enums.motionMethod.Sodervisk)
+        modMotionLeftKnee=modelFilters.ModelMotionFilter(scp,acqLeftKnee,model,enums.motionMethod.Sodervisk)
         modMotionLeftKnee.segmentalCompute(["Left Thigh","Left Shank"])
 
         # decorator
@@ -94,7 +94,7 @@ class CGM2_SARA_test():
         acqRightKnee = btkTools.smartReader(str(MAIN_PATH +  rightKneeFilename))
 
         # Motion of only left
-        modMotionRightKnee=modelFilters.ModelMotionFilter(scp,acqRightKnee,model,pyCGM2Enums.motionMethod.Sodervisk)
+        modMotionRightKnee=modelFilters.ModelMotionFilter(scp,acqRightKnee,model,enums.motionMethod.Sodervisk)
         modMotionRightKnee.segmentalCompute(["Right Thigh","Right Shank"])
 
         # decorator
@@ -112,78 +112,162 @@ class CGM2_SARA_test():
                         useLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara",
                         useLeftKJCnode="KJC_Sara", useLeftAJCnode="LAJC_mid",
                         useRightKJCnode="KJC_Sara", useRightAJCnode="RAJC_mid",
-                        markerDiameter=markerDiameter,
-                        RotateLeftThighFlag = True,
-                        RotateRightThighFlag = True).compute()
+                        markerDiameter=markerDiameter).compute()
 
         #  save static c3d with update KJC
         btkTools.smartWriter(acqStatic, "Static-SARA.c3d")
 
 
-        # ------ Fitting -------
-        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        # # ------ Fitting -------
+        # acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        #
+        #
+        #
+        # # Motion FILTER
+        #
+        # modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist)
+        # modMotion.compute()
+        #
+        # # relative angles
+        # modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+        #
+        # # absolute angles
+        # longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","RASI","RPSI","LPSI"])
+        # modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+        #                               segmentLabels=["Left Foot","Right Foot","Pelvis"],
+        #                               angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+        #                               eulerSequences=["TOR","TOR", "ROT"],
+        #                               globalFrameOrientation = globalFrame,
+        #                               forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+        #
+        #
+        # # ------- OPENSIM IK --------------------------------------
+        #
+        # # --- osim builder ---
+        # cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
+        # markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml"
+        #
+        # osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
+        #
+        #
+        # oscf = opensimFilters.opensimCalibrationFilter(osimfile,
+        #                                         model,
+        #                                         cgmCalibrationprocedure)
+        # oscf.addMarkerSet(markersetFile)
+        # scalingOsim = oscf.build(exportOsim=False)
+        #
+        #
+        # # --- fitting ---
+        # #procedure
+        # cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model)
+        # iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml"
+        #
+        # osrf = opensimFilters.opensimFittingFilter(iksetupFile,
+        #                                                   scalingOsim,
+        #                                                   cgmFittingProcedure,
+        #                                                   MAIN_PATH )
+        # acqIK = osrf.run(acqGait,str(MAIN_PATH + gaitFilename ),exportSetUp=False)
+        #
+        # # -------- NEW MOTION FILTER ON IK MARKERS ------------------
+        #
+        # modMotion_ik=modelFilters.ModelMotionFilter(scp,acqIK,model,enums.motionMethod.Sodervisk,
+        #                                             useForMotionTest=True)
+        # modMotion_ik.compute()
+        #
+        # finalJcs =modelFilters.ModelJCSFilter(model,acqIK)
+        # finalJcs.setFilterBool(False)
+        # finalJcs.compute(description="ik", pointLabelSuffix = "2_ik")#
+        #
+        # btkTools.smartWriter(acqIK,"gait trial 01 - Fitting.c3d")
+
+    @classmethod
+    def CGM23_2DOF_test(cls):
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.3\\Knee Calibration\\"
+        staticFilename = "Static.c3d"
+
+        leftKneeFilename = "Left Knee.c3d"
+        rightKneeFilename = "Right Knee.c3d"
+        gaitFilename= "gait trial 01.c3d"
 
 
-
-        # Motion FILTER
-
-        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
-        modMotion.compute()
-
-        # relative angles
-        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
-
-        # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","RASI","RPSI","LPSI"])
-        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
-                                      segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                      angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                      eulerSequences=["TOR","TOR", "ROT"],
-                                      globalFrameOrientation = globalFrame,
-                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
 
 
-        # ------- OPENSIM IK --------------------------------------
-
-        # --- osim builder ---
-        cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
-        markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml"
-
-        osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
 
-        oscf = opensimFilters.opensimCalibrationFilter(osimfile,
-                                                model,
-                                                cgmCalibrationprocedure)
-        oscf.addMarkerSet(markersetFile)
-        scalingOsim = oscf.build(exportOsim=False)
+        model=cgm2.CGM2_3LowerLimbs()
+        model.configure()
+
+        model.addAnthropoInputParameters(mp)
+
+        # --- INITIAL  CALIBRATION ---
+        scp=modelFilters.StaticCalibrationProcedure(model)
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+        # cgm decorator
+        modelDecorator.HipJointCenterDecorator(model).hara()
+        modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both")
+        modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="both")
+
+        # final
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                           seLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara",
+                           useLeftKJCnode="LKJC_mid", useLeftAJCnode="LAJC_mid",
+                           useRightKJCnode="RKJC_mid", useRightAJCnode="RAJC_mid",
+                           markerDiameter=markerDiameter).compute()
 
 
-        # --- fitting ---
-        #procedure
-        cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model)
-        iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml"
+        # ------ LEFT KNEE CALIBRATION -------
+        acqLeftKnee = btkTools.smartReader(str(MAIN_PATH +  leftKneeFilename))
 
-        osrf = opensimFilters.opensimFittingFilter(iksetupFile,
-                                                          scalingOsim,
-                                                          cgmFittingProcedure,
-                                                          MAIN_PATH )
-        acqIK = osrf.run(acqGait,str(MAIN_PATH + gaitFilename ),exportSetUp=False)
+        # Motion of only left
+        modMotionLeftKnee=modelFilters.ModelMotionFilter(scp,acqLeftKnee,model,enums.motionMethod.Sodervisk)
+        modMotionLeftKnee.segmentalCompute(["Left Thigh","Left Shank"])
 
-        # -------- NEW MOTION FILTER ON IK MARKERS ------------------
+        # decorator
+        modelDecorator.KneeCalibrationDecorator(model).calibrate2dof("Left",indexFirstFrame = 489,  indexLastFrame = 1451 )
 
-        modMotion_ik=modelFilters.ModelMotionFilter(scp,acqIK,model,pyCGM2Enums.motionMethod.Sodervisk,
-                                                    useForMotionTest=True)
-        modMotion_ik.compute()
+        # ----add Point into the c3d----
+        btkTools.smartWriter(acqLeftKnee, "Left Knee-2dof.c3d")
 
-        finalJcs =modelFilters.ModelJCSFilter(model,acqIK)
-        finalJcs.setFilterBool(False)
-        finalJcs.compute(description="ik", pointLabelSuffix = "2_ik")#
+        # ------ RIGHT KNEE CALIBRATION -------
+        acqRightKnee = btkTools.smartReader(str(MAIN_PATH +  rightKneeFilename))
 
-        btkTools.smartWriter(acqIK,"gait trial 01 - Fitting.c3d")
+        # Motion of only left
+        modMotionRightKnee=modelFilters.ModelMotionFilter(scp,acqRightKnee,model,enums.motionMethod.Sodervisk)
+        modMotionRightKnee.segmentalCompute(["Right Thigh","Right Shank"])
+
+        # decorator
+        modelDecorator.KneeCalibrationDecorator(model).calibrate2dof("Right",indexFirstFrame = 25,  indexLastFrame = 1060 )
+
+        # ----add Point into the c3d----
+        btkTools.smartWriter(acqRightKnee,  "Right Knee-2dof.c3d")
+
+        #--- FINAL  CALIBRATION ---
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                        useLeftHJCnode="LHJC_Hara", useRightHJCnode="RHJC_Hara",
+                        useLeftKJCnode="KJC_Sara", useLeftAJCnode="LAJC_mid",
+                        useRightKJCnode="KJC_Sara", useRightAJCnode="RAJC_mid",
+                        markerDiameter=markerDiameter).compute()
+
+        #  save static c3d with update KJC
+        btkTools.smartWriter(acqStatic, "Static-2DOF.c3d")
 
 
 
 if __name__ == "__main__":
 
-    CGM2_SARA_test.CGM2_3_SARA_test()
+    CGM2_Knee_test.CGM23_SARA_test()
+    CGM2_Knee_test.CGM23_2DOF_test()
