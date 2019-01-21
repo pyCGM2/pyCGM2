@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 
-        if args.DEBUG:
+        if DEBUG:
             NEXUS.SaveTrial(30)
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

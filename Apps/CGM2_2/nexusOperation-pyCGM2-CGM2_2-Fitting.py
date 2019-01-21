@@ -100,7 +100,7 @@ if __name__ == "__main__":
         nexusTools.createGeneralEvents(NEXUS,subject,acqIK,["Left-FP","Right-FP"])
         # ========END of the nexus OPERATION if run from Nexus  =========
 
-        if args.DEBUG:
+        if DEBUG:
 
             NEXUS.SaveTrial(30)
 
