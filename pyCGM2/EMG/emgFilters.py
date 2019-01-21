@@ -22,28 +22,22 @@ class BasicEmgProcessingFilter(object):
         self.m_hpf_low = low
 
     def run(self):
-
         fa=self.m_acq.GetAnalogFrequency()
-        for analog in btk.Iterate(self.m_acq.GetAnalogs()):
-            for label in self.m_labels:
-                if analog.GetLabel()==label :
+        for label in self.m_labels:
+            values =  self.m_acq.GetAnalog(label).GetValues()
+            # stop 50hz
+            value50= signal_processing.remove50hz(values,fa)
+            # high pass and compensation with mean
+            hpLower = self.m_hpf_low
+            hpUpper = self.m_hpf_up
+            valuesHp =  signal_processing.highPass(value50,hpLower,hpUpper,fa)
 
-                    values =  analog.GetValues()
+            btkTools.smartAppendAnalog(self.m_acq,label+"_HPF",valuesHp, desc= "high Pass filter" )
 
-                    # stop 50hz
-                    value50= signal_processing.remove50hz(values,fa)
-
-                    # high pass and compensation with mean
-                    hpLower = self.m_hpf_low
-                    hpUpper = self.m_hpf_up
+            # rectification
+            btkTools.smartAppendAnalog(self.m_acq,label+"_Rectify",np.abs(valuesHp), desc= "rectify" )
 
 
-                    valuesHp =  signal_processing.highPass(value50,hpLower,hpUpper,fa)
-
-                    btkTools.smartAppendAnalog(self.m_acq,label+"_HPF",valuesHp, desc= "high Pass filter" )
-
-                    # rectification
-                    btkTools.smartAppendAnalog(self.m_acq,label+"_Rectify",np.abs(valuesHp), desc= "rectify" )
 
 class EmgEnvelopProcessingFilter(object):
     """
@@ -61,14 +55,21 @@ class EmgEnvelopProcessingFilter(object):
 
     def run(self):
         fa=self.m_acq.GetAnalogFrequency()
-        for analog in btk.Iterate(self.m_acq.GetAnalogs()):
-            for label in self.m_labels:
-                if analog.GetLabel()==label :
+        for label in self.m_labels:
+            values =  self.m_acq.GetAnalog(label).GetValues()
+            valuesFilt = signal_processing.enveloppe(values, self.m_fc,fa)
+            btkTools.smartAppendAnalog(self.m_acq,label+"_Env",valuesFilt, desc= "fc("+str(self.m_fc)+")")
 
-                    values =  analog.GetValues()
-                    valuesFilt = signal_processing.enveloppe(values, self.m_fc,fa)
 
-                    btkTools.smartAppendAnalog(self.m_acq,label+"_Env",valuesFilt, desc= "fc("+str(self.m_fc)+")")
+        # for analog in btk.Iterate(self.m_acq.GetAnalogs()):
+        #
+        #     for label in self.m_labels:
+        #         if analog.GetLabel()==label :
+        #
+        #             values =  analog.GetValues()
+        #             valuesFilt = signal_processing.enveloppe(values, self.m_fc,fa)
+        #
+        #             btkTools.smartAppendAnalog(self.m_acq,label+"_Env",valuesFilt, desc= "fc("+str(self.m_fc)+")")
 
 class EmgNormalisationProcessingFilter(object):
     """
