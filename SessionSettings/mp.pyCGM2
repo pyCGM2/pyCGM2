@@ -10,14 +10,14 @@
         "RightAnkleWidth": 0,
         "LeftSoleDelta": 0,
         "RightSoleDelta": 0,
-        'LeftShoulderOffset' : 0,
-        'LeftElbowWidth' : 0,
-        'LeftWristWidth' : 0,
-        'LeftHandThickness' : 0,
-        'RightShoulderOffset' :0,
-        'RightElbowWidth' : 0,
-        'RightWristWidth' : 0,
-        'RightHandThickness' :0
+        "LeftShoulderOffset" : 0,
+        "LeftElbowWidth" : 0,
+        "LeftWristWidth" : 0,
+        "LeftHandThickness" : 0,
+        "RightShoulderOffset" :0,
+        "RightElbowWidth" : 0,
+        "RightWristWidth" : 0,
+        "RightHandThickness" :0
     },
     "Optional": {
         "InterAsisDistance": 0,
