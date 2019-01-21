@@ -29,7 +29,6 @@ if __name__ == "__main__":
     parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
     parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
     parser.add_argument('-e','--endFrame', type=int, help="end frame")
-    parser.add_argument('--DEBUG', action='store_true', help='debug model. load file into nexus externally')
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -39,8 +38,8 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
         # --------------------------PATH + FILE ------------------------------------
-
-        if args.DEBUG:
+        DEBUG = False
+        if DEBUG:
             # CGM2.3--
             DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\"
             reconstructedFilenameLabelledNoExt = "Right Knee"
