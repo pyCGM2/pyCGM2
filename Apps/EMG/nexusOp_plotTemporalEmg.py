@@ -23,6 +23,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
     parser.add_argument('-bpf', '--bandPassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-ecf','--envelopCutOffFrequency', type=int, help='cutoff frequency for emg envelops')
+    parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of the processed file')
     parser.add_argument('-r','--raw', action='store_true', help='rectified data')
     args = parser.parse_args()
 
@@ -44,6 +45,8 @@ if __name__ == "__main__":
             logging.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
 
         rectifyBool = False if args.raw else True
+
+        fileSuffix ="" if args.fileSuffix is None else args.fileSuffix
 
         # --- acquisition file and path----
         DEBUG = False
@@ -79,7 +82,6 @@ if __name__ == "__main__":
         # NORMAL_ACTIVITIES = ["RECFEM","RECFEM",None,"VASLAT"]
 
 
-        fileSuffix=""
         analysis.processEMG(DATA_PATH, [inputFile], EMG_LABELS,
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency,fileSuffix=fileSuffix) # high pass then low pass for all c3ds

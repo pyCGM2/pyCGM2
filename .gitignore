@@ -16,7 +16,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+#lib/
 lib64/
 parts/
 sdist/
@@ -98,6 +98,7 @@ ENV/
 
 
 Sandbox
+Obsolete
 !/pyCGM2/opensim3/*.dll
 !/pyCGM2/opensim3/*.lib
 !/pyCGM2/ma/*.dll

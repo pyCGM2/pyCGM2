@@ -23,7 +23,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
     parser.add_argument('-bpf', '--bandPassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-ecf','--envelopCutOffFrequency', type=int, help='cutoff frequency for emg envelops')
-    parser.add_argument('-r','--raw', action='store_true', help='rectified data')
+    parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of the processed file')
+    parser.add_argument('-c','--consistency', action='store_true', help='consistency plots')
     args = parser.parse_args()
 
 
@@ -44,8 +45,10 @@ if __name__ == "__main__":
             envelopCutOffFrequency =  args.envelopCutOffFrequency
             logging.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
 
-        rectifyBool = False if args.raw else True
+        consistencyFlag = True if args.consistency else False
 
+
+        fileSuffix="" if args.fileSuffix is None else args.fileSuffix
         # --- acquisition file and path----
         DEBUG = False
         if DEBUG:
@@ -79,7 +82,7 @@ if __name__ == "__main__":
         # NORMAL_ACTIVITIES = ["RECFEM","RECFEM",None,"VASLAT"]
 
 
-        fileSuffix=""
+
         analysis.processEMG(DATA_PATH, [inputFile], EMG_LABELS,
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency,fileSuffix=fileSuffix) # high pass then low pass for all c3ds
@@ -88,7 +91,12 @@ if __name__ == "__main__":
 
         if fileSuffix!="":
             inputfile = inputFile +"_"+ fileSuffix
-        plot.plotDescriptiveEnvelopEMGpanel(emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False)
+
+        if not consistencyFlag:
+            plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False,exportPdf=True,outputName=inputFile)
+        else:
+            plot.plotConsistencyEnvelopEMGpanel(DATA_PATH,emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False,exportPdf=True,outputName=inputFile)
+
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
