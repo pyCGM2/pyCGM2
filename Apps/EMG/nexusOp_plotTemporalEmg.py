@@ -26,10 +26,8 @@ if __name__ == "__main__":
     parser.add_argument('-r','--raw', action='store_true', help='rectified data')
     args = parser.parse_args()
 
-    print args
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
-
 
         # ----------------------INPUTS-------------------------------------------
         bandPassFilterFrequencies = [20,200]
@@ -59,6 +57,7 @@ if __name__ == "__main__":
             DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
 
         inputFile = inputFileNoExt+".c3d"
+
 
         emgSettings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
 
