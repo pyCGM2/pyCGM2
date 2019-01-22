@@ -49,7 +49,7 @@ class CGM2_4_calibration():
         # --- Calibration ---
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm2.CGM2_4LowerLimbs()
+        model=cgm2.CGM2_4()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
@@ -102,7 +102,7 @@ class CGM2_4_calibration():
         # --- Calibration ---
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm2.CGM2_4LowerLimbs()
+        model=cgm2.CGM2_4()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
@@ -157,7 +157,7 @@ class CGM2_4_calibration():
         # --- Calibration ---
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm2.CGM2_4LowerLimbs()
+        model=cgm2.CGM2_4()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
@@ -216,7 +216,7 @@ class CGM2_4_staticFitting():
         translators = files.getTranslators(MAIN_PATH,"CGM2_4.translators")
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
-        model=cgm2.CGM2_4LowerLimbs()
+        model=cgm2.CGM2_4()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
@@ -277,7 +277,7 @@ class CGM2_4_staticFitting():
         translators = files.getTranslators(MAIN_PATH,"CGM2_4.translators")
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
-        model=cgm2.CGM2_4LowerLimbs()
+        model=cgm2.CGM2_4()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
@@ -339,7 +339,7 @@ class CGM2_4_staticFitting():
         translators = files.getTranslators(MAIN_PATH,"CGM2_4.translators")
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
-        model=cgm2.CGM2_4LowerLimbs()
+        model=cgm2.CGM2_4()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
@@ -437,7 +437,7 @@ class CGM2_4_staticFitting():
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
 
-        model=cgm2.CGM2_4LowerLimbs()
+        model=cgm2.CGM2_4()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
@@ -495,7 +495,7 @@ class CGM2_4_staticFitting():
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
 
-        model=cgm2.CGM2_4LowerLimbs()
+        model=cgm2.CGM2_4()
         model.configure()
 
         model.addAnthropoInputParameters(mp)

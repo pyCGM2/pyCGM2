@@ -47,7 +47,7 @@ class CGM2_3_Tests():
         translators = files.getTranslators(MAIN_PATH,"CGM2_3.translators")
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
-        model=cgm2.CGM2_3LowerLimbs()
+        model=cgm2.CGM2_3()()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
@@ -111,7 +111,7 @@ class CGM2_3_Tests():
         translators = files.getTranslators(MAIN_PATH,"CGM2_3.translators")
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
-        model=cgm2.CGM2_3LowerLimbs()
+        model=cgm2.CGM2_3()()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
@@ -176,7 +176,7 @@ class CGM2_3_Tests():
         translators = files.getTranslators(MAIN_PATH,"CGM2_3.translators")
         acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
-        model=cgm2.CGM2_3LowerLimbs()
+        model=cgm2.CGM2_3()()
         model.configure()
 
         model.addAnthropoInputParameters(mp)

@@ -36,7 +36,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     # --------------------------MODEL--------------------------------------
     # ---definition---
-    model=cgm2.CGM2_4LowerLimbs()
+    model=cgm2.CGM2_4()
     model.configure(acq=acqStatic,detectedCalibrationMethods=dcm)
 
     model.addAnthropoInputParameters(required_mp,optional=optional_mp)

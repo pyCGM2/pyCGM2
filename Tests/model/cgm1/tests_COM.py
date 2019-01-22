@@ -58,7 +58,7 @@ class CGM1_com():
         'RightWristWidth' : 55 ,
         'RightHandThickness' : 30}
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure(bodyPart=enums.BodyPart.FullBody)
         model.addAnthropoInputParameters(mp)
 
@@ -156,7 +156,7 @@ class CGM1_com():
         'RightWristWidth' : 55 ,
         'RightHandThickness' : 30}
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure(bodyPart=enums.BodyPart.FullBody)
         model.addAnthropoInputParameters(mp)
 

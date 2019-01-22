@@ -30,7 +30,7 @@ class CGM2_1_calibrationTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm2.CGM2_1LowerLimbs()
+        model=cgm2.CGM2_1()
         model.configure()
 
         markerDiameter=14
@@ -83,7 +83,7 @@ class CGM2_1_calibrationTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm2.CGM2_1LowerLimbs()
+        model=cgm2.CGM2_1()
         model.configure()
 
         markerDiameter=14
@@ -137,7 +137,7 @@ class CGM2_1_calibrationTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm2.CGM2_1LowerLimbs()
+        model=cgm2.CGM2_1()
         model.configure()
 
         markerDiameter=14
@@ -192,7 +192,7 @@ class CGM2_1_calibrationTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm2.CGM2_1LowerLimbs()
+        model=cgm2.CGM2_1()
         model.configure()
 
         markerDiameter=14
@@ -250,7 +250,7 @@ class CGM2_1_calibrationTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm2.CGM2_1LowerLimbs()
+        model=cgm2.CGM2_1()
         model.configure()
 
         markerDiameter=14

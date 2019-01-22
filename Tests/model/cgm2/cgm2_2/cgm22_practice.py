@@ -46,7 +46,7 @@ if __name__ == "__main__":
     # --- Calibration ---
     acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-    model=cgm2.CGM2_2LowerLimbs()
+    model=cgm2.CGM2_2()
     model.configure()
 
     model.addAnthropoInputParameters(mp)

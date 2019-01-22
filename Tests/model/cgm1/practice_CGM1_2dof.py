@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-    model=cgm.CGM1LowerLimbs()
+    model=cgm.CGM1
     model.configure()
 
     markerDiameter=14

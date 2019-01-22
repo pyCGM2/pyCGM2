@@ -48,7 +48,7 @@ class CGM1_angleTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure(bodyPart=enums.BodyPart.UpperLimb)
 
 
@@ -122,7 +122,7 @@ class CGM1_angleTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure(bodyPart=enums.BodyPart.UpperLimb)
 
 
@@ -214,7 +214,7 @@ class CGM1_angleTest():
         'RightWristWidth' : 55 ,
         'RightHandThickness' : 30}
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure(bodyPart=enums.BodyPart.FullBody)
         model.addAnthropoInputParameters(mp)
 

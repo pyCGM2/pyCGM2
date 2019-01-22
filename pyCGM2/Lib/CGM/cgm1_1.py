@@ -35,7 +35,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     dcm= cgm.CGM.detectCalibrationMethods(acqStatic)
 
     # ---definition---
-    model=cgm.CGM1LowerLimbs()
+    model=cgm.CGM1()
     model.setVersion("CGM1.1")
     model.configure(acq=acqStatic,detectedCalibrationMethods=dcm)
     model.addAnthropoInputParameters(required_mp,optional=optional_mp)

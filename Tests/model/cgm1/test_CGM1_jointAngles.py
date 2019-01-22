@@ -59,7 +59,7 @@ class CGM1_motionJCSTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -157,7 +157,7 @@ class CGM1_motionJCSTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -256,7 +256,7 @@ class CGM1_motionJCSTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -363,7 +363,7 @@ class CGM1_motionJCSTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -472,7 +472,7 @@ class CGM1_motionAbsoluteAnglesTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -561,7 +561,7 @@ class CGM1_motionAbsoluteAnglesTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -652,7 +652,7 @@ class CGM1_motionFullAnglesTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -790,7 +790,7 @@ class CGM1_motionFullAnglesTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -936,7 +936,7 @@ class CGM1_motionFullAnglesTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         mp={
@@ -1080,7 +1080,7 @@ class CGM1_motionFullAnglesTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         mp={
@@ -1226,7 +1226,7 @@ class CGM1_motionFullAnglesTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         mp={
@@ -1374,7 +1374,7 @@ class CGM1_motionFullAnglesTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
 

@@ -94,7 +94,7 @@ class CGM1_motionInverseDynamicsTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -176,7 +176,7 @@ class CGM1_motionInverseDynamicsTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -253,7 +253,7 @@ class CGM1_motionInverseDynamicsTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -329,7 +329,7 @@ class CGM1_motionInverseDynamicsTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -413,7 +413,7 @@ class CGM1_motionInverseDynamicsTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -502,7 +502,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -569,7 +569,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -634,7 +634,7 @@ class CGM1_motionInverseDynamics_pathologicalSubjectTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14

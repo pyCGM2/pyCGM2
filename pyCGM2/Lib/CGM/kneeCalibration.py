@@ -49,7 +49,7 @@ def calibration2Dof(model,
         logging.info("Detected motion side : %s" %(side) )
 
     if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2"]:
-        validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1LowerLimbs.LOWERLIMB_TRACKING_MARKERS)
+        validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1.LOWERLIMB_TRACKING_MARKERS)
 
     # --------------------------RESET OF THE STATIC File---------
     # load btkAcq from static file

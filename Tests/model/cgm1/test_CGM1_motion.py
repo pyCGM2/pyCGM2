@@ -117,7 +117,7 @@ class CGM1_motionTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -285,7 +285,7 @@ class CGM1_motionTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -456,7 +456,7 @@ class CGM1_motionTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -647,7 +647,7 @@ class CGM1_motionTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -822,7 +822,7 @@ class CGM1_motionTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -999,7 +999,7 @@ class CGM1_motionTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14
@@ -1187,7 +1187,7 @@ class CGM1_motionTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
 
         markerDiameter=14

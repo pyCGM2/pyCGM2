@@ -12,7 +12,7 @@ class tests_getTrackingMarkers():
     def CGM1(cls):
         TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
         trackingMarkers = model.getTrackingMarkers()
 
@@ -22,7 +22,7 @@ class tests_getTrackingMarkers():
     def CGM11(cls):
         TRACKING_MARKERS = ["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
         trackingMarkers = model.getTrackingMarkers()
 
@@ -101,7 +101,7 @@ class tests_getStaticMarkers():
         dcm = cgm.CGM.detectCalibrationMethods(acq)
 
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
         trackingMarkers = model.getTrackingMarkers()
         staticMarkers = model.getStaticMarkers(dcm)
@@ -124,7 +124,7 @@ class tests_getStaticMarkers():
         dcm = cgm.CGM.detectCalibrationMethods(acq)
 
 
-        model=cgm.CGM1LowerLimbs()
+        model=cgm.CGM1
         model.configure()
         trackingMarkers = model.getTrackingMarkers()
         staticMarkers = model.getStaticMarkers(dcm)

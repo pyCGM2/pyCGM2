@@ -50,7 +50,7 @@ class CGM2_Knee_test():
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
 
-        model=cgm2.CGM2_3LowerLimbs()
+        model=cgm2.CGM2_3()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
@@ -207,7 +207,7 @@ class CGM2_Knee_test():
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
 
-        model=cgm2.CGM2_3LowerLimbs()
+        model=cgm2.CGM2_3()
         model.configure()
 
         model.addAnthropoInputParameters(mp)
