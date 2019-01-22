@@ -4,10 +4,11 @@ import matplotlib.pyplot as plt
 import logging
 
 import pyCGM2
+from pyCGM2.Lib import analysis
+from pyCGM2.Lib import plot
 
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Processing import exporter,c3dManager
-from pyCGM2.Processing.highLevel import standardSmartFunctions,gaitSmartFunctions
 from pyCGM2.Utils import files
 
 
@@ -98,10 +99,8 @@ class AnalysisTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
+
 
     @classmethod
     def makeAnalysis_oneFile_withInfo(cls):
@@ -128,10 +127,7 @@ class AnalysisTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
 
 
     @classmethod
@@ -158,12 +154,9 @@ class AnalysisTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
 
-        files.saveAnalysis(analysis,DATA_PATH,"Save_and_openAnalysis")
+        files.saveAnalysis(analysisInstance,DATA_PATH,"Save_and_openAnalysis")
         analysis2 = files.loadAnalysis(DATA_PATH,"Save_and_openAnalysis")
 
 if __name__ == "__main__":

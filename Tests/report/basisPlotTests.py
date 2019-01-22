@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
+from pyCGM2.Lib import analysis
 
-from pyCGM2.Processing.highLevel import standardSmartFunctions,gaitSmartFunctions
 from pyCGM2.Model.CGM2 import  cgm,cgm2
 from pyCGM2.Processing import c3dManager
 
@@ -61,14 +61,12 @@ class oneAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         fig = plt.figure()
         ax = plt.gca()
-        plot.gaitDescriptivePlot(ax,analysis.kinematicStats,
+        plot.gaitDescriptivePlot(ax,analysisInstance.kinematicStats,
                                 "LPelvisAngles","Left",0,
                                 color="blue",
                                 title="", xlabel="", ylabel="",ylim=None,
@@ -100,14 +98,12 @@ class oneAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
+
 
         fig = plt.figure()
         ax = plt.gca()
-        plot.gaitConsistencyPlot(ax,analysis.kinematicStats,
+        plot.gaitConsistencyPlot(ax,analysisInstance.kinematicStats,
                                 "LPelvisAngles","Left",0,
                                 color="blue",
                                 title="", xlabel="", ylabel="",ylim=None,
@@ -139,14 +135,11 @@ class oneAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         fig = plt.figure()
         ax = plt.gca()
-        plot.gaitMeanPlot(ax,analysis.kinematicStats,
+        plot.gaitMeanPlot(ax,analysisInstance.kinematicStats,
                                 "LPelvisAngles","Left",0,
                                 color="blue",
                                 title="", xlabel="", ylabel="",ylim=None,
@@ -180,15 +173,9 @@ class multipleAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis1 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis1 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
-        analysis2 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis2 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         analyses = [analysis1, analysis2]
         fig = plt.figure()
@@ -235,15 +222,9 @@ class multipleAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis1 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis1 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
-        analysis2 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis2 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         analyses = [analysis1, analysis2]
         fig = plt.figure()

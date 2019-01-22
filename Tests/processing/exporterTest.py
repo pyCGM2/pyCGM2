@@ -4,11 +4,12 @@ import matplotlib.pyplot as plt
 import logging
 
 import pyCGM2
-
+from pyCGM2.Lib import analysis
+from pyCGM2.Lib import plot
 
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Processing import exporter,c3dManager
-from pyCGM2.Processing.highLevel import standardSmartFunctions,gaitSmartFunctions
+
 
 
 
@@ -37,14 +38,11 @@ class ExportTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
 
 
         exportFilter = exporter.XlsAnalysisExportFilter()
-        exportFilter.setAnalysisInstance(analysis)
+        exportFilter.setAnalysisInstance(analysisInstance)
         exportFilter.export("testAdvanced", path=DATA_PATH,excelFormat = "xls",mode="Advanced")
 
     @classmethod
@@ -70,14 +68,12 @@ class ExportTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
 
 
         exportFilter = exporter.XlsAnalysisExportFilter()
-        exportFilter.setAnalysisInstance(analysis)
+        exportFilter.setAnalysisInstance(analysisInstance)
         exportFilter.export("test", path=DATA_PATH,excelFormat = "xls",mode="Basic")
 
 

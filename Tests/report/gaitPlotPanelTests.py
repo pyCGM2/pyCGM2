@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
+from pyCGM2.Lib import analysis
 
-from pyCGM2.Processing.highLevel import standardSmartFunctions,gaitSmartFunctions
 from pyCGM2 import enums
 from pyCGM2.Processing import c3dManager
 from pyCGM2.Model.CGM2 import  cgm,cgm2
@@ -40,13 +40,10 @@ class oneAnalysis_StandardPlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         # viewer
-        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis)
+        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysisInstance)
         kv.setConcretePlotFunction(plot.descriptivePlot)
         kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
 
@@ -86,13 +83,10 @@ class oneAnalysis_GaitPlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         # viewer
-        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis)
+        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysisInstance)
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
         kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
 
@@ -125,13 +119,10 @@ class oneAnalysis_GaitPlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         # viewer
-        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis)
+        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysisInstance)
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
         kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
 
@@ -165,13 +156,10 @@ class oneAnalysis_GaitPlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         # viewer
-        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis)
+        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysisInstance)
         kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
         kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
 
@@ -205,14 +193,11 @@ class oneAnalysis_GaitPlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         # viewer
         if trialManager.kineticFlag:
-            kv = plotViewers.LowerLimbKineticsPlotViewer(analysis)
+            kv = plotViewers.LowerLimbKineticsPlotViewer(analysisInstance)
             kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
             kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
 
@@ -249,15 +234,9 @@ class multipleAnalysis_GaitPlotTest():
         experimentalInfo=None
 
 
-        analysis1 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis1 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
-        analysis2 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis2 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         kv = plotViewers.multipleAnalyses_LowerLimbKinematicsPlotViewer([analysis1,analysis2],"Left",["ana1","ana2"])
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
@@ -295,15 +274,9 @@ class multipleAnalysis_GaitPlotTest():
         experimentalInfo=None
 
 
-        analysis1 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis1 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
-        analysis2 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis2 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         kv = plotViewers.multipleAnalyses_LowerLimbKinematicsPlotViewer([analysis1,analysis2],"Left",["ana1","ana2"])
         kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
@@ -338,15 +311,9 @@ class multipleAnalysis_GaitPlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis1 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis1 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
-        analysis2 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis2 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
         kv = plotViewers.multipleAnalyses_LowerLimbKinematicsPlotViewer([analysis1,analysis2],"Left",
                                                                     ["ana1","ana2"])
@@ -383,15 +350,9 @@ class multipleAnalysis_GaitPlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis1 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis1 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
-        analysis2 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis2 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
 
         kv = plotViewers.multipleAnalyses_LowerLimbKineticsPlotViewer([analysis1,analysis2],"Right",
@@ -428,15 +389,9 @@ class multipleAnalysis_GaitPlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis1 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis1 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
-        analysis2 = gaitSmartFunctions.make_analysis(trialManager,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT,
-                                                cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT,
-                                    modelInfo,subjectInfo,experimentalInfo)
+        analysis2 = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
 
 
         kv = plotViewers.multipleAnalyses_LowerLimbKineticsPlotViewer([analysis1,analysis2],"Right",
