@@ -6,14 +6,14 @@ from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emg
 from pyCGM2.Processing import scores
 from pyCGM2.Tools import trialTools
 
-def plotTemporalKinematic(DATA_PATH, modelledFilenames,exportPdf=False):
+def plotTemporalKinematic(DATA_PATH, modelledFilenames,pointLabelSuffix="", exportPdf=False):
 
     if exportPdf:
         filenameOut =  str(modelledFilenames+"-Temporal Kinematics")
 
     trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
 
-    kv = plotViewers.TemporalGaitKinematicsPlotViewer(trial)
+    kv = plotViewers.TemporalGaitKinematicsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix)
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
@@ -23,14 +23,14 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,exportPdf=False):
     plt.show()
 
 
-def plotTemporalKinetic(DATA_PATH, modelledFilenames,exportPdf=False):
+def plotTemporalKinetic(DATA_PATH, modelledFilenames,pointLabelSuffix="",exportPdf=False):
 
     if exportPdf:
         filenameOut =  str(modelledFilenames+"-Temporal Kinetics")
 
     trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
 
-    kv = plotViewers.TemporalGaitKineticsPlotViewer(trial)
+    kv = plotViewers.TemporalGaitKineticsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix)
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
