@@ -237,7 +237,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
     def setEmgs(self,emgs):
         for it in emgs:
-            self.emgs.append({"Label": it[0], "Context": it[1]})
+            self.emgs.append({"Label": it[0], "Context": it[1],  "Muscle": it[2]})
 
     def setNormalizedEmgFlag(self,flag):
         self.m_normalizedEmgFlag = flag
@@ -253,26 +253,31 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
-        ax0 = plt.subplot(5,3,1)
-        ax1 = plt.subplot(5,3,2)
-        ax2 = plt.subplot(5,3,3)
-        ax3 = plt.subplot(5,3,4)
-        ax4 = plt.subplot(5,3,5)
-        ax5 = plt.subplot(5,3,6)
-        ax6 = plt.subplot(5,3,7)
-        ax7 = plt.subplot(5,3,8)
-        ax8 = plt.subplot(5,3,9)
-        ax9 = plt.subplot(5,3,10)
-        ax10 = plt.subplot(5,3,11)
-        ax11 = plt.subplot(5,3,12)
+        ax0 = plt.subplot(4,4,1)
+        ax1 = plt.subplot(4,4,2)
+        ax2 = plt.subplot(4,4,3)
+        ax3 = plt.subplot(4,4,4)
+        ax4 = plt.subplot(4,4,5)
+        ax5 = plt.subplot(4,4,6)
+        ax6 = plt.subplot(4,4,7)
+        ax7 = plt.subplot(4,4,8)
+        ax8 = plt.subplot(4,4,9)
+        ax9 = plt.subplot(4,4,10)
+        ax10 = plt.subplot(4,4,11)
+        ax11 = plt.subplot(4,4,12)
+        ax12 = plt.subplot(4,4,13)
+        ax13 = plt.subplot(4,4,14)
+        ax14 = plt.subplot(4,4,15)
+        ax15 = plt.subplot(4,4,16)
 
         for i in range(0, len(self.emgs)):
             label = self.emgs[i]["Label"]
             context = self.emgs[i]["Context"]
+            muscle = self.emgs[i]["Muscle"]
 
-            muscle = self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
+            normalActivity = self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
 
-            self.fig.axes[i].set_title(label +"["+ muscle+"]" +"-"+context ,size=6)
+            self.fig.axes[i].set_title(label+":"+ muscle+"-"+context+"\n["+ normalActivity+"]" ,size=6)
 
 
         for ax in self.fig.axes:
@@ -361,7 +366,7 @@ class MultipleAnalysis_EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer)
 
     def setEmgs(self,emgs):
         for it in emgs:
-            self.emgs.append({"Label": it[0], "Context": it[1]})
+            self.emgs.append({"Label": it[0], "Context": it[1],  "Muscle": it[2]})
 
     def setNormalizedEmgFlag(self,flag):
         self.m_normalizedEmgFlag = flag
@@ -376,18 +381,22 @@ class MultipleAnalysis_EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer)
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
-        ax0 = plt.subplot(5,3,1)
-        ax1 = plt.subplot(5,3,2)
-        ax2 = plt.subplot(5,3,3)
-        ax3 = plt.subplot(5,3,4)
-        ax4 = plt.subplot(5,3,5)
-        ax5 = plt.subplot(5,3,6)
-        ax6 = plt.subplot(5,3,7)
-        ax7 = plt.subplot(5,3,8)
-        ax8 = plt.subplot(5,3,9)
-        ax9 = plt.subplot(5,3,10)
-        ax10 = plt.subplot(5,3,11)
-        ax11 = plt.subplot(5,3,12)
+        ax0 = plt.subplot(4,4,1)
+        ax1 = plt.subplot(4,4,2)
+        ax2 = plt.subplot(4,4,3)
+        ax3 = plt.subplot(4,4,4)
+        ax4 = plt.subplot(4,4,5)
+        ax5 = plt.subplot(4,4,6)
+        ax6 = plt.subplot(4,4,7)
+        ax7 = plt.subplot(4,4,8)
+        ax8 = plt.subplot(4,4,9)
+        ax9 = plt.subplot(4,4,10)
+        ax10 = plt.subplot(4,4,11)
+        ax11 = plt.subplot(4,4,12)
+        ax12 = plt.subplot(4,4,13)
+        ax13 = plt.subplot(4,4,14)
+        ax14 = plt.subplot(4,4,15)
+        ax15 = plt.subplot(4,4,16)
 
         for i in range(0, len(self.emgs)):
             label = self.emgs[i]["Label"]
@@ -395,8 +404,7 @@ class MultipleAnalysis_EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer)
 
             muscle = self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
 
-            self.fig.axes[i].set_title(label +"["+ muscle+"]" +"-"+context ,size=6)
-
+            self.fig.axes[i].set_title(label+":"+ muscle+"-"+context+"\n["+ normalActivity+"]" ,size=6)
 
         for ax in self.fig.axes:
             ax.tick_params(axis='x', which='major', labelsize=6)
