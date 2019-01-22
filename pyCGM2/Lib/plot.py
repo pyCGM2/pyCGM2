@@ -6,7 +6,10 @@ from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emg
 from pyCGM2.Processing import scores
 from pyCGM2.Tools import trialTools
 
-def plotTemporalKinematic(DATA_PATH, modelledFilenames):
+def plotTemporalKinematic(DATA_PATH, modelledFilenames,exportPdf=False):
+
+    if exportPdf:
+        filenameOut =  str(modelledFilenames+"-Temporal Kinematics")
 
     trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
 
@@ -14,12 +17,16 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames):
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
+    if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
     pf.plot()
 
     plt.show()
 
 
-def plotTemporalKinetic(DATA_PATH, modelledFilenames):
+def plotTemporalKinetic(DATA_PATH, modelledFilenames,exportPdf=False):
+
+    if exportPdf:
+        filenameOut =  str(modelledFilenames+"-Temporal Kinetics")
 
     trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
 
@@ -27,6 +34,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames):
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
+    if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
     pf.plot()
 
     plt.show()
@@ -149,7 +157,14 @@ def plot_spatioTemporal(analysis):
     stppf.plot()
     plt.show()
 
-def plot_DescriptiveKinematic(analysis,normativeDataset,pointLabelSuffix="",type="Gait"):
+def plot_DescriptiveKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix="",type="Gait",exportPdf=False,outputName=None):
+
+    if outputName is None:
+        outputName = "Global Analysis"
+
+    if exportPdf:
+        filenameOut =  str(outputName+"-descriptive  Kinematics")
+
 
     # filter 1 - descriptive kinematic panel
     #-------------------------------------------
@@ -174,12 +189,18 @@ def plot_DescriptiveKinematic(analysis,normativeDataset,pointLabelSuffix="",type
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    #pf.setExport(outputPath,str(pdfFilename+"-descriptive  Kinematics"),"pdf")
+    if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     pf.plot()
     plt.show()
 
 
-def plot_ConsistencyKinematic(analysis,normativeDataset,pointLabelSuffix="",type="Gait"):
+def plot_ConsistencyKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix="",type="Gait",exportPdf=False,outputName=None):
+
+    if outputName is None:
+        outputName = "Global Analysis"
+
+    if exportPdf:
+        filenameOut =  str(outputName+"-consistency Kinematics")
 
     if analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3"]:
         kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
@@ -201,12 +222,18 @@ def plot_ConsistencyKinematic(analysis,normativeDataset,pointLabelSuffix="",type
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    #pf.setExport(outputPath,str(pdfFilename+"-consisntency Kinematics"),"pdf")
+    if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     pf.plot()
     plt.show()
 
 
-def plot_DescriptiveKinetic(analysis,normativeDataset,pointLabelSuffix="",type="Gait"):
+def plot_DescriptiveKinetic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix="",type="Gait",exportPdf=False,outputName=None):
+
+    if outputName is None:
+        outputName = "Global Analysis"
+
+    if exportPdf:
+        filenameOut =  str(outputName+"-descriptive Kinetics")
 
     if  analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
         kv = plotViewers.LowerLimbKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
@@ -224,12 +251,18 @@ def plot_DescriptiveKinetic(analysis,normativeDataset,pointLabelSuffix="",type="
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    #pf.setExport(outputPath,str(pdfFilename+"-descriptive  Kinetics"),"pdf")
+    if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     pf.plot()
     plt.show()
 
 
-def plot_ConsistencyKinetic(analysis,normativeDataset,pointLabelSuffix="",type="Gait"):
+def plot_ConsistencyKinetic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix="",type="Gait",exportPdf=False,outputName=None):
+
+    if outputName is None:
+        outputName = "Global Analysis"
+
+    if exportPdf:
+        filenameOut =  str(outputName+"-consistency Kinetics")
 
     if  analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
         kv = plotViewers.LowerLimbKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
@@ -245,11 +278,17 @@ def plot_ConsistencyKinetic(analysis,normativeDataset,pointLabelSuffix="",type="
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    #pf.setExport(outputPath,str(pdfFilename+"-descriptive  Kinetics"),"pdf")
+    if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     pf.plot()
     plt.show()
 
-def plot_MAP(analysis,normativeDataset):
+def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None):
+
+    if outputName is None:
+        outputName = "Global Analysis"
+
+    if exportPdf:
+        filenameOut =  str(outputName+"-Map")
 
     #compute
     gps =scores.CGM1_GPS()
@@ -258,8 +297,10 @@ def plot_MAP(analysis,normativeDataset):
 
     #plot
     kv = plotViewers.GpsMapPlotViewer(analysis)
+
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
+    if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     pf.plot()
     plt.show()
 
