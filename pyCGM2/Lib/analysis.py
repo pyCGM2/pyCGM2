@@ -7,9 +7,9 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.EMG import emgFilters
 from pyCGM2 import enums
 
-def makeAnalysis(type,modelInfo,DATA_PATH,
+def makeAnalysis(type,modelVersion,DATA_PATH,
                     modelledFilenames,
-                    subjectInfo, experimentalInfo,
+                    subjectInfo, experimentalInfo,modelInfo,
                     pointLabelSuffix=""):
 
 
@@ -38,12 +38,13 @@ def makeAnalysis(type,modelInfo,DATA_PATH,
     cycles = cyclefilter.build()
 
     #----analysis
-    if modelInfo["Version"]=="CGM2.4":
+    if modelVersion=="CGM2.4":
         cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT["Left"].append("LForeFootAngles")
         cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT["Right"].append("RForeFootAngles")
 
     kinematicLabelsDict = cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT
     kineticLabelsDict = cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT
+
 
 
     if type == "Gait":
@@ -57,8 +58,12 @@ def makeAnalysis(type,modelInfo,DATA_PATH,
                                                       kineticLabelsDict = kineticLabelsDict,
                                                       pointlabelSuffix = pointLabelSuffix)
 
+    finalmodelInfos = {"Version":modelVersion}
+    if modelInfo is not None: finalmodelInfos.update(modelInfo)
+
+
     analysisFilter = analysis.AnalysisFilter()
-    analysisFilter.setInfo(subject=subjectInfo, model=modelInfo, experimental=experimentalInfo)
+    analysisFilter.setInfo(subject=subjectInfo, model=finalmodelInfos, experimental=experimentalInfo)
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
 
