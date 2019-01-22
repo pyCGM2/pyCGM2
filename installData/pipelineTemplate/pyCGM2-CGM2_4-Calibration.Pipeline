@@ -33,9 +33,9 @@
     </ParamList>
   </Entry>
 
-  <Entry DisplayName="Run pyCGM2-staticProcessing " Enabled="0" OperationId="107" OperationName="Python">
+  <Entry DisplayName="Run pyCGM2-plotTemporalKinematics" Enabled="0" OperationId="0" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-pyCGM2-staticProcessing.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-plotTemporalKinematics.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
