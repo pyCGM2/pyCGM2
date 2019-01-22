@@ -109,7 +109,7 @@ def openYaml(path,filename,stringContent=None):
         struct = yaml.load(stringContent)
         return struct
 
-def openPipelineFile(path,filename,stringContent=None):
+def openConfigurationFile(path,filename,stringContent=None):
     if stringContent is None:
         try:
             if path is None:
