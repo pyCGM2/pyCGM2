@@ -20,7 +20,7 @@
   <Entry DisplayName="pyCGM2-2Dof-KneeCalibration" Enabled="1" OperationId="341" OperationName="Python">
     <ParamList name="">
       <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/Knee Calibration/nexusOperation-pyCGM2-2DofCalibration.py"/>
-      <Param name="ScriptArgs" value="--side=Left -b=932 -e=1278"/>
+      <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
     </ParamList>
