@@ -88,7 +88,7 @@ class CGM(model.Model):
         return [useLeftKJCmarkerLabel,useLeftAJCmarkerLabel,useRightKJCmarkerLabel,useRightAJCmarkerLabel]
 
 
-class CGM1LowerLimbs(CGM):
+class CGM1(CGM):
     """
     Lower limb conventional Gait Model 1 (i.e. Vicon Plugin Gait)
 
@@ -111,7 +111,7 @@ class CGM1LowerLimbs(CGM):
 
 
     def __init__(self):
-        super(CGM1LowerLimbs, self).__init__()
+        super(CGM1, self).__init__()
         self.decoratedModel = False
         self.version = "CGM1.0"
 
@@ -130,13 +130,13 @@ class CGM1LowerLimbs(CGM):
         return "LowerLimb CGM1.0"
 
     def _lowerLimbTrackingMarkers(self):
-        return CGM1LowerLimbs.LOWERLIMB_TRACKING_MARKERS#["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
+        return CGM1.LOWERLIMB_TRACKING_MARKERS#["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
 
     def _trunkTrackingMarkers(self):
-        return CGM1LowerLimbs.THORAX_TRACKING_MARKERS#["C7", "T10","CLAV", "STRN"]
+        return CGM1.THORAX_TRACKING_MARKERS#["C7", "T10","CLAV", "STRN"]
 
     def _upperLimbTrackingMarkers(self):
-        return CGM1LowerLimbs.THORAX_TRACKING_MARKERS+CGM1LowerLimbs.UPPERLIMB_TRACKING_MARKERS#S#["C7", "T10","CLAV", "STRN", "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN"]
+        return CGM1.THORAX_TRACKING_MARKERS+CGM1.UPPERLIMB_TRACKING_MARKERS#S#["C7", "T10","CLAV", "STRN", "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN"]
 
     def getTrackingMarkers(self):
         tracking_markers=[]

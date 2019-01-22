@@ -14,7 +14,7 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusTools
 
 
-class CGM2_1LowerLimbs(cgm.CGM1LowerLimbs):
+class CGM2_1(cgm.CGM1):
     """
 
     """
@@ -22,7 +22,7 @@ class CGM2_1LowerLimbs(cgm.CGM1LowerLimbs):
     #nativeCgm1 = True
 
     def __init__(self):
-        super(CGM2_1LowerLimbs, self).__init__()
+        super(CGM2_1, self).__init__()
         self.decoratedModel = False
 
         self.version = "CGM2.1"
@@ -30,14 +30,14 @@ class CGM2_1LowerLimbs(cgm.CGM1LowerLimbs):
     def __repr__(self):
         return "LowerLimb CGM2.1"
 
-class CGM2_2LowerLimbs(cgm.CGM1LowerLimbs):
+class CGM2_2(cgm.CGM1):
     """
 
     """
 
 
     def __init__(self):
-        super(CGM2_2LowerLimbs, self).__init__()
+        super(CGM2_2, self).__init__()
         self.decoratedModel = False
 
         self.version = "CGM2.2"
@@ -46,7 +46,7 @@ class CGM2_2LowerLimbs(cgm.CGM1LowerLimbs):
         return "LowerLimb CGM2.2"
 
 
-class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
+class CGM2_3(cgm.CGM1):
     """
         implementation of the cgm2.3 skin marker added
     """
@@ -66,7 +66,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
            - Initialize deviation data
 
         """
-        super(CGM2_3LowerLimbs, self).__init__()
+        super(CGM2_3, self).__init__()
 
 
         self.decoratedModel = False
@@ -80,7 +80,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
         return "LowerLimb CGM2.3"
 
     def _lowerLimbTrackingMarkers(self):
-        return CGM2_3LowerLimbs.LOWERLIMB_TRACKING_MARKERS
+        return CGM2_3.LOWERLIMB_TRACKING_MARKERS
 
 
     def _lowerlimbConfigure(self):
@@ -232,7 +232,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
     def calibrate(self,aquiStatic, dictRef, dictAnatomic,  options=None): #
 
-        super(CGM2_3LowerLimbs, self).calibrate(aquiStatic, dictRef, dictAnatomic,  options=options)
+        super(CGM2_3, self).calibrate(aquiStatic, dictRef, dictAnatomic,  options=options)
 
 
     def opensimIkTask(self):
@@ -390,7 +390,7 @@ class CGM2_3LowerLimbs(cgm.CGM1LowerLimbs):
 
         return out
 
-class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
+class CGM2_4(CGM2_3):
 
     ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles","LForeFoot"],
                        'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles","LForeFoot"]}
@@ -414,7 +414,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
            - Initialize deviation data
 
         """
-        super(CGM2_4LowerLimbs, self).__init__()
+        super(CGM2_4, self).__init__()
 
         self.decoratedModel = False
 
@@ -426,7 +426,7 @@ class CGM2_4LowerLimbs(CGM2_3LowerLimbs):
         return "LowerLimb CGM2.4"
 
     def _lowerLimbTrackingMarkers(self):
-        return CGM2_4LowerLimbs.LOWERLIMB_TRACKING_MARKERS
+        return CGM2_4.LOWERLIMB_TRACKING_MARKERS
 
     def _lowerlimbConfigure(self):
         self.addSegment("Pelvis",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["LASI","RASI","LPSI","RPSI"])
