@@ -14,7 +14,7 @@ def smartReader(filename,translators=None):
             - `translators` (str) - marker translators
     """
     reader = btk.btkAcquisitionFileReader()
-    reader.SetFilename(filename)
+    reader.SetFilename(str(filename))
     reader.Update()
     acq=reader.GetOutput()
     if translators is not None:
@@ -31,7 +31,7 @@ def smartWriter(acq, filename):
     """
     writer = btk.btkAcquisitionFileWriter()
     writer.SetInput(acq)
-    writer.SetFilename(filename)
+    writer.SetFilename(str(filename))
     writer.Update()
 
 
