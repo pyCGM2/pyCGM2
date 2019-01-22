@@ -12,7 +12,9 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2.Model.CGM2.coreApps import CgmArgsManager, cgm1_1
+from pyCGM2.Model.CGM2 import CgmArgsManager
+from pyCGM2.Lib.CGM import  cgm1_1
+
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
