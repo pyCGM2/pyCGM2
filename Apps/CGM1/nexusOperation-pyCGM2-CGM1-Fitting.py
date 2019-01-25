@@ -12,7 +12,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2.Model.CGM2 import CgmArgsManager
+from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm1
 
 
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED: # run Operation
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
 
         # --------------------------CONFIG ------------------------------------
         argsManager = CgmArgsManager.argsManager_cgm1(settings,args)
@@ -48,9 +48,9 @@ if __name__ == "__main__":
         DEBUG=False
         # --------------------------LOADING ------------------------------------
         if DEBUG:
-            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\FullBody\\" #+ "CGM1\\CGM1\\native\\"
+            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\Kad\\" #+ "CGM1\\CGM1\\native\\"
             #DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\lowerLimbTrunk\\" #+ "CGM1\\CGM1\\native\\"
-            reconstructFilenameLabelledNoExt = "PN01NORMSS01" #"static Cal 01-noKAD-noAnkleMed" #
+            reconstructFilenameLabelledNoExt = "Gait Trial 01" #"static Cal 01-noKAD-noAnkleMed" #
             # DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
             # reconstructFilenameLabelledNoExt = "gait Trial" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
