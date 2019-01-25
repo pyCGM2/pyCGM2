@@ -6170,7 +6170,7 @@ class CGM1(CGM):
         # export angles
         for it in btk.Iterate(acq.GetPoints()):
             if it.GetType() == btk.btkPoint.Angle:
-                if pointSuffix!="":
+                if pointSuffix is not None:
                     if pointSuffix in it.GetLabel():
                         nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
                 else:
@@ -6215,7 +6215,7 @@ class CGM1(CGM):
             # export Force
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Force:
-                    if pointSuffix!="":
+                    if pointSuffix is not None:
                         if pointSuffix in it.GetLabel():
                             nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
                     else:
@@ -6225,7 +6225,7 @@ class CGM1(CGM):
             # export Moment
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Moment:
-                    if pointSuffix!="":
+                    if pointSuffix is not None:
                         if pointSuffix in it.GetLabel():
                             nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
                     else:
@@ -6235,7 +6235,7 @@ class CGM1(CGM):
             # export Moment
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Power:
-                    if pointSuffix!="":
+                    if pointSuffix is not None:
                         if pointSuffix in it.GetLabel():
                             nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
                     else:

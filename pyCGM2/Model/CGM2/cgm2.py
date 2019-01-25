@@ -2353,98 +2353,6 @@ class CGM2_4(CGM2_3):
 
         return out
 
-    # # ----- vicon API -------
-    # def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):
-    #     """
-    #         method exporting model outputs to Nexus UI
-    #
-    #         This method exports :
-    #
-    #             - joint centres as modelled-marker
-    #             - angles
-    #             - moment
-    #             - force
-    #             - power
-    #             - bones
-    #
-    #
-    #         :Parameters:
-    #             - `NEXUS` () - Nexus environment
-    #             - `vskName` (str) - name of the subject created in Nexus
-    #             - `staticProcessingFlag` (bool`) : flag indicating only static model ouput will be export
-    #
-    #     """
-    #
-    #      # export JC
-    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq)
-    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHJC", acq)
-    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKJC", acq)
-    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq)
-    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq)
-    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq)
-    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LFJC", acq)
-    #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RFJC", acq)
-    #     logging.debug("jc over")
-    #
-    #     # export angles
-    #     for it in btk.Iterate(acq.GetPoints()):
-    #         if it.GetType() == btk.btkPoint.Angle:
-    #             if pointSuffix!="":
-    #                 if pointSuffix in it.GetLabel():
-    #                     nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-    #             else:
-    #                 nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-    #
-    #     logging.debug("angles over")
-    #
-    #     # bones
-    #     # -------------
-    #     nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() )
-    #
-    #     nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
-    #     #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
-    #     nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
-    #     nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LHEE").GetValues() )
-    #     nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() )
-    #
-    #     nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
-    #     #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
-    #     nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
-    #     nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RHEE").GetValues()  )
-    #     nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues())
-    #
-    #     logging.debug("bones over")
-    #
-    #     if not staticProcessingFlag:
-    #         # export Force
-    #         for it in btk.Iterate(acq.GetPoints()):
-    #             if it.GetType() == btk.btkPoint.Force:
-    #                 if pointSuffix!="":
-    #                     if pointSuffix in it.GetLabel():
-    #                         nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-    #                 else:
-    #                     nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-    #         logging.debug("force over")
-    #
-    #         # export Moment
-    #         for it in btk.Iterate(acq.GetPoints()):
-    #             if it.GetType() == btk.btkPoint.Moment:
-    #                 if pointSuffix!="":
-    #                     if pointSuffix in it.GetLabel():
-    #                         nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-    #                 else:
-    #                     nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-    #         logging.debug("Moment over")
-    #
-    #         # export Moment
-    #         for it in btk.Iterate(acq.GetPoints()):
-    #             if it.GetType() == btk.btkPoint.Power:
-    #                 if pointSuffix!="":
-    #                     if pointSuffix in it.GetLabel():
-    #                         nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-    #                 else:
-    #                     nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-    #         logging.debug("power over")
 
 
     def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):
@@ -2503,7 +2411,7 @@ class CGM2_4(CGM2_3):
         # export angles
         for it in btk.Iterate(acq.GetPoints()):
             if it.GetType() == btk.btkPoint.Angle:
-                if pointSuffix!="":
+                if pointSuffix is not None:
                     if pointSuffix in it.GetLabel():
                         nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
                 else:
@@ -2549,7 +2457,7 @@ class CGM2_4(CGM2_3):
             # export Force
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Force:
-                    if pointSuffix!="":
+                    if pointSuffix is not None:
                         if pointSuffix in it.GetLabel():
                             nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
                     else:
@@ -2559,7 +2467,7 @@ class CGM2_4(CGM2_3):
             # export Moment
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Moment:
-                    if pointSuffix!="":
+                    if pointSuffix is not None:
                         if pointSuffix in it.GetLabel():
                             nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
                     else:
@@ -2569,7 +2477,7 @@ class CGM2_4(CGM2_3):
             # export Moment
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Power:
-                    if pointSuffix!="":
+                    if pointSuffix is not None:
                         if pointSuffix in it.GetLabel():
                             nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
                     else:

@@ -17,7 +17,7 @@ class NexusModelFilter(object):
         self.m_vskName = vskName
         self.NEXUS = NEXUS
         self.staticProcessing = staticProcessing
-        self.m_pointSuffix = pointSuffix if pointSuffix=="" else str("_"+pointSuffix)
+        self.m_pointSuffix = pointSuffix if pointSuffix is None else str("_"+pointSuffix)
 
     def run(self):
         """
