@@ -16,7 +16,7 @@ import ViconNexus
 # pyCGM2 libraries
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
-from pyCGM2.Model.CGM2 import CgmArgsManager
+from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm2_4
 
 
@@ -45,13 +45,14 @@ if __name__ == "__main__":
         # --------------------GLOBAL SETTINGS ------------------------------
 
         # ( in user/AppData)
-        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
 
         argsManager = CgmArgsManager.argsManager_cgm(settings,args)
         leftFlatFoot = argsManager.getLeftFlatFoot()
         rightFlatFoot = argsManager.getRightFlatFoot()
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm2.4")
+        ik_flag = argsManager.enableIKflag()
 
         hjcMethod = settings["Calibration"]["HJC"]
         lhjc = argsManager.forceHjc("left")
@@ -61,7 +62,6 @@ if __name__ == "__main__":
         if  rhjc is not None:
             hjcMethod["Right"] = rhjc
 
-        ik_flag = False if args.noIk else True
 
         # --------------------------LOADING------------------------------
         DEBUG= False
@@ -91,7 +91,7 @@ if __name__ == "__main__":
 
         # --------------------------SESSION INFOS -----------------------------
          # --------------------------SESSIONS INFOS -----------------------------------
-        mpInfo,mpFilename = files.getJsonFileContent(DATA_PATH,"mp.pyCGM2",subject)
+        mpInfo,mpFilename = files.getMpFileContent(DATA_PATH,"mp.pyCGM2",subject)
 
         #  translators management
         translators = files.getTranslators(DATA_PATH,"CGM2_4.translators")

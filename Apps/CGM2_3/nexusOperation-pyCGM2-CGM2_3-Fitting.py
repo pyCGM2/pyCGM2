@@ -15,7 +15,7 @@ import ViconNexus
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
-from pyCGM2.Model.CGM2 import CgmArgsManager
+from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm2_3
 
 
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
         # --------------------GLOBAL SETTINGS ------------------------------
         # global setting ( in user/AppData)
-        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
 
 
 
@@ -48,8 +48,9 @@ if __name__ == "__main__":
         pointSuffix = argsManager.getPointSuffix("cgm2.3")
         momentProjection =  argsManager.getMomentProjection()
         mfpa = argsManager.getManualForcePlateAssign()
+        ik_flag = argsManager.enableIKflag()
 
-        ik_flag = False if args.noIk else True
+
 
         # ----------------------LOADING-------------------------------------------
         # --- acquisition file and path----

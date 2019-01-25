@@ -44,6 +44,14 @@ class argsManager_cgm(object):
 
                 return self.settings["Global"]["Point suffix"]
 
+    def enableIKflag(self):
+        if self.args.noIk:
+            return False
+        else:
+            if self.settings["Global"]["EnableIK"]:
+                return True
+            else:
+                return False
 
     def getMomentProjection(self):
         if self.args.proj is not None:

@@ -20,7 +20,7 @@ from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 from pyCGM2.Model import  modelFilters
 
-from pyCGM2.Model.CGM2 import CgmArgsManager
+from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  kneeCalibration
 
 
@@ -72,14 +72,14 @@ if __name__ == "__main__":
         if model.version in ["CGM1.0","CGM1.1","CGM2.1","CGM2.2"] :
             raise Exception ("Can t use SARA method with your model %s [minimal version : CGM2.3]"%(model.version))
         elif model.version == "CGM2.3":
-            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
         elif model.version in  ["CGM2.4"]:
-            settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
         else:
             raise Exception ("model version not found [contact admin]")
 
         # --------------------------SESSION INFOS ------------------------------------
-        mpInfo,mpFilename = files.getJsonFileContent(DATA_PATH,"mp.pyCGM2",subject)
+        mpInfo,mpFilename = files.getMpFileContent(DATA_PATH,"mp.pyCGM2",subject)
 
         #  translators management
         if model.version in  ["CGM2.3"]:

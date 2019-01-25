@@ -12,7 +12,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2.Model.CGM2 import CgmArgsManager
+from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm1_1
 
 from pyCGM2.Utils import files
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED: # run Operation
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
+        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
 
         # --------------------------CONFIG ------------------------------------
         argsManager = CgmArgsManager.argsManager_cgm(settings,args)

@@ -62,7 +62,7 @@ if __name__ == "__main__":
         inputFile = inputFileNoExt+".c3d"
 
 
-        emgSettings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
+        emgSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
 
         # reconfiguration of emg settings as lists
         EMG_LABELS = []
