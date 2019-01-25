@@ -209,15 +209,6 @@ def applyTranslators(acq, translators,keepInitial=False):
         - `acq` (btkAcquisition) - a btk acquisition instance
         - `translators` (dict) - translators
         - `keepInitial` (bool) - flag for avoiding to remove initial markers
-
-    example of translators :
-    	"Translators" : {
-		"LASI":"L_ASIS",
-		"RASI":"",
-          }
-
-        2nd line  means RASI is with the acq
-
     """
     acqClone = btk.btkAcquisition.Clone(acq)
 
@@ -226,8 +217,7 @@ def applyTranslators(acq, translators,keepInitial=False):
     # gather all labels
     for it in translators.items():
         wantedLabel,initialLabel = it[0],it[1]
-
-        if wantedLabel != initialLabel and initialLabel !="":
+        if wantedLabel != initialLabel and initialLabel !="None":
             modifiedMarkerList.append(it[0])
             modifiedMarkerList.append(it[1])
 
@@ -243,7 +233,7 @@ def applyTranslators(acq, translators,keepInitial=False):
     for it in translators.items():
         wantedLabel,initialLabel = it[0],it[1]
         logging.debug("wantedLabel (%s) initialLabel (%s)  " %(str(wantedLabel), str(initialLabel)))
-        if wantedLabel != initialLabel and initialLabel !="":
+        if wantedLabel != initialLabel and initialLabel !="None":
             if isPointExist(acq,initialLabel):
                 logging.debug("Initial point (%s) renamed (%s)  added into the c3d" %(str(initialLabel), str(wantedLabel)))
                 smartAppendPoint(acqClone,str(wantedLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
