@@ -36,8 +36,6 @@ class ModelConfigManager(ConfigManager):
 
         self._internSettings = None
 
-        import ipdb; ipdb.set_trace()
-
     def getInternalSettings(self):
         return self._internSettings
 
@@ -87,9 +85,9 @@ class CGM1ConfigManager(ModelConfigManager):
 
     def __internalsettings(self):
         if self._internalSettingsFile is None:
-            self._internSettings = files.openConfigurationFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.ysettings")
+            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
         else:
-            self._internSettings = files.openConfigurationFile(self._userSettings["DATA_PATH"],internalSettingsFile)
+            self._internSettings = files.openFile(self._userSettings["DATA_PATH"],internalSettingsFile)
 
 
 
@@ -114,14 +112,14 @@ class CGM1ConfigManager(ModelConfigManager):
 
     @property
     def pointSuffix(self):
-        value = self._userSettings["Global"]["Point Suffix"]
-        self._internSettings["Global"]["Point Suffix"] = value # overwriting
+        value = self._userSettings["Global"]["Point suffix"]
+        self._internSettings["Global"]["Point suffix"] = value # overwriting
         return  value
 
     @property
     def translators(self): # overwriting if Translators exist
         if self._translatorFile is not None:
-            translators = files.openConfigurationFile(self._userSettings["DATA_PATH"],self._translatorFile)
+            translators = files.openFile(self._userSettings["DATA_PATH"],self._translatorFile)
             self._internSettings["Translators"] = translators
             return self._internSettings["Translators"]
         else:
@@ -148,9 +146,9 @@ class CGM1_1ConfigManager(CGM1ConfigManager):
 
     def __internalsettings(self):
         if self._internalSettingsFile is None:
-            self._internSettings = files.openConfigurationFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.ysettings")
+            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
         else:
-            self._internSettings = files.openConfigurationFile(self._userSettings["DATA_PATH"],internalSettingsFile)
+            self._internSettings = files.openFile(self._userSettings["DATA_PATH"],internalSettingsFile)
 
 class CGM2_1ConfigManager(CGM1ConfigManager):
     """
@@ -163,9 +161,9 @@ class CGM2_1ConfigManager(CGM1ConfigManager):
 
     def __internalsettings(self):
         if self._internalSettingsFile is None:
-            self._internSettings = files.openConfigurationFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.ysettings")
+            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
         else:
-            self._internSettings = files.openConfigurationFile(self._userSettings["DATA_PATH"],internalSettingsFile)
+            self._internSettings = files.openFile(self._userSettings["DATA_PATH"],internalSettingsFile)
 
 
     @property
@@ -188,9 +186,9 @@ class CGM2_2ConfigManager(CGM1ConfigManager):
 
     def __internalsettings(self):
         if self._internalSettingsFile is None:
-            self._internSettings = files.openConfigurationFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.ysettings")
+            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
         else:
-            self._internSettings = files.openConfigurationFile(self._userSettings["DATA_PATH"],internalSettingsFile)
+            self._internSettings = files.openFile(self._userSettings["DATA_PATH"],internalSettingsFile)
 
 
 
@@ -202,7 +200,7 @@ class CGM2_2ConfigManager(CGM1ConfigManager):
     @property
     def ikWeight(self): # overwriting if Translators exist
         if self._ikweightFile is not None:
-            ikweight = files.openConfigurationFile(self._userSettings["DATA_PATH"],self._ikweightFile)
+            ikweight = files.openFile(self._userSettings["DATA_PATH"],self._ikweightFile)
             self._internSettings["Fitting"]["Weight"] = ikweight
             return self._internSettings["Fitting"]["Weight"]
         else:
@@ -219,9 +217,9 @@ class CGM2_3ConfigManager(CGM1ConfigManager):
 
     def __internalsettings(self):
         if self._internalSettingsFile is None:
-            self._internSettings = files.openConfigurationFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.ysettings")
+            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
         else:
-            self._internSettings = files.openConfigurationFile(self._userSettings["DATA_PATH"],internalSettingsFile)
+            self._internSettings = files.openFile(self._userSettings["DATA_PATH"],internalSettingsFile)
 
     @property
     def enableIK(self):
@@ -238,6 +236,6 @@ class CGM2_4ConfigManager(CGM1ConfigManager):
 
     def __internalsettings(self):
         if self._internalSettingsFile is None:
-            self._internSettings = files.openConfigurationFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.ysettings")
+            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
         else:
-            self._internSettings = files.openConfigurationFile(self._userSettings["DATA_PATH"],internalSettingsFile)
+            self._internSettings = files.openFile(self._userSettings["DATA_PATH"],internalSettingsFile)
