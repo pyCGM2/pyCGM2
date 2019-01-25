@@ -12,6 +12,14 @@ def getFromInfoSubjectMp(infoSettings,resetFlag=True):
     'RightAnkleWidth' : infoSettings["MP"]["Required"][ "RightAnkleWidth"],
     'LeftSoleDelta' : infoSettings["MP"]["Required"][ "LeftSoleDelta"],
     'RightSoleDelta' : infoSettings["MP"]["Required"]["RightSoleDelta"]
+    'LeftShoulderOffset' : mpInfo["MP"]["Required"]["LeftShoulderOffset"],
+    'RightShoulderOffset' : mpInfo["MP"]["Required"]["RightShoulderOffset"],
+    'LeftElbowWidth' : mpInfo["MP"]["Required"]["LeftElbowWidth"],
+    'LeftWristWidth' : mpInfo["MP"]["Required"]["LeftWristWidth"],
+    'LeftHandThickness' : mpInfo["MP"]["Required"]["LeftHandThickness"],
+    'RightElbowWidth' : mpInfo["MP"]["Required"]["RightElbowWidth"],
+    'RightWristWidth' : mpInfo["MP"]["Required"]["RightWristWidth"],
+    'RightHandThickness' : mpInfo["MP"]["Required"]["RightHandThickness"]
     }
 
     if resetFlag:
