@@ -30,6 +30,7 @@ class argsManager_cgm(object):
             logging.warning("marker diameter forced : %s", str(float(self.args.markerDiameter)))
             return float(self.args.markerDiameter)
         else:
+            import ipdb; ipdb.set_trace()
             return float(self.settings["Global"]["Marker diameter"])
 
     def getPointSuffix(self,checkValue):
@@ -39,6 +40,9 @@ class argsManager_cgm(object):
             if self.args.pointSuffix is not None:
                 return self.args.pointSuffix
             else:
+                if self.settings["Global"]["Point suffix"] =="None":
+                    self.settings["Global"]["Point suffix"] = None
+
                 return self.settings["Global"]["Point suffix"]
 
 
