@@ -1,104 +1,104 @@
-{
-  "Global" : {
-    "Marker diameter" : 14,
-    "Point suffix" : ""
-  },
-  "Translators" : {
-        "LASI":"",
-        "RASI":"",
-        "LPSI":"",
-        "RPSI":"",
-        "RTHI":"",
-        "RKNE":"",
-        "RTIAP":"",
-        "RTIAD":"",
-        "RTIB":"",
-        "RANK":"",
-        "RTIAP":"",
-        "RTIAD":"",
-        "RHEE":"",
-        "RSMH":"",
-        "RTOE":"",
-        "RFMH":"",
-        "RVMH":"",
-        "LTHI":"",
-        "LKNE":"",
-        "LTHAP":"",
-        "LTHAD":"",
-        "LTIB":"",
-        "LANK":"",
-        "LTIAP":"",
-        "LTIAD":"",
-        "LHEE":"",
-        "LSMH":"",
-        "LTOE":"",
-        "LFMH":"",
-        "LVMH":"",
-        "RKNM":"",
-        "LKNM":"",
-        "RMED":"",
-        "LMED":"",
-        "C7":"",
-        "T10":"",
-        "CLAV":"",
-        "STRN":"",
-        "LFHD":"",
-        "LBHD":"",
-        "RFHD":"",
-        "RBHD":"",
-        "LSHO":"",
-        "LELB":"",
-        "LWRB":"",
-        "LWRA":"",
-        "LFIN":"",
-        "RSHO":"",
-        "RELB":"",
-        "RWRB":"",
-        "RWRA":"",
-        "RFIN":""
-        },
-  "Calibration" : {
-    "HJC" : {"Left": "Hara","Right": "Hara"},
-    "Left flat foot" : 1 ,
-    "Right flat foot" : 1
-  },
-  "Fitting" : {
-    "Moment Projection" : "JCS",
-    "Weight" :{
-        "LASI":100,
-        "RASI":100,
-        "LPSI":100,
-        "RPSI":100,
-        "RTHI":100,
-        "RKNE":100,
-        "RTHAP":100,
-        "RTHAD":100,
-        "RTIB":100,
-        "RANK":100,
-        "RTIAP":100,
-        "RTIAD":100,
-        "RHEE":100,
-        "RSMH":0,
-        "RTOE":100,
-        "RFMH":100,
-        "RVMH":100,
-        "LTHI":100,
-        "LKNE":100,
-        "LTHAP":100,
-        "LTHAD":100,
-        "LTIB":100,
-        "LANK":100,
-        "LTIAP":100,
-        "LTIAD":100,
-        "LHEE":100,
-        "LSMH":0,
-        "LTOE":100,
-        "LFMH":100,
-        "LVMH":100,
-        "RTHLD":0,
-        "RPAT":0,
-        "LTHLD":0,
-        "LPAT": 0
-    }
-  }
-}
+
+  Global:
+    Marker diameter: 14
+    Point suffix:  None
+    EnableIK: 1
+
+  Translators:
+    LASI: None
+    RASI: None
+    LPSI: None
+    RPSI: None
+    RTHI: None
+    RKNE: None
+    RTIAP: None
+    RTIAD: None
+    RTIB: None
+    RANK: None
+    RTIAP: None
+    RTIAD: None
+    RHEE: None
+    RSMH: None
+    RTOE: None
+    RFMH: None
+    RVMH: None
+    LTHI: None
+    LKNE: None
+    LTHAP: None
+    LTHAD: None
+    LTIB: None
+    LANK: None
+    LTIAP: None
+    LTIAD: None
+    LHEE: None
+    LSMH: None
+    LTOE: None
+    LFMH: None
+    LVMH: None
+    RKNM: None
+    LKNM: None
+    RMED: None
+    LMED: None
+    C7: None
+    T10: None
+    CLAV: None
+    STRN: None
+    LFHD: None
+    LBHD: None
+    RFHD: None
+    RBHD: None
+    LSHO: None
+    LELB: None
+    LWRB: None
+    LWRA: None
+    LFIN: None
+    RSHO: None
+    RELB: None
+    RWRB: None
+    RWRA: None
+    RFIN: None
+
+  Calibration:
+    HJC:
+        Left: Hara
+        Right: Hara
+    Left flat foot: 1
+    Right flat foot: 1
+
+  Fitting:
+    Moment Projection: JCS
+    Weight:
+        LASI:100
+        RASI:100
+        LPSI:100
+        RPSI:100
+        RTHI:100
+        RKNE:100
+        RTHAP:100
+        RTHAD:100
+        RTIB:100
+        RANK:100
+        RTIAP:100
+        RTIAD:100
+        RHEE:100
+        RSMH:0
+        RTOE:100
+        RFMH:100
+        RVMH:100
+        LTHI:100
+        LKNE:100
+        LTHAP:100
+        LTHAD:100
+        LTIB:100
+        LANK:100
+        LTIAP:100
+        LTIAD:100
+        LHEE:100
+        LSMH:0
+        LTOE:100
+        LFMH:100
+        LVMH:100
+        RTHLD:0
+        RPAT:0
+        LTHLD:0
+        LPAT: 0

@@ -1,51 +1,48 @@
-{
-  "Global" : {
-    "Marker diameter" : 14,
-    "Point suffix" : ""
-  },
-  "Translators" : {
-    "LASI":"",
-      "RASI":"",
-      "LPSI":"",
-      "RPSI":"",
-      "RTHI":"",
-      "RKNE":"",
-      "RTIB":"",
-      "RANK":"",
-      "RMED":"",
-      "RHEE":"",
-      "RTOE":"",
-      "LTHI":"",
-      "LKNE":"",
-      "LTIB":"",
-      "LANK":"",
-      "LMED":"",
-      "LHEE":"",
-      "LTOE":"",
-      "C7":"",
-      "T10":"",
-      "CLAV":"",
-      "STRN":"",
-      "LFHD":"",
-      "LBHD":"",
-      "RFHD":"",
-      "RBHD":"",
-      "LSHO":"",
-      "LELB":"",
-      "LWRB":"",
-      "LWRA":"",
-      "LFIN":"",
-      "RSHO":"",
-      "RELB":"",
-      "RWRB":"",
-      "RWRA":"",
-      "RFIN":""
-  },
-  "Calibration" : {
-    "Left flat foot" : 1 ,
-    "Right flat foot" : 1
-  },
-  "Fitting" : {
-    "Moment Projection" : "Distal"
-  }
-}
+Global:
+    Marker diameter: 14
+    Point suffix: None
+
+Translators:
+    LASI: None
+    RASI: None
+    LPSI: None
+    RPSI: None
+    RTHI: None
+    RKNE: None
+    RTIB: None
+    RANK: None
+    RMED: None
+    RHEE: None
+    RTOE: None
+    LTHI: None
+    LKNE: None
+    LTIB: None
+    LANK: None
+    LMED: None
+    LHEE: None
+    LTOE: None
+    C7: None
+    T10: None
+    CLAV: None
+    STRN: None
+    LFHD: None
+    LBHD: None
+    RFHD: None
+    RBHD: None
+    LSHO: None
+    LELB: None
+    LWRB: None
+    LWRA: None
+    LFIN: None
+    RSHO: None
+    RELB: None
+    RWRB: None
+    RWRA: None
+    RFIN: None
+
+Calibration:
+    Left flat foot: 1
+    Right flat foot: 1
+
+Fitting:
+    Moment Projection: Distal

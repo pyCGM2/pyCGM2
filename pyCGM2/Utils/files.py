@@ -7,8 +7,33 @@ from shutil import copyfile
 from collections import OrderedDict
 import shutil
 import yaml
+import yamlordereddictloader
 
 import pyCGM2
+
+def openFile(path,filename):
+
+    if os.path.isfile( path + filename):
+        content = open(str(path+filename)).read()
+        #if filename == "PIG-KAD-mp.ypyCGM2": import ipdb; ipdb.set_trace()
+
+        jsonFlag = is_json(content)
+        yamlFlag = is_yaml(content)
+        if jsonFlag:
+            logging.info("your file (%s) matches json syntax"%filename)
+            struct = openJson(path ,str(filename))
+
+        if yamlFlag:
+            logging.info("your file (%s) matches yaml syntax"%filename)
+            struct = openYaml(path,filename)
+
+        if not yamlFlag and not yamlFlag:
+            raise Exception ("%s is neither a Yaml or a json file"%filename)
+
+        return struct
+    else:
+        return False
+
 
 def loadModel(path,FilenameNoExt):
     if FilenameNoExt is not None:
@@ -76,6 +101,10 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
     analysisFile.close()
 
 
+
+
+
+
 def openJson(path,filename,stringContent=None):
 
     if stringContent is None:
@@ -95,99 +124,35 @@ def saveJson(path, filename, content):
     with open(str(path+filename), 'w') as outfile:
         json.dump(content, outfile,indent=4)
 
-def openYaml(path,filename,stringContent=None):
-    if stringContent is None:
-        try:
-            if path is None:
-                struct = yaml.load(open(str(filename)).read())
-            else:
-                struct= yaml.load(open(str(path+filename)).read())
-            return struct
-        except :
-            raise Exception ("[pyCGM2] : yaml syntax of file (%s) is incorrect. check it" %(filename))
-    else:
-        struct = yaml.load(stringContent)
-        return struct
-
-def openConfigurationFile(path,filename,stringContent=None):
-    if stringContent is None:
-        try:
-            if path is None:
-                content = open(str(filename)).read()
-            else:
-                content = open(str(path+filename)).read()
-        except "IOError":
-            print "Don t find your pipeline file"
-    else:
-        content = stringContent
-
-    jsonFlag = is_json(content)
-
-    if jsonFlag:
-        logging.info("your config file matches json syntax")
-        struct = openJson(None,None,stringContent=content)
-    else:
-        yamlFlag = is_yaml(content)
-
-        if yamlFlag:
-            logging.info("your config file matches yaml syntax")
-            struct = openYaml(path,filename,stringContent=content)
-        else:
-            raise Exception("[pYCGM2]: pipeline config file is neither a json file nor a yaml file")
-
-    return struct
-
 
 def prettyJsonDisplay(parsedContent):
     print json.dumps(parsedContent, indent=4, sort_keys=True)
 
-def openTranslators(DATA_PATH, translatorsFilename):
-    filename = openJson(DATA_PATH, translatorsFilename)
-    return filename["Translators"]
 
 
-def getJsonFileContent(DATA_PATH,jsonfile,subject):
 
-    if subject is not None:
-        outJson = subject+"-" + jsonfile
+
+def openYaml(path,filename,stringContent=None):
+    if stringContent is None:
+        try:
+            if path is None:
+                struct = yaml.load(open(str(filename)).read(),Loader=yamlordereddictloader.Loader)
+            else:
+                struct= yaml.load(open(str(path+filename)).read(),Loader=yamlordereddictloader.Loader)
+            return struct
+        except :
+            raise Exception ("[pyCGM2] : yaml syntax of file (%s) is incorrect. check it" %(filename))
     else:
-        outJson = jsonfile
+        struct = yaml.load(stringContent,Loader=yamlordereddictloader.Loader)
+        return struct
 
-
-    if not os.path.isfile( DATA_PATH + outJson):
-        copyfile(str(pyCGM2.PYCGM2_SESSION_SETTINGS_FOLDER+jsonfile), str(DATA_PATH + outJson))
-        logging.warning("Copy of %s from pyCGM2 Settings folder"%(jsonfile))
-
-    content = openJson(DATA_PATH,outJson)
-
-
-    return content,outJson
-
-
-
-
-
-def getSessioninfoFile(DATA_PATH,subject):
-
-    if subject is not None:
-        infoJsonFile = subject+"-pyCGM2.info"
-    else:
-        infoJsonFile = "pyCGM2.info"
-
-
-    if not os.path.isfile( DATA_PATH + infoJsonFile):
-        copyfile(str(pyCGM2.PYCGM2_SESSION_SETTINGS_FOLDER+"pyCGM2.info"), str(DATA_PATH + infoJsonFile))
-        logging.warning("Copy of pyCGM2.info from pyCGM2 Settings folder")
-
-    infoSettings = openJson(DATA_PATH,infoJsonFile)
-
-    return infoSettings
 
 def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
     #  translators management
     if os.path.isfile( DATA_PATH + translatorType):
        logging.warning("local translator found")
-       sessionTranslators = openJson(DATA_PATH,translatorType)
+
+       sessionTranslators = openFile(DATA_PATH,translatorType)
        translators = sessionTranslators["Translators"]
        return translators
     else:
@@ -197,13 +162,26 @@ def getIKweightSet(DATA_PATH, ikwf):
     #  translators management
     if os.path.isfile( DATA_PATH + ikwf):
        logging.warning("local ik weightSet file found")
-       ikWeight = files.openJson(DATA_PATH,ikwf)
+       ikWeight = openFile(DATA_PATH,ikwf)
        return ikWeight
     else:
        return False
 
+def getMpFileContent(DATA_PATH,file,subject):
+
+    if subject is not None:
+        out = subject+"-" + file
+    else:
+        out = file
 
 
+    if not os.path.isfile( DATA_PATH + file):
+        copyfile(str(pyCGM2.PYCGM2_SESSION_SETTINGS_FOLDER+file), str(DATA_PATH + out))
+        logging.warning("Copy of %s from pyCGM2 Settings folder"%(file))
+
+    content = openFile(DATA_PATH,out)
+
+    return content,out
 
 def getMp(mpInfo,resetFlag=True):
 
@@ -217,7 +195,16 @@ def getMp(mpInfo,resetFlag=True):
     'LeftAnkleWidth' : mpInfo["MP"]["Required"][ "LeftAnkleWidth"],
     'RightAnkleWidth' : mpInfo["MP"]["Required"][ "RightAnkleWidth"],
     'LeftSoleDelta' : mpInfo["MP"]["Required"][ "LeftSoleDelta"],
-    'RightSoleDelta' : mpInfo["MP"]["Required"]["RightSoleDelta"]
+    'RightSoleDelta' : mpInfo["MP"]["Required"]["RightSoleDelta"],
+    'LeftShoulderOffset' : mpInfo["MP"]["Required"]["LeftShoulderOffset"],
+    'RightShoulderOffset' : mpInfo["MP"]["Required"]["RightShoulderOffset"],
+    'LeftElbowWidth' : mpInfo["MP"]["Required"]["LeftElbowWidth"],
+    'LeftWristWidth' : mpInfo["MP"]["Required"]["LeftWristWidth"],
+    'LeftHandThickness' : mpInfo["MP"]["Required"]["LeftHandThickness"],
+    'RightElbowWidth' : mpInfo["MP"]["Required"]["RightElbowWidth"],
+    'RightWristWidth' : mpInfo["MP"]["Required"]["RightWristWidth"],
+    'RightHandThickness' : mpInfo["MP"]["Required"]["RightHandThickness"]
+
     }
 
     if resetFlag:
@@ -261,6 +248,15 @@ def saveMp(mpInfo,model,DATA_PATH,mpFilename):
     mpInfo["MP"]["Required"][ "RightAnkleWidth"] = model.mp["RightAnkleWidth"]
     mpInfo["MP"]["Required"][ "LeftSoleDelta"] = model.mp["LeftSoleDelta"]
     mpInfo["MP"]["Required"][ "RightSoleDelta"] = model.mp["RightSoleDelta"]
+    mpInfo["MP"]["Required"][ "LeftShoulderOffset"] = model.mp["LeftShoulderOffset"]
+    mpInfo["MP"]["Required"][ "RightShoulderOffset"] = model.mp["RightShoulderOffset"]
+    mpInfo["MP"]["Required"][ "LeftElbowWidth"] = model.mp["LeftElbowWidth"]
+    mpInfo["MP"]["Required"][ "LeftWristWidth"] = model.mp["LeftWristWidth"]
+    mpInfo["MP"]["Required"][ "LeftHandThickness"] = model.mp["LeftHandThickness"]
+    mpInfo["MP"]["Required"][ "RightElbowWidth"] = model.mp["RightElbowWidth"]
+    mpInfo["MP"]["Required"][ "RightWristWidth"] = model.mp["RightWristWidth"]
+    mpInfo["MP"]["Required"][ "RightHandThickness"] = model.mp["RightHandThickness"]
+
 
     mpInfo["MP"]["Optional"][ "InterAsisDistance"] = model.mp_computed["InterAsisDistance"]
     mpInfo["MP"]["Optional"][ "LeftAsisTrocanterDistance"] = model.mp_computed["LeftAsisTrocanterDistance"]
