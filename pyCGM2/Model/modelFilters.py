@@ -819,7 +819,7 @@ class ModelJCSFilter(object):
     def setFixEuler(self,bool):
         self.m_fixEuler =  bool
 
-    def compute(self,description="", pointLabelSuffix =""):
+    def compute(self,description="", pointLabelSuffix = None):
         """
             run `ModelJCSFilter`
 
@@ -897,7 +897,7 @@ class ModelJCSFilter(object):
 
                 jointFinalValues = np.rad2deg(jointFinalValues)
 
-            fulljointLabel  = jointLabel + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Angles"
+            fulljointLabel  = jointLabel + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else jointLabel+"Angles"
             btkTools.smartAppendPoint(self.m_aqui,
                              fulljointLabel,
                              jointFinalValues,PointType=btk.btkPoint.Angle, desc=description)
@@ -930,7 +930,7 @@ class ModelAbsoluteAnglesFilter(object):
         self.m_forwardProgression = forwardProgression
 
 
-    def compute(self,description="absolute", pointLabelSuffix =""):
+    def compute(self,description="absolute", pointLabelSuffix = None):
         """
             run `ModelAbsoluteAnglesFilter`
 
@@ -1044,7 +1044,7 @@ class ModelAbsoluteAnglesFilter(object):
                     absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
                     absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
 
-                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
+                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else self.m_angleLabels[index]+"Angles"
 
                     dest = np.deg2rad(np.array([0,0,0]))
                     for i in range (0, self.m_aqui.GetPointFrameNumber()):
@@ -1059,7 +1059,7 @@ class ModelAbsoluteAnglesFilter(object):
                     logging.debug("no clinical descriptor for segment label (%s)" %(segName))
                     absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValues)
 
-                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
+                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else self.m_angleLabels[index]+"Angles"
 
 
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
@@ -1073,7 +1073,7 @@ class ModelAbsoluteAnglesFilter(object):
                     absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos1["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos1["CoronalIndex"]] + descriptorInfos1["CoronalOffset"]))
                     absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos1["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos1["TransversalIndex"]] + descriptorInfos1["TransversalOffset"]))
 
-                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
+                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else self.m_angleLabels[index]+"Angles"
 
                     dest = np.deg2rad(np.array([0,0,0]))
                     for i in range (0, self.m_aqui.GetPointFrameNumber()):
@@ -1093,7 +1093,7 @@ class ModelAbsoluteAnglesFilter(object):
                     absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos2["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos2["CoronalIndex"]] + descriptorInfos2["CoronalOffset"]))
                     absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos2["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos2["TransversalIndex"]] + descriptorInfos2["TransversalOffset"]))
 
-                    fullAngleLabel  = "L" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "L" +self.m_angleLabels[index]+"Angles"
+                    fullAngleLabel  = "L" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else "L" +self.m_angleLabels[index]+"Angles"
 
 
                     dest = np.deg2rad(np.array([0,0,0]))
@@ -1116,7 +1116,7 @@ class ModelAbsoluteAnglesFilter(object):
                     absoluteAngleValuesFinal[:,1] =  np.rad2deg(descriptorInfos3["CoronalCoeff"] * (absoluteAngleValues[:,descriptorInfos3["CoronalIndex"]] + descriptorInfos3["CoronalOffset"]))
                     absoluteAngleValuesFinal[:,2] =  np.rad2deg(descriptorInfos3["TransversalCoeff"] * (absoluteAngleValues[:,descriptorInfos3["TransversalIndex"]] + descriptorInfos3["TransversalOffset"]))
 
-                    fullAngleLabel  = "R" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else "R" +self.m_angleLabels[index]+"Angles"
+                    fullAngleLabel  = "R" + self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else "R" +self.m_angleLabels[index]+"Angles"
 
                     dest = np.deg2rad(np.array([0,0,0]))
                     for i in range (0, self.m_aqui.GetPointFrameNumber()):
@@ -1131,7 +1131,7 @@ class ModelAbsoluteAnglesFilter(object):
                     logging.debug("no clinical descriptor for segment label (%s)" %(segName))
                     absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValues)
 
-                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix!="" else self.m_angleLabels[index]+"Angles"
+                    fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else self.m_angleLabels[index]+"Angles"
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
                                          absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
@@ -1229,7 +1229,7 @@ class InverseDynamicFilter(object):
         self.m_exportMomentContributions = exportMomentContributions
         self.m_options = options
 
-    def compute(self, pointLabelSuffix ="" ):
+    def compute(self, pointLabelSuffix = None ):
         """
             Run`InverseDynamicFilter`
 
@@ -1372,13 +1372,13 @@ class InverseDynamicFilter(object):
                     else:
                         finalMomentValues = momentValues
 
-                    fulljointLabel_force  = jointLabel + "Force_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Force"
+                    fulljointLabel_force  = jointLabel + "Force_" + pointLabelSuffix if pointLabelSuffix is not None else jointLabel+"Force"
 
                     btkTools.smartAppendPoint(self.m_aqui,
                                      fulljointLabel_force,
                                      finalForceValues,PointType=btk.btkPoint.Force, desc="")
 
-                    fulljointLabel_moment  = jointLabel + "Moment_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Moment"
+                    fulljointLabel_moment  = jointLabel + "Moment_" + pointLabelSuffix if pointLabelSuffix is not None else jointLabel+"Moment"
                     btkTools.smartAppendPoint(self.m_aqui,
                                      fulljointLabel_moment,
                                      finalMomentValues,PointType=btk.btkPoint.Moment, desc="")
@@ -1422,7 +1422,7 @@ class JointPowerFilter(object):
         self.m_model = iMod
         self.m_scale = scaleToMeter
 
-    def compute(self, pointLabelSuffix=""):
+    def compute(self, pointLabelSuffix=None):
         """
             Run `JointPowerFilter`
 
@@ -1453,7 +1453,7 @@ class JointPowerFilter(object):
                         power[i,2] = -1.0*(1.0 / self.m_model.mp["Bodymass"]) * self.m_scale * np.dot(self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:] ,relativeOmega[i,:])#
 
 
-                    fulljointLabel  = jointLabel + "Power_" + pointLabelSuffix if pointLabelSuffix!="" else jointLabel+"Power"
+                    fulljointLabel  = jointLabel + "Power_" + pointLabelSuffix if pointLabelSuffix is not None else jointLabel+"Power"
                     btkTools.smartAppendPoint(self.m_aqui,
                                      fulljointLabel,
                                      power,PointType=btk.btkPoint.Power, desc="")
@@ -1514,7 +1514,7 @@ class CentreOfMassFilter(object):
         self.model = iMod
         self.aqui = btkAcq
 
-    def compute(self, pointLabelSuffix=""):
+    def compute(self, pointLabelSuffix=None):
 
         count = 0
         bodymass= 0
@@ -1527,5 +1527,5 @@ class CentreOfMassFilter(object):
 
         self.model.setCentreOfMass(com)
 
-        outLabel  = "CentreOfMass_" + pointLabelSuffix if pointLabelSuffix!="" else "CentreOfMass"
+        outLabel  = "CentreOfMass_" + pointLabelSuffix if pointLabelSuffix is not None else "CentreOfMass"
         btkTools.smartAppendPoint(self.aqui,outLabel,self.model.getCentreOfMass())
