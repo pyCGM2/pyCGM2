@@ -46,3 +46,15 @@ Calibration:
 
 Fitting:
     Moment Projection: Distal
+
+KneeCalibration:
+    Left:
+        Method: Calibration2Dof
+        Trial: None
+        BeginFrame: 0
+        EndFrame: 0
+    Right:
+        Method: Calibration2Dof
+        Trial: None
+        BeginFrame: 0
+        EndFrame: 0
