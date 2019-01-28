@@ -47,6 +47,11 @@ Calibration:
 Fitting:
     Moment Projection: Distal
 
+
+################
+# ADVANCED     #
+################
+
 KneeCalibration:
     Left:
         Method: Calibration2Dof
@@ -58,3 +63,9 @@ KneeCalibration:
         Trial: None
         BeginFrame: 0
         EndFrame: 0
+
+################
+# DO NOT TOUCH #
+################
+
+ModelVersion: CGM1.0
