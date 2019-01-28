@@ -37,6 +37,10 @@ class ModelConfigManager(ConfigManager):
         super(ModelConfigManager, self).__init__(settings)
 
         self._internSettings = None
+        self.finalSettings = None
+
+    def getFinalSettings(self):
+        return self.finalSettings
 
 
     def getInternalSettings(self):
@@ -62,7 +66,7 @@ class ModelConfigManager(ConfigManager):
     def dynamicTrials(self):
         return  self._userSettings["Fitting"]["Trials"]
 
-    def fullSettings(self):
+    def contruct(self):
 
         finalSettings =  copy.deepcopy(self._internSettings)
 
@@ -74,7 +78,7 @@ class ModelConfigManager(ConfigManager):
                 print key
                 finalSettings.update({key : self._userSettings[key]})
 
-        return finalSettings
+        self.finalSettings = finalSettings
 
 
 
@@ -97,6 +101,8 @@ class CGM1ConfigManager(ModelConfigManager):
         self.markerDiameter
         self.pointSuffix
         self.translators
+        self.momentProjection
+
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
@@ -148,6 +154,40 @@ class CGM1ConfigManager(ModelConfigManager):
             return  enums.MomentProjection.Global
         elif self._internSettings["Fitting"]["Moment Projection"] == "JCS":
             return enums.MomentProjection.JCS
+
+    @property
+    def requiredMp(self):
+        return  self._userSettings["MP"]["Required"]
+
+    @property
+    def optionalMp(self):
+        return  self._userSettings["MP"]["Optional"]
+
+
+    def updateMp(self,model):
+
+        if self.finalSettings is not None:
+            self.finalSettings["MP"]["Optional"].update(model.mp_computed)
+
+
+
+
+
+
+    # # update optional mp and save a new info file
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "InterAsisDistance"] = model.mp_computed["InterAsisDistance"]
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftAsisTrocanterDistance"] = model.mp_computed["LeftAsisTrocanterDistance"]
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftTibialTorsion"] = model.mp_computed["LeftTibialTorsionOffset"]
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftThighRotation"] = model.mp_computed["LeftThighRotationOffset"]
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftShankRotation"] = model.mp_computed["LeftShankRotationOffset"]
+    #
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "RightAsisTrocanterDistance"] = model.mp_computed["RightAsisTrocanterDistance"]
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "RightTibialTorsion"] = model.mp_computed["RightTibialTorsionOffset"]
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "RightThighRotation"] = model.mp_computed["RightThighRotationOffset"]
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "RightShankRotation"] = model.mp_computed["RightShankRotationOffset"]
+    #
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "LeftKneeFuncCalibrationOffset"] = model.mp_computed["LeftKneeFuncCalibrationOffset"]
+    # self.pipSettings["Modelling"]["MP"]["Optional"][ "RightKneeFuncCalibrationOffset"] = model.mp_computed["RightKneeFuncCalibrationOffset"]
 
 
 class CGM1_1ConfigManager(CGM1ConfigManager):

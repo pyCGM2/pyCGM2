@@ -14,6 +14,25 @@ class tests():
 
 
     @classmethod
+    def testCGM1(cls):
+
+
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\Programming\\API\\pyCGM2\\pyCGM2\\Tests\\configurator\\localsettings\\"
+
+        #internalSettings = files.openFile(pyCGM2_GLOBAL_SETTINGS_PATH,"CGM1-pyCGM2.settings")
+
+        userSettings = files.openFile(DATA_PATH,"altered_CGM1.userSettings")
+
+        manager = Manager.CGM1ConfigManager(userSettings)
+        manager.contruct()
+        manager.getFinalSettings()
+
+        #files.prettyDictPrint(finalSettings)
+
+
+
+
+    @classmethod
     def testCGM1_localSettings(cls):
 
 
@@ -24,7 +43,9 @@ class tests():
         userSettings = files.openFile(DATA_PATH,"altered_CGM1.userSettings")
 
         manager = Manager.CGM1ConfigManager(userSettings,localInternalSettings=internalSettings)
-        finalSettings = manager.fullSettings()
+        manager.contruct()
+        finalSettings = manager.getFinalSettings()
+
 
         #files.prettyDictPrint(finalSettings)
 
@@ -49,7 +70,8 @@ class tests():
 
 
         manager = Manager.CGM1ConfigManager(userSettings,localInternalSettings=internalSettings,localTranslators=translators)
-        finalSettings = manager.fullSettings()
+        manager.contruct()
+        finalSettings = manager.getFinalSettings()
         #files.prettyDictPrint(finalSettings)
 
         np.testing.assert_equal( finalSettings["Global"]["Marker diameter"],28)
