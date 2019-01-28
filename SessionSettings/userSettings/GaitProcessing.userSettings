@@ -1,0 +1,30 @@
+Title: None
+Task: Gait Analysis
+
+ModelledTrials:
+  - trial1.c3d
+
+SubjectInfo:
+  ipp: None
+  name: None
+  dob: None
+
+Conditions
+    Foot: None
+    Orthosis: None
+    Prothesis: None
+    ExternalHelp: None
+    Assistance: None
+
+################
+# ADVANCED     #
+################
+Point suffix: None
+
+NormativeData:
+  Author: Schwartz2008
+  Modality: Free"
+
+ExperimentalInfo:
+    AssessorName: None
+    SessionName: None
