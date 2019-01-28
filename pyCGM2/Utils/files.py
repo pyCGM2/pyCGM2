@@ -125,7 +125,7 @@ def saveJson(path, filename, content):
         json.dump(content, outfile,indent=4)
 
 
-def prettyJsonDisplay(parsedContent):
+def prettyDictPrint(parsedContent):
     print json.dumps(parsedContent, indent=4, sort_keys=True)
 
 
