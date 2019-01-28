@@ -32,6 +32,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
+
     # ---check marker set used----
     dcm= cgm.CGM.detectCalibrationMethods(acqStatic)
 
