@@ -26,13 +26,7 @@ class ModelConfigManager(Manager.ConfigManager):
     def getUserSettings(self):
         return self._userSettings
 
-    def getUserSettings(self):
-        return self._userSettings
 
-
-    @property
-    def DATA_PATH(self):
-        return  self._userSettings["DATA_PATH"]
 
 
     @property
@@ -110,7 +104,8 @@ class CGM1ConfigManager(ModelConfigManager):
     def pointSuffix(self):
         value = self._userSettings["Global"]["Point suffix"]
         self._internSettings["Global"]["Point suffix"] = value # overwriting
-        return  value
+
+        return  None if value=="None" else value
 
     @property
     def translators(self): # overwriting if Translators exist
