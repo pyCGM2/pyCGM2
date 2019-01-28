@@ -41,7 +41,6 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED:
 
         #-----------------------SETTINGS---------------------------------------
-        pointSuffix = args.pointSuffix if args.pointSuffix is not None else ""
         normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
 
         if normativeData["Author"] == "Schwartz2008":
@@ -78,8 +77,8 @@ if __name__ == "__main__":
         modelVersion = model.version
 
         # --------------------------PROCESSING --------------------------------
-        analysis = analysis.makeAnalysis("Gait", modelVersion, DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
-        plot.plot_MAP(DATA_PATH,analysis,nds,,exportPdf=True,outputName=modelledFilename)
+        analysisInstance = analysis.makeAnalysis("Gait", modelVersion, DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        plot.plot_MAP(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename)
 
 
 

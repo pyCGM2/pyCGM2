@@ -280,7 +280,7 @@ class LowerLimbKinematicsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=""):
+    def __init__(self,iAnalysis,pointLabelSuffix=None):
 
         """
             :Parameters:
@@ -381,7 +381,7 @@ class LowerLimbKinematicsPlotViewer(AbstractPlotViewer):
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
-        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
+        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
         # pelvis
         self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kinematicStats,
@@ -551,7 +551,7 @@ class LowerLimbMultiFootKinematicsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=""):
+    def __init__(self,iAnalysis,pointLabelSuffix=None):
 
         """
             :Parameters:
@@ -663,7 +663,7 @@ class LowerLimbMultiFootKinematicsPlotViewer(AbstractPlotViewer):
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
-        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
+        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
         # pelvis
         self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kinematicStats,
@@ -848,7 +848,7 @@ class LowerLimbKineticsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=""):
+    def __init__(self,iAnalysis,pointLabelSuffix=None):
 
         """
             :Parameters:
@@ -957,7 +957,7 @@ class LowerLimbKineticsPlotViewer(AbstractPlotViewer):
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
-        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
+        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
         # hip
         self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kineticStats,
@@ -1721,7 +1721,7 @@ class TemporalGaitKinematicsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iTrial,pointLabelSuffix=""):
+    def __init__(self,iTrial,pointLabelSuffix=None):
 
         """
             :Parameters:
@@ -1810,7 +1810,7 @@ class TemporalGaitKinematicsPlotViewer(AbstractPlotViewer):
         pass
 
     def __setData(self):
-        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
+        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
         plot.temporalPlot(self.fig.axes[0],self.m_trial,
                                 "LPelvisAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
@@ -1912,7 +1912,7 @@ class TemporalGaitKineticsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iTrial,pointLabelSuffix=""):
+    def __init__(self,iTrial,pointLabelSuffix=None):
 
         """
             :Parameters:

@@ -41,7 +41,6 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED:
 
         #-----------------------SETTINGS---------------------------------------
-        pointSuffix = args.pointSuffix if args.pointSuffix is not None else ""
         normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
 
         if normativeData["Author"] == "Schwartz2008":
@@ -78,11 +77,11 @@ if __name__ == "__main__":
         modelVersion = model.version
 
         # --------------------------PROCESSING --------------------------------
-        analysis = analysis.makeAnalysis("Gait", modelVersion, DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        analysisInstance = analysis.makeAnalysis("Gait", modelVersion, DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
         if not consistencyFlag:
-            plot.plot_DescriptiveKinetic(DATA_PATH,analysis,nds,exportPdf=True,outputName=modelledFilename)
+            plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename)
         else:
-            plot.plot_ConsistencyKinetic(DATA_PATH,analysis,nds,exportPdf=True,outputName=modelledFilename)
+            plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename)
 
 
 

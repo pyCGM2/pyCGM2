@@ -6,7 +6,7 @@ from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emg
 from pyCGM2.Processing import scores
 from pyCGM2.Tools import trialTools
 
-def plotTemporalKinematic(DATA_PATH, modelledFilenames,pointLabelSuffix="", exportPdf=False):
+def plotTemporalKinematic(DATA_PATH, modelledFilenames,pointLabelSuffix=None, exportPdf=False):
 
     if exportPdf:
         filenameOut =  str(modelledFilenames+"-Temporal Kinematics")
@@ -23,7 +23,7 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,pointLabelSuffix="", expo
     plt.show()
 
 
-def plotTemporalKinetic(DATA_PATH, modelledFilenames,pointLabelSuffix="",exportPdf=False):
+def plotTemporalKinetic(DATA_PATH, modelledFilenames,pointLabelSuffix=None,exportPdf=False):
 
     if exportPdf:
         filenameOut =  str(modelledFilenames+"-Temporal Kinetics")
@@ -146,7 +146,13 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emglabels,muscles, contex
 
 
 
-def plot_spatioTemporal(analysis):
+def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None):
+
+    if outputName is None:
+        outputName = "Global Analysis"
+
+    if exportPdf:
+        filenameOut =  str(outputName+"-SpatioTemporal parameters")
 
     stpv = plotViewers.SpatioTemporalPlotViewer(analysis)
     stpv.setNormativeDataset(normativeDatasets.NormalSTP())
@@ -154,10 +160,11 @@ def plot_spatioTemporal(analysis):
     # filter
     stppf = plotFilters.PlottingFilter()
     stppf.setViewer(stpv)
+    if exportPdf: stppf.setExport(DATA_PATH,filenameOut,"pdf")
     stppf.plot()
     plt.show()
 
-def plot_DescriptiveKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix="",type="Gait",exportPdf=False,outputName=None):
+def plot_DescriptiveKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
 
     if outputName is None:
         outputName = "Global Analysis"
@@ -194,7 +201,7 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuff
     plt.show()
 
 
-def plot_ConsistencyKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix="",type="Gait",exportPdf=False,outputName=None):
+def plot_ConsistencyKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
 
     if outputName is None:
         outputName = "Global Analysis"
@@ -227,7 +234,7 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuff
     plt.show()
 
 
-def plot_DescriptiveKinetic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix="",type="Gait",exportPdf=False,outputName=None):
+def plot_DescriptiveKinetic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
 
     if outputName is None:
         outputName = "Global Analysis"
@@ -256,7 +263,7 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix
     plt.show()
 
 
-def plot_ConsistencyKinetic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix="",type="Gait",exportPdf=False,outputName=None):
+def plot_ConsistencyKinetic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
 
     if outputName is None:
         outputName = "Global Analysis"

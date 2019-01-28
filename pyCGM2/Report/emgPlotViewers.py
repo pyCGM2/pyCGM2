@@ -23,7 +23,7 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
     """
 
-    def __init__(self,iTrial,pointLabelSuffix=""):
+    def __init__(self,iTrial,pointLabelSuffix=None):
 
         """
             :Parameters:
@@ -125,7 +125,7 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=""):
+    def __init__(self,iAnalysis,pointLabelSuffix=None):
 
         """
             :Parameters:
@@ -212,7 +212,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=""):
+    def __init__(self,iAnalysis,pointLabelSuffix=None):
 
         """
             :Parameters:
@@ -332,7 +332,7 @@ class MultipleAnalysis_EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer)
 
     """
 
-    def __init__(self,iAnalyses,legends,pointLabelSuffix=""):
+    def __init__(self,iAnalyses,legends,pointLabelSuffix=None):
 
         """
             :Parameters:

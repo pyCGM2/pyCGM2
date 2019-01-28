@@ -22,7 +22,7 @@ from pyCGM2.EMG import normalActivation
 
 # ---- convenient plot functions
 def temporalPlot(figAxis,trial,
-                pointLabel,axis,pointLabelSuffix="",color=None,
+                pointLabel,axis,pointLabelSuffix=None,color=None,
                 title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                 customLimits=None):
 
@@ -45,7 +45,7 @@ def temporalPlot(figAxis,trial,
     flag = trialTools.isTimeSequenceExist(trial,pointLabel)
 
     if flag:
-        suffixPlus = "_" + pointLabelSuffix if pointLabelSuffix!="" else ""
+        suffixPlus = "_" + pointLabelSuffix if pointLabelSuffix is not None else ""
         timeseq = trial.findChild(ma.T_TimeSequence,str(pointLabel+suffixPlus))
         lines=figAxis.plot(timeseq.data()[:,axis], '-', color= color)
 

@@ -10,7 +10,7 @@ from pyCGM2 import enums
 def makeAnalysis(type,modelVersion,DATA_PATH,
                     modelledFilenames,
                     subjectInfo, experimentalInfo,modelInfo,
-                    pointLabelSuffix=""):
+                    pointLabelSuffix=None):
 
 
     #---- c3d manager
@@ -39,11 +39,11 @@ def makeAnalysis(type,modelVersion,DATA_PATH,
 
     #----analysis
     if modelVersion=="CGM2.4":
-        cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT["Left"].append("LForeFootAngles")
-        cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT["Right"].append("RForeFootAngles")
+        cgm.CGM1.ANALYSIS_KINEMATIC_LABELS_DICT["Left"].append("LForeFootAngles")
+        cgm.CGM1.ANALYSIS_KINEMATIC_LABELS_DICT["Right"].append("RForeFootAngles")
 
-    kinematicLabelsDict = cgm.CGM1LowerLimbs.ANALYSIS_KINEMATIC_LABELS_DICT
-    kineticLabelsDict = cgm.CGM1LowerLimbs.ANALYSIS_KINETIC_LABELS_DICT
+    kinematicLabelsDict = cgm.CGM1.ANALYSIS_KINEMATIC_LABELS_DICT
+    kineticLabelsDict = cgm.CGM1.ANALYSIS_KINETIC_LABELS_DICT
 
 
 
@@ -71,7 +71,7 @@ def makeAnalysis(type,modelVersion,DATA_PATH,
 
     #files.saveAnalysis(analysis,DATA_PATH,"Save_and_openAnalysis")
 
-def processEMG(DATA_PATH, gaitTrials, EMG_LABELS, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=""):
+def processEMG(DATA_PATH, gaitTrials, EMG_LABELS, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None):
 
 
     for gaitTrial in gaitTrials:
@@ -85,7 +85,7 @@ def processEMG(DATA_PATH, gaitTrials, EMG_LABELS, highPassFrequencies=[20,200],e
         envf.setCutoffFrequency(envelopFrequency)
         envf.run()
 
-        outFilename = gaitTrial if fileSuffix=="" else gaitTrial+"_"+fileSuffix
+        outFilename = gaitTrial if fileSuffix is None  else gaitTrial+"_"+fileSuffix
         btkTools.smartWriter(acq,DATA_PATH+outFilename)
 
 
