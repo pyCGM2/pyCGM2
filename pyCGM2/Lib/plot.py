@@ -2,7 +2,7 @@
 #import ipdb
 import matplotlib.pyplot as plt
 import numpy as np
-from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emgPlotViewers
+from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emgPlotViewers, multipleAnalysesPlotViewers
 from pyCGM2.Processing import scores
 from pyCGM2.Tools import trialTools
 
@@ -312,7 +312,7 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None
 def compareKinematic(analyses,labels,context,normativeDataset,plotType="Descriptive",type="Gait"):
 
 
-    kv = plotViewers.multipleAnalyses_LowerLimbKinematicsPlotViewer(analyses,context,labels)
+    kv = multipleAnalysesPlotViewers.multiAnalyses_LowerLimbKinematicsPlotViewer(analyses,context,labels)
 
     if plotType == "Descriptive":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if type =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )
@@ -334,7 +334,7 @@ def compareKinematic(analyses,labels,context,normativeDataset,plotType="Descript
 def compareKinetic(analyses,labels,context,normativeDataset,plotType="Descriptive",type="Gait"):
 
 
-    kv = plotViewers.multipleAnalyses_LowerLimbKineticsPlotViewer(analyses,context,labels)
+    kv = multipleAnalysesPlotViewers.multiAnalyses_LowerLimbKineticsPlotViewer(analyses,context,labels)
 
     if plotType == "Descriptive":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if type =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )
