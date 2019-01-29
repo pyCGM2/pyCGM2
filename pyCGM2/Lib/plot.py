@@ -176,11 +176,11 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuff
     # filter 1 - descriptive kinematic panel
     #-------------------------------------------
     # viewer
-    if analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3"]:
+    if analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
         kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
-    elif analysis.modelInfo["Version"] in ["CGM2.4"]:
-        kv = plotViewers.LowerLimbMultiFootKinematicsPlotViewer(analysis,
-                            pointLabelSuffix=pointLabelSuffix)
+    # elif analysis.modelInfo["Version"] in ["CGM2.4"]:
+    #     kv = plotViewers.LowerLimbMultiFootKinematicsPlotViewer(analysis,
+    #                         pointLabelSuffix=pointLabelSuffix)
     else:
         raise Exception("[pyCGM2] Model version not known")
 
