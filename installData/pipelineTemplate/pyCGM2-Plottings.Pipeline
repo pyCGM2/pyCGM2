@@ -34,6 +34,15 @@
     </ParamList>
   </Entry>
 
+  <Entry DisplayName="Run pyCGM2-plot-STP" Enabled="0" OperationId="89" OperationName="Python">
+    <ParamList name="">
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-plotSpatioTemporalParameters.py"/>
+      <Param name="ScriptArgs" value=""/>
+      <Param name="UseNexusPython" value="false"/>
+      <Param name="LaunchPython" value="false"/>
+    </ParamList>
+  </Entry>
+
 
   <Entry DisplayName="Run pyCGM2-plot-NormalizedKinematics " Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
