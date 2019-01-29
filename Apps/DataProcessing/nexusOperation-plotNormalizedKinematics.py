@@ -51,6 +51,7 @@ if __name__ == "__main__":
             nds = normativeDatasets.Pinzone2014(chosenModality) # modalites : "Center One" ,"Center Two"
 
         consistencyFlag = True if args.consistency else False
+        pointSuffix = args.pointSuffix
 
         # --------------------------INPUTS ------------------------------------
         DEBUG= False
@@ -78,7 +79,8 @@ if __name__ == "__main__":
         modelVersion = model.version
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis("Gait", modelVersion, DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        analysisInstance = analysis.makeAnalysis("Gait", modelVersion, DATA_PATH,[modelledFilename],
+                            None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
         if not consistencyFlag:
             plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename)
         else:

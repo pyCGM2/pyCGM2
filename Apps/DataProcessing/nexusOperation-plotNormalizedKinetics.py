@@ -41,6 +41,7 @@ if __name__ == "__main__":
     if NEXUS_PYTHON_CONNECTED:
 
         #-----------------------SETTINGS---------------------------------------
+        pointSuffix = args.pointSuffix
         normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
 
         if normativeData["Author"] == "Schwartz2008":

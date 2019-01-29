@@ -35,6 +35,7 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED:
 
+        pointSuffix = args.pointSuffix
         # --------------------------INPUTS ------------------------------------
         DEBUG= False
         if DEBUG:
