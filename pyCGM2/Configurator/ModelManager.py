@@ -13,21 +13,6 @@ class ModelConfigManager(Manager.ConfigManager):
     def __init__(self,settings):
         super(ModelConfigManager, self).__init__(settings)
 
-        self._internSettings = None
-        self.finalSettings = None
-
-    def getFinalSettings(self):
-        return self.finalSettings
-
-
-    def getInternalSettings(self):
-        return self._internSettings
-
-    def getUserSettings(self):
-        return self._userSettings
-
-
-
 
     @property
     def staticTrial(self):

@@ -4,6 +4,8 @@ Task: Gait Analysis
 ModelledTrials:
   - trial1.c3d
 
+Consistency: False
+
 SubjectInfo:
   ipp: None
   name: None

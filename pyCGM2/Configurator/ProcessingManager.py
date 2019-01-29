@@ -58,6 +58,9 @@ class GaitProcessingConfigManager(Manager.ConfigManager):
         value = self._userSettings["Point suffix"]
         return  None if value=="None" else value
 
+    @property
+    def consistencyFlag(self):
+        return self._userSettings["Consistency"]
 
     @property
     def title(self):
