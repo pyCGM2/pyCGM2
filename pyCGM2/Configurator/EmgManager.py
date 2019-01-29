@@ -55,8 +55,8 @@ class EmgConfigManager(Manager.ConfigManager):
         return self._internSettings["Processing"]["BandpassFrequencies"]
 
     @property
-    def EnvelopLowPassFrequency(self):
-        return self._internSettings["Processing"]["EnvelopLowPassFrequency"]
+    def EnvelopLowpassFrequency(self):
+        return self._internSettings["Processing"]["EnvelopLowpassFrequency"]
 
     @property
     def EMGS(self):

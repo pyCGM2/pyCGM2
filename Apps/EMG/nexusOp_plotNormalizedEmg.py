@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+args.BandpassFrequencies# -*- coding: utf-8 -*-
 import logging
 import argparse
 
@@ -21,8 +21,8 @@ if __name__ == "__main__":
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
-    parser.add_argument('-bpf', '--bandPassFrequencies', nargs='+',help='bandpass filter')
-    parser.add_argument('-ecf','--envelopCutOffFrequency', type=int, help='cutoff frequency for emg envelops')
+    parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
+    parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
     parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of the processed file')
     parser.add_argument('-c','--consistency', action='store_true', help='consistency plots')
     args = parser.parse_args()
@@ -34,22 +34,22 @@ if __name__ == "__main__":
 
         # ----------------------INPUTS-------------------------------------------
         bandPassFilterFrequencies = emgSettings["Processing"]["BandpassFrequencies"]
-        if args.bandPassFrequencies is not None:
-            if len(args.bandPassFrequencies) != 2:
+        if args.BandpassFrequencies is not None:
+            if len(args.BandpassFrequencies) != 2:
                 raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
             else:
-                bandPassFilterFrequencies = [float(args.bandPassFrequencies[0]),float(args.bandPassFrequencies[1])]
+                bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
                 logging.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
-        envelopCutOffFrequency = emgSettings["Processing"]["EnvelopLowPassFrequency"]
-        if args.envelopCutOffFrequency is not None:
-            envelopCutOffFrequency =  args.envelopCutOffFrequency
+        envelopCutOffFrequency = emgSettings["Processing"]["EnvelopLowpassFrequency"]
+        if args.EnvelopLowpassFrequency is not None:
+            envelopCutOffFrequency =  args.EnvelopLowpassFrequency
             logging.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
 
         consistencyFlag = True if args.consistency else False
 
+        fileSuffix = args.fileSuffix
 
-        fileSuffix="" if args.fileSuffix is None else args.fileSuffix
         # --- acquisition file and path----
         DEBUG = False
         if DEBUG:
@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
         emgAnalysis = analysis.makeEmgAnalysis("Gait",DATA_PATH, [inputFile], EMG_LABELS,None, None)
 
-        if fileSuffix!="":
+        if fileSuffix is not None:
             inputfile = inputFile +"_"+ fileSuffix
 
         if not consistencyFlag:
