@@ -1,79 +1,89 @@
-EMG1 :
-    Muscle : RECFEM
-    Context : Left
-    NormalActivity : RECFEM
+CHANNELS:    
+    EMG1 :
+        Muscle : RECFEM
+        Context : Left
+        NormalActivity : RECFEM
 
-EMG2 :
-    Muscle : RECFEM
-    Context : Right
-    NormalActivity : RECFEM
+    EMG2 :
+        Muscle : RECFEM
+        Context : Right
+        NormalActivity : RECFEM
 
-EMG3 :
-    Muscle : VASLAT
-    Context : Left
-    NormalActivity : VASLAT
+    EMG3 :
+        Muscle : VASLAT
+        Context : Left
+        NormalActivity : VASLAT
 
-EMG4 :
-    Muscle : VASLAT
-    Context : Right
-    NormalActivity : VASLAT
+    EMG4 :
+        Muscle : VASLAT
+        Context : Right
+        NormalActivity : VASLAT
 
-EMG5 :
-    Muscle : SEMITE
-    Context : Left
-    NormalActivity : SEMITE
+    EMG5 :
+        Muscle : SEMITE
+        Context : Left
+        NormalActivity : SEMITE
 
-EMG6 :
-    Muscle : SEMITE
-    Context : Right
-    NormalActivity : SEMITE
+    EMG6 :
+        Muscle : SEMITE
+        Context : Right
+        NormalActivity : SEMITE
 
-EMG7 :
-    Muscle : TIBANT
-    Context : Left
-    NormalActivity : TIBANT
+    EMG7 :
+        Muscle : TIBANT
+        Context : Left
+        NormalActivity : TIBANT
 
-EMG8 :
-    Muscle : TIBANT
-    Context : Right
-    NormalActivity : TIBANT
+    EMG8 :
+        Muscle : TIBANT
+        Context : Right
+        NormalActivity : TIBANT
 
-EMG9 :
-    Muscle : SOLEUS
-    Context : Left
-    NormalActivity : SOLEUS
+    EMG9 :
+        Muscle : SOLEUS
+        Context : Left
+        NormalActivity : SOLEUS
 
-EMG10 :
-    Muscle : SOLEUS
-    Context : Right
-    NormalActivity : SOLEUS
+    EMG10 :
+        Muscle : SOLEUS
+        Context : Right
+        NormalActivity : SOLEUS
 
-EMG11 :
-    Muscle : None
-    Context : None
-    NormalActivity : None
+    EMG11 :
+        Muscle : None
+        Context : None
+        NormalActivity : None
 
-EMG12 :
-    Muscle : None
-    Context : None
-    NormalActivity : None
+    EMG12 :
+        Muscle : None
+        Context : None
+        NormalActivity : None
 
-EMG13 :
-    Muscle : None
-    Context : None
-    NormalActivity : None
+    EMG13 :
+        Muscle : None
+        Context : None
+        NormalActivity : None
 
-EMG14 :
-    Muscle : None
-    Context : None
-    NormalActivity : None
+    EMG14 :
+        Muscle : None
+        Context : None
+        NormalActivity : None
 
-EMG15 :
-    Muscle : None
-    Context : None
-    NormalActivity : None
+    EMG15 :
+        Muscle : None
+        Context : None
+        NormalActivity : None
 
-EMG16 :
-    Muscle : None
-    Context : None
-    NormalActivity : None
+    EMG16 :
+        Muscle : None
+        Context : None
+        NormalActivity : None
+
+
+################
+# ADVANCED     #
+################
+
+Processing:
+  BandpassFrequencies: [20,200]
+  EnvelopLowPassFrequency: 6

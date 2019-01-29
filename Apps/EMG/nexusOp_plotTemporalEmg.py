@@ -30,8 +30,10 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
+        emgSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
+
         # ----------------------INPUTS-------------------------------------------
-        bandPassFilterFrequencies = [20,200]
+        bandPassFilterFrequencies = emgSettings["Processing"]["BandpassFrequencies"]
         if args.bandPassFrequencies is not None:
             if len(args.bandPassFrequencies) != 2:
                 raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
@@ -39,7 +41,7 @@ if __name__ == "__main__":
                 bandPassFilterFrequencies = [float(args.bandPassFrequencies[0]),float(args.bandPassFrequencies[1])]
                 logging.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
-        envelopCutOffFrequency = 6
+        envelopCutOffFrequency = emgSettings["Processing"]["EnvelopLowPassFrequency"]
         if args.envelopCutOffFrequency is not None:
             envelopCutOffFrequency =  args.envelopCutOffFrequency
             logging.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
@@ -62,20 +64,20 @@ if __name__ == "__main__":
         inputFile = inputFileNoExt+".c3d"
 
 
-        emgSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
+
 
         # reconfiguration of emg settings as lists
         EMG_LABELS = []
         EMG_CONTEXT =[]
         NORMAL_ACTIVITIES = []
         EMG_MUSCLES =[]
-        for emg in emgSettings.keys():
+        for emg in emgSettings["CHANNELS"].keys():
             if emg !="None":
-                if emgSettings[emg]["Muscle"] != "None":
+                if emgSettings["CHANNELS"][emg]["Muscle"] != "None":
                     EMG_LABELS.append(str(emg))
-                    EMG_MUSCLES.append(str(emgSettings[emg]["Muscle"]))
-                    EMG_CONTEXT.append(str(emgSettings[emg]["Context"])) if emgSettings[emg]["Context"] != "None" else EMG_CONTEXT.append(None)
-                    NORMAL_ACTIVITIES.append(str(emgSettings[emg]["NormalActivity"])) if emgSettings[emg]["NormalActivity"] != "None" else EMG_CONTEXT.append(None)
+                    EMG_MUSCLES.append(str(emgSettings["CHANNELS"][emg]["Muscle"]))
+                    EMG_CONTEXT.append(str(emgSettings["CHANNELS"][emg]["Context"])) if emgSettings["CHANNELS"][emg]["Context"] != "None" else EMG_CONTEXT.append(None)
+                    NORMAL_ACTIVITIES.append(str(emgSettings["CHANNELS"][emg]["NormalActivity"])) if emgSettings["CHANNELS"][emg]["NormalActivity"] != "None" else EMG_CONTEXT.append(None)
 
         # EMG_LABELS=['EMG1','EMG2','EMG3','EMG4'] # list of emg labels in your c3d
         # EMG_CONTEXT=['Left','Left','Right','Left'] # A context is not the body side. A context is relative to the gait cycle. EMG1 will plot for the Left Gait Cycle.
