@@ -884,18 +884,21 @@ class TemporalGaitKinematicsPlotViewer(AbstractPlotViewer):
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
-        ax0 = plt.subplot(5,3,1)# Pelvis X
-        ax1 = plt.subplot(5,3,2)# Pelvis Y
-        ax2 = plt.subplot(5,3,3)# Pelvis Z
-        ax3 = plt.subplot(5,3,4)# Hip X
-        ax4 = plt.subplot(5,3,5)# Hip Y
-        ax5 = plt.subplot(5,3,6)# Hip Z
-        ax6 = plt.subplot(5,3,7)# Knee X
-        ax7 = plt.subplot(5,3,8)# Knee Y
-        ax8 = plt.subplot(5,3,9)# Knee Z
-        ax9 = plt.subplot(5,3,10)# Ankle X
-        ax10 = plt.subplot(5,3,11)# Ankle Z
-        ax11 = plt.subplot(5,3,12)# Footprogress Z
+        ax0 = plt.subplot(6,3,1)# Pelvis X
+        ax1 = plt.subplot(6,3,2)# Pelvis Y
+        ax2 = plt.subplot(6,3,3)# Pelvis Z
+        ax3 = plt.subplot(6,3,4)# Hip X
+        ax4 = plt.subplot(6,3,5)# Hip Y
+        ax5 = plt.subplot(6,3,6)# Hip Z
+        ax6 = plt.subplot(6,3,7)# Knee X
+        ax7 = plt.subplot(6,3,8)# Knee Y
+        ax8 = plt.subplot(6,3,9)# Knee Z
+        ax9 = plt.subplot(6,3,10)# Ankle X
+        ax10 = plt.subplot(6,3,11)# Ankle Z
+        ax11 = plt.subplot(6,3,12)# Footprogress Z
+        ax12 = plt.subplot(6,3,13)# ForeFoot X
+        ax13 = plt.subplot(6,3,14)# ForeFoot Z
+        ax14 = plt.subplot(6,3,15)# ForeFoot Y
 
         ax0.set_title("Pelvis Tilt" ,size=8)
         ax1.set_title("Pelvis Obliquity" ,size=8)
@@ -909,14 +912,16 @@ class TemporalGaitKinematicsPlotViewer(AbstractPlotViewer):
         ax9.set_title("Ankle dorsiflexion" ,size=8)
         ax10.set_title("Ankle supination" ,size=8)
         ax11.set_title("Foot Progression " ,size=8)
+        ax12.set_title("ForeFoot dorsiflexion " ,size=8)
+        ax13.set_title("ForeFoot eversion " ,size=8)
+        ax14.set_title("ForeFoot Adduction " ,size=8)
 
         for ax in self.fig.axes:
             ax.set_ylabel("angle (deg)",size=8)
 
-
-        ax9.set_xlabel("Frame",size=8)
-        ax10.set_xlabel("Frame",size=8)
-        ax11.set_xlabel("Frame",size=8)
+        ax12.set_xlabel("Cycle %",size=8)
+        ax13.set_xlabel("Cycle %",size=8)
+        ax14.set_xlabel("Cycle %",size=8)
 
         ax0.set_ylim([0,60])
         ax1.set_ylim([-30,30])
@@ -933,6 +938,10 @@ class TemporalGaitKinematicsPlotViewer(AbstractPlotViewer):
         ax9.set_ylim([-30,30])
         ax10.set_ylim([-30,30])
         ax11.set_ylim([-30,30])
+
+        ax12.set_ylim([-50,30])
+        ax13.set_ylim([-30,30])
+        ax14.set_ylim([-30,30])
 
     def setNormativeDataset(self,iNormativeDataSet):
         """
@@ -971,6 +980,12 @@ class TemporalGaitKinematicsPlotViewer(AbstractPlotViewer):
                                 "LAnkleAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
         plot.temporalPlot(self.fig.axes[11],self.m_trial,
                                 "LFootProgressAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+        plot.temporalPlot(self.fig.axes[12],self.m_trial,
+                                "LForeFootAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+        plot.temporalPlot(self.fig.axes[13],self.m_trial,
+                                "LForeFootAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+        plot.temporalPlot(self.fig.axes[14],self.m_trial,
+                                "LForeFootAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
 
 
         plot.temporalPlot(self.fig.axes[0],self.m_trial,
@@ -997,6 +1012,12 @@ class TemporalGaitKinematicsPlotViewer(AbstractPlotViewer):
                                 "RAnkleAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
         plot.temporalPlot(self.fig.axes[11],self.m_trial,
                                 "RFootProgressAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+        plot.temporalPlot(self.fig.axes[12],self.m_trial,
+                                "RForeFootAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+        plot.temporalPlot(self.fig.axes[13],self.m_trial,
+                                "RForeFootAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+        plot.temporalPlot(self.fig.axes[14],self.m_trial,
+                                "RForeFootAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
 
     def plotPanel(self):
 
@@ -1010,40 +1031,7 @@ class TemporalGaitKinematicsPlotViewer(AbstractPlotViewer):
 
 class TemporalGaitKineticsPlotViewer(AbstractPlotViewer):
     """
-        **Description :** Constructor of temporal gait plot panel.
 
-        .. note::
-
-            The kinematic panel is made of 12 subplots
-
-            ================  ==============================  =======  ===========
-            matplotlib Axis   model outputs                   context  Axis label
-            ================  ==============================  =======  ===========
-            ax0               "LPelvisProgressAngles"         left     Tilt
-                              "RPelvisProgressAngles"         right
-            ax1               "LPelvisProgress.Angles"        left     Obli
-                              "RPelvisProgress.Angles"        right
-            ax2               "LPelvisProgress.Angles"        left     Rota
-                              "RPelvisProgress.Angles"        right
-            ax3               "LHipAngles"                    left     Flex
-                              "RHipAngles"                    right
-            ax4               "LHipAngles"                    left     Addu
-                              "RHipAngles"                    right
-            ax5               "LHipAngles"                    left    Rota
-                              "RHipAngles"                    right
-            ax6               "LKneeAngles"                   left     Flex
-                              "RKneeAngles"                   right
-            ax7               "LKneeAngles"                   left     Addu
-                              "RKneeAngles"                   right
-            ax8               "LKneeAngles"                   left     Rota
-                              "RKneeAngles"                   right
-            ax9              "LAnkleAngles"                  left     Flex
-                              "RAnkleAngles"                  right
-            ax10              "LAnkleAngles"                  left     Eve
-                              "RAnkleAngles"                  right
-            ax11              "LFootProgressAngles"           left
-                              "RFootProgressAngles"           right
-            ================  ==============================  =======  ===========
 
     """
 

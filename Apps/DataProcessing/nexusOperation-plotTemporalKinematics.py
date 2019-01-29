@@ -52,7 +52,7 @@ if __name__ == "__main__":
         logging.info( "file: "+ modelledFilename)
 
 
-        plotTemporalKinematic(DATA_PATH, modelledFilename,pointLabelSuffix=pointSuffix,exportPdf=True)
+        plot.plotTemporalKinematic(DATA_PATH, modelledFilename,pointLabelSuffix=pointSuffix,exportPdf=True)
 
 
 

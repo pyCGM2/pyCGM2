@@ -41,12 +41,15 @@ def temporalPlot(figAxis,trial,
 
         .. code:: python
 
-   '''
+    '''
+
+    pointLabel = pointLabel + "_" + pointLabelSuffix if pointLabelSuffix is not None else pointLabel
+
+
     flag = trialTools.isTimeSequenceExist(trial,pointLabel)
 
     if flag:
-        suffixPlus = "_" + pointLabelSuffix if pointLabelSuffix is not None else ""
-        timeseq = trial.findChild(ma.T_TimeSequence,str(pointLabel+suffixPlus))
+        timeseq = trial.findChild(ma.T_TimeSequence,pointLabel)
         lines=figAxis.plot(timeseq.data()[:,axis], '-', color= color)
 
     if legendLabel is not None  and flag: lines[0].set_label(legendLabel)
@@ -57,12 +60,13 @@ def temporalPlot(figAxis,trial,
     if ylabel is not None: figAxis.set_ylabel(ylabel,size=8)
     if ylim is not None: figAxis.set_ylim(ylim)
 
-    for ev in trial.findChildren(ma.T_Event):
-        colorContext = plotUtils.colorContext(ev.context())
-        if ev.name() == "Foot Strike":
-            figAxis.axvline( x= (ev.time()-timeseq.startTime())*timeseq.sampleRate(), color = colorContext, linestyle = "-")
-        elif ev.name() == "Foot Off":
-            figAxis.axvline( x= (ev.time()-timeseq.startTime())*timeseq.sampleRate(), color = colorContext, linestyle = "--")
+    if flag:
+        for ev in trial.findChildren(ma.T_Event):
+            colorContext = plotUtils.colorContext(ev.context())
+            if ev.name() == "Foot Strike":
+                figAxis.axvline( x= (ev.time()-timeseq.startTime())*timeseq.sampleRate(), color = colorContext, linestyle = "-")
+            elif ev.name() == "Foot Off":
+                figAxis.axvline( x= (ev.time()-timeseq.startTime())*timeseq.sampleRate(), color = colorContext, linestyle = "--")
 
 
 def descriptivePlot(figAxis,analysisStructureItem,
