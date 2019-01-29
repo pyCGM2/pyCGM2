@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
-    parser.add_argument('-ecf','--EnvelopLowPassFrequency', type=int, help='cutoff frequency for emg envelops')
+    parser.add_argument('-ecf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
     parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of the processed file')
     parser.add_argument('-r','--raw', action='store_true', help='rectified data')
     args = parser.parse_args()
@@ -42,7 +42,7 @@ if __name__ == "__main__":
                 logging.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
         envelopCutOffFrequency = emgSettings["Processing"]["EnvelopLowpassFrequency"]
-        if args.envelopCutOffFrequency is not None:
+        if args.EnvelopLowpassFrequency is not None:
             envelopCutOffFrequency =  args.EnvelopLowpassFrequency
             logging.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
 
