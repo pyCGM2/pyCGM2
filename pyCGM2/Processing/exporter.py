@@ -172,28 +172,38 @@ class XlsAnalysisExportFilter(object):
             for key in self.analysis.kinematicStats.data.keys():
                 label = key[0]
                 context = key[1]
-                n = len(self.analysis.kinematicStats.data[label,context]["values"])
-                X = np.zeros((101,n))
-                Y = np.zeros((101,n))
-                Z = np.zeros((101,n))
-                for i in range(0,n):
-                    X[:,i] = self.analysis.kinematicStats.data[label,context]["values"][i][:,0]
-                    Y[:,i] = self.analysis.kinematicStats.data[label,context]["values"][i][:,1]
-                    Z[:,i] = self.analysis.kinematicStats.data[label,context]["values"][i][:,2]
 
-                cycle_header= ["Cycle "+str(i) for i in range(0,n)]
-                frame_header= ["Frame "+str(i) for i in range(0,101)]
+                X=[]
+                Y=[]
+                Z=[]
+
+                countCycle = 0
+                for cycleValuesIt  in self.analysis.kinematicStats.data[label,context]["values"]:
+                    if not np.all(cycleValuesIt == 0):
+                        X.append(cycleValuesIt[:,0])
+                        Y.append(cycleValuesIt[:,0])
+                        Z.append(cycleValuesIt[:,0])
+                        countCycle+=1
+
+                X = np.asarray(X).T
+                Y = np.asarray(Y).T
+                Z = np.asarray(Z).T
+
+                if X.size!=0 and Y.size!=0 and Z.size!=0:
+
+                    cycle_header= ["Cycle "+str(i) for i in range(0,countCycle)]
+                    frame_header= ["Frame "+str(i) for i in range(0,101)]
 
 
-                df_x=pd.DataFrame(X,  columns= cycle_header,index = frame_header )
-                df_x['Axis']='X'
-                df_y=pd.DataFrame(Y,  columns= cycle_header,index = frame_header )
-                df_y['Axis']='Y'
-                df_z=pd.DataFrame(Z,  columns= cycle_header,index = frame_header )
-                df_z['Axis']='Z'
+                    df_x=pd.DataFrame(X,  columns= cycle_header,index = frame_header )
+                    df_x['Axis']='X'
+                    df_y=pd.DataFrame(Y,  columns= cycle_header,index = frame_header )
+                    df_y['Axis']='Y'
+                    df_z=pd.DataFrame(Z,  columns= cycle_header,index = frame_header )
+                    df_z['Axis']='Z'
 
-                df_label = pd.concat([df_x,df_y,df_z])
-                df_label.to_excel(xlsxWriter,str(label+"."+context))
+                    df_label = pd.concat([df_x,df_y,df_z])
+                    df_label.to_excel(xlsxWriter,str(label+"."+context))
 
         if self.analysis.kineticStats.data!={}:
             # spatio temporal paramaters matching Kinetic cycles
@@ -227,27 +237,36 @@ class XlsAnalysisExportFilter(object):
                 label=key[0]
                 context=key[1]
 
-                n = len(self.analysis.kineticStats.data[label,context]["values"])
-                X = np.zeros((101,n))
-                Y = np.zeros((101,n))
-                Z = np.zeros((101,n))
-                for i in range(0,n):
-                    X[:,i] = self.analysis.kineticStats.data[label,context]["values"][i][:,0]
-                    Y[:,i] = self.analysis.kineticStats.data[label,context]["values"][i][:,1]
-                    Z[:,i] = self.analysis.kineticStats.data[label,context]["values"][i][:,2]
+                X=[]
+                Y=[]
+                Z=[]
 
-                cycle_header= ["Cycle "+str(i) for i in range(0,n)]
-                frame_header= ["Frame "+str(i) for i in range(0,101)]
+                countCycle = 0
+                for cycleValuesIt  in self.analysis.kineticStats.data[label,context]["values"]:
+                    if not np.all(cycleValuesIt == 0):
+                        X.append(cycleValuesIt[:,0])
+                        Y.append(cycleValuesIt[:,0])
+                        Z.append(cycleValuesIt[:,0])
+                        countCycle+=1
 
-                df_x=pd.DataFrame(X,  columns= cycle_header,index = frame_header )
-                df_x['Axis']='X'
-                df_y=pd.DataFrame(Y,  columns= cycle_header,index = frame_header )
-                df_y['Axis']='Y'
-                df_z=pd.DataFrame(Z,  columns= cycle_header,index = frame_header )
-                df_z['Axis']='Z'
+                X = np.asarray(X).T
+                Y = np.asarray(Y).T
+                Z = np.asarray(Z).T
 
-                df_label = pd.concat([df_x,df_y,df_z])
-                df_label.to_excel(xlsxWriter,str(label+"."+context))
+
+                if X.size!=0 and Y.size!=0 and Z.size!=0:
+                    cycle_header= ["Cycle "+str(i) for i in range(0,n)]
+                    frame_header= ["Frame "+str(i) for i in range(0,101)]
+
+                    df_x=pd.DataFrame(X,  columns= cycle_header,index = frame_header )
+                    df_x['Axis']='X'
+                    df_y=pd.DataFrame(Y,  columns= cycle_header,index = frame_header )
+                    df_y['Axis']='Y'
+                    df_z=pd.DataFrame(Z,  columns= cycle_header,index = frame_header )
+                    df_z['Axis']='Z'
+
+                    df_label = pd.concat([df_x,df_y,df_z])
+                    df_label.to_excel(xlsxWriter,str(label+"."+context))
 
         xlsxWriter.save()
         logging.info("basic dataFrame [%s- basic] Exported"%outputName)
@@ -475,7 +494,6 @@ class XlsAnalysisExportFilter(object):
                     df_kinematics.to_csv(str(outputName + " - kinematics - DataFrame.csv"),sep=";")
                 else:
                     df_kinematics.to_csv(str(path+outputName + " - kinematics - DataFrame.csv"),sep=";")
-
 
 
         # Kinetic ouputs

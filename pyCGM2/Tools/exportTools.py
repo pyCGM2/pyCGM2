@@ -417,55 +417,63 @@ def buid_df_descriptiveCycle101_3(analysis_outputStats):
         label = key[0]
         context = key[1]
         if context == "Left":
+
             valuesMean=analysis_outputStats.data[label,context]["mean"]
-            df=pd.DataFrame(valuesMean.T,  columns = FRAMES_HEADER)
-            df['Axe']=['X','Y','Z']
-            df['Label']=label
-            df['Context']= context
-            df['Stats type'] = "mean"
-            df_collection_L.append(df)
+            if not np.all(valuesMean==0):
+                df=pd.DataFrame(valuesMean.T,  columns = FRAMES_HEADER)
+                df['Axe']=['X','Y','Z']
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "mean"
+                df_collection_L.append(df)
 
             valuesStd=analysis_outputStats.data[label,context]["std"]
-            df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
-            df['Axe']=['X','Y','Z']
-            df['Label']=label
-            df['Context']= context
-            df['Stats type'] = "std"
-            df_collection_L.append(df)
+            if not np.all(valuesStd==0):
+                df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
+                df['Axe']=['X','Y','Z']
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "std"
+                df_collection_L.append(df)
 
             valuesMedian=analysis_outputStats.data[label,context]["median"]
-            df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
-            df['Axe']=['X','Y','Z']
-            df['Label']=label
-            df['Context']= context
-            df['Stats type'] = "median"
-            df_collection_L.append(df)
+            if not np.all(valuesMedian==0):
+                df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
+                df['Axe']=['X','Y','Z']
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "median"
+                df_collection_L.append(df)
 
 
         if context == "Right":
+
             valuesMean=analysis_outputStats.data[label,context]["mean"]
-            df=pd.DataFrame(valuesMean.T,  columns= FRAMES_HEADER)
-            df['Axe']=['X','Y','Z']
-            df['Label']=label
-            df['Context']= context
-            df['Stats type'] = "mean"
-            df_collection_R.append(df)
+            if not np.all(valuesMean==0):
+                df=pd.DataFrame(valuesMean.T,  columns= FRAMES_HEADER)
+                df['Axe']=['X','Y','Z']
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "mean"
+                df_collection_R.append(df)
 
             valuesStd=analysis_outputStats.data[label,context]["std"]
-            df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
-            df['Axe']=['X','Y','Z']
-            df['Label']=label
-            df['Context']= context
-            df['Stats type'] = "std"
-            df_collection_R.append(df)
+            if not np.all(valuesStd==0):
+                df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
+                df['Axe']=['X','Y','Z']
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "std"
+                df_collection_R.append(df)
 
             valuesMedian=analysis_outputStats.data[label,context]["median"]
-            df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
-            df['Axe']=['X','Y','Z']
-            df['Label']=label
-            df['Context']= context
-            df['Stats type'] = "median"
-            df_collection_R.append(df)
+            if not np.all(valuesMedian==0):
+                df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
+                df['Axe']=['X','Y','Z']
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "median"
+                df_collection_R.append(df)
 
     left_flag = len(df_collection_L)
     right_flag = len(df_collection_R)
@@ -496,25 +504,27 @@ def buid_df_cycles101_3(analysis_outputStats):
         context = key[1]
         i_l=0
         i_r=0
-        if context =="Left" : # FIXME TODO : if different form L and R
+        if context =="Left" :
             for itValues in analysis_outputStats.data[label,context]["values"]:
-                df=pd.DataFrame(itValues.T,  columns= FRAMES_HEADER)
-                df['Axis']=['X','Y','Z']
-                df['Label']=label
-                df['Cycle']= i_l
-                df['Context']= context
-                df_collection_L.append(df)
-                i_l+=1
+                if not np.all(itValues==0):
+                    df=pd.DataFrame(itValues.T,  columns= FRAMES_HEADER)
+                    df['Axis']=['X','Y','Z']
+                    df['Label']=label
+                    df['Cycle']= i_l
+                    df['Context']= context
+                    df_collection_L.append(df)
+                i_l+=1 # will serve for merging with spt
 
         if context=="Right" :
             for itValues in analysis_outputStats.data[label,context]["values"]:
-                df=pd.DataFrame(itValues.T,  columns= FRAMES_HEADER)
-                df['Axis']=['X','Y','Z']
-                df['Label']=label
-                df['Cycle']= i_r
-                df['Context']= context
-                df_collection_R.append(df)
-                i_r+=1
+                if not np.all(itValues==0):
+                    df=pd.DataFrame(itValues.T,  columns= FRAMES_HEADER)
+                    df['Axis']=['X','Y','Z']
+                    df['Label']=label
+                    df['Cycle']= i_r
+                    df['Context']= context
+                    df_collection_R.append(df)
+                i_r+=1 # will serve for merging with spt
 
     left_flag = len(df_collection_L)
     right_flag = len(df_collection_R)

@@ -84,6 +84,7 @@ def point_descriptiveStats(cycles,label,context):
     meanData[:,1]=np.mean(y,axis=1)
     meanData[:,2]=np.mean(z,axis=1)
 
+
     stdData=np.array(np.zeros((101,3)))
     stdData[:,0]=np.std(x,axis=1)
     stdData[:,1]=np.std(y,axis=1)
@@ -253,7 +254,9 @@ class Cycle(ma.Node):
         if trialTools.isTimeSequenceExist(self.trial,pointLabel):
             return self.trial.findChild(ma.T_TimeSequence, pointLabel).data()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
         else:
-            raise Exception("[pyCGM2] marker %s doesn t exist"% pointLabel )
+            logging.warning("[pyCGM2] the point Label %s doesn t exist in %s" % (pointLabel,self.trial.name()))
+            return None
+            #raise Exception("[pyCGM2] marker %s doesn t exist"% pointLabel )
 
 
     def getPointTimeSequenceDataNormalized(self,pointLabel):
@@ -266,7 +269,12 @@ class Cycle(ma.Node):
         """
 
         data = self.getPointTimeSequenceData(pointLabel)
-        return  MathNormalisation.timeSequenceNormalisation(101,data)
+        if data is None:
+            out=np.zeros((101,3))
+        else:
+            out = MathNormalisation.timeSequenceNormalisation(101,data)
+
+        return out
 
     def getAnalogTimeSequenceData(self,analogLabel):
         """
@@ -280,7 +288,9 @@ class Cycle(ma.Node):
         if trialTools.isTimeSequenceExist(self.trial,analogLabel):
             return  self.trial.findChild(ma.T_TimeSequence, analogLabel).data()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
         else:
-            raise Exception("[pyCGM2] Analog %s doesn t exist"% analogLabel )
+            logging.warning("[pyCGM2] the Analog Label %s doesn t exist in %s" % (analogLabel,self.trial.name()))
+            return None
+
 
     def getAnalogTimeSequenceDataNormalized(self,analogLabel):
         """
@@ -291,7 +301,12 @@ class Cycle(ma.Node):
         """
 
         data = self.getAnalogTimeSequenceData(analogLabel)
-        return  MathNormalisation.timeSequenceNormalisation(101,data)
+        if data is None:
+            out=np.zeros((101,3))
+        else:
+            out = MathNormalisation.timeSequenceNormalisation(101,data)
+
+        return  out
 
     def getEvents(self,context="All"):
         """
