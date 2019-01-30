@@ -18,6 +18,23 @@ class CGM(model.Model):
     """
     KAD_MARKERS = {"Left" : ["LKAX","LKD1","LKD2"], "Right" : ["RKAX","RKD1","RKD2"]}
 
+    ANALYSIS_KINEMATIC_LABELS_DICT ={
+                            'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles"
+                                   "LForeFootAngles",
+                                   "LThoraxAngles","LSpineAngles",
+                                   "LShoulderAngles","LElbowAngles","LWristAngles"],
+                           'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles",
+                                    "RForeFootAngles",
+                                    "RThoraxAngles","RSpineAngles",
+                                    "RShoulderAngles","RElbowAngles","RWristAngles"]}
+
+    ANALYSIS_KINETIC_LABELS_DICT ={
+                            'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
+                            'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
+
+
+
+
     def __init__(self):
         super(CGM, self).__init__()
         self.m_useLeftTibialTorsion=False
@@ -101,13 +118,6 @@ class CGM1(CGM):
     THORAX_TRACKING_MARKERS=["C7", "T10","CLAV", "STRN"]
 
     UPPERLIMB_TRACKING_MARKERS=[ "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN", "LFHD","LBHD","RFHD","RBHD"]
-
-
-    ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles"],
-                           'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles"]}
-
-    ANALYSIS_KINETIC_LABELS_DICT ={ 'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
-                              'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
 
 
     def __init__(self):

@@ -7,10 +7,12 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.EMG import emgFilters
 from pyCGM2 import enums
 
-def makeAnalysis(type,modelVersion,DATA_PATH,
+def makeAnalysis(type,DATA_PATH,
                     modelledFilenames,
                     subjectInfo, experimentalInfo,modelInfo,
-                    pointLabelSuffix=None):
+                    pointLabelSuffix=None,
+                    kinematicLabelsDict=None,
+                    kineticLabelsDict=None):
 
 
     #---- c3d manager
@@ -38,12 +40,11 @@ def makeAnalysis(type,modelVersion,DATA_PATH,
     cycles = cyclefilter.build()
 
     #----analysis
-    if modelVersion=="CGM2.4":
-        cgm.CGM1.ANALYSIS_KINEMATIC_LABELS_DICT["Left"].append("LForeFootAngles")
-        cgm.CGM1.ANALYSIS_KINEMATIC_LABELS_DICT["Right"].append("RForeFootAngles")
+    if kinematicLabelsDict is None:
+        kinematicLabelsDict = cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT
 
-    kinematicLabelsDict = cgm.CGM1.ANALYSIS_KINEMATIC_LABELS_DICT
-    kineticLabelsDict = cgm.CGM1.ANALYSIS_KINETIC_LABELS_DICT
+    if kineticLabelsDict is None:
+        kineticLabelsDict = cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT
 
 
 
