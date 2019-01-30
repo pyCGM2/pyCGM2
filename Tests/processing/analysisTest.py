@@ -76,7 +76,7 @@ class AnalysisTest():
 
 
     @classmethod
-    def detailedLabelNotExistingProcess(cls):
+    def detailedProcess_labelNotInTrial(cls):
         # ----DATA-----
         DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
         modelledFilenames = ["gait Trial 03 - viconName.c3d" ]
@@ -221,7 +221,7 @@ if __name__ == "__main__":
 
     plt.close("all")
 
-    AnalysisTest.detailedLabelNotExistingProcess()
-    # AnalysisTest.makeAnalysis_oneFile_noInfo()
-    # AnalysisTest.makeAnalysis_oneFile_withInfo()
-    # AnalysisTest.Save_and_openAnalysis()
+    AnalysisTest.detailedProcess_labelNotInTrial()
+    AnalysisTest.makeAnalysis_oneFile_noInfo()
+    AnalysisTest.makeAnalysis_oneFile_withInfo()
+    AnalysisTest.Save_and_openAnalysis()

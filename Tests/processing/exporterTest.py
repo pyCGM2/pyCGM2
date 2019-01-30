@@ -47,7 +47,7 @@ class ExportTest():
         exportFilter.export("testAdvanced", path=DATA_PATH,excelFormat = "xls",mode="Advanced")
 
     @classmethod
-    def analysisAdvancedNan(cls):
+    def analysisAdvancedAndBasic_nonExistingLabel(cls):
 
         # ----DATA-----
         DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
@@ -155,6 +155,6 @@ if __name__ == "__main__":
 
     plt.close("all")
 
-    #ExportTest.analysisAdvanced()
-    ExportTest.analysisAdvancedNan()
-    #ExportTest.analysisBasic()
+    ExportTest.analysisAdvanced()
+    ExportTest.analysisAdvancedAndBasic_nonExistingLabel()
+    ExportTest.analysisBasic()
