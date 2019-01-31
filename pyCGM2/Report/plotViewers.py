@@ -301,6 +301,16 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
         ax13 = plt.subplot(6,3,14)
         ax14 = plt.subplot(6,3,15)
 
+        for ax in self.fig.axes:
+            ax.set_ylabel("angle (deg)",size=8)
+            ax.tick_params(axis='x', which='major', labelsize=6)
+            ax.tick_params(axis='y', which='major', labelsize=6)
+
+        ax12.set_xlabel("Cycle %",size=8)
+        ax13.set_xlabel("Cycle %",size=8)
+        ax14.set_xlabel("Cycle %",size=8)
+
+
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
 
             ax0.set_title("Pelvis Tilt" ,size=8)
@@ -318,13 +328,6 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
             ax12.set_title("ForeFoot dorsiflexion " ,size=8)
             ax13.set_title("ForeFoot eversion " ,size=8)
             ax14.set_title("ForeFoot Adduction " ,size=8)
-
-            for ax in self.fig.axes:
-                ax.set_ylabel("angle (deg)",size=8)
-
-            ax12.set_xlabel("Cycle %",size=8)
-            ax13.set_xlabel("Cycle %",size=8)
-            ax14.set_xlabel("Cycle %",size=8)
 
             ax0.set_ylim([0,60])
             ax1.set_ylim([-30,30])
@@ -358,13 +361,6 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
             ax7.set_title("Thorax Obliquity" ,size=8)
             ax8.set_title("Thorax Rotation" ,size=8)
 
-            for ax in self.fig.axes:
-                ax.set_ylabel("angle (deg)",size=8)
-
-            ax12.set_xlabel("Cycle %",size=8)
-            ax13.set_xlabel("Cycle %",size=8)
-            ax14.set_xlabel("Cycle %",size=8)
-
             ax0.set_ylim([0,60])
             ax1.set_ylim([-30,30])
             ax2.set_ylim([-30,30])
@@ -376,6 +372,14 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
             ax6.set_ylim([-30,30])
             ax7.set_ylim([-30,30])
             ax8.set_ylim([-30,30])
+
+            ax9.set_ylim([-30,30])
+            ax10.set_ylim([-30,30])
+            ax11.set_ylim([-30,30])
+
+            ax12.set_ylim([-50,30])
+            ax13.set_ylim([-30,30])
+            ax14.set_ylim([-30,30])
 
     def setNormativeDataset(self,iNormativeDataSet):
         """
@@ -653,6 +657,15 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
         ax13 = plt.subplot(6,3,14)# ForeFoot Z
         ax14 = plt.subplot(6,3,15)# ForeFoot Y
 
+        for ax in self.fig.axes:
+            ax.set_ylabel("angle (deg)",size=8)
+            ax.tick_params(axis='x', which='major', labelsize=6)
+            ax.tick_params(axis='y', which='major', labelsize=6)
+
+        ax12.set_xlabel("Cycle %",size=8)
+        ax13.set_xlabel("Cycle %",size=8)
+        ax14.set_xlabel("Cycle %",size=8)
+
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
             ax0.set_title("Pelvis Tilt" ,size=8)
             ax1.set_title("Pelvis Obliquity" ,size=8)
@@ -669,13 +682,6 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
             ax12.set_title("ForeFoot dorsiflexion " ,size=8)
             ax13.set_title("ForeFoot eversion " ,size=8)
             ax14.set_title("ForeFoot Adduction " ,size=8)
-
-            for ax in self.fig.axes:
-                ax.set_ylabel("angle (deg)",size=8)
-
-            ax12.set_xlabel("Cycle %",size=8)
-            ax13.set_xlabel("Cycle %",size=8)
-            ax14.set_xlabel("Cycle %",size=8)
 
             ax0.set_ylim([0,60])
             ax1.set_ylim([-30,30])
@@ -708,13 +714,6 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
             ax6.set_title("Thorax Anteversion" ,size=8)
             ax7.set_title("Thorax Obliquity" ,size=8)
             ax8.set_title("Thorax Rotation" ,size=8)
-
-            for ax in self.fig.axes:
-                ax.set_ylabel("angle (deg)",size=8)
-
-            ax12.set_xlabel("Cycle %",size=8)
-            ax13.set_xlabel("Cycle %",size=8)
-            ax14.set_xlabel("Cycle %",size=8)
 
             ax0.set_ylim([0,60])
             ax1.set_ylim([-30,30])
@@ -894,21 +893,40 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
+
+        ax0 = plt.subplot(3,4,1)# Hip X extensor
+        ax1 = plt.subplot(3,4,2)# Hip Y abductor
+        ax2 = plt.subplot(3,4,3)# Hip Z rotation
+        ax3 = plt.subplot(3,4,4)# Knee Z power
+
+        ax4 = plt.subplot(3,4,5)# knee X extensor
+        ax5 = plt.subplot(3,4,6)# knee Y abductor
+        ax6 = plt.subplot(3,4,7)# knee Z rotation
+        ax7 = plt.subplot(3,4,8)# knee Z power
+
+        ax8 = plt.subplot(3,4,9)# ankle X plantar flexion
+        ax9 = plt.subplot(3,4,10)# ankle Y rotation
+        ax10 = plt.subplot(3,4,11)# ankle Z everter
+        ax11 = plt.subplot(3,4,12)# ankle Z power
+
+        for ax in self.fig.axes:
+            ax.tick_params(axis='x', which='major', labelsize=6)
+            ax.tick_params(axis='y', which='major', labelsize=6)
+
+        for ax in [self.fig.axes[0],self.fig.axes[1],self.fig.axes[2],
+                   self.fig.axes[4],self.fig.axes[5],self.fig.axes[6],
+                   self.fig.axes[8],self.fig.axes[9],self.fig.axes[10]]:
+            ax.set_ylabel("moment (N.mm.kg-1)",size=8)
+
+        for ax in [self.fig.axes[3],self.fig.axes[7],self.fig.axes[8]]:
+            ax.set_ylabel("power (W.Kg-1)",size=8)
+
+        ax8.set_xlabel("Cycle %",size=8)
+        ax9.set_xlabel("Cycle %",size=8)
+        ax10.set_xlabel("Cycle %",size=8)
+        ax11.set_xlabel("Cycle %",size=8)
+
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
-            ax0 = plt.subplot(3,4,1)# Hip X extensor
-            ax1 = plt.subplot(3,4,2)# Hip Y abductor
-            ax2 = plt.subplot(3,4,3)# Hip Z rotation
-            ax3 = plt.subplot(3,4,4)# Knee Z power
-
-            ax4 = plt.subplot(3,4,5)# knee X extensor
-            ax5 = plt.subplot(3,4,6)# knee Y abductor
-            ax6 = plt.subplot(3,4,7)# knee Z rotation
-            ax7 = plt.subplot(3,4,8)# knee Z power
-
-            ax8 = plt.subplot(3,4,9)# ankle X plantar flexion
-            ax9 = plt.subplot(3,4,10)# ankle Y rotation
-            ax10 = plt.subplot(3,4,11)# ankle Z everter
-            ax11 = plt.subplot(3,4,12)# ankle Z power
 
             ax0.set_title("Hip extensor Moment" ,size=8)
             ax1.set_title("Hip abductor Moment" ,size=8)
@@ -924,19 +942,6 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
             ax9.set_title("Ankle everter Moment" ,size=8)
             ax10.set_title("Ankle abductor Moment" ,size=8)
             ax11.set_title("Ankle Power " ,size=8)
-
-            for ax in [self.fig.axes[0],self.fig.axes[1],self.fig.axes[2],
-                       self.fig.axes[4],self.fig.axes[5],self.fig.axes[6],
-                       self.fig.axes[8],self.fig.axes[9],self.fig.axes[10]]:
-                ax.set_ylabel("moment (N.mm.kg-1)",size=8)
-
-            for ax in [self.fig.axes[3],self.fig.axes[7],self.fig.axes[8]]:
-                ax.set_ylabel("power (W.Kg-1)",size=8)
-
-            ax8.set_xlabel("Cycle %",size=8)
-            ax9.set_xlabel("Cycle %",size=8)
-            ax10.set_xlabel("Cycle %",size=8)
-            ax11.set_xlabel("Cycle %",size=8)
 
             ax0.set_ylim([-2.0 *1000.0, 3.0*1000.0])
             ax1.set_ylim([-2.0*1000.0, 1.0*1000.0])
@@ -1149,6 +1154,19 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
         ax10 = plt.subplot(3,4,11)# ankle Z everter
         ax11 = plt.subplot(3,4,12)# ankle Z power
 
+        for ax in self.fig.axes:
+            ax.tick_params(axis='x', which='major', labelsize=6)
+            ax.tick_params(axis='y', which='major', labelsize=6)
+
+
+        for ax in [self.fig.axes[0],self.fig.axes[1],self.fig.axes[2],
+                   self.fig.axes[4],self.fig.axes[5],self.fig.axes[0],
+                   self.fig.axes[8],self.fig.axes[9],self.fig.axes[10]]:
+            ax.set_ylabel("moment (N.mm.kg-1)",size=8)
+
+        for ax in [self.fig.axes[3],self.fig.axes[7],self.fig.axes[8]]:
+            ax.set_ylabel("power (W.Kg-1)",size=8)
+
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
             ax0.set_title("Hip extensor Moment" ,size=8)
             ax1.set_title("Hip abductor Moment" ,size=8)
@@ -1165,13 +1183,7 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
             ax10.set_title("Ankle abductor Moment" ,size=8)
             ax11.set_title("Ankle Power " ,size=8)
 
-            for ax in [self.fig.axes[0],self.fig.axes[1],self.fig.axes[2],
-                       self.fig.axes[4],self.fig.axes[5],self.fig.axes[0],
-                       self.fig.axes[8],self.fig.axes[9],self.fig.axes[10]]:
-                ax.set_ylabel("moment (N.mm.kg-1)",size=8)
 
-            for ax in [self.fig.axes[3],self.fig.axes[7],self.fig.axes[8]]:
-                ax.set_ylabel("power (W.Kg-1)",size=8)
 
             ax9.set_xlabel("Frame %",size=8)
             ax10.set_xlabel("Frame %",size=8)
