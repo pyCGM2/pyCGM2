@@ -48,7 +48,7 @@ class CGM1_angleTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1
+        model=cgm.CGM1()
         model.configure(bodyPart=enums.BodyPart.UpperLimb)
 
 
@@ -122,7 +122,7 @@ class CGM1_angleTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1
+        model=cgm.CGM1()
         model.configure(bodyPart=enums.BodyPart.UpperLimb)
 
 
@@ -153,11 +153,11 @@ class CGM1_angleTest():
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist)
         modMotion.compute()
 
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromLongAxis(acqGait,"C7","STRN")
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromLongAxis(acqGait,"C7","CLAV")
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
-                                      segmentLabels=["Thorax","Head"],
-                                      angleLabels=["Thorax", "Head"],
-                                      eulerSequences=["YXZ","TOR"],
+                                      segmentLabels=["Thorax"],
+                                      angleLabels=["Thorax",],
+                                      eulerSequences=["YXZ"],
                                       globalFrameOrientation = globalFrame,
                                       forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
 
@@ -171,10 +171,10 @@ class CGM1_angleTest():
         # plot("RThoraxAngles",acqGait,"cgm1_6dof")
         # plot("LThoraxAngles",acqGait,"cgm1_6dof")
 
-        np.testing.assert_almost_equal( acqGait.GetPoint("LHeadAngles").GetValues(),
-                                    acqGait.GetPoint("LHeadAngles_cgm1_6dof").GetValues(), decimal =3)
-        np.testing.assert_almost_equal( acqGait.GetPoint("RHeadAngles").GetValues(),
-                                    acqGait.GetPoint("RHeadAngles_cgm1_6dof").GetValues(), decimal =3)
+        # np.testing.assert_almost_equal( acqGait.GetPoint("LHeadAngles").GetValues(),
+        #                             acqGait.GetPoint("LHeadAngles_cgm1_6dof").GetValues(), decimal =3)
+        # np.testing.assert_almost_equal( acqGait.GetPoint("RHeadAngles").GetValues(),
+        #                             acqGait.GetPoint("RHeadAngles_cgm1_6dof").GetValues(), decimal =3)
 
         np.testing.assert_almost_equal( acqGait.GetPoint("LThoraxAngles").GetValues(),
                                     acqGait.GetPoint("LThoraxAngles_cgm1_6dof").GetValues(), decimal =3)
@@ -214,7 +214,7 @@ class CGM1_angleTest():
         'RightWristWidth' : 55 ,
         'RightHandThickness' : 30}
 
-        model=cgm.CGM1
+        model=cgm.CGM1()
         model.configure(bodyPart=enums.BodyPart.FullBody)
         model.addAnthropoInputParameters(mp)
 
@@ -255,7 +255,72 @@ class CGM1_angleTest():
         btkTools.smartWriter(acqGait,"fullbody.c3d")
 
 
+    @classmethod
+    def CGM1_upperLimb_absoluteAngles_static(cls):
 
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\full-PiG\\"
+        staticFilename = "PN01NORMSTAT.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1()
+        model.configure(bodyPart=enums.BodyPart.UpperLimb)
+
+
+        markerDiameter=14
+        mp={
+        'LeftShoulderOffset'   : 50,
+        'LeftElbowWidth' : 91,
+        'LeftWristWidth' : 56 ,
+        'LeftHandThickness' : 28 ,
+        'RightShoulderOffset'   : 45,
+        'RightElbowWidth' : 90,
+        'RightWristWidth' : 55 ,
+        'RightHandThickness' : 30         }
+        model.addAnthropoInputParameters(mp)
+
+         # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,headHorizontal=False).compute()
+
+
+
+        # --- motion ----
+        gaitFilename="PN01NORMSTAT.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist)
+        modMotion.compute()
+
+        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromLongAxis(acqGait,"C7","CLAV")
+        modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
+                                      segmentLabels=["Thorax"],
+                                      angleLabels=["Thorax",],
+                                      eulerSequences=["YXZ"],
+                                      globalFrameOrientation = globalFrame,
+                                      forwardProgression = forwardProgression).compute(pointLabelSuffix="cgm1_6dof")
+
+
+        np.testing.assert_equal( longitudinalAxis,"X")
+        np.testing.assert_equal( forwardProgression,True)
+        np.testing.assert_equal( globalFrame,"XYZ")
+
+        # plot("LHeadAngles",acqGait,"cgm1_6dof")
+        # plot("RHeadAngles",acqGait,"cgm1_6dof")
+        plot("RThoraxAngles",acqGait,"cgm1_6dof")
+        plot("LThoraxAngles",acqGait,"cgm1_6dof")
+
+        # np.testing.assert_almost_equal( acqGait.GetPoint("LHeadAngles").GetValues(),
+        #                             acqGait.GetPoint("LHeadAngles_cgm1_6dof").GetValues(), decimal =3)
+        # np.testing.assert_almost_equal( acqGait.GetPoint("RHeadAngles").GetValues(),
+        #                             acqGait.GetPoint("RHeadAngles_cgm1_6dof").GetValues(), decimal =3)
+
+        # np.testing.assert_almost_equal( acqGait.GetPoint("LThoraxAngles").GetValues(),
+        #                             acqGait.GetPoint("LThoraxAngles_cgm1_6dof").GetValues(), decimal =3)
+        # np.testing.assert_almost_equal( acqGait.GetPoint("RThoraxAngles").GetValues(),
+        #                             acqGait.GetPoint("RThoraxAngles_cgm1_6dof").GetValues(), decimal =3)
 
 
 
@@ -263,8 +328,10 @@ if __name__ == "__main__":
 
 
 
-    CGM1_angleTest.CGM1_upperLimb()
+    #CGM1_angleTest.CGM1_upperLimb()
+    #CGM1_angleTest.CGM1_upperLimb_absoluteAngles()
     #CGM1_angleTest.CGM1_fullbody()
+    CGM1_angleTest.CGM1_upperLimb_absoluteAngles_static()
 
 
 
