@@ -362,7 +362,8 @@ class CGM1(CGM):
 
         self.setClinicalDescriptor("LSpine",enums.DataType.Angle, [0,1,2],[1.0,-1.0,1.0], [np.radians(-180),0.0,0.0])
         self.setClinicalDescriptor("RSpine",enums.DataType.Angle, [0,1,2],[1.0,1.0,-1.0], [np.radians(-180),0.0,0.0])
-
+        self.setClinicalDescriptor("LThorax",enums.DataType.Angle,[0,1,2],[1.0,-1.0,1.0], [-np.radians(180),0.0,-np.radians(180)])
+        self.setClinicalDescriptor("RThorax",enums.DataType.Angle,[0,1,2],[1.0,1.0,-1.0], [-np.radians(180),0.0,-np.radians(180)])
 
     def _upperLimbConfigure(self):
         self.addSegment("Head",0,enums.SegmentSide.Central,calibration_markers=["C7"], tracking_markers = ["LFHD","RFHD","LBHD","RBHD"])
