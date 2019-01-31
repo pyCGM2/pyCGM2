@@ -357,11 +357,11 @@ class CGM1(CGM):
     def _trunkConfigure(self):
         self.addSegment("Thorax",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["CLAV","C7","T10","STRN"])
 
-        self.addJoint("LSpine","Pelvis","Thorax", "YXZ","LSJC")
-        self.addJoint("RSpine","Pelvis","Thorax", "YXZ","LSJC")
+        self.addJoint("LSpine","Thorax","Pelvis", "YXZ","LSJC")
+        self.addJoint("RSpine","Thorax","Pelvis", "YXZ","LSJC")
 
-        self.setClinicalDescriptor("LSpine",enums.DataType.Angle, [0,1,2],[1.0,-1.0,1.0], [np.radians(-180),0.0,0.0])
-        self.setClinicalDescriptor("RSpine",enums.DataType.Angle, [0,1,2],[1.0,1.0,-1.0], [np.radians(-180),0.0,0.0])
+        self.setClinicalDescriptor("LSpine",enums.DataType.Angle, [0,1,2],[1.0,-1.0,-1.0], [np.radians(-180),0.0,np.radians(180)])
+        self.setClinicalDescriptor("RSpine",enums.DataType.Angle, [0,1,2],[1.0,1.0,1.0], [np.radians(-180),0.0,np.radians(180)])
         self.setClinicalDescriptor("LThorax",enums.DataType.Angle,[0,1,2],[1.0,-1.0,1.0], [-np.radians(180),0.0,-np.radians(180)])
         self.setClinicalDescriptor("RThorax",enums.DataType.Angle,[0,1,2],[1.0,1.0,-1.0], [-np.radians(180),0.0,-np.radians(180)])
 
