@@ -883,12 +883,6 @@ class ModelJCSFilter(object):
                 logging.debug("no clinical descriptor for joint label (%s)" %(jointLabel) )
                 jointFinalValues = np.rad2deg(jointValues)
 
-
-
-            #if jointLabel=="RNeck": import ipdb; ipdb.set_trace()
-            #np.rad2deg(euler.wrapEulerTo(np.deg2rad(jointFinalValues[0,:]), np.array([0,0,0])))
-
-
             if self.m_fixEuler:
                 dest = np.deg2rad(np.array([0,0,0]))
                 for i in range (0, self.m_aqui.GetPointFrameNumber()):
@@ -994,7 +988,8 @@ class ModelAbsoluteAnglesFilter(object):
             elif eulerSequence == "ORT":
                 logging.debug( "segment (%s) - sequence Obliquity-Rotation-Tilt used" %(seg.name) )
             else:
-                logging.debug( "segment (%s) - sequence doest recognize - sequence Tilt-Obliquity-Rotation used by default" %(seg.name) )
+                pass
+                #logging.debug( "segment (%s) - sequence doest recognize - sequence Tilt-Obliquity-Rotation used by default" %(seg.name) )
 
 
             for i in range (0, self.m_aqui.GetPointFrameNumber()):
