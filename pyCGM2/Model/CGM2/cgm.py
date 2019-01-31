@@ -19,7 +19,7 @@ class CGM(model.Model):
     KAD_MARKERS = {"Left" : ["LKAX","LKD1","LKD2"], "Right" : ["RKAX","RKD1","RKD2"]}
 
     ANALYSIS_KINEMATIC_LABELS_DICT ={
-                            'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles"
+                            'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles",
                                    "LForeFootAngles",
                                    "LThoraxAngles","LSpineAngles",
                                    "LShoulderAngles","LElbowAngles","LWristAngles"],

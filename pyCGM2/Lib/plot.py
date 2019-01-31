@@ -206,14 +206,10 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
     # filter 1 - descriptive kinematic panel
     #-------------------------------------------
     # viewer
-    if analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
-        kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=BodyPart)
-    # elif analysis.modelInfo["Version"] in ["CGM2.4"]:
-    #     kv = plotViewers.LowerLimbMultiFootKinematicsPlotViewer(analysis,
-    #                         pointLabelSuffix=pointLabelSuffix)
-    else:
-        raise Exception("[pyCGM2] Model version not known")
 
+    kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
+
+    #import ipdb; ipdb.set_trace()
     if type == "Gait":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
     else:
@@ -249,10 +245,8 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodypart,normativeDataset,point
     if exportPdf:
         filenameOut =  str(outputName+"-consistency Kinematics ["+ bodyPart.name+"]")
 
-    if analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
-        kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodypart=bodyPart)
-    else:
-        raise Exception("[pyCGM2] Model version not known")
+
+    kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodypart=bodyPart)
 
     if type == "Gait":
         kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
@@ -289,13 +283,12 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLa
     if exportPdf:
         filenameOut =  str(outputName+"-descriptive Kinetics ["+ bodyPart.name+"]")
 
-    if  analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
-        kv = plotViewers.NormalizedKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
+    kv = plotViewers.NormalizedKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
-        if type == "Gait":
-            kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
-        else:
-            kv.setConcretePlotFunction(plot.descriptivePlot)
+    if type == "Gait":
+        kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
+    else:
+        kv.setConcretePlotFunction(plot.descriptivePlot)
 
 
 
@@ -327,13 +320,12 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodypart, normativeDataset,pointL
     if exportPdf:
         filenameOut =  str(outputName+"-consistency Kinetics ["+ bodyPart.name+"]")
 
-    if  analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
-        kv = plotViewers.NormalizedKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
+    kv = plotViewers.NormalizedKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
-        if type == "Gait":
-            kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
-        else:
-            kv.setConcretePlotFunction(plot.consistencyPlot)
+    if type == "Gait":
+        kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
+    else:
+        kv.setConcretePlotFunction(plot.consistencyPlot)
 
     if normativeDataset is not None:
         kv.setNormativeDataset(normativeDataset)

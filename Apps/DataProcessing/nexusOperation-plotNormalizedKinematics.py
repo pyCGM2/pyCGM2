@@ -57,8 +57,9 @@ if __name__ == "__main__":
         # --------------------------INPUTS ------------------------------------
         DEBUG= False
         if DEBUG:
-            DATA_PATH = "C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Release Tests\CGM2.2\medial\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            modelledFilenameNoExt = "Gait Trial 01"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\lowerLimbTrunk\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
+
+            modelledFilenameNoExt = "PN01NORMSS02"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+modelledFilenameNoExt), 30 )
         else:
             DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
@@ -79,22 +80,27 @@ if __name__ == "__main__":
         model = files.loadModel(DATA_PATH,subject)
         modelVersion = model.version
 
+
+
         # --------------------------PROCESSING --------------------------------
         analysisInstance = analysis.makeAnalysis("Gait", DATA_PATH,[modelledFilename],
                             None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+
         if not consistencyFlag:
             if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds,exportPdf=True,outputName=modelledFilename)
+                plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
+                    #plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+
             if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",nds,exportPdf=True,outputName=modelledFilename)
+                plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
             if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
                 pass # TODO plot upperlimb panel
 
         else:
             if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,bodyPart,"LowerLimb",nds,exportPdf=True,outputName=modelledFilename)
+                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,bodyPart,"LowerLimb",nds, pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
             if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,bodyPart,"Trunk",nds,exportPdf=True,outputName=modelledFilename)
+                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,bodyPart,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
             if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
                 pass # TODO plot upperlimb panel
 

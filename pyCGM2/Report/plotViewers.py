@@ -265,6 +265,8 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
         self.m_flagConsistencyOnly = False
         self.m_concretePlotFunction = None
 
+
+
     def setConcretePlotFunction(self, concreteplotFunction):
         self.m_concretePlotFunction = concreteplotFunction
 
@@ -390,6 +392,7 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
+
             # pelvis
             self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kinematicStats,
                     "LPelvisAngles"+suffixPlus,"Left",0, color="red",customLimits=None)

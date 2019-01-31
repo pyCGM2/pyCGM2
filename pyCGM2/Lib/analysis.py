@@ -39,6 +39,8 @@ def makeAnalysis(type,DATA_PATH,
     cyclefilter.setBuilder(cycleBuilder)
     cycles = cyclefilter.build()
 
+
+
     #----analysis
     if kinematicLabelsDict is None:
         kinematicLabelsDict = cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT
@@ -59,12 +61,9 @@ def makeAnalysis(type,DATA_PATH,
                                                       kineticLabelsDict = kineticLabelsDict,
                                                       pointlabelSuffix = pointLabelSuffix)
 
-    finalmodelInfos = {"Version":modelVersion}
-    if modelInfo is not None: finalmodelInfos.update(modelInfo)
-
 
     analysisFilter = analysis.AnalysisFilter()
-    analysisFilter.setInfo(subject=subjectInfo, model=finalmodelInfos, experimental=experimentalInfo)
+    analysisFilter.setInfo(subject=subjectInfo, model=modelInfo, experimental=experimentalInfo)
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
 
