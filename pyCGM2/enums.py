@@ -72,6 +72,10 @@ class JointCalibrationMethod(Enum):
     KAD = "KAD"
     Medial = "medial"
 
+class BodyPartPlot(Enum):
+    LowerLimb="LowerLimb"
+    Trunk="Trunk"
+    UpperLimb="UpperLimb"
 
 
 

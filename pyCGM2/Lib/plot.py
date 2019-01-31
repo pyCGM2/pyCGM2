@@ -2,18 +2,27 @@
 #import ipdb
 import matplotlib.pyplot as plt
 import numpy as np
-from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emgPlotViewers, multipleAnalysesPlotViewers
+from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emgPlotViewers, ComparisonPlotViewers
 from pyCGM2.Processing import scores
 from pyCGM2.Tools import trialTools
 
-def plotTemporalKinematic(DATA_PATH, modelledFilenames,pointLabelSuffix=None, exportPdf=False):
+def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffix=None, exportPdf=False):
+
+    if bodyPart == "LowerLimb":
+        bodyPart = enums.BodyPartPlot.LowerLimb
+    elif bodyPart == "Trunk":
+        bodyPart = enums.BodyPartPlot.Trunk
+    elif bodyPart == "UpperLimb":
+        bodyPart = enums.BodyPartPlot.UpperLimb
+    else:
+        raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
     if exportPdf:
-        filenameOut =  str(modelledFilenames+"-Temporal Kinematics")
+        filenameOut =  str(modelledFilenames+"-Temporal Kinematics ["+ bodyPart.name+"]")
 
     trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
 
-    kv = plotViewers.TemporalGaitKinematicsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix)
+    kv = plotViewers.TemporalKinematicsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
@@ -23,14 +32,24 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,pointLabelSuffix=None, ex
     plt.show()
 
 
-def plotTemporalKinetic(DATA_PATH, modelledFilenames,pointLabelSuffix=None,exportPdf=False):
+def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=None,exportPdf=False):
+
+    if bodyPart == "LowerLimb":
+        bodyPart = enums.BodyPartPlot.LowerLimb
+    elif bodyPart == "Trunk":
+        bodyPart = enums.BodyPartPlot.Trunk
+    elif bodyPart == "UpperLimb":
+        bodyPart = enums.BodyPartPlot.UpperLimb
+    else:
+        raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
+
 
     if exportPdf:
-        filenameOut =  str(modelledFilenames+"-Temporal Kinetics")
+        filenameOut =  str(modelledFilenames+"-Temporal Kinetics["+ bodyPart.name+"]")
 
     trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
 
-    kv = plotViewers.TemporalGaitKineticsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix)
+    kv = plotViewers.TemporalKineticsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
@@ -164,20 +183,30 @@ def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None):
     stppf.plot()
     plt.show()
 
-def plot_DescriptiveKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+
+    if bodyPart == "LowerLimb":
+        bodyPart = enums.BodyPartPlot.LowerLimb
+    elif bodyPart == "Trunk":
+        bodyPart = enums.BodyPartPlot.Trunk
+    elif bodyPart == "UpperLimb":
+        bodyPart = enums.BodyPartPlot.UpperLimb
+    else:
+        raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
+
 
     if outputName is None:
-        outputName = "Global Analysis"
+        outputName = "Global Analysis ["+ bodyPart.name+"]"
 
     if exportPdf:
-        filenameOut =  str(outputName+"-descriptive  Kinematics")
+        filenameOut =  str(outputName+"-descriptive  Kinematics ["+ bodyPart.name+"]")
 
 
     # filter 1 - descriptive kinematic panel
     #-------------------------------------------
     # viewer
     if analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
-        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
+        kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=BodyPart)
     # elif analysis.modelInfo["Version"] in ["CGM2.4"]:
     #     kv = plotViewers.LowerLimbMultiFootKinematicsPlotViewer(analysis,
     #                         pointLabelSuffix=pointLabelSuffix)
@@ -201,16 +230,26 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuff
     plt.show()
 
 
-def plot_ConsistencyKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+def plot_ConsistencyKinematic(DATA_PATH,analysis,bodypart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+
+    if bodyPart == "LowerLimb":
+        bodyPart = enums.BodyPartPlot.LowerLimb
+    elif bodyPart == "Trunk":
+        bodyPart = enums.BodyPartPlot.Trunk
+    elif bodyPart == "UpperLimb":
+        bodyPart = enums.BodyPartPlot.UpperLimb
+    else:
+        raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
+
 
     if outputName is None:
-        outputName = "Global Analysis"
+        outputName = "Global Analysis ["+ bodyPart.name+"]"
 
     if exportPdf:
-        filenameOut =  str(outputName+"-consistency Kinematics")
+        filenameOut =  str(outputName+"-consistency Kinematics ["+ bodyPart.name+"]")
 
     if analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
-        kv = plotViewers.LowerLimbKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
+        kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodypart=bodyPart)
     else:
         raise Exception("[pyCGM2] Model version not known")
 
@@ -231,16 +270,26 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,normativeDataset,pointLabelSuff
     plt.show()
 
 
-def plot_DescriptiveKinetic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+
+    if bodyPart == "LowerLimb":
+        bodyPart = enums.BodyPartPlot.LowerLimb
+    elif bodyPart == "Trunk":
+        bodyPart = enums.BodyPartPlot.Trunk
+    elif bodyPart == "UpperLimb":
+        bodyPart = enums.BodyPartPlot.UpperLimb
+    else:
+        raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
+
 
     if outputName is None:
-        outputName = "Global Analysis"
+        outputName = "Global Analysis ["+ bodyPart.name+"]"
 
     if exportPdf:
-        filenameOut =  str(outputName+"-descriptive Kinetics")
+        filenameOut =  str(outputName+"-descriptive Kinetics ["+ bodyPart.name+"]")
 
     if  analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
-        kv = plotViewers.LowerLimbKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
+        kv = plotViewers.NormalizedKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
         if type == "Gait":
             kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
@@ -260,16 +309,25 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix
     plt.show()
 
 
-def plot_ConsistencyKinetic(DATA_PATH,analysis,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+def plot_ConsistencyKinetic(DATA_PATH,analysis,bodypart, normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+
+    if bodyPart == "LowerLimb":
+        bodyPart = enums.BodyPartPlot.LowerLimb
+    elif bodyPart == "Trunk":
+        bodyPart = enums.BodyPartPlot.Trunk
+    elif bodyPart == "UpperLimb":
+        bodyPart = enums.BodyPartPlot.UpperLimb
+    else:
+        raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
     if outputName is None:
-        outputName = "Global Analysis"
+        outputName = "Global Analysis ["+ bodyPart.name+"]"
 
     if exportPdf:
-        filenameOut =  str(outputName+"-consistency Kinetics")
+        filenameOut =  str(outputName+"-consistency Kinetics ["+ bodyPart.name+"]")
 
     if  analysis.modelInfo["Version"] in["CGM1.0","CGM1.1","CGM2.1","CGM2.2","CGM2.3","CGM2.4"]:
-        kv = plotViewers.LowerLimbKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
+        kv = plotViewers.NormalizedKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
         if type == "Gait":
             kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
@@ -309,10 +367,18 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None
     plt.show()
 
 
-def compareKinematic(analyses,labels,context,normativeDataset,plotType="Descriptive",type="Gait"):
+def compareKinematic(analyses,labels,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait"):
 
+    if bodyPart == "LowerLimb":
+        bodyPart = enums.BodyPartPlot.LowerLimb
+    elif bodyPart == "Trunk":
+        bodyPart = enums.BodyPartPlot.Trunk
+    elif bodyPart == "UpperLimb":
+        bodyPart = enums.BodyPartPlot.UpperLimb
+    else:
+        raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
-    kv = multipleAnalysesPlotViewers.multiAnalyses_LowerLimbKinematicsPlotViewer(analyses,context,labels)
+    kv = ComparisonPlotViewers.KinematicsPlotComparisonViewer(analyses,context,labels,bodyPart=bodyPart)
 
     if plotType == "Descriptive":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if type =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )
@@ -331,10 +397,19 @@ def compareKinematic(analyses,labels,context,normativeDataset,plotType="Descript
     plt.show()
 
 
-def compareKinetic(analyses,labels,context,normativeDataset,plotType="Descriptive",type="Gait"):
+def compareKinetic(analyses,labels,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait"):
+
+    if bodyPart == "LowerLimb":
+        bodyPart = enums.BodyPartPlot.LowerLimb
+    elif bodyPart == "Trunk":
+        bodyPart = enums.BodyPartPlot.Trunk
+    elif bodyPart == "UpperLimb":
+        bodyPart = enums.BodyPartPlot.UpperLimb
+    else:
+        raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
 
-    kv = multipleAnalysesPlotViewers.multiAnalyses_LowerLimbKineticsPlotViewer(analyses,context,labels)
+    kv = ComparisonPlotViewers.KineticsPlotComparisonViewer(analyses,context,labels,bodyPart=bodyPart)
 
     if plotType == "Descriptive":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if type =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )
