@@ -79,13 +79,23 @@ if __name__ == "__main__":
         modelVersion = model.version
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis("Gait", modelVersion, DATA_PATH,[modelledFilename],
+        analysisInstance = analysis.makeAnalysis("Gait", DATA_PATH,[modelledFilename],
                             None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
         if not consistencyFlag:
-            plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename)
-        else:
-            plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+                plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+                plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
+                pass # TODO plot upperlimb panel
 
+        else:
+            if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,bodyPart,"LowerLimb",nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,bodyPart,"Trunk",nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
+                pass # TODO plot upperlimb panel
 
 
     else:

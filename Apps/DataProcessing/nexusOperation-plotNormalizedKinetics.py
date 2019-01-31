@@ -77,12 +77,24 @@ if __name__ == "__main__":
         model = files.loadModel(DATA_PATH,subject)
         modelVersion = model.version
 
+
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis("Gait", modelVersion, DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        analysisInstance = analysis.makeAnalysis("Gait", DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+
         if not consistencyFlag:
-            plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+                plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"LowerLimb",nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+                plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"Trunk",nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
+                pass # TODO plot upperlimb panel
+
         else:
-            plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+                plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,bodyPart,"LowerLimb",nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+                plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,bodyPart,"Trunk",nds,exportPdf=True,outputName=modelledFilename)
+            if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
 
 
 

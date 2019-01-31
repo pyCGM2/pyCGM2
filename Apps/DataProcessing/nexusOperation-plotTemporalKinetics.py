@@ -52,7 +52,24 @@ if __name__ == "__main__":
         logging.info( "file: "+ modelledFilename)
 
 
-        plotTemporalKinetic(DATA_PATH, modelledFilename,pointLabelSuffix=pointSuffix,exportPdf=True)
+        # ----- Subject -----
+        # need subject to find input files
+        subjects = NEXUS.GetSubjectNames()
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
+        logging.info(  "Subject name : " + subject  )
+
+        # --------------------pyCGM2 MODEL ------------------------------
+        model = files.loadModel(DATA_PATH,subject)
+        modelVersion = model.version
+
+        # --------------------pyCGM2 MODEL ------------------------------
+        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+            plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True)
+        if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+            plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"Trunk", pointLabelSuffix=pointSuffix,exportPdf=True)
+        if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
+            pass # TODO plot upperlimb panel
+
 
 
 
