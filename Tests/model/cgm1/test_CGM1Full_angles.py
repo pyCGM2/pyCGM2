@@ -244,7 +244,8 @@ class CGM1_angleTest():
 
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
-        #plot("RSpineAngles",acqGait,"cgm1_6dof")
+        plot("RSpineAngles",acqGait,"cgm1_6dof")
+        plot("LSpineAngles",acqGait,"cgm1_6dof")
 
 
         np.testing.assert_almost_equal( acqGait.GetPoint("RSpineAngles").GetValues(),
@@ -323,6 +324,79 @@ class CGM1_angleTest():
         #                             acqGait.GetPoint("RThoraxAngles_cgm1_6dof").GetValues(), decimal =3)
 
 
+    @classmethod
+    def CGM1_fullbody_static(cls):
+
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\full-PiG\\"
+        staticFilename = "PN01NORMSTAT.c3d"
+
+        # CALIBRATION ###############################
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        markerDiameter=14
+
+        # Lower Limb
+        mp={
+        'Bodymass'   : 83,
+        'LeftLegLength' : 874,
+        'RightLegLength' : 876.0 ,
+        'LeftKneeWidth' : 106.0,
+        'RightKneeWidth' : 103.0,
+        'LeftAnkleWidth' : 74.0,
+        'RightAnkleWidth' : 72.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        'LeftShoulderOffset'   : 50,
+        'LeftElbowWidth' : 91,
+        'LeftWristWidth' : 56 ,
+        'LeftHandThickness' : 28 ,
+        'RightShoulderOffset'   : 45,
+        'RightElbowWidth' : 90,
+        'RightWristWidth' : 55 ,
+        'RightHandThickness' : 30}
+
+        model=cgm.CGM1()
+        model.configure(bodyPart=enums.BodyPart.FullBody)
+        model.addAnthropoInputParameters(mp)
+
+        scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                            leftFlatFoot = True,
+                                            rightFlatFoot = True,
+                                            markerDiameter = 14,
+                                            viconCGM1compatible=True
+                                            ).compute()
+
+
+        # MOTION ###############################
+        gaitFilename="PN01NORMSTAT.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist,
+                                      markerDiameter=14,
+                                      viconCGM1compatible=False)
+        modMotion.compute()
+
+
+        csp = modelFilters.ModelCoordinateSystemProcedure(model)
+        csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,acqGait).display()
+
+        modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
+
+        plot("RSpineAngles",acqGait,"cgm1_6dof")
+        plot("LSpineAngles",acqGait,"cgm1_6dof")
+
+
+        np.testing.assert_almost_equal( acqGait.GetPoint("RSpineAngles").GetValues(),
+                                    acqGait.GetPoint("RSpineAngles_cgm1_6dof").GetValues(), decimal =2)
+        np.testing.assert_almost_equal( acqGait.GetPoint("LSpineAngles").GetValues(),
+                                    acqGait.GetPoint("LSpineAngles_cgm1_6dof").GetValues(), decimal =2)
+
+        btkTools.smartWriter(acqGait,"fullbody.c3d")
+
+
 
 if __name__ == "__main__":
 
@@ -331,8 +405,8 @@ if __name__ == "__main__":
     #CGM1_angleTest.CGM1_upperLimb()
     #CGM1_angleTest.CGM1_upperLimb_absoluteAngles()
     #CGM1_angleTest.CGM1_fullbody()
-    CGM1_angleTest.CGM1_upperLimb_absoluteAngles_static()
-
+    #CGM1_angleTest.CGM1_upperLimb_absoluteAngles_static()
+    CGM1_angleTest.CGM1_fullbody_static()
 
 
     logging.info("######## PROCESS CGM1 --> Done ######")
