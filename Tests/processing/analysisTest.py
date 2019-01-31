@@ -157,7 +157,7 @@ class AnalysisTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysisInstance = Lib.analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
+        analysisInstance = Lib.analysis.makeAnalysis("Gait",  DATA_PATH,modelledFilenames,None, None, None)
 
 
     @classmethod
@@ -185,7 +185,7 @@ class AnalysisTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysisInstance = Lib.analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
+        analysisInstance = Lib.analysis.makeAnalysis("Gait",  DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
 
 
     @classmethod
@@ -212,7 +212,7 @@ class AnalysisTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysisInstance = Lib.analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
+        analysisInstance = Lib.analysis.makeAnalysis("Gait",  DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
 
         files.saveAnalysis(analysisInstance,DATA_PATH,"Save_and_openAnalysis")
         analysis2 = files.loadAnalysis(DATA_PATH,"Save_and_openAnalysis")
