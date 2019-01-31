@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-import numpy as np
-import scipy as sp
 import logging
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-import matplotlib.patches as mpatches
+
 
 
 

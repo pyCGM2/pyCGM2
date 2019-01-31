@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import scipy as sp
 import logging
-
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-import matplotlib.patches as mpatches
 
 # pyCGM2
 import pyCGM2
+from pyCGM2 import enums
 from pyCGM2.Report import plot, plotViewers
 from pyCGM2 import ma
 

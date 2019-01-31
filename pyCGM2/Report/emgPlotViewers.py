@@ -4,8 +4,6 @@ import scipy as sp
 import logging
 
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-import matplotlib.patches as mpatches
 
 # pyCGM2
 import pyCGM2

@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import scipy as sp
 import logging
 
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-import matplotlib.patches as mpatches
 
 # pyCGM2
 import pyCGM2
@@ -474,7 +471,7 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
             self.m_concretePlotFunction(self.fig.axes[14],self.m_analysis.kinematicStats,
                     "RForeFootAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
 
-        elif self.m_bodyPart == enums.BodyPartPlot.Trunk::
+        elif self.m_bodyPart == enums.BodyPartPlot.Trunk:
             # pelvis
             self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kinematicStats,
                     "LPelvisAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
