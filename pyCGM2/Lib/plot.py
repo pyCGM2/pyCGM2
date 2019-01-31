@@ -5,6 +5,7 @@ import numpy as np
 from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emgPlotViewers, ComparisonPlotViewers
 from pyCGM2.Processing import scores
 from pyCGM2.Tools import trialTools
+from pyCGM2 import enums
 
 def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffix=None, exportPdf=False):
 

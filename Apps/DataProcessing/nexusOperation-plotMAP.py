@@ -12,7 +12,6 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-import pyCGM2
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
