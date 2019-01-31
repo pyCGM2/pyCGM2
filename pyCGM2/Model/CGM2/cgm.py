@@ -6254,5 +6254,6 @@ class CGM1(CGM):
             logging.debug("power over")
 
         # centre of mass
+        centreOfMassLabel  = "CentreOfMass_" + pointSuffix if pointSuffix is not None else "CentreOfMass"
         if self.m_centreOfMass is not None:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str("CentreOfMass"+pointSuffix), acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str(centreOfMassLabel), acq)
