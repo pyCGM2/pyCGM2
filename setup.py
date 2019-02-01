@@ -211,3 +211,10 @@ for item in content:
 scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
                                             NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,
                                             PATH_IN_SITEPACKAGE)
+
+# if not developMode:
+#     if os.getcwd().lower in sys.path or os.getcwd() in sys.path:
+#         sys.path.remove (os.getcwd().lower())
+#         sys.path.remove (os.getcwd())
+#         import ipdb; pdb.set_trace()
+#         print "===========================REMOVE============================"
