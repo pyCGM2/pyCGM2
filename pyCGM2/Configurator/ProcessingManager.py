@@ -73,3 +73,7 @@ class GaitProcessingConfigManager(Manager.ConfigManager):
 
             self._userSettings["Title"] = title
             return self._userSettings["Title"]
+
+    @property
+    def bodyPart(self):
+        return self._userSettings["BodyPart"]
