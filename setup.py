@@ -20,7 +20,7 @@ if developMode:
 if sys.maxsize > 2**32:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
 
-VERSION ="3.1.0-beta"
+VERSION ="3.1.0"
 
 
 for it in site.getsitepackages():
@@ -161,6 +161,7 @@ setup(name = 'pyCGM2',
                  'Natural Language :: English-French',
                  'Topic :: Clinical Gait Analysis']
     )
+
 #------------------------------------------------------------------------------
 
 #------------------------- POST INSTALL---------------------------------------
