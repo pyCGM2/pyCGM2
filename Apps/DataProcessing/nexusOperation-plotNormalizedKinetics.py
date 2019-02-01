@@ -95,8 +95,6 @@ if __name__ == "__main__":
             if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
                 plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,bodyPart,"Trunk",nds, pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
             if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-
-
-
+                pass # TODO
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
