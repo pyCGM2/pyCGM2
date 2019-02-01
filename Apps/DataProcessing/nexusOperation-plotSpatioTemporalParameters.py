@@ -24,7 +24,7 @@ if __name__ == "__main__":
     plt.close("all")
 
     parser = argparse.ArgumentParser(description='CGM Gait Processing')
-        parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
 
 
     args = parser.parse_args()
