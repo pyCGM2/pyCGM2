@@ -10,7 +10,9 @@ from logging import handlers
 import shutil
 import site
 
-developMode = True if sys.argv[1] == "develop" else False
+developMode = False
+if len(sys.argv) >= 2:
+    if sys.argv[1] == "develop": developMode = True
 if developMode:
     logging.warning("You have sleected a developer model ( local install)")
 
