@@ -10,6 +10,10 @@ from logging import handlers
 import shutil
 import site
 
+developMode = True if sys.argv[1] == "develop" else False
+if developMode:
+    logging.warning("You have sleected a developer model ( local install)")
+
 
 if sys.maxsize > 2**32:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
@@ -101,11 +105,12 @@ if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\pyC
 
 
 # delete everything in programData
-pd = os.getenv("PROGRAMDATA")
-pddirs = getSubDirectories(pd)
-if "pyCGM2" in  pddirs:
-    shutil.rmtree(pd+"\\pyCGM2")
-    logging.info("pprogramData/pyCGM2---> remove")
+if not developMode:
+    pd = os.getenv("PROGRAMDATA")
+    pddirs = getSubDirectories(pd)
+    if "pyCGM2" in  pddirs:
+        shutil.rmtree(pd+"\\pyCGM2")
+        logging.info("pprogramData/pyCGM2---> remove")
 
 # delete all previous vst and pipelines in Nexus Public Documents
 files = getFiles(NEXUS_PUBLIC_DOCUMENT_VST_PATH)
@@ -160,28 +165,33 @@ setup(name = 'pyCGM2',
 
 
 #--- management of the folder ProgramData/pyCGM2----
-PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
-os.makedirs(PYCGM2_APPDATA_PATH[:-1])
+if not developMode:
+    PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
+    os.makedirs(PYCGM2_APPDATA_PATH[:-1])
 
-# CGM i settings
-settings = ["CGM1-pyCGM2.settings", "CGM1_1-pyCGM2.settings","CGM2_1-pyCGM2.settings", "CGM2_2-pyCGM2.settings","CGM2_3-pyCGM2.settings","CGM2_4-pyCGM2.settings"]
-for setting in settings:
-    shutil.copyfile(PYCGM2_SESSION_SETTINGS_FOLDER+"GlobalSettings\\"+setting, PYCGM2_APPDATA_PATH + setting)
+    # CGM i settings
+    settings = ["CGM1-pyCGM2.settings", "CGM1_1-pyCGM2.settings",
+                "CGM2_1-pyCGM2.settings", "CGM2_2-pyCGM2.settings",
+                "CGM2_3-pyCGM2.settings","CGM2_4-pyCGM2.settings",
+                "emg.settings"]
+    for setting in settings:
+        shutil.copyfile(PYCGM2_SESSION_SETTINGS_FOLDER+setting, PYCGM2_APPDATA_PATH + setting)
 
-# translators
-src_files = os.listdir(PYCGM2_SESSION_SETTINGS_FOLDER+"translators")
-os.makedirs(PYCGM2_APPDATA_PATH +"translators")
-for filename in src_files:
-    full_filename = os.path.join(PYCGM2_SESSION_SETTINGS_FOLDER+"translators", filename)
-    shutil.copyfile(full_filename, PYCGM2_APPDATA_PATH +"translators\\"+filename)
+    # translators
+    src_files = os.listdir(PYCGM2_SESSION_SETTINGS_FOLDER+"translators")
+    os.makedirs(PYCGM2_APPDATA_PATH +"translators")
+    for filename in src_files:
+        full_filename = os.path.join(PYCGM2_SESSION_SETTINGS_FOLDER+"translators", filename)
+        shutil.copyfile(full_filename, PYCGM2_APPDATA_PATH +"translators\\"+filename)
 
-# IkWeightSets
-src_files = os.listdir(PYCGM2_SESSION_SETTINGS_FOLDER+"IkWeightSets")
-os.makedirs(PYCGM2_APPDATA_PATH +"IkWeightSets")
-for filename in src_files:
-    full_filename = os.path.join(PYCGM2_SESSION_SETTINGS_FOLDER+"IkWeightSets", filename)
-    shutil.copyfile(full_filename, PYCGM2_APPDATA_PATH +"IkWeightSets\\"+filename)
-
+    # IkWeightSets
+    src_files = os.listdir(PYCGM2_SESSION_SETTINGS_FOLDER+"IkWeightSets")
+    os.makedirs(PYCGM2_APPDATA_PATH +"IkWeightSets")
+    for filename in src_files:
+        full_filename = os.path.join(PYCGM2_SESSION_SETTINGS_FOLDER+"IkWeightSets", filename)
+        shutil.copyfile(full_filename, PYCGM2_APPDATA_PATH +"IkWeightSets\\"+filename)
+else:
+    open(MAIN_PYCGM2_PATH + 'localMode', 'a').close()
 
 #--- management of nexus-related files ( vst+pipelines)-----
 

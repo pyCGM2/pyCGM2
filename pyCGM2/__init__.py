@@ -30,7 +30,16 @@ cased_path = glob.glob(re.sub(r'([^:])(?=[/\\]|$)', r'[\1]', __file__))[0]
 MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(cased_path), os.pardir)) + "\\"
 
 
-PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
+#  [Optional] setting folder
+PYCGM2_SESSION_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"SessionSettings\\"
+
+
+#  [Optional]programData
+if os.path.isfile( MAIN_PYCGM2_PATH + "localMode"):
+    PYCGM2_APPDATA_PATH = PYCGM2_SESSION_SETTINGS_FOLDER
+else:
+    PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
+
 
 # [Optional]: Apps path
 MAIN_PYCGM2_APPS_PATH = MAIN_PYCGM2_PATH+"Apps\\"
@@ -48,6 +57,3 @@ MAIN_BENCHMARK_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-benchmar
 
 # [optional] path pointing pyCGM2-Nexus tools
 NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\"
-
-# [optional]  setting folder
-PYCGM2_SESSION_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"SessionSettings\\"
