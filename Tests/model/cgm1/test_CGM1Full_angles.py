@@ -393,7 +393,7 @@ class CGM1_angleTest():
                                     acqGait.GetPoint("RSpineAngles_cgm1_6dof").GetValues(), decimal =2)
         np.testing.assert_almost_equal( acqGait.GetPoint("LSpineAngles").GetValues(),
                                     acqGait.GetPoint("LSpineAngles_cgm1_6dof").GetValues(), decimal =2)
-
+                                    
         btkTools.smartWriter(acqGait,"fullbody.c3d")
 
 
@@ -402,10 +402,10 @@ if __name__ == "__main__":
 
 
 
-    #CGM1_angleTest.CGM1_upperLimb()
-    #CGM1_angleTest.CGM1_upperLimb_absoluteAngles()
-    #CGM1_angleTest.CGM1_fullbody()
-    #CGM1_angleTest.CGM1_upperLimb_absoluteAngles_static()
+    CGM1_angleTest.CGM1_upperLimb()
+    CGM1_angleTest.CGM1_upperLimb_absoluteAngles()
+    CGM1_angleTest.CGM1_fullbody()
+    CGM1_angleTest.CGM1_upperLimb_absoluteAngles_static()
     CGM1_angleTest.CGM1_fullbody_static()
 
 
