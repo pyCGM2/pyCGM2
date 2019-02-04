@@ -69,3 +69,27 @@ Fitting:
         RANK: 100
         RHEE: 100
         RTOE: 100
+
+
+################
+# ADVANCED     #
+################
+
+KneeCalibration:
+    Left:
+        Method: Calibration2Dof
+        Trial: None
+        BeginFrame: 0
+        EndFrame: 0
+    Right:
+        Method: Calibration2Dof
+        Trial: None
+        BeginFrame: 0
+        EndFrame: 0
+
+
+################
+# DO NOT TOUCH #
+################
+
+ModelVersion: CGM2.2
