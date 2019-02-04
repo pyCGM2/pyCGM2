@@ -478,9 +478,9 @@ class CGM1(CGM):
         dictRefAnatomical["Left UpperArm"]={'sequence':"ZYiX", 'labels':   ["LEJC","LSJC","LWJC","LSJC"]}
         dictRefAnatomical["Left ForeArm"]={'sequence':"ZXiY", 'labels':   ["LWJC","LEJC",None,"LEJC"]} # used y axis of upper
         dictRefAnatomical["Left Hand"]={'sequence':"ZYX", 'labels':   ["LHO","LWJC","LMWP","LWJC"]}
-        dictRefAnatomical["Right UpperArm"]={'sequence':"ZYiX", 'labels':   ["REJC","RSJC","RWJC","REJC"]}
-        dictRefAnatomical["Right ForeArm"]={'sequence':"ZXiY", 'labels':   ["RWJC","REJC",None,"RWJC"]} # used y axis of upper
-        dictRefAnatomical["Right Hand"]={'sequence':"ZYX", 'labels':   ["RHO","RWJC","RMWP","RHO"]}
+        dictRefAnatomical["Right UpperArm"]={'sequence':"ZYiX", 'labels':   ["REJC","RSJC","RWJC","RSJC"]}
+        dictRefAnatomical["Right ForeArm"]={'sequence':"ZXiY", 'labels':   ["RWJC","REJC",None,"REJC"]} # used y axis of upper
+        dictRefAnatomical["Right Hand"]={'sequence':"ZYX", 'labels':   ["RHO","RWJC","RMWP","LWJC"]}
 
     def _lowerLimbCoordinateSystemDefinitions(self):
         self.setCoordinateSystemDefinition( "Pelvis", "PELVIS", "Anatomic")
@@ -1577,7 +1577,7 @@ class CGM1(CGM):
         pelvisScale = np.linalg.norm(lhjc-rhjc)
         offset = (lhjc+rhjc)/2.0
 
-        TopLumbar5 = offset +  (np.array([ 0, 0, 0.925* pelvisScale]))
+        TopLumbar5 = offset +  (np.array([ 0, 0, 0.925]))* pelvisScale
         seg.anatomicalFrame.static.addNode("TL5",TopLumbar5,positionType="Local")
 
         com = offset + (TopLumbar5-offset)*0.895
@@ -4634,7 +4634,7 @@ class CGM1(CGM):
 
         # TL5
         if self.m_bodypart !=  enums.BodyPart.UpperLimb:
-            TL5 = self.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("TL5").getGlobal()
+            TL5 = self.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("TL5").m_global
             tf.static.addNode("TL5",TL5,positionType="Global")
 
 
@@ -4692,13 +4692,13 @@ class CGM1(CGM):
 
         # length
         if self.m_bodypart !=  enums.BodyPart.UpperLimb:
-            c7o = seg.anatomicalFrame.static.getNode_byLabel("C7o").m_local
-            l5 = seg.anatomicalFrame.static.getNode_byLabel("TL5").m_local
+            c7o = seg.anatomicalFrame.static.getNode_byLabel("C7o").m_global
+            l5 = self.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("TL5").m_global
             length = np.linalg.norm(l5-c7o)
             seg.setLength(length)
 
             com = (c7o + ( l5 - c7o ) * 0.63 )
-            seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
+            seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
 
 
             # l5 = seg.anatomicalFrame.static.getNode_byLabel("TL5").m_local
@@ -5348,11 +5348,6 @@ class CGM1(CGM):
 
         btkTools.smartAppendPoint(aqui,"OT",OTvalues,desc="")
 
-        c7o =  seg.getReferential("TF").getNodeTrajectory("C7o")
-        btkTools.smartAppendPoint(aqui,"C7o",c7o)
-
-
-
         if self.m_bodypart is not enums.BodyPart.LowerLimbTrunk:
             btkTools.smartAppendPoint(aqui,"LVWM",LVWMvalues,desc="")
             btkTools.smartAppendPoint(aqui,"RVWM",RVWMvalues,desc="")
@@ -5386,7 +5381,6 @@ class CGM1(CGM):
         # NA
         # computation
         csFrame=frame.Frame()
-        te=np.zeros((aqui.GetPointFrameNumber(),3))
         for i in range(0,aqui.GetPointFrameNumber()):
 
             pt1=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][0])).GetValues()[i,:]
@@ -5415,7 +5409,6 @@ class CGM1(CGM):
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
-        btkTools.smartAppendPoint(aqui,"te",te)
 
     def _clavicle_motion(self,side,aqui, dictRef,dictAnat,options=None):
         """
