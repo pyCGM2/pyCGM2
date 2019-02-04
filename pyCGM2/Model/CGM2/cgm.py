@@ -4700,6 +4700,8 @@ class CGM1(CGM):
             com = (c7o + ( l5 - c7o ) * 0.63 )
             seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
 
+            
+
 
             # l5 = seg.anatomicalFrame.static.getNode_byLabel("TL5").m_local
             # c7 = seg.anatomicalFrame.static.getNode_byLabel("C7").m_local

@@ -468,7 +468,7 @@ class FullBody_COM():
 
 
         # --- motion ----
-        gaitFilename="PN01NORMSTAT-COM.c3d"
+        gaitFilename="PN01NORMSTAT_stephen.c3d"
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
 
