@@ -1,4 +1,3 @@
-
 Global:
     Marker diameter: None 14
     Point suffix: None
@@ -51,7 +50,7 @@ Calibration:
     Right flat foot:  1
 
 Fitting:
-Moment Projection: JCS
+    Moment Projection: JCS
 
 ################
 # ADVANCED     #
