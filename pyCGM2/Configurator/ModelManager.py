@@ -146,7 +146,7 @@ class CGM2_1ConfigManager(CGM1ConfigManager):
 
     """
     def __init__(self,settings,localInternalSettings = None, localTranslators=None):
-        super(CGM1_1ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators)
+        super(CGM2_1ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators)
 
         self.__internalsettings()
 
@@ -161,12 +161,12 @@ class CGM2_1ConfigManager(CGM1ConfigManager):
     def hjcMethod(self):
         return self._internSettings["Calibration"]["HJC"]
 
-class CGM2_2ConfigManager(CGM1ConfigManager):
+class CGM2_2ConfigManager(CGM2_1ConfigManager):
     """
 
     """
     def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None):
-        super(CGM1_1ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators)
+        super(CGM2_2ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators)
 
         self._localIkweight = localIkWeight
 
@@ -196,12 +196,13 @@ class CGM2_2ConfigManager(CGM1ConfigManager):
         else:
             return self._internSettings["Fitting"]["Weight"]
 
-class CGM2_3ConfigManager(CGM1ConfigManager):
+class CGM2_3ConfigManager(CGM2_2ConfigManager):
     """
 
     """
     def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None):
-        super(CGM2_3ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators,localIkWeight=localIkWeight)
+        super(CGM2_3ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators,
+                                                localIkWeight=localIkWeight)
 
         self.__internalsettings()
 
@@ -215,7 +216,7 @@ class CGM2_3ConfigManager(CGM1ConfigManager):
     def enableIK(self):
         return self._internSettings["Global"]["EnableIK"]
 
-class CGM2_4ConfigManager(CGM1ConfigManager):
+class CGM2_4ConfigManager(CGM2_3ConfigManager):
     """
 
     """
