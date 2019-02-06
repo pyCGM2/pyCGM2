@@ -337,7 +337,7 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodypart, normativeDataset,pointL
     pf.plot()
     plt.show()
 
-def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None):
+def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None,pointLabelSuffix=None):
 
     if outputName is None:
         outputName = "Global Analysis"
@@ -346,12 +346,12 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None
         filenameOut =  str(outputName+"-Map")
 
     #compute
-    gps =scores.CGM1_GPS()
+    gps =scores.CGM1_GPS(pointSuffix=pointLabelSuffix)
     scf = scores.ScoreFilter(gps,analysis, normativeDataset)
     scf.compute()
 
     #plot
-    kv = plotViewers.GpsMapPlotViewer(analysis)
+    kv = plotViewers.GpsMapPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
 
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)

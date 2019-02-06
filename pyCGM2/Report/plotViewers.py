@@ -146,7 +146,7 @@ class GpsMapPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis):
+    def __init__(self,iAnalysis,pointLabelSuffix=None):
 
         """
             :Parameters:
@@ -160,6 +160,8 @@ class GpsMapPlotViewer(AbstractPlotViewer):
             pass
         else:
             logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+
+        self.m_pointLabelSuffix = pointLabelSuffix
 
     def setNormativeDataset(self,iNormativeDataSet):
         """
@@ -182,34 +184,35 @@ class GpsMapPlotViewer(AbstractPlotViewer):
 
     def __setData(self):
 
+        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
         N = 9
-        overall = (self.m_analysis.gvs["LPelvisAngles","Left"]["mean"][0],
+        overall = (self.m_analysis.gvs["LPelvisAngles"+suffixPlus,"Left"]["mean"][0],
                      0,
                      0,
-                     self.m_analysis.gvs["LPelvisAngles","Left"]["mean"][1],
+                     self.m_analysis.gvs["LPelvisAngles"+suffixPlus,"Left"]["mean"][1],
                      0,
-                     self.m_analysis.gvs["LPelvisAngles","Left"]["mean"][2],
+                     self.m_analysis.gvs["LPelvisAngles"+suffixPlus,"Left"]["mean"][2],
                      0,
                      0,
                       self.m_analysis.gps["Overall"]["mean"][0])
         left = (0,
-                 self.m_analysis.gvs["LHipAngles","Left"]["mean"][0],
-                 self.m_analysis.gvs["LKneeAngles","Left"]["mean"][0],
+                 self.m_analysis.gvs["LHipAngles"+suffixPlus,"Left"]["mean"][0],
+                 self.m_analysis.gvs["LKneeAngles"+suffixPlus,"Left"]["mean"][0],
                   0,
-                  self.m_analysis.gvs["LHipAngles","Left"]["mean"][1],
+                  self.m_analysis.gvs["LHipAngles"+suffixPlus,"Left"]["mean"][1],
                   0,
-                  self.m_analysis.gvs["LHipAngles","Left"]["mean"][2],
-                  self.m_analysis.gvs["LFootProgressAngles","Left"]["mean"][2],
+                  self.m_analysis.gvs["LHipAngles"+suffixPlus,"Left"]["mean"][2],
+                  self.m_analysis.gvs["LFootProgressAngles"+suffixPlus,"Left"]["mean"][2],
                   self.m_analysis.gps["Context"]["Left"]["mean"][0])
 
         right = (0,
-                 self.m_analysis.gvs["RHipAngles","Right"]["mean"][0],
-                 self.m_analysis.gvs["RKneeAngles","Right"]["mean"][0],
+                 self.m_analysis.gvs["RHipAngles"+suffixPlus,"Right"]["mean"][0],
+                 self.m_analysis.gvs["RKneeAngles"+suffixPlus,"Right"]["mean"][0],
                   0,
-                  self.m_analysis.gvs["RHipAngles","Right"]["mean"][1],
+                  self.m_analysis.gvs["RHipAngles"+suffixPlus,"Right"]["mean"][1],
                   0,
-                  self.m_analysis.gvs["RHipAngles","Right"]["mean"][2],
-                  self.m_analysis.gvs["RFootProgressAngles","Right"]["mean"][2],
+                  self.m_analysis.gvs["RHipAngles"+suffixPlus,"Right"]["mean"][2],
+                  self.m_analysis.gvs["RFootProgressAngles"+suffixPlus,"Right"]["mean"][2],
                   self.m_analysis.gps["Context"]["Right"]["mean"][0])
 
         width = 0.35

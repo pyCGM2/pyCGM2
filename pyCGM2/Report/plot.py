@@ -243,7 +243,7 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
         .. code:: python
 
    '''
-
+    
 
     # check if [ pointlabel , context ] in keys of analysisStructureItem
     flag = False
