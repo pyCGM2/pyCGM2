@@ -404,9 +404,28 @@ def stpHorizontalHistogram(figAxis,analysisStructureItem,
                         overall= False,
                         title=None, xlabel=None,xlim=None):
 
+    if (stpLabel,"Right") in analysisStructureItem.keys() and (stpLabel,"Left") in analysisStructureItem.keys():
+        overallData = np.concatenate([analysisStructureItem[stpLabel,"Left"]["values"],analysisStructureItem[stpLabel,"Right"]["values"]] )
+        mean_L = analysisStructureItem[stpLabel,"Left"]["mean"]
+        err_L = analysisStructureItem[stpLabel,"Left"]["std"]
+        mean_R = analysisStructureItem[stpLabel,"Right"]["mean"]
+        err_R = analysisStructureItem[stpLabel,"Right"]["std"]
+
+    if not (stpLabel,"Right") in analysisStructureItem.keys() and (stpLabel,"Left") in analysisStructureItem.keys():
+        overallData = analysisStructureItem[stpLabel,"Left"]["values"]
+        mean_L = analysisStructureItem[stpLabel,"Left"]["mean"]
+        err_L = analysisStructureItem[stpLabel,"Left"]["std"]
+        mean_R = 0
+        err_R = 0
+
+    if  (stpLabel,"Right") in analysisStructureItem.keys() and not (stpLabel,"Left") in analysisStructureItem.keys():
+        overallData = analysisStructureItem[stpLabel,"Right"]["values"]
+        mean_L = 0
+        err_L = 0
+        mean_R = analysisStructureItem[stpLabel,"Right"]["mean"]
+        err_R = analysisStructureItem[stpLabel,"Right"]["std"]
 
     if overall:
-        overallData = np.concatenate([analysisStructureItem[stpLabel,"Left"]["values"],analysisStructureItem[stpLabel,"Right"]["values"]] )
         mean = np.mean(overallData)
         err = np.std(overallData)
         figAxis.barh([0], [ mean], color='purple', xerr=[err])
@@ -415,11 +434,6 @@ def stpHorizontalHistogram(figAxis,analysisStructureItem,
         figAxis.set_yticklabels( [""])
 
     else:
-        mean_L = analysisStructureItem[stpLabel,"Left"]["mean"]
-        err_L = analysisStructureItem[stpLabel,"Left"]["std"]
-        mean_R = analysisStructureItem[stpLabel,"Right"]["mean"]
-        err_R = analysisStructureItem[stpLabel,"Right"]["std"]
-
         figAxis.barh([0,1], [mean_L,mean_R],  xerr=[err_L,err_R], color=["red","blue"])
         figAxis.set_yticks([0,1])
         figAxis.set_yticklabels(["L","R"],size=8)
