@@ -399,8 +399,10 @@ class MultipleAnalysis_EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer)
         for i in range(0, len(self.emgs)):
             label = self.emgs[i]["Label"]
             context = self.emgs[i]["Context"]
+            muscle = self.emgs[i]["Muscle"]
 
-            muscle = self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
+
+            normalActivity = self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
 
             self.fig.axes[i].set_title(label+":"+ muscle+"-"+context+"\n["+ normalActivity+"]" ,size=6)
 
