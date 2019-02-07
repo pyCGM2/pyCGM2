@@ -157,8 +157,9 @@ def analog_descriptiveStats(cycles,label,context):
     if not np.all(x==0):
         medianData[:,0]=np.nanmedian(x,axis=1)
 
+    maximalValues = np.max(x,axis=0)
 
-    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues}
+    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues, 'maxs': maximalValues}
 
     return outDict
 
