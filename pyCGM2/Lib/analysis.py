@@ -6,6 +6,8 @@ from pyCGM2.Model.CGM2 import  cgm
 from pyCGM2.Tools import btkTools
 from pyCGM2.EMG import emgFilters
 from pyCGM2 import enums
+from pyCGM2.Processing import exporter
+
 
 def makeAnalysis(type,DATA_PATH,
                     modelledFilenames,
@@ -70,6 +72,13 @@ def makeAnalysis(type,DATA_PATH,
     return analysisFilter.analysis
 
     #files.saveAnalysis(analysis,DATA_PATH,"Save_and_openAnalysis")
+
+def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
+
+    exportFilter = exporter.XlsAnalysisExportFilter()
+    exportFilter.setAnalysisInstance(analysisInstance)
+    exportFilter.export(name, path=DATA_PATH,excelFormat = "xls",mode = mode)
+
 
 def processEMG(DATA_PATH, gaitTrials, EMG_LABELS, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None):
 
