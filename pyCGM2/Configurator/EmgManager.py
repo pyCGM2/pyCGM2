@@ -34,9 +34,10 @@ class EmgConfigManager(Manager.ConfigManager):
 
         finalSettings =  copy.deepcopy(self._internSettings)
 
-        for key in self._userSettings.keys():
-            if key  not in finalSettings.keys():
-                finalSettings.update({key : self._userSettings[key]})
+        if self._userSettings is not None:
+            for key in self._userSettings.keys():
+                if key  not in finalSettings.keys():
+                    finalSettings.update({key : self._userSettings[key]})
 
         self.finalSettings = finalSettings
 
