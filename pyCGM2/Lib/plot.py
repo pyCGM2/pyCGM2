@@ -421,11 +421,11 @@ def compareKinetic(analyses,labels,context,bodyPart,normativeDataset,plotType="D
     plt.show()
 
 
-def compareEmgEvelops(analyses,legends, emglabels, contexts, normalActivityEmgs, normalized=False,plotType="Descriptive"):
+def compareEmgEvelops(analyses,legends, emglabels, muscles, contexts, normalActivityEmgs, normalized=False,plotType="Descriptive"):
 
     combinedEMGcontext=[]
     for i in range(0,len(emglabels)):
-        combinedEMGcontext.append([emglabels[i],contexts[i]])
+        combinedEMGcontext.append([emglabels[i],contexts[i],muscles[i]])
 
 
     kv = emgPlotViewers.MultipleAnalysis_EnvEmgGaitPlotPanelViewer(analyses,legends)
