@@ -227,7 +227,7 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
     plt.show()
 
 
-def plot_ConsistencyKinematic(DATA_PATH,analysis,bodypart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
 
     if bodyPart == "LowerLimb":
         bodyPart = enums.BodyPartPlot.LowerLimb
@@ -246,7 +246,7 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodypart,normativeDataset,point
         filenameOut =  str(outputName+"-consistency Kinematics ["+ bodyPart.name+"]")
 
 
-    kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodypart=bodyPart)
+    kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
     if type == "Gait":
         kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
@@ -303,7 +303,7 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLa
     plt.show()
 
 
-def plot_ConsistencyKinetic(DATA_PATH,analysis,bodypart, normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
+def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
 
     if bodyPart == "LowerLimb":
         bodyPart = enums.BodyPartPlot.LowerLimb
