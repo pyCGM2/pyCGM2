@@ -22,6 +22,14 @@ class ModelConfigManager(Manager.ConfigManager):
     def dynamicTrials(self):
         return  self._userSettings["Fitting"]["Trials"]
 
+    @property
+    def listOfdynamicTrials(self):
+        li =list()
+        for it in self._userSettings["Fitting"]["Trials"]:
+            li.append(it["File"])
+
+        return li
+
     def contruct(self):
 
         finalSettings =  copy.deepcopy(self._internSettings)
