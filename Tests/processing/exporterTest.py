@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import logging
 
 import pyCGM2
-from pyCGM2 import Lib
+import pyCGM2.Lib.analysis
 
 
 from pyCGM2.Model.CGM2 import cgm
@@ -39,7 +39,7 @@ class ExportTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysisInstance = Lib.analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
+        analysisInstance = pyCGM2.Lib.analysis.makeAnalysis("Gait",  DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
 
 
         exportFilter = exporter.XlsAnalysisExportFilter()
@@ -143,7 +143,7 @@ class ExportTest():
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
 
-        analysisInstance = Lib.analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
+        analysisInstance = pyCGM2.Lib.analysis.makeAnalysis("Gait", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
 
 
         exportFilter = exporter.XlsAnalysisExportFilter()
@@ -151,10 +151,102 @@ class ExportTest():
         exportFilter.export("test", path=DATA_PATH,excelFormat = "xls",mode="Basic")
 
 
+    @classmethod
+    def analysisJson(cls):
+
+        # ----DATA-----
+
+        #DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\analysis\gait\\"
+        modelledFilenames = ["gait Trial 01 - viconName.c3d", "gait Trial 03 - viconName.c3d" ]
+
+        #---- c3d manager
+        #--------------------------------------------------------------------------
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
+        cmf.enableEmg(False)
+        trialManager = cmf.generate()
+
+        #---- Analysis
+        #--------------------------------------------------------------------------
+
+        # ----INFOS-----
+        modelInfo={"Type":"cgm2", "hjc":"hara"}
+        subjectInfo={"Id":"1", "Name":"Lecter"}
+        experimentalInfo={"Condition":"Barefoot", "context":"block"}
+
+        analysisInstance = pyCGM2.Lib.analysis.makeAnalysis("Gait", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
+
+
+        exportFilter = exporter.AnalysisExportFilter()
+        exportFilter.setAnalysisInstance(analysisInstance)
+        exportFilter.export("testAdvanced", path=DATA_PATH)
+
+    @classmethod
+    def analysisC3d(cls):
+
+        # ----DATA-----
+
+        #DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gait\\"
+        DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\analysis\gait\\"
+        modelledFilenames = ["gait Trial 01 - viconName.c3d", "gait Trial 03 - viconName.c3d" ]
+
+        #---- c3d manager
+        #--------------------------------------------------------------------------
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
+        cmf.enableEmg(False)
+        trialManager = cmf.generate()
+
+        #---- Analysis
+        #--------------------------------------------------------------------------
+
+        # ----INFOS-----
+        modelInfo={"Type":"cgm2", "hjc":"hara"}
+        subjectInfo={"Id":"1", "Name":"Lecter"}
+        experimentalInfo={"Condition":"Barefoot", "context":"block"}
+
+        analysisInstance = pyCGM2.Lib.analysis.makeAnalysis("Gait", DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
+
+
+        exportFilter = exporter.AnalysisC3dExportFilter()
+        exportFilter.setAnalysisInstance(analysisInstance)
+        exportFilter.export("testAdvanced", path=DATA_PATH)
+
+    @classmethod
+    def analysisAdvancedEMG(cls):
+
+        # ----DATA-----
+
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\analysis\\gaitEMG\\"
+        inputFile = ["pre.c3d","post.c3d"]
+
+        EMG_LABELS = ["EMG1","EMG2"]
+        pyCGM2.Lib.analysis.processEMG(DATA_PATH, inputFile, EMG_LABELS,
+            highPassFrequencies=[20,200],
+            envelopFrequency=6.0,fileSuffix=None) # high pass then low pass for all c3ds
+
+        emgAnalysis =  pyCGM2.Lib.analysis.makeEmgAnalysis("Gait",DATA_PATH, inputFile, EMG_LABELS,None, None)
+
+        # exportFilter = exporter.XlsAnalysisExportFilter()
+        # exportFilter.setAnalysisInstance(emgAnalysis)
+        # exportFilter.export("testAdvancedEMG", path=DATA_PATH,excelFormat = "xls",mode="Advanced")
+
+        # exportFilter = exporter.AnalysisExportFilter()
+        # exportFilter.setAnalysisInstance(emgAnalysis)
+        # exportFilter.export("testAdvancedEMG.json", path=DATA_PATH)
+
+        exportFilter = exporter.AnalysisC3dExportFilter()
+        exportFilter.setAnalysisInstance(emgAnalysis)
+        exportFilter.export("testAdvanced", path=DATA_PATH)
+
 if __name__ == "__main__":
 
     plt.close("all")
 
-    ExportTest.analysisAdvanced()
-    ExportTest.analysisAdvancedAndBasic_nonExistingLabel()
-    ExportTest.analysisBasic()
+    #ExportTest.analysisAdvanced()
+    # ExportTest.analysisAdvancedAndBasic_nonExistingLabel()
+    # ExportTest.analysisBasic()
+    #ExportTest.analysisJson()
+    #ExportTest.analysisC3d()
+    ExportTest.analysisAdvancedEMG()

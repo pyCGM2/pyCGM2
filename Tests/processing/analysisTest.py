@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import logging
 
 import pyCGM2
-from pyCGM2 import Lib
+import pyCGM2.Lib.analysis
 
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Processing import exporter,c3dManager,cycle,analysis
@@ -157,7 +157,7 @@ class AnalysisTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysisInstance = Lib.analysis.makeAnalysis("Gait",  DATA_PATH,modelledFilenames,None, None, None)
+        analysisInstance = pyCGM2.Lib.analysis.makeAnalysis("Gait",  DATA_PATH,modelledFilenames,None, None, None)
 
 
     @classmethod
@@ -185,7 +185,7 @@ class AnalysisTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysisInstance = Lib.analysis.makeAnalysis("Gait",  DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
+        analysisInstance = pyCGM2.Lib.analysis.makeAnalysis("Gait",  DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
 
 
     @classmethod
@@ -212,7 +212,7 @@ class AnalysisTest():
         subjectInfo={"Id":"1", "Name":"Lecter"}
         experimentalInfo={"Condition":"Barefoot", "context":"block"}
 
-        analysisInstance = Lib.analysis.makeAnalysis("Gait",  DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
+        analysisInstance = pyCGM2.Lib.analysis.makeAnalysis("Gait",  DATA_PATH,modelledFilenames,subjectInfo, experimentalInfo, modelInfo)
 
         files.saveAnalysis(analysisInstance,DATA_PATH,"Save_and_openAnalysis")
         analysis2 = files.loadAnalysis(DATA_PATH,"Save_and_openAnalysis")

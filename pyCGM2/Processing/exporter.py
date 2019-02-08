@@ -4,9 +4,12 @@ import pandas as pd
 import logging
 
 # pyCGM2
-import pyCGM2.Processing.cycle as CGM2cycle
+
+from pyCGM2.Utils import files
 from pyCGM2.Tools import exportTools
 
+from pyCGM2 import ma
+from pyCGM2.ma import io
 
 class XlsExportDataFrameFilter(object):
     """
@@ -544,10 +547,276 @@ class XlsAnalysisExportFilter(object):
             df_kinetics.to_excel(xlsxWriter,'Kinetic cycles')
             if csvFileExport:
                 if path == None:
-                    df_stp.to_csv(str(outputName + " - kinetics - DataFrame.csv"),sep=";")
+                    df_kinetics.to_csv(str(outputName + " - kinetics - DataFrame.csv"),sep=";")
                 else:
-                    df_stp.to_csv(str(path+outputName + " - kinetics - DataFrame.csv"),sep=";")
+                    df_kinetics.to_csv(str(path+outputName + " - kinetics - DataFrame.csv"),sep=";")
+
+
+        # EMG ouputs
+        #---------------------------
+        if self.analysis.emgStats.data!={}:
+
+            # stage 1 : get descriptive data
+            # --------------------------------
+            df_descriptiveEMG = exportTools.buid_df_descriptiveCycle101_1(self.analysis.emgStats)
+
+            # add infos
+            if modelInfo is not None:
+                for key,value in modelInfo.items():
+                    exportTools.isColumnNameExist( df_stp, key)
+                    df_descriptiveEMG[key] = value
+            if subjInfo is not None:
+                for key,value in subjInfo.items():
+                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
+                    df_descriptiveEMG[key] = value
+            if condExpInfo is not None:
+                for key,value in condExpInfo.items():
+                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
+                    df_descriptiveEMG[key] = value
+
+            df_descriptiveEMG.to_excel(xlsxWriter,'descriptive EMG ')
+
+            # stage 2 : get cycle values
+            # --------------------------------
+
+            # cycles
+            df_emg =  exportTools.buid_df_cycles101_1(self.analysis.emgStats)
+
+            # add infos
+            if modelInfo is not None:
+                for key,value in modelInfo.items():
+                    exportTools.isColumnNameExist( df_emg, key)
+                    df_emg[key] = value
+
+            if subjInfo is not None:
+                for key,value in subjInfo.items():
+                    exportTools.isColumnNameExist( df_emg, key)
+                    df_emg[key] = value
+            if condExpInfo is not None:
+                for key,value in condExpInfo.items():
+                    exportTools.isColumnNameExist( df_emg, key)
+                    df_emg[key] = value
+
+            df_emg.to_excel(xlsxWriter,'EMG cycles')
+            if csvFileExport:
+                if path == None:
+                    df_emg.to_csv(str(outputName + " - EMG - DataFrame.csv"),sep=";")
+                else:
+                    df_emg.to_csv(str(path+outputName + " - EMG - DataFrame.csv"),sep=";")
+
+
 
         logging.info("advanced dataFrame [%s- Advanced] Exported"%outputName)
 
         xlsxWriter.save()
+
+
+class AnalysisExportFilter(object):
+    """
+         Filter exporting Analysis instance in json
+    """
+
+    def __init__(self):
+
+        self.analysis = None
+
+    def setAnalysisInstance(self,analysisInstance):
+        self.analysis = analysisInstance
+
+    # def _build(self,data):
+
+    def export(self,outputName, path=None):
+
+
+        out=dict()
+
+        if self.analysis.kinematicStats.data != {}:
+            for keys in self.analysis.kinematicStats.data.keys():
+                if not np.all( self.analysis.kinematicStats.data[keys]["mean"]==0):
+
+                    out[keys[0]]=dict()
+                    out[keys[0]][keys[1]]=dict()
+                    out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+
+                    li_X = list()
+                    for cycle in self.analysis.kinematicStats.data[keys]["values"]:
+                        li_X.append(cycle[:,0].tolist())
+
+                    li_Y = list()
+                    for cycle in self.analysis.kinematicStats.data[keys]["values"]:
+                        li_Y.append(cycle[:,1].tolist())
+
+                    li_Z = list()
+                    for cycle in self.analysis.kinematicStats.data[keys]["values"]:
+                        li_Z.append(cycle[:,2].tolist())
+
+
+                    out[keys[0]][keys[1]]["values"]["X"] = li_X
+                    out[keys[0]][keys[1]]["values"]["Y"] = li_Y
+                    out[keys[0]][keys[1]]["values"]["Z"] = li_Z
+
+        if self.analysis.kineticStats.data != {}:
+            for keys in self.analysis.kineticStats.data.keys():
+                if not np.all( self.analysis.kineticStats.data[keys]["mean"]==0):
+
+                    out[keys[0]]=dict()
+                    out[keys[0]][keys[1]]=dict()
+                    out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+
+                    li_X = list()
+                    for cycle in self.analysis.kineticStats.data[keys]["values"]:
+                        li_X.append(cycle[:,0].tolist())
+
+                    li_Y = list()
+                    for cycle in self.analysis.kineticStats.data[keys]["values"]:
+                        li_Y.append(cycle[:,1].tolist())
+
+                    li_Z = list()
+                    for cycle in self.analysis.kineticStats.data[keys]["values"]:
+                        li_Z.append(cycle[:,2].tolist())
+
+
+                    out[keys[0]][keys[1]]["values"]["X"] = li_X
+                    out[keys[0]][keys[1]]["values"]["Y"] = li_Y
+                    out[keys[0]][keys[1]]["values"]["Z"] = li_Z
+
+        if self.analysis.emgStats.data != {}:
+            for keys in self.analysis.emgStats.data.keys():
+                if not np.all( self.analysis.emgStats.data[keys]["mean"]==0):
+
+                    out[keys[0]]=dict()
+                    out[keys[0]][keys[1]]=dict()
+                    out[keys[0]][keys[1]]["values"]=[]
+
+                    li = list()
+                    for cycle in self.analysis.emgStats.data[keys]["values"]:
+                        li.append(cycle[:,0].tolist())
+
+                    out[keys[0]][keys[1]]["values"] = li
+
+
+        files.saveJson(path,outputName,out)
+
+
+
+class AnalysisC3dExportFilter(object):
+    """
+         Filter exporting Analysis instance in json
+    """
+
+    def __init__(self):
+
+        self.analysis = None
+
+    def setAnalysisInstance(self,analysisInstance):
+        self.analysis = analysisInstance
+
+    # def _build(self,data):
+
+    def export(self,outputName, path=None):
+
+        root = ma.Node('root')
+        trial = ma.Trial("AnalysisC3d",root)
+
+        # metadata
+        #-------------
+
+        # subject infos
+        if self.analysis.subjectInfo is not None:
+            subjInfo = self.analysis.subjectInfo
+            for item in subjInfo.items():
+                trial.setProperty("SUBJECT_INFO:"+str(item[0]),item[1])
+
+        # model infos
+        if self.analysis.modelInfo is not None:
+            modelInfo =  self.analysis.modelInfo
+            for item in modelInfo.items():
+                trial.setProperty("MODEL_INFO:"+str(item[0]),item[1])
+
+        # model infos
+        if self.analysis.experimentalInfo is not None:
+            experimentalConditionInfo = self.analysis.experimentalInfo
+            for item in experimentalConditionInfo.items():
+                trial.setProperty("EXPERIMENTAL_INFO:"+str(item[0]),item[1])
+
+
+        #trial.setProperty('MY_GROUP:MY_PARAMETER',10.0)
+
+        # kinematic cycles
+        #------------------
+
+        # metadata
+        # for key in self.analysis.kinematicStats.data.keys():
+        #     if key[1]=="Left":
+        #         n_left_cycle = len(self.analysis.kinematicStats.data[key[0],key[1]]["values"])
+        #         trial.setProperty('PROCESSING:LeftKinematicCycleNumber',n_left_cycle)
+        #         break
+        #
+        # for key in self.analysis.kinematicStats.data.keys():
+        #     if key[1]=="Right":
+        #         n_right_cycle = len(self.analysis.kinematicStats.data[key[0],key[1]]["values"])
+        #         trial.setProperty('PROCESSING:RightKinematicCycleNumber',n_right_cycle)
+        #         break
+
+        # cycles
+        for key in self.analysis.kinematicStats.data.keys():
+            label = key[0]
+            context = key[1]
+            if not np.all( self.analysis.kinematicStats.data[label,context]["mean"]==0):
+                cycle = 0
+                values = np.zeros((101,4))
+                values2 = np.zeros((101,1))
+                for val in self.analysis.kinematicStats.data[label,context]["values"]:
+                    angle = ma.TimeSequence(str(label+"."+context+"."+str(cycle)),4,101,1.0,0.0,ma.TimeSequence.Type_Angle,"deg", trial.timeSequences())
+                    values[:,0:3] = val
+                    angle.setData(values)
+                    cycle+=1
+
+        # kinetic cycles
+        #------------------
+
+        # # metadata
+        # for key in self.analysis.kineticStats.data.keys():
+        #     if key[1]=="Left":
+        #         n_left_cycle = len(self.analysis.kineticStats.data[key[0],key[1]]["values"])
+        #         trial.setProperty('PROCESSING:LeftKineticCycleNumber',n_left_cycle)
+        #         break
+        #
+        # for key in self.analysis.kineticStats.data.keys():
+        #     if key[1]=="Right":
+        #         n_right_cycle = len(self.analysis.kineticStats.data[key[0],key[1]]["values"])
+        #         trial.setProperty('PROCESSING:RightKineticCycleNumber',n_right_cycle)
+        #         break
+
+        # cycles
+        for key in self.analysis.kineticStats.data.keys():
+            label = key[0]
+            context = key[1]
+            if not np.all( self.analysis.kineticStats.data[label,context]["mean"]==0):
+                cycle = 0
+                values = np.zeros((101,4))
+                for val in self.analysis.kineticStats.data[label,context]["values"]:
+                    moment = ma.TimeSequence(str(label+"."+context+"."+str(cycle)),4,101,1.0,0.0,ma.TimeSequence.Type_Moment,"N.mm", trial.timeSequences())
+                    values[:,0:3] = val
+                    moment.setData(values)
+                    cycle+=1
+
+        # for key in self.analysis.emgStats.data.keys():
+        #     label = key[0]
+        #     context = key[1]
+        #     if not np.all( self.analysis.emgStats.data[label,context]["mean"]==0):
+        #         cycle = 0
+        #         for val in self.analysis.emgStats.data[label,context]["values"]:
+        #             analog = ma.TimeSequence(str(label+"."+context+"."+str(cycle)),1,101,1.0,0.0,ma.TimeSequence.Type_Analog,"V", 1.0,0.0,[-10.0,10.0], trial.timeSequences())
+        #             analog.setData(val)
+        #             cycle+=1
+
+
+        try:
+            if path == None:
+                ma.io.write(root,str(outputName+".c3d"))
+            else:
+                ma.io.write(root,str(path + outputName+".c3d"))
+            logging.info("Analysis c3d  [%s.c3d] Exported" %( str(outputName +".c3d")) )
+        except:
+            raise Exception ("[pyCGM2] : analysis c3d doesn t export" )

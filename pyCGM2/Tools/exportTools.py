@@ -599,3 +599,187 @@ def buid_df_cycles101_3(analysis_outputStats):
 
 
     return DF
+
+def buid_df_descriptiveCycle101_1(analysis_outputStats):
+
+
+    # "data" section
+    df_collection_L=[]
+    df_collection_R=[]
+
+    for key in analysis_outputStats.data.keys():
+        label = key[0]
+        context = key[1]
+        if context == "Left":
+
+            valuesMean=analysis_outputStats.data[label,context]["mean"]
+            if not np.all(valuesMean==0):
+                df=pd.DataFrame(valuesMean.T,  columns = FRAMES_HEADER)
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "mean"
+                df_collection_L.append(df)
+
+            valuesStd=analysis_outputStats.data[label,context]["std"]
+            if not np.all(valuesStd==0):
+                df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "std"
+                df_collection_L.append(df)
+
+            valuesMedian=analysis_outputStats.data[label,context]["median"]
+            if not np.all(valuesMedian==0):
+                df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "median"
+                df_collection_L.append(df)
+
+
+        if context == "Right":
+
+            valuesMean=analysis_outputStats.data[label,context]["mean"]
+            if not np.all(valuesMean==0):
+                df=pd.DataFrame(valuesMean.T,  columns= FRAMES_HEADER)
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "mean"
+                df_collection_R.append(df)
+
+            valuesStd=analysis_outputStats.data[label,context]["std"]
+            if not np.all(valuesStd==0):
+                df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "std"
+                df_collection_R.append(df)
+
+            valuesMedian=analysis_outputStats.data[label,context]["median"]
+            if not np.all(valuesMedian==0):
+                df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
+                df['Label']=label
+                df['Context']= context
+                df['Stats type'] = "median"
+                df_collection_R.append(df)
+
+    left_flag = len(df_collection_L)
+    right_flag = len(df_collection_R)
+
+    if left_flag:  df_L=pd.concat(df_collection_L,ignore_index=True)
+    if right_flag: df_R=pd.concat(df_collection_R,ignore_index=True)
+
+    if left_flag and right_flag:
+        DF = pd.concat([df_L,df_R],ignore_index=True)
+    if left_flag and not right_flag:
+        DF = df_L
+    if not left_flag and right_flag:
+        DF = df_R
+
+    return DF
+
+
+def buid_df_cycles101_1(analysis_outputStats):
+
+    # "data" section
+    df_collection_L=[]
+    df_collection_R=[]
+
+    for key in analysis_outputStats.data.keys():
+        label = key[0]
+        context = key[1]
+        i_l=0
+        i_r=0
+        if context =="Left" :
+            for itValues in analysis_outputStats.data[label,context]["values"]:
+                if not np.all(itValues==0):
+                    df=pd.DataFrame(itValues.T,  columns= FRAMES_HEADER)
+                    df['Label']=label
+                    df['Cycle']= i_l
+                    df['Context']= context
+                    df_collection_L.append(df)
+                i_l+=1 # will serve for merging with spt
+
+        if context=="Right" :
+            for itValues in analysis_outputStats.data[label,context]["values"]:
+                if not np.all(itValues==0):
+                    df=pd.DataFrame(itValues.T,  columns= FRAMES_HEADER)
+                    df['Label']=label
+                    df['Cycle']= i_r
+                    df['Context']= context
+                    df_collection_R.append(df)
+                i_r+=1 # will serve for merging with spt
+
+    left_flag = len(df_collection_L)
+    right_flag = len(df_collection_R)
+
+
+
+    if left_flag:
+        df_L=pd.concat(df_collection_L,ignore_index=True)
+
+    if right_flag:
+        df_R=pd.concat(df_collection_R,ignore_index=True)
+
+    if left_flag and right_flag:
+        df_cycles = pd.concat([df_L,df_R],ignore_index=True)
+
+    if left_flag and not right_flag:
+        df_cycles = df_L
+
+    if not left_flag and right_flag:
+        df_cycles = df_R
+
+
+    # pst section
+    if analysis_outputStats.pst !={}:
+        df_collection_pst_L=[]
+        df_collection_pst_R=[]
+
+        for key in analysis_outputStats.pst.keys():
+            label = key[0]
+            context = key[1]
+            n =len(analysis_outputStats.pst[label,context]['values'])
+
+            if context == "Left":
+                df_pst_L = pd.DataFrame({ label : analysis_outputStats.pst[label,context]['values'],
+                                   "Cycle": range(0,n),
+                                   'Context': str(context)
+                                   })
+
+                df_collection_pst_L.append(df_pst_L)
+
+            if context == "Right":
+                df_pst_R = pd.DataFrame({ label : analysis_outputStats.pst[label,context]['values'],
+                                   "Cycle": range(0,n),
+                                   'Context': str(context)
+                                   })
+
+                df_collection_pst_R.append(df_pst_R)
+
+        if left_flag:
+            df_pst_L=df_collection_pst_L[0]
+            for i in range(1,len(df_collection_pst_L)):
+                df_pst_L=pd.merge(df_pst_L,df_collection_pst_L[i])
+
+        if right_flag:
+            df_pst_R=df_collection_pst_R[0]
+            for i in range(1,len(df_collection_pst_R)):
+                df_pst_R=pd.merge(df_pst_R,df_collection_pst_R[i])
+
+        if left_flag and right_flag:
+            df_pst = pd.concat([df_pst_L,df_pst_R],ignore_index=True)
+        if left_flag and not right_flag:
+            df_pst = df_pst_L
+        if not left_flag and right_flag:
+            df_pst = df_pst_R
+
+
+        # merging
+        DF=pd.merge(df_cycles,df_pst, on=['Cycle','Context'],how='outer')
+
+    else:
+        DF = df_cycles
+
+
+    return DF
