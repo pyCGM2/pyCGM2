@@ -1,7 +1,7 @@
 {
     "NORMAL_STANCE_PHASE" : 56.21,
     "Activation":{
-        "ADDBRE" : [48,72,"na","na","na"],
+        "ADDBRE" : [48,62,"na","na","na"],
         "ADDLON"  :[47,68,89,96,"na","na"],
         "ADDMAG"    :[0,6,45,62,92,100],
         "BICFEM"     :[0,7,83,100,"na","na"],
