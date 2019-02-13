@@ -1,9 +1,9 @@
 Global:
-    Marker diameter: 14
-    Point suffix: None
+    Marker diameter: 14 #[double]
+    Point suffix: None #[string]
 
-Translators:
-    LASI: None
+Translators: # Translators adapt your current marker set
+    LASI: None #[string]
     RASI: None
     LPSI: None
     RPSI: None
@@ -41,16 +41,16 @@ Translators:
     RFIN: None
 
 Calibration:
-    Left flat foot: 1
+    Left flat foot: 1 #[integer](choice: 0 or 1)
     Right flat foot: 1
 
 Fitting:
-    Moment Projection: Distal
+    Moment Projection: Distal #[string](choice: Proximal, Global, Distal)
 
 
-################
-# ADVANCED     #
-################
+#############################
+# ADVANCED (Not in use)     #
+#############################
 
 KneeCalibration:
     Left:

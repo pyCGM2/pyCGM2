@@ -1,9 +1,9 @@
 Global:
-    Marker diameter: None 14
-    Point suffix: None
+    Marker diameter: 14 #[double]
+    Point suffix: None #[string]
 
-Translators:
-    LASI: None
+Translators: # Translators adapt your current marker set
+    LASI: None #[string]
     RASI: None
     LPSI: None
     RPSI: None
@@ -42,19 +42,22 @@ Translators:
     RWRA: None
     RFIN: None
 
+
+##### Calibration ########
+
 Calibration:
     HJC:
-        Left: Hara
+        Left: Hara #[string](choice: Hara)
         Right:  Hara
-    Left flat foot:  1
+    Left flat foot:  1 #[integer](choice: 0 or 1)
     Right flat foot:  1
 
 Fitting:
-    Moment Projection: JCS
+    Moment Projection: JCS #[string](choice: Proximal, Global, Distal, JCS)
 
-################
-# ADVANCED     #
-################
+#############################
+# ADVANCED (Not in use)     #
+#############################
 
 KneeCalibration:
     Left:

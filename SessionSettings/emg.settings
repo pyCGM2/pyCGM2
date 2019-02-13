@@ -1,8 +1,60 @@
+########## EMG configuration ##########
+# The configuration below considers the emg signals are named EMG1,EMG2... EMG16 in your c3d.
+# items:
+#  - "Muscle" is the name of the muscle where is placed the emg device
+#  - "Context" indicates if you want to plot on a left or right gait cycle.
+#  - "NormalActivity" defines the muscle whose normal activity will be plotted in background.
+#     Values are the normal adult activities defined in Vicon Clinical Manager.
+#     you can select :
+#         -ADDBRE
+#         -ADDLON
+#         -ADDMAG
+#         -BICFEM
+#         -CALF
+#         -EXTDIGLON
+#         -EXTHALLON
+#         -FLEDIGLON
+#         -FLEHALLON
+#         -GASTRO
+#         -GLUMAX
+#         -GLUMED
+#         -GLUMIN
+#         -GRACIL
+#         -HAMSTR
+#         -HIPABD
+#         -HIPADD
+#         -HIPEXT
+#         -HIPFLE
+#         -ILIACU
+#         -ILIOPS
+#         -LATHAM
+#         -LATQUA
+#         -MEDHAM
+#         -MEDQUA
+#         -PERBRE
+#         -PERLON
+#         -POPLIT
+#         -RECFEM
+#         -SARTOR
+#         -SEMIME
+#         -SEMITE
+#         -SOLEUS
+#         -TENFACLAT
+#         -TIBANT
+#         -TIBPOS
+#         -VASINT
+#         -VASLAT
+#         -VASMEDLON
+#         -VASMEDOBL
+########## EMG configuration ##########
+
+
+
 CHANNELS:
     EMG1 :
-        Muscle : RECFEM
-        Context : Left
-        NormalActivity : RECFEM
+        Muscle : RECFEM #[string]
+        Context : Left #[string](choice: Left or Right)
+        NormalActivity : RECFEM #[string](choice: see above)
 
     EMG2 :
         Muscle : RECFEM
@@ -85,5 +137,5 @@ CHANNELS:
 ################
 
 Processing:
-  BandpassFrequencies: [20,200]
-  EnvelopLowpassFrequency: 6
+  BandpassFrequencies: [20,200] #[array of two double]: frequencies of the bandpass filter
+  EnvelopLowpassFrequency: 6 #[double]: emg envelop frequency
