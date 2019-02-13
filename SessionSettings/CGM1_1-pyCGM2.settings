@@ -49,22 +49,6 @@ Calibration:
 Fitting:
     Moment Projection: JCS #[string](choice: Proximal, Global, Distal, JCS)
 
-#############################
-# ADVANCED (Not in use)     #
-#############################
-
-KneeCalibration:
-    Left:
-        Method: Calibration2Dof
-        Trial: None
-        BeginFrame: 0
-        EndFrame: 0
-    Right:
-        Method: Calibration2Dof
-        Trial: None
-        BeginFrame: 0
-        EndFrame: 0
-
 
 ################
 # DO NOT TOUCH #
