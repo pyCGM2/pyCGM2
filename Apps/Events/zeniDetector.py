@@ -1,5 +1,21 @@
-
 # -*- coding: utf-8 -*-
+"""Nexus Operation : **plotTemporalEmg**
+
+The script displays rectified EMG with time as x-axis
+
+:param -fso, --footStrikeOffset [int]: add an offset on all foot strike events
+:param -foo, --footOffOffset [int]: add an offset on all foot off events
+
+
+Examples:
+    In the script argument box of a python nexus operation, you can edit:
+
+    >>>  -fso=10
+    (add 10 frames to all foot strike events)
+
+
+"""
+
 import os
 import logging
 import matplotlib.pyplot as plt

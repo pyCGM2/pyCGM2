@@ -19,7 +19,7 @@
 
   <Entry DisplayName="Run pyCGM2-CGM2_1-Calibration " Enabled="1" OperationId="104" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/CGM2_1/nexusOperation-pyCGM2-CGM2_1-Calibration.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/CGM2_1/CGM2_1_Calibration.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
@@ -35,7 +35,7 @@
 
   <Entry DisplayName="Run pyCGM2-plotTemporalKinematics" Enabled="0" OperationId="0" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-plotTemporalKinematics.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/plotTemporalKinematics.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>

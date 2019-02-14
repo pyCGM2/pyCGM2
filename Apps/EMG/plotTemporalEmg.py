@@ -1,4 +1,23 @@
 # -*- coding: utf-8 -*-
+"""Nexus Operation : **plotTemporalEmg**
+
+The script displays rectified EMG with time as x-axis
+
+:param -bpf, --BandpassFrequencies [array]: bandpass frequencies
+:param -ecf, --EnvelopLowpassFrequency [double]: cut-off low pass frequency for getting emg envelop
+:param -fs, --fileSuffix [string]: store the c3d file with addition of a suffix
+:param -r, --raw [bool]: display non-rectified emg instead of rectified
+
+Examples:
+    In the script argument box of a python nexus operation, you can edit:
+
+    >>>  -bpf 20 450 -ecf=8.9 --raw
+    (bandpass frequencies set to 20 and 450Hz and envelop made from a low-pass filter with a cutoff frequency of 8.9Hz,
+    non-rectified EMG  will be displayed)
+
+
+"""
+
 import logging
 import argparse
 

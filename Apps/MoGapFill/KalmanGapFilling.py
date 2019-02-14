@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
+"""Nexus Operation : **KalmanGapFilling**
+
+Low dimensional Kalman smoother that fills gaps in motion capture marker trajectories
+
+This repository is a  Python implementation of a gap filling algorithm
+(http://dx.doi.org/10.1016/j.jbiomech.2016.04.016)
+that smooths trajectories in low dimensional subspaces, together with a Python plugin for Vicon Nexus.
+"""
+
+
 import sys
 import ViconNexus
 import numpy as np
 import smooth
 
-#Low dimensional Kalman smoother that fills gaps in motion capture marker trajectories
-#This repository is a  Python implementation of a gap filling algorithm
-#(http://dx.doi.org/10.1016/j.jbiomech.2016.04.016)
-#that smooths trajectories in low dimensional subspaces, together with a Python plugin for Vicon Nexus.
 
 if __name__ == "__main__":
 

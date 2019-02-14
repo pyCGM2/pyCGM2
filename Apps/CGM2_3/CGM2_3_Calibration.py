@@ -1,5 +1,28 @@
 # -*- coding: utf-8 -*-
-#import ipdb
+"""Nexus Operation : **CGM2.3 Calibration**
+
+:param -l, --leftFlatFoot [int]: enable or disable the flat foot option on the left foot
+:param -r, --rightFlatFoot [int]: enable or disable the flat foot option on the right foot
+:param -md, --markerDiameter [int]: marker diameter
+:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
+:param --check [bool]: add "cgm2.3" as point suffix
+:param --resetMP [bool]: reset computation of optional parameters, like interAsisDistance, ShankOffsets...
+:param --forceLHJC [array]: force the local position of the left hip joint centre in the pelvic coordinate system
+:param --forceRHJC [array]: force the local position of the left hip joint centre in the pelvic coordinate system
+
+
+Examples:
+    In the script argument box of a python nexus operation, you can edit:
+
+    >>> -l=1 -r=0 -ps=py
+    (if you want to add suffix py and enable the flat foot option on the left side only)
+    >>> --leftFlatFoot=1 -r=0 --pointSuffix=py --resetMP
+    (if you want to add suffix py, enable the flat foot option on the left side only and reset the computation of optional parameters, like interAsisDistance, ShankOffsets...)
+    >>>  --forceLHJC 10 20 30  --forceRHJC 10 20 30
+    (force the left and right hip joint centre positions (10 mm along the pelvic X-axis, 20 mm along the pelvic Y-axis, 30 mm along the pelvic Z-axis)
+
+"""
+
 import logging
 import argparse
 import matplotlib.pyplot as plt

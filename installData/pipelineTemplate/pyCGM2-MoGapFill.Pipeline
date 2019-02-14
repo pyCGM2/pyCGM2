@@ -19,7 +19,7 @@
 
   <Entry DisplayName="MoGapFill-Kalman" Enabled="1" OperationId="856" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/MoGapFill/nexusOperation_KalmanGapFilling.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/MoGapFill/KalmanGapFilling.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>

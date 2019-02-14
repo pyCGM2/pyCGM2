@@ -19,7 +19,7 @@
 
   <Entry DisplayName="Run pyCGM2-plot-TemporalKinematics " Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-plotTemporalKinematics.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/plotTemporalKinematics.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
@@ -27,7 +27,7 @@
   </Entry>
   <Entry DisplayName="Run pyCGM2-plot-TemporalKinetics " Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-plotTemporalKinetics.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/plotTemporalKinetics.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
@@ -36,7 +36,7 @@
 
   <Entry DisplayName="Run pyCGM2-plot-STP" Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-plotSpatioTemporalParameters.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/plotSpatioTemporalParameters.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
@@ -46,7 +46,7 @@
 
   <Entry DisplayName="Run pyCGM2-plot-NormalizedKinematics " Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-plotNormalizedKinematics.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/plotNormalizedKinematics.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
@@ -54,7 +54,7 @@
   </Entry>
   <Entry DisplayName="Run pyCGM2-plot-MAP" Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-plotMAP.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/plotMAP.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
@@ -62,7 +62,7 @@
   </Entry>
   <Entry DisplayName="Run pyCGM2-plot-NormalizedKinetics " Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/nexusOperation-plotNormalizedKinetics.py"/>
+      <Param name="Script" value="C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps/DataProcessing/plotNormalizedKinetics.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>

@@ -1,4 +1,23 @@
 # -*- coding: utf-8 -*-
+"""Nexus Operation : **plotNormalizedEmg**
+
+The script displays gait-normalized emg envelops
+
+:param -bpf, --BandpassFrequencies [array]: bandpass frequencies
+:param -ecf, --EnvelopLowpassFrequency [double]: cut-off low pass frequency for getting emg envelop
+:param -fs, --fileSuffix [string]: store the c3d file with addition of a suffix
+:param -c, --consistency [bool]: display consistency plot ( ie : all gait cycles) instead of a descriptive statistics view
+
+Examples:
+    In the script argument box of a python nexus operation, you can edit:
+
+    >>>  -bpf 20 450 -ecf=8.9 --consistency
+    (bandpass frequencies set to 20 and 450Hz and envelop made from a low-pass filter with a cutoff frequency of 8.9Hz,
+    all gait cycles will be displayed)
+
+
+"""
+
 import logging
 import argparse
 
