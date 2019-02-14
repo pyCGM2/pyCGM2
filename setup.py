@@ -28,7 +28,6 @@ for it in site.getsitepackages():
         SITE_PACKAGE_PATH = it +"\\"
 
 NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py2.7.egg"
-PATH_IN_SITEPACKAGE = SITE_PACKAGE_PATH+NAME_IN_SITEPACKAGE+"\\"
 
 
 MAIN_PYCGM2_PATH = os.getcwd() + "\\"
@@ -38,7 +37,10 @@ PYCGM2_SESSION_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"SessionSettings\\"
 NEXUS_PYCGM2_VST_PATH = MAIN_PYCGM2_PATH + "Extern\\vicon\\vst\\"
 NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "installData\\pipelineTemplate\\"
 
-
+if not developMode:
+    PATH_IN_SITEPACKAGE = SITE_PACKAGE_PATH+NAME_IN_SITEPACKAGE+"\\"
+else:
+    PATH_IN_SITEPACKAGE = MAIN_PYCGM2_PATH 
 
 user_folder = pd = os.getenv("PUBLIC")
 NEXUS_PUBLIC_DOCUMENT_VST_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\ModelTemplates\\"
