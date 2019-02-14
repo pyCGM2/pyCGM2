@@ -1,4 +1,38 @@
 # -*- coding: utf-8 -*-
+"""Nexus Operation : **plotSpatioTemporalParameters**
+
+The script displays spatio-temporal parameters (Velocity, cadence, duration of the gait phases...)
+
+:param -ps, --pointSuffix [string]: suffix adds to the pyCGM2 nomenclature
+
+Examples:
+    In the script argument box of a python nexus operation, you can edit:
+
+    >>>  -ps=py
+
+.. note::
+    the spatio-temporal parameters are :
+        * duration
+        * cadence
+        * stanceDuration
+        * stancePhase
+        * swingDuration
+        * swingPhase
+        * doubleStance1
+        * doubleStance2
+        * simpleStance
+        * strideLength
+        * stepLength
+        * strideWidth
+        * speed
+
+.. warning::
+    the spatio-temporal parameters are not stored in the c3d file yet.
+
+
+
+"""
+
 import logging
 import argparse
 import matplotlib.pyplot as plt
@@ -24,11 +58,7 @@ if __name__ == "__main__":
     plt.close("all")
 
     parser = argparse.ArgumentParser(description='CGM Gait Processing')
-    parser.add_argument('-nd','--normativeData', type=str, help='normative Data set (Schwartz2008 or Pinzone2014)', default="Schwartz2008")
-    parser.add_argument('-ndm','--normativeDataModality', type=str,
-                        help="if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
-                        default="Free")
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix added to pyCGM2 outputs')
 
 
     args = parser.parse_args()
@@ -39,22 +69,7 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED:
 
-
-
-        #-----------------------SETTINGS---------------------------------------
         pointSuffix = args.pointSuffix
-
-
-        normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
-
-        if normativeData["Author"] == "Schwartz2008":
-            chosenModality = normativeData["Modality"]
-            nds = normativeDatasets.Schwartz2008(chosenModality)    # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
-        elif normativeData["Author"] == "Pinzone2014":
-            chosenModality = normativeData["Modality"]
-            nds = normativeDatasets.Pinzone2014(chosenModality) # modalites : "Center One" ,"Center Two"
-
-
         # --------------------------INPUTS ------------------------------------
         DEBUG= False
         if DEBUG:
@@ -81,10 +96,11 @@ if __name__ == "__main__":
         modelVersion = model.version
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis("Gait", DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
-        plot.plot_MAP(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename,pointLabelSuffix=pointSuffix)
-
-
+        analysisInstance = analysis.makeAnalysis("Gait", DATA_PATH,[modelledFilename],
+                        None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        plot.plot_spatioTemporal(DATA_PATH,analysisInstance,
+            exportPdf=True,
+            outputName=modelledFilename)
 
 
     else:

@@ -1,4 +1,22 @@
 # -*- coding: utf-8 -*-
+"""Nexus Operation : **plotMAP**
+
+The script displays Gait-Normalized kinematics
+
+:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
+:param -nd, --normativeData [string]: Normative data set ( choice: Schwartz2008 [DEFAULT] or Pinzone2014)
+:param -ndm, --normativeDataModality [string]: modalities associated with the selected normative dataset. (choices: if  Schwartz2008: VerySlow,Slow,Free[DEFAULT],Fast,VeryFast.  if Pinzone2014 : CentreOne,CentreTwo)
+
+
+Examples:
+    In the script argument box of a python nexus operation, you can edit:
+
+    >>>  -normativeData=Schwartz2008 --normativeDataModality=VeryFast
+    (your gait panel will display as normative data, results from the modality VeryFast of the nomative dataset collected by Schwartz2008)
+
+"""
+
+
 import logging
 import argparse
 import matplotlib.pyplot as plt
@@ -12,8 +30,6 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 import ViconNexus
 
 # pyCGM2 libraries
-
-from pyCGM2 import enums
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
@@ -31,7 +47,7 @@ if __name__ == "__main__":
                         help="if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
                         default="Free")
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
-    parser.add_argument('-c','--consistency', action='store_true', help='consistency plots')
+
 
     args = parser.parse_args()
 
@@ -41,7 +57,12 @@ if __name__ == "__main__":
 
     if NEXUS_PYTHON_CONNECTED:
 
+
+
         #-----------------------SETTINGS---------------------------------------
+        pointSuffix = args.pointSuffix
+
+
         normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
 
         if normativeData["Author"] == "Schwartz2008":
@@ -51,15 +72,12 @@ if __name__ == "__main__":
             chosenModality = normativeData["Modality"]
             nds = normativeDatasets.Pinzone2014(chosenModality) # modalites : "Center One" ,"Center Two"
 
-        consistencyFlag = True if args.consistency else False
-        pointSuffix = args.pointSuffix
 
         # --------------------------INPUTS ------------------------------------
         DEBUG= False
         if DEBUG:
-            DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\lowerLimbTrunk\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-
-            modelledFilenameNoExt = "PN01NORMSS02"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Release Tests\CGM2.2\medial\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
+            modelledFilenameNoExt = "Gait Trial 01"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+modelledFilenameNoExt), 30 )
         else:
             DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
@@ -80,29 +98,11 @@ if __name__ == "__main__":
         model = files.loadModel(DATA_PATH,subject)
         modelVersion = model.version
 
-
-
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis("Gait", DATA_PATH,[modelledFilename],
-                            None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        analysisInstance = analysis.makeAnalysis("Gait", DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        plot.plot_MAP(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename,pointLabelSuffix=pointSuffix)
 
-        if not consistencyFlag:
-            if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-                    #plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
 
-            if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-            if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-                pass # TODO plot upperlimb panel
-
-        else:
-            if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,bodyPart,"LowerLimb",nds, pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-            if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,bodyPart,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-            if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-                pass # TODO plot upperlimb panel
 
 
     else:
