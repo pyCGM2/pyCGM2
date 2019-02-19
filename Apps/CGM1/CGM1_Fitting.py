@@ -19,9 +19,9 @@ Examples:
 """
 
 #import ipdb
+import traceback
 import logging
 import argparse
-import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
@@ -38,19 +38,8 @@ from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
-if __name__ == "__main__":
 
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
-
-    parser = argparse.ArgumentParser(description='CGM1 Fitting')
-    parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
-    parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
-    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
-    parser.add_argument('--check', action='store_true', help='force model output suffix')
-
-    args = parser.parse_args()
+def main(args):
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
         # --------------------------GLOBAL SETTINGS ------------------------------------
@@ -126,3 +115,29 @@ if __name__ == "__main__":
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
+
+
+if __name__ == "__main__":
+
+    NEXUS = ViconNexus.ViconNexus()
+    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
+    parser = argparse.ArgumentParser(description='CGM1 Fitting')
+    parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
+    parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
+    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+    parser.add_argument('--check', action='store_true', help='force model output suffix')
+
+    args = parser.parse_args()
+
+    # ---- main script -----
+    try:
+        main(args)
+
+
+    except Exception, errormsg:
+        print "Error message: %s" % errormsg
+        traceback.print_exc()
+        print "Press return to exit.."
+        raw_input()

@@ -6,7 +6,7 @@
 :param -md, --markerDiameter [int]: marker diameter
 :param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
 :param --check [bool]: add "cgm1" as point suffix
-:param --resetMP [bool]: reset computation of optional parameters, like interAsisDistance, ShankOffsets... 
+:param --resetMP [bool]: reset computation of optional parameters, like interAsisDistance, ShankOffsets...
 
 Examples:
     In the script argument box of a python nexus operation, you can edit:
@@ -19,9 +19,8 @@ Examples:
 """
 #import ipdb
 import logging
-import matplotlib.pyplot as plt
 import argparse
-
+import traceback
 
 # pyCGM2 settings
 import pyCGM2
@@ -38,20 +37,7 @@ from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm1
 
 
-if __name__ == "__main__":
-
-    plt.close("all")
-
-    parser = argparse.ArgumentParser(description='CGM1 Calibration')
-    parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
-    parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
-    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
-    parser.add_argument('--check', action='store_true', help='force model output suffix' )
-    parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
-
-    args = parser.parse_args()
-
+def main(args):
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
@@ -126,5 +112,29 @@ if __name__ == "__main__":
 
         if DEBUG:
             NEXUS.SaveTrial(30)
-    else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+
+        # print "Press return to exit.."
+        # raw_input()
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description='CGM1 Calibration')
+    parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
+    parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
+    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+    parser.add_argument('--check', action='store_true', help='force model output suffix' )
+    parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
+
+    args = parser.parse_args()
+
+    # ---- main script -----
+    try:
+        main(args)
+
+
+    except Exception, errormsg:
+        print "Error message: %s" % errormsg
+        traceback.print_exc()
+        print "Press return to exit.."
+        raw_input()

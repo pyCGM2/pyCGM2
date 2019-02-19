@@ -40,7 +40,7 @@ NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "installData\\pipelineTemplate
 if not developMode:
     PATH_IN_SITEPACKAGE = SITE_PACKAGE_PATH+NAME_IN_SITEPACKAGE+"\\"
 else:
-    PATH_IN_SITEPACKAGE = MAIN_PYCGM2_PATH 
+    PATH_IN_SITEPACKAGE = MAIN_PYCGM2_PATH
 
 user_folder = pd = os.getenv("PUBLIC")
 NEXUS_PUBLIC_DOCUMENT_VST_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\ModelTemplates\\"
@@ -161,7 +161,9 @@ setup(name = 'pyCGM2',
                  'Programming Language :: Python :: 2.7',
                  'Operating System :: Windows OS',
                  'Natural Language :: English-French',
-                 'Topic :: Clinical Gait Analysis']
+                 'Topic :: Clinical Gait Analysis'],
+    scripts=['Apps/CGM1/CGM1_Calibration.py',
+             'Apps/CGM1/CGM1_Fitting.py']
     )
 
 #------------------------------------------------------------------------------
