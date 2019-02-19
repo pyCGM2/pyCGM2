@@ -9,13 +9,40 @@ from pyCGM2 import enums
 from pyCGM2.Processing import exporter
 
 
-def makeAnalysis(type,DATA_PATH,
+def makeAnalysis(DATA_PATH,
                     modelledFilenames,
-                    subjectInfo, experimentalInfo,modelInfo,
+                    type="Gait",
+                    subjectInfo=None, experimentalInfo=None,modelInfo=None,
                     pointLabelSuffix=None,
                     kinematicLabelsDict=None,
                     kineticLabelsDict=None):
 
+    """
+    makeAnalysis : create the pyCGM2.Processing.analysis.Analysis instance
+
+    :param DATA_PATH [str]: path to your data
+    :param modelledFilenames [string list]: c3d files with model outputs
+
+
+    **optional**
+
+    :param type [str]: process files with gait events if selected type is Gait
+    :param subjectInfo [dict]:  dictionnary gathering info about the patient (name,dob...)
+    :param experimentalInfo [dict]:  dictionnary gathering info about the  data session (orthosis, gait task,... )
+    :param modelInfo [dict]:  dictionnary gathering info about the used model)
+    :param pointLabelSuffix [string]: suffix previously added to your model outputs
+    :param kinematicLabelsDict [dict]: dictionnary with two entries,Left and Right, pointing to kinematic model outputs you desire processes
+    :param kineticLabelsDict [dict]: dictionnary with two entries,Left and Right, pointing to kinetic model outputs you desire processes
+
+    .. note::
+
+        The dictionnaries (subjectInfo,experimentalInfo,modelInfo) is interesting
+        if you want to find these information within the xls file
+
+
+
+
+    """
 
     #---- c3d manager
     c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
@@ -75,34 +102,86 @@ def makeAnalysis(type,DATA_PATH,
 
 def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
 
+    """
+    exportAnalysis : export the pyCGM2.Processing.analysis.Analysis instance in a xls spreadsheet
+
+    :param analysisInstance [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
+    :param DATA_PATH [str]: path to your data
+    :param name [string]: name of the output file
+
+    **optional**
+
+    :param mode [string]: structure of the output xls (choice: Advanced[Default] or Basic)
+
+    .. note::
+
+        the advanced xls organizes data by row ( one raw = on cycle)
+        whereas the Basic mode exports each model output in a new sheet
+
+
+
+    """
+
     exportFilter = exporter.XlsAnalysisExportFilter()
     exportFilter.setAnalysisInstance(analysisInstance)
     exportFilter.export(name, path=DATA_PATH,excelFormat = "xls",mode = mode)
 
 
-def processEMG(DATA_PATH, gaitTrials, EMG_LABELS, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None):
+def processEMG(DATA_PATH, trialFiles, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None):
+    """
+    processEMG : filters emg channels
+
+    :param DATA_PATH [str]: path to your data
+    :param trialFiles [string list]: c3d files with emg signals
+    :param emgChannels [string list]: label of your emg channels
+
+    **optional**
+
+    :param highPassFrequencies [list of float]: boundaries of the bandpass filter
+    :param envelopFrequency [float]: cut-off frequency for creating an emg envelop
+    :param fileSuffix [string]: add suffix to the trial if you dont want overwriting your c3d
+
+    """
 
 
-    for gaitTrial in gaitTrials:
-        acq = btkTools.smartReader(DATA_PATH +gaitTrial)
+    for trialFile in trialFiles:
+        acq = btkTools.smartReader(DATA_PATH +trialFile)
 
-        bf = emgFilters.BasicEmgProcessingFilter(acq,EMG_LABELS)
+        bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
         bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
         bf.run()
 
-        envf = emgFilters.EmgEnvelopProcessingFilter(acq,EMG_LABELS)
+        envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
         envf.setCutoffFrequency(envelopFrequency)
         envf.run()
 
-        outFilename = gaitTrial if fileSuffix is None  else gaitTrial+"_"+fileSuffix
+        outFilename = trialFile if fileSuffix is None  else trialFile+"_"+fileSuffix
         btkTools.smartWriter(acq,DATA_PATH+outFilename)
 
 
 
-def makeEmgAnalysis(type,DATA_PATH,
+def makeEmgAnalysis(DATA_PATH,
                     processedEmgFiles,
-                    emg_labels,
-                    subjectInfo, experimentalInfo):
+                    emgChannels,
+                    subjectInfo=None, experimentalInfo=None,
+                    type="Gait"):
+
+    """
+    makeEmgAnalysis : create the pyCGM2.Processing.analysis.Analysis instance with only EMG signals
+
+
+    :param DATA_PATH [str]: path to your data
+    :param processedEmgFiles [string list]: c3d files with emg processed outputs
+    :param emgChannels [string list]: label of your emg channels
+
+    **optional**
+
+    :param subjectInfo [dict]:  dictionnary gathering info about the patient (name,dob...)
+    :param experimentalInfo [dict]:  dictionnary gathering info about the  data session (orthosis, gait task,... )
+    :param type [str]: process files with gait events if selected type is Gait
+
+    """
+
 
 
     c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,processedEmgFiles)
@@ -133,7 +212,7 @@ def makeEmgAnalysis(type,DATA_PATH,
     cyclefilter.setBuilder(cycleBuilder)
     cycles = cyclefilter.build()
 
-    emgLabelList  = [label+"_Rectify_Env" for label in emg_labels]
+    emgLabelList  = [label+"_Rectify_Env" for label in emgChannels]
 
     if type == "Gait":
         analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
@@ -160,13 +239,26 @@ def makeEmgAnalysis(type,DATA_PATH,
 
     return analysisInstance
 
-def normalizedEMG(analysis, EMG_LABELS,Contexts, method="MeanMax", fromOtherAnalysis=None):
+def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None):
+    """
+    normalizedEMG : perform normalization of emg in amplitude
+
+    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
+    :param emgChannels [string list]: label of your emg channels
+    :param contexts [string list]: contexts associated with your emg channel
+
+    **optional**
+
+    :param method [str]: method of amplitude normalisation (choice MeanMax[default], MaxMax, MedianMax)
+    :param fromOtherAnalysis [pyCGM2.Processing.analysis.Analysis]: amplitude normalisation from another analysis instance
+
+    """
 
     i=0
-    for label in EMG_LABELS:
+    for label in emgChannels:
 
 
-        envnf = emgFilters.EmgNormalisationProcessingFilter(analysis,label,Contexts[i])
+        envnf = emgFilters.EmgNormalisationProcessingFilter(analysis,label,contexts[i])
 
 
         if fromOtherAnalysis is not None:
