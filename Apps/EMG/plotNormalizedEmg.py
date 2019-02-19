@@ -107,7 +107,7 @@ if __name__ == "__main__":
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency,fileSuffix=fileSuffix) # high pass then low pass for all c3ds
 
-        emgAnalysis = analysis.makeEmgAnalysis("Gait",DATA_PATH, [inputFile], EMG_LABELS,None, None)
+        emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS)
 
         if fileSuffix is not None:
             inputfile = inputFile +"_"+ fileSuffix
