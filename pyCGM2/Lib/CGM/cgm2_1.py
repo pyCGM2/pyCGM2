@@ -23,6 +23,22 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
               leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
               pointSuffix):
 
+    """
+    Calibration of the CGM2.1
+
+    :param DATA_PATH [str]: path to your data
+    :param calibrateFilenameLabelled [str]: c3d file
+    :param translators [dict]:  translators to apply
+    :param required_mp [dict]: required anthropometric data
+    :param optional_mp [dict]: optional anthropometric data (ex: LThighOffset,...)
+    :param leftFlatFoot [bool]: enable of the flat foot option for the left foot
+    :param rightFlatFoot [bool]: enable of the flat foot option for the right foot
+    :param markerDiameter [double]: marker diameter (mm)
+    :param hjcMethod [str or list of 3 float]: method for locating the hip joint centre
+    :param pointSuffix [str]: suffix to add to model outputs
+
+    """
+
     # --------------------------ACQUISITION ------------------------------------
 
     # ---btk acquisition---
@@ -135,6 +151,18 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     mfpa,
     momentProjection):
 
+    """
+    Fitting of the CGM2.1
+
+    :param model [str]: pyCGM2 model previously calibrated
+    :param DATA_PATH [str]: path to your data
+    :param reconstructFilenameLabelled [string list]: c3d files
+    :param translators [dict]:  translators to apply
+    :param mfpa [str]: manual force plate assignement
+    :param markerDiameter [double]: marker diameter (mm)
+    :param pointSuffix [str]: suffix to add to model outputs
+    :param momentProjection [str]: Coordinate system in which joint moment is expressed
+    """
     # --------------------------ACQUISITION ------------------------------------
 
     # --- btk acquisition ----
