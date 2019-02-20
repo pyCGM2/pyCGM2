@@ -33,7 +33,7 @@ NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py2.7.egg"
 MAIN_PYCGM2_PATH = os.getcwd() + "\\"
 
 
-PYCGM2_SESSION_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"SessionSettings\\"
+PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"Settings\\"
 NEXUS_PYCGM2_VST_PATH = MAIN_PYCGM2_PATH + "PyCGM2\\Install\\vst\\"
 NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "PyCGM2\\Install\\pipelineTemplate\\"
 
@@ -158,7 +158,7 @@ setup(name = 'pyCGM2',
     author_email = 'fabien.leboeuf@gmail.com',
     keywords = 'python CGM Vicon PluginGait',
     packages=find_packages(),
-    data_files = gen_data_files("Apps","Data","Extern","SessionSettings","installData"),
+    data_files = gen_data_files("Apps","Settings"),
 	include_package_data=True,
     license='CC-BY-SA',
 	install_requires = ['numpy>=1.11.0',
@@ -195,24 +195,24 @@ if not developMode:
                 "CGM2_3-pyCGM2.settings","CGM2_4-pyCGM2.settings",
                 "emg.settings"]
     for setting in settings:
-        shutil.copyfile(PYCGM2_SESSION_SETTINGS_FOLDER+setting, PYCGM2_APPDATA_PATH + setting)
+        shutil.copyfile(PYCGM2_SETTINGS_FOLDER+setting, PYCGM2_APPDATA_PATH + setting)
 
     # translators
-    src_files = os.listdir(PYCGM2_SESSION_SETTINGS_FOLDER+"translators")
+    src_files = os.listdir(PYCGM2_SETTINGS_FOLDER+"translators")
     os.makedirs(PYCGM2_APPDATA_PATH +"translators")
     for filename in src_files:
-        full_filename = os.path.join(PYCGM2_SESSION_SETTINGS_FOLDER+"translators", filename)
+        full_filename = os.path.join(PYCGM2_SETTINGS_FOLDER+"translators", filename)
         shutil.copyfile(full_filename, PYCGM2_APPDATA_PATH +"translators\\"+filename)
 
     # IkWeightSets
-    src_files = os.listdir(PYCGM2_SESSION_SETTINGS_FOLDER+"IkWeightSets")
+    src_files = os.listdir(PYCGM2_SETTINGS_FOLDER+"IkWeightSets")
     os.makedirs(PYCGM2_APPDATA_PATH +"IkWeightSets")
     for filename in src_files:
-        full_filename = os.path.join(PYCGM2_SESSION_SETTINGS_FOLDER+"IkWeightSets", filename)
+        full_filename = os.path.join(PYCGM2_SETTINGS_FOLDER+"IkWeightSets", filename)
         shutil.copyfile(full_filename, PYCGM2_APPDATA_PATH +"IkWeightSets\\"+filename)
 
     # opensim
-    shutil.copytree(PYCGM2_SESSION_SETTINGS_FOLDER+"opensim", PYCGM2_APPDATA_PATH+"opensim")
+    shutil.copytree(PYCGM2_SETTINGS_FOLDER+"opensim", PYCGM2_APPDATA_PATH+"opensim")
 
 else:
     open(MAIN_PYCGM2_PATH + 'localMode', 'a').close()

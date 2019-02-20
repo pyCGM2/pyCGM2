@@ -176,7 +176,7 @@ def getMpFileContent(DATA_PATH,file,subject):
 
 
     if not os.path.isfile( DATA_PATH + file):
-        copyfile(str(pyCGM2.PYCGM2_SESSION_SETTINGS_FOLDER+file), str(DATA_PATH + out))
+        copyfile(str(pyCGM2.PYCGM2_SETTINGS_FOLDER+file), str(DATA_PATH + out))
         logging.warning("Copy of %s from pyCGM2 Settings folder"%(file))
 
     content = openFile(DATA_PATH,out)
