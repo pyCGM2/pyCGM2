@@ -34,8 +34,8 @@ MAIN_PYCGM2_PATH = os.getcwd() + "\\"
 
 
 PYCGM2_SESSION_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"SessionSettings\\"
-NEXUS_PYCGM2_VST_PATH = MAIN_PYCGM2_PATH + "Extern\\vicon\\vst\\"
-NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "installData\\pipelineTemplate\\"
+NEXUS_PYCGM2_VST_PATH = MAIN_PYCGM2_PATH + "PyCGM2\\Install\\vst\\"
+NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "PyCGM2\\Install\\pipelineTemplate\\"
 
 if not developMode:
     PATH_IN_SITEPACKAGE = SITE_PACKAGE_PATH+NAME_IN_SITEPACKAGE+"\\"
@@ -210,6 +210,10 @@ if not developMode:
     for filename in src_files:
         full_filename = os.path.join(PYCGM2_SESSION_SETTINGS_FOLDER+"IkWeightSets", filename)
         shutil.copyfile(full_filename, PYCGM2_APPDATA_PATH +"IkWeightSets\\"+filename)
+
+    # opensim
+    shutil.copytree(PYCGM2_SESSION_SETTINGS_FOLDER+"opensim", PYCGM2_APPDATA_PATH+"opensim")
+
 else:
     open(MAIN_PYCGM2_PATH + 'localMode', 'a').close()
 
