@@ -33,19 +33,11 @@ from pyCGM2.Report import normativeDatasets
 import ViconNexus
 
 
-if __name__ == "__main__":
+def main(args):
 
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
-
-    parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
-    parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
-    parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
-    parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of the processed file')
-    parser.add_argument('-c','--consistency', action='store_true', help='consistency plots')
-    args = parser.parse_args()
-
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
@@ -120,3 +112,23 @@ if __name__ == "__main__":
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
+    parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
+    parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
+    parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of the processed file')
+    parser.add_argument('-c','--consistency', action='store_true', help='consistency plots')
+    args = parser.parse_args()
+
+    # ---- main script -----
+    try:
+        main(args)
+
+
+    except Exception, errormsg:
+        print "Error message: %s" % errormsg
+        traceback.print_exc()
+        print "Press return to exit.."
+        raw_input()

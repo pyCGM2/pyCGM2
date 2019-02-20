@@ -41,16 +41,7 @@ from pyCGM2.Model import  modelFilters
 from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  kneeCalibration
 
-if __name__ == "__main__":
-
-    plt.close("all")
-
-    parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
-    parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
-    parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
-    parser.add_argument('-e','--endFrame', type=int, help="end frame")
-
-    args = parser.parse_args()
+def main(args):
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -168,3 +159,24 @@ if __name__ == "__main__":
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
+
+if __name__ == "__main__":
+
+    plt.close("all")
+
+    parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
+    parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
+    parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
+    parser.add_argument('-e','--endFrame', type=int, help="end frame")
+
+    args = parser.parse_args()
+    # ---- main script -----
+    try:
+        main(args)
+
+
+    except Exception, errormsg:
+        print "Error message: %s" % errormsg
+        traceback.print_exc()
+        print "Press return to exit.."
+        raw_input()

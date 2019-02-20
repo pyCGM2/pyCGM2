@@ -22,7 +22,7 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusTools
 from pyCGM2 import enums
 
-if __name__ == "__main__":
+def main(args):
 
     """
     goal: rigid gap filling. fill gap from 3 markers
@@ -38,13 +38,7 @@ if __name__ == "__main__":
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-    parser = argparse.ArgumentParser(description='rigidLabelling')
-    parser.add_argument('--static', type=str, help='filename of the static',required=True)
-    parser.add_argument('--target', type=str, help='marker to recosntruct',required=True)
-    parser.add_argument('--trackingMarkers', nargs='*', help='list of tracking markers',required=True)
-    parser.add_argument('--begin', type=int, help='initial Frame')
-    parser.add_argument('--last', type=int, help='last Frame')
-    args = parser.parse_args()
+
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
@@ -149,3 +143,24 @@ if __name__ == "__main__":
         # btk methods
         # btkTools.smartAppendPoint(acqGait,labelMarkerToreconstruct,val_final)
         # btkTools.smartWriter(acqGait, str(DATA_PATH + reconstructFilenameLabelled))
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description='rigidLabelling')
+    parser.add_argument('--static', type=str, help='filename of the static',required=True)
+    parser.add_argument('--target', type=str, help='marker to recosntruct',required=True)
+    parser.add_argument('--trackingMarkers', nargs='*', help='list of tracking markers',required=True)
+    parser.add_argument('--begin', type=int, help='initial Frame')
+    parser.add_argument('--last', type=int, help='last Frame')
+    args = parser.parse_args()
+
+    # ---- main script -----
+    try:
+        main(args)
+
+
+    except Exception, errormsg:
+        print "Error message: %s" % errormsg
+        traceback.print_exc()
+        print "Press return to exit.."
+        raw_input()

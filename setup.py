@@ -77,6 +77,20 @@ def gen_data_files(*dirs):
             results.append((root, map(lambda f:root + "/" + f, files)))
     return results
 
+def gen_data_files_forScripts(*dirs):
+    results = []
+    for src_dir in dirs:
+        print src_dir
+        for root,dirs,files in os.walk(src_dir):
+            for file in files:
+                if file[-3:] ==".py":
+                    results.append(os.path.join(root, file))
+    print results
+    return results
+
+
+
+
 def getSubDirectories(dir):
     subdirs = [d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
     return subdirs
@@ -162,8 +176,7 @@ setup(name = 'pyCGM2',
                  'Operating System :: Windows OS',
                  'Natural Language :: English-French',
                  'Topic :: Clinical Gait Analysis'],
-    scripts=['Apps/CGM1/CGM1_Calibration.py',
-             'Apps/CGM1/CGM1_Fitting.py']
+    scripts=gen_data_files_forScripts("Apps")
     )
 
 #------------------------------------------------------------------------------

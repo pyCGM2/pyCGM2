@@ -37,19 +37,8 @@ from pyCGM2.Report import normativeDatasets
 from pyCGM2.Nexus import  nexusTools
 from pyCGM2.Utils import files
 
-if __name__ == "__main__":
+def main(args):
 
-    plt.close("all")
-
-    parser = argparse.ArgumentParser(description='CGM Gait Processing')
-    parser.add_argument('-nd','--normativeData', type=str, help='normative Data set (Schwartz2008 or Pinzone2014)', default="Schwartz2008")
-    parser.add_argument('-ndm','--normativeDataModality', type=str,
-                        help="if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
-                        default="Free")
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
-
-
-    args = parser.parse_args()
 
 
     NEXUS = ViconNexus.ViconNexus()
@@ -107,3 +96,28 @@ if __name__ == "__main__":
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
+
+if __name__ == "__main__":
+
+    plt.close("all")
+
+    parser = argparse.ArgumentParser(description='CGM Gait Processing')
+    parser.add_argument('-nd','--normativeData', type=str, help='normative Data set (Schwartz2008 or Pinzone2014)', default="Schwartz2008")
+    parser.add_argument('-ndm','--normativeDataModality', type=str,
+                        help="if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
+                        default="Free")
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+
+
+    args = parser.parse_args()
+
+    # ---- main script -----
+    try:
+        main(args)
+
+
+    except Exception, errormsg:
+        print "Error message: %s" % errormsg
+        traceback.print_exc()
+        print "Press return to exit.."
+        raw_input()

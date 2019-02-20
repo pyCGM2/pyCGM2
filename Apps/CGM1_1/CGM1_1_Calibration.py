@@ -40,19 +40,7 @@ from pyCGM2.Lib.CGM import  cgm1_1
 
 
 
-if __name__ == "__main__":
-
-    plt.close("all")
-
-    parser = argparse.ArgumentParser(description='CGM1.1 Calibration')
-    parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
-    parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
-    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
-    parser.add_argument('--check', action='store_true', help='force model output suffix' )
-    parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
-
-    args = parser.parse_args()
+def main(args):
 
 
     NEXUS = ViconNexus.ViconNexus()
@@ -126,3 +114,25 @@ if __name__ == "__main__":
             NEXUS.SaveTrial(30)
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description='CGM1.1 Calibration')
+    parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
+    parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
+    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+    parser.add_argument('--check', action='store_true', help='force model output suffix' )
+    parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
+
+    args = parser.parse_args()
+
+    # ---- main script -----
+    try:
+        main(args)
+
+    except Exception, errormsg:
+        print "Error message: %s" % errormsg
+        traceback.print_exc()
+        print "Press return to exit.."
+        raw_input()

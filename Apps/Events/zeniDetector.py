@@ -36,20 +36,12 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Events import events
 from pyCGM2.Nexus import nexusTools
 
-if __name__ == "__main__":
-
-
-
+def main(args):
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-    parser = argparse.ArgumentParser(description='ZeniDetector')
-    parser.add_argument('-fso','--footStrikeOffset', type=int, help='systenatic foot strike offset on both side')
-    parser.add_argument('-foo','--footOffOffset', type=int, help='systenatic foot off offset on both side')
-    args = parser.parse_args()
 
-    print args
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
         # ----------------------INPUTS-------------------------------------------
@@ -105,3 +97,21 @@ if __name__ == "__main__":
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description='ZeniDetector')
+    parser.add_argument('-fso','--footStrikeOffset', type=int, help='systenatic foot strike offset on both side')
+    parser.add_argument('-foo','--footOffOffset', type=int, help='systenatic foot off offset on both side')
+    args = parser.parse_args()
+
+    # ---- main script -----
+    try:
+        main(args)
+
+
+    except Exception, errormsg:
+        print "Error message: %s" % errormsg
+        traceback.print_exc()
+        print "Press return to exit.."
+        raw_input()
