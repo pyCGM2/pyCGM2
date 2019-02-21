@@ -1,5 +1,5 @@
 recursive-include Apps *
-recursive-include Settings *
+recursive-include pyCGM2\Settings *
 recursive-include pyCGM2\Data *
 recursive-include pyCGM2\Install *
 recursive-include pyCGM2\ma *.pyd

@@ -20,7 +20,7 @@ if developMode:
 if sys.maxsize > 2**32:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
 
-VERSION ="3.1.0"
+VERSION ="3.1.1"
 
 
 for it in site.getsitepackages():
@@ -33,7 +33,7 @@ NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py2.7.egg"
 MAIN_PYCGM2_PATH = os.getcwd() + "\\"
 
 
-PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"Settings\\"
+PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"PyCGM2\\Settings\\"
 NEXUS_PYCGM2_VST_PATH = MAIN_PYCGM2_PATH + "PyCGM2\\Install\\vst\\"
 NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "PyCGM2\\Install\\pipelineTemplate\\"
 
@@ -42,7 +42,7 @@ if not developMode:
 else:
     PATH_IN_SITEPACKAGE = MAIN_PYCGM2_PATH
 
-user_folder = pd = os.getenv("PUBLIC")
+user_folder =  os.getenv("PUBLIC")
 NEXUS_PUBLIC_DOCUMENT_VST_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\ModelTemplates\\"
 NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = user_folder+"\\Documents\\Vicon/Nexus2.x\\Configurations\\Pipelines\\"
 
@@ -158,11 +158,10 @@ setup(name = 'pyCGM2',
     author_email = 'fabien.leboeuf@gmail.com',
     keywords = 'python CGM Vicon PluginGait',
     packages=find_packages(),
-    data_files = gen_data_files("Apps","Settings"),
 	include_package_data=True,
     license='CC-BY-SA',
 	install_requires = ['numpy>=1.11.0',
-                        'scipy>=0.17.0',
+                        'scipy>=0.17.0,<=0.19.0',
                         'matplotlib<3.0.0',
                         'pandas >=0.19.1',
                         'enum34>=1.1.2',
@@ -186,36 +185,14 @@ setup(name = 'pyCGM2',
 
 #--- management of the folder ProgramData/pyCGM2----
 if not developMode:
-    PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
-    os.makedirs(PYCGM2_APPDATA_PATH[:-1])
-
-    # CGM i settings
-    settings = ["CGM1-pyCGM2.settings", "CGM1_1-pyCGM2.settings",
-                "CGM2_1-pyCGM2.settings", "CGM2_2-pyCGM2.settings",
-                "CGM2_3-pyCGM2.settings","CGM2_4-pyCGM2.settings",
-                "emg.settings"]
-    for setting in settings:
-        shutil.copyfile(PYCGM2_SETTINGS_FOLDER+setting, PYCGM2_APPDATA_PATH + setting)
-
-    # translators
-    src_files = os.listdir(PYCGM2_SETTINGS_FOLDER+"translators")
-    os.makedirs(PYCGM2_APPDATA_PATH +"translators")
-    for filename in src_files:
-        full_filename = os.path.join(PYCGM2_SETTINGS_FOLDER+"translators", filename)
-        shutil.copyfile(full_filename, PYCGM2_APPDATA_PATH +"translators\\"+filename)
-
-    # IkWeightSets
-    src_files = os.listdir(PYCGM2_SETTINGS_FOLDER+"IkWeightSets")
-    os.makedirs(PYCGM2_APPDATA_PATH +"IkWeightSets")
-    for filename in src_files:
-        full_filename = os.path.join(PYCGM2_SETTINGS_FOLDER+"IkWeightSets", filename)
-        shutil.copyfile(full_filename, PYCGM2_APPDATA_PATH +"IkWeightSets\\"+filename)
-
-    # opensim
-    shutil.copytree(PYCGM2_SETTINGS_FOLDER+"opensim", PYCGM2_APPDATA_PATH+"opensim")
+    if os.getenv("PROGRAMDATA"):
+        PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2"
+        shutil.copytree(PYCGM2_SETTINGS_FOLDER[:-1], PYCGM2_APPDATA_PATH)
+    else:
+        open(MAIN_PYCGM2_PATH + 'localSettings', 'a').close()
 
 else:
-    open(MAIN_PYCGM2_PATH + 'localMode', 'a').close()
+    open(MAIN_PYCGM2_PATH + 'developMode', 'a').close()
 
 #--- management of nexus-related files ( vst+pipelines)-----
 
@@ -232,10 +209,3 @@ for item in content:
 scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
                                             NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,
                                             PATH_IN_SITEPACKAGE)
-
-# if not developMode:
-#     if os.getcwd().lower in sys.path or os.getcwd() in sys.path:
-#         sys.path.remove (os.getcwd().lower())
-#         sys.path.remove (os.getcwd())
-#         import ipdb; pdb.set_trace()
-#         print "===========================REMOVE============================"
