@@ -1,8 +1,7 @@
 recursive-include Apps *
-recursive-include Data *
-recursive-include Extern *
-recursive-include SessionSettings *
-recursive-include installData*
+recursive-include Settings *
+recursive-include pyCGM2\Data *
+recursive-include pyCGM2\Install *
 recursive-include pyCGM2\ma *.pyd
 recursive-include pyCGM2\ma *.dll
 recursive-include pyCGM2\ma *.pyo
