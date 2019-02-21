@@ -37,6 +37,9 @@ PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"PyCGM2\\Settings\\"
 NEXUS_PYCGM2_VST_PATH = MAIN_PYCGM2_PATH + "PyCGM2\\Install\\vst\\"
 NEXUS_PIPELINE_TEMPLATE_PATH = MAIN_PYCGM2_PATH + "PyCGM2\\Install\\pipelineTemplate\\"
 
+PATH_TO_PYTHON_SCRIPTS = os.path.dirname(sys.executable)+"\\Scripts\\"
+
+# do not serve anymore since all apps are now in Scripts ( i still keep it)
 if not developMode:
     PATH_IN_SITEPACKAGE = SITE_PACKAGE_PATH+NAME_IN_SITEPACKAGE+"\\"
 else:
@@ -50,7 +53,7 @@ NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = user_folder+"\\Documents\\Vicon/Nexus2.x\\
 
 def scanViconTemplatePipeline(sourcePath,desPath,pyCGM2nexusAppsPath):
 
-    toreplace= "C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2"
+    toreplace= "[TOREPLACE]"
 
     sourcePath = sourcePath[:-1] if sourcePath[-1:]=="\\" else sourcePath
     desPath = desPath[:-1] if desPath[-1:]=="\\" else desPath
@@ -108,8 +111,6 @@ for folder in  dirSitepackage:
         logging.info("package pyCGM2 (%s) removed"%(folder))
 
 
-# if NAME_IN_SITEPACKAGE in dirSitepackage:
-#     shutil.rmtree(PATH_IN_SITEPACKAGE[:-1])
 
 if "pyCGM2.egg-link" in os.listdir(SITE_PACKAGE_PATH[:-1]):
     os.remove(SITE_PACKAGE_PATH+"pyCGM2.egg-link")
@@ -161,7 +162,7 @@ setup(name = 'pyCGM2',
 	include_package_data=True,
     license='CC-BY-SA',
 	install_requires = ['numpy>=1.11.0',
-                        'scipy>=0.17.0,<=0.19.0',
+                        'scipy==1.2.1',
                         'matplotlib<3.0.0',
                         'pandas >=0.19.1',
                         'enum34>=1.1.2',
@@ -208,4 +209,4 @@ for item in content:
 
 scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
                                             NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,
-                                            PATH_IN_SITEPACKAGE)
+                                            PATH_TO_PYTHON_SCRIPTS)
