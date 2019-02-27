@@ -82,7 +82,25 @@ class translator_tests():
         btkTools.smartWriter(acqStatic2,"test_yamlfile.c3d")
 
 
+    @classmethod
+    def cgm1_sacrum(cls):
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\Translators\\cgm1-sacr\\"
+        staticFilename = "static.c3d"
+
+        translators = files.getTranslators(MAIN_PATH, translatorType = "CGM1.translators")
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        acqStatic2 =  btkTools.applyTranslators(acqStatic,translators)
+
+
+        btkTools.smartWriter(acqStatic2,"staticCGM1Sacrum.c3d")
+
+
+
+
 if __name__ == "__main__":
 
     #translator_tests.cgm2_3_jsonContent()
-    translator_tests.cgm2_3_yamlFile()
+    #translator_tests.cgm2_3_yamlFile()
+    translator_tests.cgm1_sacrum()
