@@ -26,6 +26,7 @@ Examples:
 import logging
 import argparse
 import matplotlib.pyplot as plt
+import traceback
 
 # pyCGM2 settings
 import pyCGM2

@@ -17,7 +17,7 @@ Examples:
     (means you disable the inverse kinematic solver and joint moments will be expressed into the Global Coordinate system, and )
 
 """
-
+import traceback
 import logging
 import argparse
 import matplotlib.pyplot as plt

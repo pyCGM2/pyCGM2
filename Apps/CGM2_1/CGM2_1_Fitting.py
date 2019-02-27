@@ -17,7 +17,7 @@ Examples:
     (means joint moments will be expressed into the Global Coordinate system)
 
 """
-
+import traceback
 import logging
 import argparse
 import matplotlib.pyplot as plt

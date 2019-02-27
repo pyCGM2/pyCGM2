@@ -19,6 +19,7 @@ Examples:
 """
 
 #import ipdb
+import traceback
 import logging
 import matplotlib.pyplot as plt
 import argparse
