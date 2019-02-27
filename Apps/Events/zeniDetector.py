@@ -15,7 +15,7 @@ Examples:
 
 
 """
-
+import traceback
 import os
 import logging
 import matplotlib.pyplot as plt

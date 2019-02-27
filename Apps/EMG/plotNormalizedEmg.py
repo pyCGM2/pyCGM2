@@ -20,7 +20,7 @@ Examples:
 
 import logging
 import argparse
-
+import traceback
 
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)

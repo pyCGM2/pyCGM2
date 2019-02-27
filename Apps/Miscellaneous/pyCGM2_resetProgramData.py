@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pyCGM2
 import shutil
-
+import traceback
 
 def main():
 

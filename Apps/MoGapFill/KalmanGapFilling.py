@@ -12,6 +12,7 @@ that smooths trajectories in low dimensional subspaces, together with a Python p
 import sys
 import ViconNexus
 import numpy as np
+import traceback
 
 def smooth(rawdata,tol=0.0025,sigR=1e-3,keepOriginal=True):
 

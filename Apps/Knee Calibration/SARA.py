@@ -17,7 +17,7 @@ Examples:
     (Left knee calibration between frames 50 and 100)
 """
 
-
+import traceback
 import logging
 import argparse
 import matplotlib.pyplot as plt

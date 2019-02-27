@@ -32,7 +32,7 @@ Examples:
 
 
 """
-
+import traceback
 import logging
 import argparse
 import matplotlib.pyplot as plt
