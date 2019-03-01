@@ -2854,6 +2854,7 @@ class CGM1(CGM):
         # --- motion of the anatomical referential
 
         seg.anatomicalFrame.motion=[]
+        TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
 
         # additional markers
         val=(aqui.GetPoint("LHJC").GetValues() + aqui.GetPoint("RHJC").GetValues()) / 2.0
@@ -2887,7 +2888,16 @@ class CGM1(CGM):
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
+# length
+            lhjc = aqui.GetPoint("LHJC").GetValues()[i,:]
+            rhjc =  aqui.GetPoint("RHJC").GetValues()[i,:]
+            pelvisScale = np.linalg.norm(lhjc-rhjc)
+            offset = (lhjc+rhjc)/2.0
 
+            TopLumbar5[i,:] = offset +  np.dot(R,(np.array([ 0, 0, 0.925]))* pelvisScale)
+#seg.anatomicalFrame.static.addNode("TL5",TopLumbar5,positionType="Local")
+
+        self._TopLumbar5 = TopLumbar5
 
     def _left_thigh_motion(self,aqui, dictRef,dictAnat,options=None):
         """
@@ -4574,10 +4584,10 @@ class CGM1(CGM):
         OT = ptOrigin + -1.0*(markerDiameter/2.0)* tf.static.m_axisX
         clav = aquiStatic.GetPoint("CLAV").GetValues()[frameInit:frameEnd,:].mean(axis=0)
         offset =( clav - OT)*1.05
-        c7 = aquiStatic.GetPoint(str("C7")).GetValues()[frameInit:frameEnd,:].mean(axis=0) - offset
+        c7offset = aquiStatic.GetPoint(str("C7")).GetValues()[frameInit:frameEnd,:].mean(axis=0) + offset
 
         btkTools.smartAppendPoint(aquiStatic,"OT", OT* np.ones((pfn,3)), desc="")
-        btkTools.smartAppendPoint(aquiStatic,"C7o", c7* np.ones((pfn,3)), desc="")
+        btkTools.smartAppendPoint(aquiStatic,"C7o", c7offset* np.ones((pfn,3)), desc="")
 
 
         seg.addCalibrationMarkerLabel("OT")
@@ -4700,19 +4710,6 @@ class CGM1(CGM):
             com = (c7o + ( l5 - c7o ) * 0.63 )
             seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
 
-            
-
-
-            # l5 = seg.anatomicalFrame.static.getNode_byLabel("TL5").m_local
-            # c7 = seg.anatomicalFrame.static.getNode_byLabel("C7").m_local
-            # seg.setLength(np.linalg.norm(l5-c7))
-            #
-            # l5global = seg.anatomicalFrame.static.getNode_byLabel("TL5").m_global
-            # c7o = seg.anatomicalFrame.static.getNode_byLabel("C7o").m_global
-            # c7global = seg.anatomicalFrame.static.getNode_byLabel("C7").m_global
-            # com = (c7o + ( l5global - c7o ) * 0.63 )
-            # seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
-
         else:
             top = seg.anatomicalFrame.static.getNode_byLabel("midTop").m_local
             bottom = seg.anatomicalFrame.static.getNode_byLabel("midBottom").m_local
@@ -4757,13 +4754,6 @@ class CGM1(CGM):
         tf.static.setRotation(R)
         tf.static.setTranslation(ptOrigin)
 
-        # for label in seg.m_tracking_markers:
-        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        #     tf.static.addNode(label,globalPosition,positionType="Global")
-        #
-        # for label in seg.m_calibration_markers:
-        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        #     tf.static.addNode(label,globalPosition,positionType="Global")
 
     def _clavicle_Anatomicalcalibrate(self,side,aquiStatic, dictAnatomic,frameInit,frameEnd):
 
@@ -5378,17 +5368,22 @@ class CGM1(CGM):
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
+        T5inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
+        C7inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
 
         # additional markers
         # NA
         # computation
+        clavTraj = seg.getReferential("TF").getNodeTrajectory("CLAV")
+
+        #self._TopLumbar5
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
-            pt1=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][3])).GetValues()[i,:]
+            pt1=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][0])).GetValues()[i,:] #midTop
+            pt2=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][1])).GetValues()[i,:] #midBottom
+            pt3=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][2])).GetValues()[i,:] #midFront
+            ptOrigin=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][3])).GetValues()[i,:] #OT
 
 
             a1=(pt2-pt1)
@@ -5410,6 +5405,21 @@ class CGM1(CGM):
             csFrame.setTranslation(ptOrigin)
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+
+            T5inThorax[i,:] = np.dot(R.T,self._TopLumbar5[i,:]-ptOrigin)
+
+
+            offset =( ptOrigin + np.dot(R,np.array([-markerDiameter/2.0,0,0])) - ptOrigin)*1.05
+
+            C7Global= aqui.GetPoint(str("C7")).GetValues()[i,:] + offset
+            C7inThorax[i,:] = np.dot(R.T,C7Global-ptOrigin)
+
+        meanT5inThorax =np.mean(T5inThorax,axis=0)
+        meanC7inThorax =np.mean(C7inThorax,axis=0)
+        seg.anatomicalFrame.static.addNode("T5motion",meanT5inThorax,positionType="Local",desc = "meanTrial")
+        seg.anatomicalFrame.static.addNode("C7motion",meanC7inThorax,positionType="Local",desc = "meanTrial")
+
+
 
 
     def _clavicle_motion(self,side,aqui, dictRef,dictAnat,options=None):

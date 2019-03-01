@@ -223,9 +223,9 @@ class CGM1_com():
         btkTools.smartWriter(acqGait,"PN01NORMSS01-COM_VERIF.c3d")
 
     @classmethod
-    def CGM1_fullBody_L5C7(cls):
+    def CGM1_fullBody_L5C7_STATIC(cls):
         MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\Full PIG - StephenL5_C7\\"
-        staticFilename = "PN01NORMSTAT.c3d"
+        staticFilename = "PN01NORMSTAT_stephen.c3d"
 
         # CALIBRATION ###############################
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
@@ -267,7 +267,7 @@ class CGM1_com():
 
 
         # MOTION ###############################
-        gaitFilename="PN01NORMSS01.c3d"
+        gaitFilename= staticFilename
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
 
@@ -297,18 +297,103 @@ class CGM1_com():
 
         TL5_pelvis = model.getSegment("Pelvis").anatomicalFrame.getNodeTrajectory("TL5")
         TL5_thorax = model.getSegment("Thorax").anatomicalFrame.getNodeTrajectory("TL5")
-        C7o_thorax = model.getSegment("Thorax").anatomicalFrame.getNodeTrajectory("C7o")
+        TL5motion_thorax = model.getSegment("Thorax").anatomicalFrame.getNodeTrajectory("T5motion")
         C7_thorax = model.getSegment("Thorax").anatomicalFrame.getNodeTrajectory("C7")
         C7_head = model.getSegment("Head").anatomicalFrame.getNodeTrajectory("C7")
-        btkTools.smartAppendPoint(acqGait,"TL5_pelvis",TL5_pelvis, desc="")
-        btkTools.smartAppendPoint(acqGait,"TL5_thorax",TL5_thorax, desc="")
-        btkTools.smartAppendPoint(acqGait,"C7o_thorax",C7o_thorax, desc="")
-        btkTools.smartAppendPoint(acqGait,"C7_thorax",C7_thorax, desc="")
-        btkTools.smartAppendPoint(acqGait,"C7_head",C7_thorax, desc="")
+        C7motion_thorax = model.getSegment("Thorax").anatomicalFrame.getNodeTrajectory("C7motion")
+        btkTools.smartAppendPoint(acqGait,"TL5motion_thorax",TL5motion_thorax, desc="")
+        btkTools.smartAppendPoint(acqGait,"C7motion_thorax",C7motion_thorax, desc="")
+
+
+        btkTools.smartWriter(acqGait,"PN01NORMSTAT_stephen_VERIF.c3d")
+
+
+    @classmethod
+    def CGM1_fullBody_L5C7_GAIT(cls):
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\Full PIG - StephenL5_C7\\"
+        staticFilename = "PN01NORMSTAT_stephen.c3d"
+
+        # CALIBRATION ###############################
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        markerDiameter=14
+
+        # Lower Limb
+        mp={
+        'Bodymass'   : 83,
+        'LeftLegLength' : 874,
+        'RightLegLength' : 876.0 ,
+        'LeftKneeWidth' : 106.0,
+        'RightKneeWidth' : 103.0,
+        'LeftAnkleWidth' : 74.0,
+        'RightAnkleWidth' : 72.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        'LeftShoulderOffset'   : 50,
+        'LeftElbowWidth' : 91,
+        'LeftWristWidth' : 56 ,
+        'LeftHandThickness' : 28 ,
+        'RightShoulderOffset'   : 45,
+        'RightElbowWidth' : 90,
+        'RightWristWidth' : 55 ,
+        'RightHandThickness' : 30}
+
+        model=cgm.CGM1()
+        model.configure(bodyPart=enums.BodyPart.FullBody)
+        model.addAnthropoInputParameters(mp)
+
+        scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                                            leftFlatFoot = True,
+                                            rightFlatFoot = True,
+                                            markerDiameter = 14,
+                                            viconCGM1compatible=True
+                                            ).compute()
+
+
+        # MOTION ###############################
+        gaitFilename="PN01NORMSS01_stephen.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist,
+                                      markerDiameter=14,
+                                      viconCGM1compatible=False)
+        modMotion.compute()
+
+
+        # BSP model
+        bspModel = bodySegmentParameters.Bsp(model)
+        bspModel.compute()
+
+        btkTools.smartAppendPoint(acqGait,"pelvisCOM_py",model.getSegment("Pelvis").getComTrajectory())
+        btkTools.smartAppendPoint(acqGait,"headCOM_py",model.getSegment("Head").getComTrajectory())
+        btkTools.smartAppendPoint(acqGait,"ThoraxCOM_py",model.getSegment("Thorax").getComTrajectory())
+        btkTools.smartAppendPoint(acqGait,"LhumCOM_py",model.getSegment("Left UpperArm").getComTrajectory())
+        btkTools.smartAppendPoint(acqGait,"LforeCom_py",model.getSegment("Left ForeArm").getComTrajectory())
+        btkTools.smartAppendPoint(acqGait,"LhandCom_py",model.getSegment("Left Hand").getComTrajectory())
+        btkTools.smartAppendPoint(acqGait,"RhumCOM_py",model.getSegment("Right UpperArm").getComTrajectory())
+        btkTools.smartAppendPoint(acqGait,"RforeCom_py",model.getSegment("Right ForeArm").getComTrajectory())
+        btkTools.smartAppendPoint(acqGait,"RhandCom_py",model.getSegment("Right Hand").getComTrajectory())
+
+        modelFilters.CentreOfMassFilter(model,acqGait).compute(pointLabelSuffix="py2")
 
 
 
-        btkTools.smartWriter(acqGait,"fullbody_L5C7.c3d")
+        TL5_pelvis = model.getSegment("Pelvis").anatomicalFrame.getNodeTrajectory("TL5")
+        TL5_thorax = model.getSegment("Thorax").anatomicalFrame.getNodeTrajectory("TL5")
+        TL5motion_thorax = model.getSegment("Thorax").anatomicalFrame.getNodeTrajectory("T5motion")
+        C7_thorax = model.getSegment("Thorax").anatomicalFrame.getNodeTrajectory("C7")
+        C7_head = model.getSegment("Head").anatomicalFrame.getNodeTrajectory("C7")
+        C7motion_thorax = model.getSegment("Thorax").anatomicalFrame.getNodeTrajectory("C7motion")
+        btkTools.smartAppendPoint(acqGait,"TL5motion_thorax",TL5motion_thorax, desc="")
+        btkTools.smartAppendPoint(acqGait,"C7motion_thorax",C7motion_thorax, desc="")
+
+
+
+
+        btkTools.smartWriter(acqGait,"PN01NORMSS01_stephen_VERIF.c3d")
 
 
 
@@ -318,4 +403,5 @@ if __name__ == "__main__":
 
     # CGM1_com.CGM1_fullbody_static()
     # CGM1_com.CGM1_fullbody_gait()
-    CGM1_com.CGM1_fullBody_L5C7()
+    CGM1_com.CGM1_fullBody_L5C7_STATIC()
+    CGM1_com.CGM1_fullBody_L5C7_GAIT()
