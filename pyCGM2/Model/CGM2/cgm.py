@@ -4708,7 +4708,7 @@ class CGM1(CGM):
             seg.setLength(length)
 
             com = (c7o + ( l5 - c7o ) * 0.63 )
-            seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
+            seg.anatomicalFrame.static.addNode("comStatic",com,positionType="Global")
 
         else:
             top = seg.anatomicalFrame.static.getNode_byLabel("midTop").m_local
@@ -5374,7 +5374,6 @@ class CGM1(CGM):
         # additional markers
         # NA
         # computation
-        clavTraj = seg.getReferential("TF").getNodeTrajectory("CLAV")
 
         #self._TopLumbar5
         csFrame=frame.Frame()
@@ -5420,6 +5419,8 @@ class CGM1(CGM):
         seg.anatomicalFrame.static.addNode("C7motion",meanC7inThorax,positionType="Local",desc = "meanTrial")
 
 
+        com = (meanC7inThorax + ( meanT5inThorax - meanC7inThorax ) * 0.63)
+        seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
 
 
     def _clavicle_motion(self,side,aqui, dictRef,dictAnat,options=None):

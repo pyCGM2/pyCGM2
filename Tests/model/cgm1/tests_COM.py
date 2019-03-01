@@ -390,9 +390,6 @@ class CGM1_com():
         btkTools.smartAppendPoint(acqGait,"TL5motion_thorax",TL5motion_thorax, desc="")
         btkTools.smartAppendPoint(acqGait,"C7motion_thorax",C7motion_thorax, desc="")
 
-
-
-
         btkTools.smartWriter(acqGait,"PN01NORMSS01_stephen_VERIF.c3d")
 
 
