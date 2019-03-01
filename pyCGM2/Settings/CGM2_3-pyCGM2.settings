@@ -61,7 +61,7 @@ Calibration:
 Fitting:
     Moment Projection: JCS #[string](choice: Proximal, Global, Distal, JCS)
     Weight:
-        LASI: 100 [double]: marker weight used by the Inverse Kinematics solver
+        LASI: 100 #[double]: marker weight used by the Inverse Kinematics solver
         RASI: 100
         LPSI: 100
         RPSI: 100
