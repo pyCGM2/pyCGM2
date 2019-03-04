@@ -4515,7 +4515,7 @@ class CGM1(CGM):
 
         # length - com
         c7 = seg.anatomicalFrame.static.getNode_byLabel("C7").m_local
-        seg.setLength(np.linalg.norm(c7-headCoM))
+        seg.setLength(np.linalg.norm(c7-headCoM)/2.0)
         seg.anatomicalFrame.static.addNode("com",headCoM,positionType="Local")
 
 
