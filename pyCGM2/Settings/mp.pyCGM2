@@ -1,0 +1,30 @@
+MP:
+    Required:
+        Bodymass: 0
+        LeftLegLength: 0
+        RightLegLength: 0
+        LeftKneeWidth: 0
+        RightKneeWidth: 0
+        LeftAnkleWidth: 0
+        RightAnkleWidth: 0
+        LeftSoleDelta: 0
+        RightSoleDelta: 0
+        LeftShoulderOffset: 0
+        LeftElbowWidth: 0
+        LeftWristWidth: 0
+        LeftHandThickness: 0
+        RightShoulderOffset: 0
+        RightElbowWidth: 0
+        RightWristWidth: 0
+        RightHandThickness: 0
+
+    Optional:
+        InterAsisDistance: 0
+        LeftAsisTrocanterDistance: 0
+        LeftTibialTorsion: 0
+        LeftThighRotation: 0
+        LeftShankRotation: 0
+        RightAsisTrocanterDistance: 0
+        RightTibialTorsion: 0
+        RightThighRotation: 0
+        RightShankRotation: 0
