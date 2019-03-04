@@ -117,7 +117,7 @@ class CGM1(CGM):
 
     THORAX_TRACKING_MARKERS=["C7", "T10","CLAV", "STRN"]
 
-    UPPERLIMB_TRACKING_MARKERS=[ "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN", "LFHD","LBHD","RFHD","RBHD"]
+    UPPERLIMB_TRACKING_MARKERS=[ "LELB", "LWRA", "LWRB",  "LFIN", "RELB", "RWRA", "RWRB",  "RFIN", "LFHD","LBHD","RFHD","RBHD"]
 
 
     def __init__(self):
@@ -370,12 +370,12 @@ class CGM1(CGM):
         self.addSegment("Thorax",0,enums.SegmentSide.Central,calibration_markers=[], tracking_markers = ["CLAV","C7","T10","STRN"])
         self.addSegment("Left Clavicle",0,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = [])
         self.addSegment("Left UpperArm",0,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LSJC","LELB"])
-        self.addSegment("Left ForeArm",0,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LWRA","LWRB","LFRM","LEJC"])
+        self.addSegment("Left ForeArm",0,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LWRA","LWRB","LEJC"])
         self.addSegment("Left Hand",0,enums.SegmentSide.Left,calibration_markers=[], tracking_markers = ["LWRA","LWRB","LFIN","LWJC"])
 
         self.addSegment("Right Clavicle",0,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = [])
         self.addSegment("Right UpperArm",0,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RSJC","RELB"])
-        self.addSegment("Right ForeArm",0,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RWRA","RWRB","RFRM","REJC"])
+        self.addSegment("Right ForeArm",0,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RWRA","RWRB","REJC"])
         self.addSegment("Right Hand",0,enums.SegmentSide.Right,calibration_markers=[], tracking_markers = ["RWRA","RWRB","RFIN","RWJC"])
 
         if self.m_bodypart == enums.BodyPart.FullBody:
