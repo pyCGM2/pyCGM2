@@ -624,206 +624,207 @@ class CGM2_4(CGM2_3):
         frameInit=ff-ff
         frameEnd=lf-ff+1
 
-        if not self.decoratedModel:
-            logging.debug(" Native CGM")
-            if not btkTools.isPointExist(aquiStatic,"LKNE"):
-                btkTools.smartAppendPoint(aquiStatic,"LKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
-            if not btkTools.isPointExist(aquiStatic,"RKNE"):
-                btkTools.smartAppendPoint(aquiStatic,"RKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
+        if self.m_bodypart !=enums.BodyPart.UpperLimb:
+            if not self.decoratedModel:
+                logging.debug(" Native CGM")
+                if not btkTools.isPointExist(aquiStatic,"LKNE"):
+                    btkTools.smartAppendPoint(aquiStatic,"LKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
+                if not btkTools.isPointExist(aquiStatic,"RKNE"):
+                    btkTools.smartAppendPoint(aquiStatic,"RKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
 
-        else:
-            logging.debug(" Decorated CGM")
-
-        # ---- Pelvis-THIGH-SHANK CALIBRATION
-        #-------------------------------------
-        # calibration of technical Referentials
-        logging.debug(" --- Pelvis - TF calibration ---")
-        logging.debug(" -------------------------------")
-        self._pelvis_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
-
-        logging.debug(" --- Left Thigh- TF calibration ---")
-        logging.debug(" ----------------------------------")
-        self._left_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
-
-        logging.debug(" --- Right Thigh - TF calibration ---")
-        logging.debug(" ------------------------------------")
-        self._right_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
-
-        logging.debug(" --- Left Shank - TF calibration ---")
-        logging.debug(" -----------------------------------")
-        self._left_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
-
-
-        logging.debug(" --- Richt Shank - TF calibration ---")
-        logging.debug(" ------------------------------------")
-        self._right_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
-
-        # calibration of anatomical Referentials
-        logging.debug(" --- Pelvis - AF calibration ---")
-        logging.debug(" -------------------------------")
-        self._pelvis_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-        logging.debug(" --- Left Thigh - AF calibration ---")
-        logging.debug(" -----------------------------------")
-        self._left_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-        logging.debug(" --- Right Thigh - AF calibration ---")
-        logging.debug(" ------------------------------------")
-        self._right_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-        logging.debug(" --- Thigh Offsets ---")
-        logging.debug(" --------------------")
-
-
-        logging.debug(" ------Left-------")
-        if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
-            self.mp_computed["LeftThighRotationOffset"]= -self.mp["LeftThighRotation"]
-
-        else:
-            self.getThighOffset(side="left")
-
-        # management of Functional method
-        if self.mp_computed["LeftKneeFuncCalibrationOffset"] != 0:
-            offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
-            # SARA
-            if self.checkCalibrationProperty("LeftFuncKneeMethod","SARA"):
-                logging.debug("Left knee functional calibration : SARA ")
-            # 2DOF
-            elif self.checkCalibrationProperty("LeftFuncKneeMethod","2DOF"):
-                logging.debug("Left knee functional calibration : 2Dof ")
-            self._rotateAnatomicalFrame("Left Thigh",offset,
-                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-
-        logging.debug(" ------Right-------")
-        if self.mp.has_key("RightThighRotation") and self.mp["RightThighRotation"] != 0:
-            self.mp_computed["RightThighRotationOffset"]= self.mp["RightThighRotation"]
-        else:
-            self.getThighOffset(side="right")
-
-        # management of Functional method
-        if self.mp_computed["RightKneeFuncCalibrationOffset"] != 0:
-            offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
-            # SARA
-            if self.checkCalibrationProperty("RightFuncKneeMethod","SARA"):
-                logging.debug("Left knee functional calibration : SARA ")
-            # 2DOF
-            elif self.checkCalibrationProperty("RightFuncKneeMethod","2DOF"):
-                logging.debug("Left knee functional calibration : 2Dof ")
-            self._rotateAnatomicalFrame("Right Thigh",offset,
-                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-
-
-        logging.debug(" --- Left Shank - AF calibration ---")
-        logging.debug(" -------------------------------")
-        self._left_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-
-        logging.debug(" --- Right Shank - AF calibration ---")
-        logging.debug(" -------------------------------")
-        self._right_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-        logging.debug(" ---Shank  Offsets ---")
-        logging.debug(" ---------------------")
-
-        # shakRotation
-        if self.mp.has_key("LeftShankRotation") and self.mp["LeftShankRotation"] != 0:
-            self.mp_computed["LeftShankRotationOffset"]= -self.mp["LeftShankRotation"]
-        else:
-            self.getShankOffsets(side="left")
-
-        if self.mp.has_key("RightShankRotation") and self.mp["RightShankRotation"] != 0:
-            self.mp_computed["RightShankRotationOffset"]= self.mp["RightShankRotation"]
-        else:
-            self.getShankOffsets(side="right")
-
-        # tibial Torsion
-
-        if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0: #   - check if TibialTorsion whithin main mp
-            self.mp_computed["LeftTibialTorsionOffset"]= -self.mp["LeftTibialTorsion"]
-            self.m_useLeftTibialTorsion=True
-        else:
-            if self.m_useLeftTibialTorsion: # if useTibialTorsion flag enable from a decorator
-                self.getTibialTorsionOffset(side="left")
             else:
-                self.mp_computed["LeftTibialTorsionOffset"]= 0
+                logging.debug(" Decorated CGM")
 
-        #   right
-        if self.mp.has_key("RightTibialTorsion") and self.mp["RightTibialTorsion"] != 0:
-            self.mp_computed["RightTibialTorsionOffset"]= self.mp["RightTibialTorsion"]
-            self.m_useRightTibialTorsion=True
-        else:
-            if self.m_useRightTibialTorsion:
-                self.getTibialTorsionOffset(side="right")
+            # ---- Pelvis-THIGH-SHANK CALIBRATION
+            #-------------------------------------
+            # calibration of technical Referentials
+            logging.debug(" --- Pelvis - TF calibration ---")
+            logging.debug(" -------------------------------")
+            self._pelvis_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+
+            logging.debug(" --- Left Thigh- TF calibration ---")
+            logging.debug(" ----------------------------------")
+            self._left_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+
+            logging.debug(" --- Right Thigh - TF calibration ---")
+            logging.debug(" ------------------------------------")
+            self._right_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+
+            logging.debug(" --- Left Shank - TF calibration ---")
+            logging.debug(" -----------------------------------")
+            self._left_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+
+
+            logging.debug(" --- Richt Shank - TF calibration ---")
+            logging.debug(" ------------------------------------")
+            self._right_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+
+            # calibration of anatomical Referentials
+            logging.debug(" --- Pelvis - AF calibration ---")
+            logging.debug(" -------------------------------")
+            self._pelvis_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+            logging.debug(" --- Left Thigh - AF calibration ---")
+            logging.debug(" -----------------------------------")
+            self._left_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+            logging.debug(" --- Right Thigh - AF calibration ---")
+            logging.debug(" ------------------------------------")
+            self._right_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+            logging.debug(" --- Thigh Offsets ---")
+            logging.debug(" --------------------")
+
+
+            logging.debug(" ------Left-------")
+            if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
+                self.mp_computed["LeftThighRotationOffset"]= -self.mp["LeftThighRotation"]
+
             else:
-                self.mp_computed["RightTibialTorsionOffset"]= 0
+                self.getThighOffset(side="left")
+
+            # management of Functional method
+            if self.mp_computed["LeftKneeFuncCalibrationOffset"] != 0:
+                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+                # SARA
+                if self.checkCalibrationProperty("LeftFuncKneeMethod","SARA"):
+                    logging.debug("Left knee functional calibration : SARA ")
+                # 2DOF
+                elif self.checkCalibrationProperty("LeftFuncKneeMethod","2DOF"):
+                    logging.debug("Left knee functional calibration : 2Dof ")
+                self._rotateAnatomicalFrame("Left Thigh",offset,
+                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
-        # AbdAdd offset
-        self.getAbdAddAnkleJointOffset(side="left")
-        self.getAbdAddAnkleJointOffset(side="right")
+            logging.debug(" ------Right-------")
+            if self.mp.has_key("RightThighRotation") and self.mp["RightThighRotation"] != 0:
+                self.mp_computed["RightThighRotationOffset"]= self.mp["RightThighRotation"]
+            else:
+                self.getThighOffset(side="right")
+
+            # management of Functional method
+            if self.mp_computed["RightKneeFuncCalibrationOffset"] != 0:
+                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+                # SARA
+                if self.checkCalibrationProperty("RightFuncKneeMethod","SARA"):
+                    logging.debug("Left knee functional calibration : SARA ")
+                # 2DOF
+                elif self.checkCalibrationProperty("RightFuncKneeMethod","2DOF"):
+                    logging.debug("Left knee functional calibration : 2Dof ")
+                self._rotateAnatomicalFrame("Right Thigh",offset,
+                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
-        logging.debug(" --- Left Shank Proximal- AF calibration ---")
-        logging.debug(" -------------------------------------------")
-        #   shank Prox ( copy )
-        self.updateSegmentFromCopy("Left Shank Proximal", self.getSegment("Left Shank")) # look out . I copied the shank instance and rename it
-        self._left_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
 
-        logging.debug(" --- Right Shank Proximal- AF calibration ---")
-        logging.debug(" --------------------------------------------")
-        self.updateSegmentFromCopy("Right Shank Proximal", self.getSegment("Right Shank"))
-        self._right_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
-
-        # ---  FOOT segments ----
-        # -----------------------
-        # need anatomical flexion axis of the shank.
+            logging.debug(" --- Left Shank - AF calibration ---")
+            logging.debug(" -------------------------------")
+            self._left_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
-        logging.debug(" --- Left Hind Foot  - TF calibration ---")
-        logging.debug(" -----------------------------------------")
-        self._leftHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+            logging.debug(" --- Right Shank - AF calibration ---")
+            logging.debug(" -------------------------------")
+            self._right_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-        logging.debug(" --- Left Hind Foot  - AF calibration ---")
-        logging.debug(" -----------------------------------------")
-        self._leftHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
+            logging.debug(" ---Shank  Offsets ---")
+            logging.debug(" ---------------------")
 
-        logging.debug(" --- Hind foot Offset---")
-        logging.debug(" -----------------------")
-        self.getHindFootOffset(side = "Left")
+            # shakRotation
+            if self.mp.has_key("LeftShankRotation") and self.mp["LeftShankRotation"] != 0:
+                self.mp_computed["LeftShankRotationOffset"]= -self.mp["LeftShankRotation"]
+            else:
+                self.getShankOffsets(side="left")
 
-        logging.debug(" --- Left Fore Foot  - TF calibration ---")
-        logging.debug(" -----------------------------------------")
-        self._leftForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+            if self.mp.has_key("RightShankRotation") and self.mp["RightShankRotation"] != 0:
+                self.mp_computed["RightShankRotationOffset"]= self.mp["RightShankRotation"]
+            else:
+                self.getShankOffsets(side="right")
+
+            # tibial Torsion
+
+            if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0: #   - check if TibialTorsion whithin main mp
+                self.mp_computed["LeftTibialTorsionOffset"]= -self.mp["LeftTibialTorsion"]
+                self.m_useLeftTibialTorsion=True
+            else:
+                if self.m_useLeftTibialTorsion: # if useTibialTorsion flag enable from a decorator
+                    self.getTibialTorsionOffset(side="left")
+                else:
+                    self.mp_computed["LeftTibialTorsionOffset"]= 0
+
+            #   right
+            if self.mp.has_key("RightTibialTorsion") and self.mp["RightTibialTorsion"] != 0:
+                self.mp_computed["RightTibialTorsionOffset"]= self.mp["RightTibialTorsion"]
+                self.m_useRightTibialTorsion=True
+            else:
+                if self.m_useRightTibialTorsion:
+                    self.getTibialTorsionOffset(side="right")
+                else:
+                    self.mp_computed["RightTibialTorsionOffset"]= 0
 
 
-        logging.debug(" --- Left Fore Foot  - AF calibration ---")
-        logging.debug(" -----------------------------------------")
-        self._leftForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
+            # AbdAdd offset
+            self.getAbdAddAnkleJointOffset(side="left")
+            self.getAbdAddAnkleJointOffset(side="right")
 
 
-        logging.debug(" --- Right Hind Foot  - TF calibration ---")
-        logging.debug(" -----------------------------------------")
-        self._rightHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+            logging.debug(" --- Left Shank Proximal- AF calibration ---")
+            logging.debug(" -------------------------------------------")
+            #   shank Prox ( copy )
+            self.updateSegmentFromCopy("Left Shank Proximal", self.getSegment("Left Shank")) # look out . I copied the shank instance and rename it
+            self._left_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
 
-        logging.debug(" --- Right Hind Foot  - AF calibration ---")
-        logging.debug(" -----------------------------------------")
-        self._rightHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
+            logging.debug(" --- Right Shank Proximal- AF calibration ---")
+            logging.debug(" --------------------------------------------")
+            self.updateSegmentFromCopy("Right Shank Proximal", self.getSegment("Right Shank"))
+            self._right_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
 
-        logging.debug(" --- Hind foot Offset---")
-        logging.debug(" -----------------------")
-        self.getHindFootOffset(side = "Right")
+            # ---  FOOT segments ----
+            # -----------------------
+            # need anatomical flexion axis of the shank.
 
-        # --- fore foot
-        # ----------------
-        logging.debug(" --- Right Fore Foot  - TF calibration ---")
-        logging.debug(" -----------------------------------------")
-        self._rightForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
 
-        logging.debug(" --- Right Fore Foot  - AF calibration ---")
-        logging.debug(" -----------------------------------------")
-        self._rightForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
+            logging.debug(" --- Left Hind Foot  - TF calibration ---")
+            logging.debug(" -----------------------------------------")
+            self._leftHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+
+            logging.debug(" --- Left Hind Foot  - AF calibration ---")
+            logging.debug(" -----------------------------------------")
+            self._leftHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
+
+            logging.debug(" --- Hind foot Offset---")
+            logging.debug(" -----------------------")
+            self.getHindFootOffset(side = "Left")
+
+            logging.debug(" --- Left Fore Foot  - TF calibration ---")
+            logging.debug(" -----------------------------------------")
+            self._leftForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+
+
+            logging.debug(" --- Left Fore Foot  - AF calibration ---")
+            logging.debug(" -----------------------------------------")
+            self._leftForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
+
+
+            logging.debug(" --- Right Hind Foot  - TF calibration ---")
+            logging.debug(" -----------------------------------------")
+            self._rightHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+
+            logging.debug(" --- Right Hind Foot  - AF calibration ---")
+            logging.debug(" -----------------------------------------")
+            self._rightHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
+
+            logging.debug(" --- Hind foot Offset---")
+            logging.debug(" -----------------------")
+            self.getHindFootOffset(side = "Right")
+
+            # --- fore foot
+            # ----------------
+            logging.debug(" --- Right Fore Foot  - TF calibration ---")
+            logging.debug(" -----------------------------------------")
+            self._rightForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+
+            logging.debug(" --- Right Fore Foot  - AF calibration ---")
+            logging.debug(" -----------------------------------------")
+            self._rightForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
 
         #------_upperLimb
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
@@ -1482,57 +1483,58 @@ class CGM2_4(CGM2_3):
 
         if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
 
-            #if not pigStaticProcessing:
-            logging.debug(" - Pelvis - motion -")
-            logging.debug(" -------------------")
-            self._pelvis_motion(aqui, dictRef, dictAnat)
+            if self.m_bodypart != enums.BodyPart.UpperLimb:
+                #if not pigStaticProcessing:
+                logging.debug(" - Pelvis - motion -")
+                logging.debug(" -------------------")
+                self._pelvis_motion(aqui, dictRef, dictAnat)
 
-            logging.debug(" - Left Thigh - motion -")
-            logging.debug(" -----------------------")
-            self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
+                logging.debug(" - Left Thigh - motion -")
+                logging.debug(" -----------------------")
+                self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
-            # if rotation offset from knee functional calibration methods
-            if self.mp_computed["LeftKneeFuncCalibrationOffset"]:
-                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
-                self._rotate_anatomical_motion("Left Thigh",offset,
-                                        aqui,options=options)
-
-
-            logging.debug(" - Right Thigh - motion -")
-            logging.debug(" ------------------------")
-            self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
-
-            if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
-                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
-                self._rotate_anatomical_motion("Right Thigh",offset,
-                                        aqui,options=options)
+                # if rotation offset from knee functional calibration methods
+                if self.mp_computed["LeftKneeFuncCalibrationOffset"]:
+                    offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+                    self._rotate_anatomical_motion("Left Thigh",offset,
+                                            aqui,options=options)
 
 
-            logging.debug(" - Left Shank - motion -")
-            logging.debug(" -----------------------")
-            self._left_shank_motion(aqui, dictRef, dictAnat,options=options)
+                logging.debug(" - Right Thigh - motion -")
+                logging.debug(" ------------------------")
+                self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
-            logging.debug(" - Right Shank - motion -")
-            logging.debug(" ------------------------")
-            self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
-
-
-            logging.debug(" - Left HindFoot - motion -")
-            logging.debug(" ---------------------------")
-            self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
-
-            logging.debug(" - Left ForeFoot - motion -")
-            logging.debug(" ---------------------------")
-            self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
+                if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
+                    offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+                    self._rotate_anatomical_motion("Right Thigh",offset,
+                                            aqui,options=options)
 
 
-            logging.debug(" - Right Hindfoot - motion -")
-            logging.debug(" ---------------------------")
-            self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+                logging.debug(" - Left Shank - motion -")
+                logging.debug(" -----------------------")
+                self._left_shank_motion(aqui, dictRef, dictAnat,options=options)
 
-            logging.debug(" - Right ForeFoot - motion -")
-            logging.debug(" ---------------------------")
-            self._right_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
+                logging.debug(" - Right Shank - motion -")
+                logging.debug(" ------------------------")
+                self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
+
+
+                logging.debug(" - Left HindFoot - motion -")
+                logging.debug(" ---------------------------")
+                self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+
+                logging.debug(" - Left ForeFoot - motion -")
+                logging.debug(" ---------------------------")
+                self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
+
+
+                logging.debug(" - Right Hindfoot - motion -")
+                logging.debug(" ---------------------------")
+                self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+
+                logging.debug(" - Right ForeFoot - motion -")
+                logging.debug(" ---------------------------")
+                self._right_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
 
             if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
                 self._thorax_motion(aqui, dictRef,dictAnat,options=options)
@@ -1568,43 +1570,55 @@ class CGM2_4(CGM2_3):
                             selectedTrackingMarkers.append(marker)
                     seg.m_tracking_markers= selectedTrackingMarkers
 
+            if self.m_bodypart != enums.BodyPart.UpperLimb:
+                logging.debug("--- Segmental Least-square motion process ---")
+                self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
+                self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
 
-            logging.debug("--- Segmental Least-square motion process ---")
-            self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
-            self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
+                TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
 
-            self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
+                for i in range(0,aqui.GetPointFrameNumber()):
+                    lhjc = aqui.GetPoint("LHJC").GetValues()[i,:]
+                    rhjc =  aqui.GetPoint("RHJC").GetValues()[i,:]
+                    pelvisScale = np.linalg.norm(lhjc-rhjc)
+                    offset = (lhjc+rhjc)/2.0
+                    R = self.getSegment("Pelvis").anatomicalFrame.motion[i].getRotation()
+                    TopLumbar5[i,:] = offset +  np.dot(R,(np.array([ 0, 0, 0.925]))* pelvisScale)
 
-            self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
+                self._TopLumbar5 = TopLumbar5
 
-            self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
+                self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
 
+                self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
 
-            self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
-
-            # hindFoot ( because of singularities AJC- TOE and HEE align)
-            self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
-            self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
-
-            #self._leftHindFoot_motion_optimize(aqui, dictRef,motionMethod)
-            #self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
-            #self._rightHindFoot_motion_optimize(aqui, dictRef,motionMethod)
-            #self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
-
-            # foreFoot (more robust than Sodervisk)
-            self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
-            self._right_foreFoot_motion(aqui, dictRef,dictAnat, options=options)
-
-            #self._leftForeFoot_motion(aqui, dictRef,motionMethod)
-            #self._anatomical_motion(aqui,"Left ForeFoot",originLabel = str(dictAnat["Left ForeFoot"]['labels'][3]))
+                self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
 
 
-            #self._rightForeFoot_motion(aqui, dictRef,motionMethod)
-            #self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
+                self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
+
+                # hindFoot ( because of singularities AJC- TOE and HEE align)
+                self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+                self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+
+                #self._leftHindFoot_motion_optimize(aqui, dictRef,motionMethod)
+                #self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
+                #self._rightHindFoot_motion_optimize(aqui, dictRef,motionMethod)
+                #self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
+
+                # foreFoot (more robust than Sodervisk)
+                self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
+                self._right_foreFoot_motion(aqui, dictRef,dictAnat, options=options)
+
+                #self._leftForeFoot_motion(aqui, dictRef,motionMethod)
+                #self._anatomical_motion(aqui,"Left ForeFoot",originLabel = str(dictAnat["Left ForeFoot"]['labels'][3]))
+
+
+                #self._rightForeFoot_motion(aqui, dictRef,motionMethod)
+                #self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
             if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
                 self._thorax_motion(aqui, dictRef,dictAnat,options=options)
 
@@ -2485,5 +2499,20 @@ class CGM2_4(CGM2_3):
             logging.debug("power over")
 
         # centre of mass
+        centreOfMassLabel  = "CentreOfMass_" + pointSuffix if pointSuffix is not None else "CentreOfMass"
         if self.m_centreOfMass is not None:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str("CentreOfMass"+pointSuffix), acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str(centreOfMassLabel), acq)
+
+
+class CGM2_5(CGM2_4):
+    """
+
+    """
+
+    def __init__(self):
+        super(CGM2_5, self).__init__()
+        self.decoratedModel = False
+        self.version = "CGM2.5"
+
+    def __repr__(self):
+        return "LowerLimb CGM2.5"

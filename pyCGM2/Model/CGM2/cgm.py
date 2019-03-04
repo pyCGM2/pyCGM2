@@ -2735,34 +2735,47 @@ class CGM1(CGM):
                             selectedTrackingMarkers.append(marker)
                     seg.m_tracking_markers= selectedTrackingMarkers
 
+            if self.m_bodypart != enums.BodyPart.UpperLimb:
+                logging.debug("--- Segmental Least-square motion process ---")
+                self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
+                self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
 
-            logging.debug("--- Segmental Least-square motion process ---")
-            self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
-            self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
+                import ipdb; ipdb.set_trace()
+                TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
 
-            self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
+                for i in range(0,aqui.GetPointFrameNumber()):
+                    lhjc = aqui.GetPoint("LHJC").GetValues()[i,:]
+                    rhjc =  aqui.GetPoint("RHJC").GetValues()[i,:]
+                    pelvisScale = np.linalg.norm(lhjc-rhjc)
+                    offset = (lhjc+rhjc)/2.0
+                    R = self.getSegment("Pelvis").anatomicalFrame.motion[i].getRotation()
+                    TopLumbar5[i,:] = offset +  np.dot(R,(np.array([ 0, 0, 0.925]))* pelvisScale)
 
 
-            self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
+                self._TopLumbar5 = TopLumbar5
+
+                self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
+
+                self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
 
 
-            self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
-            self._left_shankProximal_motion(aqui,dictAnat,options=options)
+                self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
+                self._left_shankProximal_motion(aqui,dictAnat,options=options)
 
-            self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
-            self._right_shankProximal_motion(aqui,dictAnat,options=options)
+                self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
+                self._right_shankProximal_motion(aqui,dictAnat,options=options)
 
-            # foot
-            # issue with least-square optimization :  AJC - HEE and TOE may be inline -> singularities !!
-#            self._leftFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
-#            self._rightFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
+                # foot
+                # issue with least-square optimization :  AJC - HEE and TOE may be inline -> singularities !!
+    #            self._leftFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
+    #            self._rightFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
 
-            self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
-            self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
+                self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
+                self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
 
             if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
                 self._thorax_motion(aqui, dictRef,dictAnat,options=options)
@@ -2888,14 +2901,14 @@ class CGM1(CGM):
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
-# length
+            # length
             lhjc = aqui.GetPoint("LHJC").GetValues()[i,:]
             rhjc =  aqui.GetPoint("RHJC").GetValues()[i,:]
             pelvisScale = np.linalg.norm(lhjc-rhjc)
             offset = (lhjc+rhjc)/2.0
 
             TopLumbar5[i,:] = offset +  np.dot(R,(np.array([ 0, 0, 0.925]))* pelvisScale)
-#seg.anatomicalFrame.static.addNode("TL5",TopLumbar5,positionType="Local")
+            #seg.anatomicalFrame.static.addNode("TL5",TopLumbar5,positionType="Local")
 
         self._TopLumbar5 = TopLumbar5
 
@@ -4707,6 +4720,7 @@ class CGM1(CGM):
             length = np.linalg.norm(l5-c7o)
             seg.setLength(length)
 
+            # com not computed there but durinf motion !!
             com = (c7o + ( l5 - c7o ) * 0.63 )
             seg.anatomicalFrame.static.addNode("comStatic",com,positionType="Global")
 
