@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 
 def getLastNexusVersion():
     nexusDir = "C:\Program Files (x86)\Vicon"
@@ -12,10 +13,12 @@ def getLastNexusVersion():
     last = max(li)
     return "Nexus2."+str(last)
 
+try:
+    NEXUS_VERSION = getLastNexusVersion()
+    if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python" in sys.path:
+        sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python")
 
-NEXUS_VERSION = getLastNexusVersion()
-if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python" in sys.path:
-    sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python")
-
-if not "C:/Program Files (x86)/Vicon/Nexus"+NEXUS_VERSION+"/SDK/Win32" in sys.path:
-    sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32")
+    if not "C:/Program Files (x86)/Vicon/Nexus"+NEXUS_VERSION+"/SDK/Win32" in sys.path:
+        sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32")
+except Exception, errormsg:
+    logging.error (errormsg)
