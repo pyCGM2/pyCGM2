@@ -57,7 +57,7 @@ def appendForcePlateCornerAsMarker (btkAcq):
 
 
 def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, left_markerLabelToe ="LTOE", left_markerLabelHeel ="LHEE",
-                 right_markerLabelToe ="RTOE", right_markerLabelHeel ="RHEE",  display = False):
+                 right_markerLabelToe ="RTOE", right_markerLabelHeel ="RHEE",  display = False, mfpa=None):
     """
         Convenient function detecting foot in contact with a force plate
 
@@ -207,7 +207,21 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
 
             indexFP+=1
 
-    return suffix
+        # correction with manual assignement
+        if mfpa is not None:
+            logging.warning("[pyCGM2] : automatic force plate assigment corrected  ")
+            correctedSuffix=""
+            if len(mfpa) != len(suffix):
+                raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(suffix))))
+            else:
+                for i in range(0, len(mfpa)):
+                    if mfpa[i] != "A":
+                        correctedSuffix = correctedSuffix + mfpa[i]
+                    else:
+                        correctedSuffix = correctedSuffix + suffix[i]
+            return correctedSuffix
+        else:
+            return suffix
 
 
 def addForcePlateGeneralEvents (btkAcq,mappedForcePlate ):
