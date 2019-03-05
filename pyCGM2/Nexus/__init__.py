@@ -1,3 +1,6 @@
+import os
+import sys
+
 def getLastNexusVersion():
     nexusDir = "C:\Program Files (x86)\Vicon"
     dirs = os.listdir(nexusDir)
