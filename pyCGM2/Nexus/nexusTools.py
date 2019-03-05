@@ -279,3 +279,18 @@ def createEvents(NEXUS,subject,acq,labels):
         if ev.GetLabel() in labels:
             #print ev.GetTime()*freq
             NEXUS.CreateAnEvent( str(subject), str(ev.GetContext()), str(ev.GetLabel()), int(ev.GetTime()*freq), 0.0 )
+
+def getForcePlateAssignment(NEXUS):
+    mfpa=""
+    for id in NEXUS.GetDeviceIDs():
+        name, type, rate, output_ids, forceplate, eyetracker = NEXUS.GetDeviceDetails(id)
+        if type == u'ForcePlate':
+            if forceplate.Context=="Invalid":
+                mfpa=mfpa+"X"
+            if forceplate.Context=="Left":
+                mfpa=mfpa+"L"
+            if forceplate.Context=="Right":
+                mfpa=mfpa+"R"
+            if forceplate.Context=="Auto":
+                mfpa=mfpa+"A"
+    return mfpa
