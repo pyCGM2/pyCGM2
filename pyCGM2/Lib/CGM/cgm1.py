@@ -237,7 +237,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
 
-
         # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",

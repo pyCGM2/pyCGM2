@@ -100,6 +100,9 @@ def main(args):
         ikWeight = files.getIKweightSet(DATA_PATH,"CGM2_2.ikw")
         if not ikWeight:  ikWeight = settings["Fitting"]["Weight"]
 
+        #force plate assignement from Nexus
+        mfpa = nexusTools.getForcePlateAssignment(NEXUS)
+
         # --------------------------MODELLING PROCESSING -----------------------
         acqIK = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,settings,

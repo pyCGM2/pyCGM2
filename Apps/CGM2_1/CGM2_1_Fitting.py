@@ -92,6 +92,8 @@ def main(args):
         translators = files.getTranslators(DATA_PATH,"CGM2_1.translators")
         if not translators:  translators = settings["Translators"]
 
+        #force plate assignement from Nexus
+        mfpa = nexusTools.getForcePlateAssignment(NEXUS)
 
         # --------------------------MODELLING PROCESSING -----------------------
         acqGait = cgm2_1.fitting(model,DATA_PATH, reconstructFilenameLabelled,

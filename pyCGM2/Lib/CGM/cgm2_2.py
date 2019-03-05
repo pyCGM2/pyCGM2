@@ -335,17 +335,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     if model.m_bodypart != enums.BodyPart.UpperLimb:
         # --- force plate handling----
         # find foot  in contact
-        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqIK)
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqIK,mfpa=mfpa)
         forceplates.addForcePlateGeneralEvents(acqIK,mappedForcePlate)
-        logging.debug("Force plate assignment : %s" %mappedForcePlate)
+        logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
-        if mfpa is not None:
-            if len(mfpa) != len(mappedForcePlate):
-                raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(mappedForcePlate))))
-            else:
-                mappedForcePlate = mfpa
-                logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
-                forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
 
         # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,acqIK,mappedForcePlate,
