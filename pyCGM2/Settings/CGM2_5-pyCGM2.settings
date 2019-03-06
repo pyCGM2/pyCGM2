@@ -41,7 +41,7 @@ Translators: # Translators adapt your current marker set
     C7: T2 # cf Armand et al.2013 https://doi.org/10.1016/j.gaitpost.2013.06.016
     T10: None
     CLAV: None
-    STRN: None
+    STRN: CLAV
     LFHD: GLAB #Eames et al.1999 10.1016/S0167-9457(99)00022-6
     LBHD: LMAS
     RFHD: GLAB
