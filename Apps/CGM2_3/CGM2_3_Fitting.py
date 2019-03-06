@@ -11,8 +11,6 @@
 Examples:
     In the script argument box of a python nexus operation, you can edit:
 
-    >>> -mfpa=LRXL
-    (means you are assigning the left foot on force plates 1 and 4, the right foot on force plate #2 and an invalid contact of force plate 4 )
     >>> --proj=Global --noIk
     (means you disable the inverse kinematic solver and joint moments will be expressed into the Global Coordinate system, and )
 
@@ -57,7 +55,6 @@ def main(args):
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm2.3")
         momentProjection =  argsManager.getMomentProjection()
-        mfpa = argsManager.getManualForcePlateAssign()
         ik_flag = argsManager.enableIKflag()
 
 

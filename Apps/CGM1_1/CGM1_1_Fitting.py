@@ -2,7 +2,6 @@
 """Nexus Operation : **CGM1.1 Fitting**
 
 :param --proj [string]: define in which coordinate system joint moment will be expressed (Choice : Distal, Proximal, Global)
-:param -mfpa [string]: manual force plate assignement. (Choice: combinaison of  X, L, R depending of your force plate number)
 :param -md, --markerDiameter [int]: marker diameter
 :param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
 :param --check [bool]: add "cgm1.1" as point suffix
@@ -11,8 +10,6 @@
 Examples:
     In the script argument box of a python nexus operation, you can edit:
 
-    >>> -mfpa=LRXL
-    (means you are assigning the left foot on force plates 1 and 4, the right foot on force plate #2 and an invalid contact of force plate 4 )
     >>> --proj=Global
     (means joint moments will be expressed into the Global Coordinate system)
 
@@ -53,7 +50,6 @@ def main(args):
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm1_1")
         momentProjection =  argsManager.getMomentProjection()
-        mfpa = argsManager.getManualForcePlateAssign()
 
         # --------------------------LOADING ------------------------------------
         DEBUG= False
