@@ -133,7 +133,6 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='CGM2-3 Fitting')
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
-    parser.add_argument('-mfpa',type=str,  help='manual assignment of force plates')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
