@@ -71,7 +71,7 @@ def smooth(rawdata,tol=0.0025,sigR=1e-3,keepOriginal=True):
 	return y
 
 
-def main(args):
+def main():
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -114,11 +114,11 @@ if __name__ == "__main__":
 
     # ---- main script -----
     try:
-        main(args)
+        main()
 
 
     except Exception, errormsg:
         print "Error message: %s" % errormsg
         traceback.print_exc()
-        print "Press return to exit.."
-        raw_input()
+        #print "Press return to exit.."
+        #raw_input()
