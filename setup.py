@@ -124,7 +124,7 @@ if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\pyC
 
 
 # delete everything in programData
-if not developMode:
+if os.getenv("PROGRAMDATA") is not None:
     pd = os.getenv("PROGRAMDATA")
     pddirs = getSubDirectories(pd)
     if "pyCGM2" in  pddirs:
@@ -189,12 +189,6 @@ if not developMode:
     if os.getenv("PROGRAMDATA"):
         PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2"
         shutil.copytree(PYCGM2_SETTINGS_FOLDER[:-1], PYCGM2_APPDATA_PATH)
-    else:
-        open(MAIN_PYCGM2_PATH + 'localSettings', 'a').close()
-
-else:
-    open(MAIN_PYCGM2_PATH + 'developMode', 'a').close()
-
 #--- management of nexus-related files ( vst+pipelines)-----
 
 

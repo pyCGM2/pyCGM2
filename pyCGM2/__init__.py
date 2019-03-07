@@ -34,10 +34,12 @@ PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"pyCGM2\Settings\\"
 
 
 #  [Optional]programData
-if os.path.isfile( MAIN_PYCGM2_PATH + "localSettings") or os.path.isfile( MAIN_PYCGM2_PATH + "developMode"):
-    PYCGM2_APPDATA_PATH = PYCGM2_SETTINGS_FOLDER
-else:
+if  os.path.isdir(os.getenv("PROGRAMDATA")+"\\pyCGM2"):
     PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
+else:
+    PYCGM2_APPDATA_PATH = PYCGM2_SETTINGS_FOLDER
+    
+
 
 
 # [Optional]: Apps path
