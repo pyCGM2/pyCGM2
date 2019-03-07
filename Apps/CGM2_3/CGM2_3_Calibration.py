@@ -22,7 +22,7 @@ Examples:
     (force the left and right hip joint centre positions (10 mm along the pelvic X-axis, 20 mm along the pelvic Y-axis, 30 mm along the pelvic Z-axis)
 
 """
-
+import os
 import logging
 import argparse
 import matplotlib.pyplot as plt
@@ -57,7 +57,7 @@ def main(args):
 
         # --------------------GLOBAL SETTINGS ------------------------------
         # ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_3-pyCGM2.settings"): 
+        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_3-pyCGM2.settings"):
             settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
         else:
             settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
@@ -173,5 +173,4 @@ if __name__ == "__main__":
     except Exception, errormsg:
         print "Error message: %s" % errormsg
         traceback.print_exc()
-        #print "Press return to exit.."
-        #raw_input()
+        raise

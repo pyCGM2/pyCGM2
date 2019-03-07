@@ -17,7 +17,7 @@ Examples:
 
 
 """
-
+import os
 import logging
 import argparse
 import traceback
@@ -42,7 +42,7 @@ def main(args):
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "emg.settings"): 
+        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "emg.settings"):
             emgSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
         else:
             emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
@@ -126,5 +126,4 @@ if __name__ == "__main__":
     except Exception, errormsg:
         print "Error message: %s" % errormsg
         traceback.print_exc()
-        #print "Press return to exit.."
-        #raw_input()
+        raise

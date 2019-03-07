@@ -24,6 +24,7 @@ Examples:
 """
 
 #import ipdb
+import os
 import traceback
 import logging
 import argparse
@@ -57,7 +58,7 @@ def main(args):
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_1-pyCGM2.settings"): 
+        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_1-pyCGM2.settings"):
             settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
         else:
             settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_1-pyCGM2.settings")
@@ -161,5 +162,4 @@ if __name__ == "__main__":
     except Exception, errormsg:
         print "Error message: %s" % errormsg
         traceback.print_exc()
-        #print "Press return to exit.."
-        #raw_input()
+        raise

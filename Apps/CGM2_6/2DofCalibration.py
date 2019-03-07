@@ -179,5 +179,4 @@ if __name__ == "__main__":
     except Exception, errormsg:
         print "Error message: %s" % errormsg
         traceback.print_exc()
-        #print "Press return to exit.."
-        #raw_input()
+        raise

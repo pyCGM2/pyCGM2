@@ -19,6 +19,7 @@ Examples:
 """
 
 #import ipdb
+import os
 import traceback
 import logging
 import matplotlib.pyplot as plt
@@ -56,7 +57,7 @@ def main(args):
             settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
         else:
             settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1_1-pyCGM2.settings")
-                    
+
 
         # --------------------------CONFIG ------------------------------------
         argsManager = CgmArgsManager.argsManager_cgm1(settings,args)
@@ -139,5 +140,4 @@ if __name__ == "__main__":
     except Exception, errormsg:
         print "Error message: %s" % errormsg
         traceback.print_exc()
-        #print "Press return to exit.."
-        #raw_input()
+        raise
