@@ -20,7 +20,7 @@ if developMode:
 if sys.maxsize > 2**32:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
 
-VERSION ="3.1.3"
+VERSION ="3.1.4"
 
 
 for it in site.getsitepackages():
@@ -83,12 +83,10 @@ def gen_data_files(*dirs):
 def gen_data_files_forScripts(*dirs):
     results = []
     for src_dir in dirs:
-        print src_dir
         for root,dirs,files in os.walk(src_dir):
             for file in files:
                 if file[-3:] ==".py":
                     results.append(os.path.join(root, file))
-    print results
     return results
 
 
