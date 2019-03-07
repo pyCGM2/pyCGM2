@@ -19,7 +19,7 @@
 
   <Entry DisplayName="Run pyCGM2-CGM2_4-Fitting " Enabled="1" OperationId="35" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/CGM2_4-Fitting.py"/>
+      <Param name="Script" value="[TOREPLACE]/CGM2_4_Fitting.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
