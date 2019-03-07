@@ -46,8 +46,12 @@ def main(args):
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+        import ipdb; ipdb.set_trace()
 
+        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1-pyCGM2.settings"):
+            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+        else:
+            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1-pyCGM2.settings")
         # --------------------------CONFIG ------------------------------------
         argsManager = CgmArgsManager.argsManager_cgm1(settings,args)
         leftFlatFoot = argsManager.getLeftFlatFoot()

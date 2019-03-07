@@ -41,7 +41,10 @@ def main(args):
     if NEXUS_PYTHON_CONNECTED: # run Operation
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1-pyCGM2.settings"): 
+            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+        else:
+            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1-pyCGM2.settings")
 
         # --------------------------CONFIG ------------------------------------
         argsManager = CgmArgsManager.argsManager_cgm1(settings,args)
