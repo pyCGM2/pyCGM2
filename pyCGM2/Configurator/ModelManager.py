@@ -238,3 +238,19 @@ class CGM2_4ConfigManager(CGM2_3ConfigManager):
             self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
         else:
             self._internSettings = self._localInternalSettings
+
+
+class CGM2_5ConfigManager(CGM2_4ConfigManager):
+    """
+
+    """
+    def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None):
+        super(CGM2_5ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators,localIkWeight=localIkWeight)
+
+        self.__internalsettings()
+
+    def __internalsettings(self):
+        if self._localInternalSettings is None:
+            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_5-pyCGM2.settings")
+        else:
+            self._internSettings = self._localInternalSettings
