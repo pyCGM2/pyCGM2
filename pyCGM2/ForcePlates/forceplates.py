@@ -4,6 +4,8 @@ import logging
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
 
+import re
+
 
 
 from pyCGM2 import btk
@@ -56,7 +58,7 @@ def appendForcePlateCornerAsMarker (btkAcq):
 
 
 
-def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, left_markerLabelToe ="LTOE", left_markerLabelHeel ="LHEE",
+def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, left_markerLabelToe ="LTOE", left_markerLabelHeel ="LHEE",
                  right_markerLabelToe ="RTOE", right_markerLabelHeel ="RHEE",  display = False, mfpa=None):
     """
         Convenient function detecting foot in contact with a force plate
@@ -76,6 +78,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
            - `right_markerLabelToe` (str) - label of the right toe marker
            - `right_markerLabelHeel` (str) - label of the right heel marker
            - `display` (bool) - display n figures ( n depend on force plate number) presenting relative distance between mid foot and the orgin of the force plate
+           - `mfpa` (string or dict) - manual force plate assigmenment from another method. Can be a string (XLRA, A stand for automatic) or a dict returing assigned foot to a Force plate ID.
 
     """
 
@@ -100,6 +103,9 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
 
     suffix=str()
 
+    pfIDS=[]
+    for i in range(0,pfc.GetItemNumber()):
+        pfIDS.append( re.findall( "\[(.*?)\]" ,pfc.GetItem(i).GetChannel(0).GetDescription())[0])
 
     for i in range(0,grwc.GetItemNumber()):
         pos= grwc.GetItem(i).GetPosition().GetValues()
@@ -139,12 +145,14 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
             boolLst = Rz > forceThreshold
 
 
+
             enableDataFlag = False
             for it in boolLst.tolist():
                 if it == True:
                     enableDataFlag=True
 
                     break
+
 
             if not enableDataFlag:
                 logging.debug("PF #%s not activated. It provides no data superior to threshold"%(str(indexFP)) )
@@ -205,23 +213,37 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=25, 
                     suffix ="".join(li)
 
 
+
             indexFP+=1
 
         # correction with manual assignement
         if mfpa is not None:
-            logging.warning("[pyCGM2] : automatic force plate assigment corrected  ")
             correctedSuffix=""
-            if len(mfpa) != len(suffix):
-                raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(suffix))))
-            else:
-                for i in range(0, len(mfpa)):
-                    if mfpa[i] != "A":
-                        correctedSuffix = correctedSuffix + mfpa[i]
+            if type(mfpa) == dict:
+                logging.warning("[pyCGM2] : automatic force plate assigment corrected with context associated with the device Id  ")
+                i=0
+                for id in pfIDS:
+                    fpa = mfpa[id]
+                    if fpa != "A":
+                        correctedSuffix = correctedSuffix + fpa
                     else:
                         correctedSuffix = correctedSuffix + suffix[i]
+                    i+=1
+            else:
+                logging.warning("[pyCGM2] : automatic force plate assigment corrected  ")
+                if len(mfpa) != len(suffix):
+                    raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(suffix))))
+                else:
+                    for i in range(0, len(mfpa)):
+                        if mfpa[i] != "A":
+                            correctedSuffix = correctedSuffix + mfpa[i]
+                        else:
+                            correctedSuffix = correctedSuffix + suffix[i]
             return correctedSuffix
         else:
             return suffix
+
+
 
 
 def addForcePlateGeneralEvents (btkAcq,mappedForcePlate ):
