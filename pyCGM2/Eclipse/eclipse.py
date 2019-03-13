@@ -158,6 +158,10 @@ class TrialEnfReader(EnfReader):
         if label in self.m_trialInfos.keys():
             return self.m_trialInfos[label]
 
+    def getC3d(self):
+
+        return self.m_file.replace(".Trial.enf",".c3d")
+
 
     def isActivate(self):
         flag = False
