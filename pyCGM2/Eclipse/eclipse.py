@@ -4,26 +4,64 @@ import os
 import ConfigParser
 
 import pyCGM2
+from pyCGM2 import enums
+
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
 
 
-# Module compatible with the pyCGM2 eclipse scheme
+def getEnfFiles(path, type):
+    path = path[:-1] if path[-1:]=="\\" else path
 
-# ---- low levels-----
-def ConfigSectionMap(config,section):
-    dict1 = {}
-    options = config.options(section)
-    for option in options:
-        try:
-            dict1[option] = config.get(section, option)
-            if dict1[option] == -1:
-                DebugPrint("skip: %s" % option)
-        except:
-            print("exception on %s!" % option)
-            dict1[option] = None
-    return dict1
+    enfFiles = files.getFiles(str(path+"\\"),type.value)
+
+    if type == enums.EclipseType.Session:
+        if len(enfFiles)>1:
+            raise Exception ("Vicon Eclipse badly configured. Two session enf found")
+        else:
+            return  enfFiles[0]
+
+    elif type == enums.EclipseType.Patient:
+        if len(enfFiles)>1:
+            raise Exception ("Vicon Eclipse badly configured. Two Patient enf found")
+        else:
+            return  enfFiles[0]
+    elif type == enums.EclipseType.Trial:
+        return enfFiles
+    else:
+        raise Exception ("eclipse file type not recognize. Shoud be an item of enums.eClipseType")
+
+
+def findCalibration(path):
+    enfs = getEnfFiles(path,enums.EclipseType.Trial)
+
+
+    detected = list()
+    for enf in enfs:
+        enfTrial = TrialEnfReader(path,enf)
+        if enfTrial.isCalibrationTrial() and enfTrial.isActivate() :
+            detected.append(enf)
+
+    if len(detected)>1:
+        raise Exception("You should have only one activated calibration c3d")
+    else:
+        return detected[0]
+
+
+def findMotions(path):
+    enfs = getEnfFiles(path,enums.EclipseType.Trial)
+
+    detected = list()
+    for enf in enfs:
+        enfTrial = TrialEnfReader(path,enf)
+        if enfTrial.isMotionTrial() and enfTrial.isActivate():
+            detected.append(enf)
+
+    if detected ==[]:
+        return None
+    else:
+        return detected
 
 
 def cleanEnf(path,enf):
@@ -37,138 +75,150 @@ def cleanEnf(path,enf):
     dst = open(path+enf, 'w')
     dst.write(filteredContent)
     dst.close()
-
-
     return filteredContent
 
-def InitConfigParser(path,enf):
-    Config = ConfigParser.ConfigParser()
-    try:
-        Config.read(path+enf)
-    except ConfigParser.ParsingError:
-        print "pb et nettoyage"
-        cleanEnf(path,enf)
-        Config.read(path+enf)
-    return Config
+class EnfReader(object):
 
-# get files---------
+    def __init__(self, path,enfFile):
 
-def getEnfTrials(path):
-    path = path[:-1] if path[-1:]=="\\" else path
-    enfFiles = files.getFiles(path+"\\","Trial.enf")
-    return enfFiles
+        config = ConfigParser.ConfigParser()
+        config.optionxform=str # keep letter case
 
-def getEnfSession(path):
-    path = path[:-1] if path[-1:]=="\\" else path
-    enfFile = files.getFiles(path+"\\","Session.enf")
-    if len(enfFile)>1:
-        raise Exception ("Vicon Eclipse badly configured. Two session enf found")
-    return enfFile[0]
-
-# ---- High Levels -----
-def getSessionInfos(path,sessionEnf):
-    Config = InitConfigParser(path,sessionEnf)
-    nodeinfos =  ConfigSectionMap(Config,"SESSION_INFO")
-    return nodeinfos
-
-def getTrialInfos(path,trialEnf):
-    Config = InitConfigParser(path,trialEnf)
-    nodeinfos =  ConfigSectionMap(Config,"TRIAL_INFO")
-    return nodeinfos
+        try:
+            config.read(path+enfFile)
+        except ConfigParser.ParsingError:
+            print "enf cleaned"
+            cleanEnf(path,enfFile)
+            config.read(path+enfFile)
 
 
-def findCalibrationFromEnfs(path, enfs):
+        self.m_path =  path
+        self.m_file =  enfFile
+        self.m_config = config
 
-    for enf in enfs:
-        Config = InitConfigParser(path,enf)
+    def getSection(self,section):
+        dict1 = {}
+        options = self.m_config.options(section)
+        for option in options:
+            try:
+                dict1[option] = self.m_config.get(section, option)
+                if dict1[option] == -1:
+                    DebugPrint("skip: %s" % option)
+            except:
+                print("exception on %s!" % option)
+                dict1[option] = None
+        return dict1
 
-        sections = Config.sections()
-        nodeinfos =  ConfigSectionMap(Config,"TRIAL_INFO")
-        if "processing" in nodeinfos.keys() and "trial_type" in nodeinfos.keys():
-            if nodeinfos["processing"] == "Ready" and nodeinfos["trial_type"] == "Static":
-                return enf.replace(".Trial.enf",".c3d")
+
+class SessionEnfReader(EnfReader):
+
+    def __init__(self, path,enfFile):
+        super(SessionEnfReader, self).__init__(path,enfFile)
+        self.m_sessionInfos = super(SessionEnfReader, self).getSection("SESSION_INFO")
+
+        for key in self.m_sessionInfos:
+            if self.m_sessionInfos[key] == "":
+                self.m_sessionInfos[key] = None
+            elif self.m_sessionInfos[key].lower() == "true":
+                self.m_sessionInfos[key]=True
+            elif self.m_sessionInfos[key].lower() == "false":
+                self.m_sessionInfos[key]=False
             else:
-                logging.error("No calibration enf found")
+                pass
+
+    def get(self,label):
+        if label in self.m_sessionInfos.keys():
+            return self.m_sessionInfos[label]
+
+    def getSessionInfos(self):
+        return self.m_sessionInfos
 
 
-def findMotionFromEnfs(path, enfs):
+class TrialEnfReader(EnfReader):
 
-    outList = list()
-    for enf in enfs:
-        Config = InitConfigParser(path,enf)
+    def __init__(self, path,enfFile):
+        super(TrialEnfReader, self).__init__(path,enfFile)
+        self.m_trialInfos = super(TrialEnfReader, self).getSection("TRIAL_INFO")
 
-        sections = Config.sections()
-        nodeinfos =  ConfigSectionMap(Config,"TRIAL_INFO")
-
-        if "processing" in nodeinfos.keys() and "trial_type" in nodeinfos.keys():
-            if nodeinfos["processing"] == "Ready" and nodeinfos["trial_type"] == "Motion":
-                outList.append( enf.replace(".Trial.enf",".c3d"))
-
-    if outList ==[]:
-        return None
-    else:
-        return outList
-
-def getForcePlateAssignementFrom(path,c3dFile):
-
-    enf = c3dFile.replace(".c3d",".Trial.enf")
-    Config = InitConfigParser(path,enf)
-
-    sections = Config.sections()
-    nodeinfos =  ConfigSectionMap(Config,"TRIAL_INFO")
-
-    acq = btkTools.smartReader(path+c3dFile)
-
-    nfp = btkTools.getNumberOfForcePlate(acq)
-
-    mfpa = ""
-    for i in range(1,nfp+1):
-        if nodeinfos["fp"+str(i)]=="Left":
-            mfpa = mfpa + "L"
-        elif nodeinfos["fp"+str(i)]=="Right":
-                mfpa = mfpa + "R"
-        else:
-                mfpa = mfpa + "X"
+        for key in self.m_trialInfos:
+            if self.m_trialInfos[key] == "":
+                self.m_trialInfos[key] = None
+            elif self.m_trialInfos[key].lower() == "true":
+                self.m_trialInfos[key]=True
+            elif self.m_trialInfos[key].lower() == "false":
+                self.m_trialInfos[key]=False
+            else:
+                pass
 
 
-    return mfpa
+    def getTrialInfos(self):
+        return self.m_trialInfos
+
+    def get(self,label):
+        if label in self.m_trialInfos.keys():
+            return self.m_trialInfos[label]
+
+
+    def isActivate(self):
+        flag = False
+        if "Activate" in self.m_trialInfos.keys():
+            if self.m_trialInfos["Activate"] == "Selected" :
+                flag = True
+        return flag
 
 
 
-def enfForcePlateAssignment(path,c3dFilename,mappedForcePlate):
-    """
-        Add Force plate assignement in the enf file
+    def isCalibrationTrial(self):
+        flag = False
+        if "PROCESSING" in self.m_trialInfos.keys() and "TRIAL_TYPE" in self.m_trialInfos.keys():
+            if self.m_trialInfos["PROCESSING"] == "Ready" and self.m_trialInfos["TRIAL_TYPE"] == "Static":
+                flag = True
+        return flag
 
-        :Parameters:
-            - `c3dFullFilename` (str) - filename with path of the c3d
-    """
+    def isKneeCalibrationTrial(self):
+        flag = False
+        if "PROCESSING" in self.m_trialInfos.keys() and "TRIAL_TYPE" in self.m_trialInfos.keys():
+            if self.m_trialInfos["PROCESSING"] == "Ready" and self.m_trialInfos["TRIAL_TYPE"] == "KneeCalibration":
+                flag = True
+        return flag
 
-    acqGait = btkTools.smartReader(str(path + c3dFilename))
-    enfFile = str(path + c3dFilename[:-4]+".Trial.enf")
+    def isC3dExist(self):
 
-    if not os.path.isfile(enfFile):
-        raise Exception ("[pyCGM2] - No enf file associated with the c3d")
-    else:
-        # --------------------Modify ENF --------------------------------------
-        Config = InitConfigParser(path,enfFile)
-        configEnf = Configparser.ConfigParser()
-        configEnf.optionxform = str
-        configEnf.read(enfFile)
+        return os.path.isfile(self.m_path + self.m_file.replace(".Trial.enf",".c3d"))
 
 
-        indexFP=1
-        for letter in mappedForcePlate:
 
-            if letter =="L": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Left"
-            if letter =="R": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Right"
-            if letter =="X": configEnf["TRIAL_INFO"]["FP"+str(indexFP)]="Invalid"
+    def isMotionTrial(self):
+        flag = False
+        if "PROCESSING" in self.m_trialInfos.keys() and "TRIAL_TYPE" in self.m_trialInfos.keys():
+            if self.m_trialInfos["PROCESSING"] == "Ready" and self.m_trialInfos["TRIAL_TYPE"] == "Motion":
+                flag =  True
+        return flag
 
-            indexFP+=1
+    def getForcePlateAssigment(self):
 
-        tmpFile =str(c3dFullFilename[:-4]+".Trial.enf-tmp")
-        with open(tmpFile, 'w') as configfile:
-            configEnf.write(configfile)
+        c3dFilename = self.m_file.replace(".Trial.enf",".c3d")
+        acq = btkTools.smartReader(str(self.m_path + c3dFilename))
+        nfp = btkTools.getNumberOfForcePlate(acq)
 
-        os.remove(enfFile)
-        os.rename(tmpFile,enfFile)
-        logging.warning("Enf file updated with Force plate assignment")
+        mfpa = ""
+        for i in range(1,nfp+1):
+            if self.m_trialInfos["FP"+str(indexFP)]=="Left": mfpa = mfpa +"L"
+            if self.m_trialInfos["FP"+str(indexFP)]=="Right": mfpa = mfpa +"R"
+            if self.m_trialInfos["FP"+str(indexFP)]=="Invalid": mfpa = mfpa +"X"
+            if self.m_trialInfos["FP"+str(indexFP)]=="Auto": mfpa = mfpa +"A"
+
+        return mfpa
+
+    def getMarkerDiameter(self):
+        if "MarkerDiameter" in self.m_trialInfos.keys():
+            return float(self.m_trialInfos["MarkerDiameter"]) if self.m_trialInfos["MarkerDiameter"] is not None else 14.0
+
+    def getFlatFootOptions(self):
+        if "LeftFlatFoot" in self.m_trialInfos.keys():
+             leftFlatFoot =  self.m_trialInfos["LeftFlatFoot"]
+
+        if "RightFlatFoot" in self.m_trialInfos.keys():
+            RightFlatFoot  = self.m_trialInfos["LeftFlatFoot"]
+
+            return leftFlatFoot, RightFlatFoot

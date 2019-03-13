@@ -77,6 +77,10 @@ class BodyPartPlot(Enum):
     Trunk="Trunk"
     UpperLimb="UpperLimb"
 
+class EclipseType(Enum):
+    Session="Session.enf"
+    Trial="Trial.enf"
+    Patient="Patient.enf"
 
 
 # --- enum used with Btk-Models
