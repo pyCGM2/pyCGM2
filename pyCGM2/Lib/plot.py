@@ -7,7 +7,7 @@ from pyCGM2.Processing import scores
 from pyCGM2.Tools import trialTools
 from pyCGM2 import enums
 
-def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffix=None, exportPdf=False):
+def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffix=None, exportPdf=False,outputName=None):
     """
     plotTemporalKinematic : display temporal trace of the Kinematics
 
@@ -35,7 +35,10 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
         raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
     if exportPdf:
-        filenameOut =  str(modelledFilenames+"-Temporal Kinematics ["+ bodyPart.name+"]")
+        if outputName is None:
+            filenameOut =  str(modelledFilenames+"-Temporal Kinematics ["+ bodyPart.name+"]")
+        else:
+            filenameOut =  str(outputName+"-Temporal Kinematics ["+ bodyPart.name+"]")
 
     trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
 
@@ -49,7 +52,7 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
     plt.show()
 
 
-def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=None,exportPdf=False):
+def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=None,exportPdf=False,outputName=None):
 
     """
     plotTemporalKinetic : display temporal trace of the Kinetics
@@ -78,9 +81,11 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
     else:
         raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
-
     if exportPdf:
-        filenameOut =  str(modelledFilenames+"-Temporal Kinetics["+ bodyPart.name+"]")
+        if outputName is None:
+            filenameOut =  str(modelledFilenames+"-Temporal Kinetics["+ bodyPart.name+"]")
+        else:
+            filenameOut =  str(outputName+"-Temporal Kinetics ["+ bodyPart.name+"]")
 
     trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
 
@@ -93,7 +98,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
 
     plt.show()
 
-def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,exportPdf=False):
+def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,exportPdf=False,outputName=None):
     """
     plotTemporalEMG : display temporal trace of EMG signals
 
@@ -126,10 +131,15 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
     for page in pages:
 
         if exportPdf and len(page)>1:
-            filenameOut =  str(processedEmgfile+"-TemporalEmgPlot"+"[rectify]-")+str(count) if rectify else str(processedEmgfile+"-TemporalEmgPlot"+"[raw]-")+str(count)
+            if outputName is None:
+                filenameOut =  str(processedEmgfile+"-TemporalEmgPlot"+"[rectify]-")+str(count) if rectify else str(processedEmgfile+"-TemporalEmgPlot"+"[raw]-")+str(count)
+            else:
+                filenameOut =  str(outputName+"-TemporalEmgPlot"+"[rectify]-")+str(count) if rectify else str(title+"-TemporalEmgPlot"+"[raw]-")+str(count)
         else:
-            filenameOut =  str(processedEmgfile+"-TemporalEmgPlot"+"[rectify]") if rectify else str(processedEmgfile+"-TemporalEmgPlot"+"[raw]")
-
+            if outputName is None:
+                filenameOut =  str(processedEmgfile+"-TemporalEmgPlot"+"[rectify]") if rectify else str(processedEmgfile+"-TemporalEmgPlot"+"[raw]")
+            else:
+                filenameOut =  str(outputName+"-TemporalEmgPlot"+"[rectify]") if rectify else str(title+"-TemporalEmgPlot"+"[raw]")
 
         combinedEMGcontext=[]
 
