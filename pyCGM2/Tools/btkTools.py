@@ -597,3 +597,24 @@ def getNumberOfForcePlate(btkAcq):
     pfc.Update()
 
     return pfc.GetItemNumber()
+
+
+def getStartEndEvents(btkAcq,context,startLabel="start", endLabel="end"):
+    events= btkAcq.GetEvents()
+
+    start=[]
+    end=[]
+    for ev in btk.Iterate(events):
+        if ev.GetContext()==context and ev.GetLabel()==startLabel :
+                start.append(ev.GetFrame())
+        if ev.GetContext()==context and ev.GetLabel()==endLabel :
+                end.append(ev.GetFrame())
+    if start==[] or end==[]:
+        return None,None
+
+    if len(start)>1 or len(end)>1:
+        raise("[pyCGM2]: You can t have multiple Start and End events" )
+    elif end<start:
+        raise("[pyCGM2]: wrong order ( start<end)" )
+    else:
+        return start[0],end[0]
