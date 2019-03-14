@@ -63,6 +63,19 @@ def findMotions(path):
     else:
         return detected
 
+def findKneeMotions(path):
+    enfs = getEnfFiles(path,enums.EclipseType.Trial)
+
+    detected = list()
+    for enf in enfs:
+        enfTrial = TrialEnfReader(path,enf)
+        if enfTrial.isKneeCalibrationTrial() and enfTrial.isActivate():
+            detected.append(enf)
+    if detected ==[]:
+        return None
+    else:
+        return detected
+
 
 def cleanEnf(path,enf):
     src = open(path+enf,"r")
@@ -185,6 +198,7 @@ class TrialEnfReader(EnfReader):
             if self.m_trialInfos["PROCESSING"] == "Ready" and self.m_trialInfos["TRIAL_TYPE"] == "KneeCalibration":
                 flag = True
         return flag
+
 
     def isC3dExist(self):
 

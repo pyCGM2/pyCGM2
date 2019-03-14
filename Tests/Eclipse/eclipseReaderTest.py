@@ -32,6 +32,9 @@ class EclipseTest():
         motion = eclipse.findMotions(DATA_PATH)
         motionTrialreader = eclipse.TrialEnfReader(DATA_PATH,motion[0])
 
+        kneeMotion = eclipse.findKneeMotions(DATA_PATH)
+
+
         import ipdb; ipdb.set_trace()
 
 
