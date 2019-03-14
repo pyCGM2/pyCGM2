@@ -33,7 +33,8 @@ class argsManager_cgm(object):
             return float(self.settings["Global"]["Marker diameter"])
 
     def getPointSuffix(self,checkValue):
-        if self.args.check:
+
+        if hasattr(self.args,"check") and self.args.check:
             return checkValue
         else:
             if self.args.pointSuffix is not None:
@@ -105,6 +106,9 @@ class argsManager_cgm(object):
                 return rhjc
             else:
                 return None
+
+    def getAnalysisTitle(self):
+        return self.args.analysisTitle
 
 
 class argsManager_cgm1(argsManager_cgm):
