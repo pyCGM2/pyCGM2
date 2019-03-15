@@ -103,9 +103,14 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
 
     suffix=str()
 
-    pfIDS=[]
-    for i in range(0,pfc.GetItemNumber()):
-        pfIDS.append( re.findall( "\[(.*?)\]" ,pfc.GetItem(i).GetChannel(0).GetDescription())[0])
+    if mfpa is not None:
+        try:
+            pfIDS=[]
+            for i in range(0,pfc.GetItemNumber()):
+                pfIDS.append( re.findall( "\[(.*?)\]" ,pfc.GetItem(i).GetChannel(0).GetDescription())[0])
+        except Exception:
+            logging.info("[pyCGM2]: Id of Force plate not detected")
+            pass
 
     for i in range(0,grwc.GetItemNumber()):
         pos= grwc.GetItem(i).GetPosition().GetValues()
