@@ -21,7 +21,7 @@ from pyCGM2.ForcePlates import forceplates
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
               required_mp,optional_mp,
               leftFlatFoot,rightFlatFoot,markerDiameter,
-              pointSuffix):
+              pointSuffix,**kwargs):
 
     """
     Calibration of the CGM1.1
@@ -89,6 +89,11 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                                               markerDiameter=markerDiameter)
     modMotion.compute()
 
+    if "displayCoordinateSystem" in kwargs.keys() and kwargs["displayCoordinateSystem"]:
+        csp = modelFilters.ModelCoordinateSystemProcedure(model)
+        csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,acqStatic)
+        csdf.setStatic(False)
+        csdf.display()
 
     #---- Joint kinematics----
     # relative angles
@@ -141,7 +146,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     markerDiameter,
     pointSuffix,
     mfpa,
-    momentProjection):
+    momentProjection,**kwargs):
 
     """
     Fitting of the CGM1.1
@@ -174,6 +179,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     modMotion.compute()
 
+    if "displayCoordinateSystem" in kwargs.keys() and kwargs["displayCoordinateSystem"]:
+        csp = modelFilters.ModelCoordinateSystemProcedure(model)
+        csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,acqGait)
+        csdf.setStatic(False)
+        csdf.display()
 
     #---- Joint kinematics----
     # relative angles

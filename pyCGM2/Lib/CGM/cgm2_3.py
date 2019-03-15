@@ -23,7 +23,7 @@ from pyCGM2.Model.Opensim import opensimFilters
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
               required_mp,optional_mp,
               ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-              pointSuffix):
+              pointSuffix,**kwargs):
     """
     Calibration of the CGM2.3
 
@@ -96,6 +96,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
     modMotion.compute()
 
 
+
     if ik_flag:
         #                        ---OPENSIM IK---
 
@@ -158,6 +159,12 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
     modMotionFitted=modelFilters.ModelMotionFilter(scp,finalAcqStatic,model,enums.motionMethod.Sodervisk)
     modMotionFitted.compute()
 
+    if "displayCoordinateSystem" in kwargs.keys() and kwargs["displayCoordinateSystem"]:
+        csp = modelFilters.ModelCoordinateSystemProcedure(model)
+        csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,finalAcqStatic)
+        csdf.setStatic(False)
+        csdf.display()
+
     #---- Joint kinematics----
     # relative angles
     modelFilters.ModelJCSFilter(model,finalAcqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
@@ -209,7 +216,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     ik_flag,markerDiameter,
     pointSuffix,
     mfpa,
-    momentProjection):
+    momentProjection,**kwargs):
 
     """
     Fitting of the CGM2.3
@@ -309,6 +316,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     modMotionFitted.compute()
 
+    if "displayCoordinateSystem" in kwargs.keys() and kwargs["displayCoordinateSystem"]:
+        csp = modelFilters.ModelCoordinateSystemProcedure(model)
+        csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,finalAcqGait)
+        csdf.setStatic(False)
+        csdf.display()
 
     #---- Joint kinematics----
     # relative angles
