@@ -344,7 +344,6 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
 
     kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
-    #import ipdb; ipdb.set_trace()
     if type == "Gait":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
     else:

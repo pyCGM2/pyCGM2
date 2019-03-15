@@ -78,30 +78,29 @@ def point_descriptiveStats(cycles,label,context):
 
             i+=1
 
-
     meanData=np.array(np.zeros((101,3)))
-
-    if not np.all(x==0) and not np.all(y==0) and not np.all(z==0):
-        x[x == 0] = np.nan
-        y[y == 0] = np.nan
-        z[z == 0] = np.nan
-        meanData[:,0] = np.nanmean(x, axis=1)
-        meanData[:,1]=np.nanmean(y,axis=1)
-        meanData[:,2]=np.nanmean(z,axis=1)
-
-
     stdData=np.array(np.zeros((101,3)))
-    if not np.all(x==0) and not np.all(y==0) and not np.all(z==0):
-        stdData[:,0]=np.nanstd(x,axis=1)
-        stdData[:,1]=np.nanstd(y,axis=1)
-        stdData[:,2]=np.nanstd(z,axis=1)
-
-
     medianData=np.array(np.zeros((101,3)))
-    if not np.all(x==0) and not np.all(y==0) and not np.all(z==0):
+
+    if not np.all(x==0):
+        x[x == 0] = np.nan
+        meanData[:,0] = np.nanmean(x, axis=1)
+        stdData[:,0]=np.nanstd(x,axis=1)
         medianData[:,0]=np.nanmedian(x,axis=1)
+
+    if not np.all(y==0):
+        y[y == 0] = np.nan
+        meanData[:,1] = np.nanmean(y, axis=1)
+        stdData[:,1]=np.nanstd(y,axis=1)
         medianData[:,1]=np.nanmedian(y,axis=1)
+
+
+    if not np.all(z==0):
+        z[z == 0] = np.nan
+        meanData[:,2] = np.nanmean(z, axis=1)
+        stdData[:,2]=np.nanstd(z,axis=1)
         medianData[:,2]=np.nanmedian(z,axis=1)
+
 
     outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues }
 
