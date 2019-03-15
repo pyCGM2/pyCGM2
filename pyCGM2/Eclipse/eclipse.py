@@ -123,6 +123,31 @@ class EnfReader(object):
         return dict1
 
 
+class PatientEnfReader(EnfReader):
+
+    def __init__(self, path,enfFile):
+        super(PatientEnfReader, self).__init__(path,enfFile)
+        self.m_patientInfos = super(PatientEnfReader, self).getSection("SUBJECT_INFO")
+
+        for key in self.m_patientInfos:
+            if self.m_patientInfos[key] == "":
+                self.m_patientInfos[key] = None
+            elif self.m_patientInfos[key].lower() == "true":
+                self.m_patientInfos[key]=True
+            elif self.m_patientInfos[key].lower() == "false":
+                self.m_patientInfos[key]=False
+            else:
+                pass
+
+    def get(self,label):
+        if label in self.m_patientInfos.keys():
+            return self.m_patientInfos[label]
+
+    def getPatientInfos(self):
+        return self.m_patientInfos
+
+
+
 class SessionEnfReader(EnfReader):
 
     def __init__(self, path,enfFile):
