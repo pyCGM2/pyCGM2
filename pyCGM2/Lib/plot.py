@@ -557,7 +557,7 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None
     plt.show()
 
 
-def compareKinematic(analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait"):
+def compareKinematic(analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait",pointSuffixes=None):
     """
     compareKinematic : compare kinematics of two pyCGM2 analysis instances
 
@@ -587,7 +587,7 @@ def compareKinematic(analyses,legends,context,bodyPart,normativeDataset,plotType
     else:
         raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
-    kv = ComparisonPlotViewers.KinematicsPlotComparisonViewer(analyses,context,legends,bodyPart=bodyPart)
+    kv = ComparisonPlotViewers.KinematicsPlotComparisonViewer(analyses,context,legends,bodyPart=bodyPart,pointLabelSuffix_lst=pointSuffixes)
 
     if plotType == "Descriptive":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if type =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )
@@ -606,7 +606,7 @@ def compareKinematic(analyses,legends,context,bodyPart,normativeDataset,plotType
     plt.show()
 
 
-def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait"):
+def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait",pointSuffixes=None):
 
     """
     compareKinetic : compare kinetics of two pyCGM2 analysis instances
@@ -639,7 +639,7 @@ def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="
         raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
 
-    kv = ComparisonPlotViewers.KineticsPlotComparisonViewer(analyses,context,legends,bodyPart=bodyPart)
+    kv = ComparisonPlotViewers.KineticsPlotComparisonViewer(analyses,context,legends,bodyPart=bodyPart,pointLabelSuffix_lst=pointSuffixes)
 
     if plotType == "Descriptive":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if type =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )
