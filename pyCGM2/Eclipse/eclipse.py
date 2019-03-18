@@ -11,6 +11,18 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
 from bs4 import BeautifulSoup
 
+
+def generateEmptyEnf(path):
+    c3ds = files.getFiles(path,"c3d")
+
+    for c3d in c3ds:
+        enfName = c3d[:-4]+".Trial.enf"
+        if enfName not in os.listdir(path):
+            logging.info(enfName +  " : created  ")
+            open(path+enfName, 'a').close()
+
+
+
 def getCurrentMarkedEnfs():
     currentMarkedNodesFile = os.getenv("PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
 
