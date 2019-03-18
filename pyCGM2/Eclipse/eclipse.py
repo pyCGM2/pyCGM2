@@ -9,6 +9,21 @@ from pyCGM2 import enums
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
+from bs4 import BeautifulSoup
+
+def getCurrentMarkedEnfs():
+    currentMarkedNodesFile = os.getenv("PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
+
+    infile = open(currentMarkedNodesFile,"r")
+    soup = BeautifulSoup(infile.read(),'xml')
+
+    out=list()
+    nodes = soup.find_all("MarkedNode")
+    for node in nodes:
+        fullFilename = node.get("MarkedNodePath")
+        out.append(fullFilename.split("\\")[-1])
+
+    return out if out!=[] else None
 
 
 def getEnfFiles(path, type):
@@ -265,3 +280,7 @@ class TrialEnfReader(EnfReader):
             RightFlatFoot  = self.m_trialInfos["LeftFlatFoot"]
 
             return leftFlatFoot, RightFlatFoot
+
+    def isMarked(self):
+        markedFiles = getCurrentMarkedEnfs()
+        return True if self.m_file in markedFiles else false

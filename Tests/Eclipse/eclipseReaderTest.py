@@ -35,10 +35,15 @@ class EclipseTest():
         kneeMotion = eclipse.findKneeMotions(DATA_PATH)
 
 
-        
 
+    @classmethod
+    def currentMarkedNodesFileTest(cls):
+
+        out = eclipse.getCurrentMarkedEnfs()
+        
 
 if __name__ == "__main__":
 
 
     EclipseTest.test()
+    EclipseTest.currentMarkedNodesFileTest()
