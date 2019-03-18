@@ -72,7 +72,7 @@ class CGM2_4_Tests():
                             markerDiameter=markerDiameter).compute()
 
 
-        #import ipdb; ipdb.set_trace()
+        
         # ------ Fitting -------
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
         acqGait =  btkTools.applyTranslators(acqGait,translators)
@@ -136,7 +136,7 @@ class CGM2_4_Tests():
                             markerDiameter=markerDiameter).compute()
 
 
-        #import ipdb; ipdb.set_trace()
+        
         # ------ Fitting -------
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
         acqGait =  btkTools.applyTranslators(acqGait,translators)

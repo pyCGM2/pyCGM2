@@ -110,7 +110,6 @@ class EmgNormalisationProcessingFilter(object):
             self.m_threshold = np.max(value["maxs"])
 
         elif EnumEmgNorm == enums.EmgAmplitudeNormalization.MeanMax:
-            import ipdb; ipdb.set_trace()
             self.m_threshold = np.mean(value["maxs"])
 
         elif EnumEmgNorm == enums.EmgAmplitudeNormalization.MedianMax:

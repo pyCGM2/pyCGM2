@@ -125,7 +125,7 @@ class CGM2_Knee_test():
         # print functional Offsets
         print model.mp_computed["LeftKneeFuncCalibrationOffset"]
         print model.mp_computed["RightKneeFuncCalibrationOffset"]
-        #import ipdb; ipdb.set_trace()
+        
 
 
         # # ------ Fitting -------
@@ -377,7 +377,7 @@ class CGM2_Knee_coreApp_tests():
             MAIN_PATH,funcFilename,translators,
             "Left",831,1280)
 
-        import ipdb; ipdb.set_trace()
+        
 
 if __name__ == "__main__":
 

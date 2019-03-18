@@ -35,7 +35,7 @@ class EclipseTest():
         kneeMotion = eclipse.findKneeMotions(DATA_PATH)
 
 
-        import ipdb; ipdb.set_trace()
+        
 
 
 if __name__ == "__main__":

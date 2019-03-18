@@ -2740,7 +2740,7 @@ class CGM1(CGM):
                 self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
                 self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
 
-                import ipdb; ipdb.set_trace()
+                
                 TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
 
                 for i in range(0,aqui.GetPointFrameNumber()):

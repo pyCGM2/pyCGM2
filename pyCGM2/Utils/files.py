@@ -15,7 +15,7 @@ def openFile(path,filename):
 
     if os.path.isfile( path + filename):
         content = open(str(path+filename)).read()
-        #if filename == "PIG-KAD-mp.ypyCGM2": import ipdb; ipdb.set_trace()
+        
 
         jsonFlag = is_json(content)
         yamlFlag = is_yaml(content)

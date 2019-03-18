@@ -27,7 +27,7 @@ def _setPointData(framecount,pfn,ff,lf,values):
         data[2][i] = values[j,2]
         j+=1
 
-    #import ipdb; ipdb.set_trace()
+    
     return data,exists
 
 

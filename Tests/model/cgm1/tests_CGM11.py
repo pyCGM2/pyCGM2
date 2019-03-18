@@ -192,7 +192,7 @@ class CGM11_Tests():
         }
 
 
-        #import ipdb; ipdb.set_trace()
+
         settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
         translators = settings["Translators"]
 
@@ -272,7 +272,7 @@ class CGM11_Tests():
         }
 
 
-        #import ipdb; ipdb.set_trace()
+
         settings = files.openJson(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
         translators = settings["Translators"]
 
