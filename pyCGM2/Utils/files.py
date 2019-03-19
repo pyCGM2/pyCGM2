@@ -15,7 +15,7 @@ def openFile(path,filename):
 
     if os.path.isfile( path + filename):
         content = open(str(path+filename)).read()
-        
+
 
         jsonFlag = is_json(content)
         yamlFlag = is_yaml(content)
@@ -359,3 +359,10 @@ def is_json(s):
 
 def is_yaml(s):
     return try_as(yaml.safe_load, s, yaml.scanner.ScannerError)
+
+def generateEmptyENF(path):
+    c3ds = getFiles(path,"c3d")
+    for c3d in c3ds:
+        enfName = c3d[:-4]+".Trial.enf"
+        if enfName not in os.listdir(path):
+            open(path+enfName, 'a').close()

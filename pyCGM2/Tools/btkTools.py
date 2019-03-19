@@ -618,3 +618,44 @@ def getStartEndEvents(btkAcq,context,startLabel="start", endLabel="end"):
         raise("[pyCGM2]: wrong order ( start<end)" )
     else:
         return start[0],end[0]
+
+
+def changeSubjectName(btkAcq,subjectName):
+
+    def getSectionFromMd(md):
+        md_sections=list()
+        for i in range(0, md.GetChildNumber()):
+            md_sections.append(md.GetChild(i).GetLabel())
+        return md_sections
+
+
+    # change subject name in the metadata
+    md = btkAcq.GetMetaData()
+
+
+    if "SUBJECTS" in getSectionFromMd(md):
+        subjectMd =  btkAcq.GetMetaData().FindChild("SUBJECTS").value()
+        if "NAMES" in getSectionFromMd(subjectMd):
+            subjectMd.FindChild("NAMES").value().GetInfo().SetValue(0,subjectName)
+
+        if "USES_PREFIXES"  not in getSectionFromMd(subjectMd):
+            btk.btkMetaDataCreateChild(subjectMd, "USES_PREFIXES", 0)
+
+    if "ANALYSIS" in getSectionFromMd(md):
+        analysisMd =  btkAcq.GetMetaData().FindChild("ANALYSIS").value()
+        if "SUBJECTS" in getSectionFromMd(analysisMd):
+            anaSubMdi = analysisMd.FindChild("SUBJECTS").value().GetInfo()
+            for i in range(0,anaSubMdi.GetDimension(1) ):
+                anaSubMdi.SetValue(i,subjectName)
+
+    events = btkAcq.GetEvents()
+    for ev in btk.Iterate(events):
+        ev.SetSubject(subjectName)
+
+    # Do not work
+    # eventMd =  btkAcq.GetMetaData().FindChild("EVENT").value()
+    # eventMdi = eventMd.FindChild("SUBJECTS").value().GetInfo()
+    # for i in range(0,eventMdi.GetDimension(1) ):
+    #     eventMdi.SetValue(i,"TEST")
+
+    return btkAcq
