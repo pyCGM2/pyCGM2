@@ -117,7 +117,7 @@ class CGM1(CGM):
 
     THORAX_TRACKING_MARKERS=["C7", "T10","CLAV", "STRN"]
 
-    UPPERLIMB_TRACKING_MARKERS=[ "LELB", "LWRA", "LWRB",  "LFIN", "RELB", "RWRA", "RWRB",  "RFIN", "LFHD","LBHD","RFHD","RBHD"]
+    UPPERLIMB_TRACKING_MARKERS=[ "LSHO",  "LELB", "LWRA", "LWRB",  "LFIN","RSHO", "RELB", "RWRA", "RWRB",  "RFIN", "LFHD","LBHD","RFHD","RBHD"]
 
 
     def __init__(self):
@@ -2740,7 +2740,7 @@ class CGM1(CGM):
                 self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
                 self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
 
-                
+
                 TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
 
                 for i in range(0,aqui.GetPointFrameNumber()):
