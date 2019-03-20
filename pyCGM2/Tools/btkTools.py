@@ -620,30 +620,31 @@ def getStartEndEvents(btkAcq,context,startLabel="start", endLabel="end"):
         return start[0],end[0]
 
 
-def changeSubjectName(btkAcq,subjectName):
+def _getSectionFromMd(md):
+    md_sections=list()
+    for i in range(0, md.GetChildNumber()):
+        md_sections.append(md.GetChild(i).GetLabel())
+    return md_sections
 
-    def getSectionFromMd(md):
-        md_sections=list()
-        for i in range(0, md.GetChildNumber()):
-            md_sections.append(md.GetChild(i).GetLabel())
-        return md_sections
+
+def changeSubjectName(btkAcq,subjectName):
 
 
     # change subject name in the metadata
     md = btkAcq.GetMetaData()
 
 
-    if "SUBJECTS" in getSectionFromMd(md):
+    if "SUBJECTS" in _getSectionFromMd(md):
         subjectMd =  btkAcq.GetMetaData().FindChild("SUBJECTS").value()
-        if "NAMES" in getSectionFromMd(subjectMd):
+        if "NAMES" in _getSectionFromMd(subjectMd):
             subjectMd.FindChild("NAMES").value().GetInfo().SetValue(0,subjectName)
 
         if "USES_PREFIXES"  not in getSectionFromMd(subjectMd):
             btk.btkMetaDataCreateChild(subjectMd, "USES_PREFIXES", 0)
 
-    if "ANALYSIS" in getSectionFromMd(md):
+    if "ANALYSIS" in _getSectionFromMd(md):
         analysisMd =  btkAcq.GetMetaData().FindChild("ANALYSIS").value()
-        if "SUBJECTS" in getSectionFromMd(analysisMd):
+        if "SUBJECTS" in _getSectionFromMd(analysisMd):
             anaSubMdi = analysisMd.FindChild("SUBJECTS").value().GetInfo()
             for i in range(0,anaSubMdi.GetDimension(1) ):
                 anaSubMdi.SetValue(i,subjectName)
@@ -659,3 +660,17 @@ def changeSubjectName(btkAcq,subjectName):
     #     eventMdi.SetValue(i,"TEST")
 
     return btkAcq
+
+def smartGetMetadata(btkAcq,firstLevel,secondLevel):
+    md = btkAcq.GetMetaData()
+    if firstLevel in _getSectionFromMd(md):
+        firstMd =  btkAcq.GetMetaData().FindChild(firstLevel).value()
+        if secondLevel in _getSectionFromMd(firstMd):
+            return firstMd.FindChild(secondLevel).value().GetInfo().ToString()
+
+def smartSetMetadata(btkAcq,firstLevel,secondLevel,index,value):
+    md = btkAcq.GetMetaData()
+    if firstLevel in _getSectionFromMd(md):
+        firstMd =  btkAcq.GetMetaData().FindChild(firstLevel).value()
+        if secondLevel in _getSectionFromMd(firstMd):
+            return firstMd.FindChild(secondLevel).value().GetInfo().SetValue(index,value)
