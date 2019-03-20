@@ -91,7 +91,7 @@ def calibration2Dof(model,
         modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,enums.motionMethod.Determinist)
         modMotion.compute()
 
-    elif model.version in  ["CGM2.3","CGM2.4"]:
+    elif model.version in  ["CGM2.3","CGM2.4","CGM2.5"]:
         if side == "Left":
             thigh_markers = model.getSegment("Left Thigh").m_tracking_markers
             shank_markers = model.getSegment("Left Shank").m_tracking_markers
@@ -187,7 +187,7 @@ def sara(model,
                            markerDiameter=markerDiameter).compute()
 
 
-    if model.version in  ["CGM2.3","CGM2.4"]:
+    if model.version in  ["CGM2.3","CGM2.4","CGM2.5"]:
         if side == "Left":
             thigh_markers = model.getSegment("Left Thigh").m_tracking_markers
             shank_markers = model.getSegment("Left Shank").m_tracking_markers

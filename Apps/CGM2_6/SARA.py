@@ -85,9 +85,20 @@ def main(args):
         if model.version in ["CGM1.0","CGM1.1","CGM2.1","CGM2.2"] :
             raise Exception ("Can t use SARA method with your model %s [minimal version : CGM2.3]"%(model.version))
         elif model.version == "CGM2.3":
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_3-pyCGM2.settings"):
+                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+            else:
+                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
         elif model.version in  ["CGM2.4"]:
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_4-pyCGM2.settings"):
+                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+            else:
+                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_4-pyCGM2.settings")
+        elif model.version in  ["CGM2.5"]:
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_5-pyCGM2.settings"):
+                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_5-pyCGM2.settings")
+            else:
+                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_5-pyCGM2.settings")
         else:
             raise Exception ("model version not found [contact admin]")
 
@@ -99,6 +110,8 @@ def main(args):
             translators = files.getTranslators(DATA_PATH,"CGM2-3.translators")
         elif model.version in  ["CGM2.4"]:
             translators = files.getTranslators(DATA_PATH,"CGM2-4.translators")
+        elif model.version in  ["CGM2.5"]:
+            translators = files.getTranslators(DATA_PATH,"CGM2-5.translators")
         if not translators:
            translators = settings["Translators"]
 
