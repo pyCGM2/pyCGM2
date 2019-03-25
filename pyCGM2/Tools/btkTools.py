@@ -202,13 +202,12 @@ def checkMultipleSubject(acq):
 
 # --- Model -----
 
-def applyTranslators(acq, translators,keepInitial=False):
+def applyTranslators(acq, translators):
     """
     Rename marker from translators
     :Parameters:
         - `acq` (btkAcquisition) - a btk acquisition instance
         - `translators` (dict) - translators
-        - `keepInitial` (bool) - flag for avoiding to remove initial markers
     """
     acqClone = btk.btkAcquisition.Clone(acq)
 
@@ -221,26 +220,46 @@ def applyTranslators(acq, translators,keepInitial=False):
             modifiedMarkerList.append(it[0])
             modifiedMarkerList.append(it[1])
 
-
     # Remove Modified Markers from Clone
     for point in  btk.Iterate(acq.GetPoints()):
         if point.GetType() == btk.btkPoint.Marker:
             label = point.GetLabel()
             if label in modifiedMarkerList:
                 acqClone.RemovePoint(label)
+                logging.debug("point (%s) remove in the clone acq  " %(str(label)))
 
     # Add Modify markers to clone
     for it in translators.items():
         wantedLabel,initialLabel = it[0],it[1]
-        logging.debug("wantedLabel (%s) initialLabel (%s)  " %(str(wantedLabel), str(initialLabel)))
-        if wantedLabel != initialLabel and initialLabel !="None":
+        if initialLabel !="None":
+            print wantedLabel
+            if isPointExist(acq,wantedLabel):
+                smartAppendPoint(acqClone,str(wantedLabel+"_origin"),acq.GetPoint(str(wantedLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
+                logging.warning("wantedLabel (%s)_origin created" %(str(wantedLabel)))
             if isPointExist(acq,initialLabel):
-                logging.debug("Initial point (%s) renamed (%s)  added into the c3d" %(str(initialLabel), str(wantedLabel)))
-                smartAppendPoint(acqClone,str(wantedLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
-                if keepInitial:
-                    smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
-            else :
-                logging.debug("initialLabel (%s) doesn t exist  " %(str(initialLabel)))
+                if initialLabel in translators.keys():
+                    if translators[initialLabel] == "None":
+                        logging.warning("Initial point (%s)and (%s) point to similar values" %(str(initialLabel), str(wantedLabel)))
+                        smartAppendPoint(acqClone,str(wantedLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
+                        smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
+                    elif translators[initialLabel] == wantedLabel:
+                        logging.warning("Initial point (%s) swaped with (%s)" %(str(initialLabel), str(wantedLabel)))
+                        initialValue = acq.GetPoint(str(initialLabel)).GetValues()
+                        wantedlValue = acq.GetPoint(str(wantedLabel)).GetValues()
+                        smartAppendPoint(acqClone,str(wantedLabel),initialValue,PointType=btk.btkPoint.Marker)
+                        smartAppendPoint(acqClone,str("TMP"),wantedlValue,PointType=btk.btkPoint.Marker)
+                        acqClone.GetPoint("TMP").SetLabel(initialLabel)
+                        acqClone.RemovePoint(str(wantedLabel+"_origin"))
+                        acqClone.RemovePoint(str(initialLabel+"_origin"))
+                else:
+                    logging.warning("Initial point (%s) renamed (%s)  added into the c3d" %(str(initialLabel), str(wantedLabel)))
+                    smartAppendPoint(acqClone,str(wantedLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
+                    smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
+
+            else:
+                logging.error("initialLabel (%s) doesn t exist  " %(str(initialLabel)))
+                raise Exception ("your translators are badly configured")
+
 
     return acqClone
 
