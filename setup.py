@@ -174,7 +174,7 @@ setup(name = 'pyCGM2',
                  'Operating System :: Windows OS',
                  'Natural Language :: English-French',
                  'Topic :: Clinical Gait Analysis'],
-    scripts=gen_data_files_forScripts("Apps")
+    scripts=gen_data_files_forScripts("Apps","Scripts")
     )
 
 #------------------------------------------------------------------------------
