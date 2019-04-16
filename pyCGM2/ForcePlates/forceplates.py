@@ -236,10 +236,12 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
                     i+=1
             else:
                 logging.warning("[pyCGM2] : automatic force plate assigment corrected  ")
-                if len(mfpa) != len(suffix):
-                    raise Exception("[pyCGM2] manual force plate assignment badly sets. Wrong force plate number. %s force plate require" %(str(len(suffix))))
+                if len(mfpa) < len(suffix):
+                    raise Exception("[pyCGM2] number of assigned force plate inferior to the number of force plate number. Your assignment should have  %s letters at least" %(str(len(suffix))))
                 else:
-                    for i in range(0, len(mfpa)):
+                    if len(mfpa) > len(suffix):
+                        logging.warning("[pyCGM2]: Your manual force plate assignement mentions more force plates than the number of force plates stored in the c3d")
+                    for i in range(0, len(suffix)):
                         if mfpa[i] != "A":
                             correctedSuffix = correctedSuffix + mfpa[i]
                         else:

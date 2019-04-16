@@ -15,6 +15,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 from pyCGM2.Tools import  btkTools
 from pyCGM2.ForcePlates import forceplates
 
+import numpy as np
 
 
 
@@ -117,7 +118,70 @@ class test_matchedFootPlatForm_difficultCases():
         if mappedForcePlate!="RLRLXX":
             raise Exception ("uncorrected force plate matching")
 
+class test_manualAssigment():
+    @classmethod
+    def threePF_wrongAssigmenent(cls):
 
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+
+        # --- Motion 1
+        gaitFilename="walking_Y_3pf.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        #forceplates.appendForcePlateCornerAsMarker(acqGait)
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+
+        try:
+            assignedMappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XX")
+        except Exception, errormsg:
+            np.testing.assert_string_equal(errormsg.args[0],"[pyCGM2] number of assigned force plate inferior to the number of force plate number. Your assignment should have  3 letters at least")
+
+
+    @classmethod
+    def threePF_assigmenentCases(cls):
+
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+
+        # --- Motion 1
+        gaitFilename="walking_Y_3pf.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        #forceplates.appendForcePlateCornerAsMarker(acqGait)
+        correctAssigmenent = "RLR"
+
+        assignedMappedForcePlate1 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XXX")
+        np.testing.assert_string_equal(assignedMappedForcePlate1,"XXX")
+
+        assignedMappedForcePlate2 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XXA")
+        np.testing.assert_string_equal(assignedMappedForcePlate2,"XXR")
+
+        assignedMappedForcePlate3 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="AAA")
+        np.testing.assert_string_equal(assignedMappedForcePlate3,"RLR")
+
+        assignedMappedForcePlate4 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="AXA")
+        np.testing.assert_string_equal(assignedMappedForcePlate4,"RXR")
+
+    @classmethod
+    def threePF_mfpaSupNumberForcePlates(cls):
+
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+
+        # --- Motion 1
+        gaitFilename="walking_Y_3pf.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        #forceplates.appendForcePlateCornerAsMarker(acqGait)
+        correctAssigmenent = "RLR"
+
+        assignedMappedForcePlate1 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XXXXXX")
+        np.testing.assert_string_equal(assignedMappedForcePlate1,"XXX")
+
+
+        assignedMappedForcePlate2 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XXALR")
+        np.testing.assert_string_equal(assignedMappedForcePlate2,"XXR")
+
+        assignedMappedForcePlate3 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="AAALR")
+        np.testing.assert_string_equal(assignedMappedForcePlate3,"RLR")
+
+        assignedMappedForcePlate4 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="AXAXXX")
+        np.testing.assert_string_equal(assignedMappedForcePlate4,"RXR")
 
 
 if __name__ == "__main__":
@@ -131,3 +195,8 @@ if __name__ == "__main__":
     logging.info("######## DIFFICULT CASES ######")
     test_matchedFootPlatForm_difficultCases.fourPF_PF3misfunction()
     test_matchedFootPlatForm_difficultCases.sixForcePlate_overlayFP4and5()
+
+    logging.info("######## MANUAL ASSIGMENT ######")
+    test_manualAssigment.threePF_wrongAssigmenent()
+    test_manualAssigment.threePF_assigmenentCases()
+    test_manualAssigment.threePF_mfpaSupNumberForcePlates()
