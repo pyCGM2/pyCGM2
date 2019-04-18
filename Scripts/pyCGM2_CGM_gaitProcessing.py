@@ -32,7 +32,6 @@ def main(args):
             modelInfo=None,
             pointLabelSuffix=manager.pointSuffix)
 
-    import ipdb; ipdb.set_trace()
     plot.plot_spatioTemporal(DATA_PATH,analysisInstance,
         exportPdf=True,
         outputName=manager.title)
