@@ -141,6 +141,8 @@ def main(args):
             translators = files.getTranslators(DATA_PATH,"CGM2_3.translators")
         elif model.version in  ["CGM2.4"]:
             translators = files.getTranslators(DATA_PATH,"CGM2_4.translators")
+        elif model.version in  ["CGM2.5"]:
+            translators = files.getTranslators(DATA_PATH,"CGM2_5.translators")
 
         if not translators:
            translators = settings["Translators"]
