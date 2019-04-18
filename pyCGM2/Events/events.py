@@ -71,8 +71,6 @@ class ZeniProcedure(object):
             indexes_fs_right = detect_peaks.detect_peaks(-diffHeel_right[:,longAxisIndex])+ff
             indexes_fo_right = detect_peaks.detect_peaks(diffToe_right[:,longAxisIndex])+ff
 
-        print  indexes_fs_left
-        print  indexes_fs_left+self.footStrikeOffset
         return indexes_fs_left+self.footStrikeOffset,indexes_fo_left+self.footOffOffset, indexes_fs_right+self.footStrikeOffset, indexes_fo_right+self.footOffOffset
 
 
@@ -80,7 +78,7 @@ class EventFilter(object):
     """
 
     """
-    def __init__(self,procedure,acq,  ):
+    def __init__(self,procedure,acq):
         """
             :Parameters:
         """
@@ -99,12 +97,12 @@ class EventFilter(object):
         indexes_fs_left,indexes_fo_left,indexes_fs_right,indexes_fo_right =  self.m_procedure.detect(self.m_aqui)
 
         for ind in indexes_fs_left:
-            ev = btk.btkEvent('Foot Strike', (ind-1)/pf, 'Left', btk.btkEvent.Automatic, '', eventDescriptor)
+            ev = btk.btkEvent('Foot Strike', (ind-1)/pf, 'Left', btk.btkEvent.Manual, '', eventDescriptor)
             ev.SetId(1)
             self.m_aqui.AppendEvent(ev)
 
         for ind in indexes_fo_left:
-            ev = btk.btkEvent('Foot Off', (ind-1)/pf, 'Left', btk.btkEvent.Automatic, '', eventDescriptor)
+            ev = btk.btkEvent('Foot Off', (ind-1)/pf, 'Left', btk.btkEvent.Manual, '', eventDescriptor)
             ev.SetId(2)
             self.m_aqui.AppendEvent(ev)
 
@@ -117,3 +115,10 @@ class EventFilter(object):
             ev = btk.btkEvent('Foot Off', (ind-1)/pf, 'Right', btk.btkEvent.Manual, '', eventDescriptor)
             ev.SetId(2)
             self.m_aqui.AppendEvent(ev)
+
+        # events= self.m_aqui.GetEvents()
+        # for ev in btk.Iterate(events):
+        #     print ev.GetLabel()
+        #     print ev.GetContext()
+        #     print ev.GetTime()
+        #     print "------"
