@@ -7,6 +7,8 @@ from pyCGM2.Eclipse import vskTools,eclipse
 from pyCGM2 import enums
 import numpy as np
 
+import os
+from bs4 import BeautifulSoup
 class EclipseTest():
 
     @classmethod
@@ -77,7 +79,9 @@ class EclipseTest():
         motionProcessingOnly = eclipse.findMotions(DATA_PATH,filterSelected=False)
         kneeMotionProcessingOnly = eclipse.findKneeMotions(DATA_PATH,filterSelected=False)
 
-
+        motionClassified = eclipse.classifyMotions(DATA_PATH,filterSelected=True)
+        motionClassifiedProcessingOnly = eclipse.classifyMotions(DATA_PATH,filterSelected=False)
+        motionClassifiedProcessingOnly_TaskOnly = eclipse.classifyMotions(DATA_PATH,filterSelected=False, criteria = ["Task"])
 
 
     @classmethod
@@ -90,4 +94,4 @@ if __name__ == "__main__":
 
     EclipseTest.readTrialFile()
     EclipseTest.getEnfFiles()
-    EclipseTest.currentMarkedNodesFileTest()
+    #EclipseTest.currentMarkedNodesFileTest()

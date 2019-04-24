@@ -12,6 +12,9 @@ from pyCGM2.Utils import files
 from bs4 import BeautifulSoup
 
 
+
+DEFAULT_SUBSESSION = {"Task":"","Shoes":"","ProthesisOrthosis":"","ExternalAid":"","PersonalAid":""}
+
 def generateEmptyEnf(path):
     c3ds = files.getFiles(path,"c3d")
 
@@ -129,6 +132,69 @@ def cleanEnf(path,enf):
     dst.write(filteredContent)
     dst.close()
     return filteredContent
+
+
+def classifyMotions(path,filterSelected=True,criteria=["Task","Shoes","ProthesisOrthosis","ExternalAid","PersonalAid"]):
+    """
+    motionClassified = eclipse.classifyMotions(DATA_PATH,filterSelected=True)
+
+    motionClassified[i][0] =  ditionnary labelling a subSession
+    motionClassified[i][1] =  list of c3d matching with the subsession
+
+    """
+
+
+
+    enfs = getEnfFiles(path,enums.EclipseType.Trial)
+    subSessions = list()
+
+    # 1 : detect task
+
+    for enf in enfs:
+        subSession =dict(DEFAULT_SUBSESSION)
+        enfTrial = TrialEnfReader(path,enf)
+        if filterSelected:
+            if enfTrial.isMotionTrial() and enfTrial.isSelected():
+                for it in criteria:
+                    subSession[it] = enfTrial.get(it)
+                if subSession not in subSessions:
+                    subSessions.append(subSession)
+        else:
+            if enfTrial.isMotionTrial() and enfTrial.get("Processing")=="Ready":
+                for it in criteria:
+                    subSession[it] = enfTrial.get(it)
+                if subSession not in subSessions:   subSessions.append(subSession)
+
+
+    #2 : match c3d
+    c3ds = list()
+    for subSessionIt in subSessions:
+        c3d_bySubSession = list()
+        for enf in enfs:
+            subSession =dict(DEFAULT_SUBSESSION)
+            enfTrial = TrialEnfReader(path,enf)
+            if filterSelected:
+                if enfTrial.isMotionTrial() and enfTrial.isSelected():
+                    for it in criteria:
+                        subSession[it] = enfTrial.get(it)
+                    if subSession == subSessionIt:
+                        c3d_bySubSession.append(enfTrial.getC3d())
+            else:
+                if enfTrial.isMotionTrial() and enfTrial.get("Processing")=="Ready":
+                    for it in criteria:
+                        subSession[it] = enfTrial.get(it)
+                    if subSession == subSessionIt:
+                        c3d_bySubSession.append(enfTrial.getC3d())
+        c3ds.append(c3d_bySubSession)
+
+
+    return zip(subSessions,c3ds)
+
+
+
+
+
+
 
 class EnfReader(object):
 
