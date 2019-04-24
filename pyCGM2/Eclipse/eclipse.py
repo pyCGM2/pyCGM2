@@ -60,15 +60,19 @@ def getEnfFiles(path, type):
         raise Exception ("eclipse file type not recognize. Shoud be an item of enums.eClipseType")
 
 
-def findCalibration(path):
+def findCalibration(path, filterSelected=True):
     enfs = getEnfFiles(path,enums.EclipseType.Trial)
 
 
     detected = list()
     for enf in enfs:
         enfTrial = TrialEnfReader(path,enf)
-        if enfTrial.isCalibrationTrial() and enfTrial.isActivate() :
-            detected.append(enf)
+        if filterSelected:
+            if enfTrial.isCalibrationTrial() and enfTrial.isSelected() :
+                detected.append(enf)
+        else:
+            if enfTrial.isCalibrationTrial() and enfTrial.get("Processing")=="Ready":
+                detected.append(enf)
 
     if len(detected)>1:
         raise Exception("You should have only one activated calibration c3d")
@@ -76,28 +80,37 @@ def findCalibration(path):
         return detected[0]
 
 
-def findMotions(path):
+def findMotions(path,filterSelected=True):
     enfs = getEnfFiles(path,enums.EclipseType.Trial)
 
     detected = list()
     for enf in enfs:
         enfTrial = TrialEnfReader(path,enf)
-        if enfTrial.isMotionTrial() and enfTrial.isActivate():
-            detected.append(enf)
+        if filterSelected:
+            if enfTrial.isMotionTrial() and enfTrial.isSelected():
+                detected.append(enf)
+        else:
+            if enfTrial.isMotionTrial() and enfTrial.get("Processing")=="Ready":
+                detected.append(enf)
 
     if detected ==[]:
         return None
     else:
         return detected
 
-def findKneeMotions(path):
+def findKneeMotions(path,filterSelected=True):
     enfs = getEnfFiles(path,enums.EclipseType.Trial)
 
     detected = list()
     for enf in enfs:
         enfTrial = TrialEnfReader(path,enf)
-        if enfTrial.isKneeCalibrationTrial() and enfTrial.isActivate():
-            detected.append(enf)
+        if filterSelected:
+            if enfTrial.isKneeCalibrationTrial() and enfTrial.isSelected():
+                detected.append(enf)
+        else:
+            if enfTrial.isKneeCalibrationTrial() and enfTrial.get("Processing")=="Ready":
+                detected.append(enf)
+
     if detected ==[]:
         return None
     else:
@@ -123,6 +136,9 @@ class EnfReader(object):
 
         config = ConfigParser.ConfigParser()
         config.optionxform=str # keep letter case
+
+        if not os.path.isfile(path+enfFile):
+            raise Exception ("[pyCGM2] : enf file (%s) not find"%(str(path+enfFile)))
 
         try:
             config.read(path+enfFile)
@@ -206,7 +222,7 @@ class TrialEnfReader(EnfReader):
         self.m_trialInfos = super(TrialEnfReader, self).getSection("TRIAL_INFO")
 
         for key in self.m_trialInfos:
-            if self.m_trialInfos[key] == "":
+            if self.m_trialInfos[key] == "" or self.m_trialInfos[key] == "None":
                 self.m_trialInfos[key] = None
             elif self.m_trialInfos[key].lower() == "true":
                 self.m_trialInfos[key]=True
@@ -228,10 +244,10 @@ class TrialEnfReader(EnfReader):
         return self.m_file.replace(".Trial.enf",".c3d")
 
 
-    def isActivate(self):
+    def isSelected(self):
         flag = False
-        if "Activate" in self.m_trialInfos.keys():
-            if self.m_trialInfos["Activate"] == "Selected" :
+        if "Selected" in self.m_trialInfos.keys():
+            if self.m_trialInfos["Selected"] == "Selected" :
                 flag = True
         return flag
 
@@ -239,15 +255,15 @@ class TrialEnfReader(EnfReader):
 
     def isCalibrationTrial(self):
         flag = False
-        if "PROCESSING" in self.m_trialInfos.keys() and "TRIAL_TYPE" in self.m_trialInfos.keys():
-            if self.m_trialInfos["PROCESSING"] == "Ready" and self.m_trialInfos["TRIAL_TYPE"] == "Static":
+        if "Processing" in self.m_trialInfos.keys() and "TrialType" in self.m_trialInfos.keys():
+            if self.m_trialInfos["Processing"] == "Ready" and self.m_trialInfos["TrialType"] == "Static":
                 flag = True
         return flag
 
     def isKneeCalibrationTrial(self):
         flag = False
-        if "PROCESSING" in self.m_trialInfos.keys() and "TRIAL_TYPE" in self.m_trialInfos.keys():
-            if self.m_trialInfos["PROCESSING"] == "Ready" and self.m_trialInfos["TRIAL_TYPE"] == "KneeCalibration":
+        if "Processing" in self.m_trialInfos.keys() and "TrialType" in self.m_trialInfos.keys():
+            if self.m_trialInfos["Processing"] == "Ready" and self.m_trialInfos["TrialType"] == "Knee Calibration":
                 flag = True
         return flag
 
@@ -260,8 +276,8 @@ class TrialEnfReader(EnfReader):
 
     def isMotionTrial(self):
         flag = False
-        if "PROCESSING" in self.m_trialInfos.keys() and "TRIAL_TYPE" in self.m_trialInfos.keys():
-            if self.m_trialInfos["PROCESSING"] == "Ready" and self.m_trialInfos["TRIAL_TYPE"] == "Motion":
+        if "Processing" in self.m_trialInfos.keys() and "TrialType" in self.m_trialInfos.keys():
+            if self.m_trialInfos["Processing"] == "Ready" and self.m_trialInfos["TrialType"] == "Motion":
                 flag =  True
         return flag
 
