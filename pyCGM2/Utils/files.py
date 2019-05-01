@@ -366,3 +366,7 @@ def generateEmptyENF(path):
         enfName = c3d[:-4]+".Trial.enf"
         if enfName not in os.listdir(path):
             open(path+enfName, 'a').close()
+
+
+def copyPaste(src, dst):
+    shutil.copyfile(src, dst)
