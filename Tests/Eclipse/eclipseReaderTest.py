@@ -75,13 +75,13 @@ class EclipseTest():
         kneeMotion = eclipse.findKneeMotions(DATA_PATH)
 
 
-        calibProcessingOnly = eclipse.findCalibration(DATA_PATH,filterSelected=False)
-        motionProcessingOnly = eclipse.findMotions(DATA_PATH,filterSelected=False)
-        kneeMotionProcessingOnly = eclipse.findKneeMotions(DATA_PATH,filterSelected=False)
+        calibProcessingOnly = eclipse.findCalibration(DATA_PATH,ignoreSelect=False)
+        motionProcessingOnly = eclipse.findMotions(DATA_PATH,ignoreSelect=False)
+        kneeMotionProcessingOnly = eclipse.findKneeMotions(DATA_PATH,ignoreSelect=False)
 
-        motionClassified = eclipse.classifyMotions(DATA_PATH,filterSelected=True)
-        motionClassifiedProcessingOnly = eclipse.classifyMotions(DATA_PATH,filterSelected=False)
-        motionClassifiedProcessingOnly_TaskOnly = eclipse.classifyMotions(DATA_PATH,filterSelected=False, criteria = ["Task"])
+        motionClassified = eclipse.classifyEnfMotions(DATA_PATH,ignoreSelect=True)
+        motionClassifiedProcessingOnly = eclipse.classifyEnfMotions(DATA_PATH,ignoreSelect=False)
+        motionClassifiedProcessingOnly_TaskOnly = eclipse.classifyEnfMotions(DATA_PATH,ignoreSelect=False, criteria = ["Task"])
 
 
     @classmethod
@@ -89,9 +89,25 @@ class EclipseTest():
 
         out = eclipse.getCurrentMarkedEnfs()
 
+    @classmethod
+    def writeTrialFile(cls):
+        DATA_PATH ="C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Eclipse\\Lecter\session\\"
+
+
+
+        #sessionreader = eclipse.SessionEnfReader(DATA_PATH,sessionEnfFile)
+
+
+
+        staticTrialFile ="PN01OP01S01STAT.Trial.enf"
+        staticTrialreader = eclipse.TrialEnfReader(DATA_PATH,staticTrialFile)
+        staticTrialreader.set("Model","cgm1")
+        staticTrialreader.save()
+    
 
 if __name__ == "__main__":
 
-    EclipseTest.readTrialFile()
-    EclipseTest.getEnfFiles()
+    #EclipseTest.readTrialFile()
+    #EclipseTest.getEnfFiles()
     #EclipseTest.currentMarkedNodesFileTest()
+    EclipseTest.writeTrialFile()

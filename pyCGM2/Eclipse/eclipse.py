@@ -15,6 +15,7 @@ from bs4 import BeautifulSoup
 
 DEFAULT_SUBSESSION = {"Task":"","Shoes":"","ProthesisOrthosis":"","ExternalAid":"","PersonalAid":""}
 
+
 def generateEmptyEnf(path):
     c3ds = files.getFiles(path,"c3d")
 
@@ -63,14 +64,14 @@ def getEnfFiles(path, type):
         raise Exception ("eclipse file type not recognize. Shoud be an item of enums.eClipseType")
 
 
-def findCalibration(path, filterSelected=True):
+def findCalibration(path, ignoreSelect=False):
     enfs = getEnfFiles(path,enums.EclipseType.Trial)
 
 
     detected = list()
     for enf in enfs:
         enfTrial = TrialEnfReader(path,enf)
-        if filterSelected:
+        if not ignoreSelect:
             if enfTrial.isCalibrationTrial() and enfTrial.isSelected() :
                 detected.append(enf)
         else:
@@ -83,13 +84,13 @@ def findCalibration(path, filterSelected=True):
         return detected[0]
 
 
-def findMotions(path,filterSelected=True):
+def findMotions(path,ignoreSelect=False):
     enfs = getEnfFiles(path,enums.EclipseType.Trial)
 
     detected = list()
     for enf in enfs:
         enfTrial = TrialEnfReader(path,enf)
-        if filterSelected:
+        if not ignoreSelect:
             if enfTrial.isMotionTrial() and enfTrial.isSelected():
                 detected.append(enf)
         else:
@@ -101,13 +102,13 @@ def findMotions(path,filterSelected=True):
     else:
         return detected
 
-def findKneeMotions(path,filterSelected=True):
+def findKneeMotions(path,ignoreSelect=False):
     enfs = getEnfFiles(path,enums.EclipseType.Trial)
 
     detected = list()
     for enf in enfs:
         enfTrial = TrialEnfReader(path,enf)
-        if filterSelected:
+        if not ignoreSelect:
             if enfTrial.isKneeCalibrationTrial() and enfTrial.isSelected():
                 detected.append(enf)
         else:
@@ -134,12 +135,10 @@ def cleanEnf(path,enf):
     return filteredContent
 
 
-def classifyMotions(path,filterSelected=True,criteria=["Task","Shoes","ProthesisOrthosis","ExternalAid","PersonalAid"]):
+def classifyEnfMotions(path,ignoreSelect=False,
+    criteria=["Task","Shoes","ProthesisOrthosis","ExternalAid","PersonalAid"]):
     """
-    motionClassified = eclipse.classifyMotions(DATA_PATH,filterSelected=True)
 
-    motionClassified[i][0] =  ditionnary labelling a subSession
-    motionClassified[i][1] =  list of c3d matching with the subsession
 
     """
 
@@ -153,7 +152,7 @@ def classifyMotions(path,filterSelected=True,criteria=["Task","Shoes","Prothesis
     for enf in enfs:
         subSession =dict(DEFAULT_SUBSESSION)
         enfTrial = TrialEnfReader(path,enf)
-        if filterSelected:
+        if not ignoreSelect:
             if enfTrial.isMotionTrial() and enfTrial.isSelected():
                 for it in criteria:
                     subSession[it] = enfTrial.get(it)
@@ -173,22 +172,32 @@ def classifyMotions(path,filterSelected=True,criteria=["Task","Shoes","Prothesis
         for enf in enfs:
             subSession =dict(DEFAULT_SUBSESSION)
             enfTrial = TrialEnfReader(path,enf)
-            if filterSelected:
+            if not ignoreSelect:
                 if enfTrial.isMotionTrial() and enfTrial.isSelected():
                     for it in criteria:
                         subSession[it] = enfTrial.get(it)
                     if subSession == subSessionIt:
-                        c3d_bySubSession.append(enfTrial.getC3d())
+                        c3d_bySubSession.append(enfTrial.getFile())
             else:
                 if enfTrial.isMotionTrial() and enfTrial.get("Processing")=="Ready":
                     for it in criteria:
                         subSession[it] = enfTrial.get(it)
                     if subSession == subSessionIt:
-                        c3d_bySubSession.append(enfTrial.getC3d())
+                        c3d_bySubSession.append(enfTrial.getFile())
         c3ds.append(c3d_bySubSession)
 
+    shortNames = list()
+    for subSessionIt in subSessions:
+        shortNames.append(subSessionIt["Task"][0] +"_"+ subSessionIt["Shoes"][0]+ subSessionIt["ProthesisOrthosis"][0]+ subSessionIt["ExternalAid"][0]+ subSessionIt["PersonalAid"][0])
 
-    return zip(subSessions,c3ds)
+
+    # zipped and retrun list of ClassifiedEnf object
+    zipped = zip(subSessions,c3ds,shortNames )
+    out = list()
+    for it in zipped:
+        out.append(ClassifiedEnf(it[0],it[1],it[2]))
+
+    return out
 
 
 
@@ -230,6 +239,13 @@ class EnfReader(object):
                 print("exception on %s!" % option)
                 dict1[option] = None
         return dict1
+
+    def getFile(self):
+        return self.m_file
+
+    def getPath(self):
+        return self.m_path
+
 
 
 class PatientEnfReader(EnfReader):
@@ -296,6 +312,16 @@ class TrialEnfReader(EnfReader):
                 self.m_trialInfos[key]=False
             else:
                 pass
+
+    def set(self,label,value):
+        self.m_trialInfos[label] = value
+        self.m_config.set('TRIAL_INFO', label, value)
+
+
+    def save(self):
+        with open(self.m_path + self.m_file, 'w') as configfile:
+            self.m_config.write(configfile)
+
 
 
     def getTrialInfos(self):
@@ -378,3 +404,24 @@ class TrialEnfReader(EnfReader):
     def isMarked(self):
         markedFiles = getCurrentMarkedEnfs()
         return True if self.m_file in markedFiles else false
+
+
+
+class ClassifiedEnf(object):
+
+    def __init__(self,criteria,enfFiles,shortName):
+        self.__criteria = criteria
+        self.__enfFiles = enfFiles
+        self.__shortName = shortName
+
+
+
+
+    def getEnfFiles(self):
+        return self.__enfFiles
+
+    def getCriteria(self):
+        return self.__criteria
+
+    def getshortName(self):
+        return self.__shortName
