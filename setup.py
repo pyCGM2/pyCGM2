@@ -20,7 +20,7 @@ if developMode:
 if sys.maxsize > 2**32:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
 
-VERSION ="3.1.6"
+VERSION ="3.1.7"
 
 
 for it in site.getsitepackages():
@@ -46,8 +46,9 @@ else:
     PATH_IN_SITEPACKAGE = MAIN_PYCGM2_PATH
 
 user_folder =  os.getenv("PUBLIC")
-NEXUS_PUBLIC_DOCUMENT_VST_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\ModelTemplates\\"
-NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = user_folder+"\\Documents\\Vicon/Nexus2.x\\Configurations\\Pipelines\\"
+NEXUS_PUBLIC_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\"
+NEXUS_PUBLIC_DOCUMENT_VST_PATH = NEXUS_PUBLIC_PATH + "ModelTemplates\\"
+NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = NEXUS_PUBLIC_PATH+"Configurations\\Pipelines\\"
 
 
 
@@ -129,16 +130,17 @@ if os.getenv("PROGRAMDATA") is not None:
         shutil.rmtree(pd+"\\pyCGM2")
         logging.info("pprogramData/pyCGM2---> remove")
 
-# delete all previous vst and pipelines in Nexus Public Documents
-files = getFiles(NEXUS_PUBLIC_DOCUMENT_VST_PATH)
-for file in files:
-    if "pyCGM2" in file[0:6]: # check 6 first letters
-        os.remove(os.path.join(NEXUS_PUBLIC_DOCUMENT_VST_PATH,file))
+if os.path.isdir(NEXUS_PUBLIC_PATH):
+    # delete all previous vst and pipelines in Nexus Public Documents
+    files = getFiles(NEXUS_PUBLIC_DOCUMENT_VST_PATH)
+    for file in files:
+        if "pyCGM2" in file[0:6]: # check 6 first letters
+            os.remove(os.path.join(NEXUS_PUBLIC_DOCUMENT_VST_PATH,file))
 
-files = getFiles(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH)
-for file in files:
-    if "pyCGM2" in file[0:6]:
-        os.remove(os.path.join(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,file))
+    files = getFiles(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH)
+    for file in files:
+        if "pyCGM2" in file[0:6]:
+            os.remove(os.path.join(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,file))
 
 
 
@@ -187,18 +189,19 @@ if not developMode:
     if os.getenv("PROGRAMDATA"):
         PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2"
         shutil.copytree(PYCGM2_SETTINGS_FOLDER[:-1], PYCGM2_APPDATA_PATH)
+
 #--- management of nexus-related files ( vst+pipelines)-----
+if os.path.isdir(NEXUS_PUBLIC_PATH):
+    # vst
+    content = os.listdir(NEXUS_PYCGM2_VST_PATH[:-1])
+    for item in content:
+        full_filename = os.path.join(NEXUS_PYCGM2_VST_PATH, item)
+        shutil.copyfile(full_filename,  os.path.join(NEXUS_PUBLIC_DOCUMENT_VST_PATH,item))
 
 
+    scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
+                                                NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,
+                                                PATH_TO_PYTHON_SCRIPTS)
 
-# vst
-
-content = os.listdir(NEXUS_PYCGM2_VST_PATH[:-1])
-for item in content:
-    full_filename = os.path.join(NEXUS_PYCGM2_VST_PATH, item)
-    shutil.copyfile(full_filename,  os.path.join(NEXUS_PUBLIC_DOCUMENT_VST_PATH,item))
-
-
-scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
-                                            NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,
-                                            PATH_TO_PYTHON_SCRIPTS)
+else:
+    logging.error("[pyCGM2] - Nexus folder not detected - No generation of VST and pipelines")
