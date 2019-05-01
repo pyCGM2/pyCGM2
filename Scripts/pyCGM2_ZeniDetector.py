@@ -30,11 +30,8 @@ def main(args):
         acqGait.ClearEvents()
         # ----------------------EVENT DETECTOR-------------------------------
         evp = events.ZeniProcedure()
-
-        if args.footStrikeOffset is not None:
-            evp.setFootStrikeOffset(args.footStrikeOffset)
-        if args.footOffOffset is not None:
-            evp.setFootOffOffset(args.footOffOffset)
+        evp.setFootStrikeOffset(args.footStrikeOffset)
+        evp.setFootOffOffset(args.footOffOffset)
 
         # event filter
         evf = events.EventFilter(evp,acqGait)
@@ -55,9 +52,9 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='ZeniDetector')
     parser.add_argument('file', nargs=1, help='your c3d file')
-    parser.add_argument('-fso','--footStrikeOffset', type=int, help='systenatic foot strike offset on both side')
-    parser.add_argument('-foo','--footOffOffset', type=int, help='systenatic foot off offset on both side')
-    parser.add_argument('--MokkaCheck', action='store_false', help=' Mokka Checking' )
+    parser.add_argument('-fso','--footStrikeOffset', type=int, help='systenatic foot strike offset on both side',default=0)
+    parser.add_argument('-foo','--footOffOffset', type=int, help='systenatic foot off offset on both side',default=0)
+    parser.add_argument('--MokkaCheck', action='store_true', help=' Mokka Checking' )
     args = parser.parse_args()
 
     #---- main script -----
