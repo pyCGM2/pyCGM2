@@ -100,7 +100,6 @@ if __name__ == "__main__":
 
         # ---- main script -----
     try:
-        #print args
         main(args)
 
 
