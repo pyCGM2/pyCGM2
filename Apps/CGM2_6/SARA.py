@@ -16,7 +16,7 @@ Examples:
     >>>  -side=Left -b=50 -e=100
     (Left knee calibration between frames 50 and 100)
 """
-
+import os
 import traceback
 import logging
 import argparse
