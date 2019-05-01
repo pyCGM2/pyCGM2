@@ -64,13 +64,14 @@ def main(args):
     for trial in rectTrials:
         plot.plotTemporalEMG(DATA_PATH,trial, EMG_LABELS,EMG_MUSCLES, EMG_CONTEXT, NORMAL_ACTIVITIES,exportPdf=True,rectify=manager.rectifyFlag)
 
+
     #----- Gait normalized envelop -------
     envTrials = manager.gaitNormalized_trials
     analysis.processEMG(DATA_PATH, envTrials, EMG_LABELS,
         highPassFrequencies=manager.BandpassFrequencies,
         envelopFrequency=manager.EnvelopLowpassFrequency,fileSuffix=None) # high pass then low pass for all c3ds
 
-    emgAnalysisInstance = analysis.makeEmgAnalysis("Gait",DATA_PATH, envTrials, EMG_LABELS,None, None)
+    emgAnalysisInstance = analysis.makeEmgAnalysis(DATA_PATH, envTrials, EMG_LABELS,None, None)
 
     filename = manager.title
 
@@ -92,13 +93,14 @@ if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser(description='EMG-pipeline')
-    parser.add_argument('-uf','--userFile', type=str, help='userSettings', default="emg.userSettings")
-    parser.add_argument('-ef','--expertFile', type=str, help='Local expert settings', default=None)
+    parser.add_argument('--userFile', type=str, help='userSettings', default="emg.userSettings")
+    parser.add_argument('--expertFile', type=str, help='Local expert settings')
     args = parser.parse_args()
         #print args
 
         # ---- main script -----
     try:
+        #print args
         main(args)
 
 

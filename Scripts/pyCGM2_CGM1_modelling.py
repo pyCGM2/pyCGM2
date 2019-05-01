@@ -99,8 +99,8 @@ if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser(description='CGM1-pipeline')
-    parser.add_argument('-uf','--userFile', type=str, help='userSettings', default="CGM1.userSettings")
-    parser.add_argument('-ef','--expertFile', type=str, help='Local expert settings', default=None)
+    parser.add_argument('--userFile', type=str, help='userSettings', default="CGM1.userSettings")
+    parser.add_argument('--expertFile', type=str, help='Local expert settings')
 
     args = parser.parse_args()
         #print args

@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser(description='CGM-processing')
-    parser.add_argument('-uf','--userFile', type=str, help='userSettings', default="GaitProcessing.userSettings")
+    parser.add_argument('--userFile', type=str, help='userSettings', default="GaitProcessing.userSettings")
 
     args = parser.parse_args()
         #print args
