@@ -38,7 +38,7 @@ if  os.path.isdir(os.getenv("PROGRAMDATA")+"\\pyCGM2"):
     PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
 else:
     PYCGM2_APPDATA_PATH = PYCGM2_SETTINGS_FOLDER
-    
+
 
 
 
@@ -51,10 +51,11 @@ NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"pyCGM2\\Data\\normativeData\\"  # B
 # [Optional] main folder containing osim model
 OPENSIM_PREBUILD_MODEL_PATH = PYCGM2_APPDATA_PATH + "opensim\\"
 
-
 # [Optional] path pointing at Data Folders used for Tests
 TEST_DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\"
 MAIN_BENCHMARK_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\"
 
 # [optional] path pointing pyCGM2-Nexus tools
 NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\"
+
+PYCGM2_SCRIPTS_PATH = MAIN_PYCGM2_PATH+"Scripts\\"
