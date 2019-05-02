@@ -20,6 +20,8 @@ import logging
 import argparse
 import matplotlib.pyplot as plt
 import traceback
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # pyCGM2 settings
 import pyCGM2
@@ -38,8 +40,6 @@ from pyCGM2.Nexus import  nexusTools
 from pyCGM2.Utils import files
 
 def main(args):
-
-
 
 
     NEXUS = ViconNexus.ViconNexus()
@@ -63,8 +63,8 @@ def main(args):
         # --------------------------INPUTS ------------------------------------
         DEBUG= False
         if DEBUG:
-            DATA_PATH = "C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Release Tests\CGM2.2\medial\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            modelledFilenameNoExt = "Gait Trial 01"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Release Tests\CGM1\lowerLimbTrunk\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
+            modelledFilenameNoExt = "PN01NORMSS02"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
             NEXUS.OpenTrial( str(DATA_PATH+modelledFilenameNoExt), 30 )
         else:
             DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
@@ -91,18 +91,9 @@ def main(args):
         if not consistencyFlag:
             if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
                 plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-            if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-            if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-                pass # TODO plot upperlimb panel
-
         else:
             if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
                 plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,bodyPart,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-            if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,bodyPart,"Trunk",nds, pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-            if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-                pass # TODO
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
 

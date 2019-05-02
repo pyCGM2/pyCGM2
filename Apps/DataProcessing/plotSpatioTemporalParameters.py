@@ -35,6 +35,9 @@ Examples:
 import traceback
 import logging
 import argparse
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 import matplotlib.pyplot as plt
 
 

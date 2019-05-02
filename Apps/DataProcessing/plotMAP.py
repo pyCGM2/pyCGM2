@@ -21,6 +21,9 @@ import logging
 import argparse
 import matplotlib.pyplot as plt
 import traceback
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 
 # pyCGM2 settings
 import pyCGM2
@@ -65,8 +68,9 @@ def main(args):
         # --------------------------INPUTS ------------------------------------
         DEBUG= False
         if DEBUG:
-            DATA_PATH = "C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Release Tests\CGM2.2\medial\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            modelledFilenameNoExt = "Gait Trial 01"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
+            DATA_PATH = "C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Release Tests\CGM1\lowerLimbTrunk\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
+            modelledFilenameNoExt = "PN01NORMSS02"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
+
             NEXUS.OpenTrial( str(DATA_PATH+modelledFilenameNoExt), 30 )
         else:
             DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
@@ -88,7 +92,7 @@ def main(args):
         modelVersion = model.version
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis("Gait", DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
         plot.plot_MAP(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename,pointLabelSuffix=pointSuffix)
 
 

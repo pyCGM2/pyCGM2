@@ -18,6 +18,9 @@ import traceback
 import logging
 import argparse
 import matplotlib.pyplot as plt
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 
 
 # pyCGM2 settings

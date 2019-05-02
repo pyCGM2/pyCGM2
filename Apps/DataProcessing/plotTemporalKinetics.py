@@ -17,6 +17,9 @@ import traceback
 import logging
 import argparse
 import matplotlib.pyplot as plt
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 
 
 # pyCGM2 settings
@@ -75,10 +78,10 @@ def main(args):
         # --------------------pyCGM2 MODEL ------------------------------
         if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
             plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True)
-        if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"Trunk", pointLabelSuffix=pointSuffix,exportPdf=True)
-        if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-            pass # TODO plot upperlimb panel
+        # if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+        #     plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"Trunk", pointLabelSuffix=pointSuffix,exportPdf=True)
+        # if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
+        #     pass # TODO plot upperlimb panel
 
 
 
