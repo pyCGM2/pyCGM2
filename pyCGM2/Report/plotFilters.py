@@ -20,6 +20,7 @@ class PlottingFilter(object):
         self.m_path = None
         self.m_fileName = None
         self.m_format = None
+        self.m_title = None
 
 
     def setExport(self,path,filename,format):
@@ -56,6 +57,7 @@ class PlottingFilter(object):
 
         #self.__concretePlotViewer.plotPanel(self.m_path,self.m_pdfName)
         self.fig = self.__concretePlotViewer.plotPanel()
+        if self.m_title is not None: self.__concretePlotViewer.fig.suptitle(self.m_title)
 
 
         if self.m_path is not None and self.m_fileName is not None:
@@ -71,3 +73,6 @@ class PlottingFilter(object):
 
     def setHorizontalLine(self, axisIndex, value,color= "black"):
         self.__concretePlotViewer.fig.axes[axisIndex].axhline(value,color=color,ls='dashed')
+
+    def setTitle(self,title):
+        self.m_title=title
