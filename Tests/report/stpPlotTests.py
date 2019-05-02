@@ -41,7 +41,7 @@ class stpPlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysisInstance = analysis.makeAnalysis("Gait", "CGM1.0", DATA_PATH,modelledFilenames,None, None, None)
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames,None, None, None)
 
 
         # viewer
@@ -53,6 +53,7 @@ class stpPlotTest():
         pf.setViewer(kv)
         pf.setExport(DATA_PATH,"stp","pdf")
         pf.plot()
+
 
         plt.show()
 
