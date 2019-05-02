@@ -347,30 +347,26 @@ class TrialEnfReader(EnfReader):
 
     def isCalibrationTrial(self):
         flag = False
-        if "Processing" in self.m_trialInfos.keys() and "TrialType" in self.m_trialInfos.keys():
-            if self.m_trialInfos["Processing"] == "Ready" and self.m_trialInfos["TrialType"] == "Static":
-                flag = True
+        if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Knee Static":
+            flag = True
         return flag
 
     def isKneeCalibrationTrial(self):
         flag = False
-        if "Processing" in self.m_trialInfos.keys() and "TrialType" in self.m_trialInfos.keys():
-            if self.m_trialInfos["Processing"] == "Ready" and self.m_trialInfos["TrialType"] == "Knee Calibration":
-                flag = True
+        if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Knee Calibration":
+            flag = True
         return flag
 
 
     def isC3dExist(self):
-
         return os.path.isfile(self.m_path + self.m_file.replace(".Trial.enf",".c3d"))
 
 
 
     def isMotionTrial(self):
         flag = False
-        if "Processing" in self.m_trialInfos.keys() and "TrialType" in self.m_trialInfos.keys():
-            if self.m_trialInfos["Processing"] == "Ready" and self.m_trialInfos["TrialType"] == "Motion":
-                flag =  True
+        if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Motion":
+            flag =  True
         return flag
 
     def getForcePlateAssigment(self):

@@ -12,6 +12,14 @@ from bs4 import BeautifulSoup
 class EclipseTest():
 
     @classmethod
+    def tests(cls):
+        DATA_PATH ="C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Eclipse\\Lecter\session\\"
+
+        trialFile ="PN01OP01S01SS02[CGM1].Trial.enf"
+        trialreader = eclipse.TrialEnfReader(DATA_PATH,trialFile)
+        import ipdb; ipdb.set_trace()
+
+    @classmethod
     def readTrialFile(cls):
         DATA_PATH ="C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Eclipse\\Lecter\session\\"
 
@@ -103,10 +111,11 @@ class EclipseTest():
         staticTrialreader = eclipse.TrialEnfReader(DATA_PATH,staticTrialFile)
         staticTrialreader.set("Model","cgm1")
         staticTrialreader.save()
-    
+
 
 if __name__ == "__main__":
 
+    EclipseTest.tests()
     #EclipseTest.readTrialFile()
     #EclipseTest.getEnfFiles()
     #EclipseTest.currentMarkedNodesFileTest()
