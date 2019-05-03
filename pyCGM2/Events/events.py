@@ -24,11 +24,9 @@ class ZeniProcedure(object):
         self.footOffOffset = 0
 
     def setFootStrikeOffset(self,value):
-        print value
         self.footStrikeOffset = value
 
     def setFootOffOffset(self,value):
-        print value
         self.footOffOffset = value
 
     def detect(self,acq):
