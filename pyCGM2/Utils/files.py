@@ -8,6 +8,7 @@ from collections import OrderedDict
 import shutil
 import yaml
 import yamlordereddictloader
+from bs4 import BeautifulSoup
 
 import pyCGM2
 
@@ -370,3 +371,11 @@ def generateEmptyENF(path):
 
 def copyPaste(src, dst):
     shutil.copyfile(src, dst)
+
+
+def readXml(DATA_PATH,filename):
+    infile = open(DATA_PATH+filename,"r")
+    contents = infile.read()
+    soup = BeautifulSoup(contents,'xml')
+
+    return soup
