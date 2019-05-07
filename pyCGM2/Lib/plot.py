@@ -19,6 +19,9 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
 
     :param pointLabelSuffix [string]: suffix previously added to your model outputs
     :param exportPdf [bool]: save as pdf (False[default])
+    :param outputName [string]: name of the output filed
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
 
 
     Examples:
@@ -67,7 +70,9 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
 
     :param pointLabelSuffix [string]: suffix previously added to your model outputs
     :param exportPdf [bool]: save as pdf (False[default])
-
+    :param outputName [string]: name of the output filed
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
 
     Examples:
 
@@ -117,6 +122,9 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
 
     :param rectify [bool]:  plot rectify signals (True[default])
     :param exportPdf [bool]: save as pdf (False[default])
+    :param outputName [string]: name of the output filed
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
     """
 
 
@@ -190,6 +198,8 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,cont
     :param type [string]:  display gait events (other choice than gait [default], display foot strikes only)
     :param exportPdf [bool]: save as pdf (False[default])
     :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
     """
 
     if outputName is None:
@@ -244,6 +254,8 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, cont
     :param type [string]:  display gait events ( other choice than gait [default], display foot strikes only)
     :param exportPdf [bool]: save as pdf (False[default])
     :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
     """
 
     if outputName is None:
@@ -291,6 +303,8 @@ def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=
 
     :param exportPdf [bool]: save as pdf (False[default])
     :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
 
     """
 
@@ -328,6 +342,8 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
     :param type [string]:  display gait events ( other choice than gait [default], display foot strikes only)
     :param exportPdf [bool]: save as pdf (False[default])
     :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
 
     """
 
@@ -390,7 +406,8 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
     :param type [string]:  display gait events ( other choice than gait [default], display foot strikes only)
     :param exportPdf [bool]: save as pdf (False[default])
     :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
-
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
     """
     if bodyPart == "LowerLimb":
         bodyPart = enums.BodyPartPlot.LowerLimb
@@ -445,6 +462,8 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLa
     :param type [string]:  display gait events ( other choice than gait [default], display foot strikes only)
     :param exportPdf [bool]: save as pdf (False[default])
     :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
     """
 
     if bodyPart == "LowerLimb":
@@ -500,7 +519,8 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,pointL
     :param type [string]:  display gait events ( other choice than gait [default], display foot strikes only)
     :param exportPdf [bool]: save as pdf (False[default])
     :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
-
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
     """
     if bodyPart == "LowerLimb":
         bodyPart = enums.BodyPartPlot.LowerLimb
@@ -550,6 +570,8 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None
     :param pointLabelSuffix [string]: (None) suffix added to outputs
     :param exportPdf [bool]: save as pdf (False[default])
     :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
     """
     if outputName is None:
         outputName = "Global Analysis"
@@ -639,6 +661,8 @@ def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="
 
     :param plotType [string]: trace type ( Descriptive [default] or Consistency)
     :param type [string]:  display events (Gait [defaut] or None)
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
 
     :example:
 
@@ -693,6 +717,8 @@ def compareEmgEvelops(analyses,legends, emgChannels, muscles, contexts, normalAc
     **optional**
     :param normalized [bool]:  plot normalized-amplitude envelops
     :param plotType [string]: trace type ( Descriptive [default] or Consistency)
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
 
     :example:
 
@@ -744,7 +770,8 @@ def compareSelectedEmgEvelops(analyses,legends, emgChannels,contexts, normalized
     :param normalized [bool]:  display normalized amplitude envelop (false [defaut])
     :param plotType [string]: trace type ( Descriptive [default] or Consistency)
     :param type [string]:  display events (Gait [defaut] or None)
-
+    :param show [bool]: enable matplotlib show function
+    :param title [string]: change default title of the plot panel
     :example:
 
     >>> plot.compareSelectedEmgEvelops([emgAnalysisPre,emgAnalysisPost],["Pre","Post"],["EMG1","EMG1"],["Left","Left"],normalized=False)
