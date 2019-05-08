@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 #import ipdb
-
+import pyCGM2
 from pyCGM2.Processing import c3dManager, cycle, analysis
 from pyCGM2.Model.CGM2 import  cgm
 from pyCGM2.Tools import btkTools
 from pyCGM2.EMG import emgFilters
 from pyCGM2 import enums
 from pyCGM2.Processing import exporter
+from pyCGM2.Processing import jointPatterns
+
 
 
 def makeAnalysis(DATA_PATH,
@@ -274,3 +276,29 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
         envnf.run()
         i+=1
         del envnf
+
+def automaticCPdeviations(DATA_PATH,analysis,pointLabelSuffix=None,filterTrue=False, export=True, outputname ="Nieuwenhuys2017" ):
+    """
+    Detect gait deviation for CP according a Delphi Consensus (Nieuwenhuys2017 et al 2017)
+
+    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
+
+    """
+
+    RULES_PATH = pyCGM2.PYCGM2_SETTINGS_FOLDER +"jointPatterns\\"
+    rulesXls = RULES_PATH+"Nieuwenhuys2017.xlsx"
+    jpp = jointPatterns.XlsJointPatternProcedure(rulesXls,pointSuffix=pointLabelSuffix)
+    dpf = jointPatterns.JointPatternFilter(jpp, analysis)
+    dataFrameValues = dpf.getValues()
+    dataFramePatterns = dpf.getPatterns(filter = filterTrue)
+
+    if export:
+        # xlsExport = exporter.XlsExportDataFrameFilter()
+        # xlsExport.setDataFrames([dataFrameValues])
+        # xlsExport.export(str(outputname+"_Data"), path=DATA_PATH)
+
+        xlsExport = exporter.XlsExportDataFrameFilter()
+        xlsExport.setDataFrames([dataFramePatterns])
+        xlsExport.export(str(outputname+"_Patterns"), path=DATA_PATH)
+
+    return dataFramePatterns
