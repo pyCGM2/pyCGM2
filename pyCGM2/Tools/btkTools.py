@@ -34,6 +34,38 @@ def smartWriter(acq, filename):
     writer.SetFilename(str(filename))
     writer.Update()
 
+def GetMarkerNames(acq):
+    markerNames=[]
+    for it in btk.Iterate(acq.GetPoints()):
+        if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*":
+            markerNames.append(it.GetLabel())
+    return markerNames
+
+def isGap(acq, markerLabel):
+    """
+        Check if there is a gap
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `markerList` (list of str) - marker labels
+    """
+    residualValues = acq.GetPoint(markerLabel).GetResiduals()
+    if any(residualValues== -1.0):
+        logging.warning("[pyCGM2] gap found for marker (%s)"%(markerLabel))
+        return True
+    else:
+        return False
+
+def findMarkerGap(acq):
+    gaps = list()
+    markerNames  = GetMarkerNames(acq)
+    for marker in markerNames:
+        if isGap(acq,marker):
+            gaps.append(marker)
+
+    return gaps
+
+
 
 def isPointExist(acq,label):
     """
@@ -89,19 +121,20 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
     # valueProj *np.ones((aquiStatic.GetPointFrameNumber(),3))
 
     values = np.nan_to_num(values)
+    residuals = np.zeros((values.shape[0]))
+    for i in range(0, values.shape[0]):
+        if np.all(values[i,:] == np.zeros((3))):
+            residuals[i] = -1
+        else:
+            residuals[i] = 0
 
     if isPointExist(acq,label):
         acq.GetPoint(label).SetValues(values)
         acq.GetPoint(label).SetDescription(desc)
         acq.GetPoint(label).SetType(PointType)
+        acq.GetPoint(label).SetResiduals(residuals)
 
     else:
-        residuals = np.zeros((values.shape[0]))
-        for i in range(0, values.shape[0]):
-            if np.all(values[i,:] == np.zeros((3))):
-                residuals[i] = -1
-            else:
-                residuals[i] = 0
 
         new_btkPoint = btk.btkPoint(label,acq.GetPointFrameNumber())
         new_btkPoint.SetValues(values)
@@ -149,7 +182,7 @@ def checkFirstAndLastFrame (acq, markerLabel):
     if acq.GetPoint(markerLabel).GetValues()[-1,0] == 0:
         raise Exception ("[pyCGM2] no marker on last frame")
 
-def isGap(acq, markerList):
+def isGap_inAcq(acq, markerList):
     """
         Check if there is a gap
 
@@ -257,8 +290,8 @@ def applyTranslators(acq, translators):
                     smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
 
             else:
-                logging.error("initialLabel (%s) doesn t exist  " %(str(initialLabel)))
-                raise Exception ("your translators are badly configured")
+                logging.warning("initialLabel (%s) doesn t exist  " %(str(initialLabel)))
+                #raise Exception ("your translators are badly configured")
 
 
     return acqClone
@@ -693,3 +726,13 @@ def smartSetMetadata(btkAcq,firstLevel,secondLevel,index,value):
         firstMd =  btkAcq.GetMetaData().FindChild(firstLevel).value()
         if secondLevel in _getSectionFromMd(firstMd):
             return firstMd.FindChild(secondLevel).value().GetInfo().SetValue(index,value)
+
+
+
+
+def NexusGetTrajectory(acq,label):
+    values = acq.GetPoint(label).GetValues()
+    residuals = acq.GetPoint(label).GetResiduals()[:,0]
+    residualsBool = np.asarray(residuals)==0
+
+    return values[:,0],values[:,1],values[:,2],residualsBool
