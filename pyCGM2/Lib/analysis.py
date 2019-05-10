@@ -17,7 +17,8 @@ def makeAnalysis(DATA_PATH,
                     subjectInfo=None, experimentalInfo=None,modelInfo=None,
                     pointLabelSuffix=None,
                     kinematicLabelsDict=None,
-                    kineticLabelsDict=None):
+                    kineticLabelsDict=None,
+                    disableKinetics=False):
 
     """
     makeAnalysis : create the pyCGM2.Processing.analysis.Analysis instance
@@ -35,6 +36,7 @@ def makeAnalysis(DATA_PATH,
     :param pointLabelSuffix [string]: suffix previously added to your model outputs
     :param kinematicLabelsDict [dict]: dictionnary with two entries,Left and Right, pointing to kinematic model outputs you desire processes
     :param kineticLabelsDict [dict]: dictionnary with two entries,Left and Right, pointing to kinetic model outputs you desire processes
+    :param disableKinetics [bool]: disable kinetics processing
 
     .. note::
 
@@ -50,6 +52,8 @@ def makeAnalysis(DATA_PATH,
     c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
     cmf.enableEmg(False)
+    if disableKinetics: cmf.enableKinetic(False)
+
     trialManager = cmf.generate()
 
 
@@ -293,9 +297,9 @@ def automaticCPdeviations(DATA_PATH,analysis,pointLabelSuffix=None,filterTrue=Fa
     dataFramePatterns = dpf.getPatterns(filter = filterTrue)
 
     if export:
-        # xlsExport = exporter.XlsExportDataFrameFilter()
-        # xlsExport.setDataFrames([dataFrameValues])
-        # xlsExport.export(str(outputname+"_Data"), path=DATA_PATH)
+        xlsExport = exporter.XlsExportDataFrameFilter()
+        xlsExport.setDataFrames([dataFrameValues])
+        xlsExport.export(str(outputname+"_Data"), path=DATA_PATH)
 
         xlsExport = exporter.XlsExportDataFrameFilter()
         xlsExport.setDataFrames([dataFramePatterns])
