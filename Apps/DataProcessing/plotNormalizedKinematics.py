@@ -107,9 +107,9 @@ def main(args):
 
         else:
             if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,bodyPart,"LowerLimb",nds, pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
+                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds, pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
             if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,bodyPart,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
+                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
             if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
                 pass # TODO plot upperlimb panel
 
