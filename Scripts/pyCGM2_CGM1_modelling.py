@@ -11,6 +11,8 @@ from pyCGM2.Configurator import ModelManager
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Tools import btkTools
 from pyCGM2 import log; log.setLogger()
+from pyCGM2.Eclipse import vskTools
+
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -39,9 +41,13 @@ def main(args):
     else:
         translators = None
 
+    if args.vskFile:
+        vsk = vskTools.Vsk(str(DATA_PATH +  args.vskFile))
+    else:
+        vsk=None
 
     # --- Manager ----
-    manager = ModelManager.CGM1ConfigManager(userSettings,localInternalSettings=internalSettings,localTranslators=translators)
+    manager = ModelManager.CGM1ConfigManager(userSettings,localInternalSettings=internalSettings,localTranslators=translators,vsk=vsk)
     manager.contruct()
     finalSettings = manager.getFinalSettings()
     files.prettyDictPrint(finalSettings)
@@ -101,9 +107,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CGM1-pipeline')
     parser.add_argument('--userFile', type=str, help='userSettings', default="CGM1.userSettings")
     parser.add_argument('--expertFile', type=str, help='Local expert settings')
+    parser.add_argument('--vskFile', type=str, help='Local vsk file')
 
     args = parser.parse_args()
-        #print args
 
         # ---- main script -----
     try:

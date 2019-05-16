@@ -46,9 +46,13 @@ def main(args):
     else:
         localIkWeight = None
 
+    if args.vskFile:
+        vsk = vskTools.Vsk(str(DATA_PATH +  args.vskFile))
+    else:
+        vsk=None
 
     # --- Manager ----
-    manager = ModelManager.CGM2_2ConfigManager(userSettings,localInternalSettings=internalSettings,localTranslators=translators,localIkWeight=localIkWeight)
+    manager = ModelManager.CGM2_2ConfigManager(userSettings,localInternalSettings=internalSettings,localTranslators=translators,localIkWeight=localIkWeight,vsk=vsk)
     manager.contruct()
     finalSettings = manager.getFinalSettings()
     files.prettyDictPrint(finalSettings)
@@ -112,6 +116,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CGM2.2-pipeline')
     parser.add_argument('--userFile', type=str, help='userSettings', default="CGM2_2.userSettings")
     parser.add_argument('--expertFile', type=str, help='Local expert settings')
+    parser.add_argument('--vskFile', type=str, help='Local vsk file')
 
     args = parser.parse_args()
         #print args
