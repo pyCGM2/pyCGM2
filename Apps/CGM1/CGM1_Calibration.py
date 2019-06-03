@@ -91,11 +91,15 @@ def main(args):
         translators = files.getTranslators(DATA_PATH,"CGM1.translators")
         if not translators:  translators = settings["Translators"]
 
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(calibrateFilenameLabelled,subject)
+        acq = nacf.run()
+
         # --------------------------MODELLING PROCESSING -----------------------
         model,acqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                       required_mp,optional_mp,
                       leftFlatFoot,rightFlatFoot,markerDiameter,
-                      pointSuffix)
+                      pointSuffix,forceBtkAcq=acq)
 
 
         # ----------------------SAVE-------------------------------------------

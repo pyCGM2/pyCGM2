@@ -93,12 +93,16 @@ def main(args):
         #force plate assignement from Nexus
         mfpa = nexusTools.getForcePlateAssignment(NEXUS)
 
+
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(reconstructFilenameLabelled,subject)
+        acq = nacf.run()
         # --------------------------MODELLING PROCESSING -----------------------
         acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,
             markerDiameter,
             pointSuffix,
-            mfpa,momentProjection)
+            mfpa,momentProjection,
+            forceBtkAcq=acq)
 
         # ----------------------SAVE-------------------------------------------
         # Todo: pyCGM2 model :  cpickle doesn t work. Incompatibility with Swig. ( see about BTK wrench)
