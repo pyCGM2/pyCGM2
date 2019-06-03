@@ -94,7 +94,7 @@ class ForcePlate(Device):
 
 
     def getDescription(self):
-            return str(self.m_name + "[" +str(self.m_id) + "]")
+            return str("Force Plate [" +str(self.m_id) + "]")
 #
     def getOrigin(self):
         nfp_info = self.m_forcePlateInfo
