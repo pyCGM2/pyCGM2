@@ -24,7 +24,7 @@ class BasicEmgProcessingFilter(object):
     def run(self):
         fa=self.m_acq.GetAnalogFrequency()
         for label in self.m_labels:
-            values =  self.m_acq.GetAnalog(label).GetValues()
+            values =  self.m_acq.GetAnalog(str(label)).GetValues()
             # stop 50hz
             value50= signal_processing.remove50hz(values,fa)
             # high pass and compensation with mean
@@ -56,7 +56,7 @@ class EmgEnvelopProcessingFilter(object):
     def run(self):
         fa=self.m_acq.GetAnalogFrequency()
         for label in self.m_labels:
-            values =  self.m_acq.GetAnalog(label).GetValues()
+            values =  self.m_acq.GetAnalog(str(label)).GetValues()
             valuesFilt = signal_processing.enveloppe(values, self.m_fc,fa)
             btkTools.smartAppendAnalog(self.m_acq,label+"_Env",valuesFilt, desc= "fc("+str(self.m_fc)+")")
 
