@@ -94,7 +94,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
     grwf = btk.btkGroundReactionWrenchFilter()
     pfe.SetInput(btkAcq)
     pfc = pfe.GetOutput()
-    grwf.SetInput(pfc)
+    grwf.SetInput(pfc) 
     grwc = grwf.GetOutput()
     grwc.Update()
 
