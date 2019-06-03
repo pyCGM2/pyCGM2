@@ -41,6 +41,13 @@ def GetMarkerNames(acq):
             markerNames.append(it.GetLabel())
     return markerNames
 
+def GetAnalogNames(acq):
+    analogNames=[]
+    for it in btk.Iterate(acq.GetAnalogs()):
+        analogNames.append(it.GetLabel())
+    return analogNames
+
+
 def isGap(acq, markerLabel):
     """
         Check if there is a gap
@@ -75,20 +82,23 @@ def isPointExist(acq,label):
             - `acq` (btkAcquisition) - a btk acquisition inctance
             - `label` (str) - point label
     """
-    #TODO : replace by btkIterate
-    i = acq.GetPoints().Begin()
-    while i != acq.GetPoints().End():
-        if i.value().GetLabel()==label:
-            flagPoint= True
-            break
-        else:
-            i.incr()
-            flagPoint= False
 
-    if flagPoint:
-        return True
-    else:
+    if acq.GetPointNumber()==0:
         return False
+    else:
+        i = acq.GetPoints().Begin()
+        while i != acq.GetPoints().End():
+            if i.value().GetLabel()==label:
+                flagPoint= True
+                break
+            else:
+                i.incr()
+                flagPoint= False
+
+        if flagPoint:
+            return True
+        else:
+            return False
 
 def isPointsExist(acq,labels):
     """
@@ -104,7 +114,7 @@ def isPointsExist(acq,labels):
             return False
     return True
 
-def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
+def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc="",residuals = None):
     """
         Append/Update a point inside an acquisition
 
@@ -121,12 +131,14 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
     # valueProj *np.ones((aquiStatic.GetPointFrameNumber(),3))
 
     values = np.nan_to_num(values)
-    residuals = np.zeros((values.shape[0]))
-    for i in range(0, values.shape[0]):
-        if np.all(values[i,:] == np.zeros((3))):
-            residuals[i] = -1
-        else:
-            residuals[i] = 0
+
+    if residuals is None:
+        residuals = np.zeros((values.shape[0]))
+        for i in range(0, values.shape[0]):
+            if np.all(values[i,:] == np.zeros((3))):
+                residuals[i] = -1
+            else:
+                residuals[i] = 0
 
     if isPointExist(acq,label):
         acq.GetPoint(label).SetValues(values)
@@ -603,6 +615,7 @@ def smartAppendAnalog(acq,label,values,desc="" ):
         newAnalog.SetValues(values)
         newAnalog.SetLabel(label)
         acq.AppendAnalog(newAnalog)
+
 
 def markerUnitConverter(acq,unitOffset):
     for it in btk.Iterate(acq.GetPoints()):
