@@ -47,11 +47,22 @@ class NexusConstructAcquisitionFilter(object):
         self.m_subject = subject
 
         self.m_framerate = NEXUS.GetFrameRate()
-        self.m_frames = NEXUS.GetFrameCount()
+        #self.m_frames = NEXUS.GetTrialRange()[1]
+        self.m_rangeROI = NEXUS.GetTrialRegionOfInterest()
+        self.m_trialRange = NEXUS.GetTrialRange()
+
+        self.m_firstFrame = self.m_rangeROI[0]
+        self.m_lastFrame = self.m_rangeROI[1]
+        self.m_frames = self.m_lastFrame-(self.m_firstFrame-1)
+
+
 
         deviceIDs = NEXUS.GetDeviceIDs()
         self.m_analogFrameRate = NEXUS.GetDeviceDetails(1)[2] if ( len(deviceIDs) > 0 ) else self.m_framerate
-        self.m_analogFrameNumber = self.m_frames * int(self.m_analogFrameRate/self.m_framerate)
+
+
+        self.m_numberAnalogSamplePerFrame = int(self.m_analogFrameRate/self.m_framerate)
+        self.m_analogFrameNumber = self.m_frames * self.m_numberAnalogSamplePerFrame
 
 
         self.m_nexusForcePlates = list()
@@ -66,8 +77,10 @@ class NexusConstructAcquisitionFilter(object):
                     self.m_nexusAnalogDevices.append(Devices.AnalogDevice(deviceID))
 
         self.m_acq = btk.btkAcquisition()
-        self.m_acq.Init(0, int(self.m_frames),0, int(self.m_analogFrameRate/self.m_framerate))
+        self.m_acq.Init(0, int(self.m_frames),0, self.m_numberAnalogSamplePerFrame)
         self.m_acq.SetPointFrequency(self.m_framerate)
+        self.m_acq.SetFirstFrame(self.m_firstFrame)
+
 
 
 
@@ -86,7 +99,16 @@ class NexusConstructAcquisitionFilter(object):
 
             E = np.asarray(E).astype("float")-1
             values =np.array([np.asarray(rawDataX),np.asarray(rawDataY),np.asarray(rawDataZ)]).T
-            btkTools.smartAppendPoint(self.m_acq,str(marker),values, PointType=btk.btkPoint.Marker,desc="",residuals=E)
+
+            if values.shape[0]<self.m_lastFrame:
+                values_cut = values
+                E_cut = E
+            else:
+                values_cut = values[(self.m_firstFrame-1):self.m_lastFrame,:]
+                E_cut = E[(self.m_firstFrame-1):self.m_lastFrame]
+
+            btkTools.smartAppendPoint(self.m_acq,str(marker),values_cut, PointType=btk.btkPoint.Marker,desc="",
+                                      residuals=E_cut)
 
     def appendAnalogs(self):
 
@@ -98,7 +120,7 @@ class NexusConstructAcquisitionFilter(object):
                 analog.SetLabel(channel.getLabel())
                 analog.SetUnit(channel.getUnit())
                 analog.SetFrameNumber(self.m_analogFrameNumber)
-                analog.SetValues(channel.getValues())
+                analog.SetValues(channel.getValues()[(self.m_firstFrame-1)*self.m_numberAnalogSamplePerFrame:self.m_lastFrame*self.m_numberAnalogSamplePerFrame])
                 analog.SetDescription(channel.getDescription())
 
                 self.m_acq.AppendAnalog(analog)
@@ -118,7 +140,7 @@ class NexusConstructAcquisitionFilter(object):
                 analog.SetLabel(forceLabels[j])
                 analog.SetUnit("N")#nexusForcePlate.getForceUnit())
                 analog.SetFrameNumber(self.m_analogFrameNumber)
-                analog.SetValues(forceLocal[:,j])
+                analog.SetValues(forceLocal[(self.m_firstFrame-1)*self.m_numberAnalogSamplePerFrame:self.m_lastFrame*self.m_numberAnalogSamplePerFrame,j])
                 analog.SetDescription(nexusForcePlate.getDescription())
                 #analog.SetGain(btk.btkAnalog.PlusMinus10)
 
@@ -130,7 +152,7 @@ class NexusConstructAcquisitionFilter(object):
                 analog.SetLabel(momentLabels[j])
                 analog.SetUnit("Nmm")#nexusForcePlate.getMomentUnit())
                 analog.SetFrameNumber(self.m_analogFrameNumber)
-                analog.SetValues(momentLocal[:,j])
+                analog.SetValues(momentLocal[(self.m_firstFrame-1)*self.m_numberAnalogSamplePerFrame:self.m_lastFrame*self.m_numberAnalogSamplePerFrame,j])
                 analog.SetDescription(nexusForcePlate.getDescription())
                 #analog.GetGain(btk.btkAnalog.PlusMinus10)
                 self.m_acq.AppendAnalog(analog)
@@ -173,5 +195,7 @@ class NexusConstructAcquisitionFilter(object):
         self.appendMarkers()
         self.appendForcePlates()
         self.appendAnalogs()
+
+
 
         return self.m_acq
