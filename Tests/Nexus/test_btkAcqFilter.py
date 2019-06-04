@@ -21,39 +21,50 @@ from pyCGM2.Nexus import nexusFilters
 class Tests():
 
     @classmethod
-    def constructAcq(cls):
+    def Kistler4_Noraxon1_Xsens1(cls):
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-        DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\NexusAPI\\c3d_x2d\\"
-
-        filenameNoExt = "gait_GAP"
+        DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\NexusAPI\\BtkAcquisitionCreator\\sample0\\"
+        filenameNoExt = "gait"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
         subject = NEXUS.GetSubjectNames()[0]
 
-
         acqConstructorFilter = nexusFilters.NexusConstructAcquisitionFilter(filenameNoExt,subject)
-        acq = acqConstructorFilter.run()
-
-        btkTools.smartWriter(acq,"constructAcq.c3d")
+        acq = acqConstructorFilter.build()
 
 
+        acq0 = btkTools.smartReader(str(DATA_PATH+ filenameNoExt+".c3d"))
+
+        np.testing.assert_equal(acq.GetPointFrequency(),acq0.GetPointFrequency())
+        np.testing.assert_equal(acq.GetNumberAnalogSamplePerFrame(),acq0.GetNumberAnalogSamplePerFrame())
+        np.testing.assert_equal(acq.GetAnalogFrequency(),acq0.GetAnalogFrequency())
+        np.testing.assert_equal(btkTools.smartGetMetadata(acq,"FORCE_PLATFORM","USED"),btkTools.smartGetMetadata(acq0,"FORCE_PLATFORM","USED"))
+
+        np.testing.assert_array_almost_equal(map(float,btkTools.smartGetMetadata(acq,"FORCE_PLATFORM","CORNERS")),
+                                             map(float,btkTools.smartGetMetadata(acq0,"FORCE_PLATFORM","CORNERS")),decimal=2)
+        np.testing.assert_array_almost_equal(map(float,btkTools.smartGetMetadata(acq,"FORCE_PLATFORM","ORIGIN")),
+                                             map(float,btkTools.smartGetMetadata(acq0,"FORCE_PLATFORM","ORIGIN")),decimal=2)
+        np.testing.assert_equal(map(float,btkTools.smartGetMetadata(acq,"FORCE_PLATFORM","CHANNEL")),
+                                map(float,btkTools.smartGetMetadata(acq0,"FORCE_PLATFORM","CHANNEL")))
+
+        #btkTools.smartWriter(acq,"sample0_checked.c3d")
 
 
     @classmethod
-    def constructAcq_wrenchOuputs(cls):
+    def Kistler4_Noraxon1_Xsens1_wrenchOuputs(cls):
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-        DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\NexusAPI\\c3d_x2d\\"
+        DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\NexusAPI\\BtkAcquisitionCreator\\sample0\\"
+        filenameNoExt = "gait"
 
-        filenameNoExt = "gait_GAP"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
         subject = NEXUS.GetSubjectNames()[0]
 
 
         acqConstructorFilter = nexusFilters.NexusConstructAcquisitionFilter(filenameNoExt,subject)
-        acq = acqConstructorFilter.run()
+        acq = acqConstructorFilter.build()
 
         #btkTools.smartWriter(acq,"NEWC3D.c3d")
 
@@ -100,8 +111,7 @@ class Tests():
 
 
 
-
 if __name__ == "__main__":
 
-    #Tests.constructAcq()
-    Tests.constructAcq_wrenchOuputs()
+    Tests.Kistler4_Noraxon1_Xsens1()
+    Tests.Kistler4_Noraxon1_Xsens1_wrenchOuputs()

@@ -43,133 +43,135 @@ class NexusConstructAcquisitionFilter(object):
 
         """
         """
-        self.filenameNoExt = filenameNoExt
-        self.subject = subject
+        self.m_filenameNoExt = filenameNoExt
+        self.m_subject = subject
 
-        self.__output = None
-
-    def run(self):
-        framerate = NEXUS.GetFrameRate()
-        frames = NEXUS.GetFrameCount()
-        analogFrameRate = NEXUS.GetDeviceDetails(1)[2]
-        analogFrameNumber = frames * int(analogFrameRate/framerate)
-
-
-        acq = btk.btkAcquisition()
-        acq.Init(0, int(frames),0, int(analogFrameRate/framerate))
-        acq.SetPointFrequency(framerate)
-
-
-        nexusForcePlates = list()
-        nexusAnalogDevices = list()
-
-        # list of devices
-        devices = list()
+        self.m_framerate = NEXUS.GetFrameRate()
+        self.m_frames = NEXUS.GetFrameCount()
 
         deviceIDs = NEXUS.GetDeviceIDs()
+        self.m_analogFrameRate = NEXUS.GetDeviceDetails(1)[2] if ( len(deviceIDs) > 0 ) else self.m_framerate
+        self.m_analogFrameNumber = self.m_frames * int(self.m_analogFrameRate/self.m_framerate)
+
+
+        self.m_nexusForcePlates = list()
+        self.m_nexusAnalogDevices = list()
+
+
         if( len(deviceIDs) > 0 ):
             for deviceID in deviceIDs:
                 if NEXUS.GetDeviceDetails( deviceID )[1] == "ForcePlate":
-                    devices.append( Devices.ForcePlate(deviceID))
+                    self.m_nexusForcePlates.append( Devices.ForcePlate(deviceID))
                 else:
-                    devices.append(Devices.AnalogDevice(deviceID))
+                    self.m_nexusAnalogDevices.append(Devices.AnalogDevice(deviceID))
+
+        self.m_acq = btk.btkAcquisition()
+        self.m_acq.Init(0, int(self.m_frames),0, int(self.m_analogFrameRate/self.m_framerate))
+        self.m_acq.SetPointFrequency(self.m_framerate)
 
 
 
-        fp_count=0
-        for device in devices:
+    def appendMarkers(self):
 
-            if isinstance(device,pyCGM2.Nexus.Devices.ForcePlate):
-                nexusForcePlates.append(device)
-                forceLocal = device.getLocalReactionForce()
-                momentLocal = device.getLocalReactionMoment()
-
-                forceLabels =["Force.Fx"+str(fp_count+1), "Force.Fy"+str(fp_count+1),"Force.Fz"+str(fp_count+1)]
-                for j in range(0,3):
-                    analog = btk.btkAnalog()
-                    analog.SetLabel(forceLabels[j])
-                    analog.SetUnit("N")#nexusForcePlate.getForceUnit())
-                    analog.SetFrameNumber(analogFrameNumber)
-                    analog.SetValues(forceLocal[:,j])
-                    analog.SetDescription(device.getDescription())
-                    #analog.SetGain(btk.btkAnalog.PlusMinus10)
-
-                    acq.AppendAnalog(analog)
-
-                momentLabels =["Moment.Mx"+str(fp_count+1), "Moment.My"+str(fp_count+1),"Moment.Mz"+str(fp_count+1)]
-                for j in range(0,3):
-                    analog = btk.btkAnalog()
-                    analog.SetLabel(momentLabels[j])
-                    analog.SetUnit("Nmm")#nexusForcePlate.getMomentUnit())
-                    analog.SetFrameNumber(analogFrameNumber)
-                    analog.SetValues(momentLocal[:,j])
-                    analog.SetDescription(device.getDescription())
-                    #analog.GetGain(btk.btkAnalog.PlusMinus10)
-                    acq.AppendAnalog(analog)
-
-                fp_count+=1
-
-            else:
-                nexusAnalogDevices.append(device)
-                channels = device.getChannels()
-
-                for channel in channels:
-                    analog = btk.btkAnalog()
-                    analog.SetLabel(channel.getLabel())
-                    analog.SetUnit(channel.getUnit())
-                    analog.SetFrameNumber(analogFrameNumber)
-                    analog.SetValues(channel.getValues())
-                    analog.SetDescription(channel.getDescription())
-                    acq.AppendAnalog(analog)
-
-
-        #
-        markersLoaded = NEXUS.GetMarkerNames(self.subject) # nexus2.7 return all makers, even calibration only
+        markersLoaded = NEXUS.GetMarkerNames(self.m_subject)
         markers =[]
         for i in range(0,len(markersLoaded)):
-            data = NEXUS.GetTrajectory(self.subject,markersLoaded[i])
+            data = NEXUS.GetTrajectory(self.m_subject,markersLoaded[i])
             if data != ([],[],[],[]):
                 markers.append(markersLoaded[i])
 
 
         for marker in markers:
-            rawDataX, rawDataY, rawDataZ, E = NEXUS.GetTrajectory(self.subject,marker)
+            rawDataX, rawDataY, rawDataZ, E = NEXUS.GetTrajectory(self.m_subject,marker)
 
             E = np.asarray(E).astype("float")-1
             values =np.array([np.asarray(rawDataX),np.asarray(rawDataY),np.asarray(rawDataZ)]).T
-            btkTools.smartAppendPoint(acq,str(marker),values, PointType=btk.btkPoint.Marker,desc="",residuals=E)
+            btkTools.smartAppendPoint(self.m_acq,str(marker),values, PointType=btk.btkPoint.Marker,desc="",residuals=E)
 
+    def appendAnalogs(self):
+
+        for nexusAnalogDevice in self.m_nexusAnalogDevices:
+
+            channels = nexusAnalogDevice.getChannels()
+            for channel in channels:
+                analog = btk.btkAnalog()
+                analog.SetLabel(channel.getLabel())
+                analog.SetUnit(channel.getUnit())
+                analog.SetFrameNumber(self.m_analogFrameNumber)
+                analog.SetValues(channel.getValues())
+                analog.SetDescription(channel.getDescription())
+
+                self.m_acq.AppendAnalog(analog)
+
+    def appendForcePlates(self):
+
+        forcePlateNumber = len(self.m_nexusForcePlates)
+
+        fp_count=0
+        for nexusForcePlate in self.m_nexusForcePlates:
+            forceLocal = nexusForcePlate.getLocalReactionForce()
+            momentLocal = nexusForcePlate.getLocalReactionMoment()
+
+            forceLabels =["Force.Fx"+str(fp_count+1), "Force.Fy"+str(fp_count+1),"Force.Fz"+str(fp_count+1)]
+            for j in range(0,3):
+                analog = btk.btkAnalog()
+                analog.SetLabel(forceLabels[j])
+                analog.SetUnit("N")#nexusForcePlate.getForceUnit())
+                analog.SetFrameNumber(self.m_analogFrameNumber)
+                analog.SetValues(forceLocal[:,j])
+                analog.SetDescription(nexusForcePlate.getDescription())
+                #analog.SetGain(btk.btkAnalog.PlusMinus10)
+
+                self.m_acq.AppendAnalog(analog)
+
+            momentLabels =["Moment.Mx"+str(fp_count+1), "Moment.My"+str(fp_count+1),"Moment.Mz"+str(fp_count+1)]
+            for j in range(0,3):
+                analog = btk.btkAnalog()
+                analog.SetLabel(momentLabels[j])
+                analog.SetUnit("Nmm")#nexusForcePlate.getMomentUnit())
+                analog.SetFrameNumber(self.m_analogFrameNumber)
+                analog.SetValues(momentLocal[:,j])
+                analog.SetDescription(nexusForcePlate.getDescription())
+                #analog.GetGain(btk.btkAnalog.PlusMinus10)
+                self.m_acq.AppendAnalog(analog)
+
+            fp_count+=1
 
         # metadata for platform type2
-        md_force_platform = btk.btkMetaData('FORCE_PLATFORM') # create main metadata
-        btk.btkMetaDataCreateChild(md_force_platform, "USED", 4)# a
-        btk.btkMetaDataCreateChild(md_force_platform, "ZERO", [1,0]) #btk.btkDoubleArray(12, 0.8))# add a child
-        btk.btkMetaDataCreateChild(md_force_platform, "TYPE", [2,2,2,2]) #btk.btkDoubleArray(12, 0.8))# add a child
-        acq.GetMetaData().AppendChild(md_force_platform)
+        md_force_platform = btk.btkMetaData('FORCE_PLATFORM')
+        btk.btkMetaDataCreateChild(md_force_platform, "USED", int(forcePlateNumber))# a
+        btk.btkMetaDataCreateChild(md_force_platform, "ZERO", [1,0]) #
+        btk.btkMetaDataCreateChild(md_force_platform, "TYPE", btk.btkDoubleArray(forcePlateNumber, 2)) #btk.btkDoubleArray(forcePlateNumber, 2))# add a child
+
+        self.m_acq.GetMetaData().AppendChild(md_force_platform)
 
 
         origins = []
-        for nexusForcePlate in nexusForcePlates:
+        for nexusForcePlate in self.m_nexusForcePlates:
             origins.append(-1.0*nexusForcePlate.getLocalOrigin())
 
         md_origin = btk.btkMetaData('ORIGIN')
-        md_origin.SetInfo(btk.btkMetaDataInfo([3,4], np.concatenate(origins)))
+        md_origin.SetInfo(btk.btkMetaDataInfo([3,int(forcePlateNumber)], np.concatenate(origins)))
         md_force_platform.AppendChild(md_origin)
 
 
-
         corners = []
-        for nexusForcePlate in nexusForcePlates:
+        for nexusForcePlate in self.m_nexusForcePlates:
             corners.append(nexusForcePlate.getCorners().T.flatten())
 
         md_corners = btk.btkMetaData('CORNERS')
-        md_corners.SetInfo(btk.btkMetaDataInfo([3,4,4], np.concatenate(corners)))
+        md_corners.SetInfo(btk.btkMetaDataInfo([3,4,int(forcePlateNumber)], np.concatenate(corners)))
         md_force_platform.AppendChild(md_corners)
 
 
         md_channel = btk.btkMetaData('CHANNEL')
-        md_channel.SetInfo(btk.btkMetaDataInfo([6,4], np.arange(1,25)))
+        md_channel.SetInfo(btk.btkMetaDataInfo([6,int(forcePlateNumber)], np.arange(1,int(forcePlateNumber)*6+1)))
         md_force_platform.AppendChild(md_channel)
 
-        self.__output = acq
-        return acq
+    def build(self):
+
+        self.appendMarkers()
+        self.appendForcePlates()
+        self.appendAnalogs()
+
+        return self.m_acq
