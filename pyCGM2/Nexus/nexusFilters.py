@@ -81,6 +81,82 @@ class NexusConstructAcquisitionFilter(object):
         self.m_acq.SetPointFrequency(self.m_framerate)
         self.m_acq.SetFirstFrame(self.m_firstFrame)
 
+    def appendEvents(self):
+
+
+        eventType = "Foot Strike"
+        eventContext = "Left"
+        if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
+            for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
+                ev = btk.btkEvent(eventType,frame/self.m_framerate , int(frame), eventContext, btk.btkEvent.Automatic)
+                ev.SetSubject(str(self.m_subject))
+                self.m_acq.AppendEvent(ev)
+
+
+        eventType = "Foot Off"
+        eventContext = "Left"
+        if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
+            for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
+                ev = btk.btkEvent(eventType,frame/self.m_framerate , int(frame), eventContext, btk.btkEvent.Automatic)
+                ev.SetSubject(str(self.m_subject))
+                self.m_acq.AppendEvent(ev)
+
+        eventType = "Foot Strike"
+        eventContext = "Right"
+        if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
+            for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
+                ev = btk.btkEvent(eventType,frame/self.m_framerate , int(frame), eventContext, btk.btkEvent.Automatic)
+                ev.SetSubject(str(self.m_subject))
+                self.m_acq.AppendEvent(ev)
+
+        eventType = "Foot Off"
+        eventContext = "Right"
+        if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
+            for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
+                ev = btk.btkEvent(eventType,frame/self.m_framerate , int(frame), eventContext, btk.btkEvent.Automatic)
+                ev.SetSubject(str(self.m_subject))
+                self.m_acq.AppendEvent(ev)
+
+        eventType = "Event"
+        eventContext = "General"
+        if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
+            for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
+                ev = btk.btkEvent(eventType,frame/self.m_framerate , int(frame), eventContext, btk.btkEvent.Manual)
+                ev.SetSubject(str(self.m_subject))
+                self.m_acq.AppendEvent(ev)
+
+        eventType = "Left-FP"
+        eventContext = "General"
+        if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
+            for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
+                ev = btk.btkEvent(eventType,frame/self.m_framerate , int(frame), eventContext,btk.btkEvent.Manual)
+                ev.SetSubject(str(self.m_subject))
+                self.m_acq.AppendEvent(ev)
+
+        eventType = "Right-FP"
+        eventContext = "General"
+        if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
+            for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
+                ev = btk.btkEvent(eventType,frame/self.m_framerate , int(frame), eventContext,btk.btkEvent.Manual)
+                ev.SetSubject(str(self.m_subject))
+                self.m_acq.AppendEvent(ev)
+
+
+        eventType = "Start"
+        eventContext = "Left"
+        if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
+            for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
+                ev = btk.btkEvent(eventType,frame/self.m_framerate , int(frame), eventContext,btk.btkEvent.Manual)
+                ev.SetSubject(str(self.m_subject))
+                self.m_acq.AppendEvent(ev)
+
+        eventType = "End"
+        eventContext = "Left"
+        if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
+            for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
+                ev = btk.btkEvent(eventType,frame/self.m_framerate , int(frame), eventContext, btk.btkEvent.Manual)
+                ev.SetSubject(str(self.m_subject))
+                self.m_acq.AppendEvent(ev)
 
 
 
@@ -191,7 +267,7 @@ class NexusConstructAcquisitionFilter(object):
         md_force_platform.AppendChild(md_channel)
 
     def build(self):
-
+        self.appendEvents()
         self.appendMarkers()
         self.appendForcePlates()
         self.appendAnalogs()
