@@ -12,6 +12,7 @@ from pyCGM2.Processing import jointPatterns
 from pyCGM2.Tools import trialTools
 from pyCGM2 import ma
 
+
 def makeAnalysis(DATA_PATH,
                     modelledFilenames,
                     type="Gait",

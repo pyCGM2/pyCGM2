@@ -7,7 +7,6 @@ import logging
 from pyCGM2.Tools import trialTools
 
 
-
 class C3dManager(object):
     def __init__ (self):
         self.spatioTemporal={"Trials":None , "Filenames":None}
