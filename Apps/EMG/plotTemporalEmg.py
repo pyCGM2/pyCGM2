@@ -29,6 +29,8 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
+from pyCGM2.Tools import btkTools, trialTools
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 import ViconNexus
 
@@ -79,6 +81,17 @@ def main(args):
         inputFile = inputFileNoExt+".c3d"
 
 
+        # --------------------------SUBJECT ------------------------------------
+        subjects = NEXUS.GetSubjectNames()
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
+
+        # btkAcq builder + save
+        if os.path.exists(str(DATA_PATH+ "__tmp.c3d")):
+            os.remove(str(DATA_PATH+ "__tmp.c3d"))
+
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
+        acq = nacf.build()
+
 
 
         # reconfiguration of emg settings as lists
@@ -99,13 +112,18 @@ def main(args):
         # NORMAL_ACTIVITIES = ["RECFEM","RECFEM",None,"VASLAT"]
 
 
-        analysis.processEMG(DATA_PATH, [inputFile], EMG_LABELS,
+
+        analysis.processEMG(acq, EMG_LABELS,
             highPassFrequencies=bandPassFilterFrequencies,
-            envelopFrequency=envelopCutOffFrequency,fileSuffix=fileSuffix) # high pass then low pass for all c3ds
+            envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
+
+        openmaTrial = trialTools.convertBtkAcquisition(acq)
+
 
         if fileSuffix is not None:
             inputfile = inputFile +"_"+ fileSuffix
-        plot.plotTemporalEMG(DATA_PATH,inputFile, EMG_LABELS,EMG_MUSCLES, EMG_CONTEXT, NORMAL_ACTIVITIES,exportPdf=True,rectify=rectifyBool)
+        plot.plotTemporalEMG(DATA_PATH,inputFile, EMG_LABELS,EMG_MUSCLES, EMG_CONTEXT, NORMAL_ACTIVITIES,exportPdf=True,rectify=rectifyBool,
+                            openmaTrial=openmaTrial)
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

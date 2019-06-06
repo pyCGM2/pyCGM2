@@ -119,7 +119,8 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
 
     if show: plt.show()
 
-def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,exportPdf=False,outputName=None,show=True,title=None,
+def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,
+                    exportPdf=False,outputName=None,show=True,title=None,
                     openmaTrial=None):
     """
     plotTemporalEMG : display temporal trace of EMG signals
@@ -147,7 +148,6 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
 
     if openmaTrial is not None:
         trial = openmaTrial
-        trialTools.sortedEvents(trial)
     else:
         trial =trialTools.smartTrialReader(DATA_PATH,processedEmgfile)
 
@@ -193,9 +193,8 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
         if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
         pf.plot()
 
-        if show: plt.show()
         count+=1
-
+    if show: plt.show()
 
 def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
 
