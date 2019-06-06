@@ -36,7 +36,7 @@ class Tests():
         subject = NEXUS.GetSubjectNames()[0]
 
         trialConstructorFilter = nexusFilters.NexusConstructTrialFilter(filenameNoExt,subject)
-        root = trialConstructorFilter.build()
+        trial = trialConstructorFilter.build()
 
 
 

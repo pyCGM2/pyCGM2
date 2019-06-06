@@ -6,7 +6,10 @@ import logging
 
 from pyCGM2 import btk
 from pyCGM2 import ma
+from pyCGM2.ma import io
+
 from pyCGM2.Tools import btkTools
+from pyCGM2.Tools import trialTools
 
 from pyCGM2.Nexus import nexusTools,Devices
 
@@ -40,10 +43,11 @@ class NexusModelFilter(object):
 
 
 class NexusConstructAcquisitionFilter(object):
-    def __init__(self,filenameNoExt,subject):
+    def __init__(self,dataPath,filenameNoExt,subject):
 
         """
         """
+        self.m_dataPath = dataPath
         self.m_filenameNoExt = filenameNoExt
         self.m_subject = subject
 
@@ -329,6 +333,13 @@ class NexusConstructAcquisitionFilter(object):
 
         return self.m_acq
 
+    def exportC3d(self,filenameNoExt=None):
+
+        if filenameNoExt is None:
+            btkTools.smartWriter(self.m_acq,str(self.m_dataPath+self.m_filenameNoExt))
+        else:
+            btkTools.smartWriter(self.m_acq,str(self.m_dataPath+filenameNoExt))
+
 
 class NexusConstructTrialFilter(object):
     def __init__(self,filenameNoExt,subject):
@@ -568,5 +579,14 @@ class NexusConstructTrialFilter(object):
         self.appendAnalogs()
         self.appendModelOutputs()
 
+        trialTools.sortedEvents(self.m_trial)
 
-        return self.m_root
+        return self.m_trial
+
+    def exportC3d(self,filenameNoExt=None):
+
+
+        if filenameNoExt is None:
+            ma.io.write(self.m_root,str(self.m_dataPath+self.m_filenameNoExt))
+        else:
+            ma.io.write(self.m_root,str(self.m_dataPath+filenameNoExt))
