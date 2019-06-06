@@ -5,7 +5,6 @@ The script displays rectified EMG with time as x-axis
 
 :param -bpf, --BandpassFrequencies [array]: bandpass frequencies
 :param -ecf, --EnvelopLowpassFrequency [double]: cut-off low pass frequency for getting emg envelop
-:param -fs, --fileSuffix [string]: store the c3d file with addition of a suffix
 :param -r, --raw [bool]: display non-rectified emg instead of rectified
 
 Examples:
@@ -68,15 +67,7 @@ def main(args):
         fileSuffix = args.fileSuffix
 
         # --- acquisition file and path----
-        DEBUG = False
-        if DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "EMG\\SampleNantes_prepost\\"
-            inputFileNoExt = "pre" #"static Cal 01-noKAD-noAnkleMed" #
-
-            NEXUS.OpenTrial( str(DATA_PATH+inputFileNoExt), 10 )
-
-        else:
-            DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
+        DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
 
         inputFile = inputFileNoExt+".c3d"
 
@@ -120,8 +111,7 @@ def main(args):
         openmaTrial = trialTools.convertBtkAcquisition(acq)
 
 
-        if fileSuffix is not None:
-            inputfile = inputFile +"_"+ fileSuffix
+
         plot.plotTemporalEMG(DATA_PATH,inputFile, EMG_LABELS,EMG_MUSCLES, EMG_CONTEXT, NORMAL_ACTIVITIES,exportPdf=True,rectify=rectifyBool,
                             openmaTrial=openmaTrial)
 
@@ -133,7 +123,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-ecf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
-    parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of the processed file')
     parser.add_argument('-r','--raw', action='store_true', help='rectified data')
     args = parser.parse_args()
     # ---- main script -----
