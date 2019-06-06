@@ -59,15 +59,7 @@ def main(args):
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm1")
 
-
-        DEBUG = False
-        # --------------------------LOADING ------------------------------------
-        if DEBUG:
-            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\Kad\\" #+ "CGM1\\CGM1\\native\\"
-            calibrateFilenameLabelledNoExt = "Static Cal 01-both" #"static Cal 01-noKAD-noAnkleMed" #
-            NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
-        else:
-            DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
 
@@ -92,8 +84,8 @@ def main(args):
         if not translators:  translators = settings["Translators"]
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(calibrateFilenameLabelled,subject)
-        acq = nacf.run()
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,calibrateFilenameLabelled,subject)
+        acq = nacf.build()
 
         # --------------------------MODELLING PROCESSING -----------------------
         model,acqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,

@@ -53,17 +53,7 @@ def main(args):
         pointSuffix = argsManager.getPointSuffix("cgm1")
         momentProjection =  argsManager.getMomentProjection()
 
-        DEBUG=False
-        # --------------------------LOADING ------------------------------------
-        if DEBUG:
-            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\Kad\\" #+ "CGM1\\CGM1\\native\\"
-            #DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\lowerLimbTrunk\\" #+ "CGM1\\CGM1\\native\\"
-            reconstructFilenameLabelledNoExt = "Gait Trial 01" #"static Cal 01-noKAD-noAnkleMed" #
-            # DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            # reconstructFilenameLabelledNoExt = "gait Trial" #"static Cal 01-noKAD-noAnkleMed" #
-            NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
-        else:
-            DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
         logging.info( "data Path: "+ DATA_PATH )
@@ -93,9 +83,9 @@ def main(args):
         #force plate assignement from Nexus
         mfpa = nexusTools.getForcePlateAssignment(NEXUS)
 
-
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(reconstructFilenameLabelled,subject)
-        acq = nacf.run()
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelled,subject)
+        acq = nacf.build()
         # --------------------------MODELLING PROCESSING -----------------------
         acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,
