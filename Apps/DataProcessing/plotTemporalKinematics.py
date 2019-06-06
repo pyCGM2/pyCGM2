@@ -36,7 +36,7 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
-from pyCGM2.Nexus import  nexusTools
+from pyCGM2.Nexus import  nexusTools,nexusFilters
 from pyCGM2.Utils import files
 
 def main(args):
@@ -71,15 +71,20 @@ def main(args):
         subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
+        # ----- construction of the openMA root instance  -----
+        trialConstructorFilter = nexusFilters.NexusConstructTrialFilter(DATA_PATH,modelledFilenameNoExt,subject)
+        openmaTrial = trialConstructorFilter.build()
+
+
         # --------------------pyCGM2 MODEL ------------------------------
         model = files.loadModel(DATA_PATH,subject)
         modelVersion = model.version
 
         # --------------------pyCGM2 MODEL ------------------------------
         if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plotTemporalKinematic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True)
+            plot.plotTemporalKinematic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True,openmaTrial=openmaTrial)
         if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plotTemporalKinematic(DATA_PATH, modelledFilename,"Trunk", pointLabelSuffix=pointSuffix,exportPdf=True)
+            plot.plotTemporalKinematic(DATA_PATH, modelledFilename,"Trunk", pointLabelSuffix=pointSuffix,exportPdf=True,openmaTrial=openmaTrial)
         if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
             pass # TODO plot upperlimb panel
 
