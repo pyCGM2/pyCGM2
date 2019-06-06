@@ -7,7 +7,9 @@ from pyCGM2.Processing import scores
 from pyCGM2.Tools import trialTools
 from pyCGM2 import enums
 
-def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffix=None, exportPdf=False,outputName=None,show=True,title=None):
+from pyCGM2 import ma
+def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffix=None, exportPdf=False,outputName=None,show=True,title=None,
+                          openmaTrial=None):
     """
     plotTemporalKinematic : display temporal trace of the Kinematics
 
@@ -22,6 +24,7 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
     :param outputName [string]: name of the output filed
     :param show [bool]: enable matplotlib show function
     :param title [string]: change default title of the plot panel
+    :param openmaTrial [openma::Trial]: force use of an openma trial instance
 
 
     Examples:
@@ -43,7 +46,11 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
         else:
             filenameOut =  str(outputName+"-Temporal Kinematics ["+ bodyPart.name+"]")
 
-    trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
+    if openmaTrial is not None:
+        trial = openmaTrial
+        trialTools.sortedEvents(trial)
+    else:
+        trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
 
     kv = plotViewers.TemporalKinematicsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
     # # filter
@@ -56,7 +63,8 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
     if show: plt.show()
 
 
-def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=None,exportPdf=False,outputName=None,show=True,title=None):
+def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=None,exportPdf=False,outputName=None,show=True,title=None,
+                        openmaTrial=None):
 
     """
     plotTemporalKinetic : display temporal trace of the Kinetics
@@ -73,6 +81,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
     :param outputName [string]: name of the output filed
     :param show [bool]: enable matplotlib show function
     :param title [string]: change default title of the plot panel
+    :param openmaTrial [openma::Trial]: force use of an openma trial instance
 
     Examples:
 
@@ -93,7 +102,12 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
         else:
             filenameOut =  str(outputName+"-Temporal Kinetics ["+ bodyPart.name+"]")
 
-    trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
+    if openmaTrial is not None:
+        trial = openmaTrial
+        trialTools.sortedEvents(trial)
+
+    else:
+        trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
 
     kv = plotViewers.TemporalKineticsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
     # # filter
@@ -105,7 +119,8 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
 
     if show: plt.show()
 
-def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,exportPdf=False,outputName=None,show=True,title=None):
+def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,exportPdf=False,outputName=None,show=True,title=None,
+                    openmaTrial=None):
     """
     plotTemporalEMG : display temporal trace of EMG signals
 
@@ -116,6 +131,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
     :param muscles [string list]: muscle labels associated with your emg channels
     :param contexts [string list]: contexts associated with your emg channel
     :param normalActivityEmgs [string list]: normal activities associated with your emg channels
+    :param openmaTrial [openma::Trial]: force use of an openma trial instance
 
 
     **optional**
@@ -129,8 +145,11 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
 
 
 
-
-    trial =trialTools.smartTrialReader(DATA_PATH,processedEmgfile)
+    if openmaTrial is not None:
+        trial = openmaTrial
+        trialTools.sortedEvents(trial)
+    else:
+        trial =trialTools.smartTrialReader(DATA_PATH,processedEmgfile)
 
     if len(emgChannels)>10:
         pages = [[0,9], [10,15]]
