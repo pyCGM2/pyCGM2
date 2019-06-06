@@ -438,7 +438,7 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
 
         ev = ma.Event(label,time,context,str(subject),trial.events())
 
-        sortedEvents(trial)
+    sortedEvents(trial)
 
     if returnType == "Trial":
         return trial
