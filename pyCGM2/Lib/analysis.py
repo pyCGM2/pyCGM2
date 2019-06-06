@@ -9,7 +9,8 @@ from pyCGM2 import enums
 from pyCGM2.Processing import exporter
 from pyCGM2.Processing import jointPatterns
 
-
+from pyCGM2.Tools import trialTools
+from pyCGM2 import ma
 
 def makeAnalysis(DATA_PATH,
                     modelledFilenames,
@@ -18,7 +19,8 @@ def makeAnalysis(DATA_PATH,
                     pointLabelSuffix=None,
                     kinematicLabelsDict=None,
                     kineticLabelsDict=None,
-                    disableKinetics=False):
+                    disableKinetics=False,
+                    openmaTrials=None):
 
     """
     makeAnalysis : create the pyCGM2.Processing.analysis.Analysis instance
@@ -37,6 +39,7 @@ def makeAnalysis(DATA_PATH,
     :param kinematicLabelsDict [dict]: dictionnary with two entries,Left and Right, pointing to kinematic model outputs you desire processes
     :param kineticLabelsDict [dict]: dictionnary with two entries,Left and Right, pointing to kinetic model outputs you desire processes
     :param disableKinetics [bool]: disable kinetics processing
+    :param openmaTrials [bool]: force the use of a list of openma trials
 
     .. note::
 
@@ -47,9 +50,14 @@ def makeAnalysis(DATA_PATH,
 
 
     """
-
     #---- c3d manager
-    c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+
+    if openmaTrials is not None:
+        c3dmanagerProcedure = c3dManager.UniqueOpenmaTrialSetProcedure(DATA_PATH,modelledFilenames,trials=openmaTrials)
+
+    else:
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
     cmf.enableEmg(False)
     if disableKinetics: cmf.enableKinetic(False)
@@ -133,36 +141,30 @@ def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
     exportFilter.export(name, path=DATA_PATH,excelFormat = "xls",mode = mode)
 
 
-def processEMG(DATA_PATH, trialFiles, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None):
+def processEMG(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
     """
     processEMG : filters emg channels
 
-    :param DATA_PATH [str]: path to your data
-    :param trialFiles [string list]: c3d files with emg signals
+    :param acq [btk::Acquisition]: btk acquisition
     :param emgChannels [string list]: label of your emg channels
 
     **optional**
 
     :param highPassFrequencies [list of float]: boundaries of the bandpass filter
     :param envelopFrequency [float]: cut-off frequency for creating an emg envelop
-    :param fileSuffix [string]: add suffix to the trial if you dont want overwriting your c3d
 
     """
 
 
-    for trialFile in trialFiles:
-        acq = btkTools.smartReader(DATA_PATH +trialFile)
+    bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
+    bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
+    bf.run()
 
-        bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
-        bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
-        bf.run()
+    envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
+    envf.setCutoffFrequency(envelopFrequency)
+    envf.run()
 
-        envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
-        envf.setCutoffFrequency(envelopFrequency)
-        envf.run()
-
-        outFilename = trialFile if fileSuffix is None  else trialFile+"_"+fileSuffix
-        btkTools.smartWriter(acq,DATA_PATH+outFilename)
+    return acq
 
 
 
@@ -170,7 +172,9 @@ def makeEmgAnalysis(DATA_PATH,
                     processedEmgFiles,
                     emgChannels,
                     subjectInfo=None, experimentalInfo=None,
-                    type="Gait"):
+                    type="Gait",
+                    openmaTrials = None
+                    ):
 
     """
     makeEmgAnalysis : create the pyCGM2.Processing.analysis.Analysis instance with only EMG signals
@@ -185,12 +189,15 @@ def makeEmgAnalysis(DATA_PATH,
     :param subjectInfo [dict]:  dictionnary gathering info about the patient (name,dob...)
     :param experimentalInfo [dict]:  dictionnary gathering info about the  data session (orthosis, gait task,... )
     :param type [str]: process files with gait events if selected type is Gait
-
+    :param openmaTrials [bool]: force the use of a list of openma trials
     """
 
 
+    if openmaTrials is not None:
+        c3dmanagerProcedure = c3dManager.UniqueOpenmaTrialSetProcedure(DATA_PATH,modelledFilenames,trials=openmaTrials)
+    else:
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,processedEmgFiles)
 
-    c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,processedEmgFiles)
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
     cmf.enableSpatioTemporal(False)
     cmf.enableKinematic(False)
