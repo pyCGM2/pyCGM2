@@ -426,6 +426,20 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
         ts.setData(data)
         ts.setDescription(desc)
 
+
+
+
+    for it in btk.Iterate(acq.GetEvents()):
+
+        label = it.GetLabel()
+        time = it.GetTime()
+        context = it.GetContext()
+        subject = it.GetSubject()
+
+        ev = ma.Event(label,time,context,str(subject),trial.events())
+
+        sortedEvents(trial)
+
     if returnType == "Trial":
         return trial
     else:
