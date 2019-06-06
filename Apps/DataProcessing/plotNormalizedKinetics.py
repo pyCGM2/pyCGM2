@@ -61,13 +61,7 @@ def main(args):
         consistencyFlag = True if args.consistency else False
 
         # --------------------------INPUTS ------------------------------------
-        DEBUG= False
-        if DEBUG:
-            DATA_PATH = "C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Release Tests\CGM1\lowerLimbTrunk\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            modelledFilenameNoExt = "PN01NORMSS02"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
-            NEXUS.OpenTrial( str(DATA_PATH+modelledFilenameNoExt), 30 )
-        else:
-            DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
+        DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
 
         modelledFilename = modelledFilenameNoExt+".c3d"
 
