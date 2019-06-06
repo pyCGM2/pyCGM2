@@ -41,7 +41,12 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     """
     # ---btk acquisition---
-    acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+
+    if "forceBtkAcq" in kwargs.keys():
+        acqStatic = kwargs["forceBtkAcq"]
+    else:
+        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+
     btkTools.checkMultipleSubject(acqStatic)
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
@@ -248,8 +253,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     :param pointSuffix [str]: suffix to add to model outputs
     :param momentProjection [str]: Coordinate system in which joint moment is expressed
     """
-    # --- btk acquisition ----
-    acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+
+    if "forceBtkAcq" in kwargs.keys():
+        acqGait = kwargs["forceBtkAcq"]
+    else:
+        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqGait)
 

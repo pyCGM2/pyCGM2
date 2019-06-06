@@ -82,14 +82,7 @@ def main(args):
             hjcMethod["Right"] = rhjc
 
         # --------------------------LOADING ------------------------------------
-        DEBUG= False
-        if DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH+"CGM2\\cgm2.1\\medial\\"
-            calibrateFilenameLabelledNoExt = "static"
-            NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
-
-        else:
-            DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
 
@@ -111,11 +104,15 @@ def main(args):
         translators = files.getTranslators(DATA_PATH,"CGM2_1.translators")
         if not translators:  translators = settings["Translators"]
 
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,calibrateFilenameLabelledNoExt,subject)
+        acq = nacf.build()
+
         # --------------------------MODELLING PROCESSING -----------------------
         model,acqStatic = cgm2_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                       required_mp,optional_mp,
                       leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-                      pointSuffix)
+                      pointSuffix,forceBtkAcq=acq)
 
         # ----------------------SAVE-------------------------------------------
         #pyCGM2.model

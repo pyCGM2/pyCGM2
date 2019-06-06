@@ -84,7 +84,7 @@ def main(args):
         mfpa = nexusTools.getForcePlateAssignment(NEXUS)
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelled,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
         acq = nacf.build()
         # --------------------------MODELLING PROCESSING -----------------------
         acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,

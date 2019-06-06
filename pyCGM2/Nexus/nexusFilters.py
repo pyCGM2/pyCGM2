@@ -336,9 +336,9 @@ class NexusConstructAcquisitionFilter(object):
     def exportC3d(self,filenameNoExt=None):
 
         if filenameNoExt is None:
-            btkTools.smartWriter(self.m_acq,str(self.m_dataPath+self.m_filenameNoExt))
+            btkTools.smartWriter(self.m_acq,str(self.m_dataPath+self.m_filenameNoExt+".c3d"))
         else:
-            btkTools.smartWriter(self.m_acq,str(self.m_dataPath+filenameNoExt))
+            btkTools.smartWriter(self.m_acq,str(self.m_dataPath+filenameNoExt+".c3d"))
 
 
 class NexusConstructTrialFilter(object):
@@ -588,6 +588,6 @@ class NexusConstructTrialFilter(object):
 
 
         if filenameNoExt is None:
-            ma.io.write(self.m_root,str(self.m_dataPath+self.m_filenameNoExt))
+            ma.io.write(self.m_root,str(self.m_dataPath+self.m_filenameNoExt+".c3d"))
         else:
-            ma.io.write(self.m_root,str(self.m_dataPath+filenameNoExt))
+            ma.io.write(self.m_root,str(self.m_dataPath+filenameNoExt+".c3d"))

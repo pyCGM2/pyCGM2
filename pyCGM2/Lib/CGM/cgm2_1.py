@@ -42,7 +42,11 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     # --------------------------ACQUISITION ------------------------------------
 
     # ---btk acquisition---
-    acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+    if "forceBtkAcq" in kwargs.keys():
+        acqStatic = kwargs["forceBtkAcq"]
+    else:
+        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+
     btkTools.checkMultipleSubject(acqStatic)
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
@@ -171,7 +175,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     # --------------------------ACQUISITION ------------------------------------
 
     # --- btk acquisition ----
-    acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+    if "forceBtkAcq" in kwargs.keys():
+        acqGait = kwargs["forceBtkAcq"]
+    else:
+        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqGait)
     acqGait =  btkTools.applyTranslators(acqGait,translators)

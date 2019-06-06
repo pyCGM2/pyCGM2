@@ -115,10 +115,14 @@ def main(args):
         if not translators:
            translators = settings["Translators"]
 
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructedFilenameLabelledNoExt,subject)
+        acq = nacf.build()
+
         # --------------------------MODEL PROCESSING----------------------------
         model,acqFunc,side = kneeCalibration.sara(model,
             DATA_PATH,reconstructFilenameLabelled,translators,
-            args.side,args.beginFrame,args.endFrame)
+            args.side,args.beginFrame,args.endFrame,forceBtkAcq=acq)
 
         # ----------------------SAVE-------------------------------------------
         files.saveModel(model,DATA_PATH,subject)

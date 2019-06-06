@@ -105,13 +105,17 @@ def main(args):
         #force plate assignement from Nexus
         mfpa = nexusTools.getForcePlateAssignment(NEXUS)
 
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
+        acq = nacf.build()
+
         # --------------------------MODELLING PROCESSING -----------------------
         acqIK = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,settings,
             markerDiameter,
             pointSuffix,
             mfpa,
-            momentProjection)
+            momentProjection,
+            forceBtkAcq=acq)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,acqIK,subject,pointSuffix).run()

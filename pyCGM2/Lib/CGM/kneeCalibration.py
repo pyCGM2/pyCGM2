@@ -26,9 +26,13 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 
 def calibration2Dof(model,
     DATA_PATH,reconstructFilenameLabelled,translators,
-    side,beginFrame,endFrame,jointRange):
+    side,beginFrame,endFrame,jointRange,**kwargs):
 
-    acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+    # --- btk acquisition ----
+    if "forceBtkAcq" in kwargs.keys():
+        acqFunc = kwargs["forceBtkAcq"]
+    else:
+        acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqFunc)
     acqFunc =  btkTools.applyTranslators(acqFunc,translators)
@@ -130,10 +134,14 @@ def calibration2Dof(model,
 
 def sara(model,
     DATA_PATH,reconstructFilenameLabelled,translators,
-    side,beginFrame,endFrame):
+    side,beginFrame,endFrame,**kwargs):
 
     # --- btk acquisition ----
-    acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+    if "forceBtkAcq" in kwargs.keys():
+        acqFunc = kwargs["forceBtkAcq"]
+    else:
+        acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+
     btkTools.checkMultipleSubject(acqFunc)
     acqFunc =  btkTools.applyTranslators(acqFunc,translators)
 
