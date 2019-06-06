@@ -110,12 +110,7 @@ def main(args):
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 
-        if DEBUG:
-            NEXUS.SaveTrial(30)
 
-        # print "Press return to exit.."
-        #
-#raw_input()
 
 if __name__ == "__main__":
 

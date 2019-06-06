@@ -86,8 +86,6 @@ def main(args):
         nexusTools.createEvents(NEXUS,subject,acqGait,["Foot Strike","Foot Off"])
         # ========END of the nexus OPERATION if run from Nexus  =========
 
-        if DEBUG:
-            NEXUS.SaveTrial(30)
 
 
     else:

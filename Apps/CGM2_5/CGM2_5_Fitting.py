@@ -111,10 +111,6 @@ def main(args):
         nexusTools.createGeneralEvents(NEXUS,subject,finalAcqGait,["Left-FP","Right-FP"])
         # ========END of the nexus OPERATION if run from Nexus  =========
 
-        if DEBUG:
-
-            NEXUS.SaveTrial(30)
-
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
