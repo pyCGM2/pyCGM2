@@ -64,17 +64,7 @@ def main(args):
 
 
         # ----------------------LOADING-------------------------------------------
-        # --- acquisition file and path----
-        DEBUG= False
-        if DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.3\\medial\\"
-            reconstructFilenameLabelledNoExt = "gait Trial 01"
-            NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
-
-            args.noIk = False
-
-        else:
-            DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"

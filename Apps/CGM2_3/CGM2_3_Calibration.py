@@ -86,16 +86,7 @@ def main(args):
         # --------------------------LOADING------------------------------
 
         # --- acquisition file and path----
-        DEBUG= False
-        if DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.3\\medial\\"
-            calibrateFilenameLabelledNoExt = "static"
-
-            NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
-            ik_flag=True
-
-        else:
-            DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
 

@@ -59,18 +59,7 @@ def main(args):
         ik_flag = argsManager.enableIKflag()
 
 
-        DEBUG= False
-        if DEBUG:
-            #DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
-            #reconstructFilenameLabelledNoExt = "gait Trial 01"
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "Release Tests\\CGM2.5\\fullBody\\"
-            reconstructFilenameLabelledNoExt = "dynamic"
-            NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
-            args.noIk = False
-
-
-        else:
-            DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"

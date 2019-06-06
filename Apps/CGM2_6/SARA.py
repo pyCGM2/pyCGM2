@@ -54,15 +54,7 @@ def main(args):
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
         # --------------------------PATH + FILE ------------------------------------
-        DEBUG = False
-        if DEBUG:
-            # CGM2.3--
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.3-calibrationSara\\"
-            reconstructedFilenameLabelledNoExt = "Right Knee"
-            NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
-
-        else:
-            DATA_PATH, reconstructedFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructedFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         reconstructFilenameLabelled = reconstructedFilenameLabelledNoExt+".c3d"
 
