@@ -36,7 +36,7 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
-from pyCGM2.Nexus import  nexusTools
+from pyCGM2.Nexus import  nexusTools,nexusFilters
 from pyCGM2.Utils import files
 
 def main(args):
@@ -80,13 +80,18 @@ def main(args):
         subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
+        # ----- construction of the openMA root instance  -----
+        trialConstructorFilter = nexusFilters.NexusConstructTrialFilter(DATA_PATH,modelledFilenameNoExt,subject)
+        openmaTrial = trialConstructorFilter.build()
+
         # --------------------pyCGM2 MODEL ------------------------------
         model = files.loadModel(DATA_PATH,subject)
         modelVersion = model.version
 
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis( DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        analysisInstance = analysis.makeAnalysis( DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix,
+                                                openmaTrials=[openmaTrial]) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
 
         if not consistencyFlag:
             if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
