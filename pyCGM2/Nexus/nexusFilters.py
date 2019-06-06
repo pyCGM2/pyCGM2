@@ -342,10 +342,11 @@ class NexusConstructAcquisitionFilter(object):
 
 
 class NexusConstructTrialFilter(object):
-    def __init__(self,filenameNoExt,subject):
+    def __init__(self,dataPath,filenameNoExt,subject):
 
         """
         """
+        self.m_dataPath = dataPath
         self.m_filenameNoExt = filenameNoExt
         self.m_subject = subject
 
