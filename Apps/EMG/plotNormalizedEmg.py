@@ -29,6 +29,9 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
+from pyCGM2.Tools import btkTools,trialTools
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
+
 
 import ViconNexus
 
@@ -79,6 +82,15 @@ def main(args):
         inputFile = inputFileNoExt+".c3d"
 
 
+        # --------------------------SUBJECT ------------------------------------
+        subjects = NEXUS.GetSubjectNames()
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
+
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
+        acq = nacf.build()
+
+
 
         # reconfiguration of emg settings as lists
         EMG_LABELS = []
@@ -99,11 +111,14 @@ def main(args):
 
 
 
-        analysis.processEMG(DATA_PATH, [inputFile], EMG_LABELS,
+        analysis.processEMG(acq, EMG_LABELS,
             highPassFrequencies=bandPassFilterFrequencies,
-            envelopFrequency=envelopCutOffFrequency,fileSuffix=fileSuffix) # high pass then low pass for all c3ds
+            envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
 
-        emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS)
+        openmaTrial = trialTools.convertBtkAcquisition(acq)
+
+
+        emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS,openmaTrials = [openmaTrial])
 
         if fileSuffix is not None:
             inputfile = inputFile +"_"+ fileSuffix
