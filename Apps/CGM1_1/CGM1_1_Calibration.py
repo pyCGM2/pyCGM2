@@ -68,13 +68,7 @@ def main(args):
 
 
         # --------------------------LOADING ------------------------------------
-        DEBUG= False
-        if DEBUG:
-            DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Release Tests\\CGM1\\Kad\\" #+ "CGM1\\CGM1\\native\\"
-            calibrateFilenameLabelledNoExt = "Static Cal 01-both" #"static Cal 01-noKAD-noAnkleMed" #
-            NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
-        else:
-            DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
 
@@ -94,11 +88,16 @@ def main(args):
         translators = files.getTranslators(DATA_PATH,"CGM1_1.translators")
         if not translators:  translators = settings["Translators"]
 
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,calibrateFilenameLabelled,subject)
+        acq = nacf.build()
+
+
         # --------------------------MODELLING PROCESSING -----------------------
         model,acqStatic = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                       required_mp,optional_mp,
                       leftFlatFoot,rightFlatFoot,markerDiameter,
-                      pointSuffix)
+                      pointSuffix,forceBtkAcq=acq)
 
         # ----------------------SAVE-------------------------------------------
         #pyCGM2.model

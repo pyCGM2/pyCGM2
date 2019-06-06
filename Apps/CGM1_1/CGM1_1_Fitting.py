@@ -56,14 +56,7 @@ def main(args):
         pointSuffix = argsManager.getPointSuffix("cgm1_1")
         momentProjection =  argsManager.getMomentProjection()
 
-        # --------------------------LOADING ------------------------------------
-        DEBUG= False
-        if DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            reconstructFilenameLabelledNoExt = "gait Trial" #"static Cal 01-noKAD-noAnkleMed" #
-            NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
-        else:
-            DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
         logging.info( "data Path: "+ DATA_PATH )
@@ -90,6 +83,11 @@ def main(args):
         translators = files.getTranslators(DATA_PATH,"CGM1_1.translators")
         if not translators:  translators = settings["Translators"]
 
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,calibrateFilenameLabelled,subject)
+        acq = nacf.build()
+
+
         #force plate assignement from Nexus
         mfpa = nexusTools.getForcePlateAssignment(NEXUS)
 
@@ -98,7 +96,8 @@ def main(args):
             translators,
             markerDiameter,
             pointSuffix,
-            mfpa,momentProjection)
+            mfpa,momentProjection,
+            forceBtkAcq=acq)
 
         # ----------------------SAVE-------------------------------------------
         # Todo: pyCGM2 model :  cpickle doesn t work. Incompatibility with Swig. ( see about BTK wrench)
