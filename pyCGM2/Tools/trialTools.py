@@ -140,6 +140,7 @@ def automaticKineticDetection(dataPath,filenames,trials=None):
 
             else:
                 trial = trials[i]
+
             sortedEvents(trial)
             flag_kinetics,times, times_l, times_r = isKineticFlag(trial)
 
@@ -428,4 +429,4 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
     if returnType == "Trial":
         return trial
     else:
-        return root 
+        return root
