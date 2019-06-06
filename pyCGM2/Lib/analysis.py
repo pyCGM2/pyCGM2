@@ -193,9 +193,8 @@ def makeEmgAnalysis(DATA_PATH,
     :param openmaTrials [bool]: force the use of a list of openma trials
     """
 
-
     if openmaTrials is not None:
-        c3dmanagerProcedure = c3dManager.UniqueOpenmaTrialSetProcedure(DATA_PATH,modelledFilenames,trials=openmaTrials)
+        c3dmanagerProcedure = c3dManager.UniqueOpenmaTrialSetProcedure(DATA_PATH,processedEmgFiles,trials=openmaTrials)
     else:
         c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,processedEmgFiles)
 
