@@ -3,7 +3,7 @@
 
 :param -l, --leftFlatFoot [int]: enable or disable the flat foot option on the left foot
 :param -r, --rightFlatFoot [int]: enable or disable the flat foot option on the right foot
-:param -h, --headFlat [int]: enable or disable the head flat option
+:param -hf, --headFlat [int]: enable or disable the head flat option
 :param -md, --markerDiameter [int]: marker diameter
 :param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
 :param --check [bool]: add "cgm1" as point suffix
@@ -119,7 +119,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CGM1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
-    parser.add_argument('-h','--headFlat',type=int,  help='head flat option')
+    parser.add_argument('-hf','--headFlat',type=int,  help='head flat option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix' )
