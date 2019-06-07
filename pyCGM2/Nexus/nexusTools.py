@@ -105,14 +105,15 @@ def setTrajectoryFromAcq(NEXUS,vskName,label,acq):
 
 
 
-def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
+def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq,suffix=""):
 
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
         logging.debug( "marker (%s) already exist" %(label))
+        if suffix !="":NEXUS.CreateModeledMarker(vskName, label+suffix)
     else:
-        NEXUS.CreateModeledMarker(vskName, label)
+        NEXUS.CreateModeledMarker(vskName, label+suffix)
 
     values = acq.GetPoint(label).GetValues()
 
@@ -125,7 +126,7 @@ def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq):
 
     data,exists = _setPointData(framecount,pfn,ff,lf,values)
 
-    NEXUS.SetModelOutput( vskName, label, data, exists )
+    NEXUS.SetModelOutput( vskName, label+suffix, data, exists )
 
 
 
@@ -226,13 +227,15 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
-def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=None):
+def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=None,suffix=""):
 
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
+        if suffix !="":
+            NEXUS.CreateModelOutput( vskName, label+suffix, 'Plug-in Gait Bones', ['RX', 'RY', 'RZ', 'TX', 'TY', 'TZ', 'SX', 'SY', 'SZ'], ['Angle', 'Angle', 'Angle', 'Length', 'Length', 'Length', 'Length', 'Length', 'Length'])
     else:
-        NEXUS.CreateModelOutput( vskName, label, 'Plug-in Gait Bones', ['RX', 'RY', 'RZ', 'TX', 'TY', 'TZ', 'SX', 'SY', 'SZ'], ['Angle', 'Angle', 'Angle', 'Length', 'Length', 'Length', 'Length', 'Length', 'Length'])
+        NEXUS.CreateModelOutput( vskName, label+suffix, 'Plug-in Gait Bones', ['RX', 'RY', 'RZ', 'TX', 'TY', 'TZ', 'SX', 'SY', 'SZ'], ['Angle', 'Angle', 'Angle', 'Length', 'Length', 'Length', 'Length', 'Length', 'Length'])
 
     #ff,lf = NEXUS.GetTrialRange()
     ff = acq.GetFirstFrame()
@@ -280,7 +283,7 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
 
         j+=1
 
-    NEXUS.SetModelOutput( vskName, label, data, exists )
+    NEXUS.SetModelOutput( vskName, label+suffix, data, exists )
 
 
 def createGeneralEvents(NEXUS,subject,acq,labels):
