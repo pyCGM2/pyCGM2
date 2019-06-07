@@ -38,7 +38,11 @@ def main():
         subject = NEXUS.GetSubjectNames()[0]
         print "Gap filling for subject ", subject
 
-        acq = btkTools.smartReader(str(DATA_PATH+filenameLabelledNoExt+".c3d"))
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameLabelledNoExt,subject)
+        acq = nacf.build()
+
+        #acq = btkTools.smartReader(str(DATA_PATH+filenameLabelledNoExt+".c3d"))
 
         gfp =  gapFilling.LowDimensionalKalmanFilterProcedure()
         gff = gapFilling.GapFillingFilter(gfp,acq)
