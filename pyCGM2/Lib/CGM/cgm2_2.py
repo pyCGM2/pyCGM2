@@ -22,7 +22,8 @@ from pyCGM2.Model.Opensim import opensimFilters
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
               required_mp,optional_mp,
-              ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
+              ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
+              markerDiameter,hjcMethod,
               pointSuffix,**kwargs):
     """
     Calibration of the CGM2.2
@@ -35,6 +36,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
     :param ik_flag [bool]: enable the inverse kinematic solver
     :param leftFlatFoot [bool]: enable of the flat foot option for the left foot
     :param rightFlatFoot [bool]: enable of the flat foot option for the right foot
+    :param headFlat [bool]: enable of the head flat  option
     :param markerDiameter [double]: marker diameter (mm)
     :param hjcMethod [str or list of 3 float]: method for locating the hip joint centre
     :param pointSuffix [str]: suffix to add to model outputs
@@ -66,6 +68,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
     model.setStaticFilename(calibrateFilenameLabelled)
     model.setCalibrationProperty("leftFlatFoot",leftFlatFoot)
     model.setCalibrationProperty("rightFlatFoot",rightFlatFoot)
+    model.setCalibrationProperty("headFlat",headFlat)
     model.setCalibrationProperty("markerDiameter",markerDiameter)
 
 
@@ -77,6 +80,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
     # use if all optional mp are zero
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                         leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                                        headFlat= headFlat,
                                         markerDiameter=markerDiameter,
                                         ).compute()
 
@@ -89,6 +93,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
         # initial static filter
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                           headFlat= headFlat,
                            markerDiameter=markerDiameter).compute()
 
     # ----------------------CGM MODELLING----------------------------------

@@ -73,6 +73,8 @@ def calibration2Dof(model,
     # initial calibration ( i.e calibration from Calibration operation)
     leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
     rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
+    headFlat = model.m_properties["CalibrationParameters"]["headFlat"]
+
     markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]
 
     if side == "Left":
@@ -87,6 +89,7 @@ def calibration2Dof(model,
     scp=modelFilters.StaticCalibrationProcedure(model)
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                           headFlat = headFlat,
                            markerDiameter=markerDiameter).compute()
 
 
@@ -127,6 +130,7 @@ def calibration2Dof(model,
     # ----  Calibration
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                        leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                       headFlat = headFlat,
                        markerDiameter=markerDiameter).compute()
 
     return model,acqFunc,side
@@ -180,6 +184,7 @@ def sara(model,
     leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
     rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
     markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]
+    headFlat = model.m_properties["CalibrationParameters"]["headFlat"]
 
     if side == "Left":
         model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
@@ -192,6 +197,7 @@ def sara(model,
     scp=modelFilters.StaticCalibrationProcedure(model)
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                           headFlat = headFlat,
                            markerDiameter=markerDiameter).compute()
 
 
@@ -223,6 +229,7 @@ def sara(model,
 
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                           headFlat = headFlat,
                            markerDiameter=markerDiameter).compute()
 
     return model,acqFunc,side

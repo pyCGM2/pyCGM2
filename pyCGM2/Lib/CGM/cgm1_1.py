@@ -20,7 +20,7 @@ from pyCGM2.ForcePlates import forceplates
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
               required_mp,optional_mp,
-              leftFlatFoot,rightFlatFoot,markerDiameter,
+              leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
               pointSuffix,**kwargs):
 
     """
@@ -33,6 +33,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     :param optional_mp [dict]: optional anthropometric data (ex: LThighOffset,...)
     :param leftFlatFoot [bool]: enable of the flat foot option for the left foot
     :param rightFlatFoot [bool]: enable of the flat foot option for the right foot
+    :param headFlat [bool]: enable of the head flat  option
     :param markerDiameter [double]: marker diameter (mm)
     :param pointSuffix [str]: suffix to add to model outputs
 
@@ -61,6 +62,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     model.setStaticFilename(calibrateFilenameLabelled)
     model.setCalibrationProperty("leftFlatFoot",leftFlatFoot)
     model.setCalibrationProperty("rightFlatFoot",rightFlatFoot)
+    model.setCalibrationProperty("headFlat",headFlat)
     model.setCalibrationProperty("markerDiameter",markerDiameter)
 
 
@@ -71,6 +73,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                         leftFlatFoot = leftFlatFoot,
                                         rightFlatFoot = rightFlatFoot,
+                                        headFlat= headFlat,
                                         markerDiameter = markerDiameter,
                                         ).compute()
     # ---- Decorators -----
@@ -81,6 +84,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
         # initial static filter
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                           headFlat= headFlat,
                            markerDiameter=markerDiameter).compute()
 
 

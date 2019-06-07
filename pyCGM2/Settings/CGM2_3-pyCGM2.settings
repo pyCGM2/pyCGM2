@@ -57,6 +57,7 @@ Calibration:
         Right: Hara
     Left flat foot: 1 #[integer](choice: 0 or 1)
     Right flat foot: 1
+    Head flat : 1
 
 Fitting:
     Moment Projection: JCS #[string](choice: Proximal, Global, Distal, JCS)

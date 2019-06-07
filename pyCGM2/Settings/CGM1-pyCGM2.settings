@@ -43,6 +43,7 @@ Translators: # Translators adapt your current marker set
 Calibration:
     Left flat foot: 1 #[integer](choice: 0 or 1)
     Right flat foot: 1
+    Head flat : 1
 
 Fitting:
     Moment Projection: Distal #[string](choice: Proximal, Global, Distal)

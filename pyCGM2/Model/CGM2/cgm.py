@@ -4433,7 +4433,13 @@ class CGM1(CGM):
         straightHead=np.array([x2,y2,z2]).T
         relativeR = np.dot(R.T,straightHead)
         angle_y,angle_x,angle_z = euler.euler_yxz(relativeR)
-        self.mp_computed["HeadOffset"] =  np.rad2deg(angle_y)
+
+        if ("headFlat" in options.keys() and options["headFlat"]):
+            logging.debug ("option (headFlat) enable")
+            self.mp_computed["HeadOffset"] =  np.rad2deg(angle_y)
+        else:
+            self.mp_computed["HeadOffset"] =  0
+
 
 
         # if ("headHorizontal" in options.keys() and options["headHorizontal"]):
@@ -4488,7 +4494,6 @@ class CGM1(CGM):
         seg.anatomicalFrame.static.setTranslation(ptOrigin)
 
         # # --- relative rotation Technical Anatomical
-
         offset =  1.0*np.deg2rad(self.mp_computed["HeadOffset"])
 
         rot = np.eye(3,3)
