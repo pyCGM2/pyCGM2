@@ -49,7 +49,7 @@ class CGM1_motionTest():
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
-        model=cgm.CGM1
+        model=cgm.CGM1()
         model.configure(bodyPart=enums.BodyPart.UpperLimb)
 
 
@@ -68,7 +68,7 @@ class CGM1_motionTest():
          # -----------CGM STATIC CALIBRATION--------------------
         scp=modelFilters.StaticCalibrationProcedure(model)
 
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,headFlat= True).compute()
         csp = modelFilters.ModelCoordinateSystemProcedure(model)
 
 
@@ -99,7 +99,70 @@ class CGM1_motionTest():
 
 
 
+    @classmethod
+    def CGM1_FullBody_HeadFlatDisable(cls):
 
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1-TESTS\\Full-Pig-HeadFlat\\"
+        staticFilename = "PN01NORMSTAT.c3d"
+
+        acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
+
+        model=cgm.CGM1()
+        model.configure(bodyPart=enums.BodyPart.FullBody)
+
+
+        markerDiameter=14
+        mp={
+        'Bodymass'   : 83,
+        'LeftLegLength' : 874,
+        'RightLegLength' : 876.0 ,
+        'LeftKneeWidth' : 106.0,
+        'RightKneeWidth' : 103.0,
+        'LeftAnkleWidth' : 74.0,
+        'RightAnkleWidth' : 72.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        'LeftShoulderOffset'   : 50,
+        'LeftElbowWidth' : 91,
+        'LeftWristWidth' : 56 ,
+        'LeftHandThickness' : 28 ,
+        'RightShoulderOffset'   : 45,
+        'RightElbowWidth' : 90,
+        'RightWristWidth' : 55 ,
+        'RightHandThickness' : 30}
+        model.addAnthropoInputParameters(mp)
+
+         # -----------CGM STATIC CALIBRATION--------------------
+        scp=modelFilters.StaticCalibrationProcedure(model)
+
+        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,headFlat= False).compute()
+        csp = modelFilters.ModelCoordinateSystemProcedure(model)
+
+
+        # --- motion ----
+        gaitFilename="PN01NORMSS01.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist)
+        modMotion.compute()
+
+        csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,acqGait)
+        csdf.setStatic(False)
+        csdf.display()
+
+        #   thorax
+        # R_thorax= model.getSegment("Thorax").anatomicalFrame.motion[10].getRotation()
+        # R_thorax_vicon = getViconRmatrix(10, acqGait, "TRXO", "TRXA", "TRXL", "XZY")
+        # np.testing.assert_almost_equal( R_thorax,
+        #                         R_thorax_vicon, decimal =3)
+
+        #   head
+        R_head= model.getSegment("Head").anatomicalFrame.motion[10].getRotation()
+        R_head_vicon = getViconRmatrix(10, acqGait, "HEDO", "HEDA", "HEDL", "XZY")
+
+        np.testing.assert_almost_equal( R_head,
+                                R_head_vicon, decimal =2)
 
 
 
@@ -110,7 +173,7 @@ if __name__ == "__main__":
 
 
     CGM1_motionTest.CGM1_UpperLimb()
-
+    CGM1_motionTest.CGM1_FullBody_HeadFlatDisable()
 
 
     logging.info("######## PROCESS CGM1 --> Done ######")

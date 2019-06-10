@@ -5389,6 +5389,7 @@ class CGM1(CGM):
         seg.anatomicalFrame.motion=[]
         T5inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
         C7inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
+        T10inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
 
         # additional markers
         # NA
@@ -5424,7 +5425,8 @@ class CGM1(CGM):
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
-            T5inThorax[i,:] = np.dot(R.T,self._TopLumbar5[i,:]-ptOrigin)
+            if hasattr(self,"_TopLumbar5"):
+                T5inThorax[i,:] = np.dot(R.T,self._TopLumbar5[i,:]-ptOrigin)
 
 
             offset =( ptOrigin + np.dot(R,np.array([-markerDiameter/2.0,0,0])) - ptOrigin)*1.05
@@ -5432,13 +5434,26 @@ class CGM1(CGM):
             C7Global= aqui.GetPoint(str("C7")).GetValues()[i,:] + offset
             C7inThorax[i,:] = np.dot(R.T,C7Global-ptOrigin)
 
-        meanT5inThorax =np.mean(T5inThorax,axis=0)
+            T10Global= aqui.GetPoint(str("T10")).GetValues()[i,:] + offset
+            T10inThorax[i,:] = np.dot(R.T,T10Global-ptOrigin)
+
+
+        if hasattr(self,"_TopLumbar5"):
+            meanT5inThorax =np.mean(T5inThorax,axis=0)
+            seg.anatomicalFrame.static.addNode("T5motion",meanT5inThorax,positionType="Local",desc = "meanTrial")
+
         meanC7inThorax =np.mean(C7inThorax,axis=0)
-        seg.anatomicalFrame.static.addNode("T5motion",meanT5inThorax,positionType="Local",desc = "meanTrial")
+        meanT10inThorax =np.mean(T10inThorax,axis=0)
+
+
         seg.anatomicalFrame.static.addNode("C7motion",meanC7inThorax,positionType="Local",desc = "meanTrial")
+        seg.anatomicalFrame.static.addNode("T10motion",meanT10inThorax,positionType="Local",desc = "meanTrial")
 
+        if hasattr(self,"_TopLumbar5"):
+            com = (meanC7inThorax + ( meanT5inThorax - meanC7inThorax ) * 0.63)
+        else:
+            com = (meanC7inThorax + ( meanT10inThorax - meanC7inThorax ) * 0.82)
 
-        com = (meanC7inThorax + ( meanT5inThorax - meanC7inThorax ) * 0.63)
         seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
 
 
