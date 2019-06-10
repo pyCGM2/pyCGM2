@@ -63,7 +63,7 @@ def enveloppe(array, fc,fa):
 
 
 # ---- btkAcq -----
-def pointsFiltering(btkAcq,order=2, fc =6):
+def markerFiltering(btkAcq,order=2, fc =6):
     """
         Low-pass filtering of all points in an acquisition
 
@@ -76,10 +76,11 @@ def pointsFiltering(btkAcq,order=2, fc =6):
     bPoint, aPoint = signal.butter(order, fc / (fp*0.5) , btype='lowpass')
 
     for pointIt in btk.Iterate(btkAcq.GetPoints()):
-        x=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,0],axis=0  )
-        y=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,1],axis=0  )
-        z=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,2],axis=0  )
-        pointIt.SetValues(np.array( [x,y,z] ).transpose())
+        if pointIt.GetType() == btk.btkPoint.Marker:
+            x=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,0],axis=0  )
+            y=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,1],axis=0  )
+            z=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,2],axis=0  )
+            pointIt.SetValues(np.array( [x,y,z] ).transpose())
 
 
 # ----- methods ---------
