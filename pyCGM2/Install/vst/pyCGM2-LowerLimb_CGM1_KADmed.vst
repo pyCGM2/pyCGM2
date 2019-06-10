@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<KinematicModel MODEL="PIG_LB_KAD_MED_NEW" VERSION="3.2">
+<KinematicModel MODEL="pyCGM2-LowerLimb_CGM1_KADmed" VERSION="3.2">
 	<Parameters>
 		<StaticParameter NAME="Bodymass" PRIOR="65" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="mass"/>
 		<StaticParameter NAME="Height" PRIOR="1700" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="length"/>
@@ -40,7 +40,7 @@
 		<Parameter NAME="RBWT_Root_X" VALUE="-39.159122467041016" PRIOR="-39.159122467041016" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RBWT_Root_Z" VALUE="-111.88320922851563" PRIOR="-111.88320922851563" SD="0" HIDDEN="false"/>
 		<Parameter NAME="LKNE_L_Femur_X" VALUE="39.159122467041016" PRIOR="39.159122467041016" SD="0" HIDDEN="false"/>
-		<Parameter NAME="LKNE_L_Femur_Y" VALUE="-458.72" PRIOR="-458.72" SD="0" HIDDEN="false"/>
+		<Parameter NAME="LKNE_L_Femur_Y" VALUE="-458.72000122070313" PRIOR="-458.72000122070313" SD="0" HIDDEN="false"/>
 		<Parameter NAME="LKNE_L_Femur_Z" VALUE="11.188321113586426" PRIOR="11.188321113586426" SD="0" HIDDEN="false"/>
 		<Parameter NAME="LANK_L_Tibia_X" VALUE="25" PRIOR="25" SD="0" HIDDEN="false"/>
 		<Parameter NAME="LANK_L_Tibia_Y" VALUE="-419.56204223632813" PRIOR="-419.56204223632813" SD="0" HIDDEN="false"/>
@@ -50,7 +50,7 @@
 		<Parameter NAME="LHEL_L_Foot_Z" VALUE="-33.564964294433594" PRIOR="-33.564964294433594" SD="0" HIDDEN="false"/>
 		<Parameter NAME="LTOE_L_Toe_Z" VALUE="156.63648986816406" PRIOR="156.63648986816406" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RKNE_R_Femur_X" VALUE="-39.159122467041016" PRIOR="-39.159122467041016" SD="0" HIDDEN="false"/>
-		<Parameter NAME="RKNE_R_Femur_Y" VALUE="-458.72" PRIOR="-458.72" SD="0" HIDDEN="false"/>
+		<Parameter NAME="RKNE_R_Femur_Y" VALUE="-458.72000122070313" PRIOR="-458.72000122070313" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RKNE_R_Femur_Z" VALUE="11.188321113586426" PRIOR="11.188321113586426" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RANK_R_Tibia_X" VALUE="-25" PRIOR="-25" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RANK_R_Tibia_Y" VALUE="-419.56204223632813" PRIOR="-419.56204223632813" SD="0" HIDDEN="false"/>
@@ -72,22 +72,22 @@
 		<Parameter NAME="RSHN_R_Tibia_Y" VALUE="-201.38978576660156" PRIOR="-201.38978576660156" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RSHN_R_Tibia_Z" VALUE="-11.188321113586426" PRIOR="-11.188321113586426" SD="0" HIDDEN="false"/>
 		<Parameter NAME="R_Femur_RKAX_x" VALUE="-135" PRIOR="-135" HIDDEN="true"/>
-		<Parameter NAME="R_Femur_RKAX_y" VALUE="-458.72" PRIOR="-458.72" HIDDEN="true"/>
+		<Parameter NAME="R_Femur_RKAX_y" VALUE="-458.72000122070313" PRIOR="-458.72000122070313" HIDDEN="true"/>
 		<Parameter NAME="R_Femur_RKAX_z" VALUE="0" PRIOR="0" HIDDEN="true"/>
 		<Parameter NAME="R_Femur_RKD1_x" VALUE="-35" PRIOR="-35" HIDDEN="true"/>
-		<Parameter NAME="R_Femur_RKD1_y" VALUE="-388.02" PRIOR="-388.02" HIDDEN="true"/>
+		<Parameter NAME="R_Femur_RKD1_y" VALUE="-388.01998901367188" PRIOR="-388.01998901367188" HIDDEN="true"/>
 		<Parameter NAME="R_Femur_RKD1_z" VALUE="70.699996948242188" PRIOR="70.699996948242188" HIDDEN="true"/>
 		<Parameter NAME="R_Femur_RKD2_x" VALUE="-35" PRIOR="-35" HIDDEN="true"/>
-		<Parameter NAME="R_Femur_RKD2_y" VALUE="-529.42" PRIOR="-529.42" HIDDEN="true"/>
+		<Parameter NAME="R_Femur_RKD2_y" VALUE="-529.41998291015625" PRIOR="-529.41998291015625" HIDDEN="true"/>
 		<Parameter NAME="R_Femur_RKD2_z" VALUE="70.699996948242188" PRIOR="70.699996948242188" HIDDEN="true"/>
 		<Parameter NAME="L_Femur_LKAX_x" VALUE="135" PRIOR="135" HIDDEN="true"/>
-		<Parameter NAME="L_Femur_LKAX_y" VALUE="-458.72" PRIOR="-458.72" HIDDEN="true"/>
+		<Parameter NAME="L_Femur_LKAX_y" VALUE="-458.72000122070313" PRIOR="-458.72000122070313" HIDDEN="true"/>
 		<Parameter NAME="L_Femur_LKAX_z" VALUE="0" PRIOR="0" HIDDEN="true"/>
 		<Parameter NAME="L_Femur_LKD1_x" VALUE="35" PRIOR="35" HIDDEN="true"/>
-		<Parameter NAME="L_Femur_LKD1_y" VALUE="-388.02" PRIOR="-388.02" HIDDEN="true"/>
+		<Parameter NAME="L_Femur_LKD1_y" VALUE="-388.01998901367188" PRIOR="-388.01998901367188" HIDDEN="true"/>
 		<Parameter NAME="L_Femur_LKD1_z" VALUE="70.699996948242188" PRIOR="70.699996948242188" HIDDEN="true"/>
 		<Parameter NAME="L_Femur_LKD2_x" VALUE="35" PRIOR="35" HIDDEN="true"/>
-		<Parameter NAME="L_Femur_LKD2_y" VALUE="-529.42" PRIOR="-529.42" HIDDEN="true"/>
+		<Parameter NAME="L_Femur_LKD2_y" VALUE="-529.41998291015625" PRIOR="-529.41998291015625" HIDDEN="true"/>
 		<Parameter NAME="L_Femur_LKD2_z" VALUE="70.699996948242188" PRIOR="70.699996948242188" HIDDEN="true"/>
 		<Parameter NAME="L_Foot_LMML_x" VALUE="-60" PRIOR="-60" HIDDEN="true"/>
 		<Parameter NAME="L_Foot_LMML_y" VALUE="0" PRIOR="0" HIDDEN="true"/>

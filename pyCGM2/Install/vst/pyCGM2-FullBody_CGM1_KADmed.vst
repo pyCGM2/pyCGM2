@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<KinematicModel MODEL="PIG_FB_KAD_NEW" VERSION="3.2">
+<KinematicModel MODEL="pyCGM2-FullBody_CGM1_KADmed" VERSION="3.2">
 	<Parameters>
 		<StaticParameter NAME="Bodymass" PRIOR="65" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="mass"/>
 		<StaticParameter NAME="Height" PRIOR="1700" HIDDEN="false" ADVANCED="false" READONLY="false" REQUIRED="true" QUANTITY="length"/>
@@ -58,7 +58,7 @@
 		<Parameter NAME="RBWT_Root_X" VALUE="-39.159122467041016" PRIOR="-39.159122467041016" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RBWT_Root_Z" VALUE="-111.88320922851563" PRIOR="-111.88320922851563" SD="0" HIDDEN="false"/>
 		<Parameter NAME="LKNE_L_Femur_X" VALUE="40" PRIOR="40" SD="0" HIDDEN="false"/>
-		<Parameter NAME="LKNE_L_Femur_Y" VALUE="-458.72" PRIOR="-458.72" SD="0" HIDDEN="false"/>
+		<Parameter NAME="LKNE_L_Femur_Y" VALUE="-458.72000122070313" PRIOR="-458.72000122070313" SD="0" HIDDEN="false"/>
 		<Parameter NAME="LKNE_L_Femur_Z" VALUE="10" PRIOR="10" SD="0" HIDDEN="false"/>
 		<Parameter NAME="LANK_L_Tibia_X" VALUE="11.188321113586426" PRIOR="11.188321113586426" SD="0" HIDDEN="false"/>
 		<Parameter NAME="LANK_L_Tibia_Y" VALUE="-419.56204223632813" PRIOR="-419.56204223632813" SD="0" HIDDEN="false"/>
@@ -68,7 +68,7 @@
 		<Parameter NAME="LHEL_L_Foot_Z" VALUE="-33.564964294433594" PRIOR="-33.564964294433594" SD="0" HIDDEN="false"/>
 		<Parameter NAME="LTOE_L_Toe_Z" VALUE="156.63648986816406" PRIOR="156.63648986816406" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RKNE_R_Femur_X" VALUE="-40" PRIOR="-40" SD="0" HIDDEN="false"/>
-		<Parameter NAME="RKNE_R_Femur_Y" VALUE="-458.2" PRIOR="-458.72" SD="0" HIDDEN="false"/>
+		<Parameter NAME="RKNE_R_Femur_Y" VALUE="-458.72000122070313" PRIOR="-458.72000122070313" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RKNE_R_Femur_Z" VALUE="11.188321113586426" PRIOR="11.188321113586426" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RANK_R_Tibia_X" VALUE="-11.188321113586426" PRIOR="-11.188321113586426" SD="0" HIDDEN="false"/>
 		<Parameter NAME="RANK_R_Tibia_Y" VALUE="-419.56204223632813" PRIOR="-419.56204223632813" SD="0" HIDDEN="false"/>
