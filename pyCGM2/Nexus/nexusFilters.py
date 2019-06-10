@@ -88,6 +88,7 @@ class NexusConstructAcquisitionFilter(object):
         self.m_acq.SetPointFrequency(self.m_framerate)
         self.m_acq.SetFirstFrame(self.m_firstFrame)
 
+
     def appendEvents(self):
 
 
@@ -326,8 +327,8 @@ class NexusConstructAcquisitionFilter(object):
     def build(self):
         self.appendEvents()
         self.appendMarkers()
-        self.appendForcePlates()
-        self.appendAnalogs()
+        if self.m_nexusForcePlates !=[]: self.appendForcePlates()
+        if self.m_nexusAnalogDevices !=[]:self.appendAnalogs()
         self.appendModelOutputs()
 
 
@@ -576,8 +577,8 @@ class NexusConstructTrialFilter(object):
     def build(self):
         self.appendEvents()
         self.appendMarkers()
-        self.appendForcePlates()
-        self.appendAnalogs()
+        if self.m_nexusForcePlates !=[]: self.appendForcePlates()
+        if self.m_nexusAnalogDevices !=[]:self.appendAnalogs()
         self.appendModelOutputs()
 
         trialTools.sortedEvents(self.m_trial)
