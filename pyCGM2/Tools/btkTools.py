@@ -358,16 +358,15 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
     flag,vff,vlf = findValidFrames(acq,markers)
     index = vff
 
+    originValues = (acq.GetPoint("LASI").GetValues()[index,:] + acq.GetPoint("RASI").GetValues()[index,:])/2.0
+    longitudinal_extremityValues = (acq.GetPoint("LPSI").GetValues()[index,:] + acq.GetPoint("RPSI").GetValues()[index,:])/2.0
+    lateral_extremityValues = acq.GetPoint("LASI").GetValues()[index,:]
 
-    originValues = (acq.GetPoint("LPSI").GetValues()[index,:] + acq.GetPoint("RPSI").GetValues()[index,:])/2.0
-    longitudinal_extremityValues = (acq.GetPoint("LASI").GetValues()[index,:] + acq.GetPoint("RASI").GetValues()[index,:])/2.0
-    lateral_extremityValues = acq.GetPoint("LPSI").GetValues()[index,:]
 
-
-    a1=(longitudinal_extremityValues-originValues)
+    a1=(longitudinal_extremityValues-originValues)# PSI - ASI
     a1=a1/np.linalg.norm(a1)
 
-    a2=(lateral_extremityValues-originValues)
+    a2=(lateral_extremityValues-originValues) #LASI -ASI
     a2=a2/np.linalg.norm(a2)
 
     globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
@@ -388,6 +387,7 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
         tmp.append(res)
     maxIndex = np.argmax(np.abs(tmp))
     lateralAxis =  globalAxes.keys()[maxIndex]
+
 
 
     # global frame

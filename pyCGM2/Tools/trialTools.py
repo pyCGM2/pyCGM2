@@ -234,7 +234,7 @@ def findProgressionFromPelvicMarkers(trial,LASI="LASI",RASI="RASI", LPSI="LPSI",
     a1=(midASISvalues-midPSISvalues)
     a1=a1/np.linalg.norm(a1)
 
-    a2=(RPSIvalues-midPSISvalues)
+    a2=(RASIvalues-midASISvalues)
     a2=a2/np.linalg.norm(a2)
 
     globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
