@@ -4433,7 +4433,13 @@ class CGM1(CGM):
         straightHead=np.array([x2,y2,z2]).T
         relativeR = np.dot(R.T,straightHead)
         angle_y,angle_x,angle_z = euler.euler_yxz(relativeR)
-        self.mp_computed["HeadOffset"] =  np.rad2deg(angle_y)
+
+        if ("headFlat" in options.keys() and options["headFlat"]):
+            logging.debug ("option (headFlat) enable")
+            self.mp_computed["HeadOffset"] =  np.rad2deg(angle_y)
+        else:
+            self.mp_computed["HeadOffset"] =  0
+
 
 
         # if ("headHorizontal" in options.keys() and options["headHorizontal"]):
@@ -4488,7 +4494,6 @@ class CGM1(CGM):
         seg.anatomicalFrame.static.setTranslation(ptOrigin)
 
         # # --- relative rotation Technical Anatomical
-
         offset =  1.0*np.deg2rad(self.mp_computed["HeadOffset"])
 
         rot = np.eye(3,3)
@@ -5384,6 +5389,7 @@ class CGM1(CGM):
         seg.anatomicalFrame.motion=[]
         T5inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
         C7inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
+        T10inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
 
         # additional markers
         # NA
@@ -5419,7 +5425,8 @@ class CGM1(CGM):
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
-            T5inThorax[i,:] = np.dot(R.T,self._TopLumbar5[i,:]-ptOrigin)
+            if hasattr(self,"_TopLumbar5"):
+                T5inThorax[i,:] = np.dot(R.T,self._TopLumbar5[i,:]-ptOrigin)
 
 
             offset =( ptOrigin + np.dot(R,np.array([-markerDiameter/2.0,0,0])) - ptOrigin)*1.05
@@ -5427,13 +5434,26 @@ class CGM1(CGM):
             C7Global= aqui.GetPoint(str("C7")).GetValues()[i,:] + offset
             C7inThorax[i,:] = np.dot(R.T,C7Global-ptOrigin)
 
-        meanT5inThorax =np.mean(T5inThorax,axis=0)
+            T10Global= aqui.GetPoint(str("T10")).GetValues()[i,:] + offset
+            T10inThorax[i,:] = np.dot(R.T,T10Global-ptOrigin)
+
+
+        if hasattr(self,"_TopLumbar5"):
+            meanT5inThorax =np.mean(T5inThorax,axis=0)
+            seg.anatomicalFrame.static.addNode("T5motion",meanT5inThorax,positionType="Local",desc = "meanTrial")
+
         meanC7inThorax =np.mean(C7inThorax,axis=0)
-        seg.anatomicalFrame.static.addNode("T5motion",meanT5inThorax,positionType="Local",desc = "meanTrial")
+        meanT10inThorax =np.mean(T10inThorax,axis=0)
+
+
         seg.anatomicalFrame.static.addNode("C7motion",meanC7inThorax,positionType="Local",desc = "meanTrial")
+        seg.anatomicalFrame.static.addNode("T10motion",meanT10inThorax,positionType="Local",desc = "meanTrial")
 
+        if hasattr(self,"_TopLumbar5"):
+            com = (meanC7inThorax + ( meanT5inThorax - meanC7inThorax ) * 0.63)
+        else:
+            com = (meanC7inThorax + ( meanT10inThorax - meanC7inThorax ) * 0.82)
 
-        com = (meanC7inThorax + ( meanT5inThorax - meanC7inThorax ) * 0.63)
         seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
 
 
@@ -6168,6 +6188,7 @@ class CGM1(CGM):
 
         """
 
+        pointSuffix  =  pointSuffix if pointSuffix is not None else ""
 
         if staticProcessingFlag:
             if self.checkCalibrationProperty("LeftKAD",True):
@@ -6176,24 +6197,26 @@ class CGM1(CGM):
                 nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKNE", acq)
 
         # export JC
+
+        #centreOfMassLabel  = "CentreOfMass" + pointSuffix if pointSuffix is not None else "CentreOfMass"
         if self.m_bodypart != enums.BodyPart.UpperLimb:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHJC", acq)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKJC", acq)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq,suffix = pointSuffix)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKJC", acq,suffix = pointSuffix)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHJC", acq,suffix = pointSuffix)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq,suffix = pointSuffix)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq,suffix = pointSuffix)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq,suffix = pointSuffix)
 
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
             pass
 
         if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LSJC", acq)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RSJC", acq)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LEJC", acq)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"REJC", acq)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHO", acq)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHO", acq)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LSJC", acq,suffix = pointSuffix)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RSJC", acq,suffix = pointSuffix)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LEJC", acq,suffix = pointSuffix)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"REJC", acq,suffix = pointSuffix)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHO", acq,suffix = pointSuffix)
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHO", acq,suffix = pointSuffix)
 
             logging.debug("jc over")
 
@@ -6212,34 +6235,52 @@ class CGM1(CGM):
         # bones
         # -------------
         if self.m_bodypart != enums.BodyPart.UpperLimb:
-            nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),
+                OriginValues = acq.GetPoint("midHJC").GetValues(), suffix = pointSuffix )
 
-            nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),
+                OriginValues = acq.GetPoint("LKJC").GetValues(),suffix = pointSuffix )
             #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
-            nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() )
-            nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset") )
-            nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left Foot"), OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0 )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),
+                            OriginValues = acq.GetPoint("LAJC").GetValues(),suffix = pointSuffix )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"),
+                OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left Foot"),
+                OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0,suffix = pointSuffix )
 
-            nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),
+                OriginValues = acq.GetPoint("RKJC").GetValues(),suffix = pointSuffix )
             #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
-            nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() )
-            nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset") )
-            nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right Foot") ,  OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"), manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0)
+            nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),
+            OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix = pointSuffix)
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") ,
+                OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right Foot") ,
+                OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"), manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0,suffix = pointSuffix)
 
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk :
-            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues(),
+            suffix = pointSuffix)
 
         if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues(),
+                suffix = pointSuffix )
 
-            nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),OriginValues = acq.GetPoint("LEJC").GetValues() )
-            nexusTools.appendBones(NEXUS,vskName,acq,"LFOREARM", self.getSegment("Left ForeArm"),OriginValues = acq.GetPoint("LWJC").GetValues() )
-            nexusTools.appendBones(NEXUS,vskName,acq,"LHAND", self.getSegment("Left Hand"),OriginValues = acq.GetPoint("LHO").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),
+                OriginValues = acq.GetPoint("LEJC").GetValues(),suffix = pointSuffix )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFOREARM", self.getSegment("Left ForeArm"),
+                OriginValues = acq.GetPoint("LWJC").GetValues(),suffix = pointSuffix )
+            nexusTools.appendBones(NEXUS,vskName,acq,"LHAND", self.getSegment("Left Hand"),
+            OriginValues = acq.GetPoint("LHO").GetValues(),suffix = pointSuffix )
 
-            nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm"),OriginValues = acq.GetPoint("REJC").GetValues() )
-            nexusTools.appendBones(NEXUS,vskName,acq,"RFOREARM", self.getSegment("Right ForeArm"),OriginValues = acq.GetPoint("RWJC").GetValues() )
-            nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),OriginValues = acq.GetPoint("RHO").GetValues() )
-            nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),OriginValues = acq.GetPoint("HC").GetValues() )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm")
+            ,OriginValues = acq.GetPoint("REJC").GetValues(),suffix = pointSuffix )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFOREARM", self.getSegment("Right ForeArm"),
+            OriginValues = acq.GetPoint("RWJC").GetValues(),suffix = pointSuffix )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),
+            OriginValues = acq.GetPoint("RHO").GetValues(),suffix = pointSuffix )
+            nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),
+            OriginValues = acq.GetPoint("HC").GetValues(),suffix = pointSuffix )
         logging.debug("bones over")
 
         if not staticProcessingFlag:
@@ -6274,6 +6315,7 @@ class CGM1(CGM):
             logging.debug("power over")
 
         # centre of mass
-        centreOfMassLabel  = "CentreOfMass_" + pointSuffix if pointSuffix is not None else "CentreOfMass"
+
+        centreOfMassLabel  = "CentreOfMass" + pointSuffix if pointSuffix is not None else "CentreOfMass"
         if self.m_centreOfMass is not None:
             nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str(centreOfMassLabel), acq)

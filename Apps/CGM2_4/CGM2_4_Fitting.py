@@ -61,18 +61,7 @@ def main(args):
         ik_flag = argsManager.enableIKflag()
 
 
-        DEBUG= False
-        if DEBUG:
-            #DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\cgm2.4\\medial\\"
-            #reconstructFilenameLabelledNoExt = "gait Trial 01"
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "Release Tests\\CGM2.4\\medial\\"
-            reconstructFilenameLabelledNoExt = "gait Trial 01"
-            NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
-            args.noIk = False
-
-
-        else:
-            DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
@@ -106,23 +95,22 @@ def main(args):
         #force plate assignement from Nexus
         mfpa = nexusTools.getForcePlateAssignment(NEXUS)
 
+        # btkAcquisition
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
+        acq = nacf.build()
+
         # --------------------------MODELLING PROCESSING -----------------------
         finalAcqGait = cgm2_4.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,settings,
             ik_flag,markerDiameter,
             pointSuffix,
             mfpa,
-            momentProjection)
+            momentProjection,forceBtkAcq=acq)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,finalAcqGait,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,finalAcqGait,["Left-FP","Right-FP"])
         # ========END of the nexus OPERATION if run from Nexus  =========
-
-        if DEBUG:
-
-            NEXUS.SaveTrial(30)
-
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

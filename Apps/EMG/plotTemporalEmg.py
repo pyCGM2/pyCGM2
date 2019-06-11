@@ -5,7 +5,6 @@ The script displays rectified EMG with time as x-axis
 
 :param -bpf, --BandpassFrequencies [array]: bandpass frequencies
 :param -ecf, --EnvelopLowpassFrequency [double]: cut-off low pass frequency for getting emg envelop
-:param -fs, --fileSuffix [string]: store the c3d file with addition of a suffix
 :param -r, --raw [bool]: display non-rectified emg instead of rectified
 
 Examples:
@@ -29,6 +28,8 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
+from pyCGM2.Tools import btkTools, trialTools
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 import ViconNexus
 
@@ -66,18 +67,21 @@ def main(args):
         fileSuffix = args.fileSuffix
 
         # --- acquisition file and path----
-        DEBUG = False
-        if DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "EMG\\SampleNantes_prepost\\"
-            inputFileNoExt = "pre" #"static Cal 01-noKAD-noAnkleMed" #
-
-            NEXUS.OpenTrial( str(DATA_PATH+inputFileNoExt), 10 )
-
-        else:
-            DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
+        DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
 
         inputFile = inputFileNoExt+".c3d"
 
+
+        # --------------------------SUBJECT ------------------------------------
+        subjects = NEXUS.GetSubjectNames()
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
+
+        # btkAcq builder + save
+        if os.path.exists(str(DATA_PATH+ "__tmp.c3d")):
+            os.remove(str(DATA_PATH+ "__tmp.c3d"))
+
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
+        acq = nacf.build()
 
 
 
@@ -99,13 +103,17 @@ def main(args):
         # NORMAL_ACTIVITIES = ["RECFEM","RECFEM",None,"VASLAT"]
 
 
-        analysis.processEMG(DATA_PATH, [inputFile], EMG_LABELS,
-            highPassFrequencies=bandPassFilterFrequencies,
-            envelopFrequency=envelopCutOffFrequency,fileSuffix=fileSuffix) # high pass then low pass for all c3ds
 
-        if fileSuffix is not None:
-            inputfile = inputFile +"_"+ fileSuffix
-        plot.plotTemporalEMG(DATA_PATH,inputFile, EMG_LABELS,EMG_MUSCLES, EMG_CONTEXT, NORMAL_ACTIVITIES,exportPdf=True,rectify=rectifyBool)
+        analysis.processEMG(acq, EMG_LABELS,
+            highPassFrequencies=bandPassFilterFrequencies,
+            envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
+
+        openmaTrial = trialTools.convertBtkAcquisition(acq)
+
+
+
+        plot.plotTemporalEMG(DATA_PATH,inputFile, EMG_LABELS,EMG_MUSCLES, EMG_CONTEXT, NORMAL_ACTIVITIES,exportPdf=True,rectify=rectifyBool,
+                            openmaTrial=openmaTrial)
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
@@ -115,7 +123,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-ecf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
-    parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of the processed file')
     parser.add_argument('-r','--raw', action='store_true', help='rectified data')
     args = parser.parse_args()
     # ---- main script -----

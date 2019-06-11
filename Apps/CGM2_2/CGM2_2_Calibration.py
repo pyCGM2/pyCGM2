@@ -3,6 +3,7 @@
 
 :param -l, --leftFlatFoot [int]: enable or disable the flat foot option on the left foot
 :param -r, --rightFlatFoot [int]: enable or disable the flat foot option on the right foot
+:param -hf, --headFlat [int]: enable or disable the head flat option
 :param -md, --markerDiameter [int]: marker diameter
 :param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
 :param --check [bool]: add "cgm2.2" as point suffix
@@ -67,6 +68,7 @@ def main(args):
         argsManager = CgmArgsManager.argsManager_cgm(settings,args)
         leftFlatFoot = argsManager.getLeftFlatFoot()
         rightFlatFoot = argsManager.getRightFlatFoot()
+        headFlat = argsManager.getHeadFlat()
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm2.2")
 
@@ -82,19 +84,7 @@ def main(args):
         ik_flag = False if args.noIk else True
 
         # --------------------------LOADING ------------------------------------
-        DEBUG= False
-        if DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH +"CGM2\\cgm2.2\\native\\"
-            calibrateFilenameLabelledNoExt = "static"
-
-            #DATA_PATH = pyCGM2.TEST_DATA_PATH +"CGM3\\Salford_healthy_DataCollection\\PN01OP01S01\\"
-            #calibrateFilenameLabelledNoExt = "PN01OP01S01STAT"
-
-            NEXUS.OpenTrial( str(DATA_PATH+calibrateFilenameLabelledNoExt), 30 )
-            args.noIk=False
-
-        else:
-            DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
 
@@ -118,10 +108,16 @@ def main(args):
         translators = files.getTranslators(DATA_PATH,"CGM2_2.translators")
         if not translators:  translators = settings["Translators"]
 
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,calibrateFilenameLabelledNoExt,subject)
+        acq = nacf.build()
+
         model,finalAcqStatic = cgm2_2.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                       required_mp,optional_mp,
-                      ik_flag,leftFlatFoot,rightFlatFoot,markerDiameter,hjcMethod,
-                      pointSuffix)
+                      ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
+                      markerDiameter,
+                      hjcMethod,
+                      pointSuffix,forceBtkAcq=acq)
 
 
 
@@ -141,9 +137,6 @@ def main(args):
         # ========END of the nexus OPERATION if run from Nexus  =========
 
 
-        if DEBUG:
-            NEXUS.SaveTrial(30)
-
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
 
@@ -152,6 +145,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CGM2.2 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')
+    parser.add_argument('-hf','--headFlat',type=int,  help='head flat option')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')

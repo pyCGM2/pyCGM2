@@ -5,6 +5,8 @@ from pyCGM2.Utils import files
 from pyCGM2 import enums
 import logging
 import copy
+from pyCGM2.Eclipse import vskTools,eclipse
+
 
 class ModelConfigManager(Manager.ConfigManager):
     """
@@ -51,7 +53,7 @@ class CGM1ConfigManager(ModelConfigManager):
     """
 
     """
-    def __init__(self,settings,localInternalSettings = None, localTranslators=None):
+    def __init__(self,settings,localInternalSettings = None, localTranslators=None,vsk=None):
         super(CGM1ConfigManager, self).__init__(settings)
 
         self._localTranslators = localTranslators
@@ -67,6 +69,14 @@ class CGM1ConfigManager(ModelConfigManager):
         self.translators
         self.momentProjection
 
+        if vsk is not None:
+            self._vsk = vsk
+        else:
+            self._vsk = None
+
+        self.requiredMp
+        self.optionalMp
+
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
@@ -74,6 +84,7 @@ class CGM1ConfigManager(ModelConfigManager):
         else:
             logging.info("Local internal setting found")
             self._internSettings = self._localInternalSettings
+
 
     @property
     def leftFlatFoot(self):
@@ -122,16 +133,28 @@ class CGM1ConfigManager(ModelConfigManager):
 
     @property
     def requiredMp(self):
-        return  self._userSettings["MP"]["Required"]
+        if self._vsk is None:
+            return  self._userSettings["MP"]["Required"]
+        else:
+            required_mp,optional_mp = vskTools.getFromVskSubjectMp(self._vsk, resetFlag=True)
+            self._userSettings["MP"]["Required"].update(required_mp)
+            return required_mp
 
     @property
     def optionalMp(self):
-        return  self._userSettings["MP"]["Optional"]
+        if self._vsk is None:
+            return  self._userSettings["MP"]["Optional"]
+        else:
+            required_mp,optional_mp = vskTools.getFromVskSubjectMp(self._vsk, resetFlag=True)
+            self._userSettings["MP"]["Optional"].update(optional_mp)
+            return optional_mp
+
 
 
     def updateMp(self,model):
 
         if self.finalSettings is not None:
+            self.finalSettings["MP"]["Required"].update(model.mp)
             self.finalSettings["MP"]["Optional"].update(model.mp_computed)
 
 
@@ -140,8 +163,8 @@ class CGM1_1ConfigManager(CGM1ConfigManager):
     """
 
     """
-    def __init__(self,settings,localInternalSettings = None, localTranslators=None):
-        super(CGM1_1ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators)
+    def __init__(self,settings,localInternalSettings = None, localTranslators=None,vsk=None):
+        super(CGM1_1ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators, vsk=vsk)
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
@@ -153,8 +176,8 @@ class CGM2_1ConfigManager(CGM1ConfigManager):
     """
 
     """
-    def __init__(self,settings,localInternalSettings = None, localTranslators=None):
-        super(CGM2_1ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators)
+    def __init__(self,settings,localInternalSettings = None, localTranslators=None,vsk=None):
+        super(CGM2_1ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators,vsk=vsk)
 
         self.__internalsettings()
 
@@ -173,8 +196,8 @@ class CGM2_2ConfigManager(CGM2_1ConfigManager):
     """
 
     """
-    def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None):
-        super(CGM2_2ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators)
+    def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None,vsk=None):
+        super(CGM2_2ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators,vsk=vsk)
 
         self._localIkweight = localIkWeight
 
@@ -208,9 +231,9 @@ class CGM2_3ConfigManager(CGM2_2ConfigManager):
     """
 
     """
-    def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None):
+    def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None,vsk=None):
         super(CGM2_3ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators,
-                                                localIkWeight=localIkWeight)
+                                                localIkWeight=localIkWeight,vsk=vsk)
 
         self.__internalsettings()
 
@@ -228,8 +251,8 @@ class CGM2_4ConfigManager(CGM2_3ConfigManager):
     """
 
     """
-    def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None):
-        super(CGM2_4ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators,localIkWeight=localIkWeight)
+    def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None,vsk=None):
+        super(CGM2_4ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators,localIkWeight=localIkWeight,vsk=vsk)
 
         self.__internalsettings()
 
@@ -244,8 +267,8 @@ class CGM2_5ConfigManager(CGM2_4ConfigManager):
     """
 
     """
-    def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None):
-        super(CGM2_5ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators,localIkWeight=localIkWeight)
+    def __init__(self,settings,localInternalSettings = None, localTranslators=None, localIkWeight=None,vsk=None):
+        super(CGM2_5ConfigManager, self).__init__(settings,localInternalSettings = localInternalSettings, localTranslators=localTranslators,localIkWeight=localIkWeight,vsk=vsk)
 
         self.__internalsettings()
 

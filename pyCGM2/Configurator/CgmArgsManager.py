@@ -10,6 +10,16 @@ class argsManager_cgm(object):
         self.settings = settings
         self.args = args
 
+
+    def getHeadFlat(self):
+        if self.args.headFlat is not None:
+            logging.warning("Head flat option : %s"%(str(bool(self.args.headFlat))))
+            return  bool(self.args.headFlat)
+        else:
+            return bool(self.settings["Calibration"]["Head flat"])
+
+
+
     def getLeftFlatFoot(self):
         if self.args.leftFlatFoot is not None:
             logging.warning("Left flat foot forces : %s"%(str(bool(self.args.leftFlatFoot))))
@@ -62,8 +72,8 @@ class argsManager_cgm(object):
                 return  enums.MomentProjection.Proximal
             elif self.args.proj == "Global":
                 return  enums.MomentProjection.Global
-            elif args.proj == "JCS":
-                return pyCGM2Enums.MomentProjection.JCS
+            elif self.args.proj == "JCS":
+                return enums.MomentProjection.JCS
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
 

@@ -5,7 +5,6 @@ The script displays gait-normalized emg envelops
 
 :param -bpf, --BandpassFrequencies [array]: bandpass frequencies
 :param -ecf, --EnvelopLowpassFrequency [double]: cut-off low pass frequency for getting emg envelop
-:param -fs, --fileSuffix [string]: store the c3d file with addition of a suffix
 :param -c, --consistency [bool]: display consistency plot ( ie : all gait cycles) instead of a descriptive statistics view
 
 Examples:
@@ -28,6 +27,9 @@ from pyCGM2.Utils import files
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
+
+from pyCGM2.Tools import btkTools,trialTools
+from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 
 import ViconNexus
@@ -63,20 +65,20 @@ def main(args):
 
         consistencyFlag = True if args.consistency else False
 
-        fileSuffix = args.fileSuffix
 
         # --- acquisition file and path----
-        DEBUG = False
-        if DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "EMG\\SampleNantes_prepost\\"
-            inputFileNoExt = "pre" #"static Cal 01-noKAD-noAnkleMed" #
-
-            NEXUS.OpenTrial( str(DATA_PATH+inputFileNoExt), 10 )
-
-        else:
-            DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
+        DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
 
         inputFile = inputFileNoExt+".c3d"
+
+
+        # --------------------------SUBJECT ------------------------------------
+        subjects = NEXUS.GetSubjectNames()
+        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
+
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
+        acq = nacf.build()
 
 
 
@@ -99,14 +101,15 @@ def main(args):
 
 
 
-        analysis.processEMG(DATA_PATH, [inputFile], EMG_LABELS,
+        analysis.processEMG(acq, EMG_LABELS,
             highPassFrequencies=bandPassFilterFrequencies,
-            envelopFrequency=envelopCutOffFrequency,fileSuffix=fileSuffix) # high pass then low pass for all c3ds
+            envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
 
-        emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS)
+        openmaTrial = trialTools.convertBtkAcquisition(acq)
 
-        if fileSuffix is not None:
-            inputfile = inputFile +"_"+ fileSuffix
+
+        emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS,openmaTrials = [openmaTrial])
+
 
         if not consistencyFlag:
             plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False,exportPdf=True,outputName=inputFile)
@@ -122,7 +125,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
-    parser.add_argument('-fs','--fileSuffix', type=str, help='suffix of the processed file')
     parser.add_argument('-c','--consistency', action='store_true', help='consistency plots')
     args = parser.parse_args()
 

@@ -20,7 +20,7 @@ if developMode:
 if sys.maxsize > 2**32:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
 
-VERSION ="3.1.7"
+VERSION ="3.2.4"
 
 
 for it in site.getsitepackages():
@@ -143,14 +143,35 @@ if os.path.isdir(NEXUS_PUBLIC_PATH):
             os.remove(os.path.join(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,file))
 
 
-
-
-#
 # dirs = getSubDirectories(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH)
 # if "pyCGM2" in dirs:
 #     shutil.rmtree(NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH+"pyCGM2")
 #------------------------------------------------------------------
 
+
+#------------------------- PRE INSTALL---------------------------------------
+
+#--- management of the folder ProgramData/pyCGM2----
+if not developMode:
+    if os.getenv("PROGRAMDATA"):
+        PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2"
+        shutil.copytree(PYCGM2_SETTINGS_FOLDER[:-1], PYCGM2_APPDATA_PATH)
+
+#--- management of nexus-related files ( vst+pipelines)-----
+if os.path.isdir(NEXUS_PUBLIC_PATH):
+    # vst
+    content = os.listdir(NEXUS_PYCGM2_VST_PATH[:-1])
+    for item in content:
+        full_filename = os.path.join(NEXUS_PYCGM2_VST_PATH, item)
+        shutil.copyfile(full_filename,  os.path.join(NEXUS_PUBLIC_DOCUMENT_VST_PATH,item))
+
+
+    scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
+                                                NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,
+                                                PATH_TO_PYTHON_SCRIPTS)
+
+else:
+    logging.error("[pyCGM2] - Nexus folder not detected - No generation of VST and pipelines")
 
 #------------------------- INSTALL--------------------------------------------
 setup(name = 'pyCGM2',
@@ -178,30 +199,3 @@ setup(name = 'pyCGM2',
                  'Topic :: Clinical Gait Analysis'],
     scripts=gen_data_files_forScripts("Apps","Scripts")
     )
-
-#------------------------------------------------------------------------------
-
-#------------------------- POST INSTALL---------------------------------------
-
-
-#--- management of the folder ProgramData/pyCGM2----
-if not developMode:
-    if os.getenv("PROGRAMDATA"):
-        PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2"
-        shutil.copytree(PYCGM2_SETTINGS_FOLDER[:-1], PYCGM2_APPDATA_PATH)
-
-#--- management of nexus-related files ( vst+pipelines)-----
-if os.path.isdir(NEXUS_PUBLIC_PATH):
-    # vst
-    content = os.listdir(NEXUS_PYCGM2_VST_PATH[:-1])
-    for item in content:
-        full_filename = os.path.join(NEXUS_PYCGM2_VST_PATH, item)
-        shutil.copyfile(full_filename,  os.path.join(NEXUS_PUBLIC_DOCUMENT_VST_PATH,item))
-
-
-    scanViconTemplatePipeline(NEXUS_PIPELINE_TEMPLATE_PATH,
-                                                NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH,
-                                                PATH_TO_PYTHON_SCRIPTS)
-
-else:
-    logging.error("[pyCGM2] - Nexus folder not detected - No generation of VST and pipelines")

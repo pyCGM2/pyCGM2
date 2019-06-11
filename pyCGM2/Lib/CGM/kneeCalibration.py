@@ -26,9 +26,13 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 
 def calibration2Dof(model,
     DATA_PATH,reconstructFilenameLabelled,translators,
-    side,beginFrame,endFrame,jointRange):
+    side,beginFrame,endFrame,jointRange,**kwargs):
 
-    acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+    # --- btk acquisition ----
+    if "forceBtkAcq" in kwargs.keys():
+        acqFunc = kwargs["forceBtkAcq"]
+    else:
+        acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqFunc)
     acqFunc =  btkTools.applyTranslators(acqFunc,translators)
@@ -69,6 +73,8 @@ def calibration2Dof(model,
     # initial calibration ( i.e calibration from Calibration operation)
     leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
     rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
+    headFlat = model.m_properties["CalibrationParameters"]["headFlat"]
+
     markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]
 
     if side == "Left":
@@ -83,6 +89,7 @@ def calibration2Dof(model,
     scp=modelFilters.StaticCalibrationProcedure(model)
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                           headFlat = headFlat,
                            markerDiameter=markerDiameter).compute()
 
 
@@ -123,6 +130,7 @@ def calibration2Dof(model,
     # ----  Calibration
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                        leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                       headFlat = headFlat,
                        markerDiameter=markerDiameter).compute()
 
     return model,acqFunc,side
@@ -130,10 +138,14 @@ def calibration2Dof(model,
 
 def sara(model,
     DATA_PATH,reconstructFilenameLabelled,translators,
-    side,beginFrame,endFrame):
+    side,beginFrame,endFrame,**kwargs):
 
     # --- btk acquisition ----
-    acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+    if "forceBtkAcq" in kwargs.keys():
+        acqFunc = kwargs["forceBtkAcq"]
+    else:
+        acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+
     btkTools.checkMultipleSubject(acqFunc)
     acqFunc =  btkTools.applyTranslators(acqFunc,translators)
 
@@ -172,6 +184,7 @@ def sara(model,
     leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
     rightFlatFoot = model.m_properties["CalibrationParameters"]["rightFlatFoot"]
     markerDiameter = model.m_properties["CalibrationParameters"]["markerDiameter"]
+    headFlat = model.m_properties["CalibrationParameters"]["headFlat"]
 
     if side == "Left":
         model.mp_computed["LeftKneeFuncCalibrationOffset"] = 0
@@ -184,6 +197,7 @@ def sara(model,
     scp=modelFilters.StaticCalibrationProcedure(model)
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                           headFlat = headFlat,
                            markerDiameter=markerDiameter).compute()
 
 
@@ -215,6 +229,7 @@ def sara(model,
 
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
+                           headFlat = headFlat,
                            markerDiameter=markerDiameter).compute()
 
     return model,acqFunc,side

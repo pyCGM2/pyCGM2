@@ -50,19 +50,7 @@ def main(args):
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        DEBUG = False
-        if DEBUG:
-            # CGM2.3--
-            DATA_PATH = pyCGM2.TEST_DATA_PATH + "CGM2\\knee calibration\\CGM2.4-calibration2Dof\\"
-            reconstructedFilenameLabelledNoExt = "PN01OP01S01FUNC01"
-            args.side = "Left"
-            args.beginFrame=932
-            args.endFrame=1278
-
-            NEXUS.OpenTrial( str(DATA_PATH+reconstructedFilenameLabelledNoExt), 30 )
-
-        else:
-            DATA_PATH, reconstructedFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructedFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         reconstructFilenameLabelled = reconstructedFilenameLabelledNoExt+".c3d"
 
@@ -147,10 +135,14 @@ def main(args):
         if not translators:
            translators = settings["Translators"]
 
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructedFilenameLabelledNoExt,subject)
+        acq = nacf.build()
+
         # --------------------------MODEL PROCESSING----------------------------
         model,acqFunc,side = kneeCalibration.calibration2Dof(model,
             DATA_PATH,reconstructFilenameLabelled,translators,
-            args.side,args.beginFrame,args.endFrame,None)
+            args.side,args.beginFrame,args.endFrame,None,forceBtkAcq=acq)
 
         # ----------------------SAVE-------------------------------------------
         files.saveModel(model,DATA_PATH,subject)

@@ -34,6 +34,45 @@ def smartWriter(acq, filename):
     writer.SetFilename(str(filename))
     writer.Update()
 
+def GetMarkerNames(acq):
+    markerNames=[]
+    for it in btk.Iterate(acq.GetPoints()):
+        if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*":
+            markerNames.append(it.GetLabel())
+    return markerNames
+
+def GetAnalogNames(acq):
+    analogNames=[]
+    for it in btk.Iterate(acq.GetAnalogs()):
+        analogNames.append(it.GetLabel())
+    return analogNames
+
+
+def isGap(acq, markerLabel):
+    """
+        Check if there is a gap
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `markerList` (list of str) - marker labels
+    """
+    residualValues = acq.GetPoint(markerLabel).GetResiduals()
+    if any(residualValues== -1.0):
+        logging.warning("[pyCGM2] gap found for marker (%s)"%(markerLabel))
+        return True
+    else:
+        return False
+
+def findMarkerGap(acq):
+    gaps = list()
+    markerNames  = GetMarkerNames(acq)
+    for marker in markerNames:
+        if isGap(acq,marker):
+            gaps.append(marker)
+
+    return gaps
+
+
 
 def isPointExist(acq,label):
     """
@@ -43,20 +82,23 @@ def isPointExist(acq,label):
             - `acq` (btkAcquisition) - a btk acquisition inctance
             - `label` (str) - point label
     """
-    #TODO : replace by btkIterate
-    i = acq.GetPoints().Begin()
-    while i != acq.GetPoints().End():
-        if i.value().GetLabel()==label:
-            flagPoint= True
-            break
-        else:
-            i.incr()
-            flagPoint= False
 
-    if flagPoint:
-        return True
-    else:
+    if acq.GetPointNumber()==0:
         return False
+    else:
+        i = acq.GetPoints().Begin()
+        while i != acq.GetPoints().End():
+            if i.value().GetLabel()==label:
+                flagPoint= True
+                break
+            else:
+                i.incr()
+                flagPoint= False
+
+        if flagPoint:
+            return True
+        else:
+            return False
 
 def isPointsExist(acq,labels):
     """
@@ -72,7 +114,7 @@ def isPointsExist(acq,labels):
             return False
     return True
 
-def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
+def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc="",residuals = None):
     """
         Append/Update a point inside an acquisition
 
@@ -90,18 +132,21 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc=""):
 
     values = np.nan_to_num(values)
 
-    if isPointExist(acq,label):
-        acq.GetPoint(label).SetValues(values)
-        acq.GetPoint(label).SetDescription(desc)
-        acq.GetPoint(label).SetType(PointType)
-
-    else:
+    if residuals is None:
         residuals = np.zeros((values.shape[0]))
         for i in range(0, values.shape[0]):
             if np.all(values[i,:] == np.zeros((3))):
                 residuals[i] = -1
             else:
                 residuals[i] = 0
+
+    if isPointExist(acq,label):
+        acq.GetPoint(label).SetValues(values)
+        acq.GetPoint(label).SetDescription(desc)
+        acq.GetPoint(label).SetType(PointType)
+        acq.GetPoint(label).SetResiduals(residuals)
+
+    else:
 
         new_btkPoint = btk.btkPoint(label,acq.GetPointFrameNumber())
         new_btkPoint.SetValues(values)
@@ -149,7 +194,7 @@ def checkFirstAndLastFrame (acq, markerLabel):
     if acq.GetPoint(markerLabel).GetValues()[-1,0] == 0:
         raise Exception ("[pyCGM2] no marker on last frame")
 
-def isGap(acq, markerList):
+def isGap_inAcq(acq, markerList):
     """
         Check if there is a gap
 
@@ -257,8 +302,8 @@ def applyTranslators(acq, translators):
                     smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
 
             else:
-                logging.error("initialLabel (%s) doesn t exist  " %(str(initialLabel)))
-                raise Exception ("your translators are badly configured")
+                logging.warning("initialLabel (%s) doesn t exist  " %(str(initialLabel)))
+                #raise Exception ("your translators are badly configured")
 
 
     return acqClone
@@ -313,16 +358,15 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
     flag,vff,vlf = findValidFrames(acq,markers)
     index = vff
 
+    originValues = (acq.GetPoint("LASI").GetValues()[index,:] + acq.GetPoint("RASI").GetValues()[index,:])/2.0
+    longitudinal_extremityValues = (acq.GetPoint("LPSI").GetValues()[index,:] + acq.GetPoint("RPSI").GetValues()[index,:])/2.0
+    lateral_extremityValues = acq.GetPoint("LASI").GetValues()[index,:]
 
-    originValues = (acq.GetPoint("LPSI").GetValues()[index,:] + acq.GetPoint("RPSI").GetValues()[index,:])/2.0
-    longitudinal_extremityValues = (acq.GetPoint("LASI").GetValues()[index,:] + acq.GetPoint("RASI").GetValues()[index,:])/2.0
-    lateral_extremityValues = acq.GetPoint("LPSI").GetValues()[index,:]
 
-
-    a1=(longitudinal_extremityValues-originValues)
+    a1=(longitudinal_extremityValues-originValues)# PSI - ASI
     a1=a1/np.linalg.norm(a1)
 
-    a2=(lateral_extremityValues-originValues)
+    a2=(lateral_extremityValues-originValues) #LASI -ASI
     a2=a2/np.linalg.norm(a2)
 
     globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
@@ -343,6 +387,7 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
         tmp.append(res)
     maxIndex = np.argmax(np.abs(tmp))
     lateralAxis =  globalAxes.keys()[maxIndex]
+
 
 
     # global frame
@@ -571,6 +616,7 @@ def smartAppendAnalog(acq,label,values,desc="" ):
         newAnalog.SetLabel(label)
         acq.AppendAnalog(newAnalog)
 
+
 def markerUnitConverter(acq,unitOffset):
     for it in btk.Iterate(acq.GetPoints()):
         if it.GetType() == btk.btkPoint.Marker:
@@ -693,3 +739,13 @@ def smartSetMetadata(btkAcq,firstLevel,secondLevel,index,value):
         firstMd =  btkAcq.GetMetaData().FindChild(firstLevel).value()
         if secondLevel in _getSectionFromMd(firstMd):
             return firstMd.FindChild(secondLevel).value().GetInfo().SetValue(index,value)
+
+
+
+
+def NexusGetTrajectory(acq,label):
+    values = acq.GetPoint(label).GetValues()
+    residuals = acq.GetPoint(label).GetResiduals()[:,0]
+    residualsBool = np.asarray(residuals)==0
+
+    return values[:,0],values[:,1],values[:,2],residualsBool

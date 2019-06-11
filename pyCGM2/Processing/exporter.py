@@ -304,14 +304,14 @@ class XlsAnalysisExportFilter(object):
 
         if path == None:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xls"),engine='xlwt')
+                xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xls"),engine='xlwt',encoding='utf-8')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xlsx"))
+                xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xlsx"),encoding='utf-8')
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- Advanced.xls"),engine='xlwt')
+                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- Advanced.xls"),engine='xlwt',encoding='utf-8')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- Advanced.xlsx"))
+                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- Advanced.xlsx"),encoding='utf-8')
 
         # infos
         #-------

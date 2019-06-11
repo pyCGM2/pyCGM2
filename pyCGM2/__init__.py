@@ -23,7 +23,7 @@ try:
     if not "C:/Program Files (x86)/Vicon/Nexus"+NEXUS_VERSION+"/SDK/Win32" in sys.path:
         sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32")
 except Exception, errormsg:
-    logging.error (errormsg)
+    logging.info (errormsg)
 
 # CONSTANTS
 cased_path = glob.glob(re.sub(r'([^:])(?=[/\\]|$)', r'[\1]', __file__))[0]

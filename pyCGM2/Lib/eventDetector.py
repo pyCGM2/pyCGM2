@@ -2,7 +2,23 @@
 from pyCGM2.Events import events
 
 def zeni(acqGait,footStrikeOffset=0,footOffOffset=0):
+    """
+    Detect gait event according Zeni's algorithm (Coordinate only method)
 
+    :param acqGait [Btk.Acquisition]: gait acquisition
+
+    **optional**
+    :param footStrikeOffset [int]:  systematic offset to add to foot strike
+    :param footOffOffset [int]: systematic oofset to add to foot off
+
+    **Return**
+    :param AcqGait [Btk.Acquisition]:  gait acquisition updated with events
+
+
+    :example:
+
+    >>>
+    """
     acqGait.ClearEvents()
     # ----------------------EVENT DETECTOR-------------------------------
     evp = events.ZeniProcedure()

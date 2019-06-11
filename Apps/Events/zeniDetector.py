@@ -46,15 +46,7 @@ def main(args):
 
         # ----------------------INPUTS-------------------------------------------
         # --- acquisition file and path----
-        DEBUG = False
-        if DEBUG:
-            DATA_PATH = "C:\\Users\\AAA34169\\Documents\\VICON DATA\\Salford\\Alana MoCap data\\MRI-US-01 - myProcess\\PIG\\"
-            reconstructFilenameLabelledNoExt = "MRI-US-01, 2008-08-08, 3DGA 16" #"static Cal 01-noKAD-noAnkleMed" #
-
-            NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
-
-        else:
-            DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
 
@@ -62,7 +54,10 @@ def main(args):
         logging.info( "calibration file: "+ reconstructFilenameLabelled)
 
         # --- btk acquisition ----
-        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
+        acqGait = nacf.build()
+
+        #acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
 
         #   check if acq was saved with only one  activated subject
@@ -91,8 +86,6 @@ def main(args):
         nexusTools.createEvents(NEXUS,subject,acqGait,["Foot Strike","Foot Off"])
         # ========END of the nexus OPERATION if run from Nexus  =========
 
-        if DEBUG:
-            NEXUS.SaveTrial(30)
 
 
     else:

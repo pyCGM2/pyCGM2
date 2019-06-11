@@ -51,82 +51,82 @@
 
 
 CHANNELS:
-    EMG1 :
+    Voltage.EMG1 :
         Muscle : RECFEM #[string]
         Context : Left #[string](choice: Left or Right)
         NormalActivity : RECFEM #[string](choice: see above)
 
-    EMG2 :
+    Voltage.EMG2 :
         Muscle : RECFEM
         Context : Right
         NormalActivity : RECFEM
 
-    EMG3 :
+    Voltage.EMG3 :
         Muscle : VASLAT
         Context : Left
         NormalActivity : VASLAT
 
-    EMG4 :
+    Voltage.EMG4 :
         Muscle : VASLAT
         Context : Right
         NormalActivity : VASLAT
 
-    EMG5 :
+    Voltage.EMG5 :
         Muscle : SEMITE
         Context : Left
         NormalActivity : SEMITE
 
-    EMG6 :
+    Voltage.EMG6 :
         Muscle : SEMITE
         Context : Right
         NormalActivity : SEMITE
 
-    EMG7 :
+    Voltage.EMG7 :
         Muscle : TIBANT
         Context : Left
         NormalActivity : TIBANT
 
-    EMG8 :
+    Voltage.EMG8 :
         Muscle : TIBANT
         Context : Right
         NormalActivity : TIBANT
 
-    EMG9 :
+    Voltage.EMG9 :
         Muscle : SOLEUS
         Context : Left
         NormalActivity : SOLEUS
 
-    EMG10 :
+    Voltage.EMG10 :
         Muscle : SOLEUS
         Context : Right
         NormalActivity : SOLEUS
 
-    EMG11 :
+    Voltage.EMG11 :
         Muscle : None
         Context : None
         NormalActivity : None
 
-    EMG12 :
+    Voltage.EMG12 :
         Muscle : None
         Context : None
         NormalActivity : None
 
-    EMG13 :
+    Voltage.EMG13 :
         Muscle : None
         Context : None
         NormalActivity : None
 
-    EMG14 :
+    Voltage.EMG14 :
         Muscle : None
         Context : None
         NormalActivity : None
 
-    EMG15 :
+    Voltage.EMG15 :
         Muscle : None
         Context : None
         NormalActivity : None
 
-    EMG16 :
+    Voltage.EMG16 :
         Muscle : None
         Context : None
         NormalActivity : None

@@ -81,6 +81,7 @@ def findCalibration(path, ignoreSelect=False):
     if len(detected)>1:
         raise Exception("You should have only one activated calibration c3d")
     else:
+        if detected ==[] : raise Exception("No static file detected")
         return detected[0]
 
 
@@ -98,7 +99,7 @@ def findMotions(path,ignoreSelect=False):
                 detected.append(enf)
 
     if detected ==[]:
-        return None
+        raise Exception("No motion files detected")
     else:
         return detected
 
@@ -347,7 +348,7 @@ class TrialEnfReader(EnfReader):
 
     def isCalibrationTrial(self):
         flag = False
-        if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Knee Static":
+        if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Static":
             flag = True
         return flag
 

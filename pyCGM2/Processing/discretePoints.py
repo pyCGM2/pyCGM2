@@ -80,8 +80,6 @@ class BenedettiProcedure(object):
         dataframes = list()
         # Left
         dataframes.append( self.__getPelvis_kinematics(analysisInstance,"LPelvisAngles","Left"))
-
-        dataframes.append( self.__getHip_kinematics(analysisInstance,"LPelvisAngles","Left"))
         dataframes.append( self.__getHip_kinematics(analysisInstance,"LHipAngles","Left"))
         dataframes.append( self.__getKnee_kinematics(analysisInstance,"LKneeAngles","Left"))
         dataframes.append( self.__getAnkle_kinematics(analysisInstance,"LAnkleAngles","Left"))

@@ -53,7 +53,7 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
-from pyCGM2.Nexus import  nexusTools
+from pyCGM2.Nexus import  nexusTools,nexusFilters
 from pyCGM2.Utils import files
 
 def main(args):
@@ -68,13 +68,7 @@ def main(args):
 
         pointSuffix = args.pointSuffix
         # --------------------------INPUTS ------------------------------------
-        DEBUG= False
-        if DEBUG:
-            DATA_PATH = "C:\Users\HLS501\Documents\VICON DATA\pyCGM2-Data\Release Tests\CGM2.2\medial\\" #pyCGM2.TEST_DATA_PATH + "CGM1\\CGM1\\native\\"
-            modelledFilenameNoExt = "Gait Trial 01"# "gait trial" #"static Cal 01-noKAD-noAnkleMed" #
-            NEXUS.OpenTrial( str(DATA_PATH+modelledFilenameNoExt), 30 )
-        else:
-            DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
+        DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
 
 
         modelledFilename = modelledFilenameNoExt+".c3d"
@@ -88,12 +82,16 @@ def main(args):
         subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
 
+        # ----- construction of the openMA root instance  -----
+        trialConstructorFilter = nexusFilters.NexusConstructTrialFilter(DATA_PATH,modelledFilenameNoExt,subject)
+        openmaTrial = trialConstructorFilter.build()
+
         # --------------------pyCGM2 MODEL ------------------------------
         model = files.loadModel(DATA_PATH,subject)
         modelVersion = model.version
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix,openmaTrials=[openmaTrial]) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
         plot.plot_spatioTemporal(DATA_PATH,analysisInstance,
             exportPdf=True,
             outputName=modelledFilename)

@@ -7,7 +7,7 @@ import logging
 from pyCGM2 import ma
 from pyCGM2.ma import io
 from pyCGM2.ma import body
-
+from pyCGM2 import btk
 
 
 
@@ -118,7 +118,7 @@ def isKineticFlag(trial):
         return True,kineticEvent_times,kineticEvent_times_left,kineticEvent_times_right
 
 
-def automaticKineticDetection(dataPath,filenames):
+def automaticKineticDetection(dataPath,filenames,trials=None):
     """
         convenient method for detecting correct kinetic in a filename set
 
@@ -128,19 +128,26 @@ def automaticKineticDetection(dataPath,filenames):
     """
     kineticTrials=[]
     kineticFilenames=[]
+
+    i=0
     for filename in filenames:
         if filename in kineticFilenames:
             logging.debug("[pyCGM2] : filename %s duplicated in the input list" %(filename))
         else:
-            fileNode = ma.io.read(str(dataPath + filename))
-            trial = fileNode.findChild(ma.T_Trial)
-            sortedEvents(trial)
+            if trials is None:
+                fileNode = ma.io.read(str(dataPath + filename))
+                trial = fileNode.findChild(ma.T_Trial)
 
+            else:
+                trial = trials[i]
+
+            sortedEvents(trial)
             flag_kinetics,times, times_l, times_r = isKineticFlag(trial)
 
             if flag_kinetics:
                 kineticFilenames.append(filename)
                 kineticTrials.append(trial)
+    i+=1
 
     kineticTrials = None if kineticTrials ==[] else kineticTrials
     flag_kinetics = False if kineticTrials ==[] else True
@@ -227,7 +234,7 @@ def findProgressionFromPelvicMarkers(trial,LASI="LASI",RASI="RASI", LPSI="LPSI",
     a1=(midASISvalues-midPSISvalues)
     a1=a1/np.linalg.norm(a1)
 
-    a2=(RPSIvalues-midPSISvalues)
+    a2=(RASIvalues-midASISvalues)
     a2=a2/np.linalg.norm(a2)
 
     globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
@@ -353,3 +360,87 @@ def findValidFrames(trial,markerLabels):
     lastValidFrame = len(flag) - flag[::-1].index(1) - 1
 
     return flag,firstValidFrame,lastValidFrame
+
+
+def convertBtkAcquisition(acq, returnType = "Trial"):
+
+
+    root = ma.Node('root')
+    trial = ma.Trial("Trial",root)
+
+    framerate = acq.GetPointFrequency()
+    firstFrame = acq.GetFirstFrame()
+
+    numberAnalogSamplePerFrame = acq.GetNumberAnalogSamplePerFrame()
+    analogFramerate = acq.GetAnalogFrequency()
+
+    if firstFrame ==1:
+        time_init = 0.0
+    else:
+        time_init = firstFrame/framerate
+
+
+    for it in btk.Iterate(acq.GetPoints()):
+
+        label = it.GetLabel()
+        values = it.GetValues()
+        residuals = it.GetResiduals()
+        desc = it.GetDescription()
+
+        data = np.zeros((values.shape[0],4))
+        data[:,0:3] = values
+        data[:,3] = residuals[:,0]
+
+        if it.GetType() == btk.btkPoint.Marker:
+            ts = ma.TimeSequence(str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Marker,"mm", trial.timeSequences())
+
+        elif it.GetType() == btk.btkPoint.Angle:
+            ts = ma.TimeSequence(str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Angle,"Deg", trial.timeSequences())
+
+        elif it.GetType() == btk.btkPoint.Force:
+            ts = ma.TimeSequence(str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Force,"N.Kg-1", trial.timeSequences())
+
+        elif it.GetType() == btk.btkPoint.Moment:
+            ts = ma.TimeSequence(str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Moment,"Nmm.Kg-1", trial.timeSequences())
+
+
+        elif it.GetType() == btk.btkPoint.Power:
+            ts = ma.TimeSequence(str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Power,"Watt.Kg-1", trial.timeSequences())
+
+        else:
+            logging.warning("[pyCGM2] point [%s] not copied into openma trial"%(label))
+
+        ts.setData(data)
+        ts.setDescription(desc)
+
+
+    for it in btk.Iterate(acq.GetAnalogs()):
+
+        label = it.GetLabel()
+        values = it.GetValues()
+        desc = it.GetDescription()
+
+        data = values
+
+        ts = ma.TimeSequence(str(label),1,data.shape[0],analogFramerate,time_init,ma.TimeSequence.Type_Analog,"V", 1.0,0.0,[-10.0,10.0], trial.timeSequences())
+        ts.setData(data)
+        ts.setDescription(desc)
+
+
+
+
+    for it in btk.Iterate(acq.GetEvents()):
+
+        label = it.GetLabel()
+        time = it.GetTime()
+        context = it.GetContext()
+        subject = it.GetSubject()
+
+        ev = ma.Event(label,time,context,str(subject),trial.events())
+
+    sortedEvents(trial)
+
+    if returnType == "Trial":
+        return trial
+    else:
+        return root

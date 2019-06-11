@@ -59,14 +59,7 @@ def main(args):
         momentProjection =  argsManager.getMomentProjection()
 
         # --------------------------LOADING ------------------------------------
-        DEBUG= False
-        if DEBUG:
-            DATA_PATH = pyCGM2.TEST_DATA_PATH+"CGM2\\cgm2.1\\medial\\"
-            reconstructFilenameLabelledNoExt = "Gait Trial 01"
-            NEXUS.OpenTrial( str(DATA_PATH+reconstructFilenameLabelledNoExt), 10 )
-
-        else:
-            DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
 
@@ -96,22 +89,23 @@ def main(args):
         #force plate assignement from Nexus
         mfpa = nexusTools.getForcePlateAssignment(NEXUS)
 
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
+        acq = nacf.build()
+
         # --------------------------MODELLING PROCESSING -----------------------
         acqGait = cgm2_1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,
             markerDiameter,
             pointSuffix,
-            mfpa,momentProjection)
+            mfpa,momentProjection,
+            forceBtkAcq=acq)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,acqGait,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,acqGait,["Left-FP","Right-FP"])
 
         # ========END of the nexus OPERATION if run from Nexus  =========
-
-        if DEBUG:
-
-            NEXUS.SaveTrial(30)
 
 
     else:
