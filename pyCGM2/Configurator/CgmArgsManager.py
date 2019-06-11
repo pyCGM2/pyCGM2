@@ -73,7 +73,7 @@ class argsManager_cgm(object):
             elif self.args.proj == "Global":
                 return  enums.MomentProjection.Global
             elif self.args.proj == "JCS":
-                return pyCGM2Enums.MomentProjection.JCS
+                return enums.MomentProjection.JCS
             else:
                 raise Exception("[pyCGM2] Moment projection doesn t recognise in your settings. choice is Proximal, Distal or Global")
 
