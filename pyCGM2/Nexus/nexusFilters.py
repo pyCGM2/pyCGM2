@@ -63,7 +63,7 @@ class NexusConstructAcquisitionFilter(object):
 
 
         deviceIDs = NEXUS.GetDeviceIDs()
-        self.m_analogFrameRate = NEXUS.GetDeviceDetails(1)[2] if ( len(deviceIDs) > 0 ) else self.m_framerate
+        self.m_analogFrameRate = NEXUS.GetDeviceDetails(deviceIDs[0])[2] if ( len(deviceIDs) > 0 ) else self.m_framerate
 
 
         self.m_numberAnalogSamplePerFrame = int(self.m_analogFrameRate/self.m_framerate)
@@ -80,7 +80,6 @@ class NexusConstructAcquisitionFilter(object):
                     self.m_nexusForcePlates.append( Devices.ForcePlate(deviceID))
                 else:
                     self.m_nexusAnalogDevices.append(Devices.AnalogDevice(deviceID))
-
 
 
         self.m_acq = btk.btkAcquisition()
