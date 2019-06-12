@@ -16,6 +16,7 @@ from pyCGM2.Utils import utils
 class GaitEventQualityProcedure(object):
     def __init__(self,acq):
         self.acq = acq
+        self.state = True
 
     def check(self):
 
@@ -38,9 +39,11 @@ class GaitEventQualityProcedure(object):
                         label = events_L[i].GetLabel()
                         if label == init:
                             logging.error("Wrong Left Event - two consecutive (%s) detected at frane (%i)"%(str(label),events_L[i].GetFrame()) )
+                            self.state = False
                         init = label
                 else:
                     logging.warning("Only one left events")
+                    self.state = False
 
             if events_R!=[]:
                 init = events_R[0].GetLabel()
@@ -49,9 +52,11 @@ class GaitEventQualityProcedure(object):
                         label = events_R[i].GetLabel()
                         if label == init:
                             logging.error("Wrong Right Event - two consecutive (%s) detected at frane (%i)"%(str(label),events_R[i].GetFrame()) )
+                            self.state = False
                         init = label
                 else:
                     logging.warning("Only one right events ")
+                    self.state = False
 
 
 
@@ -60,6 +65,8 @@ class AnthropometricDataQualityProcedure(object):
     def __init__(self,mp):
         self.mp = mp
 
+        self.state = True
+
     def check(self):
         """
         TODO :
@@ -67,30 +74,31 @@ class AnthropometricDataQualityProcedure(object):
         - use marker measurement
         """
 
-        if self.mp["RightLegLength"] < 500: logging.warning("Right Leg Lenth < 500 mm")
-        if self.mp["LeftLegLength"] < 500: logging.warning("Left Leg Lenth < 500 mm")
-        if self.mp["RightKneeWidth"] < self.mp["RightAnkleWidth"]: logging.error("Right ankle width > knee width ")
-        if self.mp["LeftKneeWidth"] < self.mp["LeftAnkleWidth"]: logging.error("Right ankle width > knee width ")
-        if self.mp["RightKneeWidth"] > self.mp["RightLegLength"]: logging.error("Right knee width > leg length ")
-        if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: logging.error("Left knee width > leg length ")
+        if self.mp["RightLegLength"] < 500: logging.warning("Right Leg Lenth < 500 mm");self.state = False
+        if self.mp["LeftLegLength"] < 500: logging.warning("Left Leg Lenth < 500 mm");self.state = False
+        if self.mp["RightKneeWidth"] < self.mp["RightAnkleWidth"]: logging.error("Right ankle width > knee width ");self.state = False
+        if self.mp["LeftKneeWidth"] < self.mp["LeftAnkleWidth"]: logging.error("Right ankle width > knee width ");self.state = False
+        if self.mp["RightKneeWidth"] > self.mp["RightLegLength"]: logging.error("Right knee width > leg length ");self.state = False
+        if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: logging.error("Left knee width > leg length ");self.state = False
 
 
         if not utils.isInRange(self.mp["RightKneeWidth"],
             self.mp["LeftKneeWidth"]-0.3*self.mp["LeftKneeWidth"],
             self.mp["LeftKneeWidth"]+0.3*self.mp["LeftKneeWidth"]):
-             logging.warning("Knee widths differed by more than 30%")
+            logging.warning("Knee widths differed by more than 30%")
+            self.state = False
 
         if not utils.isInRange(self.mp["RightAnkleWidth"],
             self.mp["LeftAnkleWidth"]-0.3*self.mp["LeftAnkleWidth"],
             self.mp["LeftAnkleWidth"]+0.3*self.mp["LeftAnkleWidth"]):
-             logging.warning("Ankle widths differed by more than 30%")
-
+            logging.warning("Ankle widths differed by more than 30%")
+            self.state = False
 
         if not utils.isInRange(self.mp["RightLegLength"],
             self.mp["LeftLegLength"]-0.3*self.mp["LeftLegLength"],
             self.mp["LeftLegLength"]+0.3*self.mp["LeftLegLength"]):
-             logging.warning("Leg lengths differed by more than 30%")
-
+            logging.warning("Leg lengths differed by more than 30%")
+            self.state = False
 
 
 class GapQualityProcedure(object):
@@ -98,6 +106,8 @@ class GapQualityProcedure(object):
         self.acq = acq
 
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
+
+        self.state = True
 
     def check(self):
 
@@ -120,6 +130,7 @@ class GapQualityProcedure(object):
 
             if gapNumber!=0:
                 logging.warning("marker [%s] - number of gap [%i] and max gap [%i]"%(marker,gapNumber,maxGap))
+                self.state = False
 
 
 
@@ -132,6 +143,8 @@ class SwappingMarkerQualityProcedure(object):
 
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
         self.epsilon = 50.0
+
+        self.state = True
 
     def check(self):
 
@@ -148,13 +161,15 @@ class SwappingMarkerQualityProcedure(object):
 
             for i in range(1,frameNumber-1):
                 residual = self.acq.GetPoint(marker).GetResidual(i)
+                residual_plus1 = self.acq.GetPoint(marker).GetResidual(i+1)
                 value_minus1 = norms[i-1]
                 value = norms[i]
                 value_plus1 = norms[i+1]
 
-                if residual>=0.0:
+                if residual>=0.0 and residual_plus1>0.0:
                     if np.abs(value-value_plus1) >self.epsilon :#10.0*(np.abs(value-value_minus1)):
                         logging.warning("marker [%s] - swapped at frame [%i] "%(marker,i))
+                        self.state = False
 
 
 class MarkerQualityProcedure(object):
@@ -167,6 +182,9 @@ class MarkerQualityProcedure(object):
     def __init__(self,acq,markers = None):
         self.acq = acq
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
+
+        self.state = True
+
     def check(self):
 
         frameNumber = self.acq.GetPointFrameNumber()
@@ -209,6 +227,7 @@ class MarkerQualityProcedure(object):
 
             if path.contains_point(intersection[0]):
                 logging.error("wrong Labelling of pelvic markers at frame [%i]"%(i))
+                self.state = False
             else:
                 # check marker side
                 pt1=RASI_values[i,:]
@@ -225,20 +244,31 @@ class MarkerQualityProcedure(object):
 
                 x,y,z,R=frame.setFrameData(a1,a2,"YZX")
 
-                csFrame=frame.Frame()
-                csFrame.setRotation(R)
-                csFrame.setTranslation(ptOrigin)
+                csFrame_L=frame.Frame()
+                csFrame_L.setRotation(R)
+                csFrame_L.setTranslation(RASI_values[i,:])
+
+                csFrame_R=frame.Frame()
+                csFrame_R.setRotation(R)
+                csFrame_R.setTranslation(LASI_values[i,:])
+
 
                 for marker in self.markers:
-                    local = np.dot(csFrame.getRotation().T,self.acq.GetPoint(marker).GetValues()[i,:]-csFrame.getTranslation())
+                    residual = self.acq.GetPoint(marker).GetResidual(i)
 
-                    if marker[0] == "L" and local[1]<0: logging.error("check location of the marker [%s] at frame [%i]"%(marker,i))
-                    if marker[0] == "R" and local[1]>0: logging.error("check location of the marker [%s] at frame [%i]"%(marker,i))
+                    if marker[0] == "L":
+                        local = np.dot(csFrame_L.getRotation().T,self.acq.GetPoint(marker).GetValues()[i,:]-csFrame_L.getTranslation())
+                    if marker[0] == "R":
+                        local = np.dot(csFrame_R.getRotation().T,self.acq.GetPoint(marker).GetValues()[i,:]-csFrame_R.getTranslation())
+                    if residual >0.0:
+                        if marker[0] == "L" and local[1]<0: logging.error("check location of the marker [%s] at frame [%i]"%(marker,i));self.state = False
+                        if marker[0] == "R" and local[1]>0: logging.error("check location of the marker [%s] at frame [%i]"%(marker,i));self.state = False
 
 
 class ForcePlateQualityProcedure(object):
     def __init__(self,acq):
         self.acq = acq
+        self.state = True
 
     def check(self):
         # TODO :  - saturation and foot asignment
@@ -248,6 +278,7 @@ class EMGQualityProcedure(object):
     def __init__(self,acq, analogLabels ):
         self.acq = acq
         self.analogLabels =  analogLabels
+        self.state = True
 
     def check(self):
         # TODO :  - saturation and foot asignment

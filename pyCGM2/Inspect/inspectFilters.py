@@ -14,3 +14,5 @@ class QualityFilter(object):
 
     def run(self):
         self.m_procedure.check()
+        if self.m_procedure.state:
+            logging.info("quality Test => OK :-)")
