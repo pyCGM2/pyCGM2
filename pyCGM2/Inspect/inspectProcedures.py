@@ -75,25 +75,25 @@ class AnthropometricDataQualityProcedure(object):
         if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: logging.error("Left knee width > leg length ")
 
 
-        if utils.isInRange(self.mp["RightKneeWidth"],
+        if not utils.isInRange(self.mp["RightKneeWidth"],
             self.mp["LeftKneeWidth"]-0.3*self.mp["LeftKneeWidth"],
             self.mp["LeftKneeWidth"]+0.3*self.mp["LeftKneeWidth"]):
              logging.warning("Knee widths differed by more than 30%")
 
-        if utils.isInRange(self.mp["RightAnkleWidth"],
+        if not utils.isInRange(self.mp["RightAnkleWidth"],
             self.mp["LeftAnkleWidth"]-0.3*self.mp["LeftAnkleWidth"],
             self.mp["LeftAnkleWidth"]+0.3*self.mp["LeftAnkleWidth"]):
              logging.warning("Ankle widths differed by more than 30%")
 
 
-        if utils.isInRange(self.mp["RightLegLength"],
+        if not utils.isInRange(self.mp["RightLegLength"],
             self.mp["LeftLegLength"]-0.3*self.mp["LeftLegLength"],
             self.mp["LeftLegLength"]+0.3*self.mp["LeftLegLength"]):
              logging.warning("Leg lengths differed by more than 30%")
 
 
 
-class GapQualityFilter(object):
+class GapQualityProcedure(object):
     def __init__(self,acq,markers=None):
         self.acq = acq
 
@@ -158,10 +158,10 @@ class SwappingMarkerQualityProcedure(object):
 
 
 class MarkerQualityProcedure(object):
-        """
-        TODO :
-        - check medial markers if exist
-        """
+    """
+    TODO :
+    - check medial markers if exist
+    """
 
 
     def __init__(self,acq,markers = None):

@@ -55,7 +55,7 @@ class Tests():
 
 
         acq = btkTools.smartReader(DATA_PATH+"gait_gap.c3d")
-        inspectprocedure1 = inspectProcedures.GapQualityFilter(acq)
+        inspectprocedure1 = inspectProcedures.GapQualityProcedure(acq)
         inspector = inspectFilters.QualityFilter(inspectprocedure1)
         inspector.run()
 
