@@ -61,6 +61,11 @@ class AnthropometricDataQualityProcedure(object):
         self.mp = mp
 
     def check(self):
+        """
+        TODO :
+        - use relation between variable ( width/height)
+        - use marker measurement
+        """
 
         if self.mp["RightLegLength"] < 500: logging.warning("Right Leg Lenth < 500 mm")
         if self.mp["LeftLegLength"] < 500: logging.warning("Left Leg Lenth < 500 mm")
@@ -153,6 +158,12 @@ class SwappingMarkerQualityProcedure(object):
 
 
 class MarkerQualityProcedure(object):
+        """
+        TODO :
+        - check medial markers if exist
+        """
+
+
     def __init__(self,acq,markers = None):
         self.acq = acq
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
