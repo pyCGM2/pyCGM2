@@ -749,3 +749,27 @@ def NexusGetTrajectory(acq,label):
     residualsBool = np.asarray(residuals)==0
 
     return values[:,0],values[:,1],values[:,2],residualsBool
+
+
+def sortedEvents(acq):
+    evs = acq.GetEvents()
+
+    contextLst=[] # recuperation de tous les contextes
+    for it in btk.Iterate(evs):
+        if it.GetContext() not in contextLst:
+            contextLst.append(it.GetContext())
+
+
+    valueFrame=[] # recuperation de toutes les frames SANS doublons
+    for it in  btk.Iterate(evs):
+        if it.GetFrame() not in valueFrame:
+            valueFrame.append(it.GetFrame())
+    valueFrame.sort() # trie
+
+    events =[]
+    for contextLst_it in contextLst:
+        for frameSort in valueFrame:
+            for it in  btk.Iterate(evs):
+                if it.GetFrame()==frameSort and it.GetContext()==contextLst_it:
+                    events.append(it)
+    return events
