@@ -10,6 +10,9 @@ from matplotlib.path import Path
 from pyCGM2.Model import model, modelDecorator, frame, motion
 from pyCGM2.Model.CGM2 import cgm, cgm2
 
+from pyCGM2.Utils import utils
+
+
 class GaitEventQualityProcedure(object):
     def __init__(self,acq):
         self.acq = acq
@@ -65,6 +68,24 @@ class AnthropometricDataQualityProcedure(object):
         if self.mp["LeftKneeWidth"] < self.mp["LeftAnkleWidth"]: logging.error("Right ankle width > knee width ")
         if self.mp["RightKneeWidth"] > self.mp["RightLegLength"]: logging.error("Right knee width > leg length ")
         if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: logging.error("Left knee width > leg length ")
+
+
+        if utils.isInRange(self.mp["RightKneeWidth"],
+            self.mp["LeftKneeWidth"]-0.3*self.mp["LeftKneeWidth"],
+            self.mp["LeftKneeWidth"]+0.3*self.mp["LeftKneeWidth"]):
+             logging.warning("Knee widths differed by more than 30%")
+
+        if utils.isInRange(self.mp["RightAnkleWidth"],
+            self.mp["LeftAnkleWidth"]-0.3*self.mp["LeftAnkleWidth"],
+            self.mp["LeftAnkleWidth"]+0.3*self.mp["LeftAnkleWidth"]):
+             logging.warning("Ankle widths differed by more than 30%")
+
+
+        if utils.isInRange(self.mp["RightLegLength"],
+            self.mp["LeftLegLength"]-0.3*self.mp["LeftLegLength"],
+            self.mp["LeftLegLength"]+0.3*self.mp["LeftLegLength"]):
+             logging.warning("Leg lengths differed by more than 30%")
+
 
 
 class GapQualityFilter(object):
@@ -202,3 +223,21 @@ class MarkerQualityProcedure(object):
 
                     if marker[0] == "L" and local[1]<0: logging.error("check location of the marker [%s] at frame [%i]"%(marker,i))
                     if marker[0] == "R" and local[1]>0: logging.error("check location of the marker [%s] at frame [%i]"%(marker,i))
+
+
+class ForcePlateQualityProcedure(object):
+    def __init__(self,acq):
+        self.acq = acq
+
+    def check(self):
+        # TODO :  - saturation and foot asignment
+        pass
+
+class EMGQualityProcedure(object):
+    def __init__(self,acq, analogLabels ):
+        self.acq = acq
+        self.analogLabels =  analogLabels
+
+    def check(self):
+        # TODO :  - saturation and foot asignment
+        pass
