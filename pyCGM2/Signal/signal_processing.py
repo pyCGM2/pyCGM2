@@ -83,6 +83,38 @@ def markerFiltering(btkAcq,order=2, fc =6):
             pointIt.SetValues(np.array( [x,y,z] ).transpose())
 
 
+def forcePlateFiltering(btkAcq,order=4, fc =5):
+    """
+        Low-pass filtering of all points in an acquisition
+
+        :Parameters:
+            - `btkAcq` (btkAcquisition) - btk acquisition instance
+            - `fc` (double) - cut-off frequency
+            - `order` (double) - order of the low-pass filter
+   """
+
+
+    fp=btkAcq.GetAnalogFrequency()
+    bPoint, aPoint = signal.butter(order, fc / (fp*0.5) , btype='lowpass')
+
+    # --- ground reaction force wrench ---
+    pfe = btk.btkForcePlatformsExtractor()
+    pfe.SetInput(btkAcq)
+    pfc = pfe.GetOutput()
+    pfc.Update()
+
+    for i in range(0,pfc.GetItemNumber()):
+
+        for j in range(0,pfc.GetItem(i).GetChannelNumber()):
+            values = pfc.GetItem(i).GetChannel(j).GetValues()[:,0]
+
+            values_filt = signal.filtfilt(bPoint, aPoint, values,axis=0  )
+
+            label = pfc.GetItem(i).GetChannel(j).GetLabel() # SetValues on channel not store new values
+            btkAcq.GetAnalog(label).SetValues(values_filt)
+
+
+
 # ----- methods ---------
 def arrayLowPassFiltering(valuesArray, freq, order=2, fc =6):
     """
