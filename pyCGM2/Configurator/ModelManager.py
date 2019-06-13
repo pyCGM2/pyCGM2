@@ -64,6 +64,7 @@ class CGM1ConfigManager(ModelConfigManager):
         # run data to overwrite in internalSettings
         self.leftFlatFoot
         self.rightFlatFoot
+        self.headFlat
         self.markerDiameter
         self.pointSuffix
         self.translators
@@ -96,6 +97,12 @@ class CGM1ConfigManager(ModelConfigManager):
     def rightFlatFoot(self):
         value = self._userSettings["Calibration"]["Right flat foot"]
         self._internSettings["Calibration"]["Right flat foot"] = value # overwriting
+        return value
+
+    @property
+    def headFlat(self):
+        value = self._userSettings["Calibration"]["Head flat"]
+        self._internSettings["Calibration"]["Head flat"] = value # overwriting
         return value
 
     @property

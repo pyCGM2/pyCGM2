@@ -59,6 +59,7 @@ def main(args):
         manager.optionalMp,
         manager.leftFlatFoot,
         manager.rightFlatFoot,
+        manager.headFlat,
         manager.markerDiameter,
         manager.hjcMethod,
         manager.pointSuffix,
