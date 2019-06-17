@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+import scipy as sp
 import logging
 
 from pyCGM2 import btk
@@ -40,6 +41,35 @@ def GetMarkerNames(acq):
         if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*":
             markerNames.append(it.GetLabel())
     return markerNames
+
+
+def findNearestMarker(acq,i,marker):
+
+    values = acq.GetPoint(marker).GetValues()[i,:]
+
+    markerNames=[]
+    for it in btk.Iterate(acq.GetPoints()):
+        if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*" and it.GetLabel() != marker:
+            markerNames.append(it.GetLabel())
+
+    j=0
+    out = np.zeros((len(markerNames),3))
+    for name in markerNames :
+        out[j,:] = acq.GetPoint(name).GetValues()[i,:]
+        j+=1
+
+    tree = sp.spatial.KDTree(out)
+    dist,index = tree.query(values)
+
+
+    return markerNames[index],dist
+
+
+
+
+
+
+
 
 def GetAnalogNames(acq):
     analogNames=[]
