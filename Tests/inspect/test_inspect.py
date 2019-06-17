@@ -83,8 +83,46 @@ class Tests():
         inspector.run()
 
 
+    @classmethod
+    def testSwapped(cls):
+        DATA_PATH ="C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\operations\\inspection\\sample0\\"
+        filename = "static.c3d"
+
+
+        logging.info("TEST")
+
+
+
+        mp={
+        'Bodymass'   : 70.0,
+        'LeftLegLength' : 900.0,
+        'RightLegLength' : 900.0 ,
+        'LeftKneeWidth' : 100.0,
+        'RightKneeWidth' : 100.0,
+        'LeftAnkleWidth' : 70.0,
+        'RightAnkleWidth' : 70.0,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        'LeftShoulderOffset'   : 0,
+        'LeftElbowWidth' : 0,
+        'LeftWristWidth' : 0 ,
+        'LeftHandThickness' : 0 ,
+        'RightShoulderOffset'   : 0,
+        'RightElbowWidth' : 0,
+        'RightWristWidth' : 0 ,
+        'RightHandThickness' : 0}
+
+
+        acq = btkTools.smartReader(DATA_PATH+"gait_swapped.c3d")
+        inspectprocedure2 = inspectProcedures.SwappingMarkerQualityProcedure(acq)
+        inspector = inspectFilters.QualityFilter(inspectprocedure2)
+        inspector.run()
+
+
+
 
 
 if __name__ == "__main__":
 
-    Tests.test()
+    #Tests.test()
+    Tests.testSwapped()

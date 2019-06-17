@@ -142,8 +142,6 @@ class SwappingMarkerQualityProcedure(object):
         self.acq = acq
 
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
-        self.epsilon = 50.0
-
         self.state = True
 
     def check(self):
@@ -152,12 +150,10 @@ class SwappingMarkerQualityProcedure(object):
         freq = self.acq.GetPointFrequency()
 
         for marker in self.markers:
-
+            nearest,dist = btkTools.findNearestMarker(self.acq,1,marker)
 
             values = self.acq.GetPoint(marker).GetValues()
-            valueDer = derivation.firstOrderFiniteDifference(values,freq)
             norms = np.linalg.norm(values,axis =1)
-
 
             for i in range(1,frameNumber-1):
                 residual = self.acq.GetPoint(marker).GetResidual(i)
@@ -166,10 +162,12 @@ class SwappingMarkerQualityProcedure(object):
                 value = norms[i]
                 value_plus1 = norms[i+1]
 
-                if residual>=0.0 and residual_plus1>0.0:
-                    if np.abs(value-value_plus1) >self.epsilon :#10.0*(np.abs(value-value_minus1)):
+                if residual>=0.0 and residual_plus1>=0.0:
+                    if np.abs(value-value_plus1) > dist :
                         logging.warning("marker [%s] - swapped at frame [%i] "%(marker,i))
                         self.state = False
+
+
 
 
 class MarkerQualityProcedure(object):
