@@ -10,7 +10,7 @@ import pyCGM2.Lib.analysis
 from pyCGM2.Model.CGM2 import cgm
 
 from pyCGM2.Processing import exporter,c3dManager,cycle,analysis
-
+from pyCGM2.Tools import btkTools
 
 
 
@@ -222,15 +222,19 @@ class ExportTest():
         inputFile = ["pre.c3d","post.c3d"]
 
         EMG_LABELS = ["EMG1","EMG2"]
-        pyCGM2.Lib.analysis.processEMG(DATA_PATH, inputFile, EMG_LABELS,
-            highPassFrequencies=[20,200],
-            envelopFrequency=6.0,fileSuffix=None) # high pass then low pass for all c3ds
+#
+        for file in inputFile:
+            acq = btkTools.smartReader(DATA_PATH+file)
+            pyCGM2.Lib.analysis.processEMG(acq, EMG_LABELS, highPassFrequencies=[20,200],envelopFrequency=6.0)
+            btkTools.smartWriter(acq,DATA_PATH+file[:-4]+"-emgProcessed.c3d")
 
-        emgAnalysis =  pyCGM2.Lib.analysis.makeEmgAnalysis("Gait",DATA_PATH, inputFile, EMG_LABELS,None, None)
+        inputFileProcessed =   [file[:-4]+"-emgProcessed.c3d" for file in inputFile]
 
-        # exportFilter = exporter.XlsAnalysisExportFilter()
-        # exportFilter.setAnalysisInstance(emgAnalysis)
-        # exportFilter.export("testAdvancedEMG", path=DATA_PATH,excelFormat = "xls",mode="Advanced")
+        emgAnalysis =  pyCGM2.Lib.analysis.makeEmgAnalysis(DATA_PATH, inputFileProcessed, EMG_LABELS,None, None)
+
+        exportFilter = exporter.XlsAnalysisExportFilter()
+        exportFilter.setAnalysisInstance(emgAnalysis)
+        exportFilter.export("testAdvancedEMG", path=DATA_PATH,excelFormat = "xls",mode="Advanced")
 
         # exportFilter = exporter.AnalysisExportFilter()
         # exportFilter.setAnalysisInstance(emgAnalysis)
