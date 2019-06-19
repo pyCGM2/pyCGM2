@@ -199,7 +199,7 @@ class opensimModel(object):
        if index != -1:
            logging.debug( "marker (%s) found"%(label))
            localPos = np.dot(rotation_osim_model,
-                                  self.m_cgmModel.getSegment(modelSegmentLabel).anatomicalFrame.static.getNode_byLabel(label).m_local) # TODO : verifier que node exist
+                                  self.m_cgmModel.getSegment(modelSegmentLabel).anatomicalFrame.static.getNode_byLabel(label).m_local) # TODO : check node exist
 
            self.m_model.updMarkerSet().get(label).getOffset().set(0,localPos[0]/toMeter)
            self.m_model.updMarkerSet().get(label).getOffset().set(1,localPos[1]/toMeter)
