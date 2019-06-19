@@ -68,8 +68,6 @@ def main(args):
         logging.info("loaded model : %s" %(model.version ))
 
 
-
-
         if model.version == "CGM1.0":
             if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1-pyCGM2.settings"):
                 settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
