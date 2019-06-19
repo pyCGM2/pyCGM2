@@ -225,7 +225,7 @@ class ExportTest():
 #
         for file in inputFile:
             acq = btkTools.smartReader(DATA_PATH+file)
-            pyCGM2.Lib.analysis.processEMG(acq, EMG_LABELS, highPassFrequencies=[20,200],envelopFrequency=6.0)
+            pyCGM2.Lib.analysis.processEMG_fromBtkAcq(acq, EMG_LABELS, highPassFrequencies=[20,200],envelopFrequency=6.0)
             btkTools.smartWriter(acq,DATA_PATH+file[:-4]+"-emgProcessed.c3d")
 
         inputFileProcessed =   [file[:-4]+"-emgProcessed.c3d" for file in inputFile]

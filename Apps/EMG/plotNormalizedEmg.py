@@ -101,7 +101,7 @@ def main(args):
 
 
 
-        analysis.processEMG(acq, EMG_LABELS,
+        analysis.processEMG_fromBtkAcq(acq, EMG_LABELS,
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
 

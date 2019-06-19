@@ -142,9 +142,9 @@ def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
     exportFilter.export(name, path=DATA_PATH,excelFormat = "xls",mode = mode)
 
 
-def processEMG(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
+def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
     """
-    processEMG : filters emg channels
+    processEMG_fromBtkAcq : filt emg from a btk acq 
 
     :param acq [btk::Acquisition]: btk acquisition
     :param emgChannels [string list]: label of your emg channels
@@ -166,6 +166,37 @@ def processEMG(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6
     envf.run()
 
     return acq
+
+def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=""):
+
+    """
+    processEMG_fromC3dFiles : filters emg channels from a list of c3d files
+
+    :param DATA_PATH [String]: path to your folder
+    :param gaitTrials [string List]:c3d files with emg signals
+    :param emgChannels [string list]: label of your emg channels
+
+    **optional**
+
+    :param highPassFrequencies [list of float]: boundaries of the bandpass filter
+    :param envelopFrequency [float]: cut-off frequency for creating an emg envelop
+    :param fileSuffix [string]: suffix added to your ouput c3d files
+
+    """
+
+    for gaitTrial in gaitTrials:
+        acq = btkTools.smartReader(DATA_PATH +gaitTrial)
+
+        bf = emgFilters.BasicEmgProcessingFilter(acq,EMG_LABELS)
+        bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
+        bf.run()
+
+        envf = emgFilters.EmgEnvelopProcessingFilter(acq,EMG_LABELS)
+        envf.setCutoffFrequency(envelopFrequency)
+        envf.run()
+
+        outFilename = gaitTrial if fileSuffix=="" else gaitTrial+"_"+fileSuffix
+    btkTools.smartWriter(acq,DATA_PATH+outFilename)
 
 
 
