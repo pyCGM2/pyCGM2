@@ -34,7 +34,7 @@ from pyCGM2 import btk
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2.Events import events
-from pyCGM2.Nexus import nexusTools
+from pyCGM2.Nexus import nexusTools,nexusFilters
 
 def main(args):
 
