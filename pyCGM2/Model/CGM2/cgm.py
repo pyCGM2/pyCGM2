@@ -2145,9 +2145,7 @@ class CGM1(CGM):
         R = np.dot(seg.anatomicalFrame.static.getRotation(),rotZ) # apply rotation
 
 
-
-
-        csFrame=frame.Frame() # NOTE : Creation of a new Frame remove all former node
+        csFrame=frame.Frame() #  WARNING Creation of a new Frame remove all former node
         csFrame.update(R,seg.anatomicalFrame.static.getTranslation() )
         seg.anatomicalFrame.setStaticFrame(csFrame)
 
@@ -2155,9 +2153,9 @@ class CGM1(CGM):
         tf=seg.getReferential("TF")
         tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
+
         # add node
-        # get previous nodes
-        previous_nodes = seg.anatomicalFrame.static.getNodes()
+        previous_nodes = tf.static.getNodes() # get nodes from technical frames
 
         for node in previous_nodes:
             globalPosition=node.getGlobal()
