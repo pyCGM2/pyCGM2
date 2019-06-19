@@ -53,16 +53,7 @@ def main(args):
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ reconstructFilenameLabelled)
 
-        # --- btk acquisition ----
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
-        acqGait = nacf.build()
-
         #acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
-
-
-        #   check if acq was saved with only one  activated subject
-        if acqGait.GetPoint(0).GetLabel().count(":"):
-            raise Exception("[pyCGM2] Your Trial c3d was saved with two activate subject. Re-save it with only one before pyCGM2 calculation")
 
         # --------------------------SUBJECT -----------------------------------
 
@@ -70,6 +61,11 @@ def main(args):
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         logging.info(  "Subject name : " + subject  )
+
+        # --- btk acquisition ----
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
+        acqGait = nacf.build()
+
 
         # ----------------------EVENT DETECTOR-------------------------------
         evp = events.ZeniProcedure()
