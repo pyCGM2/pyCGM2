@@ -1427,9 +1427,6 @@ class CGM2_4(CGM2_3):
             self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
             self._anatomical_motion(aqui,"Left Thigh",originLabel = "LKJC")
 
-            print "in compute"
-            print self.getSegment("Left Thigh").getReferential("TF").relativeMatrixAnatomic
-
 
         if "Right Thigh" in segments:
             self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
