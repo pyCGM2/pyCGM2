@@ -19,7 +19,7 @@ import ViconNexus
 
 from pyCGM2.Gap import gapFilling
 from pyCGM2.Tools import btkTools
-from pyCGM2.Nexus import nexusTools
+from pyCGM2.Nexus import nexusTools,nexusFilters
 
 
 
