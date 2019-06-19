@@ -41,14 +41,18 @@ def calibration2Dof(model,
     ff = acqFunc.GetFirstFrame()
     lf = acqFunc.GetLastFrame()
 
-    if beginFrame is None and endFrame is None:
-        start,end = btkTools.getStartEndEvents(acqFunc,side)
-        if start is not None and end is not None:
-            logging.info("Start and End events detected")
-            initFrame=start
-            endFrame=end
+    start,end = btkTools.getStartEndEvents(acqFunc,side)
+
+    if start is not None:
+        logging.info("Start event detected")
+        initFrame=start
     else:
         initFrame = beginFrame if beginFrame is not None else ff
+
+    if end is not None:
+        logging.info("End event detected")
+        endFrame=end
+    else:
         endFrame = endFrame if endFrame is not None else lf
 
     iff=initFrame-ff
@@ -153,14 +157,18 @@ def sara(model,
     ff = acqFunc.GetFirstFrame()
     lf = acqFunc.GetLastFrame()
 
-    if beginFrame is None and endFrame is None:
-        start,end = btkTools.getStartEndEvents(acqFunc,side)
-        if start is not None and end is not None:
-            logging.info("Start and End events detected")
-            initFrame=start
-            endFrame=end
+    start,end = btkTools.getStartEndEvents(acqFunc,side)
+
+    if start is not None:
+        logging.info("Start event detected")
+        initFrame=start
     else:
         initFrame = beginFrame if beginFrame is not None else ff
+
+    if end is not None:
+        logging.info("End event detected")
+        endFrame=end
+    else:
         endFrame = endFrame if endFrame is not None else lf
 
     iff=initFrame-ff

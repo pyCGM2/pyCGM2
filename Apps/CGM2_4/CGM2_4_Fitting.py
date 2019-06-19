@@ -78,6 +78,7 @@ def main(args):
         # --------------------pyCGM2 MODEL ------------------------------
         model = files.loadModel(DATA_PATH,subject)
 
+        
         # check model
         logging.info("loaded model : %s" %(model.version))
         if model.version != "CGM2.4":
