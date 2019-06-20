@@ -167,7 +167,7 @@ def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelop
 
     return acq
 
-def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=""):
+def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None):
 
     """
     processEMG_fromC3dFiles : filters emg channels from a list of c3d files
@@ -183,15 +183,16 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],
     :param fileSuffix [string]: suffix added to your ouput c3d files
 
     """
+    if fileSuffix is None: fileSuffix=""
 
     for gaitTrial in gaitTrials:
         acq = btkTools.smartReader(DATA_PATH +gaitTrial)
 
-        bf = emgFilters.BasicEmgProcessingFilter(acq,EMG_LABELS)
+        bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
         bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
         bf.run()
 
-        envf = emgFilters.EmgEnvelopProcessingFilter(acq,EMG_LABELS)
+        envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
         envf.setCutoffFrequency(envelopFrequency)
         envf.run()
 
