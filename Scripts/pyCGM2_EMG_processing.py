@@ -42,18 +42,8 @@ def main(args):
     files.prettyDictPrint(finalSettings)
 
     # reconfiguration of emg settings as lists
-    EMG_LABELS = []
-    EMG_CONTEXT =[]
-    NORMAL_ACTIVITIES = []
-    EMG_MUSCLES =[]
-    for emg in manager.EMGS.keys():
-        print emg
-        if emg !="None":
-            if manager.EMGS[emg]["Muscle"] != "None":
-                EMG_LABELS.append(str(emg))
-                EMG_MUSCLES.append(str(manager.EMGS[emg]["Muscle"]))
-                EMG_CONTEXT.append(str(manager.EMGS[emg]["Context"])) if manager.EMGS[emg]["Context"] != "None" else EMG_CONTEXT.append(None)
-                NORMAL_ACTIVITIES.append(str(manager.EMGS[emg]["NormalActivity"])) if manager.EMGS[emg]["NormalActivity"] != "None" else EMG_CONTEXT.append(None)
+    EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES  =  manager.getEmgConfiguration()
+    
 
     #----- rectified view -------
     rectTrials = manager.temporal_trials
