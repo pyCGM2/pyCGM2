@@ -35,6 +35,24 @@ def openFile(path,filename):
     else:
         return False
 
+def readContent(stringContent):
+
+    jsonFlag = is_json(stringContent)
+    yamlFlag = is_yaml(stringContent)
+    if jsonFlag:
+        logging.info("your content  matches json syntax")
+        struct = json.loads(stringContent,object_pairs_hook=OrderedDict)
+
+    if yamlFlag:
+        logging.info("your content  matches yaml syntax")
+        struct =  yaml.load(stringContent,Loader=yamlordereddictloader.Loader)
+
+    if not yamlFlag and not yamlFlag:
+        raise Exception ("content is neither a Yaml or a json")
+
+    return struct
+
+
 
 def loadModel(path,FilenameNoExt):
     if FilenameNoExt is not None:
