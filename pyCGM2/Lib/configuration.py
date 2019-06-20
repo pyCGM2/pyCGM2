@@ -17,41 +17,41 @@ def getEmgConfiguration(userSettings,internalSettings):
 def getCGMmanager(CGMversion,userSettings,internalSettings=None,translators=None,localIkWeight=None,vsk=None):
 
     # --- Manager ----
-    if model  = "CGM1.0":
+    if model  == "CGM1.0":
         manager = ModelManager.CGM1ConfigManager(userSettings,
                                                     localInternalSettings=internalSettings,
                                                     localTranslators=translators,
                                                     localIkWeight=localIkWeight,
                                                     vsk=vsk)
 
-    elif model  = "CGM1.1":
+    elif model  == "CGM1.1":
         manager = ModelManager.CGM1_1ConfigManager(userSettings,
                                                     localInternalSettings=internalSettings,
                                                     localTranslators=translators,
                                                     localIkWeight=localIkWeight,
                                                     vsk=vsk)
 
-    elif model  = "CGM2.1":
+    elif model  == "CGM2.1":
         manager = ModelManager.CGM2_1ConfigManager(userSettings,
                                                     localInternalSettings=internalSettings,
                                                     localTranslators=translators,
                                                     localIkWeight=localIkWeight,
                                                     vsk=vsk)
 
-    elif model  = "CGM2.2":
+    elif model  == "CGM2.2":
         manager = ModelManager.CGM2_2ConfigManager(userSettings,
                                                     localInternalSettings=internalSettings,
                                                     localTranslators=translators,
                                                     localIkWeight=localIkWeight,
 
-    elif model  = "CGM2.3":
+    elif model  == "CGM2.3":
         manager = ModelManager.CGM2_3ConfigManager(userSettings,
                                                     localInternalSettings=internalSettings,
                                                     localTranslators=translators,
                                                     localIkWeight=localIkWeight,
                                                     vsk=vsk)
                                                     vsk=vsk)
-    elif model  = "CGM2.4":
+    elif model  == "CGM2.4":
         manager = ModelManager.CGM2_4ConfigManager(userSettings,
                                                     localInternalSettings=internalSettings,
                                                     localTranslators=translators,
@@ -59,7 +59,7 @@ def getCGMmanager(CGMversion,userSettings,internalSettings=None,translators=None
                                                     vsk=vsk)
 
 
-    elif model  = "CGM2.5":
+    elif model  == "CGM2.5":
         manager = ModelManager.CGM2_5ConfigManager(userSettings,
                                                     localInternalSettings=internalSettings,
                                                     localTranslators=translators,
