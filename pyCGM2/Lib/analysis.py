@@ -144,7 +144,7 @@ def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
 
 def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
     """
-    processEMG_fromBtkAcq : filt emg from a btk acq 
+    processEMG_fromBtkAcq : filt emg from a btk acq
 
     :param acq [btk::Acquisition]: btk acquisition
     :param emgChannels [string list]: label of your emg channels
