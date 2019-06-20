@@ -43,10 +43,21 @@ def main(args):
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "emg.settings"):
-            emgSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
+
+        # --- acquisition file and path----
+        DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
+        inputFile = inputFileNoExt+".c3d"
+
+
+        #--------------------------settings-------------------------------------
+        if os.path.isfile(DATA_PATH + "emg.settings"):
+            emgSettings = files.openFile(DATA_PATH,"emg.settings")
+            logging.warning("[pyCGM2]: emg.settings detected in the data folder")
         else:
-            emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "emg.settings"):
+                emgSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
+            else:
+                emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
 
         # ----------------------INPUTS-------------------------------------------
         bandPassFilterFrequencies = emgSettings["Processing"]["BandpassFrequencies"]
@@ -66,10 +77,6 @@ def main(args):
 
         fileSuffix = args.fileSuffix
 
-        # --- acquisition file and path----
-        DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
-
-        inputFile = inputFileNoExt+".c3d"
 
 
         # --------------------------SUBJECT ------------------------------------
