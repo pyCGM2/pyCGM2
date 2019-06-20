@@ -43,6 +43,7 @@ def getCGMmanager(CGMversion,userSettings,internalSettings=None,translators=None
                                                     localInternalSettings=internalSettings,
                                                     localTranslators=translators,
                                                     localIkWeight=localIkWeight,
+                                                    vsk=vsk)
 
     elif model  == "CGM2.3":
         manager = ModelManager.CGM2_3ConfigManager(userSettings,
@@ -50,7 +51,7 @@ def getCGMmanager(CGMversion,userSettings,internalSettings=None,translators=None
                                                     localTranslators=translators,
                                                     localIkWeight=localIkWeight,
                                                     vsk=vsk)
-                                                    vsk=vsk)
+
     elif model  == "CGM2.4":
         manager = ModelManager.CGM2_4ConfigManager(userSettings,
                                                     localInternalSettings=internalSettings,
