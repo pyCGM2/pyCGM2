@@ -2486,7 +2486,7 @@ class CGM2_4(CGM2_3):
                         nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
             logging.debug("Moment over")
 
-            # export Moment
+            # export Power
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Power:
                     if pointSuffix is not None:
