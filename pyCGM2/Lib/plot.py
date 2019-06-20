@@ -634,6 +634,13 @@ def compareKinematic(analyses,legends,context,bodyPart,normativeDataset,plotType
     >>> normativeData = normativeDatasets.Schwartz2008("Free")
     >>> plot.compareKinematic([analysisPre,analysisPost],["pre","post"],"Left","LowerLimb",normativeData)
     """
+    i=1
+    for analysis in analyses:
+        if analysis.kinematicStats.data == {}:
+            raise Exception("[pyCGM2]: Kinetic comparison aborted. Analysis [%i] has no kinematic data"%(i))
+        i+=1
+
+
     if bodyPart == "LowerLimb":
         bodyPart = enums.BodyPartPlot.LowerLimb
     elif bodyPart == "Trunk":
@@ -687,6 +694,12 @@ def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="
     >>> normativeData = normativeDatasets.Schwartz2008("Free")
     >>> plot.compareKinetic([analysisPre,analysisPost],["pre","post"],"Left","LowerLimb",normativeData)
     """
+    i=1
+    for analysis in analyses:
+        if analysis.kineticStats.data == {}:
+            raise Exception("[pyCGM2]: Kinetic comparison aborted. Analysis [%i] has no kinetic data"%(i))
+        i+=1
+
 
     if bodyPart == "LowerLimb":
         bodyPart = enums.BodyPartPlot.LowerLimb
@@ -747,6 +760,12 @@ def compareEmgEvelops(analyses,legends, emgChannels, muscles, contexts, normalAc
     >>>                       ["RECFEM","VASLAT"])
 
     """
+
+    i=1
+    for analysis in analyses:
+        if analysis.emgStats.data == {}:
+            raise Exception("[pyCGM2]: EMG comparison aborted. Analysis [%i] has no emg data"%(i))
+        i+=1
 
 
     combinedEMGcontext=[]
