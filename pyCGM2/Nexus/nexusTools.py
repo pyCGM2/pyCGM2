@@ -161,9 +161,9 @@ def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
         logging.debug( "force (%s) already exist" %(label))
     else:
         if normalizedData:
-            NEXUS.CreateModelOutput( vskName, label, "Forces", ["X","Y","Z"], ["Force","Force","Force"])
-        else:
             NEXUS.CreateModelOutput( vskName, label, "Forces", ["X","Y","Z"], ["ForceNormalized","ForceNormalized","ForceNormalized"])
+        else:
+            NEXUS.CreateModelOutput( vskName, label, "Forces", ["X","Y","Z"], ["Force","Force","Force"])
 
     values = acq.GetPoint(label).GetValues()
 
@@ -210,9 +210,9 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
         logging.debug( "power (%s) already exist" %(label))
     else:
         if normalizedData:
-            NEXUS.CreateModelOutput( vskName, label, "Powers", ["X","Y","Z"], ["Power","Power","Power"])
-        else:
             NEXUS.CreateModelOutput( vskName, label, "Powers", ["X","Y","Z"], ["PowerNormalized","PowerNormalized","PowerNormalized"])
+        else:
+            NEXUS.CreateModelOutput( vskName, label, "Powers", ["X","Y","Z"], ["Power","Power","Power"])            
 
 
     values = acq.GetPoint(label).GetValues()
