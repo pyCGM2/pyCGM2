@@ -21,11 +21,11 @@ def openFile(path,filename):
         jsonFlag = is_json(content)
         yamlFlag = is_yaml(content)
         if jsonFlag:
-            logging.info("your file (%s) matches json syntax"%filename)
+            logging.debug("your file (%s) matches json syntax"%filename)
             struct = openJson(path ,str(filename))
 
         if yamlFlag:
-            logging.info("your file (%s) matches yaml syntax"%filename)
+            logging.debug("your file (%s) matches yaml syntax"%filename)
             struct = openYaml(path,filename)
 
         if not yamlFlag and not yamlFlag:
@@ -40,11 +40,11 @@ def readContent(stringContent):
     jsonFlag = is_json(stringContent)
     yamlFlag = is_yaml(stringContent)
     if jsonFlag:
-        logging.info("your content  matches json syntax")
+        logging.debug("your content  matches json syntax")
         struct = json.loads(stringContent,object_pairs_hook=OrderedDict)
 
     if yamlFlag:
-        logging.info("your content  matches yaml syntax")
+        logging.debug("your content  matches yaml syntax")
         struct =  yaml.load(stringContent,Loader=yamlordereddictloader.Loader)
 
     if not yamlFlag and not yamlFlag:
