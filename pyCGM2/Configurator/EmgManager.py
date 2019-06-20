@@ -97,7 +97,7 @@ class EmgConfigManager(Manager.ConfigManager):
     def consistencyFlag(self):
         return self._userSettings["Views"]["Consistency"]
 
-    def constructLists(self):
+    def getEmgConfiguration(self):
         labels = []
         contexts =[]
         normalActivities = []
