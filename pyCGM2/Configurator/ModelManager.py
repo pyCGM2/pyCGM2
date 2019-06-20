@@ -81,7 +81,10 @@ class CGM1ConfigManager(ModelConfigManager):
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
-            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1-pyCGM2.settings"):
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+            else:
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1-pyCGM2.settings")
         else:
             logging.info("Local internal setting found")
             self._internSettings = self._localInternalSettings
@@ -175,7 +178,11 @@ class CGM1_1ConfigManager(CGM1ConfigManager):
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
-            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1_1-pyCGM2.settings"):
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
+            else:
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1_1-pyCGM2.settings")
+
         else:
             self._internSettings = self._localInternalSettings
 
@@ -190,7 +197,10 @@ class CGM2_1ConfigManager(CGM1ConfigManager):
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
-            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_1-pyCGM2.settings"):
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
+            else:
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_1-pyCGM2.settings")
         else:
             self._internSettings = self._localInternalSettings
 
@@ -215,7 +225,10 @@ class CGM2_2ConfigManager(CGM2_1ConfigManager):
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
-            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_2-pyCGM2.settings"):
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
+            else:
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_2-pyCGM2.settings")
         else:
             self._internSettings = self._localInternalSettings
 
@@ -246,7 +259,10 @@ class CGM2_3ConfigManager(CGM2_2ConfigManager):
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
-            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_3-pyCGM2.settings"):
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
+            else:
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
         else:
             self._internSettings = self._localInternalSettings
 
@@ -265,7 +281,11 @@ class CGM2_4ConfigManager(CGM2_3ConfigManager):
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
-            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_4-pyCGM2.settings"):
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+            else:
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_4-pyCGM2.settings")
+
         else:
             self._internSettings = self._localInternalSettings
 
@@ -281,6 +301,9 @@ class CGM2_5ConfigManager(CGM2_4ConfigManager):
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
-            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_5-pyCGM2.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_5-pyCGM2.settings"):
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_5-pyCGM2.settings")
+            else:
+                self._internSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_5-pyCGM2.settings")
         else:
             self._internSettings = self._localInternalSettings

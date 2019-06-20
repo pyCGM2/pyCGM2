@@ -25,7 +25,10 @@ class EmgConfigManager(Manager.ConfigManager):
 
     def __internalsettings(self):
         if self._localInternalSettings is None:
-            self._internSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
+            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "emg.settings"):
+                self._internSettings = = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
+            else:
+                self._internSettings = = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
         else:
             logging.info("Local internal setting found")
             self._internSettings = self._localInternalSettings
