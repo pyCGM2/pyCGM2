@@ -6,7 +6,7 @@ from pyCGM2 import enums
 import logging
 import copy
 from pyCGM2.Eclipse import vskTools,eclipse
-
+import os
 
 class ModelConfigManager(Manager.ConfigManager):
     """
