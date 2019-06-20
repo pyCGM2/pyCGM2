@@ -30,7 +30,7 @@ from pyCGM2.Report import normativeDatasets
 
 from pyCGM2.Tools import btkTools, trialTools
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
-
+from pyCGM2.Configurator import EmgManager
 import ViconNexus
 
 
@@ -54,13 +54,13 @@ def main(args):
             emgSettings = files.openFile(DATA_PATH,"emg.settings")
             logging.warning("[pyCGM2]: emg.settings detected in the data folder")
         else:
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "emg.settings"):
-                emgSettings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"emg.settings")
-            else:
-                emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
+            emgSettings = None
+
+        manager = EmgManager.EmgConfigManager(None,localInternalSettings=emgSettings)
+        manager.contruct()
 
         # ----------------------INPUTS-------------------------------------------
-        bandPassFilterFrequencies = emgSettings["Processing"]["BandpassFrequencies"]
+        bandPassFilterFrequencies = manager.BandpassFrequencies#emgSettings["Processing"]["BandpassFrequencies"]
         if args.BandpassFrequencies is not None:
             if len(args.BandpassFrequencies) != 2:
                 raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
@@ -68,7 +68,7 @@ def main(args):
                 bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
                 logging.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
-        envelopCutOffFrequency = emgSettings["Processing"]["EnvelopLowpassFrequency"]
+        envelopCutOffFrequency = manager.EnvelopLowpassFrequency#emgSettings["Processing"]["EnvelopLowpassFrequency"]
         if args.EnvelopLowpassFrequency is not None:
             envelopCutOffFrequency =  args.EnvelopLowpassFrequency
             logging.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
@@ -83,32 +83,13 @@ def main(args):
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
 
-        # btkAcq builder + save
-        if os.path.exists(str(DATA_PATH+ "__tmp.c3d")):
-            os.remove(str(DATA_PATH+ "__tmp.c3d"))
 
+        # btk Acquisition
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
         acq = nacf.build()
 
-
-
-        # reconfiguration of emg settings as lists
-        EMG_LABELS = []
-        EMG_CONTEXT =[]
-        NORMAL_ACTIVITIES = []
-        EMG_MUSCLES =[]
-        for emg in emgSettings["CHANNELS"].keys():
-            if emg !="None":
-                if emgSettings["CHANNELS"][emg]["Muscle"] != "None":
-                    EMG_LABELS.append(str(emg))
-                    EMG_MUSCLES.append(str(emgSettings["CHANNELS"][emg]["Muscle"]))
-                    EMG_CONTEXT.append(str(emgSettings["CHANNELS"][emg]["Context"])) if emgSettings["CHANNELS"][emg]["Context"] != "None" else EMG_CONTEXT.append(None)
-                    NORMAL_ACTIVITIES.append(str(emgSettings["CHANNELS"][emg]["NormalActivity"])) if emgSettings["CHANNELS"][emg]["NormalActivity"] != "None" else EMG_CONTEXT.append(None)
-
-        # EMG_LABELS=['EMG1','EMG2','EMG3','EMG4'] # list of emg labels in your c3d
-        # EMG_CONTEXT=['Left','Left','Right','Left'] # A context is not the body side. A context is relative to the gait cycle. EMG1 will plot for the Left Gait Cycle.
-        # NORMAL_ACTIVITIES = ["RECFEM","RECFEM",None,"VASLAT"]
-
+        # --------------emg Processing--------------
+        EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES  =  manager.getEmgConfiguration()
 
 
         analysis.processEMG_fromBtkAcq(acq, EMG_LABELS,
