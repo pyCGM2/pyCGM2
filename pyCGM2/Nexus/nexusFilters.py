@@ -605,7 +605,7 @@ class NexusConstructTrialFilter(object):
                     ts = ma.TimeSequence(str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Marker,"mm", self.m_trial.timeSequences())
                     ts.setData(data)
                 else:
-                    logging.warning("[pyCGM2] : Model Output (%s) from Nexus not added to the btk acquisition"%(modelOutputName))
+                    logging.warning("[pyCGM2] : Model Output (%s) from Nexus not added to the openma trial"%(modelOutputName))
 
 
     def build(self):
