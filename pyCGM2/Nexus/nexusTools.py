@@ -6,27 +6,20 @@ import logging
 from pyCGM2 import btk
 
 
+def _setPointData(ftr,framecount,ff,values):
 
-def _setPointData(framecount,pfn,ff,lf,values):
-    if framecount > pfn:
-        beg = ff-1
-        end = lf
-    else:
-        beg = 0
-        end = lf-ff+1
+    beg = ff - ftr
 
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
     exists = [False]*framecount
 
-    j=0
-    for i in range(beg,end):
-        #print i
-        exists[i] = True if values[j,0] !=0 else False
-        data[0][i] = values[j,0]
-        data[1][i] = values[j,1]
-        data[2][i] = values[j,2]
-        j+=1
-
+    i=beg
+    for val in values:
+        data[0][i] = val[0]
+        data[1][i] = val[1]
+        data[2][i] = val[2]
+        exists[i] = False if val[0] ==0 and val[1] ==0 and val[2] ==0 else True
+        i+=1
 
     return data,exists
 
@@ -96,10 +89,11 @@ def setTrajectoryFromAcq(NEXUS,vskName,label,acq):
     #ff,lf = NEXUS.GetTrialRange()
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
-    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
     pfn = acq.GetPointFrameNumber()
 
-    data,exists = _setPointData(framecount,pfn,ff,lf,values)
+    trialRange_init = NEXUS.GetTrialRange()[0]
+    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
+    data,exists = _setPointData(trialRange_init,framecount,ff,values)
 
     NEXUS.SetTrajectory( vskName, label, data[0],data[1],data[2], exists )
 
@@ -119,13 +113,14 @@ def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq,suffix=""):
     #ff,lf = NEXUS.GetTrialRange()
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
-    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
     pfn = acq.GetPointFrameNumber()
 
-
-    data,exists = _setPointData(framecount,pfn,ff,lf,values)
+    trialRange_init = NEXUS.GetTrialRange()[0]
+    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
+    data,exists = _setPointData(trialRange_init,framecount,ff,values)
 
     NEXUS.SetModelOutput( vskName, output_label, data, exists )
+
 
 
 
@@ -145,9 +140,11 @@ def appendAngleFromAcq(NEXUS,vskName,label, acq):
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
 
-    framecount = NEXUS.GetFrameCount()
+
     pfn = acq.GetPointFrameNumber()
-    data,exists = _setPointData(framecount,pfn,ff,lf,values)
+    trialRange_init = NEXUS.GetTrialRange()[0]
+    framecount = NEXUS.GetFrameCount()
+    data,exists = _setPointData(trialRange_init,framecount,ff,values)
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
@@ -170,9 +167,12 @@ def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     #ff,lf = NEXUS.GetTrialRange()
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
-    framecount = NEXUS.GetFrameCount()
     pfn = acq.GetPointFrameNumber()
-    data,exists = _setPointData(framecount,pfn,ff,lf,values)
+
+    trialRange_init = NEXUS.GetTrialRange()[0]
+    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
+    data,exists = _setPointData(trialRange_init,framecount,ff,values)
+
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
@@ -196,14 +196,18 @@ def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     #ff,lf = NEXUS.GetTrialRange()
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
-    framecount = NEXUS.GetFrameCount()
     pfn = acq.GetPointFrameNumber()
-    data,exists = _setPointData(framecount,pfn,ff,lf,values)
+
+
+    trialRange_init = NEXUS.GetTrialRange()[0]
+    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
+    data,exists = _setPointData(trialRange_init,framecount,ff,values)
+
+
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
 def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
-
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
@@ -220,9 +224,10 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     #ff,lf = NEXUS.GetTrialRange()
     ff = acq.GetFirstFrame()
     lf = acq.GetLastFrame()
-    framecount = NEXUS.GetFrameCount()
     pfn = acq.GetPointFrameNumber()
-    data,exists = _setPointData(framecount,pfn,ff,lf,values)
+    trialRange_init = NEXUS.GetTrialRange()[0]
+    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
+    data,exists = _setPointData(trialRange_init,framecount,ff,values)
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
@@ -238,13 +243,10 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
     lf = acq.GetLastFrame()
     pfn = acq.GetPointFrameNumber()
     framecount = NEXUS.GetFrameCount()
+    trialRange_init = NEXUS.GetTrialRange()[0]
 
-    if framecount > pfn:
-        beg = ff-1
-        end = lf
-    else:
-        beg = 0
-        end = lf-ff+1
+    beg = ff-trialRange_init
+    end = lf-trialRange_init
 
 
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount))),
