@@ -246,7 +246,7 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
     trialRange_init = NEXUS.GetTrialRange()[0]
 
     beg = ff-trialRange_init
-    end = lf-trialRange_init
+    end = lf-trialRange_init+1
 
 
     data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount))),
