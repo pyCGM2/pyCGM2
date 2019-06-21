@@ -55,6 +55,7 @@ class NexusConstructAcquisitionFilter(object):
         #self.m_frames = NEXUS.GetTrialRange()[1]
         self.m_rangeROI = NEXUS.GetTrialRegionOfInterest()
         self.m_trialRange = NEXUS.GetTrialRange()
+        self.m_trialFirstFrame = self.m_trialRange[0] # might be different from 1 if corpped and no x2d
 
         self.m_firstFrame = self.m_rangeROI[0]
         self.m_lastFrame = self.m_rangeROI[1]
@@ -95,84 +96,95 @@ class NexusConstructAcquisitionFilter(object):
         eventContext = "Left"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                ev.SetSubject(str(self.m_subject))
-                self.m_acq.AppendEvent(ev)
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
+                    ev.SetSubject(str(self.m_subject))
+                    self.m_acq.AppendEvent(ev)
 
 
         eventType = "Foot Off"
         eventContext = "Left"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                ev.SetSubject(str(self.m_subject))
-                self.m_acq.AppendEvent(ev)
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
+                    ev.SetSubject(str(self.m_subject))
+                    self.m_acq.AppendEvent(ev)
 
         eventType = "Foot Strike"
         eventContext = "Right"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                ev.SetSubject(str(self.m_subject))
-                self.m_acq.AppendEvent(ev)
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
+                    ev.SetSubject(str(self.m_subject))
+                    self.m_acq.AppendEvent(ev)
 
         eventType = "Foot Off"
         eventContext = "Right"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                ev.SetSubject(str(self.m_subject))
-                self.m_acq.AppendEvent(ev)
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
+                    ev.SetSubject(str(self.m_subject))
+                    self.m_acq.AppendEvent(ev)
 
         eventType = "Event"
         eventContext = "General"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                ev.SetSubject(str(self.m_subject))
-                self.m_acq.AppendEvent(ev)
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
+                    ev.SetSubject(str(self.m_subject))
+                    self.m_acq.AppendEvent(ev)
 
         eventType = "Left-FP"
         eventContext = "General"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = btk.btkEvent(eventType,time, int(frame), eventContext,btk.btkEvent.Manual)
-                ev.SetSubject(str(self.m_subject))
-                self.m_acq.AppendEvent(ev)
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
+                    ev.SetSubject(str(self.m_subject))
+                    self.m_acq.AppendEvent(ev)
+
 
         eventType = "Right-FP"
         eventContext = "General"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = btk.btkEvent(eventType,time, int(frame), eventContext,btk.btkEvent.Manual)
-                ev.SetSubject(str(self.m_subject))
-                self.m_acq.AppendEvent(ev)
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
+                    ev.SetSubject(str(self.m_subject))
+                    self.m_acq.AppendEvent(ev)
 
 
         eventType = "Start"
         eventContext = "Left"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = btk.btkEvent(eventType,time, int(frame), eventContext,btk.btkEvent.Manual)
-                ev.SetSubject(str(self.m_subject))
-                self.m_acq.AppendEvent(ev)
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
+                    ev.SetSubject(str(self.m_subject))
+                    self.m_acq.AppendEvent(ev)
+
 
         eventType = "End"
         eventContext = "Left"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = btk.btkEvent(eventType,time , int(frame), eventContext, btk.btkEvent.Manual)
-                ev.SetSubject(str(self.m_subject))
-                self.m_acq.AppendEvent(ev)
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
+                    ev.SetSubject(str(self.m_subject))
+                    self.m_acq.AppendEvent(ev)
 
 
 
@@ -188,23 +200,28 @@ class NexusConstructAcquisitionFilter(object):
 
         for marker in markers:
             rawDataX, rawDataY, rawDataZ, E = NEXUS.GetTrajectory(self.m_subject,marker)
-
+            #import ipdb; ipdb.set_trace()
             E = np.asarray(E).astype("float")-1
             values =np.array([np.asarray(rawDataX),np.asarray(rawDataY),np.asarray(rawDataZ)]).T
 
-            if values.shape[0]<self.m_lastFrame:
-                values_cut = values
-                E_cut = E
-            else:
-                values_cut = values[(self.m_firstFrame-1):self.m_lastFrame,:]
-                E_cut = E[(self.m_firstFrame-1):self.m_lastFrame]
+            start = self.m_firstFrame - self.m_trialFirstFrame
+            end = self.m_lastFrame - self.m_trialFirstFrame
+
+            values_cut = values[start:end+1,:]
+            E_cut = E[start:end+1]
+
 
             btkTools.smartAppendPoint(self.m_acq,str(marker),values_cut, PointType=btk.btkPoint.Marker,desc="",
                                       residuals=E_cut)
 
     def appendAnalogs(self):
 
+        ftr = NEXUS.GetTrialRange()[0]
+
         for nexusAnalogDevice in self.m_nexusAnalogDevices:
+
+            start = self.m_firstFrame - 1#self.m_trialFirstFrame
+            end = self.m_lastFrame - 1#self.m_trialFirstFrame
 
             channels = nexusAnalogDevice.getChannels()
             for channel in channels:
@@ -212,7 +229,7 @@ class NexusConstructAcquisitionFilter(object):
                 analog.SetLabel(channel.getLabel())
                 analog.SetUnit(channel.getUnit())
                 analog.SetFrameNumber(self.m_analogFrameNumber)
-                analog.SetValues(channel.getValues()[(self.m_firstFrame-1)*self.m_numberAnalogSamplePerFrame:self.m_lastFrame*self.m_numberAnalogSamplePerFrame])
+                analog.SetValues(channel.getValues()[start*self.m_numberAnalogSamplePerFrame:(end+1)*self.m_numberAnalogSamplePerFrame])
                 analog.SetDescription(channel.getDescription())
 
                 self.m_acq.AppendAnalog(analog)
@@ -223,8 +240,12 @@ class NexusConstructAcquisitionFilter(object):
 
         fp_count=0
         for nexusForcePlate in self.m_nexusForcePlates:
-            forceLocal = nexusForcePlate.getLocalReactionForce()
+            forceLocal = nexusForcePlate.getLocalReactionForce() #  row number =  NEXUS.getTrialRange[1] not FrameCount
             momentLocal = nexusForcePlate.getLocalReactionMoment()
+
+
+            start = self.m_firstFrame - 1 #-1 because Nexus frame start at 1
+            end = self.m_lastFrame -1#- self.m_trialFirstFrame
 
             forceLabels =["Force.Fx"+str(fp_count+1), "Force.Fy"+str(fp_count+1),"Force.Fz"+str(fp_count+1)]
             for j in range(0,3):
@@ -232,7 +253,7 @@ class NexusConstructAcquisitionFilter(object):
                 analog.SetLabel(forceLabels[j])
                 analog.SetUnit("N")#nexusForcePlate.getForceUnit())
                 analog.SetFrameNumber(self.m_analogFrameNumber)
-                analog.SetValues(forceLocal[(self.m_firstFrame-1)*self.m_numberAnalogSamplePerFrame:self.m_lastFrame*self.m_numberAnalogSamplePerFrame,j])
+                analog.SetValues(forceLocal[(start)*self.m_numberAnalogSamplePerFrame:(end+1)*self.m_numberAnalogSamplePerFrame,j])
                 analog.SetDescription(nexusForcePlate.getDescription())
                 #analog.SetGain(btk.btkAnalog.PlusMinus10)
 
@@ -244,7 +265,7 @@ class NexusConstructAcquisitionFilter(object):
                 analog.SetLabel(momentLabels[j])
                 analog.SetUnit("Nmm")#nexusForcePlate.getMomentUnit())
                 analog.SetFrameNumber(self.m_analogFrameNumber)
-                analog.SetValues(momentLocal[(self.m_firstFrame-1)*self.m_numberAnalogSamplePerFrame:self.m_lastFrame*self.m_numberAnalogSamplePerFrame,j])
+                analog.SetValues(momentLocal[(start)*self.m_numberAnalogSamplePerFrame:(end+1)*self.m_numberAnalogSamplePerFrame,j])
                 analog.SetDescription(nexusForcePlate.getDescription())
                 #analog.GetGain(btk.btkAnalog.PlusMinus10)
                 self.m_acq.AppendAnalog(analog)
@@ -290,18 +311,18 @@ class NexusConstructAcquisitionFilter(object):
         if modelOutputNames!=[]:
             for modelOutputName in modelOutputNames:
                 data, E = NEXUS.GetModelOutput(self.m_subject,modelOutputName)
-
                 type = NEXUS.GetModelOutputDetails(self.m_subject,modelOutputName)[0]
 
                 E = np.asarray(E).astype("float")-1
                 values =np.array([np.asarray(data[0]),np.asarray(data[1]),np.asarray(data[2])]).T
 
-                if values.shape[0]<self.m_lastFrame:
-                    values_cut = values
-                    E_cut = E
-                else:
-                    values_cut = values[(self.m_firstFrame-1):self.m_lastFrame,:]
-                    E_cut = E[(self.m_firstFrame-1):self.m_lastFrame]
+
+                start = self.m_firstFrame - self.m_trialFirstFrame
+                end = self.m_lastFrame - self.m_trialFirstFrame
+
+                values_cut = values[start:end+1,:]
+                E_cut = E[start:end+1]
+
 
                 if type == "Angles":
                     btkTools.smartAppendPoint(self.m_acq,str(modelOutputName),values_cut, PointType=btk.btkPoint.Angle,desc="",
@@ -354,6 +375,7 @@ class NexusConstructTrialFilter(object):
         #self.m_frames = NEXUS.GetTrialRange()[1]
         self.m_rangeROI = NEXUS.GetTrialRegionOfInterest()
         self.m_trialRange = NEXUS.GetTrialRange()
+        self.m_trialFirstFrame = self.m_trialRange[0]
 
         self.m_firstFrame = self.m_rangeROI[0]
         self.m_lastFrame = self.m_rangeROI[1]
@@ -390,66 +412,75 @@ class NexusConstructTrialFilter(object):
         eventContext = "Left"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
 
 
         eventType = "Foot Off"
         eventContext = "Left"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
 
         eventType = "Foot Strike"
         eventContext = "Right"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
 
         eventType = "Foot Off"
         eventContext = "Right"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
 
         eventType = "Event"
         eventContext = "General"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
 
         eventType = "Left-FP"
         eventContext = "General"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
 
         eventType = "Right-FP"
         eventContext = "General"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
 
 
         eventType = "Start"
         eventContext = "Left"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
 
         eventType = "End"
         eventContext = "Left"
         if NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0] != []:
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
-                time = (frame-1)/self.m_framerate
-                ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
 
 
 
@@ -470,12 +501,13 @@ class NexusConstructTrialFilter(object):
             E = np.asarray(E).astype("float")-1
             values =np.array([np.asarray(rawDataX),np.asarray(rawDataY),np.asarray(rawDataZ)]).T
 
-            if values.shape[0]<self.m_lastFrame:
-                values_cut = values
-                E_cut = E
-            else:
-                values_cut = values[(self.m_firstFrame-1):self.m_lastFrame,:]
-                E_cut = E[(self.m_firstFrame-1):self.m_lastFrame]
+            start = self.m_firstFrame - self.m_trialFirstFrame
+            end = self.m_lastFrame - self.m_trialFirstFrame
+
+            #if marker == "LTHI": import ipdb; ipdb.set_trace()
+            values_cut = values[start:end+1,:]
+            E_cut = E[start:end+1]
+
 
             data = np.zeros((values_cut.shape[0],4))
             data[:,0:3] = values_cut
@@ -502,7 +534,10 @@ class NexusConstructTrialFilter(object):
             channels = nexusAnalogDevice.getChannels()
             for channel in channels:
 
-                data = channel.getValues()[(self.m_firstFrame-1)*self.m_numberAnalogSamplePerFrame:self.m_lastFrame*self.m_numberAnalogSamplePerFrame]
+                start = self.m_firstFrame - 1
+                end = self.m_lastFrame - 1
+
+                data = channel.getValues()[(start)*self.m_numberAnalogSamplePerFrame:(end+1)*self.m_numberAnalogSamplePerFrame]
 
                 if self.m_firstFrame ==1:
                     time_init = 0.0
@@ -534,12 +569,12 @@ class NexusConstructTrialFilter(object):
                 E = np.asarray(E).astype("float")-1
                 values =np.array([np.asarray(data[0]),np.asarray(data[1]),np.asarray(data[2])]).T
 
-                if values.shape[0]<self.m_lastFrame:
-                    values_cut = values
-                    E_cut = E
-                else:
-                    values_cut = values[(self.m_firstFrame-1):self.m_lastFrame,:]
-                    E_cut = E[(self.m_firstFrame-1):self.m_lastFrame]
+
+                start = self.m_firstFrame - self.m_trialFirstFrame
+                end = self.m_lastFrame - self.m_trialFirstFrame
+
+                values_cut = values[start:end+1,:]
+                E_cut = E[start:end+1]
 
                 data = np.zeros((values_cut.shape[0],4))
                 data[:,0:3] = values_cut
