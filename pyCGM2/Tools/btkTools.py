@@ -675,8 +675,9 @@ def constructMarker(acq,label,markers,numpyMethod=np.mean,desc=""):
 
 def constructEmptyMarker(acq,label,desc=""):
     nFrames = acq.GetPointFrameNumber()
-    values = np.zeros((nFrames,3))
-    smartAppendPoint(acq,label,values,desc=desc)
+    values = np.ones((nFrames,3))
+    residuals = np.ones((nFrames,1))*-1.0
+    smartAppendPoint(acq,label,values,desc=desc,residuals= np.ones((nFrames,1))*-1.0)
 
 
 def createZeros(acq, markerLabels):
