@@ -394,9 +394,11 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
 
 
     a1=(longitudinal_extremityValues-originValues)# PSI - ASI
+    a1[2]=0
     a1=a1/np.linalg.norm(a1)
 
     a2=(lateral_extremityValues-originValues) #LASI -ASI
+    a2[2]=0
     a2=a2/np.linalg.norm(a2)
 
     globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
@@ -408,7 +410,7 @@ def findProgressionAxisFromPelvicMarkers(acq,markers):
         tmp.append(res)
     maxIndex = np.argmax(np.abs(tmp))
     longitudinalAxis =  globalAxes.keys()[maxIndex]
-    forwardProgression = True if tmp[maxIndex]>0 else False
+    forwardProgression = True if tmp[maxIndex]<0 else False
 
     # lateral axis
     tmp=[]
