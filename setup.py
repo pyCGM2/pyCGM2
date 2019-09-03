@@ -174,6 +174,7 @@ else:
     logging.error("[pyCGM2] - Nexus folder not detected - No generation of VST and pipelines")
 
 #------------------------- INSTALL--------------------------------------------
+# numpy 1.11 scipy==1.2.1'matplotlib<3.0.0' pandas ==0.19.1'enum34>=1.1.2 configparser>=3.5.0' beautifulsoup4>=3.5.0' 'pyyaml>=3.13.0 yamlordereddictloader>=0.4.0 'xlrd >=0.9.0
 setup(name = 'pyCGM2',
     version = VERSION,
     author = 'Fabien Leboeuf',
@@ -185,16 +186,17 @@ setup(name = 'pyCGM2',
     packages=find_packages(),
 	include_package_data=True,
     license='CC-BY-SA',
-	install_requires = ['numpy>=1.11.0',
+	install_requires = ['numpy<1.17.0',
                         'scipy==1.2.1',
                         'matplotlib<3.0.0',
-                        'pandas >=0.19.1',
+                        'pandas ==0.19.1',
                         'enum34>=1.1.2',
                         'configparser>=3.5.0',
                         'beautifulsoup4>=3.5.0',
                         'pyyaml>=3.13.0',
                         'yamlordereddictloader>=0.4.0',
-                        'xlrd >=0.9.0'],
+                        'xlrd >=0.9.0',
+                        'lxml>=4.4.1'],
     classifiers=['Programming Language :: Python',
                  'Programming Language :: Python :: 2.7',
                  'Operating System :: Microsoft :: Windows',
