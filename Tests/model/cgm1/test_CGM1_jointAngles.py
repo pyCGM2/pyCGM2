@@ -26,6 +26,7 @@ from pyCGM2.Model import  modelFilters,modelDecorator, frame
 from pyCGM2.Model.CGM2 import cgm
 import pyCGM2.enums as pyCGM2Enums
 from pyCGM2.Math import numeric
+from pyCGM2.Processing import progressionFrame
 
 
 
@@ -501,7 +502,12 @@ class CGM1_motionAbsoluteAnglesTest():
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
 
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                               segmentLabels=["Left Foot","Right Foot","Pelvis"],
@@ -530,7 +536,13 @@ class CGM1_motionAbsoluteAnglesTest():
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
+
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -590,7 +602,12 @@ class CGM1_motionAbsoluteAnglesTest():
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
 
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                               segmentLabels=["Left Foot","Right Foot","Pelvis"],
@@ -620,7 +637,12 @@ class CGM1_motionAbsoluteAnglesTest():
         modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,pyCGM2Enums.motionMethod.Determinist)
         modMotion.compute()
 
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -686,7 +708,12 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -740,7 +767,12 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -831,7 +863,12 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -885,7 +922,12 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -975,7 +1017,12 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -1029,7 +1076,12 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -1120,7 +1172,12 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -1174,7 +1231,12 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -1268,7 +1330,12 @@ class CGM1_motionFullAnglesTest():
 
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -1323,7 +1390,12 @@ class CGM1_motionFullAnglesTest():
         modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix="cgm1_6dof")
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
@@ -1423,7 +1495,13 @@ class CGM1_motionFullAnglesTest():
 
 
         # absolute angles
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
+
         modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,
                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                       angleLabels=["LFootProgress", "RFootProgress","Pelvis"],

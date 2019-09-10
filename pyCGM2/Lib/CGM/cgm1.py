@@ -16,6 +16,7 @@ from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
+from pyCGM2.Processing import progressionFrame
 
 
 
@@ -96,6 +97,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     # ----motion filter----
     # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system
 
+    import ipdb; ipdb.set_trace()
     modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,enums.motionMethod.Determinist,
                                               markerDiameter=markerDiameter,
                                               viconCGM1compatible=False,
@@ -118,9 +120,14 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
 
     # detection of traveling axis + absolute angle
     if model.m_bodypart != enums.BodyPart.UpperLimb:
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqStatic,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
     else:
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromLongAxis(acqStatic,"C7","CLAV")
+        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
+
+    pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
+    pff.compute()
+    globalFrame = pff.outputs["globalFrame"]
+    forwardProgression = pff.outputs["forwardProgression"]
 
     if model.m_bodypart != enums.BodyPart.UpperLimb:
             modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
@@ -211,9 +218,14 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     # detection of traveling axis + absolute angle
     if model.m_bodypart != enums.BodyPart.UpperLimb:
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
     else:
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromLongAxis(acqGait,"C7","CLAV")
+        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
+
+    pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+    pff.compute()
+    globalFrame = pff.outputs["globalFrame"]
+    forwardProgression = pff.outputs["forwardProgression"]
 
     if model.m_bodypart != enums.BodyPart.UpperLimb:
             modelFilters.ModelAbsoluteAnglesFilter(model,acqGait,

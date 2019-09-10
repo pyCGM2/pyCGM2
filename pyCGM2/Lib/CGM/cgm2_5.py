@@ -17,6 +17,7 @@ from pyCGM2.Model.CGM2 import cgm,cgm2
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Model.Opensim import opensimFilters
+from pyCGM2.Processing import progressionFrame
 
 
 
@@ -196,9 +197,14 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     # detection of traveling axis + absolute angle
     if model.m_bodypart != enums.BodyPart.UpperLimb:
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(finalAcqStatic,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
     else:
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromLongAxis(finalAcqStatic,"C7","CLAV")
+        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
+
+    pff = progressionFrame.ProgressionFrameFilter(finalAcqStatic,pfp)
+    pff.compute()
+    globalFrame = pff.outputs["globalFrame"]
+    forwardProgression = pff.outputs["forwardProgression"]
 
     if model.m_bodypart != enums.BodyPart.UpperLimb:
             modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqStatic,
@@ -376,9 +382,14 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     # detection of traveling axis + absolute angle
     if model.m_bodypart != enums.BodyPart.UpperLimb:
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(finalAcqGait,["LASI","LPSI","RASI","RPSI"])
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
     else:
-        longitudinalAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromLongAxis(finalAcqGait,"C7","CLAV")
+        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
+
+    pff = progressionFrame.ProgressionFrameFilter(finalAcqGait,pfp)
+    pff.compute()
+    globalFrame = pff.outputs["globalFrame"]
+    forwardProgression = pff.outputs["forwardProgression"]
 
     if model.m_bodypart != enums.BodyPart.UpperLimb:
             modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqGait,

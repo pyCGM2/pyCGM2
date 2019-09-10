@@ -8,7 +8,7 @@ from pyCGM2 import btk
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.Opensim import osimProcessing
-
+from pyCGM2.Processing import progressionFrame
 
 
 # ---- PROCEDURES -----
@@ -239,7 +239,13 @@ class opensimFittingFilter(object):
 
 
         acqMotion_forIK = btk.btkAcquisition.Clone(acqMotion)
-        progressionAxis,forwardProgression,globalFrame = btkTools.findProgressionAxisFromPelvicMarkers(acqMotion,["LASI","RASI","RPSI","LPSI"])
+
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqMotion,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        progressionAxis = pff.outputs["progressionAxis"]
+        forwardProgression = pff.outputs["forwardProgression"]
 
         # --- ikTasks
         #  UPDATE method - ik tags ( need task in the initial iktools)
