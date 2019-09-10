@@ -825,20 +825,21 @@ class CGM1(CGM):
         seg.addCalibrationMarkerLabel("SACR")
         seg.addCalibrationMarkerLabel("midASIS")
 
+
         # new mp
         if self.mp.has_key("PelvisDepth") and self.mp["PelvisDepth"] != 0:
             logging.debug("PelvisDepth defined from your vsk file")
             self.mp_computed["PelvisDepth"] = self.mp["PelvisDepth"]
         else:
             logging.debug("Pelvis Depth computed and added to model parameters")
-            self.mp_computed["PelvisDepth"] = np.linalg.norm( valMidAsis.mean(axis=0)-valSACR.mean(axis=0)) - 2.0* (markerDiameter/2.0) -2.0* (basePlate/2.0)
+            self.mp_computed["PelvisDepth"] = np.linalg.norm( valMidAsis[frameInit:frameEnd,:].mean(axis=0)-valSACR[frameInit:frameEnd,:].mean(axis=0)) - 2.0* (markerDiameter/2.0) -2.0* (basePlate/2.0)
 
         if self.mp.has_key("InterAsisDistance") and self.mp["InterAsisDistance"] != 0:
             logging.debug("InterAsisDistance defined from your vsk file")
             self.mp_computed["InterAsisDistance"] = self.mp["InterAsisDistance"]
         else:
             logging.debug("asisDistance computed and added to model parameters")
-            self.mp_computed["InterAsisDistance"] = np.linalg.norm( aquiStatic.GetPoint("LASI").GetValues().mean(axis=0) - aquiStatic.GetPoint("RASI").GetValues().mean(axis=0))
+            self.mp_computed["InterAsisDistance"] = np.linalg.norm( aquiStatic.GetPoint("LASI").GetValues()[frameInit:frameEnd,:].mean(axis=0) - aquiStatic.GetPoint("RASI").GetValues()[frameInit:frameEnd,:].mean(axis=0))
 
 
         # --- Construction of the technical referential
