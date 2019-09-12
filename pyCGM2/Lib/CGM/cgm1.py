@@ -97,13 +97,16 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     # ----motion filter----
     # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system
 
-    import ipdb; ipdb.set_trace()
     modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,enums.motionMethod.Determinist,
-                                              markerDiameter=markerDiameter,
-                                              viconCGM1compatible=False,
-                                              pigStatic=True,
-                                              useLeftKJCmarker=pigStaticMarkers[0], useLeftAJCmarker=pigStaticMarkers[1],
-                                              useRightKJCmarker=pigStaticMarkers[2], useRightAJCmarker=pigStaticMarkers[3])
+                                                  markerDiameter=markerDiameter,
+                                                  viconCGM1compatible=False,
+                                                  pigStatic=True,
+                                                  useLeftKJCmarker=pigStaticMarkers[0], useLeftAJCmarker=pigStaticMarkers[1],
+                                                  useRightKJCmarker=pigStaticMarkers[2], useRightAJCmarker=pigStaticMarkers[3],
+                                                  leftFlatFoot = leftFlatFoot,
+                                                  rightFlatFoot = rightFlatFoot)
+
+
     modMotion.compute()
 
 

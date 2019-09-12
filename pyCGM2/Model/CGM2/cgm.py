@@ -137,7 +137,7 @@ class CGM1(CGM):
         self.version = string
 
     def __repr__(self):
-        return "LowerLimb CGM1.0"
+        return "CGM1.0"
 
     def _lowerLimbTrackingMarkers(self):
         return CGM1.LOWERLIMB_TRACKING_MARKERS#["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
@@ -463,7 +463,7 @@ class CGM1(CGM):
         dictRef["Thorax"]={"TF" : {'sequence':"ZYX", 'labels':   ["midTop","midBottom","midFront","CLAV"]} }
         dictRef["Left Clavicle"]={"TF" : {'sequence':"ZXY", 'labels':   ["LSJC","OT","LVWM","LSJC"]} } # OT and LWM from thorax
         dictRef["Right Clavicle"]={"TF" : {'sequence':"ZXY", 'labels':   ["RSJC","OT","RVWM","RSJC"]} } # OT and LWM from thorax
-        dictRef["Head"]={"TF" : {'sequence':"XZY", 'labels':   ["HC","midFH","LBHD","midFH"]} }
+        dictRef["Head"]={"TF" : {'sequence':"XZY", 'labels':   ["HC","midFH","midLH","midFH"]} }
         dictRef["Left UpperArm"]={"TF" : {'sequence':"ZYiX", 'labels':   ["LELB","LSJC","LCVM","LELB"]} }
         dictRef["Left ForeArm"]={"TF" : {'sequence':"ZXY", 'labels':   ["LWRA","LEJC","LWRB","LWRB"]} }
         dictRef["Left Hand"]={"TF" : {'sequence':"ZYX", 'labels':   ["LFIN","LWJC","LMWP","LFIN"]} }
@@ -474,7 +474,7 @@ class CGM1(CGM):
         dictRefAnatomical["Thorax"]= {'sequence':"ZYX", 'labels':  ["midTop","midBottom","midFront","OT"]}
         dictRefAnatomical["Left Clavicle"]={'sequence':"ZXY", 'labels':   ["LSJC","OT","LVWM","LSJC"]} # idem technical
         dictRefAnatomical["Right Clavicle"]={'sequence':"ZXY", 'labels':   ["RSJC","OT","RVWM","RSJC"]} # idem technical
-        dictRefAnatomical["Head"]={'sequence':"XZY", 'labels':   ["HC","midFH","LBHD","midFH"]}
+        dictRefAnatomical["Head"]={'sequence':"XZY", 'labels':   ["HC","midFH","midLH","midFH"]}
         dictRefAnatomical["Left UpperArm"]={'sequence':"ZYiX", 'labels':   ["LEJC","LSJC","LWJC","LSJC"]}
         dictRefAnatomical["Left ForeArm"]={'sequence':"ZXiY", 'labels':   ["LWJC","LEJC",None,"LEJC"]} # used y axis of upper
         dictRefAnatomical["Left Hand"]={'sequence':"ZYX", 'labels':   ["LHO","LWJC","LMWP","LWJC"]}
@@ -2694,6 +2694,7 @@ class CGM1(CGM):
                 logging.debug(" - Right foot - motion -")
                 logging.debug(" ----------------------")
 
+
                 if pigStaticProcessing:
                     self._right_foot_motion_static(aqui, dictAnat,options=options)
                 else:
@@ -2945,54 +2946,47 @@ class CGM1(CGM):
         # NA
 
         # computation
-        LKJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
-
-            v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
-
-            a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Thigh"]["TF"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-            LKJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
-
-
-        #btkTools.smartAppendPoint(aqui,"LKJC_Chord",LKJCvalues,desc="chord")
-
-        # --- LKJC
-        if  "useLeftKJCmarker" in options.keys():
+                # --- LKJC
+        if  "useLeftKJCmarker" in options.keys() and options["useLeftKJCmarker"] is not "LKJC":
+            logging.info("[pyCGM2] - LKJC marker forced to use %s"%(options["useLeftKJCmarker"]))
             LKJCvalues = aqui.GetPoint(options["useLeftKJCmarker"]).GetValues()
             desc = aqui.GetPoint(options["useLeftKJCmarker"]).GetDescription()
-            btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues,desc=desc)
+            btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues,desc=str(desc))
+        else:
+            LKJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
+            csFrame=frame.Frame()
+            for i in range(0,aqui.GetPointFrameNumber()):
 
-        # final LKJC ( just check if KJC already exist)
-        if not btkTools.isPointExist(aqui,"LKJC"):
-            desc = seg.getReferential('TF').static.getNode_byLabel("LKJC").m_desc
-            #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
-            btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues,desc=str("Chord-"+desc))
+                pt1=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][0])).GetValues()[i,:]
+                pt2=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][1])).GetValues()[i,:]
+                pt3=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][2])).GetValues()[i,:]
+                ptOrigin=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][3])).GetValues()[i,:]
 
 
+                a1=(pt2-pt1)
+                a1=np.divide(a1,np.linalg.norm(a1))
+
+                v=(pt3-pt1)
+                v=np.divide(v,np.linalg.norm(v))
+
+                a2=np.cross(a1,v)
+                a2=np.divide(a2,np.linalg.norm(a2))
+
+                x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Thigh"]["TF"]['sequence'])
+
+                csFrame.m_axisX=x
+                csFrame.m_axisY=y
+                csFrame.m_axisZ=z
+                csFrame.setRotation(R)
+                csFrame.setTranslation(ptOrigin)
+
+                seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+
+                LKJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
+
+
+                desc = seg.getReferential('TF').static.getNode_byLabel("LKJC").m_desc
+                btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues,desc=str("Chord-"+desc))
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
@@ -3059,55 +3053,53 @@ class CGM1(CGM):
         seg.getReferential("TF").motion =[]
 
         # additional markers
-        # NA
 
-        # computation
-        RKJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
+        if  "useRightKJCmarker" in options.keys() and options["useRightKJCmarker"] is not "RKJC":
+            logging.info("[pyCGM2] - RKJC marker forced to use %s"%(options["useRightKJCmarker"]))
+            RKJCvalues = aqui.GetPoint(options["useRightKJCmarker"]).GetValues()
+            desc = aqui.GetPoint(options["useRightKJCmarker"]).GetDescription()
+            btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues,desc=desc)
+        else:
+            RKJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
 
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            for i in range(0,aqui.GetPointFrameNumber()):
 
-            pt1=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
-
-            v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
-
-            a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Thigh"]["TF"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+                pt1=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][0])).GetValues()[i,:]
+                pt2=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][1])).GetValues()[i,:]
+                pt3=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][2])).GetValues()[i,:]
+                ptOrigin=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][3])).GetValues()[i,:]
 
 
-            RKJCvalues[i,:] = modelDecorator.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
+                a1=(pt2-pt1)
+                a1=np.divide(a1,np.linalg.norm(a1))
+
+                v=(pt3-pt1)
+                v=np.divide(v,np.linalg.norm(v))
+
+                a2=np.cross(a1,v)
+                a2=np.divide(a2,np.linalg.norm(a2))
+
+                x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Thigh"]["TF"]['sequence'])
+
+                csFrame.m_axisX=x
+                csFrame.m_axisY=y
+                csFrame.m_axisZ=z
+                csFrame.setRotation(R)
+                csFrame.setTranslation(ptOrigin)
+
+                seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+
+
+                RKJCvalues[i,:] = modelDecorator.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
+
+            desc = seg.getReferential('TF').static.getNode_byLabel("RKJC").m_desc
+            #RKJCvalues = aqui.GetPoint("RKJC_Chord").GetValues()
+            btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues,desc=str("Chord-"+desc))
 
         #btkTools.smartAppendPoint(aqui,"RKJC_Chord",RKJCvalues,desc="chord")
 
         # --- RKJC
-        if  "useRightKJCmarker" in options.keys():
-            RKJCvalues = aqui.GetPoint(options["useRightKJCmarker"]).GetValues()
-            desc = aqui.GetPoint(options["useRightKJCmarker"]).GetDescription()
-            btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues,desc=desc)
-
-        # final LKJC ( just check if KJC already exist)
-        if not btkTools.isPointExist(aqui,"RKJC"):
-            desc = seg.getReferential('TF').static.getNode_byLabel("RKJC").m_desc
-            #RKJCvalues = aqui.GetPoint("RKJC_Chord").GetValues()
-            btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues,desc=str("Chord-"+desc))
 
 
         # --- motion of the anatomical referential
@@ -3178,72 +3170,62 @@ class CGM1(CGM):
         # additional markers
         # NA
 
-        # computation
-        LAJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
-
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
-
-            v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
-
-            a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Shank"]["TF"]['sequence'])
-
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-
-            LAJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
-
-            # update of the AJC location with rotation around abdAddAxis
-            LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,-self.mp_computed["LeftAnkleAbAddOffset"])
-
 
         # --- LAJC
-        desc_node = seg.getReferential('TF').static.getNode_byLabel("LAJC").m_desc
-        if self.mp_computed["LeftAnkleAbAddOffset"] > 0.01:
-            desc="chord+AbAdRot-"+desc_node
-        else:
-            desc="chord "+desc_node
-
-
-        #btkTools.smartAppendPoint(aqui,"LAJC_Chord",LAJCvalues,desc=desc)
-
-
-        # --- LAJC
-        if  "useLeftAJCmarker" in options.keys():
+        if  "useLeftAJCmarker" in options.keys() and options["useLeftAJCmarker"] is not "LAJC":
+            logging.info("[pyCGM2] - LAJC marker forced to use %s"%(options["useLeftAJCmarker"]))
             LAJCvalues = aqui.GetPoint(options["useLeftAJCmarker"]).GetValues()
             desc = aqui.GetPoint(options["useLeftAJCmarker"]).GetDescription()
             btkTools.smartAppendPoint(aqui,"LAJC",LAJCvalues,desc=desc)
+        else:
 
-        # final LKJC ( just check if KJC already exist)
-        if not btkTools.isPointExist(aqui,"LAJC"):
-            #LAJCvalues = aqui.GetPoint("LAJC_Chord").GetValues()
+            # computation
+            LAJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
+
+
+            csFrame=frame.Frame()
+            for i in range(0,aqui.GetPointFrameNumber()):
+
+                pt1=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][0])).GetValues()[i,:]
+                pt2=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][1])).GetValues()[i,:]
+                pt3=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][2])).GetValues()[i,:]
+                ptOrigin=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][3])).GetValues()[i,:]
+
+
+                a1=(pt2-pt1)
+                a1=np.divide(a1,np.linalg.norm(a1))
+
+                v=(pt3-pt1)
+                v=np.divide(v,np.linalg.norm(v))
+
+                a2=np.cross(a1,v)
+                a2=np.divide(a2,np.linalg.norm(a2))
+
+                x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Shank"]["TF"]['sequence'])
+
+
+                csFrame.m_axisX=x
+                csFrame.m_axisY=y
+                csFrame.m_axisZ=z
+                csFrame.setRotation(R)
+                csFrame.setTranslation(ptOrigin)
+
+                seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+
+
+                LAJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
+
+                # update of the AJC location with rotation around abdAddAxis
+                LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,-self.mp_computed["LeftAnkleAbAddOffset"])
+
+            # --- LAJC
+            desc_node = seg.getReferential('TF').static.getNode_byLabel("LAJC").m_desc
+            if self.mp_computed["LeftAnkleAbAddOffset"] > 0.01:
+                desc="chord+AbAdRot-"+desc_node
+            else:
+                desc="chord "+desc_node
+
             btkTools.smartAppendPoint(aqui,"LAJC",LAJCvalues,desc=desc)
-
-
-
-#        if not "forceAJC" in options.keys() or not options["forceAJC"]:
-#            btkTools.smartAppendPoint(aqui,"LAJC",LAJCvalues, desc=desc)
 
 
         # --- motion of the anatomical referential
@@ -3368,64 +3350,58 @@ class CGM1(CGM):
         # additional markers
         # NA
 
-        # computation
-        RAJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][0])).GetValues()[i,:] #ank
-            pt2=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][1])).GetValues()[i,:] #kjc
-            pt3=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][2])).GetValues()[i,:] #tib
-            ptOrigin=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
-
-            v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
-
-            a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Shank"]["TF"]['sequence'])
-
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-            # ajc position from chord modified by shank offset
-            RAJCvalues[i,:] = modelDecorator.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
-
-            # update of the AJC location with rotation around abdAddAxis
-            RAJCvalues[i,:] = self._rotateAjc(RAJCvalues[i,:],pt2,pt1,   self.mp_computed["RightAnkleAbAddOffset"])
-
-        # --- RAJC
-        desc_node = seg.getReferential('TF').static.getNode_byLabel("RAJC").m_desc
-        if self.mp_computed["RightAnkleAbAddOffset"] >0.01:
-            desc="chord+AbAdRot-"+desc_node
-        else:
-            desc="chord"+desc_node
-
-        #btkTools.smartAppendPoint(aqui,"RAJC_Chord",RAJCvalues,desc=desc)
-
         # --- LAJC
-        if  "useRightAJCmarker" in options.keys():
+        if  "useRightAJCmarker" in options.keys() and options["useRightAJCmarker"] is not "RAJC":
+            logging.info("[pyCGM2] - RAJC marker forced to use %s"%(options["useRightAJCmarker"]))
             RAJCvalues = aqui.GetPoint(options["useRightAJCmarker"]).GetValues()
             desc = aqui.GetPoint(options["useRightAJCmarker"]).GetDescription()
             btkTools.smartAppendPoint(aqui,"RAJC",RAJCvalues,desc=desc)
+        else:
+            RAJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
 
-        # final LKJC ( just check if KJC already exist)
-        if not btkTools.isPointExist(aqui,"RAJC"):
-            #RAJCvalues = aqui.GetPoint("RAJC_Chord").GetValues()
+            csFrame=frame.Frame()
+            for i in range(0,aqui.GetPointFrameNumber()):
+
+                pt1=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][0])).GetValues()[i,:] #ank
+                pt2=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][1])).GetValues()[i,:] #kjc
+                pt3=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][2])).GetValues()[i,:] #tib
+                ptOrigin=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][3])).GetValues()[i,:]
+
+
+                a1=(pt2-pt1)
+                a1=np.divide(a1,np.linalg.norm(a1))
+
+                v=(pt3-pt1)
+                v=np.divide(v,np.linalg.norm(v))
+
+                a2=np.cross(a1,v)
+                a2=np.divide(a2,np.linalg.norm(a2))
+
+                x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Shank"]["TF"]['sequence'])
+
+
+                csFrame.m_axisX=x
+                csFrame.m_axisY=y
+                csFrame.m_axisZ=z
+                csFrame.setRotation(R)
+                csFrame.setTranslation(ptOrigin)
+
+                seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+
+                # ajc position from chord modified by shank offset
+                RAJCvalues[i,:] = modelDecorator.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
+
+                # update of the AJC location with rotation around abdAddAxis
+                RAJCvalues[i,:] = self._rotateAjc(RAJCvalues[i,:],pt2,pt1,   self.mp_computed["RightAnkleAbAddOffset"])
+
+            # --- RAJC
+            desc_node = seg.getReferential('TF').static.getNode_byLabel("RAJC").m_desc
+            if self.mp_computed["RightAnkleAbAddOffset"] >0.01:
+                desc="chord+AbAdRot-"+desc_node
+            else:
+                desc="chord"+desc_node
+
             btkTools.smartAppendPoint(aqui,"RAJC",RAJCvalues,desc=desc)
-
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
@@ -3595,8 +3571,6 @@ class CGM1(CGM):
 
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
 
-
-
             csFrame.update(R,ptOrigin)
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
@@ -3693,6 +3667,7 @@ class CGM1(CGM):
         # additional markers
         # NA
 
+
         # computation
         csFrame=frame.Frame()
         for i in range(0,aquiStatic.GetPointFrameNumber()):
@@ -3701,6 +3676,9 @@ class CGM1(CGM):
 
             pt1=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][0])).GetValues()[i,:] #toe
             pt2=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][1])).GetValues()[i,:] #hee
+
+            if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
+                pt2[2] = pt1[2]+self.mp['LeftSoleDelta']
 
             if dictAnat["Left Foot"]['labels'][2] is not None:
                 pt3=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][2])).GetValues()[i,:]
@@ -3740,6 +3718,10 @@ class CGM1(CGM):
 
             pt1=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][0])).GetValues()[i,:] #toe
             pt2=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][1])).GetValues()[i,:] #hee
+
+            if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
+                pt2[2] = pt1[2]+self.mp['RightSoleDelta']
+
 
             if dictAnat["Right Foot"]['labels'][2] is not None:
                 pt3=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][2])).GetValues()[i,:]
@@ -4391,12 +4373,18 @@ class CGM1(CGM):
         valmBH=(aquiStatic.GetPoint("LBHD").GetValues() + aquiStatic.GetPoint("RBHD").GetValues()) / 2.0
         btkTools.smartAppendPoint(aquiStatic,"midBH",valmBH,desc="")
 
+
+        valmLH=(aquiStatic.GetPoint("LFHD").GetValues() + aquiStatic.GetPoint("LBHD").GetValues()) / 2.0
+        btkTools.smartAppendPoint(aquiStatic,"midLH",valmLH,desc="")
+
+
         valmHC=(valmFH+valmBH) / 2.0
         btkTools.smartAppendPoint(aquiStatic,"HC",valmHC,desc="")
 
         seg.addCalibrationMarkerLabel("midFH")
         seg.addCalibrationMarkerLabel("midBH")
         seg.addCalibrationMarkerLabel("HC")
+        seg.addCalibrationMarkerLabel("midLH")
 
         # --- Construction of the technical referential
         tf=seg.getReferential("TF")
@@ -4433,18 +4421,13 @@ class CGM1(CGM):
         relativeR = np.dot(R.T,straightHead)
         angle_y,angle_x,angle_z = euler.euler_yxz(relativeR)
 
+
         if ("headFlat" in options.keys() and options["headFlat"]):
             logging.debug ("option (headFlat) enable")
             self.mp_computed["HeadOffset"] =  np.rad2deg(angle_y)
         else:
             self.mp_computed["HeadOffset"] =  0
 
-
-
-        # if ("headHorizontal" in options.keys() and options["headHorizontal"]):
-        #     self.mp_computed["HeadOffset"] =  np.rad2deg(y)
-        # else:
-        #     self.mp_computed["HeadOffset"] = 0.0
 
 
         #nodes
@@ -5367,21 +5350,16 @@ class CGM1(CGM):
                 LSJCvalues = aqui.GetPoint(options["useLeftSJCmarker"]).GetValues()
                 desc = aqui.GetPoint(options["useLeftSJCmarker"]).GetDescription()
                 btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=desc)
+            else:
+                desc = seg.getReferential('TF').static.getNode_byLabel("LSJC").m_desc
+                btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=str("Chord-"+desc))
 
             if  "useRightSJCmarker" in options.keys():
                 RSJCvalues = aqui.GetPoint(options["useRightSJCmarker"]).GetValues()
                 desc = aqui.GetPoint(options["useRightSJCmarker"]).GetDescription()
                 btkTools.smartAppendPoint(aqui,"RSJC",RSJCvalues,desc=desc)
-
-            # final LKJC ( just check if KJC already exist)
-            if not btkTools.isPointExist(aqui,"LSJC"):
-                desc = seg.getReferential('TF').static.getNode_byLabel("LSJC").m_desc
-                #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
-                btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=str("Chord-"+desc))
-
-            if not btkTools.isPointExist(aqui,"RSJC"):
+            else:
                 desc = seg.getReferential('TF').static.getNode_byLabel("RSJC").m_desc
-                #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
                 btkTools.smartAppendPoint(aqui,"RSJC",RSJCvalues,desc=str("Chord-"+desc))
 
         # --- motion of the anatomical referential
@@ -5643,16 +5621,21 @@ class CGM1(CGM):
                 LEJCvalues = aqui.GetPoint(options["useLeftEJCmarker"]).GetValues()
                 desc = aqui.GetPoint(options["useLeftEJCmarker"]).GetDescription()
                 btkTools.smartAppendPoint(aqui,"LEJC",LEJCvalues,desc=desc)
+            else:
+                desc = seg.getReferential('TF').static.getNode_byLabel(prefix+"EJC").m_desc
+                #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
+                btkTools.smartAppendPoint(aqui,prefix+"EJC",EJCvalues,desc=str("Chord-"+desc))
+
+
             if  "useRightEJCmarker" in options.keys():
                 REJCvalues = aqui.GetPoint(options["useRightEJCmarker"]).GetValues()
                 desc = aqui.GetPoint(options["useRightEJCmarker"]).GetDescription()
                 btkTools.smartAppendPoint(aqui,"REJC",LEJCvalues,desc=desc)
-
-
-            if not btkTools.isPointExist(aqui,prefix+"EJC"):
+            else:
                 desc = seg.getReferential('TF').static.getNode_byLabel(prefix+"EJC").m_desc
                 #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
                 btkTools.smartAppendPoint(aqui,prefix+"EJC",EJCvalues,desc=str("Chord-"+desc))
+
 
         if frameReconstruction == "Both" or frameReconstruction == "Anatomical":
             # --- motion of the anatomical referential
@@ -5782,13 +5765,16 @@ class CGM1(CGM):
                 LWJCvalues = aqui.GetPoint(options["useLeftWJCmarker"]).GetValues()
                 desc = aqui.GetPoint(options["useLeftWJCmarker"]).GetDescription()
                 btkTools.smartAppendPoint(aqui,"LWJC",LWJCvalues,desc=desc)
+            else:
+                desc = seg.getReferential('TF').static.getNode_byLabel(prefix+"WJC").m_desc
+                #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
+                btkTools.smartAppendPoint(aqui,prefix+"WJC",WJCvalues,desc=str("Chord-"+desc))
 
             if  "useRightWJCmarker" in options.keys():
                 RWJCvalues = aqui.GetPoint(options["useRightWJCmarker"]).GetValues()
                 desc = aqui.GetPoint(options["useRightWJCmarker"]).GetDescription()
                 btkTools.smartAppendPoint(aqui,"RWJC",RWJCvalues,desc=desc)
-
-            if not btkTools.isPointExist(aqui,"WJC"):
+            else:
                 desc = seg.getReferential('TF').static.getNode_byLabel(prefix+"WJC").m_desc
                 #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
                 btkTools.smartAppendPoint(aqui,prefix+"WJC",WJCvalues,desc=str("Chord-"+desc))
@@ -5912,19 +5898,17 @@ class CGM1(CGM):
             LHOvalues = aqui.GetPoint(options["useLeftHOmarker"]).GetValues()
             desc = aqui.GetPoint(options["useLeftHOmarker"]).GetDescription()
             btkTools.smartAppendPoint(aqui,"LHO",LHOvalues,desc=desc)
+        else:
+            desc = seg.getReferential('TF').static.getNode_byLabel(prefix+"HO").m_desc
+            btkTools.smartAppendPoint(aqui,prefix+"HO",HOvalues,desc=str("Chord-"+desc))
 
         if  "useRightHOmarker" in options.keys():
             RHOvalues = aqui.GetPoint(options["useRightHOmarker"]).GetValues()
             desc = aqui.GetPoint(options["useRightHOmarker"]).GetDescription()
             btkTools.smartAppendPoint(aqui,"RHO",RHOvalues,desc=desc)
-
-
-        if not btkTools.isPointExist(aqui,prefix+"HO"):
+        else:
             desc = seg.getReferential('TF').static.getNode_byLabel(prefix+"HO").m_desc
-            #LKJCvalues = aqui.GetPoint("LKJC_Chord").GetValues()
             btkTools.smartAppendPoint(aqui,prefix+"HO",HOvalues,desc=str("Chord-"+desc))
-
-
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
@@ -5982,6 +5966,10 @@ class CGM1(CGM):
 
         valmBH=(aqui.GetPoint("LBHD").GetValues() + aqui.GetPoint("RBHD").GetValues()) / 2.0
         btkTools.smartAppendPoint(aqui,"midBH",valmBH,desc="")
+
+        valmLH=(aqui.GetPoint("LFHD").GetValues() + aqui.GetPoint("LBHD").GetValues()) / 2.0
+        btkTools.smartAppendPoint(aqui,"midLH",valmLH,desc="")
+
 
         valmHC=(valmFH+valmBH) / 2.0
         btkTools.smartAppendPoint(aqui,"HC",valmHC,desc="")
