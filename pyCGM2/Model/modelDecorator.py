@@ -1392,6 +1392,7 @@ class KneeCalibrationDecorator(DecoratorModel):
 
             # marker
             btkTools.smartAppendPoint(acq,"LKJC_MID",LKJCvalues, desc="MID")
+            btkTools.smartAppendPoint(acq,"LAJC_midKnee",LAJCvalues, desc="kad-like")
 
             # add nodes to referential
             tf_dist.static.addNode("LAJC_midKnee",LAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
@@ -1430,6 +1431,7 @@ class KneeCalibrationDecorator(DecoratorModel):
 
             # marker
             btkTools.smartAppendPoint(acq,"RKJC_MID",RKJCvalues, desc="MID")
+            btkTools.smartAppendPoint(acq,"RAJC_midKnee",RAJCvalues, desc="kad-like")
 
             # add nodes to referential
             tf_dist.static.addNode("RAJC_midKnee",RAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
@@ -1507,7 +1509,8 @@ class KneeCalibrationDecorator(DecoratorModel):
             tf_prox.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "mid" )
             tf_dist.static.addNode("RKJC",RKJCvalues.mean(axis=0), positionType="Global", desc = "mid")
 
-
+            # marker
+            btkTools.smartAppendPoint(acq,"RKJC_MID",RKJCvalues, desc="MID")
 
     def sara(self,side,**kwargs):
         """
