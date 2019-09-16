@@ -7,6 +7,7 @@ from pyCGM2 import btk
 
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Signal import detect_peaks
+from pyCGM2.Processing import progressionFrame
 
 
 #-------- EVENT PROCEDURES  ----------
@@ -35,7 +36,14 @@ class ZeniProcedure(object):
         ff=acq.GetFirstFrame()
 
 
-        progressionAxis,forwardProgression,globalFrame = btkTools.findProgression(acq,"LANK")
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
+        pff.compute()
+        progressionAxis = pff.outputs["progressionAxis"]
+        globalFrame = pff.outputs["globalFrame"]
+        forwardProgression = pff.outputs["forwardProgression"]
+
+
         longAxisIndex = 0 if progressionAxis == "X" else 1
 
         sacrum=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
