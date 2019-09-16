@@ -6,7 +6,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 from pyCGM2.Utils import files
 from pyCGM2.Utils.utils import *
 from pyCGM2.qtm import qtmTools
-
+import ipdb
 
 
 class QtmTests():
@@ -28,6 +28,23 @@ class QtmTests():
 
         qtmTools.isType(dynamicMeaurements[0],"Gait")
 
+    @classmethod
+    def sessionLiborReaderTest(cls):
+        DATA_PATH = os.getcwd()+ "\\"
+        file="session_Libor.xml"
+        soup = files.readXml(DATA_PATH,file)
+        ipdb.set_trace()
+
+
+        staticMeasurement = qtmTools.findStatic(soup)
+        dynamicMeaurements= qtmTools.findDynamic(soup)
+        qtmTools.SubjectMp(soup)
+
+        types = qtmTools.detectMeasurementType(soup)
+
+        mfpa = qtmTools.getForcePlateAssigment(dynamicMeaurements[0])
+
+        qtmTools.isType(dynamicMeaurements[0],"Gait")
 
 
 
@@ -35,4 +52,4 @@ class QtmTests():
 
 if __name__ == "__main__":
 
-    QtmTests.sessionReaderTest()
+    QtmTests.sessionLiborReaderTest()
