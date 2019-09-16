@@ -50,6 +50,10 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
         acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqStatic)
+    if btkTools.isPointExist(acqStatic,"SACR"):
+        translators["LPSI"] = "SACR"
+        translators["RPSI"] = "SACR"
+        logging.info("[pyCGM2] Sacrum marker detected")
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
@@ -269,7 +273,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqGait)
-
+    if btkTools.isPointExist(acqGait,"SACR"):
+        translators["LPSI"] = "SACR"
+        translators["RPSI"] = "SACR"
+        logging.info("[pyCGM2] Sacrum marker detected")
+        
     acqGait =  btkTools.applyTranslators(acqGait,translators)
     trackingMarkers = model.getTrackingMarkers()
     validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
