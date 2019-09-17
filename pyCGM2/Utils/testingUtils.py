@@ -2,7 +2,7 @@
 import numpy as np
 import scipy as sp
 
-TODO : Resume functions
+#TODO : Resume functions
 
 
 def pointsComparison(acq,label,suffix):
