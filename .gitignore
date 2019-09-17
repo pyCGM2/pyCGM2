@@ -102,3 +102,4 @@ Obsolete
 !/pyCGM2/opensim3/*.dll
 !/pyCGM2/opensim3/*.lib
 !/pyCGM2/ma/*.dll
+pyCGM2/Settings/config.json
