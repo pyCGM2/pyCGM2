@@ -48,8 +48,6 @@ class QtmTests():
 
 
 
-
-
 if __name__ == "__main__":
 
     QtmTests.sessionLiborReaderTest()
