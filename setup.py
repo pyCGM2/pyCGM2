@@ -20,7 +20,7 @@ if developMode:
 if sys.maxsize > 2**32:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
 
-VERSION ="3.2.10"
+VERSION ="3.2.11"
 
 
 for it in site.getsitepackages():
@@ -196,8 +196,8 @@ setup(name = 'pyCGM2',
                         'pyyaml>=3.13.0',
                         'yamlordereddictloader>=0.4.0',
                         'xlrd >=0.9.0',
-                        'lxml>=4.4.1',
-                        'qtmWebGaitReport>=0.0.1'],
+                        'lxml>=4.4.1'],
+                        # 'qtmWebGaitReport>=0.0.1'],
     classifiers=['Programming Language :: Python',
                  'Programming Language :: Python :: 2.7',
                  'Operating System :: Microsoft :: Windows',
