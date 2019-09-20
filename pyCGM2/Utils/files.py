@@ -9,6 +9,7 @@ import shutil
 import yaml
 import yamlordereddictloader
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 import pyCGM2
 
@@ -397,3 +398,17 @@ def readXml(DATA_PATH,filename):
     soup = BeautifulSoup(contents,'xml')
 
     return soup
+
+
+def getFileCreationDate(file):
+    """
+    str(getFileCreationDate(file).date())
+    str(getFileCreationDate(file))
+    """
+    stat = os.stat(file)
+    try:
+        stamp =  stat.st_birthtime
+    except AttributeError:
+        stamp= stat.st_mtime
+
+    return datetime.fromtimestamp(stamp)
