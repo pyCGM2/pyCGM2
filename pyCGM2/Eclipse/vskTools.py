@@ -74,7 +74,15 @@ def getFromVskSubjectMp(vskInstance, resetFlag=False):
     'LeftAnkleWidth' : float(vskInstance.getStaticParameterValue("LeftAnkleWidth")),
     'RightAnkleWidth' : float(vskInstance.getStaticParameterValue("RightAnkleWidth")),
     'LeftSoleDelta' : float(vskInstance.getStaticParameterValue("LeftSoleDelta")),
-    'RightSoleDelta' : float(vskInstance.getStaticParameterValue("RightSoleDelta"))
+    'RightSoleDelta' : float(vskInstance.getStaticParameterValue("RightSoleDelta")),
+    'LeftShoulderOffset' : float(vskInstance.getStaticParameterValue("LeftShoulderOffset")),
+    'RightShoulderOffset' : float(vskInstance.getStaticParameterValue("RightShoulderOffset")),
+    'LeftElbowWidth' : float(vskInstance.getStaticParameterValue("LeftElbowWidth")),
+    'LeftWristWidth' : float(vskInstance.getStaticParameterValue("LeftWristWidth")),
+    'LeftHandThickness' : float(vskInstance.getStaticParameterValue("LeftHandThickness")),
+    'RightElbowWidth' : float(vskInstance.getStaticParameterValue("RightElbowWidth")),
+    'RightWristWidth' : float(vskInstance.getStaticParameterValue("RightWristWidth")),
+    'RightHandThickness' : float(vskInstance.getStaticParameterValue("RightHandThickness"))
     }
 
     if resetFlag:
