@@ -141,8 +141,12 @@ def openJson(path,filename,stringContent=None):
         return jsonStuct
 
 def saveJson(path, filename, content):
-    with open(str(path+filename), 'w') as outfile:
-        json.dump(content, outfile,indent=4)
+    if path is None:
+        with open(str(filename), 'w') as outfile:
+            json.dump(content, outfile,indent=4)
+    else:
+        with open(str(path+filename), 'w') as outfile:
+            json.dump(content, outfile,indent=4)
 
 
 def prettyDictPrint(parsedContent):
