@@ -9,6 +9,7 @@ from pyCGM2.Utils import files
 from pyCGM2.Configurator import ProcessingManager
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
+from pyCGM2.Processing import exporter
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -69,6 +70,13 @@ def main(args):
 
     plot.plot_MAP(DATA_PATH,analysisInstance,manager.normativeData,exportPdf=True,outputName=manager.title,pointLabelSuffix=manager.pointSuffix)
 
+    exportXlsFilter = exporter.XlsAnalysisExportFilter()
+    exportXlsFilter.setAnalysisInstance(analysisInstance)
+    exportXlsFilter.export(manager.title, path=DATA_PATH,excelFormat = "xls",mode="Advanced")
+
+    exportC3dFilter = exporter.AnalysisC3dExportFilter()
+    exportC3dFilter.setAnalysisInstance(analysisInstance)
+    exportC3dFilter.export(manager.title, path=DATA_PATH)
 
 
 if __name__ == "__main__":
