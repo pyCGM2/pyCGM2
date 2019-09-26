@@ -607,8 +607,7 @@ class CGM1(CGM):
 
             logging.debug(" ------Left-------")
             if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
-                self.mp_computed["LeftThighRotationOffset"]= -self.mp["LeftThighRotation"]
-
+                self.mp_computed["LeftThighRotationOffset"]= self.mp["LeftThighRotation"]
             else:
                 self.getThighOffset(side="left")
 
@@ -671,7 +670,7 @@ class CGM1(CGM):
 
             # shakRotation
             if self.mp.has_key("LeftShankRotation") and self.mp["LeftShankRotation"] != 0:
-                self.mp_computed["LeftShankRotationOffset"]= -self.mp["LeftShankRotation"]
+                self.mp_computed["LeftShankRotationOffset"]= self.mp["LeftShankRotation"]
             else:
                 self.getShankOffsets(side="left")
 
@@ -681,12 +680,12 @@ class CGM1(CGM):
                 self.getShankOffsets(side="right")
 
             # tibial Torsion
-            if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0: #   - check if TibialTorsion whithin main mp
-                self.mp_computed["LeftTibialTorsionOffset"]= -self.mp["LeftTibialTorsion"]
+            if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0:
+                self.mp_computed["LeftTibialTorsionOffset"]= self.mp["LeftTibialTorsion"]
                 self.m_useLeftTibialTorsion=True
 
             else:
-                if self.m_useLeftTibialTorsion: # if useTibialTorsion flag enable from a decorator
+                if self.m_useLeftTibialTorsion: 
                     self.getTibialTorsionOffset(side="left")
                 else:
                     self.mp_computed["LeftTibialTorsionOffset"]= 0
@@ -1007,11 +1006,11 @@ class CGM1(CGM):
         # --- knee Joint centers location from chord method
         if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
             logging.debug("LeftThighRotation defined from your vsk file")
-            self.mp_computed["LeftThighRotationOffset"] = self.mp["LeftThighRotation"]* -1.0
+            self.mp_computed["LeftThighRotationOffset"] = self.mp["LeftThighRotation"]
         else:
             self.mp_computed["LeftThighRotationOffset"] = 0.0
 
-        LKJC = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
+        LKJC = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
 
         if tf.static.isNodeExist("LKJC"):
             nodeLKJC = tf.static.getNode_byLabel("LKJC")
@@ -1196,11 +1195,11 @@ class CGM1(CGM):
         # --- ankle Joint centers location
         if self.mp.has_key("LeftShankRotation") and self.mp["LeftShankRotation"] != 0:
             logging.debug("LeftShankRotation defined from your vsk file")
-            self.mp_computed["LeftShankRotationOffset"] = self.mp["LeftShankRotation"]*-1.0
+            self.mp_computed["LeftShankRotationOffset"] = self.mp["LeftShankRotation"]
         else:
             self.mp_computed["LeftShankRotationOffset"]=0.0
 
-        LAJC = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
+        LAJC = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftShankRotationOffset"] )
 
         # --- node manager
         if tf.static.isNodeExist("LAJC"):
@@ -1758,7 +1757,7 @@ class CGM1(CGM):
         """
 
         if self.m_useLeftTibialTorsion:
-            tibialTorsion = np.deg2rad(self.mp_computed["LeftTibialTorsionOffset"])
+            tibialTorsion = -1.0*np.deg2rad(self.mp_computed["LeftTibialTorsionOffset"])
         else:
             tibialTorsion = 0.0
 
@@ -2175,53 +2174,20 @@ class CGM1(CGM):
 
         if side == "both" or side=="left":
 
-            # Left --------
-            kneeFlexionAxis=    np.dot(self.getSegment("Left Thigh").anatomicalFrame.static.getRotation().T,
-                                           self.getSegment("Left Thigh").anatomicalFrame.static.m_axisY)
-
-
-            proj_kneeFlexionAxis = np.array([ kneeFlexionAxis[0],
-                                   kneeFlexionAxis[1],
-                                     0])
-            v_kneeFlexionAxis = proj_kneeFlexionAxis/np.linalg.norm(proj_kneeFlexionAxis)
-
-
-            thiLocal = self.getSegment("Left Thigh").anatomicalFrame.static.getNode_byLabel("LTHI").m_local
-            proj_thi = np.array([ thiLocal[0],
-                                   thiLocal[1],
-                                     0])
-            v_thi = proj_thi/np.linalg.norm(proj_thi)
-
-            angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis, v_thi, self.getSegment("Left Thigh").anatomicalFrame.static.m_axisZ))
-
-            self.mp_computed["LeftThighRotationOffset"]= -angle # angle needed : Thi toward knee flexion
-            logging.debug(" left Thigh Offset => %s " % str(self.mp_computed["LeftThighRotationOffset"]))
-
+            thi = self.getSegment("Left Thigh").anatomicalFrame.static.getNode_byLabel("LTHI").m_global - self.getSegment("Left Thigh").anatomicalFrame.static.getNode_byLabel("LKJC").m_global
+            angle = np.rad2deg(np.arctan2( -1.0*np.dot(thi, self.getSegment("Left Thigh").anatomicalFrame.static.m_axisX),
+                                    np.dot(thi, self.getSegment("Left Thigh").anatomicalFrame.static.m_axisY)))
+            self.mp_computed["LeftThighRotationOffset"]= angle # angle needed : Thi toward knee flexion
 
         if side == "both" or side=="right":
 
+            thi = self.getSegment("Right Thigh").anatomicalFrame.static.getNode_byLabel("RTHI").m_global - \
+                  self.getSegment("Right Thigh").anatomicalFrame.static.getNode_byLabel("RKJC").m_global
 
-            kneeFlexionAxis=    np.dot(self.getSegment("Right Thigh").anatomicalFrame.static.getRotation().T,
-                                           self.getSegment("Right Thigh").anatomicalFrame.static.m_axisY)
+            angle = np.rad2deg(np.arctan2( -1.0*np.dot(thi, self.getSegment("Right Thigh").anatomicalFrame.static.m_axisX),
+                                    -1.0*np.dot(thi, self.getSegment("Right Thigh").anatomicalFrame.static.m_axisY)))
 
-
-            proj_kneeFlexionAxis = np.array([ kneeFlexionAxis[0],
-                                   kneeFlexionAxis[1],
-                                     0])
-            v_kneeFlexionAxis = proj_kneeFlexionAxis/np.linalg.norm(proj_kneeFlexionAxis)
-
-
-            thiLocal = self.getSegment("Right Thigh").anatomicalFrame.static.getNode_byLabel("RTHI").m_local
-            proj_thi = np.array([ thiLocal[0],
-                                   thiLocal[1],
-                                     0])
-            v_thi = proj_thi/np.linalg.norm(proj_thi)
-
-            v_kneeFlexionAxis_opp = geometry.oppositeVector(v_kneeFlexionAxis)
-
-            angle=np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis_opp, v_thi,self.getSegment("Right Thigh").anatomicalFrame.static.m_axisZ))
-
-            self.mp_computed["RightThighRotationOffset"]=-angle # angle needed : Thi toward knee flexion
+            self.mp_computed["RightThighRotationOffset"] = angle # angle needed : Thi toward knee flexion
             logging.debug(" right Thigh Offset => %s " % str(self.mp_computed["RightThighRotationOffset"]))
 
 
@@ -2239,74 +2205,22 @@ class CGM1(CGM):
 
         if side == "both" or side == "left" :
 
-            ankleFlexionAxis=    np.dot(self.getSegment("Left Shank").anatomicalFrame.static.getRotation().T,
-                                       self.getSegment("Left Shank").anatomicalFrame.static.m_axisY)
-
-
-            proj_ankleFlexionAxis = np.array([ ankleFlexionAxis[0],
-                               ankleFlexionAxis[1],
-                                 0])
-
-            v_ankleFlexionAxis = proj_ankleFlexionAxis/np.linalg.norm(proj_ankleFlexionAxis)
-
-            #"****** left angle beetween tib and flexion axis **********"
-            tibLocal = self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LTIB").m_local
-            proj_tib = np.array([ tibLocal[0],
-                               tibLocal[1],
-                                 0])
-            v_tib = proj_tib/np.linalg.norm(proj_tib)
-
-            angle=np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_tib,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
-            self.mp_computed["LeftShankRotationOffset"]= -angle
-            logging.debug(" left shank offset => %s " % str(self.mp_computed["LeftShankRotationOffset"]))
-
-
-            #"****** left angle beetween ank and flexion axis (not used by native pig)**********"
-            ANK =  self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LANK").m_local
-            v_ank = ANK/np.linalg.norm(ANK)
-            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_ank,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
-
-            self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"] = angle
-            #logging.debug(" left projection offset => %s " % str(self.mp_computed["leftProjectionAngle_AnkleFlexion_LateralAnkle"]))
-
+            tib = self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LTIB").m_global - \
+                  self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LAJC").m_global
+            angle = np.rad2deg(np.arctan2( -1.0*np.dot(tib, self.getSegment("Left Shank").anatomicalFrame.static.m_axisX),
+                                    np.dot(tib, self.getSegment("Left Shank").anatomicalFrame.static.m_axisY)))
+            self.mp_computed["LeftShankRotationOffset"]= angle
 
 
         if side == "both" or side == "right" :
 
-            ankleFlexionAxis=    np.dot(self.getSegment("Right Shank").anatomicalFrame.static.getRotation().T,
-                                       self.getSegment("Right Shank").anatomicalFrame.static.m_axisY)
+            tib = self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RTIB").m_global - \
+                  self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RAJC").m_global
 
+            angle = np.rad2deg(np.arctan2( -1.0*np.dot(tib, self.getSegment("Right Shank").anatomicalFrame.static.m_axisX),
+                                    -1.0*np.dot(tib, self.getSegment("Right Shank").anatomicalFrame.static.m_axisY)))
 
-            proj_ankleFlexionAxis = np.array([ ankleFlexionAxis[0],
-                               ankleFlexionAxis[1],
-                                 0])
-
-            v_ankleFlexionAxis = proj_ankleFlexionAxis/np.linalg.norm(proj_ankleFlexionAxis)
-
-            #"****** right angle beetween tib and flexion axis **********"
-            tibLocal = self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RTIB").m_local
-            proj_tib = np.array([ tibLocal[0],
-                               tibLocal[1],
-                                 0])
-
-            v_tib = proj_tib/np.linalg.norm(proj_tib)
-            v_ankleFlexionAxis_opp = geometry.oppositeVector(v_ankleFlexionAxis)
-
-
-            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_tib,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
-            self.mp_computed["RightShankRotationOffset"]= -angle
-            logging.debug(" right shank offset => %s " % str(self.mp_computed["RightShankRotationOffset"]))
-
-
-
-            #"****** right angle beetween ank and flexion axis ( Not used by Native Pig)**********"
-            ANK =  self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RANK").m_local
-            v_ank = ANK/np.linalg.norm(ANK)
-
-            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_ank,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
-
-            self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"] = angle
-            #logging.debug(" right projection offset => %s " % str(self.mp_computed["rightProjectionAngle_AnkleFlexion_LateralAnkle"]))
+            self.mp_computed["RightShankRotationOffset"]= angle
 
 
     def getTibialTorsionOffset(self, side = "both"):
@@ -2319,57 +2233,32 @@ class CGM1(CGM):
 
         if side == "both" or side == "left" :
 
-            #"****** right angle beetween anatomical axis **********"
-            kneeFlexionAxis=    np.dot(self.getSegment("Left Shank").anatomicalFrame.static.getRotation().T,
-                                       self.getSegment("Left Thigh").anatomicalFrame.static.m_axisY)
+            kneeFlexionAxis=    self.getSegment("Left Thigh").anatomicalFrame.static.m_axisY
+
+            ankleFlexionAxis=    self.getSegment("Left Shank").anatomicalFrame.static.m_axisY
 
 
-            proj_kneeFlexionAxis = np.array([ kneeFlexionAxis[0],
-                               kneeFlexionAxis[1],
-                                 0])
+            angle = np.rad2deg(np.arctan2( np.dot(kneeFlexionAxis, self.getSegment("Left Shank").anatomicalFrame.static.m_axisY),
+                                            np.dot(kneeFlexionAxis, self.getSegment("Left Shank").anatomicalFrame.static.m_axisX))- \
+                                np.arctan2( np.dot(ankleFlexionAxis, self.getSegment("Left Shank").anatomicalFrame.static.m_axisY),
+                                            np.dot(ankleFlexionAxis, self.getSegment("Left Shank").anatomicalFrame.static.m_axisX)))
 
-            v_kneeFlexionAxis= proj_kneeFlexionAxis/np.linalg.norm(proj_kneeFlexionAxis)
-
-            ankleFlexionAxis=    np.dot(self.getSegment("Left Shank").anatomicalFrame.static.getRotation().T,
-                                       self.getSegment("Left Shank").anatomicalFrame.static.m_axisY)
-
-
-            proj_ankleFlexionAxis = np.array([ ankleFlexionAxis[0],
-                               ankleFlexionAxis[1],
-                                 0])
-
-            v_ankleFlexionAxis = proj_ankleFlexionAxis/np.linalg.norm(proj_ankleFlexionAxis)
-
-            angle= np.rad2deg( geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ))
             self.mp_computed["LeftTibialTorsionOffset"] = angle
-            logging.debug(" left tibial torsion => %s " % str(self.mp_computed["LeftTibialTorsionOffset"]))
 
 
         if side == "both" or side == "right" :
 
-            #"****** right angle beetween anatomical axis **********"
-            kneeFlexionAxis=    np.dot(self.getSegment("Right Shank").anatomicalFrame.static.getRotation().T,
-                                       self.getSegment("Right Thigh").anatomicalFrame.static.m_axisY)
+
+            kneeFlexionAxis=    self.getSegment("Right Thigh").anatomicalFrame.static.m_axisY
+
+            ankleFlexionAxis=    self.getSegment("Right Shank").anatomicalFrame.static.m_axisY
 
 
-            proj_kneeFlexionAxis = np.array([ kneeFlexionAxis[0],
-                               kneeFlexionAxis[1],
-                                 0])
+            angle = np.rad2deg(-1.0*np.arctan2( np.dot(kneeFlexionAxis, self.getSegment("Right Shank").anatomicalFrame.static.m_axisY),
+                                            np.dot(kneeFlexionAxis, self.getSegment("Right Shank").anatomicalFrame.static.m_axisX))+ \
+                                np.arctan2( np.dot(ankleFlexionAxis, self.getSegment("Right Shank").anatomicalFrame.static.m_axisY),
+                                            np.dot(ankleFlexionAxis, self.getSegment("Right Shank").anatomicalFrame.static.m_axisX)))
 
-            v_kneeFlexionAxis= proj_kneeFlexionAxis/np.linalg.norm(proj_kneeFlexionAxis)
-
-            ankleFlexionAxis=    np.dot(self.getSegment("Right Shank").anatomicalFrame.static.getRotation().T,
-                                       self.getSegment("Right Shank").anatomicalFrame.static.m_axisY)
-
-
-            proj_ankleFlexionAxis = np.array([ ankleFlexionAxis[0],
-                               ankleFlexionAxis[1],
-                                 0])
-
-            v_ankleFlexionAxis = proj_ankleFlexionAxis/np.linalg.norm(proj_ankleFlexionAxis)
-
-
-            angle= np.rad2deg(geometry.angleFrom2Vectors(v_kneeFlexionAxis,v_ankleFlexionAxis,self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ))
             self.mp_computed["RightTibialTorsionOffset"] = angle
             logging.debug(" Right tibial torsion => %s " % str(self.mp_computed["RightTibialTorsionOffset"]))
 
@@ -2382,37 +2271,29 @@ class CGM1(CGM):
         """
         if side == "both" or side == "left" :
 
-            ankleFlexionAxis=    np.dot(self.getSegment("Left Shank").anatomicalFrame.static.getRotation().T,
-                                       self.getSegment("Left Shank").anatomicalFrame.static.m_axisY)
+            AnkleAxis = self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LANK").m_global - \
+                  self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LAJC").m_global
 
+            angle = np.rad2deg(np.arctan2( -1.0*np.dot(self.getSegment("Left Shank").anatomicalFrame.static.m_axisZ,  AnkleAxis ),
+                                                np.dot(self.getSegment("Left Shank").anatomicalFrame.static.m_axisY,  AnkleAxis )))
 
-
-            v_ankleFlexionAxis = ankleFlexionAxis/np.linalg.norm(ankleFlexionAxis)
-
-            ANK =  self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LANK").m_local - \
-                   self.getSegment("Left Shank").anatomicalFrame.static.getNode_byLabel("LAJC").m_local
-            v_ank = ANK/np.linalg.norm(ANK)
-
-            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis,v_ank,self.getSegment("Left Shank").anatomicalFrame.static.m_axisX))
             self.mp_computed["LeftAnkleAbAddOffset"] = angle
+
             logging.debug(" LeftAnkleAbAddOffset => %s " % str(self.mp_computed["LeftAnkleAbAddOffset"]))
 
-
         if side == "both" or side == "right" :
-            ankleFlexionAxis=    np.dot(self.getSegment("Right Shank").anatomicalFrame.static.getRotation().T,
-                                       self.getSegment("Right Shank").anatomicalFrame.static.m_axisY)
 
+            AnkleAxis = self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RANK").m_global - \
+                  self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RAJC").m_global
 
-            v_ankleFlexionAxis = ankleFlexionAxis/np.linalg.norm(ankleFlexionAxis)
+            angle = np.rad2deg(np.arctan2( -1.0*np.dot(self.getSegment("Right Shank").anatomicalFrame.static.m_axisZ,  AnkleAxis ),
+                                    -1.0*np.dot(self.getSegment("Right Shank").anatomicalFrame.static.m_axisY,  AnkleAxis )))
 
-            v_ankleFlexionAxis_opp = geometry.oppositeVector(v_ankleFlexionAxis)
-            ANK =  self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RANK").m_local - \
-                   self.getSegment("Right Shank").anatomicalFrame.static.getNode_byLabel("RAJC").m_local
-            v_ank = ANK/np.linalg.norm(ANK)
-
-            angle = np.rad2deg(geometry.angleFrom2Vectors(v_ankleFlexionAxis_opp,v_ank,self.getSegment("Right Shank").anatomicalFrame.static.m_axisX))
             self.mp_computed["RightAnkleAbAddOffset"] = angle
+
             logging.debug(" RightAnkleAbAddOffset => %s " % str(self.mp_computed["RightAnkleAbAddOffset"]))
+
+
 
 
     def getFootOffset(self, side = "both"):
@@ -2431,10 +2312,10 @@ class CGM1(CGM):
             R = self.getSegment("Left Foot").getReferential("TF").relativeMatrixAnatomic
             y,x,z = euler.euler_yxz(R)
 
-            self.mp_computed["LeftStaticPlantFlexOffset"] = np.rad2deg(y)
+            self.mp_computed["LeftStaticPlantFlexOffset"] = -1.0*np.rad2deg(y)
             logging.debug(" LeftStaticPlantFlexOffset => %s " % str(self.mp_computed["LeftStaticPlantFlexOffset"]))
 
-            self.mp_computed["LeftStaticRotOffset"] = np.rad2deg(x)
+            self.mp_computed["LeftStaticRotOffset"] = -1.0*np.rad2deg(x)
             logging.debug(" LeftStaticRotOffset => %s " % str(self.mp_computed["LeftStaticRotOffset"]))
 
 
@@ -2442,128 +2323,11 @@ class CGM1(CGM):
             R = self.getSegment("Right Foot").getReferential("TF").relativeMatrixAnatomic
             y,x,z = euler.euler_yxz(R)
 
-            self.mp_computed["RightStaticPlantFlexOffset"] = np.rad2deg(y)
+            self.mp_computed["RightStaticPlantFlexOffset"] = -1.0*np.rad2deg(y)
             logging.debug(" RightStaticPlantFlexOffset => %s " % str(self.mp_computed["RightStaticPlantFlexOffset"]))
 
             self.mp_computed["RightStaticRotOffset"] = np.rad2deg(x)
             logging.debug(" RightStaticRotOffset => %s " % str(self.mp_computed["RightStaticRotOffset"]))
-
-
-
-    def getViconFootOffset(self, side):
-        """
-            Get vicon compatible foot offsets :
-
-            :Parameters:
-               - `side` (str) - body side  (left, right)
-
-            .. note:  standard vicon CGM consider positive = dorsiflexion  and  abduction
-
-        """
-        if side  == "Left":
-            spf = self.mp_computed["LeftStaticPlantFlexOffset"] * -1.0
-            logging.debug(" Left staticPlantarFlexion offset (Vicon compatible)  => %s " % str(spf))
-
-
-            sro = self.mp_computed["LeftStaticRotOffset"] * -1.0
-            logging.debug("Left staticRotation offset (Vicon compatible)  => %s " % str(sro))
-
-        if side  == "Right":
-            spf = self.mp_computed["RightStaticPlantFlexOffset"] * -1.0
-            logging.debug("Right staticRotation offset (Vicon compatible)  => %s " % str(spf))
-
-            sro = self.mp_computed["RightStaticRotOffset"]
-            logging.debug("Right staticRotation offset (Vicon compatible)  => %s " % str(sro))
-
-        return spf,sro
-
-
-    def getViconAnkleAbAddOffset(self, side):
-        """
-            Get vicon compatible foot offsets :
-
-            :Parameters:
-               - `side` (str) - body side  (left, right)
-
-            .. note:  standard vicon CGM consider positive = dorsiflexion  and  abduction
-
-        """
-        if side  == "Left":
-            abdAdd = self.mp_computed["LeftAnkleAbAddOffset"] * -1.0
-            logging.debug(" Left AnkleAbAddOffset offset (Vicon compatible)  => %s " % str(abdAdd))
-
-
-        if side  == "Right":
-            abdAdd = self.mp_computed["RightAnkleAbAddOffset"]
-            logging.debug(" Right AnkleAbAddOffset offset (Vicon compatible)  => %s " % str(abdAdd))
-
-        return abdAdd
-
-
-    def getViconThighOffset(self, side):
-        """
-            Get vicon compatible thigh offset
-
-            :Parameters:
-               - `side` (str) - body side  (both, left, right)
-
-            .. note:  standard vicon CGM consider positive = internal rotation
-
-        """
-
-
-        if side  == "Left":
-            val = self.mp_computed["LeftThighRotationOffset"] * -1.0
-            logging.debug(" Left thigh offset (Vicon compatible)  => %s " % str(val))
-            return val
-
-        if side  == "Right":
-            val = self.mp_computed["RightThighRotationOffset"]
-            logging.debug(" Right thigh offset (Vicon compatible)  => %s " % str(val))
-            return val
-
-
-    def getViconShankOffset(self, side):
-        """
-            Get vicon compatible shank offset
-
-            :Parameters:
-               - `side` (str) - body side  (both, left, right)
-
-            .. note:  standard vicon CGM consider positive = internal rotation
-
-        """
-
-        if side  == "Left":
-            val = self.mp_computed["LeftShankRotationOffset"] * -1.0
-            logging.debug(" Left shank offset (Vicon compatible)  => %s " % str(val))
-            return val
-
-        if side  == "Right":
-            val = self.mp_computed["RightShankRotationOffset"]
-            logging.debug(" Right shank offset (Vicon compatible)  => %s " % str(val))
-            return val
-
-    def getViconTibialTorsion(self, side):
-        """
-            Get vicon compatible tibial tosion offset
-
-            :Parameters:
-               - `side` (str) - body side  (both, left, right)
-
-            .. note:  standard vicon CGM consider positive = internal rotation
-
-        """
-
-        if side  == "Left":
-            val = self.mp_computed["LeftTibialTorsionOffset"] * -1.0
-            logging.debug(" Left tibial torsion (Vicon compatible)  => %s " % str(val))
-            return val
-
-        if side  == "Right":
-            val = self.mp_computed["RightTibialTorsionOffset"]
-            logging.debug(" Right tibial torsion  (Vicon compatible)  => %s " % str(val))
-            return val
 
     # ----- Motion --------------
     def computeOptimizedSegmentMotion(self,aqui,segments, dictRef,dictAnat,motionMethod,options ):
@@ -2976,7 +2740,7 @@ class CGM1(CGM):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
-            LKJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftThighRotationOffset"] )
+            LKJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
 
         if  "useLeftKJCmarker" in options.keys() and options["useLeftKJCmarker"] is not "LKJC":
             logging.info("[pyCGM2] - LKJC marker forced to use %s"%(options["useLeftKJCmarker"]))
@@ -3206,10 +2970,10 @@ class CGM1(CGM):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
 
-            LAJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["LeftShankRotationOffset"] )
+            LAJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftShankRotationOffset"] )
 
             # update of the AJC location with rotation around abdAddAxis
-            LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,-self.mp_computed["LeftAnkleAbAddOffset"])
+            LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,self.mp_computed["LeftAnkleAbAddOffset"])
 
         if  "useLeftAJCmarker" in options.keys() and options["useLeftAJCmarker"] is not "LAJC":
             logging.info("[pyCGM2] - LAJC marker forced to use %s"%(options["useLeftAJCmarker"]))
@@ -3281,7 +3045,7 @@ class CGM1(CGM):
         # --- managment of tibial torsion
 
         if self.m_useLeftTibialTorsion:
-            tibialTorsion = np.deg2rad(self.mp_computed["LeftTibialTorsionOffset"])
+            tibialTorsion = -1.0*np.deg2rad(self.mp_computed["LeftTibialTorsionOffset"])
         else:
             tibialTorsion = 0.0
 
