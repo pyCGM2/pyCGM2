@@ -21,15 +21,17 @@ def applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1onl
 
     # KAD - and Kadmed
     if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD:
-        logging.warning("CASE FOUND ===> Left Side = KAD")
+        logging.warning("CASE FOUND ===> Left Side = Knee-KAD")
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
         if  dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
+            logging.warning("CASE FOUND ===> Left Side = Ankle-Med")
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
 
     if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD:
-        logging.warning("CASE FOUND ===> Right Side = KAD")
+        logging.warning("CASE FOUND ===> Right Side = Knee-KAD")
         modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
         if  dcm["Right Ankle"] == enums.JointCalibrationMethod.Medial:
+            logging.warning("CASE FOUND ===> Right Side = Ankle-Med")
             modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
 
     if not cgm1only:
