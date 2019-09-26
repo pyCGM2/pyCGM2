@@ -85,30 +85,31 @@ def getFromVskSubjectMp(vskInstance, resetFlag=False):
     'RightHandThickness' : float(vskInstance.getStaticParameterValue("RightHandThickness"))
     }
 
+    optional_mp={
+    'InterAsisDistance'   : float(vskInstance.getStaticParameterValue("InterAsisDistance")),#0,
+    'LeftAsisTrocanterDistance' : float(vskInstance.getStaticParameterValue("LeftAsisTrocanterDistance")),#0,
+    'RightAsisTrocanterDistance' : float(vskInstance.getStaticParameterValue("RightAsisTrocanterDistance"))
+    }
+
+
     if resetFlag:
 
-        optional_mp={
-        'InterAsisDistance'   : 0,
-        'LeftAsisTrocanterDistance' : 0,
+        optional_mp.update({
         'LeftTibialTorsion' : 0 ,
         'LeftThighRotation' : 0,
         'LeftShankRotation' : 0,
-        'RightAsisTrocanterDistance' : 0,
         'RightTibialTorsion' :0 ,
         'RightThighRotation' : 0,
         'RightShankRotation' : 0
-        }
+        })
     else:
-        optional_mp={
-        'InterAsisDistance'   : float(vskInstance.getStaticParameterValue("InterAsisDistance")),#0,
-        'LeftAsisTrocanterDistance' : float(vskInstance.getStaticParameterValue("LeftAsisTrocanterDistance")),#0,
+        optional_mp.update({
         'LeftTibialTorsion' : float(vskInstance.getStaticParameterValue("LeftTibialTorsion")),#0 ,
         'LeftThighRotation' : float(vskInstance.getStaticParameterValue("LeftThighRotation")),#0,
         'LeftShankRotation' : float(vskInstance.getStaticParameterValue("LeftShankRotation")),#0,
-        'RightAsisTrocanterDistance' : float(vskInstance.getStaticParameterValue("RightAsisTrocanterDistance")),#0,
         'RightTibialTorsion' : float(vskInstance.getStaticParameterValue("RightTibialTorsion")),#0 ,
         'RightThighRotation' : float(vskInstance.getStaticParameterValue("RightThighRotation")),#0,
         'RightShankRotation' : float(vskInstance.getStaticParameterValue("RightShankRotation")),#0,
-        }
+        })
 
     return required_mp,optional_mp
