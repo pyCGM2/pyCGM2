@@ -8,7 +8,7 @@ Created on Mon Oct 10 11:47:01 2016
 import numpy as np
 
 
-def angleFrom2Vectors(v1,v2, vn):
+def angleFrom2Vectors(v1,v2, vn = None):
     """
         Return a signed angle between 2 vectors
 
@@ -28,8 +28,9 @@ def angleFrom2Vectors(v1,v2, vn):
     cross = np.cross(v1, v2)
     angle= np.arctan2(np.linalg.norm(np.cross(v1, v2)), np.dot(v2, v1))
 
-    if (np.dot(vn, cross) < 0):
-        angle = -angle;
+    # if vn is not None:
+    #     if (np.dot(vn, cross) < 0):
+    #         angle = -angle;
 
     return angle
 
