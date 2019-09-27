@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #import ipdb
+import logging
 import pyCGM2
 from pyCGM2.Processing import c3dManager, cycle, analysis
 from pyCGM2.Model.CGM2 import  cgm
@@ -9,7 +10,7 @@ from pyCGM2 import enums
 from pyCGM2.Processing import exporter
 from pyCGM2.Processing import jointPatterns
 
-from pyCGM2.Tools import trialTools
+from pyCGM2.Tools import trialTools,btkTools
 from pyCGM2 import ma
 
 
@@ -187,6 +188,14 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],
 
     for gaitTrial in gaitTrials:
         acq = btkTools.smartReader(DATA_PATH +gaitTrial)
+
+        flag = False
+        for channel in emgChannels:
+            if not btkTools.isAnalogExist(acq,channel):
+                logging.info( "channel [%s] not detected in the c3d [%s]"%(channel,gaitTrial))
+                flag = True
+        if flag:
+            raise Exception ("[pyCGM2] One label has not been detected as analog. see above")
 
         bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
         bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])

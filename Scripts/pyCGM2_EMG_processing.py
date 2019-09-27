@@ -43,7 +43,6 @@ def main(args):
 
     # reconfiguration of emg settings as lists
     EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES  =  manager.getEmgConfiguration()
-    
 
     #----- rectified view -------
     rectTrials = manager.temporal_trials
