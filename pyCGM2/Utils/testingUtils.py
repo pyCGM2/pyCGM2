@@ -2,7 +2,7 @@
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
-
+from pyCGM2.Math import numeric
 
 
 
@@ -14,6 +14,10 @@ def test_offset(value,acq,viconLabel, decimal=3):
 def test_point(acq,RefLabel,LabelToTest,decimal = 3):
     np.testing.assert_almost_equal(acq.GetPoint(RefLabel).GetValues(),acq.GetPoint(LabelToTest).GetValues(),decimal = decimal)
 
+
+def test_point_rms(acq,RefLabel,LabelToTest,threshold):
+    np.testing.assert_array_less(numeric.rms((acq.GetPoint(RefLabel).GetValues()-acq.GetPoint(LabelToTest).GetValues()[init:end,:]), axis = 0),
+                                 threshold)
 
 def plotComparisonofPoint(acq,label,suffix):
 
