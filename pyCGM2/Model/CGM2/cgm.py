@@ -191,9 +191,9 @@ class CGM1(CGM):
                 raise Exception ("[pyCGM2] You must indicate a static acquisition or a bodyPart ")
 
             if detectedCalibrationMethods["Left Knee"] == enums.JointCalibrationMethod.KAD:
-                self._lowerLimbTrackingMarkers().remove("LKNE")
+                if "LKNE" in self._lowerLimbTrackingMarkers(): self._lowerLimbTrackingMarkers().remove("LKNE")
             if detectedCalibrationMethods["Right Knee"] == enums.JointCalibrationMethod.KAD:
-                self._lowerLimbTrackingMarkers().remove("RKNE")
+                if "RKNE" in self._lowerLimbTrackingMarkers(): self._lowerLimbTrackingMarkers().remove("RKNE")
 
             if btkTools.isPointsExist(acq,self._lowerLimbTrackingMarkers()):
                 bodyPart = enums.BodyPart.LowerLimb
@@ -685,7 +685,7 @@ class CGM1(CGM):
                 self.m_useLeftTibialTorsion=True
 
             else:
-                if self.m_useLeftTibialTorsion: 
+                if self.m_useLeftTibialTorsion:
                     self.getTibialTorsionOffset(side="left")
                 else:
                     self.mp_computed["LeftTibialTorsionOffset"]= 0
