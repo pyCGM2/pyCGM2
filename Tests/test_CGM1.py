@@ -571,7 +571,6 @@ class TestLowerBody():
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        # testingUtils.plotComparisonOfPoint(acqGait,"RHipAngles","test")
         testingUtils.test_point(acqGait,"LHipAngles","LHipAngles_test",decimal = 3)
         testingUtils.test_point(acqGait,"LKneeAngles","LKneeAngles_test",decimal = 2)
         testingUtils.test_point(acqGait,"LAnkleAngles","LAnkleAngles_test",decimal = 2)
