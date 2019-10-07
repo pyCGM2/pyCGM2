@@ -69,7 +69,7 @@ class XlsJointPatternProcedure(object):
 
     def __init__(self,xlsFiles,pointSuffix=None):
 
-        self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
+        self.pointSuffix = ("_"+pointSuffix)  if pointSuffix is not None else ""
         self.m_xls = pd.ExcelFile(xlsFiles)
         self.data = None
         self.patterns = None

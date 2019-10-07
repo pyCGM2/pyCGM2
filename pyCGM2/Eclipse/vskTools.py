@@ -6,16 +6,17 @@ from pyCGM2.Utils import files
 
 
 def getVskFiles(path):
+
     path = path[:-1] if path[-1:]=="\\" else path
     vskFile = files.getFiles(path+"\\",".vsk")
     if len(vskFile)>1:
         logging.warning("Folder with several vsk. %s selected"%(vskFile[0]))
 
-    return vskFile[0]
+    return vskFile[0].encode("latin-1")
 
 
 def checkSetReadOnly(vskfilename):
-    file0 = open(vskfilename,'r')
+    file0 = open(vskfilename.decode("utf-8"),'r')
     content = file0.read()
 
     flag=True  if content.find('READONLY="true"') !=-1 else False
@@ -27,7 +28,7 @@ def checkSetReadOnly(vskfilename):
         logging.warning("read Only found")
         content2 = string.replace(content, 'READONLY="true"', 'READONLY="false"')
 
-        with open(vskfilename, "w") as text_file:
+        with open(vskfilename.decode("utf-8"), "w") as text_file:
             text_file.write(content2)
 
 
@@ -39,9 +40,9 @@ class Vsk(object):
 
     def __init__(self,file):
 
-        self.m_file=file
+        self.m_file=file.decode("utf-8")
 
-        infile = open(file,"r")
+        infile = open(file.decode("utf-8"),"r")
         contents = infile.read()
         soup = BeautifulSoup(contents,'xml')
 
@@ -55,7 +56,7 @@ class Vsk(object):
         for sp in staticParameters:
             if sp.attrs["NAME"] == label:
                 try:
-                    val = sp.attrs["VALUE"]
+                    val = sp.attrs["VALUE"].encode("latin-1")
                 except KeyError:
                     logging.warning("static parameter (%s) has no value. Zero return"%(label))
                     val=0

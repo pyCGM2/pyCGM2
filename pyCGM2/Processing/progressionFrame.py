@@ -68,7 +68,7 @@ class PelvisProgressionFrameProcedure(object):
 
             forwardProgression = True if diff>0 else False
 
-            globalFrame = str(progressionAxis+lateralAxis+"Z")
+            globalFrame = (progressionAxis+lateralAxis+"Z")
 
 
         else:
@@ -131,18 +131,18 @@ class PelvisProgressionFrameProcedure(object):
             lateralAxis =  globalAxes.keys()[maxIndex]
 
             # global frame
-            if "X" not in str(progressionAxis+lateralAxis):
-                globalFrame = str(progressionAxis+lateralAxis+"X")
-            if "Y" not in str(progressionAxis+lateralAxis):
-                globalFrame = str(progressionAxis+lateralAxis+"Y")
-            if "Z" not in str(progressionAxis+lateralAxis):
-                globalFrame = str(progressionAxis+lateralAxis+"Z")
+            if "X" not in (progressionAxis+lateralAxis):
+                globalFrame = (progressionAxis+lateralAxis+"X")
+            if "Y" not in (progressionAxis+lateralAxis):
+                globalFrame = (progressionAxis+lateralAxis+"Y")
+            if "Z" not in (progressionAxis+lateralAxis):
+                globalFrame = (progressionAxis+lateralAxis+"Z")
 
 
 
         logging.info("Progression axis : %s"%(progressionAxis))
-        logging.info("forwardProgression : %s"%(str(forwardProgression)))
-        logging.info("globalFrame : %s"%(str(globalFrame)))
+        logging.info("forwardProgression : %s"%((forwardProgression)))
+        logging.info("globalFrame : %s"%((globalFrame)))
 
 
         return   progressionAxis,forwardProgression,globalFrame
@@ -189,7 +189,7 @@ class ThoraxProgressionFrameProcedure(object):
 
             forwardProgression = True if diff>0 else False
 
-            globalFrame = str(progressionAxis+lateralAxis+"Z")
+            globalFrame = (progressionAxis+lateralAxis+"Z")
 
 
         else:
@@ -251,18 +251,18 @@ class ThoraxProgressionFrameProcedure(object):
             lateralAxis =  globalAxes.keys()[maxIndex]
 
             # global frame
-            if "X" not in str(progressionAxis+lateralAxis):
-                globalFrame = str(progressionAxis+lateralAxis+"X")
-            if "Y" not in str(progressionAxis+lateralAxis):
-                globalFrame = str(progressionAxis+lateralAxis+"Y")
-            if "Z" not in str(progressionAxis+lateralAxis):
-                globalFrame = str(progressionAxis+lateralAxis+"Z")
+            if "X" not in (progressionAxis+lateralAxis):
+                globalFrame = (progressionAxis+lateralAxis+"X")
+            if "Y" not in (progressionAxis+lateralAxis):
+                globalFrame = (progressionAxis+lateralAxis+"Y")
+            if "Z" not in (progressionAxis+lateralAxis):
+                globalFrame = (progressionAxis+lateralAxis+"Z")
 
 
 
         logging.info("Progression axis : %s"%(progressionAxis))
-        logging.info("forwardProgression : %s"%(str(forwardProgression)))
-        logging.info("globalFrame : %s"%(str(globalFrame)))
+        logging.info("forwardProgression : %s"%((forwardProgression)))
+        logging.info("globalFrame : %s"%((globalFrame)))
 
 
         return   progressionAxis,forwardProgression,globalFrame

@@ -16,15 +16,12 @@ from bs4 import BeautifulSoup
 DEFAULT_SUBSESSION = {"Task":"","Shoes":"","ProthesisOrthosis":"","ExternalAid":"","PersonalAid":""}
 
 
-def generateEmptyEnf(path):
-    c3ds = files.getFiles(path,"c3d")
-
+def generateEmptyENF(path):
+    c3ds = getFiles(path,"c3d")
     for c3d in c3ds:
         enfName = c3d[:-4]+".Trial.enf"
-        if enfName not in os.listdir(path):
-            logging.info(enfName +  " : created  ")
-            open(path+enfName, 'a').close()
-
+        if enfName not in os.listdir(path.decode("utf-8")):
+            open((path.decode("utf-8")+enfName).encode("latin-1"), 'a').close()
 
 
 def getCurrentMarkedEnfs():
@@ -123,14 +120,14 @@ def findKneeMotions(path,ignoreSelect=False):
 
 
 def cleanEnf(path,enf):
-    src = open(path+enf,"r")
+    src = open((path+enf).decode("utf-8"),"r")
     filteredContent = ""
     for line in src:
         if line[0] != "=":
            filteredContent += line
     src.close()
 
-    dst = open(path+enf, 'w')
+    dst = open((path+enf).decode("utf-8"), 'w')
     dst.write(filteredContent)
     dst.close()
     return filteredContent
@@ -142,9 +139,6 @@ def classifyEnfMotions(path,ignoreSelect=False,
 
 
     """
-
-
-
     enfs = getEnfFiles(path,enums.EclipseType.Trial)
     subSessions = list()
 
@@ -213,15 +207,15 @@ class EnfReader(object):
         config = ConfigParser.ConfigParser()
         config.optionxform=str # keep letter case
 
-        if not os.path.isfile(path+enfFile):
+        if not os.path.isfile((path+enfFile).decode("utf-8")):
             raise Exception ("[pyCGM2] : enf file (%s) not find"%(str(path+enfFile)))
 
         try:
-            config.read(path+enfFile)
+            config.read((path+enfFile).decode("utf-8"))
         except ConfigParser.ParsingError:
             print "enf cleaned"
             cleanEnf(path,enfFile)
-            config.read(path+enfFile)
+            config.read((path+enfFile).decode("utf-8"))
 
 
         self.m_path =  path
@@ -320,7 +314,7 @@ class TrialEnfReader(EnfReader):
 
 
     def save(self):
-        with open(self.m_path + self.m_file, 'w') as configfile:
+        with open((self.m_path + self.m_file).decode("utf-8").encode("latin-1"), 'w') as configfile:
             self.m_config.write(configfile)
 
 
@@ -373,7 +367,7 @@ class TrialEnfReader(EnfReader):
     def getForcePlateAssigment(self):
 
         c3dFilename = self.m_file.replace(".Trial.enf",".c3d")
-        acq = btkTools.smartReader(str(self.m_path + c3dFilename))
+        acq = btkTools.smartReader((self.m_path + c3dFilename))
         nfp = btkTools.getNumberOfForcePlate(acq)
 
         mfpa = ""

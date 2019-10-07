@@ -47,7 +47,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
     if "forceBtkAcq" in kwargs.keys():
         acqStatic = kwargs["forceBtkAcq"]
     else:
-        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+        acqStatic = btkTools.smartReader((DATA_PATH+calibrateFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqStatic)
     if btkTools.isPointExist(acqStatic,"SACR"):
@@ -119,7 +119,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
                                                 model,
                                                 cgmCalibrationprocedure,
-                                                str(DATA_PATH))
+                                                (DATA_PATH))
         oscf.addMarkerSet(markersetFile)
         scalingOsim = oscf.build()
 
@@ -176,8 +176,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           scalingOsim,
                                                           cgmFittingProcedure,
-                                                          str(DATA_PATH) )
-        acqStaticIK = osrf.run(acqStatic,str(DATA_PATH + calibrateFilenameLabelled ))
+                                                          (DATA_PATH) )
+        acqStaticIK = osrf.run(acqStatic,(DATA_PATH + calibrateFilenameLabelled ))
 
 
 
@@ -270,14 +270,14 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     if "forceBtkAcq" in kwargs.keys():
         acqGait = kwargs["forceBtkAcq"]
     else:
-        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+        acqGait = btkTools.smartReader((DATA_PATH + reconstructFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqGait)
     if btkTools.isPointExist(acqGait,"SACR"):
         translators["LPSI"] = "SACR"
         translators["RPSI"] = "SACR"
         logging.info("[pyCGM2] Sacrum marker detected")
-        
+
     acqGait =  btkTools.applyTranslators(acqGait,translators)
     trackingMarkers = model.getTrackingMarkers()
     validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
@@ -300,7 +300,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
                                                 model,
                                                 cgmCalibrationprocedure,
-                                                str(DATA_PATH))
+                                                (DATA_PATH))
         oscf.addMarkerSet(markersetFile)
         scalingOsim = oscf.build()
 
@@ -359,10 +359,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           scalingOsim,
                                                           cgmFittingProcedure,
-                                                          str(DATA_PATH) )
+                                                          (DATA_PATH) )
 
         logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
-        acqIK = osrf.run(acqGait,str(DATA_PATH + reconstructFilenameLabelled ))
+        acqIK = osrf.run(acqGait,(DATA_PATH + reconstructFilenameLabelled ))
         logging.info("-------INVERSE KINEMATICS DONE-----------------")
 
 

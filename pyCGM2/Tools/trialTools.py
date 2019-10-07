@@ -118,7 +118,7 @@ def isKineticFlag(trial):
         return True,kineticEvent_times,kineticEvent_times_left,kineticEvent_times_right
 
 
-def automaticKineticDetection(dataPath,filenames,trials=None):
+def automaticKineticDetection(dataPath,filenames,trials=None,encoder="latin-1"):
     """
         convenient method for detecting correct kinetic in a filename set
 
@@ -135,7 +135,7 @@ def automaticKineticDetection(dataPath,filenames,trials=None):
             logging.debug("[pyCGM2] : filename %s duplicated in the input list" %(filename))
         else:
             if trials is None:
-                fileNode = ma.io.read(str(dataPath + filename))
+                fileNode = ma.io.read((dataPath + filename).decode("utf-8").encode(encoder))
                 trial = fileNode.findChild(ma.T_Trial)
 
             else:
@@ -300,7 +300,7 @@ def renameOpenMAtoVicon(analysis, suffix=""):
             newName = newName[0: newName.rfind("Power")+5] + suffix
         ts.setName(newName)
 
-def buildTrials(dataPath,trialfilenames):
+def buildTrials(dataPath,trialfilenames,encoder="latin-1"):
     """
         Get trial list from filenames
 
@@ -316,7 +316,7 @@ def buildTrials(dataPath,trialfilenames):
         logging.debug( filename)
         logging.debug( "------------------")
 
-        fileNode = ma.io.read(str(dataPath + filename))
+        fileNode = ma.io.read((dataPath + filename).decode("utf-8").encode(encoder))
         trial = fileNode.findChild(ma.T_Trial)
         sortedEvents(trial)
 
@@ -326,11 +326,11 @@ def buildTrials(dataPath,trialfilenames):
     return trials,filenames
 
 
-def smartTrialReader(dataPath,trialfilename):
+def smartTrialReader(dataPath,trialfilename,encoder="latin-1"):
     if dataPath is None:
-        fileNode = ma.io.read(str(trialfilename))
+        fileNode = ma.io.read((trialfilename).decode("utf-8").encode(encoder))
     else:
-        fileNode = ma.io.read(str(dataPath + trialfilename))
+        fileNode = ma.io.read((dataPath + trialfilename).decode("utf-8").encode(encoder))
 
     trial = fileNode.findChild(ma.T_Trial)
     sortedEvents(trial)

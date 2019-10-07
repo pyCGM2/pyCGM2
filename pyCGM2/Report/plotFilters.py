@@ -62,11 +62,11 @@ class PlottingFilter(object):
 
         if self.m_path is not None and self.m_fileName is not None:
             if self.m_format is "pdf":
-                pp = PdfPages(str(self.m_path+ self.m_fileName+".pdf"))
+                pp = PdfPages((self.m_path+ self.m_fileName+".pdf").decode("utf-8").encode("latin-1"))
                 pp.savefig(self.fig)
                 pp.close()
             else:
-                plt.savefig(str(self.m_path+ self.m_fileName+"."+self.m_format))
+                plt.savefig((self.m_path+ self.m_fileName+"."+self.m_format).decode("utf-8").encode("latin-1"))
 
     def setYlimits(self, axisIndex, min, max):
         self.__concretePlotViewer.fig.axes[axisIndex].set_ylim([min,max])

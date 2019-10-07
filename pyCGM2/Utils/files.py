@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 import cPickle
 import logging
 import json
@@ -13,17 +13,21 @@ from datetime import datetime
 
 import pyCGM2
 
+
 def openFile(path,filename):
+    """
+    >>> content = openFile("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\LowLevelTests\\latin1_iæøå\\","file.yaml")
 
-    if os.path.isfile( path + filename):
-        content = open(str(path+filename)).read()
 
+    """
+    if os.path.isfile( (path + filename).decode("utf-8")):
+        content = open((path+filename).decode("utf-8").encode("latin-1")).read()
 
         jsonFlag = is_json(content)
         yamlFlag = is_yaml(content)
         if jsonFlag:
             logging.debug("your file (%s) matches json syntax"%filename)
-            struct = openJson(path ,str(filename))
+            struct = openJson(path ,(filename))
 
         if yamlFlag:
             logging.debug("your file (%s) matches yaml syntax"%filename)
@@ -62,10 +66,10 @@ def loadModel(path,FilenameNoExt):
         filename = "pyCGM2.model"
 
     # --------------------pyCGM2 MODEL ------------------------------
-    if not os.path.isfile(path + filename):
+    if not os.path.isfile((path + filename).decode("utf-8")):
         raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM Calibration operation"%filename)
     else:
-        f = open(path + filename, 'r')
+        f = open((path+filename).decode("utf-8").encode("latin-1"), 'r')
         model = cPickle.load(f)
         f.close()
 
@@ -79,11 +83,11 @@ def saveModel(model,path,FilenameNoExt):
         filename = "pyCGM2.model"
 
     #pyCGM2.model
-    if os.path.isfile(path + filename):
+    if os.path.isfile((path + filename).decode("utf-8")):
         logging.warning("previous model removed")
-        os.remove(path + filename)
+        os.remove((path + filename).decode("utf-8"))
 
-    modelFile = open(path + filename, "w")
+    modelFile = open((path+filename).decode("utf-8").encode("latin-1"), "w")
     cPickle.dump(model, modelFile)
     modelFile.close()
 
@@ -95,10 +99,10 @@ def loadAnalysis(path,FilenameNoExt):
         filename = "pyCGM2.analysis"
 
     # --------------------pyCGM2 MODEL ------------------------------
-    if not os.path.isfile(path + filename):
+    if not os.path.isfile((path + filename).decode("utf-8")):
         raise Exception ("%s-pyCGM2.analysis file doesn't exist"%filename)
     else:
-        f = open(path + filename, 'r')
+        f = open((path+filename).decode("utf-8").encode("latin-1"), 'r')
         analysis = cPickle.load(f)
         f.close()
 
@@ -112,40 +116,37 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
         filename = "pyCGM2.analysis"
 
     #pyCGM2.model
-    if os.path.isfile(path + filename):
+    if os.path.isfile((path + filename).decode("utf-8")):
         logging.warning("previous analysis removed")
-        os.remove(path + filename)
+        os.remove((path + filename).decode("utf-8"))
 
-    analysisFile = open(path + filename, "w")
+    analysisFile = open((path+filename).decode("utf-8").encode("latin-1"), "w")
     cPickle.dump(analysisInstance, analysisFile)
     analysisFile.close()
 
 
+def openJson(path,filename):
 
+    if path is not None: path = path.decode("utf-8")
+    filename = filename.decode("utf-8")
 
-
-
-def openJson(path,filename,stringContent=None):
-
-    if stringContent is None:
-        try:
-            if path is None:
-                jsonStuct= json.loads(open(str(filename)).read(),object_pairs_hook=OrderedDict)
-            else:
-                jsonStuct= json.loads(open(str(path+filename)).read(),object_pairs_hook=OrderedDict)
-            return jsonStuct
-        except :
-            raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
-    else:
-        jsonStuct = json.loads(stringContent,object_pairs_hook=OrderedDict)
+    try:
+        if path is None:
+            jsonStuct= json.loads(open((filename)).read(),object_pairs_hook=OrderedDict)
+        else:
+            jsonStuct= json.loads(open((path+filename)).read(),object_pairs_hook=OrderedDict)
         return jsonStuct
+    except :
+        raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
 
 def saveJson(path, filename, content):
+    if path is not None: path = path.decode("utf-8")
+    filename = filename.decode("utf-8")
     if path is None:
-        with open(str(filename), 'w') as outfile:
+        with open((filename), 'w') as outfile:
             json.dump(content, outfile,indent=4)
     else:
-        with open(str(path+filename), 'w') as outfile:
+        with open((path+filename).encode("latin-1"), 'w') as outfile:
             json.dump(content, outfile,indent=4)
 
 
@@ -154,26 +155,23 @@ def prettyDictPrint(parsedContent):
 
 
 
-
-
-def openYaml(path,filename,stringContent=None):
-    if stringContent is None:
-        try:
-            if path is None:
-                struct = yaml.load(open(str(filename)).read(),Loader=yamlordereddictloader.Loader)
-            else:
-                struct= yaml.load(open(str(path+filename)).read(),Loader=yamlordereddictloader.Loader)
-            return struct
-        except :
-            raise Exception ("[pyCGM2] : yaml syntax of file (%s) is incorrect. check it" %(filename))
-    else:
-        struct = yaml.load(stringContent,Loader=yamlordereddictloader.Loader)
+def openYaml(path,filename):
+    if path is not None: path = path.decode("utf-8")
+    filename = filename.decode("utf-8")
+    try:
+        if path is None:
+            struct = yaml.load(open((filename)).read(),Loader=yamlordereddictloader.Loader)
+        else:
+            struct= yaml.load(open((path+filename)).read(),Loader=yamlordereddictloader.Loader)
         return struct
+    except :
+        raise Exception ("[pyCGM2] : yaml syntax of file (%s) is incorrect. check it" %(filename))
+
 
 
 def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
     #  translators management
-    if os.path.isfile( DATA_PATH + translatorType):
+    if os.path.isfile( (DATA_PATH + translatorType).decode("utf-8")):
        logging.warning("local translator found")
 
        sessionTranslators = openFile(DATA_PATH,translatorType)
@@ -184,7 +182,7 @@ def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
 
 def getIKweightSet(DATA_PATH, ikwf):
     #  translators management
-    if os.path.isfile( DATA_PATH + ikwf):
+    if os.path.isfile( (DATA_PATH + ikwf).decode("utf-8")):
        logging.warning("local ik weightSet file found")
        ikWeight = openFile(DATA_PATH,ikwf)
        return ikWeight
@@ -198,9 +196,8 @@ def getMpFileContent(DATA_PATH,file,subject):
     else:
         out = file
 
-
-    if not os.path.isfile( DATA_PATH + file):
-        copyfile(str(pyCGM2.PYCGM2_SETTINGS_FOLDER+file), str(DATA_PATH + out))
+    if not os.path.isfile( (DATA_PATH + file).decode("utf-8")):
+        copyfile((pyCGM2.PYCGM2_SETTINGS_FOLDER+file), (DATA_PATH + out).decode("utf-8").encode("latin-1"))
         logging.warning("Copy of %s from pyCGM2 Settings folder"%(file))
 
     content = openFile(DATA_PATH,out)
@@ -303,13 +300,13 @@ def saveMp(mpInfo,model,DATA_PATH,mpFilename):
 def getFiles(path, extension, ignore=None):
 
     out=list()
-    for file in os.listdir(path):
+    for file in os.listdir(path.decode("utf-8")):
         if ignore is None:
             if file.endswith(extension):
-                out.append(file)
+                out.append(file.encode("latin-1"))
         else:
             if file.endswith(extension) and ignore not in file:
-                out.append(file)
+                out.append(file.encode("latin-1"))
 
     return out
 
@@ -317,35 +314,32 @@ def getFiles(path, extension, ignore=None):
 def getC3dFiles(path, text="", ignore=None ):
 
     out=list()
-    for file in os.listdir(path):
+    for file in os.listdir(path.decode("utf-8")):
        if ignore is None:
            if file.endswith(".c3d"):
-               if text in file:  out.append(file)
+               if text in file:  out.append(file.encode("latin-1"))
        else:
            if file.endswith(".c3d") and ignore not in file:
-               if text in file:  out.append(file)
+               if text in file:  out.append(file.encode("latin-1"))
 
     return out
 
 def copySessionFolder(folderPath, folder2copy, newFolder, selectedFiles=None):
 
-    if not os.path.isdir(str(folderPath+"\\"+newFolder)):
-        os.makedirs(str(folderPath+"\\"+newFolder))
+    if not os.path.isdir((folderPath+"\\"+newFolder).decode("utf-8")):
+        os.makedirs((folderPath+"\\"+newFolder).decode("utf-8"))
 
-
-    for file in os.listdir(folderPath+"\\"+folder2copy):
+    for file in os.listdir((folderPath+"\\"+folder2copy).decode("utf-8")):
         if file.endswith(".Session.enf"):
-
-            src = folderPath+"\\"+folder2copy+"\\" +file
-            dst = folderPath+"\\"+newFolder+"\\" +newFolder+".Session.enf"
+            src = (folderPath.decode("utf-8")+"\\"+folder2copy.decode("utf-8")+"\\" +file).encode("latin-1")
+            dst = (folderPath.decode("utf-8")+"\\"+newFolder.decode("utf-8")+"\\" +newFolder.decode("utf-8")+".Session.enf").encode("latin-1")
 
             shutil.copyfile(src, dst)
         else:
             if selectedFiles is None:
                 fileToCopy = file
-
-                src = folderPath+"\\"+folder2copy+"\\" +fileToCopy
-                dst = folderPath+"\\"+newFolder+"\\" + fileToCopy
+                src = (folderPath.decode("utf-8")+"\\"+folder2copy.decode("utf-8")+"\\" +fileToCopy).encode("latin-1")
+                dst = (folderPath.decode("utf-8")+"\\"+newFolder.decode("utf-8")+"\\" + fileToCopy).encode("latin-1")
 
                 shutil.copyfile(src, dst)
 
@@ -354,21 +348,23 @@ def copySessionFolder(folderPath, folder2copy, newFolder, selectedFiles=None):
                 if file in selectedFiles:
                     fileToCopy = file
 
-                    src = folderPath+"\\"+folder2copy+"\\" +fileToCopy
-                    dst = folderPath+"\\"+newFolder+"\\" + fileToCopy
+                    src = (folderPath.decode("utf-8")+"\\"+folder2copy.decode("utf-8")+"\\" +fileToCopy).encode("latin-1")
+                    dst = (folderPath.decode("utf-8")+"\\"+newFolder.decode("utf-8")+"\\" + fileToCopy).encode("latin-1")
 
                     shutil.copyfile(src, dst)
 
 def createDir(fullPathName):
+    fullPathName = fullPathName.decode("utf-8")
     pathOut = fullPathName[:-1] if fullPathName[-1:]=="\\" else fullPathName
-    if not os.path.isdir(str(pathOut)):
-        os.makedirs(str(pathOut))
+    if not os.path.isdir((pathOut)):
+        os.makedirs((pathOut))
     else:
         logging.warning("directory already exists")
 
 def getDirs(folderPath):
+    folderPath = folderPath.decode("utf-8")
     pathOut = folderPath[:-1] if folderPath[-1:]=="\\" else folderPath
-    dirs = [ name for name in os.listdir(pathOut) if os.path.isdir(os.path.join(pathOut, name)) ]
+    dirs = [ name.encode("latin-1") for name in os.listdir(pathOut) if os.path.isdir(os.path.join(pathOut, name)) ]
     return ( dirs)
 
 def try_as(loader, s, on_error):
@@ -384,20 +380,13 @@ def is_json(s):
 def is_yaml(s):
     return try_as(yaml.safe_load, s, yaml.scanner.ScannerError)
 
-def generateEmptyENF(path):
-    c3ds = getFiles(path,"c3d")
-    for c3d in c3ds:
-        enfName = c3d[:-4]+".Trial.enf"
-        if enfName not in os.listdir(path):
-            open(path+enfName, 'a').close()
-
-
 def copyPaste(src, dst):
-    shutil.copyfile(src, dst)
+    shutil.copyfile(src.decode("utf-8").encode("latin-1"),
+                    dst.decode("utf-8").encode("latin-1"))
 
 
 def readXml(DATA_PATH,filename):
-    infile = open(DATA_PATH+filename,"r")
+    infile = open((DATA_PATH+filename).decode("utf-8"),"r")
     contents = infile.read()
     soup = BeautifulSoup(contents,'xml')
 
@@ -409,7 +398,7 @@ def getFileCreationDate(file):
     str(getFileCreationDate(file).date())
     str(getFileCreationDate(file))
     """
-    stat = os.stat(file)
+    stat = os.stat(file.decode("utf-8"))
     try:
         stamp =  stat.st_birthtime
     except AttributeError:

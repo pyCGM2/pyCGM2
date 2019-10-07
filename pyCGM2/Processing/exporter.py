@@ -36,14 +36,14 @@ class XlsExportDataFrameFilter(object):
         for  dataframe in self.dataframes:
             if path == None:
                 if excelFormat == "xls":
-                    xlsxWriter = pd.ExcelWriter(str(outputName + "- dataframe.xls"),engine='xlwt')
+                    xlsxWriter = pd.ExcelWriter((outputName + "- dataframe.xls"),engine='xlwt')
                 elif excelFormat == "xlsx":
-                    xlsxWriter = pd.ExcelWriter(str(outputName + "- dataframe.xlsx"))
+                    xlsxWriter = pd.ExcelWriter((outputName + "- dataframe.xlsx"))
             else:
                 if excelFormat == "xls":
-                    xlsxWriter = pd.ExcelWriter(str(path+outputName + "- dataframe.xls"),engine='xlwt')
+                    xlsxWriter = pd.ExcelWriter((path+outputName + "- dataframe.xls"),engine='xlwt')
                 elif excelFormat == "xlsx":
-                    xlsxWriter = pd.ExcelWriter(str(path+outputName + "- dataFrame.xlsx"))
+                    xlsxWriter = pd.ExcelWriter((path+outputName + "- dataFrame.xlsx"))
 
             dataframe.to_excel(xlsxWriter,"dataframe_"+str(i))
             i+=1
@@ -84,14 +84,14 @@ class XlsAnalysisExportFilter(object):
 
         if path == None:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(outputName + "- basic.xls"),engine='xlwt')
+                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xls").decode("utf-8").encode("latin-1"),engine='xlwt')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter(str(outputName + "- basic.xlsx"))
+                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xlsx").decode("utf-8").encode("latin-1"))
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- basic.xls"),engine='xlwt')
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xls").decode("utf-8").encode("latin-1"),engine='xlwt')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- basic.xlsx"))
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xlsx").decode("utf-8").encode("latin-1"))
 
         # metadata
         #--------------
@@ -304,14 +304,14 @@ class XlsAnalysisExportFilter(object):
 
         if path == None:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xls"),engine='xlwt',encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xls").decode("utf-8").encode("latin-1"),engine='xlwt',encoding='utf-8')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter(str(outputName + "- Advanced.xlsx"),encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xlsx").decode("utf-8").encode("latin-1"),encoding='utf-8')
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- Advanced.xls"),engine='xlwt',encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xls").decode("utf-8").encode("latin-1"),engine='xlwt',encoding='utf-8')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter(str(path+outputName + "- Advanced.xlsx"),encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xlsx").decode("utf-8").encode("latin-1"),encoding='utf-8')
 
         # infos
         #-------
@@ -379,9 +379,9 @@ class XlsAnalysisExportFilter(object):
 
             if csvFileExport:
                 if path == None:
-                    df_stp.to_csv(str(outputName + " - stp - DataFrame.csv"),sep=";")
+                    df_stp.to_csv((outputName + " - stp - DataFrame.csv"),sep=";")
                 else:
-                    df_stp.to_csv(str(path+outputName + " - stp - DataFrame.csv"),sep=";")
+                    df_stp.to_csv((path+outputName + " - stp - DataFrame.csv"),sep=";")
 
         # Scores
         #---------------------------
@@ -494,9 +494,9 @@ class XlsAnalysisExportFilter(object):
             df_kinematics.to_excel(xlsxWriter,'Kinematic cycles')
             if csvFileExport:
                 if path == None:
-                    df_kinematics.to_csv(str(outputName + " - kinematics - DataFrame.csv"),sep=";")
+                    df_kinematics.to_csv((outputName + " - kinematics - DataFrame.csv"),sep=";")
                 else:
-                    df_kinematics.to_csv(str(path+outputName + " - kinematics - DataFrame.csv"),sep=";")
+                    df_kinematics.to_csv((path+outputName + " - kinematics - DataFrame.csv"),sep=";")
 
 
         # Kinetic ouputs
@@ -547,9 +547,9 @@ class XlsAnalysisExportFilter(object):
             df_kinetics.to_excel(xlsxWriter,'Kinetic cycles')
             if csvFileExport:
                 if path == None:
-                    df_kinetics.to_csv(str(outputName + " - kinetics - DataFrame.csv"),sep=";")
+                    df_kinetics.to_csv((outputName + " - kinetics - DataFrame.csv"),sep=";")
                 else:
-                    df_kinetics.to_csv(str(path+outputName + " - kinetics - DataFrame.csv"),sep=";")
+                    df_kinetics.to_csv((path+outputName + " - kinetics - DataFrame.csv"),sep=";")
 
 
         # EMG ouputs
@@ -600,9 +600,9 @@ class XlsAnalysisExportFilter(object):
             df_emg.to_excel(xlsxWriter,'EMG cycles')
             if csvFileExport:
                 if path == None:
-                    df_emg.to_csv(str(outputName + " - EMG - DataFrame.csv"),sep=";")
+                    df_emg.to_csv((outputName + " - EMG - DataFrame.csv"),sep=";")
                 else:
-                    df_emg.to_csv(str(path+outputName + " - EMG - DataFrame.csv"),sep=";")
+                    df_emg.to_csv((path+outputName + " - EMG - DataFrame.csv"),sep=";")
 
 
 
@@ -814,9 +814,9 @@ class AnalysisC3dExportFilter(object):
 
         try:
             if path == None:
-                ma.io.write(root,str(outputName+".c3d"))
+                ma.io.write(root,(outputName+".c3d").decode("utf-8").encode("latin-1")  )
             else:
-                ma.io.write(root,str(path + outputName+".c3d"))
-            logging.info("Analysis c3d  [%s.c3d] Exported" %( str(outputName +".c3d")) )
+                ma.io.write(root,(path + outputName+".c3d").decode("utf-8").encode("latin-1"))
+            logging.info("Analysis c3d  [%s.c3d] Exported" %( (outputName +".c3d")) )
         except:
             raise Exception ("[pyCGM2] : analysis c3d doesn t export" )

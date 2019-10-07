@@ -38,7 +38,7 @@ class GaitEventQualityProcedure(object):
                     for i in range(1,len(events_L)):
                         label = events_L[i].GetLabel()
                         if label == init:
-                            logging.error("Wrong Left Event - two consecutive (%s) detected at frane (%i)"%(str(label),events_L[i].GetFrame()) )
+                            logging.error("Wrong Left Event - two consecutive (%s) detected at frane (%i)"%((label),events_L[i].GetFrame()) )
                             self.state = False
                         init = label
                 else:
@@ -51,7 +51,7 @@ class GaitEventQualityProcedure(object):
                     for i in range(1,len(events_R)):
                         label = events_R[i].GetLabel()
                         if label == init:
-                            logging.error("Wrong Right Event - two consecutive (%s) detected at frane (%i)"%(str(label),events_R[i].GetFrame()) )
+                            logging.error("Wrong Right Event - two consecutive (%s) detected at frane (%i)"%((label),events_R[i].GetFrame()) )
                             self.state = False
                         init = label
                 else:

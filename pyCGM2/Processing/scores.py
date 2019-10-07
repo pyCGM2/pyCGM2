@@ -30,7 +30,7 @@ class CGM1_GPS(object):
 
     def __init__(self,pointSuffix=None):
 
-        pointSuffix = str("_"+pointSuffix)  if (pointSuffix is not None) else ""
+        pointSuffix = ("_"+pointSuffix)  if (pointSuffix is not None) else ""
 
         matchingNormativeDataLabel = dict()
 

@@ -32,7 +32,7 @@ def calibration2Dof(model,
     if "forceBtkAcq" in kwargs.keys():
         acqFunc = kwargs["forceBtkAcq"]
     else:
-        acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+        acqFunc = btkTools.smartReader((DATA_PATH + reconstructFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqFunc)
     acqFunc =  btkTools.applyTranslators(acqFunc,translators)
@@ -70,7 +70,7 @@ def calibration2Dof(model,
     # --------------------------RESET OF THE STATIC File---------
     # load btkAcq from static file
     staticFilename = model.m_staticFilename
-    acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilename))
+    acqStatic = btkTools.smartReader((DATA_PATH+staticFilename))
     btkTools.checkMultipleSubject(acqStatic)
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
@@ -113,8 +113,8 @@ def calibration2Dof(model,
 
         validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,thigh_markers+shank_markers)
 
-        proximalSegmentLabel=str(side+" Thigh")
-        distalSegmentLabel=str(side+" Shank")
+        proximalSegmentLabel=(side+" Thigh")
+        distalSegmentLabel=(side+" Shank")
 
         # Motion
         modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,enums.motionMethod.Sodervisk)
@@ -148,7 +148,7 @@ def sara(model,
     if "forceBtkAcq" in kwargs.keys():
         acqFunc = kwargs["forceBtkAcq"]
     else:
-        acqFunc = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+        acqFunc = btkTools.smartReader((DATA_PATH + reconstructFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqFunc)
     acqFunc =  btkTools.applyTranslators(acqFunc,translators)
@@ -184,7 +184,7 @@ def sara(model,
 
     # load btkAcq from static file
     staticFilename = model.m_staticFilename
-    acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilename))
+    acqStatic = btkTools.smartReader((DATA_PATH+staticFilename))
     btkTools.checkMultipleSubject(acqStatic)
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
@@ -220,8 +220,8 @@ def sara(model,
 
         validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,thigh_markers+shank_markers)
 
-        proximalSegmentLabel=str(side+" Thigh")
-        distalSegmentLabel=str(side+" Shank")
+        proximalSegmentLabel=(side+" Thigh")
+        distalSegmentLabel=(side+" Shank")
 
         # segment Motion
         modMotion=modelFilters.ModelMotionFilter(scp,acqFunc,model,enums.motionMethod.Sodervisk)

@@ -1,12 +1,14 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
+# from __future__ import unicode_literals
+
 import numpy as np
 import scipy as sp
 import logging
-
+import encodings
 from pyCGM2 import btk
 
 # --- acquisition -----
-def smartReader(filename,translators=None):
+def smartReader(filename,translators=None,encoder="latin-1"):
     """
         Convenient function to read a c3d with Btk
 
@@ -14,15 +16,17 @@ def smartReader(filename,translators=None):
             - `filename` (str) - path and filename of the c3d
             - `translators` (str) - marker translators
     """
+
+
     reader = btk.btkAcquisitionFileReader()
-    reader.SetFilename(str(filename))
+    reader.SetFilename(filename.decode("utf-8").encode(encoder))
     reader.Update()
     acq=reader.GetOutput()
     if translators is not None:
         acq =  applyTranslators(acq,translators)
     return acq
 
-def smartWriter(acq, filename):
+def smartWriter(acq, filename,encoder="latin-1"):
     """
         Convenient function to write a c3d with Btk
 
@@ -32,8 +36,11 @@ def smartWriter(acq, filename):
     """
     writer = btk.btkAcquisitionFileWriter()
     writer.SetInput(acq)
-    writer.SetFilename(str(filename))
+    writer.SetFilename(filename.decode("utf-8").encode(encoder))
     writer.Update()
+
+
+
 
 def GetMarkerNames(acq):
     markerNames=[]
@@ -177,7 +184,6 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc="",res
         acq.GetPoint(label).SetResiduals(residuals)
 
     else:
-
         new_btkPoint = btk.btkPoint(label,acq.GetPointFrameNumber())
         new_btkPoint.SetValues(values)
         new_btkPoint.SetDescription(desc)
@@ -302,7 +308,7 @@ def applyTranslators(acq, translators):
                 label = point.GetLabel()
                 if label in modifiedMarkerList:
                     acqClone.RemovePoint(label)
-                    logging.debug("point (%s) remove in the clone acq  " %(str(label)))
+                    logging.debug("point (%s) remove in the clone acq  " %((label)))
 
         # Add Modify markers to clone
         for it in translators.items():
@@ -310,30 +316,30 @@ def applyTranslators(acq, translators):
             if initialLabel !="None":
                 print wantedLabel
                 if isPointExist(acq,wantedLabel):
-                    smartAppendPoint(acqClone,str(wantedLabel+"_origin"),acq.GetPoint(str(wantedLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
-                    logging.warning("wantedLabel (%s)_origin created" %(str(wantedLabel)))
+                    smartAppendPoint(acqClone,(wantedLabel+"_origin"),acq.GetPoint((wantedLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
+                    logging.warning("wantedLabel (%s)_origin created" %((wantedLabel)))
                 if isPointExist(acq,initialLabel):
                     if initialLabel in translators.keys():
                         if translators[initialLabel] == "None":
-                            logging.warning("Initial point (%s)and (%s) point to similar values" %(str(initialLabel), str(wantedLabel)))
-                            smartAppendPoint(acqClone,str(wantedLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
-                            smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
+                            logging.warning("Initial point (%s)and (%s) point to similar values" %((initialLabel), (wantedLabel)))
+                            smartAppendPoint(acqClone,(wantedLabel),acq.GetPoint((initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
+                            smartAppendPoint(acqClone,(initialLabel),acq.GetPoint((initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
                         elif translators[initialLabel] == wantedLabel:
-                            logging.warning("Initial point (%s) swaped with (%s)" %(str(initialLabel), str(wantedLabel)))
-                            initialValue = acq.GetPoint(str(initialLabel)).GetValues()
-                            wantedlValue = acq.GetPoint(str(wantedLabel)).GetValues()
-                            smartAppendPoint(acqClone,str(wantedLabel),initialValue,PointType=btk.btkPoint.Marker)
-                            smartAppendPoint(acqClone,str("TMP"),wantedlValue,PointType=btk.btkPoint.Marker)
+                            logging.warning("Initial point (%s) swaped with (%s)" %((initialLabel), (wantedLabel)))
+                            initialValue = acq.GetPoint((initialLabel)).GetValues()
+                            wantedlValue = acq.GetPoint((wantedLabel)).GetValues()
+                            smartAppendPoint(acqClone,(wantedLabel),initialValue,PointType=btk.btkPoint.Marker)
+                            smartAppendPoint(acqClone,("TMP"),wantedlValue,PointType=btk.btkPoint.Marker)
                             acqClone.GetPoint("TMP").SetLabel(initialLabel)
-                            acqClone.RemovePoint(str(wantedLabel+"_origin"))
-                            acqClone.RemovePoint(str(initialLabel+"_origin"))
+                            acqClone.RemovePoint((wantedLabel+"_origin"))
+                            acqClone.RemovePoint((initialLabel+"_origin"))
                     else:
-                        logging.warning("Initial point (%s) renamed (%s)  added into the c3d" %(str(initialLabel), str(wantedLabel)))
-                        smartAppendPoint(acqClone,str(wantedLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
-                        smartAppendPoint(acqClone,str(initialLabel),acq.GetPoint(str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
+                        logging.warning("Initial point (%s) renamed (%s)  added into the c3d" %((initialLabel), (wantedLabel)))
+                        smartAppendPoint(acqClone,(wantedLabel),acq.GetPoint((initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
+                        smartAppendPoint(acqClone,(initialLabel),acq.GetPoint((initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
 
                 else:
-                    logging.warning("initialLabel (%s) doesn t exist  " %(str(initialLabel)))
+                    logging.warning("initialLabel (%s) doesn t exist  " %((initialLabel)))
                     #raise Exception ("your translators are badly configured")
 
 
@@ -397,7 +403,7 @@ def modifySubject(acq,newSubjectlabel):
             - `acq` (btkAcquisition) - a btk acquisition inctance
             - `newSubjectlabel` (str) - desired subject name
     """
-    acq.GetMetaData().FindChild("SUBJECTS").value().FindChild("NAMES").value().GetInfo().SetValue(0,str(newSubjectlabel))
+    acq.GetMetaData().FindChild("SUBJECTS").value().FindChild("NAMES").value().GetInfo().SetValue(0,(newSubjectlabel))
 
 
 def getNumberOfModelOutputs(acq):

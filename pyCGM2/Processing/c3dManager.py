@@ -59,6 +59,7 @@ class UniqueC3dSetProcedure(object):
         self.m_data_path = data_path
 
 
+
     def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag):
 
 

@@ -108,9 +108,9 @@ class EmgConfigManager(Manager.ConfigManager):
         for emg in self.EMGS.keys():
             if emg !="None":
                 if self.EMGS[emg]["Muscle"] != "None":
-                    labels.append(str(emg))
-                    muscles.append(str(self.EMGS[emg]["Muscle"]))
-                    contexts.append(str(self.EMGS[emg]["Context"])) if self.EMGS[emg]["Context"] != "None" else EMG_CONTEXT.append(None)
-                    normalActivities.append(str(self.EMGS[emg]["NormalActivity"])) if self.EMGS[emg]["NormalActivity"] != "None" else EMG_CONTEXT.append(None)
+                    labels.append((emg))
+                    muscles.append((self.EMGS[emg]["Muscle"]))
+                    contexts.append((self.EMGS[emg]["Context"])) if self.EMGS[emg]["Context"] != "None" else EMG_CONTEXT.append(None)
+                    normalActivities.append((self.EMGS[emg]["NormalActivity"])) if self.EMGS[emg]["NormalActivity"] != "None" else EMG_CONTEXT.append(None)
 
         return labels,muscles,contexts,normalActivities

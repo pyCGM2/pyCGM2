@@ -47,7 +47,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     if "forceBtkAcq" in kwargs.keys():
         acqStatic = kwargs["forceBtkAcq"]
     else:
-        acqStatic = btkTools.smartReader(str(DATA_PATH+calibrateFilenameLabelled))
+        acqStatic = btkTools.smartReader((DATA_PATH+calibrateFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqStatic)
     if btkTools.isPointExist(acqStatic,"SACR"):
@@ -192,7 +192,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     if "forceBtkAcq" in kwargs.keys():
         acqGait = kwargs["forceBtkAcq"]
     else:
-        acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+        acqGait = btkTools.smartReader((DATA_PATH + reconstructFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqGait)
     if btkTools.isPointExist(acqGait,"SACR"):

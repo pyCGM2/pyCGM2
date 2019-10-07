@@ -243,7 +243,7 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
         .. code:: python
 
    '''
-    
+
 
     # check if [ pointlabel , context ] in keys of analysisStructureItem
     flag = False
@@ -429,14 +429,16 @@ def stpHorizontalHistogram(figAxis,analysisStructureItem,
         mean = np.mean(overallData)
         err = np.std(overallData)
         figAxis.barh([0], [ mean], color='purple', xerr=[err])
-
         figAxis.set_ylabel("Overall",size=8)
         figAxis.set_yticklabels( [""])
+        figAxis.text(0,0,round(mean,2))
 
     else:
         figAxis.barh([0,1], [mean_L,mean_R],  xerr=[err_L,err_R], color=["red","blue"])
         figAxis.set_yticks([0,1])
         figAxis.set_yticklabels(["L","R"],size=8)
+        figAxis.text(0,0,round(mean_L,2))
+        figAxis.text(0,1,round(mean_R,2))
 
     if title is not None: figAxis.set_title(title ,size=8)
     if xlabel is not None: figAxis.set_xlabel(xlabel,size=8)
