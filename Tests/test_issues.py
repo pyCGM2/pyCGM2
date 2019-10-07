@@ -1,5 +1,7 @@
-# -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_issues.py::TestIssueModel
+# coding: utf-8
+# from __future__ import unicode_literals
+
+# pytest -s --disable-pytest-warnings  test_issues.py::TestIssues
 
 import ipdb
 import os
@@ -14,15 +16,16 @@ from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Tools import btkTools
 from pyCGM2.Eclipse import vskTools
-from pyCGM2.Utils import testingUtils
+from pyCGM2.Utils import testingUtils,files
 import pytest
+from pyCGM2 import btk
 
 class TestIssueModel:
     def test_issue_signAbdAddOffset(self):
 
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Datatests from Vicon\\issues\\Nick-issueAbdAddOffset\\pyCGM2_FullBody_PiG_KADmed - myTest\\"
-        staticFilename = "Static.c3d"
 
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "Datatests from Vicon\\issues\\Nick-issueAbdAddOffset\\pyCGM2_FullBody_PiG_KADmed - myTest\\"
+        staticFilename = "Static.c3d"
         acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
 
         markerDiameter=14
