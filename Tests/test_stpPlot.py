@@ -24,8 +24,8 @@ class Test_stpPlot():
     def test_singleAnalysis(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot_latin1_çà\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
 
         #---- Analysis
@@ -45,7 +45,6 @@ class Test_stpPlot():
         # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
-        pf.setExport(DATA_PATH,"stp","pdf")
         pf.plot()
 
-        plt.show()
+        #plt.show()

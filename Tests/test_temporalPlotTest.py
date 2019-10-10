@@ -16,8 +16,8 @@ class Test_PlotTest():
     def test_temporalKinematicPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
 
         trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames[0])
@@ -30,14 +30,14 @@ class Test_PlotTest():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()
 
 
     def test_temporalKineticPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
         trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames[0])
         # viewer
@@ -48,4 +48,4 @@ class Test_PlotTest():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()

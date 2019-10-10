@@ -22,8 +22,8 @@ class Test_gpsPlotTest():
     def test_singleAnalysis(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
         #---- Analysis
         #--------------------------------------------------------------------------
@@ -46,7 +46,6 @@ class Test_gpsPlotTest():
         # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
-        pf.setExport(DATA_PATH,"gps","pdf")
         pf.plot()
 
-        plt.show()
+        #plt.show()

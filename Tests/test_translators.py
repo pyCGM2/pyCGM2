@@ -91,14 +91,18 @@ class TestTranslatorScenario:
             """
         translators = files.readContent(contents24)
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\Translators\\scenario1\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\translators\\scenario1\\"
         staticFilename = "static.c3d"
+
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"LowLevel\\translators\\scenario1\\"
+        files.createDir(DATA_PATH_OUT)
+
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
         acqStatic2 =  btkTools.applyTranslators(acqStatic,translators["Translators"])
 
-        btkTools.smartWriter(acqStatic2,"scenario1Test.c3d")
+        btkTools.smartWriter(acqStatic2,DATA_PATH_OUT+"scenario1Test.c3d")
 
         np.testing.assert_equal(acqStatic2.GetPoint("LeftASI").GetValues(), acqStatic2.GetPoint("LASI").GetValues())
         np.testing.assert_equal(acqStatic2.GetPoint("RightASI").GetValues(), acqStatic2.GetPoint("RASI").GetValues())
@@ -176,8 +180,12 @@ class TestTranslatorScenario:
             """
         translators = files.readContent(contents24)
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\Translators\\scenario2\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\translators\\scenario2\\"
         staticFilename = "staticAlana.c3d"
+
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"LowLevel\\translators\\scenario2\\"
+        files.createDir(DATA_PATH_OUT)
+
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
@@ -185,7 +193,7 @@ class TestTranslatorScenario:
         acqStatic2 =  btkTools.applyTranslators(acqStatic,translators["Translators"])
 
 
-        btkTools.smartWriter(acqStatic2,"scenario2Test.c3d")
+        btkTools.smartWriter(acqStatic2,DATA_PATH_OUT+"scenario2Test.c3d")
 
         np.testing.assert_equal(acqStatic2.GetPoint("LTHI").GetValues(), acqStatic2.GetPoint("LTHLD").GetValues())
         np.testing.assert_equal(acqStatic2.GetPoint("LTHI_origin").GetValues(), acqStatic.GetPoint("LTHI").GetValues())
@@ -262,8 +270,12 @@ class TestTranslatorScenario:
             """
         translators = files.readContent(contents24)
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\Translators\\scenario3\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\translators\\scenario3\\"
         staticFilename = "staticAlana.c3d"
+
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"LowLevel\\translators\\scenario3\\"
+        files.createDir(DATA_PATH_OUT)
+
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
@@ -271,7 +283,7 @@ class TestTranslatorScenario:
         acqStatic2 =  btkTools.applyTranslators(acqStatic,translators["Translators"])
 
 
-        btkTools.smartWriter(acqStatic2,"scenario3Test.c3d")
+        btkTools.smartWriter(acqStatic2,DATA_PATH_OUT+"scenario3Test.c3d")
 
         np.testing.assert_equal(acqStatic2.GetPoint("LTHI").GetValues(), acqStatic2.GetPoint("LTHAD").GetValues())
         np.testing.assert_equal(acqStatic2.GetPoint("LTHI_origin").GetValues(), acqStatic.GetPoint("LTHI").GetValues())
@@ -344,8 +356,12 @@ class TestTranslatorScenario:
             """
         translators = files.readContent(contents24)
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\Translators\\scenario4\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\translators\\scenario4\\"
         staticFilename = "staticAlana.c3d"
+
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"LowLevel\\translators\\scenario4\\"
+        files.createDir(DATA_PATH_OUT)
+
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
@@ -353,7 +369,7 @@ class TestTranslatorScenario:
         acqStatic2 =  btkTools.applyTranslators(acqStatic,translators["Translators"])
 
 
-        btkTools.smartWriter(acqStatic2,"scenario4Test.c3d")
+        btkTools.smartWriter(acqStatic2,DATA_PATH_OUT +"scenario4Test.c3d")
 
         np.testing.assert_equal(acqStatic2.GetPoint("LTHI").GetValues(), acqStatic.GetPoint("LTHAD").GetValues())
         np.testing.assert_equal(acqStatic2.GetPoint("LTHAD").GetValues(), acqStatic.GetPoint("LTHI").GetValues())
@@ -362,8 +378,12 @@ class TestTranslatorScenario:
 class TestConcreteScenario_tests():
 
     def test_cgm1_sacrum(self):
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\Translators\\cgm1-sacr\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\translators\\cgm1-sacr\\"
         staticFilename = "static.c3d"
+
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"LowLevel\\translators\\cgm1-sacr\\"
+        files.createDir(DATA_PATH_OUT)
+
 
         translators = files.getTranslators(MAIN_PATH, translatorType = "CGM1.translators")
 
@@ -372,7 +392,7 @@ class TestConcreteScenario_tests():
         acqStatic2 =  btkTools.applyTranslators(acqStatic,translators)
 
 
-        btkTools.smartWriter(acqStatic2,"staticCGM1Sacrum.c3d")
+        btkTools.smartWriter(acqStatic2,DATA_PATH_OUT+"staticCGM1Sacrum.c3d")
 
         np.testing.assert_equal(acqStatic2.GetPoint("LPSI").GetValues(), acqStatic.GetPoint("SACR").GetValues())
         np.testing.assert_equal(acqStatic2.GetPoint("RPSI").GetValues(), acqStatic.GetPoint("SACR").GetValues())
@@ -438,8 +458,12 @@ class TestConcreteScenario_tests():
             """
         translators = files.readContent(contents24)
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\Translators\\cgm2.5\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\translators\\cgm2.5\\"
         staticFilename = "static.c3d"
+
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"LowLevel\\translators\\cgm2.5\\"
+        files.createDir(DATA_PATH_OUT)
+
 
         acqStatic = btkTools.smartReader(str(MAIN_PATH +  staticFilename))
 
@@ -447,7 +471,7 @@ class TestConcreteScenario_tests():
         acqStatic2 =  btkTools.applyTranslators(acqStatic,translators["Translators"])
 
 
-        btkTools.smartWriter(acqStatic2,"translators24_initiateWith_25markerset.c3d")
+        btkTools.smartWriter(acqStatic2,DATA_PATH_OUT+"translators24_initiateWith_25markerset.c3d")
 
 
         np.testing.assert_equal(acqStatic2.GetPoint("C7").GetValues(), acqStatic.GetPoint("T2").GetValues())

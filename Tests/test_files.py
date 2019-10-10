@@ -49,7 +49,6 @@ class Test_UtilsFiles:
 
     def test_getFiles(self):
         fs = files.getFiles("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\LowLevelTests\\latin1_iæøå\\","json")
-        import ipdb; ipdb.set_trace()
 
 
     def test_copySessionFolder(self):
@@ -62,8 +61,6 @@ class Test_UtilsFiles:
         dirs = files.getDirs("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\LowLevelTests\\latin1_iæøå\\")
         print dirs
 
-    def test_generateEmptyENF(self):
-        files.generateEmptyENF("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\LowLevelTests\\latin1_iæøå\\")
 
     def test_getFileCreationDate(self):
         files.getFileCreationDate("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\LowLevelTests\\latin1_iæøå\\file.c3d")
@@ -90,3 +87,5 @@ class Test_vsk:
 #
 #         motions = eclipse.findMotions("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Eclipse\\Lecter-iæøå\\session\\",ignoreSelect=False)
 #         import ipdb; ipdb.set_trace()
+# def test_generateEmptyENF(self):
+#     eclipse.generateEmptyENF("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\LowLevelTests\\latin1_iæøå\\")

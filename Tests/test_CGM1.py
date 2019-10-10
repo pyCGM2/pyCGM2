@@ -19,7 +19,7 @@ import pytest
 
 class TestFullBody:
     def test_FullBody_noOptions(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Release Tests\CGM1\\fullBody-native-Options\\"
+        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\fullBody-native-Options\\"
         staticFilename = "static.c3d"
 
         acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
@@ -155,7 +155,7 @@ class TestFullBody:
 class TestLowerBody():
 
     def test_KadMed_options(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Release Tests\CGM1\\kad-med-Options\\"
+        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\kad-med-Options\\"
         staticFilename = "static.c3d"
         acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
 
@@ -263,7 +263,7 @@ class TestLowerBody():
         # testingUtils.plotComparisonofPoint(finalAcqStatic,"RAnkleAngles","test")
 
     def test_KadMed_noOptions(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Release Tests\CGM1\\kad-med-noOptions\\"
+        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\kad-med-noOptions\\"
         staticFilename = "static.c3d"
         acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
 
@@ -369,7 +369,7 @@ class TestLowerBody():
 
 
     def test_Kad_options(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Release Tests\CGM1\\kad-options\\"
+        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\kad-options\\"
         staticFilename = "static.c3d"
         acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
 
@@ -474,7 +474,7 @@ class TestLowerBody():
         testingUtils.test_point(acqGait,"RAnkleAngles","RAnkleAngles_test",decimal = 2)
 
     def test_Kad_noOptions(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Release Tests\CGM1\\kad-noOptions\\"
+        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\kad-noOptions\\"
         staticFilename = "static.c3d"
         acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
 

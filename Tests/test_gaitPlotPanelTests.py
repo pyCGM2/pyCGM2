@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_gaitPlotPanelTests.py::Test_oneAnalysis_GaitPlotTest::test_gaitDescriptiveKinematicPlotPanel
+# pytest -s --disable-pytest-warnings  test_gaitPlotPanelTests.py::Test_oneAnalysis_StandardPlotTest::test_descriptiveKinematicPlotPanel
 import logging
 
 import matplotlib.pyplot as plt
@@ -15,26 +15,20 @@ from pyCGM2.Model.CGM2 import  cgm,cgm2
 from pyCGM2.Report import plot,plotFilters,plotViewers,normativeDatasets,ComparisonPlotViewers
 from pyCGM2.Tools import trialTools
 from pyCGM2.Report import plot
+from pyCGM2.Utils import files
 
 
 class Test_oneAnalysis_StandardPlotTest():
 
 
-    def test_descriptiveKinematicPlotPanel(self):
+    def test_descriptiveKinematicPlotPanel_savePngAndPdf(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot_latin1_çà\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
-        # #---- c3d manager
-        # #--------------------------------------------------------------------------
-        # c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
-        # cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
-        # cmf.enableEmg(False)
-        # trialManager = cmf.generate()
-
-        #---- Analysis
-        #--------------------------------------------------------------------------
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        files.createDir(DATA_PATH_OUT)
 
         modelInfo=None
         subjectInfo=None
@@ -50,9 +44,14 @@ class Test_oneAnalysis_StandardPlotTest():
         # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
+        pf.setExport(DATA_PATH_OUT,"test_descriptiveKinematicPlotPanel","png")
         pf.plot()
 
-        plt.show()
+        # filter
+        pf = plotFilters.PlottingFilter()
+        pf.setViewer(kv)
+        pf.setExport(DATA_PATH_OUT,"test_descriptiveKinematicPlotPanel","pdf")
+        pf.plot()
 
 
 
@@ -65,9 +64,8 @@ class Test_oneAnalysis_GaitPlotTest():
     def test_gaitDescriptiveKinematicPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot_latin1_çà\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
-
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
 
         #---- Analysis
@@ -89,44 +87,13 @@ class Test_oneAnalysis_GaitPlotTest():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
-
-
-    def test_gaitDescriptiveKinematicPlotPanel_recorded(self):
-
-        # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot_latin1_çà\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
-
-
-        #---- Analysis
-        #--------------------------------------------------------------------------
-
-        modelInfo=None
-        subjectInfo=None
-        experimentalInfo=None
-
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames)
-
-        # viewer
-        kv = plotViewers.NormalizedKinematicsPlotViewer(analysisInstance)
-        kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
-        kv.setNormativeDataset(normativeDatasets.Schwartz2008("Free"))
-
-        # filter
-        pf = plotFilters.PlottingFilter()
-        pf.setViewer(kv)
-        pf.setExport(DATA_PATH,"check","png")
-        pf.plot()
-
-        plt.show()
-
+        #plt.show()
 
     def test_gaitConsistencyKinematicPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
 
         #---- Analysis
@@ -148,14 +115,14 @@ class Test_oneAnalysis_GaitPlotTest():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()
 
 
     def test_gaitDescriptiveKineticPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
         #---- Analysis
         #--------------------------------------------------------------------------
@@ -176,7 +143,7 @@ class Test_oneAnalysis_GaitPlotTest():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()
 
 class Test_multipleAnalysis_GaitPlotTest():
 
@@ -184,8 +151,8 @@ class Test_multipleAnalysis_GaitPlotTest():
     def test_gaitDescriptiveKinematicPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
 
         #---- Analysis
@@ -209,15 +176,15 @@ class Test_multipleAnalysis_GaitPlotTest():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()
 
 
 
     def test_gaitConsistencyKinematicPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
         #---- Analysis
         #--------------------------------------------------------------------------
@@ -240,14 +207,14 @@ class Test_multipleAnalysis_GaitPlotTest():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()
 
 
     def test_gaitMeanOnlyKinematicPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
         #---- Analysis
         #--------------------------------------------------------------------------
@@ -269,14 +236,14 @@ class Test_multipleAnalysis_GaitPlotTest():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()
 
 
     def test_gaitConsistencyKineticPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
 
 
@@ -302,14 +269,14 @@ class Test_multipleAnalysis_GaitPlotTest():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()
 
 
     def test_gaitMeanOnlyKineticPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
 
 
@@ -335,4 +302,4 @@ class Test_multipleAnalysis_GaitPlotTest():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()

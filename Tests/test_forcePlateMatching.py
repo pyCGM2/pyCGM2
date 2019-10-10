@@ -24,7 +24,7 @@ class Test_matchedFootPlatForm:
 
     def test_twoPF(self):
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateAssignment\\"
 
         # --- Motion 1
         gaitFilename="walking_oppositeX_2pf.c3d"
@@ -48,7 +48,7 @@ class Test_matchedFootPlatForm:
 
     def test_threePF(self):
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateAssignment\\"
 
         # --- Motion 1
         gaitFilename="walking_Y_3pf.c3d"
@@ -62,7 +62,7 @@ class Test_matchedFootPlatForm:
 
     def test_threePF_patho(self):
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateAssignment\\"
 
         # --- Motion 1
         gaitFilename="walking_pathoY_onlyRight.c3d"
@@ -80,7 +80,7 @@ class Test_matchedFootPlatForm_difficultCases():
         FP#3 misfunction. Zeroing was not performed. Thus an offset superior to the threshold occurs from the beggining
         """
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateAssignment\\"
 
         # --- Motion 1
         gaitFilename="walking-X-4pf.c3d"
@@ -102,10 +102,10 @@ class Test_matchedFootPlatForm_difficultCases():
         """
 
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\footAssignement\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateAssignment\\"
 
         # --- Motion 1
-        gaitFilename="gait trial 01.c3d"
+        gaitFilename="gait trial 6PF_overlay45.c3d"
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
         #forceplates.appendForcePlateCornerAsMarker(acqGait)
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
@@ -116,7 +116,7 @@ class Test_matchedFootPlatForm_difficultCases():
 class Test_manualAssigment:
     def test_threePF_wrongAssigmenent(self):
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateAssignment\\"
 
         # --- Motion 1
         gaitFilename="walking_Y_3pf.c3d"
@@ -132,7 +132,7 @@ class Test_manualAssigment:
 
     def test_threePF_assigmenentCases(self):
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateAssignment\\"
 
         # --- Motion 1
         gaitFilename="walking_Y_3pf.c3d"
@@ -154,7 +154,7 @@ class Test_manualAssigment:
 
     def test_threePF_mfpaSupNumberForcePlates(self):
 
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\forceplates\\detectFoot\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateAssignment\\"
 
         # --- Motion 1
         gaitFilename="walking_Y_3pf.c3d"

@@ -24,8 +24,8 @@ class Test_oneTrial_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d"]
 
         trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames[0])
 
@@ -45,8 +45,8 @@ class Test_oneAnalysis_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
         #---- Analysis
         #--------------------------------------------------------------------------
@@ -74,8 +74,8 @@ class Test_oneAnalysis_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
 
         #---- Analysis
@@ -104,8 +104,8 @@ class Test_oneAnalysis_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames = ["gait Trial 01.c3d","gait Trial 02.c3d"]
 
         #---- Analysis
         #--------------------------------------------------------------------------
@@ -134,8 +134,9 @@ class Test_multipleAnalysis_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames1 = ["gait Trial 01.c3d"]
+        modelledFilenames2 = ["gait Trial 02.c3d"]
 
         #---- Analysis
         #--------------------------------------------------------------------------
@@ -144,8 +145,8 @@ class Test_multipleAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis1 = analysis.makeAnalysis(DATA_PATH,modelledFilenames)
-        analysis2 = analysis.makeAnalysis(DATA_PATH,modelledFilenames)
+        analysis1 = analysis.makeAnalysis(DATA_PATH,modelledFilenames1)
+        analysis2 = analysis.makeAnalysis(DATA_PATH,modelledFilenames2)
 
         analyses = [analysis1, analysis2]
         fig = plt.figure()
@@ -174,8 +175,9 @@ class Test_multipleAnalysis_PlotTest():
         """
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"operations\\plot\\gaitPlot\\"
-        modelledFilenames = ["gait Trial 03 - viconName.c3d"]
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\CGM1-NormalGaitData-Events\Hånnibøl Lecter\\"
+        modelledFilenames1 = ["gait Trial 01.c3d"]
+        modelledFilenames2 = ["gait Trial 02.c3d"]
 
 
         #---- Analysis
@@ -185,8 +187,8 @@ class Test_multipleAnalysis_PlotTest():
         subjectInfo=None
         experimentalInfo=None
 
-        analysis1 = analysis.makeAnalysis(DATA_PATH,modelledFilenames)
-        analysis2 = analysis.makeAnalysis(DATA_PATH,modelledFilenames)
+        analysis1 = analysis.makeAnalysis(DATA_PATH,modelledFilenames1)
+        analysis2 = analysis.makeAnalysis(DATA_PATH,modelledFilenames2)
 
         analyses = [analysis1, analysis2]
         fig = plt.figure()

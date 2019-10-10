@@ -28,7 +28,7 @@ class Test_btkProgression():
     def test_gaitTrialProgressionX_forward_lateralY(self):
         """
         """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
 
         gaitFilename="gait_X_forward.c3d"
@@ -59,7 +59,7 @@ class Test_btkProgression():
         """
 
         """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
         gaitFilename="gait_X_backward.c3d"
         acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
@@ -93,7 +93,7 @@ class Test_btkProgression():
     def test_gaitTrialProgressionY_forward_lateralX(self):
         """
         """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
 
         gaitFilename="gait_Y_forward.c3d"
@@ -124,7 +124,7 @@ class Test_btkProgression():
     def test_gaitTrialProgressionY_backward_lateralX(self):
         """
         """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
 
         gaitFilename="gait_Y_backward.c3d"
@@ -156,7 +156,7 @@ class Test_btkProgression():
     def test_upperBody_gaitTrialProgressionX_forward_lateralY(self):
         """
         """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
 
         gaitFilename="fullBody_GaitX_forward.c3d"
@@ -175,7 +175,7 @@ class Test_btkProgression():
     def test_upperBody_gaitTrialProgressionX_backward_lateralY(self):
         """
         """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
 
         gaitFilename="fullBody_GaitX_backward.c3d"
@@ -197,7 +197,7 @@ class Test_btkProgression_static():
         """
 
         """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
         gaitFilename="static_X.c3d"
         acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
@@ -230,7 +230,7 @@ class Test_btkProgression_static():
         """
 
         """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
         gaitFilename="static_X_backward.c3d"
         acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
@@ -259,7 +259,7 @@ class Test_btkProgression_static():
     def test_gaitTrialProgressionY_backward_lateralX_static(self):
         """
         """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
 
         gaitFilename="static_Y_backward.c3d"
@@ -290,7 +290,7 @@ class Test_btkProgression_static():
     def test_upperBody_StaticProgressionX_forward_lateralY(self):
         """
         """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
 
         gaitFilename="fullBody_StaticX.c3d"
@@ -303,101 +303,3 @@ class Test_btkProgression_static():
         np.testing.assert_equal( pff.outputs["progressionAxis"],"X")
         np.testing.assert_equal( pff.outputs["forwardProgression"] ,True)
         np.testing.assert_equal( pff.outputs["globalFrame"],"XYZ")
-
-
-class Test_issueReported:
-
-    def test_Brian(self):
-        """
-        """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "\\Datasets Tests\\Brian Horsak\\issue-pelvis\\"
-
-
-        gaitFilename="walk09.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
-
-        valSACR=acq.GetPoint("SACR").GetValues()
-
-        btkTools.smartAppendPoint(acq,"RPSI",valSACR,desc="")
-        btkTools.smartAppendPoint(acq,"LPSI",valSACR,desc="")
-
-
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
-        pff.compute()
-
-        np.testing.assert_equal( pff.outputs["progressionAxis"],"X")
-        np.testing.assert_equal( pff.outputs["forwardProgression"] ,True)
-
-
-        gaitFilename="walk11.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
-
-        valSACR=acq.GetPoint("SACR").GetValues()
-
-        btkTools.smartAppendPoint(acq,"RPSI",valSACR,desc="")
-        btkTools.smartAppendPoint(acq,"LPSI",valSACR,desc="")
-
-
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
-        pff.compute()
-
-        np.testing.assert_equal( pff.outputs["progressionAxis"],"X")
-        np.testing.assert_equal( pff.outputs["forwardProgression"] ,True)
-
-
-
-    def test_gaitTrialGarches(self):
-        """
-        """
-        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "operations\\progression\\"
-
-        translators = {
-                "LASI":"L.ASIS",
-                "RASI":"R.ASIS",
-                "LPSI":"L.PSIS",
-                "RPSI":"R.PSIS",
-                "RTHI":"R.Thigh",
-                "RKNE":"R.Knee",
-                "RTHAP":"R.THAP",
-                "RTHAD":"R.THAD",
-                "RTIB":"R.Shank",
-                "RANK":"R.Ankle",
-                "RTIAP":"R.TIAP",
-                "RTIAD":"R.TIAD",
-                "RHEE":"R.Heel",
-                "RSMH":"R.SMH",
-                "RTOE":"R.Toe",
-                "RFMH":"R.FMH",
-                "RVMH":"R.VMH",
-                "LTHI":"L.Thigh",
-                "LKNE":"L.Knee",
-                "LTHAP":"L.THAP",
-                "LTHAD":"L.THAD",
-                "LTIB":"L.Shank",
-                "LANK":"L.Ankle",
-                "LTIAP":"L.TIAP",
-                "LTIAD":"L.TIAD",
-                "LHEE":"L.Heel",
-                "LSMH":"L.SMH",
-                "LTOE":"L.Toe",
-                "LFMH":"L.FMH",
-                "LVMH":"L.VMH",
-                "RKNM":"R.Knee.Medial",
-                "LKNM":"L.Knee.Medial",
-                "RMED":"R.Ankle.Medial",
-                "LMED":"L.Ankle.Medial"
-                }
-
-        gaitFilename="gait_garches_issue.c3d"
-
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename),translators =translators )
-
-
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
-        pff.compute()
-
-        np.testing.assert_equal( pff.outputs["progressionAxis"],"Y")
-        np.testing.assert_equal( pff.outputs["forwardProgression"] ,False)

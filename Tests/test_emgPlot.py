@@ -13,33 +13,35 @@ from pyCGM2.EMG import emgFilters
 
 from pyCGM2.Processing import cycle,analysis,c3dManager
 from pyCGM2 import enums
-
-
 from pyCGM2.Report import plot,plotFilters,emgPlotViewers
+from pyCGM2.Utils import files
 
 class Test_emgPlotTests():
 
     def test_temporalPlotSingleEmg(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes_latin1-çà\\"
-        gaitTrial = "gait.c3d"
-        restTrial = "repos.c3d"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\\EMG\\Hånnibøl Lecter-nerve block\\"
+        gaitTrial = "PRE-gait trial 01.c3d"
+        restTrial = "PRE-repos.c3d"
 
-        EMG_LABELS=['Voltage.EMG1']
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"GaitData\\EMG\\Hånnibøl Lecter-nerve block\\"
+        files.createDir(DATA_PATH_OUT)
+
+        EMG_LABELS=['EMG1']
 
         acq = btkTools.smartReader(DATA_PATH +gaitTrial)
         bf = emgFilters.BasicEmgProcessingFilter(acq,EMG_LABELS)
         bf.setHighPassFrequencies(20.0,200.0)
         bf.run()
-        btkTools.smartWriter(acq,DATA_PATH+"testBasicPlot.c3d")
+        btkTools.smartWriter(acq,DATA_PATH_OUT+"test_temporalPlotSingleEmg.c3d")
 
 
-        trial =trialTools.smartTrialReader(DATA_PATH,"testBasicPlot.c3d")
+        trial =trialTools.smartTrialReader(DATA_PATH_OUT,"test_temporalPlotSingleEmg.c3d")
 
         fig = plt.figure()
         ax = plt.gca()
-        plot.temporalPlot(ax,trial,"Voltage.EMG1_Rectify",0,
+        plot.temporalPlot(ax,trial,"EMG1_Rectify",0,
                 color="blue",
                 title="test", xlabel="frame", ylabel="emg",ylim=None,legendLabel=None,
                 customLimits=None)
@@ -51,25 +53,28 @@ class Test_emgPlotTests():
     def test_temporalPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes_latin1-çà\\"
-        gaitTrial = "gait.c3d"
-        restTrial = "repos.c3d"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\\EMG\\Hånnibøl Lecter-nerve block\\"
+        gaitTrial = "PRE-gait trial 01.c3d"
+        restTrial = "PRE-repos.c3d"
 
-        EMG_LABELS=['Voltage.EMG1','Voltage.EMG2','Voltage.EMG3','Voltage.EMG4']
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"GaitData\\EMG\\Hånnibøl Lecter-nerve block\\"
+        files.createDir(DATA_PATH_OUT)
+
+        EMG_LABELS=['EMG1','EMG2','EMG3','EMG4']
 
         acq = btkTools.smartReader(DATA_PATH +gaitTrial)
 
         bf = emgFilters.BasicEmgProcessingFilter(acq,EMG_LABELS)
         bf.setHighPassFrequencies(20.0,200.0)
         bf.run()
-        btkTools.smartWriter(acq,DATA_PATH+"testBasicPlot.c3d")
+        btkTools.smartWriter(acq,DATA_PATH_OUT+"test_temporalPlotPanel.c3d")
 
 
-        trial =trialTools.smartTrialReader(DATA_PATH,"testBasicPlot.c3d")
+        trial =trialTools.smartTrialReader(DATA_PATH_OUT,"test_temporalPlotPanel.c3d")
 
         # # viewer
         kv = emgPlotViewers.TemporalEmgPlotViewer(trial)
-        kv.setEmgs([["Voltage.EMG1","Left","RF"],["Voltage.EMG2","Right","RF"],["Voltage.EMG3","Left","vaste"],["Voltage.EMG4","Right","vaste"]])
+        kv.setEmgs([["EMG1","Left","RF"],["EMG2","Right","RF"],["EMG3","Left","vaste"],["EMG4","Right","vaste"]])
         kv.setNormalActivationLabels(["RECFEM","RECFEM",None,"VASLAT"])
         kv. setEmgRectify(True)
 
@@ -86,11 +91,15 @@ class Test_emgPlotTests():
     def test_envelopPlotSingleEmg(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes\\"
-        gaitTrial = "gait.c3d"
-        restTrial = "repos.c3d"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\\EMG\\Hånnibøl Lecter-nerve block\\"
+        gaitTrial = "PRE-gait trial 01.c3d"
+        restTrial = "PRE-repos.c3d"
 
-        EMG_LABELS=['Voltage.EMG1','Voltage.EMG2']
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"GaitData\\EMG\\Hånnibøl Lecter-nerve block\\"
+        files.createDir(DATA_PATH_OUT)
+
+
+        EMG_LABELS=['EMG1','EMG2']
 
         acq = btkTools.smartReader(DATA_PATH +gaitTrial)
 
@@ -102,11 +111,11 @@ class Test_emgPlotTests():
         envf.setCutoffFrequency(180.0)
         envf.run()
 
-        btkTools.smartWriter(acq,DATA_PATH+"test.c3d")
+        btkTools.smartWriter(acq,DATA_PATH_OUT+"test_envelopPlotSingleEmg.c3d")
 
-        modelledFilenames = ["test.c3d"]
+        modelledFilenames = ["test_envelopPlotSingleEmg.c3d"]
 
-        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH_OUT,modelledFilenames)
         cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
         cmf.enableSpatioTemporal(False)
         cmf.enableKinematic(False)
@@ -134,7 +143,7 @@ class Test_emgPlotTests():
         analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
                                                       kinematicLabelsDict = None,
                                                       kineticLabelsDict = None,
-                                                      emgLabelList = ['Voltage.EMG1_Rectify_Env','Voltage.EMG2_Rectify_Env'],
+                                                      emgLabelList = ['EMG1_Rectify_Env','EMG2_Rectify_Env'],
                                                       subjectInfos=subjectInfo,
                                                       modelInfos=modelInfo,
                                                       experimentalInfos=experimentalInfo)
@@ -146,7 +155,7 @@ class Test_emgPlotTests():
 
         analysisInstance = analysisFilter.analysis
 
-        envnf = emgFilters.EmgNormalisationProcessingFilter(analysisInstance,"Voltage.EMG1","Left")
+        envnf = emgFilters.EmgNormalisationProcessingFilter(analysisInstance,"EMG1","Left")
         envnf.setMaxMethod(enums.EmgAmplitudeNormalization.MeanMax)
         envnf.run()
 
@@ -155,7 +164,7 @@ class Test_emgPlotTests():
         fig = plt.figure()
         ax = plt.gca()
         plot.gaitDescriptivePlot(ax,analysisInstance.emgStats,
-                                "Voltage.EMG1_Rectify_Env","Left",0,
+                                "EMG1_Rectify_Env","Left",0,
                                 color=None,
                                 title="title", xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                                 customLimits=None)
@@ -169,11 +178,14 @@ class Test_emgPlotTests():
     def test_envelopCoactivationPlot(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes\\"
-        gaitTrial = "gait.c3d"
-        restTrial = "repos.c3d"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\\EMG\\Hånnibøl Lecter-nerve block\\"
+        gaitTrial = "PRE-gait trial 01.c3d"
+        restTrial = "PRE-repos.c3d"
 
-        EMG_LABELS=['Voltage.EMG1','Voltage.EMG2']
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"GaitData\\EMG\\Hånnibøl Lecter-nerve block\\"
+        files.createDir(DATA_PATH_OUT)
+
+        EMG_LABELS=['EMG1','EMG2']
 
         acq = btkTools.smartReader(DATA_PATH +gaitTrial)
 
@@ -185,11 +197,11 @@ class Test_emgPlotTests():
         envf.setCutoffFrequency(180.0)
         envf.run()
 
-        btkTools.smartWriter(acq,DATA_PATH+"test.c3d")
+        btkTools.smartWriter(acq,DATA_PATH_OUT+"test_envelopCoactivationPlot.c3d")
 
-        modelledFilenames = ["test.c3d"]
+        modelledFilenames = ["test_envelopCoactivationPlot.c3d"]
 
-        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH_OUT,modelledFilenames)
         cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
         cmf.enableSpatioTemporal(False)
         cmf.enableKinematic(False)
@@ -217,7 +229,7 @@ class Test_emgPlotTests():
         analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
                                                       kinematicLabelsDict = None,
                                                       kineticLabelsDict = None,
-                                                      emgLabelList = ['Voltage.EMG1_Rectify_Env','Voltage.EMG2_Rectify_Env'],
+                                                      emgLabelList = ['EMG1_Rectify_Env','EMG2_Rectify_Env'],
                                                       subjectInfos=subjectInfo,
                                                       modelInfos=modelInfo,
                                                       experimentalInfos=experimentalInfo)
@@ -229,17 +241,17 @@ class Test_emgPlotTests():
 
         analysisInstance = analysisFilter.analysis
 
-        envnf = emgFilters.EmgNormalisationProcessingFilter(analysisInstance,"Voltage.EMG1","Left")
+        envnf = emgFilters.EmgNormalisationProcessingFilter(analysisInstance,"EMG1","Left")
         envnf.setMaxMethod(enums.EmgAmplitudeNormalization.MeanMax)
         envnf.run()
 
-        envnf = emgFilters.EmgNormalisationProcessingFilter(analysisInstance,"Voltage.EMG2","Left")
+        envnf = emgFilters.EmgNormalisationProcessingFilter(analysisInstance,"EMG2","Left")
         envnf.setMaxMethod(enums.EmgAmplitudeNormalization.MeanMax)
         envnf.run()
 
         # viewer
         kv = emgPlotViewers.CoactivationEmgPlotViewer (analysisInstance)
-        kv.setEmgs("Voltage.EMG1","Voltage.EMG2")
+        kv.setEmgs("EMG1","EMG2")
         kv.setMuscles("RF1","RF2")
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
         kv.setContext("Left")
@@ -256,11 +268,14 @@ class Test_emgPlotTests():
     def test_envelopGaitPlotPanel(self):
 
         # ----DATA-----
-        DATA_PATH = pyCGM2.TEST_DATA_PATH+"EMG\\SampleNantes\\"
-        gaitTrial = "gait.c3d"
-        restTrial = "repos.c3d"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"GaitData\\EMG\\Hånnibøl Lecter-nerve block\\"
+        gaitTrial = "PRE-gait trial 01.c3d"
+        restTrial = "PRE-repos.c3d"
 
-        EMG_LABELS=['Voltage.EMG1','Voltage.EMG2']
+        DATA_PATH_OUT = pyCGM2.TEST_DATA_PATH_OUT+"GaitData\\EMG\\Hånnibøl Lecter-nerve block\\"
+        files.createDir(DATA_PATH_OUT)
+
+        EMG_LABELS=['EMG1','EMG2']
 
         acq = btkTools.smartReader(DATA_PATH +gaitTrial)
 
@@ -272,11 +287,11 @@ class Test_emgPlotTests():
         envf.setCutoffFrequency(180.0)
         envf.run()
 
-        btkTools.smartWriter(acq,DATA_PATH+"test.c3d")
+        btkTools.smartWriter(acq,DATA_PATH_OUT+"test_envelopGaitPlotPanel.c3d")
 
-        modelledFilenames = ["test.c3d"]
+        modelledFilenames = ["test_envelopGaitPlotPanel.c3d"]
 
-        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH_OUT,modelledFilenames)
         cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
         cmf.enableSpatioTemporal(False)
         cmf.enableKinematic(False)
@@ -304,7 +319,7 @@ class Test_emgPlotTests():
         analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
                                                       kinematicLabelsDict = None,
                                                       kineticLabelsDict = None,
-                                                      emgLabelList = ['Voltage.EMG1_Rectify_Env','Voltage.EMG2_Rectify_Env'],
+                                                      emgLabelList = ['EMG1_Rectify_Env','EMG2_Rectify_Env'],
                                                       subjectInfos=subjectInfo,
                                                       modelInfos=modelInfo,
                                                       experimentalInfos=experimentalInfo)
@@ -316,11 +331,11 @@ class Test_emgPlotTests():
 
         analysisInstance = analysisFilter.analysis
 
-        envnf = emgFilters.EmgNormalisationProcessingFilter(analysisInstance,"Voltage.EMG1","Right")
+        envnf = emgFilters.EmgNormalisationProcessingFilter(analysisInstance,"EMG1","Right")
         envnf.setMaxMethod(enums.EmgAmplitudeNormalization.MeanMax)
         envnf.run()
 
-        envnf = emgFilters.EmgNormalisationProcessingFilter(analysisInstance,"Voltage.EMG2","Right")
+        envnf = emgFilters.EmgNormalisationProcessingFilter(analysisInstance,"EMG2","Right")
         envnf.setMaxMethod(enums.EmgAmplitudeNormalization.MeanMax)
         envnf.run()
 
@@ -329,7 +344,7 @@ class Test_emgPlotTests():
 
         # viewer
         kv = emgPlotViewers.EnvEmgGaitPlotPanelViewer (analysisInstance)
-        kv.setEmgs([["Voltage.EMG1","Right","rf"],["Voltage.EMG2","Right","rf"]])
+        kv.setEmgs([["EMG1","Right","rf"],["EMG2","Right","rf"]])
         kv.setNormalActivationLabels(["RECFEM","RECFEM"])
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
 

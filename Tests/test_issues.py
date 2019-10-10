@@ -19,12 +19,13 @@ from pyCGM2.Eclipse import vskTools
 from pyCGM2.Utils import testingUtils,files
 import pytest
 from pyCGM2 import btk
+from pyCGM2.Processing import progressionFrame
 
-class TestIssueModel:
+class TestStephenM:
     def test_issue_signAbdAddOffset(self):
 
 
-        DATA_PATH = pyCGM2.TEST_DATA_PATH + "Datatests from Vicon\\issues\\Nick-issueAbdAddOffset\\pyCGM2_FullBody_PiG_KADmed - myTest\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "Issues\\StephenM\\signedAbdAdd-KadMed\\"
         staticFilename = "Static.c3d"
         acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
 
@@ -92,3 +93,45 @@ class TestIssueModel:
         testingUtils.test_offset(model.mp_computed["RightStaticPlantFlexOffset"],acqStatic,"RStaticPlantFlex", decimal=1)
         testingUtils.test_offset(model.mp_computed["LeftStaticRotOffset"],acqStatic,"LStaticRotOff", decimal=1)
         testingUtils.test_offset(model.mp_computed["RightStaticRotOffset"],acqStatic,"RStaticRotOff", decimal=1)
+
+
+class Test_BrianH:
+
+    def test_progressionFrameIssue(self):
+        """
+        """
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "\\Issues\\BrianH\\progressionFrame Issue\\"
+
+
+        gaitFilename="walk09.c3d"
+        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        valSACR=acq.GetPoint("SACR").GetValues()
+
+        btkTools.smartAppendPoint(acq,"RPSI",valSACR,desc="")
+        btkTools.smartAppendPoint(acq,"LPSI",valSACR,desc="")
+
+
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
+        pff.compute()
+
+        np.testing.assert_equal( pff.outputs["progressionAxis"],"X")
+        np.testing.assert_equal( pff.outputs["forwardProgression"] ,True)
+
+
+        gaitFilename="walk11.c3d"
+        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        valSACR=acq.GetPoint("SACR").GetValues()
+
+        btkTools.smartAppendPoint(acq,"RPSI",valSACR,desc="")
+        btkTools.smartAppendPoint(acq,"LPSI",valSACR,desc="")
+
+
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
+        pff.compute()
+
+        np.testing.assert_equal( pff.outputs["progressionAxis"],"X")
+        np.testing.assert_equal( pff.outputs["forwardProgression"] ,True)

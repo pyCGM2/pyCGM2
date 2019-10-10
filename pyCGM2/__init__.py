@@ -52,7 +52,8 @@ NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"pyCGM2\\Data\\normativeData\\"  # B
 OPENSIM_PREBUILD_MODEL_PATH = PYCGM2_APPDATA_PATH + "opensim\\"
 
 # [Optional] path pointing at Data Folders used for Tests
-TEST_DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\"
+TEST_DATA_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\"
+TEST_DATA_PATH_OUT = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests-OUT\\"
 MAIN_BENCHMARK_PATH = "C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-benchmarks\\Gait patterns\\"
 
 # [optional] path pointing pyCGM2-Nexus tools
