@@ -35,7 +35,7 @@ class Test_oneTrial_PlotTest():
                 title="test", xlabel="frame", ylabel="angle",ylim=None,legendLabel=None,
                 customLimits=None)
 
-        plt.show()
+        #plt.show()
 
 class Test_oneAnalysis_PlotTest():
 
@@ -65,7 +65,7 @@ class Test_oneAnalysis_PlotTest():
                                 color="blue",
                                 title="", xlabel="", ylabel="",ylim=None,
                                 customLimits=None)
-        plt.show()
+        #plt.show()
 
 
     def test_consistencyPlot_OneModelOutputPlot(self):
@@ -95,7 +95,7 @@ class Test_oneAnalysis_PlotTest():
                                 color="blue",
                                 title="", xlabel="", ylabel="",ylim=None,
                                 customLimits=None)
-        plt.show()
+        #plt.show()
 
 
     def test_meanPlot_OneModelOutputPlot(self):
@@ -123,7 +123,7 @@ class Test_oneAnalysis_PlotTest():
                                 color="blue",
                                 title="", xlabel="", ylabel="",ylim=None,
                                 customLimits=None)
-        plt.show()
+        #plt.show()
 
 
 class Test_multipleAnalysis_PlotTest():
@@ -166,7 +166,7 @@ class Test_multipleAnalysis_PlotTest():
                                  legendLabel="analysis2",
                                  customLimits=None)
         ax.legend()
-        plt.show()
+        #plt.show()
 
 
     def test_meanPlot_OneModelOutputPlot(self):
@@ -208,4 +208,4 @@ class Test_multipleAnalysis_PlotTest():
                                  legendLabel="analysis2",
                                  customLimits=None)
         ax.legend()
-        plt.show()
+        #plt.show()

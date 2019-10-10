@@ -46,7 +46,7 @@ class Test_emgPlotTests():
                 title="test", xlabel="frame", ylabel="emg",ylim=None,legendLabel=None,
                 customLimits=None)
         plot.addTemporalNormalActivationLayer(ax,trial,"RECFEM","Left")
-        plt.show()
+        #plt.show()
 
 
 
@@ -84,7 +84,7 @@ class Test_emgPlotTests():
         pf.setExport(DATA_PATH,"check","png")
         pf.plot()
 
-        plt.show()
+        #plt.show()
 
 
 
@@ -172,7 +172,7 @@ class Test_emgPlotTests():
         footOff = analysisInstance.emgStats.pst['stancePhase', "Left"]["mean"]
         plot.addNormalActivationLayer(ax,"RECFEM", footOff)
 
-        plt.show()
+        #plt.show()
 
 
     def test_envelopCoactivationPlot(self):
@@ -261,7 +261,7 @@ class Test_emgPlotTests():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()
 
 
 
@@ -354,4 +354,4 @@ class Test_emgPlotTests():
         pf.setViewer(kv)
         pf.plot()
 
-        plt.show()
+        #plt.show()
