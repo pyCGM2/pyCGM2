@@ -25,6 +25,9 @@ try:
 except Exception, errormsg:
     logging.info (errormsg)
 
+
+ENCODER = "latin-1"
+
 # CONSTANTS
 cased_path = glob.glob(re.sub(r'([^:])(?=[/\\]|$)', r'[\1]', __file__))[0]
 MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(cased_path), os.pardir)) + "\\"

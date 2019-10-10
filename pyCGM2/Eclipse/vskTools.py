@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 import string
 import logging
+import pyCGM2
 from pyCGM2.Utils import files
 
 
@@ -12,7 +13,7 @@ def getVskFiles(path):
     if len(vskFile)>1:
         logging.warning("Folder with several vsk. %s selected"%(vskFile[0]))
 
-    return vskFile[0].encode("latin-1")
+    return vskFile[0].encode(pyCGM2.ENCODER)
 
 
 def checkSetReadOnly(vskfilename):
@@ -56,7 +57,7 @@ class Vsk(object):
         for sp in staticParameters:
             if sp.attrs["NAME"] == label:
                 try:
-                    val = sp.attrs["VALUE"].encode("latin-1")
+                    val = sp.attrs["VALUE"].encode(pyCGM2.ENCODER)
                 except KeyError:
                     logging.warning("static parameter (%s) has no value. Zero return"%(label))
                     val=0

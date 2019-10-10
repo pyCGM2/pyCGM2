@@ -1,6 +1,6 @@
 # coding: utf-8
 # from __future__ import unicode_literals
-
+import pyCGM2
 import numpy as np
 import scipy as sp
 import logging
@@ -8,7 +8,7 @@ import encodings
 from pyCGM2 import btk
 
 # --- acquisition -----
-def smartReader(filename,translators=None,encoder="latin-1"):
+def smartReader(filename,translators=None,encoder=pyCGM2.ENCODER):
     """
         Convenient function to read a c3d with Btk
 
@@ -26,7 +26,7 @@ def smartReader(filename,translators=None,encoder="latin-1"):
         acq =  applyTranslators(acq,translators)
     return acq
 
-def smartWriter(acq, filename,encoder="latin-1"):
+def smartWriter(acq, filename,encoder=pyCGM2.ENCODER):
     """
         Convenient function to write a c3d with Btk
 

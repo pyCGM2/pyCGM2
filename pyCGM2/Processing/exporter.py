@@ -4,7 +4,7 @@ import pandas as pd
 import logging
 
 # pyCGM2
-
+import pyCGM2
 from pyCGM2.Utils import files
 from pyCGM2.Tools import exportTools
 
@@ -84,14 +84,14 @@ class XlsAnalysisExportFilter(object):
 
         if path == None:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xls").decode("utf-8").encode("latin-1"),engine='xlwt')
+                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xls").decode("utf-8").encode(pyCGM2.ENCODER),engine='xlwt')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xlsx").decode("utf-8").encode("latin-1"))
+                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xlsx").decode("utf-8").encode(pyCGM2.ENCODER))
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xls").decode("utf-8").encode("latin-1"),engine='xlwt')
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xls").decode("utf-8").encode(pyCGM2.ENCODER),engine='xlwt')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xlsx").decode("utf-8").encode("latin-1"))
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xlsx").decode("utf-8").encode(pyCGM2.ENCODER))
 
         # metadata
         #--------------
@@ -304,14 +304,14 @@ class XlsAnalysisExportFilter(object):
 
         if path == None:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xls").decode("utf-8").encode("latin-1"),engine='xlwt',encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xls").decode("utf-8").encode(pyCGM2.ENCODER),engine='xlwt',encoding='utf-8')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xlsx").decode("utf-8").encode("latin-1"),encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xlsx").decode("utf-8").encode(pyCGM2.ENCODER),encoding='utf-8')
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xls").decode("utf-8").encode("latin-1"),engine='xlwt',encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xls").decode("utf-8").encode(pyCGM2.ENCODER),engine='xlwt',encoding='utf-8')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xlsx").decode("utf-8").encode("latin-1"),encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xlsx").decode("utf-8").encode(pyCGM2.ENCODER),encoding='utf-8')
 
         # infos
         #-------
@@ -814,9 +814,9 @@ class AnalysisC3dExportFilter(object):
 
         try:
             if path == None:
-                ma.io.write(root,(outputName+".c3d").decode("utf-8").encode("latin-1")  )
+                ma.io.write(root,(outputName+".c3d").decode("utf-8").encode(pyCGM2.ENCODER)  )
             else:
-                ma.io.write(root,(path + outputName+".c3d").decode("utf-8").encode("latin-1"))
+                ma.io.write(root,(path + outputName+".c3d").decode("utf-8").encode(pyCGM2.ENCODER))
             logging.info("Analysis c3d  [%s.c3d] Exported" %( (outputName +".c3d")) )
         except:
             raise Exception ("[pyCGM2] : analysis c3d doesn t export" )

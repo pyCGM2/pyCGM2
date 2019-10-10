@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import logging
 
+import pyCGM2
 # openMA
 from pyCGM2 import ma
 from pyCGM2.ma import io
@@ -118,7 +119,7 @@ def isKineticFlag(trial):
         return True,kineticEvent_times,kineticEvent_times_left,kineticEvent_times_right
 
 
-def automaticKineticDetection(dataPath,filenames,trials=None,encoder="latin-1"):
+def automaticKineticDetection(dataPath,filenames,trials=None,encoder=pyCGM2.ENCODER):
     """
         convenient method for detecting correct kinetic in a filename set
 
@@ -300,7 +301,7 @@ def renameOpenMAtoVicon(analysis, suffix=""):
             newName = newName[0: newName.rfind("Power")+5] + suffix
         ts.setName(newName)
 
-def buildTrials(dataPath,trialfilenames,encoder="latin-1"):
+def buildTrials(dataPath,trialfilenames,encoder=pyCGM2.ENCODER):
     """
         Get trial list from filenames
 
@@ -326,7 +327,7 @@ def buildTrials(dataPath,trialfilenames,encoder="latin-1"):
     return trials,filenames
 
 
-def smartTrialReader(dataPath,trialfilename,encoder="latin-1"):
+def smartTrialReader(dataPath,trialfilename,encoder=pyCGM2.ENCODER):
     if dataPath is None:
         fileNode = ma.io.read((trialfilename).decode("utf-8").encode(encoder))
     else:

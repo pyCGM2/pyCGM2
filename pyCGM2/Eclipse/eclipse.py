@@ -21,7 +21,7 @@ def generateEmptyENF(path):
     for c3d in c3ds:
         enfName = c3d[:-4]+".Trial.enf"
         if enfName not in os.listdir(path.decode("utf-8")):
-            open((path.decode("utf-8")+enfName).encode("latin-1"), 'a').close()
+            open((path.decode("utf-8")+enfName).encode(pyCGM2.ENCODER), 'a').close()
 
 
 def getCurrentMarkedEnfs():
@@ -314,7 +314,7 @@ class TrialEnfReader(EnfReader):
 
 
     def save(self):
-        with open((self.m_path + self.m_file).decode("utf-8").encode("latin-1"), 'w') as configfile:
+        with open((self.m_path + self.m_file).decode("utf-8").encode(pyCGM2.ENCODER), 'w') as configfile:
             self.m_config.write(configfile)
 
 

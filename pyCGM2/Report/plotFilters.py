@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-
+import pyCGM2
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
@@ -62,11 +62,11 @@ class PlottingFilter(object):
 
         if self.m_path is not None and self.m_fileName is not None:
             if self.m_format is "pdf":
-                pp = PdfPages((self.m_path+ self.m_fileName+".pdf").decode("utf-8").encode("latin-1"))
+                pp = PdfPages((self.m_path+ self.m_fileName+".pdf").decode("utf-8").encode(pyCGM2.ENCODER))
                 pp.savefig(self.fig)
                 pp.close()
             else:
-                plt.savefig((self.m_path+ self.m_fileName+"."+self.m_format).decode("utf-8").encode("latin-1"))
+                plt.savefig((self.m_path+ self.m_fileName+"."+self.m_format).decode("utf-8").encode(pyCGM2.ENCODER))
 
     def setYlimits(self, axisIndex, min, max):
         self.__concretePlotViewer.fig.axes[axisIndex].set_ylim([min,max])

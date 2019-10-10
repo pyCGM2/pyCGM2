@@ -21,7 +21,7 @@ def openFile(path,filename):
 
     """
     if os.path.isfile( (path + filename).decode("utf-8")):
-        content = open((path+filename).decode("utf-8").encode("latin-1")).read()
+        content = open((path+filename).decode("utf-8").encode(pyCGM2.ENCODER)).read()
 
         jsonFlag = is_json(content)
         yamlFlag = is_yaml(content)
@@ -69,7 +69,7 @@ def loadModel(path,FilenameNoExt):
     if not os.path.isfile((path + filename).decode("utf-8")):
         raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM Calibration operation"%filename)
     else:
-        f = open((path+filename).decode("utf-8").encode("latin-1"), 'r')
+        f = open((path+filename).decode("utf-8").encode(pyCGM2.ENCODER), 'r')
         model = cPickle.load(f)
         f.close()
 
@@ -87,7 +87,7 @@ def saveModel(model,path,FilenameNoExt):
         logging.warning("previous model removed")
         os.remove((path + filename).decode("utf-8"))
 
-    modelFile = open((path+filename).decode("utf-8").encode("latin-1"), "w")
+    modelFile = open((path+filename).decode("utf-8").encode(pyCGM2.ENCODER), "w")
     cPickle.dump(model, modelFile)
     modelFile.close()
 
@@ -102,7 +102,7 @@ def loadAnalysis(path,FilenameNoExt):
     if not os.path.isfile((path + filename).decode("utf-8")):
         raise Exception ("%s-pyCGM2.analysis file doesn't exist"%filename)
     else:
-        f = open((path+filename).decode("utf-8").encode("latin-1"), 'r')
+        f = open((path+filename).decode("utf-8").encode(pyCGM2.ENCODER), 'r')
         analysis = cPickle.load(f)
         f.close()
 
@@ -120,7 +120,7 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
         logging.warning("previous analysis removed")
         os.remove((path + filename).decode("utf-8"))
 
-    analysisFile = open((path+filename).decode("utf-8").encode("latin-1"), "w")
+    analysisFile = open((path+filename).decode("utf-8").encode(pyCGM2.ENCODER), "w")
     cPickle.dump(analysisInstance, analysisFile)
     analysisFile.close()
 
@@ -146,7 +146,7 @@ def saveJson(path, filename, content):
         with open((filename), 'w') as outfile:
             json.dump(content, outfile,indent=4)
     else:
-        with open((path+filename).encode("latin-1"), 'w') as outfile:
+        with open((path+filename).encode(pyCGM2.ENCODER), 'w') as outfile:
             json.dump(content, outfile,indent=4)
 
 
@@ -197,7 +197,7 @@ def getMpFileContent(DATA_PATH,file,subject):
         out = file
 
     if not os.path.isfile( (DATA_PATH + file).decode("utf-8")):
-        copyfile((pyCGM2.PYCGM2_SETTINGS_FOLDER+file), (DATA_PATH + out).decode("utf-8").encode("latin-1"))
+        copyfile((pyCGM2.PYCGM2_SETTINGS_FOLDER+file), (DATA_PATH + out).decode("utf-8").encode(pyCGM2.ENCODER))
         logging.warning("Copy of %s from pyCGM2 Settings folder"%(file))
 
     content = openFile(DATA_PATH,out)
@@ -303,10 +303,10 @@ def getFiles(path, extension, ignore=None):
     for file in os.listdir(path.decode("utf-8")):
         if ignore is None:
             if file.endswith(extension):
-                out.append(file.encode("latin-1"))
+                out.append(file.encode(pyCGM2.ENCODER))
         else:
             if file.endswith(extension) and ignore not in file:
-                out.append(file.encode("latin-1"))
+                out.append(file.encode(pyCGM2.ENCODER))
 
     return out
 
@@ -317,10 +317,10 @@ def getC3dFiles(path, text="", ignore=None ):
     for file in os.listdir(path.decode("utf-8")):
        if ignore is None:
            if file.endswith(".c3d"):
-               if text in file:  out.append(file.encode("latin-1"))
+               if text in file:  out.append(file.encode(pyCGM2.ENCODER))
        else:
            if file.endswith(".c3d") and ignore not in file:
-               if text in file:  out.append(file.encode("latin-1"))
+               if text in file:  out.append(file.encode(pyCGM2.ENCODER))
 
     return out
 
@@ -331,15 +331,15 @@ def copySessionFolder(folderPath, folder2copy, newFolder, selectedFiles=None):
 
     for file in os.listdir((folderPath+"\\"+folder2copy).decode("utf-8")):
         if file.endswith(".Session.enf"):
-            src = (folderPath.decode("utf-8")+"\\"+folder2copy.decode("utf-8")+"\\" +file).encode("latin-1")
-            dst = (folderPath.decode("utf-8")+"\\"+newFolder.decode("utf-8")+"\\" +newFolder.decode("utf-8")+".Session.enf").encode("latin-1")
+            src = (folderPath.decode("utf-8")+"\\"+folder2copy.decode("utf-8")+"\\" +file).encode(pyCGM2.ENCODER)
+            dst = (folderPath.decode("utf-8")+"\\"+newFolder.decode("utf-8")+"\\" +newFolder.decode("utf-8")+".Session.enf").encode(pyCGM2.ENCODER)
 
             shutil.copyfile(src, dst)
         else:
             if selectedFiles is None:
                 fileToCopy = file
-                src = (folderPath.decode("utf-8")+"\\"+folder2copy.decode("utf-8")+"\\" +fileToCopy).encode("latin-1")
-                dst = (folderPath.decode("utf-8")+"\\"+newFolder.decode("utf-8")+"\\" + fileToCopy).encode("latin-1")
+                src = (folderPath.decode("utf-8")+"\\"+folder2copy.decode("utf-8")+"\\" +fileToCopy).encode(pyCGM2.ENCODER)
+                dst = (folderPath.decode("utf-8")+"\\"+newFolder.decode("utf-8")+"\\" + fileToCopy).encode(pyCGM2.ENCODER)
 
                 shutil.copyfile(src, dst)
 
@@ -348,8 +348,8 @@ def copySessionFolder(folderPath, folder2copy, newFolder, selectedFiles=None):
                 if file in selectedFiles:
                     fileToCopy = file
 
-                    src = (folderPath.decode("utf-8")+"\\"+folder2copy.decode("utf-8")+"\\" +fileToCopy).encode("latin-1")
-                    dst = (folderPath.decode("utf-8")+"\\"+newFolder.decode("utf-8")+"\\" + fileToCopy).encode("latin-1")
+                    src = (folderPath.decode("utf-8")+"\\"+folder2copy.decode("utf-8")+"\\" +fileToCopy).encode(pyCGM2.ENCODER)
+                    dst = (folderPath.decode("utf-8")+"\\"+newFolder.decode("utf-8")+"\\" + fileToCopy).encode(pyCGM2.ENCODER)
 
                     shutil.copyfile(src, dst)
 
@@ -364,7 +364,7 @@ def createDir(fullPathName):
 def getDirs(folderPath):
     folderPath = folderPath.decode("utf-8")
     pathOut = folderPath[:-1] if folderPath[-1:]=="\\" else folderPath
-    dirs = [ name.encode("latin-1") for name in os.listdir(pathOut) if os.path.isdir(os.path.join(pathOut, name)) ]
+    dirs = [ name.encode(pyCGM2.ENCODER) for name in os.listdir(pathOut) if os.path.isdir(os.path.join(pathOut, name)) ]
     return ( dirs)
 
 def try_as(loader, s, on_error):
@@ -381,8 +381,8 @@ def is_yaml(s):
     return try_as(yaml.safe_load, s, yaml.scanner.ScannerError)
 
 def copyPaste(src, dst):
-    shutil.copyfile(src.decode("utf-8").encode("latin-1"),
-                    dst.decode("utf-8").encode("latin-1"))
+    shutil.copyfile(src.decode("utf-8").encode(pyCGM2.ENCODER),
+                    dst.decode("utf-8").encode(pyCGM2.ENCODER))
 
 
 def readXml(DATA_PATH,filename):
