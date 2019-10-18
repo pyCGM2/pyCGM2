@@ -1,14 +1,17 @@
 # coding: utf-8
-# from __future__ import unicode_literals
+from __future__ import unicode_literals
 import pyCGM2
 import numpy as np
-import scipy as sp
+from scipy import spatial
 import logging
 import encodings
 from pyCGM2 import btk
+from pyCGM2.Utils import utils
+
+
 
 # --- acquisition -----
-def smartReader(filename,translators=None,encoder=pyCGM2.ENCODER):
+def smartReader(filename,translators=None):
     """
         Convenient function to read a c3d with Btk
 
@@ -16,17 +19,15 @@ def smartReader(filename,translators=None,encoder=pyCGM2.ENCODER):
             - `filename` (str) - path and filename of the c3d
             - `translators` (str) - marker translators
     """
-
-
     reader = btk.btkAcquisitionFileReader()
-    reader.SetFilename(filename.decode("utf-8").encode(encoder))
+    reader.SetFilename(utils.str(filename))
     reader.Update()
     acq=reader.GetOutput()
     if translators is not None:
         acq =  applyTranslators(acq,translators)
     return acq
 
-def smartWriter(acq, filename,encoder=pyCGM2.ENCODER):
+def smartWriter(acq, filename):
     """
         Convenient function to write a c3d with Btk
 
@@ -36,13 +37,16 @@ def smartWriter(acq, filename,encoder=pyCGM2.ENCODER):
     """
     writer = btk.btkAcquisitionFileWriter()
     writer.SetInput(acq)
-    writer.SetFilename(filename.decode("utf-8").encode(encoder))
+    writer.SetFilename(utils.str(filename))
     writer.Update()
 
 
 
 
 def GetMarkerNames(acq):
+    """
+    """
+
     markerNames=[]
     for it in btk.Iterate(acq.GetPoints()):
         if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*":
@@ -51,12 +55,11 @@ def GetMarkerNames(acq):
 
 
 def findNearestMarker(acq,i,marker):
-
-    values = acq.GetPoint(marker).GetValues()[i,:]
+    values = acq.GetPoint(utils.str(marker)).GetValues()[i,:]
 
     markerNames=[]
     for it in btk.Iterate(acq.GetPoints()):
-        if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*" and it.GetLabel() != marker:
+        if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*" and it.GetLabel() != utils.str(marker):
             markerNames.append(it.GetLabel())
 
     j=0
@@ -65,15 +68,11 @@ def findNearestMarker(acq,i,marker):
         out[j,:] = acq.GetPoint(name).GetValues()[i,:]
         j+=1
 
-    tree = sp.spatial.KDTree(out)
+    tree = spatial.KDTree(out)
     dist,index = tree.query(values)
 
 
     return markerNames[index],dist
-
-
-
-
 
 
 
@@ -93,7 +92,7 @@ def isGap(acq, markerLabel):
             - `acq` (btkAcquisition) - a btk acquisition inctance
             - `markerList` (list of str) - marker labels
     """
-    residualValues = acq.GetPoint(markerLabel).GetResiduals()
+    residualValues = acq.GetPoint(utils.str(markerLabel)).GetResiduals()
     if any(residualValues== -1.0):
         logging.warning("[pyCGM2] gap found for marker (%s)"%(markerLabel))
         return True
@@ -119,13 +118,12 @@ def isPointExist(acq,label):
             - `acq` (btkAcquisition) - a btk acquisition inctance
             - `label` (str) - point label
     """
-
     if acq.GetPointNumber()==0:
         return False
     else:
         i = acq.GetPoints().Begin()
         while i != acq.GetPoints().End():
-            if i.value().GetLabel()==label:
+            if i.value().GetLabel()== utils.str(label):
                 flagPoint= True
                 break
             else:
@@ -178,15 +176,15 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc="",res
                 residuals[i] = 0
 
     if isPointExist(acq,label):
-        acq.GetPoint(label).SetValues(values)
-        acq.GetPoint(label).SetDescription(desc)
-        acq.GetPoint(label).SetType(PointType)
-        acq.GetPoint(label).SetResiduals(residuals)
+        acq.GetPoint(utils.str(label)).SetValues(values)
+        acq.GetPoint(utils.str(label)).SetDescription(utils.str(desc))
+        acq.GetPoint(utils.str(label)).SetType(PointType)
+        acq.GetPoint(utils.str(label)).SetResiduals(residuals)
 
     else:
-        new_btkPoint = btk.btkPoint(label,acq.GetPointFrameNumber())
+        new_btkPoint = btk.btkPoint(utils.str(label),acq.GetPointFrameNumber())
         new_btkPoint.SetValues(values)
-        new_btkPoint.SetDescription(desc)
+        new_btkPoint.SetDescription(utils.str(desc))
         new_btkPoint.SetType(PointType)
         new_btkPoint.SetResiduals(residuals)
         acq.AppendPoint(new_btkPoint)
@@ -224,10 +222,10 @@ def checkFirstAndLastFrame (acq, markerLabel):
             - `markerLabel` (str) - marker label
     """
 
-    if acq.GetPoint(markerLabel).GetValues()[0,0] == 0:
+    if acq.GetPoint(utils.str(markerLabel)).GetValues()[0,0] == 0:
         raise Exception ("[pyCGM2] no marker on first frame")
 
-    if acq.GetPoint(markerLabel).GetValues()[-1,0] == 0:
+    if acq.GetPoint(utils.str(markerLabel)).GetValues()[-1,0] == 0:
         raise Exception ("[pyCGM2] no marker on last frame")
 
 def isGap_inAcq(acq, markerList):
@@ -239,7 +237,7 @@ def isGap_inAcq(acq, markerList):
             - `markerList` (list of str) - marker labels
     """
     for m in markerList:
-         residualValues = acq.GetPoint(m).GetResiduals()
+         residualValues = acq.GetPoint(utils.str(m)).GetResiduals()
          if any(residualValues== -1.0):
              raise Exception("[pyCGM2] gap founded for markers %s " % m )
 
@@ -249,7 +247,7 @@ def findValidFrames(acq,markerLabels):
     for i in range(0,acq.GetPointFrameNumber()):
         pointFlag=list()
         for marker in markerLabels:
-            if acq.GetPoint(marker).GetResidual(i) >= 0 :
+            if acq.GetPoint(utils.str(marker)).GetResidual(i) >= 0 :
                 pointFlag.append(1)
             else:
                 pointFlag.append(0)
@@ -369,7 +367,6 @@ def clearEvents(acq,labels):
 
     events= acq.GetEvents()
     newEvents=btk.btkEventCollection()
-
     for ev in btk.Iterate(events):
         if ev.GetLabel() not in labels:
             newEvents.InsertItem(ev)
@@ -392,7 +389,7 @@ def modifyEventSubject(acq,newSubjectlabel):
     nEvents = acq.GetEventNumber()
     if nEvents>=1:
         for i in range(0, nEvents):
-            acq.GetEvent(i).SetSubject(newSubjectlabel)
+            acq.GetEvent(i).SetSubject(utils.str(newSubjectlabel))
     return acq
 
 def modifySubject(acq,newSubjectlabel):
@@ -403,7 +400,7 @@ def modifySubject(acq,newSubjectlabel):
             - `acq` (btkAcquisition) - a btk acquisition inctance
             - `newSubjectlabel` (str) - desired subject name
     """
-    acq.GetMetaData().FindChild("SUBJECTS").value().FindChild("NAMES").value().GetInfo().SetValue(0,(newSubjectlabel))
+    acq.GetMetaData().FindChild(utils.str("SUBJECTS") ).value().FindChild(utils.str("NAMES")).value().GetInfo().SetValue(0,(utils.str(newSubjectlabel)))
 
 
 def getNumberOfModelOutputs(acq):
@@ -444,7 +441,7 @@ def hasChild(md,mdLabel):
 
     outMd = None
     for itMd in btk.Iterate(md):
-        if itMd.GetLabel() == mdLabel:
+        if itMd.GetLabel() == utils.str(mdLabel):
             outMd = itMd
             break
     return outMd
@@ -453,7 +450,7 @@ def hasChild(md,mdLabel):
 def getVisibleMarkersAtFrame(acq,markers,index):
     visibleMarkers=[]
     for marker in markers:
-        if acq.GetPoint(marker).GetResidual(index) !=-1:
+        if acq.GetPoint(utils.str(marker)).GetResidual(index) !=-1:
             visibleMarkers.append(marker)
     return visibleMarkers
 
@@ -471,7 +468,7 @@ def isAnalogExist(acq,label):
     #TODO : replace by btkIterate
     i = acq.GetAnalogs().Begin()
     while i != acq.GetAnalogs().End():
-        if i.value().GetLabel()==label:
+        if i.value().GetLabel()==utils.str(label):
             flag= True
             break
         else:
@@ -488,14 +485,14 @@ def isAnalogExist(acq,label):
 def smartAppendAnalog(acq,label,values,desc="" ):
 
     if isAnalogExist(acq,label):
-        acq.GetAnalog(label).SetValues(values)
-        acq.GetAnalog(label).SetDescription(desc)
+        acq.GetAnalog(utils.str(label)).SetValues(values)
+        acq.GetAnalog(utils.str(label)).SetDescription(utils.str(desc))
         #acq.GetAnalog(label).SetType(PointType)
 
     else:
         newAnalog=btk.btkAnalog(acq.GetAnalogFrameNumber())
         newAnalog.SetValues(values)
-        newAnalog.SetLabel(label)
+        newAnalog.SetLabel(utils.str(label))
         acq.AppendAnalog(newAnalog)
 
 
@@ -514,9 +511,9 @@ def constructMarker(acq,label,markers,numpyMethod=np.mean,desc=""):
 
     i=0
     for marker in markers:
-        x[:,i] = acq.GetPoint(marker).GetValues()[:,0]
-        y[:,i] = acq.GetPoint(marker).GetValues()[:,1]
-        z[:,i] = acq.GetPoint(marker).GetValues()[:,2]
+        x[:,i] = acq.GetPoint(utils.str(marker)).GetValues()[:,0]
+        y[:,i] = acq.GetPoint(utils.str(marker)).GetValues()[:,1]
+        z[:,i] = acq.GetPoint(utils.str(marker)).GetValues()[:,2]
         i+=1
 
     values = np.zeros((nFrames,3))
@@ -553,9 +550,9 @@ def getStartEndEvents(btkAcq,context,startLabel="start", endLabel="end"):
     start=[]
     end=[]
     for ev in btk.Iterate(events):
-        if ev.GetContext()==context and ev.GetLabel()==startLabel :
+        if ev.GetContext()== utils.str(context) and ev.GetLabel()==utils.str(startLabel) :
                 start.append(ev.GetFrame())
-        if ev.GetContext()==context and ev.GetLabel()==endLabel :
+        if ev.GetContext()==utils.str(context) and ev.GetLabel()==utils.str(endLabel) :
                 end.append(ev.GetFrame())
     if start==[] or end==[]:
         return None,None
@@ -583,23 +580,23 @@ def changeSubjectName(btkAcq,subjectName):
 
 
     if "SUBJECTS" in _getSectionFromMd(md):
-        subjectMd =  btkAcq.GetMetaData().FindChild("SUBJECTS").value()
+        subjectMd =  btkAcq.GetMetaData().FindChild(utils.str("SUBJECTS")).value()
         if "NAMES" in _getSectionFromMd(subjectMd):
-            subjectMd.FindChild("NAMES").value().GetInfo().SetValue(0,subjectName)
+            subjectMd.FindChild(utils.str("NAMES")).value().GetInfo().SetValue(0,utils.str(subjectName))
 
-        if "USES_PREFIXES"  not in getSectionFromMd(subjectMd):
-            btk.btkMetaDataCreateChild(subjectMd, "USES_PREFIXES", 0)
+        if "USES_PREFIXES"  not in _getSectionFromMd(subjectMd):
+            btk.btkMetaDataCreateChild(subjectMd, utils.str("USES_PREFIXES"), 0)
 
     if "ANALYSIS" in _getSectionFromMd(md):
-        analysisMd =  btkAcq.GetMetaData().FindChild("ANALYSIS").value()
+        analysisMd =  btkAcq.GetMetaData().FindChild(utils.str("ANALYSIS")).value()
         if "SUBJECTS" in _getSectionFromMd(analysisMd):
-            anaSubMdi = analysisMd.FindChild("SUBJECTS").value().GetInfo()
+            anaSubMdi = analysisMd.FindChild(utils.str("SUBJECTS")).value().GetInfo()
             for i in range(0,anaSubMdi.GetDimension(1) ):
-                anaSubMdi.SetValue(i,subjectName)
+                anaSubMdi.SetValue(i,utils.str(subjectName))
 
     events = btkAcq.GetEvents()
     for ev in btk.Iterate(events):
-        ev.SetSubject(subjectName)
+        ev.SetSubject(utils.str(subjectName))
 
     # Do not work
     # eventMd =  btkAcq.GetMetaData().FindChild("EVENT").value()
@@ -611,24 +608,24 @@ def changeSubjectName(btkAcq,subjectName):
 
 def smartGetMetadata(btkAcq,firstLevel,secondLevel):
     md = btkAcq.GetMetaData()
-    if firstLevel in _getSectionFromMd(md):
-        firstMd =  btkAcq.GetMetaData().FindChild(firstLevel).value()
-        if secondLevel in _getSectionFromMd(firstMd):
-            return firstMd.FindChild(secondLevel).value().GetInfo().ToString()
+    if utils.str(firstLevel) in _getSectionFromMd(md):
+        firstMd =  btkAcq.GetMetaData().FindChild(utils.str(firstLevel)).value()
+        if utils.str(secondLevel) in _getSectionFromMd(firstMd):
+            return firstMd.FindChild(utils.str(secondLevel)).value().GetInfo().ToString()
 
 def smartSetMetadata(btkAcq,firstLevel,secondLevel,index,value):
     md = btkAcq.GetMetaData()
-    if firstLevel in _getSectionFromMd(md):
-        firstMd =  btkAcq.GetMetaData().FindChild(firstLevel).value()
-        if secondLevel in _getSectionFromMd(firstMd):
-            return firstMd.FindChild(secondLevel).value().GetInfo().SetValue(index,value)
+    if utils.str(firstLevel) in _getSectionFromMd(md):
+        firstMd =  btkAcq.GetMetaData().FindChild(utils.str(firstLevel)).value()
+        if utils.str(secondLevel) in _getSectionFromMd(firstMd):
+            return firstMd.FindChild(utils.str(secondLevel)).value().GetInfo().SetValue(index,utils.str(value))
 
 
 
 
 def NexusGetTrajectory(acq,label):
-    values = acq.GetPoint(label).GetValues()
-    residuals = acq.GetPoint(label).GetResiduals()[:,0]
+    values = acq.GetPoint(utils.str(label)).GetValues()
+    residuals = acq.GetPoint(utils.str(label)).GetResiduals()[:,0]
     residualsBool = np.asarray(residuals)==0
 
     return values[:,0],values[:,1],values[:,2],residualsBool
