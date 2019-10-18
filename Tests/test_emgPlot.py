@@ -1,5 +1,6 @@
-
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 # pytest -s --disable-pytest-warnings  test_emgPlot.py::Test_emgPlotTests::test_temporalPlotSingleEmg
 
 
@@ -46,7 +47,7 @@ class Test_emgPlotTests():
                 title="test", xlabel="frame", ylabel="emg",ylim=None,legendLabel=None,
                 customLimits=None)
         plot.addTemporalNormalActivationLayer(ax,trial,"RECFEM","Left")
-        #plt.show()
+        # plt.show()
 
 
 
@@ -81,7 +82,7 @@ class Test_emgPlotTests():
         # # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
-        pf.setExport(DATA_PATH,"check","png")
+        pf.setExport(DATA_PATH_OUT,"hän-test_temporalPlotPanel","png")
         pf.plot()
 
         #plt.show()

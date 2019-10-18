@@ -14,6 +14,7 @@ from pyCGM2.Report import plotUtils
 from pyCGM2 import ma
 from pyCGM2.ma import io
 from pyCGM2.EMG import normalActivation
+from pyCGM2.Utils import utils
 
 # ---- convenient plot functions
 def temporalPlot(figAxis,trial,
@@ -44,7 +45,7 @@ def temporalPlot(figAxis,trial,
     flag = trialTools.isTimeSequenceExist(trial,pointLabel)
 
     if flag:
-        timeseq = trial.findChild(ma.T_TimeSequence,pointLabel)
+        timeseq = trial.findChild(ma.T_TimeSequence,utils.str(pointLabel))
         lines=figAxis.plot(timeseq.data()[:,axis], '-', color= color)
 
     if legendLabel is not None  and flag: lines[0].set_label(legendLabel)

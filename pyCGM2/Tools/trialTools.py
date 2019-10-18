@@ -56,8 +56,7 @@ def sortedEvents(trial):
             valueTime.append(it.time())
     valueTime.sort() # trie
 
-
-    events = ma.Node("SortedEvents")     #events =list()
+    events = ma.Node(utils.str("SortedEvents"))     #events =list()
     for contextLst_it in contextLst:
         for timeSort in valueTime:
             for it in evs:
@@ -65,7 +64,7 @@ def sortedEvents(trial):
                     ev = ma.Event(it.name(),
                                   it.time(),
                                   contextLst_it,
-                                  "")
+                                  np.str(""))
                     ev.addParent(events)
 
 
@@ -219,6 +218,7 @@ def buildTrials(dataPath,trialfilenames):
 
 def smartTrialReader(dataPath,trialfilename):
 
+
     if dataPath is None:
         fileNode = ma.io.read(utils.str((trialfilename)))
     else:
@@ -226,14 +226,13 @@ def smartTrialReader(dataPath,trialfilename):
 
     trial = fileNode.findChild(ma.T_Trial)
     sortedEvents(trial)
-
     return trial
 
 
 def findValidFrames(trial,markerLabels):
 
     flag = list()
-    pfn = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).samples()
+    pfn = trial.findChild(ma.T_TimeSequence,utils.str(""),[[utils.str("type"),ma.TimeSequence.Type_Marker]]).samples()
     for i in range(0,pfn):
         pointFlag=list()
         for marker in markerLabels:
@@ -247,6 +246,7 @@ def findValidFrames(trial,markerLabels):
             flag.append(1)
         else:
             flag.append(0)
+
 
     firstValidFrame = flag.index(1)
     lastValidFrame = len(flag) - flag[::-1].index(1) - 1
@@ -336,3 +336,36 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
         return trial
     else:
         return root
+
+def findProgression(trial,pointLabel):
+
+    if not isTimeSequenceExist(trial,pointLabel):
+        raise Exception( "[pyCGM2] : origin point doesnt exist")
+
+
+    f,ff,lf = findValidFrames(trial,[pointLabel])
+
+    values = trial.findChild(ma.T_TimeSequence,utils.str(pointLabel)).data()[ff:lf,0:3]
+
+    MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
+    absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
+
+    ind = np.argmax(absMaxValues)
+    diff = MaxValues[ind]
+
+    if ind ==0 :
+        progressionAxis = "X"
+        lateralAxis = "Y"
+    else:
+        progressionAxis = "Y"
+        lateralAxis = "X"
+
+    forwardProgression = True if diff>0 else False
+
+    globalFrame = (progressionAxis+lateralAxis+"Z")
+
+    logging.debug("Progression axis : %s"%(progressionAxis))
+    logging.debug("forwardProgression : %s"%(str(forwardProgression)))
+    logging.debug("globalFrame : %s"%(str(globalFrame)))
+
+    return   progressionAxis,forwardProgression,globalFrame

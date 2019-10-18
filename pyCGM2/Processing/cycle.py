@@ -7,7 +7,7 @@ from pyCGM2.Tools import trialTools
 import pyCGM2.Math.normalisation  as MathNormalisation
 
 from pyCGM2 import ma
-
+from pyCGM2.Utils import utils
 
 #----module methods ------
 
@@ -295,7 +295,7 @@ class Cycle(ma.Node):
         """
 
         if trialTools.isTimeSequenceExist(self.trial,analogLabel):
-            return  self.trial.findChild(ma.T_TimeSequence, analogLabel).data()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
+            return  self.trial.findChild(ma.T_TimeSequence, utils.str(analogLabel)).data()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
         else:
             logging.debug("[pyCGM2] the Analog Label %s doesn t exist in %s" % (analogLabel,self.trial.name()))
             return None
@@ -401,7 +401,6 @@ class GaitCycle(Cycle):
         self.m_normalizedOppositeFS=round(np.divide(float(self.m_oppositeFS - self.begin),float(self.end-self.begin))*100)
         self.m_normalizedContraFO=round(np.divide(float(self.m_contraFO - self.begin),float(self.end-self.begin))*100)
 
-
         self.__computeSpatioTemporalParameter()
 
 
@@ -423,14 +422,12 @@ class GaitCycle(Cycle):
         pst.setProperty("simpleStance", round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency),duration)*100))
 
         #pst.setProperty("simpleStance3 ",15.0 )
-
         if self.context == "Left":
 
             if trialTools.isTimeSequenceExist(self.trial,"LHEE") and trialTools.isTimeSequenceExist(self.trial,"RHEE") and trialTools.isTimeSequenceExist(self.trial,"LTOE"):
 
 
                 progressionAxis,forwardProgression,globalFrame = trialTools.findProgression(self.trial,"LHEE")
-
                 longitudinal_axis=0  if progressionAxis =="X" else 1
                 lateral_axis=1  if progressionAxis =="X" else 0
 
