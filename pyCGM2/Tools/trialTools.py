@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import numpy as np
 import matplotlib.pyplot as plt
 import logging
@@ -9,6 +11,8 @@ from pyCGM2 import ma
 from pyCGM2.ma import io
 from pyCGM2.ma import body
 from pyCGM2 import btk
+from pyCGM2.Utils import utils
+
 
 
 
@@ -21,7 +25,7 @@ def isTimeSequenceExist(trial,label):
             - `label` (str) - label of the time sequence
     """
     try:
-        ts = trial.findChild(ma.T_TimeSequence,label)
+        ts = trial.findChild(ma.T_TimeSequence,utils.str(label))
         return True
     except ValueError:
         return False
@@ -103,14 +107,14 @@ def isKineticFlag(trial):
     kineticEvent_times_left=[]
     kineticEvent_times_right=[]
 
-    evsn = trial.findChild(ma.T_Node,"SortedEvents")
+    evsn = trial.findChild(ma.T_Node,utils.str("SortedEvents"))
     for ev in evsn.findChildren(ma.T_Event):
-        if ev.context() == "General":
-            if ev.name() in ['Left-FP','Right-FP']:
+        if ev.context() == utils.str("General"):
+            if ev.name() in [utils.str('Left-FP'),utils.str('Right-FP')]:
                 kineticEvent_times.append(ev.time())
-            if ev.name() in ['Left-FP']:
+            if ev.name() in [utils.str('Left-FP')]:
                 kineticEvent_times_left.append(ev.time())
-            if ev.name() in ['Right-FP']:
+            if ev.name() in [utils.str('Right-FP')]:
                 kineticEvent_times_right.append(ev.time())
 
     if kineticEvent_times==[]:
@@ -119,7 +123,7 @@ def isKineticFlag(trial):
         return True,kineticEvent_times,kineticEvent_times_left,kineticEvent_times_right
 
 
-def automaticKineticDetection(dataPath,filenames,trials=None,encoder=pyCGM2.ENCODER):
+def automaticKineticDetection(dataPath,filenames,trials=None):
     """
         convenient method for detecting correct kinetic in a filename set
 
@@ -136,7 +140,7 @@ def automaticKineticDetection(dataPath,filenames,trials=None,encoder=pyCGM2.ENCO
             logging.debug("[pyCGM2] : filename %s duplicated in the input list" %(filename))
         else:
             if trials is None:
-                fileNode = ma.io.read((dataPath + filename).decode("utf-8").encode(encoder))
+                fileNode = ma.io.read(utils.str((dataPath + filename)))
                 trial = fileNode.findChild(ma.T_Trial)
 
             else:
@@ -157,120 +161,6 @@ def automaticKineticDetection(dataPath,filenames,trials=None,encoder=pyCGM2.ENCO
     return kineticTrials,kineticFilenames,flag_kinetics
 
 
-def findProgression(trial,pointLabel):
-
-    if not isTimeSequenceExist(trial,pointLabel):
-        raise Exception( "[pyCGM2] : origin point doesnt exist")
-
-    f,ff,lf = findValidFrames(trial,[pointLabel])
-
-    values = trial.findChild(ma.T_TimeSequence,pointLabel).data()[ff:lf,0:3]
-
-    MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
-    absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
-
-    ind = np.argmax(absMaxValues)
-    diff = MaxValues[ind]
-
-    if ind ==0 :
-        progressionAxis = "X"
-        lateralAxis = "Y"
-    else:
-        progressionAxis = "Y"
-        lateralAxis = "X"
-
-    forwardProgression = True if diff>0 else False
-
-    globalFrame = str(progressionAxis+lateralAxis+"Z")
-
-    logging.debug("Progression axis : %s"%(progressionAxis))
-    logging.debug("forwardProgression : %s"%(str(forwardProgression)))
-    logging.debug("globalFrame : %s"%(str(globalFrame)))
-
-    return   progressionAxis,forwardProgression,globalFrame
-
-
-def findProgressionFromPelvicMarkers(trial,LASI="LASI",RASI="RASI", LPSI="LPSI", RPSI="RPSI", SACR=None):
-    """
-
-
-        :Parameters:
-            - `trial` (openMA trial) - an openma trial instance
-            - `originPointLabel` (str) - origin marker label
-            - `longitudinal_extremityPointLabel` (str) - forward marker label
-            - `lateral_extremityPointLabel` (str) - lateral marker label
-
-    """
-
-    if not isTimeSequenceExist(trial,LASI):
-        raise Exception( "[pyCGM2] : LPSI doesnt exist")
-
-    if not isTimeSequenceExist(trial,RASI):
-        raise Exception( "[pyCGM2] : RASI  doesnt exist")
-
-    f,ff,lf = findValidFrames(trial,[LASI,RASI,LPSI,RPSI])
-
-    LASIvalues = trial.findChild(ma.T_TimeSequence,LASI).data()[ff,0:3]
-    RASIvalues = trial.findChild(ma.T_TimeSequence,RASI).data()[ff,0:3]
-
-    midASISvalues =   (LASIvalues+RASIvalues)/2.0
-
-    if SACR is not None:
-        if not isTimeSequenceExist(trial,LPSI):
-            raise Exception( "[pyCGM2] : LPSI  doesnt exist")
-
-        if not isTimeSequenceExist(trial,RPSI):
-            raise Exception( "[pyCGM2] : RPSI  doesnt exist")
-
-
-        LPSIvalues = trial.findChild(ma.T_TimeSequence,LPSI).data()[ff,0:3]
-        RPSIvalues = trial.findChild(ma.T_TimeSequence,LPSI).data()[ff,0:3]
-        midPSISvalues =   (LPSIvalues+RPSIvalues)/2.0
-    else:
-        if not isTimeSequenceExist(trial,SACR):
-            raise Exception( "[pyCGM2] : SACR  doesnt exist")
-
-        midPSISvalues = trial.findChild(ma.T_TimeSequence,SACR).data()[ff,0:3]
-
-    a1=(midASISvalues-midPSISvalues)
-    a1=a1/np.linalg.norm(a1)
-
-    a2=(RASIvalues-midASISvalues)
-    a2=a2/np.linalg.norm(a2)
-
-    globalAxes = {"X" : np.array([1,0,0]), "Y" : np.array([0,1,0]), "Z" : np.array([0,0,1])}
-
-    # longitudinal axis
-    tmp=[]
-    for axis in globalAxes.keys():
-        res = np.dot(a1,globalAxes[axis])
-        tmp.append(res)
-    maxIndex = np.argmax(np.abs(tmp))
-    longitudinalAxis =  globalAxes.keys()[maxIndex]
-    forwardProgression = True if tmp[maxIndex]>0 else False
-
-    # lateral axis
-    tmp=[]
-    for axis in globalAxes.keys():
-        res = np.dot(a2,globalAxes[axis])
-        tmp.append(res)
-    maxIndex = np.argmax(np.abs(tmp))
-    lateralAxis =  globalAxes.keys()[maxIndex]
-
-
-    # global frame
-    if "X" not in str(longitudinalAxis+lateralAxis):
-        globalFrame = str(longitudinalAxis+lateralAxis+"X")
-    if "Y" not in str(longitudinalAxis+lateralAxis):
-        globalFrame = str(longitudinalAxis+lateralAxis+"Y")
-    if "Z" not in str(longitudinalAxis+lateralAxis):
-        globalFrame = str(longitudinalAxis+lateralAxis+"Z")
-
-    logging.debug("Longitudinal axis : %s"%(longitudinalAxis))
-    logging.debug("forwardProgression : %s"%(str(forwardProgression)))
-    logging.debug("globalFrame : %s"%(str(globalFrame)))
-
-    return   longitudinalAxis,forwardProgression,globalFrame
 
 def renameOpenMAtoVicon(analysis, suffix=""):
     """
@@ -299,9 +189,9 @@ def renameOpenMAtoVicon(analysis, suffix=""):
         if "Power" in name:
             newName = name.replace(".", "")
             newName = newName[0: newName.rfind("Power")+5] + suffix
-        ts.setName(newName)
+        ts.setName(utils.str(newName))
 
-def buildTrials(dataPath,trialfilenames,encoder=pyCGM2.ENCODER):
+def buildTrials(dataPath,trialfilenames):
     """
         Get trial list from filenames
 
@@ -317,7 +207,7 @@ def buildTrials(dataPath,trialfilenames,encoder=pyCGM2.ENCODER):
         logging.debug( filename)
         logging.debug( "------------------")
 
-        fileNode = ma.io.read((dataPath + filename).decode("utf-8").encode(encoder))
+        fileNode = ma.io.read(utils.str((dataPath + filename)))
         trial = fileNode.findChild(ma.T_Trial)
         sortedEvents(trial)
 
@@ -327,11 +217,12 @@ def buildTrials(dataPath,trialfilenames,encoder=pyCGM2.ENCODER):
     return trials,filenames
 
 
-def smartTrialReader(dataPath,trialfilename,encoder=pyCGM2.ENCODER):
+def smartTrialReader(dataPath,trialfilename):
+
     if dataPath is None:
-        fileNode = ma.io.read((trialfilename).decode("utf-8").encode(encoder))
+        fileNode = ma.io.read(utils.str((trialfilename)))
     else:
-        fileNode = ma.io.read((dataPath + trialfilename).decode("utf-8").encode(encoder))
+        fileNode = ma.io.read(utils.str(dataPath + trialfilename))
 
     trial = fileNode.findChild(ma.T_Trial)
     sortedEvents(trial)
@@ -346,7 +237,7 @@ def findValidFrames(trial,markerLabels):
     for i in range(0,pfn):
         pointFlag=list()
         for marker in markerLabels:
-            residue = trial.findChild(ma.T_TimeSequence,marker).data()[i,3]
+            residue = trial.findChild(ma.T_TimeSequence,utils.str(marker)).data()[i,3]
             if residue >= 0 :
                 pointFlag.append(1)
             else:
@@ -366,8 +257,8 @@ def findValidFrames(trial,markerLabels):
 def convertBtkAcquisition(acq, returnType = "Trial"):
 
 
-    root = ma.Node('root')
-    trial = ma.Trial("Trial",root)
+    root = ma.Node(utils.str('root'))
+    trial = ma.Trial(utils.str("Trial"),root)
 
     framerate = acq.GetPointFrequency()
     firstFrame = acq.GetFirstFrame()
@@ -441,7 +332,7 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
 
     sortedEvents(trial)
 
-    if returnType == "Trial":
+    if returnType == utils.str("Trial"):
         return trial
     else:
         return root
