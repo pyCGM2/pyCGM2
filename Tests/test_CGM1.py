@@ -34,7 +34,7 @@ class TestFullBody:
         pointSuffix = "test"
 
         vskFile = vskTools.getVskFiles(DATA_PATH)
-        vsk = vskTools.Vsk(str(DATA_PATH + "New Subject.vsk"))
+        vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
         model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
@@ -158,7 +158,7 @@ class TestLowerBody():
     def test_KadMed_options(self):
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\kad-med-Options\\"
         staticFilename = "static.c3d"
-        acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
+        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
 
         markerDiameter=14
         leftFlatFoot = True
@@ -266,7 +266,7 @@ class TestLowerBody():
     def test_KadMed_noOptions(self):
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\kad-med-noOptions\\"
         staticFilename = "static.c3d"
-        acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
+        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
 
         markerDiameter=14
         leftFlatFoot = False
@@ -372,7 +372,7 @@ class TestLowerBody():
     def test_Kad_options(self):
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\kad-options\\"
         staticFilename = "static.c3d"
-        acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
+        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
 
         markerDiameter=14
         leftFlatFoot = True
@@ -477,7 +477,7 @@ class TestLowerBody():
     def test_Kad_noOptions(self):
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\kad-noOptions\\"
         staticFilename = "static.c3d"
-        acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
+        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
 
         markerDiameter=14
         leftFlatFoot = False
