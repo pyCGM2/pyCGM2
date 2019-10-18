@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# pytest --disable-pytest-warnings  test_basisPlotTests.py::Test_oneTrial_PlotTest::test_temporalPlot_OneModelOutputPlot
+from __future__ import unicode_literals
+# pytest -s --disable-pytest-warnings  test_basisPlotTests.py::Test_oneTrial_PlotTest::test_temporalPlot_OneModelOutputPlot
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
