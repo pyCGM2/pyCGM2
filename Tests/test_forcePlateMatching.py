@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_forcePlateMatching.py::
+from __future__ import unicode_literals
+# pytest -s --disable-pytest-warnings  test_forcePlateMatching.py::Test_matchedFootPlatForm::test_twoPF
 """
 Created on Thu Jul 07 15:14:18 2016
 
@@ -15,6 +16,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 from pyCGM2.ForcePlates import forceplates
+from pyCGM2.Utils import utils
 
 import numpy as np
 
@@ -127,7 +129,7 @@ class Test_manualAssigment:
         try:
             assignedMappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XX")
         except Exception, errormsg:
-            np.testing.assert_string_equal(errormsg.args[0],"[pyCGM2] number of assigned force plate inferior to the number of force plate number. Your assignment should have  3 letters at least")
+            np.testing.assert_string_equal(errormsg.args[0],utils.str("[pyCGM2] number of assigned force plate inferior to the number of force plate number. Your assignment should have  3 letters at least"))
 
 
     def test_threePF_assigmenentCases(self):
@@ -138,19 +140,23 @@ class Test_manualAssigment:
         gaitFilename="walking_Y_3pf.c3d"
         acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
         #forceplates.appendForcePlateCornerAsMarker(acqGait)
-        correctAssigmenent = "RLR"
+
 
         assignedMappedForcePlate1 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XXX")
-        np.testing.assert_string_equal(assignedMappedForcePlate1,"XXX")
+        assert assignedMappedForcePlate1 == "XXX"
+
 
         assignedMappedForcePlate2 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XXA")
-        np.testing.assert_string_equal(assignedMappedForcePlate2,"XXR")
+        assert assignedMappedForcePlate2 == "XXR"
+
 
         assignedMappedForcePlate3 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="AAA")
-        np.testing.assert_string_equal(assignedMappedForcePlate3,"RLR")
+        assert assignedMappedForcePlate3 == "RLR"
+
 
         assignedMappedForcePlate4 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="AXA")
-        np.testing.assert_string_equal(assignedMappedForcePlate4,"RXR")
+        assert assignedMappedForcePlate4 == "RXR"
+
 
     def test_threePF_mfpaSupNumberForcePlates(self):
 
@@ -163,14 +169,15 @@ class Test_manualAssigment:
         correctAssigmenent = "RLR"
 
         assignedMappedForcePlate1 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XXXXXX")
-        np.testing.assert_string_equal(assignedMappedForcePlate1,"XXX")
+        assert assignedMappedForcePlate1 == "XXX"
+
 
 
         assignedMappedForcePlate2 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XXALR")
-        np.testing.assert_string_equal(assignedMappedForcePlate2,"XXR")
+        assert assignedMappedForcePlate2 == "XXR"
 
         assignedMappedForcePlate3 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="AAALR")
-        np.testing.assert_string_equal(assignedMappedForcePlate3,"RLR")
+        assert assignedMappedForcePlate3 == "RLR"
 
         assignedMappedForcePlate4 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="AXAXXX")
-        np.testing.assert_string_equal(assignedMappedForcePlate4,"RXR")
+        assert assignedMappedForcePlate4 == "RXR"
