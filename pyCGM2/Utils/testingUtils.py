@@ -1,23 +1,26 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 from pyCGM2.Math import numeric
 import logging
+from pyCGM2.Utils import utils
+
 
 #---------TESTS----------
 
 def test_offset(value,acq,viconLabel, decimal=3):
     np.testing.assert_almost_equal(value,
-    np.rad2deg(acq.GetMetaData().FindChild("PROCESSING").value().FindChild(viconLabel).value().GetInfo().ToDouble()[0]) , decimal = decimal)
+    np.rad2deg(acq.GetMetaData().FindChild(utils.str("PROCESSING")).value().FindChild(utils.str(viconLabel)).value().GetInfo().ToDouble()[0]) , decimal = decimal)
 
 
 def test_point(acq,RefLabel,LabelToTest,decimal = 3):
-    np.testing.assert_almost_equal(acq.GetPoint(RefLabel).GetValues(),acq.GetPoint(LabelToTest).GetValues(),decimal = decimal)
+    np.testing.assert_almost_equal(acq.GetPoint(utils.str(RefLabel)).GetValues(),acq.GetPoint(utils.str(LabelToTest)).GetValues(),decimal = decimal)
 
 
 def test_point_rms(acq,RefLabel,LabelToTest,threshold):
-    np.testing.assert_array_less(numeric.rms((acq.GetPoint(RefLabel).GetValues()-acq.GetPoint(LabelToTest).GetValues()[init:end,:]), axis = 0),
+    np.testing.assert_array_less(numeric.rms((acq.GetPoint(utils.str(RefLabel)).GetValues()-acq.GetPoint(utils.str(LabelToTest)).GetValues()[init:end,:]), axis = 0),
                                  threshold)
 
 
@@ -26,7 +29,7 @@ def test_point_rms(acq,RefLabel,LabelToTest,threshold):
 def print_offset(value,acq,viconLabel, decimal=3):
     logging.info(" offset [%s] => %f ( my value) = %f ( reference)"%(viconLabel,
                             value,
-                            np.rad2deg(acq.GetMetaData().FindChild("PROCESSING").value().FindChild(viconLabel).value().GetInfo().ToDouble()[0])))
+                            np.rad2deg(acq.GetMetaData().FindChild(utils.str("PROCESSING")).value().FindChild(utils.str(viconLabel)).value().GetInfo().ToDouble()[0])))
 
 
 def plotComparisonOfPoint(acq,label,suffix):
@@ -37,15 +40,15 @@ def plotComparisonOfPoint(acq,label,suffix):
     ax2 = plt.subplot(1,3,2)
     ax3 = plt.subplot(1,3,3)
 
-    ax1.plot(acq.GetPoint(label).GetValues()[:,0],"-r")
-    ax1.plot(acq.GetPoint(label+"_"+suffix).GetValues()[:,0],"-b")
+    ax1.plot(acq.GetPoint(utils.str(label)).GetValues()[:,0],"-r")
+    ax1.plot(acq.GetPoint(utils.str(label+"_"+suffix)).GetValues()[:,0],"-b")
 
 
-    ax2.plot(acq.GetPoint(label).GetValues()[:,1],"-r")
-    ax2.plot(acq.GetPoint(label+"_"+suffix).GetValues()[:,1],"-b")
+    ax2.plot(acq.GetPoint(utils.str(label)).GetValues()[:,1],"-r")
+    ax2.plot(acq.GetPoint(utils.str(label+"_"+suffix)).GetValues()[:,1],"-b")
 
-    ax3.plot(acq.GetPoint(label).GetValues()[:,2],"-r")
-    ax3.plot(acq.GetPoint(label+"_"+suffix).GetValues()[:,2],"-b")
+    ax3.plot(acq.GetPoint(utils.str(label)).GetValues()[:,2],"-r")
+    ax3.plot(acq.GetPoint(utils.str(label+"_"+suffix)).GetValues()[:,2],"-b")
 
     plt.show()
 

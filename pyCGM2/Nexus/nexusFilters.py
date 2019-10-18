@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# from __future__ import unicode_literals
 import pyCGM2
 import ViconNexus
 import numpy as np
@@ -12,6 +13,7 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Tools import trialTools
 
 from pyCGM2.Nexus import nexusTools,Devices
+from pyCGM2.Utils import utils
 
 NEXUS = ViconNexus.ViconNexus()
 
@@ -32,7 +34,7 @@ class NexusModelFilter(object):
         self.m_vskName = vskName
         self.NEXUS = NEXUS
         self.staticProcessing = staticProcessing
-        self.m_pointSuffix = pointSuffix if pointSuffix is None else str("_"+pointSuffix)
+        self.m_pointSuffix = pointSuffix if pointSuffix is None else utils.str("_"+pointSuffix)
 
     def run(self):
         """
@@ -99,7 +101,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                    ev.SetSubject(str(self.m_subject))
+                    ev.SetSubject(utils.str(self.m_subject))
                     self.m_acq.AppendEvent(ev)
 
 
@@ -110,7 +112,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                    ev.SetSubject(str(self.m_subject))
+                    ev.SetSubject(utils.str(self.m_subject))
                     self.m_acq.AppendEvent(ev)
 
         eventType = "Foot Strike"
@@ -120,7 +122,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                    ev.SetSubject(str(self.m_subject))
+                    ev.SetSubject(utils.str(self.m_subject))
                     self.m_acq.AppendEvent(ev)
 
         eventType = "Foot Off"
@@ -130,7 +132,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                    ev.SetSubject(str(self.m_subject))
+                    ev.SetSubject(utils.str(self.m_subject))
                     self.m_acq.AppendEvent(ev)
 
         eventType = "Event"
@@ -140,7 +142,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                    ev.SetSubject(str(self.m_subject))
+                    ev.SetSubject(utils.str(self.m_subject))
                     self.m_acq.AppendEvent(ev)
 
         eventType = "Left-FP"
@@ -150,7 +152,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                    ev.SetSubject(str(self.m_subject))
+                    ev.SetSubject(utils.str(self.m_subject))
                     self.m_acq.AppendEvent(ev)
 
 
@@ -161,7 +163,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                    ev.SetSubject(str(self.m_subject))
+                    ev.SetSubject(utils.str(self.m_subject))
                     self.m_acq.AppendEvent(ev)
 
 
@@ -172,7 +174,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                    ev.SetSubject(str(self.m_subject))
+                    ev.SetSubject(utils.str(self.m_subject))
                     self.m_acq.AppendEvent(ev)
 
 
@@ -183,7 +185,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                    ev.SetSubject(str(self.m_subject))
+                    ev.SetSubject(utils.str(self.m_subject))
                     self.m_acq.AppendEvent(ev)
 
 
@@ -211,7 +213,7 @@ class NexusConstructAcquisitionFilter(object):
             E_cut = E[start:end+1]
 
 
-            btkTools.smartAppendPoint(self.m_acq,str(marker),values_cut, PointType=btk.btkPoint.Marker,desc="",
+            btkTools.smartAppendPoint(self.m_acq,marker,values_cut, PointType=btk.btkPoint.Marker,desc="",
                                       residuals=E_cut)
 
     def appendAnalogs(self):
@@ -325,19 +327,19 @@ class NexusConstructAcquisitionFilter(object):
 
 
                 if type == "Angles":
-                    btkTools.smartAppendPoint(self.m_acq,str(modelOutputName),values_cut, PointType=btk.btkPoint.Angle,desc="",
+                    btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Angle,desc="",
                                               residuals=E_cut)
                 elif type == "Forces":
-                    btkTools.smartAppendPoint(self.m_acq,str(modelOutputName),values_cut, PointType=btk.btkPoint.Force,desc="",
+                    btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Force,desc="",
                                               residuals=E_cut)
                 elif type == "Moments":
-                    btkTools.smartAppendPoint(self.m_acq,str(modelOutputName),values_cut, PointType=btk.btkPoint.Moment,desc="",
+                    btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Moment,desc="",
                                               residuals=E_cut)
                 elif type == "Powers":
-                    btkTools.smartAppendPoint(self.m_acq,str(modelOutputName),values_cut, PointType=btk.btkPoint.Power,desc="",
+                    btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Power,desc="",
                                               residuals=E_cut)
                 elif type == "Modeled Markers":
-                    btkTools.smartAppendPoint(self.m_acq,str(modelOutputName),values_cut, PointType=btk.btkPoint.Marker,desc="",
+                    btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Marker,desc="",
                                               residuals=E_cut)
                 else:
                     logging.warning("[pyCGM2] : Model Output (%s) from Nexus not added to the btk acquisition"%(modelOutputName))
@@ -357,9 +359,9 @@ class NexusConstructAcquisitionFilter(object):
     def exportC3d(self,filenameNoExt=None):
 
         if filenameNoExt is None:
-            btkTools.smartWriter(self.m_acq,str(self.m_dataPath+self.m_filenameNoExt+".c3d"))
+            btkTools.smartWriter(self.m_acq,self.m_dataPath+self.m_filenameNoExt+".c3d")
         else:
-            btkTools.smartWriter(self.m_acq,str(self.m_dataPath+filenameNoExt+".c3d"))
+            btkTools.smartWriter(self.m_acq,self.m_dataPath+filenameNoExt+".c3d")
 
 
 class NexusConstructTrialFilter(object):
@@ -414,7 +416,7 @@ class NexusConstructTrialFilter(object):
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
-                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                    ev = ma.Event(eventType,time,eventContext,utils.str(self.m_subject),self.m_trial.events())
 
 
         eventType = "Foot Off"
@@ -423,7 +425,7 @@ class NexusConstructTrialFilter(object):
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
-                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                    ev = ma.Event(eventType,time,eventContext,utils.str(self.m_subject),self.m_trial.events())
 
         eventType = "Foot Strike"
         eventContext = "Right"
@@ -431,7 +433,7 @@ class NexusConstructTrialFilter(object):
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
-                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                    ev = ma.Event(eventType,time,eventContext,utils.str(self.m_subject),self.m_trial.events())
 
         eventType = "Foot Off"
         eventContext = "Right"
@@ -439,7 +441,7 @@ class NexusConstructTrialFilter(object):
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
-                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                    ev = ma.Event(eventType,time,eventContext,utils.str(self.m_subject),self.m_trial.events())
 
         eventType = "Event"
         eventContext = "General"
@@ -447,7 +449,7 @@ class NexusConstructTrialFilter(object):
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
-                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                    ev = ma.Event(eventType,time,eventContext,utils.str(self.m_subject),self.m_trial.events())
 
         eventType = "Left-FP"
         eventContext = "General"
@@ -455,7 +457,7 @@ class NexusConstructTrialFilter(object):
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
-                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                    ev = ma.Event(eventType,time,eventContext,utils.str(self.m_subject),self.m_trial.events())
 
         eventType = "Right-FP"
         eventContext = "General"
@@ -463,7 +465,7 @@ class NexusConstructTrialFilter(object):
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
-                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                    ev = ma.Event(eventType,time,eventContext,utils.str(self.m_subject),self.m_trial.events())
 
 
         eventType = "Start"
@@ -472,7 +474,7 @@ class NexusConstructTrialFilter(object):
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
-                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                    ev = ma.Event(eventType,time,eventContext,utils.str(self.m_subject),self.m_trial.events())
 
         eventType = "End"
         eventContext = "Left"
@@ -480,7 +482,7 @@ class NexusConstructTrialFilter(object):
             for frame in NEXUS.GetEvents(self.m_subject,eventContext,eventType)[0]:
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
-                    ev = ma.Event(eventType,time,eventContext,str(self.m_subject),self.m_trial.events())
+                    ev = ma.Event(eventType,time,eventContext,utils.str(self.m_subject),self.m_trial.events())
 
 
 
@@ -519,7 +521,7 @@ class NexusConstructTrialFilter(object):
                 time_init = self.m_firstFrame/self.m_framerate
 
 
-            ts = ma.TimeSequence(str(marker),4,data.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Marker,"mm", self.m_trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(marker),4,data.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Marker,"mm", self.m_trial.timeSequences())
             ts.setData(data)
 
 
@@ -545,7 +547,7 @@ class NexusConstructTrialFilter(object):
                     time_init = self.m_firstFrame/self.m_analogFrameRate
 
 
-                ts = ma.TimeSequence(str(channel.getLabel()),1,data.shape[0],self.m_analogFrameRate,time_init,ma.TimeSequence.Type_Analog,"V", 1.0,0.0,[-10.0,10.0], self.m_trial.timeSequences())
+                ts = ma.TimeSequence(utils.str(channel.getLabel()),1,data.shape[0],self.m_analogFrameRate,time_init,ma.TimeSequence.Type_Analog,"V", 1.0,0.0,[-10.0,10.0], self.m_trial.timeSequences())
                 ts.setData(data.reshape((data.shape[0],1)))
                 ts.setDescription(channel.getDescription())
 
@@ -586,23 +588,23 @@ class NexusConstructTrialFilter(object):
                     time_init = self.m_firstFrame/self.m_framerate
 
                 if type == "Angles":
-                    ts = ma.TimeSequence(str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Angle,"Deg", self.m_trial.timeSequences())
+                    ts = ma.TimeSequence(utils.str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Angle,"Deg", self.m_trial.timeSequences())
                     ts.setData(data)
 
                 elif type == "Forces":
-                    ts = ma.TimeSequence(str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Force,"N.Kg-1", self.m_trial.timeSequences())
+                    ts = ma.TimeSequence(utils.str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Force,"N.Kg-1", self.m_trial.timeSequences())
                     ts.setData(data)
 
                 elif type == "Moments":
-                    ts = ma.TimeSequence(str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Moment,"Nmm.Kg-1", self.m_trial.timeSequences())
+                    ts = ma.TimeSequence(utils.str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Moment,"Nmm.Kg-1", self.m_trial.timeSequences())
                     ts.setData(data)
 
                 elif type == "Powers":
-                    ts = ma.TimeSequence(str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Power,"Watt.Kg-1", self.m_trial.timeSequences())
+                    ts = ma.TimeSequence(utils.str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Power,"Watt.Kg-1", self.m_trial.timeSequences())
                     ts.setData(data)
 
                 elif type == "Modeled Markers":
-                    ts = ma.TimeSequence(str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Marker,"mm", self.m_trial.timeSequences())
+                    ts = ma.TimeSequence(utils.str(modelOutputName),4,values_cut.shape[0],self.m_framerate,time_init,ma.TimeSequence.Type_Marker,"mm", self.m_trial.timeSequences())
                     ts.setData(data)
                 else:
                     logging.warning("[pyCGM2] : Model Output (%s) from Nexus not added to the openma trial"%(modelOutputName))
@@ -623,6 +625,6 @@ class NexusConstructTrialFilter(object):
 
 
         if filenameNoExt is None:
-            ma.io.write(self.m_root,str(self.m_dataPath+self.m_filenameNoExt+".c3d"))
+            ma.io.write(self.m_root,utils.str(self.m_dataPath+self.m_filenameNoExt+".c3d"))
         else:
-            ma.io.write(self.m_root,str(self.m_dataPath+filenameNoExt+".c3d"))
+            ma.io.write(self.m_root,utils.str(self.m_dataPath+filenameNoExt+".c3d"))

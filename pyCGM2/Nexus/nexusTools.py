@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from __future__ import unicode_literals
 import numpy as np
 import logging
 
@@ -291,7 +291,7 @@ def createGeneralEvents(NEXUS,subject,acq,labels):
     for ev in btk.Iterate(events):
         if ev.GetLabel() in labels:
             #print ev.GetTime()*freq
-            NEXUS.CreateAnEvent( str(subject), "General", str(ev.GetLabel()), int(ev.GetTime()*freq), 0.0 )
+            NEXUS.CreateAnEvent( subject, "General", ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
 def createEvents(NEXUS,subject,acq,labels):
 
@@ -300,13 +300,13 @@ def createEvents(NEXUS,subject,acq,labels):
     for ev in btk.Iterate(events):
         if ev.GetLabel() in labels:
             #print ev.GetTime()*freq
-            NEXUS.CreateAnEvent( str(subject), str(ev.GetContext()), str(ev.GetLabel()), int(ev.GetTime()*freq), 0.0 )
+            NEXUS.CreateAnEvent( subject, ev.GetContext(), ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
 def getForcePlateAssignment(NEXUS):
     out = dict()
     for id in NEXUS.GetDeviceIDs():
         name, type, rate, output_ids, forceplate, eyetracker = NEXUS.GetDeviceDetails(id)
-        if type == u'ForcePlate':
+        if type == 'ForcePlate':
             if forceplate.Context=="Invalid":
                 out[str(id)]="X"
             if forceplate.Context=="Left":
