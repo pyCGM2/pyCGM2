@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from bs4 import BeautifulSoup
 import string
 import logging
@@ -17,7 +19,7 @@ def getVskFiles(path):
 
 
 def checkSetReadOnly(vskfilename):
-    file0 = open(vskfilename.decode("utf-8"),'r')
+    file0 = open(vskfilename,'r')
     content = file0.read()
 
     flag=True  if content.find('READONLY="true"') !=-1 else False
@@ -29,7 +31,7 @@ def checkSetReadOnly(vskfilename):
         logging.warning("read Only found")
         content2 = string.replace(content, 'READONLY="true"', 'READONLY="false"')
 
-        with open(vskfilename.decode("utf-8"), "w") as text_file:
+        with open(vskfilename, "w") as text_file:
             text_file.write(content2)
 
 
@@ -41,9 +43,9 @@ class Vsk(object):
 
     def __init__(self,file):
 
-        self.m_file=file.decode("utf-8")
+        self.m_file=file
 
-        infile = open(file.decode("utf-8"),"r")
+        infile = open(file,"r")
         contents = infile.read()
         soup = BeautifulSoup(contents,'xml')
 
@@ -57,7 +59,7 @@ class Vsk(object):
         for sp in staticParameters:
             if sp.attrs["NAME"] == label:
                 try:
-                    val = sp.attrs["VALUE"].encode(pyCGM2.ENCODER)
+                    val = sp.attrs["VALUE"]
                 except KeyError:
                     logging.warning("static parameter (%s) has no value. Zero return"%(label))
                     val=0
