@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 """Nexus Operation : **CGM1 Calibration**
 
 :param -l, --leftFlatFoot [int]: enable or disable the flat foot option on the left foot
@@ -48,7 +50,6 @@ def main(args):
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
-
         if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1-pyCGM2.settings"):
             settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
         else:
@@ -65,6 +66,7 @@ def main(args):
 
         calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
 
+
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
 
@@ -74,8 +76,8 @@ def main(args):
         subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
-        required_mp,optional_mp = nexusUtils.getNexusSubjectMp(NEXUS,subject,resetFlag=args.resetMP)
 
+        required_mp,optional_mp = nexusUtils.getNexusSubjectMp(NEXUS,subject,resetFlag=args.resetMP)
 
         # -------------------------- INFOS ------------------------------------
         mpInfo,mpFilename = files.getMpFileContent(DATA_PATH,"mp.pyCGM2",subject)

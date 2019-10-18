@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 """Nexus Operation : **CGM1 Fitting**
 
 :param --proj [string]: define in which coordinate system joint moment will be expressed (Choice : Distal, Proximal, Global)
