@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-# pytest --disable-pytest-warnings  test_CGM1.py::TestLowerBody
+from __future__ import unicode_literals
+
+# pytest -s --disable-pytest-warnings  test_CGM1.py::TestFullBody::test_FullBody_noOptions
 
 import ipdb
 import os
@@ -14,7 +16,7 @@ from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Tools import btkTools
 from pyCGM2.Eclipse import vskTools
-from pyCGM2.Utils import testingUtils
+from pyCGM2.Utils import testingUtils,utils
 import pytest
 
 class TestFullBody:
@@ -22,7 +24,8 @@ class TestFullBody:
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\fullBody-native-Options\\"
         staticFilename = "static.c3d"
 
-        acqStatic = btkTools.smartReader(str(DATA_PATH +  staticFilename))
+        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
+
 
         markerDiameter=14
         leftFlatFoot = True
@@ -33,8 +36,6 @@ class TestFullBody:
         vskFile = vskTools.getVskFiles(DATA_PATH)
         vsk = vskTools.Vsk(str(DATA_PATH + "New Subject.vsk"))
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
-
-
 
         model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
             staticFilename,
