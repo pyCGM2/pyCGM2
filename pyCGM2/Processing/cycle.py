@@ -261,7 +261,7 @@ class Cycle(ma.Node):
         """
 
         if trialTools.isTimeSequenceExist(self.trial,pointLabel):
-            return self.trial.findChild(ma.T_TimeSequence, pointLabel).data()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
+            return self.trial.findChild(ma.T_TimeSequence, utils.str(pointLabel)).data()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
         else:
             logging.debug("[pyCGM2] the point Label %s doesn t exist in %s" % (pointLabel,self.trial.name()))
             return None
