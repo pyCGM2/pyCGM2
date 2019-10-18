@@ -10,6 +10,7 @@ from pyCGM2.Tools import exportTools
 
 from pyCGM2 import ma
 from pyCGM2.ma import io
+from pyCGM2.Utils import utils
 
 class XlsExportDataFrameFilter(object):
     """
@@ -84,14 +85,14 @@ class XlsAnalysisExportFilter(object):
 
         if path == None:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xls").decode("utf-8").encode(pyCGM2.ENCODER),engine='xlwt')
+                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xls"),engine='xlwt')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xlsx").decode("utf-8").encode(pyCGM2.ENCODER))
+                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xlsx"))
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xls").decode("utf-8").encode(pyCGM2.ENCODER),engine='xlwt')
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xls"),engine='xlwt')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xlsx").decode("utf-8").encode(pyCGM2.ENCODER))
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xlsx"))
 
         # metadata
         #--------------
@@ -304,14 +305,14 @@ class XlsAnalysisExportFilter(object):
 
         if path == None:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xls").decode("utf-8").encode(pyCGM2.ENCODER),engine='xlwt',encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xls"),engine='xlwt',encoding='utf-8')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xlsx").decode("utf-8").encode(pyCGM2.ENCODER),encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xlsx"),encoding='utf-8')
         else:
             if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xls").decode("utf-8").encode(pyCGM2.ENCODER),engine='xlwt',encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xls"),engine='xlwt',encoding='utf-8')
             elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xlsx").decode("utf-8").encode(pyCGM2.ENCODER),encoding='utf-8')
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xlsx"),encoding='utf-8')
 
         # infos
         #-------
@@ -725,19 +726,19 @@ class AnalysisC3dExportFilter(object):
         if self.analysis.subjectInfo is not None:
             subjInfo = self.analysis.subjectInfo
             for item in subjInfo.items():
-                trial.setProperty("SUBJECT_INFO:"+str(item[0]),item[1])
+                trial.setProperty("SUBJECT_INFO:"+ utils.str(item[0]),utils.str(item[1]))
 
         # model infos
         if self.analysis.modelInfo is not None:
             modelInfo =  self.analysis.modelInfo
             for item in modelInfo.items():
-                trial.setProperty("MODEL_INFO:"+str(item[0]),item[1])
+                trial.setProperty("MODEL_INFO:"+ utils.str(item[0]),utils.str(item[1]))
 
         # model infos
         if self.analysis.experimentalInfo is not None:
             experimentalConditionInfo = self.analysis.experimentalInfo
             for item in experimentalConditionInfo.items():
-                trial.setProperty("EXPERIMENTAL_INFO:"+str(item[0]),item[1])
+                trial.setProperty("EXPERIMENTAL_INFO:"+ utils.str(item[0]),utils.str(item[1]))
 
 
         #trial.setProperty('MY_GROUP:MY_PARAMETER',10.0)
@@ -767,7 +768,7 @@ class AnalysisC3dExportFilter(object):
                 values = np.zeros((101,4))
                 values2 = np.zeros((101,1))
                 for val in self.analysis.kinematicStats.data[label,context]["values"]:
-                    angle = ma.TimeSequence(str(label+"."+context+"."+str(cycle)),4,101,1.0,0.0,ma.TimeSequence.Type_Angle,"deg", trial.timeSequences())
+                    angle = ma.TimeSequence(utils.str(label+"."+context+"."+str(cycle)),4,101,1.0,0.0,ma.TimeSequence.Type_Angle,"deg", trial.timeSequences())
                     values[:,0:3] = val
                     angle.setData(values)
                     cycle+=1
@@ -814,9 +815,9 @@ class AnalysisC3dExportFilter(object):
 
         try:
             if path == None:
-                ma.io.write(root,(outputName+".c3d").decode("utf-8").encode(pyCGM2.ENCODER)  )
+                ma.io.write(root,utils.str(outputName+".c3d")  )
             else:
-                ma.io.write(root,(path + outputName+".c3d").decode("utf-8").encode(pyCGM2.ENCODER))
+                ma.io.write(root,utils.str(path + outputName+".c3d"))
             logging.info("Analysis c3d  [%s.c3d] Exported" %( (outputName +".c3d")) )
         except:
             raise Exception ("[pyCGM2] : analysis c3d doesn t export" )

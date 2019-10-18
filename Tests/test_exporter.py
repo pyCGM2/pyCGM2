@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_exporter.py::TestExport::test_analysisAdvanced
 
 import ipdb
@@ -46,7 +47,7 @@ class TestExport:
 
         exportFilter = exporter.XlsAnalysisExportFilter()
         exportFilter.setAnalysisInstance(analysisInstance)
-        exportFilter.export("advancedExport", path=DATA_PATH_OUT,excelFormat = "xls",mode="Advanced")
+        exportFilter.export("Hän-advancedExport", path=DATA_PATH_OUT,excelFormat = "xls",mode="Advanced")
 
 
     def test_analysisBasic(self):
@@ -80,7 +81,7 @@ class TestExport:
 
         exportFilter = exporter.XlsAnalysisExportFilter()
         exportFilter.setAnalysisInstance(analysisInstance)
-        exportFilter.export("basicExport", path=DATA_PATH_OUT,excelFormat = "xls",mode="Basic")
+        exportFilter.export("Hän-basicExport", path=DATA_PATH_OUT,excelFormat = "xls",mode="Basic")
 
 
     def test_analysisJson(self):
@@ -112,7 +113,7 @@ class TestExport:
 
         exportFilter = exporter.AnalysisExportFilter()
         exportFilter.setAnalysisInstance(analysisInstance)
-        exportFilter.export("jsonExport", path=DATA_PATH_OUT)
+        exportFilter.export("Hän-jsonExport", path=DATA_PATH_OUT)
 
 
     def test_analysisC3d(self):
@@ -144,7 +145,7 @@ class TestExport:
 
         exportFilter = exporter.AnalysisC3dExportFilter()
         exportFilter.setAnalysisInstance(analysisInstance)
-        exportFilter.export("c3dExport", path=DATA_PATH_OUT)
+        exportFilter.export("Hän-c3dExport", path=DATA_PATH_OUT)
 
     def test_analysisAdvancedEMG(self):
 
@@ -169,12 +170,12 @@ class TestExport:
 
         exportFilter = exporter.XlsAnalysisExportFilter()
         exportFilter.setAnalysisInstance(emgAnalysis)
-        exportFilter.export("Emg_advancedExport", path=DATA_PATH_OUT,excelFormat = "xls",mode="Advanced")
+        exportFilter.export("Hän-Emg_advancedExport", path=DATA_PATH_OUT,excelFormat = "xls",mode="Advanced")
 
         exportFilter = exporter.AnalysisExportFilter()
         exportFilter.setAnalysisInstance(emgAnalysis)
-        exportFilter.export("Emg_export.json", path=DATA_PATH_OUT)
+        exportFilter.export("Hän-Emg_export.json", path=DATA_PATH_OUT)
 
         exportFilter = exporter.AnalysisC3dExportFilter()
         exportFilter.setAnalysisInstance(emgAnalysis)
-        exportFilter.export("emg_C3dExport", path=DATA_PATH_OUT)
+        exportFilter.export("Hän-emg_C3dExport", path=DATA_PATH_OUT)
