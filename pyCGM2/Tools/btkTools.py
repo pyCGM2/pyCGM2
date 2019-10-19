@@ -305,7 +305,7 @@ def applyTranslators(acq, translators):
             if point.GetType() == btk.btkPoint.Marker:
                 label = point.GetLabel()
                 if label in modifiedMarkerList:
-                    acqClone.RemovePoint(label)
+                    acqClone.RemovePoint(utils.str(label))
                     logging.debug("point (%s) remove in the clone acq  " %((label)))
 
         # Add Modify markers to clone
@@ -314,27 +314,27 @@ def applyTranslators(acq, translators):
             if initialLabel !="None":
                 print wantedLabel
                 if isPointExist(acq,wantedLabel):
-                    smartAppendPoint(acqClone,(wantedLabel+"_origin"),acq.GetPoint((wantedLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
+                    smartAppendPoint(acqClone,(wantedLabel+"_origin"),acq.GetPoint(utils.str(wantedLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
                     logging.warning("wantedLabel (%s)_origin created" %((wantedLabel)))
                 if isPointExist(acq,initialLabel):
                     if initialLabel in translators.keys():
                         if translators[initialLabel] == "None":
                             logging.warning("Initial point (%s)and (%s) point to similar values" %((initialLabel), (wantedLabel)))
-                            smartAppendPoint(acqClone,(wantedLabel),acq.GetPoint((initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
-                            smartAppendPoint(acqClone,(initialLabel),acq.GetPoint((initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
+                            smartAppendPoint(acqClone,(wantedLabel),acq.GetPoint(utils.str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
+                            smartAppendPoint(acqClone,(initialLabel),acq.GetPoint(utils.str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
                         elif translators[initialLabel] == wantedLabel:
                             logging.warning("Initial point (%s) swaped with (%s)" %((initialLabel), (wantedLabel)))
-                            initialValue = acq.GetPoint((initialLabel)).GetValues()
-                            wantedlValue = acq.GetPoint((wantedLabel)).GetValues()
+                            initialValue = acq.GetPoint(utils.str(initialLabel)).GetValues()
+                            wantedlValue = acq.GetPoint(utils.str(wantedLabel)).GetValues()
                             smartAppendPoint(acqClone,(wantedLabel),initialValue,PointType=btk.btkPoint.Marker)
                             smartAppendPoint(acqClone,("TMP"),wantedlValue,PointType=btk.btkPoint.Marker)
-                            acqClone.GetPoint("TMP").SetLabel(initialLabel)
-                            acqClone.RemovePoint((wantedLabel+"_origin"))
-                            acqClone.RemovePoint((initialLabel+"_origin"))
+                            acqClone.GetPoint(utils.str("TMP")).SetLabel(initialLabel)
+                            acqClone.RemovePoint(utils.str(wantedLabel+"_origin"))
+                            acqClone.RemovePoint(utils.str(initialLabel+"_origin"))
                     else:
                         logging.warning("Initial point (%s) renamed (%s)  added into the c3d" %((initialLabel), (wantedLabel)))
-                        smartAppendPoint(acqClone,(wantedLabel),acq.GetPoint((initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
-                        smartAppendPoint(acqClone,(initialLabel),acq.GetPoint((initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
+                        smartAppendPoint(acqClone,(wantedLabel),acq.GetPoint(utils.str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
+                        smartAppendPoint(acqClone,(initialLabel),acq.GetPoint(utils.str(initialLabel)).GetValues(),PointType=btk.btkPoint.Marker)
 
                 else:
                     logging.warning("initialLabel (%s) doesn t exist  " %((initialLabel)))

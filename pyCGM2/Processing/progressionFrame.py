@@ -4,7 +4,7 @@ import numpy as np
 from pyCGM2.Math import numeric
 from pyCGM2.Tools import  btkTools
 import logging
-
+from pyCGM2.Utils import utils
 
 class ProgressionFrameFilter(object):
     """
@@ -47,7 +47,7 @@ class PelvisProgressionFrameProcedure(object):
         # find valid frames and get the first one
         flag,vff,vlf = btkTools.findValidFrames(acq,[self.m_marker])
 
-        values = acq.GetPoint(self.m_marker).GetValues()[vff:vlf,:]
+        values = acq.GetPoint(utils.str(self.m_marker)).GetValues()[vff:vlf,:]
 
         MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
         absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
@@ -95,7 +95,7 @@ class PelvisProgressionFrameProcedure(object):
             values = np.zeros((acq.GetPointFrameNumber(),3))
             count = 0
             for marker in self.m_backmarkers:
-                values = values + acq.GetPoint(marker).GetValues()
+                values = values + acq.GetPoint(utils.str(marker)).GetValues()
                 count +=1
             backValues = values / count
 
@@ -169,7 +169,7 @@ class ThoraxProgressionFrameProcedure(object):
         # find valid frames and get the first one
         flag,vff,vlf = btkTools.findValidFrames(acq,[self.m_marker])
 
-        values = acq.GetPoint(self.m_marker).GetValues()[vff:vlf,:]
+        values = acq.GetPoint(utils.str(self.m_marker)).GetValues()[vff:vlf,:]
 
         MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
         absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
@@ -207,7 +207,7 @@ class ThoraxProgressionFrameProcedure(object):
             values = np.zeros((acq.GetPointFrameNumber(),3))
             count = 0
             for marker in self.m_frontmarkers:
-                values = values + acq.GetPoint(marker).GetValues()
+                values = values + acq.GetPoint(utils.str(marker)).GetValues()
                 count +=1
             frontValues = values / count
 

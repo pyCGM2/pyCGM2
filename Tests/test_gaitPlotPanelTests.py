@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_gaitPlotPanelTests.py::Test_oneAnalysis_StandardPlotTest::test_descriptiveKinematicPlotPanel
 import logging
 

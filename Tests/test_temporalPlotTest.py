@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 # pytest --disable-pytest-warnings  test_temporalPlotTest.py::Test_PlotTest::test_temporalKinematicPlotPanel
 import ipdb
 import logging

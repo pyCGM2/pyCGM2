@@ -1,7 +1,7 @@
 # coding: utf-8
-# from __future__ import unicode_literals
+from __future__ import unicode_literals
 
-# pytest -s --disable-pytest-warnings  test_issues.py::TestIssues
+# pytest -s --disable-pytest-warnings  test_issues.py::TestStephenM::test_issue_signAbdAddOffset
 
 import ipdb
 import os
@@ -16,7 +16,7 @@ from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Tools import btkTools
 from pyCGM2.Eclipse import vskTools
-from pyCGM2.Utils import testingUtils,files
+from pyCGM2.Utils import testingUtils,files,utils
 import pytest
 from pyCGM2 import btk
 from pyCGM2.Processing import progressionFrame
@@ -36,7 +36,7 @@ class TestStephenM:
         pointSuffix = "test"
 
         vskFile = vskTools.getVskFiles(DATA_PATH)
-        vsk = vskTools.Vsk(str(DATA_PATH + "Nick.vsk"))
+        vsk = vskTools.Vsk(DATA_PATH + "Nick.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
         # required_mp={
         # 'Bodymass'   : 65.0,
@@ -104,9 +104,9 @@ class Test_BrianH:
 
 
         gaitFilename="walk09.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
-        valSACR=acq.GetPoint("SACR").GetValues()
+        valSACR=acq.GetPoint(utils.str("SACR")).GetValues()
 
         btkTools.smartAppendPoint(acq,"RPSI",valSACR,desc="")
         btkTools.smartAppendPoint(acq,"LPSI",valSACR,desc="")
@@ -123,7 +123,7 @@ class Test_BrianH:
         gaitFilename="walk11.c3d"
         acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
-        valSACR=acq.GetPoint("SACR").GetValues()
+        valSACR=acq.GetPoint(utils.str("SACR")).GetValues()
 
         btkTools.smartAppendPoint(acq,"RPSI",valSACR,desc="")
         btkTools.smartAppendPoint(acq,"LPSI",valSACR,desc="")

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_progression.py::
+from __future__ import unicode_literals
+# pytest -s --disable-pytest-warnings  test_progression.py::Test_btkProgression
 """
 Created on Thu Sep 15 11:09:22 2016
 
@@ -19,7 +20,7 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 from pyCGM2.Tools import  btkTools,trialTools
 from pyCGM2.Processing import progressionFrame
-
+from pyCGM2.Utils import utils
 # ---- BTK ------
 
 # Gait
@@ -32,7 +33,7 @@ class Test_btkProgression():
 
 
         gaitFilename="gait_X_forward.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
@@ -43,7 +44,7 @@ class Test_btkProgression():
         np.testing.assert_equal( pff.outputs["globalFrame"],"XYZ")
 
 
-        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
+        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -62,9 +63,9 @@ class Test_btkProgression():
         MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
         gaitFilename="gait_X_backward.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
-        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
+        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
 
@@ -77,7 +78,7 @@ class Test_btkProgression():
         np.testing.assert_equal( pff.outputs["globalFrame"],"XYZ")
 
 
-        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
+        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -97,7 +98,7 @@ class Test_btkProgression():
 
 
         gaitFilename="gait_Y_forward.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
@@ -107,7 +108,7 @@ class Test_btkProgression():
         np.testing.assert_equal( pff.outputs["forwardProgression"] ,True)
         np.testing.assert_equal( pff.outputs["globalFrame"],"YXZ")
 
-        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
+        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -128,7 +129,7 @@ class Test_btkProgression():
 
 
         gaitFilename="gait_Y_backward.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
@@ -139,7 +140,7 @@ class Test_btkProgression():
         np.testing.assert_equal( pff.outputs["forwardProgression"] ,False)
         np.testing.assert_equal( pff.outputs["globalFrame"],"YXZ")
 
-        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
+        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -160,7 +161,7 @@ class Test_btkProgression():
 
 
         gaitFilename="fullBody_GaitX_forward.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
         pfp = progressionFrame.ThoraxProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
@@ -179,7 +180,7 @@ class Test_btkProgression():
 
 
         gaitFilename="fullBody_GaitX_backward.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
         pfp = progressionFrame.ThoraxProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
@@ -200,7 +201,7 @@ class Test_btkProgression_static():
         MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
         gaitFilename="static_X.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
@@ -211,7 +212,7 @@ class Test_btkProgression_static():
         np.testing.assert_equal( pff.outputs["globalFrame"],"XYZ")
 
 
-        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
+        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -233,7 +234,7 @@ class Test_btkProgression_static():
         MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
         gaitFilename="static_X_backward.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
@@ -244,7 +245,7 @@ class Test_btkProgression_static():
         np.testing.assert_equal( pff.outputs["globalFrame"],"XYZ")
 
 
-        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
+        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -263,7 +264,7 @@ class Test_btkProgression_static():
 
 
         gaitFilename="static_Y_backward.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
@@ -274,7 +275,7 @@ class Test_btkProgression_static():
         np.testing.assert_equal( pff.outputs["globalFrame"],"YXZ")
 
 
-        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
+        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -294,7 +295,7 @@ class Test_btkProgression_static():
 
 
         gaitFilename="fullBody_StaticX.c3d"
-        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
         pfp = progressionFrame.ThoraxProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
