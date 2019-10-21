@@ -17,66 +17,66 @@ from pyCGM2.Tools import btkTools
 class Test_UtilsFiles:
     def test_openFile(self):
 
-        contentYaml = files.openFile("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\","file.yaml")
-        contentJson = files.openFile("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\","file.json")
+        contentYaml = files.openFile(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","file.yaml")
+        contentJson = files.openFile(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","file.json")
 
         assert contentYaml !=False
         assert contentJson !=False
 
-        files.saveJson("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\", "testJsonOut", contentJson)
+        files.saveJson(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\", "testJsonOut", contentJson)
 
 
     def test_loadAndSaveModel(self):
 
-        model = files.loadModel("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\","PIG-KAD")
+        model = files.loadModel(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","PIG-KAD")
         assert model !=False
-        files.saveModel(model,"C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\","testModelOut")
+        files.saveModel(model,pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","testModelOut")
 
     def test_loadAndSaveAnalysis(self):
 
-        ana = files.loadAnalysis("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\","file")
+        ana = files.loadAnalysis(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","file")
         assert ana !=False
-        files.saveAnalysis(ana,"C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\","testAnalysisOut")
+        files.saveAnalysis(ana,pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","testAnalysisOut")
 
     def test_getTranslators(self):
-        translators = files.getTranslators("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\", translatorType = "CGM1.translators")
+        translators = files.getTranslators(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\", translatorType = "CGM1.translators")
         assert translators !=False
 
     def test_getIKweightSet(self):
-        ikws = files.getIKweightSet("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\", "CGM2_2.ikw")
+        ikws = files.getIKweightSet(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\", "CGM2_2.ikw")
         assert ikws !=False
 
     def test_getMpFileContent(self):
-        mp = files.getMpFileContent("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\","mp.pyCGM2","Nick")
+        mp = files.getMpFileContent(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","mp.pyCGM2","Nick")
         assert mp !=False
 
     def test_getFiles(self):
-        fs = files.getFiles("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\","json")
+        fs = files.getFiles(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","json")
 
 
     def test_copySessionFolder(self):
-        files.copySessionFolder("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\", "folder", "newFolder", selectedFiles=None)
+        files.copySessionFolder(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\", "folder", "newFolder", selectedFiles=None)
 
     def test_createDir(self):
-        files.createDir("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests-OUT\\LowLevel\\IO\\Hänibàl_files\\latin1_iæøå_test")
+        files.createDir(pyCGM2.TEST_DATA_PATH + "-OUT\\LowLevel\\IO\\Hänibàl_files\\latin1_iæøå_test")
 
     def test_getDirs(self):
-        dirs = files.getDirs("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\")
+        dirs = files.getDirs(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\")
         print dirs
 
 
     def test_getFileCreationDate(self):
-        files.getFileCreationDate("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\file.c3d")
+        files.getFileCreationDate(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\file.c3d")
 
 class Test_vsk:
 
     def test_vskFiles(self):
-        vskFile = vskTools.getVskFiles("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\")
+        vskFile = vskTools.getVskFiles(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\")
         assert vskFile !=False
 
-        vskTools.checkSetReadOnly("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\PIG-KAD.vsk")
+        vskTools.checkSetReadOnly(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\PIG-KAD.vsk")
 
-        vskInstance = vskTools.Vsk("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\PIG-KAD.vsk")
+        vskInstance = vskTools.Vsk(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\PIG-KAD.vsk")
 
 # class Test_eclipse:
 #
