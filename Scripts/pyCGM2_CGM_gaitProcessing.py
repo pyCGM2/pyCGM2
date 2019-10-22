@@ -15,7 +15,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
-from pyCGM2 import log;
+from pyCGM2 import log
 log.setLogger()
 
 def main(args):
