@@ -53,6 +53,8 @@ class Test_UtilsFiles:
     def test_getFiles(self):
         fs = files.getFiles(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","json")
 
+    def test_getFiles2(self):
+        fs = files.getFiles(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hånnibøl_c3d\\","Trial.enf")
 
     def test_copySessionFolder(self):
         files.copySessionFolder(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\", "folder", "newFolder", selectedFiles=None)
@@ -77,18 +79,3 @@ class Test_vsk:
         vskTools.checkSetReadOnly(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\PIG-KAD.vsk")
 
         vskInstance = vskTools.Vsk(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\PIG-KAD.vsk")
-
-# class Test_eclipse:
-#
-#     def test_eclipse(self):
-#
-#         files = eclipse.getEnfFiles("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\", enums.EclipseType.Trial)
-#
-#     def test_findCalibration(self):
-#         calib = eclipse.findCalibration("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Eclipse\\Lecter-iæøå\\session\\")
-#         assert calib == "PN01OP01S01STAT.Trial.enf"
-#
-#         motions = eclipse.findMotions("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data\\Eclipse\\Lecter-iæøå\\session\\",ignoreSelect=False)
-#         import ipdb; ipdb.set_trace()
-# def test_generateEmptyENF(self):
-#     eclipse.generateEmptyENF("C:\\Users\\HLS501\\Documents\\VICON DATA\\pyCGM2-Data-Tests\\LowLevel\\IO\\Hänibàl_files\\")

@@ -8,7 +8,7 @@ from pyCGM2 import enums
 
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Tools import btkTools
-from pyCGM2.Utils import files
+from pyCGM2.Utils import files,utils
 from bs4 import BeautifulSoup
 
 
@@ -20,8 +20,8 @@ def generateEmptyENF(path):
     c3ds = getFiles(path,"c3d")
     for c3d in c3ds:
         enfName = c3d[:-4]+".Trial.enf"
-        if enfName not in os.listdir(path.decode("utf-8")):
-            open((path.decode("utf-8")+enfName).encode(pyCGM2.ENCODER), 'a').close()
+        if enfName not in os.listdir(path):
+            open((path+enfName), 'a').close()
 
 
 def getCurrentMarkedEnfs():
@@ -42,7 +42,7 @@ def getCurrentMarkedEnfs():
 def getEnfFiles(path, type):
     path = path[:-1] if path[-1:]=="\\" else path
 
-    enfFiles = files.getFiles(str(path+"\\"),type.value)
+    enfFiles = files.getFiles(path+"\\",type.value)
 
     if type == enums.EclipseType.Session:
         if len(enfFiles)>1:
@@ -120,14 +120,14 @@ def findKneeMotions(path,ignoreSelect=False):
 
 
 def cleanEnf(path,enf):
-    src = open((path+enf).decode("utf-8"),"r")
+    src = open((path+enf),"r")
     filteredContent = ""
     for line in src:
         if line[0] != "=":
            filteredContent += line
     src.close()
 
-    dst = open((path+enf).decode("utf-8"), 'w')
+    dst = open((path+enf), 'w')
     dst.write(filteredContent)
     dst.close()
     return filteredContent
@@ -207,15 +207,15 @@ class EnfReader(object):
         config = ConfigParser.ConfigParser()
         config.optionxform=str # keep letter case
 
-        if not os.path.isfile((path+enfFile).decode("utf-8")):
-            raise Exception ("[pyCGM2] : enf file (%s) not find"%(str(path+enfFile)))
+        if not os.path.isfile((path+enfFile)):
+            raise Exception ("[pyCGM2] : enf file (%s) not find"%(utils.str(path+enfFile)))
 
         try:
-            config.read((path+enfFile).decode("utf-8"))
+            config.read((path+enfFile))
         except ConfigParser.ParsingError:
             print "enf cleaned"
             cleanEnf(path,enfFile)
-            config.read((path+enfFile).decode("utf-8"))
+            config.read((path+enfFile))
 
 
         self.m_path =  path
@@ -314,7 +314,7 @@ class TrialEnfReader(EnfReader):
 
 
     def save(self):
-        with open((self.m_path + self.m_file).decode("utf-8").encode(pyCGM2.ENCODER), 'w') as configfile:
+        with open((self.m_path + self.m_file), 'w') as configfile:
             self.m_config.write(configfile)
 
 
