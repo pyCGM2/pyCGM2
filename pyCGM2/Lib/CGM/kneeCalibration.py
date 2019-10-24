@@ -41,6 +41,11 @@ def calibration2Dof(model,
     ff = acqFunc.GetFirstFrame()
     lf = acqFunc.GetLastFrame()
 
+    # motion
+    if side is None:
+        side = detectSide(acqFunc,"LANK","RANK")
+        logging.info("Detected motion side : %s" %(side) )
+
     start,end = btkTools.getStartEndEvents(acqFunc,side)
 
     if start is not None:
@@ -59,10 +64,6 @@ def calibration2Dof(model,
     ilf=endFrame-ff
 
 
-    # motion
-    if side is None:
-        side = detectSide(acqFunc,"LANK","RANK")
-        logging.info("Detected motion side : %s" %(side) )
 
     if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2"]:
         validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1.LOWERLIMB_TRACKING_MARKERS)
@@ -157,6 +158,11 @@ def sara(model,
     ff = acqFunc.GetFirstFrame()
     lf = acqFunc.GetLastFrame()
 
+    #---motion side of the lower limb---
+    if side is None:
+        side = detectSide(acqFunc,"LANK","RANK")
+        logging.info("Detected motion side : %s" %(side) )
+
     start,end = btkTools.getStartEndEvents(acqFunc,side)
 
     if start is not None:
@@ -175,10 +181,7 @@ def sara(model,
     ilf=endFrame-ff
 
 
-    #---motion side of the lower limb---
-    if side is None:
-        side = detectSide(acqFunc,"LANK","RANK")
-        logging.info("Detected motion side : %s" %(side) )
+
 
     # --------------------------RESET OF THE STATIC File---------
 
