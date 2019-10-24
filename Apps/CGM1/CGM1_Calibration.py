@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+#from __future__ import unicode_literals
 
 """Nexus Operation : **CGM1 Calibration**
 
@@ -65,7 +65,6 @@ def main(args):
         DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
-
 
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "calibration file: "+ calibrateFilenameLabelled)
@@ -134,7 +133,6 @@ if __name__ == "__main__":
         main(args)
 
 
-    except Exception, errormsg:
-        print "Error message: %s" % errormsg
+    except Exception:
         traceback.print_exc()
         raise
