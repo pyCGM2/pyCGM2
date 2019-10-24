@@ -9,7 +9,7 @@ from pyCGM2 import btk
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.Opensim import osimProcessing
 from pyCGM2.Processing import progressionFrame
-
+from pyCGM2.Utils import utils
 
 # ---- PROCEDURES -----
 
@@ -149,7 +149,7 @@ class opensimCalibrationFilter(object):
         self.m_toMeter = 1000.0
 
         self._osimModel = osimProcessing.opensimModel(osimFile,model)
-        self.opensimOutputDir = dataDir if dataDir[-1:] =="\\" else str(dataDir+"\\")
+        self.opensimOutputDir = dataDir if dataDir[-1:] =="\\" else utils.str(dataDir+"\\")
 
     def addMarkerSet(self,markerSetFile):
         """
@@ -200,7 +200,7 @@ class opensimCalibrationFilter(object):
 
 
         """
-        filename = filename if path is None else str(path+filename)
+        filename = filename if path is None else utils.str(path+filename)
         self._osimModel.m_model.printToXML(filename)
 
 
@@ -222,7 +222,7 @@ class opensimFittingFilter(object):
         self.accuracy = accuracy
 
 
-        self.opensimOutputDir = dataDir if dataDir[-1:] =="\\" else str(dataDir+"\\")
+        self.opensimOutputDir = dataDir if dataDir[-1:] =="\\" else utils.str(dataDir+"\\")
 
         self._osimIK = osimProcessing.opensimKinematicFitting(self.m_calibratedOsim.m_model,self.m_ikToolFile)
         self._osimIK.setAccuracy(self.accuracy)
@@ -299,5 +299,5 @@ class opensimFittingFilter(object):
 
 
         """
-        filename = filename if path is None else str(path+filename)
+        filename = filename if path is None else utils.str(path+filename)
         self._osimIK.m_ikTool.printToXML(filename)

@@ -4,6 +4,7 @@ import numpy as np
 
 from pyCGM2 import btk
 from pyCGM2 import opensim3 as opensim
+from pyCGM2.Utils import utils
 
 
 
@@ -40,13 +41,13 @@ def globalTransformationLabToOsim(acq,R_LAB_OSIM):
 def smartTrcExport(acq,filenameNoExt):
     writerDyn = btk.btkAcquisitionFileWriter()
     writerDyn.SetInput(acq)
-    writerDyn.SetFilename(str(filenameNoExt + ".trc"))
+    writerDyn.SetFilename(utils.str(filenameNoExt + ".trc"))
     writerDyn.Update()
 
 
 
 def sto2pointValues(stoFilename,label,R_LAB_OSIM):
-    storageObject = opensim.Storage(stoFilename)
+    storageObject = opensim.Storage(utils.str(stoFilename))
     index_x =storageObject.getStateIndex(label+"_tx")
     index_y =storageObject.getStateIndex(label+"_ty")
     index_z =storageObject.getStateIndex(label+"_tz")
@@ -129,7 +130,7 @@ class opensimModel(object):
         self.m_osimFile = osimFile
 
 
-        self.m_model = opensim.Model(str(osimFile))
+        self.m_model = opensim.Model(utils.str(osimFile))
         self.m_cgmModel = cgmModel
         self.m_markers= list()
 
@@ -232,7 +233,7 @@ class opensimKinematicFitting(object):
 
     def setResultsDirectory(self,path):
         pr= self.m_ikTool.getPropertyByName("results_directory")
-        opensim.PropertyHelper().setValueString(path,pr)
+        opensim.PropertyHelper().setValueString(utils.str(path),pr)
 
     def addIkMarkerTask(self,label,weight=100):
         markerTask = opensim.IKMarkerTask()
@@ -255,8 +256,8 @@ class opensimKinematicFitting(object):
 
         # steps 2 : config ikTool
         self.m_ikTool.setModel(self.m_model)
-        self.m_ikTool.setMarkerDataFileName(filenameNoExt+".trc")
-        self.m_ikTool.setOutputMotionFileName(filenameNoExt+".mot")
+        self.m_ikTool.setMarkerDataFileName(utils.str(filenameNoExt+".trc"))
+        self.m_ikTool.setOutputMotionFileName(utils.str(filenameNoExt+".mot"))
 
         #  set times ( FIXME - I had surprise with set method, i prefer to handle the xmlnode directly)
         prTime= self.m_ikTool.getPropertyByName("time_range")
