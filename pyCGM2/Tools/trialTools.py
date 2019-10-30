@@ -64,7 +64,7 @@ def sortedEvents(trial):
                     ev = ma.Event(it.name(),
                                   it.time(),
                                   contextLst_it,
-                                  np.str(""))
+                                  utils.str(""))
                     ev.addParent(events)
 
 
@@ -284,20 +284,20 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
         data[:,3] = residuals[:,0]
 
         if it.GetType() == btk.btkPoint.Marker:
-            ts = ma.TimeSequence(str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Marker,"mm", trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Marker,"mm", trial.timeSequences())
 
         elif it.GetType() == btk.btkPoint.Angle:
-            ts = ma.TimeSequence(str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Angle,"Deg", trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Angle,"Deg", trial.timeSequences())
 
         elif it.GetType() == btk.btkPoint.Force:
-            ts = ma.TimeSequence(str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Force,"N.Kg-1", trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Force,"N.Kg-1", trial.timeSequences())
 
         elif it.GetType() == btk.btkPoint.Moment:
-            ts = ma.TimeSequence(str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Moment,"Nmm.Kg-1", trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Moment,"Nmm.Kg-1", trial.timeSequences())
 
 
         elif it.GetType() == btk.btkPoint.Power:
-            ts = ma.TimeSequence(str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Power,"Watt.Kg-1", trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Power,"Watt.Kg-1", trial.timeSequences())
 
         else:
             logging.warning("[pyCGM2] point [%s] not copied into openma trial"%(label))
@@ -314,7 +314,7 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
 
         data = values
 
-        ts = ma.TimeSequence(str(label),1,data.shape[0],analogFramerate,time_init,ma.TimeSequence.Type_Analog,"V", 1.0,0.0,[-10.0,10.0], trial.timeSequences())
+        ts = ma.TimeSequence(utils.str(label),1,data.shape[0],analogFramerate,time_init,ma.TimeSequence.Type_Analog,"V", 1.0,0.0,[-10.0,10.0], trial.timeSequences())
         ts.setData(data)
         ts.setDescription(desc)
 
@@ -328,7 +328,7 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
         context = it.GetContext()
         subject = it.GetSubject()
 
-        ev = ma.Event(label,time,context,str(subject),trial.events())
+        ev = ma.Event(label,time,context,utils.str(subject),trial.events())
 
     sortedEvents(trial)
 
@@ -365,7 +365,7 @@ def findProgression(trial,pointLabel):
     globalFrame = (progressionAxis+lateralAxis+"Z")
 
     logging.debug("Progression axis : %s"%(progressionAxis))
-    logging.debug("forwardProgression : %s"%(str(forwardProgression)))
-    logging.debug("globalFrame : %s"%(str(globalFrame)))
+    logging.debug("forwardProgression : %s"%(utils.str(forwardProgression)))
+    logging.debug("globalFrame : %s"%(utils.str(globalFrame)))
 
     return   progressionAxis,forwardProgression,globalFrame

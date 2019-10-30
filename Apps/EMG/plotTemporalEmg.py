@@ -75,8 +75,7 @@ def main(args):
 
         rectifyBool = False if args.raw else True
 
-        fileSuffix = args.fileSuffix
-
+        
 
 
         # --------------------------SUBJECT ------------------------------------
