@@ -284,20 +284,20 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
         data[:,3] = residuals[:,0]
 
         if it.GetType() == btk.btkPoint.Marker:
-            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Marker,"mm", trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Marker,utils.str("mm"), trial.timeSequences())
 
         elif it.GetType() == btk.btkPoint.Angle:
-            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Angle,"Deg", trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Angle,utils.str("Deg"), trial.timeSequences())
 
         elif it.GetType() == btk.btkPoint.Force:
-            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Force,"N.Kg-1", trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Force,utils.str("N.Kg-1"), trial.timeSequences())
 
         elif it.GetType() == btk.btkPoint.Moment:
-            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Moment,"Nmm.Kg-1", trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Moment,utils.str("Nmm.Kg-1"), trial.timeSequences())
 
 
         elif it.GetType() == btk.btkPoint.Power:
-            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Power,"Watt.Kg-1", trial.timeSequences())
+            ts = ma.TimeSequence(utils.str(label),4,data.shape[0],framerate,time_init,ma.TimeSequence.Type_Power,utils.str("Watt.Kg-1"), trial.timeSequences())
 
         else:
             logging.warning("[pyCGM2] point [%s] not copied into openma trial"%(label))
@@ -314,7 +314,7 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
 
         data = values
 
-        ts = ma.TimeSequence(utils.str(label),1,data.shape[0],analogFramerate,time_init,ma.TimeSequence.Type_Analog,"V", 1.0,0.0,[-10.0,10.0], trial.timeSequences())
+        ts = ma.TimeSequence(utils.str(label),1,data.shape[0],analogFramerate,time_init,ma.TimeSequence.Type_Analog,utils.str("V"), 1.0,0.0,[-10.0,10.0], trial.timeSequences())
         ts.setData(data)
         ts.setDescription(desc)
 
