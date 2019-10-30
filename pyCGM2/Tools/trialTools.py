@@ -365,7 +365,7 @@ def findProgression(trial,pointLabel):
     globalFrame = (progressionAxis+lateralAxis+"Z")
 
     logging.debug("Progression axis : %s"%(progressionAxis))
-    logging.debug("forwardProgression : %s"%(utils.str(forwardProgression)))
-    logging.debug("globalFrame : %s"%(utils.str(globalFrame)))
+    logging.debug("forwardProgression : %s"%(str(forwardProgression)))
+    logging.debug("globalFrame : %s"%(str(globalFrame)))
 
     return   progressionAxis,forwardProgression,globalFrame
