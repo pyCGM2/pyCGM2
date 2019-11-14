@@ -151,15 +151,18 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
     else:
         trial =trialTools.smartTrialReader(DATA_PATH,processedEmgfile)
 
-    if len(emgChannels)>10:
-        pages = [[0,9], [10,15]]
-    else:
-        pages = [[0,9]]
+
+    emgChannels_list=  [emgChannels[i:i+10] for i in range(0, len(emgChannels), 10)]
+    contexts_list =  [contexts[i:i+10] for i in range(0, len(contexts), 10)]
+    muscles_list =  [muscles[i:i+10] for i in range(0, len(muscles), 10)]
+
+    pageNumber = len(emgChannels_list)
+
 
     count = 0
-    for page in pages:
+    for i in range(0,pageNumber):
 
-        if exportPdf and len(page)>1:
+        if exportPdf and pageNumber>1:
             if outputName is None:
                 filenameOut =  str(processedEmgfile+"-TemporalEmgPlot"+"[rectify]-")+str(count) if rectify else str(processedEmgfile+"-TemporalEmgPlot"+"[raw]-")+str(count)
             else:
@@ -171,9 +174,8 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
                 filenameOut =  str(outputName+"-TemporalEmgPlot"+"[rectify]") if rectify else str(title+"-TemporalEmgPlot"+"[raw]")
 
         combinedEMGcontext=[]
-
-        for i in range(page[0],page[1]+1):
-            combinedEMGcontext.append([emgChannels[i],contexts[i], muscles[i]])
+        for j in range(0,len(emgChannels_list[i])):
+            combinedEMGcontext.append([emgChannels_list[i][j],contexts_list[i][j], muscles_list[i][j]])
 
         # # viewer
         kv = emgPlotViewers.TemporalEmgPlotViewer(trial)
@@ -186,7 +188,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
         if title is not None:
-            if len(page)>1:
+            if pageNumber>1:
                 pf.setTitle(str(title+"-TemporalEmgPlot"+"[rectify]-")+str(count) if rectify else str(title+"-TemporalEmgPlot"+"[raw]-")+str(count))
             else:
                 pf.setTitle(str(title+"-TemporalEmgPlot"+"[rectify]") if rectify else str(title+"-TemporalEmgPlot"+"[raw]"))
