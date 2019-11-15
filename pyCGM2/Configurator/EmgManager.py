@@ -110,7 +110,7 @@ class EmgConfigManager(Manager.ConfigManager):
                 if self.EMGS[emg]["Muscle"] != "None":
                     labels.append((emg))
                     muscles.append((self.EMGS[emg]["Muscle"]))
-                    contexts.append((self.EMGS[emg]["Context"])) if self.EMGS[emg]["Context"] != "None" else EMG_CONTEXT.append(None)
-                    normalActivities.append((self.EMGS[emg]["NormalActivity"])) if self.EMGS[emg]["NormalActivity"] != "None" else EMG_CONTEXT.append(None)
+                    contexts.append((self.EMGS[emg]["Context"])) if self.EMGS[emg]["Context"] != "None" else contexts.append("NA")
+                    normalActivities.append((self.EMGS[emg]["NormalActivity"])) if self.EMGS[emg]["NormalActivity"] != "None" else normalActivities.append("NA")
 
         return labels,muscles,contexts,normalActivities

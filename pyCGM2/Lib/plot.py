@@ -155,6 +155,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
     emgChannels_list=  [emgChannels[i:i+10] for i in range(0, len(emgChannels), 10)]
     contexts_list =  [contexts[i:i+10] for i in range(0, len(contexts), 10)]
     muscles_list =  [muscles[i:i+10] for i in range(0, len(muscles), 10)]
+    normalActivityEmgs_list =  [normalActivityEmgs[i:i+10] for i in range(0, len(normalActivityEmgs), 10)]
 
     pageNumber = len(emgChannels_list)
 
@@ -180,7 +181,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
         # # viewer
         kv = emgPlotViewers.TemporalEmgPlotViewer(trial)
         kv.setEmgs(combinedEMGcontext)
-        kv.setNormalActivationLabels(normalActivityEmgs)
+        kv.setNormalActivationLabels(normalActivityEmgs_list[i])
         kv. setEmgRectify(rectify)
 
         # # filter
