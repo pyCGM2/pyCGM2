@@ -734,7 +734,7 @@ def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="
     if show: plt.show()
 
 
-def compareEmgEvelops(analyses,legends, emgChannels, muscles, contexts, normalActivityEmgs, normalized=False,plotType="Descriptive",show=True,title=None):
+def compareEmgEnvelops(analyses,legends, emgChannels, muscles, contexts, normalActivityEmgs, normalized=False,plotType="Descriptive",show=True,title=None,type="Gait"):
     """
     compareEmgEvelops : compare emg envelops from  two pyCGM2 analysis instances
 
@@ -776,17 +776,24 @@ def compareEmgEvelops(analyses,legends, emgChannels, muscles, contexts, normalAc
         combinedEMGcontext.append([emgChannels[i],contexts[i],muscles[i]])
 
 
-    kv = emgPlotViewers.MultipleAnalysis_EnvEmgGaitPlotPanelViewer(analyses,legends)
+    kv = emgPlotViewers.MultipleAnalysis_EnvEmgPlotPanelViewer(analyses,legends)
 
     kv.setEmgs(combinedEMGcontext)
     kv.setNormalActivationLabels(normalActivityEmgs)
     if normalized:
         kv.setNormalizedEmgFlag(True)
 
-    if plotType == "Descriptive":
-        kv.setConcretePlotFunction(plot.gaitDescriptivePlot )
-    elif plotType == "Consistency":
-        kv.setConcretePlotFunction(plot.gaitConsistencyPlot )
+    if type=="Gait":
+        if plotType == "Descriptive":
+            kv.setConcretePlotFunction(plot.gaitDescriptivePlot )
+        elif plotType == "Consistency":
+            kv.setConcretePlotFunction(plot.gaitConsistencyPlot )
+    else:
+        if plotType == "Descriptive":
+            kv.setConcretePlotFunction(plot.descriptivePlot )
+        elif plotType == "Consistency":
+            kv.setConcretePlotFunction(plot.consistencyPlot )
+
 
     # filter
     pf = plotFilters.PlottingFilter()
