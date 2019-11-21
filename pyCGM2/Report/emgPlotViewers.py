@@ -325,7 +325,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
 
 
-class MultipleAnalysis_EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
+class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
     """
 
     """
@@ -338,7 +338,7 @@ class MultipleAnalysis_EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer)
         """
 
 
-        super(MultipleAnalysis_EnvEmgGaitPlotPanelViewer, self).__init__(iAnalyses)
+        super(MultipleAnalysis_EnvEmgPlotPanelViewer, self).__init__(iAnalyses)
 
 
         if len(iAnalyses) != len(legends):
