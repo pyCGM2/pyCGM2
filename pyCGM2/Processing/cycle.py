@@ -213,19 +213,17 @@ class Cycle(ma.Node):
         super(Cycle,self).__init__(nodeLabel)
         self.trial=trial
 
-        try:
-            self.pointfrequency = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
-        except ValueError:
-            raise Exception("[pyCGM2] : there are no time sequence of type marker in the openmaTrial")
-
-        try:
-            self.analogfrequency = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate()
-        except ValueError:
-            self.analogfrequency = 0
-
+        self.pointfrequency = trial.property("POINT:RATE").cast() #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
+        self.analogfrequency = trial.property("ANALOG:RATE").cast() #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate()
         self.appf =  self.analogfrequency / self.pointfrequency
-        self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime() * self.pointfrequency))
 
+        try:
+            trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
+            self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime() * self.pointfrequency))
+
+        except ValueError:
+            logging.warning("[pyCGM2] : there are no time sequence of type marker in the openmaTrial")
+            self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).startTime() * self.analogfrequency))/self.appf
 
         self.begin =  int(round(startTime * self.pointfrequency) + 1)
         self.end = int(round(endTime * self.pointfrequency) + 1)
@@ -293,7 +291,6 @@ class Cycle(ma.Node):
                 - `analogLabel` (str) - analog Label
 
         """
-
         if trialTools.isTimeSequenceExist(self.trial,analogLabel):
             return  self.trial.findChild(ma.T_TimeSequence, utils.str(analogLabel)).data()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
         else:
@@ -683,7 +680,6 @@ class CyclesBuilder(object):
             return None
 
     def getEmg(self):
-
         if self.emgTrials is not None:
             emgCycles=list()
             for trial in  self.emgTrials:
@@ -707,6 +703,7 @@ class CyclesBuilder(object):
                                                    context))
 
             return emgCycles
+
         else:
             return None
 

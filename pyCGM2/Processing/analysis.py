@@ -283,27 +283,20 @@ class AnalysisBuilder(AbstractBuilder):
                 - `out` (dict) - dictionnary with descriptive statictics of emg envelopes
                 - `outPst` ( dict) - dictionnary with descriptive statictics of spatio-temporal parameters matching emg envelopes
         """
-
-
         out={}
         outPst={}
 
         logging.info("--emg computation--")
         if self.m_cycles.emgCycles is not None:
-
-            for rawLabel,muscleDict in zip(self.m_emgLabelList,self.m_emgs):
-
-                muscleLabel = muscleDict["label"]
-                muscleSide = muscleDict["side"]
-
-                out[muscleLabel,muscleSide,"Left"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Left")
-                out[muscleLabel,muscleSide,"Right"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Right")
-
+            for rawLabel in self.m_emgLabelList:
+                out[rawLabel,"Left"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Left")
+                out[rawLabel,"Right"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Right")
 
         else:
             logging.warning("No emg computation")
 
         return out,outPst
+
 
 class GaitAnalysisBuilder(AbstractBuilder):
     """
