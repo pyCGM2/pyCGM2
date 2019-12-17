@@ -607,10 +607,14 @@ def changeSubjectName(btkAcq,subjectName):
 
 def smartGetMetadata(btkAcq,firstLevel,secondLevel):
     md = btkAcq.GetMetaData()
-    if utils.str(firstLevel) in _getSectionFromMd(md):
-        firstMd =  btkAcq.GetMetaData().FindChild(utils.str(firstLevel)).value()
-        if utils.str(secondLevel) in _getSectionFromMd(firstMd):
-            return firstMd.FindChild(utils.str(secondLevel)).value().GetInfo().ToString()
+    if secondLevel is not None:
+        if utils.str(firstLevel) in _getSectionFromMd(md):
+            firstMd =  btkAcq.GetMetaData().FindChild(utils.str(firstLevel)).value()
+            if utils.str(secondLevel) in _getSectionFromMd(firstMd):
+                return firstMd.FindChild(utils.str(secondLevel)).value().GetInfo().ToString()
+    else:
+        if utils.str(firstLevel) in _getSectionFromMd(md):
+            return md.FindChild(utils.str(firstLevel)).value().GetInfo().ToString()
 
 def smartSetMetadata(btkAcq,firstLevel,secondLevel,index,value):
     md = btkAcq.GetMetaData()
@@ -618,6 +622,30 @@ def smartSetMetadata(btkAcq,firstLevel,secondLevel,index,value):
         firstMd =  btkAcq.GetMetaData().FindChild(utils.str(firstLevel)).value()
         if utils.str(secondLevel) in _getSectionFromMd(firstMd):
             return firstMd.FindChild(utils.str(secondLevel)).value().GetInfo().SetValue(index,utils.str(value))
+
+def checkMetadata(btkAcq,firstLevel,secondLevel):
+    md = btkAcq.GetMetaData()
+    flag =  False
+    if secondLevel is not None:
+        if utils.str(firstLevel) in _getSectionFromMd(md):
+            firstMd =  btkAcq.GetMetaData().FindChild(utils.str(firstLevel)).value()
+            if utils.str(secondLevel) in _getSectionFromMd(firstMd):
+                flag =  True
+    else:
+        if utils.str(firstLevel) in _getSectionFromMd(md):
+            flag = True
+
+    return flag
+
+def checkForcePlateExist(btkAcq):
+
+    if checkMetadata(btkAcq,"FORCE_PLATFORM","USED"):
+        if  smartGetMetadata(btkAcq,"FORCE_PLATFORM","USED")[0] != "0":
+            return True
+        else:
+            return False
+    else:
+        return False
 
 
 
