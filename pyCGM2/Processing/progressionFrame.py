@@ -40,9 +40,9 @@ class PelvisProgressionFrameProcedure(object):
 
 
     def compute(self,acq):
-
+        
         if not btkTools.isPointExist(acq,self.m_marker):
-            raise Exception( "[pyCGM2] : marker %s doesn't exist"%(m_marker))
+            raise Exception( "[pyCGM2] : marker %s doesn't exist"%(self.m_marker))
 
         # find valid frames and get the first one
         flag,vff,vlf = btkTools.findValidFrames(acq,[self.m_marker])
