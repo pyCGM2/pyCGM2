@@ -444,7 +444,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,finalAcqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",
-                                 rightSegmentLabel="Right Foot").compute()
+                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
         #---- Joint kinetics----
         idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()

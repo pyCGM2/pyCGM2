@@ -1161,10 +1161,11 @@ class ForcePlateAssemblyFilter(object):
         self.m_model.getSegment(self.m_rightSeglabel).zeroingExternalDevice()
 
 
-    def compute(self):
+    def compute(self,pointLabelSuffix=None):
         """
             run `ForcePlateAssemblyFilter`
         """
+
         pfe = btk.btkForcePlatformsExtractor()
         grwf = btk.btkGroundReactionWrenchFilter()
         pfe.SetInput(self.m_aqui)
@@ -1176,13 +1177,31 @@ class ForcePlateAssemblyFilter(object):
         appf = self.m_aqui.GetNumberAnalogSamplePerFrame()
         pfn = self.m_aqui.GetPointFrameNumber()
 
+        fpwf = btk.btkForcePlatformWrenchFilter() # the wrench of the center of the force platform data, expressed in the global frame
+        fpwf.SetInput(pfe.GetOutput())
+        fpwc = fpwf.GetOutput()
+        fpwc.Update()
+
+
+        left_forceValues =  np.zeros((pfn,3))
+        left_momentValues =  np.zeros((pfn,3))
+
+        right_forceValues =  np.zeros((pfn,3))
+        right_momentValues =  np.zeros((pfn,3))
 
         i = 0
         for l in self.m_mappedForcePlate:
+
             if l == "L":
                 self.m_model.getSegment(self.m_leftSeglabel).addExternalDeviceWrench(grwc.GetItem(i))
+                left_forceValues = left_forceValues + fpwc.GetItem(i).GetForce().GetValues()[::appf]
+                left_momentValues = left_momentValues + fpwc.GetItem(i).GetMoment().GetValues()[::appf]
+
             elif l == "R":
                 self.m_model.getSegment(self.m_rightSeglabel).addExternalDeviceWrench(grwc.GetItem(i))
+                right_forceValues = right_forceValues + fpwc.GetItem(i).GetForce().GetValues()[::appf]
+                right_momentValues = right_momentValues + fpwc.GetItem(i).GetMoment().GetValues()[::appf]
+
             else:
                 logging.debug("force plate %i sans donnees" %(i))
             i+=1
@@ -1191,6 +1210,32 @@ class ForcePlateAssemblyFilter(object):
             self.m_model.getSegment(self.m_leftSeglabel).downSampleExternalDeviceWrenchs(appf)
         if "R" in self.m_mappedForcePlate:
             self.m_model.getSegment(self.m_rightSeglabel).downSampleExternalDeviceWrenchs(appf)
+
+        # ground reaction force and moment
+        if self.m_model.mp.has_key("Bodymass"):
+            bodymass = self.m_model.mp["Bodymass"]
+        else:
+            bodymass = 1.0
+            logging.warning("[pyCGM2] - bodymass is not within your mp data. non-normalized GroundReaction Force and Moment ouput")
+
+        forceLabel  = "LGroundReactionForce_"+pointLabelSuffix if pointLabelSuffix is not None else "LGroundReactionForce"
+        momentLabel  = "LGroundReactionMoment_"+pointLabelSuffix if pointLabelSuffix is not None else "LGroundReactionMoment"
+
+        btkTools.smartAppendPoint(self.m_aqui,forceLabel,
+                         left_forceValues / bodymass,
+                         PointType=btk.btkPoint.Force, desc="")
+        btkTools.smartAppendPoint(self.m_aqui,momentLabel,
+                         left_momentValues / bodymass,
+                         PointType=btk.btkPoint.Moment, desc="")
+
+        forceLabel  = "RGroundReactionForce_"+pointLabelSuffix if pointLabelSuffix is not None else "RGroundReactionForce"
+        momentLabel  = "RGroundReactionMoment_"+pointLabelSuffix if pointLabelSuffix is not None else "RGroundReactionMoment"
+        btkTools.smartAppendPoint(self.m_aqui,forceLabel,
+                         right_forceValues / bodymass,
+                         PointType=btk.btkPoint.Force, desc="")
+        btkTools.smartAppendPoint(self.m_aqui,momentLabel,
+                         right_momentValues / bodymass,
+                         PointType=btk.btkPoint.Moment, desc="")
 
 
 
@@ -1255,9 +1300,9 @@ class InverseDynamicFilter(object):
                         proximalSegLabel = "Right Shank Proximal"
                     else:
                         proximalSegLabel = it.m_proximalLabel
-
                 else:
                     proximalSegLabel = it.m_proximalLabel
+
                 if self.m_model.getSegment(it.m_distalLabel).m_proximalWrench is not None:
                     if self.m_projection != enums.MomentProjection.JCS and  self.m_projection != enums.MomentProjection.JCS_Dual:
 
