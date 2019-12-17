@@ -14,6 +14,7 @@ from pyCGM2.Utils import files
 
 import logging
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Model import modelFilters
 from pyCGM2.Eclipse import vskTools
