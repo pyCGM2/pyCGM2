@@ -126,7 +126,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
             ax.plot(diffL,'-r')
             ax.plot(diffR,'-b')
 
-        if np.min(diffL)<np.min(diffR):
+        if np.nanmin(diffL)<np.nanmin(diffR):
             logging.debug(" Force plate " + str(i) + " : left foot")
             suffix = suffix +  "L"
         else:
