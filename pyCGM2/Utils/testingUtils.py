@@ -32,7 +32,7 @@ def print_offset(value,acq,viconLabel, decimal=3):
                             np.rad2deg(acq.GetMetaData().FindChild(utils.str("PROCESSING")).value().FindChild(utils.str(viconLabel)).value().GetInfo().ToDouble()[0])))
 
 
-def plotComparisonOfPoint(acq,label,suffix):
+def plotComparisonOfPoint(acq,label,suffix,title=None):
 
     fig = plt.figure(figsize=(10,4), dpi=100,facecolor="white")
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
@@ -49,6 +49,8 @@ def plotComparisonOfPoint(acq,label,suffix):
 
     ax3.plot(acq.GetPoint(utils.str(label)).GetValues()[:,2],"-r")
     ax3.plot(acq.GetPoint(utils.str(label+"_"+suffix)).GetValues()[:,2],"-b")
+
+    if title is not None: plt.title(title)
 
     plt.show()
 
