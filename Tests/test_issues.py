@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 # pytest -s --disable-pytest-warnings  test_issues.py::TestStephenM::test_issue_signAbdAddOffset
 
+
 import ipdb
 import os
 import logging
@@ -13,7 +14,7 @@ import matplotlib.pyplot as plt
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 from pyCGM2 import enums
-from pyCGM2.Lib.CGM import  cgm1
+from pyCGM2.Lib.CGM import  cgm1,cgm2_4
 from pyCGM2.Tools import btkTools
 from pyCGM2.Eclipse import vskTools
 from pyCGM2.Utils import testingUtils,files,utils
@@ -93,6 +94,69 @@ class TestStephenM:
         testingUtils.test_offset(model.mp_computed["RightStaticPlantFlexOffset"],acqStatic,"RStaticPlantFlex", decimal=1)
         testingUtils.test_offset(model.mp_computed["LeftStaticRotOffset"],acqStatic,"LStaticRotOff", decimal=1)
         testingUtils.test_offset(model.mp_computed["RightStaticRotOffset"],acqStatic,"RStaticRotOff", decimal=1)
+
+
+    def test_issue_jointForce_CGM24(self):
+
+        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Issues\\StephenM\\sign_jointForce_CGM24\\"
+        staticFilename = "FullBody CGM2 data Cal 01.c3d"
+
+        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
+
+
+        markerDiameter=14
+        leftFlatFoot = False
+        rightFlatFoot = False
+        headStraight = False
+        pointSuffix = "test"
+
+        vskFile = vskTools.getVskFiles(DATA_PATH)
+        vsk = vskTools.Vsk(DATA_PATH + "Nick.vsk")
+        required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
+
+        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
+
+        model,finalAcqStatic = cgm2_4.calibrate(DATA_PATH,
+            staticFilename,
+            None,
+            settings,
+            required_mp,
+            optional_mp,
+            True,
+            leftFlatFoot,
+            rightFlatFoot,
+            headStraight,
+            markerDiameter,
+            {"Left": "Hara","Right": "Hara"},
+            pointSuffix,
+            displayCoordinateSystem=True)
+
+
+        # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
+        # logging.info("Static Calibration -----> Done")
+
+        gaitFilename="Capture 02.Distal.c3d"
+
+        mfpa = "R"
+        reconstructFilenameLabelled = gaitFilename
+
+        acqGait = cgm2_4.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+            None,
+            settings,
+            True,
+            markerDiameter,
+            pointSuffix,
+            mfpa,
+            enums.MomentProjection.Distal,
+            displayCoordinateSystem=True)
+
+        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="RAnkleForce PiG - CGM24")
+        testingUtils.plotComparisonOfPoint(acqGait,"RKneeForce","test",title="RKneeForce PiG - CGM24")
+        testingUtils.plotComparisonOfPoint(acqGait,"RHipForce","test",title="RHipForce PiG - CGM24")
+
+
+
+
 
 
 class Test_BrianH:
