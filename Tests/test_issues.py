@@ -97,6 +97,9 @@ class TestStephenM:
 
 
     def test_issue_jointForce_CGM24(self):
+        """
+        synopsis : inverted sign of the x-component of the joint force with CGM1.1 to CGM2.4
+        """
 
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "Issues\\StephenM\\sign_jointForce_CGM24\\"
         staticFilename = "FullBody CGM2 data Cal 01.c3d"
