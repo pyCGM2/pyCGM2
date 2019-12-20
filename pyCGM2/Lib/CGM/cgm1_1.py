@@ -279,6 +279,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                              acqGait,
                              procedure = idp,
                              projection = momentProjection,
+                             globalFrameOrientation = globalFrame,
+                             forwardProgression = forwardProgression
                              ).compute(pointLabelSuffix=pointSuffix)
 
 

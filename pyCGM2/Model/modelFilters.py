@@ -1247,7 +1247,9 @@ class InverseDynamicFilter(object):
     """
 
     def __init__(self, iMod, btkAcq, procedure = None, gravityVector = np.array([0,0,-1]), scaleToMeter =0.001,
-                 projection = enums.MomentProjection.Distal, exportMomentContributions = False, **options):
+                 projection = enums.MomentProjection.Distal,
+                 globalFrameOrientation="XYZ",forwardProgression=True,
+                 exportMomentContributions = False, **options):
         """
            :Parameters:
                - `btkAcq` (btkAcquisition) - btk acquisition instance of a dynamic trial
@@ -1267,6 +1269,9 @@ class InverseDynamicFilter(object):
         self.m_procedure = procedure
         self.m_projection = projection
         self.m_exportMomentContributions = exportMomentContributions
+        self.m_globalFrameOrientation = globalFrameOrientation
+        self.m_forwardProgression = forwardProgression
+
         self.m_options = options
 
     def compute(self, pointLabelSuffix = None ):
@@ -1281,6 +1286,40 @@ class InverseDynamicFilter(object):
         """
 
         self.m_procedure.compute(self.m_model,self.m_aqui,self.m_gravity,self.m_scaleToMeter)
+
+
+        if self.m_globalFrameOrientation == "XYZ":
+            if self.m_forwardProgression:
+                pt1=np.array([0,0,0])
+                pt2=np.array([1,0,0])
+                pt3=np.array([0,0,1])
+            else:
+                pt1=np.array([0,0,0])
+                pt2=np.array([-1,0,0])
+                pt3=np.array([0,0,1])
+
+            a1=(pt2-pt1)
+            v=(pt3-pt1)
+            a2=np.cross(a1,v)
+            x,y,z,Rglobal=frame.setFrameData(a1,a2,"XYiZ")
+
+        if self.m_globalFrameOrientation == "YXZ":
+            if self.m_forwardProgression:
+
+                pt1=np.array([0,0,0])
+                pt2=np.array([0,1,0])
+                pt3=np.array([0,0,1])
+            else:
+                pt1=np.array([0,0,0])
+                pt2=np.array([0,-1,0])
+                pt3=np.array([0,0,1])
+
+            a1=(pt2-pt1)
+            v=(pt3-pt1)
+            a2=np.cross(a1,v)
+            x,y,z,Rglobal=frame.setFrameData(a1,a2,"XYiZ")
+
+
 
 
         for it in  self.m_model.m_jointCollection:
@@ -1305,19 +1344,19 @@ class InverseDynamicFilter(object):
 
                 if self.m_model.getSegment(it.m_distalLabel).m_proximalWrench is not None:
                     if self.m_projection != enums.MomentProjection.JCS and  self.m_projection != enums.MomentProjection.JCS_Dual:
-
                         if self.m_projection == enums.MomentProjection.Distal:
                             mot = self.m_model.getSegment(it.m_distalLabel).anatomicalFrame.motion
                         elif self.m_projection == enums.MomentProjection.Proximal:
                             mot = self.m_model.getSegment(proximalSegLabel).anatomicalFrame.motion
 
-
                         forceValues = np.zeros((nFrames,3))
                         momentValues = np.zeros((nFrames,3))
                         for i in range(0,nFrames ):
                             if self.m_projection == enums.MomentProjection.Global:
-                                forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:]
-                                momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:]
+                                forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(Rglobal.T,
+                                                                                            self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:].T)
+                                momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(Rglobal.T,
+                                                                                          self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:].T)
                             else:
                                 forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T,
                                                                                         self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:].T)

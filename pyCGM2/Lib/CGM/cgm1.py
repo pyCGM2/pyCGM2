@@ -265,7 +265,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                           globalFrameOrientation = globalFrame,
                                           forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-
     #---- Body segment parameters----
     bspModel = bodySegmentParameters.Bsp(model)
     bspModel.compute()
@@ -295,7 +294,9 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                              acqGait,
                              procedure = idp,
                              projection = momentProjection,
-                             viconCGM1compatible=True
+                             viconCGM1compatible=True,
+                             globalFrameOrientation = globalFrame,
+                             forwardProgression = forwardProgression
                              ).compute(pointLabelSuffix=pointSuffix)
 
 
