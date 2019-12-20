@@ -67,8 +67,9 @@ class TestFullBody:
             enums.MomentProjection.Distal,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleForce","test",title="gait1_dist_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="gait1_dist_RANK_force")
+
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
 
         gaitFilename="gait2.Distal.c3d"
 
@@ -83,8 +84,8 @@ class TestFullBody:
             enums.MomentProjection.Distal,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleForce","test",title="gait2_dist_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="gait2_dist_LANK_force")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
 
     def test_FullBody_noOptions_proximal(self):
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\fullBody-native-noOptions\\"
@@ -132,8 +133,8 @@ class TestFullBody:
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleForce","test",title="gait1_prox_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="gait1_prox_RANK_force")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
 
         gaitFilename="gait2.Proximal.c3d"
 
@@ -148,8 +149,8 @@ class TestFullBody:
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleForce","test",title="gait2_prox_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="gait2_prox_RANK_force")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
 
 
     def test_FullBody_noOptions_global(self):
@@ -198,8 +199,8 @@ class TestFullBody:
             enums.MomentProjection.Global,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleMoment","test",title="gait1_glob_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleMoment","test",title="gait1_glob_RANK_force")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
 
 
         gaitFilename="gait2.Global.c3d"
@@ -215,8 +216,8 @@ class TestFullBody:
             enums.MomentProjection.Global,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleForce","test",title="gait2_glob_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="gait2_glob_RANK_force")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
 
 class TestFullBody_progressionY:
 
@@ -265,8 +266,9 @@ class TestFullBody_progressionY:
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleForce","test",title="gait1_prox_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="gait1_prox_RANK_force")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
+
 
         gaitFilename="gait2.Proximal.c3d"
 
@@ -330,8 +332,8 @@ class TestFullBody_progressionY:
             enums.MomentProjection.Distal,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleForce","test",title="gait1_distal_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="gait1_distal_RANK_force")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
 
         gaitFilename="gait2.Distal.c3d"
 
@@ -346,8 +348,8 @@ class TestFullBody_progressionY:
             enums.MomentProjection.Distal,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleForce","test",title="gait2_distal_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="gait2_distal_RANK_force")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
 
 
     def test_FullBody_noOptions_global(self):
@@ -396,8 +398,8 @@ class TestFullBody_progressionY:
             enums.MomentProjection.Global,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleForce","test",title="gait2_glob_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="gait2_glob_RANK_force")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
 
 
         gaitFilename="gait2.Global.c3d"
@@ -413,5 +415,5 @@ class TestFullBody_progressionY:
             enums.MomentProjection.Global,
             displayCoordinateSystem=True)
 
-        testingUtils.plotComparisonOfPoint(acqGait,"LAnkleForce","test",title="gait2_glob_LANK_force")
-        testingUtils.plotComparisonOfPoint(acqGait,"RAnkleForce","test",title="gait2_glob_RANK_force")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Left")
+        testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
