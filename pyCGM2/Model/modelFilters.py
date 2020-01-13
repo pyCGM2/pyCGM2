@@ -1576,7 +1576,7 @@ class CoordinateSystemDisplayFilter(object):
                                                         definition["coordinateSystemLabel"],
                                                         referential = definition["referentialType"] )
                 else:
-                    logging.info("[pyCGM2] - referential not display because the segment %s is not in the model segment list "%(definition["segmentLabel"]))
+                    logging.info("[pyCGM2] - referential not display because the segment [%s] is not in the model segment list "%(definition["segmentLabel"]))
 
         else:
             for definition in definitions:
@@ -1586,7 +1586,7 @@ class CoordinateSystemDisplayFilter(object):
                                                         definition["coordinateSystemLabel"],
                                                         referential = definition["referentialType"] )
                 else:
-                    logging.info("[pyCGM2] - referential not display because the segment %s is not in the model segment list "%(definition["segmentLabel"]))
+                    logging.info("[pyCGM2] - referential not display because the segment [%s] is not in the model segment list "%(definition["segmentLabel"]))
 
 
 class CentreOfMassFilter(object):
