@@ -1570,17 +1570,23 @@ class CoordinateSystemDisplayFilter(object):
 
         if self.static:
             for definition in definitions:
-                self.model.displayStaticCoordinateSystem( self.aqui,
-                                                    definition["segmentLabel"],
-                                                    definition["coordinateSystemLabel"],
-                                                    referential = definition["referentialType"] )
+                if definition["segmentLabel"] in self.model.getSegmentList():
+                    self.model.displayStaticCoordinateSystem( self.aqui,
+                                                        definition["segmentLabel"],
+                                                        definition["coordinateSystemLabel"],
+                                                        referential = definition["referentialType"] )
+                else:
+                    logging.info("[pyCGM2] - referential not display because the segment %s is not in the model segment list "%(definition["segmentLabel"]))
 
         else:
             for definition in definitions:
-                self.model.displayMotionCoordinateSystem( self.aqui,
-                                                    definition["segmentLabel"],
-                                                    definition["coordinateSystemLabel"],
-                                                    referential = definition["referentialType"] )
+                if definition["segmentLabel"] in self.model.getSegmentList():
+                    self.model.displayMotionCoordinateSystem( self.aqui,
+                                                        definition["segmentLabel"],
+                                                        definition["coordinateSystemLabel"],
+                                                        referential = definition["referentialType"] )
+                else:
+                    logging.info("[pyCGM2] - referential not display because the segment %s is not in the model segment list "%(definition["segmentLabel"]))
 
 
 class CentreOfMassFilter(object):

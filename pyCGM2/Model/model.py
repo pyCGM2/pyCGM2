@@ -167,6 +167,38 @@ class Model(object):
                 self.m_segmentCollection[i].m_isCloneOf = isClone
 
 
+    def removeSegment(self,segmentlabels):
+        """
+            remove `Segment` from its label
+
+            :Parameters:
+                - `label` (list) - segment labels to remove
+
+            :Return:
+                - `na` (pyCGM2.Model.CGM2.model.Segment) - pyCGM2.Model.CGM2.model.Segment instance
+
+
+        """
+        segment_list = [it for it in self.m_segmentCollection if it.name not in segementlabels]
+        self.m_segmentCollection = segment_list
+
+    def removeJoint(self,jointlabels):
+        """
+            remove `joint` from its label
+
+            :Parameters:
+                - `jointlabels` (list) - joint labels to remove
+
+            :Return:
+                - `na` (pyCGM2.Model.CGM2.model.Segment) - pyCGM2.Model.CGM2.model.Segment instance
+
+
+        """
+        joint_list = [it for it in self.m_jointCollection if it.m_label not in jointlabels]
+        self.m_jointCollection = joint_list
+
+
+
     def getSegment(self,label):
         """
             Get `Segment` from its label
@@ -219,6 +251,21 @@ class Model(object):
         for it in self.m_segmentCollection:
             if it.index == index:
                 return it
+
+    def getSegmentList(self):
+        """
+            Get list of `Segment` labels
+
+            :Parameters:
+
+
+            :Return:
+                - `labels` (list) - list of segment label
+
+
+        """
+        return [it.name for it in self.m_segmentCollection]
+
 
 
 
