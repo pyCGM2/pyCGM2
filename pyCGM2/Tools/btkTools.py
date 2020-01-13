@@ -145,7 +145,7 @@ def isPointsExist(acq,labels):
     """
     for label in labels:
         if not isPointExist(acq,label):
-            logging.debug("[pyCGM2] markers (%s) doesn't exist"% label )
+            logging.warning("[pyCGM2] markers (%s) doesn't exist"% label )
             return False
     return True
 
