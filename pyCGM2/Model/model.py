@@ -267,6 +267,20 @@ class Model(object):
         return [it.name for it in self.m_segmentCollection]
 
 
+    def getJointList(self):
+        """
+            Get list of `Joint` labels
+
+            :Parameters:
+
+
+            :Return:
+                - `labels` (list) - list of joint label
+
+
+        """
+        return [it.m_label for it in self.m_jointCollection]
+
 
 
     def getJoint(self,label):
