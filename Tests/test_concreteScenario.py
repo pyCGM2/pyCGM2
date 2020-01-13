@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_concreteScenario.py::TestData_withNoFP::test_CGM1_FullBody_noOptions_noFP
-# pytest -s --disable-pytest-warnings  test_concreteScenario.py::TestDifferentStaticDynamicmarkerSet::test_CGM1_FullBody_noOptions_uncorrectUpperLimbMarker
+# pytest -s --disable-pytest-warnings  test_concreteScenario.py::TestDifferentStaticDynamicMarkerSet::test_CGM1_FullBody_noOptions_uncorrectUpperLimbMarker
 """
 Created on Thu Jul 07 15:14:18 2016
 
@@ -71,7 +71,7 @@ class TestData_withNoFP:
         btkTools.smartWriter(acqGait, "gait1-pyCGM2modelled.c3d")
 
 
-class TestDifferentStaticDynamicmarkerSet:
+class TestDifferentStaticDynamicMarkerSet:
     def test_CGM1_FullBody_noOptions_uncorrectUpperLimbMarker(self):
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "Scenarii\different static and dynamic marker set\CGM1-fullBody\\"
         staticFilename = "static.c3d"
