@@ -114,10 +114,17 @@ class CGM1(CGM):
     #nativeCgm1 = True
 
     LOWERLIMB_TRACKING_MARKERS=["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
-
     THORAX_TRACKING_MARKERS=["C7", "T10","CLAV", "STRN"]
-
     UPPERLIMB_TRACKING_MARKERS=[ "LSHO",  "LELB", "LWRA", "LWRB",  "LFIN","RSHO", "RELB", "RWRA", "RWRB",  "RFIN", "LFHD","LBHD","RFHD","RBHD"]
+
+    LOWERLIMB_SEGMENTS=["Pelvis", "Left Thigh","Left Shank", "Left Shank Proximal","Left Foot","Right Thigh","Right Shank","Right Shank Proximal","Right Foot"]
+    THORAX_SEGMENTS=["Thorax"]
+    UPPERLIMB_SEGMENTS=["Head", "Thorax","Left Clavicle", "Left UpperArm","Left ForeArm","Left Hand","Right Clavicle", "Right UpperArm","Right ForeArm","Right Hand"]
+
+
+    LOWERLIMB_JOINTS=["LHip", "LKnee","LAnkle", "RHip", "RKnee","RAnkle"]
+    THORAX_JOINTS=["LSpine","RSpine"]
+    UPPERLIMB_JOINTS=["LShoulder", "LElbow","LWrist", "LNeck","RShoulder", "RElbow","RWrist", "RNeck","LSpine","RSpine"]
 
 
     def __init__(self):
@@ -148,15 +155,80 @@ class CGM1(CGM):
     def _upperLimbTrackingMarkers(self):
         return CGM1.THORAX_TRACKING_MARKERS+CGM1.UPPERLIMB_TRACKING_MARKERS#S#["C7", "T10","CLAV", "STRN", "LELB", "LWRA", "LWRB", "LFRM", "LFIN", "RELB", "RWRA", "RWRB", "RFRM", "RFIN"]
 
-    def getTrackingMarkers(self):
-        tracking_markers=[]
-        if self.m_bodypart != enums.BodyPart.UpperLimb:
-            tracking_markers = tracking_markers + self._lowerLimbTrackingMarkers()
-        if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            tracking_markers = tracking_markers +self._trunkTrackingMarkers()
-        if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            tracking_markers =  tracking_markers + self._upperLimbTrackingMarkers()
-        return tracking_markers
+    # def getTrackingMarkers(self):
+    #     tracking_markers=[]
+    #     if self.m_bodypart != enums.BodyPart.UpperLimb:
+    #         tracking_markers = tracking_markers + self._lowerLimbTrackingMarkers()
+    #     if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
+    #         tracking_markers = tracking_markers +self._trunkTrackingMarkers()
+    #     if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+    #         tracking_markers =  tracking_markers + self._upperLimbTrackingMarkers()
+    #     return tracking_markers
+
+    def getTrackingMarkers(self,acq):
+
+        bodyPart_Static = self.m_bodypart
+
+        if btkTools.isPointsExist(acq,self._lowerLimbTrackingMarkers()):
+            bodyPart = enums.BodyPart.LowerLimb
+
+        if btkTools.isPointsExist(acq,self._upperLimbTrackingMarkers()):
+            bodyPart = enums.BodyPart.UpperLimb
+
+        if btkTools.isPointsExist(acq,self._lowerLimbTrackingMarkers()+self._trunkTrackingMarkers()):
+            bodyPart = enums.BodyPart.LowerLimbTrunk
+
+        if btkTools.isPointsExist(acq,self._lowerLimbTrackingMarkers()+self._upperLimbTrackingMarkers()):
+            bodyPart = enums.BodyPart.FullBody
+
+        if bodyPart != bodyPart_Static:
+            if bodyPart_Static == enums.BodyPart.FullBody:
+
+                if bodyPart == enums.BodyPart.LowerLimbTrunk:
+                    logging.warning("[pyCGM2] Model reconfigured to LowerLimb+Thorax model - Missing upper-limb tracking markers")
+
+                    segment_list = [it for it in self.m_segmentCollection if it.name in CGM1.LOWERLIMB_SEGMENTS+CGM1.THORAX_SEGMENTS]
+                    self.m_segmentCollection = segment_list
+
+                    joint_list = [it for it in self.m_jointCollection if it.m_label in CGM1.LOWERLIMB_JOINTS+CGM1.THORAX_JOINTS]
+                    self.m_jointCollection = joint_list
+
+                if bodyPart == enums.BodyPart.LowerLimb:
+                    logging.warning("[pyCGM2] Model reconfigured to LowerLimb model - Missing upper-limb or thorax tracking markers")
+                    segment_list = [it for it in self.m_segmentCollection if it.name in CGM1.LOWERLIMB_SEGMENTS]
+                    self.m_segmentCollection = segment_list
+
+                    joint_list = [it for it in self.m_jointCollection if it.m_label in CGM1.LOWERLIMB_JOINTS]
+                    self.m_jointCollection = joint_list
+
+                if bodyPart == enums.BodyPart.UpperLimb:
+                    logging.warning("[pyCGM2] Model reconfigured to UpperLimb model - Missing lower-limb tracking markers")
+                    segment_list = [it for it in self.m_segmentCollection if it.name in CGM1.UPPERLIMB_SEGMENTS]
+                    self.m_segmentCollection = segment_list
+
+                    joint_list = [it for it in self.m_jointCollection if it.m_label in CGM1.UPPERLIMB_JOINTS]
+                    self.m_jointCollection = joint_list
+
+            elif bodyPart_Static == enums.BodyPart.LowerLimbTrunk:
+                if bodyPart == enums.BodyPart.LowerLimb:
+                    logging.warning("[pyCGM2] Model reconfigured to LowerLimb model - Missing thorax tracking markers")
+                    segment_list = [it for it in self.m_segmentCollection if it.name in CGM1.LOWERLIMB_SEGMENTS]
+                    self.m_segmentCollection = segment_list
+                    joint_list = [it for it in self.m_jointCollection if it.m_label in CGM1.LOWERLIMB_JOINTS]
+                    self.m_jointCollection = joint_list
+            else:
+                raise Exception("[pyCGM2] Model not applicable. Check your tracking marker set (static file calibated a %s model whereas the trial detects a %s model)"%(bodyPart_Static.name,bodyPart.name))
+
+            self.setBodyPart(bodyPart)
+
+            tracking_markers=[]
+            if self.m_bodypart != enums.BodyPart.UpperLimb:
+                tracking_markers = tracking_markers + self._lowerLimbTrackingMarkers()
+            if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
+                tracking_markers = tracking_markers +self._trunkTrackingMarkers()
+            if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+                tracking_markers =  tracking_markers + self._upperLimbTrackingMarkers()
+            return tracking_markers
 
     def getStaticMarkers(self,dcm):
         static_markers = self.getTrackingMarkers() # initiate with tracking
