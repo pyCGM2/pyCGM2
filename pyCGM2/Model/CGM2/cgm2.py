@@ -406,6 +406,11 @@ class CGM2_4(CGM2_3):
                "RTIB","RANK","RTIAP","RTIAD",
                "RHEE","RTOE","RFMH","RVMH"]
 
+    LOWERLIMB_SEGMENTS = cgm.CGM1.LOWERLIMB_SEGMENTS + ["Left ForeFoot","Right ForeFoot"]
+
+    LOWERLIMB_JOINTS = cgm.CGM1.LOWERLIMB_JOINTS + ["LForeFoot", "RForeFoot"]
+
+
 
     def __init__(self):
         """Constructor

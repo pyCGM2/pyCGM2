@@ -281,9 +281,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         logging.info("[pyCGM2] Sacrum marker detected")
 
     acqGait =  btkTools.applyTranslators(acqGait,translators)
-    trackingMarkers = model.getTrackingMarkers()
+    trackingMarkers = model.getTrackingMarkers(acqGait)
     validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
-
 
 
     # --- initial motion Filter ---
