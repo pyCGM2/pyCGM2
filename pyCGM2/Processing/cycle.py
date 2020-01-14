@@ -404,20 +404,28 @@ class GaitCycle(Cycle):
     def __computeSpatioTemporalParameter(self):
 
         duration = np.divide((self.end-self.begin),self.pointfrequency)
+        stanceDuration=np.divide(np.abs(self.m_contraFO - self.begin) , self.pointfrequency)
+        swingDuration=np.divide(np.abs(self.m_contraFO - self.end) , self.pointfrequency)
+        stepDuration=np.divide(np.abs(self.m_oppositeFS - self.begin) , self.pointfrequency)
 
         pst = ma.Node("stp",self)
         pst.setProperty("duration", duration)
         pst.setProperty("cadence", np.divide(60.0,duration))
-        stanceDuration=np.divide(np.abs(self.m_contraFO - self.begin) , self.pointfrequency)
+
         pst.setProperty("stanceDuration", stanceDuration)
-        pst.setProperty("stancePhase", round(np.divide(stanceDuration,duration)*100))
-        swingDuration=np.divide(np.abs(self.m_contraFO - self.end) , self.pointfrequency)
         pst.setProperty("swingDuration", swingDuration)
+        pst.setProperty("stepDuration", stepDuration)
+        pst.setProperty("doubleStance1Duration", np.divide(np.abs(self.m_oppositeFO - self.begin) , self.pointfrequency))
+        pst.setProperty("doubleStance2Duration", np.divide(np.abs(self.m_contraFO - self.m_oppositeFS) , self.pointfrequency))
+        pst.setProperty("simpleStanceDuration", np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency))
+
+
+        pst.setProperty("stancePhase", round(np.divide(stanceDuration,duration)*100))
         pst.setProperty("swingPhase", round(np.divide(swingDuration,duration)*100 ))
         pst.setProperty("doubleStance1", round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.begin) , self.pointfrequency),duration)*100))
         pst.setProperty("doubleStance2", round(np.divide(np.divide(np.abs(self.m_contraFO - self.m_oppositeFS) , self.pointfrequency),duration)*100))
         pst.setProperty("simpleStance", round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency),duration)*100))
-
+        pst.setProperty("stepPhase", round(np.divide(stepDuration,duration)*100))
         #pst.setProperty("simpleStance3 ",15.0 )
         if self.context == "Left":
 
