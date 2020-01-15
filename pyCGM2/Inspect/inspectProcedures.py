@@ -17,6 +17,7 @@ class GaitEventQualityProcedure(object):
     def __init__(self,acq):
         self.acq = acq
         self.state = True
+        self.exceptionMode = False
 
     def check(self):
 
@@ -32,13 +33,35 @@ class GaitEventQualityProcedure(object):
                 if ev.GetContext() == "Right":
                     events_R.append(ev)
 
+
+            if events_L!=[] and events_R!=[]:
+                labels = [it.GetLabel() for it in events if it.GetLabel() in ["Foot Strike","Foot Off"]]
+                frames = [it.GetFrame() for it in events if it.GetLabel() in ["Foot Strike","Foot Off"]]
+
+                init = labels[0]
+                for i in range(1,len(labels)):
+                    label = labels[i]
+                    frame = frames[i]
+                    if label == init:
+                        if not self.exceptionMode:
+                            logging.error(" two consecutive (%s) detected at frame (%i)"%((label),frame))
+                        else:
+                            raise Exception(" two consecutive (%s) detected at frame (%i)"%((label),frame))
+
+                        self.state = False
+                    init = label
+
             if events_L!=[]:
                 init = events_L[0].GetLabel()
                 if len(events_L)>1:
                     for i in range(1,len(events_L)):
                         label = events_L[i].GetLabel()
                         if label == init:
-                            logging.error("Wrong Left Event - two consecutive (%s) detected at frane (%i)"%((label),events_L[i].GetFrame()) )
+                            if not self.exceptionMode:
+                                logging.error("Wrong Left Event - two consecutive (%s) detected at frane (%i)"%((label),events_L[i].GetFrame()) )
+                            else:
+                                raise Exception("Wrong Left Event - two consecutive (%s) detected at frane (%i)"%((label),events_L[i].GetFrame()))
+
                             self.state = False
                         init = label
                 else:
@@ -51,7 +74,10 @@ class GaitEventQualityProcedure(object):
                     for i in range(1,len(events_R)):
                         label = events_R[i].GetLabel()
                         if label == init:
-                            logging.error("Wrong Right Event - two consecutive (%s) detected at frane (%i)"%((label),events_R[i].GetFrame()) )
+                            if not self.exceptionMode:
+                                logging.error("Wrong Right Event - two consecutive (%s) detected at frane (%i)"%((label),events_R[i].GetFrame()) )
+                            else:
+                                raise Exception("Wrong Right Event - two consecutive (%s) detected at frane (%i)"%((label),events_R[i].GetFrame()) )
                             self.state = False
                         init = label
                 else:
@@ -64,8 +90,8 @@ class GaitEventQualityProcedure(object):
 class AnthropometricDataQualityProcedure(object):
     def __init__(self,mp):
         self.mp = mp
-
         self.state = True
+        self.exceptionMode = False
 
     def check(self):
         """
@@ -104,8 +130,8 @@ class AnthropometricDataQualityProcedure(object):
 class GapQualityProcedure(object):
     def __init__(self,acq,markers=None):
         self.acq = acq
-
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
+        self.exceptionMode = False
 
         self.state = True
 
@@ -140,8 +166,9 @@ class GapQualityProcedure(object):
 class SwappingMarkerQualityProcedure(object):
     def __init__(self,acq,markers=None):
         self.acq = acq
-
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
+        self.exceptionMode = False
+
         self.state = True
 
     def check(self):
@@ -180,6 +207,7 @@ class MarkerQualityProcedure(object):
     def __init__(self,acq,markers = None):
         self.acq = acq
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
+        self.exceptionMode = False
 
         self.state = True
 
@@ -224,7 +252,11 @@ class MarkerQualityProcedure(object):
 
 
             if path.contains_point(intersection[0]):
-                logging.error("wrong Labelling of pelvic markers at frame [%i]"%(i))
+                if not self.exceptionMode:
+                    logging.error("wrong Labelling of pelvic markers at frame [%i]"%(i))
+                else:
+                    raise Exception("wrong Labelling of pelvic markers at frame [%i]"%(i))
+
                 self.state = False
             else:
                 # check marker side
@@ -259,14 +291,24 @@ class MarkerQualityProcedure(object):
                     if marker[0] == "R":
                         local = np.dot(csFrame_R.getRotation().T,self.acq.GetPoint(marker).GetValues()[i,:]-csFrame_R.getTranslation())
                     if residual >0.0:
-                        if marker[0] == "L" and local[1]<0: logging.error("check location of the marker [%s] at frame [%i]"%(marker,i));self.state = False
-                        if marker[0] == "R" and local[1]>0: logging.error("check location of the marker [%s] at frame [%i]"%(marker,i));self.state = False
+                        if marker[0] == "L" and local[1]<0:
+                            if not self.exceptionMode:
+                                logging.error("check location of the marker [%s] at frame [%i]"%(marker,i));self.state = False
+                            else:
+                                raise Exception("check location of the marker [%s] at frame [%i]"%(marker,i));self.state = False
+                        if marker[0] == "R" and local[1]>0:
+                            if not self.exceptionMode:
+                                logging.error("check location of the marker [%s] at frame [%i]"%(marker,i));self.state = False
+                            else:
+                                raise Exception("check location of the marker [%s] at frame [%i]"%(marker,i));self.state = False
 
 
 class ForcePlateQualityProcedure(object):
     def __init__(self,acq):
         self.acq = acq
+        self.exceptionMode = False
         self.state = True
+
 
     def check(self):
         # TODO :  - saturation and foot asignment
@@ -275,6 +317,7 @@ class ForcePlateQualityProcedure(object):
 class EMGQualityProcedure(object):
     def __init__(self,acq, analogLabels ):
         self.acq = acq
+        self.exceptionMode = False
         self.analogLabels =  analogLabels
         self.state = True
 
