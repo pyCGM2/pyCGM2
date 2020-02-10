@@ -14,11 +14,16 @@ from pyCGM2.Utils import utils
 
 
 class GaitEventQualityProcedure(object):
-    def __init__(self,acq):
+    def __init__(self,acq, title = None):
+
         self.acq = acq
         self.state = True
+        self.exceptionMode = False
+
+        self.title = "Gait events" if title is None else title
 
     def check(self):
+
 
         events = btkTools.sortedEvents(self.acq)
 
@@ -32,13 +37,33 @@ class GaitEventQualityProcedure(object):
                 if ev.GetContext() == "Right":
                     events_R.append(ev)
 
+
+            if events_L!=[] and events_R!=[]:
+                labels = [it.GetLabel() for it in events if it.GetLabel() in ["Foot Strike","Foot Off"]]
+                frames = [it.GetFrame() for it in events if it.GetLabel() in ["Foot Strike","Foot Off"]]
+
+                init = labels[0]
+                for i in range(1,len(labels)):
+                    label = labels[i]
+                    frame = frames[i]
+                    if label == init:
+                        logging.error("[pyCGM2-Checking] two consecutive (%s) detected at frame (%i)"%((label),frame))
+                        if self.exceptionMode:
+                            raise Exception("[pyCGM2-Checking]  two consecutive (%s) detected at frame (%i)"%((label),frame))
+
+                        self.state = False
+                    init = label
+
             if events_L!=[]:
                 init = events_L[0].GetLabel()
                 if len(events_L)>1:
                     for i in range(1,len(events_L)):
                         label = events_L[i].GetLabel()
                         if label == init:
-                            logging.error("Wrong Left Event - two consecutive (%s) detected at frane (%i)"%((label),events_L[i].GetFrame()) )
+                            logging.error("[pyCGM2-Checking]  Wrong Left Event - two consecutive (%s) detected at frane (%i)"%((label),events_L[i].GetFrame()) )
+                            if self.exceptionMode:
+                                raise Exception("[pyCGM2-Checking]  Wrong Left Event - two consecutive (%s) detected at frane (%i)"%((label),events_L[i].GetFrame()))
+
                             self.state = False
                         init = label
                 else:
@@ -51,7 +76,9 @@ class GaitEventQualityProcedure(object):
                     for i in range(1,len(events_R)):
                         label = events_R[i].GetLabel()
                         if label == init:
-                            logging.error("Wrong Right Event - two consecutive (%s) detected at frane (%i)"%((label),events_R[i].GetFrame()) )
+                            logging.error("[pyCGM2-Checking] Wrong Right Event - two consecutive (%s) detected at frane (%i)"%((label),events_R[i].GetFrame()) )
+                            if self.exceptionMode:
+                                raise Exception("[pyCGM2-Checking] Wrong Right Event - two consecutive (%s) detected at frane (%i)"%((label),events_R[i].GetFrame()) )
                             self.state = False
                         init = label
                 else:
@@ -62,10 +89,12 @@ class GaitEventQualityProcedure(object):
 
 
 class AnthropometricDataQualityProcedure(object):
-    def __init__(self,mp):
+    def __init__(self,mp,title=None):
         self.mp = mp
-
         self.state = True
+        self.exceptionMode = False
+
+        self.title = "CGM anthropometric parameters" if title is None else title
 
     def check(self):
         """
@@ -74,40 +103,71 @@ class AnthropometricDataQualityProcedure(object):
         - use marker measurement
         """
 
-        if self.mp["RightLegLength"] < 500: logging.warning("Right Leg Lenth < 500 mm");self.state = False
-        if self.mp["LeftLegLength"] < 500: logging.warning("Left Leg Lenth < 500 mm");self.state = False
-        if self.mp["RightKneeWidth"] < self.mp["RightAnkleWidth"]: logging.error("Right ankle width > knee width ");self.state = False
-        if self.mp["LeftKneeWidth"] < self.mp["LeftAnkleWidth"]: logging.error("Right ankle width > knee width ");self.state = False
-        if self.mp["RightKneeWidth"] > self.mp["RightLegLength"]: logging.error("Right knee width > leg length ");self.state = False
-        if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: logging.error("Left knee width > leg length ");self.state = False
+        if self.mp["RightLegLength"] < 500: logging.warning("[pyCGM2-Checking] Right Leg Lenth < 500 mm");self.state = False
+        if self.mp["LeftLegLength"] < 500: logging.warning("[pyCGM2-Checking] Left Leg Lenth < 500 mm");self.state = False
+        if self.mp["RightKneeWidth"] < self.mp["RightAnkleWidth"]: logging.error("[pyCGM2-Checking] Right ankle width > knee width ");self.state = False
+        if self.mp["LeftKneeWidth"] < self.mp["LeftAnkleWidth"]: logging.error("[pyCGM2-Checking] Right ankle width > knee width ");self.state = False
+        if self.mp["RightKneeWidth"] > self.mp["RightLegLength"]: logging.error("[pyCGM2-Checking]  Right knee width > leg length ");self.state = False
+        if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: logging.error(" [pyCGM2-Checking] Left knee width > leg length ");self.state = False
 
 
         if not utils.isInRange(self.mp["RightKneeWidth"],
             self.mp["LeftKneeWidth"]-0.3*self.mp["LeftKneeWidth"],
             self.mp["LeftKneeWidth"]+0.3*self.mp["LeftKneeWidth"]):
-            logging.warning("Knee widths differed by more than 30%")
+            logging.warning("[pyCGM2-Checking] Knee widths differed by more than 30%")
             self.state = False
 
         if not utils.isInRange(self.mp["RightAnkleWidth"],
             self.mp["LeftAnkleWidth"]-0.3*self.mp["LeftAnkleWidth"],
             self.mp["LeftAnkleWidth"]+0.3*self.mp["LeftAnkleWidth"]):
-            logging.warning("Ankle widths differed by more than 30%")
+            logging.warning("[pyCGM2-Checking] Ankle widths differed by more than 30%")
             self.state = False
 
         if not utils.isInRange(self.mp["RightLegLength"],
             self.mp["LeftLegLength"]-0.3*self.mp["LeftLegLength"],
             self.mp["LeftLegLength"]+0.3*self.mp["LeftLegLength"]):
-            logging.warning("Leg lengths differed by more than 30%")
+            logging.warning("[pyCGM2-Checking] Leg lengths differed by more than 30%")
             self.state = False
 
+class MarkerPresenceQualityProcedure(object):
 
-class GapQualityProcedure(object):
-    def __init__(self,acq,markers=None):
+    def __init__(self,acq,markers=None,title=None):
         self.acq = acq
+        self.exceptionMode = False
+        self.title = "Marker presence" if title is None else title
 
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
 
         self.state = True
+        self.markersIn = []
+
+    def check(self):
+
+        frameNumber = self.acq.GetPointFrameNumber()
+
+        count = 0
+        for marker in self.markers:
+            try:
+                self.acq.GetPoint(marker)
+            except RuntimeError:
+                logging.warning("[pyCGM2-Checking]  marker [%s] - not exist in the acquisition"%(marker))
+            else:
+                self.markersIn.append(marker)
+                count +=1
+
+        if not count == len(self.markers):
+            self.state = False
+
+class GapQualityProcedure(object):
+
+    def __init__(self,acq,markers=None,title=None):
+        self.acq = acq
+        self.exceptionMode = False
+
+        self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
+        self.state = True
+
+        self.title = "Gap" if title is None else title
 
     def check(self):
 
@@ -117,20 +177,25 @@ class GapQualityProcedure(object):
             gapCount = list()
             previousValue = 0
             count =0
-            for i in range(0,frameNumber):
-                val = self.acq.GetPoint(marker).GetResidual(i)
-                if val <0 : count+=1
-                if previousValue<0  and  val==0.0:
-                    gapCount.append(count)
-                    count = 0
-                previousValue = val
+            try:
+                self.acq.GetPoint(marker)
+            except RuntimeError:
+                logging.warning("[pyCGM2-Checking] marker [%s] - not exist in the acquisition"%(marker))
+            else:
+                for i in range(0,frameNumber):
+                    val = self.acq.GetPoint(marker).GetResidual(i)
+                    if val <0 : count+=1
+                    if previousValue<0  and  val==0.0:
+                        gapCount.append(count)
+                        count = 0
+                    previousValue = val
 
-            gapNumber = len(gapCount)
-            if gapNumber!=0: maxGap = max(gapCount)
+                gapNumber = len(gapCount)
+                if gapNumber!=0: maxGap = max(gapCount)
 
-            if gapNumber!=0:
-                logging.warning("marker [%s] - number of gap [%i] and max gap [%i]"%(marker,gapNumber,maxGap))
-                self.state = False
+                if gapNumber!=0:
+                    logging.warning("[pyCGM2-Checking] marker [%s] - number of gap [%i] and max gap [%i]"%(marker,gapNumber,maxGap))
+                    self.state = False
 
 
 
@@ -138,11 +203,14 @@ class GapQualityProcedure(object):
 
 
 class SwappingMarkerQualityProcedure(object):
-    def __init__(self,acq,markers=None):
+    def __init__(self,acq,markers=None,title=None):
         self.acq = acq
-
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
+        self.exceptionMode = False
+        self.title = "Swapping marker" if title is None else title
+
         self.state = True
+
 
     def check(self):
 
@@ -164,24 +232,24 @@ class SwappingMarkerQualityProcedure(object):
 
                 if residual>=0.0 and residual_plus1>=0.0:
                     if np.abs(value-value_plus1) > dist :
-                        logging.warning("marker [%s] - swapped at frame [%i] "%(marker,i))
+                        logging.warning("[pyCGM2-Checking] marker [%s] - swapped at frame [%i] "%(marker,i))
                         self.state = False
 
 
-
-
-class MarkerQualityProcedure(object):
+class MarkerPositionQualityProcedure(object):
     """
     TODO :
     - check medial markers if exist
     """
 
 
-    def __init__(self,acq,markers = None):
+    def __init__(self,acq,markers = None, title = None):
         self.acq = acq
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
-
+        self.exceptionMode = False
         self.state = True
+
+        self.title = "Marker position" if title is None else title
 
     def check(self):
 
@@ -224,7 +292,10 @@ class MarkerQualityProcedure(object):
 
 
             if path.contains_point(intersection[0]):
-                logging.error("wrong Labelling of pelvic markers at frame [%i]"%(i))
+                logging.error("[pyCGM2-Checking] wrong Labelling of pelvic markers at frame [%i]"%(i))
+                if self.exceptionMode:
+                    raise Exception("[pyCGM2-Checking] wrong Labelling of pelvic markers at frame [%i]"%(i))
+
                 self.state = False
             else:
                 # check marker side
@@ -259,25 +330,41 @@ class MarkerQualityProcedure(object):
                     if marker[0] == "R":
                         local = np.dot(csFrame_R.getRotation().T,self.acq.GetPoint(marker).GetValues()[i,:]-csFrame_R.getTranslation())
                     if residual >0.0:
-                        if marker[0] == "L" and local[1]<0: logging.error("check location of the marker [%s] at frame [%i]"%(marker,i));self.state = False
-                        if marker[0] == "R" and local[1]>0: logging.error("check location of the marker [%s] at frame [%i]"%(marker,i));self.state = False
+                        if marker[0] == "L" and local[1]<0:
+                            logging.error("[pyCGM2-Checking] check location of the marker [%s] at frame [%i]"%(marker,i))
+                            self.state = False
+                            if self.exceptionMode:
+                                raise Exception("[pyCGM2-Checking] check location of the marker [%s] at frame [%i]"%(marker,i))
+
+                        if marker[0] == "R" and local[1]>0:
+                            logging.error("[pyCGM2-Checking] check location of the marker [%s] at frame [%i]"%(marker,i))
+                            self.state = False
+                            if self.exceptionMode:
+                                raise Exception("[pyCGM2-Checking] check location of the marker [%s] at frame [%i]"%(marker,i))
+                                self.state = False
 
 
 class ForcePlateQualityProcedure(object):
-    def __init__(self,acq):
+
+    def __init__(self,acq,title=None):
         self.acq = acq
+        self.exceptionMode = False
         self.state = True
+
+        self.title = "Force Plate" if title is None else title
 
     def check(self):
         # TODO :  - saturation and foot asignment
         pass
 
 class EMGQualityProcedure(object):
-    def __init__(self,acq, analogLabels ):
+    def __init__(self,acq, analogLabels,title=None):
         self.acq = acq
+        self.exceptionMode = False
         self.analogLabels =  analogLabels
         self.state = True
 
+        self.title = "EMG" if title is None else title
     def check(self):
         # TODO :  - saturation and foot asignment
         pass

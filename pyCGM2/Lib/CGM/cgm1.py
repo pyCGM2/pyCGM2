@@ -207,7 +207,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         logging.info("[pyCGM2] Sacrum marker detected")
 
     acqGait =  btkTools.applyTranslators(acqGait,translators)
-    trackingMarkers = model.getTrackingMarkers()
+
+    trackingMarkers = model.getTrackingMarkers(acqGait)
     validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
 
     scp=modelFilters.StaticCalibrationProcedure(model) # procedure
@@ -265,7 +266,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                           globalFrameOrientation = globalFrame,
                                           forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-
     #---- Body segment parameters----
     bspModel = bodySegmentParameters.Bsp(model)
     bspModel.compute()
@@ -286,7 +286,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",
-                                 rightSegmentLabel="Right Foot").compute()
+                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
 
         #---- Joint kinetics----
@@ -295,7 +295,9 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                              acqGait,
                              procedure = idp,
                              projection = momentProjection,
-                             viconCGM1compatible=True
+                             viconCGM1compatible=True,
+                             globalFrameOrientation = globalFrame,
+                             forwardProgression = forwardProgression
                              ).compute(pointLabelSuffix=pointSuffix)
 
 

@@ -213,19 +213,17 @@ class Cycle(ma.Node):
         super(Cycle,self).__init__(nodeLabel)
         self.trial=trial
 
-        try:
-            self.pointfrequency = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
-        except ValueError:
-            raise Exception("[pyCGM2] : there are no time sequence of type marker in the openmaTrial")
-
-        try:
-            self.analogfrequency = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate()
-        except ValueError:
-            self.analogfrequency = 0
-
+        self.pointfrequency = trial.property("POINT:RATE").cast() #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
+        self.analogfrequency = trial.property("ANALOG:RATE").cast() #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate()
         self.appf =  self.analogfrequency / self.pointfrequency
-        self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime() * self.pointfrequency))
 
+        try:
+            trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
+            self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime() * self.pointfrequency))
+
+        except ValueError:
+            logging.warning("[pyCGM2] : there are no time sequence of type marker in the openmaTrial")
+            self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).startTime() * self.analogfrequency))/self.appf
 
         self.begin =  int(round(startTime * self.pointfrequency) + 1)
         self.end = int(round(endTime * self.pointfrequency) + 1)
@@ -293,7 +291,6 @@ class Cycle(ma.Node):
                 - `analogLabel` (str) - analog Label
 
         """
-
         if trialTools.isTimeSequenceExist(self.trial,analogLabel):
             return  self.trial.findChild(ma.T_TimeSequence, utils.str(analogLabel)).data()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
         else:
@@ -350,16 +347,19 @@ class GaitCycle(Cycle):
             - Each GaitCycle creation computes spatio-temporal parameters automatically.
             - spatio-temporal parameters are :
                 "duration", "cadence",
-                "stanceDuration", "stancePhase",
+                "stanceDuration", "stepDuration", "doubleStance1Duration",
+                "doubleStance2Duration", "simpleStanceDuration", "stancePhase",
                 "swingDuration", "swingPhase", "doubleStance1", "doubleStance2",
-                "simpleStance", "strideLength", "stepLength",
+                "simpleStance", "stepPhase", "strideLength", "stepLength",
                 "strideWidth", "speed"
     """
 
 
-    STP_LABELS=["duration","cadence", "stanceDuration",  "stancePhase",
+    STP_LABELS=["duration","cadence",
+                "stanceDuration", "stepDuration", "doubleStance1Duration",
+                "doubleStance2Duration","simpleStanceDuration","stancePhase",
                 "swingDuration", "swingPhase", "doubleStance1", "doubleStance2",
-                "simpleStance", "strideLength", "stepLength",
+                "simpleStance", "stepPhase","strideLength", "stepLength",
                 "strideWidth", "speed"]
 
 
@@ -407,20 +407,28 @@ class GaitCycle(Cycle):
     def __computeSpatioTemporalParameter(self):
 
         duration = np.divide((self.end-self.begin),self.pointfrequency)
+        stanceDuration=np.divide(np.abs(self.m_contraFO - self.begin) , self.pointfrequency)
+        swingDuration=np.divide(np.abs(self.m_contraFO - self.end) , self.pointfrequency)
+        stepDuration=np.divide(np.abs(self.m_oppositeFS - self.begin) , self.pointfrequency)
 
         pst = ma.Node("stp",self)
         pst.setProperty("duration", duration)
         pst.setProperty("cadence", np.divide(60.0,duration))
-        stanceDuration=np.divide(np.abs(self.m_contraFO - self.begin) , self.pointfrequency)
+
         pst.setProperty("stanceDuration", stanceDuration)
-        pst.setProperty("stancePhase", round(np.divide(stanceDuration,duration)*100))
-        swingDuration=np.divide(np.abs(self.m_contraFO - self.end) , self.pointfrequency)
         pst.setProperty("swingDuration", swingDuration)
+        pst.setProperty("stepDuration", stepDuration)
+        pst.setProperty("doubleStance1Duration", np.divide(np.abs(self.m_oppositeFO - self.begin) , self.pointfrequency))
+        pst.setProperty("doubleStance2Duration", np.divide(np.abs(self.m_contraFO - self.m_oppositeFS) , self.pointfrequency))
+        pst.setProperty("simpleStanceDuration", np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency))
+
+
+        pst.setProperty("stancePhase", round(np.divide(stanceDuration,duration)*100))
         pst.setProperty("swingPhase", round(np.divide(swingDuration,duration)*100 ))
         pst.setProperty("doubleStance1", round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.begin) , self.pointfrequency),duration)*100))
         pst.setProperty("doubleStance2", round(np.divide(np.divide(np.abs(self.m_contraFO - self.m_oppositeFS) , self.pointfrequency),duration)*100))
         pst.setProperty("simpleStance", round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency),duration)*100))
-
+        pst.setProperty("stepPhase", round(np.divide(stepDuration,duration)*100))
         #pst.setProperty("simpleStance3 ",15.0 )
         if self.context == "Left":
 
@@ -577,23 +585,39 @@ class CyclesBuilder(object):
             spatioTemporalCycles=list()
             for trial in  self.spatioTemporalTrials:
 
+                startTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime()
+                endTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).samples() / trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
+
                 context = "Left"
                 left_fs_times=list()
                 for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
                     left_fs_times.append(ev.time())
 
-                for i in range(0, len(left_fs_times)-1):
-                    spatioTemporalCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                                   context))
+                if left_fs_times == []:
+                    spatioTemporalCycles.append (Cycle(trial, startTime,endTime,context))
+                    logging.info("[pyCGM2] left - time normalization from time boudaries")
+                elif len(left_fs_times) ==1:
+                    raise Exception ("[pyCGM2] left - Time Normalization can't be performed. Remove the foot strike event or add another one)")
+                else:
+                    for i in range(0, len(left_fs_times)-1):
+                        spatioTemporalCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
+                                                       context))
 
                 context = "Right"
                 right_fs_times=list()
                 for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-                    right_fs_times.append(ev.time())
+                    spatioTemporalCycles.append(ev.time())
 
-                for i in range(0, len(right_fs_times)-1):
-                    spatioTemporalCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                                   context))
+                if right_fs_times == []:
+                    spatioTemporalCycles.append (Cycle(trial, startTime,endTime,context))
+                    logging.info("[pyCGM2] right - time normalization from time boudaries")
+                elif len(right_fs_times) ==1:
+                    raise Exception ("[pyCGM2]  right - Time Normalization can't be performed. Remove the foot strike event or add another one)")
+
+                else:
+                    for i in range(0, len(right_fs_times)-1):
+                        spatioTemporalCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
+                                                       context))
 
             return spatioTemporalCycles
         else:
@@ -604,23 +628,39 @@ class CyclesBuilder(object):
             kinematicCycles=list()
             for trial in  self.kinematicTrials:
 
+                startTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime()
+                endTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).samples() /  trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
+
                 context = "Left"
                 left_fs_times=list()
                 for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
                     left_fs_times.append(ev.time())
 
-                for i in range(0, len(left_fs_times)-1):
-                    kinematicCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                                   context))
+                if left_fs_times == []:
+                    kinematicCycles.append (Cycle(trial, startTime,endTime,context))
+                    logging.info("[pyCGM2] left - time normalization from time boudaries")
+                elif len(left_fs_times) ==1:
+                    raise Exception ("[pyCGM2] left - Time Normalization can't be performed. Remove the foot strike event or add another one)")
+                else:
+                    for i in range(0, len(left_fs_times)-1):
+                        kinematicCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
+                                                       context))
 
                 context = "Right"
                 right_fs_times=list()
                 for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
                     right_fs_times.append(ev.time())
 
-                for i in range(0, len(right_fs_times)-1):
-                    kinematicCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                                   context))
+                if right_fs_times == []:
+                    kinematicCycles.append (Cycle(trial, startTime,endTime,context))
+                    logging.info("[pyCGM2] right - time normalization from time boudaries")
+                elif len(right_fs_times) ==1:
+                    raise Exception ("[pyCGM2] right - Time Normalization can't be performed. Remove the foot strike event or add another one)")
+
+                else:
+                    for i in range(0, len(right_fs_times)-1):
+                        kinematicCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
+                                                       context))
 
             return kinematicCycles
         else:
@@ -637,6 +677,9 @@ class CyclesBuilder(object):
 
                 flag_kinetics,times,times_left,times_right = trialTools.isKineticFlag(trial)
 
+                startTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime()
+                endTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).samples() /  trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
+
                 if flag_kinetics:
                     context = "Left"
                     count_L=0
@@ -644,19 +687,25 @@ class CyclesBuilder(object):
                     for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
                         left_fs_times.append(ev.time())
 
-                    for i in range(0, len(left_fs_times)-1):
-                        init =  left_fs_times[i]
-                        end =  left_fs_times[i+1]
+                    if left_fs_times == []:
+                        kineticCycles.append (Cycle(trial, startTime,endTime,context))
+                        logging.info("[pyCGM2] left - time normalization from time boudaries")
+                    elif len(left_fs_times) ==1:
+                        raise Exception ("[pyCGM2] left - Time Normalization can't be performed. Remove the foot strike event or add another one)")
+                    else:
+                        for i in range(0, len(left_fs_times)-1):
+                            init =  left_fs_times[i]
+                            end =  left_fs_times[i+1]
 
-                        for timeKinetic in times_left:
+                            for timeKinetic in times_left:
 
-                            if timeKinetic<=end and timeKinetic>=init:
-                                logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_times[i], left_fs_times[i+1]))
-                                kineticCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                                           context))
+                                if timeKinetic<=end and timeKinetic>=init:
+                                    logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_times[i], left_fs_times[i+1]))
+                                    kineticCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
+                                                               context))
 
-                                count_L+=1
-                    logging.debug("%i Left Kinetic cycles available" %(count_L))
+                                    count_L+=1
+                        logging.debug("%i Left Kinetic cycles available" %(count_L))
 
 
 
@@ -666,47 +715,69 @@ class CyclesBuilder(object):
                     for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
                         right_fs_times.append(ev.time())
 
-                    for i in range(0, len(right_fs_times)-1):
-                        init =  right_fs_times[i]
-                        end =  right_fs_times[i+1]
+                    if right_fs_times == []:
+                        kineticCycles.append (Cycle(trial, startTime,endTime,context))
+                        logging.info("[pyCGM2] right - time normalization from time boudaries")
+                    elif len(right_fs_times) ==1:
+                        raise Exception ("[pyCGM2] right - Time Normalization can't be performed. Remove the foot strike event or add another one)")
+                    else:
+                        for i in range(0, len(right_fs_times)-1):
+                            init =  right_fs_times[i]
+                            end =  right_fs_times[i+1]
 
-                        for timeKinetic in times_right:
-                            if timeKinetic<=end and timeKinetic>=init:
-                                logging.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_times[i], right_fs_times[i+1]))
-                                kineticCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                                           context))
-                                count_R+=1
-                    logging.debug("%i Right Kinetic cycles available" %(count_R))
+                            for timeKinetic in times_right:
+                                if timeKinetic<=end and timeKinetic>=init:
+                                    logging.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_times[i], right_fs_times[i+1]))
+                                    kineticCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
+                                                               context))
+                                    count_R+=1
+                        logging.debug("%i Right Kinetic cycles available" %(count_R))
 
             return kineticCycles
         else:
             return None
 
     def getEmg(self):
-
         if self.emgTrials is not None:
             emgCycles=list()
             for trial in  self.emgTrials:
+
+                startTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).startTime()
+                endTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).samples() /  trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate()
 
                 context = "Left"
                 left_fs_times=list()
                 for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
                     left_fs_times.append(ev.time())
 
-                for i in range(0, len(left_fs_times)-1):
-                    emgCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                                   context))
+                if left_fs_times == []:
+                    emgCycles.append (Cycle(trial, startTime,endTime,context))
+                    logging.info("[pyCGM2] left - time normalization from time boudaries")
+                elif len(left_fs_times) ==1:
+                    raise Exception ("[pyCGM2] left - Time Normalization can't be performed. Remove the foot strike event or add another one)")
+                else:
+                    for i in range(0, len(left_fs_times)-1):
+                        emgCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
+                                                       context))
 
                 context = "Right"
                 right_fs_times=list()
                 for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
                     right_fs_times.append(ev.time())
 
-                for i in range(0, len(right_fs_times)-1):
-                    emgCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                                   context))
+                if right_fs_times == []:
+                    emgCycles.append (Cycle(trial, startTime,endTime,context))
+                    logging.info("[pyCGM2] right - time normalization from time boudaries")
+                elif len(right_fs_times) ==1:
+                    raise Exception ("[pyCGM2] right - Time Normalization can't be performed. Remove the foot strike event or add another one)")
+                else:
+                    for i in range(0, len(right_fs_times)-1):
+                        emgCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
+                                                       context))
+
 
             return emgCycles
+
         else:
             return None
 

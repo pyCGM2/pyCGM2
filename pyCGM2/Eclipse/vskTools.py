@@ -69,30 +69,30 @@ class Vsk(object):
 def getFromVskSubjectMp(vskInstance, resetFlag=False):
 
     required_mp={
-    'Bodymass'   : float(vskInstance.getStaticParameterValue("Bodymass")),
-    'Height'   : float(vskInstance.getStaticParameterValue("Height")),
-    'LeftLegLength' :float(vskInstance.getStaticParameterValue("LeftLegLength")),
-    'RightLegLength' : float(vskInstance.getStaticParameterValue("RightLegLength")),
-    'LeftKneeWidth' : float(vskInstance.getStaticParameterValue("LeftKneeWidth")),
-    'RightKneeWidth' : float(vskInstance.getStaticParameterValue("RightKneeWidth")),
-    'LeftAnkleWidth' : float(vskInstance.getStaticParameterValue("LeftAnkleWidth")),
-    'RightAnkleWidth' : float(vskInstance.getStaticParameterValue("RightAnkleWidth")),
-    'LeftSoleDelta' : float(vskInstance.getStaticParameterValue("LeftSoleDelta")),
-    'RightSoleDelta' : float(vskInstance.getStaticParameterValue("RightSoleDelta")),
-    'LeftShoulderOffset' : float(vskInstance.getStaticParameterValue("LeftShoulderOffset")),
-    'RightShoulderOffset' : float(vskInstance.getStaticParameterValue("RightShoulderOffset")),
-    'LeftElbowWidth' : float(vskInstance.getStaticParameterValue("LeftElbowWidth")),
-    'LeftWristWidth' : float(vskInstance.getStaticParameterValue("LeftWristWidth")),
-    'LeftHandThickness' : float(vskInstance.getStaticParameterValue("LeftHandThickness")),
-    'RightElbowWidth' : float(vskInstance.getStaticParameterValue("RightElbowWidth")),
-    'RightWristWidth' : float(vskInstance.getStaticParameterValue("RightWristWidth")),
-    'RightHandThickness' : float(vskInstance.getStaticParameterValue("RightHandThickness"))
+    'Bodymass'   : float(vskInstance.getStaticParameterValue("Bodymass")) if vskInstance.getStaticParameterValue("Bodymass") is not None else 0,
+    'Height'   : float(vskInstance.getStaticParameterValue("Height")) if vskInstance.getStaticParameterValue("Height") is not None else 0,
+    'LeftLegLength' :float(vskInstance.getStaticParameterValue("LeftLegLength")) if vskInstance.getStaticParameterValue("LeftLegLength") is not None else 0,
+    'RightLegLength' : float(vskInstance.getStaticParameterValue("RightLegLength")) if vskInstance.getStaticParameterValue("RightLegLength") is not None else 0,
+    'LeftKneeWidth' : float(vskInstance.getStaticParameterValue("LeftKneeWidth")) if vskInstance.getStaticParameterValue("LeftKneeWidth") is not None else 0,
+    'RightKneeWidth' : float(vskInstance.getStaticParameterValue("RightKneeWidth")) if vskInstance.getStaticParameterValue("RightKneeWidth") is not None else 0,
+    'LeftAnkleWidth' : float(vskInstance.getStaticParameterValue("LeftAnkleWidth")) if vskInstance.getStaticParameterValue("LeftAnkleWidth") is not None else 0,
+    'RightAnkleWidth' : float(vskInstance.getStaticParameterValue("RightAnkleWidth")) if vskInstance.getStaticParameterValue("RightAnkleWidth") is not None else 0,
+    'LeftSoleDelta' : float(vskInstance.getStaticParameterValue("LeftSoleDelta")) if vskInstance.getStaticParameterValue("LeftSoleDelta") is not None else 0,
+    'RightSoleDelta' : float(vskInstance.getStaticParameterValue("RightSoleDelta")) if vskInstance.getStaticParameterValue("RightSoleDelta") is not None else 0,
+    'LeftShoulderOffset' : float(vskInstance.getStaticParameterValue("LeftShoulderOffset")) if vskInstance.getStaticParameterValue("LeftShoulderOffset") is not None else 0,
+    'RightShoulderOffset' : float(vskInstance.getStaticParameterValue("RightShoulderOffset")) if vskInstance.getStaticParameterValue("RightShoulderOffset") is not None else 0,
+    'LeftElbowWidth' : float(vskInstance.getStaticParameterValue("LeftElbowWidth")) if vskInstance.getStaticParameterValue("LeftElbowWidth") is not None else 0,
+    'LeftWristWidth' : float(vskInstance.getStaticParameterValue("LeftWristWidth")) if vskInstance.getStaticParameterValue("LeftWristWidth") is not None else 0,
+    'LeftHandThickness' : float(vskInstance.getStaticParameterValue("LeftHandThickness")) if vskInstance.getStaticParameterValue("LeftHandThickness") is not None else 0,
+    'RightElbowWidth' : float(vskInstance.getStaticParameterValue("RightElbowWidth")) if vskInstance.getStaticParameterValue("RightElbowWidth") is not None else 0,
+    'RightWristWidth' : float(vskInstance.getStaticParameterValue("RightWristWidth")) if vskInstance.getStaticParameterValue("RightWristWidth") is not None else 0,
+    'RightHandThickness' : float(vskInstance.getStaticParameterValue("RightHandThickness")) if vskInstance.getStaticParameterValue("RightHandThickness") is not None else 0
     }
 
     optional_mp={
-    'InterAsisDistance'   : float(vskInstance.getStaticParameterValue("InterAsisDistance")),#0,
-    'LeftAsisTrocanterDistance' : float(vskInstance.getStaticParameterValue("LeftAsisTrocanterDistance")),#0,
-    'RightAsisTrocanterDistance' : float(vskInstance.getStaticParameterValue("RightAsisTrocanterDistance"))
+    'InterAsisDistance'   : float(vskInstance.getStaticParameterValue("InterAsisDistance")) if vskInstance.getStaticParameterValue("InterAsisDistance") is not None else 0,#0,
+    'LeftAsisTrocanterDistance' : float(vskInstance.getStaticParameterValue("LeftAsisTrocanterDistance")) if vskInstance.getStaticParameterValue("LeftAsisTrocanterDistance") is not None else 0,#0,
+    'RightAsisTrocanterDistance' : float(vskInstance.getStaticParameterValue("RightAsisTrocanterDistance")) if vskInstance.getStaticParameterValue("RightAsisTrocanterDistance") is not None else 0
     }
 
 

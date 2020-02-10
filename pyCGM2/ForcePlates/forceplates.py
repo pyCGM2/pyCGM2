@@ -94,7 +94,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
     grwf = btk.btkGroundReactionWrenchFilter()
     pfe.SetInput(btkAcq)
     pfc = pfe.GetOutput()
-    grwf.SetInput(pfc) 
+    grwf.SetInput(pfc)
     grwc = grwf.GetOutput()
     grwc.Update()
 
@@ -126,7 +126,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
             ax.plot(diffL,'-r')
             ax.plot(diffR,'-b')
 
-        if np.min(diffL)<np.min(diffR):
+        if np.nanmin(diffL)<np.nanmin(diffR):
             logging.debug(" Force plate " + str(i) + " : left foot")
             suffix = suffix +  "L"
         else:
@@ -297,3 +297,89 @@ def addForcePlateGeneralEvents (btkAcq,mappedForcePlate ):
 
 
         indexFP+=1
+
+def correctForcePlateType5(btkAcq):
+
+    pfe = btk.btkForcePlatformsExtractor()
+    pfe.SetInput(btkAcq)
+    pfc = pfe.GetOutput()
+    pfc.Update()
+
+    md_force_platform =  btkAcq.GetMetaData().FindChild(str("FORCE_PLATFORM")).value()
+    md_force_platform_channels = btkAcq.GetMetaData().FindChild(str("FORCE_PLATFORM")).value().FindChild(str("CHANNEL")).value()
+
+    md_force_platform.RemoveChild("CAL_MATRIX")
+    md_force_platform.RemoveChild("MATRIX_STORE")
+
+    md_channels=list()
+    for i in btkTools.smartGetMetadata(btkAcq,'FORCE_PLATFORM',"CHANNEL"):
+        md_channels.append(i)
+
+
+    pfds = [pfc.GetItem(0),pfc.GetItem(1)]
+    forcePlateNumber = len(pfds)
+
+
+    channel_number_byFp = list()
+    for i in range(0,len(pfds)):
+        if pfds[i].GetType() in [1,2,4]:
+            channel_number_byFp.append(6)
+        if pfds[i].GetType() in [3,5]:
+            channel_number_byFp.append(8)
+
+    init=0
+    channel_indexes_ofAnalog=list()
+    for i in channel_number_byFp:
+        channel_indexes_ofAnalog.append(md_channels[init:init+i])
+        init=i
+
+
+    newChannelIndexes=[]
+    for i in range(0,len(pfds)):
+
+        if pfds[i].GetType() == 5:
+
+            numAnalogs = btkAcq.GetAnalogNumber()
+
+            analogChannels =  np.zeros((8,btkAcq.GetAnalogFrameNumber()))
+            j=0
+            for index in channel_indexes_ofAnalog[i]:
+                analogChannels[j,:]=btkAcq.GetAnalog(int(index)-1).GetValues().T
+                md_channels.remove(index)
+                j+=1
+
+            wrench = np.dot(pfds[i].GetCalMatrix().T.reshape(8,6).T,analogChannels) # warning : storage of cal_matrix of type5 force plate is wrong in btk.
+
+            force = wrench[0:3,:].T
+            moment = wrench[3:6,:].T
+
+            origin = pfds[i].GetOrigin()
+            corners = pfds[i].GetCorners()
+
+
+            btkTools.smartAppendAnalog(btkAcq,"Force.Fx"+str(i),force[:,0],desc="virtual Force plate" )
+            btkTools.smartAppendAnalog(btkAcq,"Force.Fy"+str(i),force[:,1],desc="virtual Force plate" )
+            btkTools.smartAppendAnalog(btkAcq,"Force.Fz"+str(i),force[:,2],desc="virtual Force plate" )
+
+            btkTools.smartAppendAnalog(btkAcq,"Moment.Mx"+str(i),moment[:,0],desc="virtual Force plate" )
+            btkTools.smartAppendAnalog(btkAcq,"Moment.My"+str(i),moment[:,1],desc="virtual Force plate" )
+            btkTools.smartAppendAnalog(btkAcq,"Moment.Mz"+str(i),moment[:,2],desc="virtual Force plate" )
+
+            new_channel_indexes_ofAnalog = range(numAnalogs,numAnalogs+6)
+
+            numAnalogs = btkAcq.GetAnalogNumber()
+
+            btkTools.smartSetMetadata(btkAcq,'FORCE_PLATFORM',"TYPE",i,str(2))
+
+            newChannelIndexes = newChannelIndexes +  new_channel_indexes_ofAnalog
+
+
+        else:
+            newChannelIndexes = newChannelIndexes + channel_indexes_ofAnalog[i]
+
+    md_newChannelIndexes= map(lambda x: x + 1, newChannelIndexes)
+    md_force_platform_channels.SetInfo(btk.btkMetaDataInfo([6,int(forcePlateNumber)], md_newChannelIndexes))
+
+    btkAcq.GetMetaData().FindChild(str("FORCE_PLATFORM")).value().FindChild(str("ZERO")).value().SetInfo(btk.btkMetaDataInfo(btk.btkDoubleArray(forcePlateNumber, 0)))
+
+    return btkAcq

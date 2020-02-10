@@ -145,7 +145,7 @@ def isPointsExist(acq,labels):
     """
     for label in labels:
         if not isPointExist(acq,label):
-            logging.debug("[pyCGM2] markers (%s) doesn't exist"% label )
+            logging.warning("[pyCGM2] markers (%s) doesn't exist"% label )
             return False
     return True
 
@@ -607,10 +607,14 @@ def changeSubjectName(btkAcq,subjectName):
 
 def smartGetMetadata(btkAcq,firstLevel,secondLevel):
     md = btkAcq.GetMetaData()
-    if utils.str(firstLevel) in _getSectionFromMd(md):
-        firstMd =  btkAcq.GetMetaData().FindChild(utils.str(firstLevel)).value()
-        if utils.str(secondLevel) in _getSectionFromMd(firstMd):
-            return firstMd.FindChild(utils.str(secondLevel)).value().GetInfo().ToString()
+    if secondLevel is not None:
+        if utils.str(firstLevel) in _getSectionFromMd(md):
+            firstMd =  btkAcq.GetMetaData().FindChild(utils.str(firstLevel)).value()
+            if utils.str(secondLevel) in _getSectionFromMd(firstMd):
+                return firstMd.FindChild(utils.str(secondLevel)).value().GetInfo().ToString()
+    else:
+        if utils.str(firstLevel) in _getSectionFromMd(md):
+            return md.FindChild(utils.str(firstLevel)).value().GetInfo().ToString()
 
 def smartSetMetadata(btkAcq,firstLevel,secondLevel,index,value):
     md = btkAcq.GetMetaData()
@@ -618,6 +622,30 @@ def smartSetMetadata(btkAcq,firstLevel,secondLevel,index,value):
         firstMd =  btkAcq.GetMetaData().FindChild(utils.str(firstLevel)).value()
         if utils.str(secondLevel) in _getSectionFromMd(firstMd):
             return firstMd.FindChild(utils.str(secondLevel)).value().GetInfo().SetValue(index,utils.str(value))
+
+def checkMetadata(btkAcq,firstLevel,secondLevel):
+    md = btkAcq.GetMetaData()
+    flag =  False
+    if secondLevel is not None:
+        if utils.str(firstLevel) in _getSectionFromMd(md):
+            firstMd =  btkAcq.GetMetaData().FindChild(utils.str(firstLevel)).value()
+            if utils.str(secondLevel) in _getSectionFromMd(firstMd):
+                flag =  True
+    else:
+        if utils.str(firstLevel) in _getSectionFromMd(md):
+            flag = True
+
+    return flag
+
+def checkForcePlateExist(btkAcq):
+
+    if checkMetadata(btkAcq,"FORCE_PLATFORM","USED"):
+        if  smartGetMetadata(btkAcq,"FORCE_PLATFORM","USED")[0] != "0":
+            return True
+        else:
+            return False
+    else:
+        return False
 
 
 
@@ -646,9 +674,18 @@ def sortedEvents(acq):
     valueFrame.sort() # trie
 
     events =[]
-    for contextLst_it in contextLst:
-        for frameSort in valueFrame:
-            for it in  btk.Iterate(evs):
-                if it.GetFrame()==frameSort and it.GetContext()==contextLst_it:
-                    events.append(it)
+    for frame in valueFrame:
+        for it in  btk.Iterate(evs):
+            if it.GetFrame()==frame:
+                events.append(it)
+
+
+    #
+    # import ipdb; ipdb.set_trace()
+    # events =[]
+    # for contextLst_it in contextLst:
+    #     for frameSort in valueFrame:
+    #         for it in  btk.Iterate(evs):
+    #             if it.GetFrame()==frameSort and it.GetContext()==contextLst_it:
+    #                 events.append(it)
     return events

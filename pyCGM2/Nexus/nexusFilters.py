@@ -202,7 +202,7 @@ class NexusConstructAcquisitionFilter(object):
 
         for marker in markers:
             rawDataX, rawDataY, rawDataZ, E = NEXUS.GetTrajectory(self.m_subject,marker)
-            #import ipdb; ipdb.set_trace()
+
             E = np.asarray(E).astype("float")-1
             values =np.array([np.asarray(rawDataX),np.asarray(rawDataY),np.asarray(rawDataZ)]).T
 
@@ -407,6 +407,8 @@ class NexusConstructTrialFilter(object):
         self.m_root = ma.Node('root')
         self.m_trial = ma.Trial("NexusTrial",self.m_root)
 
+        self.m_trial.setProperty("POINT:RATE", self.m_framerate)
+        self.m_trial.setProperty("ANALOG:RATE", self.m_analogFrameRate)
 
     def appendEvents(self):
 
@@ -506,7 +508,7 @@ class NexusConstructTrialFilter(object):
             start = self.m_firstFrame - self.m_trialFirstFrame
             end = self.m_lastFrame - self.m_trialFirstFrame
 
-            #if marker == "LTHI": import ipdb; ipdb.set_trace()
+
             values_cut = values[start:end+1,:]
             E_cut = E[start:end+1]
 

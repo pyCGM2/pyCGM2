@@ -201,7 +201,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         logging.info("[pyCGM2] Sacrum marker detected")
 
     acqGait =  btkTools.applyTranslators(acqGait,translators)
-    trackingMarkers = model.getTrackingMarkers()
+    trackingMarkers = model.getTrackingMarkers(acqGait)
     validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
 
 
@@ -278,7 +278,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",
-                                 rightSegmentLabel="Right Foot").compute()
+                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
         #---- Joint kinetics----
         idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
@@ -286,6 +286,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                              acqGait,
                              procedure = idp,
                              projection = momentProjection,
+                             globalFrameOrientation = globalFrame,
+                             forwardProgression = forwardProgression
                              ).compute(pointLabelSuffix=pointSuffix)
 
 

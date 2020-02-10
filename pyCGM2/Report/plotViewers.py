@@ -108,7 +108,7 @@ class SpatioTemporalPlotViewer(AbstractPlotViewer):
                                 title="Step length", xlabel=None,xlim=None)
 
         plot.stpHorizontalHistogram(self.fig.axes[5],self.m_analysis.stpStats,
-                                "duration",
+                                "stepDuration",
                                 overall= False,
                                 title="Step time", xlabel=None,xlim=None)
 

@@ -1161,10 +1161,11 @@ class ForcePlateAssemblyFilter(object):
         self.m_model.getSegment(self.m_rightSeglabel).zeroingExternalDevice()
 
 
-    def compute(self):
+    def compute(self,pointLabelSuffix=None):
         """
             run `ForcePlateAssemblyFilter`
         """
+
         pfe = btk.btkForcePlatformsExtractor()
         grwf = btk.btkGroundReactionWrenchFilter()
         pfe.SetInput(self.m_aqui)
@@ -1176,13 +1177,31 @@ class ForcePlateAssemblyFilter(object):
         appf = self.m_aqui.GetNumberAnalogSamplePerFrame()
         pfn = self.m_aqui.GetPointFrameNumber()
 
+        fpwf = btk.btkForcePlatformWrenchFilter() # the wrench of the center of the force platform data, expressed in the global frame
+        fpwf.SetInput(pfe.GetOutput())
+        fpwc = fpwf.GetOutput()
+        fpwc.Update()
+
+
+        left_forceValues =  np.zeros((pfn,3))
+        left_momentValues =  np.zeros((pfn,3))
+
+        right_forceValues =  np.zeros((pfn,3))
+        right_momentValues =  np.zeros((pfn,3))
 
         i = 0
         for l in self.m_mappedForcePlate:
+
             if l == "L":
                 self.m_model.getSegment(self.m_leftSeglabel).addExternalDeviceWrench(grwc.GetItem(i))
+                left_forceValues = left_forceValues + fpwc.GetItem(i).GetForce().GetValues()[::appf]
+                left_momentValues = left_momentValues + fpwc.GetItem(i).GetMoment().GetValues()[::appf]
+
             elif l == "R":
                 self.m_model.getSegment(self.m_rightSeglabel).addExternalDeviceWrench(grwc.GetItem(i))
+                right_forceValues = right_forceValues + fpwc.GetItem(i).GetForce().GetValues()[::appf]
+                right_momentValues = right_momentValues + fpwc.GetItem(i).GetMoment().GetValues()[::appf]
+
             else:
                 logging.debug("force plate %i sans donnees" %(i))
             i+=1
@@ -1191,6 +1210,32 @@ class ForcePlateAssemblyFilter(object):
             self.m_model.getSegment(self.m_leftSeglabel).downSampleExternalDeviceWrenchs(appf)
         if "R" in self.m_mappedForcePlate:
             self.m_model.getSegment(self.m_rightSeglabel).downSampleExternalDeviceWrenchs(appf)
+
+        # ground reaction force and moment
+        if self.m_model.mp.has_key("Bodymass"):
+            bodymass = self.m_model.mp["Bodymass"]
+        else:
+            bodymass = 1.0
+            logging.warning("[pyCGM2] - bodymass is not within your mp data. non-normalized GroundReaction Force and Moment ouput")
+
+        forceLabel  = "LGroundReactionForce_"+pointLabelSuffix if pointLabelSuffix is not None else "LGroundReactionForce"
+        momentLabel  = "LGroundReactionMoment_"+pointLabelSuffix if pointLabelSuffix is not None else "LGroundReactionMoment"
+
+        btkTools.smartAppendPoint(self.m_aqui,forceLabel,
+                         left_forceValues / bodymass,
+                         PointType=btk.btkPoint.Force, desc="")
+        btkTools.smartAppendPoint(self.m_aqui,momentLabel,
+                         left_momentValues / bodymass,
+                         PointType=btk.btkPoint.Moment, desc="")
+
+        forceLabel  = "RGroundReactionForce_"+pointLabelSuffix if pointLabelSuffix is not None else "RGroundReactionForce"
+        momentLabel  = "RGroundReactionMoment_"+pointLabelSuffix if pointLabelSuffix is not None else "RGroundReactionMoment"
+        btkTools.smartAppendPoint(self.m_aqui,forceLabel,
+                         right_forceValues / bodymass,
+                         PointType=btk.btkPoint.Force, desc="")
+        btkTools.smartAppendPoint(self.m_aqui,momentLabel,
+                         right_momentValues / bodymass,
+                         PointType=btk.btkPoint.Moment, desc="")
 
 
 
@@ -1202,7 +1247,9 @@ class InverseDynamicFilter(object):
     """
 
     def __init__(self, iMod, btkAcq, procedure = None, gravityVector = np.array([0,0,-1]), scaleToMeter =0.001,
-                 projection = enums.MomentProjection.Distal, exportMomentContributions = False, **options):
+                 projection = enums.MomentProjection.Distal,
+                 globalFrameOrientation="XYZ",forwardProgression=True,
+                 exportMomentContributions = False, **options):
         """
            :Parameters:
                - `btkAcq` (btkAcquisition) - btk acquisition instance of a dynamic trial
@@ -1222,6 +1269,9 @@ class InverseDynamicFilter(object):
         self.m_procedure = procedure
         self.m_projection = projection
         self.m_exportMomentContributions = exportMomentContributions
+        self.m_globalFrameOrientation = globalFrameOrientation
+        self.m_forwardProgression = forwardProgression
+
         self.m_options = options
 
     def compute(self, pointLabelSuffix = None ):
@@ -1236,6 +1286,40 @@ class InverseDynamicFilter(object):
         """
 
         self.m_procedure.compute(self.m_model,self.m_aqui,self.m_gravity,self.m_scaleToMeter)
+
+
+        if self.m_globalFrameOrientation == "XYZ":
+            if self.m_forwardProgression:
+                pt1=np.array([0,0,0])
+                pt2=np.array([1,0,0])
+                pt3=np.array([0,0,1])
+            else:
+                pt1=np.array([0,0,0])
+                pt2=np.array([-1,0,0])
+                pt3=np.array([0,0,1])
+
+            a1=(pt2-pt1)
+            v=(pt3-pt1)
+            a2=np.cross(a1,v)
+            x,y,z,Rglobal=frame.setFrameData(a1,a2,"XYiZ")
+
+        if self.m_globalFrameOrientation == "YXZ":
+            if self.m_forwardProgression:
+
+                pt1=np.array([0,0,0])
+                pt2=np.array([0,1,0])
+                pt3=np.array([0,0,1])
+            else:
+                pt1=np.array([0,0,0])
+                pt2=np.array([0,-1,0])
+                pt3=np.array([0,0,1])
+
+            a1=(pt2-pt1)
+            v=(pt3-pt1)
+            a2=np.cross(a1,v)
+            x,y,z,Rglobal=frame.setFrameData(a1,a2,"XYiZ")
+
+
 
 
         for it in  self.m_model.m_jointCollection:
@@ -1255,24 +1339,24 @@ class InverseDynamicFilter(object):
                         proximalSegLabel = "Right Shank Proximal"
                     else:
                         proximalSegLabel = it.m_proximalLabel
-
                 else:
                     proximalSegLabel = it.m_proximalLabel
+
                 if self.m_model.getSegment(it.m_distalLabel).m_proximalWrench is not None:
                     if self.m_projection != enums.MomentProjection.JCS and  self.m_projection != enums.MomentProjection.JCS_Dual:
-
                         if self.m_projection == enums.MomentProjection.Distal:
                             mot = self.m_model.getSegment(it.m_distalLabel).anatomicalFrame.motion
                         elif self.m_projection == enums.MomentProjection.Proximal:
                             mot = self.m_model.getSegment(proximalSegLabel).anatomicalFrame.motion
 
-
                         forceValues = np.zeros((nFrames,3))
                         momentValues = np.zeros((nFrames,3))
                         for i in range(0,nFrames ):
                             if self.m_projection == enums.MomentProjection.Global:
-                                forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:]
-                                momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:]
+                                forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(Rglobal.T,
+                                                                                            self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:].T)
+                                momentValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(Rglobal.T,
+                                                                                          self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetMoment().GetValues()[i,:].T)
                             else:
                                 forceValues[i,:] = (1.0 / self.m_model.mp["Bodymass"]) * np.dot(mot[i].getRotation().T,
                                                                                         self.m_model.getSegment(it.m_distalLabel).m_proximalWrench.GetForce().GetValues()[i,:].T)
@@ -1486,17 +1570,23 @@ class CoordinateSystemDisplayFilter(object):
 
         if self.static:
             for definition in definitions:
-                self.model.displayStaticCoordinateSystem( self.aqui,
-                                                    definition["segmentLabel"],
-                                                    definition["coordinateSystemLabel"],
-                                                    referential = definition["referentialType"] )
+                if definition["segmentLabel"] in self.model.getSegmentList():
+                    self.model.displayStaticCoordinateSystem( self.aqui,
+                                                        definition["segmentLabel"],
+                                                        definition["coordinateSystemLabel"],
+                                                        referential = definition["referentialType"] )
+                else:
+                    logging.info("[pyCGM2] - referential not display because the segment [%s] is not in the model segment list "%(definition["segmentLabel"]))
 
         else:
             for definition in definitions:
-                self.model.displayMotionCoordinateSystem( self.aqui,
-                                                    definition["segmentLabel"],
-                                                    definition["coordinateSystemLabel"],
-                                                    referential = definition["referentialType"] )
+                if definition["segmentLabel"] in self.model.getSegmentList():
+                    self.model.displayMotionCoordinateSystem( self.aqui,
+                                                        definition["segmentLabel"],
+                                                        definition["coordinateSystemLabel"],
+                                                        referential = definition["referentialType"] )
+                else:
+                    logging.info("[pyCGM2] - referential not display because the segment [%s] is not in the model segment list "%(definition["segmentLabel"]))
 
 
 class CentreOfMassFilter(object):
