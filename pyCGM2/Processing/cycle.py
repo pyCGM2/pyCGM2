@@ -347,16 +347,19 @@ class GaitCycle(Cycle):
             - Each GaitCycle creation computes spatio-temporal parameters automatically.
             - spatio-temporal parameters are :
                 "duration", "cadence",
-                "stanceDuration", "stancePhase",
+                "stanceDuration", "stepDuration", "doubleStance1Duration",
+                "doubleStance2Duration", "simpleStanceDuration", "stancePhase",
                 "swingDuration", "swingPhase", "doubleStance1", "doubleStance2",
-                "simpleStance", "strideLength", "stepLength",
+                "simpleStance", "stepPhase", "strideLength", "stepLength",
                 "strideWidth", "speed"
     """
 
 
-    STP_LABELS=["duration","cadence", "stanceDuration",  "stancePhase",
+    STP_LABELS=["duration","cadence",
+                "stanceDuration", "stepDuration", "doubleStance1Duration",
+                "doubleStance2Duration","simpleStanceDuration","stancePhase",
                 "swingDuration", "swingPhase", "doubleStance1", "doubleStance2",
-                "simpleStance", "strideLength", "stepLength",
+                "simpleStance", "stepPhase","strideLength", "stepLength",
                 "strideWidth", "speed"]
 
 

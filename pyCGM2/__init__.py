@@ -29,8 +29,7 @@ except Exception, errormsg:
 ENCODER = "latin-1"
 
 # CONSTANTS
-cased_path = glob.glob(re.sub(r'([^:])(?=[/\\]|$)', r'[\1]', __file__))[0]
-MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(cased_path), os.pardir)) + "\\"
+MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)) + "\\"
 
 #  [Optional] setting folder
 PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"pyCGM2\Settings\\"
