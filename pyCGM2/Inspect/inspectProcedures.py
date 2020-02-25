@@ -235,7 +235,7 @@ class SwappingMarkerQualityProcedure(object):
                     residual = self.acq.GetPoint(marker).GetResidual(index)
                     if residual>=0.0:
                         frame = index+ff
-                        logging.warning("[pyCGM2-Checking] marker [%s] - swapped at frame [%i] "%(marker,frame))
+                        logging.warning("[pyCGM2-Checking] marker [%s] - swapped at frame [%i] (nearest marker= %s - dist=%.2f) "%(marker,frame,nearest,dist))
 
 
 class MarkerPositionQualityProcedure(object):
