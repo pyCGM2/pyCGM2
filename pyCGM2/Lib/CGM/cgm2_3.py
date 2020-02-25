@@ -109,7 +109,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     modMotion.compute()
 
-
+    if model.getBodyPart() == enums.BodyPart.UpperLimb:
+        ik_flag = False
+        logging.warning("[pyCGM2] Fitting only applied for the upper limb")
 
     if ik_flag:
         #                        ---OPENSIM IK---
@@ -278,7 +280,12 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     modMotion.compute()
     # /section to remove
 
+    if model.getBodyPart() == enums.BodyPart.UpperLimb:
+        ik_flag = False
+        logging.warning("[pyCGM2] Fitting only applied for the upper limb")
+
     if ik_flag:
+
         #                        ---OPENSIM IK---
 
         # --- opensim calibration Filter ---
@@ -332,7 +339,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
         acqIK = osrf.run(acqGait,(DATA_PATH + reconstructFilenameLabelled ))
         logging.info("-------INVERSE KINEMATICS DONE-----------------")
-
 
     # eventual gait acquisition to consider for joint kinematics
     finalAcqGait = acqIK if ik_flag else acqGait

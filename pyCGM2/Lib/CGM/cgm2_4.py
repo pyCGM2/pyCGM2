@@ -108,7 +108,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     modMotion.compute()
 
-
+    if model.getBodyPart() == enums.BodyPart.UpperLimb:
+        ik_flag = False
+        logging.warning("[pyCGM2] Fitting only applied for the upper limb")
 
     if ik_flag:
         #                        ---OPENSIM IK---
@@ -289,6 +291,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     scp=modelFilters.StaticCalibrationProcedure(model)
     modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Sodervisk)
     modMotion.compute()
+
+    if model.getBodyPart() == enums.BodyPart.UpperLimb:
+        ik_flag = False
+        logging.warning("[pyCGM2] Fitting only applied for the upper limb")
 
     if ik_flag:
         #                        ---OPENSIM IK---

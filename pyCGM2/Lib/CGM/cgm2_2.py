@@ -108,6 +108,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
     modMotion.compute()
 
+    if model.getBodyPart() == enums.BodyPart.UpperLimb:
+        ik_flag = False
+        logging.warning("[pyCGM2] Fitting only applied for the upper limb")
 
     if ik_flag:
         #                        ---OPENSIM IK---
@@ -269,71 +272,78 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist)
     modMotion.compute()
 
+    ik_flag =  True
+    if model.getBodyPart() == enums.BodyPart.UpperLimb:
+        ik_flag = False
+        logging.warning("[pyCGM2] Fitting only applied for the upper limb")
 
-    #                        ---OPENSIM IK---
+    if ik_flag:
+        #                        ---OPENSIM IK---
 
-    # --- opensim calibration Filter ---
-    osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
-    markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-markerset.xml" # markerset
-    cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
+        # --- opensim calibration Filter ---
+        osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
+        markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-markerset.xml" # markerset
+        cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
 
-    oscf = opensimFilters.opensimCalibrationFilter(osimfile,
-                                            model,
-                                            cgmCalibrationprocedure,
-                                            (DATA_PATH))
-    oscf.addMarkerSet(markersetFile)
-    scalingOsim = oscf.build()
-
-
-    # --- opensim Fitting Filter ---
-    iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
-
-    cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
-    cgmFittingProcedure.updateMarkerWeight("LASI",settings["Fitting"]["Weight"]["LASI"])
-    cgmFittingProcedure.updateMarkerWeight("RASI",settings["Fitting"]["Weight"]["RASI"])
-    cgmFittingProcedure.updateMarkerWeight("LPSI",settings["Fitting"]["Weight"]["LPSI"])
-    cgmFittingProcedure.updateMarkerWeight("RPSI",settings["Fitting"]["Weight"]["RPSI"])
-    cgmFittingProcedure.updateMarkerWeight("RTHI",settings["Fitting"]["Weight"]["RTHI"])
-    cgmFittingProcedure.updateMarkerWeight("RKNE",settings["Fitting"]["Weight"]["RKNE"])
-    cgmFittingProcedure.updateMarkerWeight("RTIB",settings["Fitting"]["Weight"]["RTIB"])
-    cgmFittingProcedure.updateMarkerWeight("RANK",settings["Fitting"]["Weight"]["RANK"])
-    cgmFittingProcedure.updateMarkerWeight("RHEE",settings["Fitting"]["Weight"]["RHEE"])
-    cgmFittingProcedure.updateMarkerWeight("RTOE",settings["Fitting"]["Weight"]["RTOE"])
-    cgmFittingProcedure.updateMarkerWeight("LTHI",settings["Fitting"]["Weight"]["LTHI"])
-    cgmFittingProcedure.updateMarkerWeight("LKNE",settings["Fitting"]["Weight"]["LKNE"])
-    cgmFittingProcedure.updateMarkerWeight("LTIB",settings["Fitting"]["Weight"]["LTIB"])
-    cgmFittingProcedure.updateMarkerWeight("LANK",settings["Fitting"]["Weight"]["LANK"])
-    cgmFittingProcedure.updateMarkerWeight("LHEE",settings["Fitting"]["Weight"]["LHEE"])
-    cgmFittingProcedure.updateMarkerWeight("LTOE",settings["Fitting"]["Weight"]["LTOE"])
+        oscf = opensimFilters.opensimCalibrationFilter(osimfile,
+                                                model,
+                                                cgmCalibrationprocedure,
+                                                (DATA_PATH))
+        oscf.addMarkerSet(markersetFile)
+        scalingOsim = oscf.build()
 
 
-    osrf = opensimFilters.opensimFittingFilter(iksetupFile,
-                                                      scalingOsim,
-                                                      cgmFittingProcedure,
-                                                      (DATA_PATH) )
+        # --- opensim Fitting Filter ---
+        iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
 
-    logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
-    acqIK = osrf.run(acqGait,(DATA_PATH + reconstructFilenameLabelled ))
-    logging.info("-------INVERSE KINEMATICS DONE-----------------")
+        cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
+        cgmFittingProcedure.updateMarkerWeight("LASI",settings["Fitting"]["Weight"]["LASI"])
+        cgmFittingProcedure.updateMarkerWeight("RASI",settings["Fitting"]["Weight"]["RASI"])
+        cgmFittingProcedure.updateMarkerWeight("LPSI",settings["Fitting"]["Weight"]["LPSI"])
+        cgmFittingProcedure.updateMarkerWeight("RPSI",settings["Fitting"]["Weight"]["RPSI"])
+        cgmFittingProcedure.updateMarkerWeight("RTHI",settings["Fitting"]["Weight"]["RTHI"])
+        cgmFittingProcedure.updateMarkerWeight("RKNE",settings["Fitting"]["Weight"]["RKNE"])
+        cgmFittingProcedure.updateMarkerWeight("RTIB",settings["Fitting"]["Weight"]["RTIB"])
+        cgmFittingProcedure.updateMarkerWeight("RANK",settings["Fitting"]["Weight"]["RANK"])
+        cgmFittingProcedure.updateMarkerWeight("RHEE",settings["Fitting"]["Weight"]["RHEE"])
+        cgmFittingProcedure.updateMarkerWeight("RTOE",settings["Fitting"]["Weight"]["RTOE"])
+        cgmFittingProcedure.updateMarkerWeight("LTHI",settings["Fitting"]["Weight"]["LTHI"])
+        cgmFittingProcedure.updateMarkerWeight("LKNE",settings["Fitting"]["Weight"]["LKNE"])
+        cgmFittingProcedure.updateMarkerWeight("LTIB",settings["Fitting"]["Weight"]["LTIB"])
+        cgmFittingProcedure.updateMarkerWeight("LANK",settings["Fitting"]["Weight"]["LANK"])
+        cgmFittingProcedure.updateMarkerWeight("LHEE",settings["Fitting"]["Weight"]["LHEE"])
+        cgmFittingProcedure.updateMarkerWeight("LTOE",settings["Fitting"]["Weight"]["LTOE"])
 
+
+        osrf = opensimFilters.opensimFittingFilter(iksetupFile,
+                                                          scalingOsim,
+                                                          cgmFittingProcedure,
+                                                          (DATA_PATH) )
+
+        logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
+        acqIK = osrf.run(acqGait,(DATA_PATH + reconstructFilenameLabelled ))
+        logging.info("-------INVERSE KINEMATICS DONE-----------------")
+
+    # eventual gait acquisition to consider for joint kinematics
+    finalAcqGait = acqIK if ik_flag else acqGait
 
     # --- final pyCGM2 model motion Filter ---
     # use fitted markers
-    modMotionFitted=modelFilters.ModelMotionFilter(scp,acqIK,model,enums.motionMethod.Determinist ,
+    modMotionFitted=modelFilters.ModelMotionFilter(scp,finalAcqGait,model,enums.motionMethod.Determinist ,
                                               markerDiameter=markerDiameter)
 
     modMotionFitted.compute()
 
     if "displayCoordinateSystem" in kwargs.keys() and kwargs["displayCoordinateSystem"]:
         csp = modelFilters.ModelCoordinateSystemProcedure(model)
-        csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,acqIK)
+        csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,finalAcqGait)
         csdf.setStatic(False)
         csdf.display()
 
 
     #---- Joint kinematics----
     # relative angles
-    modelFilters.ModelJCSFilter(model,acqIK).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
+    modelFilters.ModelJCSFilter(model,finalAcqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
     # detection of traveling axis + absolute angle
     if model.m_bodypart != enums.BodyPart.UpperLimb:
@@ -341,13 +351,13 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     else:
         pfp = progressionFrame.ThoraxProgressionFrameProcedure()
 
-    pff = progressionFrame.ProgressionFrameFilter(acqIK,pfp)
+    pff = progressionFrame.ProgressionFrameFilter(finalAcqGait,pfp)
     pff.compute()
     globalFrame = pff.outputs["globalFrame"]
     forwardProgression = pff.outputs["forwardProgression"]
 
     if model.m_bodypart != enums.BodyPart.UpperLimb:
-            modelFilters.ModelAbsoluteAnglesFilter(model,acqIK,
+            modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqGait,
                                                    segmentLabels=["Left Foot","Right Foot","Pelvis"],
                                                     angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
                                                     eulerSequences=["TOR","TOR", "ROT"],
@@ -355,7 +365,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                                     forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
     if model.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            modelFilters.ModelAbsoluteAnglesFilter(model,acqIK,
+            modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqGait,
                                           segmentLabels=["Thorax"],
                                           angleLabels=["Thorax"],
                                           eulerSequences=["YXZ"],
@@ -364,7 +374,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     if model.m_bodypart == enums.BodyPart.UpperLimb or model.m_bodypart == enums.BodyPart.FullBody:
 
-            modelFilters.ModelAbsoluteAnglesFilter(model,acqIK,
+            modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqGait,
                                           segmentLabels=["Thorax","Head"],
                                           angleLabels=["Thorax", "Head"],
                                           eulerSequences=["YXZ","TOR"],
@@ -377,26 +387,26 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     bspModel.compute()
 
     if  model.m_bodypart == enums.BodyPart.FullBody:
-        modelFilters.CentreOfMassFilter(model,acqIK).compute(pointLabelSuffix=pointSuffix)
+        modelFilters.CentreOfMassFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
 
     # Inverse dynamics
     if model.m_bodypart != enums.BodyPart.UpperLimb:
         # --- force plate handling----
         # find foot  in contact
-        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqIK,mfpa=mfpa)
-        forceplates.addForcePlateGeneralEvents(acqIK,mappedForcePlate)
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(finalAcqGait,mfpa=mfpa)
+        forceplates.addForcePlateGeneralEvents(finalAcqGait,mappedForcePlate)
         logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
 
         # assembly foot and force plate
-        modelFilters.ForcePlateAssemblyFilter(model,acqIK,mappedForcePlate,
+        modelFilters.ForcePlateAssemblyFilter(model,finalAcqGait,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",
                                  rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
         #---- Joint kinetics----
         idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
         modelFilters.InverseDynamicFilter(model,
-                             acqIK,
+                             finalAcqGait,
                              procedure = idp,
                              projection = momentProjection,
                              globalFrameOrientation = globalFrame,
@@ -405,11 +415,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
 
         #---- Joint energetics----
-        modelFilters.JointPowerFilter(model,acqIK).compute(pointLabelSuffix=pointSuffix)
+        modelFilters.JointPowerFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
 
 
     #---- zero unvalid frames ---
-    btkTools.applyValidFramesOnOutput(acqIK,validFrames)
+    btkTools.applyValidFramesOnOutput(finalAcqGait,validFrames)
 
 
-    return acqIK
+    return finalAcqGait
