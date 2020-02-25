@@ -54,13 +54,14 @@ def GetMarkerNames(acq):
     return markerNames
 
 
-def findNearestMarker(acq,i,marker):
+def findNearestMarker(acq,i,marker,markerNames=None):
     values = acq.GetPoint(utils.str(marker)).GetValues()[i,:]
 
-    markerNames=[]
-    for it in btk.Iterate(acq.GetPoints()):
-        if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*" and it.GetLabel() != utils.str(marker):
-            markerNames.append(it.GetLabel())
+    if markerNames is None:
+        markerNames=[]
+        for it in btk.Iterate(acq.GetPoints()):
+            if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*" and it.GetLabel() != utils.str(marker):
+                markerNames.append(it.GetLabel())
 
     j=0
     out = np.zeros((len(markerNames),3))

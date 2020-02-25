@@ -204,27 +204,31 @@ class GapQualityProcedure(object):
 
 
 class SwappingMarkerQualityProcedure(object):
-    def __init__(self,acq,markers=None,title=None):
+    def __init__(self,acq,markers=None,title=None,plot=False):
         self.acq = acq
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
         self.exceptionMode = False
         self.title = "Swapping marker" if title is None else title
 
         self.state = True
+        self.plot = plot
 
 
-    def check(self,plot=False):
+
+    def check(self):
 
         ff = self.acq.GetFirstFrame()
         frameNumber = self.acq.GetPointFrameNumber()
         freq = self.acq.GetPointFrequency()
 
         for marker in self.markers:
-            nearest,dist = btkTools.findNearestMarker(self.acq,1,marker)
+            markerList = list(self.markers)
+            markerList.remove(marker)
+            nearest,dist = btkTools.findNearestMarker(self.acq,1,marker,markerNames = markerList)
             values = self.acq.GetPoint(marker).GetValues()
             norms = np.linalg.norm(values,axis =1)
 
-            ta, tai, taf, amp = detect_changes.detect_cusum(norms, dist, dist/2.0, True, False)
+            ta, tai, taf, amp = detect_changes.detect_cusum(norms, dist, dist/2.0, True, self.plot)
 
             if ta.size != 0:
                 for index in tai:
