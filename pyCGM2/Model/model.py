@@ -65,6 +65,10 @@ class Model(object):
     def setBodyPart(self, bodypart):
         self.m_bodypart = bodypart
 
+    def getBodyPart(self):
+        return self.m_bodypart
+
+
     def setCentreOfMass(self,com):
         self.m_centreOfMass = com
     def getCentreOfMass(self):
