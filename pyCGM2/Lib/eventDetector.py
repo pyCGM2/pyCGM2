@@ -28,5 +28,5 @@ def zeni(acqGait,footStrikeOffset=0,footOffOffset=0):
     # event filter
     evf = events.EventFilter(evp,acqGait)
     evf.detect()
-
-    return acqGait
+    state = evf.getState()
+    return acqGait,state

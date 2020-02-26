@@ -77,6 +77,7 @@ def main(args):
 
         evf = events.EventFilter(evp,acqGait)
         evf.detect()
+        state = evf.getState()
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusTools.createEvents(NEXUS,subject,acqGait,["Foot Strike","Foot Off"])
