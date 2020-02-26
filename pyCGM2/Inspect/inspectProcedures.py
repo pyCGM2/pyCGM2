@@ -27,7 +27,6 @@ class GaitEventQualityProcedure(object):
 
 
         events = btkTools.sortedEvents(self.acq)
-
         if events != []:
 
             events_L = list()
@@ -85,6 +84,12 @@ class GaitEventQualityProcedure(object):
                 else:
                     logging.warning("Only one right events ")
                     self.state = False
+        else:
+            logging.error("[pyCGM2-Checking] No events are in trial")
+            if self.exceptionMode:
+                raise Exception("[pyCGM2-Checking]  No events are in the trials")
+            self.state = False
+
 
 
 
