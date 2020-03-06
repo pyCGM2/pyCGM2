@@ -1614,3 +1614,101 @@ class CentreOfMassFilter(object):
 
         outLabel  = "CentreOfMass_" + pointLabelSuffix if pointLabelSuffix is not None else "CentreOfMass"
         btkTools.smartAppendPoint(self.aqui,outLabel,self.model.getCentreOfMass())
+
+class Naim2019ThighMisaligmentCorrectionProcedure(object):
+    """
+        This function corrects the thigh anatomical frame in respect with the method detailed in Naim et al, 2019.
+
+
+        Naaim, A., Bonnefoy-Mazure, A., Armand, S., & Dumas, R. (2019).
+        Correcting lower limb segment axis misalignment in gait analysis: A simple geometrical method.
+        Gait and Posture, 72(May), 34–39
+    """
+
+    def __init__(self,model,side):
+        """
+        :param model [pyCGM2.Model.Model]: model
+        :param side [str]: body side (Left, Right or Both as choice)
+        """
+
+        self.m_model =  model
+        self.m_side = side
+
+
+    def correct(self):
+        """
+
+        """
+        side = self.m_side
+
+        if self.m_side == "Both":
+            sides = ["Left","Right"]
+        else:
+            sides = [self.m_side]
+
+        for side in sides:
+            if side== "Left":
+                sequence = "ZXiY"
+                letter = "L"
+            elif side == "Right":
+                sequence = "ZXY"
+                letter = "R"
+
+            else:
+                raise Exception("[pyCGM2] : side not recognized ( Left or Right only)")
+
+            seg = self.m_model.getSegment(side+" Thigh")
+
+            hjc = self.m_model.getSegment(side+" Thigh").anatomicalFrame.getNodeTrajectory(letter+"HJC")
+            kjc = self.m_model.getSegment(side+" Thigh").anatomicalFrame.getNodeTrajectory(letter+"KJC")
+            ajc = self.m_model.getSegment(side+" Shank").anatomicalFrame.getNodeTrajectory(letter+"AJC")
+
+            v = np.cross(hjc-kjc,ajc-kjc)
+            v = np.divide(v.mean(axis =0),np.linalg.norm(v.mean(axis =0)))
+
+            # virtual point along the mean axis
+            virtual = np.zeros((len(ajc),3))
+            for i in range(0,len(ajc)):
+                virtual[i,:]= kjc[i,:] + -100 * v if side == "Left" else kjc[i,:] + 100 * v
+
+            #alteration of the segmental motion
+            seg.anatomicalFrame.motion=[] # erase all previous motion
+
+            csFrame=frame.Frame()
+            for i in range(0,len(ajc)):
+                pt1=kjc[i,:]
+                pt2=hjc[i,:]
+                pt3=virtual[i,:]
+                ptOrigin=hjc[i,:]
+
+                a1=(pt2-pt1)
+                a1=np.divide(a1,np.linalg.norm(a1))
+
+                v=(pt3-pt1)
+                v=np.divide(v,np.linalg.norm(v))
+
+                a2=np.cross(a1,v)
+                a2=np.divide(a2,np.linalg.norm(a2))
+
+                x,y,z,R=frame.setFrameData(a1,a2,sequence)
+
+                csFrame.m_axisX=x
+                csFrame.m_axisY=y
+                csFrame.m_axisZ=z
+                csFrame.setRotation(R)
+                csFrame.setTranslation(ptOrigin)
+
+                seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+
+            logging.warning("[pyCGM2] : %s thigh anatomical frame motion corrected according Naim et al, 2019"%(side))
+
+
+class ModelMotionCorrectionFilter(object):
+    """
+        Correction of the Motion of an anatomical frame
+    """
+    def __init__(self,procedure):
+        self.m_procedure = procedure
+
+    def correct(self):
+        self.m_procedure.correct()
