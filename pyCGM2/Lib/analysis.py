@@ -206,7 +206,8 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],
         envf.run()
 
         outFilename = gaitTrial if fileSuffix=="" else gaitTrial+"_"+fileSuffix
-    btkTools.smartWriter(acq,DATA_PATH+outFilename)
+
+        btkTools.smartWriter(acq,DATA_PATH+outFilename)
 
 
 
