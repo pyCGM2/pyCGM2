@@ -97,7 +97,6 @@ ENV/
 *.suo
 
 
-Sandbox
 Obsolete
 !/pyCGM2/opensim3/*.dll
 !/pyCGM2/opensim3/*.lib
