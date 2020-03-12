@@ -17,6 +17,7 @@ from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Processing import progressionFrame
+from pyCGM2.Signal import signal_processing
 
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
@@ -71,6 +72,20 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     model.setCalibrationProperty("headFlat",headFlat)
     model.setCalibrationProperty("markerDiameter",markerDiameter)
 
+
+    # filtering
+    # -----------------------
+    if "fc_lowPass_marker" in kwargs.keys() :
+        fc = kwargs["fc_lowPass_marker"]
+        order = 4
+        if "order_lowPass_marker" in kwargs.keys(): order = kwargs["order_lowPass_marker"]
+        signal_processing.markerFiltering(acqGait,order=order, fc =fc)
+
+    if "fc_lowPass_forcePlate" in kwargs.keys() :
+        fc = kwargs["fc_lowPass_forcePlate"]
+        order = 4
+        if "order_lowPass_forcePlate" in kwargs.keys(): order = kwargs["order_lowPass_forcePlate"]
+        signal_processing.forcePlateFiltering(acqGait,order=order, fc =fc)
 
     # --------------------------STATIC CALBRATION--------------------------
     scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure

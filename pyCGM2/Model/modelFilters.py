@@ -1348,7 +1348,7 @@ class InverseDynamicFilter(object):
                             mot = self.m_model.getSegment(it.m_distalLabel).anatomicalFrame.motion
                         elif self.m_projection == enums.MomentProjection.Proximal:
                             mot = self.m_model.getSegment(proximalSegLabel).anatomicalFrame.motion
-
+                            
                         forceValues = np.zeros((nFrames,3))
                         momentValues = np.zeros((nFrames,3))
                         for i in range(0,nFrames ):
