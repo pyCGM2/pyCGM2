@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import numpy as np
 from scipy import signal, integrate
 import matplotlib.pyplot as plt
@@ -71,16 +72,21 @@ def markerFiltering(btkAcq,order=2, fc =6):
             - `btkAcq` (btkAcquisition) - btk acquisition instance
             - `fc` (double) - cut-off frequency
             - `order` (double) - order of the low-pass filter
-   """
+    """
     fp=btkAcq.GetPointFrequency()
     bPoint, aPoint = signal.butter(order, fc / (fp*0.5) , btype='lowpass')
 
     for pointIt in btk.Iterate(btkAcq.GetPoints()):
         if pointIt.GetType() == btk.btkPoint.Marker:
+            label = pointIt.GetLabel()
             x=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,0],axis=0  )
             y=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,1],axis=0  )
             z=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,2],axis=0  )
-            pointIt.SetValues(np.array( [x,y,z] ).transpose())
+
+            btkAcq.GetPoint(label).SetValues(np.array( [x,y,z] ).transpose())
+
+
+            # pointIt.SetValues(np.array( [x,y,z] ).transpose())
 
 
 def forcePlateFiltering(btkAcq,order=4, fc =5):
@@ -105,15 +111,19 @@ def forcePlateFiltering(btkAcq,order=4, fc =5):
 
     for i in range(0,pfc.GetItemNumber()):
 
+
+
         for j in range(0,pfc.GetItem(i).GetChannelNumber()):
+
             values = pfc.GetItem(i).GetChannel(j).GetValues()[:,0]
 
             values_filt = signal.filtfilt(bPoint, aPoint, values,axis=0  )
 
             label = pfc.GetItem(i).GetChannel(j).GetLabel() # SetValues on channel not store new values
-            btkAcq.GetAnalog(label).SetValues(values_filt)
-
-
+            try:
+                btkAcq.GetAnalog(label).SetValues(values_filt)
+            except RuntimeError:
+                logging.error("[pyCGM2] filtering of the force place %i impossible - label %s not found"%(i,label))
 
 # ----- methods ---------
 def arrayLowPassFiltering(valuesArray, freq, order=2, fc =6):
