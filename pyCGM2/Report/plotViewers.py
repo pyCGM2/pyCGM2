@@ -16,8 +16,9 @@ class AbstractPlotViewer(object):
     """
     Abstract Builder
     """
-    def __init__(self,input):
+    def __init__(self,input,AutomaticYlimits=False):
         self.m_input =input
+        self.m_automaticYlim_flag = AutomaticYlimits
 
     def setNormativeData(self):
         pass
@@ -30,6 +31,9 @@ class AbstractPlotViewer(object):
 
     def plotPanel(self):
         pass
+
+    def setAutomaticYlimits(self,bool):
+        self.m_automaticYlim_flag = bool
 
 class SpatioTemporalPlotViewer(AbstractPlotViewer):
     """
@@ -270,6 +274,7 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
 
 
 
+
     def setConcretePlotFunction(self, concreteplotFunction):
         self.m_concretePlotFunction = concreteplotFunction
 
@@ -332,25 +337,26 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
             ax13.set_title("ForeFoot eversion " ,size=8)
             ax14.set_title("ForeFoot Adduction " ,size=8)
 
-            ax0.set_ylim([0,60])
-            ax1.set_ylim([-30,30])
-            ax2.set_ylim([-30,30])
+            if not self.m_automaticYlim_flag:
+                ax0.set_ylim([0,60])
+                ax1.set_ylim([-30,30])
+                ax2.set_ylim([-30,30])
 
-            ax3.set_ylim( [-20,70])
-            ax4.set_ylim([-30,30])
-            ax5.set_ylim([-30,30])
+                ax3.set_ylim( [-20,70])
+                ax4.set_ylim([-30,30])
+                ax5.set_ylim([-30,30])
 
-            ax6.set_ylim([-15,75])
-            ax7.set_ylim([-30,30])
-            ax8.set_ylim([-30,30])
+                ax6.set_ylim([-15,75])
+                ax7.set_ylim([-30,30])
+                ax8.set_ylim([-30,30])
 
-            ax9.set_ylim([-30,30])
-            ax10.set_ylim([-30,30])
-            ax11.set_ylim([-30,30])
+                ax9.set_ylim([-30,30])
+                ax10.set_ylim([-30,30])
+                ax11.set_ylim([-30,30])
 
-            ax12.set_ylim([-50,30])
-            ax13.set_ylim([-30,30])
-            ax14.set_ylim([-30,30])
+                ax12.set_ylim([-50,30])
+                ax13.set_ylim([-30,30])
+                ax14.set_ylim([-30,30])
 
         elif self.m_bodyPart == enums.BodyPartPlot.Trunk:
 
@@ -364,25 +370,26 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
             ax7.set_title("Thorax Obliquity" ,size=8)
             ax8.set_title("Thorax Rotation" ,size=8)
 
-            ax0.set_ylim([0,60])
-            ax1.set_ylim([-30,30])
-            ax2.set_ylim([-30,30])
+            if not self.m_automaticYlim_flag:
+                ax0.set_ylim([0,60])
+                ax1.set_ylim([-30,30])
+                ax2.set_ylim([-30,30])
 
-            ax3.set_ylim( [-30,30])
-            ax4.set_ylim([-30,30])
-            ax5.set_ylim([-30,30])
+                ax3.set_ylim( [-30,30])
+                ax4.set_ylim([-30,30])
+                ax5.set_ylim([-30,30])
 
-            ax6.set_ylim([-30,30])
-            ax7.set_ylim([-30,30])
-            ax8.set_ylim([-30,30])
+                ax6.set_ylim([-30,30])
+                ax7.set_ylim([-30,30])
+                ax8.set_ylim([-30,30])
 
-            ax9.set_ylim([-30,30])
-            ax10.set_ylim([-30,30])
-            ax11.set_ylim([-30,30])
+                ax9.set_ylim([-30,30])
+                ax10.set_ylim([-30,30])
+                ax11.set_ylim([-30,30])
 
-            ax12.set_ylim([-50,30])
-            ax13.set_ylim([-30,30])
-            ax14.set_ylim([-30,30])
+                ax12.set_ylim([-50,30])
+                ax13.set_ylim([-30,30])
+                ax14.set_ylim([-30,30])
 
     def setNormativeDataset(self,iNormativeDataSet):
         """
@@ -686,25 +693,26 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
             ax13.set_title("ForeFoot eversion " ,size=8)
             ax14.set_title("ForeFoot Adduction " ,size=8)
 
-            ax0.set_ylim([0,60])
-            ax1.set_ylim([-30,30])
-            ax2.set_ylim([-30,30])
+            if not self.m_automaticYlim_flag:
+                ax0.set_ylim([0,60])
+                ax1.set_ylim([-30,30])
+                ax2.set_ylim([-30,30])
 
-            ax3.set_ylim( [-20,70])
-            ax4.set_ylim([-30,30])
-            ax5.set_ylim([-30,30])
+                ax3.set_ylim( [-20,70])
+                ax4.set_ylim([-30,30])
+                ax5.set_ylim([-30,30])
 
-            ax6.set_ylim([-15,75])
-            ax7.set_ylim([-30,30])
-            ax8.set_ylim([-30,30])
+                ax6.set_ylim([-15,75])
+                ax7.set_ylim([-30,30])
+                ax8.set_ylim([-30,30])
 
-            ax9.set_ylim([-30,30])
-            ax10.set_ylim([-30,30])
-            ax11.set_ylim([-30,30])
+                ax9.set_ylim([-30,30])
+                ax10.set_ylim([-30,30])
+                ax11.set_ylim([-30,30])
 
-            ax12.set_ylim([-50,30])
-            ax13.set_ylim([-30,30])
-            ax14.set_ylim([-30,30])
+                ax12.set_ylim([-50,30])
+                ax13.set_ylim([-30,30])
+                ax14.set_ylim([-30,30])
 
         if self.m_bodyPart == enums.BodyPartPlot.Trunk:
 
@@ -718,17 +726,18 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
             ax7.set_title("Thorax Obliquity" ,size=8)
             ax8.set_title("Thorax Rotation" ,size=8)
 
-            ax0.set_ylim([0,60])
-            ax1.set_ylim([-30,30])
-            ax2.set_ylim([-30,30])
+            if not self.m_automaticYlim_flag:
+                ax0.set_ylim([0,60])
+                ax1.set_ylim([-30,30])
+                ax2.set_ylim([-30,30])
 
-            ax3.set_ylim( [-30,30])
-            ax4.set_ylim([-30,30])
-            ax5.set_ylim([-30,30])
+                ax3.set_ylim( [-30,30])
+                ax4.set_ylim([-30,30])
+                ax5.set_ylim([-30,30])
 
-            ax6.set_ylim([-30,30])
-            ax7.set_ylim([-30,30])
-            ax8.set_ylim([-30,30])
+                ax6.set_ylim([-30,30])
+                ax7.set_ylim([-30,30])
+                ax8.set_ylim([-30,30])
 
     def setNormativeDataset(self,iNormativeDataSet):
         pass
@@ -946,20 +955,21 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
             ax10.set_title("Ankle abductor Moment" ,size=8)
             ax11.set_title("Ankle Power " ,size=8)
 
-            ax0.set_ylim([-2.0 *1000.0, 3.0*1000.0])
-            ax1.set_ylim([-2.0*1000.0, 1.0*1000.0])
-            ax2.set_ylim([-0.5*1000.0, 0.5*1000.0])
-            ax3.set_ylim(  [-3.0, 3.0])
+            if not self.m_automaticYlim_flag:
+                ax0.set_ylim([-2.0 *1000.0, 3.0*1000.0])
+                ax1.set_ylim([-2.0*1000.0, 1.0*1000.0])
+                ax2.set_ylim([-0.5*1000.0, 0.5*1000.0])
+                ax3.set_ylim(  [-3.0, 3.0])
 
-            ax4.set_ylim([-1.0*1000.0, 1.0*1000.0])
-            ax5.set_ylim([-1.0*1000.0, 1.0*1000.0])
-            ax6.set_ylim([-0.5*1000.0, 0.5*1000.0])
-            ax7.set_ylim( [-3.0, 3.0])
+                ax4.set_ylim([-1.0*1000.0, 1.0*1000.0])
+                ax5.set_ylim([-1.0*1000.0, 1.0*1000.0])
+                ax6.set_ylim([-0.5*1000.0, 0.5*1000.0])
+                ax7.set_ylim( [-3.0, 3.0])
 
-            ax8.set_ylim([-1.0*1000.0, 3.0*1000.0])
-            ax9.set_ylim([-0.5*1000.0, 0.5*1000.0])
-            ax10.set_ylim([-0.5*1000.0, 0.5*1000.0])
-            ax11.set_ylim( [-2.0, 5.0])
+                ax8.set_ylim([-1.0*1000.0, 3.0*1000.0])
+                ax9.set_ylim([-0.5*1000.0, 0.5*1000.0])
+                ax10.set_ylim([-0.5*1000.0, 0.5*1000.0])
+                ax11.set_ylim( [-2.0, 5.0])
         else:
             raise Exception("Plot panel not implemented yet")
 
@@ -1192,20 +1202,21 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
             ax10.set_xlabel("Frame %",size=8)
             ax11.set_xlabel("Frame %",size=8)
 
-            ax0.set_ylim([-2.0 *1000.0, 3.0*1000.0])
-            ax1.set_ylim([-2.0*1000.0, 1.0*1000.0])
-            ax2.set_ylim([-0.5*1000.0, 0.5*1000.0])
-            ax3.set_ylim(  [-3.0, 3.0])
+            if not self.m_automaticYlim_flag:
+                ax0.set_ylim([-2.0 *1000.0, 3.0*1000.0])
+                ax1.set_ylim([-2.0*1000.0, 1.0*1000.0])
+                ax2.set_ylim([-0.5*1000.0, 0.5*1000.0])
+                ax3.set_ylim(  [-3.0, 3.0])
 
-            ax4.set_ylim([-1.0*1000.0, 1.0*1000.0])
-            ax5.set_ylim([-1.0*1000.0, 1.0*1000.0])
-            ax6.set_ylim([-0.5*1000.0, 0.5*1000.0])
-            ax7.set_ylim( [-3.0, 3.0])
+                ax4.set_ylim([-1.0*1000.0, 1.0*1000.0])
+                ax5.set_ylim([-1.0*1000.0, 1.0*1000.0])
+                ax6.set_ylim([-0.5*1000.0, 0.5*1000.0])
+                ax7.set_ylim( [-3.0, 3.0])
 
-            ax8.set_ylim([-1.0*1000.0, 3.0*1000.0])
-            ax9.set_ylim([-0.5*1000.0, 0.5*1000.0])
-            ax10.set_ylim([-0.5*1000.0, 0.5*1000.0])
-            ax11.set_ylim( [-2.0, 5.0])
+                ax8.set_ylim([-1.0*1000.0, 3.0*1000.0])
+                ax9.set_ylim([-0.5*1000.0, 0.5*1000.0])
+                ax10.set_ylim([-0.5*1000.0, 0.5*1000.0])
+                ax11.set_ylim( [-2.0, 5.0])
         else:
             raise Exception ("Plot Panel not implemented yet")
 

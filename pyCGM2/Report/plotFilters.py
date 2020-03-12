@@ -74,5 +74,9 @@ class PlottingFilter(object):
     def setHorizontalLine(self, axisIndex, value,color= "black"):
         self.__concretePlotViewer.fig.axes[axisIndex].axhline(value,color=color,ls='dashed')
 
+
+    def setAutomaticYlimits(self):
+        self.__concretePlotViewer.setAutomaticYlimits(True)
+
     def setTitle(self,title):
         self.m_title=title
