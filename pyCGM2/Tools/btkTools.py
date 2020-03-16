@@ -25,6 +25,13 @@ def smartReader(filename,translators=None):
     acq=reader.GetOutput()
     if translators is not None:
         acq =  applyTranslators(acq,translators)
+
+    # management force plate type 5
+    if checkForcePlateExist(acq):
+        if "5" in smartGetMetadata(acq,"FORCE_PLATFORM","TYPE"):
+            logging.warning("[pyCGM2] Type 5 Force plate detected. Due to a BTK known-issue,  type 5 force plate has been corrected as type 2")
+            from pyCGM2.ForcePlates import forceplates # inelegant code but avoir circular import !! 
+            forceplates.correctForcePlateType5(acq)
     return acq
 
 def smartWriter(acq, filename):
