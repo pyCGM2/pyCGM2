@@ -132,55 +132,56 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
         csdf.setStatic(False)
         csdf.display()
 
-    #---- Joint kinematics----
-    # relative angles
-    modelFilters.ModelJCSFilter(model,acqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
-
-    # detection of traveling axis + absolute angle
-    if model.m_bodypart != enums.BodyPart.UpperLimb:
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+    if "noKinematicsCalculation" in kwargs.keys() and kwargs["noKinematicsCalculation"]:
+        logging.warning("[pyCGM2] No Kinematic calculation done for the static file")
+        return model, acqStatic
     else:
-        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
+        #---- Joint kinematics----
+        # relative angles
+        modelFilters.ModelJCSFilter(model,acqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
-    pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
-    pff.compute()
-    globalFrame = pff.outputs["globalFrame"]
-    forwardProgression = pff.outputs["forwardProgression"]
+        # detection of traveling axis + absolute angle
+        if model.m_bodypart != enums.BodyPart.UpperLimb:
+            pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        else:
+            pfp = progressionFrame.ThoraxProgressionFrameProcedure()
 
-    if model.m_bodypart != enums.BodyPart.UpperLimb:
-            modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
-                                                   segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                                    angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                                    eulerSequences=["TOR","TOR", "ROT"],
-                                                    globalFrameOrientation = globalFrame,
-                                                    forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
+        pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        forwardProgression = pff.outputs["forwardProgression"]
 
-    if model.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
-                                          segmentLabels=["Thorax"],
-                                          angleLabels=["Thorax"],
-                                          eulerSequences=["YXZ"],
-                                          globalFrameOrientation = globalFrame,
-                                          forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
+        if model.m_bodypart != enums.BodyPart.UpperLimb:
+                modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
+                                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                                        angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                                        eulerSequences=["TOR","TOR", "ROT"],
+                                                        globalFrameOrientation = globalFrame,
+                                                        forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-    if model.m_bodypart == enums.BodyPart.UpperLimb or model.m_bodypart == enums.BodyPart.FullBody:
+        if model.m_bodypart == enums.BodyPart.LowerLimbTrunk:
+                modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
+                                              segmentLabels=["Thorax"],
+                                              angleLabels=["Thorax"],
+                                              eulerSequences=["YXZ"],
+                                              globalFrameOrientation = globalFrame,
+                                              forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-            modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
-                                          segmentLabels=["Thorax","Head"],
-                                          angleLabels=["Thorax", "Head"],
-                                          eulerSequences=["YXZ","TOR"],
-                                          globalFrameOrientation = globalFrame,
-                                          forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
-    # BSP model
-    bspModel = bodySegmentParameters.Bsp(model)
-    bspModel.compute()
+        if model.m_bodypart == enums.BodyPart.UpperLimb or model.m_bodypart == enums.BodyPart.FullBody:
 
-    if  model.m_bodypart == enums.BodyPart.FullBody:
-        modelFilters.CentreOfMassFilter(model,acqStatic).compute(pointLabelSuffix=pointSuffix)
+                modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
+                                              segmentLabels=["Thorax","Head"],
+                                              angleLabels=["Thorax", "Head"],
+                                              eulerSequences=["YXZ","TOR"],
+                                              globalFrameOrientation = globalFrame,
+                                              forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
+        # BSP model
+        bspModel = bodySegmentParameters.Bsp(model)
+        bspModel.compute()
 
-
-
-    return model, acqStatic
+        if  model.m_bodypart == enums.BodyPart.FullBody:
+            modelFilters.CentreOfMassFilter(model,acqStatic).compute(pointLabelSuffix=pointSuffix)
+        return model, acqStatic
 
 
 def fitting(model,DATA_PATH, reconstructFilenameLabelled,
