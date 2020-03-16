@@ -20,7 +20,6 @@ class Test_Btk:
         filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hånnibøl_c3d\\static.c3d"
         acq= btkTools.smartReader(filename, translators=None)
 
-
     def test_btkWriter(self):
         filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hånnibøl_c3d\\static.c3d"
         acq= btkTools.smartReader(filename, translators=None)
@@ -74,3 +73,7 @@ class Test_Btk:
         btkTools.changeSubjectName(acq,"Hän")
         btkTools.smartGetMetadata(acq,"SUBJECTS","USED")
         btkTools.smartSetMetadata(acq,"SUBJECTS","USED",0,"Hän")
+
+    def test_btkReader_forcePlateType5(self):
+        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\forcePlateType5\\hugGait.c3d"
+        acq= btkTools.smartReader(filename, translators=None)
