@@ -12,6 +12,23 @@ from pyCGM2 import ma
 from pyCGM2.ma import io
 from pyCGM2.Utils import utils
 
+def renameEmgInAnalysis(analysisInstance,emgChannels, emgMuscles, emgContexts):
+    i=len(emgChannels)-1
+    for channelIt in reversed(emgChannels):
+        newlabel = emgMuscles[i]+"-"+emgContexts[i]
+        for keyIt in analysisInstance.emgStats.data.keys():
+            context = keyIt[1]
+            if channelIt in keyIt[0]:
+                newLabelFinal = keyIt[0].replace(channelIt,newlabel)
+                analysisInstance.emgStats.data[newLabelFinal,context] = analysisInstance.emgStats.data.pop((keyIt[0],context))
+                logging.warning("label [%s] replaced with [%s]"%(keyIt[0],newLabelFinal))
+        i=i-1
+
+
+
+
+
+
 class XlsExportDataFrameFilter(object):
     """
          Filter exporting Analysis instance in xls table
