@@ -30,7 +30,7 @@ def smartReader(filename,translators=None):
     if checkForcePlateExist(acq):
         if "5" in smartGetMetadata(acq,"FORCE_PLATFORM","TYPE"):
             logging.warning("[pyCGM2] Type 5 Force plate detected. Due to a BTK known-issue,  type 5 force plate has been corrected as type 2")
-            from pyCGM2.ForcePlates import forceplates # inelegant code but avoir circular import !! 
+            from pyCGM2.ForcePlates import forceplates # inelegant code but avoir circular import !!
             forceplates.correctForcePlateType5(acq)
     return acq
 
