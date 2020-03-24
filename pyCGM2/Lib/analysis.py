@@ -192,7 +192,7 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],
         flag = False
         for channel in emgChannels:
             if not btkTools.isAnalogExist(acq,channel):
-                logging.info( "channel [%s] not detected in the c3d [%s]"%(channel,gaitTrial))
+                logging.error( "channel [%s] not detected in the c3d [%s]"%(channel,gaitTrial))
                 flag = True
         if flag:
             raise Exception ("[pyCGM2] One label has not been detected as analog. see above")

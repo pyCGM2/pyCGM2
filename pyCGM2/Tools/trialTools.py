@@ -228,6 +228,8 @@ def smartTrialReader(dataPath,trialfilename):
     sortedEvents(trial)
     return trial
 
+def smartTrialWriter(root,dataPath,filename):
+    ma.io.write(root,utils.str(dataPath+filename))
 
 def findValidFrames(trial,markerLabels):
 

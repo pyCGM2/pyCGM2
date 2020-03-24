@@ -748,6 +748,21 @@ class Segment(object):
 
         self.m_info = dict()
         self.m_isCloneOf = False
+
+    def removeTrackingMarker(self,label):
+        """
+            Add a tracking marker
+
+            :Parameters:
+                - `label` (str) - marker label
+        """
+        if label in self.m_tracking_markers:
+            self.m_tracking_markers.remove(label)
+            self.m_markerLabels.remove(label)
+        else:
+            logging.debug("tracking marker %s  remove" % label)
+
+
     def addTrackingMarkerLabel(self,label):
         """
             Add a tracking marker

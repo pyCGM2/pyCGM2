@@ -40,7 +40,7 @@ class PelvisProgressionFrameProcedure(object):
 
 
     def compute(self,acq):
-        
+
         if not btkTools.isPointExist(acq,self.m_marker):
             raise Exception( "[pyCGM2] : marker %s doesn't exist"%(self.m_marker))
 
@@ -103,6 +103,8 @@ class PelvisProgressionFrameProcedure(object):
             # axes
             back = backValues[index,:]
             front = frontValues[index,:]
+            front[2] = back[2] # allow to avoid detecting Z axis if pelvs anterior axis point dowwnward
+
             z=np.array([0,0,1])
 
             a1=(front-back)
@@ -121,7 +123,6 @@ class PelvisProgressionFrameProcedure(object):
             maxIndex = np.argmax(np.abs(tmp))
             progressionAxis =  globalAxes.keys()[maxIndex]
             forwardProgression = True if tmp[maxIndex]>0 else False
-
             # lateral axis
             tmp=[]
             for axis in globalAxes.keys():

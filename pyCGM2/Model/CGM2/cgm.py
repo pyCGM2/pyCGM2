@@ -218,6 +218,11 @@ class CGM1(CGM):
                     self.m_segmentCollection = segment_list
                     joint_list = [it for it in self.m_jointCollection if it.m_label in self.LOWERLIMB_JOINTS]
                     self.m_jointCollection = joint_list
+
+            elif bodyPart_Static == enums.BodyPart.LowerLimb:
+                if bodyPart == enums.BodyPart.LowerLimbTrunk or  bodyPart == enums.BodyPart.FullBody:
+                    logging.info("[pyCGM2] LowerLimbTrunk aof fullbody markerset detected in your acquisition but  model calibration done for LowerLimb only")
+                    bodyPart = enums.BodyPart.LowerLimb
             else:
                 raise Exception("[pyCGM2] Model not applicable. Check your tracking marker set (static file calibated a %s model whereas the trial detects a %s model)"%(bodyPart_Static.name,bodyPart.name))
 
