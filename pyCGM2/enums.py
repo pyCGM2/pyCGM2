@@ -82,7 +82,10 @@ class EclipseType(Enum):
     Trial="Trial.enf"
     Patient="Patient.enf"
 
-
+class AnalysisSection(Enum):
+    Kinematic="Kinematic"
+    Kinetic="Kinetic"
+    Emg="Emg"
 # --- enum used with Btk-Models
 # obsolete
 #class BspModel(Enum):
