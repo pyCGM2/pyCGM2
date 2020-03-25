@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
-import pyCGM2
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from matplotlib.backends.backend_pdf import PdfPages
+
+import pyCGM2
+from pyCGM2.Report import plot
 
 
 
@@ -80,3 +83,7 @@ class PlottingFilter(object):
 
     def setTitle(self,title):
         self.m_title=title
+
+    def displaySignificantDiffererence(self,axisIndex,clusters):
+
+        plot.addRectanglePatches(self.__concretePlotViewer.fig.axes[axisIndex],clusters)
