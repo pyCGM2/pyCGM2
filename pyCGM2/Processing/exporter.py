@@ -528,7 +528,7 @@ class XlsAnalysisExportFilter(object):
             # add infos
             if modelInfo is not None:
                 for key,value in modelInfo.items():
-                    exportTools.isColumnNameExist( df_stp, key)
+                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
                     df_descriptiveKinetics[key] = value
             if subjInfo is not None:
                 for key,value in subjInfo.items():
@@ -581,15 +581,15 @@ class XlsAnalysisExportFilter(object):
             # add infos
             if modelInfo is not None:
                 for key,value in modelInfo.items():
-                    exportTools.isColumnNameExist( df_stp, key)
+                    exportTools.isColumnNameExist( df_descriptiveEMG, key)
                     df_descriptiveEMG[key] = value
             if subjInfo is not None:
                 for key,value in subjInfo.items():
-                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
+                    exportTools.isColumnNameExist( df_descriptiveEMG, key)
                     df_descriptiveEMG[key] = value
             if condExpInfo is not None:
                 for key,value in condExpInfo.items():
-                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
+                    exportTools.isColumnNameExist( df_descriptiveEMG, key)
                     df_descriptiveEMG[key] = value
 
             df_descriptiveEMG.to_excel(xlsxWriter,'descriptive EMG ')
@@ -621,7 +621,6 @@ class XlsAnalysisExportFilter(object):
                     df_emg.to_csv((outputName + " - EMG - DataFrame.csv"),sep=";")
                 else:
                     df_emg.to_csv((path+outputName + " - EMG - DataFrame.csv"),sep=";")
-
 
 
         logging.info("advanced dataFrame [%s- Advanced] Exported"%outputName)
