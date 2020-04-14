@@ -308,6 +308,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
 
         #---- Joint kinetics----
+        if type(momentProjection) == str:
+            momentProjection = enums.enumFromtext(momentProjection,enums.MomentProjection)
         idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
         modelFilters.InverseDynamicFilter(model,
                              acqGait,
