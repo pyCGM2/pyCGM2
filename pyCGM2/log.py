@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 import sys
-from logging.handlers import RotatingFileHandler
 from logging import handlers
 #logging.basicConfig(filename = "installer.log", level=logging.DEBUG)
 
