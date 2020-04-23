@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+import matplotlib.pyplot as plt
 import logging
 import os
 import shutil
 
 import pyCGM2
 from pyCGM2.Model.CGM2 import cgm
-from pyCGM2.Lib.CGM import  cgm1
+from pyCGM2.Lib.CGM import  cgm2_1
 from pyCGM2.Utils import files
 from pyCGM2.Utils.utils import *
 from pyCGM2.qtm import qtmTools
@@ -19,35 +20,30 @@ import argparse
 
 from pyCGM2.Inspect import inspectFilters, inspectProcedures
 
-from pyCGM2 import log; log.setLogger(level = logging.INFO)
+from pyCGM2 import log;
+log.setLogger(level = logging.INFO)
 
+#from qtmWebGaitReport import qtmFilters
 
-# from qtmWebGaitReport import qtmFilters
 
 MARKERSETS={"Lower limb tracking markers": cgm.CGM1.LOWERLIMB_TRACKING_MARKERS,
             "Thorax tracking markers": cgm.CGM1.THORAX_TRACKING_MARKERS,
             "Upper limb tracking markers": cgm.CGM1.UPPERLIMB_TRACKING_MARKERS,
-            "Calibration markers": ["LMED","RMED","LKAX","LKD1","LKD2","RKAX","RKD1","RKD2"]}
+            "Calibration markers": ["LKNM","RKNM","LMED","RMED","LKAX","LKD1","LKD2","RKAX","RKD1","RKD2"]}
 
 
 def main():
 
-    parser = argparse.ArgumentParser(description='CGM1 workflow')
-    parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
-
-    args = parser.parse_args()
-
-
-
     logging.info("------------------------------------------------")
     logging.info("------------QTM - pyCGM2 Workflow---------------")
     logging.info("------------------------------------------------")
-    file=args.sessionFile
+    file="session.xml"
     sessionXML = files.readXml(os.getcwd()+"\\",file)
     sessionDate = files.getFileCreationDate(os.getcwd()+"\\"+file)
 
+
     #---------------------------------------------------------------------------
-    #management of the Processed foldercd
+    #management of the Processed folder
     DATA_PATH = os.getcwd()+"\\"+"processed\\"
     files.createDir(DATA_PATH)
 
@@ -70,18 +66,17 @@ def main():
 
             if zeniState:
                 btkTools.smartWriter(acq, str(DATA_PATH + reconstructFilenameLabelled))
+
                 cmd = "Mokka.exe \"%s\""%(str(DATA_PATH + reconstructFilenameLabelled))
                 os.system(cmd)
-
 
     # --------------------------GLOBAL SETTINGS ------------------------------------
     # global setting ( in user/AppData)
 
-    if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1-pyCGM2.settings"):
-        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
+    if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_1-pyCGM2.settings"):
+        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
     else:
-        settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1-pyCGM2.settings")
-
+        settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_1-pyCGM2.settings")
     # --------------------------MP ------------------------------------
     required_mp,optional_mp = qtmTools.SubjectMp(sessionXML)
 
@@ -92,7 +87,7 @@ def main():
 
 
     #  translators management
-    translators = files.getTranslators(os.getcwd()+"\\","CGM1.translators")
+    translators = files.getTranslators(os.getcwd()+"\\","CGM2_1.translators")
     if not translators:  translators = settings["Translators"]
 
 
@@ -106,7 +101,9 @@ def main():
     leftFlatFoot = toBool(staticMeasurement.Left_foot_normalised_to_static_trial.text)
     rightFlatFoot = toBool(staticMeasurement.Right_foot_normalised_to_static_trial.text)
     headFlat = toBool(staticMeasurement.Head_normalised_to_static_trial.text)
+
     markerDiameter = float(staticMeasurement.Marker_diameter.text)*1000.0
+    hjcMethod = settings["Calibration"]["HJC"]
     pointSuffix = None
 
     # Calibration checking
@@ -133,7 +130,6 @@ def main():
             inspector = inspectFilters.QualityFilter(ip_swap)
             inspector.run()
 
-
             ip_pos = inspectProcedures.MarkerPositionQualityProcedure(acqStatic,
                                          markers = ip_presence.markersIn)
             inspector = inspectFilters.QualityFilter(ip_pos)
@@ -141,15 +137,21 @@ def main():
     # Calibration operation
     # --------------------
     logging.info("[pyCGM2] --- calibration operation ---")
-    model,acqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
-                  required_mp,optional_mp,
-                  leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
-                  pointSuffix)
+    model,acqStatic = cgm2_1.calibrate(DATA_PATH,
+        calibrateFilenameLabelled,
+        translators,
+        required_mp,optional_mp,
+        leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
+        hjcMethod,
+        pointSuffix)
+
+
     logging.info("----- CALIBRATION-  static file [%s]-----> DONE"%(calibrateFilenameLabelled))
 
     # --------------------------MODEL FITTING ----------------------------------
     logging.info("--------------------------MODEL FITTING ----------------------------------")
     dynamicMeasurements= qtmTools.findDynamic(sessionXML)
+
     modelledC3ds = list()
     eventInspectorStates = list()
     for dynamicMeasurement in dynamicMeasurements:
@@ -167,6 +169,9 @@ def main():
             momentProjection =   enums.MomentProjection.Proximal
         elif momentProjection_text == "Global":
             momentProjection =   enums.MomentProjection.Global
+        elif momentProjection_text == "JCS":
+            momentProjection =  enums.MomentProjection.JCS
+
 
 
         acq = btkTools.smartReader(DATA_PATH+reconstructFilenameLabelled)
@@ -216,14 +221,14 @@ def main():
         # -----------------------
         inspectprocedureEvents = inspectProcedures.GaitEventQualityProcedure(acq)
         inspector = inspectFilters.QualityFilter(inspectprocedureEvents)
-        inspector.run
+        inspector.run()
         eventInspectorStates.append(inspectprocedureEvents.state)
 
 
         # fitting operation
         # -----------------------
         logging.info("[pyCGM2] --- Fitting operation ---")
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait = cgm2_1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,
             markerDiameter,
             pointSuffix,
@@ -282,11 +287,17 @@ def main():
 
 
             if pdfReportFlag:
-                report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
 
-                logging.info("----- Gait Processing -----> DONE")
+                report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
 
 
 if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description='CGM21 workflow')
+    # parser.add_argument('--noGaitEventDetection', action='store_true', help='no gait event detection')
+    # parser.add_argument('--noGaitProcessing', action='store_true', help='no gait processing')
+
+
+    args = parser.parse_args()
 
     main()
