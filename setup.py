@@ -240,6 +240,10 @@ setup(name = 'pyCGM2',
 
                 'Nexus_resetProgramData =  pyCGM2.Apps.ViconApps.Miscellaneous.pyCGM2_resetProgramData:main',
                 'Nexus_check_inputArgs  =  pyCGM2.Apps.ViconApps.Miscellaneous.check_inputArgs:main',
+
+                # QTM
+                'QTM_CGM1_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow:main',
+
           ]
       },
     )
