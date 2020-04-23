@@ -243,6 +243,11 @@ setup(name = 'pyCGM2',
 
                 # QTM
                 'QTM_CGM1_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow:main',
+                'QTM_CGM11_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM11_workflow:main',
+                'QTM_CGM21_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM21_workflow:main',
+                'QTM_CGM22_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM22_workflow:main',
+                'QTM_CGM23_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM23_workflow:main',
+                'QTM_CGM24_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM24_workflow:main',
 
           ]
       },
