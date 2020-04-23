@@ -217,18 +217,19 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     # filtering
     # -----------------------
-    if "fc_lowPass_marker" in kwargs.keys() :
+    if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
         fc = kwargs["fc_lowPass_marker"]
         order = 4
-        if "order_lowPass_marker" in kwargs.keys(): order = kwargs["order_lowPass_marker"]
+        if "order_lowPass_marker" in kwargs.keys():
+            order = kwargs["order_lowPass_marker"]
         signal_processing.markerFiltering(acqGait,order=order, fc =fc)
 
-    if "fc_lowPass_forcePlate" in kwargs.keys() :
+    if "fc_lowPass_forcePlate" in kwargs.keys() and kwargs["fc_lowPass_forcePlate"]!=0 :
         fc = kwargs["fc_lowPass_forcePlate"]
         order = 4
-        if "order_lowPass_forcePlate" in kwargs.keys(): order = kwargs["order_lowPass_forcePlate"]
+        if "order_lowPass_forcePlate" in kwargs.keys():
+            order = kwargs["order_lowPass_forcePlate"]
         signal_processing.forcePlateFiltering(acqGait,order=order, fc =fc)
-
 
     scp=modelFilters.StaticCalibrationProcedure(model) # procedure
     # ---Motion filter----
