@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from pyCGM2.Utils.utils import *
-
+from pyCGM2.Utils.utils import toBool
+from datetime import datetime
 
 def getFilename(measurement):
     return measurement.attrs["Filename"].replace("qtm","c3d")
