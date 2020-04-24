@@ -2,34 +2,26 @@
 <Pipeline>
 
 
-  <Entry DisplayName="Run pyCGM2-CGM2_3- Fitting " Enabled="1" OperationId="104" OperationName="Python">
+  <Entry DisplayName="Run pyCGM2-CGM23-Fitting " Enabled="1" OperationId="87" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/CGM2_3_Fitting.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_CGM23_Fitting-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
-    </ParamList>
-  </Entry>
-
-  <Entry DisplayName="Save Trial - C3D + VSK" Enabled="1" OperationId="105" OperationName="SaveOperation">
-    <ParamList name="">
-      <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
-      <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
     </ParamList>
   </Entry>
 
   <Entry DisplayName="Run pyCGM2-plot-STP" Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/plotSpatioTemporalParameters.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_plotSpatioTemporalParameters-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
     </ParamList>
   </Entry>
-
   <Entry DisplayName="Run pyCGM2-plot-NormalizedKinematics " Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/plotNormalizedKinematics.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_plotNormalizedKinematic-scripts.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
@@ -37,7 +29,7 @@
   </Entry>
   <Entry DisplayName="Run pyCGM2-plot-MAP" Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/plotMAP.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_plotMAP-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
@@ -45,7 +37,7 @@
   </Entry>
   <Entry DisplayName="Run pyCGM2-plot-NormalizedKinetics " Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/plotNormalizedKinetics.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_plotNormalizedKinetics-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>

@@ -2,9 +2,9 @@
 <Pipeline>
 
 
-  <Entry DisplayName="Run pyCGM2-CGM2_4-Calibration " Enabled="1" OperationId="20" OperationName="Python">
+  <Entry DisplayName="Run pyCGM2-CGM24-Calibration " Enabled="1" OperationId="20" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/CGM2_4_Calibration.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_CGM24_Calibration-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>

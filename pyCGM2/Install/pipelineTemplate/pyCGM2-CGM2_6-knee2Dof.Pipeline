@@ -4,7 +4,7 @@
 
   <Entry DisplayName="pyCGM2-2Dof-KneeCalibration" Enabled="1" OperationId="341" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/CGM_Knee2DofCalibration.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_CGM26_2DOF.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
