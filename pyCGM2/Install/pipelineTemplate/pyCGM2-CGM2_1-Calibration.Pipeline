@@ -2,16 +2,16 @@
 <Pipeline>
 
 
-  <Entry DisplayName="Run pyCGM2-CGM2_1-Calibration " Enabled="1" OperationId="104" OperationName="Python">
+  <Entry DisplayName="Run pyCGM2-CGM21-Calibration " Enabled="1" OperationId="78" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/CGM2_1_Calibration.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_CGM21_Calibration-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
     </ParamList>
   </Entry>
 
-  <Entry DisplayName="Save Trial - C3D + VSK" Enabled="1" OperationId="105" OperationName="SaveOperation">
+  <Entry DisplayName="Save Trial - C3D + VSK" Enabled="1" OperationId="79" OperationName="SaveOperation">
     <ParamList name="">
       <Param macro="SELECTED_START_FRAME" name="StartFrame"/>
       <Param macro="SELECTED_END_FRAME" name="EndFrame"/>
@@ -20,7 +20,7 @@
 
   <Entry DisplayName="Run pyCGM2-plotTemporalKinematics" Enabled="0" OperationId="0" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/plotTemporalKinematics.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_plotTemporalKinematics-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
