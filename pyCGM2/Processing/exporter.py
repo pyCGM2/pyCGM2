@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import logging
+from  collections import OrderedDict
 
 # pyCGM2
 import pyCGM2
@@ -645,7 +646,7 @@ class AnalysisExportFilter(object):
     def export(self,outputName, path=None):
 
 
-        out=dict()
+        out=OrderedDict()
 
         if self.analysis.kinematicStats.data != {}:
             for keys in self.analysis.kinematicStats.data.keys():
@@ -713,6 +714,8 @@ class AnalysisExportFilter(object):
 
 
         files.saveJson(path,outputName,out)
+
+        return out
 
 
 
