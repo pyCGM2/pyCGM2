@@ -24,8 +24,6 @@ from pyCGM2 import log;
 log.setLogger(level = logging.INFO)
 with open('pyCGM2.log', 'w'):   pass
 
-from qtmWebGaitReport import qtmFilters
-
 
 MARKERSETS={"Lower limb tracking markers": cgm.CGM1.LOWERLIMB_TRACKING_MARKERS,
             "Thorax tracking markers": cgm.CGM1.THORAX_TRACKING_MARKERS,
@@ -233,7 +231,7 @@ def main():
             fc_lowPass_forcePlate = fc_fp,
             order_lowPass_forcePlate = order_fp)
 
-        outFilename = reconstructFilenameLabelled#[:-4] + "_CGM1.c3d"
+        outFilename = reconstructFilenameLabelled
         btkTools.smartWriter(acqGait, str(DATA_PATH + outFilename))
         modelledC3ds.append(outFilename)
 
@@ -245,45 +243,19 @@ def main():
         raise Exception ("[pyCGM2] Impossible to run Gait processing. Badly gait event detection. check the log file")
     logging.info("---------------------GAIT PROCESSING -----------------------")
 
-    webReportFlag = toBool(str(sessionXML.find("Create_WEB_report").text))
-    pdfReportFlag = toBool(str(sessionXML.find("Create_PDF_report").text))
 
-    if webReportFlag or pdfReportFlag:
-        nds = normativeDatasets.Schwartz2008("Free")
+    nds = normativeDatasets.Schwartz2008("Free")
 
-        types = qtmTools.detectMeasurementType(sessionXML)
-        for type in types:
+    types = qtmTools.detectMeasurementType(sessionXML)
+    for type in types:
 
-            modelledTrials = list()
-            for dynamicMeasurement in dynamicMeasurements:
-                if  qtmTools.isType(dynamicMeasurement,type):
-                    filename = qtmTools.getFilename(dynamicMeasurement)
-                    modelledTrials.append(filename)#.replace(".c3d","_CGM1.c3d"))
+        modelledTrials = list()
+        for dynamicMeasurement in dynamicMeasurements:
+            if  qtmTools.isType(dynamicMeasurement,type):
+                filename = qtmTools.getFilename(dynamicMeasurement)
+                modelledTrials.append(filename)
 
-
-            # subjectMd = {"patientName": sessionXML.find("Last_name").text +" "+ sessionXML.find("First_name").text,
-            #             "bodyHeight": sessionXML.find("Height").text,
-            #             "bodyWeight": sessionXML.find("Weight").text ,
-            #             "diagnosis": sessionXML.find("Diagnosis").text,
-            #             "dob": sessionXML.find("Date_of_birth").text,
-            #             "sex": sessionXML.find("Sex").text,
-            #             "test condition": type,
-            #             "gmfcs": sessionXML.find("Gross_Motor_Function_Classification").text,
-            #             "fms": sessionXML.find("Functional_Mobility_Scale").text}
-            #
-            #
-            #
-            # if webReportFlag:
-            #     workingDirectory = DATA_PATH
-            #     webReport =  qtmFilters.WebReportFilter(DATA_PATH,modelledTrials,subjectMd,sessionDate)
-            #     #report.exportJson()
-            #     report.upload()
-            #     logging.info("[pyCGM2] Qualisys Web Report exported")
-
-
-            if pdfReportFlag:
-
-                report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
+        report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
 
 if __name__ == "__main__":
 

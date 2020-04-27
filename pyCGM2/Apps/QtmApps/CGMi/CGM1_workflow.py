@@ -22,8 +22,6 @@ from pyCGM2.Inspect import inspectFilters, inspectProcedures
 from pyCGM2 import log; log.setLogger(level = logging.INFO)
 
 
-# from qtmWebGaitReport import qtmFilters
-
 MARKERSETS={"Lower limb tracking markers": cgm.CGM1.LOWERLIMB_TRACKING_MARKERS,
             "Thorax tracking markers": cgm.CGM1.THORAX_TRACKING_MARKERS,
             "Upper limb tracking markers": cgm.CGM1.UPPERLIMB_TRACKING_MARKERS,
@@ -31,23 +29,15 @@ MARKERSETS={"Lower limb tracking markers": cgm.CGM1.LOWERLIMB_TRACKING_MARKERS,
 
 
 def main():
-
-    parser = argparse.ArgumentParser(description='CGM1 workflow')
-    parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
-
-    args = parser.parse_args()
-
-
-
     logging.info("------------------------------------------------")
     logging.info("------------QTM - pyCGM2 Workflow---------------")
     logging.info("------------------------------------------------")
-    file=args.sessionFile
+    file="session.xml"
     sessionXML = files.readXml(os.getcwd()+"\\",file)
     sessionDate = files.getFileCreationDate(os.getcwd()+"\\"+file)
 
     #---------------------------------------------------------------------------
-    #management of the Processed foldercd
+    #management of the Processed folder
     DATA_PATH = os.getcwd()+"\\"+"processed\\"
     files.createDir(DATA_PATH)
 
@@ -233,7 +223,7 @@ def main():
             fc_lowPass_forcePlate = fc_fp,
             order_lowPass_forcePlate = order_fp)
 
-        outFilename = reconstructFilenameLabelled#[:-4] + "_CGM1.c3d"
+        outFilename = reconstructFilenameLabelled
         btkTools.smartWriter(acqGait, str(DATA_PATH + outFilename))
         modelledC3ds.append(outFilename)
 
@@ -245,46 +235,21 @@ def main():
         raise Exception ("[pyCGM2] Impossible to run Gait processing. Badly gait event detection. check the log file")
     logging.info("---------------------GAIT PROCESSING -----------------------")
 
-    webReportFlag = toBool(str(sessionXML.find("Create_WEB_report").text))
-    pdfReportFlag = toBool(str(sessionXML.find("Create_PDF_report").text))
+    nds = normativeDatasets.Schwartz2008("Free")
 
-    if webReportFlag or pdfReportFlag:
-        nds = normativeDatasets.Schwartz2008("Free")
+    types = qtmTools.detectMeasurementType(sessionXML)
+    for type in types:
 
-        types = qtmTools.detectMeasurementType(sessionXML)
-        for type in types:
-
-            modelledTrials = list()
-            for dynamicMeasurement in dynamicMeasurements:
-                if  qtmTools.isType(dynamicMeasurement,type):
-                    filename = qtmTools.getFilename(dynamicMeasurement)
-                    modelledTrials.append(filename)#.replace(".c3d","_CGM1.c3d"))
+        modelledTrials = list()
+        for dynamicMeasurement in dynamicMeasurements:
+            if  qtmTools.isType(dynamicMeasurement,type):
+                filename = qtmTools.getFilename(dynamicMeasurement)
+                modelledTrials.append(filename)
 
 
-            # subjectMd = {"patientName": sessionXML.find("Last_name").text +" "+ sessionXML.find("First_name").text,
-            #             "bodyHeight": sessionXML.find("Height").text,
-            #             "bodyWeight": sessionXML.find("Weight").text ,
-            #             "diagnosis": sessionXML.find("Diagnosis").text,
-            #             "dob": sessionXML.find("Date_of_birth").text,
-            #             "sex": sessionXML.find("Sex").text,
-            #             "test condition": type,
-            #             "gmfcs": sessionXML.find("Gross_Motor_Function_Classification").text,
-            #             "fms": sessionXML.find("Functional_Mobility_Scale").text}
-            #
-            #
-            #
-            # if webReportFlag:
-            #     workingDirectory = DATA_PATH
-            #     webReport =  qtmFilters.WebReportFilter(DATA_PATH,modelledTrials,subjectMd,sessionDate)
-            #     #report.exportJson()
-            #     webReport.upload()
-            #     logging.info("[pyCGM2] Qualisys Web Report exported")
+        report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
 
-
-            if pdfReportFlag:
-                report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
-
-                logging.info("----- Gait Processing -----> DONE")
+        logging.info("----- Gait Processing -----> DONE")
 
 
 if __name__ == "__main__":
