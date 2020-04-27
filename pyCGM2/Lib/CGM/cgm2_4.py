@@ -291,20 +291,22 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     trackingMarkers = model.getTrackingMarkers(acqGait)
     validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
 
-    # filtering
-    # -----------------------
-    if "fc_lowPass_marker" in kwargs.keys() :
-        fc = kwargs["fc_lowPass_marker"]
-        order = 4
-        if "order_lowPass_marker" in kwargs.keys(): order = kwargs["order_lowPass_marker"]
-        signal_processing.markerFiltering(acqGait,order=order, fc =fc)
+        # filtering
+        # -----------------------
+        if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
+            fc = kwargs["fc_lowPass_marker"]
+            order = 4
+            if "order_lowPass_marker" in kwargs.keys():
+                order = kwargs["order_lowPass_marker"]
+            signal_processing.markerFiltering(acqGait,order=order, fc =fc)
 
-    if "fc_lowPass_forcePlate" in kwargs.keys() :
-        fc = kwargs["fc_lowPass_forcePlate"]
-        order = 4
-        if "order_lowPass_forcePlate" in kwargs.keys(): order = kwargs["order_lowPass_forcePlate"]
-        signal_processing.forcePlateFiltering(acqGait,order=order, fc =fc)
-
+        if "fc_lowPass_forcePlate" in kwargs.keys() and kwargs["fc_lowPass_forcePlate"]!=0 :
+            fc = kwargs["fc_lowPass_forcePlate"]
+            order = 4
+            if "order_lowPass_forcePlate" in kwargs.keys():
+                order = kwargs["order_lowPass_forcePlate"]
+            signal_processing.forcePlateFiltering(acqGait,order=order, fc =fc)
+            
     # --- initial motion Filter ---
     scp=modelFilters.StaticCalibrationProcedure(model)
     modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Sodervisk)

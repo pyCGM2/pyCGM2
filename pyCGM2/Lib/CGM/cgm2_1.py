@@ -58,20 +58,6 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
-    # filtering
-    # -----------------------
-    if "fc_lowPass_marker" in kwargs.keys() :
-        fc = kwargs["fc_lowPass_marker"]
-        order = 4
-        if "order_lowPass_marker" in kwargs.keys(): order = kwargs["order_lowPass_marker"]
-        signal_processing.markerFiltering(acqGait,order=order, fc =fc)
-
-    if "fc_lowPass_forcePlate" in kwargs.keys() :
-        fc = kwargs["fc_lowPass_forcePlate"]
-        order = 4
-        if "order_lowPass_forcePlate" in kwargs.keys(): order = kwargs["order_lowPass_forcePlate"]
-        signal_processing.forcePlateFiltering(acqGait,order=order, fc =fc)
-
 
     # ---check marker set used----
     dcm = cgm.CGM.detectCalibrationMethods(acqStatic)
@@ -220,6 +206,23 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     acqGait =  btkTools.applyTranslators(acqGait,translators)
     trackingMarkers = model.getTrackingMarkers(acqGait)
     validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
+
+    # filtering
+    # -----------------------
+    if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
+        fc = kwargs["fc_lowPass_marker"]
+        order = 4
+        if "order_lowPass_marker" in kwargs.keys():
+            order = kwargs["order_lowPass_marker"]
+        signal_processing.markerFiltering(acqGait,order=order, fc =fc)
+
+    if "fc_lowPass_forcePlate" in kwargs.keys() and kwargs["fc_lowPass_forcePlate"]!=0 :
+        fc = kwargs["fc_lowPass_forcePlate"]
+        order = 4
+        if "order_lowPass_forcePlate" in kwargs.keys():
+            order = kwargs["order_lowPass_forcePlate"]
+        signal_processing.forcePlateFiltering(acqGait,order=order, fc =fc)
+
 
 
     scp=modelFilters.StaticCalibrationProcedure(model)

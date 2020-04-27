@@ -132,19 +132,21 @@ class EmgNormalisationProcessingFilter(object):
 
     def processAnalysis(self):
 
-        values = self.m_analysis.emgStats.data[self.m_label,self.m_context]["values"]
+        for contextIt in ["Left","Right"]:
+            if self.m_analysis.emgStats.data.has_key((self.m_label,contextIt)):
+                values = self.m_analysis.emgStats.data[self.m_label,contextIt]["values"]
+                valuesNorm = list()
 
-        valuesNorm = list()
+                for val in values:
+                    valuesNorm.append( val / self.m_threshold)
 
-        for val in values:
-            valuesNorm.append( val / self.m_threshold)
-
-
-        self.m_analysis.emgStats.data[self.m_label+"_Norm",self.m_context] = {
-                'mean':np.mean(valuesNorm,axis=0),
-                'median':np.median(valuesNorm,axis=0),
-                'std':np.std(valuesNorm,axis=0),
-                'values': valuesNorm}
+                self.m_analysis.emgStats.data[self.m_label+"_Norm",contextIt] = {
+                        'mean':np.mean(valuesNorm,axis=0),
+                        'median':np.median(valuesNorm,axis=0),
+                        'std':np.std(valuesNorm,axis=0),
+                        'values': valuesNorm}
+            else:
+                logging.warning("[pyCGM2] label [%s] - context [%s] dont find in the emgStats dictionnary"%(self.m_label,contextIt))
 
 
     def run(self):

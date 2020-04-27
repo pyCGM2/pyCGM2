@@ -2,6 +2,26 @@
 from enum import Enum
 
 
+def enumFromtext(memberStr, enum):
+    if memberStr  in enum.__members__.keys():
+        return enum.__members__[memberStr]
+    else:
+        raise Exception ("[pyCGM2] %s not found in targeted enum"%(memberStr))
+
+
+def isValueBelongToEnum(value, enum):
+    """
+
+    """
+    flag = False
+    for it in enum.__members__.items():
+        if it[1].value == value:
+            flag = True
+    return flag
+
+
+
+
 def isEnumMember(member, enum):
     """
         check if member of an enum
@@ -33,11 +53,11 @@ class motionMethod(Enum):
 
 class MomentProjection(Enum):
     """ Enum defining in which Segment expressed kinetics"""
-    Global = 0
-    Proximal = 1
-    Distal = 2
-    JCS = 3
-    JCS_Dual =4
+    Global = "Global"
+    Proximal = "Proximal"
+    Distal = "Distal"
+    JCS = "JCS"
+    JCS_Dual ="JCS_Dual"
 
 
 class HarringtonPredictor(Enum):
@@ -82,7 +102,10 @@ class EclipseType(Enum):
     Trial="Trial.enf"
     Patient="Patient.enf"
 
-
+class AnalysisSection(Enum):
+    Kinematic="Kinematic"
+    Kinetic="Kinetic"
+    Emg="Emg"
 # --- enum used with Btk-Models
 # obsolete
 #class BspModel(Enum):

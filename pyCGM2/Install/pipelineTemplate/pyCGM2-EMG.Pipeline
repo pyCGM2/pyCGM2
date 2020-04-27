@@ -4,7 +4,7 @@
 
   <Entry DisplayName="Run pyCGM2-plot-TemporalEMG " Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/nexusOp_plotTemporalEmg.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_plotTemporalEmg-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
@@ -13,7 +13,7 @@
 
   <Entry DisplayName="Run pyCGM2-plot-NormalizedEnvEMG " Enabled="0" OperationId="89" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/nexusOp_plotNormalizedEmg.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_plotNormalizedEmg-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>

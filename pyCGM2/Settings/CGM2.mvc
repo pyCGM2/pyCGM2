@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MokkaModelVisualConfiguration name="CGM2" version="1.0">
+    <MarkersList>
+        <Marker label="RASI" radius="8" colorR="1" colorG="1" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="RPSI" radius="8" colorR="1" colorG="1" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="LPSI" radius="8" colorR="1" colorG="1" colorB="1" visible="1" trajectory="0"/>
+        <Marker label="LASI" radius="8" colorR="1" colorG="1" colorB="1" visible="1" trajectory="0"/>
+
+        <Marker label="LTHI" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTHAP" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTHAD" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LKNE" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LKNM" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIB" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIAP" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTIAD" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LANK" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LMED" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LHEE" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LTOE" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LFMH" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LVMH" radius="8" colorR="255" colorG="0" colorB="0" visible="1" trajectory="0"/>
+
+        <Marker label="RTHI" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RTHAP" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RTHAD" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RKNE" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RKNM" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RTIB" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RTIAP" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RTIAD" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RANK" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RMED" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RHEE" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RTOE" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RFMH" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+        <Marker label="RVMH" radius="8" colorR="0" colorG="0" colorB="255" visible="1" trajectory="0"/>
+
+        <Marker label="LHJC" radius="8" colorR="0" colorG="255" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LKJC" radius="8" colorR="0" colorG="255" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="LAJC" radius="8" colorR="0" colorG="255" colorB="0" visible="1" trajectory="0"/>
+
+        <Marker label="RHJC" radius="8" colorR="0" colorG="255" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RKJC" radius="8" colorR="0" colorG="255" colorB="0" visible="1" trajectory="0"/>
+        <Marker label="RAJC" radius="8" colorR="0" colorG="255" colorB="0" visible="1" trajectory="0"/>
+
+
+    </MarkersList>
+    <SegmentsList>
+        <Segment label="Pelvis" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="RASI"/>
+            <Point label="RPSI"/>
+            <Point label="LPSI"/>
+            <Point label="LASI"/>
+            <Link pt1="LASI" pt2="RASI"/>
+            <Link pt1="LASI" pt2="LPSI"/>
+            <Link pt1="LPSI" pt2="RPSI"/>
+            <Link pt1="RASI" pt2="RPSI"/>
+        </Segment>
+
+        <Segment label="Left Leg" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LASI"/>
+            <Point label="LTHI" />
+            <Point label="LTHAP" />
+            <Point label="LTHAD" />
+            <Point label="LKNE" />
+            <Point label="LKNM" />
+            <Point label="LTIB" />
+            <Point label="LTIAP" />
+            <Point label="LTIAD" />
+            <Point label="LANK" />
+            <Point label="LMED" />
+            <Point label="LHEE" />
+            <Point label="LTOE" />
+            <Point label="LFMH" />
+            <Point label="LVMH" />
+
+            <Link pt1="LASI" pt2="LTHI"/>
+            <Link pt1="LTHI" pt2="LTHAP"/>
+            <Link pt1="LTHI" pt2="LTHAD"/>
+            <Link pt1="LTHAP" pt2="LTHAD"/>
+            <Link pt1="LTHI" pt2="LKNE"/>
+            <Link pt1="LKNE" pt2="LKNM"/>
+            <Link pt1="LKNE" pt2="LTIB"/>
+            <Link pt1="LTIB" pt2="LTIAP"/>
+            <Link pt1="LTIB" pt2="LTIAD"/>
+            <Link pt1="LTIAD" pt2="LTIAD"/>
+            <Link pt1="LTIB" pt2="LANK"/>
+            <Link pt1="LANK" pt2="LMED"/>
+            <Link pt1="LANK" pt2="LHEE"/>
+            <Link pt1="LANK" pt2="LTOE"/>
+            <Link pt1="LMED" pt2="LMED"/>
+            <Link pt1="LTOE" pt2="LFMH"/>
+            <Link pt1="LTOE" pt2="LVMH"/>
+            <Link pt1="LFMH" pt2="LVMH"/>
+        </Segment>
+        <Segment label="Right Leg" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="RASI"/>
+            <Point label="RTHI" />
+            <Point label="RTHAP" />
+            <Point label="RTHAD" />
+            <Point label="RKNE" />
+            <Point label="RKNM" />
+            <Point label="RTIB" />
+            <Point label="RTIAP" />
+            <Point label="RTIAD" />
+            <Point label="RANK" />
+            <Point label="RMED" />
+            <Point label="RHEE" />
+            <Point label="RTOE" />
+            <Point label="RFMH" />
+            <Point label="RVMH" />
+
+            <Link pt1="RASI" pt2="RTHI"/>
+            <Link pt1="RTHI" pt2="RTHAP"/>
+            <Link pt1="RTHI" pt2="RTHAD"/>
+            <Link pt1="RTHAP" pt2="RTHAD"/>
+            <Link pt1="RTHI" pt2="RKNE"/>
+            <Link pt1="RKNE" pt2="RKNM"/>
+            <Link pt1="RKNE" pt2="RTIB"/>
+            <Link pt1="RTIB" pt2="RTIAP"/>
+            <Link pt1="RTIB" pt2="RTIAD"/>
+            <Link pt1="RTIAD" pt2="RTIAD"/>
+            <Link pt1="RTIB" pt2="RANK"/>
+            <Link pt1="RANK" pt2="RMED"/>
+            <Link pt1="RANK" pt2="RHEE"/>
+            <Link pt1="RANK" pt2="RTOE"/>
+            <Link pt1="RMED" pt2="RMED"/>
+            <Link pt1="RTOE" pt2="RFMH"/>
+            <Link pt1="RTOE" pt2="RVMH"/>
+            <Link pt1="RFMH" pt2="RVMH"/>
+        </Segment>
+        <Segment label="Left Leg skeleton" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="LHJC"/>
+            <Point label="LKJC" />
+            <Point label="LAJC" />
+
+            <Link pt1="LHJC" pt2="LKJC"/>
+            <Link pt1="LKJC" pt2="LAJC"/>
+        </Segment>
+        <Segment label="Right Leg skeleton" colorR="1" colorG="1" colorB="1" visible="1" surface="0" description="">
+            <Point label="RHJC"/>
+            <Point label="RKJC" />
+            <Point label="RAJC" />
+
+            <Link pt1="RHJC" pt2="RKJC"/>
+            <Link pt1="RKJC" pt2="RAJC"/>
+        </Segment>
+    </SegmentsList>
+</MokkaModelVisualConfiguration>

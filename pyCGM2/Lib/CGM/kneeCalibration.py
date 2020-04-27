@@ -40,16 +40,18 @@ def calibration2Dof(model,
 
     # filtering
     # -----------------------
-    if "fc_lowPass_marker" in kwargs.keys() :
+    if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
         fc = kwargs["fc_lowPass_marker"]
         order = 4
-        if "order_lowPass_marker" in kwargs.keys(): order = kwargs["order_lowPass_marker"]
+        if "order_lowPass_marker" in kwargs.keys():
+            order = kwargs["order_lowPass_marker"]
         signal_processing.markerFiltering(acqFunc,order=order, fc =fc)
 
-    if "fc_lowPass_forcePlate" in kwargs.keys() :
+    if "fc_lowPass_forcePlate" in kwargs.keys() and kwargs["fc_lowPass_forcePlate"]!=0 :
         fc = kwargs["fc_lowPass_forcePlate"]
         order = 4
-        if "order_lowPass_forcePlate" in kwargs.keys(): order = kwargs["order_lowPass_forcePlate"]
+        if "order_lowPass_forcePlate" in kwargs.keys():
+            order = kwargs["order_lowPass_forcePlate"]
         signal_processing.forcePlateFiltering(acqFunc,order=order, fc =fc)
 
     #---get frame range of interest---
@@ -171,16 +173,18 @@ def sara(model,
 
     # filtering
     # -----------------------
-    if "fc_lowPass_marker" in kwargs.keys() :
+    if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
         fc = kwargs["fc_lowPass_marker"]
         order = 4
-        if "order_lowPass_marker" in kwargs.keys(): order = kwargs["order_lowPass_marker"]
+        if "order_lowPass_marker" in kwargs.keys():
+            order = kwargs["order_lowPass_marker"]
         signal_processing.markerFiltering(acqFunc,order=order, fc =fc)
 
-    if "fc_lowPass_forcePlate" in kwargs.keys() :
+    if "fc_lowPass_forcePlate" in kwargs.keys() and kwargs["fc_lowPass_forcePlate"]!=0 :
         fc = kwargs["fc_lowPass_forcePlate"]
         order = 4
-        if "order_lowPass_forcePlate" in kwargs.keys(): order = kwargs["order_lowPass_forcePlate"]
+        if "order_lowPass_forcePlate" in kwargs.keys():
+            order = kwargs["order_lowPass_forcePlate"]
         signal_processing.forcePlateFiltering(acqFunc,order=order, fc =fc)
 
     #---get frame range of interest---

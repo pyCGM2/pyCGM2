@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from pyCGM2.Utils.utils import *
-
+from pyCGM2.Utils.utils import toBool
+from datetime import datetime
 
 def getFilename(measurement):
     return measurement.attrs["Filename"].replace("qtm","c3d")
@@ -91,3 +91,24 @@ def SubjectMp(soup):
         }
 
     return required_mp,optional_mp
+
+
+def get_modelled_trials(session_xml, measurement_type):
+    modelled_trials = []
+    dynamicMeasurements = findDynamic(session_xml)
+    for dynamicMeasurement in dynamicMeasurements:
+        if isType(dynamicMeasurement, measurement_type):
+            filename = getFilename(dynamicMeasurement)
+            modelled_trials.append(filename)
+    return modelled_trials
+
+
+def get_creation_date(session_xml):
+    date_str = session_xml.Subject.Session.Creation_date.text
+    year, month, day = date_str.split("-")
+    time_str = session_xml.Subject.Session.Creation_time.text
+    hour, minute, second = time_str.split(":")
+    datetime_obj = datetime(
+        int(year), int(month), int(day),
+        int(hour), int(minute), int(second))
+    return datetime_obj
