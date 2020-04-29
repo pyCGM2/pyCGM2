@@ -34,10 +34,16 @@ MARKERSETS={"Lower limb tracking markers": cgm.CGM1.LOWERLIMB_TRACKING_MARKERS,
 
 def main():
 
+    parser = argparse.ArgumentParser(description='CGM21 workflow')
+    parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
+
+    args = parser.parse_args()
+
+
     logging.info("------------------------------------------------")
     logging.info("------------QTM - pyCGM2 Workflow---------------")
     logging.info("------------------------------------------------")
-    file="session.xml"
+    file=args.sessionFile
     sessionXML = files.readXml(os.getcwd()+"\\",file)
     sessionDate = files.getFileCreationDate(os.getcwd()+"\\"+file)
 
@@ -292,12 +298,5 @@ def main():
 
 
 if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser(description='CGM21 workflow')
-    # parser.add_argument('--noGaitEventDetection', action='store_true', help='no gait event detection')
-    # parser.add_argument('--noGaitProcessing', action='store_true', help='no gait processing')
-
-
-    args = parser.parse_args()
 
     main()
