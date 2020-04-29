@@ -29,7 +29,7 @@ def findStatic(soup):
             static.append(measurement)
         if len(static)>1:
             raise Exception("You can t have 2 activated static c3d within your session")
-    return measurement #str(static[0].attrs["Filename"][:-4]+".c3d")
+    return static[0] 
 
 def findDynamic(soup):
     qtmMeasurements = soup.find_all("Measurement")
