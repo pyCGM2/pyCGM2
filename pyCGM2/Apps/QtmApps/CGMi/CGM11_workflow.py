@@ -251,10 +251,9 @@ def main():
         raise Exception ("[pyCGM2] Impossible to run Gait processing. Badly gait event detection. check the log file")
     logging.info("---------------------GAIT PROCESSING -----------------------")
 
-    webReportFlag = toBool(str(sessionXML.find("Create_WEB_report").text))
     pdfReportFlag = toBool(str(sessionXML.find("Create_PDF_report").text))
 
-    if webReportFlag or pdfReportFlag:
+    if  pdfReportFlag:
         nds = normativeDatasets.Schwartz2008("Free")
 
         types = qtmTools.detectMeasurementType(sessionXML)
@@ -266,30 +265,9 @@ def main():
                     filename = qtmTools.getFilename(dynamicMeasurement)
                     modelledTrials.append(filename)#.replace(".c3d","_CGM1.c3d"))
 
+            report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
+            logging.info("----- Gait Processing -----> DONE")
 
-            # subjectMd = {"patientName": sessionXML.find("Last_name").text +" "+ sessionXML.find("First_name").text,
-            #             "bodyHeight": sessionXML.find("Height").text,
-            #             "bodyWeight": sessionXML.find("Weight").text ,
-            #             "diagnosis": sessionXML.find("Diagnosis").text,
-            #             "dob": sessionXML.find("Date_of_birth").text,
-            #             "sex": sessionXML.find("Sex").text,
-            #             "test condition": type,
-            #             "gmfcs": sessionXML.find("Gross_Motor_Function_Classification").text,
-            #             "fms": sessionXML.find("Functional_Mobility_Scale").text}
-            #
-            #
-            #
-            # if webReportFlag:
-            #     workingDirectory = DATA_PATH
-            #     webReport =  qtmFilters.WebReportFilter(DATA_PATH,modelledTrials,subjectMd,sessionDate)
-            #     #report.exportJson()
-            #     report.upload()
-            #     logging.info("[pyCGM2] Qualisys Web Report exported")
-
-
-            if pdfReportFlag:
-
-                report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
 
 if __name__ == "__main__":
 
