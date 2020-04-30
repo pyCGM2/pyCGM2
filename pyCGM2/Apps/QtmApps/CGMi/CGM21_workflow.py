@@ -23,7 +23,6 @@ from pyCGM2.Inspect import inspectFilters, inspectProcedures
 from pyCGM2 import log;
 log.setLogger(level = logging.INFO)
 
-#from qtmWebGaitReport import qtmFilters
 
 
 MARKERSETS={"Lower limb tracking markers": cgm.CGM1.LOWERLIMB_TRACKING_MARKERS,

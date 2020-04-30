@@ -24,7 +24,6 @@ from pyCGM2 import log;
 log.setLogger(level = logging.INFO)
 with open('pyCGM2.log', 'w'):   pass
 
-# from qtmWebGaitReport import qtmFilters
 
 
 MARKERSETS={"Lower limb tracking markers": cgm.CGM1.LOWERLIMB_TRACKING_MARKERS,
