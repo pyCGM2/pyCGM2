@@ -237,6 +237,13 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         csdf.setStatic(False)
         csdf.display()
 
+    if "NaimKneeCorrection" in kwargs.keys() and kwargs["NaimKneeCorrection"]:
+	# Apply Naim 2019 method
+        nmacp = modelFilters.Naim2019ThighMisaligmentCorrectionProcedure(model,"Both")
+        mmcf = modelFilters.ModelMotionCorrectionFilter(nmacp)
+        mmcf.correct()
+
+
     #---- Joint kinematics----
     # relative angles
     modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
