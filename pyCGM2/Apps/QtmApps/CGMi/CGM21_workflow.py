@@ -31,20 +31,13 @@ MARKERSETS={"Lower limb tracking markers": cgm.CGM1.LOWERLIMB_TRACKING_MARKERS,
             "Calibration markers": ["LKNM","RKNM","LMED","RMED","LKAX","LKD1","LKD2","RKAX","RKD1","RKD2"]}
 
 
-def main():
-
-    parser = argparse.ArgumentParser(description='CGM21 workflow')
-    parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
-
-    args = parser.parse_args()
-
-
+def main(sessionFilename,createPDFReport=True):
     logging.info("------------------------------------------------")
     logging.info("------------QTM - pyCGM2 Workflow---------------")
     logging.info("------------------------------------------------")
-    file=args.sessionFile
-    sessionXML = files.readXml(os.getcwd()+"\\",file)
-    sessionDate = files.getFileCreationDate(os.getcwd()+"\\"+file)
+
+    sessionXML = files.readXml(os.getcwd()+"\\",sessionFilename)
+    sessionDate = files.getFileCreationDate(os.getcwd()+"\\"+sessionFilename)
 
 
     #---------------------------------------------------------------------------
@@ -243,7 +236,7 @@ def main():
             fc_lowPass_forcePlate = fc_fp,
             order_lowPass_forcePlate = order_fp)
 
-        outFilename = reconstructFilenameLabelled#[:-4] + "_CGM1.c3d"
+        outFilename = reconstructFilenameLabelled
         btkTools.smartWriter(acqGait, str(DATA_PATH + outFilename))
         modelledC3ds.append(outFilename)
 
@@ -256,9 +249,7 @@ def main():
     logging.info("---------------------GAIT PROCESSING -----------------------")
 
 
-    pdfReportFlag = toBool(str(sessionXML.find("Create_PDF_report").text))
-
-    if  pdfReportFlag:
+    if createPDFReport:
         nds = normativeDatasets.Schwartz2008("Free")
 
         types = qtmTools.detectMeasurementType(sessionXML)
@@ -268,7 +259,7 @@ def main():
             for dynamicMeasurement in dynamicMeasurements:
                 if  qtmTools.isType(dynamicMeasurement,type):
                     filename = qtmTools.getFilename(dynamicMeasurement)
-                    modelledTrials.append(filename)#.replace(".c3d","_CGM1.c3d"))
+                    modelledTrials.append(filename)
 
             report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
             logging.info("----- Gait Processing -----> DONE")
@@ -276,5 +267,10 @@ def main():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='CGM21 workflow')
+    parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
 
-    main()
+    args = parser.parse_args()
+    sessionFilename = args.sessionFile
+    main(sessionFilename)
+
