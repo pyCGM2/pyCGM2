@@ -1348,7 +1348,7 @@ class InverseDynamicFilter(object):
                             mot = self.m_model.getSegment(it.m_distalLabel).anatomicalFrame.motion
                         elif self.m_projection == enums.MomentProjection.Proximal:
                             mot = self.m_model.getSegment(proximalSegLabel).anatomicalFrame.motion
-                            
+
                         forceValues = np.zeros((nFrames,3))
                         momentValues = np.zeros((nFrames,3))
                         for i in range(0,nFrames ):
@@ -1625,7 +1625,7 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
         Gait and Posture, 72(May), 34–39
     """
 
-    def __init__(self,model,side):
+    def __init__(self,model,side,threshold=20):
         """
         :param model [pyCGM2.Model.Model]: model
         :param side [str]: body side (Left, Right or Both as choice)
@@ -1634,6 +1634,10 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
         self.m_model =  model
         self.m_side = side
 
+        self.m_threshold = threshold
+        # self.m_virtual=dict()
+
+        logging.info("[pyCGM2] threshold of the Naim's correction method : %s"%(threshold))
 
     def correct(self):
         """
@@ -1653,10 +1657,10 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
             elif side == "Right":
                 sequence = "ZXY"
                 letter = "R"
-
             else:
                 raise Exception("[pyCGM2] : side not recognized ( Left or Right only)")
 
+            logging.warning("Naim knee Correction on the %s side "%(side))
             seg = self.m_model.getSegment(side+" Thigh")
 
             hjc = self.m_model.getSegment(side+" Thigh").anatomicalFrame.getNodeTrajectory(letter+"HJC")
@@ -1664,12 +1668,32 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
             ajc = self.m_model.getSegment(side+" Shank").anatomicalFrame.getNodeTrajectory(letter+"AJC")
 
             v = np.cross(hjc-kjc,ajc-kjc)
-            v = np.divide(v.mean(axis =0),np.linalg.norm(v.mean(axis =0)))
+
+            # 3d angle
+            va = kjc-ajc
+            vb = hjc-kjc
+
+            angle = np.zeros((va.shape[0],1))
+
+            for i in range(0,va.shape[0]):
+                angle[i] = np.rad2deg(np.arctan2(np.linalg.norm(np.cross(va[i,:],vb[i,:])), np.dot(va[i,:],vb[i,:])))
+
+            # extract v> threshold
+            v_sup = list()
+            for i in range(0,va.shape[0]):
+                if angle[i]>self.m_threshold:
+                    v_sup.append(v[i,:])
+            v_sup = np.asarray(v_sup)
+
+            # normalized axis
+            v = np.divide(v_sup.mean(axis=0),np.linalg.norm(v.mean(axis =0)))
 
             # virtual point along the mean axis
             virtual = np.zeros((len(ajc),3))
             for i in range(0,len(ajc)):
                 virtual[i,:]= kjc[i,:] + -100 * v if side == "Left" else kjc[i,:] + 100 * v
+
+            # self.m_virtual[side] = virtual
 
             #alteration of the segmental motion
             seg.anatomicalFrame.motion=[] # erase all previous motion
@@ -1699,6 +1723,7 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
                 csFrame.setTranslation(ptOrigin)
 
                 seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+
 
             logging.warning("[pyCGM2] : %s thigh anatomical frame motion corrected according Naim et al, 2019"%(side))
 

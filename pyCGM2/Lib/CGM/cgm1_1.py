@@ -238,10 +238,17 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         csdf.display()
 
     if "NaimKneeCorrection" in kwargs.keys() and kwargs["NaimKneeCorrection"]:
-	# Apply Naim 2019 method
-        nmacp = modelFilters.Naim2019ThighMisaligmentCorrectionProcedure(model,"Both")
+
+        # Apply Naim 2019 method
+        if type(kwargs["NaimKneeCorrection"]) is float:
+            nmacp = modelFilters.Naim2019ThighMisaligmentCorrectionProcedure(model,"Both",threshold=(kwargs["NaimKneeCorrection"]))
+        else:
+            nmacp = modelFilters.Naim2019ThighMisaligmentCorrectionProcedure(model,"Both")
         mmcf = modelFilters.ModelMotionCorrectionFilter(nmacp)
         mmcf.correct()
+
+        # btkTools.smartAppendPoint(acqGait,"LNaim",mmcf.m_procedure.m_virtual["Left"])
+        # btkTools.smartAppendPoint(acqGait,"RNaim",mmcf.m_procedure.m_virtual["Right"])
 
 
     #---- Joint kinematics----
