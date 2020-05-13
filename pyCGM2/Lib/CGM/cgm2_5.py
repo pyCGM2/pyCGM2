@@ -21,7 +21,7 @@ from pyCGM2.Processing import progressionFrame
 from pyCGM2.Signal import signal_processing
 
 
-def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               required_mp,optional_mp,
               ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
               markerDiameter,hjcMethod,
@@ -43,6 +43,10 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
     :param pointSuffix [str]: suffix to add to model outputs
 
     """
+
+    if "Fitting" in weights.keys():
+        weights  = weights["Fitting"]["Weight"]
+
     # ---btk acquisition---
     if "forceBtkAcq" in kwargs.keys():
         acqStatic = kwargs["forceBtkAcq"]
@@ -136,49 +140,49 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
             iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-ikSetUp_template.xml" # ik tool file
 
             cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
-            cgmFittingProcedure.updateMarkerWeight("LASI",settings["Fitting"]["Weight"]["LASI"])
-            cgmFittingProcedure.updateMarkerWeight("RASI",settings["Fitting"]["Weight"]["RASI"])
-            cgmFittingProcedure.updateMarkerWeight("LPSI",settings["Fitting"]["Weight"]["LPSI"])
-            cgmFittingProcedure.updateMarkerWeight("RPSI",settings["Fitting"]["Weight"]["RPSI"])
-            cgmFittingProcedure.updateMarkerWeight("RTHI",settings["Fitting"]["Weight"]["RTHI"])
-            cgmFittingProcedure.updateMarkerWeight("RKNE",settings["Fitting"]["Weight"]["RKNE"])
-            cgmFittingProcedure.updateMarkerWeight("RTIB",settings["Fitting"]["Weight"]["RTIB"])
-            cgmFittingProcedure.updateMarkerWeight("RANK",settings["Fitting"]["Weight"]["RANK"])
-            cgmFittingProcedure.updateMarkerWeight("RHEE",settings["Fitting"]["Weight"]["RHEE"])
-            cgmFittingProcedure.updateMarkerWeight("RTOE",settings["Fitting"]["Weight"]["RTOE"])
+            cgmFittingProcedure.updateMarkerWeight("LASI",weights["LASI"])
+            cgmFittingProcedure.updateMarkerWeight("RASI",weights["RASI"])
+            cgmFittingProcedure.updateMarkerWeight("LPSI",weights["LPSI"])
+            cgmFittingProcedure.updateMarkerWeight("RPSI",weights["RPSI"])
+            cgmFittingProcedure.updateMarkerWeight("RTHI",weights["RTHI"])
+            cgmFittingProcedure.updateMarkerWeight("RKNE",weights["RKNE"])
+            cgmFittingProcedure.updateMarkerWeight("RTIB",weights["RTIB"])
+            cgmFittingProcedure.updateMarkerWeight("RANK",weights["RANK"])
+            cgmFittingProcedure.updateMarkerWeight("RHEE",weights["RHEE"])
+            cgmFittingProcedure.updateMarkerWeight("RTOE",weights["RTOE"])
 
-            cgmFittingProcedure.updateMarkerWeight("LTHI",settings["Fitting"]["Weight"]["LTHI"])
-            cgmFittingProcedure.updateMarkerWeight("LKNE",settings["Fitting"]["Weight"]["LKNE"])
-            cgmFittingProcedure.updateMarkerWeight("LTIB",settings["Fitting"]["Weight"]["LTIB"])
-            cgmFittingProcedure.updateMarkerWeight("LANK",settings["Fitting"]["Weight"]["LANK"])
-            cgmFittingProcedure.updateMarkerWeight("LHEE",settings["Fitting"]["Weight"]["LHEE"])
-            cgmFittingProcedure.updateMarkerWeight("LTOE",settings["Fitting"]["Weight"]["LTOE"])
+            cgmFittingProcedure.updateMarkerWeight("LTHI",weights["LTHI"])
+            cgmFittingProcedure.updateMarkerWeight("LKNE",weights["LKNE"])
+            cgmFittingProcedure.updateMarkerWeight("LTIB",weights["LTIB"])
+            cgmFittingProcedure.updateMarkerWeight("LANK",weights["LANK"])
+            cgmFittingProcedure.updateMarkerWeight("LHEE",weights["LHEE"])
+            cgmFittingProcedure.updateMarkerWeight("LTOE",weights["LTOE"])
 
-            cgmFittingProcedure.updateMarkerWeight("LTHAP",settings["Fitting"]["Weight"]["LTHAP"])
-            cgmFittingProcedure.updateMarkerWeight("LTHAD",settings["Fitting"]["Weight"]["LTHAD"])
-            cgmFittingProcedure.updateMarkerWeight("LTIAP",settings["Fitting"]["Weight"]["LTIAP"])
-            cgmFittingProcedure.updateMarkerWeight("LTIAD",settings["Fitting"]["Weight"]["LTIAD"])
-            cgmFittingProcedure.updateMarkerWeight("RTHAP",settings["Fitting"]["Weight"]["RTHAP"])
-            cgmFittingProcedure.updateMarkerWeight("RTHAD",settings["Fitting"]["Weight"]["RTHAD"])
-            cgmFittingProcedure.updateMarkerWeight("RTIAP",settings["Fitting"]["Weight"]["RTIAP"])
-            cgmFittingProcedure.updateMarkerWeight("RTIAD",settings["Fitting"]["Weight"]["RTIAD"])
+            cgmFittingProcedure.updateMarkerWeight("LTHAP",weights["LTHAP"])
+            cgmFittingProcedure.updateMarkerWeight("LTHAD",weights["LTHAD"])
+            cgmFittingProcedure.updateMarkerWeight("LTIAP",weights["LTIAP"])
+            cgmFittingProcedure.updateMarkerWeight("LTIAD",weights["LTIAD"])
+            cgmFittingProcedure.updateMarkerWeight("RTHAP",weights["RTHAP"])
+            cgmFittingProcedure.updateMarkerWeight("RTHAD",weights["RTHAD"])
+            cgmFittingProcedure.updateMarkerWeight("RTIAP",weights["RTIAP"])
+            cgmFittingProcedure.updateMarkerWeight("RTIAD",weights["RTIAD"])
 
-            cgmFittingProcedure.updateMarkerWeight("LSMH",settings["Fitting"]["Weight"]["LSMH"])
-            cgmFittingProcedure.updateMarkerWeight("LFMH",settings["Fitting"]["Weight"]["LFMH"])
-            cgmFittingProcedure.updateMarkerWeight("LVMH",settings["Fitting"]["Weight"]["LVMH"])
+            cgmFittingProcedure.updateMarkerWeight("LSMH",weights["LSMH"])
+            cgmFittingProcedure.updateMarkerWeight("LFMH",weights["LFMH"])
+            cgmFittingProcedure.updateMarkerWeight("LVMH",weights["LVMH"])
 
-            cgmFittingProcedure.updateMarkerWeight("RSMH",settings["Fitting"]["Weight"]["RSMH"])
-            cgmFittingProcedure.updateMarkerWeight("RFMH",settings["Fitting"]["Weight"]["RFMH"])
-            cgmFittingProcedure.updateMarkerWeight("RVMH",settings["Fitting"]["Weight"]["RVMH"])
+            cgmFittingProcedure.updateMarkerWeight("RSMH",weights["RSMH"])
+            cgmFittingProcedure.updateMarkerWeight("RFMH",weights["RFMH"])
+            cgmFittingProcedure.updateMarkerWeight("RVMH",weights["RVMH"])
 
-    #            cgmFittingProcedure.updateMarkerWeight("LTHL",settings["Fitting"]["Weight"]["LTHL"])
-    #            cgmFittingProcedure.updateMarkerWeight("LTHLD",settings["Fitting"]["Weight"]["LTHLD"])
-    #            cgmFittingProcedure.updateMarkerWeight("LPAT",settings["Fitting"]["Weight"]["LPAT"])
-    #            cgmFittingProcedure.updateMarkerWeight("LTIBL",settings["Fitting"]["Weight"]["LTIBL"])
-    #            cgmFittingProcedure.updateMarkerWeight("RTHL",settings["Fitting"]["Weight"]["RTHL"])
-    #            cgmFittingProcedure.updateMarkerWeight("RTHLD",settings["Fitting"]["Weight"]["RTHLD"])
-    #            cgmFittingProcedure.updateMarkerWeight("RPAT",settings["Fitting"]["Weight"]["RPAT"])
-    #            cgmFittingProcedure.updateMarkerWeight("RTIBL",settings["Fitting"]["Weight"]["RTIBL"])
+    #            cgmFittingProcedure.updateMarkerWeight("LTHL",weights["LTHL"])
+    #            cgmFittingProcedure.updateMarkerWeight("LTHLD",weights["LTHLD"])
+    #            cgmFittingProcedure.updateMarkerWeight("LPAT",weights["LPAT"])
+    #            cgmFittingProcedure.updateMarkerWeight("LTIBL",weights["LTIBL"])
+    #            cgmFittingProcedure.updateMarkerWeight("RTHL",weights["RTHL"])
+    #            cgmFittingProcedure.updateMarkerWeight("RTHLD",weights["RTHLD"])
+    #            cgmFittingProcedure.updateMarkerWeight("RPAT",weights["RPAT"])
+    #            cgmFittingProcedure.updateMarkerWeight("RTIBL",weights["RTIBL"])
 
 
             osrf = opensimFilters.opensimFittingFilter(iksetupFile,
@@ -255,7 +259,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
 
 
 def fitting(model,DATA_PATH, reconstructFilenameLabelled,
-    translators,settings,
+    translators,weights,
     ik_flag,markerDiameter,
     pointSuffix,
     mfpa,
@@ -274,6 +278,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     :param pointSuffix [str]: suffix to add to model outputs
     :param momentProjection [str]: Coordinate system in which joint moment is expressed
     """
+
+    if "Fitting" in weights.keys():
+        weights  = weights["Fitting"]["Weight"]
+
     # --- btk acquisition ----
     if "forceBtkAcq" in kwargs.keys():
         acqGait = kwargs["forceBtkAcq"]
@@ -335,51 +343,51 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_4\\cgm2_4-ikSetUp_template.xml" # ik tl file
 
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
-        cgmFittingProcedure.updateMarkerWeight("LASI",settings["Fitting"]["Weight"]["LASI"])
-        cgmFittingProcedure.updateMarkerWeight("RASI",settings["Fitting"]["Weight"]["RASI"])
-        cgmFittingProcedure.updateMarkerWeight("LPSI",settings["Fitting"]["Weight"]["LPSI"])
-        cgmFittingProcedure.updateMarkerWeight("RPSI",settings["Fitting"]["Weight"]["RPSI"])
-        cgmFittingProcedure.updateMarkerWeight("RTHI",settings["Fitting"]["Weight"]["RTHI"])
-        cgmFittingProcedure.updateMarkerWeight("RKNE",settings["Fitting"]["Weight"]["RKNE"])
-        cgmFittingProcedure.updateMarkerWeight("RTIB",settings["Fitting"]["Weight"]["RTIB"])
-        cgmFittingProcedure.updateMarkerWeight("RANK",settings["Fitting"]["Weight"]["RANK"])
-        cgmFittingProcedure.updateMarkerWeight("RHEE",settings["Fitting"]["Weight"]["RHEE"])
-        cgmFittingProcedure.updateMarkerWeight("RTOE",settings["Fitting"]["Weight"]["RTOE"])
+        cgmFittingProcedure.updateMarkerWeight("LASI",weights["LASI"])
+        cgmFittingProcedure.updateMarkerWeight("RASI",weights["RASI"])
+        cgmFittingProcedure.updateMarkerWeight("LPSI",weights["LPSI"])
+        cgmFittingProcedure.updateMarkerWeight("RPSI",weights["RPSI"])
+        cgmFittingProcedure.updateMarkerWeight("RTHI",weights["RTHI"])
+        cgmFittingProcedure.updateMarkerWeight("RKNE",weights["RKNE"])
+        cgmFittingProcedure.updateMarkerWeight("RTIB",weights["RTIB"])
+        cgmFittingProcedure.updateMarkerWeight("RANK",weights["RANK"])
+        cgmFittingProcedure.updateMarkerWeight("RHEE",weights["RHEE"])
+        cgmFittingProcedure.updateMarkerWeight("RTOE",weights["RTOE"])
 
-        cgmFittingProcedure.updateMarkerWeight("LTHI",settings["Fitting"]["Weight"]["LTHI"])
-        cgmFittingProcedure.updateMarkerWeight("LKNE",settings["Fitting"]["Weight"]["LKNE"])
-        cgmFittingProcedure.updateMarkerWeight("LTIB",settings["Fitting"]["Weight"]["LTIB"])
-        cgmFittingProcedure.updateMarkerWeight("LANK",settings["Fitting"]["Weight"]["LANK"])
-        cgmFittingProcedure.updateMarkerWeight("LHEE",settings["Fitting"]["Weight"]["LHEE"])
-        cgmFittingProcedure.updateMarkerWeight("LTOE",settings["Fitting"]["Weight"]["LTOE"])
-
-
-        cgmFittingProcedure.updateMarkerWeight("LTHAP",settings["Fitting"]["Weight"]["LTHAP"])
-        cgmFittingProcedure.updateMarkerWeight("LTHAD",settings["Fitting"]["Weight"]["LTHAD"])
-        cgmFittingProcedure.updateMarkerWeight("LTIAP",settings["Fitting"]["Weight"]["LTIAP"])
-        cgmFittingProcedure.updateMarkerWeight("LTIAD",settings["Fitting"]["Weight"]["LTIAD"])
-        cgmFittingProcedure.updateMarkerWeight("RTHAP",settings["Fitting"]["Weight"]["RTHAP"])
-        cgmFittingProcedure.updateMarkerWeight("RTHAD",settings["Fitting"]["Weight"]["RTHAD"])
-        cgmFittingProcedure.updateMarkerWeight("RTIAP",settings["Fitting"]["Weight"]["RTIAP"])
-        cgmFittingProcedure.updateMarkerWeight("RTIAD",settings["Fitting"]["Weight"]["RTIAD"])
-
-        cgmFittingProcedure.updateMarkerWeight("LSMH",settings["Fitting"]["Weight"]["LSMH"])
-        cgmFittingProcedure.updateMarkerWeight("LFMH",settings["Fitting"]["Weight"]["LFMH"])
-        cgmFittingProcedure.updateMarkerWeight("LVMH",settings["Fitting"]["Weight"]["LVMH"])
-
-        cgmFittingProcedure.updateMarkerWeight("RSMH",settings["Fitting"]["Weight"]["RSMH"])
-        cgmFittingProcedure.updateMarkerWeight("RFMH",settings["Fitting"]["Weight"]["RFMH"])
-        cgmFittingProcedure.updateMarkerWeight("RVMH",settings["Fitting"]["Weight"]["RVMH"])
+        cgmFittingProcedure.updateMarkerWeight("LTHI",weights["LTHI"])
+        cgmFittingProcedure.updateMarkerWeight("LKNE",weights["LKNE"])
+        cgmFittingProcedure.updateMarkerWeight("LTIB",weights["LTIB"])
+        cgmFittingProcedure.updateMarkerWeight("LANK",weights["LANK"])
+        cgmFittingProcedure.updateMarkerWeight("LHEE",weights["LHEE"])
+        cgmFittingProcedure.updateMarkerWeight("LTOE",weights["LTOE"])
 
 
-#       cgmFittingProcedure.updateMarkerWeight("LTHL",settings["Fitting"]["Weight"]["LTHL"])
-#       cgmFittingProcedure.updateMarkerWeight("LTHLD",settings["Fitting"]["Weight"]["LTHLD"])
-#       cgmFittingProcedure.updateMarkerWeight("LPAT",settings["Fitting"]["Weight"]["LPAT"])
-#       cgmFittingProcedure.updateMarkerWeight("LTIBL",settings["Fitting"]["Weight"]["LTIBL"])
-#       cgmFittingProcedure.updateMarkerWeight("RTHL",settings["Fitting"]["Weight"]["RTHL"])
-#       cgmFittingProcedure.updateMarkerWeight("RTHLD",settings["Fitting"]["Weight"]["RTHLD"])
-#       cgmFittingProcedure.updateMarkerWeight("RPAT",settings["Fitting"]["Weight"]["RPAT"])
-#       cgmFittingProcedure.updateMarkerWeight("RTIBL",settings["Fitting"]["Weight"]["RTIBL"])
+        cgmFittingProcedure.updateMarkerWeight("LTHAP",weights["LTHAP"])
+        cgmFittingProcedure.updateMarkerWeight("LTHAD",weights["LTHAD"])
+        cgmFittingProcedure.updateMarkerWeight("LTIAP",weights["LTIAP"])
+        cgmFittingProcedure.updateMarkerWeight("LTIAD",weights["LTIAD"])
+        cgmFittingProcedure.updateMarkerWeight("RTHAP",weights["RTHAP"])
+        cgmFittingProcedure.updateMarkerWeight("RTHAD",weights["RTHAD"])
+        cgmFittingProcedure.updateMarkerWeight("RTIAP",weights["RTIAP"])
+        cgmFittingProcedure.updateMarkerWeight("RTIAD",weights["RTIAD"])
+
+        cgmFittingProcedure.updateMarkerWeight("LSMH",weights["LSMH"])
+        cgmFittingProcedure.updateMarkerWeight("LFMH",weights["LFMH"])
+        cgmFittingProcedure.updateMarkerWeight("LVMH",weights["LVMH"])
+
+        cgmFittingProcedure.updateMarkerWeight("RSMH",weights["RSMH"])
+        cgmFittingProcedure.updateMarkerWeight("RFMH",weights["RFMH"])
+        cgmFittingProcedure.updateMarkerWeight("RVMH",weights["RVMH"])
+
+
+#       cgmFittingProcedure.updateMarkerWeight("LTHL",weights["LTHL"])
+#       cgmFittingProcedure.updateMarkerWeight("LTHLD",weights["LTHLD"])
+#       cgmFittingProcedure.updateMarkerWeight("LPAT",weights["LPAT"])
+#       cgmFittingProcedure.updateMarkerWeight("LTIBL",weights["LTIBL"])
+#       cgmFittingProcedure.updateMarkerWeight("RTHL",weights["RTHL"])
+#       cgmFittingProcedure.updateMarkerWeight("RTHLD",weights["RTHLD"])
+#       cgmFittingProcedure.updateMarkerWeight("RPAT",weights["RPAT"])
+#       cgmFittingProcedure.updateMarkerWeight("RTIBL",weights["RTIBL"])
 
 
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
