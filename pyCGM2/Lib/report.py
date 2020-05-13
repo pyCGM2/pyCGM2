@@ -22,6 +22,7 @@ def pdfGaitReport(DATA_PATH,model,modelledTrials, normativeDataset,pointSuffix, 
             outputName=title,
             show=None,
             title=title)
+        pdf.savefig()
 
         #Kinematics
         if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
