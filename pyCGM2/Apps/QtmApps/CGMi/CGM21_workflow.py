@@ -96,11 +96,10 @@ def main(sessionFilename,createPDFReport=True):
 
     logging.info("----- CALIBRATION-  static file [%s]--"%(calibrateFilenameLabelled))
 
-    leftFlatFoot = toBool(staticMeasurement.Left_foot_normalised_to_static_trial.text)
-    rightFlatFoot = toBool(staticMeasurement.Right_foot_normalised_to_static_trial.text)
-    headFlat = toBool(staticMeasurement.Head_normalised_to_static_trial.text)
-
-    markerDiameter = float(staticMeasurement.Marker_diameter.text)*1000.0
+    leftFlatFoot = toBool(sessionXML.Left_foot_normalised_to_static_trial.text)
+    rightFlatFoot = toBool(sessionXML.Right_foot_normalised_to_static_trial.text)
+    headFlat = toBool(sessionXML.Head_normalised_to_static_trial.text)
+    markerDiameter = float(sessionXML.Marker_diameter.text)*1000.0
     hjcMethod = settings["Calibration"]["HJC"]
     pointSuffix = None
 
@@ -158,7 +157,7 @@ def main(sessionFilename,createPDFReport=True):
 
         logging.info("----Processing of [%s]-----"%(reconstructFilenameLabelled))
         mfpa = qtmTools.getForcePlateAssigment(dynamicMeasurement)
-        momentProjection_text = dynamicMeasurement.Moment_Projection.text
+        momentProjection_text = sessionXML.Moment_Projection.text
         if momentProjection_text == "Default":
             momentProjection_text = settings["Fitting"]["Moment Projection"]
         if momentProjection_text == "Distal":
