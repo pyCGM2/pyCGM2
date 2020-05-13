@@ -104,17 +104,17 @@ class SpatioTemporalPlotViewer(AbstractPlotViewer):
         plot.stpHorizontalHistogram(self.fig.axes[3],self.m_analysis.stpStats,
                                 "cadence",
                                 overall= True,
-                                title="cadence", xlabel=None,xlim=None)
+                                title="cadence (strides/min)", xlabel=None,xlim=None)
 
         plot.stpHorizontalHistogram(self.fig.axes[4],self.m_analysis.stpStats,
                                 "stepLength",
                                 overall= False,
-                                title="Step length", xlabel=None,xlim=None)
+                                title="Step length (m)", xlabel=None,xlim=None)
 
         plot.stpHorizontalHistogram(self.fig.axes[5],self.m_analysis.stpStats,
                                 "stepDuration",
                                 overall= False,
-                                title="Step time", xlabel=None,xlim=None)
+                                title="Step time (s)", xlabel=None,xlim=None)
 
         plot.stpHorizontalHistogram(self.fig.axes[6],self.m_analysis.stpStats,
                                 "stancePhase",
