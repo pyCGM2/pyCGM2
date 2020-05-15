@@ -1,5 +1,6 @@
-import time
 from __future__ import print_function
+import time
+
 
 class Timer(object):
     """ A quick tic-toc timer

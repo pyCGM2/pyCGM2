@@ -10,7 +10,6 @@ import yaml
 import yamlordereddictloader
 from bs4 import BeautifulSoup
 from datetime import datetime
-from __future__ import print_function
 import pyCGM2
 
 
