@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 # pytest -s --disable-pytest-warnings  test_highLevelPlot.py::Test_emgPlotTests::test_temporalEmgPlot
-
+import logging
 import os
 import matplotlib.pyplot as plt
 

@@ -64,7 +64,7 @@ class Test_UtilsFiles:
 
     def test_getDirs(self):
         dirs = files.getDirs(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\")
-        print dirs
+        print(dirs)
 
 
     def test_getFileCreationDate(self):
