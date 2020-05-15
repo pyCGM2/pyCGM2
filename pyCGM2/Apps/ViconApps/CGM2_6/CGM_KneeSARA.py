@@ -161,12 +161,10 @@ def main():
         # -- add nexus Bones
         if side == "Left":
             nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE1", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
-            print model.mp_computed["LeftKneeFuncCalibrationOffset"]
             logging.warning("offset %s" %(str(model.mp_computed["LeftKneeFuncCalibrationOffset"] )))
         elif side == "Right":
             nexusTools.appendBones(NEXUS,subject,acqFunc,"RFE1", model.getSegment("Right Thigh"),OriginValues = acqFunc.GetPoint("RKJC").GetValues() )
             logging.warning("offset %s" %(str(model.mp_computed["RightKneeFuncCalibrationOffset"] )))
-            print model.mp_computed["RightKneeFuncCalibrationOffset"]
 
 
     else:

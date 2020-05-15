@@ -23,8 +23,6 @@ def checkSetReadOnly(vskfilename):
     content = file0.read()
 
     flag=True  if content.find('READONLY="true"') !=-1 else False
-    print flag
-
     file0.close()
 
     if flag:

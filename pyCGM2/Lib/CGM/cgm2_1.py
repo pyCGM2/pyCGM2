@@ -107,21 +107,22 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     # ----motion filter----
     # notice : viconCGM1compatible option duplicate error on Construction of the foot coordinate system
 
-    modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,enums.motionMethod.Determinist,
-                                              markerDiameter=markerDiameter)
-
-    modMotion.compute()
-
-    if "displayCoordinateSystem" in kwargs.keys() and kwargs["displayCoordinateSystem"]:
-        csp = modelFilters.ModelCoordinateSystemProcedure(model)
-        csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,acqStatic)
-        csdf.setStatic(False)
-        csdf.display()
-
     if "noKinematicsCalculation" in kwargs.keys() and kwargs["noKinematicsCalculation"]:
         logging.warning("[pyCGM2] No Kinematic calculation done for the static file")
         return model, acqStatic
     else:
+        modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,enums.motionMethod.Determinist,
+                                                  markerDiameter=markerDiameter)
+
+        modMotion.compute()
+
+        if "displayCoordinateSystem" in kwargs.keys() and kwargs["displayCoordinateSystem"]:
+            csp = modelFilters.ModelCoordinateSystemProcedure(model)
+            csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,acqStatic)
+            csdf.setStatic(False)
+            csdf.display()
+
+
         #---- Joint kinematics----
         # relative angles
         modelFilters.ModelJCSFilter(model,acqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
@@ -232,7 +233,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     modMotion.compute()
 
-
     if "displayCoordinateSystem" in kwargs.keys() and kwargs["displayCoordinateSystem"]:
         csp = modelFilters.ModelCoordinateSystemProcedure(model)
         csdf = modelFilters.CoordinateSystemDisplayFilter(csp,model,acqGait)
@@ -242,6 +242,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     #---- Joint kinematics----
     # relative angles
     modelFilters.ModelJCSFilter(model,acqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
+
 
     # detection of traveling axis + absolute angle
     if model.m_bodypart != enums.BodyPart.UpperLimb:
@@ -288,31 +289,32 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         modelFilters.CentreOfMassFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
     # Inverse dynamics
-    if model.m_bodypart != enums.BodyPart.UpperLimb:
-        # --- force plate handling----
-        # find foot  in contact
-        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait,mfpa=mfpa)
-        forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
-        logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+    if btkTools.checkForcePlateExist(acqGait):
+        if model.m_bodypart != enums.BodyPart.UpperLimb:
+            # --- force plate handling----
+            # find foot  in contact
+            mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait,mfpa=mfpa)
+            forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
+            logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
-        # assembly foot and force plate
-        modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
-                                 leftSegmentLabel="Left Foot",
-                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
+            # assembly foot and force plate
+            modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
+                                     leftSegmentLabel="Left Foot",
+                                     rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
-        #---- Joint kinetics----
-        idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
-        modelFilters.InverseDynamicFilter(model,
-                             acqGait,
-                             procedure = idp,
-                             projection = momentProjection,
-                             globalFrameOrientation = globalFrame,
-                             forwardProgression = forwardProgression
-                             ).compute(pointLabelSuffix=pointSuffix)
+            #---- Joint kinetics----
+            idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
+            modelFilters.InverseDynamicFilter(model,
+                                 acqGait,
+                                 procedure = idp,
+                                 projection = momentProjection,
+                                 globalFrameOrientation = globalFrame,
+                                 forwardProgression = forwardProgression
+                                 ).compute(pointLabelSuffix=pointSuffix)
 
 
-        #---- Joint energetics----
-        modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
+            #---- Joint energetics----
+            modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
     #---- zero unvalid frames ---
     btkTools.applyValidFramesOnOutput(acqGait,validFrames)

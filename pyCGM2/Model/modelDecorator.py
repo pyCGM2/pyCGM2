@@ -32,10 +32,10 @@ def footJointCentreFromMet(acq,side,frameInit,frameEnd,markerDiameter =14, offse
         met1_head=acq.GetPoint("LFMH").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         v1=(met5_head-met2_base)
-        v1=v1/np.linalg.norm(v1)
+        v1=np.nan_to_num(np.divide(v1,np.linalg.norm(v1)))
 
         v2=(met1_head-met2_base)
-        v2=v2/np.linalg.norm(v2)
+        v2=np.nan_to_num(np.divide(v2,np.linalg.norm(v2)))
 
         z = - np.cross(v1,v2)
 
@@ -47,10 +47,10 @@ def footJointCentreFromMet(acq,side,frameInit,frameEnd,markerDiameter =14, offse
         met1_head=acq.GetPoint("RFMH").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         v1=(met5_head-met2_base)
-        v1=v1/np.linalg.norm(v1)
+        v1=np.nan_to_num(np.divide(v1,np.linalg.norm(v1)))
 
         v2=(met1_head-met2_base)
-        v2=v2/np.linalg.norm(v2)
+        v2=np.nan_to_num(np.divide(v2,np.linalg.norm(v2)))
 
         z =  np.cross(v1,v2)
 
@@ -79,7 +79,11 @@ def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
     """
 
     if (len(A1) != len(A2) or len(A1) != len(A3) or len(A2) != len(A3)):
-        raise exception ("length of input argument of chord function different")
+        raise Exception ("length of input argument of chord function different")
+
+
+    if np.all(A1==0) and np.all(A3==0) and np.all(A3==0):
+        return np.zeros((3))
 
     arrayDim = len(A1.shape) # si 1 = array1d si 2 = array2d
 
@@ -97,9 +101,9 @@ def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
         K = A3[i,:] if arrayDim==2 else A3
 
         if beta == 0.0:
-            y=np.divide((J-I),np.linalg.norm(J-I))
+            y=np.nan_to_num(np.divide((J-I),np.linalg.norm(J-I)))
             x=np.cross(y,K-I)
-            x=np.divide((x),np.linalg.norm(x))
+            x=np.nan_to_num(np.divide((x),np.linalg.norm(x)))
             z=np.cross(x,y)
 
             matR=np.array([x,y,z]).T
@@ -129,9 +133,9 @@ def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
             # chord avec beta nul
             #P = chord(L,B,A,C,beta=0.0) # attention ma methode . attention au arg input
 
-            y=np.divide((J-I),np.linalg.norm(J-I))
+            y=np.nan_to_num(np.divide((J-I),np.linalg.norm(J-I)))
             x=np.cross(y,K-I)
-            x=np.divide((x),np.linalg.norm(x))
+            x=np.nan_to_num(np.divide((x),np.linalg.norm(x)))
             z=np.cross(x,y)
 
             matR=np.array([x,y,z]).T
@@ -154,16 +158,16 @@ def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
 
 
             # define P research circle in T plan
-            n = np.divide((A-B),AB)
+            n = np.nan_to_num(np.divide((A-B),AB))
             O = A - np.dot(n, AO)
             r = L*np.cos(alpha) #OK
 
 
             # build segment
             #T = BuildSegment(O,n,P-O,'zyx');
-            Z=np.divide(n,np.linalg.norm(n))
-            Y=np.divide(np.cross(Z,P-O),np.linalg.norm(np.cross(Z,P-O)))
-            X=np.divide(np.cross(Y,Z),np.linalg.norm(np.cross(Y,Z)))
+            Z=np.nan_to_num(np.divide(n,np.linalg.norm(n)))
+            Y=np.nan_to_num(np.divide(np.cross(Z,P-O),np.linalg.norm(np.cross(Z,P-O))))
+            X=np.nan_to_num(np.divide(np.cross(Y,Z),np.linalg.norm(np.cross(Y,Z))))
             Origin= O
 
             # erreur ici, il manque les norm
@@ -199,7 +203,8 @@ def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
                 sens = np.dot(np.cross(ProjC,ProjB).T,nBone)
 
 
-                Betai = np.divide(sens,np.linalg.norm(sens))*np.arccos(np.divide((np.dot(ProjC.T,ProjB)),(np.linalg.norm(ProjC)*np.linalg.norm(ProjB))))*180.0/np.pi
+                Betai = np.nan_to_num(np.divide(sens,np.linalg.norm(sens))) * np.arccos(np.nan_to_num(np.divide(np.dot(ProjC.T,ProjB),
+                                                     np.linalg.norm(ProjC)*np.linalg.norm(ProjB))))*180.0/np.pi
 
                 diffBeta = np.abs(beta - Betai)
 
@@ -229,7 +234,7 @@ def midPoint(acq,lateralMarkerLabel,medialMarkerLabel,offset=0):
 
         if offset !=0:
             v = medial-lateral
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             midvalues[i,:] = lateral + (offset)*v
         else:
@@ -441,8 +446,8 @@ def saraCalibration(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame, 
     CoR_prox = CoR[0:3]
     CoR_dist = CoR[3:6]
 
-    prox_axisNorm=AoR[0:3]/np.linalg.norm(AoR[0:3])
-    dist_axisNorm=AoR[3:6]/np.linalg.norm(AoR[3:6])
+    prox_axisNorm= np.nan_to_num(np.divide(AoR[0:3],np.linalg.norm(AoR[0:3])))
+    dist_axisNorm= np.nan_to_num(np.divide(AoR[3:6],np.linalg.norm(AoR[3:6])))
 
     prox_origin = CoR_prox +  gap * prox_axisNorm.reshape(3,1)
     prox_axisLim = CoR_prox - gap * prox_axisNorm.reshape(3,1)
@@ -452,7 +457,7 @@ def saraCalibration(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame, 
 
 
     S = diagS[3:6,3:6]
-    coeffDet = S[2,2]/(np.trace(S)-S[2,2]) #TODO : explanation ? where does it come up
+    coeffDet = S[2,2]/(np.trace(S)-S[2,2])
 
     return prox_origin.reshape(3),prox_axisLim.reshape(3),dist_origin.reshape(3),dist_axisLim.reshape(3),prox_axisNorm,dist_axisNorm,coeffDet
 
@@ -730,12 +735,12 @@ class Kad(DecoratorModel):
                 dist =  dist / np.sqrt(2)
                 res = np.array([np.mean(dist), np.var(dist)])
                 n = np.cross(LKD2-LKD1 , LKAX-LKD1)
-                n= n/np.linalg.norm(n)
+                n= np.nan_to_num(np.divide(n,np.linalg.norm(n)))
 
                 I = (LKD1+LKAX)/2
                 PP1 = 2/3.0*(I-LKD2)+LKD2
                 O = PP1 - n*np.sqrt(3)*res[0]/3.0
-                LKAXO = (O-LKAX)/np.linalg.norm(O-LKAX)
+                LKAXO = np.nan_to_num(np.divide((O-LKAX),np.linalg.norm(O-LKAX)))
 
                 LKNEvalues[i,:] = O + LKAXO * distSkin
 
@@ -800,7 +805,7 @@ class Kad(DecoratorModel):
                 dist =  dist / np.sqrt(2)
                 res = np.array([np.mean(dist), np.var(dist)])
                 n = np.cross(RKD2-RKD1 , RKAX-RKD1)
-                n= n/np.linalg.norm(n)
+                n= np.nan_to_num(np.divide(n,np.linalg.norm(n)))
 
                 n=-n # look out the negative sign
 
@@ -808,7 +813,7 @@ class Kad(DecoratorModel):
                 I = (RKD1+RKAX)/2
                 PP1 = 2/3.0*(I-RKD2)+RKD2
                 O = PP1 - n*np.sqrt(3)*res[0]/3.0
-                RKAXO = (O-RKAX)/np.linalg.norm(O-RKAX)
+                RKAXO = np.nan_to_num(np.divide((O-RKAX),np.linalg.norm(O-RKAX)))
                 RKNEvalues[i,:] = O + RKAXO * distSkin
 
                 # locate KJC
@@ -1624,26 +1629,26 @@ class KneeCalibrationDecorator(DecoratorModel):
         # --- Construction of the anatomical Referential
 
         a1=(HJC-KJC)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(KNE-KJC)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,sequence)
 
         # projection of saraAxis
         y_sara = (meanAxis-KJC)
-        y_sara = y_sara / np.linalg.norm(y_sara)
+        y_sara = np.nan_to_num(np.divide(y_sara , np.linalg.norm(y_sara)))
 
         saraAxisLocal =    np.dot(R.T,y_sara)
         proj_saraAxis = np.array([ saraAxisLocal[0],
                                    saraAxisLocal[1],
                                  0])
 
-        v_saraAxis = proj_saraAxis/np.linalg.norm(proj_saraAxis)
+        v_saraAxis = np.nan_to_num(np.divide(proj_saraAxis,np.linalg.norm(proj_saraAxis)))
 
         angle=np.rad2deg(geometry.angleFrom2Vectors(np.array([0,1,0]), v_saraAxis, z))
 

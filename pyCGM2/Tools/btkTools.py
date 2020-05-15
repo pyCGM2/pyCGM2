@@ -320,7 +320,6 @@ def applyTranslators(acq, translators):
         for it in translators.items():
             wantedLabel,initialLabel = it[0],it[1]
             if initialLabel !="None":
-                print wantedLabel
                 if isPointExist(acq,wantedLabel):
                     smartAppendPoint(acqClone,(wantedLabel+"_origin"),acq.GetPoint(utils.str(wantedLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
                     logging.warning("wantedLabel (%s)_origin created" %((wantedLabel)))

@@ -902,12 +902,12 @@ class CGM2_4(CGM2_3):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1 = np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2 = np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
 
@@ -953,13 +953,13 @@ class CGM2_4(CGM2_3):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v = (pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left ForeFoot"]["TF"]['sequence'])
 
@@ -1026,12 +1026,12 @@ class CGM2_4(CGM2_3):
 
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left Foot"]['sequence'])
 
@@ -1101,12 +1101,12 @@ class CGM2_4(CGM2_3):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left ForeFoot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,sequence)
 
@@ -1152,12 +1152,12 @@ class CGM2_4(CGM2_3):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
@@ -1204,13 +1204,13 @@ class CGM2_4(CGM2_3):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Right ForeFoot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right ForeFoot"]["TF"]['sequence'])
 
@@ -1274,12 +1274,12 @@ class CGM2_4(CGM2_3):
 
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Foot"]['sequence'])
 
@@ -1355,12 +1355,12 @@ class CGM2_4(CGM2_3):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right ForeFoot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,sequence)
 
@@ -1682,12 +1682,12 @@ class CGM2_4(CGM2_3):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
 
@@ -1747,13 +1747,13 @@ class CGM2_4(CGM2_3):
             ptOrigin=aqui.GetPoint(str(dictRef["Left ForeFoot"]["TF"]['labels'][3])).GetValues()[i,:]
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left ForeFoot"]["TF"]['sequence'])
 
@@ -1817,12 +1817,12 @@ class CGM2_4(CGM2_3):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
@@ -1882,13 +1882,13 @@ class CGM2_4(CGM2_3):
 
 
             a1=(pt2-pt1)
-            a1=a1/np.linalg.norm(a1)
+            a1= np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right ForeFoot"]["TF"]['sequence'])
 

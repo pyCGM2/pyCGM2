@@ -293,37 +293,38 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     if  model.m_bodypart == enums.BodyPart.FullBody:
         modelFilters.CentreOfMassFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
-    # Inverse dynamics
-    if model.m_bodypart != enums.BodyPart.UpperLimb:
-        # --- force plate handling----
-        # find foot  in contact
-        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait,mfpa=mfpa)
-        forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
-        logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+    if btkTools.checkForcePlateExist(acqGait):
+        # Inverse dynamics
+        if model.m_bodypart != enums.BodyPart.UpperLimb:
+            # --- force plate handling----
+            # find foot  in contact
+            mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait,mfpa=mfpa)
+            forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
+            logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
 
-        # assembly foot and force plate
-        modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
-                                 leftSegmentLabel="Left Foot",
-                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
+            # assembly foot and force plate
+            modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
+                                     leftSegmentLabel="Left Foot",
+                                     rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
 
-        #---- Joint kinetics----
-        if type(momentProjection) == str:
-            momentProjection = enums.enumFromtext(momentProjection,enums.MomentProjection)
-        idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
-        modelFilters.InverseDynamicFilter(model,
-                             acqGait,
-                             procedure = idp,
-                             projection = momentProjection,
-                             viconCGM1compatible=True,
-                             globalFrameOrientation = globalFrame,
-                             forwardProgression = forwardProgression
-                             ).compute(pointLabelSuffix=pointSuffix)
+            #---- Joint kinetics----
+            if type(momentProjection) == str:
+                momentProjection = enums.enumFromtext(momentProjection,enums.MomentProjection)
+            idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
+            modelFilters.InverseDynamicFilter(model,
+                                 acqGait,
+                                 procedure = idp,
+                                 projection = momentProjection,
+                                 viconCGM1compatible=True,
+                                 globalFrameOrientation = globalFrame,
+                                 forwardProgression = forwardProgression
+                                 ).compute(pointLabelSuffix=pointSuffix)
 
 
-        #---- Joint energetics----
-        modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
+            #---- Joint energetics----
+            modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
     #---- zero unvalid frames ---
     btkTools.applyValidFramesOnOutput(acqGait,validFrames)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import logging
-
+from __future__ import print_function 
 
 
 def getQuaternionFromMatrix(RotMat):
@@ -408,7 +408,7 @@ class Frame(object):
         for nodeIt in self._nodes:
             labels.append(nodeIt.m_name[:-5])
 
-            if display: print nodeIt.m_name
+            if display: print(nodeIt.m_name)
 
         return labels
 

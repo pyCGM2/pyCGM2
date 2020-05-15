@@ -132,10 +132,3 @@ class EventFilter(object):
                 ev = btk.btkEvent('Foot Off', (ind-1)/pf, 'Right', btk.btkEvent.Manual, '', eventDescriptor)
                 ev.SetId(2)
                 self.m_aqui.AppendEvent(ev)
-
-            # events= self.m_aqui.GetEvents()
-            # for ev in btk.Iterate(events):
-            #     print ev.GetLabel()
-            #     print ev.GetContext()
-            #     print ev.GetTime()
-            #     print "------"

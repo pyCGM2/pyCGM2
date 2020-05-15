@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pyCGM2 import enums
+import logging
 
 
 def getPhases(dataStats):

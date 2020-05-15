@@ -4,7 +4,7 @@ import numpy as np
 from scipy import signal, integrate
 import matplotlib.pyplot as plt
 from pyCGM2 import btk
-
+from __future__ import print_function
 
 
 # ---- EMG -----

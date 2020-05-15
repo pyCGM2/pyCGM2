@@ -406,7 +406,6 @@ class ModelCalibrationFilter(object):
         else :
             # calibration of technical Frames
             for segName in self.m_procedure.definition:
-                print segName
                 segPicked=self.m_model.getSegment(segName)
                 for tfName in self.m_procedure.definition[segName]: # TF name
 
@@ -420,13 +419,13 @@ class ModelCalibrationFilter(object):
 
 
                     a1=(pt2-pt1)
-                    a1=np.divide(a1,np.linalg.norm(a1))
+                    a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                     v=(pt3-pt1)
-                    v=np.divide(v,np.linalg.norm(v))
+                    v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                     a2=np.cross(a1,v)
-                    a2=np.divide(a2,np.linalg.norm(a2))
+                    a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                     x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName][tfName]['sequence'])
 
@@ -446,7 +445,7 @@ class ModelCalibrationFilter(object):
             if not self.m_noAnatomicalCalibration:
                 # calibration of technical Frames
                 for segName in self.m_procedure.anatomicalDefinition:
-                    print segName
+
                     segPicked=self.m_model.getSegment(segName)
                     tf=segPicked.getReferential("TF")
                     #if segName == "Right Shank":
@@ -464,13 +463,13 @@ class ModelCalibrationFilter(object):
                     ptO = tf.static.getNode_byLabel(ndO).m_global
 
                     a1=(pt2-pt1)
-                    a1=np.divide(a1,np.linalg.norm(a1))
+                    a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                     v=(pt3-pt1)
-                    v=np.divide(v,np.linalg.norm(v))
+                    v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                     a2=np.cross(a1,v)
-                    a2=np.divide(a2,np.linalg.norm(a2))
+                    a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                     x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.anatomicalDefinition[segName]['sequence'])
 
@@ -546,13 +545,13 @@ class ModelMotionFilter(object):
                         ptOrigin=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][3])).GetValues()[i,:]
 
                         a1=(pt2-pt1)
-                        a1=np.divide(a1,np.linalg.norm(a1))
+                        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                         v=(pt3-pt1)
-                        v=np.divide(v,np.linalg.norm(v))
+                        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                         a2=np.cross(a1,v)
-                        a2=np.divide(a2,np.linalg.norm(a2))
+                        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                         x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName]["TF"]['sequence'])
 
@@ -647,13 +646,13 @@ class ModelMotionFilter(object):
                             ptOrigin=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][3])).GetValues()[i,:]
 
                             a1=(pt2-pt1)
-                            a1=np.divide(a1,np.linalg.norm(a1))
+                            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                             v=(pt3-pt1)
-                            v=np.divide(v,np.linalg.norm(v))
+                            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                             a2=np.cross(a1,v)
-                            a2=np.divide(a2,np.linalg.norm(a2))
+                            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                             x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName]["TF"]['sequence'])
 
@@ -1409,17 +1408,17 @@ class InverseDynamicFilter(object):
                                 order=[2,1,0]
 
                             e2= np.cross(e3,e1)
-                            e2=np.divide(e2,np.linalg.norm(e2))
+                            e2=np.nan_to_num(np.divide(e2,np.linalg.norm(e2)))
 
                             if self.m_projection == enums.MomentProjection.JCS_Dual:
 
-                                forceValues[i,order[0]] = np.divide(np.dot(np.cross(e2,e3),F[i]), np.dot(np.cross(e1,e2),e3))
-                                forceValues[i,order[1]] = np.divide(np.dot(np.cross(e3,e1),F[i]), np.dot(np.cross(e1,e2),e3))
-                                forceValues[i,order[2]] = np.divide(np.dot(np.cross(e1,e2),F[i]), np.dot(np.cross(e1,e2),e3))
+                                forceValues[i,order[0]] = np.nan_to_num(np.divide(np.dot(np.cross(e2,e3),F[i]), np.dot(np.cross(e1,e2),e3)))
+                                forceValues[i,order[1]] = np.nan_to_num(np.divide(np.dot(np.cross(e3,e1),F[i]), np.dot(np.cross(e1,e2),e3)))
+                                forceValues[i,order[2]] = np.nan_to_num(np.divide(np.dot(np.cross(e1,e2),F[i]), np.dot(np.cross(e1,e2),e3)))
 
-                                momentValues[i,order[0]] = np.divide(np.dot(np.cross(e2,e3),M[i]), np.dot(np.cross(e1,e2),e3))
-                                momentValues[i,order[1]] = np.dot(M[i],e2) #np.divide(np.dot(np.cross(e3,e1),M[i]), np.dot(np.cross(e1,e2),e3))
-                                momentValues[i,order[2]] = np.divide(np.dot(np.cross(e1,e2),M[i]), np.dot(np.cross(e1,e2),e3))
+                                momentValues[i,order[0]] = np.nan_to_num(np.divide(np.dot(np.cross(e2,e3),M[i]), np.dot(np.cross(e1,e2),e3)))
+                                momentValues[i,order[1]] = np.dot(M[i],e2) #np.nan_to_num(np.divide(np.dot(np.cross(e3,e1),M[i]), np.dot(np.cross(e1,e2),e3))
+                                momentValues[i,order[2]] = np.nan_to_num(np.divide(np.dot(np.cross(e1,e2),M[i]), np.dot(np.cross(e1,e2),e3)))
 
                             if self.m_projection == enums.MomentProjection.JCS:
 
@@ -1686,7 +1685,7 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
             v_sup = np.asarray(v_sup)
 
             # normalized axis
-            v = np.divide(v_sup.mean(axis=0),np.linalg.norm(v.mean(axis =0)))
+            v = np.nan_to_num(np.divide(v_sup.mean(axis=0),np.linalg.norm(v.mean(axis =0))))
 
             # virtual point along the mean axis
             virtual = np.zeros((len(ajc),3))
@@ -1706,13 +1705,13 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
                 ptOrigin=hjc[i,:]
 
                 a1=(pt2-pt1)
-                a1=np.divide(a1,np.linalg.norm(a1))
+                a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                 v=(pt3-pt1)
-                v=np.divide(v,np.linalg.norm(v))
+                v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                 a2=np.cross(a1,v)
-                a2=np.divide(a2,np.linalg.norm(a2))
+                a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                 x,y,z,R=frame.setFrameData(a1,a2,sequence)
 

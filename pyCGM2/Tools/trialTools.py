@@ -82,7 +82,6 @@ def addTimeSequencesToTrial(trial,nodeToAdd):
     trialTimeSequences = trial.timeSequences()
     tss = nodeToAdd.child(0).findChildren(ma.T_TimeSequence)
     for ts in tss:
-        #print ts.name()
         ts.addParent(trialTimeSequences)
 
 

@@ -41,7 +41,6 @@ class ModelConfigManager(Manager.ConfigManager):
 
         for key in self._userSettings.keys(): #upate of #mp
             if key  not in finalSettings.keys():
-                print key
                 finalSettings.update({key : self._userSettings[key]})
 
         self.finalSettings = finalSettings

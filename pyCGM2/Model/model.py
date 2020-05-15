@@ -183,7 +183,7 @@ class Model(object):
 
 
         """
-        segment_list = [it for it in self.m_segmentCollection if it.name not in segementlabels]
+        segment_list = [it for it in self.m_segmentCollection if it.name not in segmentlabels]
         self.m_segmentCollection = segment_list
 
     def removeJoint(self,jointlabels):
@@ -482,13 +482,13 @@ class Model6Dof(Model):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef[segName][tfName]['sequence'])
 
@@ -525,13 +525,13 @@ class Model6Dof(Model):
             ptO = tf.static.getNode_byLabel(ndO).m_global
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic[segName]['sequence'])
 

@@ -1,5 +1,5 @@
 import time
-
+from __future__ import print_function
 
 class Timer(object):
     """ A quick tic-toc timer
@@ -25,5 +25,5 @@ class Timer(object):
         self.elapsed = time.time() - self.tstart
         if self.verbose:
             if self.name:
-                print '[%s]' % self.name,
-            print 'Elapsed: %s' % (self.elapsed)
+                print('[%s]' % self.name),
+            print ('Elapsed: %s' % (self.elapsed))
