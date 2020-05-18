@@ -65,7 +65,8 @@ def enveloppe(array, fc,fa):
 
 
 # ---- btkAcq -----
-def markerFiltering(btkAcq,order=2, fc =6):
+def markerFiltering(btkAcq,order=2, fc=6,zerosFiltering=True):
+
     """
         Low-pass filtering of all points in an acquisition
 
@@ -74,15 +75,48 @@ def markerFiltering(btkAcq,order=2, fc =6):
             - `fc` (double) - cut-off frequency
             - `order` (double) - order of the low-pass filter
     """
+
+    def filterZeros(array,bEmgEnv,aEMGEnv):
+
+        N = len(array)
+        indexes = range(0,N)
+
+        for i in range(0,N):
+            if array[i] == 0:
+                indexes[i] =0
+
+        splitdata = [x[x!=0] for x in np.split(array, np.where(array==0)[0]) if len(x[x!=0])]
+        splitIndexes = [x[x!=0] for x in np.split(indexes, np.where(indexes==0)[0]) if len(x[x!=0])]
+
+        filtValues_section=list()
+        for data in splitdata:
+            filtValues_section.append(signal.filtfilt(bEmgEnv, aEMGEnv, data ,axis=0))
+
+        indexes = np.concatenate(splitIndexes)
+        values = np.concatenate(filtValues_section)
+
+        out = np.zeros((N))
+        j = 0
+        for i in indexes:
+            out[i] = values[j]
+            j+=1
+        return out
+
+
     fp=btkAcq.GetPointFrequency()
     bPoint, aPoint = signal.butter(order, fc / (fp*0.5) , btype='lowpass')
 
     for pointIt in btk.Iterate(btkAcq.GetPoints()):
         if pointIt.GetType() == btk.btkPoint.Marker:
             label = pointIt.GetLabel()
-            x=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,0],axis=0  )
-            y=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,1],axis=0  )
-            z=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,2],axis=0  )
+            if zerosFiltering:
+                x = filterZeros(pointIt.GetValues()[:,0],bPoint,aPoint)
+                y = filterZeros(pointIt.GetValues()[:,1],bPoint,aPoint)
+                z = filterZeros(pointIt.GetValues()[:,2],bPoint,aPoint)
+            else:
+                x=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,0],axis=0  )
+                y=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,1],axis=0  )
+                z=signal.filtfilt(bPoint, aPoint, pointIt.GetValues()[:,2],axis=0  )
 
             btkAcq.GetPoint(label).SetValues(np.array( [x,y,z] ).transpose())
 
