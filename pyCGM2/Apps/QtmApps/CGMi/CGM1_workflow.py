@@ -7,7 +7,7 @@ import pyCGM2
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Utils import files
-from pyCGM2.Utils.utils import *
+from pyCGM2.Utils import utils
 from pyCGM2.qtm import qtmTools
 from pyCGM2 import enums
 from pyCGM2.Tools import btkTools
@@ -95,9 +95,9 @@ def main(sessionFilename,createPDFReport=True):
 
     logging.info("----- CALIBRATION-  static file [%s]--"%(calibrateFilenameLabelled))
 
-    leftFlatFoot = toBool(sessionXML.Left_foot_normalised_to_static_trial.text)
-    rightFlatFoot = toBool(sessionXML.Right_foot_normalised_to_static_trial.text)
-    headFlat = toBool(sessionXML.Head_normalised_to_static_trial.text)
+    leftFlatFoot = utils.toBool(sessionXML.Left_foot_normalised_to_static_trial.text)
+    rightFlatFoot = utils.toBool(sessionXML.Right_foot_normalised_to_static_trial.text)
+    headFlat = utils.toBool(sessionXML.Head_normalised_to_static_trial.text)
     markerDiameter = float(sessionXML.Marker_diameter.text)*1000.0
     pointSuffix = None
 
