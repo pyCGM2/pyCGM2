@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from pyCGM2.Utils.utils import toBool
 from datetime import datetime
+import logging
+
 
 def getFilename(measurement):
     return measurement.attrs["Filename"].replace("qtm","c3d")
@@ -29,7 +31,7 @@ def findStatic(soup):
             static.append(measurement)
         if len(static)>1:
             raise Exception("You can t have 2 activated static c3d within your session")
-    return static[0] 
+    return static[0]
 
 def findDynamic(soup):
     qtmMeasurements = soup.find_all("Measurement")
@@ -57,8 +59,13 @@ def detectMeasurementType(soup):
 
 def SubjectMp(soup):
 
+    bodymass = float(soup.Subject.Weight.text)
+    if bodymass == 0.0:
+        logging.error("[pyCGM2] Null Bodymass detected - Kinetics will be unnormalized")
+        bodymass = 1.0
+
     required_mp={
-    'Bodymass'   : float(soup.Subject.Weight.text),
+    'Bodymass'   : bodymass,
     'Height'   : float(soup.Subject.Height.text),
     'LeftLegLength' : float(soup.Subject.Leg_length_left.text)*1000.0,
     'RightLegLength' : float(soup.Subject.Leg_length_right.text)*1000.0,#865.0 ,
