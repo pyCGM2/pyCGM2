@@ -64,7 +64,23 @@ def pdfGaitReport(DATA_PATH,model,modelledTrials, normativeDataset,pointSuffix, 
             pdf.savefig()
 
         if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-            pass # TODO plot upperlimb panel
+            plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"UpperLimb",
+                normativeDataset,
+                exportPdf=False,
+                outputName=title,
+                pointLabelSuffix=pointSuffix,
+                show=False,
+                title=title)
+            pdf.savefig()
+
+            plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"UpperLimb",
+                normativeDataset,
+                exportPdf=False,
+                outputName=title,
+                pointLabelSuffix=pointSuffix,
+                show=False,
+                title=title)
+            pdf.savefig()
 
 
         #Kinetics

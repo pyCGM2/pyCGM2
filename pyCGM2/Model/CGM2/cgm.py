@@ -22,10 +22,12 @@ class CGM(model.Model):
                             'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles",
                                    "LForeFootAngles",
                                    "LThoraxAngles","LSpineAngles",
+                                   "LNeckAngles","LHeadAngles",
                                    "LShoulderAngles","LElbowAngles","LWristAngles"],
                            'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles",
                                     "RForeFootAngles",
                                     "RThoraxAngles","RSpineAngles",
+                                    "RNeckAngles","RHeadAngles",
                                     "RShoulderAngles","RElbowAngles","RWristAngles"]}
 
     ANALYSIS_KINETIC_LABELS_DICT ={

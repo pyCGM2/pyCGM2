@@ -370,6 +370,14 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
             ax7.set_title("Thorax Obliquity" ,size=8)
             ax8.set_title("Thorax Rotation" ,size=8)
 
+            ax9.set_title("Neck Forward Tilt" ,size=8)
+            ax10.set_title("Neck Lateral Tilt" ,size=8)
+            ax11.set_title("Neck Rotation" ,size=8)
+
+            ax12.set_title("Head Forward Tilt" ,size=8)
+            ax13.set_title("Head Lateral Tilt" ,size=8)
+            ax14.set_title("Head Rotation" ,size=8)
+
             if not self.m_automaticYlim_flag:
                 ax0.set_ylim([0,60])
                 ax1.set_ylim([-30,30])
@@ -382,6 +390,39 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
                 ax6.set_ylim([-30,30])
                 ax7.set_ylim([-30,30])
                 ax8.set_ylim([-30,30])
+
+                ax9.set_ylim([-30,30])
+                ax10.set_ylim([-30,30])
+                ax11.set_ylim([-30,30])
+
+                ax12.set_ylim([-50,30])
+                ax13.set_ylim([-30,30])
+                ax14.set_ylim([-30,30])
+
+        elif self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
+
+            ax0.set_title("Shoulder flexion" ,size=8)
+            ax1.set_title("Shoulder Adduction" ,size=8)
+            ax2.set_title("Shoulder Rotation" ,size=8)
+            ax3.set_title("Elbow Flexion" ,size=8)
+            # ax4.set_title("Elbow Adduction" ,size=8)
+            # ax5.set_title("Spine Rotation" ,size=8)
+            ax6.set_title("Ulnar Deviation" ,size=8)
+            ax7.set_title("Wrist Extension" ,size=8)
+            ax8.set_title("Wrist Rotation" ,size=8)
+
+            if not self.m_automaticYlim_flag:
+                ax0.set_ylim([-60,60])
+                ax1.set_ylim([-30,30])
+                ax2.set_ylim([-30,30])
+
+                ax3.set_ylim( [-60,60])
+                ax4.set_ylim([-30,30])
+                ax5.set_ylim([-30,30])
+
+                ax6.set_ylim([-30,30])
+                ax7.set_ylim([-30,30])
+                ax8.set_ylim([0,160])
 
                 ax9.set_ylim([-30,30])
                 ax10.set_ylim([-30,30])
@@ -538,6 +579,89 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
                     "RThoraxAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
 
 
+            # Neck
+            self.m_concretePlotFunction(self.fig.axes[9],self.m_analysis.kinematicStats,
+                    "LNeckAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[9],self.m_analysis.kinematicStats,
+                    "RNeckAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
+
+            self.m_concretePlotFunction(self.fig.axes[10],self.m_analysis.kinematicStats,
+                    "LNeckAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[10],self.m_analysis.kinematicStats,
+                    "RNeckAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
+
+            self.m_concretePlotFunction(self.fig.axes[11],self.m_analysis.kinematicStats,
+                    "LNeckAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[11],self.m_analysis.kinematicStats,
+                    "RNeckAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
+
+
+            # Head
+            self.m_concretePlotFunction(self.fig.axes[12],self.m_analysis.kinematicStats,
+                    "LHeadAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[12],self.m_analysis.kinematicStats,
+                    "RHeadAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
+
+            self.m_concretePlotFunction(self.fig.axes[13],self.m_analysis.kinematicStats,
+                    "LHeadAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[13],self.m_analysis.kinematicStats,
+                    "RHeadAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
+
+            self.m_concretePlotFunction(self.fig.axes[14],self.m_analysis.kinematicStats,
+                    "LHeadAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[14],self.m_analysis.kinematicStats,
+                    "RHeadAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
+
+
+
+        elif self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
+            # shoulder
+            self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kinematicStats,
+                    "LShoulderAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kinematicStats,
+                    "RShoulderAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
+
+            self.m_concretePlotFunction(self.fig.axes[1],self.m_analysis.kinematicStats,
+                    "LShoulderAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[1],self.m_analysis.kinematicStats,
+                    "RShoulderAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
+
+            self.m_concretePlotFunction(self.fig.axes[2],self.m_analysis.kinematicStats,
+                    "LShoulderAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[2],self.m_analysis.kinematicStats,
+                    "RShoulderAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
+
+            # elbow
+            self.m_concretePlotFunction(self.fig.axes[3],self.m_analysis.kinematicStats,
+                    "LElbowAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[3],self.m_analysis.kinematicStats,
+                    "RElbowAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
+
+            # self.m_concretePlotFunction(self.fig.axes[4],self.m_analysis.kinematicStats,
+            #         "LElbowAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+            # self.m_concretePlotFunction(self.fig.axes[4],self.m_analysis.kinematicStats,
+            #         "LElbowAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
+            #
+            # self.m_concretePlotFunction(self.fig.axes[5],self.m_analysis.kinematicStats,
+            #         "LElbowAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+            # self.m_concretePlotFunction(self.fig.axes[5],self.m_analysis.kinematicStats,
+            #         "RElbowAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
+
+            # wrist
+            self.m_concretePlotFunction(self.fig.axes[6],self.m_analysis.kinematicStats,
+                    "LWristAngles"+suffixPlus,"Left",0, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[6],self.m_analysis.kinematicStats,
+                    "RWristAngles"+suffixPlus,"Right",0, color="blue",customLimits=None)
+
+            self.m_concretePlotFunction(self.fig.axes[7],self.m_analysis.kinematicStats,
+                    "LWristAngles"+suffixPlus,"Left",1, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[7],self.m_analysis.kinematicStats,
+                    "RWristAngles"+suffixPlus,"Right",1, color="blue",customLimits=None)
+
+            self.m_concretePlotFunction(self.fig.axes[8],self.m_analysis.kinematicStats,
+                    "LWristAngles"+suffixPlus,"Left",2, color="red",customLimits=None)
+            self.m_concretePlotFunction(self.fig.axes[8],self.m_analysis.kinematicStats,
+                    "RWristAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
 
 
 
@@ -726,6 +850,14 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
             ax7.set_title("Thorax Obliquity" ,size=8)
             ax8.set_title("Thorax Rotation" ,size=8)
 
+            ax9.set_title("Neck Forward Tilt" ,size=8)
+            ax10.set_title("Neck Lateral Tilt" ,size=8)
+            ax11.set_title("Neck Rotation" ,size=8)
+
+            ax12.set_title("Head Forward Tilt" ,size=8)
+            ax13.set_title("Head Lateral Tilt" ,size=8)
+            ax14.set_title("Head Rotation" ,size=8)
+
             if not self.m_automaticYlim_flag:
                 ax0.set_ylim([0,60])
                 ax1.set_ylim([-30,30])
@@ -739,11 +871,44 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
                 ax7.set_ylim([-30,30])
                 ax8.set_ylim([-30,30])
 
+        if self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
+
+            ax0.set_title("Shoulder flexion" ,size=8)
+            ax1.set_title("Shoulder Adduction" ,size=8)
+            ax2.set_title("Shoulder Rotation" ,size=8)
+            ax3.set_title("Elbow Flexion" ,size=8)
+            # ax4.set_title("Elbow Adduction" ,size=8)
+            # ax5.set_title("Spine Rotation" ,size=8)
+            ax6.set_title("Ulnar Deviation" ,size=8)
+            ax7.set_title("Wrist Extension" ,size=8)
+            ax8.set_title("Wrist Rotation" ,size=8)
+
+            if not self.m_automaticYlim_flag:
+                ax0.set_ylim([-60,60])
+                ax1.set_ylim([-30,30])
+                ax2.set_ylim([-30,30])
+
+                ax3.set_ylim( [-60,60])
+                ax4.set_ylim([-30,30])
+                ax5.set_ylim([-30,30])
+
+                ax6.set_ylim([-30,30])
+                ax7.set_ylim([-30,30])
+                ax8.set_ylim([0,160])
+
+                ax9.set_ylim([-30,30])
+                ax10.set_ylim([-30,30])
+                ax11.set_ylim([-30,30])
+
+                ax12.set_ylim([-50,30])
+                ax13.set_ylim([-30,30])
+                ax14.set_ylim([-30,30])
+
     def setNormativeDataset(self,iNormativeDataSet):
         pass
 
     def __setData(self):
-        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
+
 
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
             plot.temporalPlot(self.fig.axes[0],self.m_trial,
@@ -830,11 +995,25 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
             plot.temporalPlot(self.fig.axes[8],self.m_trial,
                                     "LThoraxAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
 
+            plot.temporalPlot(self.fig.axes[9],self.m_trial,
+                                    "LNeckAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[10],self.m_trial,
+                                    "LNeckAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[11],self.m_trial,
+                                    "LNeckAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[12],self.m_trial,
+                                    "LHeadAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[13],self.m_trial,
+                                    "LHeadAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[14],self.m_trial,
+                                    "LHeadAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+
+
 
             plot.temporalPlot(self.fig.axes[0],self.m_trial,
                                     "RPelvisAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
             plot.temporalPlot(self.fig.axes[1],self.m_trial,
-                            "RPelvisAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+                                    "RPelvisAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
             plot.temporalPlot(self.fig.axes[2],self.m_trial,
                                     "RPelvisAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
             plot.temporalPlot(self.fig.axes[3],self.m_trial,
@@ -849,6 +1028,63 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
                                     "RThoraxAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
             plot.temporalPlot(self.fig.axes[8],self.m_trial,
                                     "RThoraxAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+
+            plot.temporalPlot(self.fig.axes[9],self.m_trial,
+                                    "RNeckAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[10],self.m_trial,
+                                    "RNeckAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[11],self.m_trial,
+                                    "RNeckAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[12],self.m_trial,
+                                    "RHeadAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[13],self.m_trial,
+                                    "RHeadAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[14],self.m_trial,
+                                    "RHeadAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+
+
+        if self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
+
+            plot.temporalPlot(self.fig.axes[0],self.m_trial,
+                                    "LShoulderAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[1],self.m_trial,
+                            "LShoulderAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[2],self.m_trial,
+                                    "LShoulderAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[3],self.m_trial,
+                                    "LElbowAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            # plot.temporalPlot(self.fig.axes[4],self.m_trial,
+            #                         "LElbowAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            # plot.temporalPlot(self.fig.axes[5],self.m_trial,
+            #                         "LElbowAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[6],self.m_trial,
+                                    "LWristAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[7],self.m_trial,
+                                    "LWristAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+            plot.temporalPlot(self.fig.axes[8],self.m_trial,
+                                    "LWristAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+
+
+            plot.temporalPlot(self.fig.axes[0],self.m_trial,
+                                    "RShoulderAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[1],self.m_trial,
+                                    "RShoulderAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[2],self.m_trial,
+                                    "RShoulderAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[3],self.m_trial,
+                                    "RElbowAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            # plot.temporalPlot(self.fig.axes[4],self.m_trial,
+            #                         "RElbowAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            # plot.temporalPlot(self.fig.axes[5],self.m_trial,
+            #                         "RElbowAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[6],self.m_trial,
+                                    "RWristAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[7],self.m_trial,
+                                    "RWristAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+            plot.temporalPlot(self.fig.axes[8],self.m_trial,
+                                    "RWristAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+
+
 
     def plotPanel(self):
 
