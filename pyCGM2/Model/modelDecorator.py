@@ -81,8 +81,7 @@ def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
     if (len(A1) != len(A2) or len(A1) != len(A3) or len(A2) != len(A3)):
         raise Exception ("length of input argument of chord function different")
 
-
-    if np.all(A1==0) and np.all(A3==0) and np.all(A3==0):
+    if np.all(A1==0) or np.all(A3==0) or np.all(A3==0):
         return np.zeros((3))
 
     arrayDim = len(A1.shape) # si 1 = array1d si 2 = array2d
