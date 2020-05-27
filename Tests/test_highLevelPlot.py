@@ -67,6 +67,18 @@ class Test_cgm1PlotTests():
 
         analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames)
 
+
+
+        plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",
+                nds,
+                pointLabelSuffix=None,
+                type="Gait",
+                exportPdf=False,
+                outputName=None,
+                show=True,
+                title=None)
+
+
         plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",
                 nds,
                 pointLabelSuffix=None,
