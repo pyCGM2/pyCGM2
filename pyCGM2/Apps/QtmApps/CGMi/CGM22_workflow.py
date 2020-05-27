@@ -31,6 +31,14 @@ MARKERSETS={"Lower limb tracking markers": cgm.CGM1.LOWERLIMB_TRACKING_MARKERS,
             "Calibration markers": ["LKNM","RKNM","LMED","RMED","LKAX","LKD1","LKD2","RKAX","RKD1","RKD2"]}
 
 
+def command():
+    parser = argparse.ArgumentParser(description='CGM22 workflow')
+    parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
+
+    args = parser.parse_args()
+    sessionFilename = args.sessionFile
+    main(sessionFilename)
+
 def main(sessionFilename,createPDFReport=True):
     logging.info("------------------------------------------------")
     logging.info("------------QTM - pyCGM2 Workflow---------------")
@@ -266,12 +274,3 @@ def main(sessionFilename,createPDFReport=True):
 
             report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
             logging.info("----- Gait Processing -----> DONE")
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='CGM22 workflow')
-    parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
-
-    args = parser.parse_args()
-    sessionFilename = args.sessionFile
-    main(sessionFilename)
