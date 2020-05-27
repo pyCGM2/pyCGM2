@@ -283,7 +283,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     acqGait =  btkTools.applyTranslators(acqGait,translators)
     trackingMarkers = model.getTrackingMarkers(acqGait)
     validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
-
+    import ipdb; ipdb.set_trace()
     # filtering
     # -----------------------
     if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
@@ -291,7 +291,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         order = 4
         if "order_lowPass_marker" in kwargs.keys():
             order = kwargs["order_lowPass_marker"]
-        signal_processing.markerFiltering(acqGait,order=order, fc =fc)
+        signal_processing.markerFiltering(acqGait,trackingMarkers,order=order, fc =fc)
 
     if "fc_lowPass_forcePlate" in kwargs.keys() and kwargs["fc_lowPass_forcePlate"]!=0 :
         fc = kwargs["fc_lowPass_forcePlate"]
@@ -307,6 +307,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Sodervisk)
     modMotion.compute()
     # /section to remove
+
 
     if model.getBodyPart() == enums.BodyPart.UpperLimb:
         ik_flag = False

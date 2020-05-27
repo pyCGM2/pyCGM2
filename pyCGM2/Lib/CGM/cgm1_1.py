@@ -209,7 +209,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         order = 4
         if "order_lowPass_marker" in kwargs.keys():
             order = kwargs["order_lowPass_marker"]
-        signal_processing.markerFiltering(acqGait,order=order, fc =fc)
+        signal_processing.markerFiltering(acqGait,trackingMarkers,order=order, fc =fc)
 
     if "fc_lowPass_forcePlate" in kwargs.keys() and kwargs["fc_lowPass_forcePlate"]!=0 :
         fc = kwargs["fc_lowPass_forcePlate"]
