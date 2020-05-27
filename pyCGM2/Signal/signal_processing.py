@@ -65,7 +65,7 @@ def enveloppe(array, fc,fa):
 
 
 # ---- btkAcq -----
-def markerFiltering(btkAcq,order=2, fc=6,zerosFiltering=True):
+def markerFiltering(btkAcq,markers,order=2, fc=6,zerosFiltering=True):
 
     """
         Low-pass filtering of all points in an acquisition
@@ -76,21 +76,24 @@ def markerFiltering(btkAcq,order=2, fc=6,zerosFiltering=True):
             - `order` (double) - order of the low-pass filter
     """
 
-    def filterZeros(array,bEmgEnv,aEMGEnv):
+    def filterZeros(array,b,a):
+
 
         N = len(array)
         indexes = range(0,N)
 
         for i in range(0,N):
             if array[i] == 0:
-                indexes[i] =0
+                indexes[i] = -1
+
 
         splitdata = [x[x!=0] for x in np.split(array, np.where(array==0)[0]) if len(x[x!=0])]
-        splitIndexes = [x[x!=0] for x in np.split(indexes, np.where(indexes==0)[0]) if len(x[x!=0])]
+        splitIndexes = [x[x!=-1] for x in np.split(indexes, np.where(indexes==-1)[0]) if len(x[x!=-1])]
+
 
         filtValues_section=list()
         for data in splitdata:
-            filtValues_section.append(signal.filtfilt(bEmgEnv, aEMGEnv, data ,axis=0))
+            filtValues_section.append(signal.filtfilt(b, a, data ,axis=0))
 
         indexes = np.concatenate(splitIndexes)
         values = np.concatenate(filtValues_section)
@@ -107,7 +110,7 @@ def markerFiltering(btkAcq,order=2, fc=6,zerosFiltering=True):
     bPoint, aPoint = signal.butter(order, fc / (fp*0.5) , btype='lowpass')
 
     for pointIt in btk.Iterate(btkAcq.GetPoints()):
-        if pointIt.GetType() == btk.btkPoint.Marker:
+        if pointIt.GetType() == btk.btkPoint.Marker and pointIt.GetLabel() in markers:
             label = pointIt.GetLabel()
             if zerosFiltering:
                 x = filterZeros(pointIt.GetValues()[:,0],bPoint,aPoint)
