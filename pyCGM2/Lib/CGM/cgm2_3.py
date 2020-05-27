@@ -283,7 +283,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     acqGait =  btkTools.applyTranslators(acqGait,translators)
     trackingMarkers = model.getTrackingMarkers(acqGait)
     validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
-    import ipdb; ipdb.set_trace()
     # filtering
     # -----------------------
     if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
