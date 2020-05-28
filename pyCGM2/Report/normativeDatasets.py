@@ -4,6 +4,79 @@ import numpy as np
 import pandas as pd
 import pyCGM2
 
+from pyCGM2.Utils import files
+
+def exportJson_Schwartz2008(path,name="Schwartz2008.json"):
+    """generate json from schwartz2008 dataset
+
+    :param path: path
+    :type path: string
+    :param name: filename
+    :type name: string
+    :return: json file
+    :rtype: file
+
+    normativeDatasets.exportJson_Schwartz2008(DATA_PATH,name="test.json")
+
+    """
+
+
+    def constructJson(dataset, dataset_label, modalityLabel,data):
+
+        dataset[dataset_label].update({modalityLabel:dict()})
+
+        for label in data.keys():
+
+            mean = data[label]["mean"]
+            sd = data[label]["sd"]
+
+            label = label.replace(".","")
+            dataset[dataset_label][modalityLabel].update({label: {'X':None,'Y':None,'Z':None }})
+
+            outX = [0, mean[0,0]-sd[0,0] ,mean[0,0]+sd[0,0] ]
+
+            for i in range(1,mean.shape[0]):
+                values = [i*2, mean[i,0]-sd[i,0],mean[i,0]+sd[i,0]]
+                outX.append(values)
+
+            outY = [0, mean[0,1]-sd[0,1],mean[0,1]+sd[0,1]]
+            for i in range(1,mean.shape[0]):
+                values = [i*2, mean[i,1]-sd[i,1],mean[i,1]+sd[i,1]]
+                outY.append(values)
+
+            outZ = [0, mean[0,2]-sd[0,2],mean[0,2]+sd[0,2]]
+            for i in range(1,mean.shape[0]):
+                values = [i*2, mean[i,2]-sd[i,2],mean[i,2]+sd[i,2]]
+                outZ.append(values)
+
+            dataset[dataset_label][modalityLabel][label]["X"] = outX
+            dataset[dataset_label][modalityLabel][label]["Y"] = outY
+            dataset[dataset_label][modalityLabel][label]["Z"] = outZ
+
+    dataset = {"Schwartz2008": dict()}
+
+    nds = Schwartz2008("VerySlow")
+    nds.constructNormativeData()
+    constructJson(dataset,"Schwartz2008","VerySlow",nds.data)
+
+    nds = Schwartz2008("Slow")
+    nds.constructNormativeData()
+    constructJson(dataset,"Schwartz2008","Slow",nds.data)
+
+    nds = Schwartz2008("Free")
+    nds.constructNormativeData()
+    constructJson(dataset,"Schwartz2008","Free",nds.data)
+
+    nds = Schwartz2008("Fast")
+    nds.constructNormativeData()
+    constructJson(dataset,"Schwartz2008","Fast",nds.data)
+
+    nds = Schwartz2008("VeryFast")
+    nds.constructNormativeData()
+    constructJson(dataset,"Schwartz2008","VeryFast",nds.data)
+
+    files.saveJson(path, name, dataset)
+
 
 class NormalSTP(object):
 

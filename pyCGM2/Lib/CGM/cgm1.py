@@ -17,7 +17,7 @@ from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Processing import progressionFrame
-
+from pyCGM2.Signal import signal_processing
 
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
@@ -121,54 +121,58 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
         csdf.setStatic(False)
         csdf.display()
 
-    #---- Joint kinematics----
-    # relative angles
-    modelFilters.ModelJCSFilter(model,acqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
-
-
-    # detection of traveling axis + absolute angle
-    if model.m_bodypart != enums.BodyPart.UpperLimb:
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+    if "noKinematicsCalculation" in kwargs.keys() and kwargs["noKinematicsCalculation"]:
+        logging.warning("[pyCGM2] No Kinematic calculation done for the static file")
+        return model, acqStatic
     else:
-        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
+        #---- Joint kinematics----
+        # relative angles
+        modelFilters.ModelJCSFilter(model,acqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
-    pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
-    pff.compute()
-    globalFrame = pff.outputs["globalFrame"]
-    forwardProgression = pff.outputs["forwardProgression"]
 
-    if model.m_bodypart != enums.BodyPart.UpperLimb:
-            modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
-                                                   segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                                    angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                                    eulerSequences=["TOR","TOR", "TOR"],
-                                                    globalFrameOrientation = globalFrame,
-                                                    forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
+        # detection of traveling axis + absolute angle
+        if model.m_bodypart != enums.BodyPart.UpperLimb:
+            pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        else:
+            pfp = progressionFrame.ThoraxProgressionFrameProcedure()
 
-    if model.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
-                                          segmentLabels=["Thorax"],
-                                          angleLabels=["Thorax"],
-                                          eulerSequences=["YXZ"],
-                                          globalFrameOrientation = globalFrame,
-                                          forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
+        pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        forwardProgression = pff.outputs["forwardProgression"]
 
-    if model.m_bodypart == enums.BodyPart.UpperLimb or model.m_bodypart == enums.BodyPart.FullBody:
+        if model.m_bodypart != enums.BodyPart.UpperLimb:
+                modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
+                                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
+                                                        angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
+                                                        eulerSequences=["TOR","TOR", "TOR"],
+                                                        globalFrameOrientation = globalFrame,
+                                                        forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-            modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
-                                          segmentLabels=["Thorax","Head"],
-                                          angleLabels=["Thorax", "Head"],
-                                          eulerSequences=["YXZ","TOR"],
-                                          globalFrameOrientation = globalFrame,
-                                          forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
-    # BSP model
-    bspModel = bodySegmentParameters.Bsp(model)
-    bspModel.compute()
+        if model.m_bodypart == enums.BodyPart.LowerLimbTrunk:
+                modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
+                                              segmentLabels=["Thorax"],
+                                              angleLabels=["Thorax"],
+                                              eulerSequences=["YXZ"],
+                                              globalFrameOrientation = globalFrame,
+                                              forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-    if  model.m_bodypart == enums.BodyPart.FullBody:
-        modelFilters.CentreOfMassFilter(model,acqStatic).compute(pointLabelSuffix=pointSuffix)
+        if model.m_bodypart == enums.BodyPart.UpperLimb or model.m_bodypart == enums.BodyPart.FullBody:
 
-    return model, acqStatic
+                modelFilters.ModelAbsoluteAnglesFilter(model,acqStatic,
+                                              segmentLabels=["Thorax","Head"],
+                                              angleLabels=["Thorax", "Head"],
+                                              eulerSequences=["YXZ","TOR"],
+                                              globalFrameOrientation = globalFrame,
+                                              forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
+        # BSP model
+        bspModel = bodySegmentParameters.Bsp(model)
+        bspModel.compute()
+
+        if  model.m_bodypart == enums.BodyPart.FullBody:
+            modelFilters.CentreOfMassFilter(model,acqStatic).compute(pointLabelSuffix=pointSuffix)
+
+        return model, acqStatic
 
 
 def fitting(model,DATA_PATH, reconstructFilenameLabelled,
@@ -211,8 +215,23 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     trackingMarkers = model.getTrackingMarkers(acqGait)
     validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
 
-    scp=modelFilters.StaticCalibrationProcedure(model) # procedure
+    # filtering
+    # -----------------------
+    if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
+        fc = kwargs["fc_lowPass_marker"]
+        order = 4
+        if "order_lowPass_marker" in kwargs.keys():
+            order = kwargs["order_lowPass_marker"]
+        signal_processing.markerFiltering(acqGait,trackingMarkers,order=order, fc =fc)
 
+    if "fc_lowPass_forcePlate" in kwargs.keys() and kwargs["fc_lowPass_forcePlate"]!=0 :
+        fc = kwargs["fc_lowPass_forcePlate"]
+        order = 4
+        if "order_lowPass_forcePlate" in kwargs.keys():
+            order = kwargs["order_lowPass_forcePlate"]
+        signal_processing.forcePlateFiltering(acqGait,order=order, fc =fc)
+
+    scp=modelFilters.StaticCalibrationProcedure(model) # procedure
     # ---Motion filter----
     modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist,
                                               markerDiameter=markerDiameter,
@@ -274,35 +293,38 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     if  model.m_bodypart == enums.BodyPart.FullBody:
         modelFilters.CentreOfMassFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
-    # Inverse dynamics
-    if model.m_bodypart != enums.BodyPart.UpperLimb:
-        # --- force plate handling----
-        # find foot  in contact
-        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait,mfpa=mfpa)
-        forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
-        logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+    if btkTools.checkForcePlateExist(acqGait):
+        # Inverse dynamics
+        if model.m_bodypart != enums.BodyPart.UpperLimb:
+            # --- force plate handling----
+            # find foot  in contact
+            mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait,mfpa=mfpa)
+            forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
+            logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
 
-        # assembly foot and force plate
-        modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
-                                 leftSegmentLabel="Left Foot",
-                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
+            # assembly foot and force plate
+            modelFilters.ForcePlateAssemblyFilter(model,acqGait,mappedForcePlate,
+                                     leftSegmentLabel="Left Foot",
+                                     rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
 
-        #---- Joint kinetics----
-        idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
-        modelFilters.InverseDynamicFilter(model,
-                             acqGait,
-                             procedure = idp,
-                             projection = momentProjection,
-                             viconCGM1compatible=True,
-                             globalFrameOrientation = globalFrame,
-                             forwardProgression = forwardProgression
-                             ).compute(pointLabelSuffix=pointSuffix)
+            #---- Joint kinetics----
+            if type(momentProjection) == str:
+                momentProjection = enums.enumFromtext(momentProjection,enums.MomentProjection)
+            idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
+            modelFilters.InverseDynamicFilter(model,
+                                 acqGait,
+                                 procedure = idp,
+                                 projection = momentProjection,
+                                 viconCGM1compatible=True,
+                                 globalFrameOrientation = globalFrame,
+                                 forwardProgression = forwardProgression
+                                 ).compute(pointLabelSuffix=pointSuffix)
 
 
-        #---- Joint energetics----
-        modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
+            #---- Joint energetics----
+            modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
     #---- zero unvalid frames ---
     btkTools.applyValidFramesOnOutput(acqGait,validFrames)

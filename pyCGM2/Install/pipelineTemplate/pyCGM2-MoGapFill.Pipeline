@@ -3,7 +3,7 @@
 
   <Entry DisplayName="MoGapFill-Kalman" Enabled="1" OperationId="856" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/KalmanGapFilling.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_KalmanGapFilling-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from pyCGM2.Utils.utils import *
+from pyCGM2.Utils.utils import toBool
+from datetime import datetime
+import logging
 
 
 def getFilename(measurement):
@@ -25,18 +27,18 @@ def findStatic(soup):
     qtmMeasurements = soup.find_all("Measurement")
     static=list()
     for measurement in qtmMeasurements:
-        if measurement.attrs["Type"] == "Static - CGM2" and toBool(measurement.Used.text):
+        if "Static" in measurement.attrs["Type"] and toBool(measurement.Used.text):
             static.append(measurement)
         if len(static)>1:
             raise Exception("You can t have 2 activated static c3d within your session")
-    return measurement #str(static[0].attrs["Filename"][:-4]+".c3d")
+    return static[0]
 
 def findDynamic(soup):
     qtmMeasurements = soup.find_all("Measurement")
 
     measurements=list()
     for measurement in qtmMeasurements:
-        if measurement.attrs["Type"] != "Static - CGM2" and toBool(measurement.Used.text):
+        if "Gait" in measurement.attrs["Type"] and toBool(measurement.Used.text):
             measurements.append(measurement)
 
     return measurements
@@ -47,7 +49,7 @@ def detectMeasurementType(soup):
 
     types = list()
     for measurement in measurements:
-        if measurement.attrs["Type"] != "Static - CGM2" and toBool(measurement.Used.text):
+        if "Static" not in measurement.attrs["Type"] and toBool(measurement.Used.text):
             if measurement.attrs["Type"] not in types:
                 types.append(measurement.attrs["Type"])
 
@@ -57,8 +59,13 @@ def detectMeasurementType(soup):
 
 def SubjectMp(soup):
 
+    bodymass = float(soup.Subject.Weight.text)
+    if bodymass == 0.0:
+        logging.error("[pyCGM2] Null Bodymass detected - Kinetics will be unnormalized")
+        bodymass = 1.0
+
     required_mp={
-    'Bodymass'   : float(soup.Subject.Weight.text),
+    'Bodymass'   : bodymass,
     'Height'   : float(soup.Subject.Height.text),
     'LeftLegLength' : float(soup.Subject.Leg_length_left.text)*1000.0,
     'RightLegLength' : float(soup.Subject.Leg_length_right.text)*1000.0,#865.0 ,
@@ -91,3 +98,24 @@ def SubjectMp(soup):
         }
 
     return required_mp,optional_mp
+
+
+def get_modelled_trials(session_xml, measurement_type):
+    modelled_trials = []
+    dynamicMeasurements = findDynamic(session_xml)
+    for dynamicMeasurement in dynamicMeasurements:
+        if isType(dynamicMeasurement, measurement_type):
+            filename = getFilename(dynamicMeasurement)
+            modelled_trials.append(filename)
+    return modelled_trials
+
+
+def get_creation_date(session_xml):
+    date_str = session_xml.Subject.Session.Creation_date.text
+    year, month, day = date_str.split("-")
+    time_str = session_xml.Subject.Session.Creation_time.text
+    hour, minute, second = time_str.split(":")
+    datetime_obj = datetime(
+        int(year), int(month), int(day),
+        int(hour), int(minute), int(second))
+    return datetime_obj

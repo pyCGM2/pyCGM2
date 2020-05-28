@@ -406,7 +406,6 @@ class ModelCalibrationFilter(object):
         else :
             # calibration of technical Frames
             for segName in self.m_procedure.definition:
-                print segName
                 segPicked=self.m_model.getSegment(segName)
                 for tfName in self.m_procedure.definition[segName]: # TF name
 
@@ -420,13 +419,13 @@ class ModelCalibrationFilter(object):
 
 
                     a1=(pt2-pt1)
-                    a1=np.divide(a1,np.linalg.norm(a1))
+                    a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                     v=(pt3-pt1)
-                    v=np.divide(v,np.linalg.norm(v))
+                    v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                     a2=np.cross(a1,v)
-                    a2=np.divide(a2,np.linalg.norm(a2))
+                    a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                     x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName][tfName]['sequence'])
 
@@ -446,7 +445,7 @@ class ModelCalibrationFilter(object):
             if not self.m_noAnatomicalCalibration:
                 # calibration of technical Frames
                 for segName in self.m_procedure.anatomicalDefinition:
-                    print segName
+
                     segPicked=self.m_model.getSegment(segName)
                     tf=segPicked.getReferential("TF")
                     #if segName == "Right Shank":
@@ -464,13 +463,13 @@ class ModelCalibrationFilter(object):
                     ptO = tf.static.getNode_byLabel(ndO).m_global
 
                     a1=(pt2-pt1)
-                    a1=np.divide(a1,np.linalg.norm(a1))
+                    a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                     v=(pt3-pt1)
-                    v=np.divide(v,np.linalg.norm(v))
+                    v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                     a2=np.cross(a1,v)
-                    a2=np.divide(a2,np.linalg.norm(a2))
+                    a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                     x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.anatomicalDefinition[segName]['sequence'])
 
@@ -546,13 +545,13 @@ class ModelMotionFilter(object):
                         ptOrigin=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][3])).GetValues()[i,:]
 
                         a1=(pt2-pt1)
-                        a1=np.divide(a1,np.linalg.norm(a1))
+                        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                         v=(pt3-pt1)
-                        v=np.divide(v,np.linalg.norm(v))
+                        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                         a2=np.cross(a1,v)
-                        a2=np.divide(a2,np.linalg.norm(a2))
+                        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                         x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName]["TF"]['sequence'])
 
@@ -647,13 +646,13 @@ class ModelMotionFilter(object):
                             ptOrigin=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][3])).GetValues()[i,:]
 
                             a1=(pt2-pt1)
-                            a1=np.divide(a1,np.linalg.norm(a1))
+                            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                             v=(pt3-pt1)
-                            v=np.divide(v,np.linalg.norm(v))
+                            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                             a2=np.cross(a1,v)
-                            a2=np.divide(a2,np.linalg.norm(a2))
+                            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                             x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName]["TF"]['sequence'])
 
@@ -1409,17 +1408,17 @@ class InverseDynamicFilter(object):
                                 order=[2,1,0]
 
                             e2= np.cross(e3,e1)
-                            e2=np.divide(e2,np.linalg.norm(e2))
+                            e2=np.nan_to_num(np.divide(e2,np.linalg.norm(e2)))
 
                             if self.m_projection == enums.MomentProjection.JCS_Dual:
 
-                                forceValues[i,order[0]] = np.divide(np.dot(np.cross(e2,e3),F[i]), np.dot(np.cross(e1,e2),e3))
-                                forceValues[i,order[1]] = np.divide(np.dot(np.cross(e3,e1),F[i]), np.dot(np.cross(e1,e2),e3))
-                                forceValues[i,order[2]] = np.divide(np.dot(np.cross(e1,e2),F[i]), np.dot(np.cross(e1,e2),e3))
+                                forceValues[i,order[0]] = np.nan_to_num(np.divide(np.dot(np.cross(e2,e3),F[i]), np.dot(np.cross(e1,e2),e3)))
+                                forceValues[i,order[1]] = np.nan_to_num(np.divide(np.dot(np.cross(e3,e1),F[i]), np.dot(np.cross(e1,e2),e3)))
+                                forceValues[i,order[2]] = np.nan_to_num(np.divide(np.dot(np.cross(e1,e2),F[i]), np.dot(np.cross(e1,e2),e3)))
 
-                                momentValues[i,order[0]] = np.divide(np.dot(np.cross(e2,e3),M[i]), np.dot(np.cross(e1,e2),e3))
-                                momentValues[i,order[1]] = np.dot(M[i],e2) #np.divide(np.dot(np.cross(e3,e1),M[i]), np.dot(np.cross(e1,e2),e3))
-                                momentValues[i,order[2]] = np.divide(np.dot(np.cross(e1,e2),M[i]), np.dot(np.cross(e1,e2),e3))
+                                momentValues[i,order[0]] = np.nan_to_num(np.divide(np.dot(np.cross(e2,e3),M[i]), np.dot(np.cross(e1,e2),e3)))
+                                momentValues[i,order[1]] = np.dot(M[i],e2) #np.nan_to_num(np.divide(np.dot(np.cross(e3,e1),M[i]), np.dot(np.cross(e1,e2),e3))
+                                momentValues[i,order[2]] = np.nan_to_num(np.divide(np.dot(np.cross(e1,e2),M[i]), np.dot(np.cross(e1,e2),e3)))
 
                             if self.m_projection == enums.MomentProjection.JCS:
 
@@ -1614,3 +1613,126 @@ class CentreOfMassFilter(object):
 
         outLabel  = "CentreOfMass_" + pointLabelSuffix if pointLabelSuffix is not None else "CentreOfMass"
         btkTools.smartAppendPoint(self.aqui,outLabel,self.model.getCentreOfMass())
+
+class Naim2019ThighMisaligmentCorrectionProcedure(object):
+    """
+        This function corrects the thigh anatomical frame in respect with the method detailed in Naim et al, 2019.
+
+
+        Naaim, A., Bonnefoy-Mazure, A., Armand, S., & Dumas, R. (2019).
+        Correcting lower limb segment axis misalignment in gait analysis: A simple geometrical method.
+        Gait and Posture, 72(May), 34–39
+    """
+
+    def __init__(self,model,side,threshold=20):
+        """
+        :param model [pyCGM2.Model.Model]: model
+        :param side [str]: body side (Left, Right or Both as choice)
+        """
+
+        self.m_model =  model
+        self.m_side = side
+
+        self.m_threshold = threshold
+        # self.m_virtual=dict()
+
+        logging.info("[pyCGM2] threshold of the Naim's correction method : %s"%(threshold))
+
+    def correct(self):
+        """
+
+        """
+        side = self.m_side
+
+        if self.m_side == "Both":
+            sides = ["Left","Right"]
+        else:
+            sides = [self.m_side]
+
+        for side in sides:
+            if side== "Left":
+                sequence = "ZXiY"
+                letter = "L"
+            elif side == "Right":
+                sequence = "ZXY"
+                letter = "R"
+            else:
+                raise Exception("[pyCGM2] : side not recognized ( Left or Right only)")
+
+            logging.warning("Naim knee Correction on the %s side "%(side))
+            seg = self.m_model.getSegment(side+" Thigh")
+
+            hjc = self.m_model.getSegment(side+" Thigh").anatomicalFrame.getNodeTrajectory(letter+"HJC")
+            kjc = self.m_model.getSegment(side+" Thigh").anatomicalFrame.getNodeTrajectory(letter+"KJC")
+            ajc = self.m_model.getSegment(side+" Shank").anatomicalFrame.getNodeTrajectory(letter+"AJC")
+
+            v = np.cross(hjc-kjc,ajc-kjc)
+
+            # 3d angle
+            va = kjc-ajc
+            vb = hjc-kjc
+
+            angle = np.zeros((va.shape[0],1))
+
+            for i in range(0,va.shape[0]):
+                angle[i] = np.rad2deg(np.arctan2(np.linalg.norm(np.cross(va[i,:],vb[i,:])), np.dot(va[i,:],vb[i,:])))
+
+            # extract v> threshold
+            v_sup = list()
+            for i in range(0,va.shape[0]):
+                if angle[i]>self.m_threshold:
+                    v_sup.append(v[i,:])
+            v_sup = np.asarray(v_sup)
+
+            # normalized axis
+            v = np.nan_to_num(np.divide(v_sup.mean(axis=0),np.linalg.norm(v.mean(axis =0))))
+
+            # virtual point along the mean axis
+            virtual = np.zeros((len(ajc),3))
+            for i in range(0,len(ajc)):
+                virtual[i,:]= kjc[i,:] + -100 * v if side == "Left" else kjc[i,:] + 100 * v
+
+            # self.m_virtual[side] = virtual
+
+            #alteration of the segmental motion
+            seg.anatomicalFrame.motion=[] # erase all previous motion
+
+            csFrame=frame.Frame()
+            for i in range(0,len(ajc)):
+                pt1=kjc[i,:]
+                pt2=hjc[i,:]
+                pt3=virtual[i,:]
+                ptOrigin=hjc[i,:]
+
+                a1=(pt2-pt1)
+                a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+
+                v=(pt3-pt1)
+                v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+
+                a2=np.cross(a1,v)
+                a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+
+                x,y,z,R=frame.setFrameData(a1,a2,sequence)
+
+                csFrame.m_axisX=x
+                csFrame.m_axisY=y
+                csFrame.m_axisZ=z
+                csFrame.setRotation(R)
+                csFrame.setTranslation(ptOrigin)
+
+                seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+
+
+            logging.warning("[pyCGM2] : %s thigh anatomical frame motion corrected according Naim et al, 2019"%(side))
+
+
+class ModelMotionCorrectionFilter(object):
+    """
+        Correction of the Motion of an anatomical frame
+    """
+    def __init__(self,procedure):
+        self.m_procedure = procedure
+
+    def correct(self):
+        self.m_procedure.correct()

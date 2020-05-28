@@ -290,7 +290,6 @@ def createGeneralEvents(NEXUS,subject,acq,labels):
     events= acq.GetEvents()
     for ev in btk.Iterate(events):
         if ev.GetLabel() in labels:
-            #print ev.GetTime()*freq
             NEXUS.CreateAnEvent( subject, "General", ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
 def createEvents(NEXUS,subject,acq,labels):
@@ -299,7 +298,6 @@ def createEvents(NEXUS,subject,acq,labels):
     events= acq.GetEvents()
     for ev in btk.Iterate(events):
         if ev.GetLabel() in labels:
-            #print ev.GetTime()*freq
             NEXUS.CreateAnEvent( subject, ev.GetContext(), ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
 def getForcePlateAssignment(NEXUS):

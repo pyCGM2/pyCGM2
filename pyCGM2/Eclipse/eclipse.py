@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 import logging
 import os
 import ConfigParser
@@ -213,7 +214,6 @@ class EnfReader(object):
         try:
             config.read((path+enfFile))
         except ConfigParser.ParsingError:
-            print "enf cleaned"
             cleanEnf(path,enfFile)
             config.read((path+enfFile))
 
@@ -229,7 +229,7 @@ class EnfReader(object):
             try:
                 dict1[option] = self.m_config.get(section, option)
                 if dict1[option] == -1:
-                    DebugPrint("skip: %s" % option)
+                    print("skip: %s" % option)
             except:
                 print("exception on %s!" % option)
                 dict1[option] = None

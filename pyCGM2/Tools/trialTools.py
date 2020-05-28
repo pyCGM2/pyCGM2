@@ -82,7 +82,6 @@ def addTimeSequencesToTrial(trial,nodeToAdd):
     trialTimeSequences = trial.timeSequences()
     tss = nodeToAdd.child(0).findChildren(ma.T_TimeSequence)
     for ts in tss:
-        #print ts.name()
         ts.addParent(trialTimeSequences)
 
 
@@ -228,6 +227,8 @@ def smartTrialReader(dataPath,trialfilename):
     sortedEvents(trial)
     return trial
 
+def smartTrialWriter(root,dataPath,filename):
+    ma.io.write(root,utils.str(dataPath+filename))
 
 def findValidFrames(trial,markerLabels):
 

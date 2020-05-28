@@ -2,6 +2,7 @@
 import numpy as np
 import logging
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
 
 # pyCGM2
@@ -464,3 +465,19 @@ def addTemporalNormalActivationLayer(figAxis,trial,normalActivationLabel,context
                 pos,burstDuration=normalActivation.getNormalBurstActivity_fromCycles(normalActivationLabel,cycleIt.firstFrame,cycleIt.begin, cycleIt.m_contraFO, cycleIt.end, cycleIt.appf)
                 for j in range(0,len(pos)):
                     figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , color='g',alpha=0.1))
+
+
+
+def addRectanglePatches(figAxis,clusters,heightProportion = 0.05):
+    ymax = figAxis.get_ylim()[1]
+    ymin = figAxis.get_ylim()[0]
+    height = (ymax-ymin)*heightProportion
+    for cluster in clusters:
+        begin = cluster[0]
+        end = cluster[1]
+        rectanglePatch = mpatches.Rectangle((begin, ymax-height),
+                                        end-begin,
+                                        height,
+                                        color="k")
+
+        figAxis.add_patch(rectanglePatch)

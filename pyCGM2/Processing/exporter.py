@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import logging
+from  collections import OrderedDict
 
 # pyCGM2
 import pyCGM2
@@ -11,6 +12,23 @@ from pyCGM2.Tools import exportTools
 from pyCGM2 import ma
 from pyCGM2.ma import io
 from pyCGM2.Utils import utils
+
+def renameEmgInAnalysis(analysisInstance,emgChannels, emgMuscles, emgContexts):
+    i=len(emgChannels)-1
+    for channelIt in reversed(emgChannels):
+        newlabel = emgMuscles[i]+"-"+emgContexts[i]
+        for keyIt in analysisInstance.emgStats.data.keys():
+            context = keyIt[1]
+            if channelIt in keyIt[0]:
+                newLabelFinal = keyIt[0].replace(channelIt,newlabel)
+                analysisInstance.emgStats.data[newLabelFinal,context] = analysisInstance.emgStats.data.pop((keyIt[0],context))
+                logging.warning("label [%s] replaced with [%s]"%(keyIt[0],newLabelFinal))
+        i=i-1
+
+
+
+
+
 
 class XlsExportDataFrameFilter(object):
     """
@@ -511,7 +529,7 @@ class XlsAnalysisExportFilter(object):
             # add infos
             if modelInfo is not None:
                 for key,value in modelInfo.items():
-                    exportTools.isColumnNameExist( df_stp, key)
+                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
                     df_descriptiveKinetics[key] = value
             if subjInfo is not None:
                 for key,value in subjInfo.items():
@@ -564,15 +582,15 @@ class XlsAnalysisExportFilter(object):
             # add infos
             if modelInfo is not None:
                 for key,value in modelInfo.items():
-                    exportTools.isColumnNameExist( df_stp, key)
+                    exportTools.isColumnNameExist( df_descriptiveEMG, key)
                     df_descriptiveEMG[key] = value
             if subjInfo is not None:
                 for key,value in subjInfo.items():
-                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
+                    exportTools.isColumnNameExist( df_descriptiveEMG, key)
                     df_descriptiveEMG[key] = value
             if condExpInfo is not None:
                 for key,value in condExpInfo.items():
-                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
+                    exportTools.isColumnNameExist( df_descriptiveEMG, key)
                     df_descriptiveEMG[key] = value
 
             df_descriptiveEMG.to_excel(xlsxWriter,'descriptive EMG ')
@@ -606,7 +624,6 @@ class XlsAnalysisExportFilter(object):
                     df_emg.to_csv((path+outputName + " - EMG - DataFrame.csv"),sep=";")
 
 
-
         logging.info("advanced dataFrame [%s- Advanced] Exported"%outputName)
 
         xlsxWriter.save()
@@ -629,7 +646,7 @@ class AnalysisExportFilter(object):
     def export(self,outputName, path=None):
 
 
-        out=dict()
+        out=OrderedDict()
 
         if self.analysis.kinematicStats.data != {}:
             for keys in self.analysis.kinematicStats.data.keys():
@@ -697,6 +714,8 @@ class AnalysisExportFilter(object):
 
 
         files.saveJson(path,outputName,out)
+
+        return out
 
 
 

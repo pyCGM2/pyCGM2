@@ -10,7 +10,6 @@ import yaml
 import yamlordereddictloader
 from bs4 import BeautifulSoup
 from datetime import datetime
-
 import pyCGM2
 
 
@@ -149,7 +148,7 @@ def saveJson(path, filename, content):
 
 
 def prettyDictPrint(parsedContent):
-    print json.dumps(parsedContent, indent=4, sort_keys=True)
+    print (json.dumps(parsedContent, indent=4, sort_keys=True))
 
 
 

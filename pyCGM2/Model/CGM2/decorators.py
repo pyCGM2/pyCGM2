@@ -7,67 +7,68 @@ from pyCGM2.Model import modelFilters, modelDecorator
 
 
 def applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1only=False):
+    if model.getBodyPart() != enums.BodyPart.UpperLimb:
+        # native but thighRotation altered in mp
+        if dcm["Left Knee"] == enums.JointCalibrationMethod.Basic and  dcm["Left Ankle"] == enums.JointCalibrationMethod.Basic and optional_mp["LeftThighRotation"] !=0:
+            logging.warning("CASE FOUND ===> Left Side = NATIVE CGM1 + manual Thigh  ")
+            modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],
+                markerDiameter, optional_mp["LeftTibialTorsion"], optional_mp["LeftShankRotation"])
 
-    # native but thighRotation altered in mp
-    if dcm["Left Knee"] == enums.JointCalibrationMethod.Basic and  dcm["Left Ankle"] == enums.JointCalibrationMethod.Basic and optional_mp["LeftThighRotation"] !=0:
-        logging.warning("CASE FOUND ===> Left Side = NATIVE CGM1 + manual Thigh  ")
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],
-            markerDiameter, optional_mp["LeftTibialTorsion"], optional_mp["LeftShankRotation"])
+        if dcm["Right Knee"] == enums.JointCalibrationMethod.Basic and  dcm["Right Ankle"] == enums.JointCalibrationMethod.Basic and optional_mp["RightThighRotation"] !=0:
+            logging.warning("CASE FOUND ===> Right Side = NATIVE CGM1 + manual Thigh  ")
+            modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],
+                markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
 
-    if dcm["Right Knee"] == enums.JointCalibrationMethod.Basic and  dcm["Right Ankle"] == enums.JointCalibrationMethod.Basic and optional_mp["RightThighRotation"] !=0:
-        logging.warning("CASE FOUND ===> Right Side = NATIVE CGM1 + manual Thigh  ")
-        modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"right",optional_mp["RightThighRotation"],
-            markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
+        # KAD - and Kadmed
+        if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD:
+            logging.warning("CASE FOUND ===> Left Side = Knee-KAD")
+            modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
+            if  dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
+                logging.warning("CASE FOUND ===> Left Side = Ankle-Med")
+                modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
 
-    # KAD - and Kadmed
-    if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD:
-        logging.warning("CASE FOUND ===> Left Side = Knee-KAD")
-        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
-        if  dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
-            logging.warning("CASE FOUND ===> Left Side = Ankle-Med")
-            modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
-
-    if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD:
-        logging.warning("CASE FOUND ===> Right Side = Knee-KAD")
-        modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
-        if  dcm["Right Ankle"] == enums.JointCalibrationMethod.Medial:
-            logging.warning("CASE FOUND ===> Right Side = Ankle-Med")
-            modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
+        if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD:
+            logging.warning("CASE FOUND ===> Right Side = Knee-KAD")
+            modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
+            if  dcm["Right Ankle"] == enums.JointCalibrationMethod.Medial:
+                logging.warning("CASE FOUND ===> Right Side = Ankle-Med")
+                modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
 
     if not cgm1only:
 
-        #Kad-like (KneeMed)
-        if dcm["Left Knee"] == enums.JointCalibrationMethod.Medial and dcm["Left Ankle"] == enums.JointCalibrationMethod.Basic:
-            modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic, markerDiameter=markerDiameter, side="left")
-        if dcm["Right Knee"] == enums.JointCalibrationMethod.Medial and dcm["Right Ankle"] == enums.JointCalibrationMethod.Basic:
-            modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic, markerDiameter=markerDiameter, side="right")
+        if model.getBodyPart() != enums.BodyPart.UpperLimb:
+            #Kad-like (KneeMed)
+            if dcm["Left Knee"] == enums.JointCalibrationMethod.Medial and dcm["Left Ankle"] == enums.JointCalibrationMethod.Basic:
+                modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic, markerDiameter=markerDiameter, side="left")
+            if dcm["Right Knee"] == enums.JointCalibrationMethod.Medial and dcm["Right Ankle"] == enums.JointCalibrationMethod.Basic:
+                modelDecorator.KneeCalibrationDecorator(model).midCondyles_KAD(acqStatic, markerDiameter=markerDiameter, side="right")
 
-        #knee and ankle Med
-        if dcm["Left Knee"] == enums.JointCalibrationMethod.Medial and dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
-            logging.info("[pyCGM2] Left Knee : Medial - Left Ankle : Medial")
-            modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="left")
-            modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
+            #knee and ankle Med
+            if dcm["Left Knee"] == enums.JointCalibrationMethod.Medial and dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
+                logging.info("[pyCGM2] Left Knee : Medial - Left Ankle : Medial")
+                modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="left")
+                modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
 
-        if dcm["Right Knee"] == enums.JointCalibrationMethod.Medial and dcm["Right Ankle"] == enums.JointCalibrationMethod.Medial:
-            logging.info("[pyCGM2] Right Knee : Medial - Right Ankle : Medial")
-            modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="right")
-            modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
+            if dcm["Right Knee"] == enums.JointCalibrationMethod.Medial and dcm["Right Ankle"] == enums.JointCalibrationMethod.Medial:
+                logging.info("[pyCGM2] Right Knee : Medial - Right Ankle : Medial")
+                modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="right")
+                modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
 
 
 def applyHJCDecorators(model,method):
+    if model.getBodyPart() != enums.BodyPart.UpperLimb:
+        if method["Left"] == "Hara":
+            logging.info("[pyCGM2] Left HJC : Hara")
+            modelDecorator.HipJointCenterDecorator(model).hara(side = "left")
+        elif len(method["Left"]) == 3:
+            logging.info("[pyCGM2] Left HJC : Custom")
+            logging.warning(method["Left"])
+            modelDecorator.HipJointCenterDecorator(model).custom(position_Left =  np.array(method["Left"]), methodDesc = "custom",side="left")
 
-    if method["Left"] == "Hara":
-        logging.info("[pyCGM2] Left HJC : Hara")
-        modelDecorator.HipJointCenterDecorator(model).hara(side = "left")
-    elif len(method["Left"]) == 3:
-        logging.info("[pyCGM2] Left HJC : Custom")
-        logging.warning(method["Left"])
-        modelDecorator.HipJointCenterDecorator(model).custom(position_Left =  np.array(method["Left"]), methodDesc = "custom",side="left")
-
-    if method["Right"] == "Hara":
-        logging.info("[pyCGM2] Right HJC : Hara")
-        modelDecorator.HipJointCenterDecorator(model).hara(side = "right")
-    elif len(method["Right"]) == 3:
-        logging.info("[pyCGM2] Right HJC : Custom")
-        logging.warning(method["Right"])
-        modelDecorator.HipJointCenterDecorator(model).custom(position_Right =  np.array(method["Right"]), methodDesc = "custom",side="right")
+        if method["Right"] == "Hara":
+            logging.info("[pyCGM2] Right HJC : Hara")
+            modelDecorator.HipJointCenterDecorator(model).hara(side = "right")
+        elif len(method["Right"]) == 3:
+            logging.info("[pyCGM2] Right HJC : Custom")
+            logging.warning(method["Right"])
+            modelDecorator.HipJointCenterDecorator(model).custom(position_Right =  np.array(method["Right"]), methodDesc = "custom",side="right")

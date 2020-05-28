@@ -66,15 +66,14 @@ if __name__ == "__main__":
     plt.figure()
     plt.plot(data9["FreeMean"].values[begin:end])
     plt.plot(di)
-    print np.mean(np.diff(data9["FreeMean"].values[begin:end]))
+
 
     slopeMax= (( data9["FreeMean"].values[end]    +data9["FreeSd"].values[end])
               - (data9["FreeMean"].values[begin]  -data9["FreeSd"].values[begin]))/(end-begin)
     slopeMin= (( data9["FreeMean"].values[end]    -data9["FreeSd"].values[end])
               - (data9["FreeMean"].values[begin]  +data9["FreeSd"].values[begin]))/(end-begin)
 
-    print slopeMax
-    print slopeMin
+
 
 
     # splope of dosiflexion 9 ds1 - startpushoof

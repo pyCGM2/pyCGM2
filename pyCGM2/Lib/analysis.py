@@ -13,6 +13,58 @@ from pyCGM2.Processing import jointPatterns
 from pyCGM2.Tools import trialTools,btkTools
 from pyCGM2 import ma
 
+def makeCGMGaitAnalysis(DATA_PATH,modelledFilenames,emgFilenames,emgChannels,
+                        subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                        pointLabelSuffix=None):
+    """
+    makeCGMGaitAnalysis : create the pyCGM2.Processing.analysis.Analysis instance with modelled c3d and  EMG c3d
+
+
+
+    """
+
+
+    if modelledFilenames == []: modelledFilenames=None
+    if emgFilenames == []: emgFilenames=None
+
+    c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(DATA_PATH, modelledFilenames, modelledFilenames, modelledFilenames, emgFilenames)
+
+    cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
+    cmf.enableSpatioTemporal(True) if modelledFilenames is not None else cmf.enableSpatioTemporal(False)
+    cmf.enableKinematic(True) if modelledFilenames is not None else cmf.enableKinematic(False)
+    cmf.enableKinetic(True) if modelledFilenames is not None else cmf.enableKinetic(False)
+    cmf.enableEmg(True) if emgFilenames is not None else cmf.enableEmg(False)
+    trialManager = cmf.generate()
+
+
+    #----cycles
+    cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalTrials=trialManager.spatioTemporal["Trials"],
+                                           kinematicTrials = trialManager.kinematic["Trials"],
+                                           kineticTrials = trialManager.kinetic["Trials"],
+                                           emgTrials=trialManager.emg["Trials"])
+
+    cyclefilter = cycle.CyclesFilter()
+    cyclefilter.setBuilder(cycleBuilder)
+    cycles = cyclefilter.build()
+
+    #----analysis
+    kinematicLabelsDict = cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT
+    kineticLabelsDict = cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT
+    emgLabelList  = [label+"_Rectify_Env" for label in emgChannels]
+
+
+    analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
+                                          kinematicLabelsDict = kinematicLabelsDict,
+                                          kineticLabelsDict = kineticLabelsDict,
+                                          pointlabelSuffix = pointLabelSuffix,
+                                          emgLabelList = emgLabelList)
+
+    analysisFilter = analysis.AnalysisFilter()
+    analysisFilter.setInfo(subject=subjectInfo, model=modelInfo, experimental=experimentalInfo)
+    analysisFilter.setBuilder(analysisBuilder)
+    analysisFilter.build()
+
+    return analysisFilter.analysis
 
 def makeAnalysis(DATA_PATH,
                     modelledFilenames,
@@ -142,6 +194,46 @@ def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
     exportFilter.setAnalysisInstance(analysisInstance)
     exportFilter.export(name, path=DATA_PATH,excelFormat = "xls",mode = mode)
 
+def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None):
+
+    """
+    processEMG_fromC3dFiles : filters emg channels from a list of c3d files
+
+    :param DATA_PATH [String]: path to your folder
+    :param gaitTrials [string List]:c3d files with emg signals
+    :param emgChannels [string list]: label of your emg channels
+
+    **optional**
+
+    :param highPassFrequencies [list of float]: boundaries of the bandpass filter
+    :param envelopFrequency [float]: cut-off frequency for creating an emg envelop
+    :param fileSuffix [string]: suffix added to your ouput c3d files
+
+    """
+    if fileSuffix is None: fileSuffix=""
+
+    for gaitTrial in gaitTrials:
+        acq = btkTools.smartReader(DATA_PATH +gaitTrial)
+
+        flag = False
+        for channel in emgChannels:
+            if not btkTools.isAnalogExist(acq,channel):
+                logging.error( "channel [%s] not detected in the c3d [%s]"%(channel,gaitTrial))
+                flag = True
+        if flag:
+            raise Exception ("[pyCGM2] One label has not been detected as analog. see above")
+
+        bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
+        bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
+        bf.run()
+
+        envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
+        envf.setCutoffFrequency(envelopFrequency)
+        envf.run()
+
+        outFilename = gaitTrial if fileSuffix=="" else gaitTrial+"_"+fileSuffix
+
+        btkTools.smartWriter(acq,DATA_PATH+outFilename)
 
 def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
     """
@@ -167,48 +259,6 @@ def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelop
     envf.run()
 
     return acq
-
-def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None):
-
-    """
-    processEMG_fromC3dFiles : filters emg channels from a list of c3d files
-
-    :param DATA_PATH [String]: path to your folder
-    :param gaitTrials [string List]:c3d files with emg signals
-    :param emgChannels [string list]: label of your emg channels
-
-    **optional**
-
-    :param highPassFrequencies [list of float]: boundaries of the bandpass filter
-    :param envelopFrequency [float]: cut-off frequency for creating an emg envelop
-    :param fileSuffix [string]: suffix added to your ouput c3d files
-
-    """
-    if fileSuffix is None: fileSuffix=""
-
-    for gaitTrial in gaitTrials:
-        acq = btkTools.smartReader(DATA_PATH +gaitTrial)
-
-        flag = False
-        for channel in emgChannels:
-            if not btkTools.isAnalogExist(acq,channel):
-                logging.info( "channel [%s] not detected in the c3d [%s]"%(channel,gaitTrial))
-                flag = True
-        if flag:
-            raise Exception ("[pyCGM2] One label has not been detected as analog. see above")
-
-        bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
-        bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
-        bf.run()
-
-        envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
-        envf.setCutoffFrequency(envelopFrequency)
-        envf.run()
-
-        outFilename = gaitTrial if fileSuffix=="" else gaitTrial+"_"+fileSuffix
-    btkTools.smartWriter(acq,DATA_PATH+outFilename)
-
-
 
 def makeEmgAnalysis(DATA_PATH,
                     processedEmgFiles,

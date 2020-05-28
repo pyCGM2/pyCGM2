@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 
 def getPhases(dataStats):
     #phases
@@ -63,3 +65,48 @@ def getPhases(dataStats):
                                     100]
 
     return phases
+
+
+def getNumberOfCycle(analysisInstance,label,context):
+
+    statSection = getAnalysisSection(analysisInstance,label,context)
+    values = statSection.data[label,context]["values"]
+    n_cycle = len(values)
+
+    return n_cycle
+
+def getValues(analysisInstance,label,context):
+
+    statSection = getAnalysisSection(analysisInstance,label,context)
+    values = statSection.data[label,context]["values"]
+
+    return values
+
+
+
+def isKeyExist(analysisInstance,label,context,exceptionMode = False):
+
+    flag = False
+    for item in  [analysisInstance.kinematicStats.data,analysisInstance.kineticStats.data,analysisInstance.emgStats.data]:
+        if (label,context) in item.keys():
+            flag = True
+            break
+
+    if not flag:
+        if exceptionMode:
+            raise Exception ("[pyCGM2] label [%s] - context [%s] doesn t find in the analysis instance"%(label,context))
+        else:
+            logging.error("[pyCGM2] label [%s] - context [%s] doesn t find in the analysis instance"%(label,context))
+
+    return flag
+
+def getAnalysisSection(analysisInstance,label,context):
+
+    if (label,context) in analysisInstance.kinematicStats.data.keys():
+        return analysisInstance.kinematicStats
+    elif (label,context) in analysisInstance.kineticStats.data.keys():
+        return analysisInstance.kineticStats
+    elif (label,context) in analysisInstance.emgStats.data.keys():
+        return analysisInstance.emgStats
+    else:
+        raise Exception ("[pyCGM2] label [%s] - context [%s] doesn t find in the analysis instance"%(label,context))

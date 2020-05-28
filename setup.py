@@ -3,8 +3,7 @@ from setuptools import setup,find_packages
 import os,sys
 import string
 import logging
-from logging.handlers import RotatingFileHandler
-from logging import handlers
+
 #logging.basicConfig(filename = "installer.log", level=logging.DEBUG)
 
 import shutil
@@ -20,7 +19,7 @@ if developMode:
 if sys.maxsize > 2**32:
     raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
 
-VERSION ="3.2.16"
+VERSION ="3.3.0"
 
 
 for it in site.getsitepackages():
@@ -205,5 +204,51 @@ setup(name = 'pyCGM2',
                  'Programming Language :: Python :: 2.7',
                  'Operating System :: Microsoft :: Windows',
                  'Natural Language :: English'],
-    scripts=gen_data_files_forScripts("Apps","Scripts")
+    #scripts=gen_data_files_forScripts("Apps/ViconApps")
+    entry_points={
+          'console_scripts': [
+                # NEXUS
+                'Nexus_CGM1_Calibration  =  pyCGM2.Apps.ViconApps.CGM1.CGM1_Calibration:main',
+                'Nexus_CGM1_Fitting      =  pyCGM2.Apps.ViconApps.CGM1.CGM1_Fitting:main',
+                'Nexus_CGM11_Calibration =  pyCGM2.Apps.ViconApps.CGM1_1.CGM1_1_Calibration:main',
+                'Nexus_CGM11_Fitting     =  pyCGM2.Apps.ViconApps.CGM1_1.CGM1_1_Fitting:main',
+                'Nexus_CGM21_Calibration =  pyCGM2.Apps.ViconApps.CGM2_1.CGM2_1_Calibration:main',
+                'Nexus_CGM21_Fitting     =  pyCGM2.Apps.ViconApps.CGM2_1.CGM2_1_Fitting:main',
+                'Nexus_CGM22_Calibration =  pyCGM2.Apps.ViconApps.CGM2_2.CGM2_2_Calibration:main',
+                'Nexus_CGM22_Fitting     =  pyCGM2.Apps.ViconApps.CGM2_2.CGM2_2_Fitting:main',
+                'Nexus_CGM23_Calibration =  pyCGM2.Apps.ViconApps.CGM2_3.CGM2_3_Calibration:main',
+                'Nexus_CGM23_Fitting     =  pyCGM2.Apps.ViconApps.CGM2_3.CGM2_3_Fitting:main',
+                'Nexus_CGM24_Calibration =  pyCGM2.Apps.ViconApps.CGM2_4.CGM2_4_Calibration:main',
+                'Nexus_CGM24_Fitting     =  pyCGM2.Apps.ViconApps.CGM2_4.CGM2_4_Fitting:main',
+                'Nexus_CGM25_Calibration =  pyCGM2.Apps.ViconApps.CGM2_5.CGM2_5_Calibration:main',
+                'Nexus_CGM25_Fitting     =  pyCGM2.Apps.ViconApps.CGM2_5.CGM2_5_Fitting:main',
+                'Nexus_CGM26_2DOF =  pyCGM2.Apps.ViconApps.CGM2_6.CGM_Knee2DofCalibration:main',
+                'Nexus_CGM26_SARA     =  pyCGM2.Apps.ViconApps.CGM2_6.CGM_Knee2DofCalibration:main',
+
+                'Nexus_plotMAP                      =  pyCGM2.Apps.ViconApps.DataProcessing.plotMAP:main',
+                'Nexus_plotNormalizedKinematics     =  pyCGM2.Apps.ViconApps.DataProcessing.plotNormalizedKinematics:main',
+                'Nexus_plotNormalizedKinetics       =  pyCGM2.Apps.ViconApps.DataProcessing.plotNormalizedKinetics:main',
+                'Nexus_plotSpatioTemporalParameters =  pyCGM2.Apps.ViconApps.DataProcessing.plotSpatioTemporalParameters:main',
+                'Nexus_plotTemporalKinematics       =  pyCGM2.Apps.ViconApps.DataProcessing.plotTemporalKinematics:main',
+                'Nexus_plotTemporalKinetics         =  pyCGM2.Apps.ViconApps.DataProcessing.plotTemporalKinetics:main',
+
+                'Nexus_plotNormalizedEmg = pyCGM2.Apps.ViconApps.EMG.plotNormalizedEmg:main',
+                'Nexus_plotTemporalEmg   = pyCGM2.Apps.ViconApps.EMG.plotTemporalEmg:main',
+
+                'Nexus_zeniDetector     =  pyCGM2.Apps.ViconApps.Events.zeniDetector:main',
+                'Nexus_KalmanGapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling:main',
+
+                'Nexus_resetProgramData =  pyCGM2.Apps.ViconApps.Miscellaneous.pyCGM2_resetProgramData:main',
+                'Nexus_check_inputArgs  =  pyCGM2.Apps.ViconApps.Miscellaneous.check_inputArgs:main',
+
+                # QTM
+                'QTM_CGM1_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow:command',
+                'QTM_CGM11_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM11_workflow:command',
+                'QTM_CGM21_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM21_workflow:command',
+                'QTM_CGM22_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM22_workflow:command',
+                'QTM_CGM23_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM23_workflow:command',
+                'QTM_CGM24_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM24_workflow:command',
+
+          ]
+      },
     )

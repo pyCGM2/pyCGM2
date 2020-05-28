@@ -11,6 +11,7 @@ from pyCGM2.Model import model, modelDecorator, frame, motion
 from pyCGM2.Model.CGM2 import cgm, cgm2
 
 from pyCGM2.Utils import utils
+from pyCGM2.Signal import detect_changes
 
 
 class GaitEventQualityProcedure(object):
@@ -26,7 +27,6 @@ class GaitEventQualityProcedure(object):
 
 
         events = btkTools.sortedEvents(self.acq)
-
         if events != []:
 
             events_L = list()
@@ -84,6 +84,12 @@ class GaitEventQualityProcedure(object):
                 else:
                     logging.warning("Only one right events ")
                     self.state = False
+        else:
+            logging.error("[pyCGM2-Checking] No events are in trial")
+            if self.exceptionMode:
+                raise Exception("[pyCGM2-Checking]  No events are in the trials")
+            self.state = False
+
 
 
 
@@ -203,37 +209,38 @@ class GapQualityProcedure(object):
 
 
 class SwappingMarkerQualityProcedure(object):
-    def __init__(self,acq,markers=None,title=None):
+    def __init__(self,acq,markers=None,title=None,plot=False):
         self.acq = acq
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
         self.exceptionMode = False
         self.title = "Swapping marker" if title is None else title
 
         self.state = True
+        self.plot = plot
+
 
 
     def check(self):
 
+        ff = self.acq.GetFirstFrame()
         frameNumber = self.acq.GetPointFrameNumber()
         freq = self.acq.GetPointFrequency()
 
         for marker in self.markers:
-            nearest,dist = btkTools.findNearestMarker(self.acq,1,marker)
-
+            markerList = list(self.markers)
+            markerList.remove(marker)
+            nearest,dist = btkTools.findNearestMarker(self.acq,1,marker,markerNames = markerList)
             values = self.acq.GetPoint(marker).GetValues()
             norms = np.linalg.norm(values,axis =1)
 
-            for i in range(1,frameNumber-1):
-                residual = self.acq.GetPoint(marker).GetResidual(i)
-                residual_plus1 = self.acq.GetPoint(marker).GetResidual(i+1)
-                value_minus1 = norms[i-1]
-                value = norms[i]
-                value_plus1 = norms[i+1]
+            ta, tai, taf, amp = detect_changes.detect_cusum(norms, dist, dist/2.0, True, self.plot)
 
-                if residual>=0.0 and residual_plus1>=0.0:
-                    if np.abs(value-value_plus1) > dist :
-                        logging.warning("[pyCGM2-Checking] marker [%s] - swapped at frame [%i] "%(marker,i))
-                        self.state = False
+            if ta.size != 0:
+                for index in tai:
+                    residual = self.acq.GetPoint(marker).GetResidual(index)
+                    if residual>=0.0:
+                        frame = index+ff
+                        logging.warning("[pyCGM2-Checking] marker [%s] - swapped at frame [%i] (nearest marker= %s - dist=%.2f) "%(marker,frame,nearest,dist))
 
 
 class MarkerPositionQualityProcedure(object):

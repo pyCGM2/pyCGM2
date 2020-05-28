@@ -65,6 +65,10 @@ class Model(object):
     def setBodyPart(self, bodypart):
         self.m_bodypart = bodypart
 
+    def getBodyPart(self):
+        return self.m_bodypart
+
+
     def setCentreOfMass(self,com):
         self.m_centreOfMass = com
     def getCentreOfMass(self):
@@ -179,7 +183,7 @@ class Model(object):
 
 
         """
-        segment_list = [it for it in self.m_segmentCollection if it.name not in segementlabels]
+        segment_list = [it for it in self.m_segmentCollection if it.name not in segmentlabels]
         self.m_segmentCollection = segment_list
 
     def removeJoint(self,jointlabels):
@@ -478,13 +482,13 @@ class Model6Dof(Model):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef[segName][tfName]['sequence'])
 
@@ -521,13 +525,13 @@ class Model6Dof(Model):
             ptO = tf.static.getNode_byLabel(ndO).m_global
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic[segName]['sequence'])
 
@@ -744,6 +748,21 @@ class Segment(object):
 
         self.m_info = dict()
         self.m_isCloneOf = False
+
+    def removeTrackingMarker(self,label):
+        """
+            Add a tracking marker
+
+            :Parameters:
+                - `label` (str) - marker label
+        """
+        if label in self.m_tracking_markers:
+            self.m_tracking_markers.remove(label)
+            self.m_markerLabels.remove(label)
+        else:
+            logging.debug("tracking marker %s  remove" % label)
+
+
     def addTrackingMarkerLabel(self,label):
         """
             Add a tracking marker

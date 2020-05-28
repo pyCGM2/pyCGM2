@@ -25,6 +25,13 @@ def smartReader(filename,translators=None):
     acq=reader.GetOutput()
     if translators is not None:
         acq =  applyTranslators(acq,translators)
+
+    # management force plate type 5
+    if checkForcePlateExist(acq):
+        if "5" in smartGetMetadata(acq,"FORCE_PLATFORM","TYPE"):
+            logging.warning("[pyCGM2] Type 5 Force plate detected. Due to a BTK known-issue,  type 5 force plate has been corrected as type 2")
+            from pyCGM2.ForcePlates import forceplates # inelegant code but avoir circular import !!
+            forceplates.correctForcePlateType5(acq)
     return acq
 
 def smartWriter(acq, filename):
@@ -54,13 +61,14 @@ def GetMarkerNames(acq):
     return markerNames
 
 
-def findNearestMarker(acq,i,marker):
+def findNearestMarker(acq,i,marker,markerNames=None):
     values = acq.GetPoint(utils.str(marker)).GetValues()[i,:]
 
-    markerNames=[]
-    for it in btk.Iterate(acq.GetPoints()):
-        if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*" and it.GetLabel() != utils.str(marker):
-            markerNames.append(it.GetLabel())
+    if markerNames is None:
+        markerNames=[]
+        for it in btk.Iterate(acq.GetPoints()):
+            if it.GetType() == btk.btkPoint.Marker and it.GetLabel()[0] !="*" and it.GetLabel() != utils.str(marker):
+                markerNames.append(it.GetLabel())
 
     j=0
     out = np.zeros((len(markerNames),3))
@@ -312,7 +320,6 @@ def applyTranslators(acq, translators):
         for it in translators.items():
             wantedLabel,initialLabel = it[0],it[1]
             if initialLabel !="None":
-                print wantedLabel
                 if isPointExist(acq,wantedLabel):
                     smartAppendPoint(acqClone,(wantedLabel+"_origin"),acq.GetPoint(utils.str(wantedLabel)).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
                     logging.warning("wantedLabel (%s)_origin created" %((wantedLabel)))

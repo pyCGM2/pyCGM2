@@ -22,10 +22,12 @@ class CGM(model.Model):
                             'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles",
                                    "LForeFootAngles",
                                    "LThoraxAngles","LSpineAngles",
+                                   "LNeckAngles","LHeadAngles",
                                    "LShoulderAngles","LElbowAngles","LWristAngles"],
                            'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles",
                                     "RForeFootAngles",
                                     "RThoraxAngles","RSpineAngles",
+                                    "RNeckAngles","RHeadAngles",
                                     "RShoulderAngles","RElbowAngles","RWristAngles"]}
 
     ANALYSIS_KINETIC_LABELS_DICT ={
@@ -41,7 +43,7 @@ class CGM(model.Model):
         self.m_useRightTibialTorsion=False
         self.staExpert= False
 
-    def setSTAexpertMode(boolFlag):
+    def setSTAexpertMode(self,boolFlag):
         self.staExpert= boolFlag
 
     @classmethod
@@ -218,6 +220,11 @@ class CGM1(CGM):
                     self.m_segmentCollection = segment_list
                     joint_list = [it for it in self.m_jointCollection if it.m_label in self.LOWERLIMB_JOINTS]
                     self.m_jointCollection = joint_list
+
+            elif bodyPart_Static == enums.BodyPart.LowerLimb:
+                if bodyPart == enums.BodyPart.LowerLimbTrunk or  bodyPart == enums.BodyPart.FullBody:
+                    logging.info("[pyCGM2] LowerLimbTrunk aof fullbody markerset detected in your acquisition but  model calibration done for LowerLimb only")
+                    bodyPart = enums.BodyPart.LowerLimb
             else:
                 raise Exception("[pyCGM2] Model not applicable. Check your tracking marker set (static file calibated a %s model whereas the trial detects a %s model)"%(bodyPart_Static.name,bodyPart.name))
 
@@ -2671,15 +2678,14 @@ class CGM1(CGM):
             ptOrigin=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][3])).GetValues()[i,:]
 
             a1=(pt2-pt1)
-
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Pelvis"]["TF"]['sequence'])
 
@@ -2722,13 +2728,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Pelvis"]['sequence'])
 
@@ -2797,13 +2803,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Thigh"]["TF"]['sequence'])
 
@@ -2842,13 +2848,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Left Thigh"]['sequence'])
 
@@ -2905,13 +2911,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Thigh"]["TF"]['sequence'])
 
@@ -2958,13 +2964,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Right Thigh"]['sequence'])
 
@@ -3025,13 +3031,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Shank"]["TF"]['sequence'])
 
@@ -3081,13 +3087,13 @@ class CGM1(CGM):
             ptOrigin=aqui.GetPoint(str(dictAnat["Left Shank"]['labels'][3])).GetValues()[i,:]
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Left Shank"]['sequence'])
             csFrame=frame.Frame()
@@ -3200,13 +3206,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Shank"]["TF"]['sequence'])
 
@@ -3258,13 +3264,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Right Shank"]['sequence'])
 
@@ -3371,12 +3377,12 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
 
@@ -3451,12 +3457,12 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
@@ -3525,12 +3531,12 @@ class CGM1(CGM):
                 v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY # distal segment
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Left Foot"]['sequence'])
@@ -3568,12 +3574,12 @@ class CGM1(CGM):
                 v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY # distal segment
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Right Foot"]['sequence'])
 
@@ -4143,13 +4149,13 @@ class CGM1(CGM):
 
 
         a1=(kjc-ajc)
-        a1=np.divide(a1,np.linalg.norm(a1))
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(ank-ajc)
-        v=np.divide(v,np.linalg.norm(v))
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=np.divide(a2,np.linalg.norm(a2))
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,"ZXY")
         csFrame=frame.Frame()
@@ -5143,13 +5149,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Thorax"]["TF"]['sequence'])
 
@@ -5221,13 +5227,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Thorax"]['sequence'])
 
@@ -5309,13 +5315,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" Clavicle"]["TF"]['sequence'])
 
@@ -5343,13 +5349,13 @@ class CGM1(CGM):
             ptOrigin=aqui.GetPoint(str(dictAnat[side+" Clavicle"]['labels'][3])).GetValues()[i,:]
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" Clavicle"]['sequence'])
 
@@ -5426,13 +5432,13 @@ class CGM1(CGM):
 
 
                 a1=(pt2-pt1)
-                a1=np.divide(a1,np.linalg.norm(a1))
+                a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                 v=(pt3-pt1)
-                v=np.divide(v,np.linalg.norm(v))
+                v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                 a2=np.cross(a1,v)
-                a2=np.divide(a2,np.linalg.norm(a2))
+                a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                 x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" UpperArm"]["TF"]['sequence'])
 
@@ -5492,13 +5498,13 @@ class CGM1(CGM):
 
 
                 a1=(pt2-pt1)
-                a1=np.divide(a1,np.linalg.norm(a1))
+                a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                 v=(pt3-pt1)
-                v=np.divide(v,np.linalg.norm(v))
+                v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                 a2=np.cross(a1,v)
-                a2=np.divide(a2,np.linalg.norm(a2))
+                a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                 x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" UpperArm"]['sequence'])
 
@@ -5562,13 +5568,13 @@ class CGM1(CGM):
 
 
                 a1=(pt2-pt1)
-                a1=np.divide(a1,np.linalg.norm(a1))
+                a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                 v=(pt3-pt1)
-                v=np.divide(v,np.linalg.norm(v))
+                v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
                 a2=np.cross(a1,v)
-                a2=np.divide(a2,np.linalg.norm(a2))
+                a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                 x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" ForeArm"]["TF"]['sequence'])
 
@@ -5635,16 +5641,16 @@ class CGM1(CGM):
 
 
                 a1=(pt2-pt1)
-                a1=np.divide(a1,np.linalg.norm(a1))
+                a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
                 if dictAnat[side+" ForeArm"]['labels'][2] is not None:
                     v=(pt3-pt1)
-                    v=np.divide(v,np.linalg.norm(v))
+                    v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
                 else:
                     v=self.getSegment(side+" UpperArm").anatomicalFrame.motion[i].m_axisY
 
                 a2=np.cross(a1,v)
-                a2=np.divide(a2,np.linalg.norm(a2))
+                a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
                 x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" ForeArm"]['sequence'])
 
@@ -5708,13 +5714,13 @@ class CGM1(CGM):
             ptOrigin=aqui.GetPoint(str(dictRef[side+" Hand"]["TF"]['labels'][3])).GetValues()[i,:]
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" Hand"]["TF"]['sequence'])
 
@@ -5764,13 +5770,13 @@ class CGM1(CGM):
 
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" Hand"]['sequence'])
 
@@ -5822,13 +5828,13 @@ class CGM1(CGM):
             ptOrigin=aqui.GetPoint(str(dictRef["Head"]["TF"]['labels'][3])).GetValues()[i,:]
 
             a1=(pt2-pt1)
-            a1=np.divide(a1,np.linalg.norm(a1))
+            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
             v=(pt3-pt1)
-            v=np.divide(v,np.linalg.norm(v))
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
             a2=np.cross(a1,v)
-            a2=np.divide(a2,np.linalg.norm(a2))
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Head"]["TF"]['sequence'])
 
