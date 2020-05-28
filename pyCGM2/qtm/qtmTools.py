@@ -27,7 +27,7 @@ def findStatic(soup):
     qtmMeasurements = soup.find_all("Measurement")
     static=list()
     for measurement in qtmMeasurements:
-        if measurement.attrs["Type"] == "Static - CGM2" and toBool(measurement.Used.text):
+        if "Static" in measurement.attrs["Type"] and toBool(measurement.Used.text):
             static.append(measurement)
         if len(static)>1:
             raise Exception("You can t have 2 activated static c3d within your session")
@@ -38,7 +38,7 @@ def findDynamic(soup):
 
     measurements=list()
     for measurement in qtmMeasurements:
-        if measurement.attrs["Type"] != "Static - CGM2" and toBool(measurement.Used.text):
+        if "Gait" in measurement.attrs["Type"] and toBool(measurement.Used.text):
             measurements.append(measurement)
 
     return measurements
@@ -49,7 +49,7 @@ def detectMeasurementType(soup):
 
     types = list()
     for measurement in measurements:
-        if measurement.attrs["Type"] != "Static - CGM2" and toBool(measurement.Used.text):
+        if "Static" not in measurement.attrs["Type"] and toBool(measurement.Used.text):
             if measurement.attrs["Type"] not in types:
                 types.append(measurement.attrs["Type"])
 
