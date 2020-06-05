@@ -267,6 +267,9 @@ def convertBtkAcquisition(acq, returnType = "Trial"):
     numberAnalogSamplePerFrame = acq.GetNumberAnalogSamplePerFrame()
     analogFramerate = acq.GetAnalogFrequency()
 
+    trial.setProperty("POINT:RATE", framerate)
+    trial.setProperty("ANALOG:RATE", analogFramerate)
+
     if firstFrame ==1:
         time_init = 0.0
     else:
