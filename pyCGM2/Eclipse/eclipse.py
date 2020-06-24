@@ -18,7 +18,7 @@ DEFAULT_SUBSESSION = {"Task":"","Shoes":"","ProthesisOrthosis":"","ExternalAid":
 
 
 def generateEmptyENF(path):
-    c3ds = getFiles(path,"c3d")
+    c3ds = files.getFiles(path,"c3d")
     for c3d in c3ds:
         enfName = c3d[:-4]+".Trial.enf"
         if enfName not in os.listdir(path):

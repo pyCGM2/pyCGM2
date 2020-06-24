@@ -93,7 +93,10 @@ def markerFiltering(btkAcq,markers,order=2, fc=6,zerosFiltering=True):
 
         filtValues_section=list()
         for data in splitdata:
-            filtValues_section.append(signal.filtfilt(b, a, data ,axis=0))
+            padlen = 3 * max(len(a), len(b)) # default as defined in https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.filtfilt.html
+            if len(data) <= padlen:
+                padlen = len(data) - 1
+            filtValues_section.append(signal.filtfilt(b, a, data ,padlen=padlen,axis=0))
 
         indexes = np.concatenate(splitIndexes)
         values = np.concatenate(filtValues_section)
