@@ -36,7 +36,7 @@ def buid_df_descriptiveCycle1_1(analysis_outputStats):
         if context == "Left":
             for typIt in ["mean","std","median"]:
                 df_L = pd.DataFrame({ label : [ analysis_outputStats[label,context][str(typIt)] ],
-                                         'Context': str(context),
+                                         'EventContext': str(context),
                                          'Stats type' : str(typIt) })
                 df_collection_L[typIt].append(df_L)
 
@@ -44,7 +44,7 @@ def buid_df_descriptiveCycle1_1(analysis_outputStats):
         if context == "Right":
             for typIt in ["mean","std","median"]:
                 df_R = pd.DataFrame({ label : [ analysis_outputStats[label,context][str(typIt)] ],
-                                   'Context': str(context),
+                                   'EventContext': str(context),
                                    'Stats type': str(typIt)
                                    })
                 df_collection_R[typIt].append(df_R)
@@ -96,7 +96,7 @@ def buid_df_cycles1_1(analysis_outputStats):
         if context == "Left":
             df_L = pd.DataFrame({ label : analysis_outputStats[label,context]['values'],
                                "Cycle": range(0,n),
-                               'Context': str(context)
+                               'EventContext': str(context)
                                })
 
             df_collection_L.append(df_L)
@@ -105,7 +105,7 @@ def buid_df_cycles1_1(analysis_outputStats):
         if context == "Right":
             df_R = pd.DataFrame({ label : analysis_outputStats[label,context]['values'],
                                "Cycle": range(0,n),
-                               'Context': str(context)
+                               'EventContext': str(context)
                                })
 
             df_collection_R.append(df_R)
@@ -140,19 +140,19 @@ def buid_df_descriptiveCycle1_1_overall(analysis_outputStats,columnName):
 
     valuesMean=analysis_outputStats["mean"]
     df=pd.DataFrame(valuesMean,  columns = [columnName])
-    df['Context']= "overall"
+    df['EventContext']= "overall"
     df['Stats type'] = "mean"
     df_collection.append(df)
 
     valuesStd=analysis_outputStats["std"]
     df=pd.DataFrame(valuesStd,  columns = [columnName])
-    df['Context']= "overall"
+    df['EventContext']= "overall"
     df['Stats type'] = "std"
     df_collection.append(df)
 
     valuesMedian=analysis_outputStats["median"]
     df=pd.DataFrame(valuesMedian,  columns = [columnName])
-    df['Context']= "overall"
+    df['EventContext']= "overall"
     df['Stats type'] = "median"
     df_collection.append(df)
 
@@ -174,19 +174,19 @@ def buid_df_descriptiveCycle1_1_onlyContext(analysis_outputStats,columnName):
         if context == "Left":
             valuesMean=analysis_outputStats[context]["mean"]
             df=pd.DataFrame(valuesMean,  columns = [columnName])
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "mean"
             df_collection_L.append(df)
 
             valuesStd=analysis_outputStats[context]["std"]
             df=pd.DataFrame(valuesStd,  columns= [columnName])
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "std"
             df_collection_L.append(df)
 
             valuesMedian=analysis_outputStats[context]["median"]
             df=pd.DataFrame(valuesMedian,  columns= [columnName])
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "median"
             df_collection_L.append(df)
 
@@ -194,19 +194,19 @@ def buid_df_descriptiveCycle1_1_onlyContext(analysis_outputStats,columnName):
         if context == "Right":
             valuesMean=analysis_outputStats[context]["mean"]
             df=pd.DataFrame(valuesMean,  columns = [columnName])
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "mean"
             df_collection_R.append(df)
 
             valuesStd=analysis_outputStats[context]["std"]
             df=pd.DataFrame(valuesStd,  columns= [columnName])
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "std"
             df_collection_R.append(df)
 
             valuesMedian=analysis_outputStats[context]["median"]
             df=pd.DataFrame(valuesMedian,  columns= [columnName])
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "median"
             df_collection_R.append(df)
 
@@ -237,14 +237,14 @@ def buid_df_cycles1_1_onlyContext(analysis_outputStats, columnName):
             values = analysis_outputStats[context]["values"]
             df=pd.DataFrame(values,  columns= [columnName])
             df['Cycle']= 0 if  len(values) == 1 else range(0,len(values))
-            df['Context']= context
+            df['EventContext']= context
             df_collection_L.append(df)
 
         if context=="Right" :
             values = analysis_outputStats[context]["values"]
             df=pd.DataFrame(values,  columns= [columnName])
             df['Cycle']= 0 if  len(values) == 1 else range(0,len(values))
-            df['Context']= context
+            df['EventContext']= context
             df_collection_R.append(df)
 
     left_flag = len(df_collection_L)
@@ -288,7 +288,7 @@ def buid_df_descriptiveCycle1_3(analysis_outputStats,columnName):
             df=pd.DataFrame(valuesMean,  columns = [columnName])
             df['Axe']=['X','Y','Z']
             df['Label']=label
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "mean"
             df_collection_L.append(df)
 
@@ -296,7 +296,7 @@ def buid_df_descriptiveCycle1_3(analysis_outputStats,columnName):
             df=pd.DataFrame(valuesStd,  columns= [columnName])
             df['Axe']=['X','Y','Z']
             df['Label']=label
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "std"
             df_collection_L.append(df)
 
@@ -304,7 +304,7 @@ def buid_df_descriptiveCycle1_3(analysis_outputStats,columnName):
             df=pd.DataFrame(valuesMedian,  columns= [columnName])
             df['Axe']=['X','Y','Z']
             df['Label']=label
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "median"
             df_collection_L.append(df)
 
@@ -314,7 +314,7 @@ def buid_df_descriptiveCycle1_3(analysis_outputStats,columnName):
             df=pd.DataFrame(valuesMean,  columns= [columnName])
             df['Axe']=['X','Y','Z']
             df['Label']=label
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "mean"
             df_collection_R.append(df)
 
@@ -322,7 +322,7 @@ def buid_df_descriptiveCycle1_3(analysis_outputStats,columnName):
             df=pd.DataFrame(valuesStd,  columns= [columnName])
             df['Axe']=['X','Y','Z']
             df['Label']=label
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "std"
             df_collection_R.append(df)
 
@@ -330,7 +330,7 @@ def buid_df_descriptiveCycle1_3(analysis_outputStats,columnName):
             df=pd.DataFrame(valuesMedian,  columns= [columnName])
             df['Axe']=['X','Y','Z']
             df['Label']=label
-            df['Context']= context
+            df['EventContext']= context
             df['Stats type'] = "median"
             df_collection_R.append(df)
 
@@ -367,7 +367,7 @@ def buid_df_cycles1_3(analysis_outputStats, columnName):
                 df['Axis']=['X','Y','Z']
                 df['Label']=label
                 df['Cycle']= i_l
-                df['Context']= context
+                df['EventContext']= context
                 df_collection_L.append(df)
                 i_l+=1
 
@@ -377,7 +377,7 @@ def buid_df_cycles1_3(analysis_outputStats, columnName):
                 df['Axis']=['X','Y','Z']
                 df['Label']=label
                 df['Cycle']= i_r
-                df['Context']= context
+                df['EventContext']= context
                 df_collection_R.append(df)
                 i_r+=1
 
@@ -423,7 +423,7 @@ def buid_df_descriptiveCycle101_3(analysis_outputStats):
                 df=pd.DataFrame(valuesMean.T,  columns = FRAMES_HEADER)
                 df['Axe']=['X','Y','Z']
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "mean"
                 df_collection_L.append(df)
 
@@ -432,7 +432,7 @@ def buid_df_descriptiveCycle101_3(analysis_outputStats):
                 df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
                 df['Axe']=['X','Y','Z']
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "std"
                 df_collection_L.append(df)
 
@@ -441,7 +441,7 @@ def buid_df_descriptiveCycle101_3(analysis_outputStats):
                 df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
                 df['Axe']=['X','Y','Z']
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "median"
                 df_collection_L.append(df)
 
@@ -453,7 +453,7 @@ def buid_df_descriptiveCycle101_3(analysis_outputStats):
                 df=pd.DataFrame(valuesMean.T,  columns= FRAMES_HEADER)
                 df['Axe']=['X','Y','Z']
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "mean"
                 df_collection_R.append(df)
 
@@ -462,7 +462,7 @@ def buid_df_descriptiveCycle101_3(analysis_outputStats):
                 df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
                 df['Axe']=['X','Y','Z']
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "std"
                 df_collection_R.append(df)
 
@@ -471,7 +471,7 @@ def buid_df_descriptiveCycle101_3(analysis_outputStats):
                 df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
                 df['Axe']=['X','Y','Z']
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "median"
                 df_collection_R.append(df)
 
@@ -511,7 +511,7 @@ def buid_df_cycles101_3(analysis_outputStats):
                     df['Axis']=['X','Y','Z']
                     df['Label']=label
                     df['Cycle']= i_l
-                    df['Context']= context
+                    df['EventContext']= context
                     df_collection_L.append(df)
                 i_l+=1 # will serve for merging with spt
 
@@ -522,7 +522,7 @@ def buid_df_cycles101_3(analysis_outputStats):
                     df['Axis']=['X','Y','Z']
                     df['Label']=label
                     df['Cycle']= i_r
-                    df['Context']= context
+                    df['EventContext']= context
                     df_collection_R.append(df)
                 i_r+=1 # will serve for merging with spt
 
@@ -560,7 +560,7 @@ def buid_df_cycles101_3(analysis_outputStats):
             if context == "Left":
                 df_pst_L = pd.DataFrame({ label : analysis_outputStats.pst[label,context]['values'],
                                    "Cycle": range(0,n),
-                                   'Context': str(context)
+                                   'EventContext': str(context)
                                    })
 
                 df_collection_pst_L.append(df_pst_L)
@@ -568,7 +568,7 @@ def buid_df_cycles101_3(analysis_outputStats):
             if context == "Right":
                 df_pst_R = pd.DataFrame({ label : analysis_outputStats.pst[label,context]['values'],
                                    "Cycle": range(0,n),
-                                   'Context': str(context)
+                                   'EventContext': str(context)
                                    })
 
                 df_collection_pst_R.append(df_pst_R)
@@ -592,7 +592,7 @@ def buid_df_cycles101_3(analysis_outputStats):
 
 
         # merging
-        DF=pd.merge(df_cycles,df_pst, on=['Cycle','Context'],how='outer')
+        DF=pd.merge(df_cycles,df_pst, on=['Cycle','EventContext'],how='outer')
 
     else:
         DF = df_cycles
@@ -616,7 +616,7 @@ def buid_df_descriptiveCycle101_1(analysis_outputStats):
             if not np.all(valuesMean==0):
                 df=pd.DataFrame(valuesMean.T,  columns = FRAMES_HEADER)
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "mean"
                 df_collection_L.append(df)
 
@@ -624,7 +624,7 @@ def buid_df_descriptiveCycle101_1(analysis_outputStats):
             if not np.all(valuesStd==0):
                 df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "std"
                 df_collection_L.append(df)
 
@@ -632,7 +632,7 @@ def buid_df_descriptiveCycle101_1(analysis_outputStats):
             if not np.all(valuesMedian==0):
                 df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "median"
                 df_collection_L.append(df)
 
@@ -643,7 +643,7 @@ def buid_df_descriptiveCycle101_1(analysis_outputStats):
             if not np.all(valuesMean==0):
                 df=pd.DataFrame(valuesMean.T,  columns= FRAMES_HEADER)
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "mean"
                 df_collection_R.append(df)
 
@@ -651,7 +651,7 @@ def buid_df_descriptiveCycle101_1(analysis_outputStats):
             if not np.all(valuesStd==0):
                 df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "std"
                 df_collection_R.append(df)
 
@@ -659,7 +659,7 @@ def buid_df_descriptiveCycle101_1(analysis_outputStats):
             if not np.all(valuesMedian==0):
                 df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
                 df['Label']=label
-                df['Context']= context
+                df['EventContext']= context
                 df['Stats type'] = "median"
                 df_collection_R.append(df)
 
@@ -696,7 +696,7 @@ def buid_df_cycles101_1(analysis_outputStats):
                     df=pd.DataFrame(itValues.T,  columns= FRAMES_HEADER)
                     df['Label']=label
                     df['Cycle']= i_l
-                    df['Context']= context
+                    df['EventContext']= context
                     df_collection_L.append(df)
                 i_l+=1 # will serve for merging with spt
 
@@ -706,7 +706,7 @@ def buid_df_cycles101_1(analysis_outputStats):
                     df=pd.DataFrame(itValues.T,  columns= FRAMES_HEADER)
                     df['Label']=label
                     df['Cycle']= i_r
-                    df['Context']= context
+                    df['EventContext']= context
                     df_collection_R.append(df)
                 i_r+=1 # will serve for merging with spt
 
@@ -744,7 +744,7 @@ def buid_df_cycles101_1(analysis_outputStats):
             if context == "Left":
                 df_pst_L = pd.DataFrame({ label : analysis_outputStats.pst[label,context]['values'],
                                    "Cycle": range(0,n),
-                                   'Context': str(context)
+                                   'EventContext': str(context)
                                    })
 
                 df_collection_pst_L.append(df_pst_L)
@@ -752,7 +752,7 @@ def buid_df_cycles101_1(analysis_outputStats):
             if context == "Right":
                 df_pst_R = pd.DataFrame({ label : analysis_outputStats.pst[label,context]['values'],
                                    "Cycle": range(0,n),
-                                   'Context': str(context)
+                                   'EventContext': str(context)
                                    })
 
                 df_collection_pst_R.append(df_pst_R)
@@ -776,7 +776,7 @@ def buid_df_cycles101_1(analysis_outputStats):
 
 
         # merging
-        DF=pd.merge(df_cycles,df_pst, on=['Cycle','Context'],how='outer')
+        DF=pd.merge(df_cycles,df_pst, on=['Cycle','EventContext'],how='outer')
 
     else:
         DF = df_cycles
