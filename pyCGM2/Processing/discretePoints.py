@@ -131,7 +131,7 @@ class BenedettiProcedure(object):
                               discretePointProcedure,discretePointLabel,discretePointValue,discretePointDescription,
                               comment):
         iDict = OrderedDict([('Label', pointLabel),
-                     ('Context', context),
+                     ('EventContext', context),
                      ('Axis', axis),
                      ('Cycle', cycleIndex),
                      ('DiscretePointProcedure', discretePointProcedure),
@@ -1526,7 +1526,7 @@ class MaxMinProcedure(object):
                               discretePointProcedure,discretePointLabel,discretePointValue,discretePointDescription,
                               comment):
         iDict = OrderedDict([('Label', pointLabel),
-                     ('Context', context),
+                     ('EventContext', context),
                      ('Axis', axis),
                      ('Cycle', cycleIndex),
                      ('DiscretePointProcedure', discretePointProcedure),
@@ -1673,7 +1673,7 @@ class GoldbergProcedure(object):
                               discretePointProcedure,discretePointLabel,discretePointValue,discretePointDescription,
                               comment):
         iDict = OrderedDict([('Label', pointLabel),
-                     ('Context', context),
+                     ('EventContext', context),
                      ('Axis', axis),
                      ('Cycle', cycleIndex),
                      ('DiscretePointProcedure', discretePointProcedure),
