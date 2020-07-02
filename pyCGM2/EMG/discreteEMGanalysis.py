@@ -90,7 +90,7 @@ class AmplitudesProcedure(object):
                               value):
         iDict = OrderedDict([('Label', emgLabel),
                      ('Muscle', muscle),
-                     ('Context', context),
+                     ('EventContext', context),
                      ('Cycle', cycleIndex),
                      ('Phase', phase),
                      ('Amplitude', value)])
