@@ -1176,7 +1176,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameFistMin,desc[0],
+                                               label[1],frameFistMin,desc[0],
                                                commentFistMin)
 
             series.append(serie)
@@ -1195,7 +1195,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameMax,desc[0],
+                                               label[1],frameMax,desc[0],
                                                "")
 
             series.append(serie)
@@ -1215,7 +1215,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameSecondMin,desc[0],
+                                               label[1],frameSecondMin,desc[0],
                                                "")
 
             series.append(serie)
@@ -1262,7 +1262,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameMin,desc[0],
+                                               label[1],frameMin,desc[0],
                                                commentMin)
 
             series.append(serie)
@@ -1282,7 +1282,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameFirstMax,desc[0],
+                                               label[1],frameFirstMax,desc[0],
                                                "")
 
             series.append(serie)
@@ -1301,7 +1301,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameSecondMax,desc[0],
+                                               label[1],frameSecondMax,desc[0],
                                                "")
 
             series.append(serie)
@@ -1329,7 +1329,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameMin,desc[0],
+                                               label[1],frameMin,desc[0],
                                                "")
 
             series.append(serie)
@@ -1348,7 +1348,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameMax,desc[0],
+                                               label[1],frameMax,desc[0],
                                                "")
 
             series.append(serie)
@@ -1389,7 +1389,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameMin,desc[0],
+                                               label[1],frameMin,desc[0],
                                                "")
 
             label = ["AM2","TAM2"]
@@ -1406,7 +1406,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameMax,desc[0],
+                                               label[1],frameMax,desc[0],
                                                "")
 
         #--4 max eversor, 5 max inv moment
@@ -1433,7 +1433,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameMax,desc[0],
+                                               label[1],frameMax,desc[0],
                                                "")
 
             label = ["AM4","TAM4"]
@@ -1450,7 +1450,7 @@ class BenedettiProcedure(object):
             serie = self.__construcPandasSerie(pointLabel,context,axis,
                                                int(i),
                                                BenedettiProcedure.NAME,
-                                               label[0],frameMin,desc[0],
+                                               label[1],frameMin,desc[0],
                                                "")
 
             series.append(serie)
