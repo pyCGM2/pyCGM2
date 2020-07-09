@@ -64,7 +64,7 @@ class XlsExportDataFrameFilter(object):
                 elif excelFormat == "xlsx":
                     xlsxWriter = pd.ExcelWriter((path+outputName + "- dataFrame.xlsx"))
 
-            dataframe.to_excel(xlsxWriter,"dataframe_"+str(i))
+            dataframe.to_excel(xlsxWriter,"dataframe_"+str(i),index=False)
             i+=1
 
         xlsxWriter.save()
@@ -157,7 +157,7 @@ class XlsAnalysisExportFilter(object):
                                     index = list_index)
 
 
-        df_metadata.to_excel(xlsxWriter,"Infos")
+        df_metadata.to_excel(xlsxWriter,"Infos",index=False)
 
 
 
@@ -183,11 +183,11 @@ class XlsAnalysisExportFilter(object):
 
             if dfs_l !=[]:
                 df_pst_L=pd.concat(dfs_l)
-                df_pst_L.to_excel(xlsxWriter,"Left - stp-kinematics")
+                df_pst_L.to_excel(xlsxWriter,"Left - stp-kinematics",index=False)
 
             if dfs_r !=[]:
                 df_pst_R=pd.concat(dfs_r)
-                df_pst_R.to_excel(xlsxWriter,"Right - stp-kinematics")
+                df_pst_R.to_excel(xlsxWriter,"Right - stp-kinematics",index=False)
 
 
             # kinematic cycles
@@ -225,7 +225,7 @@ class XlsAnalysisExportFilter(object):
                     df_z['Axis']='Z'
 
                     df_label = pd.concat([df_x,df_y,df_z])
-                    df_label.to_excel(xlsxWriter,str(label+"."+context))
+                    df_label.to_excel(xlsxWriter,str(label+"."+context),index=False)
 
         if self.analysis.kineticStats.data!={}:
             # spatio temporal paramaters matching Kinetic cycles
@@ -247,11 +247,11 @@ class XlsAnalysisExportFilter(object):
 
             if dfs_l !=[]:
                 df_pst_L=pd.concat(dfs_l)
-                df_pst_L.to_excel(xlsxWriter,"Left - pst-kinetics")
+                df_pst_L.to_excel(xlsxWriter,"Left - pst-kinetics",index=False)
 
             if dfs_r !=[]:
                 df_pst_R=pd.concat(dfs_r)
-                df_pst_R.to_excel(xlsxWriter,"Right - pst-kinetics")
+                df_pst_R.to_excel(xlsxWriter,"Right - pst-kinetics",index=False)
 
 
             # kinetic cycles
@@ -288,7 +288,7 @@ class XlsAnalysisExportFilter(object):
                     df_z['Axis']='Z'
 
                     df_label = pd.concat([df_x,df_y,df_z])
-                    df_label.to_excel(xlsxWriter,str(label+"."+context))
+                    df_label.to_excel(xlsxWriter,str(label+"."+context),index=False)
 
         xlsxWriter.save()
         logging.info("basic dataFrame [%s- basic] Exported"%outputName)
@@ -373,7 +373,7 @@ class XlsAnalysisExportFilter(object):
                 for key,value in condExpInfo.items():
                     exportTools.isColumnNameExist( df_descriptiveStp, key)
                     df_descriptiveStp[key] = value
-            df_descriptiveStp.to_excel(xlsxWriter,'descriptive stp')
+            df_descriptiveStp.to_excel(xlsxWriter,'descriptive stp',index=False)
 
 
             # stage 2 : get cycle values
@@ -394,7 +394,7 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_stp, key)
                     df_stp[key] = value
 
-            df_stp.to_excel(xlsxWriter,'stp cycles')
+            df_stp.to_excel(xlsxWriter,'stp cycles',index=False)
 
             if csvFileExport:
                 if path == None:
@@ -434,8 +434,8 @@ class XlsAnalysisExportFilter(object):
                         itdf[key] = value
 
 
-            df_descriptiveGps.to_excel(xlsxWriter,'descriptive GPS ')
-            df_allGpsByContext.to_excel(xlsxWriter,'GPS cycles ')
+            df_descriptiveGps.to_excel(xlsxWriter,'descriptive GPS ',index=False)
+            df_allGpsByContext.to_excel(xlsxWriter,'GPS cycles ',index=False)
 
 
         if self.analysis.gvs is not None:
@@ -459,8 +459,8 @@ class XlsAnalysisExportFilter(object):
                         itdf[key] = value
 
 
-            df_descriptiveGvs.to_excel(xlsxWriter,'descriptive GVS ')
-            df_allGvs.to_excel(xlsxWriter,'GVS cycles ')
+            df_descriptiveGvs.to_excel(xlsxWriter,'descriptive GVS ',index=False)
+            df_allGvs.to_excel(xlsxWriter,'GVS cycles ',index=False)
 
 
         # Kinematics ouput
@@ -487,7 +487,7 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_descriptiveKinematics, key)
                     df_descriptiveKinematics[key] = value
 
-            df_descriptiveKinematics.to_excel(xlsxWriter,'descriptive kinematics ')
+            df_descriptiveKinematics.to_excel(xlsxWriter,'descriptive kinematics ',index=False)
 
             # stage 2 : get cycle values
             # --------------------------------
@@ -510,7 +510,7 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_kinematics, key)
                     df_kinematics[key] = value
 
-            df_kinematics.to_excel(xlsxWriter,'Kinematic cycles')
+            df_kinematics.to_excel(xlsxWriter,'Kinematic cycles',index=False)
             if csvFileExport:
                 if path == None:
                     df_kinematics.to_csv((outputName + " - kinematics - DataFrame.csv"),sep=";")
@@ -540,7 +540,7 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_descriptiveKinetics, key)
                     df_descriptiveKinetics[key] = value
 
-            df_descriptiveKinetics.to_excel(xlsxWriter,'descriptive kinetics ')
+            df_descriptiveKinetics.to_excel(xlsxWriter,'descriptive kinetics ',index=False)
 
             # stage 2 : get cycle values
             # --------------------------------
@@ -563,7 +563,7 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_kinetics, key)
                     df_kinetics[key] = value
 
-            df_kinetics.to_excel(xlsxWriter,'Kinetic cycles')
+            df_kinetics.to_excel(xlsxWriter,'Kinetic cycles',index=False)
             if csvFileExport:
                 if path == None:
                     df_kinetics.to_csv((outputName + " - kinetics - DataFrame.csv"),sep=";")
@@ -593,7 +593,7 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_descriptiveEMG, key)
                     df_descriptiveEMG[key] = value
 
-            df_descriptiveEMG.to_excel(xlsxWriter,'descriptive EMG ')
+            df_descriptiveEMG.to_excel(xlsxWriter,'descriptive EMG ',index=False)
 
             # stage 2 : get cycle values
             # --------------------------------
@@ -616,7 +616,7 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_emg, key)
                     df_emg[key] = value
 
-            df_emg.to_excel(xlsxWriter,'EMG cycles')
+            df_emg.to_excel(xlsxWriter,'EMG cycles',index=False)
             if csvFileExport:
                 if path == None:
                     df_emg.to_csv((outputName + " - EMG - DataFrame.csv"),sep=";")
