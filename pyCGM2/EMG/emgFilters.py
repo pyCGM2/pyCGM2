@@ -32,6 +32,8 @@ class BasicEmgProcessingFilter(object):
             hpUpper = self.m_hpf_up
             valuesHp =  signal_processing.highPass(value50,hpLower,hpUpper,fa)
 
+            valuesHp = valuesHp - valuesHp.mean()
+
             btkTools.smartAppendAnalog(self.m_acq,label+"_HPF",valuesHp, desc= "high Pass filter" )
 
             # rectification
