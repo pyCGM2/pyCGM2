@@ -14,9 +14,10 @@ from pyCGM2.ma import io
 from pyCGM2.Utils import utils
 
 def renameEmgInAnalysis(analysisInstance,emgChannels, emgMuscles, emgContexts):
+
     i=len(emgChannels)-1
     for channelIt in reversed(emgChannels):
-        newlabel = emgMuscles[i]+"-"+emgContexts[i]
+        newlabel = emgContexts[i][0] + emgMuscles[i]
         for keyIt in analysisInstance.emgStats.data.keys():
             context = keyIt[1]
             if channelIt in keyIt[0]:

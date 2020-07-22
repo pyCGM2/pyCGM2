@@ -88,8 +88,8 @@ class AmplitudesProcedure(object):
 
     def __construcPandasSerie(self,emgLabel,muscle,context, cycleIndex,phase,
                               value):
-        iDict = OrderedDict([('Label', emgLabel),
-                     ('Muscle', muscle),
+        iDict = OrderedDict([('ChannelLabel', emgLabel),
+                     ('Label', muscle),
                      ('EventContext', context),
                      ('Cycle', cycleIndex),
                      ('Phase', phase),
@@ -97,6 +97,8 @@ class AmplitudesProcedure(object):
         return pd.Series(iDict)
 
     def __getAmplitudebyPhase(self,analysisInstance,emglabel,muscle,context):
+
+        muscle = context[0]+muscle
 
         stanceValues =   analysisInstance.emgStats.pst['stancePhase', context]['values']
         doubleStance1Values =   analysisInstance.emgStats.pst['doubleStance1', context]['values']
