@@ -107,7 +107,7 @@ def main():
 
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.getActiveSubject(NEXUS)
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
         required_mp,optional_mp = nexusUtils.getNexusSubjectMp(NEXUS,subject,resetFlag=args.resetMP)

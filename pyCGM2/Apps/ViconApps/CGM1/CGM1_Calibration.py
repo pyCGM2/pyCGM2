@@ -84,7 +84,7 @@ def main():
 
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.getActiveSubject(NEXUS) #checkActivatedSubject(NEXUS,subjects)
         Parameters = NEXUS.GetSubjectParamNames(subject)
 
 

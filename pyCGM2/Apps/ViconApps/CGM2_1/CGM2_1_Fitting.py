@@ -74,7 +74,7 @@ def main():
 
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.getActiveSubject(NEXUS)
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------

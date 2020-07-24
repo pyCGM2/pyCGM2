@@ -65,7 +65,7 @@ def main():
         # ----- Subject -----
         # need subject to find input files
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.getActiveSubject(NEXUS)
         logging.info(  "Subject name : " + subject  )
 
         # ----- construction of the openMA root instance  -----

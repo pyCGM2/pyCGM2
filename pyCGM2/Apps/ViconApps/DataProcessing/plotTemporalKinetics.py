@@ -66,7 +66,7 @@ def main():
         # ----- Subject -----
         # need subject to find input files
         subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.checkActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.getActiveSubject(NEXUS)
         logging.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------

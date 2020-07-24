@@ -26,7 +26,7 @@ def _setPointData(ftr,framecount,ff,values):
 def getActiveSubject(NEXUS):
 
     result = NEXUS.Client.GetSubjectNames()
-    if( result.Error() and self.GenerateErrors ):
+    if( result.Error() and NEXUS.GenerateErrors ):
         raise IOError()
 
     names = map( lambda x: unicode( NEXUS._GetSafeStringValue(x), 'utf-8'),  result.Names )
