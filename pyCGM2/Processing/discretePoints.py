@@ -130,13 +130,13 @@ class BenedettiProcedure(object):
     def __construcPandasSerie(self,pointLabel,context, axis, cycleIndex,
                               discretePointProcedure,discretePointLabel,discretePointValue,discretePointDescription,
                               comment):
-        iDict = OrderedDict([('Label', pointLabel),
+        iDict = OrderedDict([('VariableLabel', pointLabel),
                      ('EventContext', context),
                      ('Axis', axis),
                      ('Cycle', cycleIndex),
                      ('DiscretePointProcedure', discretePointProcedure),
-                     ('DiscretePointLabel', discretePointLabel),
-                     ('DiscretePointValue', discretePointValue),
+                     ('Label', pointLabel[0]+discretePointLabel),
+                     ('Value', discretePointValue),
                      ('DiscretePointDescription', discretePointDescription),
                      ('Comment', comment)])
         return pd.Series(iDict)
@@ -1525,13 +1525,13 @@ class MaxMinProcedure(object):
     def __construcPandasSerie(self,pointLabel,context, axis, cycleIndex,
                               discretePointProcedure,discretePointLabel,discretePointValue,discretePointDescription,
                               comment):
-        iDict = OrderedDict([('Label', pointLabel),
+        iDict = OrderedDict([('VariableLabel', pointLabel),
                      ('EventContext', context),
                      ('Axis', axis),
                      ('Cycle', cycleIndex),
                      ('DiscretePointProcedure', discretePointProcedure),
-                     ('DiscretePointLabel', discretePointLabel),
-                     ('DiscretePointValue', discretePointValue),
+                     ('Label', pointLabel[0]+discretePointLabel),
+                     ('Value', discretePointValue),
                      ('DiscretePointDescription', discretePointDescription),
                      ('Comment', comment)])
         return pd.Series(iDict)
@@ -1672,13 +1672,13 @@ class GoldbergProcedure(object):
     def __construcPandasSerie(self,pointLabel,context, axis, cycleIndex,
                               discretePointProcedure,discretePointLabel,discretePointValue,discretePointDescription,
                               comment):
-        iDict = OrderedDict([('Label', pointLabel),
+        iDict = OrderedDict([('VariableLabel', pointLabel),
                      ('EventContext', context),
                      ('Axis', axis),
                      ('Cycle', cycleIndex),
                      ('DiscretePointProcedure', discretePointProcedure),
-                     ('DiscretePointLabel', discretePointLabel),
-                     ('DiscretePointValue', discretePointValue),
+                     ('Label', pointLabel[0]+discretePointLabel),
+                     ('Value', discretePointValue),
                      ('DiscretePointDescription', discretePointDescription),
                      ('Comment', comment)])
         return pd.Series(iDict)
