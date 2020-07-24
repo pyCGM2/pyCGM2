@@ -650,12 +650,22 @@ class AnalysisExportFilter(object):
         out=OrderedDict()
 
         if self.analysis.kinematicStats.data != {}:
+            processedKeys=list()
             for keys in self.analysis.kinematicStats.data.keys():
                 if not np.all( self.analysis.kinematicStats.data[keys]["mean"]==0):
 
-                    out[keys[0]]=dict()
-                    out[keys[0]][keys[1]]=dict()
-                    out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+                    if keys not in processedKeys:
+                        processedKeys.append(keys)
+                    else:
+                        raise Exception ( "[pyCGM2] - duplicated keys[ %s - %s] detected" %(keys[0],keys[1]))
+
+                    if keys[0] not in out.keys():
+                        out[keys[0]]=dict()
+                        out[keys[0]][keys[1]]=dict()
+                        out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+                    else:
+                        out[keys[0]][keys[1]]=dict()
+                        out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
 
                     li_X = list()
                     for cycle in self.analysis.kinematicStats.data[keys]["values"]:
@@ -675,12 +685,22 @@ class AnalysisExportFilter(object):
                     out[keys[0]][keys[1]]["values"]["Z"] = li_Z
 
         if self.analysis.kineticStats.data != {}:
+            processedKeys=list()
             for keys in self.analysis.kineticStats.data.keys():
                 if not np.all( self.analysis.kineticStats.data[keys]["mean"]==0):
 
-                    out[keys[0]]=dict()
-                    out[keys[0]][keys[1]]=dict()
-                    out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+                    if keys not in processedKeys:
+                        processedKeys.append(keys)
+                    else:
+                        raise Exception ( "[pyCGM2] - duplicated keys[ %s - %s] detected" %(keys[0],keys[1]))
+
+                    if keys[0] not in out.keys():
+                        out[keys[0]]=dict()
+                        out[keys[0]][keys[1]]=dict()
+                        out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+                    else:
+                        out[keys[0]][keys[1]]=dict()
+                        out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
 
                     li_X = list()
                     for cycle in self.analysis.kineticStats.data[keys]["values"]:
@@ -699,20 +719,29 @@ class AnalysisExportFilter(object):
                     out[keys[0]][keys[1]]["values"]["Y"] = li_Y
                     out[keys[0]][keys[1]]["values"]["Z"] = li_Z
 
+
         if self.analysis.emgStats.data != {}:
+            processedKeys=list()
             for keys in self.analysis.emgStats.data.keys():
                 if not np.all( self.analysis.emgStats.data[keys]["mean"]==0):
+                    if keys not in processedKeys:
+                        processedKeys.append(keys)
+                    else:
+                        raise Exception ( "[pyCGM2] - duplicated keys[ %s - %s] detected" %(keys[0],keys[1]))
 
-                    out[keys[0]]=dict()
-                    out[keys[0]][keys[1]]=dict()
-                    out[keys[0]][keys[1]]["values"]=[]
+                    if keys[0] not in out.keys():
+                        out[keys[0]]=dict()
+                        out[keys[0]][keys[1]]=dict()
+                        out[keys[0]][keys[1]]["values"]=[]
+                    else:
+                        out[keys[0]][keys[1]]=dict()
+                        out[keys[0]][keys[1]]["values"]=[]
 
                     li = list()
                     for cycle in self.analysis.emgStats.data[keys]["values"]:
                         li.append(cycle[:,0].tolist())
 
                     out[keys[0]][keys[1]]["values"] = li
-
 
         files.saveJson(path,outputName,out)
 
