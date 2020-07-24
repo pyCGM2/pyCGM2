@@ -23,12 +23,31 @@ def _setPointData(ftr,framecount,ff,values):
 
     return data,exists
 
+def getActiveSubject(NEXUS):
 
+    result = NEXUS.Client.GetSubjectNames()
+    if( result.Error() and self.GenerateErrors ):
+        raise IOError()
+
+    names = map( lambda x: unicode( NEXUS._GetSafeStringValue(x), 'utf-8'),  result.Names )
+    templates = map( lambda x: unicode( NEXUS._GetSafeStringValue(x), 'utf-8'),  result.Models )
+    active = list(result.Active)
+
+    if active.count(True)>1:
+        raise Exception("[pyCGM2] : two subjects are activated. Select one only")
+
+    for i in range(0,len(names)):
+        if active[i]:
+            return names[i]
+
+
+    return names, templates, active
 
 def checkActivatedSubject(NEXUS,subjectNames):
     """
     Note : function should be improved in Nexus API by Vicon
     """
+    logging.warning("This method is deprecated. prefer getActiveSubject now")
 
     subjectMarkerWithTraj=dict()
     for subject in subjectNames:
