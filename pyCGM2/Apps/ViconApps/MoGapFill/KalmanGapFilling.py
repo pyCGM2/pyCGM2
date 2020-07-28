@@ -31,7 +31,7 @@ def main():
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "file: "+ filenameLabelledNoExt)
 
-        subject = NEXUS.GetSubjectNames()[0]
+        subject = nexusTools.getActiveSubject(NEXUS) #checkActivatedSubject(NEXUS,subjects)
         logging.info("Gap filling for subject %s"%(subject))
 
         # btkAcq builder
