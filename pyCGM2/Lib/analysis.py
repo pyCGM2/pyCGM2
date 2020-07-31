@@ -194,7 +194,7 @@ def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
     exportFilter.setAnalysisInstance(analysisInstance)
     exportFilter.export(name, path=DATA_PATH,excelFormat = "xls",mode = mode)
 
-def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None):
+def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None,outDataPath=None):
 
     """
     processEMG_fromC3dFiles : filters emg channels from a list of c3d files
@@ -233,7 +233,10 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],
 
         outFilename = gaitTrial if fileSuffix=="" else gaitTrial+"_"+fileSuffix
 
-        btkTools.smartWriter(acq,DATA_PATH+outFilename)
+        if outDataPath is None:
+            btkTools.smartWriter(acq,DATA_PATH+outFilename)
+        else:
+            btkTools.smartWriter(acq,outDataPath+outFilename)
 
 def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
     """
