@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_concreteScenario.py::TestData_withNoFP::test_CGM1_FullBody_noOptions_noFP
-# pytest -s --disable-pytest-warnings  test_concreteScenario.py::TestDifferentStaticDynamicMarkerSet::test_CGM1_FullBody_noOptions_uncorrectUpperLimbMarker
+# pytest -s --disable-pytest-warnings  test_concreteScenario.py::Test_DifferentStaticDynamicMarkerSet::test_CGM1_FullBody_noOptions_uncorrectPelvisMarker
 """
 Created on Thu Jul 07 15:14:18 2016
 
