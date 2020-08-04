@@ -19,7 +19,8 @@ from pyCGM2.Eclipse import vskTools
 from pyCGM2.Utils import testingUtils,utils
 import pytest
 
-class TestFullBody:
+
+class Test_FullBody:
     def test_FullBody_noOptions(self):
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\fullBody-native-Options\\"
         staticFilename = "static.c3d"
@@ -153,7 +154,7 @@ class TestFullBody:
     # testingUtils.plotValuesComparison(acqGait.GetPoint("LeftHumerusCOM").GetValues(), model.getSegment("Left UpperArm").getComTrajectory())
     # testingUtils.plotComparisonofPoint(finalAcqStatic,"RAnkleAngles","test")
 
-class TestLowerBody():
+class Test_LowerBody():
 
     def test_KadMed_options(self):
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\kad-med-Options\\"

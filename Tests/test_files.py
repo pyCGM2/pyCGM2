@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings  test_files.py::Test_UtilsFiles::test_openFile
+# pytest -s --disable-pytest-warnings  test_files.py::Test_UtilsFiles::test_loadAndSaveAnalysis
 from __future__ import unicode_literals
 import pyCGM2
 from pyCGM2.Utils import testingUtils,files
@@ -28,14 +28,15 @@ class Test_UtilsFiles:
 
     def test_loadAndSaveModel(self):
 
-        model = files.loadModel(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","PIG-KAD")
+        model = files.loadModel(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","COTTREL Simon")
         assert model !=False
         files.saveModel(model,pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","testModelOut")
 
     def test_loadAndSaveAnalysis(self):
 
-        ana = files.loadAnalysis(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","file")
+        ana = files.loadAnalysis(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","Condition1")
         assert ana !=False
+
         files.saveAnalysis(ana,pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hänibàl_files\\","testAnalysisOut")
 
     def test_getTranslators(self):

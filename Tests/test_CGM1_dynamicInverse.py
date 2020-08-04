@@ -19,7 +19,7 @@ from pyCGM2.Eclipse import vskTools
 from pyCGM2.Utils import testingUtils,utils
 import pytest
 
-class TestFullBody:
+class Test_FullBody:
 
     def test_FullBody_noOptions_distal(self):
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\fullBody-native-noOptions\\"
@@ -331,7 +331,7 @@ class TestFullBody:
         testingUtils.test_point_rms(acqGait,"RKneeMoment","RKneeMoment_test",60.0,init = 322, end = 413)
         testingUtils.test_point_rms(acqGait,"RHipMoment","RHipMoment_test",60.0,init = 322, end = 413)
 
-class TestLowerBody_progressionY:
+class Test_LowerBody_progressionY:
 
     def test_LowerBody_noOptions_proximal(self):
         DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\LowerLimb-medMed_Yprogression\\"

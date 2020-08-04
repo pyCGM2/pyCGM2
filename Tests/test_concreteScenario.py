@@ -21,7 +21,7 @@ from pyCGM2.Eclipse import vskTools
 from pyCGM2.Utils import testingUtils,utils
 
 
-class TestData_withNoFP:
+class Test_Data_withNoFP:
     def test_CGM1_FullBody_noOptions_noFP(self):
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\fullBody-native-noOptions - noFP\\"
         staticFilename = "static.c3d"
@@ -71,7 +71,7 @@ class TestData_withNoFP:
         btkTools.smartWriter(acqGait, "gait1-pyCGM2modelled.c3d")
 
 
-class TestDifferentStaticDynamicMarkerSet:
+class Test_DifferentStaticDynamicMarkerSet:
     def test_CGM1_FullBody_noOptions_uncorrectUpperLimbMarker(self):
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "Scenarii\different static and dynamic marker set\CGM1-fullBody\\"
         staticFilename = "static.c3d"
