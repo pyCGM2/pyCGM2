@@ -29,4 +29,4 @@ for testfile in pytestfiles:
 
     if val == 1: raise Exception("File %s fails"%(testfile) )
 
-if val =0:  print "GREAT.....ALL TESTS PASSED......:-) "
+if val==0:  print "GREAT.....ALL TESTS PASSED......:-) "
