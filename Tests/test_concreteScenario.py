@@ -2,11 +2,6 @@
 from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_concreteScenario.py::TestData_withNoFP::test_CGM1_FullBody_noOptions_noFP
 # pytest -s --disable-pytest-warnings  test_concreteScenario.py::Test_DifferentStaticDynamicMarkerSet::test_CGM1_FullBody_noOptions_uncorrectPelvisMarker
-"""
-Created on Thu Jul 07 15:14:18 2016
-
-@author: aaa34169
-"""
 import pyCGM2
 from pyCGM2.Tools import btkTools
 from pyCGM2.ForcePlates import forceplates
@@ -68,7 +63,7 @@ class Test_Data_withNoFP:
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        btkTools.smartWriter(acqGait, "gait1-pyCGM2modelled.c3d")
+        # btkTools.smartWriter(acqGait, "gait1-pyCGM2modelled.c3d")
 
 
 class Test_DifferentStaticDynamicMarkerSet:
