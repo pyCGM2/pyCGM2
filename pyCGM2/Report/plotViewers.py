@@ -746,7 +746,7 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iTrial,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
+    def __init__(self,iAcq,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
 
         """
             :Parameters:
@@ -754,10 +754,10 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
         """
 
 
-        super(TemporalKinematicsPlotViewer, self).__init__(iTrial)
+        super(TemporalKinematicsPlotViewer, self).__init__(iAcq)
 
-        self.m_trial = self.m_input
-        if isinstance(self.m_input,ma.Trial):
+        self.m_acq = self.m_input
+        if isinstance(self.m_input,pyCGM2.btk.btkAcquisition):
             pass
         else:
             logging.error( "[pyCGM2] error input object type. must be a ma.Trial")
@@ -911,177 +911,177 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
 
 
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
-            plot.temporalPlot(self.fig.axes[0],self.m_trial,
+            plot.temporalPlot(self.fig.axes[0],self.m_acq,
                                     "LPelvisAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[1],self.m_trial,
+            plot.temporalPlot(self.fig.axes[1],self.m_acq,
                             "LPelvisAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[2],self.m_trial,
+            plot.temporalPlot(self.fig.axes[2],self.m_acq,
                                     "LPelvisAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[3],self.m_trial,
+            plot.temporalPlot(self.fig.axes[3],self.m_acq,
                                     "LHipAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[4],self.m_trial,
+            plot.temporalPlot(self.fig.axes[4],self.m_acq,
                                     "LHipAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[5],self.m_trial,
+            plot.temporalPlot(self.fig.axes[5],self.m_acq,
                                     "LHipAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[6],self.m_trial,
+            plot.temporalPlot(self.fig.axes[6],self.m_acq,
                                     "LKneeAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[7],self.m_trial,
+            plot.temporalPlot(self.fig.axes[7],self.m_acq,
                                     "LKneeAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[8],self.m_trial,
+            plot.temporalPlot(self.fig.axes[8],self.m_acq,
                                     "LKneeAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[9],self.m_trial,
+            plot.temporalPlot(self.fig.axes[9],self.m_acq,
                                     "LAnkleAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[10],self.m_trial,
+            plot.temporalPlot(self.fig.axes[10],self.m_acq,
                                     "LAnkleAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[11],self.m_trial,
+            plot.temporalPlot(self.fig.axes[11],self.m_acq,
                                     "LFootProgressAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[12],self.m_trial,
+            plot.temporalPlot(self.fig.axes[12],self.m_acq,
                                     "LForeFootAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[13],self.m_trial,
+            plot.temporalPlot(self.fig.axes[13],self.m_acq,
                                     "LForeFootAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[14],self.m_trial,
+            plot.temporalPlot(self.fig.axes[14],self.m_acq,
                                     "LForeFootAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
 
 
-            plot.temporalPlot(self.fig.axes[0],self.m_trial,
+            plot.temporalPlot(self.fig.axes[0],self.m_acq,
                                     "RPelvisAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[1],self.m_trial,
+            plot.temporalPlot(self.fig.axes[1],self.m_acq,
                             "RPelvisAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[2],self.m_trial,
+            plot.temporalPlot(self.fig.axes[2],self.m_acq,
                                     "RPelvisAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[3],self.m_trial,
+            plot.temporalPlot(self.fig.axes[3],self.m_acq,
                                     "RHipAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[4],self.m_trial,
+            plot.temporalPlot(self.fig.axes[4],self.m_acq,
                                     "RHipAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[5],self.m_trial,
+            plot.temporalPlot(self.fig.axes[5],self.m_acq,
                                     "RHipAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[6],self.m_trial,
+            plot.temporalPlot(self.fig.axes[6],self.m_acq,
                                     "RKneeAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[7],self.m_trial,
+            plot.temporalPlot(self.fig.axes[7],self.m_acq,
                                     "RKneeAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[8],self.m_trial,
+            plot.temporalPlot(self.fig.axes[8],self.m_acq,
                                     "RKneeAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[9],self.m_trial,
+            plot.temporalPlot(self.fig.axes[9],self.m_acq,
                                     "RAnkleAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[10],self.m_trial,
+            plot.temporalPlot(self.fig.axes[10],self.m_acq,
                                     "RAnkleAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[11],self.m_trial,
+            plot.temporalPlot(self.fig.axes[11],self.m_acq,
                                     "RFootProgressAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[12],self.m_trial,
+            plot.temporalPlot(self.fig.axes[12],self.m_acq,
                                     "RForeFootAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[13],self.m_trial,
+            plot.temporalPlot(self.fig.axes[13],self.m_acq,
                                     "RForeFootAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[14],self.m_trial,
+            plot.temporalPlot(self.fig.axes[14],self.m_acq,
                                     "RForeFootAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
 
         if self.m_bodyPart == enums.BodyPartPlot.Trunk:
 
-            plot.temporalPlot(self.fig.axes[0],self.m_trial,
+            plot.temporalPlot(self.fig.axes[0],self.m_acq,
                                     "LPelvisAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[1],self.m_trial,
+            plot.temporalPlot(self.fig.axes[1],self.m_acq,
                             "LPelvisAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[2],self.m_trial,
+            plot.temporalPlot(self.fig.axes[2],self.m_acq,
                                     "LPelvisAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[3],self.m_trial,
+            plot.temporalPlot(self.fig.axes[3],self.m_acq,
                                     "LSpineAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[4],self.m_trial,
+            plot.temporalPlot(self.fig.axes[4],self.m_acq,
                                     "LSpineAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[5],self.m_trial,
+            plot.temporalPlot(self.fig.axes[5],self.m_acq,
                                     "LSpineAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[6],self.m_trial,
+            plot.temporalPlot(self.fig.axes[6],self.m_acq,
                                     "LThoraxAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[7],self.m_trial,
+            plot.temporalPlot(self.fig.axes[7],self.m_acq,
                                     "LThoraxAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[8],self.m_trial,
+            plot.temporalPlot(self.fig.axes[8],self.m_acq,
                                     "LThoraxAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
 
-            plot.temporalPlot(self.fig.axes[9],self.m_trial,
+            plot.temporalPlot(self.fig.axes[9],self.m_acq,
                                     "LNeckAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[10],self.m_trial,
+            plot.temporalPlot(self.fig.axes[10],self.m_acq,
                                     "LNeckAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[11],self.m_trial,
+            plot.temporalPlot(self.fig.axes[11],self.m_acq,
                                     "LNeckAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[12],self.m_trial,
+            plot.temporalPlot(self.fig.axes[12],self.m_acq,
                                     "LHeadAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[13],self.m_trial,
+            plot.temporalPlot(self.fig.axes[13],self.m_acq,
                                     "LHeadAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[14],self.m_trial,
+            plot.temporalPlot(self.fig.axes[14],self.m_acq,
                                     "LHeadAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
 
 
 
-            plot.temporalPlot(self.fig.axes[0],self.m_trial,
+            plot.temporalPlot(self.fig.axes[0],self.m_acq,
                                     "RPelvisAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[1],self.m_trial,
+            plot.temporalPlot(self.fig.axes[1],self.m_acq,
                                     "RPelvisAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[2],self.m_trial,
+            plot.temporalPlot(self.fig.axes[2],self.m_acq,
                                     "RPelvisAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[3],self.m_trial,
+            plot.temporalPlot(self.fig.axes[3],self.m_acq,
                                     "RSpineAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[4],self.m_trial,
+            plot.temporalPlot(self.fig.axes[4],self.m_acq,
                                     "RSpineAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[5],self.m_trial,
+            plot.temporalPlot(self.fig.axes[5],self.m_acq,
                                     "RSpineAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[6],self.m_trial,
+            plot.temporalPlot(self.fig.axes[6],self.m_acq,
                                     "RThoraxAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[7],self.m_trial,
+            plot.temporalPlot(self.fig.axes[7],self.m_acq,
                                     "RThoraxAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[8],self.m_trial,
+            plot.temporalPlot(self.fig.axes[8],self.m_acq,
                                     "RThoraxAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
 
-            plot.temporalPlot(self.fig.axes[9],self.m_trial,
+            plot.temporalPlot(self.fig.axes[9],self.m_acq,
                                     "RNeckAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[10],self.m_trial,
+            plot.temporalPlot(self.fig.axes[10],self.m_acq,
                                     "RNeckAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[11],self.m_trial,
+            plot.temporalPlot(self.fig.axes[11],self.m_acq,
                                     "RNeckAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[12],self.m_trial,
+            plot.temporalPlot(self.fig.axes[12],self.m_acq,
                                     "RHeadAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[13],self.m_trial,
+            plot.temporalPlot(self.fig.axes[13],self.m_acq,
                                     "RHeadAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[14],self.m_trial,
+            plot.temporalPlot(self.fig.axes[14],self.m_acq,
                                     "RHeadAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
 
 
         if self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
 
-            plot.temporalPlot(self.fig.axes[0],self.m_trial,
+            plot.temporalPlot(self.fig.axes[0],self.m_acq,
                                     "LShoulderAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[1],self.m_trial,
+            plot.temporalPlot(self.fig.axes[1],self.m_acq,
                             "LShoulderAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[2],self.m_trial,
+            plot.temporalPlot(self.fig.axes[2],self.m_acq,
                                     "LShoulderAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[3],self.m_trial,
+            plot.temporalPlot(self.fig.axes[3],self.m_acq,
                                     "LElbowAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            # plot.temporalPlot(self.fig.axes[4],self.m_trial,
+            # plot.temporalPlot(self.fig.axes[4],self.m_acq,
             #                         "LElbowAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            # plot.temporalPlot(self.fig.axes[5],self.m_trial,
+            # plot.temporalPlot(self.fig.axes[5],self.m_acq,
             #                         "LElbowAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[6],self.m_trial,
+            plot.temporalPlot(self.fig.axes[6],self.m_acq,
                                     "LWristAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[7],self.m_trial,
+            plot.temporalPlot(self.fig.axes[7],self.m_acq,
                                     "LWristAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[8],self.m_trial,
+            plot.temporalPlot(self.fig.axes[8],self.m_acq,
                                     "LWristAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
 
 
-            plot.temporalPlot(self.fig.axes[0],self.m_trial,
+            plot.temporalPlot(self.fig.axes[0],self.m_acq,
                                     "RShoulderAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[1],self.m_trial,
+            plot.temporalPlot(self.fig.axes[1],self.m_acq,
                                     "RShoulderAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[2],self.m_trial,
+            plot.temporalPlot(self.fig.axes[2],self.m_acq,
                                     "RShoulderAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[3],self.m_trial,
+            plot.temporalPlot(self.fig.axes[3],self.m_acq,
                                     "RElbowAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            # plot.temporalPlot(self.fig.axes[4],self.m_trial,
+            # plot.temporalPlot(self.fig.axes[4],self.m_acq,
             #                         "RElbowAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            # plot.temporalPlot(self.fig.axes[5],self.m_trial,
+            # plot.temporalPlot(self.fig.axes[5],self.m_acq,
             #                         "RElbowAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[6],self.m_trial,
+            plot.temporalPlot(self.fig.axes[6],self.m_acq,
                                     "RWristAngles",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[7],self.m_trial,
+            plot.temporalPlot(self.fig.axes[7],self.m_acq,
                                     "RWristAngles",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[8],self.m_trial,
+            plot.temporalPlot(self.fig.axes[8],self.m_acq,
                                     "RWristAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
 
 
@@ -1360,7 +1360,7 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iTrial,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
+    def __init__(self,iAcq,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
 
         """
             :Parameters:
@@ -1368,10 +1368,10 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
         """
 
 
-        super(TemporalKineticsPlotViewer, self).__init__(iTrial)
+        super(TemporalKineticsPlotViewer, self).__init__(iAcq)
 
-        self.m_trial = self.m_input
-        if isinstance(self.m_input,ma.Trial):
+        self.m_acq = self.m_input
+        if isinstance(self.m_input,pyCGM2.btk.btkAcquisition):
             pass
         else:
             logging.error( "[pyCGM2] error input object type. must be a ma.Trial")
@@ -1469,59 +1469,59 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
     def __setData(self):
 
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
-            plot.temporalPlot(self.fig.axes[0],self.m_trial,
+            plot.temporalPlot(self.fig.axes[0],self.m_acq,
                                     "LHipMoment",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[1],self.m_trial,
+            plot.temporalPlot(self.fig.axes[1],self.m_acq,
                             "LHipMoment",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[2],self.m_trial,
+            plot.temporalPlot(self.fig.axes[2],self.m_acq,
                                     "LHipMoment",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[3],self.m_trial,
+            plot.temporalPlot(self.fig.axes[3],self.m_acq,
                                     "LHipPower",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
 
-            plot.temporalPlot(self.fig.axes[4],self.m_trial,
+            plot.temporalPlot(self.fig.axes[4],self.m_acq,
                                     "LKneeMoment",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[5],self.m_trial,
+            plot.temporalPlot(self.fig.axes[5],self.m_acq,
                                     "LKneeMoment",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[6],self.m_trial,
+            plot.temporalPlot(self.fig.axes[6],self.m_acq,
                                     "LKneeMoment",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[7],self.m_trial,
+            plot.temporalPlot(self.fig.axes[7],self.m_acq,
                                     "LKneePower",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
 
-            plot.temporalPlot(self.fig.axes[8],self.m_trial,
+            plot.temporalPlot(self.fig.axes[8],self.m_acq,
                                     "LAnkleMoment",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[9],self.m_trial,
+            plot.temporalPlot(self.fig.axes[9],self.m_acq,
                                     "LAnkleMoment",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[10],self.m_trial,
+            plot.temporalPlot(self.fig.axes[10],self.m_acq,
                                     "LAnkleMoment",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
-            plot.temporalPlot(self.fig.axes[11],self.m_trial,
+            plot.temporalPlot(self.fig.axes[11],self.m_acq,
                                     "LAnklePower",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
 
 
-            plot.temporalPlot(self.fig.axes[0],self.m_trial,
+            plot.temporalPlot(self.fig.axes[0],self.m_acq,
                                     "RHipMoment",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[1],self.m_trial,
+            plot.temporalPlot(self.fig.axes[1],self.m_acq,
                             "RHipMoment",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[2],self.m_trial,
+            plot.temporalPlot(self.fig.axes[2],self.m_acq,
                                     "RHipMoment",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[3],self.m_trial,
+            plot.temporalPlot(self.fig.axes[3],self.m_acq,
                                     "RHipPower",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
 
-            plot.temporalPlot(self.fig.axes[4],self.m_trial,
+            plot.temporalPlot(self.fig.axes[4],self.m_acq,
                                     "RKneeMoment",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[5],self.m_trial,
+            plot.temporalPlot(self.fig.axes[5],self.m_acq,
                                     "RKneeMoment",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[6],self.m_trial,
+            plot.temporalPlot(self.fig.axes[6],self.m_acq,
                                     "RKneeMoment",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[7],self.m_trial,
+            plot.temporalPlot(self.fig.axes[7],self.m_acq,
                                     "RKneePower",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
 
-            plot.temporalPlot(self.fig.axes[8],self.m_trial,
+            plot.temporalPlot(self.fig.axes[8],self.m_acq,
                                     "RAnkleMoment",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[9],self.m_trial,
+            plot.temporalPlot(self.fig.axes[9],self.m_acq,
                                     "RAnkleMoment",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[10],self.m_trial,
+            plot.temporalPlot(self.fig.axes[10],self.m_acq,
                                     "RAnkleMoment",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
-            plot.temporalPlot(self.fig.axes[11],self.m_trial,
+            plot.temporalPlot(self.fig.axes[11],self.m_acq,
                                     "RAnklePower",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
 
 

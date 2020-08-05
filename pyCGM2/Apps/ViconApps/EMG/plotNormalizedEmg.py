@@ -27,7 +27,6 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
-from pyCGM2.Tools import trialTools
 from pyCGM2.Nexus import nexusFilters,nexusTools
 
 from pyCGM2.Configurator import EmgManager
@@ -97,10 +96,7 @@ def main():
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
 
-
-
-        openmaTrial = trialTools.convertBtkAcquisition(acq)
-        emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS,openmaTrials = [openmaTrial])
+        emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS,btkAcqs = [acq])
 
 
         if not consistencyFlag:

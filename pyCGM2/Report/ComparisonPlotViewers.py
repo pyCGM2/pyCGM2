@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pyCGM2
 from pyCGM2 import enums
 from pyCGM2.Report import plot, plotViewers
-from pyCGM2 import ma
+
 
 
 

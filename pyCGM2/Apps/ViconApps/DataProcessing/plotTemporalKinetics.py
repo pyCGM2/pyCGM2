@@ -73,14 +73,14 @@ def main():
         model = files.loadModel(DATA_PATH,subject)
         modelVersion = model.version
 
-        # ----- construction of the openMA root instance  -----
-        trialConstructorFilter = nexusFilters.NexusConstructTrialFilter(DATA_PATH,modelledFilenameNoExt,subject)
-        openmaTrial = trialConstructorFilter.build()
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,modelledFilenameNoExt,subject)
+        acq = nacf.build()
 
 
         # --------------------pyCGM2 MODEL ------------------------------
         if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True,openmaTrial=openmaTrial)
+            plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True,btkAcq=acq)
         # if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
         #     plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"Trunk", pointLabelSuffix=pointSuffix,exportPdf=True)
         # if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:

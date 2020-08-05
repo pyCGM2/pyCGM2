@@ -4,26 +4,26 @@ import pandas as pd
 import logging
 
 # pyCGM2
-from pyCGM2.Tools import trialTools
+from pyCGM2.Tools import btkTools
 
 
 class C3dManager(object):
     def __init__ (self):
-        self.spatioTemporal={"Trials":None , "Filenames":None}
-        self.kinematic={"Trials":None , "Filenames":None}
+        self.spatioTemporal={"Acqs":None , "Filenames":None}
+        self.kinematic={"Acqs":None , "Filenames":None}
         self.kineticFlag = False
-        self.kinetic={"Trials": None, "Filenames":None }
-        self.emg={"Trials":None , "Filenames":None}
+        self.kinetic={"Acqs": None, "Filenames":None }
+        self.emg={"Acqs":None , "Filenames":None}
 
 
 
-class UniqueOpenmaTrialSetProcedure(object):
+class UniqueBtkAcqSetProcedure(object):
 
 
-    def __init__(self, data_path, fileLst,trials):
+    def __init__(self, data_path, fileLst,acqs):
         self.m_files = fileLst
         self.m_data_path = data_path
-        self.m_trials = trials
+        self.m_acqs = acqs
 
 
 
@@ -32,21 +32,21 @@ class UniqueOpenmaTrialSetProcedure(object):
 
         #---spatioTemporalTrials
         if spatioTempFlag:
-            c3dManager.spatioTemporal["Trials"] = self.m_trials
+            c3dManager.spatioTemporal["Acqs"] = self.m_acqs
             c3dManager.spatioTemporal["Filenames"] = self.m_files
 
         # ----kinematic trials---
         if kinematicFlag:
-            c3dManager.kinematic["Trials"] = self.m_trials
+            c3dManager.kinematic["Acqs"] = self.m_acqs
             c3dManager.kinematic["Filenames"] = self.m_files
 
         #---kinetic Trials--- ( check if kinetic events)
         if kineticFlag:
-            c3dManager.kinetic["Trials"],c3dManager.kinetic["Filenames"],C3dManager.kineticFlag =  trialTools.automaticKineticDetection(self.m_data_path,self.m_files,trials = self.m_trials)
+            c3dManager.kinetic["Acqs"],c3dManager.kinetic["Filenames"],C3dManager.kineticFlag =  btkTools.automaticKineticDetection(self.m_data_path,self.m_files,acqs = self.m_acqs)
 
         #----emgTrials
         if emgFlag:
-            c3dManager.emg["Trials"] =self.m_trials
+            c3dManager.emg["Acqs"] =self.m_acqs
             c3dManager.emg["Filenames"] = self.m_files
 
 
@@ -65,21 +65,21 @@ class UniqueC3dSetProcedure(object):
 
         #---spatioTemporalTrials
         if spatioTempFlag:
-            c3dManager.spatioTemporal["Trials"],c3dManager.spatioTemporal["Filenames"] = trialTools.buildTrials(self.m_data_path,self.m_files)
+            c3dManager.spatioTemporal["Acqs"],c3dManager.spatioTemporal["Filenames"] = btkTools.buildTrials(self.m_data_path,self.m_files)
 
 
         # ----kinematic trials---
         if kinematicFlag:
-            c3dManager.kinematic["Trials"],c3dManager.kinematic["Filenames"], = trialTools.buildTrials(self.m_data_path,self.m_files)
+            c3dManager.kinematic["Acqs"],c3dManager.kinematic["Filenames"], = btkTools.buildTrials(self.m_data_path,self.m_files)
 
         #---kinetic Trials--- ( check if kinetic events)
         if kineticFlag:
-            c3dManager.kinetic["Trials"],c3dManager.kinetic["Filenames"],C3dManager.kineticFlag =  trialTools.automaticKineticDetection(self.m_data_path,self.m_files)
+            c3dManager.kinetic["Acqs"],c3dManager.kinetic["Filenames"],C3dManager.kineticFlag =  btkTools.automaticKineticDetection(self.m_data_path,self.m_files)
 
 
         #----emgTrials
         if emgFlag:
-            c3dManager.emg["Trials"],c3dManager.emg["Filenames"], = trialTools.buildTrials(self.m_data_path,self.m_files)
+            c3dManager.emg["Acqs"],c3dManager.emg["Filenames"], = btkTools.buildTrials(self.m_data_path,self.m_files)
 
 
 class DistinctC3dSetProcedure(object):
@@ -99,21 +99,21 @@ class DistinctC3dSetProcedure(object):
 
         #---spatioTemporalTrials
         if spatioTempFlag:
-            c3dManager.spatioTemporal["Trials"],c3dManager.spatioTemporal["Filenames"] = trialTools.buildTrials(self.m_data_path,self.m_files_stp)
+            c3dManager.spatioTemporal["Acqs"],c3dManager.spatioTemporal["Filenames"] = btkTools.buildTrials(self.m_data_path,self.m_files_stp)
 
 
         # ----kinematic trials---
         if kinematicFlag:
-            c3dManager.kinematic["Trials"],c3dManager.kinematic["Filenames"], = trialTools.buildTrials(self.m_data_path,self.m_files_kinematic)
+            c3dManager.kinematic["Acqs"],c3dManager.kinematic["Filenames"], = btkTools.buildTrials(self.m_data_path,self.m_files_kinematic)
 
         #---kinetic Trials--- ( check if kinetic events)
         if kineticFlag:
-            c3dManager.kinetic["Trials"],c3dManager.kinetic["Filenames"],C3dManager.kineticFlag =  trialTools.automaticKineticDetection(self.m_data_path,self.m_files_kinetic)
+            c3dManager.kinetic["Acqs"],c3dManager.kinetic["Filenames"],C3dManager.kineticFlag =  btkTools.automaticKineticDetection(self.m_data_path,self.m_files_kinetic)
 
 
         #----emgTrials
         if emgFlag:
-            c3dManager.emg["Trials"],c3dManager.emg["Filenames"], = trialTools.buildTrials(self.m_data_path,self.m_files_emg)
+            c3dManager.emg["Acqs"],c3dManager.emg["Filenames"], = btkTools.buildTrials(self.m_data_path,self.m_files_emg)
 
 
 

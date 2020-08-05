@@ -686,7 +686,12 @@ def sortedEvents(acq):
             if it.GetFrame()==frame:
                 events.append(it)
 
+    newEvents=btk.btkEventCollection()
+    for ev in events:
+        newEvents.InsertItem(ev)
 
+    acq.ClearEvents()
+    acq.SetEvents(newEvents)
     #
     # import ipdb; ipdb.set_trace()
     # events =[]
@@ -695,4 +700,92 @@ def sortedEvents(acq):
     #         for it in  btk.Iterate(evs):
     #             if it.GetFrame()==frameSort and it.GetContext()==contextLst_it:
     #                 events.append(it)
-    return events
+    # return events
+
+#------------------- FROM trials TOOLS------------------------------------------
+
+def buildTrials(dataPath,filenames):
+
+    acqs=[]
+    acqFilenames =[]
+    for filename in filenames:
+        logging.debug( dataPath)
+        logging.debug( filename)
+        acq = smartReader(dataPath + filename)
+        sortedEvents(acq)
+
+        acqs.append(acq)
+        acqFilenames.append(filename)
+
+    return acqs, acqFilenames
+
+
+def isKineticFlag(acq):
+    """
+        Flag up if correct kinetics available
+
+        :Parameters:
+            - `trial` (openma.trial) - an openma trial instance
+
+        :Return:
+            - `` (bool) - flag if kinetic available
+            - `kineticEvent_times` (lst) - time of maximal Normal reaction Forces for both context
+            - `kineticEvent_times_left` (lst) - time of maximal Normal reaction Forces for the Left context
+            - `kineticEvent_times_right` (lst) - time of maximal Normal reaction Forces for the Right context
+    """
+
+
+    kineticEvent_frames=[]
+    kineticEvent_frames_left=[]
+    kineticEvent_frames_right=[]
+
+    events= acq.GetEvents()
+    for ev in btk.Iterate(events):
+        if ev.GetContext() == "General":
+            if ev.GetLabel() in ["Left-FP","Right-FP"]:
+                kineticEvent_frames.append(ev.GetFrame())
+            if ev.GetLabel() in ["Left-FP"]:
+                kineticEvent_frames_left.append(ev.GetFrame())
+            if ev.GetLabel() in ["Right-FP"]:
+                kineticEvent_frames_right.append(ev.GetFrame())
+
+    if kineticEvent_frames==[]:
+        return False,0,0,0
+    else:
+        return True,kineticEvent_frames,kineticEvent_frames_left,kineticEvent_frames_right
+
+def automaticKineticDetection(dataPath,filenames,acqs=None):
+    """
+        convenient method for detecting correct kinetic in a filename set
+
+        :Parameters:
+            - `dataPath` (str) - folder path
+            - `filenames` (list of str) - filename of the different acquisitions
+    """
+    kineticAcqs=[]
+    kineticFilenames=[]
+
+    i=0
+    for filename in filenames:
+        if filename in kineticFilenames:
+            logging.debug("[pyCGM2] : filename %s duplicated in the input list" %(filename))
+        else:
+            if acqs is None:
+                acq = smartReader(dataPath + filename)
+
+            else:
+                acq = acqs[i]
+
+            sortedEvents(acq)
+            flag_kinetics,times, times_l, times_r = isKineticFlag(acq)
+
+            if flag_kinetics:
+                kineticFilenames.append(filename)
+                kineticAcqs.append(acq)
+    i+=1
+
+    kineticAcqs = None if kineticAcqs ==[] else kineticAcqs
+    flag_kinetics = False if kineticAcqs ==[] else True
+
+
+    return kineticAcqs,kineticFilenames,flag_kinetics

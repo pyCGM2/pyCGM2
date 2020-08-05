@@ -749,124 +749,124 @@ class AnalysisExportFilter(object):
 
 
 
-class AnalysisC3dExportFilter(object):
-    """
-         Filter exporting Analysis instance in json
-    """
-
-    def __init__(self):
-
-        self.analysis = None
-
-    def setAnalysisInstance(self,analysisInstance):
-        self.analysis = analysisInstance
-
-    # def _build(self,data):
-
-    def export(self,outputName, path=None):
-
-        root = ma.Node('root')
-        trial = ma.Trial("AnalysisC3d",root)
-
-        # metadata
-        #-------------
-
-        # subject infos
-        if self.analysis.subjectInfo is not None:
-            subjInfo = self.analysis.subjectInfo
-            for item in subjInfo.items():
-                trial.setProperty("SUBJECT_INFO:"+ utils.str(item[0]),utils.str(item[1]))
-
-        # model infos
-        if self.analysis.modelInfo is not None:
-            modelInfo =  self.analysis.modelInfo
-            for item in modelInfo.items():
-                trial.setProperty("MODEL_INFO:"+ utils.str(item[0]),utils.str(item[1]))
-
-        # model infos
-        if self.analysis.experimentalInfo is not None:
-            experimentalConditionInfo = self.analysis.experimentalInfo
-            for item in experimentalConditionInfo.items():
-                trial.setProperty("EXPERIMENTAL_INFO:"+ utils.str(item[0]),utils.str(item[1]))
-
-
-        #trial.setProperty('MY_GROUP:MY_PARAMETER',10.0)
-
-        # kinematic cycles
-        #------------------
-
-        # metadata
-        # for key in self.analysis.kinematicStats.data.keys():
-        #     if key[1]=="Left":
-        #         n_left_cycle = len(self.analysis.kinematicStats.data[key[0],key[1]]["values"])
-        #         trial.setProperty('PROCESSING:LeftKinematicCycleNumber',n_left_cycle)
-        #         break
-        #
-        # for key in self.analysis.kinematicStats.data.keys():
-        #     if key[1]=="Right":
-        #         n_right_cycle = len(self.analysis.kinematicStats.data[key[0],key[1]]["values"])
-        #         trial.setProperty('PROCESSING:RightKinematicCycleNumber',n_right_cycle)
-        #         break
-
-        # cycles
-        for key in self.analysis.kinematicStats.data.keys():
-            label = key[0]
-            context = key[1]
-            if not np.all( self.analysis.kinematicStats.data[label,context]["mean"]==0):
-                cycle = 0
-                values = np.zeros((101,4))
-                values2 = np.zeros((101,1))
-                for val in self.analysis.kinematicStats.data[label,context]["values"]:
-                    angle = ma.TimeSequence(utils.str(label+"."+context+"."+str(cycle)),4,101,1.0,0.0,ma.TimeSequence.Type_Angle,"deg", trial.timeSequences())
-                    values[:,0:3] = val
-                    angle.setData(values)
-                    cycle+=1
-
-        # kinetic cycles
-        #------------------
-
-        # # metadata
-        # for key in self.analysis.kineticStats.data.keys():
-        #     if key[1]=="Left":
-        #         n_left_cycle = len(self.analysis.kineticStats.data[key[0],key[1]]["values"])
-        #         trial.setProperty('PROCESSING:LeftKineticCycleNumber',n_left_cycle)
-        #         break
-        #
-        # for key in self.analysis.kineticStats.data.keys():
-        #     if key[1]=="Right":
-        #         n_right_cycle = len(self.analysis.kineticStats.data[key[0],key[1]]["values"])
-        #         trial.setProperty('PROCESSING:RightKineticCycleNumber',n_right_cycle)
-        #         break
-
-        # cycles
-        for key in self.analysis.kineticStats.data.keys():
-            label = key[0]
-            context = key[1]
-            if not np.all( self.analysis.kineticStats.data[label,context]["mean"]==0):
-                cycle = 0
-                values = np.zeros((101,4))
-                for val in self.analysis.kineticStats.data[label,context]["values"]:
-                    moment = ma.TimeSequence(str(label+"."+context+"."+str(cycle)),4,101,1.0,0.0,ma.TimeSequence.Type_Moment,"N.mm", trial.timeSequences())
-                    values[:,0:3] = val
-                    moment.setData(values)
-                    cycle+=1
-
-        # for key in self.analysis.emgStats.data.keys():
-        #     label = key[0]
-        #     context = key[1]
-        #     if not np.all( self.analysis.emgStats.data[label,context]["mean"]==0):
-        #         cycle = 0
-        #         for val in self.analysis.emgStats.data[label,context]["values"]:
-        #             analog = ma.TimeSequence(str(label+"."+context+"."+str(cycle)),1,101,1.0,0.0,ma.TimeSequence.Type_Analog,"V", 1.0,0.0,[-10.0,10.0], trial.timeSequences())
-        #             analog.setData(val)
-        #             cycle+=1
-
-
-        try:
-            if path == None:
-                ma.io.write(root,utils.str(outputName+".c3d")  )
-            else:
-                ma.io.write(root,utils.str(path + outputName+".c3d"))
-            logging.info("Analysis c3d  [%s.c3d] Exported" %( (outputName +".c3d")) )
-        except:
-            raise Exception ("[pyCGM2] : analysis c3d doesn t export" )
+# class AnalysisC3dExportFilter(object):
+#     """
+#          Filter exporting Analysis instance in json
+#     """
+#
+#     def __init__(self):
+#
+#         self.analysis = None
+#
+#     def setAnalysisInstance(self,analysisInstance):
+#         self.analysis = analysisInstance
+#
+#     # def _build(self,data):
+#
+#     def export(self,outputName, path=None):
+#
+#         root = ma.Node('root')
+#         trial = ma.Trial("AnalysisC3d",root)
+#
+#         # metadata
+#         #-------------
+#
+#         # subject infos
+#         if self.analysis.subjectInfo is not None:
+#             subjInfo = self.analysis.subjectInfo
+#             for item in subjInfo.items():
+#                 trial.setProperty("SUBJECT_INFO:"+ utils.str(item[0]),utils.str(item[1]))
+#
+#         # model infos
+#         if self.analysis.modelInfo is not None:
+#             modelInfo =  self.analysis.modelInfo
+#             for item in modelInfo.items():
+#                 trial.setProperty("MODEL_INFO:"+ utils.str(item[0]),utils.str(item[1]))
+#
+#         # model infos
+#         if self.analysis.experimentalInfo is not None:
+#             experimentalConditionInfo = self.analysis.experimentalInfo
+#             for item in experimentalConditionInfo.items():
+#                 trial.setProperty("EXPERIMENTAL_INFO:"+ utils.str(item[0]),utils.str(item[1]))
+#
+#
+#         #trial.setProperty('MY_GROUP:MY_PARAMETER',10.0)
+#
+#         # kinematic cycles
+#         #------------------
+#
+#         # metadata
+#         # for key in self.analysis.kinematicStats.data.keys():
+#         #     if key[1]=="Left":
+#         #         n_left_cycle = len(self.analysis.kinematicStats.data[key[0],key[1]]["values"])
+#         #         trial.setProperty('PROCESSING:LeftKinematicCycleNumber',n_left_cycle)
+#         #         break
+#         #
+#         # for key in self.analysis.kinematicStats.data.keys():
+#         #     if key[1]=="Right":
+#         #         n_right_cycle = len(self.analysis.kinematicStats.data[key[0],key[1]]["values"])
+#         #         trial.setProperty('PROCESSING:RightKinematicCycleNumber',n_right_cycle)
+#         #         break
+#
+#         # cycles
+#         for key in self.analysis.kinematicStats.data.keys():
+#             label = key[0]
+#             context = key[1]
+#             if not np.all( self.analysis.kinematicStats.data[label,context]["mean"]==0):
+#                 cycle = 0
+#                 values = np.zeros((101,4))
+#                 values2 = np.zeros((101,1))
+#                 for val in self.analysis.kinematicStats.data[label,context]["values"]:
+#                     angle = ma.TimeSequence(utils.str(label+"."+context+"."+str(cycle)),4,101,1.0,0.0,ma.TimeSequence.Type_Angle,"deg", trial.timeSequences())
+#                     values[:,0:3] = val
+#                     angle.setData(values)
+#                     cycle+=1
+#
+#         # kinetic cycles
+#         #------------------
+#
+#         # # metadata
+#         # for key in self.analysis.kineticStats.data.keys():
+#         #     if key[1]=="Left":
+#         #         n_left_cycle = len(self.analysis.kineticStats.data[key[0],key[1]]["values"])
+#         #         trial.setProperty('PROCESSING:LeftKineticCycleNumber',n_left_cycle)
+#         #         break
+#         #
+#         # for key in self.analysis.kineticStats.data.keys():
+#         #     if key[1]=="Right":
+#         #         n_right_cycle = len(self.analysis.kineticStats.data[key[0],key[1]]["values"])
+#         #         trial.setProperty('PROCESSING:RightKineticCycleNumber',n_right_cycle)
+#         #         break
+#
+#         # cycles
+#         for key in self.analysis.kineticStats.data.keys():
+#             label = key[0]
+#             context = key[1]
+#             if not np.all( self.analysis.kineticStats.data[label,context]["mean"]==0):
+#                 cycle = 0
+#                 values = np.zeros((101,4))
+#                 for val in self.analysis.kineticStats.data[label,context]["values"]:
+#                     moment = ma.TimeSequence(str(label+"."+context+"."+str(cycle)),4,101,1.0,0.0,ma.TimeSequence.Type_Moment,"N.mm", trial.timeSequences())
+#                     values[:,0:3] = val
+#                     moment.setData(values)
+#                     cycle+=1
+#
+#         # for key in self.analysis.emgStats.data.keys():
+#         #     label = key[0]
+#         #     context = key[1]
+#         #     if not np.all( self.analysis.emgStats.data[label,context]["mean"]==0):
+#         #         cycle = 0
+#         #         for val in self.analysis.emgStats.data[label,context]["values"]:
+#         #             analog = ma.TimeSequence(str(label+"."+context+"."+str(cycle)),1,101,1.0,0.0,ma.TimeSequence.Type_Analog,"V", 1.0,0.0,[-10.0,10.0], trial.timeSequences())
+#         #             analog.setData(val)
+#         #             cycle+=1
+#
+#
+#         try:
+#             if path == None:
+#                 ma.io.write(root,utils.str(outputName+".c3d")  )
+#             else:
+#                 ma.io.write(root,utils.str(path + outputName+".c3d"))
+#             logging.info("Analysis c3d  [%s.c3d] Exported" %( (outputName +".c3d")) )
+#         except:
+#             raise Exception ("[pyCGM2] : analysis c3d doesn t export" )

@@ -85,18 +85,19 @@ def main():
         subject = nexusTools.getActiveSubject(NEXUS)
         logging.info(  "Subject name : " + subject  )
 
-        # ----- construction of the openMA root instance  -----
-        trialConstructorFilter = nexusFilters.NexusConstructTrialFilter(DATA_PATH,modelledFilenameNoExt,subject)
-        openmaTrial = trialConstructorFilter.build()
 
         # --------------------pyCGM2 MODEL ------------------------------
         model = files.loadModel(DATA_PATH,subject)
         modelVersion = model.version
 
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,modelledFilenameNoExt,subject)
+        acq = nacf.build()
+
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis( DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix,
-                                                openmaTrials=[openmaTrial]) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix,
+                                                btkAcqs=[acq])
 
         if not consistencyFlag:
             if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:

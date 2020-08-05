@@ -4,12 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emgPlotViewers, ComparisonPlotViewers
 from pyCGM2.Processing import scores
-from pyCGM2.Tools import trialTools
+from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 
-from pyCGM2 import ma
 def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffix=None, exportPdf=False,outputName=None,show=True,title=None,
-                          openmaTrial=None):
+                          btkAcq=None):
     """
     plotTemporalKinematic : display temporal trace of the Kinematics
 
@@ -24,7 +23,7 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
     :param outputName [string]: name of the output filed
     :param show [bool]: enable matplotlib show function
     :param title [string]: change default title of the plot panel
-    :param openmaTrial [openma::Trial]: force use of an openma trial instance
+    :param btkAcq [Btk::Acquisition]: force use of an openma trial instance
 
 
     Examples:
@@ -46,13 +45,13 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
         else:
             filenameOut =  str(outputName+"-Temporal Kinematics ["+ bodyPart.name+"]")
 
-    if openmaTrial is not None:
-        trial = openmaTrial
-        trialTools.sortedEvents(trial)
+    if btkAcq is not None:
+        acq = btkAcq
+        btkTools.sortedEvents(acq)
     else:
-        trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
+        acq =btkTools.smartReader(DATA_PATH + modelledFilenames)
 
-    kv = plotViewers.TemporalKinematicsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
+    kv = plotViewers.TemporalKinematicsPlotViewer(acq,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
@@ -64,7 +63,7 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
 
 
 def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=None,exportPdf=False,outputName=None,show=True,title=None,
-                        openmaTrial=None):
+                        btkAcq=None):
 
     """
     plotTemporalKinetic : display temporal trace of the Kinetics
@@ -81,7 +80,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
     :param outputName [string]: name of the output filed
     :param show [bool]: enable matplotlib show function
     :param title [string]: change default title of the plot panel
-    :param openmaTrial [openma::Trial]: force use of an openma trial instance
+    :param btkAcq [Btk::Acquisition]: force use of an openma trial instance
 
     Examples:
 
@@ -102,14 +101,14 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
         else:
             filenameOut =  str(outputName+"-Temporal Kinetics ["+ bodyPart.name+"]")
 
-    if openmaTrial is not None:
-        trial = openmaTrial
-        trialTools.sortedEvents(trial)
+    if btkAcq is not None:
+        acq = btkAcq
+        btkTools.sortedEvents(acq)
 
     else:
-        trial =trialTools.smartTrialReader(DATA_PATH,modelledFilenames)
+        acq =btkTools.smartTrialReader(DATA_PATH+modelledFilenames)
 
-    kv = plotViewers.TemporalKineticsPlotViewer(trial,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
+    kv = plotViewers.TemporalKineticsPlotViewer(acq,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
@@ -121,7 +120,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
 
 def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,
                     exportPdf=False,outputName=None,show=True,title=None,
-                    openmaTrial=None):
+                    btkAcq=None):
     """
     plotTemporalEMG : display temporal trace of EMG signals
 
@@ -132,7 +131,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
     :param muscles [string list]: muscle labels associated with your emg channels
     :param contexts [string list]: contexts associated with your emg channel
     :param normalActivityEmgs [string list]: normal activities associated with your emg channels
-    :param openmaTrial [openma::Trial]: force use of an openma trial instance
+    :param btkAcq [Btk::Acquisition]: force use of an openma trial instance
 
 
     **optional**
@@ -146,10 +145,10 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
 
 
 
-    if openmaTrial is not None:
-        trial = openmaTrial
+    if btkAcq is not None:
+        acq = btkAcq
     else:
-        trial =trialTools.smartTrialReader(DATA_PATH,processedEmgfile)
+        acq =btkTools.smartTrialReader(DATA_PATH+processedEmgfile)
 
 
     emgChannels_list=  [emgChannels[i:i+10] for i in range(0, len(emgChannels), 10)]
@@ -179,7 +178,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
             combinedEMGcontext.append([emgChannels_list[i][j],contexts_list[i][j], muscles_list[i][j]])
 
         # # viewer
-        kv = emgPlotViewers.TemporalEmgPlotViewer(trial)
+        kv = emgPlotViewers.TemporalEmgPlotViewer(acq)
         kv.setEmgs(combinedEMGcontext)
         kv.setNormalActivationLabels(normalActivityEmgs_list[i])
         kv. setEmgRectify(rectify)

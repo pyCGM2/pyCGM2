@@ -8,17 +8,18 @@ import matplotlib.patches as mpatches
 # pyCGM2
 #import pyCGM2
 from pyCGM2.Processing import cycle
-from pyCGM2.Tools import trialTools
+
+from pyCGM2.Tools import btkTools
 from pyCGM2.Report import plotUtils
 
 
-from pyCGM2 import ma
-from pyCGM2.ma import io
+from pyCGM2 import btk
+
 from pyCGM2.EMG import normalActivation
 from pyCGM2.Utils import utils
 
 # ---- convenient plot functions
-def temporalPlot(figAxis,trial,
+def temporalPlot(figAxis,acq,
                 pointLabel,axis,pointLabelSuffix=None,color=None,
                 title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                 customLimits=None):
@@ -29,7 +30,7 @@ def temporalPlot(figAxis,trial,
 
         :Parameters:
              - `figAxis` (matplotlib::Axis )
-             - `trial` (ma.Trial) - a Structure item of an Analysis instance built from AnalysisFilter
+             - `acq` (ma.Trial) - a Structure item of an Analysis instance built from AnalysisFilter
 
         :Return:
             - matplotlib figure
@@ -43,11 +44,11 @@ def temporalPlot(figAxis,trial,
     pointLabel = pointLabel + "_" + pointLabelSuffix if pointLabelSuffix is not None else pointLabel
 
 
-    flag = trialTools.isTimeSequenceExist(trial,pointLabel)
+    flag = btkTools.isPointExist(acq,pointLabel)
 
     if flag:
-        timeseq = trial.findChild(ma.T_TimeSequence,utils.str(pointLabel))
-        lines=figAxis.plot(timeseq.data()[:,axis], '-', color= color)
+        point = acq.GetPoint(utils.str(pointLabel))
+        lines=figAxis.plot(point.GetValues()[:,axis], '-', color= color)
 
     if legendLabel is not None  and flag: lines[0].set_label(legendLabel)
     if title is not None: figAxis.set_title(title ,size=8)
@@ -58,12 +59,12 @@ def temporalPlot(figAxis,trial,
     if ylim is not None: figAxis.set_ylim(ylim)
 
     if flag:
-        for ev in trial.findChildren(ma.T_Event):
-            colorContext = plotUtils.colorContext(ev.context())
-            if ev.name() == "Foot Strike":
-                figAxis.axvline( x= (ev.time()-timeseq.startTime())*timeseq.sampleRate(), color = colorContext, linestyle = "-")
-            elif ev.name() == "Foot Off":
-                figAxis.axvline( x= (ev.time()-timeseq.startTime())*timeseq.sampleRate(), color = colorContext, linestyle = "--")
+        for ev in btk.Iterate( acq.GetEvents()):
+            colorContext = plotUtils.colorContext(ev.GetContext())
+            if ev.GetLabel() == "Foot Strike":
+                figAxis.axvline( x= ev.GetFrame()-acq.GetFirstFrame(), color = colorContext, linestyle = "-")
+            elif ev.GetLabel() == "Foot Off":
+                figAxis.axvline( x= ev.GetFrame()-acq.GetFirstFrame(), color = colorContext, linestyle = "--")
 
 
 def descriptivePlot(figAxis,analysisStructureItem,

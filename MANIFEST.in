@@ -2,11 +2,6 @@ recursive-include Apps *
 recursive-include pyCGM2\Settings *
 recursive-include pyCGM2\Data *
 recursive-include pyCGM2\Install *
-recursive-include pyCGM2\ma *.pyd
-recursive-include pyCGM2\ma *.dll
-recursive-include pyCGM2\ma *.pyo
-recursive-include pyCGM2\ma *.py
-recursive-include pyCGM2\ma *.pyc
 recursive-include pyCGM2\btk *.pyd
 recursive-include pyCGM2\btk *.pyo
 recursive-include pyCGM2\btk *.py

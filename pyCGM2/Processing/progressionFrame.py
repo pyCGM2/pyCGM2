@@ -25,6 +25,45 @@ class ProgressionFrameFilter(object):
         self.outputs["forwardProgression"] = forwardProgression
         self.outputs["globalFrame"] = globalFrame
 
+class PointProgressionFrameProcedure(object):
+
+    def __init__(self,marker="LHEE"):
+        self.m_marker=marker
+
+        self.__threshold = 800
+
+
+    def compute(self,acq):
+
+        if not btkTools.isPointExist(acq,self.m_marker):
+            raise Exception( "[pyCGM2] : origin point doesnt exist")
+
+        f,ff,lf = btkTools.findValidFrames(acq,[self.m_marker])
+
+        values = acq.GetPoint(self.m_marker).GetValues()[ff:lf,0:3]
+
+        MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
+        absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
+
+        ind = np.argmax(absMaxValues)
+        diff = MaxValues[ind]
+
+        if ind ==0 :
+            progressionAxis = "X"
+            lateralAxis = "Y"
+        else:
+            progressionAxis = "Y"
+            lateralAxis = "X"
+
+        forwardProgression = True if diff>0 else False
+
+        globalFrame = (progressionAxis+lateralAxis+"Z")
+
+        logging.debug("Progression axis : %s"%(progressionAxis))
+        logging.debug("forwardProgression : %s"%(forwardProgression))
+        logging.debug("globalFrame : %s"%(globalFrame))
+
+        return   progressionAxis,forwardProgression,globalFrame
 
 class PelvisProgressionFrameProcedure(object):
 

@@ -2,13 +2,14 @@
 import numpy as np
 import logging
 
+from pyCGM2.Processing import progressionFrame
 
-from pyCGM2.Tools import trialTools
 import pyCGM2.Math.normalisation  as MathNormalisation
 
-from pyCGM2 import ma
+# from pyCGM2 import ma
+from pyCGM2 import btk
 from pyCGM2.Utils import utils
-
+from pyCGM2.Tools import btkTools
 #----module methods ------
 
 
@@ -163,45 +164,22 @@ def analog_descriptiveStats(cycles,label,context):
     return outDict
 
 
-def construcGaitCycle(trial):
-    gaitCycles=list()
-
-    context = "Left"
-    left_fs_times=list()
-    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
-        left_fs_times.append(ev.time())
-
-    for i in range(0, len(left_fs_times)-1):
-        gaitCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
-                                       context))
-
-    context = "Right"
-    right_fs_times=list()
-    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-        right_fs_times.append(ev.time())
-
-    for i in range(0, len(right_fs_times)-1):
-        gaitCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
-                                       context))
-
-    return gaitCycles
-
 #----module classes ------
 
-class Cycle(ma.Node):
+class Cycle(object):
     """
-        Cut out a trial and create a generic Cycle from specific times
+        Cut out a acq and create a generic Cycle from specific times
     """
     #pour definir un label, il faut passer par la methode setName de l objet node
 
 
 
-    def __init__(self,trial,startTime,endTime,context, enableFlag = True):
+    def __init__(self,acq,startFrame,endFrame,context, enableFlag = True):
         """
         :Parameters:
              - `trial` (openma-trial) - openma from a c3d
-             - `startTime` (double) -  start time of the cycle
-             - `endTime` (double) - end time of the cycle
+             - `startFrame` (double) -  start time of the cycle
+             - `endFrame` (double) - end time of the cycle
              - `enableFlag` (bool) - flag the Cycle in order to indicate if we can use it in a analysis process.
 
         .. note:
@@ -209,28 +187,29 @@ class Cycle(ma.Node):
             no need Time sequence of type Analog
         """
 
-        nodeLabel = "Cycle"
-        super(Cycle,self).__init__(nodeLabel)
-        self.trial=trial
 
-        self.pointfrequency = trial.property("POINT:RATE").cast() #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
-        self.analogfrequency = trial.property("ANALOG:RATE").cast() #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate()
+        self.acq=acq
+
+        self.pointfrequency = int(btkTools.smartGetMetadata(self.acq,"POINT","RATE")[0]) #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
+        self.analogfrequency = int(btkTools.smartGetMetadata(self.acq,"ANALOG","RATE")[0]) #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate()
         self.appf =  self.analogfrequency / self.pointfrequency
+        self.firstFrame = acq.GetFirstFrame()
+        # try:
+        #     trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
+        #     self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startFrame() * self.pointfrequency))
+        #
+        # except ValueError:
+        #     logging.warning("[pyCGM2] : there are no time sequence of type marker in the openmaTrial")
+        #     self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).startFrame() * self.analogfrequency))/self.appf
 
-        try:
-            trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
-            self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime() * self.pointfrequency))
-
-        except ValueError:
-            logging.warning("[pyCGM2] : there are no time sequence of type marker in the openmaTrial")
-            self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).startTime() * self.analogfrequency))/self.appf
-
-        self.begin =  int(round(startTime * self.pointfrequency) + 1)
-        self.end = int(round(endTime * self.pointfrequency) + 1)
+        self.begin =  startFrame#int(round(startFrame * self.pointfrequency) + 1)
+        self.end = endFrame# int(round(endFrame * self.pointfrequency) + 1)
         self.context=context
         self.enableFlag = enableFlag
 
         self.discreteDataList=[]
+
+        self.stps =dict()
 
         logging.debug("cycle makes from Frame %d   to  %d   (%s) " % (self.begin, self.end, self.context))
 
@@ -258,10 +237,10 @@ class Cycle(ma.Node):
 
         """
 
-        if trialTools.isTimeSequenceExist(self.trial,pointLabel):
-            return self.trial.findChild(ma.T_TimeSequence, utils.str(pointLabel)).data()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
+        if btkTools.isPointExist(self.acq,pointLabel):
+            return self.acq.GetPoint(utils.str(pointLabel)).GetValues()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
         else:
-            logging.debug("[pyCGM2] the point Label %s doesn t exist in %s" % (pointLabel,self.trial.name()))
+            logging.debug("[pyCGM2] the point Label %s doesn t exist " % (pointLabel))
             return None
             #raise Exception("[pyCGM2] marker %s doesn t exist"% pointLabel )
 
@@ -291,10 +270,10 @@ class Cycle(ma.Node):
                 - `analogLabel` (str) - analog Label
 
         """
-        if trialTools.isTimeSequenceExist(self.trial,analogLabel):
-            return  self.trial.findChild(ma.T_TimeSequence, utils.str(analogLabel)).data()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
+        if btkTools.isAnalogExist(self.acq,analogLabel):
+            return  self.acq.GetAnalog(utils.str(analogLabel)).GetValues()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
         else:
-            logging.debug("[pyCGM2] the Analog Label %s doesn t exist in %s" % (analogLabel,self.trial.name()))
+            logging.debug("[pyCGM2] the Analog Label %s doesn t exist" % (analogLabel))
             return None
 
 
@@ -322,17 +301,16 @@ class Cycle(ma.Node):
                 - `context` (str) - event context ( All, Left or Right)
 
         """
-
-        events = ma.Node("Events")
-        evsn = self.trial.findChild(ma.T_Node,"SortedEvents")
-        for ev in evsn.findChildren(ma.T_Event):
+        events = list()
+        evsn = self.acq.GetEvents()
+        for ev in btk.Iterate(evsn):
             if context==("Left" or "Right") :
-                if ev.context() ==context:
-                    if round(ev.time() * self.pointfrequency) + 1  >self.begin and  round(ev.time() * self.pointfrequency) + 1<self.end:
-                        ev.addParent(events)
+                if ev.GetContext()== context:
+                    if ev.GetFrame() + 1  >self.begin and  ev.GetFrame() + 1<self.end:
+                        events.append(ev)
             else:
-                if round(ev.time() * self.pointfrequency) + 1 > self.begin and  round(ev.time() * self.pointfrequency) + 1 < self.end:
-                    ev.addParent(events)
+                if ev.GetFrame() + 1  >self.begin and  ev.GetFrame() + 1<self.end:
+                    events.append(ev)
         return events
 
 
@@ -363,33 +341,35 @@ class GaitCycle(Cycle):
                 "strideWidth", "speed"]
 
 
-    def __init__(self,gaitTrial,startTime,endTime,context, enableFlag = True):
+    def __init__(self,gaitAcq,startFrame,endFrame,context, enableFlag = True):
         """
         :Parameters:
              - `trial` (openma-trial) - openma from a c3d
-             - `startTime` (double) -  start time of the cycle
-             - `endTime` (double) - end time of the cycle
+             - `startFrame` (double) -  start time of the cycle
+             - `endFrame` (double) - end time of the cycle
              - `enableFlag` (bool) - flag the Cycle in order to indicate if we can use it in a analysis process.
 
         """
 
 
 
-        super(GaitCycle, self).__init__(gaitTrial,startTime,endTime,context, enableFlag = enableFlag)
+        super(GaitCycle, self).__init__(gaitAcq,startFrame,endFrame,context, enableFlag = enableFlag)
 
         #ajout des oppositeFO, contraFO,oopositeFS
         evs=self.getEvents()
+
+
         if context=="Right":
             oppositeSide="Left"
         elif context=="Left":
             oppositeSide="Right"
-        for ev in evs.findChildren(ma.T_Event):
-            if ev.name() == "Foot Off" and ev.context()==oppositeSide:
-                oppositeFO= int(round(ev.time() * self.pointfrequency) + 1)
-            if ev.name() == "Foot Strike" and ev.context()==oppositeSide:
-                oppositeFS= int(round(ev.time() * self.pointfrequency) + 1)
-            if ev.name() == "Foot Off" and ev.context()==context:
-                contraFO = int(round(ev.time() * self.pointfrequency) + 1)
+        for ev in evs:
+            if ev.GetLabel() == "Foot Off" and ev.GetContext()==oppositeSide:
+                oppositeFO= ev.GetFrame()
+            if ev.GetLabel() == "Foot Strike" and ev.GetContext()==oppositeSide:
+                oppositeFS= ev.GetFrame()
+            if ev.GetLabel() == "Foot Off" and ev.GetContext()==context:
+                contraFO = ev.GetFrame()
         if oppositeFO > oppositeFS:
             raise Exception("[pyCGM2] : check your c3d - Gait event error")
 
@@ -411,55 +391,65 @@ class GaitCycle(Cycle):
         swingDuration=np.divide(np.abs(self.m_contraFO - self.end) , self.pointfrequency)
         stepDuration=np.divide(np.abs(self.m_oppositeFS - self.begin) , self.pointfrequency)
 
-        pst = ma.Node("stp",self)
-        pst.setProperty("duration", duration)
-        pst.setProperty("cadence", np.divide(60.0,duration))
+        self.stps["duration"] = duration
+        self.stps["cadence"]= np.divide(60.0,duration)
 
-        pst.setProperty("stanceDuration", stanceDuration)
-        pst.setProperty("swingDuration", swingDuration)
-        pst.setProperty("stepDuration", stepDuration)
-        pst.setProperty("doubleStance1Duration", np.divide(np.abs(self.m_oppositeFO - self.begin) , self.pointfrequency))
-        pst.setProperty("doubleStance2Duration", np.divide(np.abs(self.m_contraFO - self.m_oppositeFS) , self.pointfrequency))
-        pst.setProperty("simpleStanceDuration", np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency))
+        self.stps["stanceDuration"] = stanceDuration
+        self.stps["swingDuration"] =  swingDuration
+        self.stps["stepDuration"] =  stepDuration
+        self.stps["doubleStance1Duration"] =  np.divide(np.abs(self.m_oppositeFO - self.begin) , self.pointfrequency)
+        self.stps["doubleStance2Duration"] =  np.divide(np.abs(self.m_contraFO - self.m_oppositeFS) , self.pointfrequency)
+        self.stps["simpleStanceDuration"] =  np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency)
 
 
-        pst.setProperty("stancePhase", round(np.divide(stanceDuration,duration)*100))
-        pst.setProperty("swingPhase", round(np.divide(swingDuration,duration)*100 ))
-        pst.setProperty("doubleStance1", round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.begin) , self.pointfrequency),duration)*100))
-        pst.setProperty("doubleStance2", round(np.divide(np.divide(np.abs(self.m_contraFO - self.m_oppositeFS) , self.pointfrequency),duration)*100))
-        pst.setProperty("simpleStance", round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency),duration)*100))
-        pst.setProperty("stepPhase", round(np.divide(stepDuration,duration)*100))
-        #pst.setProperty("simpleStance3 ",15.0 )
+        self.stps["stancePhase"] =  round(np.divide(stanceDuration,duration)*100)
+        self.stps["swingPhase"] =  round(np.divide(swingDuration,duration)*100 )
+        self.stps["doubleStance1"] =  round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.begin) , self.pointfrequency),duration)*100)
+        self.stps["doubleStance2"] =  round(np.divide(np.divide(np.abs(self.m_contraFO - self.m_oppositeFS) , self.pointfrequency),duration)*100)
+        self.stps["simpleStance"] =  round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency),duration)*100)
+        self.stps["stepPhase"] =  round(np.divide(stepDuration,duration)*100)
+
         if self.context == "Left":
 
-            if trialTools.isTimeSequenceExist(self.trial,"LHEE") and trialTools.isTimeSequenceExist(self.trial,"RHEE") and trialTools.isTimeSequenceExist(self.trial,"LTOE"):
+            if btkTools.isPointExist(self.acq,"LHEE") and btkTools.isPointExist(self.acq,"RHEE") and btkTools.isPointExist(self.acq,"LTOE"):
+
+                pfp = progressionFrame.PointProgressionFrameProcedure(marker="LHEE")
+                pff = progressionFrame.ProgressionFrameFilter(self.acq,pfp)
+                pff.compute()
+                progressionAxis =  pff.outputs["progressionAxis"]
+                forwardProgression = pff.outputs["forwardProgression"]
+                globalFrame = pff.outputs["globalFrame"]
 
 
-                progressionAxis,forwardProgression,globalFrame = trialTools.findProgression(self.trial,"LHEE")
                 longitudinal_axis=0  if progressionAxis =="X" else 1
                 lateral_axis=1  if progressionAxis =="X" else 0
 
 
                 strideLength=np.abs(self.getPointTimeSequenceData("LHEE")[self.end-self.begin,longitudinal_axis] -\
                                     self.getPointTimeSequenceData("LHEE")[0,longitudinal_axis])/1000.0
-                pst.setProperty("strideLength", strideLength)
+                self.stps["strideLength"] =  strideLength
 
                 stepLength = np.abs(self.getPointTimeSequenceData("RHEE")[self.m_oppositeFS-self.begin,longitudinal_axis] -\
                                     self.getPointTimeSequenceData("LHEE")[0,longitudinal_axis])/1000.0
-                pst.setProperty("stepLength", stepLength)
+                self.stps["stepLength"] =  stepLength
 
                 strideWidth = np.abs(self.getPointTimeSequenceData("LTOE")[self.end-self.begin,lateral_axis] -\
                                      self.getPointTimeSequenceData("RHEE")[0,lateral_axis])/1000.0
-                pst.setProperty("strideWidth", strideWidth)
+                self.stps["strideWidth"] =  strideWidth
 
-                pst.setProperty("speed",np.divide(strideLength,duration))
+                self.stps["speed"] = np.divide(strideLength,duration)
 
 
         if self.context == "Right":
 
-            if trialTools.isTimeSequenceExist(self.trial,"RHEE") and trialTools.isTimeSequenceExist(self.trial,"LHEE") and trialTools.isTimeSequenceExist(self.trial,"RTOE"):
+            if btkTools.isPointExist(self.acq,"RHEE") and btkTools.isPointExist(self.acq,"LHEE") and btkTools.isPointExist(self.acq,"RTOE"):
 
-                progressionAxis,forwardProgression,globalFrame = trialTools.findProgression(self.trial,"RHEE")
+                pfp = progressionFrame.PointProgressionFrameProcedure(marker="RHEE")
+                pff = progressionFrame.ProgressionFrameFilter(self.acq,pfp)
+                pff.compute()
+                progressionAxis =  pff.outputs["progressionAxis"]
+                forwardProgression = pff.outputs["forwardProgression"]
+                globalFrame = pff.outputs["globalFrame"]
 
                 longitudinal_axis=0  if progressionAxis =="X" else 1
                 lateral_axis=1  if progressionAxis =="X" else 0
@@ -470,14 +460,14 @@ class GaitCycle(Cycle):
                 strideWidth = np.abs(self.getPointTimeSequenceData("RTOE")[self.end-self.begin,lateral_axis] -\
                                  self.getPointTimeSequenceData("LHEE")[0,lateral_axis])/1000.0
 
-                pst.setProperty("strideLength", strideLength)
-                pst.setProperty("strideWidth", strideWidth)
+                self.stps["strideLength"] =  strideLength
+                self.stps["strideWidth"] =  strideWidth
 
                 stepLength = np.abs(self.getPointTimeSequenceData("RHEE")[self.m_oppositeFS-self.begin,longitudinal_axis] -\
                                     self.getPointTimeSequenceData("LHEE")[0,longitudinal_axis])/1000.0
-                pst.setProperty("stepLength", stepLength)
+                self.stps["stepLength"] =  stepLength
 
-                pst.setProperty("speed",np.divide(strideLength,duration))
+                self.stps["speed"] = np.divide(strideLength,duration)
 
     def getSpatioTemporalParameter(self,label):
         """
@@ -487,8 +477,7 @@ class GaitCycle(Cycle):
              - `label` (str) - label of the desired spatio-temporal parameter
         """
 
-        stpNode = self.findChild(ma.T_Node,"stp")
-        return stpNode.property(label).cast()
+        return self.stps[label]
 
 
 # ----- PATTERN BUILDER -----
@@ -572,51 +561,57 @@ class Cycles():
 # --- BUILDER
 class CyclesBuilder(object):
 
-    def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None):
+    def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None):
 
-        self.spatioTemporalTrials =spatioTemporalTrials
-        self.kinematicTrials =kinematicTrials
-        self.kineticTrials =kineticTrials
-        self.emgTrials =emgTrials
+        self.spatioTemporalAcqs =spatioTemporalAcqs
+        self.kinematicAcqs =kinematicAcqs
+        self.kineticAcqs =kineticAcqs
+        self.emgAcqs =emgAcqs
 
     def getSpatioTemporal(self):
 
-        if self.spatioTemporalTrials is not None:
+        if self.spatioTemporalAcqs is not None:
             spatioTemporalCycles=list()
-            for trial in  self.spatioTemporalTrials:
+            for acq in  self.spatioTemporalAcqs:
 
-                startTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime()
-                endTime = startTime + (trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).samples() / trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate())
+                startFrame = acq.GetFirstFrame()
+                endFrame = acq.GetLastFrame()
 
                 context = "Left"
-                left_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
-                    left_fs_times.append(ev.time())
+                left_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        left_fs_frames.append(ev.GetFrame())
+                #
+                # for ev in  acq.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
+                #     left_fs_frames.append(ev.time())
 
                 context = "Right"
-                right_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-                    spatioTemporalCycles.append(ev.time())
+                right_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        right_fs_frames.append(ev.GetFrame())
 
-                if left_fs_times == [] and  right_fs_times == []:
-                    spatioTemporalCycles.append (Cycle(trial, startTime,endTime,"Left"))
-                    spatioTemporalCycles.append (Cycle(trial, startTime,endTime,"Right"))
+
+                if left_fs_frames == [] and  right_fs_frames == []:
+                    spatioTemporalCycles.append (Cycle(acq, startFrame,endFrame,"Left"))
+                    spatioTemporalCycles.append (Cycle(acq, startFrame,endFrame,"Right"))
                     logging.info("[pyCGM2] left and Right context - time normalization from time boudaries")
 
-                if len(left_fs_times) >1:
-                    for i in range(0, len(left_fs_times)-1):
-                        spatioTemporalCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
+                if len(left_fs_frames) >1:
+                    for i in range(0, len(left_fs_frames)-1):
+                        spatioTemporalCycles.append (Cycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                        "Left"))
-                elif len(left_fs_times) ==1:
+                elif len(left_fs_frames) ==1:
                     logging.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
                 else:
                     logging.warning("[pyCGM2] No left cycles")
 
-                if len(right_fs_times)>1:
-                    for i in range(0, len(right_fs_times)-1):
-                        spatioTemporalCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
+                if len(right_fs_frames)>1:
+                    for i in range(0, len(right_fs_frames)-1):
+                        spatioTemporalCycles.append (Cycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                        "Right"))
-                elif len(right_fs_times) ==1:
+                elif len(right_fs_frames) ==1:
                     logging.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
                 else:
                     logging.warning("[pyCGM2] No Right cycles")
@@ -626,42 +621,45 @@ class CyclesBuilder(object):
             return None
 
     def getKinematics(self):
-        if self.kinematicTrials is not None:
+        if self.kinematicAcqs is not None:
             kinematicCycles=list()
-            for trial in  self.kinematicTrials:
+            for acq in  self.kinematicAcqs:
 
-                startTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime()
-                endTime = startTime + (trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).samples() /  trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate())
+                startFrame = acq.GetFirstFrame()
+                endFrame = acq.GetLastFrame()
 
                 context = "Left"
-                left_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
-                    left_fs_times.append(ev.time())
+                left_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        left_fs_frames.append(ev.GetFrame())
+
 
                 context = "Right"
-                right_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-                    right_fs_times.append(ev.time())
+                right_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        right_fs_frames.append(ev.GetFrame())
 
-                if left_fs_times == [] and  right_fs_times == []:
-                    kinematicCycles.append (Cycle(trial, startTime,endTime,"Left"))
-                    kinematicCycles.append (Cycle(trial, startTime,endTime,"Right"))
+                if left_fs_frames == [] and  right_fs_frames == []:
+                    kinematicCycles.append (Cycle(acq, startFrame,endFrame,"Left"))
+                    kinematicCycles.append (Cycle(acq, startFrame,endFrame,"Right"))
                     logging.info("[pyCGM2] left and Right context - time normalization from time boudaries")
 
-                if len(left_fs_times) >1:
-                    for i in range(0, len(left_fs_times)-1):
-                        kinematicCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
+                if len(left_fs_frames) >1:
+                    for i in range(0, len(left_fs_frames)-1):
+                        kinematicCycles.append (Cycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                        "Left"))
-                elif len(left_fs_times) ==1:
+                elif len(left_fs_frames) ==1:
                     logging.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
                 else:
                     logging.warning("[pyCGM2] No left cycles")
 
-                if len(right_fs_times) >1:
-                    for i in range(0, len(right_fs_times)-1):
-                        kinematicCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
+                if len(right_fs_frames) >1:
+                    for i in range(0, len(right_fs_frames)-1):
+                        kinematicCycles.append (Cycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                        "Right"))
-                elif len(right_fs_times) ==1:
+                elif len(right_fs_frames) ==1:
                     logging.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
                 else:
                     logging.warning("[pyCGM2] No Right cycles")
@@ -672,70 +670,73 @@ class CyclesBuilder(object):
 
     def getKinetics(self):
 
-        if self.kineticTrials is not None:
+        if self.kineticAcqs is not None:
 
             detectionTimeOffset = 0.02
 
             kineticCycles=list()
-            for trial in  self.kineticTrials:
+            for acq in  self.kineticAcqs:
 
-                flag_kinetics,times,times_left,times_right = trialTools.isKineticFlag(trial)
+                flag_kinetics,frames,frames_left,frames_right = btkTools.isKineticFlag(acq)
 
-                startTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startTime()
-                endTime = startTime + (trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).samples() /  trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate())
+                startFrame = acq.GetFirstFrame()
+                endFrame = acq.GetLastFrame()
 
                 if flag_kinetics:
 
+                    context = "Left"
+                    left_fs_frames=list()
+                    for ev in btk.Iterate(acq.GetEvents()):
+                        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                            left_fs_frames.append(ev.GetFrame())
 
-                    left_fs_times=list()
-                    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
-                        left_fs_times.append(ev.time())
-
-                    right_fs_times=list()
-                    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-                        right_fs_times.append(ev.time())
+                    context = "Right"
+                    right_fs_frames=list()
+                    for ev in btk.Iterate(acq.GetEvents()):
+                        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                            right_fs_frames.append(ev.GetFrame())
 
 
-                    if left_fs_times == [] and right_fs_times==[]:
-                        kineticCycles.append (Cycle(trial, startTime,endTime,"Left"))
-                        kineticCycles.append (Cycle(trial, startTime,endTime,"Right"))
+                    if left_fs_frames == [] and right_fs_frames==[]:
+                        kineticCycles.append (Cycle(acq, startFrame,endFrame,"Left"))
+                        kineticCycles.append (Cycle(acq, startFrame,endFrame,"Right"))
                         logging.info("[pyCGM2] left - time normalization from time boudaries")
 
 
                     count_L=0
-                    if len(left_fs_times)>1:
-                        for i in range(0, len(left_fs_times)-1):
-                            init =  left_fs_times[i]
-                            end =  left_fs_times[i+1]
+                    if len(left_fs_frames)>1:
+                        for i in range(0, len(left_fs_frames)-1):
+                            init =  left_fs_frames[i]
+                            end =  left_fs_frames[i+1]
 
-                            for timeKinetic in times_left:
+                            for frameKinetic in frames_left:
 
-                                if timeKinetic<=end and timeKinetic>=init:
-                                    logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_times[i], left_fs_times[i+1]))
-                                    kineticCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
+                                if frameKinetic<=end and frameKinetic>=init:
+                                    logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_frames[i], left_fs_frames[i+1]))
+                                    kineticCycles.append (Cycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                                "Left"))
 
                                     count_L+=1
                         logging.debug("%i Left Kinetic cycles available" %(count_L))
-                    elif len(left_fs_times) ==1:
+                    elif len(left_fs_frames) ==1:
                         logging.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
                     else:
                         logging.warning("[pyCGM2] No left cycles")
 
                     count_R=0
-                    if len(right_fs_times)>1:
-                        for i in range(0, len(right_fs_times)-1):
-                            init =  right_fs_times[i]
-                            end =  right_fs_times[i+1]
+                    if len(right_fs_frames)>1:
+                        for i in range(0, len(right_fs_frames)-1):
+                            init =  right_fs_frames[i]
+                            end =  right_fs_frames[i+1]
 
-                            for timeKinetic in times_right:
-                                if timeKinetic<=end and timeKinetic>=init:
-                                    logging.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_times[i], right_fs_times[i+1]))
-                                    kineticCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
+                            for frameKinetic in frames_right:
+                                if frameKinetic<=end and frameKinetic>=init:
+                                    logging.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_frames[i], right_fs_frames[i+1]))
+                                    kineticCycles.append (Cycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                                "Right"))
                                     count_R+=1
                         logging.debug("%i Right Kinetic cycles available" %(count_R))
-                    elif len(right_fs_times) ==1:
+                    elif len(right_fs_frames) ==1:
                         logging.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
                     else:
                         logging.warning("[pyCGM2] No Right cycles")
@@ -745,41 +746,45 @@ class CyclesBuilder(object):
             return None
 
     def getEmg(self):
-        if self.emgTrials is not None:
+        if self.emgAcqs is not None:
             emgCycles=list()
-            for trial in  self.emgTrials:
+            for acq in  self.emgAcqs:
 
-                startTime = trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).startTime()
-                endTime = startTime + (trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).samples() /  trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate())
+                startFrame = acq.GetFirstFrame()
+                endFrame = acq.GetLastFrame()
 
-                left_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
-                    left_fs_times.append(ev.time())
+                context = "Left"
+                left_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        left_fs_frames.append(ev.GetFrame())
 
-                right_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-                    right_fs_times.append(ev.time())
+                context = "Right"
+                right_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        right_fs_frames.append(ev.GetFrame())
 
 
-                if left_fs_times == [] and  right_fs_times == []:
-                    emgCycles.append (Cycle(trial, startTime,endTime,"Left"))
-                    emgCycles.append (Cycle(trial, startTime,endTime,"Right"))
+                if left_fs_frames == [] and  right_fs_frames == []:
+                    emgCycles.append (Cycle(acq, startFrame,endFrame,"Left"))
+                    emgCycles.append (Cycle(acq, startFrame,endFrame,"Right"))
                     logging.info("[pyCGM2] left and Right context - time normalization from time boudaries")
 
-                if len(left_fs_times)>1:
-                    for i in range(0, len(left_fs_times)-1):
-                        emgCycles.append (Cycle(trial, left_fs_times[i],left_fs_times[i+1],
+                if len(left_fs_frames)>1:
+                    for i in range(0, len(left_fs_frames)-1):
+                        emgCycles.append (Cycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                        "Left"))
-                elif len(left_fs_times) ==1:
+                elif len(left_fs_frames) ==1:
                     logging.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
                 else:
                     logging.warning("[pyCGM2] No left cycles")
 
-                if len(right_fs_times)>1:
-                    for i in range(0, len(right_fs_times)-1):
-                        emgCycles.append (Cycle(trial, right_fs_times[i],right_fs_times[i+1],
+                if len(right_fs_frames)>1:
+                    for i in range(0, len(right_fs_frames)-1):
+                        emgCycles.append (Cycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                        "Right"))
-                elif len(right_fs_times) ==1:
+                elif len(right_fs_frames) ==1:
                     logging.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
                 else:
                     logging.warning("[pyCGM2] No Right cycles")
@@ -797,13 +802,13 @@ class GaitCyclesBuilder(CyclesBuilder):
 
     """
 
-    def __init__(self,spatioTemporalTrials=None,kinematicTrials=None,kineticTrials=None,emgTrials=None):
+    def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None):
         """
             :Parameters:
-                 - `spatioTemporalTrials` (list of openma trials) - list of trials of which Cycles will be extracted for computing spatio-temporal parameters
-                 - `kinematicTrials` (list of openma trials) - list of trials of which Cycles will be extracted for computing kinematic outputs
-                 - `kineticTrials` (list of openma trials) - list of trials of which Cycles will be extracted for computing kinetic outputs
-                 - `emgTrials` (list of openma trials) - list of trials of which Cycles will be extracted for emg
+                 - `spatioTemporalAcqs` (list of openma trials) - list of trials of which Cycles will be extracted for computing spatio-temporal parameters
+                 - `kinematicAcqs` (list of openma trials) - list of trials of which Cycles will be extracted for computing kinematic outputs
+                 - `kineticAcqs` (list of openma trials) - list of trials of which Cycles will be extracted for computing kinetic outputs
+                 - `emgAcqs` (list of openma trials) - list of trials of which Cycles will be extracted for emg
                  - `longitudinal_axis` (str) - label of the  longitudinal global axis (X, Y or Z)
                  - `lateral_axis` (str) - label of the  longitudinal global axis (X, Y or Z)
 
@@ -811,10 +816,10 @@ class GaitCyclesBuilder(CyclesBuilder):
 
 
         super(GaitCyclesBuilder, self).__init__(
-            spatioTemporalTrials = spatioTemporalTrials,
-            kinematicTrials=kinematicTrials,
-            kineticTrials = kineticTrials,
-            emgTrials = emgTrials,
+            spatioTemporalAcqs = spatioTemporalAcqs,
+            kinematicAcqs=kinematicAcqs,
+            kineticAcqs = kineticAcqs,
+            emgAcqs = emgAcqs,
             )
 
 
@@ -826,26 +831,30 @@ class GaitCyclesBuilder(CyclesBuilder):
                -`spatioTemporalCycles` (list of GaitCycle)
         """
 
-        if self.spatioTemporalTrials is not None:
+        if self.spatioTemporalAcqs is not None:
             spatioTemporalCycles=list()
-            for trial in  self.spatioTemporalTrials:
+            for acq in  self.spatioTemporalAcqs:
 
                 context = "Left"
-                left_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
-                    left_fs_times.append(ev.time())
+                left_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        left_fs_frames.append(ev.GetFrame())
 
-                for i in range(0, len(left_fs_times)-1):
-                    spatioTemporalCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
+
+                for i in range(0, len(left_fs_frames)-1):
+                    spatioTemporalCycles.append (GaitCycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                    context))
 
                 context = "Right"
-                right_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-                    right_fs_times.append(ev.time())
+                right_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        right_fs_frames.append(ev.GetFrame())
 
-                for i in range(0, len(right_fs_times)-1):
-                    spatioTemporalCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
+
+                for i in range(0, len(right_fs_frames)-1):
+                    spatioTemporalCycles.append (GaitCycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                    context))
 
             return spatioTemporalCycles
@@ -860,26 +869,30 @@ class GaitCyclesBuilder(CyclesBuilder):
              -`kinematicCycles` (list of GaitCycle)
         """
 
-        if self.kinematicTrials is not None:
+        if self.kinematicAcqs is not None:
             kinematicCycles=list()
-            for trial in  self.kinematicTrials:
+            for acq in  self.kinematicAcqs:
 
                 context = "Left"
-                left_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
-                    left_fs_times.append(ev.time())
+                left_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        left_fs_frames.append(ev.GetFrame())
 
-                for i in range(0, len(left_fs_times)-1):
-                    kinematicCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
+                for i in range(0, len(left_fs_frames)-1):
+                    kinematicCycles.append (GaitCycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                    context))
 
                 context = "Right"
-                right_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-                    right_fs_times.append(ev.time())
+                right_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        right_fs_frames.append(ev.GetFrame())
 
-                for i in range(0, len(right_fs_times)-1):
-                    kinematicCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
+
+
+                for i in range(0, len(right_fs_frames)-1):
+                    kinematicCycles.append (GaitCycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                    context))
 
             return kinematicCycles
@@ -887,31 +900,34 @@ class GaitCyclesBuilder(CyclesBuilder):
             return None
 
     def getKinetics(self):
-        if self.kineticTrials is not None:
+
+        if self.kineticAcqs is not None:
 
             detectionTimeOffset = 0.02
 
             kineticCycles=list()
-            for trial in  self.kineticTrials:
+            for acq in  self.kineticAcqs:
 
-                flag_kinetics,times,times_left,times_right = trialTools.isKineticFlag(trial)
+                flag_kinetics,frames,frames_left,frames_right = btkTools.isKineticFlag(acq)
 
                 if flag_kinetics:
                     context = "Left"
                     count_L=0
-                    left_fs_times=list()
-                    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
-                        left_fs_times.append(ev.time())
+                    left_fs_frames=list()
+                    for ev in btk.Iterate(acq.GetEvents()):
+                        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                            left_fs_frames.append(ev.GetFrame())
 
-                    for i in range(0, len(left_fs_times)-1):
-                        init =  left_fs_times[i]
-                        end =  left_fs_times[i+1]
 
-                        for timeKinetic in times_left:
+                    for i in range(0, len(left_fs_frames)-1):
+                        init =  left_fs_frames[i]
+                        end =  left_fs_frames[i+1]
 
-                            if timeKinetic<=end and timeKinetic>=init:
-                                logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_times[i], left_fs_times[i+1]))
-                                kineticCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
+                        for frameKinetic in frames_left:
+
+                            if frameKinetic<=end and frameKinetic>=init:
+                                logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_frames[i], left_fs_frames[i+1]))
+                                kineticCycles.append (GaitCycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                            context))
 
                                 count_L+=1
@@ -921,18 +937,19 @@ class GaitCyclesBuilder(CyclesBuilder):
 
                     context = "Right"
                     count_R=0
-                    right_fs_times=list()
-                    for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-                        right_fs_times.append(ev.time())
+                    right_fs_frames=list()
+                    for ev in btk.Iterate(acq.GetEvents()):
+                        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                            right_fs_frames.append(ev.GetFrame())
 
-                    for i in range(0, len(right_fs_times)-1):
-                        init =  right_fs_times[i]
-                        end =  right_fs_times[i+1]
+                    for i in range(0, len(right_fs_frames)-1):
+                        init =  right_fs_frames[i]
+                        end =  right_fs_frames[i+1]
 
-                        for timeKinetic in times_right:
-                            if timeKinetic<=end and timeKinetic>=init:
-                                logging.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_times[i], right_fs_times[i+1]))
-                                kineticCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
+                        for frameKinetic in frames_right:
+                            if frameKinetic<=end and frameKinetic>=init:
+                                logging.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_frames[i], right_fs_frames[i+1]))
+                                kineticCycles.append (GaitCycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                            context))
                                 count_R+=1
                     logging.debug("%i Right Kinetic cycles available" %(count_R))
@@ -949,26 +966,28 @@ class GaitCyclesBuilder(CyclesBuilder):
                 -`emgCycles` (list of GaitCycle)
         """
 
-        if self.emgTrials is not None:
+        if self.emgAcqs is not None:
             emgCycles=list()
-            for trial in  self.emgTrials:
+            for acq in  self.emgAcqs:
 
                 context = "Left"
-                left_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Left"]]):
-                    left_fs_times.append(ev.time())
+                left_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        left_fs_frames.append(ev.GetFrame())
 
-                for i in range(0, len(left_fs_times)-1):
-                    emgCycles.append (GaitCycle(trial, left_fs_times[i],left_fs_times[i+1],
+                for i in range(0, len(left_fs_frames)-1):
+                    emgCycles.append (GaitCycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                    context))
 
                 context = "Right"
-                right_fs_times=list()
-                for ev in  trial.findChild(ma.T_Node,"SortedEvents").findChildren(ma.T_Event,"Foot Strike",[["context","Right"]]):
-                    right_fs_times.append(ev.time())
+                right_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        right_fs_frames.append(ev.GetFrame())
 
-                for i in range(0, len(right_fs_times)-1):
-                    emgCycles.append (GaitCycle(trial, right_fs_times[i],right_fs_times[i+1],
+                for i in range(0, len(right_fs_frames)-1):
+                    emgCycles.append (GaitCycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                    context))
 
             return emgCycles

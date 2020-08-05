@@ -21,7 +21,7 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
     """
 
-    def __init__(self,iTrial,pointLabelSuffix=None):
+    def __init__(self,iAcq,pointLabelSuffix=None):
 
         """
             :Parameters:
@@ -29,13 +29,13 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         """
 
 
-        super(TemporalEmgPlotViewer, self).__init__(iTrial)
+        super(TemporalEmgPlotViewer, self).__init__(iAcq)
 
         self.emgs = list()
         self.rectify = False
 
-        self.m_trial = self.m_input
-        if isinstance(self.m_input,ma.Trial):
+        self.m_acq = self.m_input
+        if isinstance(self.m_input,pyCGM2.btk.btkAcquisition):
             pass
         else:
             logging.error( "[pyCGM2] error input object type. must be a ma.Trial")
@@ -102,10 +102,10 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
             normalActivationLabel = self.m_normalActivEmgs[i]
 
-            plot.temporalPlot(self.fig.axes[i],self.m_trial,
+            plot.temporalPlot(self.fig.axes[i],self.m_acq,
                                     label,0,
                                     color=colorContext)
-            plot.addTemporalNormalActivationLayer(self.fig.axes[i],self.m_trial,self.m_normalActivEmgs[i],context)
+            plot.addTemporalNormalActivationLayer(self.fig.axes[i],self.m_acq,self.m_normalActivEmgs[i],context)
 
 
     def plotPanel(self):

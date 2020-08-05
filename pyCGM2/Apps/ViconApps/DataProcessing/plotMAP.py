@@ -91,9 +91,9 @@ def main():
         logging.info(  "Subject name : " + subject  )
 
 
-        # ----- construction of the openMA root instance  -----
-        trialConstructorFilter = nexusFilters.NexusConstructTrialFilter(DATA_PATH,modelledFilenameNoExt,subject)
-        openmaTrial = trialConstructorFilter.build()
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,modelledFilenameNoExt,subject)
+        acq = nacf.build()
 
 
         # --------------------pyCGM2 MODEL ------------------------------
@@ -101,7 +101,7 @@ def main():
         modelVersion = model.version
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix,openmaTrials=[openmaTrial]) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix,btkAcqs=[acq]) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
         plot.plot_MAP(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename,pointLabelSuffix=pointSuffix)
 
 

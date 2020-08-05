@@ -18,7 +18,7 @@ import logging
 
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
-from pyCGM2.Tools import  btkTools,trialTools
+from pyCGM2.Tools import  btkTools
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Utils import utils
 # ---- BTK ------

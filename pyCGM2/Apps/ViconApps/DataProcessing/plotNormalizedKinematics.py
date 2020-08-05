@@ -93,14 +93,14 @@ def main():
         model = files.loadModel(DATA_PATH,subject)
         modelVersion = model.version
 
-        # ----- construction of the openMA root instance  -----
-        trialConstructorFilter = nexusFilters.NexusConstructTrialFilter(DATA_PATH,modelledFilenameNoExt,subject)
-        openmaTrial = trialConstructorFilter.build()
+        # btkAcq builder
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,modelledFilenameNoExt,subject)
+        acq = nacf.build()
 
 
         # --------------------------PROCESSING --------------------------------
         analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix,
-                                                openmaTrials=[openmaTrial])
+                                                btkAcqs=[acq])
 
         if not consistencyFlag:
             if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
