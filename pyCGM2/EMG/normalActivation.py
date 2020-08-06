@@ -70,6 +70,7 @@ def getNormalBurstActivity_fromCycles(muscle,ff,begin, fo, end, apf):
         NORMAL_STANCE_PHASE=normalActivations["NORMAL_STANCE_PHASE"]
         TABLE = normalActivations["Activation"]
 
+
         beg=  (begin-ff)*apf
         fo=(fo-ff)*apf
         end=(end-ff)*apf

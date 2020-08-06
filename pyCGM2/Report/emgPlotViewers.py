@@ -11,8 +11,6 @@ from pyCGM2.Report import plot, plotViewers, plotUtils
 from pyCGM2.EMG import normalActivation
 from pyCGM2.Processing import cycle
 
-from pyCGM2 import ma
-from pyCGM2.ma import io
 
 
 
@@ -94,7 +92,6 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
     def __setData(self):
         #suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
-
         for i in range(0, len(self.emgs)):
             label = self.emgs[i]["Label"]+"_Rectify" if self.rectify  else self.emgs[i]["Label"]+"_HPF"
             context = self.emgs[i]["Context"]

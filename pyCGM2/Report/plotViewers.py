@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import pyCGM2
 from pyCGM2 import enums
 from pyCGM2.Report import plot
-from pyCGM2 import ma
 
 
 
@@ -142,7 +141,7 @@ class SpatioTemporalPlotViewer(AbstractPlotViewer):
                 self.fig.axes[i].axvline(x=(plusStd), color= "green", linestyle = "dashed")
                 i+=1
 
-
+        return self.fig
 
 class GpsMapPlotViewer(AbstractPlotViewer):
     """
@@ -242,6 +241,8 @@ class GpsMapPlotViewer(AbstractPlotViewer):
     def plotPanel(self):
         self.__setLayer()
         self.__setData()
+
+        return self.fig
 
 class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
     """

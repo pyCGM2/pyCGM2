@@ -71,6 +71,8 @@ class PlottingFilter(object):
             else:
                 plt.savefig((self.m_path+ self.m_fileName+"."+self.m_format))
 
+        return self.fig
+
     def setYlimits(self, axisIndex, min, max):
         self.__concretePlotViewer.fig.axes[axisIndex].set_ylim([min,max])
 

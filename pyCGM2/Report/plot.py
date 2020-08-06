@@ -45,10 +45,17 @@ def temporalPlot(figAxis,acq,
 
 
     flag = btkTools.isPointExist(acq,pointLabel)
-
     if flag:
         point = acq.GetPoint(utils.str(pointLabel))
         lines=figAxis.plot(point.GetValues()[:,axis], '-', color= color)
+        appf = 1
+    else:
+        flag = btkTools.isAnalogExist(acq,pointLabel)
+        if flag:
+            analog = acq.GetAnalog(utils.str(pointLabel))
+            lines=figAxis.plot(analog.GetValues()[:,axis], '-', color= color)
+            appf = acq.GetNumberAnalogSamplePerFrame()
+
 
     if legendLabel is not None  and flag: lines[0].set_label(legendLabel)
     if title is not None: figAxis.set_title(title ,size=8)
@@ -62,9 +69,9 @@ def temporalPlot(figAxis,acq,
         for ev in btk.Iterate( acq.GetEvents()):
             colorContext = plotUtils.colorContext(ev.GetContext())
             if ev.GetLabel() == "Foot Strike":
-                figAxis.axvline( x= ev.GetFrame()-acq.GetFirstFrame(), color = colorContext, linestyle = "-")
-            elif ev.GetLabel() == "Foot Off":
-                figAxis.axvline( x= ev.GetFrame()-acq.GetFirstFrame(), color = colorContext, linestyle = "--")
+                figAxis.axvline( x= (ev.GetFrame()-acq.GetFirstFrame())*appf, color = colorContext, linestyle = "-")
+            if ev.GetLabel() == "Foot Off":
+                figAxis.axvline( x= (ev.GetFrame()-acq.GetFirstFrame())*appf, color = colorContext, linestyle = "--")
 
 
 def descriptivePlot(figAxis,analysisStructureItem,
@@ -457,9 +464,9 @@ def addNormalActivationLayer(figAxis,normalActivationLabel,fo):
 
 
 
-def addTemporalNormalActivationLayer(figAxis,trial,normalActivationLabel,context):
+def addTemporalNormalActivationLayer(figAxis,acq,normalActivationLabel,context):
     if normalActivationLabel:
-        gaitCycles = cycle.construcGaitCycle(trial)
+        gaitCycles = cycle.construcGaitCycle(acq)
 
         for cycleIt  in gaitCycles:
             if cycleIt.context == context:

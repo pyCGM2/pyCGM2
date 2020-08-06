@@ -57,10 +57,11 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
     pf.setViewer(kv)
     if title is not None: pf.setTitle(str(title+"-Temporal Kinematics ["+ bodyPart.name+"]"))
     if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
-    pf.plot()
+    fig = pf.plot()
 
     if show: plt.show()
 
+    return fig
 
 def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=None,exportPdf=False,outputName=None,show=True,title=None,
                         btkAcq=None):
@@ -106,7 +107,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
         btkTools.sortedEvents(acq)
 
     else:
-        acq =btkTools.smartTrialReader(DATA_PATH+modelledFilenames)
+        acq =btkTools.smartReader(DATA_PATH+modelledFilenames)
 
     kv = plotViewers.TemporalKineticsPlotViewer(acq,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
     # # filter
@@ -114,9 +115,11 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
     pf.setViewer(kv)
     if title is not None: pf.setTitle(str(title+"-Temporal Kinetics ["+ bodyPart.name+"]"))
     if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
-    pf.plot()
+    fig = pf.plot()
 
     if show: plt.show()
+
+    return fig
 
 def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,
                     exportPdf=False,outputName=None,show=True,title=None,
@@ -148,7 +151,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
     if btkAcq is not None:
         acq = btkAcq
     else:
-        acq =btkTools.smartTrialReader(DATA_PATH+processedEmgfile)
+        acq =btkTools.smartReader(DATA_PATH+processedEmgfile)
 
 
     emgChannels_list=  [emgChannels[i:i+10] for i in range(0, len(emgChannels), 10)]
@@ -158,6 +161,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
 
     pageNumber = len(emgChannels_list)
 
+    figs=list()
 
     count = 0
     for i in range(0,pageNumber):
@@ -193,10 +197,14 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
             else:
                 pf.setTitle(str(title+"-TemporalEmgPlot"+"[rectify]") if rectify else str(title+"-TemporalEmgPlot"+"[raw]"))
         if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
-        pf.plot()
+        fig = pf.plot()
+
+        figs.append(fig)
 
         count+=1
     if show: plt.show()
+
+    return figs
 
 def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
 
@@ -249,10 +257,11 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,cont
     pf.setViewer(kv)
 
     if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
-    pf.plot()
+    fig = pf.plot()
 
     if show: plt.show()
 
+    return fig
 
 def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
 
@@ -305,10 +314,11 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, cont
     pf.setViewer(kv)
     if title is not None: pf.setTitle( str(title+"-ConsistencyEmgEnv"+"[No Normalized]-") if not normalized else str(title+"-DescriptiveEmgEnv"+"[Normalized]"))
     if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
-    pf.plot()
+    fig = pf.plot()
 
     if show: plt.show()
 
+    return fig
 
 
 def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=True,title=None):
@@ -342,9 +352,10 @@ def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=
     stppf.setViewer(stpv)
     if title is not None: stppf.setTitle(str(title+"-SpatioTemporal parameters"))
     if exportPdf: stppf.setExport(DATA_PATH,filenameOut,"pdf")
-    stppf.plot()
+    fig = stppf.plot()
 
     if show: plt.show()
+    return fig
 
 def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
     """
@@ -405,8 +416,9 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
     pf.setViewer(kv)
     if title is not None: pf.setTitle(str(title+"-descriptive  Kinematics ["+ bodyPart.name+"]"))
     if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
-    pf.plot()
+    fig = pf.plot()
     if show: plt.show()
+    return fig
 
 
 def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
@@ -462,9 +474,10 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
     pf.setViewer(kv)
     if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     if title is not None: pf.setTitle(str(title+"-consistency  Kinematics ["+ bodyPart.name+"]"))
-    pf.plot()
+    fig = pf.plot()
     if show: plt.show()
 
+    return fig
 
 def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
     """
@@ -519,9 +532,10 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLa
     pf.setViewer(kv)
     if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     if title is not None: pf.setTitle(str(title+"-descriptive  Kinetics ["+ bodyPart.name+"]"))
-    pf.plot()
+    fig = pf.plot()
     if show: plt.show()
 
+    return fig
 
 def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
     """
@@ -572,8 +586,10 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,pointL
     pf.setViewer(kv)
     if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     if title is not None: pf.setTitle(str(title+"-consistency  Kinetics ["+ bodyPart.name+"]"))
-    pf.plot()
+    fig = pf.plot()
     if show: plt.show()
+
+    return fig
 
 def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None,pointLabelSuffix=None,show=True,title=None):
     """
@@ -611,9 +627,10 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None
     pf.setViewer(kv)
     if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     if title is not None: pf.setTitle(str(title+"-Map"))
-    pf.plot()
+    fig = pf.plot()
     if show: plt.show()
 
+    return fig
 
 def compareKinematic(analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None):
     """
@@ -668,9 +685,10 @@ def compareKinematic(analyses,legends,context,bodyPart,normativeDataset,plotType
     pf.setViewer(kv)
     if title is not None: pf.setTitle(str(title+"-Kinematic comparison"))
     #pf.setExport(outputPath,str(pdfFilename+"-consisntency Kinematics"),"pdf")
-    pf.plot()
+    fig = pf.plot()
     if show: plt.show()
 
+    return fig
 
 def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None):
 
@@ -729,9 +747,10 @@ def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="
     pf.setViewer(kv)
     #pf.setExport(outputPath,str(pdfFilename+"-consisntency Kinematics"),"pdf")
     if title is not None: pf.setTitle(str(title+"-Kinetic comparison"))
-    pf.plot()
+    fig = pf.plot()
     if show: plt.show()
 
+    return fig
 
 def compareEmgEnvelops(analyses,legends, emgChannels, muscles, contexts, normalActivityEmgs, normalized=False,plotType="Descriptive",show=True,title=None,type="Gait"):
     """
@@ -799,8 +818,10 @@ def compareEmgEnvelops(analyses,legends, emgChannels, muscles, contexts, normalA
     pf.setViewer(kv)
     #pf.setExport(outputPath,str(pdfFilename+"-consisntency Kinematics"),"pdf")
     if title is not None: pf.setTitle(str(title+"-EMG envelop comparison"))
-    pf.plot()
+    fig = pf.plot()
     if show: plt.show()
+
+    return fig
 
 def compareSelectedEmgEvelops(analyses,legends, emgChannels,contexts, normalized=False,plotType="Descriptive",type="Gait",show=True,title=None):
     """
@@ -872,3 +893,5 @@ def compareSelectedEmgEvelops(analyses,legends, emgChannels,contexts, normalized
 
         ax.legend(fontsize=6)
     if show: plt.show()
+
+    return fig

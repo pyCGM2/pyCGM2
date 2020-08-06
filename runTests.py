@@ -24,9 +24,16 @@ def getTestFiles(path):
 
 pytestfiles = getTestFiles(pyCGM2.MAIN_PYCGM2_PATH+"Tests")
 for testfile in pytestfiles:
-    cmd = "pytest -v --disable-pytest-warnings --exitfirst Tests/" + testfile
+    if "plot" in testFile:
+        cmd = "pytest -v --disable-pytest-warnings --mpl --exitfirst Tests/" + testfile
+    else:
+        cmd = "pytest -v --disable-pytest-warnings --exitfirst Tests/" + testfile
+
     val = os.system(cmd)
 
     if val == 1: raise Exception("File %s fails"%(testfile) )
+
+
+
 
 if val==0:  print "GREAT.....ALL TESTS PASSED......:-) "

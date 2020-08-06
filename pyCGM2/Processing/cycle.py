@@ -6,7 +6,6 @@ from pyCGM2.Processing import progressionFrame
 
 import pyCGM2.Math.normalisation  as MathNormalisation
 
-# from pyCGM2 import ma
 from pyCGM2 import btk
 from pyCGM2.Utils import utils
 from pyCGM2.Tools import btkTools
@@ -163,6 +162,31 @@ def analog_descriptiveStats(cycles,label,context):
 
     return outDict
 
+
+def construcGaitCycle(acq):
+    gaitCycles=list()
+
+    context = "Left"
+    left_fs_frames=list()
+    for ev in btk.Iterate(acq.GetEvents()):
+        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+            left_fs_frames.append(ev.GetFrame())
+
+    for i in range(0, len(left_fs_frames)-1):
+        gaitCycles.append (GaitCycle(acq, left_fs_frames[i],left_fs_frames[i+1],
+                                       context))
+
+    context = "Right"
+    right_fs_frames=list()
+    for ev in btk.Iterate(acq.GetEvents()):
+        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+            right_fs_frames.append(ev.GetFrame())
+
+    for i in range(0, len(right_fs_frames)-1):
+        gaitCycles.append (GaitCycle(acq, right_fs_frames[i],right_fs_frames[i+1],
+                                       context))
+
+    return gaitCycles
 
 #----module classes ------
 

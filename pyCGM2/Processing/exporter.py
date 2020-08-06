@@ -9,8 +9,7 @@ import pyCGM2
 from pyCGM2.Utils import files
 from pyCGM2.Tools import exportTools
 
-from pyCGM2 import ma
-from pyCGM2.ma import io
+
 from pyCGM2.Utils import utils
 
 def renameEmgInAnalysis(analysisInstance,emgChannels, emgMuscles, emgContexts):
