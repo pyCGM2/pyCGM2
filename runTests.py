@@ -24,7 +24,7 @@ def getTestFiles(path):
 
 pytestfiles = getTestFiles(pyCGM2.MAIN_PYCGM2_PATH+"Tests")
 for testfile in pytestfiles:
-    if "plot" in testFile:
+    if "plot" in testfile:
         cmd = "pytest -v --disable-pytest-warnings --mpl --exitfirst Tests/" + testfile
     else:
         cmd = "pytest -v --disable-pytest-warnings --exitfirst Tests/" + testfile
