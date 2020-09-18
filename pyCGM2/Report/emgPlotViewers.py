@@ -40,6 +40,8 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
         self.m_pointLabelSuffix = pointLabelSuffix
 
+        self.m_ignoreNormalActivity = False
+
 
     def setEmgs(self,emgs):
         for it in emgs:
@@ -89,6 +91,8 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
     def setNormalActivationLabels(self, labels):
         self.m_normalActivEmgs = labels
 
+    def ignoreNormalActivty(self, bool):
+        self.m_ignoreNormalActivity = bool
 
     def __setData(self):
         #suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
@@ -102,7 +106,9 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
             plot.temporalPlot(self.fig.axes[i],self.m_acq,
                                     label,0,
                                     color=colorContext)
-            plot.addTemporalNormalActivationLayer(self.fig.axes[i],self.m_acq,self.m_normalActivEmgs[i],context)
+
+            if not self.m_ignoreNormalActivity:
+                plot.addTemporalNormalActivationLayer(self.fig.axes[i],self.m_acq,self.m_normalActivEmgs[i],context)
 
 
     def plotPanel(self):

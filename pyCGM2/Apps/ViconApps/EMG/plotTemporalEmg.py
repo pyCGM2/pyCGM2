@@ -39,6 +39,7 @@ def main():
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-ecf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
     parser.add_argument('-r','--raw', action='store_true', help='rectified data')
+    parser.add_argument('-ina','--ignoreNormalActivity', action='store_true', help='do not display normal activity')
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -100,7 +101,7 @@ def main():
             envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
 
         plot.plotTemporalEMG(DATA_PATH,inputFile, EMG_LABELS,EMG_MUSCLES, EMG_CONTEXT, NORMAL_ACTIVITIES,exportPdf=True,rectify=rectifyBool,
-                            btkAcq=acq)
+                            btkAcq=acq,ignoreNormalActivity= args.ignoreNormalActivity)
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

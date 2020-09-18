@@ -123,7 +123,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
 
 def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,
                     exportPdf=False,outputName=None,show=True,title=None,
-                    btkAcq=None):
+                    btkAcq=None,ignoreNormalActivity= False):
     """
     plotTemporalEMG : display temporal trace of EMG signals
 
@@ -185,6 +185,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
         kv = emgPlotViewers.TemporalEmgPlotViewer(acq)
         kv.setEmgs(combinedEMGcontext)
         kv.setNormalActivationLabels(normalActivityEmgs_list[i])
+        kv.ignoreNormalActivty(ignoreNormalActivity)
         kv. setEmgRectify(rectify)
 
         # # filter
