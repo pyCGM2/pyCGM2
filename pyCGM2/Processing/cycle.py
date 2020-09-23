@@ -214,8 +214,11 @@ class Cycle(object):
 
         self.acq=acq
 
-        self.pointfrequency = float(btkTools.smartGetMetadata(self.acq,"POINT","RATE")[0]) #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
-        self.analogfrequency = float(btkTools.smartGetMetadata(self.acq,"ANALOG","RATE")[0]) #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate()
+        self.pointfrequency = float(acq.GetPointFrame())
+        self.analogfrequency = float(acq.GetAnalogFrame())
+
+        #self.pointfrequency = float(btkTools.smartGetMetadata(self.acq,"POINT","RATE")[0]) #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
+        #self.analogfrequency = float(btkTools.smartGetMetadata(self.acq,"ANALOG","RATE")[0]) #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate()
         self.appf =  self.analogfrequency / self.pointfrequency
         self.firstFrame = acq.GetFirstFrame()
         # try:
