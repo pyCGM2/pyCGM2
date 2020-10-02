@@ -589,7 +589,6 @@ class ModelMotionFilter(object):
                         cframe.m_axisX=R[:,0]
                         cframe.m_axisY=R[:,1]
                         cframe.m_axisZ=R[:,2]
-
                         segPicked.getReferential("TF").addMotionFrame(copy.deepcopy(cframe) )
 
             if not self.m_noAnatomicalMotion:
@@ -631,99 +630,98 @@ class ModelMotionFilter(object):
                                       self.m_method,
                                       self.m_options)
         else :
-            with timer.Timer("test"):
-                for segName in self.m_procedure.definition:
+            for segName in self.m_procedure.definition:
 
+                segPicked=self.m_model.getSegment(segName)
+                segPicked.getReferential("TF").motion =[]
+
+                if self.m_method == enums.motionMethod.Determinist :
+                    for i in range(0,self.m_aqui.GetPointFrameNumber()):
+
+                        pt1=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][0])).GetValues()[i,:]
+                        pt2=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][1])).GetValues()[i,:]
+                        pt3=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][2])).GetValues()[i,:]
+                        ptOrigin=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][3])).GetValues()[i,:]
+
+                        a1=(pt2-pt1)
+                        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+
+                        v=(pt3-pt1)
+                        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+
+                        a2=np.cross(a1,v)
+                        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+
+                        x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName]["TF"]['sequence'])
+
+                        cframe=frame.Frame()
+                        cframe.m_axisX=x
+                        cframe.m_axisY=y
+                        cframe.m_axisZ=z
+                        cframe.setRotation(R)
+                        cframe.setTranslation(ptOrigin)
+
+                        segPicked.getReferential("TF").addMotionFrame(copy.deepcopy(cframe) )
+
+                if self.m_method == enums.motionMethod.Sodervisk :
+
+                    tms= segPicked.m_tracking_markers
+
+                    for i in range(0,self.m_aqui.GetPointFrameNumber()):
+                        visibleMarkers = btkTools.getVisibleMarkersAtFrame(self.m_aqui,tms,i)
+
+                        # constructuion of the input of sodervisk
+                        arrayStatic = np.zeros((len(visibleMarkers),3))
+                        arrayDynamic = np.zeros((len(visibleMarkers),3))
+
+                        j=0
+                        for vm in visibleMarkers:
+                            arrayStatic[j,:] = segPicked.getReferential("TF").static.getNode_byLabel(vm).m_global
+                            arrayDynamic[j,:] = self.m_aqui.GetPoint(vm).GetValues()[i,:]
+                            j+=1
+
+                        Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(arrayStatic,arrayDynamic)
+                        R=np.dot(Ropt,segPicked.getReferential("TF").static.getRotation())
+                        tOri=np.dot(Ropt,segPicked.getReferential("TF").static.getTranslation())+Lopt
+
+                        cframe=frame.Frame()
+                        cframe.setRotation(R)
+                        cframe.setTranslation(tOri)
+                        cframe.m_axisX=R[:,0]
+                        cframe.m_axisY=R[:,1]
+                        cframe.m_axisZ=R[:,2]
+
+                        segPicked.getReferential("TF").addMotionFrame(copy.deepcopy(cframe) )
+
+
+
+            if not self.m_noAnatomicalMotion:
+                for segName in self.m_procedure.anatomicalDefinition:
                     segPicked=self.m_model.getSegment(segName)
-                    segPicked.getReferential("TF").motion =[]
 
-                    if self.m_method == enums.motionMethod.Determinist :
-                        for i in range(0,self.m_aqui.GetPointFrameNumber()):
+                    segPicked.anatomicalFrame.motion=[]
 
-                            pt1=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][0])).GetValues()[i,:]
-                            pt2=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][1])).GetValues()[i,:]
-                            pt3=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][2])).GetValues()[i,:]
-                            ptOrigin=self.m_aqui.GetPoint(str(self.m_procedure.definition[segName]["TF"]['labels'][3])).GetValues()[i,:]
+                    ndO = str(self.m_procedure.anatomicalDefinition[segName]['labels'][3])
+                    ptO = segPicked.getReferential("TF").getNodeTrajectory(ndO)
 
-                            a1=(pt2-pt1)
-                            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+                    csFrame=frame.Frame()
+                    for i in range(0,self.m_aqui.GetPointFrameNumber()):
+                        R = np.dot(segPicked.getReferential("TF").motion[i].getRotation(), segPicked.getReferential("TF").relativeMatrixAnatomic)
+                        csFrame.update(R,ptO[i])
+                        segPicked.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+            else:
+                for segName in self.m_procedure.definition:
+                    segPicked=self.m_model.getSegment(segName)
 
-                            v=(pt3-pt1)
-                            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+                    segPicked.anatomicalFrame.motion=[]
+                    ndO = str(self.m_procedure.definition[segName]["TF"]['labels'][3])
+                    ptO = segPicked.getReferential("TF").getNodeTrajectory(ndO)
 
-                            a2=np.cross(a1,v)
-                            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-                            x,y,z,R=frame.setFrameData(a1,a2,self.m_procedure.definition[segName]["TF"]['sequence'])
-
-                            cframe=frame.Frame()
-                            cframe.m_axisX=x
-                            cframe.m_axisY=y
-                            cframe.m_axisZ=z
-                            cframe.setRotation(R)
-                            cframe.setTranslation(ptOrigin)
-
-                            segPicked.getReferential("TF").addMotionFrame(copy.deepcopy(cframe) )
-
-                    if self.m_method == enums.motionMethod.Sodervisk :
-
-                        tms= segPicked.m_tracking_markers
-
-                        for i in range(0,self.m_aqui.GetPointFrameNumber()):
-                            visibleMarkers = btkTools.getVisibleMarkersAtFrame(self.m_aqui,tms,i)
-
-                            # constructuion of the input of sodervisk
-                            arrayStatic = np.zeros((len(visibleMarkers),3))
-                            arrayDynamic = np.zeros((len(visibleMarkers),3))
-
-                            j=0
-                            for vm in visibleMarkers:
-                                arrayStatic[j,:] = segPicked.getReferential("TF").static.getNode_byLabel(vm).m_global
-                                arrayDynamic[j,:] = self.m_aqui.GetPoint(vm).GetValues()[i,:]
-                                j+=1
-
-                            Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(arrayStatic,arrayDynamic)
-                            R=np.dot(Ropt,segPicked.getReferential("TF").static.getRotation())
-                            tOri=np.dot(Ropt,segPicked.getReferential("TF").static.getTranslation())+Lopt
-
-                            cframe=frame.Frame()
-                            cframe.setRotation(R)
-                            cframe.setTranslation(tOri)
-                            cframe.m_axisX=R[:,0]
-                            cframe.m_axisY=R[:,1]
-                            cframe.m_axisZ=R[:,2]
-
-                            segPicked.getReferential("TF").addMotionFrame(copy.deepcopy(cframe) )
-
-
-
-                if not self.m_noAnatomicalMotion:
-                    for segName in self.m_procedure.anatomicalDefinition:
-                        segPicked=self.m_model.getSegment(segName)
-
-                        segPicked.anatomicalFrame.motion=[]
-
-                        ndO = str(self.m_procedure.anatomicalDefinition[segName]['labels'][3])
-                        ptO = segPicked.getReferential("TF").getNodeTrajectory(ndO)
-
-                        csFrame=frame.Frame()
-                        for i in range(0,self.m_aqui.GetPointFrameNumber()):
-                            R = np.dot(segPicked.getReferential("TF").motion[i].getRotation(), segPicked.getReferential("TF").relativeMatrixAnatomic)
-                            csFrame.update(R,ptO)
-                            segPicked.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-                else:
-                    for segName in self.m_procedure.definition:
-                        segPicked=self.m_model.getSegment(segName)
-
-                        segPicked.anatomicalFrame.motion=[]
-                        ndO = str(self.m_procedure.definition[segName]["TF"]['labels'][3])
-                        ptO = segPicked.getReferential("TF").getNodeTrajectory(ndO)
-
-                        csFrame=frame.Frame()
-                        for i in range(0,self.m_aqui.GetPointFrameNumber()):
-                            R = np.dot(segPicked.getReferential("TF").motion[i].getRotation(), segPicked.getReferential("TF").relativeMatrixAnatomic)
-                            csFrame.update(R,ptO)
-                            segPicked.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+                    csFrame=frame.Frame()
+                    for i in range(0,self.m_aqui.GetPointFrameNumber()):
+                        R = np.dot(segPicked.getReferential("TF").motion[i].getRotation(), segPicked.getReferential("TF").relativeMatrixAnatomic)
+                        csFrame.update(R,ptO[i])
+                        segPicked.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
 
