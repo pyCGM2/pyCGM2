@@ -648,6 +648,22 @@ class AnalysisExportFilter(object):
 
         out=OrderedDict()
 
+        if self.analysis.stpStats != {}:
+            processedKeys=list()
+            for keys in self.analysis.stpStats.keys():
+                if keys not in processedKeys:
+                    processedKeys.append(keys)
+                else:
+                    raise Exception ( "[pyCGM2] - duplicated keys[ %s - %s] detected" %(keys[0],keys[1]))
+
+                if keys[0] not in out.keys():
+                    out[keys[0]]=dict()
+                    out[keys[0]][keys[1]]=dict()
+                    out[keys[0]][keys[1]]["values"]=self.analysis.stpStats[keys]["values"].tolist()
+                else:
+                    out[keys[0]][keys[1]]=dict()
+                    out[keys[0]][keys[1]]["values"]=self.analysis.stpStats[keys]["values"].tolist()
+
         if self.analysis.kinematicStats.data != {}:
             processedKeys=list()
             for keys in self.analysis.kinematicStats.data.keys():
