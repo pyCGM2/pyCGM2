@@ -20,7 +20,7 @@ for i in range(0,101):
 
 def isColumnNameExist( dataframe, name):
     if name in dataframe.columns.values:
-        logging.warning("column name :[%s] already in the dataFrame",name)
+        logging.debug("column name :[%s] already in the dataFrame",name)
 
 # ---- Spatio temporal parameters -----
 def buid_df_descriptiveCycle1_1(analysis_outputStats):

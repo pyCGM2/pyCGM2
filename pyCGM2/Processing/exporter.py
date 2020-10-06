@@ -22,7 +22,7 @@ def renameEmgInAnalysis(analysisInstance,emgChannels, emgMuscles, emgContexts):
             if channelIt in keyIt[0]:
                 newLabelFinal = keyIt[0].replace(channelIt,newlabel)
                 analysisInstance.emgStats.data[newLabelFinal,context] = analysisInstance.emgStats.data.pop((keyIt[0],context))
-                logging.warning("label [%s] replaced with [%s]"%(keyIt[0],newLabelFinal))
+                logging.debug("label [%s] replaced with [%s]"%(keyIt[0],newLabelFinal))
         i=i-1
 
 
