@@ -696,15 +696,7 @@ def sortedEvents(acq):
 
     acq.ClearEvents()
     acq.SetEvents(newEvents)
-    #
-    # import ipdb; ipdb.set_trace()
-    # events =[]
-    # for contextLst_it in contextLst:
-    #     for frameSort in valueFrame:
-    #         for it in  btk.Iterate(evs):
-    #             if it.GetFrame()==frameSort and it.GetContext()==contextLst_it:
-    #                 events.append(it)
-    # return events
+
 
 #------------------- FROM trials TOOLS------------------------------------------
 
