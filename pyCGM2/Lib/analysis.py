@@ -13,8 +13,8 @@ from pyCGM2.Processing import jointPatterns
 from pyCGM2.Tools import btkTools
 
 
-def makeCGMGaitAnalysis(DATA_PATH,pstFilenames,modelledFilenames,emgFilenames,
-                        emgChannels,
+def makeCGMGaitAnalysis(DATA_PATH,modelledFilenames,
+                        emgFilenames, emgChannels,
                         subjectInfo=None, experimentalInfo=None,modelInfo=None,
                         pointLabelSuffix=None):
     """
@@ -24,11 +24,10 @@ def makeCGMGaitAnalysis(DATA_PATH,pstFilenames,modelledFilenames,emgFilenames,
 
     """
 
-    if pstFilenames == []: pstFilenames=None
     if modelledFilenames == []: modelledFilenames=None
     if emgFilenames == []: emgFilenames=None
 
-    c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(DATA_PATH, pstFilenames, modelledFilenames, modelledFilenames, emgFilenames)
+    c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(DATA_PATH, modelledFilenames, modelledFilenames, modelledFilenames, emgFilenames)
 
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
     cmf.enableSpatioTemporal(True) if modelledFilenames is not None else cmf.enableSpatioTemporal(False)
