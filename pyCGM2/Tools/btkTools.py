@@ -785,3 +785,18 @@ def automaticKineticDetection(dataPath,filenames,acqs=None):
 
 
     return kineticAcqs,kineticFilenames,flag_kinetics
+
+def getForcePlateWrench(btkAcq,fpIndex=None):
+    # --- ground reaction force wrench ---
+    pfe = btk.btkForcePlatformsExtractor()
+    grwf = btk.btkGroundReactionWrenchFilter()
+    pfe.SetInput(btkAcq)
+    pfc = pfe.GetOutput()
+    grwf.SetInput(pfc)
+    grwc = grwf.GetOutput()
+    grwc.Update()
+
+    if fpIndex is not None:
+        return grwc.GetItem(fpIndex-1)
+    else:
+        return grwc
