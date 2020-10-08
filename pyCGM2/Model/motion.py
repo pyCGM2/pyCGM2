@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import scipy as sp
-
+import logging
 
 def segmentalLeastSquare(A, B):
     """
@@ -32,7 +32,11 @@ def segmentalLeastSquare(A, B):
     for i in range(A.shape[0]):
         Bp = np.dot(R, A[i, :]) + L
         err += np.sum((Bp - B[i, :])**2)
-    RMSE = np.sqrt(err/A.shape[0]/3)
+    try:
+        RMSE = np.sqrt(err/A.shape[0]/3)
+    except:
+        RMSE =-1
+        logging.warning("[pyCGM2] - residual of the least-square optimlization set to -1. gap presence ?")
 
 
     return R, L, RMSE, Am, Bm
