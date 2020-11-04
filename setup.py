@@ -49,7 +49,11 @@ NEXUS_PUBLIC_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\"
 NEXUS_PUBLIC_DOCUMENT_VST_PATH = NEXUS_PUBLIC_PATH + "ModelTemplates\\"
 NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = NEXUS_PUBLIC_PATH+"Configurations\\Pipelines\\"
 
+def parse_requirements(requirements):
+    with open(requirements) as f:
+        return [l.strip('\n') for l in f if l.strip('\n') and not l.startswith('#')]
 
+reqs = parse_requirements("requirements.txt")
 
 def scanViconTemplatePipeline(sourcePath,desPath,pyCGM2nexusAppsPath):
 
@@ -185,21 +189,26 @@ setup(name = 'pyCGM2',
     packages=find_packages(),
 	include_package_data=True,
     license='CC-BY-SA',
-	install_requires = ['numpy<1.17.0',
+	install_requires = ['numpy==1.16.6',
                         'scipy==1.2.1',
-                        'matplotlib<3.0.0',
+                        'matplotlib==2.2.5',
                         'pandas ==0.19.1',
-                        'enum34==1.1.6',
+                        'enum34==1.1.10',
                         'configparser==4.0.2',
-                        'beautifulsoup4==4.8.1',
-                        'pyyaml==5.1.2',
+                        'beautifulsoup4==4.9.1',
+                        'pyyaml==5.3.1',
                         'yamlordereddictloader==0.4.0',
                         'xlrd==1.2.0',
-                        'lxml==4.4.1',
+                        'lxml==4.5.1',
                         'openpyxl==2.6.4',
                         'xlwt==1.3.0',
                         'pytest==4.6.5',
-                        'pytest-mpl==0.11'],
+                        'pytest-mpl==0.11',
+                        'Pillow==6.2.2',
+                        'soupsieve==1.9.6',
+                        'pyparsing==2.4.7',
+                        'kiwisolver==1.1.0',
+                        'zipp==0.6.0'],
     #'qtmWebGaitReport>=0.0.1'],
     classifiers=['Programming Language :: Python',
                  'Programming Language :: Python :: 2.7',
