@@ -25,14 +25,7 @@ def _setPointData(ftr,framecount,ff,values):
 
 def getActiveSubject(NEXUS):
 
-    result = NEXUS.Client.GetSubjectNames()
-    if( result.Error() and NEXUS.GenerateErrors ):
-        raise IOError()
-
-    names = map( lambda x: unicode( NEXUS._GetSafeStringValue(x), 'utf-8'),  result.Names )
-    templates = map( lambda x: unicode( NEXUS._GetSafeStringValue(x), 'utf-8'),  result.Models )
-    active = list(result.Active)
-
+    names, templates, active = NEXUS.GetSubjectInfo()
     if active.count(True)>1:
         raise Exception("[pyCGM2] : two subjects are activated. Select one only")
 
