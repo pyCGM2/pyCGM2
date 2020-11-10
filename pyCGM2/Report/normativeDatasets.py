@@ -6,6 +6,50 @@ import pyCGM2
 
 from pyCGM2.Utils import files
 
+
+class NormativeData(object):
+
+    def __init__(self,filenameNoExt,modality):
+
+
+        fullJsonDict = files.openFile(pyCGM2.NORMATIVE_DATABASE_PATH,filenameNoExt+".json")
+        # import ipdb; ipdb.set_trace()
+        keys = fullJsonDict.keys()
+        self._jsonDict = fullJsonDict[keys[0]][modality]
+
+        self.data = dict()
+        self.construct()
+
+    def construct(self):
+
+        for key in self._jsonDict:
+
+            self.data[key] = dict()
+            self.data[key].update({"mean":None, "sd":None})
+
+        for key in self._jsonDict:
+            valueX_m2sd = np.array(self._jsonDict[key]["X"])[:,1]
+            valueX_p2sd = np.array(self._jsonDict[key]["X"])[:,2]
+            valueX_mean = 0.5 * (valueX_p2sd+valueX_m2sd)
+            valueX_sd = valueX_p2sd-valueX_mean
+
+
+            valueY_m2sd = np.array(self._jsonDict[key]["Y"])[:,1]
+            valueY_p2sd = np.array(self._jsonDict[key]["Y"])[:,2]
+            valueY_mean = 0.5 * (valueY_p2sd+valueY_m2sd)
+            valueY_sd = valueY_p2sd-valueY_mean
+
+            valueZ_m2sd = np.array(self._jsonDict[key]["Z"])[:,1]
+            valueZ_p2sd = np.array(self._jsonDict[key]["Z"])[:,2]
+            valueZ_mean = 0.5 * (valueZ_p2sd+valueZ_m2sd)
+            valueZ_sd = valueZ_p2sd-valueZ_mean
+
+            self.data[key]["mean"] = np.array([valueX_mean,valueY_mean,valueZ_mean]).T
+            self.data[key]["sd"] = np.array([valueX_sd,valueY_sd,valueZ_sd]).T
+
+
+
+
 def exportJson_Schwartz2008(path,name="Schwartz2008.json"):
     """generate json from schwartz2008 dataset
 
@@ -33,19 +77,18 @@ def exportJson_Schwartz2008(path,name="Schwartz2008.json"):
             label = label.replace(".","")
             dataset[dataset_label][modalityLabel].update({label: {'X':None,'Y':None,'Z':None }})
 
-            outX = [0, mean[0,0]-sd[0,0] ,mean[0,0]+sd[0,0] ]
-
-            for i in range(1,mean.shape[0]):
+            outX = list()
+            for i in range(0,mean.shape[0]):
                 values = [i*2, mean[i,0]-sd[i,0],mean[i,0]+sd[i,0]]
                 outX.append(values)
 
-            outY = [0, mean[0,1]-sd[0,1],mean[0,1]+sd[0,1]]
-            for i in range(1,mean.shape[0]):
+            outY = list()
+            for i in range(0,mean.shape[0]):
                 values = [i*2, mean[i,1]-sd[i,1],mean[i,1]+sd[i,1]]
                 outY.append(values)
 
-            outZ = [0, mean[0,2]-sd[0,2],mean[0,2]+sd[0,2]]
-            for i in range(1,mean.shape[0]):
+            outZ = list()
+            for i in range(0,mean.shape[0]):
                 values = [i*2, mean[i,2]-sd[i,2],mean[i,2]+sd[i,2]]
                 outZ.append(values)
 

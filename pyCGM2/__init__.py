@@ -55,9 +55,9 @@ OPENSIM_PREBUILD_MODEL_PATH = PYCGM2_APPDATA_PATH + "opensim\\"
 
 # [Optional] path pointing at Data Folders used for Tests
 
-TEST_DATA_PATH = "C:\\Users\\fleboeuf\\Documents\\DATA\\Vicon data\\pyCGM2-Data-Tests\\"
-TEST_DATA_PATH_OUT = "C:\\Users\\fleboeuf\\Documents\\DATA\\Vicon data\\pyCGM2-Data-Tests-OUT\\"
-MAIN_BENCHMARK_PATH = "C:\\Users\\fleboeuf\\Documents\\DATA\\Vicon data\\Gait patterns\\"
+TEST_DATA_PATH = "C:\\Users\\fleboeuf\\Documents\\DATA\\pyCGM2-Data-Tests\\"
+TEST_DATA_PATH_OUT = "C:\\Users\\fleboeuf\\Documents\\DATA\\pyCGM2-Data-Tests-OUT\\"
+MAIN_BENCHMARK_PATH = "C:\\Users\\fleboeuf\\Documents\\DATA\\Gait patterns\\"
 
 # [optional] path pointing pyCGM2-Nexus tools
 NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\"

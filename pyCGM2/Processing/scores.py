@@ -8,13 +8,12 @@ class ScoreFilter(object):
     """
     """
 
-    def __init__(self, scoreProcedure, analysis, normativeProcedure):
+    def __init__(self, scoreProcedure, analysis, normativeDataSet):
 
         self.m_score = scoreProcedure
 
         # construct normative data
-        normativeProcedure.constructNormativeData()
-        self.m_normativeData =  normativeProcedure.data
+        self.m_normativeData =  normativeDataSet.data
 
         self.m_analysis=analysis
 
@@ -34,18 +33,18 @@ class CGM1_GPS(object):
 
         matchingNormativeDataLabel = dict()
 
-        matchingNormativeDataLabel["LPelvisAngles"+pointSuffix,"Left"] =  "Pelvis.Angles"
+        matchingNormativeDataLabel["LPelvisAngles"+pointSuffix,"Left"] =  "PelvisAngles"
 #        matchingNormativeDataLabel["RPelvisAngles"+pointSuffix,"Right"]=  "Pelvis.Angles"   # dont use. see richard`s articles
-        matchingNormativeDataLabel["LHipAngles"+pointSuffix,"Left"]=  "Hip.Angles"
-        matchingNormativeDataLabel["RHipAngles"+pointSuffix,"Right"]=  "Hip.Angles"
-        matchingNormativeDataLabel["LKneeAngles"+pointSuffix,"Left"]=  "Knee.Angles"
-        matchingNormativeDataLabel["RKneeAngles"+pointSuffix,"Right"]=  "Knee.Angles"
-        matchingNormativeDataLabel["LAnkleAngles"+pointSuffix,"Left"]=  "Ankle.Angles"
-        matchingNormativeDataLabel["RAnkleAngles"+pointSuffix,"Right"]=  "Ankle.Angles"
-        matchingNormativeDataLabel["LFootProgressAngles"+pointSuffix,"Left"]=  "Foot.Angles"
-        matchingNormativeDataLabel["RFootProgressAngles"+pointSuffix,"Right"]=  "Foot.Angles"
+        matchingNormativeDataLabel["LHipAngles"+pointSuffix,"Left"]=  "HipAngles"
+        matchingNormativeDataLabel["RHipAngles"+pointSuffix,"Right"]=  "HipAngles"
+        matchingNormativeDataLabel["LKneeAngles"+pointSuffix,"Left"]=  "KneeAngles"
+        matchingNormativeDataLabel["RKneeAngles"+pointSuffix,"Right"]=  "KneeAngles"
+        matchingNormativeDataLabel["LAnkleAngles"+pointSuffix,"Left"]=  "AnkleAngles"
+        matchingNormativeDataLabel["RAnkleAngles"+pointSuffix,"Right"]=  "AnkleAngles"
+        matchingNormativeDataLabel["LFootProgressAngles"+pointSuffix,"Left"]=  "FootAngles"
+        matchingNormativeDataLabel["RFootProgressAngles"+pointSuffix,"Right"]=  "FootAngles"
 
-        axes={"Pelvis.Angles":[0,1,2],"Hip.Angles":[0,1,2],"Knee.Angles":[0],"Ankle.Angles":[0],"Foot.Angles":[2]}   # tip is to use label from normative dataset
+        axes={"PelvisAngles":[0,1,2],"HipAngles":[0,1,2],"KneeAngles":[0],"AnkleAngles":[0],"FootAngles":[2]}   # tip is to use label from normative dataset
 
 
         self.matchingNormativeDataLabel = matchingNormativeDataLabel
