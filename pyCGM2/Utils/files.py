@@ -381,6 +381,13 @@ def copyPaste(src, dst):
     shutil.copyfile(src,
                     dst)
 
+def copyPasteDirectory(src, dst):
+    shutil.copytree(src,
+                    dst)
+
+def deleteDirectory(dir):
+    shutil.rmtree(dir)
+
 
 def readXml(DATA_PATH,filename):
     infile = open((DATA_PATH+filename),"r")
