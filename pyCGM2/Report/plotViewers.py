@@ -677,83 +677,205 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
         if self.m_normativeData is not None:
             if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
 
-                self.fig.axes[0].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
-                    self.m_normativeData["PelvisAngles"]["mean"][:,0]-self.m_normativeData["PelvisAngles"]["sd"][:,0],
-                    self.m_normativeData["PelvisAngles"]["mean"][:,0]+self.m_normativeData["PelvisAngles"]["sd"][:,0],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                if "PelvisAngles" in self.m_normativeData.keys():
+                    self.fig.axes[0].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
+                        self.m_normativeData["PelvisAngles"]["mean"][:,0]-self.m_normativeData["PelvisAngles"]["sd"][:,0],
+                        self.m_normativeData["PelvisAngles"]["mean"][:,0]+self.m_normativeData["PelvisAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                self.fig.axes[1].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
-                    self.m_normativeData["PelvisAngles"]["mean"][:,1]-self.m_normativeData["PelvisAngles"]["sd"][:,1],
-                    self.m_normativeData["PelvisAngles"]["mean"][:,1]+self.m_normativeData["PelvisAngles"]["sd"][:,1],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                    self.fig.axes[1].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
+                        self.m_normativeData["PelvisAngles"]["mean"][:,1]-self.m_normativeData["PelvisAngles"]["sd"][:,1],
+                        self.m_normativeData["PelvisAngles"]["mean"][:,1]+self.m_normativeData["PelvisAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                self.fig.axes[2].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
-                    self.m_normativeData["PelvisAngles"]["mean"][:,2]-self.m_normativeData["PelvisAngles"]["sd"][:,2],
-                    self.m_normativeData["PelvisAngles"]["mean"][:,2]+self.m_normativeData["PelvisAngles"]["sd"][:,2],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                    self.fig.axes[2].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
+                        self.m_normativeData["PelvisAngles"]["mean"][:,2]-self.m_normativeData["PelvisAngles"]["sd"][:,2],
+                        self.m_normativeData["PelvisAngles"]["mean"][:,2]+self.m_normativeData["PelvisAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
+                if "HipAngles" in self.m_normativeData.keys():
+                    self.fig.axes[3].fill_between(np.linspace(0,100,self.m_normativeData["HipAngles"]["mean"].shape[0]),
+                        self.m_normativeData["HipAngles"]["mean"][:,0]-self.m_normativeData["HipAngles"]["sd"][:,0],
+                        self.m_normativeData["HipAngles"]["mean"][:,0]+self.m_normativeData["HipAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                self.fig.axes[3].fill_between(np.linspace(0,100,self.m_normativeData["HipAngles"]["mean"].shape[0]),
-                    self.m_normativeData["HipAngles"]["mean"][:,0]-self.m_normativeData["HipAngles"]["sd"][:,0],
-                    self.m_normativeData["HipAngles"]["mean"][:,0]+self.m_normativeData["HipAngles"]["sd"][:,0],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                    self.fig.axes[4].fill_between(np.linspace(0,100,self.m_normativeData["HipAngles"]["mean"].shape[0]),
+                        self.m_normativeData["HipAngles"]["mean"][:,1]-self.m_normativeData["HipAngles"]["sd"][:,1],
+                        self.m_normativeData["HipAngles"]["mean"][:,1]+self.m_normativeData["HipAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                self.fig.axes[4].fill_between(np.linspace(0,100,self.m_normativeData["HipAngles"]["mean"].shape[0]),
-                    self.m_normativeData["HipAngles"]["mean"][:,1]-self.m_normativeData["HipAngles"]["sd"][:,1],
-                    self.m_normativeData["HipAngles"]["mean"][:,1]+self.m_normativeData["HipAngles"]["sd"][:,1],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                    self.fig.axes[5].fill_between(np.linspace(0,100,self.m_normativeData["HipAngles"]["mean"].shape[0]),
+                        self.m_normativeData["HipAngles"]["mean"][:,2]-self.m_normativeData["HipAngles"]["sd"][:,2],
+                        self.m_normativeData["HipAngles"]["mean"][:,2]+self.m_normativeData["HipAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                self.fig.axes[5].fill_between(np.linspace(0,100,self.m_normativeData["HipAngles"]["mean"].shape[0]),
-                    self.m_normativeData["HipAngles"]["mean"][:,2]-self.m_normativeData["HipAngles"]["sd"][:,2],
-                    self.m_normativeData["HipAngles"]["mean"][:,2]+self.m_normativeData["HipAngles"]["sd"][:,2],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                if "KneeAngles" in self.m_normativeData.keys():
+                    self.fig.axes[6].fill_between(np.linspace(0,100,self.m_normativeData["KneeAngles"]["mean"].shape[0]),
+                        self.m_normativeData["KneeAngles"]["mean"][:,0]-self.m_normativeData["KneeAngles"]["sd"][:,0],
+                        self.m_normativeData["KneeAngles"]["mean"][:,0]+self.m_normativeData["KneeAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                self.fig.axes[6].fill_between(np.linspace(0,100,self.m_normativeData["KneeAngles"]["mean"].shape[0]),
-                    self.m_normativeData["KneeAngles"]["mean"][:,0]-self.m_normativeData["KneeAngles"]["sd"][:,0],
-                    self.m_normativeData["KneeAngles"]["mean"][:,0]+self.m_normativeData["KneeAngles"]["sd"][:,0],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                    self.fig.axes[7].fill_between(np.linspace(0,100,self.m_normativeData["KneeAngles"]["mean"].shape[0]),
+                        self.m_normativeData["KneeAngles"]["mean"][:,1]-self.m_normativeData["KneeAngles"]["sd"][:,1],
+                        self.m_normativeData["KneeAngles"]["mean"][:,1]+self.m_normativeData["KneeAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                # self.fig.axes[7].fill_between(np.linspace(0,100,self.m_normativeData["KneeAngles"]["mean"].shape[0]),
-                #     self.m_normativeData["KneeAngles"]["mean"][:,1]-self.m_normativeData["KneeAngles"]["sd"][:,1],
-                #     self.m_normativeData["KneeAngles"]["mean"][:,1]+self.m_normativeData["KneeAngles"]["sd"][:,1],
-                #     facecolor="green", alpha=0.5,linewidth=0)
-                #
-                # self.fig.axes[8].fill_between(np.linspace(0,100,self.m_normativeData["KneeAngles"]["mean"].shape[0]),
-                #     self.m_normativeData["KneeAngles"]["mean"][:,2]-self.m_normativeData["KneeAngles"]["sd"][:,2],
-                #     self.m_normativeData["KneeAngles"]["mean"][:,2]+self.m_normativeData["KneeAngles"]["sd"][:,2],
-                #     facecolor="green", alpha=0.5,linewidth=0)
+                    self.fig.axes[8].fill_between(np.linspace(0,100,self.m_normativeData["KneeAngles"]["mean"].shape[0]),
+                        self.m_normativeData["KneeAngles"]["mean"][:,2]-self.m_normativeData["KneeAngles"]["sd"][:,2],
+                        self.m_normativeData["KneeAngles"]["mean"][:,2]+self.m_normativeData["KneeAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                self.fig.axes[9].fill_between(np.linspace(0,100,self.m_normativeData["AnkleAngles"]["mean"].shape[0]),
-                    self.m_normativeData["AnkleAngles"]["mean"][:,0]-self.m_normativeData["AnkleAngles"]["sd"][:,0],
-                    self.m_normativeData["AnkleAngles"]["mean"][:,0]+self.m_normativeData["AnkleAngles"]["sd"][:,0],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                if "AnkleAngles" in self.m_normativeData.keys():
+                    self.fig.axes[9].fill_between(np.linspace(0,100,self.m_normativeData["AnkleAngles"]["mean"].shape[0]),
+                        self.m_normativeData["AnkleAngles"]["mean"][:,0]-self.m_normativeData["AnkleAngles"]["sd"][:,0],
+                        self.m_normativeData["AnkleAngles"]["mean"][:,0]+self.m_normativeData["AnkleAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                # self.fig.axes[10].fill_between(np.linspace(0,100,self.m_normativeData["AnkleAngles"]["mean"].shape[0]),
-                #     self.m_normativeData["AnkleAngles"]["mean"][:,1]-self.m_normativeData["AnkleAngles"]["sd"][:,1],
-                #     self.m_normativeData["AnkleAngles"]["mean"][:,1]+self.m_normativeData["AnkleAngles"]["sd"][:,1],
-                #     facecolor="green", alpha=0.5,linewidth=0)
+                    self.fig.axes[10].fill_between(np.linspace(0,100,self.m_normativeData["AnkleAngles"]["mean"].shape[0]),
+                        self.m_normativeData["AnkleAngles"]["mean"][:,1]-self.m_normativeData["AnkleAngles"]["sd"][:,1],
+                        self.m_normativeData["AnkleAngles"]["mean"][:,1]+self.m_normativeData["AnkleAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                self.fig.axes[11].fill_between(np.linspace(0,100,self.m_normativeData["FootProgressAngles"]["mean"].shape[0]),
-                    self.m_normativeData["FootProgressAngles"]["mean"][:,2]-self.m_normativeData["FootProgressAngles"]["sd"][:,2],
-                    self.m_normativeData["FootProgressAngles"]["mean"][:,2]+self.m_normativeData["FootProgressAngles"]["sd"][:,2],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                if "FootProgressAngles" in self.m_normativeData.keys():
+                    self.fig.axes[11].fill_between(np.linspace(0,100,self.m_normativeData["FootProgressAngles"]["mean"].shape[0]),
+                        self.m_normativeData["FootProgressAngles"]["mean"][:,2]-self.m_normativeData["FootProgressAngles"]["sd"][:,2],
+                        self.m_normativeData["FootProgressAngles"]["mean"][:,2]+self.m_normativeData["FootProgressAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
             elif self.m_bodyPart == enums.BodyPartPlot.Trunk:
 
-                self.fig.axes[0].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
-                    self.m_normativeData["PelvisAngles"]["mean"][:,0]-self.m_normativeData["PelvisAngles"]["sd"][:,0],
-                    self.m_normativeData["PelvisAngles"]["mean"][:,0]+self.m_normativeData["PelvisAngles"]["sd"][:,0],
-                    facecolor="green", alpha=0.5,linewidth=0)
 
-                self.fig.axes[1].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
-                    self.m_normativeData["PelvisAngles"]["mean"][:,1]-self.m_normativeData["PelvisAngles"]["sd"][:,1],
-                    self.m_normativeData["PelvisAngles"]["mean"][:,1]+self.m_normativeData["PelvisAngles"]["sd"][:,1],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                if "PelvisAngles" in self.m_normativeData.keys():
+                    self.fig.axes[0].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
+                        self.m_normativeData["PelvisAngles"]["mean"][:,0]-self.m_normativeData["PelvisAngles"]["sd"][:,0],
+                        self.m_normativeData["PelvisAngles"]["mean"][:,0]+self.m_normativeData["PelvisAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
-                self.fig.axes[2].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
-                    self.m_normativeData["PelvisAngles"]["mean"][:,2]-self.m_normativeData["PelvisAngles"]["sd"][:,2],
-                    self.m_normativeData["PelvisAngles"]["mean"][:,2]+self.m_normativeData["PelvisAngles"]["sd"][:,2],
-                    facecolor="green", alpha=0.5,linewidth=0)
+                    self.fig.axes[1].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
+                        self.m_normativeData["PelvisAngles"]["mean"][:,1]-self.m_normativeData["PelvisAngles"]["sd"][:,1],
+                        self.m_normativeData["PelvisAngles"]["mean"][:,1]+self.m_normativeData["PelvisAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[2].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
+                        self.m_normativeData["PelvisAngles"]["mean"][:,2]-self.m_normativeData["PelvisAngles"]["sd"][:,2],
+                        self.m_normativeData["PelvisAngles"]["mean"][:,2]+self.m_normativeData["PelvisAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                if "SpineAngles" in self.m_normativeData.keys():
+                    self.fig.axes[3].fill_between(np.linspace(0,100,self.m_normativeData["SpineAngles"]["mean"].shape[0]),
+                        self.m_normativeData["SpineAngles"]["mean"][:,0]-self.m_normativeData["SpineAngles"]["sd"][:,0],
+                        self.m_normativeData["SpineAngles"]["mean"][:,0]+self.m_normativeData["SpineAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[4].fill_between(np.linspace(0,100,self.m_normativeData["SpineAngles"]["mean"].shape[0]),
+                        self.m_normativeData["SpineAngles"]["mean"][:,1]-self.m_normativeData["SpineAngles"]["sd"][:,1],
+                        self.m_normativeData["SpineAngles"]["mean"][:,1]+self.m_normativeData["SpineAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[5].fill_between(np.linspace(0,100,self.m_normativeData["SpineAngles"]["mean"].shape[0]),
+                        self.m_normativeData["SpineAngles"]["mean"][:,2]-self.m_normativeData["SpineAngles"]["sd"][:,2],
+                        self.m_normativeData["SpineAngles"]["mean"][:,2]+self.m_normativeData["SpineAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                if "ThoraxAngles" in self.m_normativeData.keys():
+                    self.fig.axes[6].fill_between(np.linspace(0,100,self.m_normativeData["ThoraxAngles"]["mean"].shape[0]),
+                        self.m_normativeData["ThoraxAngles"]["mean"][:,0]-self.m_normativeData["ThoraxAngles"]["sd"][:,0],
+                        self.m_normativeData["ThoraxAngles"]["mean"][:,0]+self.m_normativeData["ThoraxAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[7].fill_between(np.linspace(0,100,self.m_normativeData["ThoraxAngles"]["mean"].shape[0]),
+                        self.m_normativeData["ThoraxAngles"]["mean"][:,1]-self.m_normativeData["ThoraxAngles"]["sd"][:,1],
+                        self.m_normativeData["ThoraxAngles"]["mean"][:,1]+self.m_normativeData["ThoraxAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[8].fill_between(np.linspace(0,100,self.m_normativeData["ThoraxAngles"]["mean"].shape[0]),
+                        self.m_normativeData["ThoraxAngles"]["mean"][:,2]-self.m_normativeData["ThoraxAngles"]["sd"][:,2],
+                        self.m_normativeData["ThoraxAngles"]["mean"][:,2]+self.m_normativeData["ThoraxAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                if "NeckAngles" in self.m_normativeData.keys():
+                    self.fig.axes[9].fill_between(np.linspace(0,100,self.m_normativeData["NeckAngles"]["mean"].shape[0]),
+                        self.m_normativeData["NeckAngles"]["mean"][:,0]-self.m_normativeData["NeckAngles"]["sd"][:,0],
+                        self.m_normativeData["NeckAngles"]["mean"][:,0]+self.m_normativeData["NeckAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[10].fill_between(np.linspace(0,100,self.m_normativeData["NeckAngles"]["mean"].shape[0]),
+                        self.m_normativeData["NeckAngles"]["mean"][:,1]-self.m_normativeData["NeckAngles"]["sd"][:,1],
+                        self.m_normativeData["NeckAngles"]["mean"][:,1]+self.m_normativeData["NeckAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[11].fill_between(np.linspace(0,100,self.m_normativeData["NeckAngles"]["mean"].shape[0]),
+                        self.m_normativeData["NeckAngles"]["mean"][:,2]-self.m_normativeData["NeckAngles"]["sd"][:,2],
+                        self.m_normativeData["NeckAngles"]["mean"][:,2]+self.m_normativeData["NeckAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                if "HeadAngles" in self.m_normativeData.keys():
+                    self.fig.axes[12].fill_between(np.linspace(0,100,self.m_normativeData["HeadAngles"]["mean"].shape[0]),
+                        self.m_normativeData["HeadAngles"]["mean"][:,0]-self.m_normativeData["HeadAngles"]["sd"][:,0],
+                        self.m_normativeData["HeadAngles"]["mean"][:,0]+self.m_normativeData["HeadAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[13].fill_between(np.linspace(0,100,self.m_normativeData["HeadAngles"]["mean"].shape[0]),
+                        self.m_normativeData["HeadAngles"]["mean"][:,1]-self.m_normativeData["HeadAngles"]["sd"][:,1],
+                        self.m_normativeData["HeadAngles"]["mean"][:,1]+self.m_normativeData["HeadAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[14].fill_between(np.linspace(0,100,self.m_normativeData["HeadAngles"]["mean"].shape[0]),
+                        self.m_normativeData["HeadAngles"]["mean"][:,2]-self.m_normativeData["HeadAngles"]["sd"][:,2],
+                        self.m_normativeData["HeadAngles"]["mean"][:,2]+self.m_normativeData["HeadAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+            elif self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
+
+
+                if "ShoulderAngles" in self.m_normativeData.keys():
+                    self.fig.axes[0].fill_between(np.linspace(0,100,self.m_normativeData["ShoulderAngles"]["mean"].shape[0]),
+                        self.m_normativeData["ShoulderAngles"]["mean"][:,0]-self.m_normativeData["ShoulderAngles"]["sd"][:,0],
+                        self.m_normativeData["ShoulderAngles"]["mean"][:,0]+self.m_normativeData["ShoulderAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[1].fill_between(np.linspace(0,100,self.m_normativeData["ShoulderAngles"]["mean"].shape[0]),
+                        self.m_normativeData["ShoulderAngles"]["mean"][:,1]-self.m_normativeData["ShoulderAngles"]["sd"][:,1],
+                        self.m_normativeData["ShoulderAngles"]["mean"][:,1]+self.m_normativeData["ShoulderAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[2].fill_between(np.linspace(0,100,self.m_normativeData["ShoulderAngles"]["mean"].shape[0]),
+                        self.m_normativeData["ShoulderAngles"]["mean"][:,2]-self.m_normativeData["ShoulderAngles"]["sd"][:,2],
+                        self.m_normativeData["ShoulderAngles"]["mean"][:,2]+self.m_normativeData["ShoulderAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                if "ElbowAngles" in self.m_normativeData.keys():
+                    self.fig.axes[3].fill_between(np.linspace(0,100,self.m_normativeData["ElbowAngles"]["mean"].shape[0]),
+                        self.m_normativeData["ElbowAngles"]["mean"][:,0]-self.m_normativeData["ElbowAngles"]["sd"][:,0],
+                        self.m_normativeData["ElbowAngles"]["mean"][:,0]+self.m_normativeData["ElbowAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    # self.fig.axes[4].fill_between(np.linspace(0,100,self.m_normativeData["ElbowAngles"]["mean"].shape[0]),
+                    #     self.m_normativeData["ElbowAngles"]["mean"][:,1]-self.m_normativeData["ElbowAngles"]["sd"][:,1],
+                    #     self.m_normativeData["ElbowAngles"]["mean"][:,1]+self.m_normativeData["ElbowAngles"]["sd"][:,1],
+                    #     facecolor="green", alpha=0.5,linewidth=0)
+                    #
+                    # self.fig.axes[5].fill_between(np.linspace(0,100,self.m_normativeData["ElbowAngles"]["mean"].shape[0]),
+                    #     self.m_normativeData["ElbowAngles"]["mean"][:,2]-self.m_normativeData["ElbowAngles"]["sd"][:,2],
+                    #     self.m_normativeData["ElbowAngles"]["mean"][:,2]+self.m_normativeData["ElbowAngles"]["sd"][:,2],
+                    #     facecolor="green", alpha=0.5,linewidth=0)
+
+
+                if "WristAngles" in self.m_normativeData.keys():
+                    self.fig.axes[6].fill_between(np.linspace(0,100,self.m_normativeData["WristAngles"]["mean"].shape[0]),
+                        self.m_normativeData["WristAngles"]["mean"][:,0]-self.m_normativeData["WristAngles"]["sd"][:,0],
+                        self.m_normativeData["WristAngles"]["mean"][:,0]+self.m_normativeData["WristAngles"]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[7].fill_between(np.linspace(0,100,self.m_normativeData["WristAngles"]["mean"].shape[0]),
+                        self.m_normativeData["WristAngles"]["mean"][:,1]-self.m_normativeData["WristAngles"]["sd"][:,1],
+                        self.m_normativeData["WristAngles"]["mean"][:,1]+self.m_normativeData["WristAngles"]["sd"][:,1],
+                        facecolor="green", alpha=0.5,linewidth=0)
+
+                    self.fig.axes[8].fill_between(np.linspace(0,100,self.m_normativeData["WristAngles"]["mean"].shape[0]),
+                        self.m_normativeData["WristAngles"]["mean"][:,2]-self.m_normativeData["WristAngles"]["sd"][:,2],
+                        self.m_normativeData["WristAngles"]["mean"][:,2]+self.m_normativeData["WristAngles"]["sd"][:,2],
+                        facecolor="green", alpha=0.5,linewidth=0)
 
         return self.fig
 

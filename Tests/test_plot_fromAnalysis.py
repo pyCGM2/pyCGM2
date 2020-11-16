@@ -1,5 +1,5 @@
 # coding: utf-8
-#pytest -s --disable-pytest-warnings  test_plot_fromAnalysis.py::Test__highLevel_newNormativeData::test_gaitPanel_descriptiveKinematics
+#pytest -s --mpl --disable-pytest-warnings  test_plot_fromAnalysis.py::Test__highLevel_newNormativeData::test_gaitPanel_descriptiveKinematics
 
 from __future__ import unicode_literals
 import pytest
@@ -172,7 +172,6 @@ class Test_highLevel:
 
         fig = plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",normativeDataset,
             pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=False,title=None)
-
         if SHOW: plt.show()
         return fig
 
