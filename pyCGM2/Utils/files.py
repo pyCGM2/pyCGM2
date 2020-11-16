@@ -10,6 +10,7 @@ import yaml
 import yamlordereddictloader
 from bs4 import BeautifulSoup
 from datetime import datetime
+import pandas as pd
 import pyCGM2
 
 
@@ -409,3 +410,20 @@ def getFileCreationDate(file):
         stamp= stat.st_mtime
 
     return datetime.fromtimestamp(stamp)
+
+
+def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
+
+    xlsxWriter = pd.ExcelWriter((DATA_PATH_OUT+outputFilename+".xlsx"))
+    df_total = pd.DataFrame()
+    for sheet in sheetNames:
+        for file in xlsFiles:
+            excel_file = pd.ExcelFile(file)
+            sheets = excel_file.sheet_names
+            if sheet in sheets:
+                df = excel_file.parse(sheet_name = sheet)
+                df_total = df_total.append(df)
+
+        df_total.to_excel(xlsxWriter,sheet,index=False)
+
+    xlsxWriter.save()
