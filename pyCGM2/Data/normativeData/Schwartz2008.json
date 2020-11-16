@@ -2320,7 +2320,7 @@
                     ]
                 ]
             },
-            "FootAngles" : {
+            "FootProgressAngles" : {
                 "Y" : [ 
                     [ 
                         0, 
@@ -10825,7 +10825,7 @@
                     ]
                 ]
             },
-            "FootAngles" : {
+            "FootProgressAngles" : {
                 "Y" : [ 
                     [ 
                         0, 
@@ -19330,7 +19330,7 @@
                     ]
                 ]
             },
-            "FootAngles" : {
+            "FootProgressAngles" : {
                 "Y" : [ 
                     [ 
                         0, 
@@ -27835,7 +27835,7 @@
                     ]
                 ]
             },
-            "FootAngles" : {
+            "FootProgressAngles" : {
                 "Y" : [ 
                     [ 
                         0, 
@@ -36340,7 +36340,7 @@
                     ]
                 ]
             },
-            "FootAngles" : {
+            "FootProgressAngles" : {
                 "Y" : [ 
                     [ 
                         0, 

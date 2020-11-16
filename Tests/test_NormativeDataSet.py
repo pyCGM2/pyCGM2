@@ -34,7 +34,7 @@ class Test_NormativeDataSet:
         np.testing.assert_almost_equal(nds.data["HipAngles"]["mean"] ,nds2.data["Hip.Angles"]["mean"],decimal=3)
         np.testing.assert_almost_equal(nds.data["KneeAngles"]["mean"] ,nds2.data["Knee.Angles"]["mean"],decimal=3)
         np.testing.assert_almost_equal(nds.data["AnkleAngles"]["mean"] ,nds2.data["Ankle.Angles"]["mean"],decimal=3)
-        np.testing.assert_almost_equal(nds.data["FootAngles"]["mean"] ,nds2.data["Foot.Angles"]["mean"],decimal=3)
+        np.testing.assert_almost_equal(nds.data["FootProgressAngles"]["mean"] ,nds2.data["Foot.Angles"]["mean"],decimal=3)
 
         np.testing.assert_almost_equal(nds.data["HipMoment"]["mean"] ,nds2.data["Hip.Moment"]["mean"],decimal=3)
         np.testing.assert_almost_equal(nds.data["KneeMoment"]["mean"] ,nds2.data["Knee.Moment"]["mean"],decimal=3)

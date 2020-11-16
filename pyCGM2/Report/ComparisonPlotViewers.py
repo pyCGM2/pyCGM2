@@ -148,7 +148,7 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                  - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
 
         """
-        iNormativeDataSet.constructNormativeData()
+        # iNormativeDataSet.constructNormativeData()
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
@@ -288,49 +288,49 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         if self.m_normativeData is not None:
             if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
                 self.fig.axes[0].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Pelvis.Angles"]["mean"][:,0]-self.m_normativeData["Pelvis.Angles"]["sd"][:,0],
-                    self.m_normativeData["Pelvis.Angles"]["mean"][:,0]+self.m_normativeData["Pelvis.Angles"]["sd"][:,0],
+                    self.m_normativeData["PelvisAngles"]["mean"][:,0]-self.m_normativeData["PelvisAngles"]["sd"][:,0],
+                    self.m_normativeData["PelvisAngles"]["mean"][:,0]+self.m_normativeData["PelvisAngles"]["sd"][:,0],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[1].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Pelvis.Angles"]["mean"][:,1]-self.m_normativeData["Pelvis.Angles"]["sd"][:,1],
-                    self.m_normativeData["Pelvis.Angles"]["mean"][:,1]+self.m_normativeData["Pelvis.Angles"]["sd"][:,1],
+                    self.m_normativeData["PelvisAngles"]["mean"][:,1]-self.m_normativeData["PelvisAngles"]["sd"][:,1],
+                    self.m_normativeData["PelvisAngles"]["mean"][:,1]+self.m_normativeData["PelvisAngles"]["sd"][:,1],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[2].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Pelvis.Angles"]["mean"][:,2]-self.m_normativeData["Pelvis.Angles"]["sd"][:,2],
-                    self.m_normativeData["Pelvis.Angles"]["mean"][:,2]+self.m_normativeData["Pelvis.Angles"]["sd"][:,2],
+                    self.m_normativeData["PelvisAngles"]["mean"][:,2]-self.m_normativeData["PelvisAngles"]["sd"][:,2],
+                    self.m_normativeData["PelvisAngles"]["mean"][:,2]+self.m_normativeData["PelvisAngles"]["sd"][:,2],
                     facecolor="green", alpha=0.5,linewidth=0)
 
 
                 self.fig.axes[3].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Hip.Angles"]["mean"][:,0]-self.m_normativeData["Hip.Angles"]["sd"][:,0],
-                    self.m_normativeData["Hip.Angles"]["mean"][:,0]+self.m_normativeData["Hip.Angles"]["sd"][:,0],
+                    self.m_normativeData["HipAngles"]["mean"][:,0]-self.m_normativeData["HipAngles"]["sd"][:,0],
+                    self.m_normativeData["HipAngles"]["mean"][:,0]+self.m_normativeData["HipAngles"]["sd"][:,0],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[4].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Hip.Angles"]["mean"][:,1]-self.m_normativeData["Hip.Angles"]["sd"][:,1],
-                    self.m_normativeData["Hip.Angles"]["mean"][:,1]+self.m_normativeData["Hip.Angles"]["sd"][:,1],
+                    self.m_normativeData["HipAngles"]["mean"][:,1]-self.m_normativeData["HipAngles"]["sd"][:,1],
+                    self.m_normativeData["HipAngles"]["mean"][:,1]+self.m_normativeData["HipAngles"]["sd"][:,1],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[5].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Hip.Angles"]["mean"][:,2]-self.m_normativeData["Hip.Angles"]["sd"][:,2],
-                    self.m_normativeData["Hip.Angles"]["mean"][:,2]+self.m_normativeData["Hip.Angles"]["sd"][:,2],
+                    self.m_normativeData["HipAngles"]["mean"][:,2]-self.m_normativeData["HipAngles"]["sd"][:,2],
+                    self.m_normativeData["HipAngles"]["mean"][:,2]+self.m_normativeData["HipAngles"]["sd"][:,2],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[6].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Knee.Angles"]["mean"][:,0]-self.m_normativeData["Knee.Angles"]["sd"][:,0],
-                    self.m_normativeData["Knee.Angles"]["mean"][:,0]+self.m_normativeData["Knee.Angles"]["sd"][:,0],
+                    self.m_normativeData["KneeAngles"]["mean"][:,0]-self.m_normativeData["KneeAngles"]["sd"][:,0],
+                    self.m_normativeData["KneeAngles"]["mean"][:,0]+self.m_normativeData["KneeAngles"]["sd"][:,0],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[9].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Ankle.Angles"]["mean"][:,0]-self.m_normativeData["Ankle.Angles"]["sd"][:,0],
-                    self.m_normativeData["Ankle.Angles"]["mean"][:,0]+self.m_normativeData["Ankle.Angles"]["sd"][:,0],
+                    self.m_normativeData["AnkleAngles"]["mean"][:,0]-self.m_normativeData["AnkleAngles"]["sd"][:,0],
+                    self.m_normativeData["AnkleAngles"]["mean"][:,0]+self.m_normativeData["AnkleAngles"]["sd"][:,0],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[11].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Foot.Angles"]["mean"][:,2]-self.m_normativeData["Ankle.Angles"]["sd"][:,2],
-                    self.m_normativeData["Foot.Angles"]["mean"][:,2]+self.m_normativeData["Ankle.Angles"]["sd"][:,2],
+                    self.m_normativeData["FootAngles"]["mean"][:,2]-self.m_normativeData["FootProgressAngles"]["sd"][:,2],
+                    self.m_normativeData["FootAngles"]["mean"][:,2]+self.m_normativeData["FootProgressAngles"]["sd"][:,2],
                     facecolor="green", alpha=0.5,linewidth=0)
 
         return self.fig
@@ -468,7 +468,7 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                  - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
 
         """
-        iNormativeDataSet.constructNormativeData()
+        # iNormativeDataSet.constructNormativeData()
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
@@ -601,52 +601,52 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         if self.m_normativeData is not None:
             if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
                 self.fig.axes[0].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Hip.Moment"]["mean"][:,0]-self.m_normativeData["Hip.Moment"]["sd"][:,0],
-                    self.m_normativeData["Hip.Moment"]["mean"][:,0]+self.m_normativeData["Hip.Moment"]["sd"][:,0],
+                    self.m_normativeData["HipMoment"]["mean"][:,0]-self.m_normativeData["HipMoment"]["sd"][:,0],
+                    self.m_normativeData["HipMoment"]["mean"][:,0]+self.m_normativeData["HipMoment"]["sd"][:,0],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[1].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Hip.Moment"]["mean"][:,1]-self.m_normativeData["Hip.Moment"]["sd"][:,1],
-                    self.m_normativeData["Hip.Moment"]["mean"][:,1]+self.m_normativeData["Hip.Moment"]["sd"][:,1],
+                    self.m_normativeData["HipMoment"]["mean"][:,1]-self.m_normativeData["HipMoment"]["sd"][:,1],
+                    self.m_normativeData["HipMoment"]["mean"][:,1]+self.m_normativeData["HipMoment"]["sd"][:,1],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[3].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Hip.Power"]["mean"][:,2]-self.m_normativeData["Hip.Power"]["sd"][:,2],
-                    self.m_normativeData["Hip.Power"]["mean"][:,2]+self.m_normativeData["Hip.Power"]["sd"][:,2],
+                    self.m_normativeData["HipPower"]["mean"][:,2]-self.m_normativeData["HipPower"]["sd"][:,2],
+                    self.m_normativeData["HipPower"]["mean"][:,2]+self.m_normativeData["HipPower"]["sd"][:,2],
                     facecolor="green", alpha=0.5,linewidth=0)
 
 
                 self.fig.axes[4].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Knee.Moment"]["mean"][:,0]-self.m_normativeData["Knee.Moment"]["sd"][:,0],
-                    self.m_normativeData["Knee.Moment"]["mean"][:,0]+self.m_normativeData["Knee.Moment"]["sd"][:,0],
+                    self.m_normativeData["KneeMoment"]["mean"][:,0]-self.m_normativeData["KneeMoment"]["sd"][:,0],
+                    self.m_normativeData["KneeMoment"]["mean"][:,0]+self.m_normativeData["KneeMoment"]["sd"][:,0],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[5].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Knee.Moment"]["mean"][:,1]-self.m_normativeData["Knee.Moment"]["sd"][:,1],
-                    self.m_normativeData["Knee.Moment"]["mean"][:,1]+self.m_normativeData["Knee.Moment"]["sd"][:,1],
+                    self.m_normativeData["KneeMoment"]["mean"][:,1]-self.m_normativeData["KneeMoment"]["sd"][:,1],
+                    self.m_normativeData["KneeMoment"]["mean"][:,1]+self.m_normativeData["KneeMoment"]["sd"][:,1],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[7].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Knee.Power"]["mean"][:,2]-self.m_normativeData["Knee.Power"]["sd"][:,2],
-                    self.m_normativeData["Knee.Power"]["mean"][:,2]+self.m_normativeData["Knee.Power"]["sd"][:,2],
+                    self.m_normativeData["KneePower"]["mean"][:,2]-self.m_normativeData["KneePower"]["sd"][:,2],
+                    self.m_normativeData["KneePower"]["mean"][:,2]+self.m_normativeData["KneePower"]["sd"][:,2],
                     facecolor="green", alpha=0.5,linewidth=0)
 
 
 
                 self.fig.axes[8].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Ankle.Moment"]["mean"][:,0]-self.m_normativeData["Ankle.Moment"]["sd"][:,0],
-                    self.m_normativeData["Ankle.Moment"]["mean"][:,0]+self.m_normativeData["Ankle.Moment"]["sd"][:,0],
+                    self.m_normativeData["AnkleMoment"]["mean"][:,0]-self.m_normativeData["AnkleMoment"]["sd"][:,0],
+                    self.m_normativeData["AnkleMoment"]["mean"][:,0]+self.m_normativeData["AnkleMoment"]["sd"][:,0],
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[9].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Ankle.Moment"]["mean"][:,1]-self.m_normativeData["Ankle.Moment"]["sd"][:,1],
-                    self.m_normativeData["Ankle.Moment"]["mean"][:,1]+self.m_normativeData["Ankle.Moment"]["sd"][:,1],
+                    self.m_normativeData["AnkleMoment"]["mean"][:,1]-self.m_normativeData["AnkleMoment"]["sd"][:,1],
+                    self.m_normativeData["AnkleMoment"]["mean"][:,1]+self.m_normativeData["AnkleMoment"]["sd"][:,1],
                     facecolor="green", alpha=0.5,linewidth=0)
 
 
                 self.fig.axes[11].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["Ankle.Power"]["mean"][:,2]-self.m_normativeData["Ankle.Power"]["sd"][:,2],
-                    self.m_normativeData["Ankle.Power"]["mean"][:,2]+self.m_normativeData["Ankle.Power"]["sd"][:,2],
+                    self.m_normativeData["AnklePower"]["mean"][:,2]-self.m_normativeData["AnklePower"]["sd"][:,2],
+                    self.m_normativeData["AnklePower"]["mean"][:,2]+self.m_normativeData["AnklePower"]["sd"][:,2],
                     facecolor="green", alpha=0.5,linewidth=0)
 
         return self.fig

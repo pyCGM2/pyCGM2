@@ -41,10 +41,10 @@ class CGM1_GPS(object):
         matchingNormativeDataLabel["RKneeAngles"+pointSuffix,"Right"]=  "KneeAngles"
         matchingNormativeDataLabel["LAnkleAngles"+pointSuffix,"Left"]=  "AnkleAngles"
         matchingNormativeDataLabel["RAnkleAngles"+pointSuffix,"Right"]=  "AnkleAngles"
-        matchingNormativeDataLabel["LFootProgressAngles"+pointSuffix,"Left"]=  "FootAngles"
-        matchingNormativeDataLabel["RFootProgressAngles"+pointSuffix,"Right"]=  "FootAngles"
+        matchingNormativeDataLabel["LFootProgressAngles"+pointSuffix,"Left"]=  "FootProgressAngles"
+        matchingNormativeDataLabel["RFootProgressAngles"+pointSuffix,"Right"]=  "FootProgressAngles"
 
-        axes={"PelvisAngles":[0,1,2],"HipAngles":[0,1,2],"KneeAngles":[0],"AnkleAngles":[0],"FootAngles":[2]}   # tip is to use label from normative dataset
+        axes={"PelvisAngles":[0,1,2],"HipAngles":[0,1,2],"KneeAngles":[0],"AnkleAngles":[0],"FootProgressAngles":[2]}   # tip is to use label from normative dataset
 
 
         self.matchingNormativeDataLabel = matchingNormativeDataLabel
