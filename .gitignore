@@ -105,3 +105,6 @@ pyCGM2/Settings/config.json
 
 .pytest_cache
 .vscode
+
+
+Tests/baseline
