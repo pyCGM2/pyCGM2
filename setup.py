@@ -232,6 +232,10 @@ setup(name = 'pyCGM2',
                 'Nexus_resetProgramData =  pyCGM2.Apps.ViconApps.Miscellaneous.pyCGM2_resetProgramData:main',
                 'Nexus_check_inputArgs  =  pyCGM2.Apps.ViconApps.Miscellaneous.check_inputArgs:main',
 
+                'pyCGM2-copyPasteCgmSettings  =  pyCGM2.Apps.Commands.commands:copyPasteCgmSettings',
+                'pyCGM2-copyPasteEmgSettings  =  pyCGM2.Apps.Commands.commands:copyPasteEmgSettings',
+
+
                 # QTM
                 'QTM_CGM1_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow:command',
                 'QTM_CGM11_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM11_workflow:command',
