@@ -1,17 +1,10 @@
 # coding: utf-8
+# from __future__ import unicode_literals
 #pytest -s --disable-pytest-warnings  test_NormativeDataSet.py::Test_NormativeDataSet::test_Schwartz2008
 
-from __future__ import unicode_literals
-import pytest
+
 
 import numpy as np
-import matplotlib.pyplot as plt
-
-import pyCGM2
-from pyCGM2.Tools import btkTools
-from pyCGM2.Lib import analysis, plot
-from pyCGM2.Processing import scores
-from pyCGM2.Utils import files
 
 from pyCGM2.Report import normativeDatasets
 
