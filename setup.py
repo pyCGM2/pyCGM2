@@ -16,17 +16,17 @@ if developMode:
     logging.warning("You have sleected a developer model ( local install)")
 
 
-if sys.maxsize > 2**32:
-    raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
+if sys.maxsize < 2**32:
+    raise Exception ("32-bit python version detected. PyCGM2-python3 requires a 64 bits python version")
 
-VERSION ="3.4.1"
+VERSION ="4.0.0"
 
 
 for it in site.getsitepackages():
     if "site-packages" in it:
         SITE_PACKAGE_PATH = it +"\\"
 
-NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py2.7.egg"
+NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py3.7.egg"
 
 
 MAIN_PYCGM2_PATH = os.getcwd() + "\\"
@@ -62,14 +62,13 @@ def scanViconTemplatePipeline(sourcePath,desPath,pyCGM2nexusAppsPath):
     sourcePath = sourcePath[:-1] if sourcePath[-1:]=="\\" else sourcePath
     desPath = desPath[:-1] if desPath[-1:]=="\\" else desPath
     pyCGM2nexusAppsPath = pyCGM2nexusAppsPath[:-1] if pyCGM2nexusAppsPath[-1:]=="\\" else pyCGM2nexusAppsPath
-
-    pyCGM2nexusAppsPath_antislash = string.replace(pyCGM2nexusAppsPath, '\\', '/')
+    pyCGM2nexusAppsPath_antislash = pyCGM2nexusAppsPath.replace('\\', '/')
 
     for file in os.listdir(sourcePath):
         with open(sourcePath+"\\"+file, 'r') as f:
             file_contents = f.read()
 
-        content = string.replace(file_contents, toreplace,pyCGM2nexusAppsPath_antislash)
+        content = file_contents.replace(toreplace,pyCGM2nexusAppsPath_antislash)
 
 
         if not os.path.isfile( desPath +"\\"+ file):
