@@ -1,10 +1,5 @@
+# -*- coding: utf-8 -*-
 import logging
-import pyCGM2
-
-
-
-from pyCGM2.Tools import btkTools
-
 
 class QualityFilter(object):
     def __init__(self,procedure,verbose=True):

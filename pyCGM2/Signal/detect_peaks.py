@@ -1,6 +1,6 @@
 """Detect peaks in data based on their amplitude and other features."""
 
-from __future__ import division, print_function
+# from __future__ import division, print_function
 import numpy as np
 
 __author__ = "Marcos Duarte, https://github.com/demotu/BMC"
@@ -46,8 +46,8 @@ def detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
     -----
     The detection of valleys instead of peaks is performed internally by simply
     negating the data: `ind_valleys = detect_peaks(-x)`
-    
-    The function can handle NaN's 
+
+    The function can handle NaN's
 
     See this IPython Notebook [1]_.
 

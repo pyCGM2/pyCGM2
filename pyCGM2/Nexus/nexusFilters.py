@@ -33,7 +33,7 @@ class NexusModelFilter(object):
         self.m_vskName = vskName
         self.NEXUS = NEXUS
         self.staticProcessing = staticProcessing
-        self.m_pointSuffix = pointSuffix if pointSuffix is None else utils.str("_"+pointSuffix)
+        self.m_pointSuffix = pointSuffix if pointSuffix is None else "_"+pointSuffix
 
     def run(self):
         """
@@ -100,7 +100,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                    ev.SetSubject(utils.str(self.m_subject))
+                    ev.SetSubject(self.m_subject)
                     self.m_acq.AppendEvent(ev)
 
 
@@ -111,7 +111,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                    ev.SetSubject(utils.str(self.m_subject))
+                    ev.SetSubject(self.m_subject)
                     self.m_acq.AppendEvent(ev)
 
         eventType = "Foot Strike"
@@ -121,7 +121,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                    ev.SetSubject(utils.str(self.m_subject))
+                    ev.SetSubject(self.m_subject)
                     self.m_acq.AppendEvent(ev)
 
         eventType = "Foot Off"
@@ -131,7 +131,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Automatic)
-                    ev.SetSubject(utils.str(self.m_subject))
+                    ev.SetSubject(self.m_subject)
                     self.m_acq.AppendEvent(ev)
 
         eventType = "Event"
@@ -141,7 +141,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                    ev.SetSubject(utils.str(self.m_subject))
+                    ev.SetSubject(self.m_subject)
                     self.m_acq.AppendEvent(ev)
 
         eventType = "Left-FP"
@@ -151,7 +151,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                    ev.SetSubject(utils.str(self.m_subject))
+                    ev.SetSubject(self.m_subject)
                     self.m_acq.AppendEvent(ev)
 
 
@@ -162,7 +162,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                    ev.SetSubject(utils.str(self.m_subject))
+                    ev.SetSubject(self.m_subject)
                     self.m_acq.AppendEvent(ev)
 
 
@@ -173,7 +173,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                    ev.SetSubject(utils.str(self.m_subject))
+                    ev.SetSubject(self.m_subject)
                     self.m_acq.AppendEvent(ev)
 
 
@@ -184,7 +184,7 @@ class NexusConstructAcquisitionFilter(object):
                 if frame>=self.m_firstFrame and frame<=self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType,time, int(frame), eventContext, btk.btkEvent.Manual)
-                    ev.SetSubject(utils.str(self.m_subject))
+                    ev.SetSubject(self.m_subject)
                     self.m_acq.AppendEvent(ev)
 
 

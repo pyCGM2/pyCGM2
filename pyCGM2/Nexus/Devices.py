@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import pyCGM2
 import ViconNexus
 import numpy as np
-import logging
 
 NEXUS = ViconNexus.ViconNexus()
 

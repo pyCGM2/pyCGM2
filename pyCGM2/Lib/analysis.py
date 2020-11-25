@@ -10,8 +10,6 @@ from pyCGM2 import enums
 from pyCGM2.Processing import exporter
 from pyCGM2.Processing import jointPatterns
 
-from pyCGM2.Tools import btkTools
-
 
 def makeCGMGaitAnalysis(DATA_PATH,modelledFilenames,
                         emgFilenames, emgChannels,

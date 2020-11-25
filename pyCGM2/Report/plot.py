@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-
-# pyCGM2
-#import pyCGM2
 from pyCGM2.Processing import cycle
 
 from pyCGM2.Tools import btkTools

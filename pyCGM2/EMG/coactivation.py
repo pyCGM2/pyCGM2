@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from pyCGM2.Signal import signal_processing
-from pyCGM2.Tools import btkTools
-from pyCGM2 import enums
-
 
 class UnithanCoActivationProcedure(object):
     """

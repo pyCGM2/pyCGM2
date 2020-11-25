@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
-import logging
-import matplotlib.pyplot as plt
+
 from collections import OrderedDict
-
 from pyCGM2.Tools import exportTools
-from pyCGM2.Signal.detect_peaks import detect_peaks
-from pyCGM2.Math import derivation
 
-from pyCGM2.Processing import analysisHandler
-from pyCGM2.Tools import exportTools
+
+
 # --- FILTER ----
 
 

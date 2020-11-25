@@ -1,5 +1,4 @@
 # coding: utf-8
-import pyCGM2
 import numpy as np
 from scipy import spatial
 import logging

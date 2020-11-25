@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import scipy as sp
 import logging
 
 import matplotlib.pyplot as plt
@@ -8,8 +7,7 @@ import matplotlib.pyplot as plt
 # pyCGM2
 import pyCGM2
 from pyCGM2.Report import plot, plotViewers, plotUtils
-from pyCGM2.EMG import normalActivation
-from pyCGM2.Processing import cycle
+
 
 
 

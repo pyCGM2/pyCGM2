@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 10 11:47:01 2016
-
-@author: Fabien Leboeuf ( Salford Univ, UK)
-"""
-
 import numpy as np
 
 

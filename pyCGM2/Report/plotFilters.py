@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 from matplotlib.backends.backend_pdf import PdfPages
 
 import pyCGM2

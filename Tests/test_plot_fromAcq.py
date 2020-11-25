@@ -1,9 +1,6 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings  test_temporalPlot.py::Test_plot::test_temporalPlot
-
-from __future__ import unicode_literals
-import pytest
-import numpy as np
+# pytest -s --disable-pytest-warnings  test_plot_fromAcq.py::Test_plot::test_temporalPlot
+# from __future__ import unicode_literals
 import matplotlib.pyplot as plt
 
 import pyCGM2
@@ -15,7 +12,6 @@ from pyCGM2.Lib import analysis, plot
 from pyCGM2.Report import plot as reportPlot
 from pyCGM2.Report import plotFilters,emgPlotViewers
 
-from pyCGM2 import btk
 
 
 emgChannels=['Voltage.EMG1','Voltage.EMG2','Voltage.EMG3','Voltage.EMG4','Voltage.EMG5',

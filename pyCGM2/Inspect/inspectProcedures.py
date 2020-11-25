@@ -1,15 +1,13 @@
-import logging
-import pyCGM2
-from pyCGM2 import btk
-from pyCGM2.Tools import btkTools
-from pyCGM2.Math import derivation,geometry
-from pyCGM2.Signal import detect_peaks
-import matplotlib.pyplot as plt
+# -*- coding: utf-8 -*-
 import numpy as np
 from matplotlib.path import Path
-from pyCGM2.Model import model, modelDecorator, frame, motion
-from pyCGM2.Model.CGM2 import cgm, cgm2
+import logging
 
+from pyCGM2 import btk
+from pyCGM2.Tools import btkTools
+from pyCGM2.Math import geometry
+
+from pyCGM2.Model import   frame
 from pyCGM2.Utils import utils
 from pyCGM2.Signal import detect_changes
 

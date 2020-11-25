@@ -1,6 +1,6 @@
 """Cumulative sum algorithm (CUSUM) to detect abrupt changes in data."""
 
-from __future__ import division, print_function
+# from __future__ import division, print_function
 import numpy as np
 
 __author__ = 'Marcos Duarte, https://github.com/demotu/BMC'
