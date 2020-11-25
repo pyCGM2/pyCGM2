@@ -5,15 +5,14 @@ import copy
 
 from pyCGM2 import btk
 
-import frame
-import motion
+from pyCGM2.Model import frame
+from pyCGM2.Model import motion
 
 from pyCGM2 import enums
 from  pyCGM2.Math import euler,numeric
-import pyCGM2.Signal.signal_processing as pyCGM2signal
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Utils import timer
-import matplotlib.pyplot as plt
+
 
 
 
@@ -1209,7 +1208,7 @@ class ForcePlateAssemblyFilter(object):
             self.m_model.getSegment(self.m_rightSeglabel).downSampleExternalDeviceWrenchs(appf)
 
         # ground reaction force and moment
-        if self.m_model.mp.has_key("Bodymass"):
+        if "Bodymass" in self.m_model.mp:
             bodymass = self.m_model.mp["Bodymass"]
         else:
             bodymass = 1.0

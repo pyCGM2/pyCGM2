@@ -5,7 +5,8 @@ import logging
 
 from pyCGM2 import btk
 
-import frame
+from pyCGM2.Model import frame
+
 
 from pyCGM2 import enums
 from pyCGM2.Model import motion
