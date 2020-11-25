@@ -42,13 +42,13 @@ def temporalPlot(figAxis,acq,
 
     flag = btkTools.isPointExist(acq,pointLabel)
     if flag:
-        point = acq.GetPoint(utils.str(pointLabel))
+        point = acq.GetPoint(pointLabel)
         lines=figAxis.plot(point.GetValues()[:,axis], '-', color= color)
         appf = 1
     else:
         flag = btkTools.isAnalogExist(acq,pointLabel)
         if flag:
-            analog = acq.GetAnalog(utils.str(pointLabel))
+            analog = acq.GetAnalog(pointLabel)
             lines=figAxis.plot(analog.GetValues()[:,axis], '-', color= color)
             appf = acq.GetNumberAnalogSamplePerFrame()
 

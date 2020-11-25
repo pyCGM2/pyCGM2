@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import numpy as np
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Tools import btkTools
@@ -133,7 +134,7 @@ class EmgNormalisationProcessingFilter(object):
     def processAnalysis(self):
 
         for contextIt in ["Left","Right"]:
-            if self.m_analysis.emgStats.data.has_key((self.m_label,contextIt)):
+            if (self.m_label,contextIt) in self.m_analysis.emgStats.data:
                 values = self.m_analysis.emgStats.data[self.m_label,contextIt]["values"]
                 valuesNorm = list()
 

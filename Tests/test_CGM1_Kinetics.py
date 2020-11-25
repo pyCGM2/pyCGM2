@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # from __future__ import unicode_literals
-# pytest -s --disable-pytest-warnings  test_CGM1_dynamicInverse.py::TestFullBody::test_FullBody_noOptions_distal
-# pytest -s --disable-pytest-warnings  test_CGM1_kinetics.py::Test_LowerBody_progressionY::test_LowerBody_noOptions_proximal
+# pytest -s --disable-pytest-warnings  test_CGM1_Kinetics.py::Test_LowerBody_progressionY::test_LowerBody_noOptions_proximal
 import logging
 
 import pyCGM2

@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings  test_plot_fromAcq.py::Test_plot::test_temporalPlot
+# pytest -s --disable-pytest-warnings  test_plot_fromAcq.py::Test_lowLevel::test_temporalPlot
 # from __future__ import unicode_literals
 import matplotlib.pyplot as plt
 
@@ -12,6 +12,7 @@ from pyCGM2.Lib import analysis, plot
 from pyCGM2.Report import plot as reportPlot
 from pyCGM2.Report import plotFilters,emgPlotViewers
 
+SHOW = False
 
 
 emgChannels=['Voltage.EMG1','Voltage.EMG2','Voltage.EMG3','Voltage.EMG4','Voltage.EMG5',
@@ -28,7 +29,7 @@ normalActivityEmgs=['RECFEM','RECFEM', None,None,None,
 
 
 def dataTest1():
-    DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitData//CGM1-NormalGaitData-Events//Hånnibøl Lecter\\"
+    DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitData//CGM1-NormalGaitData-Events//Hannibal Lecter\\"
     modelledFilenames = ["gait Trial 01.c3d", "gait Trial 02.c3d"]
     acq = btkTools.smartReader(DATA_PATH+modelledFilenames[0])
 
@@ -43,9 +44,10 @@ def dataTest2():
 
     return DATA_PATH, modelledFilenames,acq
 
+
 class Test_lowLevel:
 
-    @pytest.mark.mpl_image_compare
+    # @pytest.mark.mpl_image_compare
     def test_temporalPlot(self):
         DATA_PATH, modelledFilenames,acq = dataTest1()
         fig = plt.figure()
@@ -53,10 +55,12 @@ class Test_lowLevel:
         reportPlot.temporalPlot(ax,acq,"LPelvisAngles",0,color="blue",
                 title="test", xlabel="frame", ylabel="angle",ylim=None,legendLabel=None,
                 customLimits=None)
+
+        if SHOW: plt.show()
         return fig
 
 
-    @pytest.mark.mpl_image_compare
+    #@pytest.mark.mpl_image_compare
     def test_lowLevel_temporalEmgPlot_4channels(self):
 
         DATA_PATH, modelledFilenames,acq = dataTest2()
@@ -83,22 +87,24 @@ class Test_lowLevel:
         fig = pf.plot()
         # plt.show()
 
-
+        if SHOW: plt.show()
         return fig
 
 
 class Test_highLevel:
 
-    @pytest.mark.mpl_image_compare
+    #@pytest.mark.mpl_image_compare
     def test_temporalKinematicPlot(self):
         DATA_PATH, modelledFilenames,acq = dataTest1()
         fig = plot.plotTemporalKinematic(DATA_PATH, modelledFilenames[0],"LowerLimb",
             pointLabelSuffix=None, exportPdf=False,outputName=None,show=False,
             title=None,       btkAcq=None)
+
+        if SHOW: plt.show()
         return fig
 
 
-    @pytest.mark.mpl_image_compare
+    #@pytest.mark.mpl_image_compare
     def test_temporalEmgPlot(self):
         DATA_PATH, modelledFilenames,acq = dataTest2()
 
@@ -113,5 +119,7 @@ class Test_highLevel:
                 exportPdf=False,outputName=None,show=False,title=None,
                 btkAcq=None)
 
-
+        if SHOW: plt.show()
         return figs[0]
+
+plt.show()
