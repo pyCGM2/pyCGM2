@@ -203,7 +203,7 @@ class EnfReader(object):
 
     def __init__(self, path,enfFile):
 
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.optionxform=str # keep letter case
 
         if not os.path.isfile((path+enfFile)):
@@ -211,7 +211,7 @@ class EnfReader(object):
 
         try:
             config.read((path+enfFile))
-        except ConfigParser.ParsingError:
+        except configparser.ParsingError:
             cleanEnf(path,enfFile)
             config.read((path+enfFile))
 
