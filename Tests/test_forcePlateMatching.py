@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_forcePlateMatching.py::Test_matchedFootPlatForm::test_twoPF
 """
 Created on Thu Jul 07 15:14:18 2016
@@ -16,7 +16,6 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 # pyCGM2
 from pyCGM2.Tools import  btkTools
 from pyCGM2.ForcePlates import forceplates
-from pyCGM2.Utils import utils
 
 import numpy as np
 
@@ -34,7 +33,6 @@ class Test_matchedFootPlatForm:
         #forceplates.appendForcePlateCornerAsMarker(acqGait)
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
 
-        print mappedForcePlate
         if mappedForcePlate!="LX":
             raise Exception ("uncorrected force plate matching")
 
@@ -44,7 +42,6 @@ class Test_matchedFootPlatForm:
         #forceplates.appendForcePlateCornerAsMarker(acqGait)
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
 
-        print mappedForcePlate
         if mappedForcePlate!="XX":
             raise Exception ("uncorrected force plate matching")
 
@@ -92,7 +89,6 @@ class Test_matchedFootPlatForm_difficultCases():
         #forceplates.appendForcePlateCornerAsMarker(acqGait)
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
 
-        print mappedForcePlate
         if mappedForcePlate!="LRXX":
             raise Exception ("uncorrected force plate matching")
 
@@ -128,8 +124,8 @@ class Test_manualAssigment:
 
         try:
             assignedMappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="XX")
-        except Exception, errormsg:
-            np.testing.assert_string_equal(errormsg.args[0],utils.str("[pyCGM2] number of assigned force plate inferior to the number of force plate number. Your assignment should have  3 letters at least"))
+        except Exception as errormsg:
+            np.testing.assert_string_equal(errormsg.args[0],"[pyCGM2] number of assigned force plate inferior to the number of force plate number. Your assignment should have  3 letters at least")
 
 
     def test_threePF_assigmenentCases(self):

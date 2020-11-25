@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_forcePlate_lowLevel.py::Test_ForcePlateTypeReader::test_ForcePlateType5
 
 import numpy as np
