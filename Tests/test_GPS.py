@@ -1,17 +1,10 @@
 # coding: utf-8
 #pytest -s --disable-pytest-warnings  test_GPS.py::Test_GPS::test_CGM1
-
-from __future__ import unicode_literals
-import pytest
-
-import numpy as np
-import matplotlib.pyplot as plt
+# from __future__ import unicode_literals
 
 import pyCGM2
-from pyCGM2.Tools import btkTools
-from pyCGM2.Lib import analysis, plot
+from pyCGM2.Lib import analysis
 from pyCGM2.Processing import scores
-from pyCGM2.Utils import files
 
 from pyCGM2.Report import normativeDatasets
 
@@ -33,7 +26,7 @@ normalActivityEmgs=['RECFEM','RECFEM', None,None,None,
 
 
 def dataTest1():
-    DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitData//CGM1-NormalGaitData-Events//Hånnibøl Lecter\\"
+    DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitData//CGM1-NormalGaitData-Events//Hannibal Lecter\\"
     modelledFilenames = ["gait Trial 01.c3d", "gait Trial 02.c3d"]
     analysisInstance = analysis.makeAnalysis(DATA_PATH,
                         modelledFilenames,

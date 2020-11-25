@@ -790,19 +790,19 @@ class AnalysisExportFilter(object):
 #         if self.analysis.subjectInfo is not None:
 #             subjInfo = self.analysis.subjectInfo
 #             for item in subjInfo.items():
-#                 trial.setProperty("SUBJECT_INFO:"+ utils.str(item[0]),utils.str(item[1]))
+#                 trial.setProperty("SUBJECT_INFO:"+ item[0],item[1])
 #
 #         # model infos
 #         if self.analysis.modelInfo is not None:
 #             modelInfo =  self.analysis.modelInfo
 #             for item in modelInfo.items():
-#                 trial.setProperty("MODEL_INFO:"+ utils.str(item[0]),utils.str(item[1]))
+#                 trial.setProperty("MODEL_INFO:"+ item[0],item[1])
 #
 #         # model infos
 #         if self.analysis.experimentalInfo is not None:
 #             experimentalConditionInfo = self.analysis.experimentalInfo
 #             for item in experimentalConditionInfo.items():
-#                 trial.setProperty("EXPERIMENTAL_INFO:"+ utils.str(item[0]),utils.str(item[1]))
+#                 trial.setProperty("EXPERIMENTAL_INFO:"+ item[0],item[1])
 #
 #
 #         #trial.setProperty('MY_GROUP:MY_PARAMETER',10.0)
@@ -832,7 +832,7 @@ class AnalysisExportFilter(object):
 #                 values = np.zeros((101,4))
 #                 values2 = np.zeros((101,1))
 #                 for val in self.analysis.kinematicStats.data[label,context]["values"]:
-#                     angle = ma.TimeSequence(utils.str(label+"."+context+"."+str(cycle)),4,101,1.0,0.0,ma.TimeSequence.Type_Angle,"deg", trial.timeSequences())
+#                     angle = ma.TimeSequence(label+"."+context+"."+str(cycle),4,101,1.0,0.0,ma.TimeSequence.Type_Angle,"deg", trial.timeSequences())
 #                     values[:,0:3] = val
 #                     angle.setData(values)
 #                     cycle+=1
@@ -879,9 +879,9 @@ class AnalysisExportFilter(object):
 #
 #         try:
 #             if path == None:
-#                 ma.io.write(root,utils.str(outputName+".c3d")  )
+#                 ma.io.write(root,outputName+".c3d" )
 #             else:
-#                 ma.io.write(root,utils.str(path + outputName+".c3d"))
+#                 ma.io.write(root,path + outputName+".c3d")
 #             logging.info("Analysis c3d  [%s.c3d] Exported" %( (outputName +".c3d")) )
 #         except:
 #             raise Exception ("[pyCGM2] : analysis c3d doesn t export" )

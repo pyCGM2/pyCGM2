@@ -265,7 +265,7 @@ class Cycle(object):
         """
 
         if btkTools.isPointExist(self.acq,pointLabel):
-            return self.acq.GetPoint(utils.str(pointLabel)).GetValues()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
+            return self.acq.GetPoint(pointLabel).GetValues()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
         else:
             logging.debug("[pyCGM2] the point Label %s doesn t exist " % (pointLabel))
             return None
@@ -298,7 +298,7 @@ class Cycle(object):
 
         """
         if btkTools.isAnalogExist(self.acq,analogLabel):
-            return  self.acq.GetAnalog(utils.str(analogLabel)).GetValues()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
+            return  self.acq.GetAnalog(analogLabel).GetValues()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
         else:
             logging.debug("[pyCGM2] the Analog Label %s doesn t exist" % (analogLabel))
             return None

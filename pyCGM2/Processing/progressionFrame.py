@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
-from pyCGM2.Math import numeric
 from pyCGM2.Tools import  btkTools
 import logging
-from pyCGM2.Utils import utils
 
 class ProgressionFrameFilter(object):
     """

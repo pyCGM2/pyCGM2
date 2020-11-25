@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-import numpy as np
-import pandas as pd
-import logging
-
 # pyCGM2
 from pyCGM2.Tools import btkTools
 
