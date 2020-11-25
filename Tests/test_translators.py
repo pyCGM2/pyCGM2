@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_translators.py::TestTranslatorScenario::test_scenario1Test
 import numpy as np
 import logging
-import json
 
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.WARNING)
@@ -11,11 +10,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.WARNING)
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
-from pyCGM2.Model.CGM2 import cgm
-from pyCGM2.Model import modelFilters, modelDecorator, frame
-import pyCGM2.enums as pyCGM2Enums
-from collections import OrderedDict
-from pyCGM2.Utils import files, utils
+from pyCGM2.Utils import files
 
 
 
@@ -104,10 +99,10 @@ class TestTranslatorScenario:
 
         btkTools.smartWriter(acqStatic2,DATA_PATH_OUT+"scenario1Test.c3d")
 
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LeftASI")).GetValues(), acqStatic2.GetPoint(utils.str("LASI")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("RightASI")).GetValues(), acqStatic2.GetPoint(utils.str("RASI")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LeftPSI")).GetValues(), acqStatic2.GetPoint(utils.str("LPSI")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("RightPSI")).GetValues(), acqStatic2.GetPoint(utils.str("RPSI")).GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LeftASI").GetValues(), acqStatic2.GetPoint("LASI").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("RightASI").GetValues(), acqStatic2.GetPoint("RASI").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LeftPSI").GetValues(), acqStatic2.GetPoint("LPSI").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("RightPSI").GetValues(), acqStatic2.GetPoint("RPSI").GetValues())
 
 
     def test_scenario2Test(self):
@@ -195,8 +190,8 @@ class TestTranslatorScenario:
 
         btkTools.smartWriter(acqStatic2,DATA_PATH_OUT+"scenario2Test.c3d")
 
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LTHI")).GetValues(), acqStatic2.GetPoint(utils.str("LTHLD")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LTHI_origin")).GetValues(), acqStatic.GetPoint(utils.str("LTHI")).GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LTHI").GetValues(), acqStatic2.GetPoint("LTHLD").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LTHI_origin").GetValues(), acqStatic.GetPoint("LTHI").GetValues())
 
 
     def test_scenario3Test(self):
@@ -285,8 +280,8 @@ class TestTranslatorScenario:
 
         btkTools.smartWriter(acqStatic2,DATA_PATH_OUT+"scenario3Test.c3d")
 
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LTHI")).GetValues(), acqStatic2.GetPoint(utils.str("LTHAD")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LTHI_origin")).GetValues(), acqStatic.GetPoint(utils.str("LTHI")).GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LTHI").GetValues(), acqStatic2.GetPoint("LTHAD").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LTHI_origin").GetValues(), acqStatic.GetPoint("LTHI").GetValues())
 
     def test_scenario4Test(self):
         """
@@ -371,8 +366,8 @@ class TestTranslatorScenario:
 
         btkTools.smartWriter(acqStatic2,DATA_PATH_OUT +"scenario4Test.c3d")
 
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LTHI")).GetValues(), acqStatic.GetPoint(utils.str("LTHAD")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LTHAD")).GetValues(), acqStatic.GetPoint(utils.str("LTHI")).GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LTHI").GetValues(), acqStatic.GetPoint("LTHAD").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LTHAD").GetValues(), acqStatic.GetPoint("LTHI").GetValues())
 
 
 class TestConcreteScenario_tests():
@@ -394,8 +389,8 @@ class TestConcreteScenario_tests():
 
         btkTools.smartWriter(acqStatic2,DATA_PATH_OUT+"staticCGM1Sacrum.c3d")
 
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LPSI")).GetValues(), acqStatic.GetPoint(utils.str("SACR")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("RPSI")).GetValues(), acqStatic.GetPoint(utils.str("SACR")).GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LPSI").GetValues(), acqStatic.GetPoint("SACR").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("RPSI").GetValues(), acqStatic.GetPoint("SACR").GetValues())
 
 
     def test_translators24_initiateWith_25markerset(self):
@@ -474,8 +469,8 @@ class TestConcreteScenario_tests():
         btkTools.smartWriter(acqStatic2,DATA_PATH_OUT+"translators24_initiateWith_25markerset.c3d")
 
 
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("C7")).GetValues(), acqStatic.GetPoint(utils.str("T2")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LFHD")).GetValues(), acqStatic.GetPoint(utils.str("GLAB")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("RFHD")).GetValues(), acqStatic.GetPoint(utils.str("GLAB")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("LBHD")).GetValues(), acqStatic.GetPoint(utils.str("LMAS")).GetValues())
-        np.testing.assert_equal(acqStatic2.GetPoint(utils.str("RBHD")).GetValues(), acqStatic.GetPoint(utils.str("RMAS")).GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("C7").GetValues(), acqStatic.GetPoint("T2").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LFHD").GetValues(), acqStatic.GetPoint("GLAB").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("RFHD").GetValues(), acqStatic.GetPoint("GLAB").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("LBHD").GetValues(), acqStatic.GetPoint("LMAS").GetValues())
+        np.testing.assert_equal(acqStatic2.GetPoint("RBHD").GetValues(), acqStatic.GetPoint("RMAS").GetValues())
