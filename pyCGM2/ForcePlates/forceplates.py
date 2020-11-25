@@ -365,7 +365,7 @@ def correctForcePlateType5(btkAcq):
             btkTools.smartAppendAnalog(btkAcq,"Moment.My"+str(i),moment[:,1],desc="virtual Force plate" )
             btkTools.smartAppendAnalog(btkAcq,"Moment.Mz"+str(i),moment[:,2],desc="virtual Force plate" )
 
-            new_channel_indexes_ofAnalog = range(numAnalogs,numAnalogs+6)
+            new_channel_indexes_ofAnalog = [*range(numAnalogs,numAnalogs+6)]
 
             numAnalogs = btkAcq.GetAnalogNumber()
 
@@ -377,8 +377,8 @@ def correctForcePlateType5(btkAcq):
         else:
             newChannelIndexes = newChannelIndexes + channel_indexes_ofAnalog[i]
 
-    md_newChannelIndexes= map(lambda x: x + 1, newChannelIndexes)
-    md_force_platform_channels.SetInfo(btk.btkMetaDataInfo([6,int(forcePlateNumber)], md_newChannelIndexes))
+    # md_newChannelIndexes= map(lambda x: x + 1, newChannelIndexes)
+    md_force_platform_channels.SetInfo(btk.btkMetaDataInfo([6,int(forcePlateNumber)], newChannelIndexes))
 
     btkAcq.GetMetaData().FindChild(str("FORCE_PLATFORM")).value().FindChild(str("ZERO")).value().SetInfo(btk.btkMetaDataInfo(btk.btkDoubleArray(forcePlateNumber, 0)))
 
