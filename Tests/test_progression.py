@@ -44,7 +44,7 @@ class Test_btkProgression():
         np.testing.assert_equal( pff.outputs["globalFrame"],"XYZ")
 
 
-        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
+        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -65,7 +65,7 @@ class Test_btkProgression():
         gaitFilename="gait_X_backward.c3d"
         acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
-        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
+        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
 
@@ -78,7 +78,7 @@ class Test_btkProgression():
         np.testing.assert_equal( pff.outputs["globalFrame"],"XYZ")
 
 
-        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
+        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -108,7 +108,7 @@ class Test_btkProgression():
         np.testing.assert_equal( pff.outputs["forwardProgression"] ,True)
         np.testing.assert_equal( pff.outputs["globalFrame"],"YXZ")
 
-        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
+        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -140,7 +140,7 @@ class Test_btkProgression():
         np.testing.assert_equal( pff.outputs["forwardProgression"] ,False)
         np.testing.assert_equal( pff.outputs["globalFrame"],"YXZ")
 
-        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
+        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -212,7 +212,7 @@ class Test_btkProgression_static():
         np.testing.assert_equal( pff.outputs["globalFrame"],"XYZ")
 
 
-        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
+        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -245,7 +245,7 @@ class Test_btkProgression_static():
         np.testing.assert_equal( pff.outputs["globalFrame"],"XYZ")
 
 
-        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
+        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])
@@ -275,7 +275,7 @@ class Test_btkProgression_static():
         np.testing.assert_equal( pff.outputs["globalFrame"],"YXZ")
 
 
-        valSACR=(acq.GetPoint(utils.str("LPSI")).GetValues() + acq.GetPoint(utils.str("RPSI")).GetValues()) / 2.0
+        valSACR=(acq.GetPoint("LPSI").GetValues() + acq.GetPoint("RPSI").GetValues()) / 2.0
         btkTools.smartAppendPoint(acq,"SACR",valSACR,desc="")
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure(backMarkers=["SACR"])

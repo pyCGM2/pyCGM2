@@ -86,7 +86,7 @@ class PelvisProgressionFrameProcedure(object):
         # find valid frames and get the first one
         flag,vff,vlf = btkTools.findValidFrames(acq,[self.m_marker])
 
-        values = acq.GetPoint(utils.str(self.m_marker)).GetValues()[vff:vlf,:]
+        values = acq.GetPoint(self.m_marker).GetValues()[vff:vlf,:]
 
         MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
         absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
@@ -134,7 +134,7 @@ class PelvisProgressionFrameProcedure(object):
             values = np.zeros((acq.GetPointFrameNumber(),3))
             count = 0
             for marker in self.m_backmarkers:
-                values = values + acq.GetPoint(utils.str(marker)).GetValues()
+                values = values + acq.GetPoint(marker).GetValues()
                 count +=1
             backValues = values / count
 
@@ -160,7 +160,7 @@ class PelvisProgressionFrameProcedure(object):
                 res = np.dot(a1,globalAxes[axis])
                 tmp.append(res)
             maxIndex = np.argmax(np.abs(tmp))
-            progressionAxis =  globalAxes.keys()[maxIndex]
+            progressionAxis =  list(globalAxes.keys())[maxIndex]
             forwardProgression = True if tmp[maxIndex]>0 else False
             # lateral axis
             tmp=[]
@@ -168,7 +168,7 @@ class PelvisProgressionFrameProcedure(object):
                 res = np.dot(a2,globalAxes[axis])
                 tmp.append(res)
             maxIndex = np.argmax(np.abs(tmp))
-            lateralAxis =  globalAxes.keys()[maxIndex]
+            lateralAxis =  list(globalAxes.keys())[maxIndex]
 
             # global frame
             if "X" not in (progressionAxis+lateralAxis):
@@ -209,7 +209,7 @@ class ThoraxProgressionFrameProcedure(object):
         # find valid frames and get the first one
         flag,vff,vlf = btkTools.findValidFrames(acq,[self.m_marker])
 
-        values = acq.GetPoint(utils.str(self.m_marker)).GetValues()[vff:vlf,:]
+        values = acq.GetPoint(self.m_marker).GetValues()[vff:vlf,:]
 
         MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
         absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
@@ -247,7 +247,7 @@ class ThoraxProgressionFrameProcedure(object):
             values = np.zeros((acq.GetPointFrameNumber(),3))
             count = 0
             for marker in self.m_frontmarkers:
-                values = values + acq.GetPoint(utils.str(marker)).GetValues()
+                values = values + acq.GetPoint(marker).GetValues()
                 count +=1
             frontValues = values / count
 
@@ -279,7 +279,7 @@ class ThoraxProgressionFrameProcedure(object):
                 res = np.dot(a1,globalAxes[axis])
                 tmp.append(res)
             maxIndex = np.argmax(np.abs(tmp))
-            progressionAxis =  globalAxes.keys()[maxIndex]
+            progressionAxis =  list(globalAxes.keys())[maxIndex]
             forwardProgression = True if tmp[maxIndex]>0 else False
 
             # lateral axis
@@ -288,7 +288,7 @@ class ThoraxProgressionFrameProcedure(object):
                 res = np.dot(a2,globalAxes[axis])
                 tmp.append(res)
             maxIndex = np.argmax(np.abs(tmp))
-            lateralAxis =  globalAxes.keys()[maxIndex]
+            lateralAxis =  list(globalAxes.keys())[maxIndex]
 
             # global frame
             if "X" not in (progressionAxis+lateralAxis):
