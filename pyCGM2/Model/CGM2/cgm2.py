@@ -5,7 +5,7 @@ import copy
 
 from pyCGM2 import btk
 
-import cgm
+from pyCGM2.Model.CGM2 import cgm
 
 from pyCGM2 import enums
 from  pyCGM2.Model import frame, motion, modelDecorator
