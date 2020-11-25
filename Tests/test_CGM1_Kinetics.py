@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
+# from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_CGM1_dynamicInverse.py::TestFullBody::test_FullBody_noOptions_distal
 # pytest -s --disable-pytest-warnings  test_CGM1_kinetics.py::Test_LowerBody_progressionY::test_LowerBody_noOptions_proximal
-import ipdb
-import os
 import logging
-
-import numpy as np
-import matplotlib.pyplot as plt
 
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
@@ -16,17 +10,13 @@ from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Tools import btkTools
 from pyCGM2.Eclipse import vskTools
-from pyCGM2.Utils import testingUtils,utils
-import pytest
+from pyCGM2.Utils import testingUtils
 
 class Test_FullBody:
 
     def test_FullBody_noOptions_distal(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\fullBody-native-noOptions\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\fullBody-native-noOptions\\"
         staticFilename = "static.c3d"
-
-        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
-
 
         markerDiameter=14
         leftFlatFoot = False
@@ -34,7 +24,6 @@ class Test_FullBody:
         headStraight = False
         pointSuffix = "test"
 
-        vskFile = vskTools.getVskFiles(DATA_PATH)
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
@@ -128,10 +117,8 @@ class Test_FullBody:
         # testingUtils.plotComparison_ForcePanel(acqGait,None,"test","Right")
 
     def test_FullBody_noOptions_proximal(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\fullBody-native-noOptions\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\fullBody-native-noOptions\\"
         staticFilename = "static.c3d"
-
-        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
 
 
         markerDiameter=14
@@ -140,7 +127,6 @@ class Test_FullBody:
         headStraight = False
         pointSuffix = "test"
 
-        vskFile = vskTools.getVskFiles(DATA_PATH)
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
@@ -230,10 +216,8 @@ class Test_FullBody:
 
 
     def test_FullBody_noOptions_global(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\fullBody-native-noOptions\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\fullBody-native-noOptions\\"
         staticFilename = "static.c3d"
-
-        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
 
 
         markerDiameter=14
@@ -242,7 +226,6 @@ class Test_FullBody:
         headStraight = False
         pointSuffix = "test"
 
-        vskFile = vskTools.getVskFiles(DATA_PATH)
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
@@ -335,11 +318,8 @@ class Test_LowerBody_progressionY:
 
 
     def test_LowerBody_noOptions_distal(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\LowerLimb-medMed_Yprogression\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\LowerLimb-medMed_Yprogression\\"
         staticFilename = "static.c3d"
-
-        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
-
 
         markerDiameter=14
         leftFlatFoot = False
@@ -347,7 +327,6 @@ class Test_LowerBody_progressionY:
         headStraight = False
         pointSuffix = "test"
 
-        vskFile = vskTools.getVskFiles(DATA_PATH)
         vsk = vskTools.Vsk(DATA_PATH + "Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
@@ -435,11 +414,8 @@ class Test_LowerBody_progressionY:
         testingUtils.test_point_rms(acqGait,"RHipMoment","RHipMoment_test",60.0,init = 380, end = 502)
 
     def test_LowerBody_noOptions_global(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\LowerLimb-medMed_Yprogression\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\LowerLimb-medMed_Yprogression\\"
         staticFilename = "static.c3d"
-
-        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
-
 
         markerDiameter=14
         leftFlatFoot = False
@@ -447,7 +423,6 @@ class Test_LowerBody_progressionY:
         headStraight = False
         pointSuffix = "test"
 
-        vskFile = vskTools.getVskFiles(DATA_PATH)
         vsk = vskTools.Vsk(DATA_PATH + "Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
@@ -537,10 +512,8 @@ class Test_LowerBody_progressionY:
         testingUtils.test_point_rms(acqGait,"RHipMoment","RHipMoment_test",60.0,init = 380, end = 502)
 
     def test_LowerBody_noOptions_proximal(self):
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\LowerLimb-medMed_Yprogression\\"
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\LowerLimb-medMed_Yprogression\\"
         staticFilename = "static.c3d"
-
-        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
 
         markerDiameter=14
         leftFlatFoot = False
@@ -548,7 +521,6 @@ class Test_LowerBody_progressionY:
         headStraight = False
         pointSuffix = "test"
 
-        vskFile = vskTools.getVskFiles(DATA_PATH)
         vsk = vskTools.Vsk(DATA_PATH + "Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
