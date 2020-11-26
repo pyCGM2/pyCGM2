@@ -14,6 +14,7 @@ from pyCGM2.Model import  modelFilters,modelDecorator
 from pyCGM2 import enums
 from pyCGM2.Model.Opensim import opensimFilters
 
+from pyCGM2.Lib.CGM import cgm2_3
 
 class Test_CGM23:
     def test_lowLevel(self):
@@ -118,3 +119,63 @@ class Test_CGM23:
         finalJcs.compute(description="ik", pointLabelSuffix = "2_ik")#
 
         btkTools.smartWriter(acqIK,"cgm23_fullIK_Motion.c3d")
+
+    def test_highLevel(self):
+
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM2.3\\Hannibal-medial\\"
+
+        staticFilename = "static.c3d"
+        reconstructFilenameLabelled= "gait1.c3d"
+
+        markerDiameter=14
+        required_mp={
+        'Bodymass'   : 71.0,
+        'LeftLegLength' : 860.0,
+        'RightLegLength' : 865.0 ,
+        'LeftKneeWidth' : 102.0,
+        'RightKneeWidth' : 103.4,
+        'LeftAnkleWidth' : 75.3,
+        'RightAnkleWidth' : 72.9,
+        'LeftSoleDelta' : 0,
+        'RightSoleDelta' : 0,
+        }
+        optional_mp = {
+            'LeftTibialTorsion' : 0,
+            'LeftThighRotation' : 0,
+            'LeftShankRotation' : 0,
+            'RightTibialTorsion' : 0,
+            'RightThighRotation' : 0,
+            'RightShankRotation' : 0
+            }
+
+        settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
+
+        model,finalAcqStatic = cgm2_3.calibrate(DATA_PATH,
+            staticFilename,
+            settings["Translators"],
+            settings["Fitting"]["Weight"],
+            required_mp,
+            optional_mp,
+            True,
+            True,
+            True,
+            True,
+            14,
+            settings["Calibration"]["HJC"],
+            None,
+            displayCoordinateSystem=True,
+            noKinematicsCalculation=False)
+
+
+        acqGait = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+            settings["Translators"],
+            settings,
+            True,14.0,
+            None,
+            "XX",
+            momentProjection =  enums.MomentProjection.JCS)
+
+
+        outFilename = reconstructFilenameLabelled
+        btkTools.smartWriter(acqGait, str(DATA_PATH + outFilename))
+        

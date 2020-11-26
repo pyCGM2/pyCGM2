@@ -171,8 +171,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                               scalingOsim,
                                                               cgmFittingProcedure,
-                                                              (DATA_PATH) )
-            acqStaticIK = osrf.run(acqStatic,(DATA_PATH + calibrateFilenameLabelled ))
+                                                              DATA_PATH,
+                                                              acqStatic )
+            acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled )
 
 
 
@@ -362,10 +363,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           scalingOsim,
                                                           cgmFittingProcedure,
-                                                          (DATA_PATH) )
+                                                          DATA_PATH,
+                                                          acqGait )
 
         logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
-        acqIK = osrf.run(acqGait,(DATA_PATH + reconstructFilenameLabelled ))
+        acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled )
         logging.info("-------INVERSE KINEMATICS DONE-----------------")
 
     # eventual gait acquisition to consider for joint kinematics
