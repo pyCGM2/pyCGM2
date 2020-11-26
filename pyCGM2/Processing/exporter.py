@@ -9,9 +9,6 @@ import pyCGM2
 from pyCGM2.Utils import files
 from pyCGM2.Tools import exportTools
 
-
-from pyCGM2.Utils import utils
-
 def renameEmgInAnalysis(analysisInstance,emgChannels, emgMuscles, emgContexts):
 
     i=len(emgChannels)-1
