@@ -191,7 +191,7 @@ setup(name = 'pyCGM2',
 	install_requires = reqs,
     #'qtmWebGaitReport>=0.0.1'],
     classifiers=['Programming Language :: Python',
-                 'Programming Language :: Python :: 2.7',
+                 'Programming Language :: Python :: 3.7',
                  'Operating System :: Microsoft :: Windows',
                  'Natural Language :: English'],
     #scripts=gen_data_files_forScripts("Apps/ViconApps")
