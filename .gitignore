@@ -109,3 +109,5 @@ pyCGM2/Settings/config.json
 
 Tests/baseline
 Sandbox
+pyCGM2/Data/deepevent/DeepEventModel.json
+pyCGM2/Data/deepevent/DeepEventWeight.h5
