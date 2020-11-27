@@ -3,7 +3,11 @@ import numpy as np
 import logging
 import copy
 
-from pyCGM2 import btk
+try: 
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
 
 from pyCGM2 import enums
 from pyCGM2.Model import model, modelDecorator, frame, motion

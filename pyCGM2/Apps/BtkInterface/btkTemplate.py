@@ -16,7 +16,12 @@ import ViconNexus
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
-from pyCGM2 import btk
+try:
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
+    
 from pyCGM2.Tools import btkTools
 
 def main():

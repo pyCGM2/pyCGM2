@@ -171,11 +171,10 @@ class Test_CGM23:
             settings["Translators"],
             settings,
             True,14.0,
-            None,
+            "acc2",
             "XX",
             momentProjection =  enums.MomentProjection.JCS)
 
 
         outFilename = reconstructFilenameLabelled
         btkTools.smartWriter(acqGait, str(DATA_PATH + outFilename))
-        

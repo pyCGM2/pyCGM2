@@ -2,7 +2,12 @@
 import numpy as np
 from scipy import spatial
 import logging
-from pyCGM2 import btk
+
+try:
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
 
 
 

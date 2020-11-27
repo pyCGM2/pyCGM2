@@ -172,7 +172,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
                                                               scalingOsim,
                                                               cgmFittingProcedure,
                                                               DATA_PATH,
-                                                              acqStatic )
+                                                              acqStatic,
+                                                              accuracy = 1e-5)
             acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled )
 
 
@@ -364,7 +365,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                                           scalingOsim,
                                                           cgmFittingProcedure,
                                                           DATA_PATH,
-                                                          acqGait )
+                                                          acqGait,
+                                                          accuracy = 1e-5 )
 
         logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
         acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled )
