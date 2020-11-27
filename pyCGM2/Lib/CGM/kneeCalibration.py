@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import logging
-import copy
-
-import pyCGM2
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
-from pyCGM2.Model.CGM2 import cgm,cgm2
+from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Model import  modelFilters, modelDecorator
 from pyCGM2 import enums
 from pyCGM2.Signal import signal_processing
@@ -25,9 +22,9 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 
     return side
 
-def calibration2Dof(model,
-    DATA_PATH,reconstructFilenameLabelled,translators,
-    side,beginFrame,endFrame,jointRange,**kwargs):
+def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
+    side, beginFrame, endFrame, jointRange,
+    **kwargs):
 
     # --- btk acquisition ----
     if "forceBtkAcq" in kwargs.keys():

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 #import ipdb
 import logging
-import matplotlib.pyplot as plt
-import argparse
-
 
 # pyCGM2 settings
 import pyCGM2
@@ -12,7 +9,7 @@ import pyCGM2
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 
-from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters
+from pyCGM2.Model import modelFilters, bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm,cgm2
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
@@ -131,7 +128,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             oscf = opensimFilters.opensimCalibrationFilter(osimfile,
                                                     model,
                                                     cgmCalibrationprocedure,
-                                                    (DATA_PATH))
+                                                    DATA_PATH )
             oscf.addMarkerSet(markersetFile)
             scalingOsim = oscf.build()
 
@@ -188,8 +185,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                               scalingOsim,
                                                               cgmFittingProcedure,
-                                                              (DATA_PATH) )
-            acqStaticIK = osrf.run(acqStatic,(DATA_PATH + calibrateFilenameLabelled ))
+                                                              DATA_PATH,
+                                                              acqStatic )
+            acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled )
 
 
 
@@ -334,7 +332,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         oscf = opensimFilters.opensimCalibrationFilter(osimfile,
                                                 model,
                                                 cgmCalibrationprocedure,
-                                                (DATA_PATH))
+                                                DATA_PATH )
         oscf.addMarkerSet(markersetFile)
         scalingOsim = oscf.build()
 
@@ -393,10 +391,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                           scalingOsim,
                                                           cgmFittingProcedure,
-                                                          (DATA_PATH) )
+                                                          DATA_PATH,
+                                                          acqGait )
 
         logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
-        acqIK = osrf.run(acqGait,(DATA_PATH + reconstructFilenameLabelled ))
+        acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled)
         logging.info("-------INVERSE KINEMATICS DONE-----------------")
 
 

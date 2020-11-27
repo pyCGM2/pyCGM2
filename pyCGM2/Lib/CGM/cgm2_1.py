@@ -1,18 +1,11 @@
 # -*- coding: utf-8 -*-
-#import ipdb
 import logging
-import matplotlib.pyplot as plt
-import argparse
-
-
-# pyCGM2 settings
-import pyCGM2
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 
-from pyCGM2.Model import modelFilters, modelDecorator,bodySegmentParameters
+from pyCGM2.Model import modelFilters,bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm,cgm2
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
