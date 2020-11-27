@@ -30,3 +30,15 @@ def zeni(acqGait,footStrikeOffset=0,footOffOffset=0):
     evf.detect()
     state = evf.getState()
     return acqGait,state
+
+
+def deepevent(acqGait):
+    acqGait.ClearEvents()
+    # ----------------------EVENT DETECTOR-------------------------------
+    evp = events.DeepEventProcedure()
+
+    # event filter
+    evf = events.EventFilter(evp,acqGait)
+    evf.detect()
+    state = evf.getState()
+    return acqGait,state

@@ -802,3 +802,25 @@ def getForcePlateWrench(btkAcq,fpIndex=None):
         return grwc.GetItem(fpIndex-1)
     else:
         return grwc
+
+
+def applyRotation(btkAcq,markers,globalFrameOrientation,forwardProgression):
+    """
+    """
+    if globalFrameOrientation == "XYZ":
+	    rot = np.array([[1,0,0],[0,1,0],[0,0,1]])
+    elif globalFrameOrientation == "YXZ":
+	    rot = np.array([[0,1,0],[-1,0,0],[0,0,1]])
+    else:
+        raise Exception("[pyCGM2] code cannot work with Z as non-normal axis")
+
+    for marker in markers:
+    	values = btkAcq.GetPoint(marker).GetValues()
+
+    	valuesRot = np.zeros((btkAcq.GetPointFrameNumber(),3))
+    	for i in range (0, btkAcq.GetPointFrameNumber()):
+    		valuesRot[i,:]= np.dot(rot,values[i,:])
+    		if not forwardProgression:
+    			valuesRot[i,:] = np.dot(np.array([[-1,0,0],[0,1,0],[0,0,1]]),valuesRot[i,:])
+
+    	btkAcq.GetPoint(marker).SetValues(valuesRot)
