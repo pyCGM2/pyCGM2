@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # from __future__ import unicode_literals
 import pyCGM2
-import ViconNexus
+from viconnexusapi import ViconNexus
 import numpy as np
 import logging
 
-try: 
+try:
     from pyCGM2 import btk
 except:
     logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
@@ -303,9 +303,8 @@ class NexusConstructAcquisitionFilter(object):
         md_corners.SetInfo(btk.btkMetaDataInfo([3,4,int(forcePlateNumber)], np.concatenate(corners)))
         md_force_platform.AppendChild(md_corners)
 
-
         md_channel = btk.btkMetaData('CHANNEL')
-        md_channel.SetInfo(btk.btkMetaDataInfo([6,int(forcePlateNumber)], np.arange(1,int(forcePlateNumber)*6+1)))
+        md_channel.SetInfo(btk.btkMetaDataInfo([6,int(forcePlateNumber)], np.arange(1,int(forcePlateNumber)*6+1).tolist()))
         md_force_platform.AppendChild(md_channel)
 
 

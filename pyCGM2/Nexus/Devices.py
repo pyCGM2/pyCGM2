@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import ViconNexus
+from viconnexusapi import ViconNexus
 import numpy as np
 
 NEXUS = ViconNexus.ViconNexus()
