@@ -24,7 +24,7 @@ from pyCGM2.Nexus import nexusTools,Devices
 class Tests:
     def test_analogDeviceTest(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\c3d_x2d\\"
 
@@ -41,7 +41,7 @@ class Tests:
 
     def test_forcePlateTest(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\c3d_x2d\\"
 
