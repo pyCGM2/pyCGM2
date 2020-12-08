@@ -67,9 +67,8 @@ def loadModel(path,FilenameNoExt):
     if not os.path.isfile((path + filename)):
         raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM Calibration operation"%filename)
     else:
-        f = open((path+filename), 'r')
-        model = pickle.load(f)
-        f.close()
+        with open(path+filename, 'rb') as f:
+            model = pickle.load(f)
 
         return model
 
@@ -85,9 +84,9 @@ def saveModel(model,path,FilenameNoExt):
         logging.warning("previous model removed")
         os.remove((path + filename))
 
-    modelFile = open((path+filename), "w")
-    pickle.dump(model, modelFile)
-    modelFile.close()
+    with open(path+filename, "wb") as modelFile:
+        pickle.dump(model, modelFile)
+    # modelFile.close()
 
 
 def loadAnalysis(path,FilenameNoExt):
