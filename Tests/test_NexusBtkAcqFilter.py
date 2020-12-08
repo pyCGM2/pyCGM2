@@ -5,7 +5,6 @@ import logging
 import numpy as np
 
 import pyCGM2
-from pyCGM2.Utils import files
 from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusFilters,nexusTools
 try:
@@ -20,13 +19,10 @@ from viconnexusapi import ViconNexus
 class Tests:
     def test_croppedC3d(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
-
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample0\\"
         filenameNoExt = "gait_cropped"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
-        subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
@@ -42,13 +38,10 @@ class Tests:
 
     def test_croppedC3d_noX2d(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
-
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample0\\"
         filenameNoExt = "gait_cropped_nox2d"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
-        subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)
 
                 # btkAcq builder
@@ -62,13 +55,13 @@ class Tests:
 
     def test_noCroppedC3d(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample0\\"
         filenameNoExt = "gait_noCropped"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
-        subjects = NEXUS.GetSubjectNames()
+
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
@@ -83,7 +76,7 @@ class Tests:
 
     def test_Kistler4_Noraxon1_Xsens1(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample0\\"
         filenameNoExt = "gait_cropped"
@@ -120,7 +113,7 @@ class Tests:
 
     def test_Kistler4_Noraxon1_Xsens1_wrenchOuputs(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample0\\"
         filenameNoExt = "gait_cropped"
@@ -162,7 +155,7 @@ class Tests:
 
     def test_modelOutputs(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample0\\"
         filenameNoExt = "gait_cropped_ModelOutputDynamic"
@@ -203,12 +196,12 @@ class TestsX2d:
 
     def test_noCroppedC3d(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample_withx2d\\"
         filenameNoExt = "gait_noCropped"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
-        subjects = NEXUS.GetSubjectNames()
+
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
@@ -224,12 +217,12 @@ class TestsX2d:
 
     def test_croppedC3d(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample_withx2d\\"
         filenameNoExt = "gait_cropped"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
-        subjects = NEXUS.GetSubjectNames()
+
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
@@ -246,14 +239,14 @@ class TestsX2d:
 
     def test_interactiveCropping_fromNoCropped(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample_withx2d\\"
         filenameNoExt = "gait_noCropped"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
         NEXUS.SetTrialRegionOfInterest(300, 400)
-        subjects = NEXUS.GetSubjectNames()
+
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
@@ -269,13 +262,13 @@ class TestsX2d:
 
     def test_interactiveCropping_fromCropped(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample_withx2d\\"
         filenameNoExt = "gait_cropped"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
         NEXUS.SetTrialRegionOfInterest(300, 400)
-        subjects = NEXUS.GetSubjectNames()
+
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
@@ -295,13 +288,13 @@ class TestsNOX2d():
 
     def test_noCroppedC3d(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample_NOx2d\\"
         filenameNoExt = "gait_noCropped"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
         # NEXUS.SetTrialRegionOfInterest(300, 400)
-        subjects = NEXUS.GetSubjectNames()
+
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
@@ -319,13 +312,13 @@ class TestsNOX2d():
 
     def test_croppedC3d(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample_NOx2d\\"
         filenameNoExt = "gait_cropped"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
         # NEXUS.SetTrialRegionOfInterest(300, 400)
-        subjects = NEXUS.GetSubjectNames()
+
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
@@ -343,14 +336,14 @@ class TestsNOX2d():
 
     def test_interactiveCropping_fromNoCropped(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample_NOx2d\\"
         filenameNoExt = "gait_noCropped"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
         NEXUS.SetTrialRegionOfInterest(300, 400)
-        subjects = NEXUS.GetSubjectNames()
+
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
@@ -370,13 +363,13 @@ class TestsNOX2d():
 
     def test_interactiveCropping_fromCropped(self):
         NEXUS = ViconNexus.ViconNexus()
-        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
 
         DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\BtkAcquisitionCreator\\sample_NOx2d\\"
         filenameNoExt = "gait_cropped"
         NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
         NEXUS.SetTrialRegionOfInterest(300, 400)
-        subjects = NEXUS.GetSubjectNames()
+
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
