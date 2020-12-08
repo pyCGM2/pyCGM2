@@ -30,7 +30,7 @@ from pyCGM2.Report import normativeDatasets
 from pyCGM2.Nexus import nexusFilters,nexusTools
 
 from pyCGM2.Configurator import EmgManager
-import ViconNexus
+from viconnexusapi import ViconNexus
 
 
 def main():
