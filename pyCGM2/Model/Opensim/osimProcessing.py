@@ -299,5 +299,5 @@ class opensimKinematicFitting(object):
 
     def run(self):
 
-        self.m_ikTool.printToXML("C:/Users/fleboeuf/Documents/DATA/pyCGM2-Data-Tests/GaitModels/CGM2.3/Hannibal-medial/IK_SETUP-pyCGM2.xml")
+        # self.m_ikTool.printToXML(os.getcwd()+"\\IK_SETUP-pyCGM2.xml")
         self.m_ikTool.run()

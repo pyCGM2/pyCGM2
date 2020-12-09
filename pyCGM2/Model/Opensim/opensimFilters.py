@@ -164,7 +164,7 @@ class opensimCalibrationFilter(object):
         self._osimModel.addMarkerSet(markerSetFile)
 
 
-    def build(self,exportOsim=True):
+    def build(self,exportOsim=False):
         """
             Build the calibrated opensim model
         """
@@ -256,7 +256,7 @@ class opensimFittingFilter(object):
 
 
 
-    def run(self, acqMotionFilename,exportSetUp=True):
+    def run(self, acqMotionFilename,exportSetUp=False):
         """
             Run kinematic fitting
             :Parameters:
