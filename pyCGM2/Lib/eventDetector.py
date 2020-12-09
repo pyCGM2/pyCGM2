@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from pyCGM2.Events import events
+from pyCGM2.Events import deepeventProcedure
 
 def zeni(acqGait,footStrikeOffset=0,footOffOffset=0):
     """
@@ -35,7 +36,7 @@ def zeni(acqGait,footStrikeOffset=0,footOffOffset=0):
 def deepevent(acqGait):
     acqGait.ClearEvents()
     # ----------------------EVENT DETECTOR-------------------------------
-    evp = events.DeepEventProcedure()
+    evp = deepeventProcedure.DeepEventProcedure()
 
     # event filter
     evf = events.EventFilter(evp,acqGait)

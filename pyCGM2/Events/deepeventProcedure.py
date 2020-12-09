@@ -25,6 +25,7 @@ class DeepEventProcedure(object):
 
     def __predict(self,load_model,acq,markers,pfn,freq):
 
+        # functions from Mathieu's code
         def derive_centre(marker,pfn,freq):
             # Compute velocity
             marker_der = (marker[2:pfn,:] - marker[0:(pfn-2),:]) / (2 / freq)
@@ -39,6 +40,7 @@ class DeepEventProcedure(object):
             Minput = signal.filtfilt(b,a,Minput,axis=0)
             Moutput = Minput + np.matlib.repmat(Mean,acq.GetPointFrameNumber(),1)
             return Moutput
+        # -- end --
 
         nframes = 1536
         nb_data_in = 36 #6 markers x 3
@@ -71,12 +73,13 @@ class DeepEventProcedure(object):
         for j in range(nframes):
             if np.sum(predicted_seuil_max[0,j,:]) == 0: predicted_seuil_max[0,j,0] = 1
 
-        eventLFS = np.argwhere(predicted_seuil_max[0,:,1])
-        eventRFS = np.argwhere(predicted_seuil_max[0,:,2])
-        eventLFO = np.argwhere(predicted_seuil_max[0,:,3])
-        eventRFO = np.argwhere(predicted_seuil_max[0,:,4])
+        eventLFS = np.argwhere(predicted_seuil_max[0,:,1])[:,0].tolist()
+        eventLFO = np.argwhere(predicted_seuil_max[0,:,2])[:,0].tolist()
+        eventRFS = np.argwhere(predicted_seuil_max[0,:,3])[:,0].tolist()
+        eventRFO = np.argwhere(predicted_seuil_max[0,:,4])[:,0].tolist()
 
-        return eventLFS,eventRFS,eventLFO,eventRFO
+
+        return eventLFS,eventLFO,eventRFS,eventRFO
 
     def detect(self,acq):
         """
@@ -93,6 +96,7 @@ class DeepEventProcedure(object):
         acqF = btk.btkAcquisition.Clone(acq)
         pfn = acqF.GetPointFrameNumber()
         freq = acqF.GetPointFrequency()
+        ff = acqF.GetFirstFrame()
 
 
         markers = ["LANK","RANK","LTOE","RTOE","LHEE","RHEE"]
@@ -106,43 +110,11 @@ class DeepEventProcedure(object):
 
         btkTools.applyRotation(acq,markers,globalFrame,forwardProgression)
 
-        eventLFS,eventLFO,eventRFS,eventRFO = self.predict(model,acq,markers,pfn,freq)
+        eventLFS,eventRFS,eventLFO,eventRFO = self.__predict(model,acq,markers,pfn,freq)
 
+        for i in range(0,len(eventLFS)): eventLFS[i] = eventLFS[i]+ff
+        for i in range(0,len(eventLFO)): eventLFO[i] = eventLFO[i]+ff
+        for i in range(0,len(eventRFS)): eventRFS[i] = eventRFS[i]+ff
+        for i in range(0,len(eventRFO)): eventRFO[i] = eventRFO[i]+ff
 
-	    # for ind_indice in range(eventLFS.shape[0]):
-	    #     newEvent=btk.btkEvent()
-	    #     newEvent.SetLabel("Foot Strike")
-	    #     newEvent.SetContext("Left")
-	    #     newEvent.SetTime((ff-1)/freq + float(eventLFS[ind_indice]/freq))
-	    #     newEvent.SetSubject(SubjectValue[0])
-	    #     newEvent.SetId(1)
-	    #     acqF.AppendEvent(newEvent)
-		#
-	    # for ind_indice in range(eventRFS.shape[0]):
-	    #     newEvent=btk.btkEvent()
-	    #     newEvent.SetLabel("Foot Strike")
-	    #     newEvent.SetContext("Right")
-	    #     newEvent.SetTime((ff-1)/freq + float(eventRFS[ind_indice]/freq))
-	    #     newEvent.SetSubject(SubjectValue[0])
-	    #     newEvent.SetId(1)
-	    #     acqF.AppendEvent(newEvent)
-		#
-	    # for ind_indice in range(eventLFO.shape[0]):
-	    #     newEvent=btk.btkEvent()
-	    #     newEvent.SetLabel("Foot Off")
-	    #     newEvent.SetContext("Left") #
-	    #     newEvent.SetTime((ff-1)/freq + float(eventLFO[ind_indice]/freq))
-	    #     newEvent.SetSubject(SubjectValue[0])
-	    #     newEvent.SetId(2)
-	    #     acqF.AppendEvent(newEvent)
-		#
-	    # for ind_indice in range(eventRFO.shape[0]):
-	    #     newEvent=btk.btkEvent()
-	    #     newEvent.SetLabel("Foot Off")
-	    #     newEvent.SetContext("Right") #
-	    #     newEvent.SetTime((ff-1)/freq + float(eventRFO[ind_indice]/freq))
-	    #     newEvent.SetSubject(SubjectValue[0])
-	    #     newEvent.SetId(2)
-	    #     acqF.AppendEvent(newEvent)
-		#
-	    # save(acqF,filenameOut)
+        return eventLFS,eventLFO,eventRFS,eventRFO

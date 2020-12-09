@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-try: 
+try:
     from pyCGM2 import btk
 except:
     logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
@@ -112,7 +112,7 @@ class EventFilter(object):
         if self.m_procedure.detect(self.m_aqui) == 0:
             self.m_state = False
         else:
-            indexes_fs_left,indexes_fo_left,indexes_fs_right,indexes_fo_right =  self.m_procedure.detect(self.m_aqui)
+            indexes_fs_left, indexes_fo_left, indexes_fs_right, indexes_fo_right =  self.m_procedure.detect(self.m_aqui)
             self.m_state = True
             for ind in indexes_fs_left:
                 ev = btk.btkEvent('Foot Strike', (ind-1)/pf, 'Left', btk.btkEvent.Manual, '', eventDescriptor)
