@@ -4,6 +4,8 @@ import re
 import os
 import logging
 
+NEXUS_VERSION = None
+
 def getLastNexusVersion():
     nexusDir = "C:\Program Files (x86)\Vicon"
     dirs = os.listdir(nexusDir)
@@ -16,14 +18,12 @@ def getLastNexusVersion():
     return "Nexus2."+str(last)
 
 try:
-    NEXUS_VERSION = getLastNexusVersion()
+    if NEXUS_VERSION is None:
+        NEXUS_VERSION = getLastNexusVersion()
+
     version = float(NEXUS_VERSION[5:])
     if version<2.12:
-        if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python" in sys.path:
-            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python")
-
-        if not "C:/Program Files (x86)/Vicon/Nexus"+NEXUS_VERSION+"/SDK/Win64" in sys.path:
-            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64")
+        logging.error ("This version of pyCGM2 is only compatible Nexus 2.12+ ")
     else :
         if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusapi" in sys.path:
             sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusapi")
