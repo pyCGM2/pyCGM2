@@ -4,6 +4,8 @@ import re
 import os
 import logging
 
+NEXUS_VERSION = None # ex: "Nexus2.9" force the use of version 2.9
+
 def getLastNexusVersion():
     nexusDir = "C:\Program Files (x86)\Vicon"
     dirs = os.listdir(nexusDir)
@@ -16,7 +18,9 @@ def getLastNexusVersion():
     return "Nexus2."+str(last)
 
 try:
-    NEXUS_VERSION = getLastNexusVersion()
+    if NEXUS_VERSION is None:
+        NEXUS_VERSION = getLastNexusVersion()
+
     version = float(NEXUS_VERSION[5:])
     if version<2.12:
         if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python" in sys.path:
