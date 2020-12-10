@@ -17,11 +17,20 @@ def getLastNexusVersion():
 
 try:
     NEXUS_VERSION = getLastNexusVersion()
-    if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python" in sys.path:
-        sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python")
+    version = float(NEXUS_VERSION[5:])
+    if version<2.12:
+        if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python" in sys.path:
+            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python")
 
-    if not "C:/Program Files (x86)/Vicon/Nexus"+NEXUS_VERSION+"/SDK/Win32" in sys.path:
-        sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32")
+        if not "C:/Program Files (x86)/Vicon/Nexus"+NEXUS_VERSION+"/SDK/Win32" in sys.path:
+            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32")
+    else :
+        if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32/Python/viconnexusapi" in sys.path:
+            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32/Python/viconnexusapi")
+
+        if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32/Python/viconnexusutils" in sys.path:
+            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32/Python/viconnexusutils")
+
 except Exception, errormsg:
     logging.info (errormsg)
 
