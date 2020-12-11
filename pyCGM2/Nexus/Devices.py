@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 import pyCGM2
-import ViconNexus
+from viconnexusapi import ViconNexus
+
 import numpy as np
 import logging
 
+# vicon nexus
+try:
+    import ViconNexus
+except:
+    from viconnexusapi import ViconNexus
+
 NEXUS = ViconNexus.ViconNexus()
-
-
 
 class Channel(object):
 

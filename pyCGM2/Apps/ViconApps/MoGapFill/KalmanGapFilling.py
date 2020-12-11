@@ -12,7 +12,11 @@ that smooths trajectories in low dimensional subspaces, together with a Python p
 import logging
 
 import pyCGM2
-import ViconNexus
+# vicon nexus
+try:
+    import ViconNexus
+except:
+    from viconnexusapi import ViconNexus
 
 from pyCGM2.Gap import gapFilling
 from pyCGM2.Nexus import nexusTools,nexusFilters

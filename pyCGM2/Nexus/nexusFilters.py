@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # from __future__ import unicode_literals
 import pyCGM2
-import ViconNexus
+
 import numpy as np
 import logging
 
@@ -10,6 +10,11 @@ from pyCGM2 import btk
 
 from pyCGM2.Tools import btkTools
 
+# vicon nexus
+try:
+    import ViconNexus
+except:
+    from viconnexusapi import ViconNexus
 
 from pyCGM2.Nexus import nexusTools,Devices
 from pyCGM2.Utils import utils
