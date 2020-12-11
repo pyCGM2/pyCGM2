@@ -4349,6 +4349,8 @@ class CGM1(CGM):
         seg.setLength(np.linalg.norm(c7-headCoM)/2.0)
         seg.anatomicalFrame.static.addNode("com",headCoM,positionType="Local")
 
+        seg.anatomicalFrame.static.addNode("SkullOriginOffset", SkullOriginOffset * seg.m_info["headScale"],positionType="Local")
+
 
 
     def _torso_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
@@ -4495,6 +4497,7 @@ class CGM1(CGM):
 
 
 
+
     def _torso_Anatomicalcalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd):
 
         """
@@ -4516,7 +4519,7 @@ class CGM1(CGM):
         pt2=aquiStatic.GetPoint(str(dictAnatomic["Thorax"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         pt3=aquiStatic.GetPoint(str(dictAnatomic["Thorax"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Thorax"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #c7o
+        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Thorax"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #OT
 
         a1=(pt2-pt1)
         a1=a1/np.linalg.norm(a1)
@@ -4546,10 +4549,17 @@ class CGM1(CGM):
 
         # length
         if self.m_bodypart !=  enums.BodyPart.UpperLimb:
+            lsjc = seg.anatomicalFrame.static.getNode_byLabel("LSJC").m_global
+            rsjc = seg.anatomicalFrame.static.getNode_byLabel("RSJC").m_global
             c7o = seg.anatomicalFrame.static.getNode_byLabel("C7o").m_global
+
             l5 = self.getSegment("Pelvis").anatomicalFrame.static.getNode_byLabel("TL5").m_global
             length = np.linalg.norm(l5-c7o)
             seg.setLength(length)
+
+            seg.m_info["Scale"] = np.mean((np.linalg.norm(ptOrigin-rsjc),
+                                            np.linalg.norm(ptOrigin-lsjc)))
+
 
             # com not computed there but durinf motion !!
             com = (c7o + ( l5 - c7o ) * 0.63 )
@@ -4559,6 +4569,8 @@ class CGM1(CGM):
             top = seg.anatomicalFrame.static.getNode_byLabel("midTop").m_local
             bottom = seg.anatomicalFrame.static.getNode_byLabel("midBottom").m_local
             seg.setLength(np.linalg.norm(top-bottom))
+            seg.m_info["Scale"] = np.linalg.norm(top-bottom)
+
 
     def _clavicle_calibrate(self,side, aquiStatic, dictRef,frameInit,frameEnd, options=None):
 
@@ -5276,6 +5288,7 @@ class CGM1(CGM):
             com = (meanC7inThorax + ( meanT10inThorax - meanC7inThorax ) * 0.82)
 
         seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
+
 
 
     def _clavicle_motion(self,side,aqui, dictRef,dictAnat,options=None):
@@ -6090,11 +6103,14 @@ class CGM1(CGM):
                 OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"), manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0,suffix = pointSuffix)
 
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk :
-            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues(),
-            suffix = pointSuffix)
+            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),
+                OriginValues = acq.GetPoint("OT").GetValues(),
+                suffix = pointSuffix)
 
         if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues(),
+            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),
+                OriginValues = acq.GetPoint("OT").GetValues(),
+                manualScale = self.getSegment("Thorax").m_info["Scale"],
                 suffix = pointSuffix )
 
             nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),
@@ -6111,7 +6127,8 @@ class CGM1(CGM):
             nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),
             OriginValues = acq.GetPoint("RHO").GetValues(),suffix = pointSuffix )
             nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),
-            OriginValues = acq.GetPoint("HC").GetValues(),suffix = pointSuffix )
+                OriginValues = self.getSegment("Head").anatomicalFrame.getNodeTrajectory("SkullOriginOffset"),
+                manualScale = self.getSegment("Head").m_info["headScale"],suffix = pointSuffix )
         logging.debug("bones over")
 
         if not staticProcessingFlag:
