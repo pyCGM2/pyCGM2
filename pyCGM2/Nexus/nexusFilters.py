@@ -319,7 +319,7 @@ class NexusConstructAcquisitionFilter(object):
                 data, E = NEXUS.GetModelOutput(self.m_subject,modelOutputName)
                 type = NEXUS.GetModelOutputDetails(self.m_subject,modelOutputName)[0]
 
-                if type not in ["Angles","Forces","Moments","Powers", "Modeled Markers"]:
+                if type in ["Angles","Forces","Moments","Powers", "Modeled Markers"]:
 
                     E = np.asarray(E).astype("float")-1
                     values =np.array([np.asarray(data[0]),np.asarray(data[1]),np.asarray(data[2])]).T
