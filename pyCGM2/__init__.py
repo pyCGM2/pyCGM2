@@ -32,7 +32,9 @@ try:
             sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusutils")
 
 except Exception:
-    logging.error ("Nexus Integration failed")
+    # integration on Linux not needed
+    # logging.error ("Nexus Integration failed")
+    pass
 
 
 ENCODER = "latin-1"
@@ -45,7 +47,8 @@ PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"pyCGM2\Settings\\"
 
 
 #  [Optional]programData
-if  os.path.isdir(os.getenv("PROGRAMDATA")+"\\pyCGM2"):
+if (os.getenv("PROGRAMDATA") is not None) and \
+   os.path.isdir(os.getenv("PROGRAMDATA")+"\\pyCGM2"):
     PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
 else:
     PYCGM2_APPDATA_PATH = PYCGM2_SETTINGS_FOLDER

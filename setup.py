@@ -21,10 +21,8 @@ if sys.maxsize < 2**32:
 
 VERSION ="4.0.0"
 
-
-for it in site.getsitepackages():
-    if "site-packages" in it:
-        SITE_PACKAGE_PATH = it +"\\"
+# just get one of the site-package and install there (it can be dist-package)
+SITE_PACKAGE_PATH = site.getsitepackages()[0] + "\\"
 
 NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py3.7.egg"
 
@@ -44,7 +42,12 @@ if not developMode:
 else:
     PATH_IN_SITEPACKAGE = MAIN_PYCGM2_PATH
 
-user_folder =  os.getenv("PUBLIC")
+# PUBLIC env may not be defined by the user
+if os.getenv("PUBLIC") is not None:
+    user_folder = os.getenv("PUBLIC")
+else:
+    user_folder = "~/"
+    
 NEXUS_PUBLIC_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\"
 NEXUS_PUBLIC_DOCUMENT_VST_PATH = NEXUS_PUBLIC_PATH + "ModelTemplates\\"
 NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = NEXUS_PUBLIC_PATH+"Configurations\\Pipelines\\"
