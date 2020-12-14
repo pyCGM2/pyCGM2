@@ -124,7 +124,8 @@ localDirPath = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__f
 localDirPathDirs = getSubDirectories(localDirPath)
 if "build" in  localDirPathDirs:    shutil.rmtree(localDirPath+"\\build")
 if "dist" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\dist")
-if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\pyCGM2.egg-info")
+# use backward slash because gives error (in general use backward slash)
+if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"/pyCGM2.egg-info")
 
 
 # delete everything in programData
