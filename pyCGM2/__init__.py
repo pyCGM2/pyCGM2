@@ -58,7 +58,6 @@ MAIN_PYCGM2_APPS_PATH = MAIN_PYCGM2_PATH+"Apps\\"
 
 # [Optional] path to embbbed Normative data base.
 NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"pyCGM2\\Data\\normativeData\\"  # By default, use pyCGM2-embedded normative data ( Schartz - Pinzone )
-DEEPEVENT_DATA_PATH = MAIN_PYCGM2_PATH +"pyCGM2\\Data\\deepevent\\"
 
 # [Optional] main folder containing osim model
 OPENSIM_PREBUILD_MODEL_PATH = PYCGM2_APPDATA_PATH + "opensim\\"
