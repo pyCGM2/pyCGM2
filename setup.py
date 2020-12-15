@@ -21,10 +21,8 @@ if sys.maxsize < 2**32:
 
 VERSION ="4.0.0"
 
-
-for it in site.getsitepackages():
-    if "site-packages" in it:
-        SITE_PACKAGE_PATH = it +"\\"
+# just get one of the site-package and install there (it can be dist-package)
+SITE_PACKAGE_PATH = site.getsitepackages()[0] + "\\"
 
 NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py3.7.egg"
 
@@ -44,7 +42,12 @@ if not developMode:
 else:
     PATH_IN_SITEPACKAGE = MAIN_PYCGM2_PATH
 
-user_folder =  os.getenv("PUBLIC")
+# PUBLIC env may not be defined by the user
+if os.getenv("PUBLIC") is not None:
+    user_folder = os.getenv("PUBLIC")
+else:
+    user_folder = "~/"
+    
 NEXUS_PUBLIC_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\"
 NEXUS_PUBLIC_DOCUMENT_VST_PATH = NEXUS_PUBLIC_PATH + "ModelTemplates\\"
 NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = NEXUS_PUBLIC_PATH+"Configurations\\Pipelines\\"
@@ -121,7 +124,8 @@ localDirPath = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__f
 localDirPathDirs = getSubDirectories(localDirPath)
 if "build" in  localDirPathDirs:    shutil.rmtree(localDirPath+"\\build")
 if "dist" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\dist")
-if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\pyCGM2.egg-info")
+# use backward slash because gives error (in general use backward slash)
+if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"/pyCGM2.egg-info")
 
 
 # delete everything in programData
