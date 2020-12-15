@@ -9,13 +9,13 @@ from pyCGM2.Utils import files
 
 
 def getVskFiles(path):
-
+    
     path = path[:-1] if path[-1:]=="\\" else path
     vskFile = files.getFiles(path+"\\",".vsk")
     if len(vskFile)>1:
         logging.warning("Folder with several vsk. %s selected"%(vskFile[0]))
 
-    return vskFile[0].encode(pyCGM2.ENCODER)
+    return vskFile[0]
 
 
 def checkSetReadOnly(vskfilename):
