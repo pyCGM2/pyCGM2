@@ -48,7 +48,8 @@ def makeCGMGaitAnalysis(DATA_PATH,modelledFilenames,
     #----analysis
     kinematicLabelsDict = cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT
     kineticLabelsDict = cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT
-    emgLabelList  = [label+"_Rectify_Env" for label in emgChannels]
+    emgLabelList  = [label+"_Rectify_Env" for label in emgChannels] + emgChannels
+    
 
 
     analysisBuilder = analysis.GaitAnalysisBuilder(cycles,

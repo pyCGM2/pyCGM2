@@ -1,6 +1,6 @@
 # coding: utf-8
 #pytest -s --mpl --disable-pytest-warnings  test_plot_fromAnalysis.py::Test__highLevel_newNormativeData::test_gaitPanel_descriptiveKinematics
-
+#pytest -s  --disable-pytest-warnings  test_plot_fromAnalysis.py::Test_lowLevel::test_lowLevel_SaggitalGagePlotViewer
 # from __future__ import unicode_literals
 import pytest
 
@@ -132,6 +132,26 @@ class Test_lowLevel:
 
         if SHOW: plt.show()
         return fig
+
+    #@pytest.mark.mpl_image_compare
+    def test_lowLevel_SaggitalGagePlotViewer(self):
+
+        DATA_PATH,modelledFilenames,analysisInstance = dataTest2()
+        normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
+
+
+        # viewer
+        kv =plotViewers.SaggitalGagePlotViewer(analysisInstance)
+        kv.setConcretePlotFunction(reportPlot.gaitDescriptivePlot)
+        kv.setNormativeDataset(normativeDataset)
+
+        # filter
+        pf = plotFilters.PlottingFilter()
+        pf.setViewer(kv)
+        fig = pf.plot()
+
+        plt.show()
+
 
 
 class Test_highLevel:

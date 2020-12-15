@@ -1671,3 +1671,147 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
         # normative dataset not implemented
 
         return self.fig
+
+
+class SaggitalGagePlotViewer(AbstractPlotViewer):
+    """
+
+
+
+    """
+
+    def __init__(self,iAnalysis,pointLabelSuffix=None):
+
+        """
+            :Parameters:
+                 - `iAnalysis` (pyCGM2.Processing.analysis.Analysis ) - Analysis instance built from AnalysisFilter
+                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
+    """
+
+
+        super(SaggitalGagePlotViewer, self).__init__(iAnalysis)
+
+        self.m_analysis = self.m_input
+        if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
+            pass
+        else:
+            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+
+        self.m_pointLabelSuffix = pointLabelSuffix
+        self.m_normativeData = None
+        self.m_flagConsistencyOnly = False
+        self.m_concretePlotFunction = None
+
+    def setConcretePlotFunction(self, concreteplotFunction):
+        self.m_concretePlotFunction = concreteplotFunction
+
+    def __setLayer(self):
+
+        self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+        self.fig.suptitle("title")
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+
+
+        ax0 = plt.subplot(6,3,1)# Hip Flex
+        ax1 = plt.subplot(6,3,2)# kne Ext
+        ax2 = plt.subplot(6,3,3)# ankle
+
+        ax3 = plt.subplot(6,3,4)# ST
+        ax4 = plt.subplot(6,3,5)# RF
+        ax5 = plt.subplot(6,3,6)# SOL
+
+        ax6 = plt.subplot(6,3,7)# hip Moment
+        ax7 = plt.subplot(6,3,8)# knee
+        ax8 = plt.subplot(6,3,9)# ankle
+
+        ax9 = plt.subplot(6,3,10)# RF
+        ax10 = plt.subplot(6,3,11)# HAM
+        ax11 = plt.subplot(6,3,12)# TA
+
+        ax12 = plt.subplot(6,3,13)
+        ax13 = plt.subplot(6,3,14)# SOL
+        ax14 = plt.subplot(6,3,15)
+
+        ax15 = plt.subplot(6,3,16)# hip Power
+        ax16 = plt.subplot(6,3,17)# knee
+        ax17 = plt.subplot(6,3,18)# ankle
+
+
+    def setNormativeDataset(self,iNormativeDataSet):
+        """
+            **Description :** set a normative gait dataset
+
+            :Parameters:
+                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
+
+        """
+        # iNormativeDataSet.constructNormativeData()
+        self.m_normativeData = iNormativeDataSet.data
+
+    def __setData(self):
+        suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
+
+
+        # ax0 = plt.subplot(6,3,1)# Hip Flex
+        # ax1 = plt.subplot(6,3,2)# kne Ext
+        # ax2 = plt.subplot(6,3,3)# ankle
+        #
+        # ax3 = plt.subplot(6,3,4)# ST
+        # ax4 = plt.subplot(6,3,5)# RF
+        # ax5 = plt.subplot(6,3,6)# SOL
+        #
+        # ax6 = plt.subplot(6,3,7)# hip Moment
+        # ax7 = plt.subplot(6,3,8)# knee
+        # ax8 = plt.subplot(6,3,9)# ankle
+        #
+        # ax9 = plt.subplot(6,3,10)# RF
+        # ax10 = plt.subplot(6,3,11)# HAM
+        # ax11 = plt.subplot(6,3,12)# TA
+        #
+        # ax12 = None
+        # ax13 = plt.subplot(6,3,14)# SOL
+        # ax14 = None
+        #
+        # ax15 = plt.subplot(6,3,16)# hip Power
+        # ax16 = plt.subplot(6,3,17)# knee
+        # ax17 = plt.subplot(6,3,18)# ankle
+
+
+        plot.gaitDescriptivePlot(self.fig.axes[0],self.m_analysis.kinematicStats,
+                "LHipAngles"+suffixPlus,"Left",0, color="red", customLimits=None)
+        plot.gaitDescriptivePlot(self.fig.axes[1],self.m_analysis.kinematicStats,
+                "LKneeAngles"+suffixPlus,"Left",0, color="red", customLimits=None)
+        plot.gaitDescriptivePlot(self.fig.axes[2],self.m_analysis.kinematicStats,
+                "LAnkleAngles"+suffixPlus,"Left",0, color="red", customLimits=None)
+
+        self.fig.axes[3].plot(self.m_analysis.emgStats.data["Voltage.EMG4","Left"]["values"][0])
+        self.fig.axes[4].plot(self.m_analysis.emgStats.data["Voltage.EMG1","Left"]["values"][0])
+        self.fig.axes[5].plot(self.m_analysis.emgStats.data["Voltage.EMG9","Left"]["values"][0])
+
+        plot.gaitDescriptivePlot(self.fig.axes[6],self.m_analysis.kineticStats,
+                "LHipMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
+        plot.gaitDescriptivePlot(self.fig.axes[7],self.m_analysis.kineticStats,
+                "LKneeMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
+        plot.gaitDescriptivePlot(self.fig.axes[8],self.m_analysis.kineticStats,
+                "LAnkleMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
+
+
+        plot.gaitDescriptivePlot(self.fig.axes[15],self.m_analysis.kineticStats,
+                "LHipPower"+suffixPlus,"Left",2, color="red", customLimits=None)
+        plot.gaitDescriptivePlot(self.fig.axes[16],self.m_analysis.kineticStats,
+                "LKneePower"+suffixPlus,"Left",2, color="red", customLimits=None)
+        plot.gaitDescriptivePlot(self.fig.axes[17],self.m_analysis.kineticStats,
+                "LAnklePower"+suffixPlus,"Left",2, color="red", customLimits=None)
+
+#
+    def plotPanel(self):
+
+        if self.m_concretePlotFunction is None:
+            raise Exception ("[pyCGM2] need definition of the concrete plot function")
+
+        self.__setLayer()
+        self.__setData()
+
+
+
+        return self.fig
