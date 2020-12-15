@@ -99,9 +99,8 @@ def loadAnalysis(path,FilenameNoExt):
     if not os.path.isfile((path + filename)):
         raise Exception ("%s-pyCGM2.analysis file doesn't exist"%filename)
     else:
-        f = open((path+filename), 'r')
-        analysis = pickle.load(f)
-        f.close()
+        with open(path+filename, 'rb') as f:
+            analysis = pickle.load(f)
 
         return analysis
 
@@ -117,9 +116,11 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
         logging.warning("previous analysis removed")
         os.remove((path + filename))
 
-    analysisFile = open((path+filename), "w")
-    pickle.dump(analysisInstance, analysisFile)
-    analysisFile.close()
+    with open(path+filename, "wb") as analysisFile:
+        pickle.dump(analysisInstance, analysisFile)
+    # modelFile.close()
+
+
 
 
 def openJson(path,filename):
