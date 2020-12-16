@@ -9,7 +9,7 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Report import plotUtils
 
 
-try: 
+try:
     from pyCGM2 import btk
 except:
     logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
@@ -235,7 +235,9 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
                         pointLabel,contextPointLabel,axis,
                         color=None,
                         title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
-                        customLimits=None):
+                        customLimits=None,
+                        alphaLine=1,
+                        alphaCorridor = 0.5):
 
     '''
 
@@ -265,8 +267,8 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
     if flag:
         mean=analysisStructureItem.data[pointLabel,contextPointLabel]["mean"][:,axis]
         std=analysisStructureItem.data[pointLabel,contextPointLabel]["std"][:,axis]
-        line= figAxis.plot(np.linspace(0,100,101), mean, color=color,linestyle="-")
-        figAxis.fill_between(np.linspace(0,100,101), mean-std, mean+std, facecolor=color, alpha=0.5,linewidth=0)
+        line= figAxis.plot(np.linspace(0,100,101), mean, color=color,linestyle="-",alpha=alphaLine)
+        figAxis.fill_between(np.linspace(0,100,101), mean-std, mean+std, facecolor=color, alpha=alphaCorridor,linewidth=0)
 
         # add gait phases
         stance = analysisStructureItem.pst['stancePhase', contextPointLabel]["mean"]
