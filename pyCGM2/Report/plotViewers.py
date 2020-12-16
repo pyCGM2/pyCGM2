@@ -1680,7 +1680,7 @@ class SaggitalGagePlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None):
+    def __init__(self,iAnalysis,emgMetadata,pointLabelSuffix=None):
 
         """
             :Parameters:
@@ -1698,8 +1698,9 @@ class SaggitalGagePlotViewer(AbstractPlotViewer):
             logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
         self.m_pointLabelSuffix = pointLabelSuffix
-        self.m_normativeData = None
-        self.m_flagConsistencyOnly = False
+
+        self.m_emgMetadata = emgMetadata
+
         self.m_concretePlotFunction = None
 
     def setConcretePlotFunction(self, concreteplotFunction):
@@ -1707,34 +1708,47 @@ class SaggitalGagePlotViewer(AbstractPlotViewer):
 
     def __setLayer(self):
 
+
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         self.fig.suptitle("title")
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
+        # fig, axs = plt.subplots(1, 2, gridspec_kw={'width_ratios': [3, 1]})
+        ax0 = plt.subplot(7,3,1)# Hip Flex
+        ax1 = plt.subplot(7,3,2)# kne Ext
+        ax2 = plt.subplot(7,3,3)# ankle
 
-        ax0 = plt.subplot(6,3,1)# Hip Flex
-        ax1 = plt.subplot(6,3,2)# kne Ext
-        ax2 = plt.subplot(6,3,3)# ankle
+        ax3 = plt.subplot(7,3,4)# ST
+        ax4 = plt.subplot(7,3,5)# RF
+        ax5 = plt.subplot(7,3,6)# SOL
 
-        ax3 = plt.subplot(6,3,4)# ST
-        ax4 = plt.subplot(6,3,5)# RF
-        ax5 = plt.subplot(6,3,6)# SOL
+        ax6 = plt.subplot(7,3,7)# NONE
+        ax7 = plt.subplot(7,3,8)# VL
+        ax8 = plt.subplot(7,3,9)# NONE
 
-        ax6 = plt.subplot(6,3,7)# hip Moment
-        ax7 = plt.subplot(6,3,8)# knee
-        ax8 = plt.subplot(6,3,9)# ankle
 
-        ax9 = plt.subplot(6,3,10)# RF
-        ax10 = plt.subplot(6,3,11)# HAM
-        ax11 = plt.subplot(6,3,12)# TA
+        ax9 = plt.subplot(7,3,10)# hip Moment
+        ax10 = plt.subplot(7,3,11)# knee
+        ax11 = plt.subplot(7,3,12)# ankle
 
-        ax12 = plt.subplot(6,3,13)
-        ax13 = plt.subplot(6,3,14)# SOL
-        ax14 = plt.subplot(6,3,15)
+        ax12 = plt.subplot(7,3,13)# RF
+        ax13 = plt.subplot(7,3,14)# HAM
+        ax14 = plt.subplot(7,3,15)# TA
 
-        ax15 = plt.subplot(6,3,16)# hip Power
-        ax16 = plt.subplot(6,3,17)# knee
-        ax17 = plt.subplot(6,3,18)# ankle
+        ax15 = plt.subplot(7,3,16) #NONE
+        ax16 = plt.subplot(7,3,17)# SOL
+        ax17 = plt.subplot(7,3,18) #NONE
+
+        ax18 = plt.subplot(7,3,19)# hip Power
+        ax19 = plt.subplot(7,3,20)# knee
+        ax20 = plt.subplot(7,3,21)# ankle
+
+        ax6.set_visible(False)
+        ax8.set_visible(False)
+        ax15.set_visible(False)
+        ax17.set_visible(False)
+
+        ax3.set_title("HAMSTRING" ,size=8)
 
 
     def setNormativeDataset(self,iNormativeDataSet):
@@ -1752,29 +1766,7 @@ class SaggitalGagePlotViewer(AbstractPlotViewer):
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
 
-        # ax0 = plt.subplot(6,3,1)# Hip Flex
-        # ax1 = plt.subplot(6,3,2)# kne Ext
-        # ax2 = plt.subplot(6,3,3)# ankle
-        #
-        # ax3 = plt.subplot(6,3,4)# ST
-        # ax4 = plt.subplot(6,3,5)# RF
-        # ax5 = plt.subplot(6,3,6)# SOL
-        #
-        # ax6 = plt.subplot(6,3,7)# hip Moment
-        # ax7 = plt.subplot(6,3,8)# knee
-        # ax8 = plt.subplot(6,3,9)# ankle
-        #
-        # ax9 = plt.subplot(6,3,10)# RF
-        # ax10 = plt.subplot(6,3,11)# HAM
-        # ax11 = plt.subplot(6,3,12)# TA
-        #
-        # ax12 = None
-        # ax13 = plt.subplot(6,3,14)# SOL
-        # ax14 = None
-        #
-        # ax15 = plt.subplot(6,3,16)# hip Power
-        # ax16 = plt.subplot(6,3,17)# knee
-        # ax17 = plt.subplot(6,3,18)# ankle
+
 
 
         plot.gaitDescriptivePlot(self.fig.axes[0],self.m_analysis.kinematicStats,
@@ -1784,23 +1776,36 @@ class SaggitalGagePlotViewer(AbstractPlotViewer):
         plot.gaitDescriptivePlot(self.fig.axes[2],self.m_analysis.kinematicStats,
                 "LAnkleAngles"+suffixPlus,"Left",0, color="red", customLimits=None)
 
-        self.fig.axes[3].plot(self.m_analysis.emgStats.data["Voltage.EMG4","Left"]["values"][0])
-        self.fig.axes[4].plot(self.m_analysis.emgStats.data["Voltage.EMG1","Left"]["values"][0])
-        self.fig.axes[5].plot(self.m_analysis.emgStats.data["Voltage.EMG9","Left"]["values"][0])
+        plot.gaitDescriptivePlot(self.fig.axes[3],self.m_analysis.emgStats,
+                self.m_emgMetadata.getChannel("HAM","Left"),"Left",0, color="red", customLimits=None,alphaLine=0.1)
+        plot.gaitDescriptivePlot(self.fig.axes[3],self.m_analysis.emgStats,
+                self.m_emgMetadata.getChannel("HAM","Right"),"Right",0, color="blue", customLimits=None,alphaLine=0.1)
+        # self.fig.axes[3].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("HAM","Left"),"Left"]["values"][0])
 
-        plot.gaitDescriptivePlot(self.fig.axes[6],self.m_analysis.kineticStats,
+        self.fig.axes[4].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("RF","Left"),"Left"]["values"][0])
+        self.fig.axes[5].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("SOL","Left"),"Left"]["values"][0])
+
+        self.fig.axes[7].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("VL","Left"),"Left"]["values"][0])
+
+        plot.gaitDescriptivePlot(self.fig.axes[9],self.m_analysis.kineticStats,
                 "LHipMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
-        plot.gaitDescriptivePlot(self.fig.axes[7],self.m_analysis.kineticStats,
+        plot.gaitDescriptivePlot(self.fig.axes[10],self.m_analysis.kineticStats,
                 "LKneeMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
-        plot.gaitDescriptivePlot(self.fig.axes[8],self.m_analysis.kineticStats,
+        plot.gaitDescriptivePlot(self.fig.axes[11],self.m_analysis.kineticStats,
                 "LAnkleMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
 
+        self.fig.axes[12].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("RF","Left"),"Left"]["values"][0])
+        self.fig.axes[13].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("HAM","Left"),"Left"]["values"][0])
+        self.fig.axes[14].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("TI","Left"),"Left"]["values"][0])
 
-        plot.gaitDescriptivePlot(self.fig.axes[15],self.m_analysis.kineticStats,
+        self.fig.axes[16].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("SOL","Left"),"Left"]["values"][0])
+
+
+        plot.gaitDescriptivePlot(self.fig.axes[18],self.m_analysis.kineticStats,
                 "LHipPower"+suffixPlus,"Left",2, color="red", customLimits=None)
-        plot.gaitDescriptivePlot(self.fig.axes[16],self.m_analysis.kineticStats,
+        plot.gaitDescriptivePlot(self.fig.axes[19],self.m_analysis.kineticStats,
                 "LKneePower"+suffixPlus,"Left",2, color="red", customLimits=None)
-        plot.gaitDescriptivePlot(self.fig.axes[17],self.m_analysis.kineticStats,
+        plot.gaitDescriptivePlot(self.fig.axes[20],self.m_analysis.kineticStats,
                 "LAnklePower"+suffixPlus,"Left",2, color="red", customLimits=None)
 
 #

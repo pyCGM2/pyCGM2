@@ -140,8 +140,13 @@ class Test_lowLevel:
         normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
 
 
+        from pyCGM2.EMG import emgMetadata
+
+        emg_metadata = emgMetadata.EmgMetadata(emgChannels,muscles,contexts)
+        
+
         # viewer
-        kv =plotViewers.SaggitalGagePlotViewer(analysisInstance)
+        kv =plotViewers.SaggitalGagePlotViewer(analysisInstance,emg_metadata)
         kv.setConcretePlotFunction(reportPlot.gaitDescriptivePlot)
         kv.setNormativeDataset(normativeDataset)
 
