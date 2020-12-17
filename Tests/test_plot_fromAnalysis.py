@@ -20,8 +20,8 @@ SHOW = False
 emgChannels=['Voltage.EMG1','Voltage.EMG2','Voltage.EMG3','Voltage.EMG4','Voltage.EMG5',
             'Voltage.EMG6','Voltage.EMG7','Voltage.EMG8','Voltage.EMG9','Voltage.EMG10']
 
-muscles=['RF','RF','VL','VL','HAM',
-            'HAM','TI','TI','SOL','SOL']
+muscles=['RECFEM','RECFEM','VASLAT','VASLAT','SEMITE',
+            'SEMITE','TIBANT','TIBANT','SOLEUS','SOLEUS']
 
 contexts=['Left','Right','Left','Right','Left',
             'Right','Left','Right','Left','Right']
@@ -143,7 +143,7 @@ class Test_lowLevel:
         from pyCGM2.EMG import emgMetadata
 
         emg_metadata = emgMetadata.EmgMetadata(emgChannels,muscles,contexts)
-        
+
 
         # viewer
         kv =plotViewers.SaggitalGagePlotViewer(analysisInstance,emg_metadata)

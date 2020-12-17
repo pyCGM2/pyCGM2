@@ -459,6 +459,58 @@ def stpHorizontalHistogram(figAxis,analysisStructureItem,
     figAxis.tick_params(axis='x', which='major', labelsize=6)
 
 
+def oneCyclePlot(figAxis,analysisStructureItem,cycleIndex,
+                        pointLabel,contextPointLabel,axis,
+                        color=None,
+                        title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
+                        customLimits=None,
+                        alphaLine=1):
+
+    '''
+
+        **Description :** plot traces of one cycle from from a pyCGM2.Processing.analysis.Analysis instance
+
+        :Parameters:
+             - `figAxis` (matplotlib::Axis )
+             - `analysisStructureItem` (pyCGM2.Processing.analysis.Analysis.Structure) - a Structure item of an Analysis instance built from AnalysisFilter
+             - `cycleIndex` (int)  cycle index
+
+        :Return:
+            - matplotlib figure
+
+        **Usage**
+
+        .. code:: python
+
+   '''
+
+
+    # check if [ pointlabel , context ] in keys of analysisStructureItem
+    flag = False
+    for key in analysisStructureItem.data.keys():
+        if key[0] == pointLabel and key[1] == contextPointLabel:
+            flag = True if analysisStructureItem.data[pointLabel,contextPointLabel]["values"] != [] else False
+
+
+    # plot
+    if flag:
+        values=analysisStructureItem.data[pointLabel,contextPointLabel]["values"][cycleIndex][:,axis]
+        lines= figAxis.plot(np.linspace(0,100,101), values, color=color,linestyle="-",alpha=alphaLine)
+
+        if customLimits is not None:
+            for value in customLimits:
+                figAxis.axhline(value,color=color,ls='dashed')
+
+    if legendLabel is not None  and flag: lines[0].set_label(legendLabel)
+    if title is not None: figAxis.set_title(title ,size=8)
+    figAxis.set_xlim([0.0,100])
+    figAxis.tick_params(axis='x', which='major', labelsize=6)
+    figAxis.tick_params(axis='y', which='major', labelsize=6)
+    if xlabel is not None: figAxis.set_xlabel(xlabel,size=8)
+    if ylabel is not None: figAxis.set_ylabel(ylabel,size=8)
+    if ylim is not None: figAxis.set_ylim(ylim)
+
+
 def addNormalActivationLayer(figAxis,normalActivationLabel,fo):
     pos,burstDuration=normalActivation.getNormalBurstActivity(normalActivationLabel,fo)
     for j in range(0,len(pos)):

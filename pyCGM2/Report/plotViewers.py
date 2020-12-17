@@ -1709,47 +1709,60 @@ class SaggitalGagePlotViewer(AbstractPlotViewer):
     def __setLayer(self):
 
 
+        # self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+        # self.fig.suptitle("Saggital Plots")
+        # plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
-        self.fig.suptitle("title")
-        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+        self.fig.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+        self.fig.suptitle("Saggital Plots")
+        widths = [1, 1, 1]
+        heights = [1, 0.5, 0.5, 1, 0.5, 0.5, 1]
+        grid = self.fig.add_gridspec(ncols=3, nrows=7, width_ratios=widths,
+                                  height_ratios=heights)
+
 
         # fig, axs = plt.subplots(1, 2, gridspec_kw={'width_ratios': [3, 1]})
-        ax0 = plt.subplot(7,3,1)# Hip Flex
-        ax1 = plt.subplot(7,3,2)# kne Ext
-        ax2 = plt.subplot(7,3,3)# ankle
+        ax0 = self.fig.add_subplot(grid[0,0]); ax0.set_title("Hip Flex" ,size=8)# Hip Flex
+        ax1 = self.fig.add_subplot(grid[0,1]); ax1.set_title("Knee Flex" ,size=8)# kne Ext
+        ax2 = self.fig.add_subplot(grid[0,2]); ax2.set_title("Ankle Flex" ,size=8)# ankle
 
-        ax3 = plt.subplot(7,3,4)# ST
-        ax4 = plt.subplot(7,3,5)# RF
-        ax5 = plt.subplot(7,3,6)# SOL
+        ax3 = self.fig.add_subplot(grid[1,0]); ax3.set_title("SEMITE" ,size=8)# ST
+        ax4 = self.fig.add_subplot(grid[1,1]); ax4.set_title("RECFEM" ,size=8)# RF
+        ax5 = self.fig.add_subplot(grid[1,2]); ax5.set_title("SOLEUS" ,size=8)# SOL
 
-        ax6 = plt.subplot(7,3,7)# NONE
-        ax7 = plt.subplot(7,3,8)# VL
-        ax8 = plt.subplot(7,3,9)# NONE
+        ax6 = self.fig.add_subplot(grid[2,0])# NONE
+        ax7 = self.fig.add_subplot(grid[2,1]); ax7.set_title("VASLAT" ,size=8)# VL
+        ax8 = self.fig.add_subplot(grid[2,2])# NONE
 
+        ax9 = self.fig.add_subplot(grid[3,0]); ax9.set_title("Hip Ext Moment" ,size=8)# hip Moment
+        ax10 = self.fig.add_subplot(grid[3,1]); ax10.set_title("Knee Ext Moment" ,size=8)# knee
+        ax11 = self.fig.add_subplot(grid[3,2]); ax11.set_title("Ankle Ext Moment" ,size=8)# ankle
 
-        ax9 = plt.subplot(7,3,10)# hip Moment
-        ax10 = plt.subplot(7,3,11)# knee
-        ax11 = plt.subplot(7,3,12)# ankle
+        ax12 = self.fig.add_subplot(grid[4,0]); ax12.set_title("RECFEM" ,size=8)# RF
+        ax13 = self.fig.add_subplot(grid[4,1]); ax13.set_title("SEMITE" ,size=8)# HAM
+        ax14 = self.fig.add_subplot(grid[4,2]); ax14.set_title("TIBANT" ,size=8)# TA
 
-        ax12 = plt.subplot(7,3,13)# RF
-        ax13 = plt.subplot(7,3,14)# HAM
-        ax14 = plt.subplot(7,3,15)# TA
+        ax15 = self.fig.add_subplot(grid[5,0])
+        ax16 = self.fig.add_subplot(grid[5,1]); ax16.set_title("SOLEUS" ,size=8)# SOL
+        ax17 = self.fig.add_subplot(grid[5,2])
 
-        ax15 = plt.subplot(7,3,16) #NONE
-        ax16 = plt.subplot(7,3,17)# SOL
-        ax17 = plt.subplot(7,3,18) #NONE
+        ax18 = self.fig.add_subplot(grid[6,0]); ax18.set_title("Hip Power" ,size=8)# hip Power
+        ax19 = self.fig.add_subplot(grid[6,1]); ax19.set_title("Knee Power" ,size=8)# knee
+        ax20 = self.fig.add_subplot(grid[6,2]); ax20.set_title("Ankle Power" ,size=8)# ankle
 
-        ax18 = plt.subplot(7,3,19)# hip Power
-        ax19 = plt.subplot(7,3,20)# knee
-        ax20 = plt.subplot(7,3,21)# ankle
 
         ax6.set_visible(False)
         ax8.set_visible(False)
         ax15.set_visible(False)
         ax17.set_visible(False)
 
-        ax3.set_title("HAMSTRING" ,size=8)
+        for axIt in [ax3,ax4,ax5,ax7,ax12,ax13,ax14,ax16]:
+            axIt.get_yaxis().set_visible(False)
 
+
+        ax18.set_xlabel("Cycle %",size=8)
+        ax19.set_xlabel("Cycle %",size=8)
+        ax20.set_xlabel("Cycle %",size=8)
 
     def setNormativeDataset(self,iNormativeDataSet):
         """
@@ -1776,16 +1789,29 @@ class SaggitalGagePlotViewer(AbstractPlotViewer):
         plot.gaitDescriptivePlot(self.fig.axes[2],self.m_analysis.kinematicStats,
                 "LAnkleAngles"+suffixPlus,"Left",0, color="red", customLimits=None)
 
-        plot.gaitDescriptivePlot(self.fig.axes[3],self.m_analysis.emgStats,
-                self.m_emgMetadata.getChannel("HAM","Left"),"Left",0, color="red", customLimits=None,alphaLine=0.1)
-        plot.gaitDescriptivePlot(self.fig.axes[3],self.m_analysis.emgStats,
-                self.m_emgMetadata.getChannel("HAM","Right"),"Right",0, color="blue", customLimits=None,alphaLine=0.1)
+        plot.oneCyclePlot(self.fig.axes[3],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("SEMITE","Left"),"Left",0, color="red", customLimits=None,alphaLine=0.5)
+        plot.oneCyclePlot(self.fig.axes[3],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("SEMITE","Right"),"Right",0, color="blue", customLimits=None,alphaLine=0.5)
         # self.fig.axes[3].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("HAM","Left"),"Left"]["values"][0])
 
-        self.fig.axes[4].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("RF","Left"),"Left"]["values"][0])
-        self.fig.axes[5].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("SOL","Left"),"Left"]["values"][0])
+        plot.oneCyclePlot(self.fig.axes[4],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("RECFEM","Left"),"Left",0, color="red", customLimits=None,alphaLine=0.5)
+        plot.oneCyclePlot(self.fig.axes[4],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("RECFEM","Right"),"Right",0, color="blue", customLimits=None,alphaLine=0.5)
+        # self.fig.axes[4].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("RF","Left"),"Left"]["values"][0])
 
-        self.fig.axes[7].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("VL","Left"),"Left"]["values"][0])
+        plot.oneCyclePlot(self.fig.axes[5],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("SOLEUS","Left"),"Left",0, color="red", customLimits=None,alphaLine=0.5)
+        plot.oneCyclePlot(self.fig.axes[5],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("SOLEUS","Right"),"Right",0, color="blue", customLimits=None,alphaLine=0.5)
+        # self.fig.axes[5].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("SOL","Left"),"Left"]["values"][0])
+
+        plot.oneCyclePlot(self.fig.axes[7],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("VASLAT","Left"),"Left",0, color="red", customLimits=None,alphaLine=0.5)
+        plot.oneCyclePlot(self.fig.axes[7],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("VASLAT","Right"),"Right",0, color="blue", customLimits=None,alphaLine=0.5)
+        # self.fig.axes[7].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("VL","Left"),"Left"]["values"][0])
 
         plot.gaitDescriptivePlot(self.fig.axes[9],self.m_analysis.kineticStats,
                 "LHipMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
@@ -1794,11 +1820,29 @@ class SaggitalGagePlotViewer(AbstractPlotViewer):
         plot.gaitDescriptivePlot(self.fig.axes[11],self.m_analysis.kineticStats,
                 "LAnkleMoment"+suffixPlus,"Left",0, color="red", customLimits=None)
 
-        self.fig.axes[12].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("RF","Left"),"Left"]["values"][0])
-        self.fig.axes[13].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("HAM","Left"),"Left"]["values"][0])
-        self.fig.axes[14].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("TI","Left"),"Left"]["values"][0])
+        plot.oneCyclePlot(self.fig.axes[12],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("RECFEM","Left"),"Left",0, color="red", customLimits=None,alphaLine=0.5)
+        plot.oneCyclePlot(self.fig.axes[12],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("RECFEM","Right"),"Right",0, color="blue", customLimits=None,alphaLine=0.5)
+        # self.fig.axes[12].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("RF","Left"),"Left"]["values"][0])
 
-        self.fig.axes[16].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("SOL","Left"),"Left"]["values"][0])
+        plot.oneCyclePlot(self.fig.axes[13],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("SEMITE","Left"),"Left",0, color="red", customLimits=None,alphaLine=0.5)
+        plot.oneCyclePlot(self.fig.axes[13],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("SEMITE","Right"),"Right",0, color="blue", customLimits=None,alphaLine=0.5)
+        # self.fig.axes[13].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("HAM","Left"),"Left"]["values"][0])
+
+        plot.oneCyclePlot(self.fig.axes[14],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("TIBANT","Left"),"Left",0, color="red", customLimits=None,alphaLine=0.5)
+        plot.oneCyclePlot(self.fig.axes[14],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("TIBANT","Right"),"Right",0, color="blue", customLimits=None,alphaLine=0.5)
+        # self.fig.axes[14].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("TI","Left"),"Left"]["values"][0])
+
+        plot.oneCyclePlot(self.fig.axes[16],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("SOLEUS","Left"),"Left",0, color="red", customLimits=None,alphaLine=0.5)
+        plot.oneCyclePlot(self.fig.axes[16],self.m_analysis.emgStats,0,
+                self.m_emgMetadata.getChannel("SOLEUS","Right"),"Right",0, color="blue", customLimits=None,alphaLine=0.5)
+        # self.fig.axes[16].plot(self.m_analysis.emgStats.data[self.m_emgMetadata.getChannel("SOL","Left"),"Left"]["values"][0])
 
 
         plot.gaitDescriptivePlot(self.fig.axes[18],self.m_analysis.kineticStats,
@@ -1817,6 +1861,54 @@ class SaggitalGagePlotViewer(AbstractPlotViewer):
         self.__setLayer()
         self.__setData()
 
+        if self.m_normativeData is not None:
+            self.fig.axes[0].fill_between(np.linspace(0,100,self.m_normativeData["HipAngles"]["mean"].shape[0]),
+                self.m_normativeData["HipAngles"]["mean"][:,0]-self.m_normativeData["HipAngles"]["sd"][:,0],
+                self.m_normativeData["HipAngles"]["mean"][:,0]+self.m_normativeData["HipAngles"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
 
+            self.fig.axes[1].fill_between(np.linspace(0,100,self.m_normativeData["KneeAngles"]["mean"].shape[0]),
+                self.m_normativeData["KneeAngles"]["mean"][:,0]-self.m_normativeData["KneeAngles"]["sd"][:,0],
+                self.m_normativeData["KneeAngles"]["mean"][:,0]+self.m_normativeData["KneeAngles"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[2].fill_between(np.linspace(0,100,self.m_normativeData["AnkleAngles"]["mean"].shape[0]),
+                self.m_normativeData["AnkleAngles"]["mean"][:,0]-self.m_normativeData["AnkleAngles"]["sd"][:,0],
+                self.m_normativeData["AnkleAngles"]["mean"][:,0]+self.m_normativeData["AnkleAngles"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+
+
+            self.fig.axes[9].fill_between(np.linspace(0,100,self.m_normativeData["HipMoment"]["mean"].shape[0]),
+                self.m_normativeData["HipMoment"]["mean"][:,0]-self.m_normativeData["HipMoment"]["sd"][:,0],
+                self.m_normativeData["HipMoment"]["mean"][:,0]+self.m_normativeData["HipMoment"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[10].fill_between(np.linspace(0,100,self.m_normativeData["KneeMoment"]["mean"].shape[0]),
+                self.m_normativeData["KneeMoment"]["mean"][:,0]-self.m_normativeData["KneeMoment"]["sd"][:,0],
+                self.m_normativeData["KneeMoment"]["mean"][:,0]+self.m_normativeData["KneeMoment"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[11].fill_between(np.linspace(0,100,self.m_normativeData["AnkleMoment"]["mean"].shape[0]),
+                self.m_normativeData["AnkleMoment"]["mean"][:,0]-self.m_normativeData["AnkleMoment"]["sd"][:,0],
+                self.m_normativeData["AnkleMoment"]["mean"][:,0]+self.m_normativeData["AnkleMoment"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+
+
+            self.fig.axes[18].fill_between(np.linspace(0,100,self.m_normativeData["HipPower"]["mean"].shape[0]),
+                self.m_normativeData["HipPower"]["mean"][:,0]-self.m_normativeData["HipPower"]["sd"][:,0],
+                self.m_normativeData["HipPower"]["mean"][:,0]+self.m_normativeData["HipPower"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[19].fill_between(np.linspace(0,100,self.m_normativeData["KneePower"]["mean"].shape[0]),
+                self.m_normativeData["KneePower"]["mean"][:,0]-self.m_normativeData["KneePower"]["sd"][:,0],
+                self.m_normativeData["KneePower"]["mean"][:,0]+self.m_normativeData["KneePower"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
+
+            self.fig.axes[20].fill_between(np.linspace(0,100,self.m_normativeData["AnklePower"]["mean"].shape[0]),
+                self.m_normativeData["AnklePower"]["mean"][:,0]-self.m_normativeData["AnklePower"]["sd"][:,0],
+                self.m_normativeData["AnklePower"]["mean"][:,0]+self.m_normativeData["AnklePower"]["sd"][:,0],
+                facecolor="green", alpha=0.5,linewidth=0)
 
         return self.fig
