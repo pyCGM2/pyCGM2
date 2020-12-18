@@ -431,8 +431,8 @@ class XlsAnalysisExportFilter(object):
                         itdf[key] = value
 
 
-            df_descriptiveGps.to_excel(xlsxWriter,'descriptive GPS ',index=False)
-            df_allGpsByContext.to_excel(xlsxWriter,'GPS cycles ',index=False)
+            df_descriptiveGps.to_excel(xlsxWriter,'descriptive GPS',index=False)
+            df_allGpsByContext.to_excel(xlsxWriter,'GPS cycles',index=False)
 
 
         if self.analysis.gvs is not None:
@@ -456,8 +456,8 @@ class XlsAnalysisExportFilter(object):
                         itdf[key] = value
 
 
-            df_descriptiveGvs.to_excel(xlsxWriter,'descriptive GVS ',index=False)
-            df_allGvs.to_excel(xlsxWriter,'GVS cycles ',index=False)
+            df_descriptiveGvs.to_excel(xlsxWriter,'descriptive GVS',index=False)
+            df_allGvs.to_excel(xlsxWriter,'GVS cycles',index=False)
 
 
         # Kinematics ouput
@@ -484,7 +484,7 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_descriptiveKinematics, key)
                     df_descriptiveKinematics[key] = value
 
-            df_descriptiveKinematics.to_excel(xlsxWriter,'descriptive kinematics ',index=False)
+            df_descriptiveKinematics.to_excel(xlsxWriter,'descriptive kinematics',index=False)
 
             # stage 2 : get cycle values
             # --------------------------------
@@ -537,7 +537,7 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_descriptiveKinetics, key)
                     df_descriptiveKinetics[key] = value
 
-            df_descriptiveKinetics.to_excel(xlsxWriter,'descriptive kinetics ',index=False)
+            df_descriptiveKinetics.to_excel(xlsxWriter,'descriptive kinetics',index=False)
 
             # stage 2 : get cycle values
             # --------------------------------
@@ -590,7 +590,7 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_descriptiveEMG, key)
                     df_descriptiveEMG[key] = value
 
-            df_descriptiveEMG.to_excel(xlsxWriter,'descriptive EMG ',index=False)
+            df_descriptiveEMG.to_excel(xlsxWriter,'descriptive EMG',index=False)
 
             # stage 2 : get cycle values
             # --------------------------------

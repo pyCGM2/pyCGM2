@@ -29,7 +29,7 @@ from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
 from pyCGM2.Utils import files
-from pyCGM2.Nexus import nexusFilters,nexusTools
+from pyCGM2.Nexus import nexusFilters,nexusTools,nexusUtils
 
 from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm2_5
@@ -82,6 +82,13 @@ def main():
 
         # --------------------pyCGM2 MODEL ------------------------------
         model = files.loadModel(DATA_PATH,subject)
+
+        # -------------------------- MP ------------------------------------
+        # allow alteration of thigh offset
+        model.mp_computed["LeftThighRotationOffset"] =   NEXUS.GetSubjectParamDetails( subject, "LeftThighRotation")[0]
+        model.mp_computed["RightThighRotationOffset"] =   NEXUS.GetSubjectParamDetails( subject, "RightThighRotation")[0]
+
+
 
         # check model
         logging.info("loaded model : %s" %(model.version))

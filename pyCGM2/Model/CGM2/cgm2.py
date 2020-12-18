@@ -2459,10 +2459,16 @@ class CGM2_4(CGM2_3):
             nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues(),suffix=pointSuffix)
 
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk :
-            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues() ,suffix=pointSuffix)
+            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX",
+                self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues(),
+                manualScale = self.getSegment("Thorax").m_info["Scale"],
+                suffix=pointSuffix)
 
         if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues() ,suffix=pointSuffix)
+            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),
+                OriginValues = acq.GetPoint("OT").GetValues(),
+                manualScale = self.getSegment("Thorax").m_info["Scale"],
+                suffix=pointSuffix)
 
             nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),OriginValues = acq.GetPoint("LEJC").GetValues() ,suffix=pointSuffix)
             nexusTools.appendBones(NEXUS,vskName,acq,"LFOREARM", self.getSegment("Left ForeArm"),OriginValues = acq.GetPoint("LWJC").GetValues() ,suffix=pointSuffix)
@@ -2471,7 +2477,9 @@ class CGM2_4(CGM2_3):
             nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm"),OriginValues = acq.GetPoint("REJC").GetValues() ,suffix=pointSuffix)
             nexusTools.appendBones(NEXUS,vskName,acq,"RFOREARM", self.getSegment("Right ForeArm"),OriginValues = acq.GetPoint("RWJC").GetValues() ,suffix=pointSuffix)
             nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),OriginValues = acq.GetPoint("RHO").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),OriginValues = acq.GetPoint("HC").GetValues() ,suffix=pointSuffix)
+            nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),
+                OriginValues = self.getSegment("Head").anatomicalFrame.getNodeTrajectory("SkullOriginOffset"),
+                manualScale = self.getSegment("Head").m_info["headScale"],suffix = pointSuffix )
         logging.debug("bones over")
 
         if not staticProcessingFlag:

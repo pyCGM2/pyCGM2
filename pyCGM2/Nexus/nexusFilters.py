@@ -14,6 +14,11 @@ except:
 
 from pyCGM2.Tools import btkTools
 
+# vicon nexus
+try:
+    import ViconNexus
+except:
+    from viconnexusapi import ViconNexus
 
 from pyCGM2.Nexus import nexusTools,Devices
 from pyCGM2.Utils import utils
@@ -317,32 +322,37 @@ class NexusConstructAcquisitionFilter(object):
                 data, E = NEXUS.GetModelOutput(self.m_subject,modelOutputName)
                 type = NEXUS.GetModelOutputDetails(self.m_subject,modelOutputName)[0]
 
-                E = np.asarray(E).astype("float")-1
-                values =np.array([np.asarray(data[0]),np.asarray(data[1]),np.asarray(data[2])]).T
+                if type in ["Angles","Forces","Moments","Powers", "Modeled Markers"]:
+
+                    E = np.asarray(E).astype("float")-1
+                    values =np.array([np.asarray(data[0]),np.asarray(data[1]),np.asarray(data[2])]).T
 
 
-                start = self.m_firstFrame - self.m_trialFirstFrame
-                end = self.m_lastFrame - self.m_trialFirstFrame
+                    start = self.m_firstFrame - self.m_trialFirstFrame
+                    end = self.m_lastFrame - self.m_trialFirstFrame
 
-                values_cut = values[start:end+1,:]
-                E_cut = E[start:end+1]
+                    values_cut = values[start:end+1,:]
+                    E_cut = E[start:end+1]
 
 
-                if type == "Angles":
-                    btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Angle,desc="",
-                                              residuals=E_cut)
-                elif type == "Forces":
-                    btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Force,desc="",
-                                              residuals=E_cut)
-                elif type == "Moments":
-                    btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Moment,desc="",
-                                              residuals=E_cut)
-                elif type == "Powers":
-                    btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Power,desc="",
-                                              residuals=E_cut)
-                elif type == "Modeled Markers":
-                    btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Marker,desc="",
-                                              residuals=E_cut)
+                    if type == "Angles":
+                        btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Angle,desc="",
+                                                  residuals=E_cut)
+                    elif type == "Forces":
+                        btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Force,desc="",
+                                                  residuals=E_cut)
+                    elif type == "Moments":
+                        btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Moment,desc="",
+                                                  residuals=E_cut)
+                    elif type == "Powers":
+                        btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Power,desc="",
+                                                  residuals=E_cut)
+                    elif type == "Modeled Markers":
+                        btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Marker,desc="",
+                                                  residuals=E_cut)
+                    else:
+                        logging.warning("[pyCGM2] : type unknown")
+
                 else:
                     logging.warning("[pyCGM2] : Model Output (%s) from Nexus not added to the btk acquisition"%(modelOutputName))
 

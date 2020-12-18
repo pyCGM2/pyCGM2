@@ -47,7 +47,7 @@ if os.getenv("PUBLIC") is not None:
     user_folder = os.getenv("PUBLIC")
 else:
     user_folder = "~/"
-    
+
 NEXUS_PUBLIC_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\"
 NEXUS_PUBLIC_DOCUMENT_VST_PATH = NEXUS_PUBLIC_PATH + "ModelTemplates\\"
 NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = NEXUS_PUBLIC_PATH+"Configurations\\Pipelines\\"

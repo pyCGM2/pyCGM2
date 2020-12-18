@@ -2,9 +2,13 @@
 from viconnexusapi import ViconNexus
 import numpy as np
 
+# vicon nexus
+try:
+    import ViconNexus
+except:
+    from viconnexusapi import ViconNexus
+
 NEXUS = ViconNexus.ViconNexus()
-
-
 
 class Channel(object):
 

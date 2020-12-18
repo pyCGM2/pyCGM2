@@ -415,13 +415,13 @@ def getFileCreationDate(file):
 def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
 
     xlsxWriter = pd.ExcelWriter((DATA_PATH_OUT+outputFilename+".xlsx"))
-    df_total = pd.DataFrame()
     for sheet in sheetNames:
+        df_total = pd.DataFrame()
         for file in xlsFiles:
             excel_file = pd.ExcelFile(file)
             sheets = excel_file.sheet_names
             if sheet in sheets:
-                df = excel_file.parse(sheet_name = sheet)
+                df = excel_file.parse(sheetname = sheet)
                 df_total = df_total.append(df)
 
         df_total.to_excel(xlsxWriter,sheet,index=False)
