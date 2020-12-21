@@ -329,8 +329,8 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[11].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["FootAngles"]["mean"][:,2]-self.m_normativeData["FootProgressAngles"]["sd"][:,2],
-                    self.m_normativeData["FootAngles"]["mean"][:,2]+self.m_normativeData["FootProgressAngles"]["sd"][:,2],
+                    self.m_normativeData["FootProgressAngles"]["mean"][:,2]-self.m_normativeData["FootProgressAngles"]["sd"][:,2],
+                    self.m_normativeData["FootProgressAngles"]["mean"][:,2]+self.m_normativeData["FootProgressAngles"]["sd"][:,2],
                     facecolor="green", alpha=0.5,linewidth=0)
 
         return self.fig
