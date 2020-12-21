@@ -61,13 +61,20 @@ def main(sessionFilename,createPDFReport=True):
     dynamicMeasurements= qtmTools.findDynamic(sessionXML)
     for dynamicMeasurement in dynamicMeasurements:
         reconstructFilenameLabelled = qtmTools.getFilename(dynamicMeasurement)
+
+        # marker
+        order_marker = int(float(dynamicMeasurement.Marker_lowpass_filter_order.text))
+        fc_marker = float(dynamicMeasurement.Marker_lowpass_filter_frequency.text)
+
         if not os.path.isfile(DATA_PATH+reconstructFilenameLabelled):
             shutil.copyfile(os.getcwd()+"\\"+reconstructFilenameLabelled,DATA_PATH+reconstructFilenameLabelled)
             logging.info("qualisys exported c3d file [%s] copied to processed folder"%(reconstructFilenameLabelled))
 
             acq=btkTools.smartReader(str(DATA_PATH+reconstructFilenameLabelled))
 
-            acq,zeniState = eventDetector.zeni(acq)
+            acq,zeniState = eventDetector.zeni(acq,
+                                fc_lowPass_marker=fc_marker,
+                                order_lowPass_marker=order_marker)
 
             if zeniState:
                 btkTools.smartWriter(acq, str(DATA_PATH + reconstructFilenameLabelled))
@@ -249,7 +256,7 @@ def main(sessionFilename,createPDFReport=True):
     logging.info("---------------------GAIT PROCESSING -----------------------")
 
     if createPDFReport:
-        nds = normativeDatasets.Schwartz2008("Free")
+        nds = normativeDatasets.NormativeData("Schwartz2008","Free")
 
         types = qtmTools.detectMeasurementType(sessionXML)
         for type in types:
