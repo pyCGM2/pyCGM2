@@ -391,9 +391,10 @@ def deleteDirectory(dir):
 
 
 def readXml(DATA_PATH,filename):
-    infile = open((DATA_PATH+filename),"r")
-    contents = infile.read()
-    soup = BeautifulSoup(contents,'xml')
+    with open((DATA_PATH+filename),"rb",) as f:
+        content = f.read()
+
+    soup = BeautifulSoup(content,'xml')
 
     return soup
 
