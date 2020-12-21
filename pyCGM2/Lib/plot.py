@@ -322,7 +322,7 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, cont
     return fig
 
 
-def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=True,title=None):
+def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
     """
     plot_spatioTemporal : display spatio-temporal parameters as horizontal histogram
 
@@ -340,7 +340,7 @@ def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=
     """
 
     if outputName is None:
-        outputName = "Global Analysis"
+        outputName = "Global Analysis-stp"
 
     if exportPdf:
         filenameOut =  str(outputName+"-SpatioTemporal parameters")
@@ -354,9 +354,15 @@ def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=
     if title is not None: stppf.setTitle(str(title+"-SpatioTemporal parameters"))
     if exportPdf: stppf.setExport(DATA_PATH,filenameOut,"pdf")
     fig = stppf.plot()
+    if exportPng:
+        fig.savefig(DATA_PATH+outputName+".png")
 
     if show: plt.show()
-    return fig
+
+    if exportPng:
+        return fig,outputName
+    else:
+        return fig
 
 def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
     """
