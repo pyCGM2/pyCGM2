@@ -67,7 +67,7 @@ def loadModel(path,FilenameNoExt):
     if not os.path.isfile((path + filename)):
         raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM Calibration operation"%filename)
     else:
-        f = open((path+filename), 'r')
+        f = open((path+filename), 'rb')
         model = cPickle.load(f)
         f.close()
 
@@ -85,8 +85,8 @@ def saveModel(model,path,FilenameNoExt):
         logging.warning("previous model removed")
         os.remove((path + filename))
 
-    modelFile = open((path+filename), "w")
-    cPickle.dump(model, modelFile)
+    modelFile = open((path+filename), "wb")
+    cPickle.dump(model, modelFile,-1)
     modelFile.close()
 
 
@@ -100,7 +100,7 @@ def loadAnalysis(path,FilenameNoExt):
     if not os.path.isfile((path + filename)):
         raise Exception ("%s-pyCGM2.analysis file doesn't exist"%filename)
     else:
-        f = open((path+filename), 'r')
+        f = open((path+filename), 'rb')
         analysis = cPickle.load(f)
         f.close()
 
@@ -118,8 +118,8 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
         logging.warning("previous analysis removed")
         os.remove((path + filename))
 
-    analysisFile = open((path+filename), "w")
-    cPickle.dump(analysisInstance, analysisFile)
+    analysisFile = open((path+filename), "wb")
+    cPickle.dump(analysisInstance, analysisFile,-1)
     analysisFile.close()
 
 
@@ -391,7 +391,7 @@ def deleteDirectory(dir):
 
 
 def readXml(DATA_PATH,filename):
-    infile = open((DATA_PATH+filename),"r")
+    infile = open((DATA_PATH+filename),"rb")
     contents = infile.read()
     soup = BeautifulSoup(contents,'xml')
 
@@ -427,3 +427,13 @@ def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
         df_total.to_excel(xlsxWriter,sheet,index=False)
 
     xlsxWriter.save()
+
+def convertPickleToBinary(path,filename):
+    
+    f = open(path+filename, 'r')
+    analysis = cPickle.load(f)
+    f.close()
+
+    f2 = open(path+filename,  "wb")   # 'wb' instead 'w' for binary file
+    cPickle.dump(analysis, f2, -1)       # -1 specifies highest binary protocol
+    f2.close()
