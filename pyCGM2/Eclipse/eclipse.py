@@ -23,19 +23,33 @@ def generateEmptyENF(path):
             open((path+enfName), 'a').close()
 
 
-def getCurrentMarkedEnfs():
+def getCurrentMarkedNodes(fileType="c3d"):
     currentMarkedNodesFile = os.getenv("PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
 
     infile = open(currentMarkedNodesFile,"r")
     soup = BeautifulSoup(infile.read(),'xml')
 
-    out=list()
+    outFiles=list()
     nodes = soup.find_all("MarkedNode")
+
+    i=0
     for node in nodes:
         fullFilename = node.get("MarkedNodePath")
-        out.append(fullFilename.split("\\")[-1])
+        nodepath = fullFilename[0:fullFilename.rfind("\\")+1]
+        if i ==0:
+            path = nodepath
+        else:
+            if nodepath != path:
+                raise Exception ("[pyCGM2] - marked nodes from different sessions")
 
-    return out if out!=[] else None
+
+        if fileType == "c3d" :   fullFilename = fullFilename.replace(".Trial.enf","."+fileType)
+        outFiles.append(fullFilename.split("\\")[-1])
+
+    if outFiles==[] :
+        return None
+    else:
+        return path, outFiles
 
 
 def getEnfFiles(path, type):
