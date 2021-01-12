@@ -19,7 +19,7 @@ if developMode:
 if sys.maxsize < 2**32:
     raise Exception ("32-bit python version detected. PyCGM2-python3 requires a 64 bits python version")
 
-VERSION ="4.0.0"
+VERSION ="4.0.1"
 
 # just get one of the site-package and install there (it can be dist-package)
 SITE_PACKAGE_PATH = site.getsitepackages()[0] + "\\"
@@ -225,9 +225,13 @@ setup(name = 'pyCGM2',
                 'Nexus_plotSpatioTemporalParameters =  pyCGM2.Apps.ViconApps.DataProcessing.plotSpatioTemporalParameters:main',
                 'Nexus_plotTemporalKinematics       =  pyCGM2.Apps.ViconApps.DataProcessing.plotTemporalKinematics:main',
                 'Nexus_plotTemporalKinetics         =  pyCGM2.Apps.ViconApps.DataProcessing.plotTemporalKinetics:main',
+                'Nexus_plotCompareNormalizedKinematics     =  pyCGM2.Apps.ViconApps.DataProcessing.plotCompareNormalizedKinematics:main',
+                'Nexus_plotCompareNormalizedKinetics     =  pyCGM2.Apps.ViconApps.DataProcessing.plotCompareNormalizedKinetics:main',
 
                 'Nexus_plotNormalizedEmg = pyCGM2.Apps.ViconApps.EMG.plotNormalizedEmg:main',
                 'Nexus_plotTemporalEmg   = pyCGM2.Apps.ViconApps.EMG.plotTemporalEmg:main',
+                'Nexus_plotCompareNormalizedEmg = pyCGM2.Apps.ViconApps.EMG.plotCompareNormalizedEmg:main',
+
 
                 'Nexus_zeniDetector     =  pyCGM2.Apps.ViconApps.Events.zeniDetector:main',
                 'Nexus_KalmanGapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling:main',
