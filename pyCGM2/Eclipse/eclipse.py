@@ -22,6 +22,19 @@ def generateEmptyENF(path):
         if enfName not in os.listdir(path):
             open((path+enfName), 'a').close()
 
+def getCurrentMarkedEnfs():
+    currentMarkedNodesFile = os.getenv("PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
+
+    infile = open(currentMarkedNodesFile,"r")
+    soup = BeautifulSoup(infile.read(),'xml')
+
+    out=list()
+    nodes = soup.find_all("MarkedNode")
+    for node in nodes:
+        fullFilename = node.get("MarkedNodePath")
+        out.append(fullFilename.split("\\")[-1])
+
+    return out if out!=[] else None
 
 def getCurrentMarkedNodes(fileType="c3d"):
     currentMarkedNodesFile = os.getenv("PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
@@ -406,7 +419,7 @@ class TrialEnfReader(EnfReader):
 
     def isMarked(self):
         markedFiles = getCurrentMarkedEnfs()
-        return True if self.m_file in markedFiles else false
+        return True if self.m_file in markedFiles else False
 
 
 
