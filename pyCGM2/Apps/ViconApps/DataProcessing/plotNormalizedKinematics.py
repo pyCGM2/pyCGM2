@@ -91,10 +91,9 @@ def main():
 
     if normativeData["Author"] == "Schwartz2008":
         chosenModality = normativeData["Modality"]
-        nds = normativeDatasets.Schwartz2008(chosenModality)    # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
     elif normativeData["Author"] == "Pinzone2014":
         chosenModality = normativeData["Modality"]
-        nds = normativeDatasets.Pinzone2014(chosenModality) # modalites : "Center One" ,"Center Two"
+    nds = normativeDatasets.NormativeData(normativeData["Author"],chosenModality)
 
     consistencyFlag = True if args.consistency else False
     pointSuffix = args.pointSuffix
