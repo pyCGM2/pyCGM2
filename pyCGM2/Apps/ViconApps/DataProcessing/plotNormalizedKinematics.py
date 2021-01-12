@@ -86,6 +86,11 @@ def main():
     subject = nexusTools.getActiveSubject(NEXUS)
     logging.info(  "Subject name : " + subject  )
 
+    # --------------------pyCGM2 MODEL ------------------------------
+
+    model = files.loadModel(DATA_PATH,subject)
+
+
     #-----------------------SETTINGS---------------------------------------
     normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
 
@@ -116,9 +121,7 @@ def main():
         analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames, pointLabelSuffix=pointSuffix)
         outputName = "Eclipse - NormalizedKinematics"
 
-    # --------------------pyCGM2 MODEL ------------------------------
 
-    model = files.loadModel(DATA_PATH,subject)
 
 
     if not consistencyFlag:
