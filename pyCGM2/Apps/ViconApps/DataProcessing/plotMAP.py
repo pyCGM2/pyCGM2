@@ -37,7 +37,7 @@ from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
 from pyCGM2.Nexus import  nexusTools,nexusFilters
-from pyCGM2.Utils import files
+from pyCGM2.Eclipse import eclipse
 
 def main():
 
@@ -58,57 +58,61 @@ def main():
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-    if NEXUS_PYTHON_CONNECTED:
+    if not NEXUS_PYTHON_CONNECTED:
+        raise Exception("Vicon Nexus is not running")
 
 
-        #-----------------------SETTINGS---------------------------------------
-        pointSuffix = args.pointSuffix
+    #-----------------------SETTINGS---------------------------------------
+    pointSuffix = args.pointSuffix
 
 
-        normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
+    #-----------------------SETTINGS---------------------------------------
+    normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
 
-        if normativeData["Author"] == "Schwartz2008":
-            chosenModality = normativeData["Modality"]
-            nds = normativeDatasets.Schwartz2008(chosenModality)    # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
-        elif normativeData["Author"] == "Pinzone2014":
-            chosenModality = normativeData["Modality"]
-            nds = normativeDatasets.Pinzone2014(chosenModality) # modalites : "Center One" ,"Center Two"
+    if normativeData["Author"] == "Schwartz2008":
+        chosenModality = normativeData["Modality"]
+    elif normativeData["Author"] == "Pinzone2014":
+        chosenModality = normativeData["Modality"]
+    nds = normativeDatasets.NormativeData(normativeData["Author"],chosenModality)
 
 
-        # --------------------------INPUTS ------------------------------------
+    #--------------------------Data Location and subject-------------------------------------
+    if eclipse.getCurrentMarkedNodes() is not None:
+        logging.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
+        # --- acquisition file and path----
+        DATA_PATH, modelledFilenames =eclipse.getCurrentMarkedNodes()
+        ECLIPSE_MODE = True
+
+    if not ECLIPSE_MODE:
+        logging.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
+        # --- acquisition file and path----
         DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
-
-
         modelledFilename = modelledFilenameNoExt+".c3d"
 
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "file: "+ modelledFilename)
 
-        # ----- Subject -----
-        # need subject to find input files
-        subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.getActiveSubject(NEXUS)
-        logging.info(  "Subject name : " + subject  )
 
+    # ----- Subject -----
+    # need subject to find input files
+    subject = nexusTools.getActiveSubject(NEXUS)
+    logging.info(  "Subject name : " + subject  )
 
+    if not ECLIPSE_MODE:
         # btkAcq builder
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,modelledFilenameNoExt,subject)
         acq = nacf.build()
 
-
-        # --------------------pyCGM2 MODEL ------------------------------
-        model = files.loadModel(DATA_PATH,subject)
-        modelVersion = model.version
-
         # --------------------------PROCESSING --------------------------------
         analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix,btkAcqs=[acq]) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
-        plot.plot_MAP(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=modelledFilename,pointLabelSuffix=pointSuffix)
-
-
-
-
+        outputName = modelledFilename
     else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames,None, None, None,pointLabelSuffix=pointSuffix)
+        outputName = "Eclipse-MAP"
+
+    plot.plot_MAP(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=outputName,pointLabelSuffix=pointSuffix)
+
+
 
 if __name__ == "__main__":
 
