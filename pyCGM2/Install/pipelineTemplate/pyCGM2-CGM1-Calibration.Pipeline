@@ -4,7 +4,7 @@
 
   <Entry DisplayName="Run pyCGM2-CGM1-Calibration " Enabled="1" OperationId="78" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/Nexus_CGM11_Calibration-script.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_CGM1_Calibration-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>

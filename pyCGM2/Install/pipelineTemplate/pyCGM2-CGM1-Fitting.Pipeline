@@ -3,7 +3,7 @@
 
   <Entry DisplayName="Run pyCGM2-CGM1-Fitting " Enabled="1" OperationId="87" OperationName="Python">
     <ParamList name="">
-      <Param name="Script" value="[TOREPLACE]/Nexus_CGM11_Fitting-script.py"/>
+      <Param name="Script" value="[TOREPLACE]/Nexus_CGM1_Fitting-script.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
