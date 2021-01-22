@@ -2,7 +2,7 @@
 <Pipeline>
 
 
-  <Entry DisplayName="Run pyCGM2-CGM1_1-Calibration " Enabled="1" OperationId="78" OperationName="Python">
+  <Entry DisplayName="Run pyCGM2-CGM1-Calibration " Enabled="1" OperationId="78" OperationName="Python">
     <ParamList name="">
       <Param name="Script" value="[TOREPLACE]/Nexus_CGM11_Calibration-script.py"/>
       <Param name="ScriptArgs" value=""/>
@@ -24,6 +24,7 @@
       <Param name="ScriptArgs" value=""/>
       <Param name="UseNexusPython" value="false"/>
       <Param name="LaunchPython" value="false"/>
-    </ParamL
+    </ParamList>
+  </Entry>
 
 </Pipeline>
