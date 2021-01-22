@@ -1,13 +1,7 @@
 # -*- coding: utf-8 -*-
-#import ipdb
-import numpy as np
-import pandas as pd
 import logging
 
-
-# pyCGM2
 import pyCGM2.Processing.cycle as CGM2cycle
-from pyCGM2.Tools import exportTools
 
 
 class AnalysisStructure:

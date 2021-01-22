@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
-import matplotlib.pyplot as plt
 
 from pyCGM2.Utils import files
 

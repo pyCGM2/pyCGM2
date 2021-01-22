@@ -2,9 +2,20 @@
 import logging
 import numpy as np
 
-from pyCGM2 import btk
-from pyCGM2 import opensim3 as opensim
-from pyCGM2.Utils import utils
+try:
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
+
+try:
+    from pyCGM2 import opensim4 as opensim
+except:
+    logging.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
+    import opensim
+    
+from bs4 import BeautifulSoup
+
 
 
 
@@ -41,13 +52,14 @@ def globalTransformationLabToOsim(acq,R_LAB_OSIM):
 def smartTrcExport(acq,filenameNoExt):
     writerDyn = btk.btkAcquisitionFileWriter()
     writerDyn.SetInput(acq)
-    writerDyn.SetFilename(utils.str(filenameNoExt + ".trc"))
+    writerDyn.SetFilename(filenameNoExt + ".trc")
     writerDyn.Update()
 
 
 
 def sto2pointValues(stoFilename,label,R_LAB_OSIM):
-    storageObject = opensim.Storage(utils.str(stoFilename))
+
+    storageObject = opensim.Storage(stoFilename)
     index_x =storageObject.getStateIndex(label+"_tx")
     index_y =storageObject.getStateIndex(label+"_ty")
     index_z =storageObject.getStateIndex(label+"_tz")
@@ -130,7 +142,7 @@ class opensimModel(object):
         self.m_osimFile = osimFile
 
 
-        self.m_model = opensim.Model(utils.str(osimFile))
+        self.m_model = opensim.Model(osimFile)
         self.m_cgmModel = cgmModel
         self.m_markers= list()
 
@@ -143,7 +155,7 @@ class opensimModel(object):
 
     def addMarkerSet(self,markersetFile):
         markerSet= opensim.MarkerSet(markersetFile)
-        self.m_model.replaceMarkerSet(self.m_myState,markerSet)
+        self.m_model.updateMarkerSet(markerSet)
 
     def setOsimJoinCentres(self,R_OSIM_CGM, jointLabelInOsim, parentSegmentLabel,childSegmentLabel, nodeLabel, toMeter = 1000.0):
 
@@ -153,12 +165,12 @@ class opensimModel(object):
         positionParent =   np.dot(R_OSIM_CGM[parentSegmentLabel],locationInParent)
         positionChild =   np.dot(R_OSIM_CGM[childSegmentLabel],locationInChild)
 
-        osimJointInParent = self.m_model.getJointSet().get(jointLabelInOsim).get_location_in_parent()
+        osimJointInParent = self.m_model.getJointSet().get(jointLabelInOsim).get_frames(0).get_translation()
         osimJointInParent.set(0,positionParent[0]/toMeter)
         osimJointInParent.set(1,positionParent[1]/toMeter)
         osimJointInParent.set(2,positionParent[2]/toMeter)
 
-        osimJointInChild = self.m_model.getJointSet().get(jointLabelInOsim).get_location()
+        osimJointInChild = self.m_model.getJointSet().get(jointLabelInOsim).get_frames(1).get_translation()
         osimJointInChild.set(0,positionChild[0]/toMeter)
         osimJointInChild.set(1,positionChild[1]/toMeter)
         osimJointInChild.set(2,positionChild[2]/toMeter)
@@ -202,9 +214,9 @@ class opensimModel(object):
            localPos = np.dot(rotation_osim_model,
                                   self.m_cgmModel.getSegment(modelSegmentLabel).anatomicalFrame.static.getNode_byLabel(label).m_local) # TODO : check node exist
 
-           self.m_model.updMarkerSet().get(label).getOffset().set(0,localPos[0]/toMeter)
-           self.m_model.updMarkerSet().get(label).getOffset().set(1,localPos[1]/toMeter)
-           self.m_model.updMarkerSet().get(label).getOffset().set(2,localPos[2]/toMeter)
+           self.m_model.updMarkerSet().get(label).get_location().set(0,localPos[0]/toMeter)
+           self.m_model.updMarkerSet().get(label).get_location().set(1,localPos[1]/toMeter)
+           self.m_model.updMarkerSet().get(label).get_location().set(2,localPos[2]/toMeter)
 
        else:
            raise Exception ("[pyCGM2] marker (%s) is not within the markerset"%label)
@@ -221,19 +233,20 @@ class opensimKinematicFitting(object):
         ikTool =  opensim.InverseKinematicsTool(ikToolFiles)
         self.m_ikMarkers = list()
 
-        self.m_ikTool = ikTool#opensim.InverseKinematicsTool()
-        pr= self.m_ikTool.getPropertyByName("report_marker_locations")
-        opensim.PropertyHelper().setValueBool(True,pr)
+        self.m_ikTool = ikTool
 
-        #self.setAccuracy(1e-08)
+        #opensim.InverseKinematicsTool()
+        # pr= self.m_ikTool.getPropertyByName("report_marker_locations")
+        # opensim.PropertyHelper().setValueBool(True,pr)
 
-    def setAccuracy(self,value):
-        pr= self.m_ikTool.getPropertyByName("accuracy")
-        opensim.PropertyHelper().setValueDouble(value,pr)
-
-    def setResultsDirectory(self,path):
-        pr= self.m_ikTool.getPropertyByName("results_directory")
-        opensim.PropertyHelper().setValueString(utils.str(path),pr)
+    # def setAccuracy(self,value):
+        # pr= self.m_ikTool.getPropertyByName("accuracy")
+        # opensim.PropertyHelper().setValueDouble(value,pr)
+    #
+    # def setResultsDirectory(self,path):
+    #     self.m_ikTool.setResultsDir(path)
+        # pr= self.m_ikTool.getPropertyByName("results_directory")
+        # opensim.PropertyHelper().setValueString(path,pr)
 
     def addIkMarkerTask(self,label,weight=100):
         markerTask = opensim.IKMarkerTask()
@@ -256,15 +269,15 @@ class opensimKinematicFitting(object):
 
         # steps 2 : config ikTool
         self.m_ikTool.setModel(self.m_model)
-        self.m_ikTool.setMarkerDataFileName(utils.str(filenameNoExt+".trc"))
-        self.m_ikTool.setOutputMotionFileName(utils.str(filenameNoExt+".mot"))
+        self.m_ikTool.setMarkerDataFileName( filenameNoExt.replace("\\","/")  +".trc")
+        self.m_ikTool.setOutputMotionFileName(filenameNoExt.replace("\\","/")  +".mot")
 
         #  set times ( FIXME - I had surprise with set method, i prefer to handle the xmlnode directly)
-        prTime= self.m_ikTool.getPropertyByName("time_range")
+        # prTime= self.m_ikTool.getPropertyByName("time_range")
 
-        opensim.PropertyHelper().appendValueDouble(0.0, prTime)
-        endTime = (acq.GetLastFrame() - acq.GetFirstFrame())/acq.GetPointFrequency()
-        opensim.PropertyHelper().appendValueDouble(endTime, prTime)
+        # opensim.PropertyHelper().appendValueDouble(0.0, prTime)
+        # endTime = (acq.GetLastFrame() - acq.GetFirstFrame())/acq.GetPointFrequency()
+        # opensim.PropertyHelper().appendValueDouble(endTime, prTime)
 
         # doesn t work
         # markerData = opensim.MarkerData(filenameNoExt+".trc")
@@ -286,4 +299,5 @@ class opensimKinematicFitting(object):
 
     def run(self):
 
+        # self.m_ikTool.printToXML(os.getcwd()+"\\IK_SETUP-pyCGM2.xml")
         self.m_ikTool.run()

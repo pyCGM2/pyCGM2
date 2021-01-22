@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
 import numpy as np
 import pandas as pd
 import pyCGM2
@@ -13,8 +12,7 @@ class NormativeData(object):
 
 
         fullJsonDict = files.openFile(pyCGM2.NORMATIVE_DATABASE_PATH,filenameNoExt+".json")
-        # import ipdb; ipdb.set_trace()
-        keys = fullJsonDict.keys()
+        keys = list(fullJsonDict.keys())
         self._jsonDict = fullJsonDict[keys[0]][modality]
 
         self.data = dict()
@@ -136,7 +134,7 @@ class NormalSTP(object):
             **Description :**  Read initial xls file and construct the member dictionnary (data)
         """
 
-        values =pd.read_excel(self.m_filename,sheetname = "Nantes")
+        values =pd.read_excel(self.m_filename,sheet_name = "Nantes")
 
         for index, row in values.iterrows():
             self.data[row["Label"]]={}
@@ -190,40 +188,40 @@ class Pinzone2014(object):
         if dataType == "Angles":
             self.data[JointLabel]= dict()
 
-            data_X=dataframe[(dataframe.Angle == axisLabel[0])][meanLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Angle == axisLabel[1])][meanLabel].as_matrix() if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Angle == axisLabel[2])][meanLabel].as_matrix() if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Angle == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Angle == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Angle == axisLabel[2])][meanLabel].values if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["mean"]= np.array([data_X,data_Y,data_Z]).T
 
-            data_X=dataframe[(dataframe.Angle == axisLabel[0])][sdLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Angle == axisLabel[1])][sdLabel].as_matrix()  if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Angle == axisLabel[2])][sdLabel].as_matrix()  if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Angle == axisLabel[0])][sdLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Angle == axisLabel[1])][sdLabel].values  if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Angle == axisLabel[2])][sdLabel].values  if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["sd"] = np.array([data_X,data_Y,data_Z]).T
 
         if dataType == "Moments":
             self.data[JointLabel]= dict()
 
-            data_X=dataframe[(dataframe.Moment == axisLabel[0])][meanLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Moment == axisLabel[1])][meanLabel].as_matrix() if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Moment == axisLabel[2])][meanLabel].as_matrix() if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Moment == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Moment == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Moment == axisLabel[2])][meanLabel].values if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["mean"]= np.array([data_X,data_Y,data_Z]).T*1000.0
 
-            data_X=dataframe[(dataframe.Moment == axisLabel[0])][sdLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Moment == axisLabel[1])][sdLabel].as_matrix()  if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Moment == axisLabel[2])][sdLabel].as_matrix()  if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Moment == axisLabel[0])][sdLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Moment == axisLabel[1])][sdLabel].values  if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Moment == axisLabel[2])][sdLabel].values  if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["sd"] = np.array([data_X,data_Y,data_Z]).T*1000.0
 
         if dataType == "Powers":
             self.data[JointLabel]= dict()
 
-            data_X=dataframe[(dataframe.Power == axisLabel[0])][meanLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Power == axisLabel[1])][meanLabel].as_matrix() if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Power == axisLabel[2])][meanLabel].as_matrix() if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Power == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Power == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Power == axisLabel[2])][meanLabel].values if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["mean"]= np.array([data_X,data_Y,data_Z]).T
 
-            data_X=dataframe[(dataframe.Power == axisLabel[0])][sdLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Power == axisLabel[1])][sdLabel].as_matrix()  if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Power == axisLabel[2])][sdLabel].as_matrix()  if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Power == axisLabel[0])][sdLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Power == axisLabel[1])][sdLabel].values  if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Power == axisLabel[2])][sdLabel].values  if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["sd"] = np.array([data_X,data_Y,data_Z]).T
 
 
@@ -233,9 +231,9 @@ class Pinzone2014(object):
             **Description :**  Read initial xls file and construct the member dictionnary (data)
         """
 
-        angles =pd.read_excel(self.m_filename,sheetname = "Angles")
-        moments =pd.read_excel(self.m_filename,sheetname = "Moments")
-        powers =pd.read_excel(self.m_filename,sheetname = "Powers")
+        angles =pd.read_excel(self.m_filename,sheet_name = "Angles")
+        moments =pd.read_excel(self.m_filename,sheet_name = "Moments")
+        powers =pd.read_excel(self.m_filename,sheet_name = "Powers")
 
         self.__setDict(angles,"Pelvis.Angles",["Pelvis Ant/Pst", "Pelvic Up/Dn", "Pelvic Int/Ext" ], "Angles")
         self.__setDict(angles,"Hip.Angles",["Hip Flx/Ext", "Hip Add/Abd", "Hip Int/Ext" ], "Angles")
@@ -307,41 +305,40 @@ class Schwartz2008(object):
 
         if dataType == "Angles":
             self.data[JointLabel]= dict()
-
-            data_X=dataframe[(dataframe.Angle == axisLabel[0])][meanLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Angle == axisLabel[1])][meanLabel].as_matrix() if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Angle == axisLabel[2])][meanLabel].as_matrix() if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Angle == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Angle == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Angle == axisLabel[2])][meanLabel].values if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["mean"]= np.array([data_X,data_Y,data_Z]).T
 
-            data_X=dataframe[(dataframe.Angle == axisLabel[0])][sdLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Angle == axisLabel[1])][sdLabel].as_matrix()  if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Angle == axisLabel[2])][sdLabel].as_matrix()  if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Angle == axisLabel[0])][sdLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Angle == axisLabel[1])][sdLabel].values  if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Angle == axisLabel[2])][sdLabel].values  if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["sd"] = np.array([data_X,data_Y,data_Z]).T
 
         if dataType == "Moments":
             self.data[JointLabel]= dict()
 
-            data_X=dataframe[(dataframe.Moment == axisLabel[0])][meanLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Moment == axisLabel[1])][meanLabel].as_matrix() if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Moment == axisLabel[2])][meanLabel].as_matrix() if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Moment == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Moment == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Moment == axisLabel[2])][meanLabel].values if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["mean"]= np.array([data_X,data_Y,data_Z]).T*1000.0
 
-            data_X=dataframe[(dataframe.Moment == axisLabel[0])][sdLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Moment == axisLabel[1])][sdLabel].as_matrix()  if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Moment == axisLabel[2])][sdLabel].as_matrix()  if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Moment == axisLabel[0])][sdLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Moment == axisLabel[1])][sdLabel].values  if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Moment == axisLabel[2])][sdLabel].values  if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["sd"] = np.array([data_X,data_Y,data_Z]).T*1000.0
 
         if dataType == "Powers":
             self.data[JointLabel]= dict()
 
-            data_X=dataframe[(dataframe.Power == axisLabel[0])][meanLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Power == axisLabel[1])][meanLabel].as_matrix() if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Power == axisLabel[2])][meanLabel].as_matrix() if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Power == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Power == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Power == axisLabel[2])][meanLabel].values if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["mean"]= np.array([data_X,data_Y,data_Z]).T
 
-            data_X=dataframe[(dataframe.Power == axisLabel[0])][sdLabel].as_matrix() if axisLabel[0] is not None else np.zeros((51))
-            data_Y=dataframe[(dataframe.Power == axisLabel[1])][sdLabel].as_matrix()  if axisLabel[1] is not None else np.zeros((51))
-            data_Z=dataframe[(dataframe.Power == axisLabel[2])][sdLabel].as_matrix()  if axisLabel[2] is not None else np.zeros((51))
+            data_X=dataframe[(dataframe.Power == axisLabel[0])][sdLabel].values if axisLabel[0] is not None else np.zeros((51))
+            data_Y=dataframe[(dataframe.Power == axisLabel[1])][sdLabel].values  if axisLabel[1] is not None else np.zeros((51))
+            data_Z=dataframe[(dataframe.Power == axisLabel[2])][sdLabel].values  if axisLabel[2] is not None else np.zeros((51))
             self.data[JointLabel]["sd"] = np.array([data_X,data_Y,data_Z]).T
 
 
@@ -350,9 +347,9 @@ class Schwartz2008(object):
             **Description :**  Read initial xls file and construct the member dictionnary (data)
         """
 
-        angles =pd.read_excel(self.m_filename,sheetname = "Joint Rotations")
-        moments =pd.read_excel(self.m_filename,sheetname = "Joint Moments")
-        powers =pd.read_excel(self.m_filename,sheetname = "Joint Power")
+        angles =pd.read_excel(self.m_filename,sheet_name = "Joint Rotations")
+        moments =pd.read_excel(self.m_filename,sheet_name = "Joint Moments")
+        powers =pd.read_excel(self.m_filename,sheet_name = "Joint Power")
 
 
         self.__setDict(angles,"Pelvis.Angles",["Pelvic Ant/Posterior Tilt", "Pelvic Up/Down Obliquity", "Pelvic Int/External Rotation" ], "Angles")

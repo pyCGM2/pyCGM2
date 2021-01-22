@@ -24,15 +24,11 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 # vicon nexus
-try:
-    import ViconNexus
-except:
-    from viconnexusapi import ViconNexus
+from viconnexusapi import ViconNexus
 
 
 # pyCGM2 libraries
-
-from pyCGM2.Events import events
+from pyCGM2.Lib import eventDetector
 from pyCGM2.Nexus import nexusTools,nexusFilters
 
 def main():
@@ -63,7 +59,6 @@ def main():
         # --------------------------SUBJECT -----------------------------------
 
         # Notice : Work with ONE subject by session
-        subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)
         logging.info(  "Subject name : " + subject  )
 
@@ -73,16 +68,14 @@ def main():
 
 
         # ----------------------EVENT DETECTOR-------------------------------
-        evp = events.ZeniProcedure()
+        footStrikeOffset = 0
+        footOffOffset=0
         if args.footStrikeOffset is not None:
-            evp.setFootStrikeOffset(args.footStrikeOffset)
+            footStrikeOffset = args.footStrikeOffset
         if args.footOffOffset is not None:
-            evp.setFootOffOffset(args.footOffOffset)
+            footOffOffset = args.footOffOffset
 
-
-        evf = events.EventFilter(evp,acqGait)
-        evf.detect()
-        state = evf.getState()
+        eventDetector.zeni(acqGait,footStrikeOffset=footStrikeOffset,footOffOffset=footOffOffset)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusTools.createEvents(NEXUS,subject,acqGait,["Foot Strike","Foot Off"])

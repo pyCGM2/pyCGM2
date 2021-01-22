@@ -1,34 +1,24 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_forcePlate_groundReaction.py::Test_groundReactionForcePlate::test_sample0
-"""
-Created on Thu Jul 07 15:14:18 2016
-
-@author: aaa34169
-"""
 import pyCGM2
 from pyCGM2.Tools import btkTools
 from pyCGM2.ForcePlates import forceplates
-from pyCGM2.Utils import files
 
 import logging
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
-from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Model import modelFilters
 from pyCGM2.Eclipse import vskTools
-from pyCGM2.Utils import testingUtils,utils
-from pyCGM2.Math import numeric
+from pyCGM2.Utils import testingUtils
 
 
 class Test_groundReactionForcePlate():
 
     def test_sample0(self):
 
-        DATA_PATH = MAIN_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\fullBody-native-noOptions\\"
+        DATA_PATH =  pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\fullBody-native-noOptions\\"
         staticFilename = "static.c3d"
-
-        acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
 
         markerDiameter=14
         leftFlatFoot = False
@@ -36,7 +26,6 @@ class Test_groundReactionForcePlate():
         headStraight = False
         pointSuffix = "test"
 
-        vskFile = vskTools.getVskFiles(DATA_PATH)
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 

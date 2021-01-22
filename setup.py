@@ -16,17 +16,15 @@ if developMode:
     logging.warning("You have sleected a developer model ( local install)")
 
 
-if sys.maxsize > 2**32:
-    raise Exception ("64-bit python version detected. PyCGM2 requires a 32 bits python version")
+if sys.maxsize < 2**32:
+    raise Exception ("32-bit python version detected. PyCGM2-python3 requires a 64 bits python version")
 
-VERSION ="3.4.4"
+VERSION ="4.0.1"
 
+# just get one of the site-package and install there (it can be dist-package)
+SITE_PACKAGE_PATH = site.getsitepackages()[0] + "\\"
 
-for it in site.getsitepackages():
-    if "site-packages" in it:
-        SITE_PACKAGE_PATH = it +"\\"
-
-NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py2.7.egg"
+NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py3.7.egg"
 
 
 MAIN_PYCGM2_PATH = os.getcwd() + "\\"
@@ -44,7 +42,12 @@ if not developMode:
 else:
     PATH_IN_SITEPACKAGE = MAIN_PYCGM2_PATH
 
-user_folder =  os.getenv("PUBLIC")
+# PUBLIC env may not be defined by the user
+if os.getenv("PUBLIC") is not None:
+    user_folder = os.getenv("PUBLIC")
+else:
+    user_folder = "~/"
+
 NEXUS_PUBLIC_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\"
 NEXUS_PUBLIC_DOCUMENT_VST_PATH = NEXUS_PUBLIC_PATH + "ModelTemplates\\"
 NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = NEXUS_PUBLIC_PATH+"Configurations\\Pipelines\\"
@@ -62,14 +65,13 @@ def scanViconTemplatePipeline(sourcePath,desPath,pyCGM2nexusAppsPath):
     sourcePath = sourcePath[:-1] if sourcePath[-1:]=="\\" else sourcePath
     desPath = desPath[:-1] if desPath[-1:]=="\\" else desPath
     pyCGM2nexusAppsPath = pyCGM2nexusAppsPath[:-1] if pyCGM2nexusAppsPath[-1:]=="\\" else pyCGM2nexusAppsPath
-
-    pyCGM2nexusAppsPath_antislash = string.replace(pyCGM2nexusAppsPath, '\\', '/')
+    pyCGM2nexusAppsPath_antislash = pyCGM2nexusAppsPath.replace('\\', '/')
 
     for file in os.listdir(sourcePath):
         with open(sourcePath+"\\"+file, 'r') as f:
             file_contents = f.read()
 
-        content = string.replace(file_contents, toreplace,pyCGM2nexusAppsPath_antislash)
+        content = file_contents.replace(toreplace,pyCGM2nexusAppsPath_antislash)
 
 
         if not os.path.isfile( desPath +"\\"+ file):
@@ -122,7 +124,8 @@ localDirPath = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__f
 localDirPathDirs = getSubDirectories(localDirPath)
 if "build" in  localDirPathDirs:    shutil.rmtree(localDirPath+"\\build")
 if "dist" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\dist")
-if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\pyCGM2.egg-info")
+# use backward slash because gives error (in general use backward slash)
+if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"/pyCGM2.egg-info")
 
 
 # delete everything in programData
@@ -192,7 +195,7 @@ setup(name = 'pyCGM2',
 	install_requires = reqs,
     #'qtmWebGaitReport>=0.0.1'],
     classifiers=['Programming Language :: Python',
-                 'Programming Language :: Python :: 2.7',
+                 'Programming Language :: Python :: 3.7',
                  'Operating System :: Microsoft :: Windows',
                  'Natural Language :: English'],
     #scripts=gen_data_files_forScripts("Apps/ViconApps")
@@ -222,9 +225,13 @@ setup(name = 'pyCGM2',
                 'Nexus_plotSpatioTemporalParameters =  pyCGM2.Apps.ViconApps.DataProcessing.plotSpatioTemporalParameters:main',
                 'Nexus_plotTemporalKinematics       =  pyCGM2.Apps.ViconApps.DataProcessing.plotTemporalKinematics:main',
                 'Nexus_plotTemporalKinetics         =  pyCGM2.Apps.ViconApps.DataProcessing.plotTemporalKinetics:main',
+                'Nexus_plotCompareNormalizedKinematics     =  pyCGM2.Apps.ViconApps.DataProcessing.plotCompareNormalizedKinematics:main',
+                'Nexus_plotCompareNormalizedKinetics     =  pyCGM2.Apps.ViconApps.DataProcessing.plotCompareNormalizedKinetics:main',
 
                 'Nexus_plotNormalizedEmg = pyCGM2.Apps.ViconApps.EMG.plotNormalizedEmg:main',
                 'Nexus_plotTemporalEmg   = pyCGM2.Apps.ViconApps.EMG.plotTemporalEmg:main',
+                'Nexus_plotCompareNormalizedEmg = pyCGM2.Apps.ViconApps.EMG.plotCompareNormalizedEmg:main',
+
 
                 'Nexus_zeniDetector     =  pyCGM2.Apps.ViconApps.Events.zeniDetector:main',
                 'Nexus_KalmanGapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling:main',

@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-import logging
+# from __future__ import print_function
 import os
-import ConfigParser
+import configparser
 
 import pyCGM2
 from pyCGM2 import enums
 
-from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Tools import btkTools
-from pyCGM2.Utils import files,utils
+from pyCGM2.Utils import files
 from bs4 import BeautifulSoup
 
 
@@ -24,7 +22,6 @@ def generateEmptyENF(path):
         if enfName not in os.listdir(path):
             open((path+enfName), 'a').close()
 
-
 def getCurrentMarkedEnfs():
     currentMarkedNodesFile = os.getenv("PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
 
@@ -38,6 +35,34 @@ def getCurrentMarkedEnfs():
         out.append(fullFilename.split("\\")[-1])
 
     return out if out!=[] else None
+
+def getCurrentMarkedNodes(fileType="c3d"):
+    currentMarkedNodesFile = os.getenv("PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
+
+    infile = open(currentMarkedNodesFile,"r")
+    soup = BeautifulSoup(infile.read(),'xml')
+
+    outFiles=list()
+    nodes = soup.find_all("MarkedNode")
+
+    i=0
+    for node in nodes:
+        fullFilename = node.get("MarkedNodePath")
+        nodepath = fullFilename[0:fullFilename.rfind("\\")+1]
+        if i ==0:
+            path = nodepath
+        else:
+            if nodepath != path:
+                raise Exception ("[pyCGM2] - marked nodes from different sessions")
+
+
+        if fileType == "c3d" :   fullFilename = fullFilename.replace(".Trial.enf","."+fileType)
+        outFiles.append(fullFilename.split("\\")[-1])
+
+    if outFiles==[] :
+        return None
+    else:
+        return path, outFiles
 
 
 def getEnfFiles(path, type):
@@ -205,15 +230,15 @@ class EnfReader(object):
 
     def __init__(self, path,enfFile):
 
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.optionxform=str # keep letter case
 
         if not os.path.isfile((path+enfFile)):
-            raise Exception ("[pyCGM2] : enf file (%s) not find"%(utils.str(path+enfFile)))
+            raise Exception ("[pyCGM2] : enf file (%s) not find"%(path+enfFile))
 
         try:
             config.read((path+enfFile))
-        except ConfigParser.ParsingError:
+        except configparser.ParsingError:
             cleanEnf(path,enfFile)
             config.read((path+enfFile))
 
@@ -394,7 +419,7 @@ class TrialEnfReader(EnfReader):
 
     def isMarked(self):
         markedFiles = getCurrentMarkedEnfs()
-        return True if self.m_file in markedFiles else false
+        return True if self.m_file in markedFiles else False
 
 
 

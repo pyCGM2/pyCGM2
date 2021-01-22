@@ -3,7 +3,11 @@ import numpy as np
 import logging
 import copy
 
-from pyCGM2 import btk
+try: 
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
 
 from pyCGM2 import enums
 from pyCGM2.Model import model, modelDecorator, frame, motion
@@ -688,7 +692,7 @@ class CGM1(CGM):
 
 
             logging.debug(" ------Left-------")
-            if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
+            if "LeftThighRotation" in self.mp and self.mp["LeftThighRotation"] != 0:
                 self.mp_computed["LeftThighRotationOffset"]= self.mp["LeftThighRotation"]
             else:
                 self.getThighOffset(side="left")
@@ -713,7 +717,7 @@ class CGM1(CGM):
 
 
             logging.debug(" ------Right-------")
-            if self.mp.has_key("RightThighRotation") and self.mp["RightThighRotation"] != 0:
+            if "RightThighRotation" in self.mp and self.mp["RightThighRotation"] != 0:
                 self.mp_computed["RightThighRotationOffset"]= self.mp["RightThighRotation"]
             else:
                 self.getThighOffset(side="right")
@@ -751,18 +755,18 @@ class CGM1(CGM):
             logging.debug(" ---------------------")
 
             # shakRotation
-            if self.mp.has_key("LeftShankRotation") and self.mp["LeftShankRotation"] != 0:
+            if "LeftShankRotation" in self.mp and self.mp["LeftShankRotation"] != 0:
                 self.mp_computed["LeftShankRotationOffset"]= self.mp["LeftShankRotation"]
             else:
                 self.getShankOffsets(side="left")
 
-            if self.mp.has_key("RightShankRotation") and self.mp["RightShankRotation"] != 0:
+            if "RightShankRotation" in self.mp and self.mp["RightShankRotation"] != 0:
                 self.mp_computed["RightShankRotationOffset"]= self.mp["RightShankRotation"]
             else:
                 self.getShankOffsets(side="right")
 
             # tibial Torsion
-            if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0:
+            if "LeftTibialTorsion" in self.mp and self.mp["LeftTibialTorsion"] != 0:
                 self.mp_computed["LeftTibialTorsionOffset"]= self.mp["LeftTibialTorsion"]
                 self.m_useLeftTibialTorsion=True
 
@@ -773,7 +777,7 @@ class CGM1(CGM):
                     self.mp_computed["LeftTibialTorsionOffset"]= 0
 
             #   right
-            if self.mp.has_key("RightTibialTorsion") and self.mp["RightTibialTorsion"] != 0:
+            if "RightTibialTorsion" in self.mp and self.mp["RightTibialTorsion"] != 0:
                 self.mp_computed["RightTibialTorsionOffset"]= self.mp["RightTibialTorsion"]
                 self.m_useRightTibialTorsion=True
             else:
@@ -908,14 +912,14 @@ class CGM1(CGM):
 
 
         # new mp
-        if self.mp.has_key("PelvisDepth") and self.mp["PelvisDepth"] != 0:
+        if "PelvisDepth" in self.mp and self.mp["PelvisDepth"] != 0:
             logging.debug("PelvisDepth defined from your vsk file")
             self.mp_computed["PelvisDepth"] = self.mp["PelvisDepth"]
         else:
             logging.debug("Pelvis Depth computed and added to model parameters")
             self.mp_computed["PelvisDepth"] = np.linalg.norm( valMidAsis[frameInit:frameEnd,:].mean(axis=0)-valSACR[frameInit:frameEnd,:].mean(axis=0)) - 2.0* (markerDiameter/2.0) -2.0* (basePlate/2.0)
 
-        if self.mp.has_key("InterAsisDistance") and self.mp["InterAsisDistance"] != 0:
+        if "InterAsisDistance" in self.mp and self.mp["InterAsisDistance"] != 0:
             logging.debug("InterAsisDistance defined from your vsk file")
             self.mp_computed["InterAsisDistance"] = self.mp["InterAsisDistance"]
         else:
@@ -953,13 +957,13 @@ class CGM1(CGM):
 
         # --- Hip Joint centers location
         # anthropometric parameter computed
-        if self.mp.has_key("LeftAsisTrocanterDistance") and self.mp["LeftAsisTrocanterDistance"] != 0:
+        if "LeftAsisTrocanterDistance" in self.mp and self.mp["LeftAsisTrocanterDistance"] != 0:
             logging.debug("LeftAsisTrocanterDistance defined from your vsk file")
             self.mp_computed['LeftAsisTrocanterDistance'] = self.mp["LeftAsisTrocanterDistance"]
         else:
             self.mp_computed['LeftAsisTrocanterDistance'] = 0.1288*self.mp['LeftLegLength']-48.56
 
-        if self.mp.has_key("RightAsisTrocanterDistance") and self.mp["RightAsisTrocanterDistance"] != 0:
+        if "RightAsisTrocanterDistance" in self.mp and self.mp["RightAsisTrocanterDistance"] != 0:
             logging.debug("RightAsisTrocanterDistance defined from your vsk file")
             self.mp_computed['RightAsisTrocanterDistance'] = self.mp["RightAsisTrocanterDistance"]
         else:
@@ -1086,7 +1090,7 @@ class CGM1(CGM):
         tf.static.setTranslation(ptOrigin)
 
         # --- knee Joint centers location from chord method
-        if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
+        if "LeftThighRotation" in self.mp and self.mp["LeftThighRotation"] != 0:
             logging.debug("LeftThighRotation defined from your vsk file")
             self.mp_computed["LeftThighRotationOffset"] = self.mp["LeftThighRotation"]
         else:
@@ -1180,7 +1184,7 @@ class CGM1(CGM):
 
 
         # --- knee Joint centers location
-        if self.mp.has_key("RightThighRotation") and self.mp["RightThighRotation"] != 0:
+        if "RightThighRotation" in self.mp and self.mp["RightThighRotation"] != 0:
             logging.debug("RightThighRotation defined from your vsk file")
             self.mp_computed["RightThighRotationOffset"] = self.mp["RightThighRotation"]
         else:
@@ -1275,7 +1279,7 @@ class CGM1(CGM):
 
 
         # --- ankle Joint centers location
-        if self.mp.has_key("LeftShankRotation") and self.mp["LeftShankRotation"] != 0:
+        if "LeftShankRotation" in self.mp and self.mp["LeftShankRotation"] != 0:
             logging.debug("LeftShankRotation defined from your vsk file")
             self.mp_computed["LeftShankRotationOffset"] = self.mp["LeftShankRotation"]
         else:
@@ -1368,7 +1372,7 @@ class CGM1(CGM):
         tf.static.setTranslation(ptOrigin)
 
         # --- ankle Joint centers location
-        if self.mp.has_key("RightShankRotation") and self.mp["RightShankRotation"] != 0:
+        if "RightShankRotation" in self.mp and self.mp["RightShankRotation"] != 0:
             logging.debug("RightShankRotation defined from your vsk file")
             self.mp_computed["RightShankRotationOffset"] = self.mp["RightShankRotation"]
         else:

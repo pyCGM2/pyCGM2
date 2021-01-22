@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # pyCGM2
 import pyCGM2
 from pyCGM2 import enums
-from pyCGM2.Report import plot, plotViewers
+from pyCGM2.Report import  plotViewers
 
 
 
@@ -61,9 +61,9 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
 
-        if self.m_concretePlotFunction.func_name in ["descriptivePlot","gaitDescriptivePlot"]:
+        if self.m_concretePlotFunction.__name__ in ["descriptivePlot","gaitDescriptivePlot"]:
             title=u""" Descriptive Time-normalized Kinematics \n """
-        elif self.m_concretePlotFunction.func_name in ["consistencyPlot","gaitConsistencyPlot"]:
+        elif self.m_concretePlotFunction.__name__ in ["consistencyPlot","gaitConsistencyPlot"]:
             title=u""" Consistency Time-normalized Kinematics \n """
         else :
             title=u"""\n"""
@@ -329,8 +329,8 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                     facecolor="green", alpha=0.5,linewidth=0)
 
                 self.fig.axes[11].fill_between(np.linspace(0,100,51),
-                    self.m_normativeData["FootAngles"]["mean"][:,2]-self.m_normativeData["FootProgressAngles"]["sd"][:,2],
-                    self.m_normativeData["FootAngles"]["mean"][:,2]+self.m_normativeData["FootProgressAngles"]["sd"][:,2],
+                    self.m_normativeData["FootProgressAngles"]["mean"][:,2]-self.m_normativeData["FootProgressAngles"]["sd"][:,2],
+                    self.m_normativeData["FootProgressAngles"]["mean"][:,2]+self.m_normativeData["FootProgressAngles"]["sd"][:,2],
                     facecolor="green", alpha=0.5,linewidth=0)
 
         return self.fig
@@ -382,9 +382,9 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
 
-        if self.m_concretePlotFunction.func_name in ["descriptivePlot","gaitDescriptivePlot"]:
+        if self.m_concretePlotFunction.__name__ in ["descriptivePlot","gaitDescriptivePlot"]:
             title=u""" Descriptive Time-normalized Kinetics \n """
-        elif self.m_concretePlotFunction.func_name in ["consistencyPlot","gaitConsistencyPlot"]:
+        elif self.m_concretePlotFunction.__name__ in ["consistencyPlot","gaitConsistencyPlot"]:
             title=u""" Consistency Time-normalized Kinetics \n """
         else :
             title=u"""\n"""

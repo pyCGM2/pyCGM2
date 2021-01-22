@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-import pyCGM2
 from viconnexusapi import ViconNexus
-
 import numpy as np
-import logging
 
 # vicon nexus
 try:

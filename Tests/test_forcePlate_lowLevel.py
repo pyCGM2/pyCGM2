@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_forcePlate_lowLevel.py::Test_ForcePlateTypeReader::test_ForcePlateType5
 
 import numpy as np
 import pyCGM2
 from pyCGM2.Tools import btkTools
 
-import logging
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
-from pyCGM2.Utils import testingUtils,utils
 
 
 class Test_ForcePlateTypeReader():
@@ -27,7 +24,7 @@ class Test_ForcePlateTypeReader():
         mlabels = ["Moment.Mx0","Moment.Mx1", "Moment.My0","Moment.My1", "Moment.Mz0","Moment.Mz1"]
 
         for label in flabels:
-            np.testing.assert_almost_equal(btkAcq.GetAnalog(utils.str(label)).GetValues(),btkAcq_correct.GetAnalog(utils.str(label)).GetValues(),decimal = 2)
+            np.testing.assert_almost_equal(btkAcq.GetAnalog(label).GetValues(),btkAcq_correct.GetAnalog(label).GetValues(),decimal = 2)
 
         for label in mlabels:
-            np.testing.assert_almost_equal(btkAcq.GetAnalog(utils.str(label)).GetValues(),btkAcq_correct.GetAnalog(utils.str(label)).GetValues(),decimal = 2)
+            np.testing.assert_almost_equal(btkAcq.GetAnalog(label).GetValues(),btkAcq_correct.GetAnalog(label).GetValues(),decimal = 2)

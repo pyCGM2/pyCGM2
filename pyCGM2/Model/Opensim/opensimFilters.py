@@ -2,14 +2,18 @@
 import os
 import numpy as np
 import logging
-
-from pyCGM2 import btk
+from bs4 import BeautifulSoup
 
 # pyCGM2
+try:
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.Opensim import osimProcessing
 from pyCGM2.Processing import progressionFrame
-from pyCGM2.Utils import utils
+
 
 # ---- PROCEDURES -----
 
@@ -149,7 +153,7 @@ class opensimCalibrationFilter(object):
         self.m_toMeter = 1000.0
 
         self._osimModel = osimProcessing.opensimModel(osimFile,model)
-        self.opensimOutputDir = dataDir if dataDir[-1:] =="\\" else utils.str(dataDir+"\\")
+        self.opensimOutputDir = dataDir if dataDir[-1:] =="\\" else dataDir+"\\"
 
     def addMarkerSet(self,markerSetFile):
         """
@@ -160,7 +164,7 @@ class opensimCalibrationFilter(object):
         self._osimModel.addMarkerSet(markerSetFile)
 
 
-    def build(self,exportOsim=True):
+    def build(self,exportOsim=False):
         """
             Build the calibrated opensim model
         """
@@ -181,7 +185,7 @@ class opensimCalibrationFilter(object):
                                                 self.m_procedure.geometry[openSimJointLabel]["joint label"],
                                                 toMeter = self.m_toMeter)
 
-        self._osimModel.m_model.setName("pyCGM2 calibrated model")
+        self._osimModel.m_model.setName("pyCGM2CalibratedModel")
 
         if exportOsim:
             if os.path.isfile(self.opensimOutputDir +"scaledModel.osim"):
@@ -200,12 +204,12 @@ class opensimCalibrationFilter(object):
 
 
         """
-        filename = filename if path is None else utils.str(path+filename)
+        filename = filename if path is None else path+filename
         self._osimModel.m_model.printToXML(filename)
 
 
 class opensimFittingFilter(object):
-    def __init__(self,ikToolFile,calibratedOsim, ikTagProcedure,dataDir,accuracy = 1e-8 ):
+    def __init__(self,ikToolFile,calibratedOsim, ikTagProcedure,dataDir,acqMotion, accuracy = 1e-8 ):
         """
             :Parameters:
                 - `ikToolFile` (str) - full filename of the opensim inverse kinematic tool file
@@ -217,18 +221,42 @@ class opensimFittingFilter(object):
         """
         self.m_calibratedOsim = calibratedOsim
         self.m_ikToolFile = ikToolFile
+        self.m_ikSoup = BeautifulSoup(open(self.m_ikToolFile), "xml")
         self.m_procedure = ikTagProcedure
 
         self.accuracy = accuracy
+        self.m_acqMotion = acqMotion
+
+        self.opensimOutputDir = dataDir if dataDir[-1:] =="\\" else dataDir+"\\"
+
+        self.setAccuracy(self.accuracy)
+        self.setResultsDirectory(self.opensimOutputDir)
+        self.setTimeRange(acqMotion)
+
+        newIkFile = dataDir + ikToolFile[ikToolFile.rfind("\\")+1:]
+        with open(newIkFile, "w") as f:
+            f.write(self.m_ikSoup.prettify())
+
+        self._osimIK = osimProcessing.opensimKinematicFitting(self.m_calibratedOsim.m_model,newIkFile)
+
+    def setAccuracy(self,value):
+
+        self.m_ikSoup.accuracy.string = str(value)
+
+    def setResultsDirectory(self,path):
+        self.m_ikSoup.results_directory.string = path.replace("\\","/")
+
+    def setTimeRange(self,acq):
+
+        beginTime = 0.0
+        endTime = (acq.GetLastFrame() - acq.GetFirstFrame())/acq.GetPointFrequency()
+        self.m_ikSoup.time_range.string = str(beginTime) + " " + str(endTime)
 
 
-        self.opensimOutputDir = dataDir if dataDir[-1:] =="\\" else utils.str(dataDir+"\\")
 
-        self._osimIK = osimProcessing.opensimKinematicFitting(self.m_calibratedOsim.m_model,self.m_ikToolFile)
-        self._osimIK.setAccuracy(self.accuracy)
-        self._osimIK.setResultsDirectory(self.opensimOutputDir)
 
-    def run(self,acqMotion, acqMotionFilename,exportSetUp=True):
+
+    def run(self, acqMotionFilename,exportSetUp=False):
         """
             Run kinematic fitting
             :Parameters:
@@ -238,10 +266,10 @@ class opensimFittingFilter(object):
         """
 
 
-        acqMotion_forIK = btk.btkAcquisition.Clone(acqMotion)
+        acqMotion_forIK = btk.btkAcquisition.Clone(self.m_acqMotion)
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acqMotion,pfp)
+        pff = progressionFrame.ProgressionFrameFilter(self.m_acqMotion,pfp)
         pff.compute()
         globalFrame = pff.outputs["globalFrame"]
         progressionAxis = pff.outputs["progressionAxis"]
@@ -254,8 +282,8 @@ class opensimFittingFilter(object):
 
 
         # --- configuration and run IK
-        if os.path.isfile(self.opensimOutputDir +"ik_model_marker_locations.sto"):
-            os.remove(self.opensimOutputDir +"ik_model_marker_locations.sto")
+        if os.path.isfile(self.opensimOutputDir +"_ik_model_marker_locations.sto"):
+            os.remove(self.opensimOutputDir +"_ik_model_marker_locations.sto")
 
         R_LAB_OSIM = osimProcessing.setGlobalTransormation_lab_osim(progressionAxis,forwardProgression)
         self._osimIK.config(R_LAB_OSIM, acqMotion_forIK, acqMotionFilename )
@@ -269,18 +297,18 @@ class opensimFittingFilter(object):
         self._osimIK.run()
 
         # --- gernerate acq with rigid markers
-        acqMotionFinal = btk.btkAcquisition.Clone(acqMotion)
+        acqMotionFinal = btk.btkAcquisition.Clone(self.m_acqMotion)
         for marker in self.m_procedure.ikTags.keys():
             if self.m_procedure.ikTags[marker] != 0:
-                values =osimProcessing.sto2pointValues(self.opensimOutputDir + "ik_model_marker_locations.sto",marker,R_LAB_OSIM)
+                values =osimProcessing.sto2pointValues(self.opensimOutputDir + "_ik_model_marker_locations.sto",marker,R_LAB_OSIM)
                 lenOsim  = len(values)
 
-                lenc3d  = acqMotion.GetPoint(marker).GetFrameNumber()
+                lenc3d  = self.m_acqMotion.GetPoint(marker).GetFrameNumber()
                 if lenOsim < lenc3d:
                     logging.warning(" size osim (%i) inferior to c3d (%i)" % (lenOsim,lenc3d))
                     values2 = np.zeros((lenc3d,3))
                     values2[0:lenOsim,:]=values
-                    values2[lenOsim:lenc3d,:]=acqMotion.GetPoint(marker).GetValues()[lenOsim:lenc3d,:]
+                    values2[lenOsim:lenc3d,:]=self.m_acqMotion.GetPoint(marker).GetValues()[lenOsim:lenc3d,:]
 
                     btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" ) # new acq with marker overwrited
                     btkTools.smartAppendPoint(acqMotionFinal,marker, values2, desc= "kinematic fitting" ) # new acq with marker overwrited
@@ -299,5 +327,5 @@ class opensimFittingFilter(object):
 
 
         """
-        filename = filename if path is None else utils.str(path+filename)
+        filename = filename if path is None else path+filename
         self._osimIK.m_ikTool.printToXML(filename)

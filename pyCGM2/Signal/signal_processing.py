@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
+# from __future__ import print_function
 import logging
 import numpy as np
 from scipy import signal, integrate
-import matplotlib.pyplot as plt
-from pyCGM2 import btk
+try: 
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
 
 
 

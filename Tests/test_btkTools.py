@@ -1,47 +1,43 @@
 # coding: utf-8
 # pytest -s --disable-pytest-warnings  test_btkTools.py::Test_Btk::test_btkReaderWriter
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 import pyCGM2
-from pyCGM2.Utils import testingUtils,files
-import ipdb
-import os
-import logging
-from pyCGM2.Eclipse import vskTools,eclipse
-from pyCGM2 import enums
-
-import pytest
+from pyCGM2.Utils import files
 from pyCGM2.Tools import btkTools
-from pyCGM2.Utils import utils
-from pyCGM2 import btk
+try: 
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
 
 
 class Test_Btk:
     def test_btkReader(self):
-        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hånnibøl_c3d\\static.c3d"
+        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hannibal_c3d\\static.c3d"
         acq= btkTools.smartReader(filename, translators=None)
 
     def test_btkWriter(self):
-        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hånnibøl_c3d\\static.c3d"
+        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hannibal_c3d\\static.c3d"
         acq= btkTools.smartReader(filename, translators=None)
 
-        filenameOUT = pyCGM2.TEST_DATA_PATH_OUT + "LowLevel\\IO\\Hånnibøl_c3d\\static.c3d"
-        files.createDir(pyCGM2.TEST_DATA_PATH_OUT+"LowLevel\\IO\\Hånnibøl_c3d")
+        filenameOUT = pyCGM2.TEST_DATA_PATH_OUT + "LowLevel\\IO\\Hannibal_c3d\\static.c3d"
+        files.createDir(pyCGM2.TEST_DATA_PATH_OUT+"LowLevel\\IO\\Hannibal_c3d")
         btkTools.smartWriter(acq,filenameOUT)
 
     def test_appendPoint(self):
-        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hånnibøl_c3d\\static.c3d"
+        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hannibal_c3d\\static.c3d"
         acq= btkTools.smartReader(filename, translators=None)
-        values= acq.GetPoint(utils.str("LASI")).GetValues()
+        values= acq.GetPoint("LASI").GetValues()
         btkTools.smartAppendPoint(acq,"LASI2",values, PointType=btk.btkPoint.Marker,desc="toto",residuals = None)
 
     def test_appendAnalog(self):
-        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hånnibøl_c3d\\static.c3d"
+        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hannibal_c3d\\static.c3d"
         acq= btkTools.smartReader(filename, translators=None)
-        values= acq.GetAnalog(utils.str("Force.Fx1")).GetValues()
+        values= acq.GetAnalog("Force.Fx1").GetValues()
         btkTools.smartAppendAnalog(acq,"Hän-emg",values,desc="Hän-emg" )
 
     def test_functions(self):
-        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hånnibøl_c3d\\gait1.c3d"
+        filename = pyCGM2.TEST_DATA_PATH +"LowLevel\\IO\\Hannibal_c3d\\gait1.c3d"
         acq= btkTools.smartReader(filename, translators=None)
 
         btkTools.GetMarkerNames(acq)

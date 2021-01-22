@@ -1,5 +1,5 @@
 # coding: utf-8
-import cPickle
+import pickle
 import logging
 import json
 import os
@@ -67,9 +67,8 @@ def loadModel(path,FilenameNoExt):
     if not os.path.isfile((path + filename)):
         raise Exception ("%s-pyCGM2.model file doesn't exist. Run CGM Calibration operation"%filename)
     else:
-        f = open((path+filename), 'rb')
-        model = cPickle.load(f)
-        f.close()
+        with open(path+filename, 'rb') as f:
+            model = pickle.load(f)
 
         return model
 
@@ -85,9 +84,9 @@ def saveModel(model,path,FilenameNoExt):
         logging.warning("previous model removed")
         os.remove((path + filename))
 
-    modelFile = open((path+filename), "wb")
-    cPickle.dump(model, modelFile,-1)
-    modelFile.close()
+    with open(path+filename, "wb") as modelFile:
+        pickle.dump(model, modelFile)
+    # modelFile.close()
 
 
 def loadAnalysis(path,FilenameNoExt):
@@ -100,9 +99,8 @@ def loadAnalysis(path,FilenameNoExt):
     if not os.path.isfile((path + filename)):
         raise Exception ("%s-pyCGM2.analysis file doesn't exist"%filename)
     else:
-        f = open((path+filename), 'rb')
-        analysis = cPickle.load(f)
-        f.close()
+        with open(path+filename, 'rb') as f:
+            analysis = pickle.load(f)
 
         return analysis
 
@@ -118,9 +116,11 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
         logging.warning("previous analysis removed")
         os.remove((path + filename))
 
-    analysisFile = open((path+filename), "wb")
-    cPickle.dump(analysisInstance, analysisFile,-1)
-    analysisFile.close()
+    with open(path+filename, "wb") as analysisFile:
+        pickle.dump(analysisInstance, analysisFile)
+    # modelFile.close()
+
+
 
 
 def openJson(path,filename):
@@ -391,9 +391,10 @@ def deleteDirectory(dir):
 
 
 def readXml(DATA_PATH,filename):
-    infile = open((DATA_PATH+filename),"rb")
-    contents = infile.read()
-    soup = BeautifulSoup(contents,'xml')
+    with open((DATA_PATH+filename),"rb",) as f:
+        content = f.read()
+
+    soup = BeautifulSoup(content,'xml')
 
     return soup
 
@@ -428,12 +429,12 @@ def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
 
     xlsxWriter.save()
 
-def convertPickleToBinary(path,filename):
-    
-    f = open(path+filename, 'r')
-    analysis = cPickle.load(f)
-    f.close()
-
-    f2 = open(path+filename,  "wb")   # 'wb' instead 'w' for binary file
-    cPickle.dump(analysis, f2, -1)       # -1 specifies highest binary protocol
-    f2.close()
+# def convertPickleToBinary(path,filename):
+#
+#     f = open(path+filename, 'r')
+#     analysis = cPickle.load(f)
+#     f.close()
+#
+#     f2 = open(path+filename,  "wb")   # 'wb' instead 'w' for binary file
+#     cPickle.dump(analysis, f2, -1)       # -1 specifies highest binary protocol
+#     f2.close()

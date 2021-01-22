@@ -6,7 +6,11 @@ from pyCGM2.Processing import progressionFrame
 
 import pyCGM2.Math.normalisation  as MathNormalisation
 
-from pyCGM2 import btk
+try: 
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
 from pyCGM2.Utils import utils
 from pyCGM2.Tools import btkTools
 #----module methods ------
@@ -265,7 +269,7 @@ class Cycle(object):
         """
 
         if btkTools.isPointExist(self.acq,pointLabel):
-            return self.acq.GetPoint(utils.str(pointLabel)).GetValues()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
+            return self.acq.GetPoint(pointLabel).GetValues()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
         else:
             logging.debug("[pyCGM2] the point Label %s doesn t exist " % (pointLabel))
             return None
@@ -298,7 +302,7 @@ class Cycle(object):
 
         """
         if btkTools.isAnalogExist(self.acq,analogLabel):
-            return  self.acq.GetAnalog(utils.str(analogLabel)).GetValues()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
+            return  self.acq.GetAnalog(analogLabel).GetValues()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
         else:
             logging.debug("[pyCGM2] the Analog Label %s doesn t exist" % (analogLabel))
             return None

@@ -6,7 +6,7 @@ from scipy.optimize import least_squares
 
 
 import pyCGM2
-import model
+from pyCGM2.Model import model
 
 
 from pyCGM2 import enums
@@ -721,8 +721,8 @@ class Kad(DecoratorModel):
 
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
-                if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0 # look out, it's mp, not mp_computed.
-                if self.model.mp.has_key("LeftShankRotation") : self.model.mp["LeftShankRotation"] =0
+                if "LeftThighRotation" in self.model.mp : self.model.mp["LeftThighRotation"] =0 # look out, it's mp, not mp_computed.
+                if "LeftShankRotation" in self.model.mp : self.model.mp["LeftShankRotation"] =0
 
             for i in range(0,self.acq.GetPointFrameNumber()):
                 #  compute points left and right lateral condyle
@@ -754,7 +754,7 @@ class Kad(DecoratorModel):
                 # locate AJC
                 beta = 0
                 ajcDesc = "KAD"
-                if self.model.mp.has_key("LeftTibialTorsion") and self.model.mp["LeftTibialTorsion"] !=0:
+                if "LeftTibialTorsion" in self.model.mp and self.model.mp["LeftTibialTorsion"] !=0:
                     beta = -1.0 * self.model.mp["LeftTibialTorsion"]
                     ajcDesc = "KAD-manualTT"
 
@@ -790,8 +790,8 @@ class Kad(DecoratorModel):
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
 
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
-                if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0 # look out, it's mp, not mp_computed.
-                if self.model.mp.has_key("RightShankRotation") : self.model.mp["RightShankRotation"] =0
+                if "RightThighRotation" in self.model.mp : self.model.mp["RightThighRotation"] =0 # look out, it's mp, not mp_computed.
+                if "RightShankRotation" in self.model.mp : self.model.mp["RightShankRotation"] =0
 
 
             for i in range(0,self.acq.GetPointFrameNumber()):
@@ -825,7 +825,7 @@ class Kad(DecoratorModel):
 
                 beta = 0
                 ajcDesc = "KAD"
-                if self.model.mp.has_key("RightTibialTorsion") and self.model.mp["RightTibialTorsion"] !=0:
+                if "RightTibialTorsion" in self.model.mp and self.model.mp["RightTibialTorsion"] !=0:
                     beta = self.model.mp["RightTibialTorsion"]
                     ajcDesc = "KAD-manualTT"
 
@@ -907,7 +907,7 @@ class Cgm1ManualOffsets(DecoratorModel):
             # zeroing of shankRotation if non-zero
             if shankoffset!=0:
                 if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
-                    if self.model.mp.has_key("LeftShankRotation") :
+                    if "LeftShankRotation" in self.model.mp :
                         self.model.mp["LeftShankRotation"] = 0
                         logging.debug("Special CGM1 case - shank offset cancelled")
 
@@ -963,7 +963,7 @@ class Cgm1ManualOffsets(DecoratorModel):
             # zeroing of shankRotation if non-zero
             if shankoffset!=0:
                 if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
-                    if self.model.mp.has_key("RightShankRotation") :
+                    if "RightShankRotation" in self.model.mp :
                         self.model.mp["RightShankRotation"] = 0
                         logging.debug("Special CGM1 case - shank offset cancelled")
 
@@ -1373,7 +1373,7 @@ class KneeCalibrationDecorator(DecoratorModel):
             # CGM specification
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
-                if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0
+                if "LeftThighRotation" in self.model.mp : self.model.mp["LeftThighRotation"] =0
 
             LKJCvalues = midPoint(acq,leftLateralKneeLabel,leftMedialKneeLabel,offset=(self.model.mp["LeftKneeWidth"]+markerDiameter)/2.0)
 
@@ -1411,7 +1411,7 @@ class KneeCalibrationDecorator(DecoratorModel):
             # CGM specification
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
-                if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0
+                if "RightThighRotation" in self.model.mp : self.model.mp["RightThighRotation"] =0
 
 
             RKJCvalues = midPoint(acq,rightLateralKneeLabel,rightMedialKneeLabel,offset=(self.model.mp["RightKneeWidth"]+markerDiameter)/2.0)
@@ -1468,7 +1468,7 @@ class KneeCalibrationDecorator(DecoratorModel):
             # CGM specification
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
-                if self.model.mp.has_key("LeftThighRotation") : self.model.mp["LeftThighRotation"] =0
+                if "LeftThighRotation" in self.model.mp : self.model.mp["LeftThighRotation"] =0
 
             if widthFromMp:
                 LKJCvalues = midPoint(acq,leftLateralKneeLabel,leftMedialKneeLabel,offset=(self.model.mp["LeftKneeWidth"]+markerDiameter)/2.0)
@@ -1496,7 +1496,7 @@ class KneeCalibrationDecorator(DecoratorModel):
             # CGM specification
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 # cancel shankRotation and thighRotation offset if contain a previous non-zero values
-                if self.model.mp.has_key("RightThighRotation") : self.model.mp["RightThighRotation"] =0
+                if "RightThighRotation" in self.model.mp : self.model.mp["RightThighRotation"] =0
 
             if widthFromMp:
                 RKJCvalues = midPoint(acq,rightLateralKneeLabel,rightMedialKneeLabel,offset=(self.model.mp["RightKneeWidth"]+markerDiameter)/2.0)
@@ -1526,8 +1526,8 @@ class KneeCalibrationDecorator(DecoratorModel):
         """
         self.model.decoratedModel = True
 
-        iff = kwargs["indexFirstFrame"] if kwargs.has_key("indexFirstFrame") else None
-        ilf = kwargs["indexLastFrame"] if kwargs.has_key("indexLastFrame") else None
+        iff = kwargs["indexFirstFrame"] if "indexFirstFrame" in kwargs else None
+        ilf = kwargs["indexLastFrame"] if "indexLastFrame" in kwargs else None
 
         if side == "Left":
             proxSegmentLabel = "Left Thigh"
@@ -1679,10 +1679,10 @@ class KneeCalibrationDecorator(DecoratorModel):
 
         """
         self.model.decoratedModel = True
-        iff = kwargs["indexFirstFrame"] if kwargs.has_key("indexFirstFrame") else None
-        ilf = kwargs["indexLastFrame"] if kwargs.has_key("indexLastFrame") else None
-        sequence = kwargs["sequence"] if kwargs.has_key("sequence") else None
-        jointRange = kwargs["jointRange"] if kwargs.has_key("jointRange") else None
+        iff = kwargs["indexFirstFrame"] if "indexFirstFrame" in kwargs else None
+        ilf = kwargs["indexLastFrame"] if "indexLastFrame" in kwargs else None
+        sequence = kwargs["sequence"] if "sequence" in kwargs else None
+        jointRange = kwargs["jointRange"] if "jointRange" in kwargs else None
 
         if side == "Left":
             proxSegmentLabel = "Left Thigh"
@@ -1791,7 +1791,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
             # CGM specification
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 self.model.m_useLeftTibialTorsion=True
-                if self.model.mp.has_key("LeftTibialTorsion") : self.model.mp["LeftTibialTorsion"] =0
+                if "LeftTibialTorsion" in self.model.mp : self.model.mp["LeftTibialTorsion"] =0
 
             if widthFromMp:
                 LAJCvalues = midPoint(acq,leftLateralAnkleLabel,leftMedialAnkleLabel,offset=(self.model.mp["LeftAnkleWidth"]+markerDiameter)/2.0)
@@ -1816,7 +1816,7 @@ class AnkleCalibrationDecorator(DecoratorModel):
             # CGM specification
             if isinstance(self.model,pyCGM2.Model.CGM2.cgm.CGM):
                 self.model.m_useRightTibialTorsion=True
-                if self.model.mp.has_key("RightTibialTorsion") : self.model.mp["RightTibialTorsion"] =0
+                if "RightTibialTorsion" in self.model.mp : self.model.mp["RightTibialTorsion"] =0
 
             if widthFromMp:
                 RAJCvalues = midPoint(acq,rightLateralAnkleLabel,rightMedialAnkleLabel,offset=(self.model.mp["RightAnkleWidth"]+markerDiameter)/2.0)

@@ -25,16 +25,12 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 from pyCGM2.Utils import files
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
-from pyCGM2.Report import normativeDatasets
 
 from pyCGM2.Nexus import nexusFilters,nexusTools
+from pyCGM2.Eclipse import eclipse
 
 from pyCGM2.Configurator import EmgManager
-# vicon nexus
-try:
-    import ViconNexus
-except:
-    from viconnexusapi import ViconNexus
+from viconnexusapi import ViconNexus
 
 
 def main():
@@ -48,53 +44,61 @@ def main():
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    ECLIPSE_MODE = False
 
-    if NEXUS_PYTHON_CONNECTED: # run Operation
+    if not NEXUS_PYTHON_CONNECTED:
+        raise Exception("Vicon Nexus is not running")
 
+    #--------------------------Data Location-------------------------------------
+    if eclipse.getCurrentMarkedNodes() is not None:
+        logging.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
+        # --- acquisition file and path----
+        DATA_PATH, inputFiles =eclipse.getCurrentMarkedNodes()
+        ECLIPSE_MODE = True
 
+    if not ECLIPSE_MODE:
+        logging.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
         # --- acquisition file and path----
         DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
         inputFile = inputFileNoExt+".c3d"
 
-        #--------------------------settings-------------------------------------
-        if os.path.isfile(DATA_PATH + "emg.settings"):
-            emgSettings = files.openFile(DATA_PATH,"emg.settings")
-            logging.warning("[pyCGM2]: emg.settings detected in the data folder")
+    #--------------------------settings-------------------------------------
+    if os.path.isfile(DATA_PATH + "emg.settings"):
+        emgSettings = files.openFile(DATA_PATH,"emg.settings")
+        logging.warning("[pyCGM2]: emg.settings detected in the data folder")
+    else:
+        emgSettings = None
+
+    manager = EmgManager.EmgConfigManager(None,localInternalSettings=emgSettings)
+    manager.contruct()
+
+
+    # ----------------------INPUTS-------------------------------------------
+    bandPassFilterFrequencies = manager.BandpassFrequencies#emgSettings["Processing"]["BandpassFrequencies"]
+    if args.BandpassFrequencies is not None:
+        if len(args.BandpassFrequencies) != 2:
+            raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
         else:
-            emgSettings = None
+            bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
+            logging.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
-        manager = EmgManager.EmgConfigManager(None,localInternalSettings=emgSettings)
-        manager.contruct()
+    envelopCutOffFrequency = manager.EnvelopLowpassFrequency#emgSettings["Processing"]["EnvelopLowpassFrequency"]
+    if args.EnvelopLowpassFrequency is not None:
+        envelopCutOffFrequency =  args.EnvelopLowpassFrequency
+        logging.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
 
+    consistencyFlag = True if args.consistency else False
 
-        # ----------------------INPUTS-------------------------------------------
-        bandPassFilterFrequencies = manager.BandpassFrequencies#emgSettings["Processing"]["BandpassFrequencies"]
-        if args.BandpassFrequencies is not None:
-            if len(args.BandpassFrequencies) != 2:
-                raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
-            else:
-                bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
-                logging.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
+    # --------------emg Processing--------------
+    EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES  =  manager.getEmgConfiguration()
 
-        envelopCutOffFrequency = manager.EnvelopLowpassFrequency#emgSettings["Processing"]["EnvelopLowpassFrequency"]
-        if args.EnvelopLowpassFrequency is not None:
-            envelopCutOffFrequency =  args.EnvelopLowpassFrequency
-            logging.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
-
-        consistencyFlag = True if args.consistency else False
-
-
+    if not ECLIPSE_MODE:
         # --------------------------SUBJECT ------------------------------------
-        subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
         acq = nacf.build()
-
-
-        # --------------emg Processing--------------
-        EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES  =  manager.getEmgConfiguration()
 
         analysis.processEMG_fromBtkAcq(acq, EMG_LABELS,
             highPassFrequencies=bandPassFilterFrequencies,
@@ -102,15 +106,22 @@ def main():
 
         emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS,btkAcqs = [acq])
 
-
-        if not consistencyFlag:
-            plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False,exportPdf=True,outputName=inputFile)
-        else:
-            plot.plotConsistencyEnvelopEMGpanel(DATA_PATH,emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False,exportPdf=True,outputName=inputFile)
-
-
+        outputName = inputFile
     else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+        analysis.processEMG(DATA_PATH, inputFiles, EMG_LABELS, highPassFrequencies=bandPassFilterFrequencies,
+            envelopFrequency=envelopCutOffFrequency)
+
+        emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, inputFiles, EMG_LABELS)
+
+        outputName = "Eclipse -  NormalizedEMG"
+
+    if not consistencyFlag:
+        plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False,exportPdf=True,outputName=outputName)
+    else:
+        plot.plotConsistencyEnvelopEMGpanel(DATA_PATH,emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False,exportPdf=True,outputName=outputName)
+
+
+
 
 if __name__ == "__main__":
 

@@ -8,7 +8,7 @@ from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 
 def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffix=None, exportPdf=False,outputName=None,show=True,title=None,
-                          btkAcq=None):
+                          btkAcq=None,exportPng=False):
     """
     plotTemporalKinematic : display temporal trace of the Kinematics
 
@@ -39,11 +39,11 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
     else:
         raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
-    if exportPdf:
+    if exportPdf or exportPng:
         if outputName is None:
-            filenameOut =  str(modelledFilenames+"-Temporal Kinematics ["+ bodyPart.name+"]")
+            filenameOut =  modelledFilenames+"-Temporal Kinematics ["+ bodyPart.name+"]"
         else:
-            filenameOut =  str(outputName+"-Temporal Kinematics ["+ bodyPart.name+"]")
+            filenameOut =  outputName+"-Temporal Kinematics ["+ bodyPart.name+"]"
 
     if btkAcq is not None:
         acq = btkAcq
@@ -55,16 +55,20 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    if title is not None: pf.setTitle(str(title+"-Temporal Kinematics ["+ bodyPart.name+"]"))
+    if title is not None: pf.setTitle(title+"-Temporal Kinematics ["+ bodyPart.name+"]")
     if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
     fig = pf.plot()
 
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
 def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=None,exportPdf=False,outputName=None,show=True,title=None,
-                        btkAcq=None):
+                        btkAcq=None,exportPng=False):
 
     """
     plotTemporalKinetic : display temporal trace of the Kinetics
@@ -96,11 +100,11 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
     else:
         raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
-    if exportPdf:
+    if exportPdf or exportPng:
         if outputName is None:
-            filenameOut =  str(modelledFilenames+"-Temporal Kinetics["+ bodyPart.name+"]")
+            filenameOut =  modelledFilenames+"-Temporal Kinetics["+ bodyPart.name+"]"
         else:
-            filenameOut =  str(outputName+"-Temporal Kinetics ["+ bodyPart.name+"]")
+            filenameOut =  outputName+"-Temporal Kinetics ["+ bodyPart.name+"]"
 
     if btkAcq is not None:
         acq = btkAcq
@@ -113,17 +117,21 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    if title is not None: pf.setTitle(str(title+"-Temporal Kinetics ["+ bodyPart.name+"]"))
+    if title is not None: pf.setTitle(title+"-Temporal Kinetics ["+ bodyPart.name+"]")
     if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
     fig = pf.plot()
 
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
 def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,
                     exportPdf=False,outputName=None,show=True,title=None,
-                    btkAcq=None,ignoreNormalActivity= False):
+                    btkAcq=None,ignoreNormalActivity= False,exportPng=False,OUT_PATH=None):
     """
     plotTemporalEMG : display temporal trace of EMG signals
 
@@ -146,7 +154,8 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
     :param title [string]: change default title of the plot panel
     """
 
-
+    if OUT_PATH is None:
+        OUT_PATH = DATA_PATH
 
     if btkAcq is not None:
         acq = btkAcq
@@ -162,20 +171,21 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
     pageNumber = len(emgChannels_list)
 
     figs=list()
+    outfilenames=list()
 
     count = 0
     for i in range(0,pageNumber):
 
         if exportPdf and pageNumber>1:
             if outputName is None:
-                filenameOut =  str(processedEmgfile+"-TemporalEmgPlot"+"[rectify]-")+str(count) if rectify else str(processedEmgfile+"-TemporalEmgPlot"+"[raw]-")+str(count)
+                filenameOut =  processedEmgfile+"-TemporalEmgPlot"+"[rectify]-"+count if rectify else processedEmgfile+"-TemporalEmgPlot"+"[raw]-"+count
             else:
-                filenameOut =  str(outputName+"-TemporalEmgPlot"+"[rectify]-")+str(count) if rectify else str(title+"-TemporalEmgPlot"+"[raw]-")+str(count)
+                filenameOut =  outputName+"-TemporalEmgPlot"+"[rectify]-"+count if rectify else title+"-TemporalEmgPlot"+"[raw]-"+count
         else:
             if outputName is None:
-                filenameOut =  str(processedEmgfile+"-TemporalEmgPlot"+"[rectify]") if rectify else str(processedEmgfile+"-TemporalEmgPlot"+"[raw]")
+                filenameOut =  processedEmgfile+"-TemporalEmgPlot"+"[rectify]" if rectify else processedEmgfile+"-TemporalEmgPlot"+"[raw]"
             else:
-                filenameOut =  str(outputName+"-TemporalEmgPlot"+"[rectify]") if rectify else str(title+"-TemporalEmgPlot"+"[raw]")
+                filenameOut =  outputName+"-TemporalEmgPlot"+"[rectify]" if rectify else title+"-TemporalEmgPlot"+"[raw]"
 
         combinedEMGcontext=[]
         for j in range(0,len(emgChannels_list[i])):
@@ -194,20 +204,29 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
         pf.setViewer(kv)
         if title is not None:
             if pageNumber>1:
-                pf.setTitle(str(title+"-TemporalEmgPlot"+"[rectify]-")+str(count) if rectify else str(title+"-TemporalEmgPlot"+"[raw]-")+str(count))
+                pf.setTitle(title+"-TemporalEmgPlot"+"[rectify]-"+count if rectify else title+"-TemporalEmgPlot"+"[raw]-"+count)
             else:
-                pf.setTitle(str(title+"-TemporalEmgPlot"+"[rectify]") if rectify else str(title+"-TemporalEmgPlot"+"[raw]"))
-        if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
+                pf.setTitle(title+"-TemporalEmgPlot"+"[rectify]" if rectify else title+"-TemporalEmgPlot"+"[raw]")
+        if exportPdf :pf.setExport(OUT_PATH,filenameOut,"pdf")
         fig = pf.plot()
+
+        if exportPng:
+            fig.savefig(OUT_PATH+filenameOut+".png")
+
+        if exportPng:
+            outfilenames.append(filenameOut+".png")
 
         figs.append(fig)
 
         count+=1
     if show: plt.show()
 
-    return figs
+    if exportPng:
+        return figs,outfilenames
+    else:
+        return figs
 
-def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
+def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
 
     """
     plotDescriptiveEnvelopEMGpanel : display average and standard deviation of time-normalized traces of EMG envelops
@@ -232,10 +251,10 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,cont
     """
 
     if outputName is None:
-        outputName = "Global Analysis"
+        outputName = "PyCGM2-Analysis"
 
-    if exportPdf:
-        filenameOut =  str(outputName+"-DescriptiveEmgEnv"+"[No Normalized]-") if not normalized else str(outputName+"-DescriptiveEmgEnv"+"[Normalized]")
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-DescriptiveEmgEnv"+"[No Normalized]-" if not normalized else outputName+"-DescriptiveEmgEnv"+"[Normalized]"
 
     # viewer
     combinedEMGcontext=[]
@@ -262,9 +281,13 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,cont
 
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
-def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
+def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
 
     """
     plotConsistencyEnvelopEMGpanel : display all cycle of time-normalized traces of EMG envelops
@@ -289,10 +312,10 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, cont
     """
 
     if outputName is None:
-        outputName = "Global Analysis"
+        outputName = "PyCGM2-Analysis"
 
-    if exportPdf:
-        filenameOut =  str(outputName+"-ConsistencyEmgEnv"+"[No Normalized]-") if not normalized else str(outputName+"-DescriptiveEmgEnv"+"[Normalized]")
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-ConsistencyEmgEnv"+"[No Normalized]-" if not normalized else outputName+"-DescriptiveEmgEnv"+"[Normalized]"
 
     # viewer
     combinedEMGcontext=[]
@@ -313,16 +336,20 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, cont
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    if title is not None: pf.setTitle( str(title+"-ConsistencyEmgEnv"+"[No Normalized]-") if not normalized else str(title+"-DescriptiveEmgEnv"+"[Normalized]"))
+    if title is not None: pf.setTitle( title+"-ConsistencyEmgEnv"+"[No Normalized]-" if not normalized else title+"-DescriptiveEmgEnv"+"[Normalized]")
     if exportPdf :pf.setExport(DATA_PATH,filenameOut,"pdf")
     fig = pf.plot()
 
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
 
-def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=True,title=None):
+def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
     """
     plot_spatioTemporal : display spatio-temporal parameters as horizontal histogram
 
@@ -339,11 +366,10 @@ def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=
 
     """
 
-    if outputName is None:
-        outputName = "Global Analysis"
+    if outputName is None:  outputName = "pyCGM2-analysis"
 
-    if exportPdf:
-        filenameOut =  str(outputName+"-SpatioTemporal parameters")
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-SpatioTemporal parameters"
 
     stpv = plotViewers.SpatioTemporalPlotViewer(analysis)
     stpv.setNormativeDataset(normativeDatasets.NormalSTP())
@@ -351,14 +377,19 @@ def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=
     # filter
     stppf = plotFilters.PlottingFilter()
     stppf.setViewer(stpv)
-    if title is not None: stppf.setTitle(str(title+"-SpatioTemporal parameters"))
+    if title is not None: stppf.setTitle(title+"-SpatioTemporal parameters")
     if exportPdf: stppf.setExport(DATA_PATH,filenameOut,"pdf")
     fig = stppf.plot()
 
     if show: plt.show()
-    return fig
 
-def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
+
+def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
     """
     plot_DescriptiveKinematic : display average and standard deviation of time-normalized kinematic outputs
 
@@ -391,10 +422,10 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
 
 
     if outputName is None:
-        outputName = "Global Analysis ["+ bodyPart.name+"]"
+        outputName = "pyCGM2-analysis ["+ bodyPart.name+"]"
 
-    if exportPdf:
-        filenameOut =  str(outputName+"-descriptive  Kinematics ["+ bodyPart.name+"]")
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-descriptive Kinematics ["+ bodyPart.name+"]"
 
 
     # filter 1 - descriptive kinematic panel
@@ -415,14 +446,19 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    if title is not None: pf.setTitle(str(title+"-descriptive  Kinematics ["+ bodyPart.name+"]"))
+    if title is not None: pf.setTitle(title+"-descriptive Kinematics ["+ bodyPart.name+"]")
     if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     fig = pf.plot()
     if show: plt.show()
-    return fig
+
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
 
-def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
+def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
 
     """
     plot_ConsistencyKinematic : display all gait cycle of time-normalized kinematic outputs
@@ -453,10 +489,10 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
 
 
     if outputName is None:
-        outputName = "Global Analysis ["+ bodyPart.name+"]"
+        outputName = "PyCGM2-Analysis ["+ bodyPart.name+"]"
 
-    if exportPdf:
-        filenameOut =  str(outputName+"-consistency Kinematics ["+ bodyPart.name+"]")
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-consistency Kinematics ["+ bodyPart.name+"]"
 
 
     kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
@@ -474,13 +510,17 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
     if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
-    if title is not None: pf.setTitle(str(title+"-consistency  Kinematics ["+ bodyPart.name+"]"))
+    if title is not None: pf.setTitle(title+"-consistency  Kinematics ["+ bodyPart.name+"]")
     fig = pf.plot()
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
-def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
+def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
     """
     plot_DescriptiveKinetic : display average and standard deviation of time-normalized kinetic outputs
 
@@ -511,10 +551,10 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLa
 
 
     if outputName is None:
-        outputName = "Global Analysis ["+ bodyPart.name+"]"
+        outputName = "PyCGM2-Analysis ["+ bodyPart.name+"]"
 
-    if exportPdf:
-        filenameOut =  str(outputName+"-descriptive Kinetics ["+ bodyPart.name+"]")
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-descriptive Kinetics ["+ bodyPart.name+"]"
 
     kv = plotViewers.NormalizedKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
@@ -532,13 +572,17 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLa
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
     if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
-    if title is not None: pf.setTitle(str(title+"-descriptive  Kinetics ["+ bodyPart.name+"]"))
+    if title is not None: pf.setTitle(title+"-descriptive  Kinetics ["+ bodyPart.name+"]")
     fig = pf.plot()
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
-def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None):
+def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
     """
     plot_ConsistencyKinetic : display all gait cycle of time-normalized kinetic outputs
 
@@ -567,10 +611,10 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,pointL
         raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
     if outputName is None:
-        outputName = "Global Analysis ["+ bodyPart.name+"]"
+        outputName = "PyCGM2-Analysis ["+ bodyPart.name+"]"
 
-    if exportPdf:
-        filenameOut =  str(outputName+"-consistency Kinetics ["+ bodyPart.name+"]")
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-consistency Kinetics ["+ bodyPart.name+"]"
 
     kv = plotViewers.NormalizedKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
@@ -586,13 +630,17 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,pointL
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
     if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
-    if title is not None: pf.setTitle(str(title+"-consistency  Kinetics ["+ bodyPart.name+"]"))
+    if title is not None: pf.setTitle(title+"-consistency  Kinetics ["+ bodyPart.name+"]")
     fig = pf.plot()
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
-def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None,pointLabelSuffix=None,show=True,title=None):
+def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None,pointLabelSuffix=None,show=True,title=None,exportPng=False):
     """
     plot_MAP : display the Movement Analysis Profile
 
@@ -611,10 +659,10 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None
     :param title [string]: change default title of the plot panel
     """
     if outputName is None:
-        outputName = "Global Analysis"
+        outputName = "PyCGM2-Analysis"
 
-    if exportPdf:
-        filenameOut =  str(outputName+"-Map")
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-Map"
 
     #compute
     gps =scores.CGM1_GPS(pointSuffix=pointLabelSuffix)
@@ -627,13 +675,17 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
     if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
-    if title is not None: pf.setTitle(str(title+"-Map"))
+    if title is not None: pf.setTitle(title+"-Map")
     fig = pf.plot()
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
-def compareKinematic(analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None):
+def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None,outputName=None,exportPng=False,exportPdf=False):
     """
     compareKinematic : compare kinematics of two pyCGM2 analysis instances
 
@@ -654,6 +706,12 @@ def compareKinematic(analyses,legends,context,bodyPart,normativeDataset,plotType
     >>> normativeData = normativeDatasets.Schwartz2008("Free")
     >>> plot.compareKinematic([analysisPre,analysisPost],["pre","post"],"Left","LowerLimb",normativeData)
     """
+    if outputName is None:
+        outputName = "pyCGM2-Comparison"+"-"+context+" ["+ bodyPart+"]"
+
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-"+context+" ["+ bodyPart+"]"+"- Kinematics Comparison"
+
     i=1
     for analysis in analyses:
         if analysis.kinematicStats.data == {}:
@@ -684,14 +742,18 @@ def compareKinematic(analyses,legends,context,bodyPart,normativeDataset,plotType
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    if title is not None: pf.setTitle(str(title+"-Kinematic comparison"))
-    #pf.setExport(outputPath,str(pdfFilename+"-consisntency Kinematics"),"pdf")
+    if title is not None: pf.setTitle(title+"-Kinematic comparison")
+    if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
     fig = pf.plot()
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
-def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None):
+def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None,outputName=None,exportPng=False,exportPdf=False):
 
     """
     compareKinetic : compare kinetics of two pyCGM2 analysis instances
@@ -715,6 +777,13 @@ def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="
     >>> normativeData = normativeDatasets.Schwartz2008("Free")
     >>> plot.compareKinetic([analysisPre,analysisPost],["pre","post"],"Left","LowerLimb",normativeData)
     """
+    if outputName is None:
+        outputName = "pyCGM2-Comparison"+"-"+context+" ["+ bodyPart+"]"
+
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-"+context+" ["+ bodyPart+"]"+"- Kinetics Comparison "
+
+
     i=1
     for analysis in analyses:
         if analysis.kineticStats.data == {}:
@@ -746,14 +815,18 @@ def compareKinetic(analyses,legends,context,bodyPart,normativeDataset,plotType="
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    #pf.setExport(outputPath,str(pdfFilename+"-consisntency Kinematics"),"pdf")
-    if title is not None: pf.setTitle(str(title+"-Kinetic comparison"))
+    if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
+    if title is not None: pf.setTitle(title+"-Kinetic comparison")
     fig = pf.plot()
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
-def compareEmgEnvelops(analyses,legends, emgChannels, muscles, contexts, normalActivityEmgs, normalized=False,plotType="Descriptive",show=True,title=None,type="Gait"):
+def compareEmgEnvelops(DATA_PATH,analyses,legends, emgChannels, muscles, contexts, normalActivityEmgs, normalized=False,plotType="Descriptive",show=True,title=None,type="Gait",outputName=None,exportPng=False,exportPdf=False):
     """
     compareEmgEvelops : compare emg envelops from  two pyCGM2 analysis instances
 
@@ -782,6 +855,13 @@ def compareEmgEnvelops(analyses,legends, emgChannels, muscles, contexts, normalA
     >>>                       ["RECFEM","VASLAT"])
 
     """
+    if outputName is None:
+        outputName = "pyCGM2-Comparison"
+
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"- EMG Comparison"
+
+
 
     i=1
     for analysis in analyses:
@@ -817,14 +897,18 @@ def compareEmgEnvelops(analyses,legends, emgChannels, muscles, contexts, normalA
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    #pf.setExport(outputPath,str(pdfFilename+"-consisntency Kinematics"),"pdf")
-    if title is not None: pf.setTitle(str(title+"-EMG envelop comparison"))
+    if exportPdf: pf.setExport(DATA_PATH,filenameOut,"pdf")
+    if title is not None: pf.setTitle(title+"-EMG envelop comparison")
     fig = pf.plot()
     if show: plt.show()
 
-    return fig
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
-def compareSelectedEmgEvelops(analyses,legends, emgChannels,contexts, normalized=False,plotType="Descriptive",type="Gait",show=True,title=None):
+def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts, normalized=False,plotType="Descriptive",type="Gait",show=True,title=None,outputName=None,exportPng=False,exportPdf=False):
     """
     compareSelectedEmgEvelops : compare selected emg envelops from  pyCGM2 analysis instances
 
@@ -844,6 +928,12 @@ def compareSelectedEmgEvelops(analyses,legends, emgChannels,contexts, normalized
 
     >>> plot.compareSelectedEmgEvelops([emgAnalysisPre,emgAnalysisPost],["Pre","Post"],["EMG1","EMG1"],["Left","Left"],normalized=False)
     """
+
+    if outputName is None:
+        outputName = "pyCGM2-Comparison"
+
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"- specific EMG Comparison"
 
     fig = plt.figure()
     ax = plt.gca()
@@ -895,4 +985,11 @@ def compareSelectedEmgEvelops(analyses,legends, emgChannels,contexts, normalized
         ax.legend(fontsize=6)
     if show: plt.show()
 
-    return fig
+    if exportPdf:
+        fig.savefig(DATA_PATH+filenameOut+".pdf")
+
+    if exportPng:
+        fig.savefig(DATA_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig

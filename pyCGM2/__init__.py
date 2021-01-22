@@ -4,7 +4,7 @@ import re
 import os
 import logging
 
-NEXUS_VERSION = None # ex: "Nexus2.9" force the use of version 2.9
+NEXUS_VERSION = None
 
 def getLastNexusVersion():
     nexusDir = "C:\Program Files (x86)\Vicon"
@@ -23,20 +23,18 @@ try:
 
     version = float(NEXUS_VERSION[5:])
     if version<2.12:
-        if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python" in sys.path:
-            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Python")
-
-        if not "C:/Program Files (x86)/Vicon/Nexus"+NEXUS_VERSION+"/SDK/Win32" in sys.path:
-            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32")
+        logging.error ("This version of pyCGM2 is only compatible Nexus 2.12+. Nexus Apps will fail if you call them ")
     else :
-        if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32/Python/viconnexusapi" in sys.path:
-            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32/Python/viconnexusapi")
+        if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusapi" in sys.path:
+            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusapi")
 
-        if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32/Python/viconnexusutils" in sys.path:
-            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win32/Python/viconnexusutils")
+        if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusutils" in sys.path:
+            sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusutils")
 
-except Exception, errormsg:
-    logging.info (errormsg)
+except Exception:
+    # integration on Linux not needed
+    # logging.error ("Nexus Integration failed")
+    pass
 
 
 ENCODER = "latin-1"
@@ -49,7 +47,8 @@ PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"pyCGM2\Settings\\"
 
 
 #  [Optional]programData
-if  os.path.isdir(os.getenv("PROGRAMDATA")+"\\pyCGM2"):
+if (os.getenv("PROGRAMDATA") is not None) and \
+   os.path.isdir(os.getenv("PROGRAMDATA")+"\\pyCGM2"):
     PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
 else:
     PYCGM2_APPDATA_PATH = PYCGM2_SETTINGS_FOLDER

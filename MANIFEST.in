@@ -6,9 +6,16 @@ recursive-include pyCGM2\btk *.pyd
 recursive-include pyCGM2\btk *.pyo
 recursive-include pyCGM2\btk *.py
 recursive-include pyCGM2\btk *.pyc
-recursive-include pyCGM2\opensim3 *.pyd
-recursive-include pyCGM2\opensim3 *.dll
-recursive-include pyCGM2\opensim3 *.pyo
-recursive-include pyCGM2\opensim3 *.py
-recursive-include pyCGM2\opensim3 *.pyc
-recursive-include pyCGM2\opensim3 *.lib
+recursive-include pyCGM2\btk *.dll
+recursive-include pyCGM2\btk *.pdb
+recursive-include pyCGM2\btk *.lib
+recursive-include pyCGM2\btk *.ilk
+recursive-include pyCGM2\btk *.exp
+recursive-include pyCGM2\btk *.cxx
+
+recursive-include pyCGM2\opensim4 *.pyd
+recursive-include pyCGM2\opensim4 *.dll
+recursive-include pyCGM2\opensim4 *.pyo
+recursive-include pyCGM2\opensim4 *.py
+recursive-include pyCGM2\opensim4 *.pyc
+recursive-include pyCGM2\opensim4 *.lib

@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-import numpy as np
-from pyCGM2 import enums
-
 
 def getNexusSubjectMp(NEXUS,subject, resetFlag=False):
 

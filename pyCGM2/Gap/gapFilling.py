@@ -1,24 +1,8 @@
 # -*- coding: utf-8 -*-
-
-import pyCGM2
-
-import numpy as np
-from pyCGM2.Tools import btkTools
-from pyCGM2.Nexus import nexusTools
-import matplotlib.pyplot as plt
-
-
-
-
-# -*- coding: utf-8 -*-
-import matplotlib.pyplot as plt
 import logging
 import numpy as np
 
-from pyCGM2 import btk
-
 from pyCGM2.Tools import  btkTools
-from pyCGM2.Signal import detect_peaks
 
 
 #-------- EVENT PROCEDURES  ----------

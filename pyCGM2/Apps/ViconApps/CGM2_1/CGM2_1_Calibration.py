@@ -35,10 +35,7 @@ from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 
 # vicon nexus
-try:
-    import ViconNexus
-except:
-    from viconnexusapi import ViconNexus
+from viconnexusapi import ViconNexus
 
 
 # pyCGM2 libraries

@@ -29,10 +29,7 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 # vicon nexus
-try:
-    import ViconNexus
-except:
-    from viconnexusapi import ViconNexus
+from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
 
@@ -43,6 +40,7 @@ from pyCGM2.Report import normativeDatasets
 
 from pyCGM2.Nexus import  nexusTools,nexusFilters
 from pyCGM2.Utils import files
+from pyCGM2.Eclipse import eclipse
 
 def main():
 
@@ -61,71 +59,87 @@ def main():
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    ECLIPSE_MODE = False
 
-    if NEXUS_PYTHON_CONNECTED:
+    if not NEXUS_PYTHON_CONNECTED:
+        raise Exception("Vicon Nexus is not running")
 
-        #-----------------------SETTINGS---------------------------------------
-        normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
 
-        if normativeData["Author"] == "Schwartz2008":
-            chosenModality = normativeData["Modality"]
-            nds = normativeDatasets.Schwartz2008(chosenModality)    # modalites : "Very Slow" ,"Slow", "Free", "Fast", "Very Fast"
-        elif normativeData["Author"] == "Pinzone2014":
-            chosenModality = normativeData["Modality"]
-            nds = normativeDatasets.Pinzone2014(chosenModality) # modalites : "Center One" ,"Center Two"
+    #--------------------------Data Location and subject-------------------------------------
+    if eclipse.getCurrentMarkedNodes() is not None:
+        logging.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
+        # --- acquisition file and path----
+        DATA_PATH, modelledFilenames =eclipse.getCurrentMarkedNodes()
+        ECLIPSE_MODE = True
 
-        consistencyFlag = True if args.consistency else False
-        pointSuffix = args.pointSuffix
-
-        # --------------------------INPUTS ------------------------------------
+    if not ECLIPSE_MODE:
+        logging.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
+        # --- acquisition file and path----
         DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
-
-
         modelledFilename = modelledFilenameNoExt+".c3d"
 
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "file: "+ modelledFilename)
 
-        # ----- Subject -----
-        # need subject to find input files
-        subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.getActiveSubject(NEXUS)
-        logging.info(  "Subject name : " + subject  )
 
-        # --------------------pyCGM2 MODEL ------------------------------
-        model = files.loadModel(DATA_PATH,subject)
-        modelVersion = model.version
+    subjects = NEXUS.GetSubjectNames()
+    subject = nexusTools.getActiveSubject(NEXUS)
+    logging.info(  "Subject name : " + subject  )
+
+    # --------------------pyCGM2 MODEL ------------------------------
+
+    model = files.loadModel(DATA_PATH,subject)
+
+
+    #-----------------------SETTINGS---------------------------------------
+    normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
+
+    if normativeData["Author"] == "Schwartz2008":
+        chosenModality = normativeData["Modality"]
+    elif normativeData["Author"] == "Pinzone2014":
+        chosenModality = normativeData["Modality"]
+    nds = normativeDatasets.NormativeData(normativeData["Author"],chosenModality)
+
+    consistencyFlag = True if args.consistency else False
+    pointSuffix = args.pointSuffix
+
+
+
+    if not ECLIPSE_MODE:
 
         # btkAcq builder
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,modelledFilenameNoExt,subject)
         acq = nacf.build()
 
-
         # --------------------------PROCESSING --------------------------------
         analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix,
                                                 btkAcqs=[acq])
-
-        if not consistencyFlag:
-            if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-                    #plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None):
-
-            if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-            if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-                pass # TODO plot upperlimb panel
-
-        else:
-            if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds, pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-            if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-                plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=modelledFilename)
-            if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-                pass # TODO plot upperlimb panel
-
+        outputName = modelledFilename
 
     else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+        # --------------------------PROCESSING --------------------------------
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames, pointLabelSuffix=pointSuffix)
+        outputName = "Eclipse - NormalizedKinematics"
+
+
+
+
+    if not consistencyFlag:
+        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+            plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+        if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+            plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+        if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
+            pass # TODO plot upperlimb panel
+
+    else:
+        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+            plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds, pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+        if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
+            plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+        if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
+            pass # TODO plot upperlimb panel
+
 
 if __name__ == "__main__":
 

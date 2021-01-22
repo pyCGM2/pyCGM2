@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-
-# pyCGM2
-#import pyCGM2
 from pyCGM2.Processing import cycle
 
 from pyCGM2.Tools import btkTools
 from pyCGM2.Report import plotUtils
 
 
-from pyCGM2 import btk
+try: 
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
 
 from pyCGM2.EMG import normalActivation
 from pyCGM2.Utils import utils
@@ -46,13 +46,13 @@ def temporalPlot(figAxis,acq,
 
     flag = btkTools.isPointExist(acq,pointLabel)
     if flag:
-        point = acq.GetPoint(utils.str(pointLabel))
+        point = acq.GetPoint(pointLabel)
         lines=figAxis.plot(point.GetValues()[:,axis], '-', color= color)
         appf = 1
     else:
         flag = btkTools.isAnalogExist(acq,pointLabel)
         if flag:
-            analog = acq.GetAnalog(utils.str(pointLabel))
+            analog = acq.GetAnalog(pointLabel)
             lines=figAxis.plot(analog.GetValues()[:,axis], '-', color= color)
             appf = acq.GetNumberAnalogSamplePerFrame()
 

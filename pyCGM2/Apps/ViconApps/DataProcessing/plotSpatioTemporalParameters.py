@@ -46,10 +46,7 @@ import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 # vicon nexus
-try:
-    import ViconNexus
-except:
-    from viconnexusapi import ViconNexus
+from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
 from pyCGM2.Lib import analysis
@@ -58,6 +55,7 @@ from pyCGM2.Report import normativeDatasets
 
 from pyCGM2.Nexus import  nexusTools,nexusFilters
 from pyCGM2.Utils import files
+from pyCGM2.Eclipse import eclipse
 
 def main():
 
@@ -67,33 +65,41 @@ def main():
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix added to pyCGM2 outputs')
     args = parser.parse_args()
 
-
-
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    ECLIPSE_MODE = False
 
-    if NEXUS_PYTHON_CONNECTED:
+    if not NEXUS_PYTHON_CONNECTED:
+        raise Exception("Vicon Nexus is not running")
 
-        pointSuffix = args.pointSuffix
+    pointSuffix = args.pointSuffix
+
+    #--------------------------Data Location and subject-------------------------------------
+    if eclipse.getCurrentMarkedNodes() is not None:
+        logging.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
+        # --- acquisition file and path----
+        DATA_PATH, modelledFilenames =eclipse.getCurrentMarkedNodes()
+        ECLIPSE_MODE = True
+
+    if not ECLIPSE_MODE:
+        logging.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
+
         # --------------------------INPUTS ------------------------------------
         DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
-
 
         modelledFilename = modelledFilenameNoExt+".c3d"
 
         logging.info( "data Path: "+ DATA_PATH )
         logging.info( "file: "+ modelledFilename)
 
-        # ----- Subject -----
-        # need subject to find input files
-        subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.getActiveSubject(NEXUS)
-        logging.info(  "Subject name : " + subject  )
+    # ----- Subject -----
+    # need subject to find input files
+    # subjects = NEXUS.GetSubjectNames()
+    subject = nexusTools.getActiveSubject(NEXUS)
+    logging.info(  "Subject name : " + subject  )
 
-        # --------------------pyCGM2 MODEL ------------------------------
-        model = files.loadModel(DATA_PATH,subject)
-        modelVersion = model.version
 
+    if not ECLIPSE_MODE:
         # btkAcq builder
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,modelledFilenameNoExt,subject)
         acq = nacf.build()
@@ -103,13 +109,17 @@ def main():
         analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix,
                                                 btkAcqs=[acq])
 
-        plot.plot_spatioTemporal(DATA_PATH,analysisInstance,
-            exportPdf=True,
-            outputName=modelledFilename)
-
-
+        outputName = modelledFilename
     else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+        # --------------------------PROCESSING --------------------------------
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames, pointLabelSuffix=pointSuffix)
+        outputName =  "Eclipse - SpatioTemporal parameters"
+
+
+    plot.plot_spatioTemporal(DATA_PATH,analysisInstance,
+        exportPdf=True,
+        outputName=outputName)
+
 
 if __name__ == "__main__":
 
