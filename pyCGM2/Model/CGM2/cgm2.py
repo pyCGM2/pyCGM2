@@ -3,7 +3,7 @@ import numpy as np
 import logging
 import copy
 
-try: 
+try:
     from pyCGM2 import btk
 except:
     logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
@@ -686,7 +686,7 @@ class CGM2_4(CGM2_3):
 
 
             logging.debug(" ------Left-------")
-            if self.mp.has_key("LeftThighRotation") and self.mp["LeftThighRotation"] != 0:
+            if "LeftThighRotation" in self.mp and self.mp["LeftThighRotation"] != 0:
                 self.mp_computed["LeftThighRotationOffset"]= -self.mp["LeftThighRotation"]
 
             else:
@@ -706,7 +706,7 @@ class CGM2_4(CGM2_3):
 
 
             logging.debug(" ------Right-------")
-            if self.mp.has_key("RightThighRotation") and self.mp["RightThighRotation"] != 0:
+            if "RightThighRotation" in self.mp  and self.mp["RightThighRotation"] != 0:
                 self.mp_computed["RightThighRotationOffset"]= self.mp["RightThighRotation"]
             else:
                 self.getThighOffset(side="right")
@@ -738,19 +738,19 @@ class CGM2_4(CGM2_3):
             logging.debug(" ---------------------")
 
             # shakRotation
-            if self.mp.has_key("LeftShankRotation") and self.mp["LeftShankRotation"] != 0:
+            if "LeftShankRotation" in self.mp  and self.mp["LeftShankRotation"] != 0:
                 self.mp_computed["LeftShankRotationOffset"]= -self.mp["LeftShankRotation"]
             else:
                 self.getShankOffsets(side="left")
 
-            if self.mp.has_key("RightShankRotation") and self.mp["RightShankRotation"] != 0:
+            if "RightShankRotation" in self.mp  and self.mp["RightShankRotation"] != 0:
                 self.mp_computed["RightShankRotationOffset"]= self.mp["RightShankRotation"]
             else:
                 self.getShankOffsets(side="right")
 
             # tibial Torsion
 
-            if self.mp.has_key("LeftTibialTorsion") and self.mp["LeftTibialTorsion"] != 0: #   - check if TibialTorsion whithin main mp
+            if "LeftTibialTorsion" in self.mp   and self.mp["LeftTibialTorsion"] != 0: #   - check if TibialTorsion whithin main mp
                 self.mp_computed["LeftTibialTorsionOffset"]= -self.mp["LeftTibialTorsion"]
                 self.m_useLeftTibialTorsion=True
             else:
@@ -760,7 +760,7 @@ class CGM2_4(CGM2_3):
                     self.mp_computed["LeftTibialTorsionOffset"]= 0
 
             #   right
-            if self.mp.has_key("RightTibialTorsion") and self.mp["RightTibialTorsion"] != 0:
+            if "RightTibialTorsion" in self.mp   and self.mp["RightTibialTorsion"] != 0:
                 self.mp_computed["RightTibialTorsionOffset"]= self.mp["RightTibialTorsion"]
                 self.m_useRightTibialTorsion=True
             else:

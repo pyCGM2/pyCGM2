@@ -2,7 +2,7 @@
 import logging
 import numpy as np
 
-try: 
+try:
     from pyCGM2 import btk
 except:
     logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
@@ -48,14 +48,16 @@ class ScoreResidualFilter(object):
     def compute(self):
 
         for nodeLabel in self.scoreProcedure.m_scoreDefinition.keys():
+            try:
+                proxLabel = self.scoreProcedure.m_scoreDefinition[nodeLabel]["proximal"]
+                distLabel = self.scoreProcedure.m_scoreDefinition[nodeLabel]["distal"]
 
-            proxLabel = self.scoreProcedure.m_scoreDefinition[nodeLabel]["proximal"]
-            distLabel = self.scoreProcedure.m_scoreDefinition[nodeLabel]["distal"]
+                proxNode =  self.m_model.getSegment(proxLabel).anatomicalFrame.getNodeTrajectory(nodeLabel)
+                distNode = self.m_model.getSegment(distLabel).anatomicalFrame.getNodeTrajectory(nodeLabel)
+                score = numeric.rms((proxNode-distNode),axis = 1)
 
-            proxNode =  self.m_model.getSegment(proxLabel).anatomicalFrame.getNodeTrajectory(nodeLabel)
-            distNode = self.m_model.getSegment(distLabel).anatomicalFrame.getNodeTrajectory(nodeLabel)
-            score = numeric.rms((proxNode-distNode),axis = 1)
+                scoreValues = np.array([score, np.zeros(self.acq.GetPointFrameNumber()), np.zeros(self.acq.GetPointFrameNumber())]).T
 
-            scoreValues = np.array([score, np.zeros(self.acq.GetPointFrameNumber()), np.zeros(self.acq.GetPointFrameNumber())]).T
-
-            btkTools.smartAppendPoint(self.acq, str(nodeLabel+"_Score"),scoreValues, PointType=btk.btkPoint.Scalar,desc="Score")
+                btkTools.smartAppendPoint(self.acq, str(nodeLabel+"_Score"),scoreValues, PointType=btk.btkPoint.Scalar,desc="Score")
+            except:
+                logging.error("[pyCGM2] Score residual for node (%s) not computed"%(nodeLabel))
