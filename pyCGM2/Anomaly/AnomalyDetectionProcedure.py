@@ -32,9 +32,7 @@ class MarkerAnomalyDetectionRollingProcedure(object):
         for marker in self.m_markers:
             pointValues = acq.GetPoint(marker).GetValues()
 
-            values = pointValues[:,2]
-            #np.linalg.norm(pointValues,axis=1)
-
+            values = np.linalg.norm(pointValues,axis=1)
 
             indices = anomaly.anomaly_rolling(values,
                                         label= marker + " ["+filename+"]",

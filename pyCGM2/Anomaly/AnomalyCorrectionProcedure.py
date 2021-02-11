@@ -50,42 +50,45 @@ class MarkerAnomalyCorrectionProcedure(object):
 
         for marker in self.m_markers:
 
-            indices_frameMatched = self.m_anomalyIndexes[marker]
-            indices = [it-ff for it in indices_frameMatched]
+            if marker in self.m_anomalyIndexes and self.m_anomalyIndexes[marker] !=[]:
+                indices_frameMatched = self.m_anomalyIndexes[marker]
+                indices = [it-ff for it in indices_frameMatched]
 
-            clustering_model = AgglomerativeClustering(distance_threshold=self._distance_threshold, n_clusters=None).fit(np.array(indices).reshape((len(indices),1)))
-            n_clusters = clustering_model.n_clusters_
+                clustering_model = AgglomerativeClustering(distance_threshold=self._distance_threshold, n_clusters=None).fit(np.array(indices).reshape((len(indices),1)))
+                n_clusters = clustering_model.n_clusters_
 
-            # plt.title('Hierarchical Clustering Dendrogram')
-            # # plot the top three levels of the dendrogram
-            # plot_dendrogram(clustering, truncate_mode='level', p=3)
-            # plt.xlabel("Number of points in node (or index of point if no parenthesis).")
-            # plt.show()
-
-
-            pointValues = acq.GetPoint(marker).GetValues()
-            values = np.linalg.norm(pointValues,axis=1)
-            values0 = np.linalg.norm(pointValues,axis=1)
-
-            residualValues = acq.GetPoint(marker).GetResiduals()
+                # plt.title('Hierarchical Clustering Dendrogram')
+                # # plot the top three levels of the dendrogram
+                # plot_dendrogram(clustering, truncate_mode='level', p=3)
+                # plt.xlabel("Number of points in node (or index of point if no parenthesis).")
+                # plt.show()
 
 
-            for i in range(0, n_clusters):
-                beg = indices[np.where(clustering_model.labels_==i)[0][0]]
-                end = indices[np.where(clustering_model.labels_==i)[0][-1]]
-                logging.warning("[pycgm2] correction from %i to %i"%(beg,end))
-                values[beg:end+1]= np.nan
-                residualValues[beg:end+1] = -1.0
+                pointValues = acq.GetPoint(marker).GetValues()
+                values = np.linalg.norm(pointValues,axis=1)
+                values0 = np.linalg.norm(pointValues,axis=1)
 
-            acq.GetPoint(marker).SetResiduals(residualValues)
-            acq.GetPoint(marker).SetValues(pointValues)
+                residualValues = acq.GetPoint(marker).GetResiduals()
 
-            if self._plot:
-                fig, axs = plt.subplots(1)
-                fig.suptitle('trajectory of marker %s'%(marker))
-                axs.plot(values0)
-                axs.plot(values,"-r")
-                # axs.set_ylim([2040,2100])
-                plt.show()
+
+                for i in range(0, n_clusters):
+                    beg = indices[np.where(clustering_model.labels_==i)[0][0]]
+                    end = indices[np.where(clustering_model.labels_==i)[0][-1]]
+                    logging.warning("[pycgm2] correction from %i to %i"%(beg,end))
+                    values[beg:end+1]= np.nan
+                    residualValues[beg:end+1] = -1.0
+
+                acq.GetPoint(marker).SetResiduals(residualValues)
+                acq.GetPoint(marker).SetValues(pointValues)
+
+                if self._plot:
+                    fig, axs = plt.subplots(1)
+                    fig.suptitle('trajectory of marker %s'%(marker))
+                    axs.plot(values0)
+                    axs.plot(values,"-r")
+                    # axs.set_ylim([2040,2100])
+                    plt.show()
+            else:
+                logging.info("[pyCGM2] -  No anomalies detected for marker %s"%marker)
 
         return acq

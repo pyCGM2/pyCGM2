@@ -4,14 +4,27 @@ import numpy as np
 import matplotlib.pyplot as plt
 import logging
 
+
 figsize = (7, 2.75)
 kw = dict(marker='o', linestyle='none', color='r', alpha=0.3)
 
+def rolling_window(a, window):
+    pad = np.ones(len(a.shape), dtype=np.int32)
+    pad[-1] = window-1
+    pad = list(zip(pad, np.zeros(len(a.shape), dtype=np.int32)))
+    a = np.pad(a, pad,mode='reflect')
+    shape = a.shape[:-1] + (a.shape[-1] - window+1 , window)
+    strides = a.strides + (a.strides[-1],)
+    return np.lib.stride_tricks.as_strided(a, shape=shape, strides=strides)
 
 
 def anomaly_rolling(values,window=10 , threshold = 3, method = "median", plot=False,label="Unknow"):
 
+    # values_augm = np.concatenate((np.flip(values[0:window-1]),values))
+
     df = pd.DataFrame({'Values': values})
+
+
     df["Values0"] = df["Values"]
     indices0 = list()
 
@@ -20,12 +33,15 @@ def anomaly_rolling(values,window=10 , threshold = 3, method = "median", plot=Fa
         logging.warning('[pyCGM2]  zeros found for label [%s]'%(label))
         outlier0_idx =  df.Values == 0
         indices0 = df['Values'][df["Values"] == 0].index.to_list()
-        df["Values"] = df.Values.replace(0, np.nan).fillna(method='ffill')
+        df["Values"] = df.Values.replace(0, np.nan)#.fillna(method='ffill')
 
     if method == "median":
-        df['rolling'] = df['Values'].rolling(window=window, center=True).median().fillna(method='bfill').fillna(method='ffill')
+        df['rolling'] = df['Values'].rolling(window=window, center=True).median()#.fillna(df["Values"])
+
+
     elif method == "mean":
-        df['rolling'] = df['Values'].rolling(window=window, center=True).mean().fillna(method='bfill').fillna(method='ffill')
+        df['rolling'] = df['Values'].rolling(window=window, center=True).mean()#.fillna(df["Values"])
+
 
     difference = np.abs(df['Values'] - df['rolling'])
     outlier_idx = difference > threshold
