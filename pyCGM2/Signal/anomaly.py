@@ -18,7 +18,7 @@ def rolling_window(a, window):
     return np.lib.stride_tricks.as_strided(a, shape=shape, strides=strides)
 
 
-def anomaly_rolling(values,window=10 , threshold = 3, method = "median", plot=False,label="Unknow"):
+def anomaly_rolling(values, aprioriError = 0, window=10 , threshold = 3, method = "median", plot=False,label="Unknow",referenceValues = None):
 
     # values_augm = np.concatenate((np.flip(values[0:window-1]),values))
 
@@ -35,16 +35,27 @@ def anomaly_rolling(values,window=10 , threshold = 3, method = "median", plot=Fa
         indices0 = df['Values'][df["Values"] == 0].index.to_list()
         df["Values"] = df.Values.replace(0, np.nan)#.fillna(method='ffill')
 
+    df["Values_upper"] = df["Values"] + aprioriError # np.random.random()*3
+    df["Values_lower"] = df["Values"] - aprioriError # np.random.random()*3
+
     if method == "median":
         df['rolling'] = df['Values'].rolling(window=window, center=True).median()#.fillna(df["Values"])
-
 
     elif method == "mean":
         df['rolling'] = df['Values'].rolling(window=window, center=True).mean()#.fillna(df["Values"])
 
+    if referenceValues is not None:
+        df['rolling'] = referenceValues
+
 
     difference = np.abs(df['Values'] - df['rolling'])
     outlier_idx = difference > threshold
+
+    difference_p3 = np.abs(df['Values_upper'] - df['rolling'])
+    difference_m3 = np.abs(df['Values_lower'] - df['rolling'])
+    outlier_idx_p3 = difference_p3 > threshold
+    outlier_idx_m3 = difference_m3 > threshold
+    outlier_idx = outlier_idx_m3.replace(True, np.nan).fillna(outlier_idx_p3.replace(True,np.nan)).replace(np.nan,True).replace(0,False)
 
     indexes = []
     if np.any(outlier_idx.values) != False:
