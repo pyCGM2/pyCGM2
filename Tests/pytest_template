@@ -1,10 +1,10 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings  test_btkTools.py::Test_Btk::test_btkReaderWriter
+# pytest -s --disable-pytest-warnings  test_??moduleName??.py::Test_??className??::test_??methodName??
 
-from __future__ import unicode_literals
+
 import pytest
 import numpy as np
 
 
-class Test_????:
-    def test_????(self):
+class Test_??className??:
+    def test_??methodName??(self):
