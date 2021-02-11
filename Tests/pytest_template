@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings  test_??moduleName??.py::Test_??className??::test_??methodName??
+# pytest -s --log-cli-level=INFO --disable-pytest-warnings  test_??moduleName??.py::Test_??className??::test_??methodName??
 
 
 import pytest
