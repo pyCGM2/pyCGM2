@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings  test_anomalies.py::Test_markerAnomalies::test_noAnomalies_gaitCGM1
+# pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_anomalies.py::Test_markerAnomalies::test_noAnomalies_gaitCGM1
 import logging
 
 import pyCGM2
@@ -18,12 +18,12 @@ class Test_markerAnomalies:
         acq = btkTools.smartReader(filename)
 
         madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( markers, plot=False, window=10,threshold = 3)
-        adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename,madp)
+        adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename[filename.rfind("/")+1:],madp)
         anomalyIndexes = adf.run()
 
 
         macp = AnomalyCorrectionProcedure.MarkerAnomalyCorrectionProcedure(markers,anomalyIndexes,plot=False,distance_threshold=20)
-        acf = AnomalyFilter.AnomalyCorrectionFilter(acq,filename,macp)
+        acf = AnomalyFilter.AnomalyCorrectionFilter(acq,filename[filename.rfind("/")+1:],macp)
         acqo = acf.run()
 
 
@@ -35,9 +35,37 @@ class Test_markerAnomalies:
         acq = btkTools.smartReader(filename)
 
         madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( markers, plot=True, window=10)
-        adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename,madp)
+        adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename[filename.rfind("/")+1:],madp)
         anomalyIndexes = adf.run()
 
         macp = AnomalyCorrectionProcedure.MarkerAnomalyCorrectionProcedure(markers,anomalyIndexes,plot=True,distance_threshold=20)
-        acf = AnomalyFilter.AnomalyCorrectionFilter(acq,filename,macp)
+        acf = AnomalyFilter.AnomalyCorrectionFilter(acq,filename[filename.rfind("/")+1:],macp)
         acqo = acf.run()
+
+
+class Test_eventsAnomalies:
+    def test_gaitEventsAnomalies(self):
+
+        filename = pyCGM2.TEST_DATA_PATH+"/LowLevel/anomalies/gaitEvents/gait Trial 01-noAnomalies.c3d"
+        acq = btkTools.smartReader(filename)
+        madp = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
+        adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename,madp)
+
+        filename = pyCGM2.TEST_DATA_PATH+"/LowLevel/anomalies/gaitEvents/gait Trial 01-noEvents.c3d"
+        acq = btkTools.smartReader(filename)
+
+        madp = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
+        adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename[filename.rfind("/")+1:],madp)
+        adf.run()
+
+        filename = pyCGM2.TEST_DATA_PATH+"/LowLevel/anomalies/gaitEvents/gait Trial 01-LeftDoubleFS_anomalies.c3d"
+        acq = btkTools.smartReader(filename)
+        madp = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
+        adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename[filename.rfind("/")+1:],madp)
+        adf.run()
+
+        filename = pyCGM2.TEST_DATA_PATH+"/LowLevel/anomalies/gaitEvents/gait Trial 01-LeftDoubleFO_anomalies.c3d"
+        acq = btkTools.smartReader(filename)
+        madp = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
+        adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename[filename.rfind("/")+1:],madp)
+        adf.run()

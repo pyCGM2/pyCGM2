@@ -10,6 +10,12 @@ import numpy as np
 import logging
 
 
+try:
+    from pyCGM2 import btk
+except:
+    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
+
 class MarkerAnomalyDetectionRollingProcedure(object):
     def __init__(self,markers,plot=False,**options):
 
@@ -93,3 +99,61 @@ class MarkerAnomalyDetectionRollingProcedure(object):
                 logging.warning("[pyCGM2] marker %s [file : %s]- anomalies found at %s"% (marker,filename,indices_frameMatchedAll))
             out[marker] = indices_frameMatchedAll
         return out
+
+
+class GaitEventAnomalyProcedure(object):
+    def __init__(self):
+        pass
+
+    def run(self,acq,filename):
+
+        events = acq.GetEvents()
+        if events.GetItemNumber() != 0:
+
+            events_L = list()
+            events_R = list()
+            for ev in btk.Iterate(events):
+
+                if ev.GetContext() == "Left":
+                    events_L.append(ev)
+                if ev.GetContext() == "Right":
+                    events_R.append(ev)
+
+
+            if events_L!=[] and events_R!=[]:
+                labels = [it.GetLabel() for it in btk.Iterate(events) if it.GetLabel() in ["Foot Strike","Foot Off"]]
+                frames = [it.GetFrame() for it in btk.Iterate(events) if it.GetLabel() in ["Foot Strike","Foot Off"]]
+
+                init = labels[0]
+                for i in range(1,len(labels)):
+                    label = labels[i]
+                    frame = frames[i]
+                    if label == init:
+                        logging.error("[pyCGM2] file (%s) - two consecutive (%s) detected at frame (%i)"%(filename,(label),frame))
+
+                    init = label
+
+            if events_L!=[]:
+                init = events_L[0].GetLabel()
+                if len(events_L)>1:
+                    for i in range(1,len(events_L)):
+                        label = events_L[i].GetLabel()
+                        if label == init:
+                            logging.error("[pyCGM2] file (%s) - Wrong Left Event - two consecutive (%s) detected at frane (%i)"%(filename,(label),events_L[i].GetFrame()) )
+                        init = label
+                else:
+                    logging.warning("Only one left events")
+
+            if events_R!=[]:
+                init = events_R[0].GetLabel()
+                if len(events_R)>1:
+                    for i in range(1,len(events_R)):
+                        label = events_R[i].GetLabel()
+                        if label == init:
+                            logging.error("[pyCGM2] file (%s) - Wrong Right Event - two consecutive (%s) detected at frane (%i)"%(filename,(label),events_R[i].GetFrame()) )
+                        init = label
+                else:
+                    logging.warning("Only one right events ")
+
+        else:
+            logging.error("[pyCGM2-Checking] No events are in trial (%s)"%(filename))
