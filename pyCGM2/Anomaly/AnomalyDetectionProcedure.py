@@ -16,8 +16,21 @@ except:
     logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
-class MarkerAnomalyDetectionRollingProcedure(object):
+
+
+class AbstractDetectionProcedure(object):
+    def __init__(self):
+        pass
+
+    def run(self,acq,filename):
+        pass
+
+
+
+class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
     def __init__(self,markers,plot=False,**options):
+
+        super(MarkerAnomalyDetectionRollingProcedure, self).__init__()
 
         if type(markers) == str:
             markers = [markers]
@@ -101,9 +114,10 @@ class MarkerAnomalyDetectionRollingProcedure(object):
         return out
 
 
-class GaitEventAnomalyProcedure(object):
+class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
     def __init__(self):
-        pass
+
+        super(GaitEventAnomalyProcedure, self).__init__()
 
     def run(self,acq,filename):
 
@@ -157,3 +171,32 @@ class GaitEventAnomalyProcedure(object):
 
         else:
             logging.error("[pyCGM2-Checking] No events are in trial (%s)"%(filename))
+
+
+
+class ForcePlateAnomalyProcedure(object):
+    def __init__(self):
+        super(ForcePlateAnomalyProcedure, self).__init__()
+
+    def run(self,acq,filename):
+
+        # --- ground reaction force wrench ---
+        pfe = btk.btkForcePlatformsExtractor()
+        grwf = btk.btkGroundReactionWrenchFilter()
+        pfe.SetInput(acq)
+        pfc = pfe.GetOutput()
+        grwf.SetInput(pfc)
+        grwc = grwf.GetOutput()
+        grwc.Update()
+
+        fp_counter = 1
+        for fpIt in btk.Iterate(grwc):
+            force_Z = fpIt.GetForce().GetValues()[:,2]
+
+            max =  np.max(force_Z)
+            indexes = np.where(force_Z == max)
+
+            if indexes[0].shape[0] > 1:
+                logging.warning ("[pyCGM2] - check Force plate (%s) of file [%s] - signal Fz seems saturating" %(str(fp_counter),filename))
+
+            fp_counter +=1
