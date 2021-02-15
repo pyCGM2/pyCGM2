@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_anomalies.py::Test_markerAnomalies::test_noAnomalies_gaitCGM1
+# pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_anomalies.py::Test_markerAnomalies::test_anomalies
 import logging
 
 import pyCGM2
@@ -34,7 +34,7 @@ class Test_markerAnomalies:
 
         acq = btkTools.smartReader(filename)
 
-        madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( markers, plot=True, window=10)
+        madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( markers, plot=False, window=10)
         adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename[filename.rfind("/")+1:],madp)
         anomalyIndexes = adf.run()
 
