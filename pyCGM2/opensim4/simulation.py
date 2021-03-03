@@ -7,7 +7,6 @@
 
 
 
-
 from sys import version_info
 if version_info >= (2, 7, 0):
     def swig_import_helper():
@@ -330,8 +329,13 @@ class SwigPyIterator(_object):
 SwigPyIterator_swigregister = _simulation.SwigPyIterator_swigregister
 SwigPyIterator_swigregister(SwigPyIterator)
 
-import opensim.common
-import opensim.simbody
+# import common
+# import opensim.simbody
+from pyCGM2 import opensim4
+from pyCGM2.opensim4 import common
+from pyCGM2.opensim4 import simbody
+
+
 class _StdVectorState(_object):
     """Proxy of C++ std::vector<(SimTK::State)> class."""
 
@@ -809,15 +813,15 @@ class _StdVectorState(_object):
 _StdVectorState_swigregister = _simulation._StdVectorState_swigregister
 _StdVectorState_swigregister(_StdVectorState)
 
-class SurfaceProperties(opensim.common.OpenSimObject):
+class SurfaceProperties(common.OpenSimObject):
     """Proxy of C++ OpenSim::SurfaceProperties class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SurfaceProperties, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SurfaceProperties, name)
     __repr__ = _swig_repr
@@ -1099,15 +1103,15 @@ def SurfaceProperties_getClassName():
     """SurfaceProperties_getClassName() -> std::string const &"""
     return _simulation.SurfaceProperties_getClassName()
 
-class Appearance(opensim.common.OpenSimObject):
+class Appearance(common.OpenSimObject):
     """Proxy of C++ OpenSim::Appearance class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Appearance, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Appearance, name)
     __repr__ = _swig_repr
@@ -1582,15 +1586,15 @@ def Appearance_getClassName():
     """Appearance_getClassName() -> std::string const &"""
     return _simulation.Appearance_getClassName()
 
-class Geometry(opensim.common.Component):
+class Geometry(common.Component):
     """Proxy of C++ OpenSim::Geometry class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.Component]:
+    for _s in [common.Component]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Geometry, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.Component]:
+    for _s in [common.Component]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Geometry, name)
 
@@ -4876,15 +4880,15 @@ def FrameGeometry_getClassName():
     """FrameGeometry_getClassName() -> std::string const &"""
     return _simulation.FrameGeometry_getClassName()
 
-class ModelComponent(opensim.common.Component):
+class ModelComponent(common.Component):
     """Proxy of C++ OpenSim::ModelComponent class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.Component]:
+    for _s in [common.Component]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ModelComponent, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.Component]:
+    for _s in [common.Component]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ModelComponent, name)
 
@@ -5727,15 +5731,15 @@ def ComponentSet_getClassName():
     """ComponentSet_getClassName() -> std::string const &"""
     return _simulation.ComponentSet_getClassName()
 
-class SetMuscles(opensim.common.OpenSimObject):
+class SetMuscles(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::Muscle,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetMuscles, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetMuscles, name)
     __repr__ = _swig_repr
@@ -6199,15 +6203,15 @@ def SetMuscles_getClassName():
     """SetMuscles_getClassName() -> std::string const &"""
     return _simulation.SetMuscles_getClassName()
 
-class Solver(opensim.common.OpenSimObject):
+class Solver(common.OpenSimObject):
     """Proxy of C++ OpenSim::Solver class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Solver, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Solver, name)
 
@@ -11120,15 +11124,15 @@ def BodySet_getClassName():
     """BodySet_getClassName() -> std::string const &"""
     return _simulation.BodySet_getClassName()
 
-class BodyScale(opensim.common.OpenSimObject):
+class BodyScale(common.OpenSimObject):
     """Proxy of C++ OpenSim::BodyScale class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, BodyScale, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, BodyScale, name)
     __repr__ = _swig_repr
@@ -11259,15 +11263,15 @@ def BodyScale_getClassName():
     """BodyScale_getClassName() -> std::string const &"""
     return _simulation.BodyScale_getClassName()
 
-class SetBodyScales(opensim.common.OpenSimObject):
+class SetBodyScales(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::BodyScale,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetBodyScales, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetBodyScales, name)
     __repr__ = _swig_repr
@@ -11839,15 +11843,15 @@ def BodyScaleSet_getClassName():
     """BodyScaleSet_getClassName() -> std::string const &"""
     return _simulation.BodyScaleSet_getClassName()
 
-class SimbodyEngine(opensim.common.OpenSimObject):
+class SimbodyEngine(common.OpenSimObject):
     """Proxy of C++ OpenSim::SimbodyEngine class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SimbodyEngine, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SimbodyEngine, name)
     __repr__ = _swig_repr
@@ -12399,15 +12403,15 @@ def SimbodyEngine_getClassName():
     """SimbodyEngine_getClassName() -> std::string const &"""
     return _simulation.SimbodyEngine_getClassName()
 
-class TransformAxis(opensim.common.OpenSimObject):
+class TransformAxis(common.OpenSimObject):
     """Proxy of C++ OpenSim::TransformAxis class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, TransformAxis, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, TransformAxis, name)
     __repr__ = _swig_repr
@@ -12921,15 +12925,15 @@ def TransformAxis_getClassName():
     """TransformAxis_getClassName() -> std::string const &"""
     return _simulation.TransformAxis_getClassName()
 
-class SpatialTransform(opensim.common.OpenSimObject):
+class SpatialTransform(common.OpenSimObject):
     """Proxy of C++ OpenSim::SpatialTransform class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SpatialTransform, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SpatialTransform, name)
     __repr__ = _swig_repr
@@ -14914,15 +14918,15 @@ def Coordinate_getClassName():
     """Coordinate_getClassName() -> std::string const &"""
     return _simulation.Coordinate_getClassName()
 
-class SetCoordinates(opensim.common.OpenSimObject):
+class SetCoordinates(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::Coordinate,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetCoordinates, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetCoordinates, name)
     __repr__ = _swig_repr
@@ -15520,15 +15524,15 @@ def CoordinateSet_getClassName():
     """CoordinateSet_getClassName() -> std::string const &"""
     return _simulation.CoordinateSet_getClassName()
 
-class JointFramesAreTheSame(opensim.common.OpenSimException):
+class JointFramesAreTheSame(common.OpenSimException):
     """Proxy of C++ OpenSim::JointFramesAreTheSame class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, JointFramesAreTheSame, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, JointFramesAreTheSame, name)
     __repr__ = _swig_repr
@@ -15969,15 +15973,15 @@ def Joint_getClassName():
     """Joint_getClassName() -> std::string const &"""
     return _simulation.Joint_getClassName()
 
-class JointHasNoCoordinates(opensim.common.OpenSimException):
+class JointHasNoCoordinates(common.OpenSimException):
     """Proxy of C++ OpenSim::JointHasNoCoordinates class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, JointHasNoCoordinates, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, JointHasNoCoordinates, name)
     __repr__ = _swig_repr
@@ -31304,15 +31308,15 @@ def ScalarActuator_getClassName():
     """ScalarActuator_getClassName() -> std::string const &"""
     return _simulation.ScalarActuator_getClassName()
 
-class SetActuators(opensim.common.OpenSimObject):
+class SetActuators(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::Actuator,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetActuators, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetActuators, name)
     __repr__ = _swig_repr
@@ -31776,15 +31780,15 @@ def SetActuators_getClassName():
     """SetActuators_getClassName() -> std::string const &"""
     return _simulation.SetActuators_getClassName()
 
-class Analysis(opensim.common.OpenSimObject):
+class Analysis(common.OpenSimObject):
     """Proxy of C++ OpenSim::Analysis class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Analysis, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Analysis, name)
 
@@ -32169,15 +32173,15 @@ def Analysis_getClassName():
     """Analysis_getClassName() -> std::string const &"""
     return _simulation.Analysis_getClassName()
 
-class SetAnalysis(opensim.common.OpenSimObject):
+class SetAnalysis(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::Analysis,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetAnalysis, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetAnalysis, name)
     __repr__ = _swig_repr
@@ -32912,15 +32916,15 @@ def AnalysisSet_getAvailableAnalyses(analysisset):
     """
     return _simulation.AnalysisSet_getAvailableAnalyses(analysisset)
 
-class Control(opensim.common.OpenSimObject):
+class Control(common.OpenSimObject):
     """Proxy of C++ OpenSim::Control class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Control, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Control, name)
 
@@ -33397,15 +33401,15 @@ def Control_getClassName():
     """Control_getClassName() -> std::string const &"""
     return _simulation.Control_getClassName()
 
-class SetControls(opensim.common.OpenSimObject):
+class SetControls(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::Control,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetControls, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetControls, name)
     __repr__ = _swig_repr
@@ -34616,15 +34620,15 @@ def ControlConstant_getClassName():
     """ControlConstant_getClassName() -> std::string const &"""
     return _simulation.ControlConstant_getClassName()
 
-class ControlLinearNode(opensim.common.OpenSimObject):
+class ControlLinearNode(common.OpenSimObject):
     """Proxy of C++ OpenSim::ControlLinearNode class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ControlLinearNode, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ControlLinearNode, name)
     __repr__ = _swig_repr
@@ -36546,15 +36550,15 @@ class Manager(_object):
 Manager_swigregister = _simulation.Manager_swigregister
 Manager_swigregister(Manager)
 
-class AbstractTool(opensim.common.OpenSimObject):
+class AbstractTool(common.OpenSimObject):
     """Proxy of C++ OpenSim::AbstractTool class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, AbstractTool, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, AbstractTool, name)
 
@@ -40382,15 +40386,15 @@ def PathWrap_getClassName():
     """PathWrap_getClassName() -> std::string const &"""
     return _simulation.PathWrap_getClassName()
 
-class SetPathWrap(opensim.common.OpenSimObject):
+class SetPathWrap(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::PathWrap,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetPathWrap, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetPathWrap, name)
     __repr__ = _swig_repr
@@ -47716,15 +47720,15 @@ def Bhargava2004MuscleMetabolicsProbe_getClassName():
     """Bhargava2004MuscleMetabolicsProbe_getClassName() -> std::string const &"""
     return _simulation.Bhargava2004MuscleMetabolicsProbe_getClassName()
 
-class Bhargava2004MuscleMetabolicsProbe_MetabolicMuscleParameter(opensim.common.OpenSimObject):
+class Bhargava2004MuscleMetabolicsProbe_MetabolicMuscleParameter(common.OpenSimObject):
     """Proxy of C++ OpenSim::Bhargava2004MuscleMetabolicsProbe_MetabolicMuscleParameter class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Bhargava2004MuscleMetabolicsProbe_MetabolicMuscleParameter, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Bhargava2004MuscleMetabolicsProbe_MetabolicMuscleParameter, name)
     __repr__ = _swig_repr
@@ -50396,15 +50400,15 @@ def Umberger2010MuscleMetabolicsProbe_getClassName():
     """Umberger2010MuscleMetabolicsProbe_getClassName() -> std::string const &"""
     return _simulation.Umberger2010MuscleMetabolicsProbe_getClassName()
 
-class Umberger2010MuscleMetabolicsProbe_MetabolicMuscleParameter(opensim.common.OpenSimObject):
+class Umberger2010MuscleMetabolicsProbe_MetabolicMuscleParameter(common.OpenSimObject):
     """Proxy of C++ OpenSim::Umberger2010MuscleMetabolicsProbe_MetabolicMuscleParameter class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Umberger2010MuscleMetabolicsProbe_MetabolicMuscleParameter, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Umberger2010MuscleMetabolicsProbe_MetabolicMuscleParameter, name)
     __repr__ = _swig_repr
@@ -51102,15 +51106,15 @@ def Umberger2010MuscleMetabolicsProbe_MetabolicMuscleParameterSet_getClassName()
     """Umberger2010MuscleMetabolicsProbe_MetabolicMuscleParameterSet_getClassName() -> std::string const &"""
     return _simulation.Umberger2010MuscleMetabolicsProbe_MetabolicMuscleParameterSet_getClassName()
 
-class ModelVisualPreferences(opensim.common.OpenSimObject):
+class ModelVisualPreferences(common.OpenSimObject):
     """Proxy of C++ OpenSim::ModelVisualPreferences class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ModelVisualPreferences, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ModelVisualPreferences, name)
     __repr__ = _swig_repr
@@ -51454,15 +51458,15 @@ def ModelVisualizer_addDirToGeometrySearchPaths(dir):
     """
     return _simulation.ModelVisualizer_addDirToGeometrySearchPaths(dir)
 
-class ModelHasNoSystem(opensim.common.OpenSimException):
+class ModelHasNoSystem(common.OpenSimException):
     """Proxy of C++ OpenSim::ModelHasNoSystem class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ModelHasNoSystem, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ModelHasNoSystem, name)
     __repr__ = _swig_repr
@@ -51489,15 +51493,15 @@ class ModelHasNoSystem(opensim.common.OpenSimException):
 ModelHasNoSystem_swigregister = _simulation.ModelHasNoSystem_swigregister
 ModelHasNoSystem_swigregister(ModelHasNoSystem)
 
-class PhysicalOffsetFramesFormLoop(opensim.common.OpenSimException):
+class PhysicalOffsetFramesFormLoop(common.OpenSimException):
     """Proxy of C++ OpenSim::PhysicalOffsetFramesFormLoop class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, PhysicalOffsetFramesFormLoop, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, PhysicalOffsetFramesFormLoop, name)
     __repr__ = _swig_repr
@@ -51525,15 +51529,15 @@ class PhysicalOffsetFramesFormLoop(opensim.common.OpenSimException):
 PhysicalOffsetFramesFormLoop_swigregister = _simulation.PhysicalOffsetFramesFormLoop_swigregister
 PhysicalOffsetFramesFormLoop_swigregister(PhysicalOffsetFramesFormLoop)
 
-class JointFramesHaveSameBaseFrame(opensim.common.OpenSimException):
+class JointFramesHaveSameBaseFrame(common.OpenSimException):
     """Proxy of C++ OpenSim::JointFramesHaveSameBaseFrame class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, JointFramesHaveSameBaseFrame, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, JointFramesHaveSameBaseFrame, name)
     __repr__ = _swig_repr
@@ -56746,15 +56750,15 @@ def MovingPathPoint_getClassName():
     """MovingPathPoint_getClassName() -> std::string const &"""
     return _simulation.MovingPathPoint_getClassName()
 
-class SetOfPathPoints(opensim.common.OpenSimObject):
+class SetOfPathPoints(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::AbstractPathPoint)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetOfPathPoints, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetOfPathPoints, name)
     __repr__ = _swig_repr
@@ -59610,15 +59614,15 @@ def PathActuator_getClassName():
     """PathActuator_getClassName() -> std::string const &"""
     return _simulation.PathActuator_getClassName()
 
-class MuscleCannotEquilibrate(opensim.common.OpenSimException):
+class MuscleCannotEquilibrate(common.OpenSimException):
     """Proxy of C++ OpenSim::MuscleCannotEquilibrate class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, MuscleCannotEquilibrate, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, MuscleCannotEquilibrate, name)
     __repr__ = _swig_repr
@@ -67226,15 +67230,15 @@ def ExpressionBasedBushingForce_getClassName():
     """ExpressionBasedBushingForce_getClassName() -> std::string const &"""
     return _simulation.ExpressionBasedBushingForce_getClassName()
 
-class ReferenceVec3(opensim.common.OpenSimObject):
+class ReferenceVec3(common.OpenSimObject):
     """Proxy of C++ OpenSim::Reference_<(SimTK::Vec3)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ReferenceVec3, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ReferenceVec3, name)
 
@@ -67390,15 +67394,15 @@ def ReferenceVec3_getClassName():
     """ReferenceVec3_getClassName() -> std::string const &"""
     return _simulation.ReferenceVec3_getClassName()
 
-class ReferenceDouble(opensim.common.OpenSimObject):
+class ReferenceDouble(common.OpenSimObject):
     """Proxy of C++ OpenSim::Reference_<(double)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ReferenceDouble, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ReferenceDouble, name)
 
@@ -67554,15 +67558,15 @@ def ReferenceDouble_getClassName():
     """ReferenceDouble_getClassName() -> std::string const &"""
     return _simulation.ReferenceDouble_getClassName()
 
-class ReferenceRotation(opensim.common.OpenSimObject):
+class ReferenceRotation(common.OpenSimObject):
     """Proxy of C++ OpenSim::Reference_<(SimTK::Rotation_<(double)>)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ReferenceRotation, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ReferenceRotation, name)
 
@@ -68272,15 +68276,15 @@ class SimTKArrayCoordinateReference(_object):
 SimTKArrayCoordinateReference_swigregister = _simulation.SimTKArrayCoordinateReference_swigregister
 SimTKArrayCoordinateReference_swigregister(SimTKArrayCoordinateReference)
 
-class UnsupportedFileType(opensim.common.OpenSimException):
+class UnsupportedFileType(common.OpenSimException):
     """Proxy of C++ OpenSim::UnsupportedFileType class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, UnsupportedFileType, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimException]:
+    for _s in [common.OpenSimException]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, UnsupportedFileType, name)
     __repr__ = _swig_repr
@@ -68308,15 +68312,15 @@ class UnsupportedFileType(opensim.common.OpenSimException):
 UnsupportedFileType_swigregister = _simulation.UnsupportedFileType_swigregister
 UnsupportedFileType_swigregister(UnsupportedFileType)
 
-class MarkerWeight(opensim.common.OpenSimObject):
+class MarkerWeight(common.OpenSimObject):
     """Proxy of C++ OpenSim::MarkerWeight class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, MarkerWeight, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, MarkerWeight, name)
     __repr__ = _swig_repr
@@ -69003,15 +69007,15 @@ def MarkersReference_getClassName():
     """MarkersReference_getClassName() -> std::string const &"""
     return _simulation.MarkersReference_getClassName()
 
-class SetMarkerWeights(opensim.common.OpenSimObject):
+class SetMarkerWeights(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(MarkerWeight,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetMarkerWeights, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetMarkerWeights, name)
     __repr__ = _swig_repr
@@ -69707,15 +69711,15 @@ def CoordinateReference_getClassName():
     """CoordinateReference_getClassName() -> std::string const &"""
     return _simulation.CoordinateReference_getClassName()
 
-class SetOientationWeights(opensim.common.OpenSimObject):
+class SetOientationWeights(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OrientationWeight,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetOientationWeights, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetOientationWeights, name)
     __repr__ = _swig_repr
@@ -70179,15 +70183,15 @@ def SetOientationWeights_getClassName():
     """SetOientationWeights_getClassName() -> std::string const &"""
     return _simulation.SetOientationWeights_getClassName()
 
-class OrientationWeight(opensim.common.OpenSimObject):
+class OrientationWeight(common.OpenSimObject):
     """Proxy of C++ OpenSim::OrientationWeight class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, OrientationWeight, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, OrientationWeight, name)
     __repr__ = _swig_repr
@@ -71372,15 +71376,15 @@ class InverseKinematicsSolver(AssemblySolver):
 InverseKinematicsSolver_swigregister = _simulation.InverseKinematicsSolver_swigregister
 InverseKinematicsSolver_swigregister(InverseKinematicsSolver)
 
-class IMUPlacer(opensim.common.OpenSimObject):
+class IMUPlacer(common.OpenSimObject):
     """Proxy of C++ OpenSim::IMUPlacer class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, IMUPlacer, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, IMUPlacer, name)
     __repr__ = _swig_repr
@@ -72216,15 +72220,15 @@ def OpenSenseUtilities_formTransformFromPoints(op, xp, yp):
     """
     return _simulation.OpenSenseUtilities_formTransformFromPoints(op, xp, yp)
 
-class IMUInverseKinematicsTool(opensim.common.OpenSimObject):
+class IMUInverseKinematicsTool(common.OpenSimObject):
     """Proxy of C++ OpenSim::IMUInverseKinematicsTool class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, IMUInverseKinematicsTool, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, IMUInverseKinematicsTool, name)
     __repr__ = _swig_repr
@@ -73508,15 +73512,15 @@ class IteratorRangeStatesTrajectoryIterator(_object):
 IteratorRangeStatesTrajectoryIterator_swigregister = _simulation.IteratorRangeStatesTrajectoryIterator_swigregister
 IteratorRangeStatesTrajectoryIterator_swigregister(IteratorRangeStatesTrajectoryIterator)
 
-class StatesTrajectoryReporter(opensim.common.AbstractReporter):
+class StatesTrajectoryReporter(common.AbstractReporter):
     """Proxy of C++ OpenSim::StatesTrajectoryReporter class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.AbstractReporter]:
+    for _s in [common.AbstractReporter]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, StatesTrajectoryReporter, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.AbstractReporter]:
+    for _s in [common.AbstractReporter]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, StatesTrajectoryReporter, name)
     __repr__ = _swig_repr
@@ -73790,7 +73794,7 @@ class FrameList(_object):
             try:
                 ConcreteClass = getattr(opensim_pkg, component.getConcreteClassName())
                 concrete_component = ConcreteClass.safeDownCast(component)
-                yield concrete_component 
+                yield concrete_component
             except:
                 yield component
             it.next()
@@ -75130,7 +75134,7 @@ class BodyList(_object):
             try:
                 ConcreteClass = getattr(opensim_pkg, component.getConcreteClassName())
                 concrete_component = ConcreteClass.safeDownCast(component)
-                yield concrete_component 
+                yield concrete_component
             except:
                 yield component
             it.next()
@@ -76638,7 +76642,7 @@ class MuscleList(_object):
             try:
                 ConcreteClass = getattr(opensim_pkg, component.getConcreteClassName())
                 concrete_component = ConcreteClass.safeDownCast(component)
-                yield concrete_component 
+                yield concrete_component
             except:
                 yield component
             it.next()
@@ -78934,7 +78938,7 @@ class ModelComponentList(_object):
             try:
                 ConcreteClass = getattr(opensim_pkg, component.getConcreteClassName())
                 concrete_component = ConcreteClass.safeDownCast(component)
-                yield concrete_component 
+                yield concrete_component
             except:
                 yield component
             it.next()
@@ -79992,7 +79996,7 @@ class JointList(_object):
             try:
                 ConcreteClass = getattr(opensim_pkg, component.getConcreteClassName())
                 concrete_component = ConcreteClass.safeDownCast(component)
-                yield concrete_component 
+                yield concrete_component
             except:
                 yield component
             it.next()
@@ -81198,7 +81202,7 @@ class ActuatorList(_object):
             try:
                 ConcreteClass = getattr(opensim_pkg, component.getConcreteClassName())
                 concrete_component = ConcreteClass.safeDownCast(component)
-                yield concrete_component 
+                yield concrete_component
             except:
                 yield component
             it.next()
@@ -82315,15 +82319,15 @@ class ActuatorIterator(_object):
 ActuatorIterator_swigregister = _simulation.ActuatorIterator_swigregister
 ActuatorIterator_swigregister(ActuatorIterator)
 
-class ActiveForceLengthCurve(opensim.common.Function):
+class ActiveForceLengthCurve(common.Function):
     """Proxy of C++ OpenSim::ActiveForceLengthCurve class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ActiveForceLengthCurve, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ActiveForceLengthCurve, name)
     __repr__ = _swig_repr
@@ -83038,15 +83042,15 @@ def ActiveForceLengthCurve_getClassName():
     """ActiveForceLengthCurve_getClassName() -> std::string const &"""
     return _simulation.ActiveForceLengthCurve_getClassName()
 
-class FiberCompressiveForceCosPennationCurve(opensim.common.Function):
+class FiberCompressiveForceCosPennationCurve(common.Function):
     """Proxy of C++ OpenSim::FiberCompressiveForceCosPennationCurve class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, FiberCompressiveForceCosPennationCurve, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, FiberCompressiveForceCosPennationCurve, name)
     __repr__ = _swig_repr
@@ -83585,15 +83589,15 @@ def FiberCompressiveForceCosPennationCurve_getClassName():
     """FiberCompressiveForceCosPennationCurve_getClassName() -> std::string const &"""
     return _simulation.FiberCompressiveForceCosPennationCurve_getClassName()
 
-class FiberCompressiveForceLengthCurve(opensim.common.Function):
+class FiberCompressiveForceLengthCurve(common.Function):
     """Proxy of C++ OpenSim::FiberCompressiveForceLengthCurve class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, FiberCompressiveForceLengthCurve, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, FiberCompressiveForceLengthCurve, name)
     __repr__ = _swig_repr
@@ -84125,15 +84129,15 @@ def FiberCompressiveForceLengthCurve_getClassName():
     """FiberCompressiveForceLengthCurve_getClassName() -> std::string const &"""
     return _simulation.FiberCompressiveForceLengthCurve_getClassName()
 
-class FiberForceLengthCurve(opensim.common.Function):
+class FiberForceLengthCurve(common.Function):
     """Proxy of C++ OpenSim::FiberForceLengthCurve class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, FiberForceLengthCurve, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, FiberForceLengthCurve, name)
     __repr__ = _swig_repr
@@ -84875,15 +84879,15 @@ def FiberForceLengthCurve_getClassName():
     """FiberForceLengthCurve_getClassName() -> std::string const &"""
     return _simulation.FiberForceLengthCurve_getClassName()
 
-class ForceVelocityCurve(opensim.common.Function):
+class ForceVelocityCurve(common.Function):
     """Proxy of C++ OpenSim::ForceVelocityCurve class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ForceVelocityCurve, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ForceVelocityCurve, name)
     __repr__ = _swig_repr
@@ -85924,15 +85928,15 @@ def ForceVelocityCurve_getClassName():
     """ForceVelocityCurve_getClassName() -> std::string const &"""
     return _simulation.ForceVelocityCurve_getClassName()
 
-class ForceVelocityInverseCurve(opensim.common.Function):
+class ForceVelocityInverseCurve(common.Function):
     """Proxy of C++ OpenSim::ForceVelocityInverseCurve class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ForceVelocityInverseCurve, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ForceVelocityInverseCurve, name)
     __repr__ = _swig_repr
@@ -86973,15 +86977,15 @@ def ForceVelocityInverseCurve_getClassName():
     """ForceVelocityInverseCurve_getClassName() -> std::string const &"""
     return _simulation.ForceVelocityInverseCurve_getClassName()
 
-class TendonForceLengthCurve(opensim.common.Function):
+class TendonForceLengthCurve(common.Function):
     """Proxy of C++ OpenSim::TendonForceLengthCurve class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, TendonForceLengthCurve, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.Function]:
+    for _s in [common.Function]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, TendonForceLengthCurve, name)
     __repr__ = _swig_repr
@@ -91743,7 +91747,7 @@ class Thelen2003MuscleList(_object):
             try:
                 ConcreteClass = getattr(opensim_pkg, component.getConcreteClassName())
                 concrete_component = ConcreteClass.safeDownCast(component)
-                yield concrete_component 
+                yield concrete_component
             except:
                 yield component
             it.next()
@@ -94445,7 +94449,7 @@ class Millard2012EquilibriumMuscleList(_object):
             try:
                 ConcreteClass = getattr(opensim_pkg, component.getConcreteClassName())
                 concrete_component = ConcreteClass.safeDownCast(component)
-                yield concrete_component 
+                yield concrete_component
             except:
                 yield component
             it.next()
@@ -97167,5 +97171,3 @@ Millard2012EquilibriumMuscleIterator_swigregister = _simulation.Millard2012Equil
 Millard2012EquilibriumMuscleIterator_swigregister(Millard2012EquilibriumMuscleIterator)
 
 # This file is compatible with both classic and new-style classes.
-
-

@@ -330,20 +330,28 @@ class SwigPyIterator(_object):
 SwigPyIterator_swigregister = _tools.SwigPyIterator_swigregister
 SwigPyIterator_swigregister(SwigPyIterator)
 
-import opensim.analyses
-import opensim.actuators
-import opensim.simulation
-import opensim.common
-import opensim.simbody
-class IKTask(opensim.common.OpenSimObject):
+# import opensim.analyses
+# import opensim.actuators
+# import simulation
+# import common
+# import opensim.simbody
+
+from pyCGM2 import opensim4
+from pyCGM2.opensim4 import analyses
+from pyCGM2.opensim4 import actuators
+from pyCGM2.opensim4 import simulation
+from pyCGM2.opensim4 import common
+from pyCGM2.opensim4 import simbody
+
+class IKTask(common.OpenSimObject):
     """Proxy of C++ OpenSim::IKTask class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, IKTask, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, IKTask, name)
 
@@ -473,15 +481,15 @@ def IKTask_getClassName():
     """IKTask_getClassName() -> std::string const &"""
     return _tools.IKTask_getClassName()
 
-class SetIKTasks(opensim.common.OpenSimObject):
+class SetIKTasks(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::IKTask,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetIKTasks, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetIKTasks, name)
     __repr__ = _swig_repr
@@ -1376,15 +1384,15 @@ def IKTaskSet_getClassName():
     """IKTaskSet_getClassName() -> std::string const &"""
     return _tools.IKTaskSet_getClassName()
 
-class MarkerPair(opensim.common.OpenSimObject):
+class MarkerPair(common.OpenSimObject):
     """Proxy of C++ OpenSim::MarkerPair class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, MarkerPair, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, MarkerPair, name)
     __repr__ = _swig_repr
@@ -1536,15 +1544,15 @@ def MarkerPair_getClassName():
     """MarkerPair_getClassName() -> std::string const &"""
     return _tools.MarkerPair_getClassName()
 
-class SetMarkerPairs(opensim.common.OpenSimObject):
+class SetMarkerPairs(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::MarkerPair,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetMarkerPairs, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetMarkerPairs, name)
     __repr__ = _swig_repr
@@ -2116,15 +2124,15 @@ def MarkerPairSet_getClassName():
     """MarkerPairSet_getClassName() -> std::string const &"""
     return _tools.MarkerPairSet_getClassName()
 
-class Measurement(opensim.common.OpenSimObject):
+class Measurement(common.OpenSimObject):
     """Proxy of C++ OpenSim::Measurement class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Measurement, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Measurement, name)
     __repr__ = _swig_repr
@@ -2326,15 +2334,15 @@ def Measurement_registerTypes():
     """Measurement_registerTypes()"""
     return _tools.Measurement_registerTypes()
 
-class SetMeasurements(opensim.common.OpenSimObject):
+class SetMeasurements(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::Measurement,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetMeasurements, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetMeasurements, name)
     __repr__ = _swig_repr
@@ -2906,15 +2914,15 @@ def MeasurementSet_getClassName():
     """MeasurementSet_getClassName() -> std::string const &"""
     return _tools.MeasurementSet_getClassName()
 
-class GenericModelMaker(opensim.common.OpenSimObject):
+class GenericModelMaker(common.OpenSimObject):
     """Proxy of C++ OpenSim::GenericModelMaker class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, GenericModelMaker, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, GenericModelMaker, name)
     __repr__ = _swig_repr
@@ -3097,15 +3105,15 @@ def GenericModelMaker_registerTypes():
     """GenericModelMaker_registerTypes()"""
     return _tools.GenericModelMaker_registerTypes()
 
-class ModelScaler(opensim.common.OpenSimObject):
+class ModelScaler(common.OpenSimObject):
     """Proxy of C++ OpenSim::ModelScaler class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ModelScaler, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ModelScaler, name)
     __repr__ = _swig_repr
@@ -3526,15 +3534,15 @@ def ModelScaler_registerTypes():
     """ModelScaler_registerTypes()"""
     return _tools.ModelScaler_registerTypes()
 
-class MarkerPlacer(opensim.common.OpenSimObject):
+class MarkerPlacer(common.OpenSimObject):
     """Proxy of C++ OpenSim::MarkerPlacer class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, MarkerPlacer, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, MarkerPlacer, name)
     __repr__ = _swig_repr
@@ -3936,15 +3944,15 @@ def MarkerPlacer_getClassName():
     """MarkerPlacer_getClassName() -> std::string const &"""
     return _tools.MarkerPlacer_getClassName()
 
-class ScaleTool(opensim.common.OpenSimObject):
+class ScaleTool(common.OpenSimObject):
     """Proxy of C++ OpenSim::ScaleTool class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ScaleTool, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ScaleTool, name)
     __repr__ = _swig_repr
@@ -4271,15 +4279,15 @@ def ScaleTool_registerTypes():
     """ScaleTool_registerTypes()"""
     return _tools.ScaleTool_registerTypes()
 
-class Tool(opensim.common.OpenSimObject):
+class Tool(common.OpenSimObject):
     """Proxy of C++ OpenSim::Tool class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Tool, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Tool, name)
 
@@ -4987,15 +4995,15 @@ def InverseDynamicsTool_registerTypes():
     """InverseDynamicsTool_registerTypes()"""
     return _tools.InverseDynamicsTool_registerTypes()
 
-class ForwardTool(opensim.simulation.AbstractTool):
+class ForwardTool(simulation.AbstractTool):
     """Proxy of C++ OpenSim::ForwardTool class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.AbstractTool]:
+    for _s in [simulation.AbstractTool]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ForwardTool, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.AbstractTool]:
+    for _s in [simulation.AbstractTool]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ForwardTool, name)
     __repr__ = _swig_repr
@@ -5347,15 +5355,15 @@ def ForwardTool_SigmaDn(tau, to, t):
     """
     return _tools.ForwardTool_SigmaDn(tau, to, t)
 
-class TrackingTask(opensim.common.OpenSimObject):
+class TrackingTask(common.OpenSimObject):
     """Proxy of C++ OpenSim::TrackingTask class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, TrackingTask, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, TrackingTask, name)
 
@@ -6749,15 +6757,15 @@ def CMC_Point_getClassName():
     """CMC_Point_getClassName() -> std::string const &"""
     return _tools.CMC_Point_getClassName()
 
-class SetTrackingTasks(opensim.common.OpenSimObject):
+class SetTrackingTasks(common.OpenSimObject):
     """Proxy of C++ OpenSim::Set<(OpenSim::TrackingTask,OpenSim::Object)> class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SetTrackingTasks, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.common.OpenSimObject]:
+    for _s in [common.OpenSimObject]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SetTrackingTasks, name)
     __repr__ = _swig_repr
@@ -7628,15 +7636,15 @@ def CMC_TaskSet_getClassName():
     """CMC_TaskSet_getClassName() -> std::string const &"""
     return _tools.CMC_TaskSet_getClassName()
 
-class CMCTool(opensim.simulation.AbstractTool):
+class CMCTool(simulation.AbstractTool):
     """Proxy of C++ OpenSim::CMCTool class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.AbstractTool]:
+    for _s in [simulation.AbstractTool]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, CMCTool, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.AbstractTool]:
+    for _s in [simulation.AbstractTool]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, CMCTool, name)
     __repr__ = _swig_repr
@@ -8020,15 +8028,15 @@ def CMCTool_getClassName():
     """CMCTool_getClassName() -> std::string const &"""
     return _tools.CMCTool_getClassName()
 
-class RRATool(opensim.simulation.AbstractTool):
+class RRATool(simulation.AbstractTool):
     """Proxy of C++ OpenSim::RRATool class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.AbstractTool]:
+    for _s in [simulation.AbstractTool]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, RRATool, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.AbstractTool]:
+    for _s in [simulation.AbstractTool]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, RRATool, name)
     __repr__ = _swig_repr
@@ -8407,15 +8415,15 @@ def RRATool_getClassName():
     """RRATool_getClassName() -> std::string const &"""
     return _tools.RRATool_getClassName()
 
-class AnalyzeTool(opensim.simulation.AbstractTool):
+class AnalyzeTool(simulation.AbstractTool):
     """Proxy of C++ OpenSim::AnalyzeTool class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.AbstractTool]:
+    for _s in [simulation.AbstractTool]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, AnalyzeTool, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.AbstractTool]:
+    for _s in [simulation.AbstractTool]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, AnalyzeTool, name)
     __repr__ = _swig_repr
@@ -9091,5 +9099,3 @@ def InverseKinematicsTool_registerTypes():
     return _tools.InverseKinematicsTool_registerTypes()
 
 # This file is compatible with both classic and new-style classes.
-
-

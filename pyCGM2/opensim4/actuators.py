@@ -330,18 +330,23 @@ class SwigPyIterator(_object):
 SwigPyIterator_swigregister = _actuators.SwigPyIterator_swigregister
 SwigPyIterator_swigregister(SwigPyIterator)
 
-import opensim.simulation
-import opensim.common
-import opensim.simbody
-class CoordinateActuator(opensim.simulation.ScalarActuator):
+from pyCGM2 import opensim4
+from pyCGM2.opensim4 import common
+from pyCGM2.opensim4 import simbody
+from pyCGM2.opensim4 import simulation
+
+# import simulation
+# import opensim.common
+# import opensim.simbody
+class CoordinateActuator(simulation.ScalarActuator):
     """Proxy of C++ OpenSim::CoordinateActuator class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.ScalarActuator]:
+    for _s in [simulation.ScalarActuator]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, CoordinateActuator, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.ScalarActuator]:
+    for _s in [simulation.ScalarActuator]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, CoordinateActuator, name)
     __repr__ = _swig_repr
@@ -751,15 +756,15 @@ def CoordinateActuator_CreateForceSetOfCoordinateActuatorsForModel(s, aModel, aO
     """
     return _actuators.CoordinateActuator_CreateForceSetOfCoordinateActuatorsForModel(s, aModel, aOptimalForce, aIncludeLockedAndConstrainedCoordinates)
 
-class PointActuator(opensim.simulation.ScalarActuator):
+class PointActuator(simulation.ScalarActuator):
     """Proxy of C++ OpenSim::PointActuator class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.ScalarActuator]:
+    for _s in [simulation.ScalarActuator]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, PointActuator, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.ScalarActuator]:
+    for _s in [simulation.ScalarActuator]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, PointActuator, name)
     __repr__ = _swig_repr
@@ -1425,15 +1430,15 @@ def PointActuator_getClassName():
     """PointActuator_getClassName() -> std::string const &"""
     return _actuators.PointActuator_getClassName()
 
-class TorqueActuator(opensim.simulation.ScalarActuator):
+class TorqueActuator(simulation.ScalarActuator):
     """Proxy of C++ OpenSim::TorqueActuator class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.ScalarActuator]:
+    for _s in [simulation.ScalarActuator]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, TorqueActuator, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.ScalarActuator]:
+    for _s in [simulation.ScalarActuator]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, TorqueActuator, name)
     __repr__ = _swig_repr
@@ -2116,15 +2121,15 @@ def TorqueActuator_getClassName():
     """TorqueActuator_getClassName() -> std::string const &"""
     return _actuators.TorqueActuator_getClassName()
 
-class BodyActuator(opensim.simulation.Actuator):
+class BodyActuator(simulation.Actuator):
     """Proxy of C++ OpenSim::BodyActuator class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Actuator]:
+    for _s in [simulation.Actuator]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, BodyActuator, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Actuator]:
+    for _s in [simulation.Actuator]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, BodyActuator, name)
     __repr__ = _swig_repr
@@ -2652,15 +2657,15 @@ def BodyActuator_getClassName():
     """BodyActuator_getClassName() -> std::string const &"""
     return _actuators.BodyActuator_getClassName()
 
-class PointToPointActuator(opensim.simulation.ScalarActuator):
+class PointToPointActuator(simulation.ScalarActuator):
     """Proxy of C++ OpenSim::PointToPointActuator class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.ScalarActuator]:
+    for _s in [simulation.ScalarActuator]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, PointToPointActuator, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.ScalarActuator]:
+    for _s in [simulation.ScalarActuator]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, PointToPointActuator, name)
     __repr__ = _swig_repr
@@ -3400,15 +3405,15 @@ def PointToPointActuator_getClassName():
     """PointToPointActuator_getClassName() -> std::string const &"""
     return _actuators.PointToPointActuator_getClassName()
 
-class ClutchedPathSpring(opensim.simulation.PathActuator):
+class ClutchedPathSpring(simulation.PathActuator):
     """Proxy of C++ OpenSim::ClutchedPathSpring class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.PathActuator]:
+    for _s in [simulation.PathActuator]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ClutchedPathSpring, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.PathActuator]:
+    for _s in [simulation.PathActuator]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ClutchedPathSpring, name)
     __repr__ = _swig_repr
@@ -3976,15 +3981,15 @@ def ClutchedPathSpring_getClassName():
     """ClutchedPathSpring_getClassName() -> std::string const &"""
     return _actuators.ClutchedPathSpring_getClassName()
 
-class SpringGeneralizedForce(opensim.simulation.Force):
+class SpringGeneralizedForce(simulation.Force):
     """Proxy of C++ OpenSim::SpringGeneralizedForce class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Force]:
+    for _s in [simulation.Force]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, SpringGeneralizedForce, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Force]:
+    for _s in [simulation.Force]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, SpringGeneralizedForce, name)
     __repr__ = _swig_repr
@@ -4540,15 +4545,15 @@ def SpringGeneralizedForce_getClassName():
     """SpringGeneralizedForce_getClassName() -> std::string const &"""
     return _actuators.SpringGeneralizedForce_getClassName()
 
-class RigidTendonMuscle(opensim.simulation.Muscle):
+class RigidTendonMuscle(simulation.Muscle):
     """Proxy of C++ OpenSim::RigidTendonMuscle class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Muscle]:
+    for _s in [simulation.Muscle]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, RigidTendonMuscle, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Muscle]:
+    for _s in [simulation.Muscle]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, RigidTendonMuscle, name)
     __repr__ = _swig_repr
@@ -4933,15 +4938,15 @@ def RigidTendonMuscle_getClassName():
     """RigidTendonMuscle_getClassName() -> std::string const &"""
     return _actuators.RigidTendonMuscle_getClassName()
 
-class Millard2012AccelerationMuscle(opensim.simulation.Muscle):
+class Millard2012AccelerationMuscle(simulation.Muscle):
     """Proxy of C++ OpenSim::Millard2012AccelerationMuscle class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Muscle]:
+    for _s in [simulation.Muscle]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Millard2012AccelerationMuscle, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Muscle]:
+    for _s in [simulation.Muscle]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Millard2012AccelerationMuscle, name)
     __repr__ = _swig_repr
@@ -6959,15 +6964,15 @@ def Millard2012AccelerationMuscle_getClassName():
     """Millard2012AccelerationMuscle_getClassName() -> std::string const &"""
     return _actuators.Millard2012AccelerationMuscle_getClassName()
 
-class McKibbenActuator(opensim.simulation.PathActuator):
+class McKibbenActuator(simulation.PathActuator):
     """Proxy of C++ OpenSim::McKibbenActuator class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.PathActuator]:
+    for _s in [simulation.PathActuator]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, McKibbenActuator, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.PathActuator]:
+    for _s in [simulation.PathActuator]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, McKibbenActuator, name)
     __repr__ = _swig_repr
@@ -7422,5 +7427,3 @@ def McKibbenActuator_getClassName():
     return _actuators.McKibbenActuator_getClassName()
 
 # This file is compatible with both classic and new-style classes.
-
-

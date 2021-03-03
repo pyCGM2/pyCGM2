@@ -330,19 +330,25 @@ class SwigPyIterator(_object):
 SwigPyIterator_swigregister = _analyses.SwigPyIterator_swigregister
 SwigPyIterator_swigregister(SwigPyIterator)
 
-import opensim.actuators
-import opensim.simulation
-import opensim.common
-import opensim.simbody
-class Kinematics(opensim.simulation.Analysis):
+from pyCGM2 import opensim4
+from pyCGM2.opensim4 import actuators
+from pyCGM2.opensim4 import simulation
+from pyCGM2.opensim4 import common
+from pyCGM2.opensim4 import simbody
+
+# import opensim.actuators
+# import simulation
+# import opensim.common
+# import opensim.simbody
+class Kinematics(simulation.Analysis):
     """Proxy of C++ OpenSim::Kinematics class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Kinematics, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Kinematics, name)
     __repr__ = _swig_repr
@@ -588,15 +594,15 @@ def Kinematics_getClassName():
     """Kinematics_getClassName() -> std::string const &"""
     return _analyses.Kinematics_getClassName()
 
-class Actuation(opensim.simulation.Analysis):
+class Actuation(simulation.Analysis):
     """Proxy of C++ OpenSim::Actuation class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Actuation, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Actuation, name)
     __repr__ = _swig_repr
@@ -836,15 +842,15 @@ def Actuation_getClassName():
     """Actuation_getClassName() -> std::string const &"""
     return _analyses.Actuation_getClassName()
 
-class MuscleAnalysis(opensim.simulation.Analysis):
+class MuscleAnalysis(simulation.Analysis):
     """Proxy of C++ OpenSim::MuscleAnalysis class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, MuscleAnalysis, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, MuscleAnalysis, name)
     __repr__ = _swig_repr
@@ -1324,15 +1330,15 @@ def MuscleAnalysis_getClassName():
     """MuscleAnalysis_getClassName() -> std::string const &"""
     return _analyses.MuscleAnalysis_getClassName()
 
-class InverseDynamics(opensim.simulation.Analysis):
+class InverseDynamics(simulation.Analysis):
     """Proxy of C++ OpenSim::InverseDynamics class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, InverseDynamics, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, InverseDynamics, name)
     __repr__ = _swig_repr
@@ -1529,15 +1535,15 @@ def InverseDynamics_getClassName():
     """InverseDynamics_getClassName() -> std::string const &"""
     return _analyses.InverseDynamics_getClassName()
 
-class StaticOptimization(opensim.simulation.Analysis):
+class StaticOptimization(simulation.Analysis):
     """Proxy of C++ OpenSim::StaticOptimization class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, StaticOptimization, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, StaticOptimization, name)
     __repr__ = _swig_repr
@@ -1879,15 +1885,15 @@ def StaticOptimization_getClassName():
     """StaticOptimization_getClassName() -> std::string const &"""
     return _analyses.StaticOptimization_getClassName()
 
-class ForceReporter(opensim.simulation.Analysis):
+class ForceReporter(simulation.Analysis):
     """Proxy of C++ OpenSim::ForceReporter class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ForceReporter, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ForceReporter, name)
     __repr__ = _swig_repr
@@ -2127,15 +2133,15 @@ def ForceReporter_getClassName():
     """ForceReporter_getClassName() -> std::string const &"""
     return _analyses.ForceReporter_getClassName()
 
-class PointKinematics(opensim.simulation.Analysis):
+class PointKinematics(simulation.Analysis):
     """Proxy of C++ OpenSim::PointKinematics class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, PointKinematics, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, PointKinematics, name)
     __repr__ = _swig_repr
@@ -2489,15 +2495,15 @@ def PointKinematics_getClassName():
 PointKinematics.NAME_LENGTH = _analyses.cvar.PointKinematics_NAME_LENGTH
 PointKinematics.BUFFER_LENGTH = _analyses.cvar.PointKinematics_BUFFER_LENGTH
 
-class BodyKinematics(opensim.simulation.Analysis):
+class BodyKinematics(simulation.Analysis):
     """Proxy of C++ OpenSim::BodyKinematics class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, BodyKinematics, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, BodyKinematics, name)
     __repr__ = _swig_repr
@@ -2792,15 +2798,15 @@ def BodyKinematics_getClassName():
     """BodyKinematics_getClassName() -> std::string const &"""
     return _analyses.BodyKinematics_getClassName()
 
-class JointReaction(opensim.simulation.Analysis):
+class JointReaction(simulation.Analysis):
     """Proxy of C++ OpenSim::JointReaction class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, JointReaction, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, JointReaction, name)
     __repr__ = _swig_repr
@@ -3088,15 +3094,15 @@ def JointReaction_getClassName():
     """JointReaction_getClassName() -> std::string const &"""
     return _analyses.JointReaction_getClassName()
 
-class StatesReporter(opensim.simulation.Analysis):
+class StatesReporter(simulation.Analysis):
     """Proxy of C++ OpenSim::StatesReporter class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, StatesReporter, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, StatesReporter, name)
     __repr__ = _swig_repr
@@ -3300,15 +3306,15 @@ def StatesReporter_getClassName():
     """StatesReporter_getClassName() -> std::string const &"""
     return _analyses.StatesReporter_getClassName()
 
-class InducedAccelerations(opensim.simulation.Analysis):
+class InducedAccelerations(simulation.Analysis):
     """Proxy of C++ OpenSim::InducedAccelerations class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, InducedAccelerations, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, InducedAccelerations, name)
     __repr__ = _swig_repr
@@ -3536,15 +3542,15 @@ def InducedAccelerations_getClassName():
     """InducedAccelerations_getClassName() -> std::string const &"""
     return _analyses.InducedAccelerations_getClassName()
 
-class ProbeReporter(opensim.simulation.Analysis):
+class ProbeReporter(simulation.Analysis):
     """Proxy of C++ OpenSim::ProbeReporter class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ProbeReporter, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ProbeReporter, name)
     __repr__ = _swig_repr
@@ -3772,15 +3778,15 @@ def ProbeReporter_getClassName():
     """ProbeReporter_getClassName() -> std::string const &"""
     return _analyses.ProbeReporter_getClassName()
 
-class OutputReporter(opensim.simulation.Analysis):
+class OutputReporter(simulation.Analysis):
     """Proxy of C++ OpenSim::OutputReporter class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, OutputReporter, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Analysis]:
+    for _s in [simulation.Analysis]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, OutputReporter, name)
     __repr__ = _swig_repr
@@ -3955,5 +3961,3 @@ def OutputReporter_getClassName():
     return _analyses.OutputReporter_getClassName()
 
 # This file is compatible with both classic and new-style classes.
-
-

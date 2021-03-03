@@ -330,8 +330,8 @@ class SwigPyIterator(_object):
 SwigPyIterator_swigregister = _common.SwigPyIterator_swigregister
 SwigPyIterator_swigregister(SwigPyIterator)
 
-import opensim.simbody
-
+# import opensim.simbody
+import pyCGM2.opensim4.simbody
 def opensim_version_common(major, minor, build):
     """
     opensim_version_common(int * major, int * minor, int * build)
@@ -19159,7 +19159,7 @@ class ComponentsList(_object):
             try:
                 ConcreteClass = getattr(opensim_pkg, component.getConcreteClassName())
                 concrete_component = ConcreteClass.safeDownCast(component)
-                yield concrete_component 
+                yield concrete_component
             except:
                 yield component
             it.next()
@@ -34889,5 +34889,3 @@ def GCVSplineSet_getClassName():
     return _common.GCVSplineSet_getClassName()
 
 # This file is compatible with both classic and new-style classes.
-
-

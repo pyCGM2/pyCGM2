@@ -102,19 +102,26 @@ except __builtin__.Exception:
     weakref_proxy = lambda x: x
 
 
-import opensim.actuators
-import opensim.simulation
-import opensim.common
-import opensim.simbody
-class ToyReflexController(opensim.simulation.Controller):
+# import opensim.actuators
+# import simulation
+# import opensim.common
+# import opensim.simbody
+
+from pyCGM2 import opensim4
+from pyCGM2.opensim4 import actuators
+from pyCGM2.opensim4 import simulation
+from pyCGM2.opensim4 import common
+from pyCGM2.opensim4 import simbody
+
+class ToyReflexController(simulation.Controller):
     """Proxy of C++ OpenSim::ToyReflexController class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Controller]:
+    for _s in [simulation.Controller]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ToyReflexController, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Controller]:
+    for _s in [simulation.Controller]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ToyReflexController, name)
     __repr__ = _swig_repr
@@ -313,15 +320,15 @@ def ToyReflexController_getClassName():
     """ToyReflexController_getClassName() -> std::string const &"""
     return _examplecomponents.ToyReflexController_getClassName()
 
-class ToyPropMyoController(opensim.simulation.Controller):
+class ToyPropMyoController(simulation.Controller):
     """Proxy of C++ OpenSim::ToyPropMyoController class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.Controller]:
+    for _s in [simulation.Controller]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, ToyPropMyoController, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.Controller]:
+    for _s in [simulation.Controller]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, ToyPropMyoController, name)
     __repr__ = _swig_repr
@@ -580,15 +587,15 @@ def ToyPropMyoController_getClassName():
     """ToyPropMyoController_getClassName() -> std::string const &"""
     return _examplecomponents.ToyPropMyoController_getClassName()
 
-class HopperDevice(opensim.simulation.ModelComponent):
+class HopperDevice(simulation.ModelComponent):
     """Proxy of C++ OpenSim::HopperDevice class."""
 
     __swig_setmethods__ = {}
-    for _s in [opensim.simulation.ModelComponent]:
+    for _s in [simulation.ModelComponent]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, HopperDevice, name, value)
     __swig_getmethods__ = {}
-    for _s in [opensim.simulation.ModelComponent]:
+    for _s in [simulation.ModelComponent]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, HopperDevice, name)
     __repr__ = _swig_repr
@@ -863,5 +870,3 @@ def HopperDevice_getClassName():
     return _examplecomponents.HopperDevice_getClassName()
 
 # This file is compatible with both classic and new-style classes.
-
-
