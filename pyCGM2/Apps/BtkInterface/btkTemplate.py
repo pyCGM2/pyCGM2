@@ -23,6 +23,10 @@ from pyCGM2.Tools import btkTools
 
 def main():
 
+    # parser = argparse.ArgumentParser(description='')
+    # # parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
+    #
+    # args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -33,7 +37,7 @@ def main():
         DATA_PATH, filename = NEXUS.GetTrialName()
 
         logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "calibration file: "+ filename)
+        logging.info( " file: "+ filename)
 
 
         # --------------------------SUBJECT ------------------------------------
