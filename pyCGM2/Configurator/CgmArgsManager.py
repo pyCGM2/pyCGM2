@@ -42,6 +42,13 @@ class argsManager_cgm(object):
         else:
             return float(self.settings["Global"]["Marker diameter"])
 
+    def getIkAccuracy(self):
+        if self.args.accuracy is not None:
+            logging.warning("ik accuracy forced : %s", str(float(self.args.accuracy)))
+            return float(self.args.accuracy)
+        else:
+            return float(self.settings["Global"]["IkAccuracy"])
+
     def getPointSuffix(self,checkValue):
 
         if hasattr(self.args,"check") and self.args.check:

@@ -362,8 +362,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                                           scalingOsim,
                                                           cgmFittingProcedure,
                                                           DATA_PATH,
-                                                          acqGait,
-                                                          accuracy = 1e-8 )
+                                                          acqGait)
+
+        if "ikAccuracy" in kwargs.keys():
+            osrf.setAccuracy(kwargs["ikAccuracy"])
 
         logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
         acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled )

@@ -233,15 +233,13 @@ class opensimFittingFilter(object):
         self.setResultsDirectory(self.opensimOutputDir)
         self.setTimeRange(acqMotion)
 
-        newIkFile = dataDir + ikToolFile[ikToolFile.rfind("\\")+1:]
-        with open(newIkFile, "w") as f:
-            f.write(self.m_ikSoup.prettify())
-
-        self._osimIK = osimProcessing.opensimKinematicFitting(self.m_calibratedOsim.m_model,newIkFile)
+        self.updateConfig()
 
     def setAccuracy(self,value):
-
+        self.accuracy = value
         self.m_ikSoup.accuracy.string = str(value)
+
+        self.updateConfig()
 
     def setResultsDirectory(self,path):
         self.m_ikSoup.results_directory.string = path.replace("\\","/")
@@ -252,7 +250,14 @@ class opensimFittingFilter(object):
         endTime = (acq.GetLastFrame() - acq.GetFirstFrame())/acq.GetPointFrequency()
         self.m_ikSoup.time_range.string = str(beginTime) + " " + str(endTime)
 
+        self.updateConfig()
 
+    def updateConfig(self):
+        newIkFile = self.opensimOutputDir + self.m_ikToolFile[self.m_ikToolFile.rfind("\\")+1:]
+        with open(newIkFile, "w") as f:
+            f.write(self.m_ikSoup.prettify())
+
+        self._osimIK = osimProcessing.opensimKinematicFitting(self.m_calibratedOsim.m_model,newIkFile)
 
 
 
@@ -292,7 +297,6 @@ class opensimFittingFilter(object):
             if os.path.isfile(self.opensimOutputDir +"scaledModel-ikSetUp.xml"):
                 os.remove(self.opensimOutputDir +"scaledModel-ikSetUp.xml")
             self.exportXml("scaledModel-ikSetUp.xml",path = self.opensimOutputDir)
-
 
         self._osimIK.run()
 

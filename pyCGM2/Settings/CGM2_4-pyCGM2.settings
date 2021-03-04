@@ -2,6 +2,7 @@ Global:
   Marker diameter: 14 #[double]
   Point suffix:  None #[string]
   EnableIK: 1 #[integer](choice: 0 or 1):  enable  the Inverse Kinematics solver
+  IkAccuracy: 1e-8
 
 Translators: # Translators adapt your current marker set
     LASI: None #[string]

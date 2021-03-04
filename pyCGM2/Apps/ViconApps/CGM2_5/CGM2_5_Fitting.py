@@ -43,6 +43,8 @@ def main():
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
+    parser.add_argument('-a','--accuracy', type=float, help='Inverse Kinematics accuracy')
+
     args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
@@ -64,6 +66,7 @@ def main():
         pointSuffix = argsManager.getPointSuffix("cgm2.5")
         momentProjection =  argsManager.getMomentProjection()
         ik_flag = argsManager.enableIKflag()
+        ikAccuracy = argsManager.getIkAccuracy()
 
 
         DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()

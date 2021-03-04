@@ -1,6 +1,7 @@
 Global:
     Marker diameter: 14 #[double]
     Point suffix: None #[string]
+    IkAccuracy: 1e-8
 
 Translators: # Translators adapt your current marker set
   LASI: None #[string]

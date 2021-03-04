@@ -43,6 +43,7 @@ def main():
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
+    parser.add_argument('-a','--accuracy', type=float, help='Inverse Kinematics accuracy')
     args = parser.parse_args()
 
 
@@ -68,6 +69,7 @@ def main():
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm2.2")
         momentProjection =  argsManager.getMomentProjection()
+        ikAccuracy = argsManager.getIkAccuracy()
 
         # --------------------------LOADING ------------------------------------
         DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
@@ -120,7 +122,8 @@ def main():
             pointSuffix,
             mfpa,
             momentProjection,
-            forceBtkAcq=acq)
+            forceBtkAcq=acq,
+            ikAccuracy = ikAccuracy)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,acqIK,subject,pointSuffix).run()
