@@ -76,6 +76,7 @@ class MarkerAnomalyCorrectionProcedure(object):
                     end = indices[np.where(clustering_model.labels_==i)[0][-1]]
                     logging.warning("[pycgm2] correction from %i to %i"%(beg,end))
                     values[beg:end+1]= np.nan
+                    pointValues[beg:end+1] = 0
                     residualValues[beg:end+1] = -1.0
 
                 acq.GetPoint(marker).SetResiduals(residualValues)
