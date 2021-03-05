@@ -24,8 +24,11 @@ from pyCGM2.Tools import btkTools
 def main():
 
     # parser = argparse.ArgumentParser(description='')
-    # # parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
-    #
+    # parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
+    # parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+    # parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+    # parser.add_argument('--check', action='store_true', help='force model output suffix')
+    # parser.add_argument('--forceLHJC', nargs='+')
     # args = parser.parse_args()
 
     NEXUS = ViconNexus.ViconNexus()
