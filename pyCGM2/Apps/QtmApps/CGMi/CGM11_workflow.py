@@ -76,11 +76,11 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
                                 fc_lowPass_marker=fc_marker,
                                 order_lowPass_marker=order_marker)
 
-            if zeniState and checkEventsInMokka:
+            if zeniState:
                 btkTools.smartWriter(acq, str(DATA_PATH + reconstructFilenameLabelled))
-
-                cmd = "Mokka.exe \"%s\""%(str(DATA_PATH + reconstructFilenameLabelled))
-                os.system(cmd)
+                if checkEventsInMokka:
+                    cmd = "Mokka.exe \"%s\""%(str(DATA_PATH + reconstructFilenameLabelled))
+                    os.system(cmd)
 
 
     # --------------------------GLOBAL SETTINGS ------------------------------------
