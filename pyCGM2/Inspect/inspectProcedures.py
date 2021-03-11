@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib.path import Path
 import logging
 
-try: 
+try:
     from pyCGM2 import btk
 except:
     logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
