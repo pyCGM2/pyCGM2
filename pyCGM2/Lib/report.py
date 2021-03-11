@@ -112,5 +112,5 @@ def pdfGaitReport(DATA_PATH,model,modelledTrials, normativeDataset,pointSuffix, 
             title=title)
         pdf.savefig()
 
-        plt.show(False)
+
         logging.info("----- Gait Processing -----> DONE")
