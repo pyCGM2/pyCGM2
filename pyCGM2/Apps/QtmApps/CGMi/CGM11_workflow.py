@@ -38,7 +38,7 @@ def command():
     sessionFilename = args.sessionFile
     main(sessionFilename)
 
-def main(sessionFilename,createPDFReport=True):
+def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
     logging.info("------------------------------------------------")
     logging.info("------------QTM - pyCGM2 Workflow---------------")
     logging.info("------------------------------------------------")
@@ -78,9 +78,9 @@ def main(sessionFilename,createPDFReport=True):
 
             if zeniState:
                 btkTools.smartWriter(acq, str(DATA_PATH + reconstructFilenameLabelled))
-
-                cmd = "Mokka.exe \"%s\""%(str(DATA_PATH + reconstructFilenameLabelled))
-                os.system(cmd)
+                if checkEventsInMokka:
+                    cmd = "Mokka.exe \"%s\""%(str(DATA_PATH + reconstructFilenameLabelled))
+                    os.system(cmd)
 
 
     # --------------------------GLOBAL SETTINGS ------------------------------------
