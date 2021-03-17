@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
 import numpy as np
+import pandas as pd
+from collections import OrderedDict
 
 try:
     from pyCGM2 import btk
@@ -52,8 +54,8 @@ class ScoreResidualFilter(object):
                 proxLabel = self.scoreProcedure.m_scoreDefinition[nodeLabel]["proximal"]
                 distLabel = self.scoreProcedure.m_scoreDefinition[nodeLabel]["distal"]
 
-                proxNode =  self.m_model.getSegment(proxLabel).anatomicalFrame.getNodeTrajectory(nodeLabel)
-                distNode = self.m_model.getSegment(distLabel).anatomicalFrame.getNodeTrajectory(nodeLabel)
+                proxNode = self.m_model.getSegment(proxLabel).getReferential('TF').getNodeTrajectory(nodeLabel)
+                distNode = self.m_model.getSegment(distLabel).getReferential('TF').getNodeTrajectory(nodeLabel)
                 score = numeric.rms((proxNode-distNode),axis = 1)
 
                 scoreValues = np.array([score, np.zeros(self.acq.GetPointFrameNumber()), np.zeros(self.acq.GetPointFrameNumber())]).T
@@ -61,3 +63,28 @@ class ScoreResidualFilter(object):
                 btkTools.smartAppendPoint(self.acq, str(nodeLabel+"_Score"),scoreValues, PointType=btk.btkPoint.Scalar,desc="Score")
             except:
                 logging.error("[pyCGM2] Score residual for node (%s) not computed"%(nodeLabel))
+
+    def getStats(self,ipp,jointLabels,EventContext="Overall",df=None):
+
+        series = list()
+
+        if EventContext == "Overall":
+            for jointLabel in jointLabels:
+
+                score = np.concatenate([self.acq.GetPoint("L"+jointLabel+"_Score").GetValues()[:,0],self.acq.GetPoint("R"+jointLabel+"_Score").GetValues()[:,0]])
+
+
+                iDict = OrderedDict([('Ipp', ipp),
+                             ('JointLabel', jointLabel),
+                             ('EventContext', EventContext),
+                             ('Mean', score.mean()),
+                             ('Std', score.std()),
+                             ('Max', score.max()),
+                             ('Min', score.min())])
+                serie = pd.Series(iDict)
+                series.append(serie)
+
+        if df is not None:
+            return pd.concat([df,pd.DataFrame(series)])
+        else:
+            return pd.DataFrame(series)
