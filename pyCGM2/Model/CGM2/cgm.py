@@ -3,7 +3,7 @@ import numpy as np
 import logging
 import copy
 
-try: 
+try:
     from pyCGM2 import btk
 except:
     logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
@@ -2484,6 +2484,7 @@ class CGM1(CGM):
         logging.debug("=====================================================")
 
         pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
+        forceFoot6DoF= True if "forceFoot6DoF" in options.keys() and options["forceFoot6DoF"] else False
 
 
         if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
@@ -2619,13 +2620,16 @@ class CGM1(CGM):
                 self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
                 self._right_shankProximal_motion(aqui,dictAnat,options=options)
 
+                if forceFoot6DoF:
                 # foot
                 # issue with least-square optimization :  AJC - HEE and TOE may be inline -> singularities !!
-    #            self._leftFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
-    #            self._rightFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
-
-                self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
-                self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
+                    self._leftFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
+                    self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
+                    self._rightFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
+                    self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
+                else:
+                    self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
+                    self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
 
             if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
                 self._thorax_motion(aqui, dictRef,dictAnat,options=options)
@@ -3734,9 +3738,10 @@ class CGM1(CGM):
         values_LKJCnode=seg.getReferential('TF').getNodeTrajectory("LKJC")
         btkTools.smartAppendPoint(aqui,"LKJC",values_LKJCnode, desc=str("opt-"+desc))
 
+
         # --- LHJC from Thigh
-        #values_HJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
-        #btkTools.smartAppendPoint(aqui,"LHJC-Thigh",values_HJCnode, desc="opt from Thigh")
+        # values_HJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
+        # btkTools.smartAppendPoint(aqui,"LHJC-Thigh",values_HJCnode, desc="opt from Thigh")
 
         # remove LHC from list of tracking markers
         if "LHJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LHJC")

@@ -1485,6 +1485,7 @@ class CGM2_4(CGM2_3):
         logging.debug("=====================================================")
 
         pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
+        forceFoot6DoF= True if "forceFoot6DoF" in options.keys() and options["forceFoot6DoF"] else False
 
 
         if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
@@ -1594,37 +1595,40 @@ class CGM2_4(CGM2_3):
                 self._TopLumbar5 = TopLumbar5
 
                 self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
-                self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
+                self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))#HJC
 
                 self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
                 self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
 
                 self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
-                self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
+                self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3])) #KJC
 
 
                 self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
                 self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
 
-                # hindFoot ( because of singularities AJC- TOE and HEE align)
-                self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
-                self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
 
-                #self._leftHindFoot_motion_optimize(aqui, dictRef,motionMethod)
-                #self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
-                #self._rightHindFoot_motion_optimize(aqui, dictRef,motionMethod)
-                #self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
-
-                # foreFoot (more robust than Sodervisk)
-                self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
-                self._right_foreFoot_motion(aqui, dictRef,dictAnat, options=options)
-
-                #self._leftForeFoot_motion(aqui, dictRef,motionMethod)
-                #self._anatomical_motion(aqui,"Left ForeFoot",originLabel = str(dictAnat["Left ForeFoot"]['labels'][3]))
+                if forceFoot6DoF:
+                    self._leftHindFoot_motion_optimize(aqui, dictRef,motionMethod)
+                    self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
+                    self._rightHindFoot_motion_optimize(aqui, dictRef,motionMethod)
+                    self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
 
 
-                #self._rightForeFoot_motion(aqui, dictRef,motionMethod)
-                #self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
+                    self._leftForeFoot_motion_optimize(aqui, dictRef,motionMethod)
+                    self._anatomical_motion(aqui,"Left ForeFoot",originLabel = str(dictAnat["Left ForeFoot"]['labels'][3]))
+
+                    self._rightForeFoot_motion_optimize(aqui, dictRef,motionMethod)
+                    self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
+                else:
+                    # hindFoot ( because of singularities AJC- TOE and HEE align)
+                    self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+                    self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+
+                    # foreFoot (more robust than Sodervisk)
+                    self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
+                    self._right_foreFoot_motion(aqui, dictRef,dictAnat, options=options)
+
             if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
                 self._thorax_motion(aqui, dictRef,dictAnat,options=options)
 

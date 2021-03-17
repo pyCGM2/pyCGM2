@@ -276,6 +276,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     :param momentProjection [str]: Coordinate system in which joint moment is expressed
     """
 
+    if "forceFoot6DoF" in kwargs.keys() and kwargs["forceFoot6DoF"]:
+        forceFoot6DoF_flag = True
+    else:
+        forceFoot6DoF_flag=False
+
     if "Fitting" in weights.keys():
         weights  = weights["Fitting"]["Weight"]
 
@@ -406,7 +411,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     # --- final pyCGM2 model motion Filter ---
     # use fitted markers
     modMotionFitted=modelFilters.ModelMotionFilter(scp,finalAcqGait,model,enums.motionMethod.Sodervisk ,
-                                              markerDiameter=markerDiameter)
+                                              markerDiameter=markerDiameter,
+                                              forceFoot6DoF=forceFoot6DoF_flag)
 
     modMotionFitted.compute()
 
