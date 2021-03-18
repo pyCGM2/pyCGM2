@@ -1128,6 +1128,11 @@ class CGM2_4(CGM2_3):
         for node in tf.static.getNodes():
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
+        # --- compute amthropo
+        # length
+        vsmh = seg.anatomicalFrame.static.getNode_byLabel("LvSMH").m_local
+        fjc = seg.anatomicalFrame.static.getNode_byLabel("LFJC").m_local
+        seg.setLength(np.linalg.norm(fjc-vsmh))
 
     def _rightHindFoot_calibrate(self,aquiStatic, dictRef,frameInit,frameEnd, options=None):
         pfn = aquiStatic.GetPointFrameNumber()
@@ -1383,6 +1388,11 @@ class CGM2_4(CGM2_3):
         for node in tf.static.getNodes():
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
+        # --- compute amthropo
+        # length
+        vsmh = seg.anatomicalFrame.static.getNode_byLabel("RvSMH").m_local
+        fjc = seg.anatomicalFrame.static.getNode_byLabel("RFJC").m_local
+        seg.setLength(np.linalg.norm(fjc-vsmh))
 
     #---- Offsets -------
     def getHindFootOffset(self, side = "Both"):
@@ -2452,14 +2462,14 @@ class CGM2_4(CGM2_3):
             nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() ,suffix=pointSuffix)
             #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
             nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LHEE").GetValues() ,suffix=pointSuffix)
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LFJC").GetValues() ,suffix=pointSuffix)
             nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() ,suffix=pointSuffix)
 
 
             nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() ,suffix=pointSuffix)
             #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
             nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RHEE").GetValues() ,suffix=pointSuffix)
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RFJC").GetValues() ,suffix=pointSuffix)
             nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues(),suffix=pointSuffix)
 
         if self.m_bodypart == enums.BodyPart.LowerLimbTrunk :
