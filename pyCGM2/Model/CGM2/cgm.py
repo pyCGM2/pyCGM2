@@ -2100,6 +2100,17 @@ class CGM1(CGM):
                - `frameEnd` (dict) - end frame
                - `options` (dict) - use to pass options
         """
+        if "markerDiameter" in options.keys():
+            logging.debug(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0
+
+        if "basePlate" in options.keys():
+            logging.debug(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0
 
         seg=self.getSegment("Right Foot")
 
@@ -2181,7 +2192,7 @@ class CGM1(CGM):
         # length
         toe = seg.anatomicalFrame.static.getNode_byLabel("RTOE").m_local
         hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_local
-        seg.setLength(np.linalg.norm(toe-hee))
+        seg.setLength(np.linalg.norm(toe-hee)- markerDiameter/2.0)
 
         # com
         toe = seg.anatomicalFrame.static.getNode_byLabel("RTOE").m_global
