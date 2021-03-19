@@ -1337,11 +1337,7 @@ class CGM2_4(CGM2_3):
 
         seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
 
-        # --- compute amthropo
-        # length
-        vsmh = seg.anatomicalFrame.static.getNode_byLabel("RvSMH").m_local
-        fjc = seg.anatomicalFrame.static.getNode_byLabel("RFJC").m_local
-        seg.setLength(np.linalg.norm(fjc-vsmh))
+
 
 
     def _rightForeFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd,options = None):
@@ -1388,6 +1384,11 @@ class CGM2_4(CGM2_3):
         for node in tf.static.getNodes():
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
+        # --- compute amthropo
+        # length
+        vsmh = seg.anatomicalFrame.static.getNode_byLabel("RvSMH").m_local
+        fjc = seg.anatomicalFrame.static.getNode_byLabel("RFJC").m_local
+        seg.setLength(np.linalg.norm(fjc-vsmh))
 
     #---- Offsets -------
     def getHindFootOffset(self, side = "Both"):
