@@ -173,14 +173,17 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
     figs=list()
     outfilenames=list()
 
+    exportFlag = True if exportPdf or exportPng else False
+
+
     count = 0
     for i in range(0,pageNumber):
 
-        if exportPdf and pageNumber>1:
+        if exportFlag and pageNumber>1:
             if outputName is None:
-                filenameOut =  processedEmgfile+"-TemporalEmgPlot"+"[rectify]-"+count if rectify else processedEmgfile+"-TemporalEmgPlot"+"[raw]-"+count
+                filenameOut =  processedEmgfile+"-TemporalEmgPlot"+"[rectify]-"+str(count) if rectify else processedEmgfile+"-TemporalEmgPlot"+"[raw]-"+count
             else:
-                filenameOut =  outputName+"-TemporalEmgPlot"+"[rectify]-"+count if rectify else title+"-TemporalEmgPlot"+"[raw]-"+count
+                filenameOut =  outputName+"-TemporalEmgPlot"+"[rectify]-"+str(count) if rectify else title+"-TemporalEmgPlot"+"[raw]-"+count
         else:
             if outputName is None:
                 filenameOut =  processedEmgfile+"-TemporalEmgPlot"+"[rectify]" if rectify else processedEmgfile+"-TemporalEmgPlot"+"[raw]"
@@ -204,7 +207,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
         pf.setViewer(kv)
         if title is not None:
             if pageNumber>1:
-                pf.setTitle(title+"-TemporalEmgPlot"+"[rectify]-"+count if rectify else title+"-TemporalEmgPlot"+"[raw]-"+count)
+                pf.setTitle(title+"-TemporalEmgPlot"+"[rectify]-"+str(count) if rectify else title+"-TemporalEmgPlot"+"[raw]-"+str(count))
             else:
                 pf.setTitle(title+"-TemporalEmgPlot"+"[rectify]" if rectify else title+"-TemporalEmgPlot"+"[raw]")
         if exportPdf :pf.setExport(OUT_PATH,filenameOut,"pdf")
