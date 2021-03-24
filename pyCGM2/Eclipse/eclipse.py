@@ -2,6 +2,7 @@
 # from __future__ import print_function
 import os
 import configparser
+import logging
 
 import pyCGM2
 from pyCGM2 import enums
@@ -397,10 +398,14 @@ class TrialEnfReader(EnfReader):
 
         mfpa = ""
         for i in range(1,nfp+1):
-            if self.m_trialInfos["FP"+str(i)]=="Left": mfpa = mfpa +"L"
-            if self.m_trialInfos["FP"+str(i)]=="Right": mfpa = mfpa +"R"
-            if self.m_trialInfos["FP"+str(i)]=="Invalid": mfpa = mfpa +"X"
-            if self.m_trialInfos["FP"+str(i)]=="Auto": mfpa = mfpa +"A"
+            try:
+                if self.m_trialInfos["FP"+str(i)]=="Left": mfpa = mfpa +"L"
+                if self.m_trialInfos["FP"+str(i)]=="Right": mfpa = mfpa +"R"
+                if self.m_trialInfos["FP"+str(i)]=="Invalid": mfpa = mfpa +"X"
+                if self.m_trialInfos["FP"+str(i)]=="Auto": mfpa = mfpa +"A"
+            except KeyError:
+                logging.info("[pyCGM2] force plate [%i] not assigned manually. set to Auto "%(i))
+                mfpa = mfpa +"A"
 
         return mfpa
 
