@@ -83,3 +83,19 @@ def convertPickleToBinary():
 
     path = os.getcwd() + "\\"
     files.convertPickleToBinary(path, args.file)
+
+
+def displayAllScripts():
+    PATH_TO_PYTHON_SCRIPTS = os.path.dirname(sys.executable)+"\\Scripts\\"
+
+    fileList=list()
+    for fileIt in os.listdir(PATH_TO_PYTHON_SCRIPTS):
+        if fileIt.startswith("Nexus") and fileIt.endswith("exe"):
+            fileList.append(fileIt)
+        elif fileIt.startswith("QTM") and fileIt.endswith("exe"):
+            fileList.append(fileIt)
+        elif fileIt.startswith("pyCGM2-") and fileIt.endswith("exe"):
+            fileList.append(fileIt)
+
+    for it in fileList:
+        print it
