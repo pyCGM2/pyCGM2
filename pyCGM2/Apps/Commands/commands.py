@@ -20,6 +20,8 @@ def copyPasteEmgSettings():
     files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"emg.settings",
                     os.getcwd()+"\\"+"emg.settings")
 
+    os.startfile( os.getcwd()+"\\"+"emg.settings")
+
 def copyPasteCgmSettings():
 
     """ copy paste the global CGM#i-pyCGM2.settings into the session folder
@@ -41,15 +43,43 @@ def copyPasteCgmSettings():
     else:
         if args.model == "CGM1":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM1-pyCGM2.settings", os.getcwd()+"\\"+"CGM1-pyCGM2.settings")
+            os.startfile(os.getcwd()+"\\"+"CGM1-pyCGM2.settings")
         if args.model == "CGM11":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM1_1-pyCGM2.settings", os.getcwd()+"\\"+"CGM1_1-pyCGM2.settings")
+            os.startfile(os.getcwd()+"\\"+"CGM1_1-pyCGM2.settings")
         if args.model == "CGM21":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_1-pyCGM2.settings", os.getcwd()+"\\"+"CGM2_1-pyCGM2.settings")
+            os.startfile(os.getcwd()+"\\"+"CGM2_1-pyCGM2.settings")
         if args.model == "CGM22":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_2-pyCGM2.settings", os.getcwd()+"\\"+"CGM2_2-pyCGM2.settings")
+            os.startfile(os.getcwd()+"\\"+"CGM2_2-pyCGM2.settings")
         if args.model == "CGM23":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_3-pyCGM2.settings", os.getcwd()+"\\"+"CGM2_3-pyCGM2.settings")
+            os.startfile(os.getcwd()+"\\"+"CGM2_3-pyCGM2.settings")
         if args.model == "CGM24":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_4-pyCGM2.settings", os.getcwd()+"\\"+"CGM2_4-pyCGM2.settings")
+            os.startfile( os.getcwd()+"\\"+"CGM2_4-pyCGM2.settings")
         if args.model == "CGM25":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_5-pyCGM2.settings", os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
+            os.startfile( os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
+
+
+
+def convertPickleToBinary():
+
+    """ convert a ascii pikle file to binary
+
+    :param -f, --file [str] - REQUIRED -:  filename
+
+    Examples:
+
+        >>>
+    """
+
+    parser = argparse.ArgumentParser(description='pyCGM2-convertPickleToBinary')
+    parser.add_argument('-f','--file', type=str, required = True, help="")
+
+    args = parser.parse_args()
+
+    path = os.getcwd() + "\\"
+    files.convertPickleToBinary(path, args.file)

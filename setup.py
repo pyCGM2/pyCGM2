@@ -234,6 +234,7 @@ setup(name = 'pyCGM2',
 
                 'pyCGM2-copyPasteCgmSettings  =  pyCGM2.Apps.Commands.commands:copyPasteCgmSettings',
                 'pyCGM2-copyPasteEmgSettings  =  pyCGM2.Apps.Commands.commands:copyPasteEmgSettings',
+                'pyCGM2-convertPickleToBinary =  pyCGM2.Apps.Commands.commands:convertPickleToBinary'
 
 
                 # QTM
