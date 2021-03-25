@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import argparse
 import logging
-import os
+import os,sys
 import pyCGM2
 from pyCGM2.Utils import files
 
@@ -19,6 +19,7 @@ def copyPasteEmgSettings():
 
     files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"emg.settings",
                     os.getcwd()+"\\"+"emg.settings")
+    os.startfile( os.getcwd()+"\\"+"emg.settings")
 
 def copyPasteCgmSettings():
 
@@ -41,15 +42,37 @@ def copyPasteCgmSettings():
     else:
         if args.model == "CGM1":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM1-pyCGM2.settings", os.getcwd()+"\\"+"CGM1-pyCGM2.settings")
+            os.startfile( os.getcwd()+"\\"+"CGM1-pyCGM2.settings")
         if args.model == "CGM11":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM1_1-pyCGM2.settings", os.getcwd()+"\\"+"CGM1_1-pyCGM2.settings")
+            os.startfile( os.getcwd()+"\\"+"CGM1_1-pyCGM2.settings")
         if args.model == "CGM21":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_1-pyCGM2.settings", os.getcwd()+"\\"+"CGM2_1-pyCGM2.settings")
+            os.startfile( os.getcwd()+"\\"+"CGM2_1-pyCGM2.settings")
         if args.model == "CGM22":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_2-pyCGM2.settings", os.getcwd()+"\\"+"CGM2_2-pyCGM2.settings")
+            os.startfile( os.getcwd()+"\\"+"CGM2_2-pyCGM2.settings")
         if args.model == "CGM23":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_3-pyCGM2.settings", os.getcwd()+"\\"+"CGM2_3-pyCGM2.settings")
+            os.startfile( os.getcwd()+"\\"+"CGM2_3-pyCGM2.settings")
         if args.model == "CGM24":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_4-pyCGM2.settings", os.getcwd()+"\\"+"CGM2_4-pyCGM2.settings")
+            os.startfile( os.getcwd()+"\\"+"CGM2_4-pyCGM2.settings")
         if args.model == "CGM25":
             files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_5-pyCGM2.settings", os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
+            os.startfile( os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
+
+def displayAllScripts():
+    PATH_TO_PYTHON_SCRIPTS = os.path.dirname(sys.executable)+"\\Scripts\\"
+
+    fileList=list()
+    for fileIt in os.listdir(PATH_TO_PYTHON_SCRIPTS):
+        if fileIt.startswith("Nexus") and fileIt.endswith("exe"):
+            fileList.append(fileIt)
+        elif fileIt.startswith("QTM") and fileIt.endswith("exe"):
+            fileList.append(fileIt)
+        elif fileIt.startswith("pyCGM2-") and fileIt.endswith("exe"):
+            fileList.append(fileIt)
+
+    for it in fileList:
+        print(it)

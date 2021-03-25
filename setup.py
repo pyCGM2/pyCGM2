@@ -241,6 +241,7 @@ setup(name = 'pyCGM2',
 
                 'pyCGM2-copyPasteCgmSettings  =  pyCGM2.Apps.Commands.commands:copyPasteCgmSettings',
                 'pyCGM2-copyPasteEmgSettings  =  pyCGM2.Apps.Commands.commands:copyPasteEmgSettings',
+                'pyCGM2-displayAllScripts  =  pyCGM2.Apps.Commands.commands:displayAllScripts',
 
 
                 # QTM
