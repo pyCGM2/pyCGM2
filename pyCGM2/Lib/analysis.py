@@ -229,7 +229,7 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],
         envf.setCutoffFrequency(envelopFrequency)
         envf.run()
 
-        outFilename = gaitTrial if fileSuffix=="" else gaitTrial+"_"+fileSuffix
+        outFilename = gaitTrial if fileSuffix=="" else gaitTrial[0:gaitTrial.rfind(".")]+"_"+fileSuffix+".c3d"
 
         if outDataPath is None:
             btkTools.smartWriter(acq,DATA_PATH+outFilename)
@@ -344,7 +344,7 @@ def makeEmgAnalysis(DATA_PATH,
 
     return analysisInstance
 
-def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None):
+def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
     """
     normalizedEMG : perform normalization of emg in amplitude
 
@@ -359,21 +359,31 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
 
     """
 
+
     i=0
     for label in emgChannels:
-
-
         envnf = emgFilters.EmgNormalisationProcessingFilter(analysis,label,contexts[i])
 
-
-        if fromOtherAnalysis is not None:
+        if fromOtherAnalysis is not None and mvcSettings is None:
+            logging.info("[pyCGM2] - %s normalized from another Analysis"%(label))
             envnf.setThresholdFromOtherAnalysis(fromOtherAnalysis)
 
-        if method is not "MeanMax":
+        if mvcSettings is not None:
+            if label in mvcSettings.keys():
+                logging.info("[pyCGM2] - %s normalized from MVC"%(label))
+                envnf.setThresholdFromOtherAnalysis(mvcSettings[label])
+            else:
+                if fromOtherAnalysis is not None:
+                    logging.info("[pyCGM2] - %s normalized from an external Analysis"%(label))
+                    envnf.setThresholdFromOtherAnalysis(fromOtherAnalysis)
+                else:
+                    logging.info("[pyCGM2] - %s normalized from current analysis"%(label))
+
+        if method != "MeanMax":
             envnf.setMaxMethod(enums.EmgAmplitudeNormalization.MeanMax)
-        elif method is not "MaxMax":
+        elif method != "MaxMax":
             envnf.setMaxMethod(enums.EmgAmplitudeNormalization.MaxMax)
-        elif method is not "MedianMax":
+        elif method != "MedianMax":
             envnf.setMaxMethod(enums.EmgAmplitudeNormalization.MedianMax)
 
         envnf.run()
