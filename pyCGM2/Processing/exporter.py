@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import logging
 from  collections import OrderedDict
+import copy
 
 # pyCGM2
 import pyCGM2
@@ -11,20 +12,24 @@ from pyCGM2.Tools import exportTools
 
 def renameEmgInAnalysis(analysisInstance,emgChannels, emgMuscles, emgContexts):
 
-    i=len(emgChannels)-1
-    for channelIt in reversed(emgChannels):
-        newlabel = emgContexts[i][0] + emgMuscles[i]
-        for keyIt in analysisInstance.emgStats.data.keys():
-            context = keyIt[1]
-            if channelIt in keyIt[0]:
-                newLabelFinal = keyIt[0].replace(channelIt,newlabel)
-                analysisInstance.emgStats.data[newLabelFinal,context] = analysisInstance.emgStats.data.pop((keyIt[0],context))
-                logging.debug("label [%s] replaced with [%s]"%(keyIt[0],newLabelFinal))
-        i=i-1
+    copiedAnalysis = copy.deepcopy(analysisInstance)
 
+    newLabel = dict()
+    for i in range(0,len(emgChannels)):
+        newLabel[emgChannels[i]] = emgContexts[i][0] + emgMuscles[i]
 
+    for keyIt in copiedAnalysis.emgStats.data.keys():
+        label = keyIt[0]
+        context = keyIt[1]
+        channel = label[0:label.find("_")]
+        if channel  in  newLabel.keys():
+            del analysisInstance.emgStats.data[keyIt[0],context]
 
+            newLabelFinal = keyIt[0].replace(channel,newLabel[channel])
+            content = copiedAnalysis.emgStats.data[keyIt[0],context]
 
+            analysisInstance.emgStats.data[newLabelFinal,context] = content
+            logging.info("label [%s] replaced with [%s]"%(keyIt[0],newLabelFinal))
 
 
 class XlsExportDataFrameFilter(object):
