@@ -72,7 +72,8 @@ def makeAnalysis(DATA_PATH,
                     kinematicLabelsDict=None,
                     kineticLabelsDict=None,
                     disableKinetics=False,
-                    btkAcqs=None):
+                    btkAcqs=None,
+                    emgFilenames=None, emgChannels=None):
 
     """
     makeAnalysis : create the pyCGM2.Processing.analysis.Analysis instance
@@ -102,16 +103,18 @@ def makeAnalysis(DATA_PATH,
 
 
     """
+    if modelledFilenames == []: modelledFilenames=None
+    if emgFilenames == []: emgFilenames=None
     #---- c3d manager
 
     if btkAcqs is not None:
         c3dmanagerProcedure = c3dManager.UniqueBtkAcqSetProcedure(DATA_PATH,modelledFilenames,acqs=btkAcqs)
 
     else:
-        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,modelledFilenames)
+        c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(DATA_PATH, modelledFilenames, modelledFilenames, modelledFilenames, emgFilenames)
 
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
-    cmf.enableEmg(False)
+    cmf.enableEmg(True) if emgFilenames is not None else cmf.enableEmg(False)
     if disableKinetics: cmf.enableKinetic(False)
 
     trialManager = cmf.generate()
@@ -143,18 +146,31 @@ def makeAnalysis(DATA_PATH,
     if kineticLabelsDict is None:
         kineticLabelsDict = cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT
 
+    if emgFilenames is not None:
+        if emgChannels is not None:
+            emgLabelList  = [label+"_Rectify_Env" for label in emgChannels]
+        else:
+            emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3","Voltage.EMG4","Voltage.EMG5",
+                           "Voltage.EMG6","Voltage.EMG7","Voltage.EMG8","Voltage.EMG9","Voltage.EMG10",
+                           "Voltage.EMG11","Voltage.EMG12","Voltage.EMG13","Voltage.EMG14","Voltage.EMG15",
+                           "Voltage.EMG16"]
+
+    else:
+        emgLabelList = None
 
 
     if type == "Gait":
         analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
                                                       kinematicLabelsDict = kinematicLabelsDict,
                                                       kineticLabelsDict = kineticLabelsDict,
-                                                      pointlabelSuffix = pointLabelSuffix)
+                                                      pointlabelSuffix = pointLabelSuffix,
+                                                      emgLabelList = emgLabelList)
     else:
         analysisBuilder = analysis.AnalysisBuilder(cycles,
                                                       kinematicLabelsDict = kinematicLabelsDict,
                                                       kineticLabelsDict = kineticLabelsDict,
-                                                      pointlabelSuffix = pointLabelSuffix)
+                                                      pointlabelSuffix = pointLabelSuffix,
+                                                      emgLabelList = emgLabelList)
 
 
     analysisFilter = analysis.AnalysisFilter()
