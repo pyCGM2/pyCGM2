@@ -613,55 +613,57 @@ def buid_df_descriptiveCycle101_1(analysis_outputStats):
         if context == "Left":
 
             valuesMean=analysis_outputStats.data[label,context]["mean"]
-            if not np.all(valuesMean==0):
-                df=pd.DataFrame(valuesMean.T,  columns = FRAMES_HEADER)
-                df['Label']=label
-                df['EventContext']= context
-                df['Stats type'] = "mean"
-                df_collection_L.append(df)
 
-            valuesStd=analysis_outputStats.data[label,context]["std"]
-            if not np.all(valuesStd==0):
-                df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
-                df['Label']=label
-                df['EventContext']= context
-                df['Stats type'] = "std"
-                df_collection_L.append(df)
+            if not np.all(np.isnan(valuesMean)):
+                if not np.all(valuesMean==0):
+                    df=pd.DataFrame(valuesMean.T,  columns = FRAMES_HEADER)
+                    df['Label']=label
+                    df['EventContext']= context
+                    df['Stats type'] = "mean"
+                    df_collection_L.append(df)
 
-            valuesMedian=analysis_outputStats.data[label,context]["median"]
-            if not np.all(valuesMedian==0):
-                df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
-                df['Label']=label
-                df['EventContext']= context
-                df['Stats type'] = "median"
-                df_collection_L.append(df)
+                valuesStd=analysis_outputStats.data[label,context]["std"]
+                if not np.all(valuesStd==0):
+                    df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
+                    df['Label']=label
+                    df['EventContext']= context
+                    df['Stats type'] = "std"
+                    df_collection_L.append(df)
+
+                valuesMedian=analysis_outputStats.data[label,context]["median"]
+                if not np.all(valuesMedian==0):
+                    df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
+                    df['Label']=label
+                    df['EventContext']= context
+                    df['Stats type'] = "median"
+                    df_collection_L.append(df)
 
 
         if context == "Right":
-
             valuesMean=analysis_outputStats.data[label,context]["mean"]
-            if not np.all(valuesMean==0):
-                df=pd.DataFrame(valuesMean.T,  columns= FRAMES_HEADER)
-                df['Label']=label
-                df['EventContext']= context
-                df['Stats type'] = "mean"
-                df_collection_R.append(df)
+            if not np.all(np.isnan(valuesMean)):
+                if not np.all(valuesMean==0):
+                    df=pd.DataFrame(valuesMean.T,  columns= FRAMES_HEADER)
+                    df['Label']=label
+                    df['EventContext']= context
+                    df['Stats type'] = "mean"
+                    df_collection_R.append(df)
 
-            valuesStd=analysis_outputStats.data[label,context]["std"]
-            if not np.all(valuesStd==0):
-                df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
-                df['Label']=label
-                df['EventContext']= context
-                df['Stats type'] = "std"
-                df_collection_R.append(df)
+                valuesStd=analysis_outputStats.data[label,context]["std"]
+                if not np.all(valuesStd==0):
+                    df=pd.DataFrame(valuesStd.T,  columns= FRAMES_HEADER)
+                    df['Label']=label
+                    df['EventContext']= context
+                    df['Stats type'] = "std"
+                    df_collection_R.append(df)
 
-            valuesMedian=analysis_outputStats.data[label,context]["median"]
-            if not np.all(valuesMedian==0):
-                df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
-                df['Label']=label
-                df['EventContext']= context
-                df['Stats type'] = "median"
-                df_collection_R.append(df)
+                valuesMedian=analysis_outputStats.data[label,context]["median"]
+                if not np.all(valuesMedian==0):
+                    df=pd.DataFrame(valuesMedian.T,  columns= FRAMES_HEADER)
+                    df['Label']=label
+                    df['EventContext']= context
+                    df['Stats type'] = "median"
+                    df_collection_R.append(df)
 
     left_flag = len(df_collection_L)
     right_flag = len(df_collection_R)
