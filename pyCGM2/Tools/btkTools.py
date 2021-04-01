@@ -824,3 +824,14 @@ def applyRotation(btkAcq,markers,globalFrameOrientation,forwardProgression):
     			valuesRot[i,:] = np.dot(np.array([[-1,0,0],[0,1,0],[0,0,1]]),valuesRot[i,:])
 
     	btkAcq.GetPoint(marker).SetValues(valuesRot)
+
+
+def smartGetEvents(acq,label,context):
+    evs = acq.GetEvents()
+
+    out = list()
+    for it in btk.Iterate(evs):
+        if it.GetContext() ==  context and it.GetLabel() ==  label:
+            out.append(it.GetFrame())
+
+    return out
