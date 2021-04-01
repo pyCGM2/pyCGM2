@@ -104,7 +104,7 @@ def main():
         if not translators: translators = settings["Translators"]
 
         #  ikweight
-        ikWeight = files.getIKweightSet(DATA_PATH,"CGM2_4.ikw")
+        ikWeight = files.getIKweightSet(DATA_PATH,"CGM2_5.ikw")
         if not ikWeight: ikWeight = settings["Fitting"]["Weight"]
 
         #force plate assignement from Nexus
