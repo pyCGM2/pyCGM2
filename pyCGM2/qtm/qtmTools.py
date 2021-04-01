@@ -43,6 +43,21 @@ def findDynamic(soup):
 
     return measurements
 
+def findKneeCalibration(soup,side):
+    qtmMeasurements = soup.find_all("Measurement")
+    kneeCalib=list()
+
+    for measurement in qtmMeasurements:
+        if side +" Knee Calibration" in measurement.attrs["Type"] and toBool(measurement.Used.text):
+            kneeCalib.append(measurement)
+        if len(kneeCalib)>1:
+            raise Exception("You can t have 2 activated %s functional knee Calib c3d within your session"%(side))
+    return kneeCalib[0] if kneeCalib !=[] else None
+
+
+def getKneeFunctionCalibMethod(measurement):
+    mea = measurement
+    return  mea.find("Knee_functional_calibration_method").text
 
 def detectMeasurementType(soup):
     measurements = soup.find_all("Measurement")
