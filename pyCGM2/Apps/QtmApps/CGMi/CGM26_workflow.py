@@ -64,6 +64,14 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
     leftKneeFuncMeasurement = qtmTools.findKneeCalibration(sessionXML,"Left")
     rightKneeFuncMeasurement = qtmTools.findKneeCalibration(sessionXML,"Right")
 
+    if leftKneeFuncMeasurement is not None:
+        shutil.copyfile(os.getcwd()+"\\"+qtmTools.getFilename(leftKneeFuncMeasurement),
+                        DATA_PATH+qtmTools.getFilename(leftKneeFuncMeasurement))
+    if rightKneeFuncMeasurement is not None:
+        shutil.copyfile(os.getcwd()+"\\"+qtmTools.getFilename(rightKneeFuncMeasurement),
+                        DATA_PATH+qtmTools.getFilename(rightKneeFuncMeasurement))
+
+
 
     dynamicMeasurements= qtmTools.findDynamic(sessionXML)
     for dynamicMeasurement in dynamicMeasurements:
@@ -183,18 +191,17 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
         order_marker = int(float(leftKneeFuncMeasurement.Marker_lowpass_filter_order.text))
         fc_marker = float(leftKneeFuncMeasurement.Marker_lowpass_filter_frequency.text)
 
-        import ipdb; ipdb.set_trace()
         if qtmTools.getKneeFunctionCalibMethod(leftKneeFuncMeasurement) =="Calibration2Dof":
             model,acqFunc,side = kneeCalibration.calibration2Dof(model,
                                   DATA_PATH,reconstructFilenameLabelled,translators,
-                                  None,None,None,
+                                  "Left",None,None,None,
                                   fc_lowPass_marker = order_marker,
                                   order_lowPass_marker = fc_marker)
 
         if qtmTools.getKneeFunctionCalibMethod(leftKneeFuncMeasurement) =="SARA":
             model,acqFunc,side = kneeCalibration.Sara(model,
                                   DATA_PATH,reconstructFilenameLabelled,translators,
-                                  None,None,None,
+                                  "Left",None,None,None,
                                   fc_lowPass_marker = order_marker,
                                   order_lowPass_marker = fc_marker)
 
@@ -207,17 +214,18 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
         order_marker = int(float(rightKneeFuncMeasurement.Marker_lowpass_filter_order.text))
         fc_marker = float(rightKneeFuncMeasurement.Marker_lowpass_filter_frequency.text)
 
+
         if qtmTools.getKneeFunctionCalibMethod(rightKneeFuncMeasurement) =="Calibration2Dof":
             model,acqFunc,side = kneeCalibration.calibration2Dof(model,
                                   DATA_PATH,reconstructFilenameLabelled,translators,
-                                  None,None,None,
+                                  "Right",None,None,None,
                                   fc_lowPass_marker = order_marker,
                                   order_lowPass_marker = fc_marker)
 
         if qtmTools.getKneeFunctionCalibMethod(rightKneeFuncMeasurement) =="SARA":
             model,acqFunc,side = kneeCalibration.Sara(model,
                                   DATA_PATH,reconstructFilenameLabelled,translators,
-                                  None,None,None,
+                                  "Right",None,None,None,
                                   fc_lowPass_marker = order_marker,
                                   order_lowPass_marker = fc_marker)
 
