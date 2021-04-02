@@ -64,7 +64,10 @@ def detectMeasurementType(soup):
 
     types = list()
     for measurement in measurements:
-        if "Static" not in measurement.attrs["Type"] and toBool(measurement.Used.text):
+        staticFlag = "Static" not in measurement.attrs["Type"]
+        leftKneeFlag = "Left Knee Calibration - CGM2" not in measurement.attrs["Type"]
+        rightKneeFlag = "Right Knee Calibration - CGM2" not in measurement.attrs["Type"]
+        if staticFlag and leftKneeFlag and rightKneeFlag and toBool(measurement.Used.text):
             if measurement.attrs["Type"] not in types:
                 types.append(measurement.attrs["Type"])
 
