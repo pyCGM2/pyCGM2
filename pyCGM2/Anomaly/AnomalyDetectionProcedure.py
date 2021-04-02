@@ -200,3 +200,24 @@ class ForcePlateAnomalyProcedure(object):
                 logging.warning ("[pyCGM2] - check Force plate (%s) of file [%s] - signal Fz seems saturating" %(str(fp_counter),filename))
 
             fp_counter +=1
+
+
+class MarkerPresenceDetectionProcedure(object):
+    def __init__(self,markers=None):
+        super(MarkerPresenceDetectionProcedure, self).__init__()
+
+        self.markers = markers
+
+    def run(self,acq,filename):
+
+        markersIn = list()
+
+        for marker in self.markers:
+            try:
+                acq.GetPoint(marker)
+            except RuntimeError:
+                logging.warning("[pyCGM2-Checking]  marker [%s] - not exist in the file "%(marker, filename))
+            else:
+                markersIn.append(marker)
+
+        return markersIn
