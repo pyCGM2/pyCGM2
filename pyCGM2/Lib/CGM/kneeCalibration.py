@@ -32,24 +32,19 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
     else:
         acqFunc = btkTools.smartReader((DATA_PATH + reconstructFilenameLabelled))
 
+
     btkTools.checkMultipleSubject(acqFunc)
     acqFunc =  btkTools.applyTranslators(acqFunc,translators)
 
     # filtering
     # -----------------------
     if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
+        trackingMarkers = model.getTrackingMarkers(acqFunc)
         fc = kwargs["fc_lowPass_marker"]
         order = 4
         if "order_lowPass_marker" in kwargs.keys():
             order = kwargs["order_lowPass_marker"]
-        signal_processing.markerFiltering(acqFunc,order=order, fc =fc)
-
-    if "fc_lowPass_forcePlate" in kwargs.keys() and kwargs["fc_lowPass_forcePlate"]!=0 :
-        fc = kwargs["fc_lowPass_forcePlate"]
-        order = 4
-        if "order_lowPass_forcePlate" in kwargs.keys():
-            order = kwargs["order_lowPass_forcePlate"]
-        signal_processing.forcePlateFiltering(acqFunc,order=order, fc =fc)
+        signal_processing.markerFiltering(acqFunc,trackingMarkers,order=order, fc =fc)
 
     #---get frame range of interest---
     ff = acqFunc.GetFirstFrame()
@@ -171,18 +166,12 @@ def sara(model,
     # filtering
     # -----------------------
     if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
+        trackingMarkers = model.getTrackingMarkers(acqFunc)
         fc = kwargs["fc_lowPass_marker"]
         order = 4
         if "order_lowPass_marker" in kwargs.keys():
             order = kwargs["order_lowPass_marker"]
-        signal_processing.markerFiltering(acqFunc,order=order, fc =fc)
-
-    if "fc_lowPass_forcePlate" in kwargs.keys() and kwargs["fc_lowPass_forcePlate"]!=0 :
-        fc = kwargs["fc_lowPass_forcePlate"]
-        order = 4
-        if "order_lowPass_forcePlate" in kwargs.keys():
-            order = kwargs["order_lowPass_forcePlate"]
-        signal_processing.forcePlateFiltering(acqFunc,order=order, fc =fc)
+        signal_processing.markerFiltering(acqFunc,trackingMarkers,order=order, fc =fc)
 
     #---get frame range of interest---
     ff = acqFunc.GetFirstFrame()
