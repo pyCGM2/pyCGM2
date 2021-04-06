@@ -541,9 +541,16 @@ def constructEmptyMarker(acq,label,desc=""):
     smartAppendPoint(acq,label,values,desc=desc,residuals= np.ones((nFrames,1))*-1.0)
 
 
-def createZeros(acq, markerLabels):
+def createPhantoms(acq, markerLabels):
+    phantom_markers = list()
+    actual_markers = list()
     for label in markerLabels:
-        constructEmptyMarker(acq,label,desc="")
+        if not isPointExist(acq, label):
+            constructEmptyMarker(acq,label,desc="phantom")
+            phantom_markers.append(label)
+        else:
+            actual_markers.append(label)
+    return actual_markers,phantom_markers
 
 
 def getNumberOfForcePlate(btkAcq):
@@ -835,3 +842,15 @@ def smartGetEvents(acq,label,context):
             out.append(it.GetFrame())
 
     return out
+
+def cleanAcq(acq):
+
+    nframes = acq.GetPointFrameNumber()
+
+    for it in btk.Iterate(acq.GetPoints()):
+        if it.GetType() in [btk.btkPoint.Marker, btk.btkPoint.Scalar, btk.btkPoint.Angle, btk.btkPoint.Force, btk.btkPoint.Moment,btk.btkPoint.Power]:
+            values = it.GetValues()
+
+            if np.all(values == np.zeros(3)) or np.all(values==np.array([180,0,180])):
+                logging.info ( "point %s remove from acquisition"%(it.GetLabel()))
+                acq.RemovePoint(it.GetLabel())

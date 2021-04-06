@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_CGM1.py::Test_FullBody::test_FullBody_noOptions
+# pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_CGM1.py::Test_LowerBody::test_KadMed_options
 
 import os
 import logging

@@ -41,6 +41,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     # ---btk acquisition---
         acqStatic = btkTools.smartReader((DATA_PATH+calibrateFilenameLabelled))
 
+    trackingMarkers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS + cgm.CGM1.THORAX_TRACKING_MARKERS+ cgm.CGM1.UPPERLIMB_TRACKING_MARKERS
+    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
+
     btkTools.checkMultipleSubject(acqStatic)
     if btkTools.isPointExist(acqStatic,"SACR"):
         translators["LPSI"] = "SACR"
@@ -165,6 +168,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
         if  model.m_bodypart == enums.BodyPart.FullBody:
             modelFilters.CentreOfMassFilter(model,acqStatic).compute(pointLabelSuffix=pointSuffix)
 
+        btkTools.cleanAcq(acqStatic)
+
+
         return model, acqStatic
 
 
@@ -197,6 +203,9 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         # --- btk acquisition ----
         acqGait = btkTools.smartReader((DATA_PATH + reconstructFilenameLabelled))
 
+    trackingMarkers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS + cgm.CGM1.THORAX_TRACKING_MARKERS+ cgm.CGM1.UPPERLIMB_TRACKING_MARKERS
+    actual_trackingMarkers,trackingMarkers_phatoms = btkTools.createPhantoms(acqGait, trackingMarkers)
+
     btkTools.checkMultipleSubject(acqGait)
     if btkTools.isPointExist(acqGait,"SACR"):
         translators["LPSI"] = "SACR"
@@ -205,8 +214,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     acqGait =  btkTools.applyTranslators(acqGait,translators)
 
-    trackingMarkers = model.getTrackingMarkers(acqGait)
-    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
+    # trackingMarkers = model.getTrackingMarkers(acqGait)
+    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,actual_trackingMarkers)
 
     # filtering
     # -----------------------
@@ -318,6 +327,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
             #---- Joint energetics----
             modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
+
+    btkTools.cleanAcq(acqGait)
 
     #---- zero unvalid frames ---
     btkTools.applyValidFramesOnOutput(acqGait,validFrames)
