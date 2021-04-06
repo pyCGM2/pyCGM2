@@ -17,7 +17,8 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import argparse
 
-from pyCGM2.Inspect import inspectFilters, inspectProcedures
+from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure #AnomalyCorrectionProcedure
+
 
 from pyCGM2 import log; log.setLogger(level = logging.INFO)
 
@@ -95,9 +96,10 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
     required_mp,optional_mp = qtmTools.SubjectMp(sessionXML)
 
     # --Check MP
-    inspectprocedure = inspectProcedures.AnthropometricDataQualityProcedure(required_mp)
-    inspector = inspectFilters.QualityFilter(inspectprocedure)
-    inspector.run()
+    adap = AnomalyDetectionProcedure.AnthropoDataAnomalyProcedure( required_mp)
+    adf = AnomalyFilter.AnomalyDetectionFilter(None,None,adap)
+    anomaly = adf.run()
+
 
 
     #  translators management
@@ -121,31 +123,24 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
     # Calibration checking
     # --------------------
     acqStatic = btkTools.smartReader(DATA_PATH+calibrateFilenameLabelled)
+
+
     for key in MARKERSETS.keys():
         logging.info("[pyCGM2] Checking of the %s"%(key))
-
-        # presence
-        ip_presence = inspectProcedures.MarkerPresenceQualityProcedure(acqStatic,
-                                        markers = MARKERSETS[key])
-        inspector = inspectFilters.QualityFilter(ip_presence)
-        inspector.run()
-
-        if ip_presence.markersIn !=[]:
-
-            ip_gap = inspectProcedures.GapQualityProcedure(acqStatic,
-                                         markers = ip_presence.markersIn)
-            inspector = inspectFilters.QualityFilter(ip_gap)
-            inspector.run()
-
-            ip_swap = inspectProcedures.SwappingMarkerQualityProcedure(acqStatic,
-                                                markers = ip_presence.markersIn)
-            inspector = inspectFilters.QualityFilter(ip_swap)
-            inspector.run()
+        # madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( MARKERSETS[key], plot=False, window=10,threshold = 3)
+        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( MARKERSETS[key])
+        adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,mpdp)
+        anomaly = adf.run()
+        foundMarkers = anomaly["Output"]
 
 
-            ip_pos = inspectProcedures.MarkerPositionQualityProcedure(acqStatic,
-                                         markers = ip_presence.markersIn)
-            inspector = inspectFilters.QualityFilter(ip_pos)
+        if foundMarkers != []:
+            madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( foundMarkers, plot=False, window=10,threshold = 3)
+            adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,madp)
+            anomaly = adf.run()
+            anomalyIndexes = anomaly["Output"]
+
+
 
     # Calibration operation
     # --------------------
@@ -184,30 +179,18 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
         # --------------------
         for key in MARKERSETS.keys():
             if key != "Calibration markers":
+                # madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( MARKERSETS[key], plot=False, window=10,threshold = 3)
+                mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( MARKERSETS[key])
+                adf = AnomalyFilter.AnomalyDetectionFilter(acq,calibrateFilenameLabelled,mpdp)
+                anomaly = adf.run()
+                foundMarkers = anomaly["Output"]
 
-                logging.info("[pyCGM2] Checking of the %s"%(key))
-                # presence
-                ip_presence = inspectProcedures.MarkerPresenceQualityProcedure(acq,
-                                                markers = MARKERSETS[key])
-                inspector = inspectFilters.QualityFilter(ip_presence)
-                inspector.run()
 
-                if ip_presence.markersIn !=[]:
-
-                    ip_gap = inspectProcedures.GapQualityProcedure(acq,
-                                                 markers = ip_presence.markersIn)
-                    inspector = inspectFilters.QualityFilter(ip_gap)
-                    inspector.run()
-
-                    ip_swap = inspectProcedures.SwappingMarkerQualityProcedure(acq,
-                                                        markers = ip_presence.markersIn)
-                    inspector = inspectFilters.QualityFilter(ip_swap)
-                    inspector.run()
-
-                    ip_pos = inspectProcedures.MarkerPositionQualityProcedure(acq,
-                                                 markers = ip_presence.markersIn)
-                    inspector = inspectFilters.QualityFilter(ip_pos)
-
+                if foundMarkers != []:
+                    madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( foundMarkers, plot=False, window=10,threshold = 3)
+                    adf = AnomalyFilter.AnomalyDetectionFilter(acq,calibrateFilenameLabelled,madp)
+                    anomaly = adf.run()
+                    anomalyIndexes = anomaly["Output"]
 
         # filtering
         # -----------------------
@@ -223,11 +206,16 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
 
         # event checking
         # -----------------------
-        inspectprocedureEvents = inspectProcedures.GaitEventQualityProcedure(acq)
-        inspector = inspectFilters.QualityFilter(inspectprocedureEvents)
-        inspector.run
-        eventInspectorStates.append(inspectprocedureEvents.state)
+        geap = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
+        adf = AnomalyFilter.AnomalyDetectionFilter(acq,reconstructFilenameLabelled,geap)
+        anomaly = adf.run()
+        errorState = anomaly["ErrorState"]
+        eventInspectorStates.append(errorState)
 
+        # ForcePlateAnomalyProcedure
+        fpap = AnomalyDetectionProcedure.ForcePlateAnomalyProcedure()
+        adf = AnomalyFilter.AnomalyDetectionFilter(acq,reconstructFilenameLabelled,fpap)
+        anomaly = adf.run()
 
         # fitting operation
         # -----------------------
@@ -250,16 +238,14 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
 
 
     # --------------------------GAIT PROCESSING -----------------------
-    if not all(eventInspectorStates):
+    if True in eventInspectorStates:
         raise Exception ("[pyCGM2] Impossible to run Gait processing. Badly gait event detection. check the log file")
-    logging.info("---------------------GAIT PROCESSING -----------------------")
 
+    logging.info("---------------------GAIT PROCESSING -----------------------")
     if createPDFReport:
         nds = normativeDatasets.NormativeData("Schwartz2008","Free")
-
         types = qtmTools.detectMeasurementType(sessionXML)
         for type in types:
-
             modelledTrials = list()
             for dynamicMeasurement in dynamicMeasurements:
                 if  qtmTools.isType(dynamicMeasurement,type):
