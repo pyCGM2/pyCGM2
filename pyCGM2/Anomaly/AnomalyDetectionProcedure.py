@@ -218,7 +218,7 @@ class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
             indexes = np.where(force_Z == max)
 
             if indexes[0].shape[0] > 1:
-                logging.warning ("[pyCGM2-Anomaly] - check Force plate (%s) of file [%s] - signal Fz seems saturating" %(str(fp_counter),filename))
+                logging.warning ("[pyCGM2-Anomaly] - check Force plate (%s) of file [%s] - signal Fz seems saturated" %(str(fp_counter),filename))
                 errorState = True
 
             fp_counter +=1
