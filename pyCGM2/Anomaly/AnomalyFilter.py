@@ -9,9 +9,9 @@ class AnomalyDetectionFilter(object):
 
     def run(self):
 
-        out = self.m_procedure.run(self.m_acq,self.m_filename)
-
-        return out
+        self.m_procedure.run(self.m_acq,self.m_filename)
+        anomaly = self.m_procedure.getAnomaly()
+        return anomaly
 
 
 class AnomalyCorrectionFilter(object):
@@ -23,5 +23,3 @@ class AnomalyCorrectionFilter(object):
     def run(self):
 
         out = self.m_procedure.run(self.m_acq,self.m_filename)
-
-        return out
