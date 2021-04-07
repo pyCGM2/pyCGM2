@@ -255,6 +255,22 @@ def isGap_inAcq(acq, markerList):
          if any(residualValues== -1.0):
              raise Exception("[pyCGM2] gap founded for markers %s " % m )
 
+def getValidFrames(acq,markerLabels):
+
+    flag = list()
+    for i in range(0,acq.GetPointFrameNumber()):
+        flag_index=True
+        for marker in markerLabels:
+            if not acq.GetPoint(marker).GetResidual(i) >= 0 :
+                flag_index = False
+            flag.append(flag_index)
+
+    return flag
+
+
+
+
+
 def findValidFrames(acq,markerLabels):
 
     flag = list()
