@@ -331,6 +331,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     btkTools.cleanAcq(acqGait)
 
     #---- zero unvalid frames ---
-    btkTools.applyValidFramesOnOutput(acqGait,validFrames)
+    #btkTools.applyValidFramesOnOutput(acqGait,validFrames)
 
     return acqGait

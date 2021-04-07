@@ -3,7 +3,7 @@
 import numpy as np
 import logging
 
-try: 
+try:
     from pyCGM2 import btk
 except:
     logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
@@ -116,6 +116,8 @@ def setTrajectoryFromAcq(NEXUS,vskName,label,acq):
 
 
 def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq,suffix=""):
+
+
 
     lst = NEXUS.GetModelOutputNames(vskName)
     output_label = label+suffix
@@ -248,56 +250,58 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
 def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=None,suffix=""):
+    print (label)
+    if any(segment.getExistFrames()):
 
-    output_label = label+suffix
-    lst = NEXUS.GetModelOutputNames(vskName)
-    if output_label not in lst:
-        NEXUS.CreateModelOutput( vskName,output_label, 'Plug-in Gait Bones', ['RX', 'RY', 'RZ', 'TX', 'TY', 'TZ', 'SX', 'SY', 'SZ'], ['Angle', 'Angle', 'Angle', 'Length', 'Length', 'Length', 'Length', 'Length', 'Length'])
+        output_label = label+suffix
+        lst = NEXUS.GetModelOutputNames(vskName)
+        if output_label not in lst:
+            NEXUS.CreateModelOutput( vskName,output_label, 'Plug-in Gait Bones', ['RX', 'RY', 'RZ', 'TX', 'TY', 'TZ', 'SX', 'SY', 'SZ'], ['Angle', 'Angle', 'Angle', 'Length', 'Length', 'Length', 'Length', 'Length', 'Length'])
 
-    #ff,lf = NEXUS.GetTrialRange()
-    ff = acq.GetFirstFrame()
-    lf = acq.GetLastFrame()
-    pfn = acq.GetPointFrameNumber()
-    framecount = NEXUS.GetFrameCount()
-    trialRange_init = NEXUS.GetTrialRange()[0]
+        #ff,lf = NEXUS.GetTrialRange()
+        ff = acq.GetFirstFrame()
+        lf = acq.GetLastFrame()
+        pfn = acq.GetPointFrameNumber()
+        framecount = NEXUS.GetFrameCount()
+        trialRange_init = NEXUS.GetTrialRange()[0]
 
-    beg = ff-trialRange_init
-    end = lf-trialRange_init+1
+        beg = ff-trialRange_init
+        end = lf-trialRange_init+1
 
 
-    data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount))),
-           list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount))),
-           list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
-    exists = [False]*framecount
+        data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount))),
+               list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount))),
+               list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
+        exists = [False]*framecount
 
-    j=0
-    for i in range(beg,end):
-        if OriginValues is None:
-            T= segment.anatomicalFrame.motion[j].getTranslation()
-        else:
-            T = OriginValues[j,:]
+        j=0
+        for i in range(beg,end):
+            if OriginValues is None:
+                T= segment.anatomicalFrame.motion[j].getTranslation()
+            else:
+                T = OriginValues[j,:]
 
-        R= segment.anatomicalFrame.motion[j].getAngleAxis()
+            R= segment.anatomicalFrame.motion[j].getAngleAxis()
 
-        if manualScale is None:
-            S = segment.m_bsp["length"]
-        else:
-            S = manualScale
+            if manualScale is None:
+                S = segment.m_bsp["length"]
+            else:
+                S = manualScale
 
-        exists[i] = True
-        data[0][i] = R[0]
-        data[1][i] = R[1]
-        data[2][i] = R[2]
-        data[3][i] = T[0]
-        data[4][i] = T[1]
-        data[5][i] = T[2]
-        data[6][i] = S
-        data[7][i] = S
-        data[8][i] = S
+            exists[i] = True if segment.getExistFrames()[j] else False
+            data[0][i] = R[0]
+            data[1][i] = R[1]
+            data[2][i] = R[2]
+            data[3][i] = T[0]
+            data[4][i] = T[1]
+            data[5][i] = T[2]
+            data[6][i] = S
+            data[7][i] = S
+            data[8][i] = S
 
-        j+=1
+            j+=1
 
-    NEXUS.SetModelOutput( vskName, output_label, data, exists )
+        NEXUS.SetModelOutput( vskName, output_label, data, exists )
 
 
 def createGeneralEvents(NEXUS,subject,acq,labels):

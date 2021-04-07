@@ -938,13 +938,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Pelvis"]["TF"]['sequence'])
 
@@ -1073,13 +1073,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Thigh"]["TF"]['sequence'])
 
@@ -1166,13 +1166,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Thigh"]["TF"]['sequence'])
 
@@ -1261,13 +1261,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Shank"]["TF"]['sequence'])
 
@@ -1355,13 +1355,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Shank"]["TF"]['sequence'])
 
@@ -1441,15 +1441,15 @@ class CGM1(CGM):
         pt2=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#AJC
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         if dictRef["Left Foot"]["TF"]['labels'][2] is not None:
             pt3=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             v=(pt3-pt1)
 
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
 
         else:
@@ -1458,16 +1458,16 @@ class CGM1(CGM):
 
             # uncorrected Refrence with dist shank
             v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
             x_dist,y_dist,z_dist,R_dist=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
 
             # uncorrected Refrence with prox shank
             v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
             x_prox,y_prox,z_prox,R_prox=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
 
             self._R_leftUnCorrfoot_dist_prox = np.dot(R_prox.T,R_dist) # will be used for placing the foot uncorrected RF
@@ -1543,15 +1543,15 @@ class CGM1(CGM):
         pt2=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
             pt3=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             v=(pt3-pt1)
 
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
             x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
         else:
@@ -1560,16 +1560,16 @@ class CGM1(CGM):
 
             # uncorrected Refrence with dist shank
             v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
             x_dist,y_dist,z_dist,R_dist=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
             # uncorrected Refrence with prox shank
             v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
             a2=np.cross(a1,v)
-            a2=a2/np.linalg.norm(a2)
+            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
             x_prox,y_prox,z_prox,R_prox=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
             self._R_rightUnCorrfoot_dist_prox = np.dot(R_prox.T,R_dist)
@@ -1631,13 +1631,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Pelvis"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Pelvis"]['sequence'])
 
@@ -1692,13 +1692,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left Thigh"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left Thigh"]['sequence'])
 
@@ -1750,13 +1750,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Thigh"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Thigh"]['sequence'])
 
@@ -1801,13 +1801,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left Shank"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left Shank"]['sequence'])
 
@@ -1896,13 +1896,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Shank"]['sequence'])
 
@@ -2031,12 +2031,12 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left Foot"]['sequence'])
 
@@ -2155,12 +2155,12 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Foot"]['sequence'])
 
@@ -2689,6 +2689,9 @@ class CGM1(CGM):
         val=(aqui.GetPoint("LASI").GetValues() + aqui.GetPoint("RASI").GetValues()) / 2.0
         btkTools.smartAppendPoint(aqui,"midASIS",val, desc="")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
@@ -2724,6 +2727,12 @@ class CGM1(CGM):
 
         values_LHJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
         values_RHJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            if not validFrames[i]:
+                values_LHJCnode[i,:] = np.zeros(3)
+                values_RHJCnode[i,:] = np.zeros(3)
+
 
         btkTools.smartAppendPoint(aqui,"LHJC",values_LHJCnode, desc=desc_L)
         btkTools.smartAppendPoint(aqui,"RHJC",values_RHJCnode, desc=desc_R)
@@ -2803,6 +2812,8 @@ class CGM1(CGM):
 
         seg=self.getSegment("Left Thigh")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]   # reinit Technical Frame Motion ()
@@ -2841,7 +2852,8 @@ class CGM1(CGM):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
-            LKJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
+            if validFrames[i]:
+                LKJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
 
         if  "useLeftKJCmarker" in options.keys() and options["useLeftKJCmarker"] is not "LKJC":
             logging.info("[pyCGM2] - LKJC marker forced to use %s"%(options["useLeftKJCmarker"]))
@@ -2854,6 +2866,7 @@ class CGM1(CGM):
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
+
 
         # additional markers
         # NA
@@ -2913,6 +2926,9 @@ class CGM1(CGM):
 
         seg=self.getSegment("Right Thigh")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]
 
@@ -2949,8 +2965,9 @@ class CGM1(CGM):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
+            if validFrames[i]:
+                RKJCvalues[i,:] = modelDecorator.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
 
-            RKJCvalues[i,:] = modelDecorator.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
 
         if  "useRightKJCmarker" in options.keys() and options["useRightKJCmarker"] is not "RKJC":
             logging.info("[pyCGM2] - RKJC marker forced to use %s"%(options["useRightKJCmarker"]))
@@ -2974,6 +2991,7 @@ class CGM1(CGM):
 
         # computation
         seg.anatomicalFrame.motion=[]
+
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
 
@@ -3029,6 +3047,9 @@ class CGM1(CGM):
 
         seg=self.getSegment("Left Shank")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]
 
@@ -3070,11 +3091,12 @@ class CGM1(CGM):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
+            if validFrames[i]:
+                LAJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftShankRotationOffset"] )
 
-            LAJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftShankRotationOffset"] )
+                # update of the AJC location with rotation around abdAddAxis
+                LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,self.mp_computed["LeftAnkleAbAddOffset"])
 
-            # update of the AJC location with rotation around abdAddAxis
-            LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,self.mp_computed["LeftAnkleAbAddOffset"])
 
         if  "useLeftAJCmarker" in options.keys() and options["useLeftAJCmarker"] is not "LAJC":
             logging.info("[pyCGM2] - LAJC marker forced to use %s"%(options["useLeftAJCmarker"]))
@@ -3093,6 +3115,7 @@ class CGM1(CGM):
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
+
 
         # additional markers
         # NA
@@ -3143,6 +3166,10 @@ class CGM1(CGM):
         segProx=self.getSegment("Left Shank Proximal")
 
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        segProx.setExistFrames(validFrames)
+
+
         # --- managment of tibial torsion
 
         if self.m_useLeftTibialTorsion:
@@ -3157,6 +3184,7 @@ class CGM1(CGM):
         # --- motion of both technical and anatomical referentials of the proximal shank
         segProx.getReferential("TF").motion =[]
         segProx.anatomicalFrame.motion=[]
+
 
         # additional markers
         # NA
@@ -3206,6 +3234,8 @@ class CGM1(CGM):
 
         seg=self.getSegment("Right Shank")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]
@@ -3246,12 +3276,14 @@ class CGM1(CGM):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
             # ajc position from chord modified by shank offset
-            RAJCvalues[i,:] = modelDecorator.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
-
+            if validFrames[i]:
+                RAJCvalues[i,:] = modelDecorator.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
             # update of the AJC location with rotation around abdAddAxis
-            RAJCvalues[i,:] = self._rotateAjc(RAJCvalues[i,:],pt2,pt1,   self.mp_computed["RightAnkleAbAddOffset"])
+                RAJCvalues[i,:] = self._rotateAjc(RAJCvalues[i,:],pt2,pt1,   self.mp_computed["RightAnkleAbAddOffset"])
 
         # --- LAJC
+
+
         if  "useRightAJCmarker" in options.keys() and options["useRightAJCmarker"] is not "RAJC":
             logging.info("[pyCGM2] - RAJC marker forced to use %s"%(options["useRightAJCmarker"]))
             RAJCvalues = aqui.GetPoint(options["useRightAJCmarker"]).GetValues()
@@ -3316,6 +3348,8 @@ class CGM1(CGM):
         seg=self.getSegment("Right Shank")
         segProx=self.getSegment("Right Shank Proximal")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        segProx.setExistFrames(validFrames)
 
         # --- management of the tibial torsion
         if self.m_useRightTibialTorsion:
@@ -3373,6 +3407,8 @@ class CGM1(CGM):
 
         """
         seg=self.getSegment("Left Foot")
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]
@@ -3425,6 +3461,7 @@ class CGM1(CGM):
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
 
+
         # additional markers
         # NA
 
@@ -3453,6 +3490,8 @@ class CGM1(CGM):
         """
         seg=self.getSegment("Right Foot")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]
@@ -3507,6 +3546,7 @@ class CGM1(CGM):
 
         # computation
         seg.anatomicalFrame.motion=[]
+
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
             ptOrigin=aqui.GetPoint(str(dictAnat["Right Foot"]['labels'][3])).GetValues()[i,:]
@@ -3526,7 +3566,11 @@ class CGM1(CGM):
 
         seg=self.getSegment("Left Foot")
 
+        validFrames = btkTools.getValidFrames(aquiStatic,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
         seg.anatomicalFrame.motion=[]
+
 
         # additional markers
         # NA
@@ -3569,7 +3613,12 @@ class CGM1(CGM):
 
         seg=self.getSegment("Right Foot")
 
+
+        validFrames = btkTools.getValidFrames(aquiStatic,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
         seg.anatomicalFrame.motion=[]
+
 
         # additional markers
         # NA
@@ -3619,7 +3668,8 @@ class CGM1(CGM):
                - `dictAnat` (dict) - dictionnary reporting markers and sequence use for building Anatomical coordinate system
         """
         seg=self.getSegment("Pelvis")
-
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -3666,6 +3716,12 @@ class CGM1(CGM):
         values_LHJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
         values_RHJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
 
+        for i in range(0,aqui.GetPointFrameNumber()):
+            if not validFrames[i]:
+                values_LHJCnode[i,:] = np.zeros(3)
+                values_RHJCnode[i,:] = np.zeros(3)
+
+
         desc_L = seg.getReferential('TF').static.getNode_byLabel("LHJC").m_desc
         desc_R = seg.getReferential('TF').static.getNode_byLabel("RHJC").m_desc
         btkTools.smartAppendPoint(aqui,"LHJC",values_LHJCnode, desc=str("opt-"+desc_L))
@@ -3678,7 +3734,6 @@ class CGM1(CGM):
         # midHJC
         val=(aqui.GetPoint("LHJC").GetValues() + aqui.GetPoint("RHJC").GetValues()) / 2.0
         btkTools.smartAppendPoint(aqui,"midHJC",val,desc="opt")
-
 
 
     def _left_thigh_motion_optimize(self,aqui, dictRef, motionMethod):
@@ -3694,6 +3749,9 @@ class CGM1(CGM):
 
         """
         seg=self.getSegment("Left Thigh")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- add LHJC if list <2 - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -3748,6 +3806,11 @@ class CGM1(CGM):
         # --- LKJC
         desc = seg.getReferential('TF').static.getNode_byLabel("LKJC").m_desc
         values_LKJCnode=seg.getReferential('TF').getNodeTrajectory("LKJC")
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            if not validFrames[i]:
+                values_LKJCnode[i,:] = np.zeros(3)
+
         btkTools.smartAppendPoint(aqui,"LKJC",values_LKJCnode, desc=str("opt-"+desc))
 
 
@@ -3774,6 +3837,8 @@ class CGM1(CGM):
         """
         seg=self.getSegment("Right Thigh")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- add RHJC if list <2 - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -3824,6 +3889,11 @@ class CGM1(CGM):
         # --- RKJC
         desc = seg.getReferential('TF').static.getNode_byLabel("RKJC").m_desc
         values_RKJCnode=seg.getReferential('TF').getNodeTrajectory("RKJC")
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            if not validFrames[i]:
+                values_RKJCnode[i,:] = np.zeros(3)
+
         btkTools.smartAppendPoint(aqui,"RKJC",values_RKJCnode, desc=str("opt-"+desc))
 
         # --- RHJC from Thigh
@@ -3847,6 +3917,8 @@ class CGM1(CGM):
         """
         seg=self.getSegment("Left Shank")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- add LKJC if list <2 - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -3896,6 +3968,11 @@ class CGM1(CGM):
         # --- LAJC
         desc = seg.getReferential('TF').static.getNode_byLabel("LAJC").m_desc
         values_LAJCnode=seg.getReferential('TF').getNodeTrajectory("LAJC")
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            if not validFrames[i]:
+                values_LAJCnode[i,:] = np.zeros(3)
+
         btkTools.smartAppendPoint(aqui,"LAJC",values_LAJCnode, desc=str("opt"+desc))
 
         # --- KJC from Shank
@@ -3921,6 +3998,9 @@ class CGM1(CGM):
 
         """
         seg=self.getSegment("Right Shank")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- add RKJC if list <2 - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -3972,7 +4052,14 @@ class CGM1(CGM):
         # RAJC
         desc = seg.getReferential('TF').static.getNode_byLabel("RAJC").m_desc
         values_RAJCnode=seg.getReferential('TF').getNodeTrajectory("RAJC")
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            if not validFrames[i]:
+                values_RAJCnode[i,:] = np.zeros(3)
+
         btkTools.smartAppendPoint(aqui,"RAJC",values_RAJCnode, desc=str("opt-"+desc))
+
+
 
         # --- KJC from Shank
         #values_KJCnode=seg.getReferential('TF').getNodeTrajectory("RKJC")
@@ -3984,6 +4071,9 @@ class CGM1(CGM):
     def _leftFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
         seg=self.getSegment("Left Foot")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- add LAJC if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -4032,6 +4122,9 @@ class CGM1(CGM):
 
         # --- AJC from Foot
         values_AJCnode=seg.getReferential('TF').getNodeTrajectory("LAJC")
+        for i in range(0,aqui.GetPointFrameNumber()):
+            if not validFrames[i]:
+                values_AJCnode[i,:] = np.zeros(3)
         #btkTools.smartAppendPoint(aqui,"LAJC-Foot",values_AJCnode, desc="opt from Foot")
 
 
@@ -4042,6 +4135,9 @@ class CGM1(CGM):
     def _rightFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
         seg=self.getSegment("Right Foot")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- add RAJC if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -4090,6 +4186,9 @@ class CGM1(CGM):
 
         # --- AJC from Foot
         values_AJCnode=seg.getReferential('TF').getNodeTrajectory("RAJC")
+        for i in range(0,aqui.GetPointFrameNumber()):
+            if not validFrames[i]:
+                values_AJCnode[i,:] = np.zeros(3)
         #btkTools.smartAppendPoint(aqui,"RAJC-Foot",values_AJCnode, desc="opt from Foot")
 
 
@@ -4103,6 +4202,7 @@ class CGM1(CGM):
 
         # --- Motion of the Anatomical frame
         seg.anatomicalFrame.motion=[]
+
 
         # computation
         csFrame=frame.Frame()
@@ -4262,13 +4362,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Head"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Head"]["TF"]['sequence'])
 
@@ -4324,13 +4424,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Head"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Head"]['sequence'])
 
@@ -4432,13 +4532,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef["Thorax"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Thorax"]["TF"]['sequence'])
 
@@ -4543,13 +4643,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Thorax"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #OT
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Thorax"]['sequence'])
 
@@ -4616,13 +4716,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef[segname]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef[segname]["TF"]['sequence'])
 
@@ -4652,13 +4752,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic[side+" Clavicle"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic[side+" Clavicle"]['sequence'])
 
@@ -4746,13 +4846,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef[segname]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0) #ELB
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef[segname]["TF"]['sequence'])
 
@@ -4816,13 +4916,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic[segname]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic[segname]['sequence'])
 
@@ -4883,13 +4983,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef[side +" ForeArm"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef[side +" ForeArm"]["TF"]['sequence'])
 
@@ -4960,16 +5060,16 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic[side+" ForeArm"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         if dictAnatomic[side+" ForeArm"]['labels'][2] is not None:
             v=(pt3-pt1)
-            v=v/np.linalg.norm(v)
+            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
         else:
             v=self.getSegment(side+ " UpperArm").anatomicalFrame.static.m_axisY
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic[side+" ForeArm"]['sequence'])
 
@@ -5030,13 +5130,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictRef[side +" Hand"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictRef[side +" Hand"]["TF"]['sequence'])
 
@@ -5094,13 +5194,13 @@ class CGM1(CGM):
         ptOrigin=aquiStatic.GetPoint(str(dictAnatomic[side +" Hand"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # HO
 
         a1=(pt2-pt1)
-        a1=a1/np.linalg.norm(a1)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
         v=(pt3-pt1)
-        v=v/np.linalg.norm(v)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
-        a2=a2/np.linalg.norm(a2)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
         x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic[side +" Hand"]['sequence'])
 
@@ -5149,6 +5249,8 @@ class CGM1(CGM):
 
         seg=self.getSegment("Thorax")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]   # reinit Technical Frame Motion ()
@@ -5167,7 +5269,6 @@ class CGM1(CGM):
         # computation
         LSJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
         RSJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
-
         LVWMvalues=np.zeros((aqui.GetPointFrameNumber(),3))
         RVWMvalues=np.zeros((aqui.GetPointFrameNumber(),3))
         OTvalues=np.zeros((aqui.GetPointFrameNumber(),3))
@@ -5200,47 +5301,44 @@ class CGM1(CGM):
 
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
-            OT = ptOrigin + -1.0*(markerDiameter/2.0)*csFrame.m_axisX #
-            OTvalues[i,:] = OT
+            OT = ptOrigin + -1.0*(markerDiameter/2.0)*csFrame.m_axisX
 
-            if self.m_bodypart is not enums.BodyPart.LowerLimbTrunk:
-                LSHO = aqui.GetPoint(str("LSHO")).GetValues()[i,:]
-                LVWM = np.cross((LSHO - OT ), csFrame.m_axisX ) + LSHO
+            LSHO = aqui.GetPoint(str("LSHO")).GetValues()[i,:]
+            LVWM = np.cross((LSHO - OT ), csFrame.m_axisX ) + LSHO
+            RSHO = aqui.GetPoint(str("RSHO")).GetValues()[i,:]
+            RVWM = np.cross((RSHO - OT ), csFrame.m_axisX ) + RSHO
 
+            if validFrames[i]:
+                OTvalues[i,:] = OT
                 LSJCvalues[i,:] = modelDecorator.chord( -1.0*(self.mp["LeftShoulderOffset"]+ markerDiameter/2.0) ,LSHO,OT,LVWM, beta=0 )
                 LVWMvalues[i,:] = LVWM
-
-                RSHO = aqui.GetPoint(str("RSHO")).GetValues()[i,:]
-                RVWM = np.cross((RSHO - OT ), csFrame.m_axisX ) + RSHO
-
                 RSJCvalues[i,:] = modelDecorator.chord( 1.0*(self.mp["RightShoulderOffset"]+ markerDiameter/2.0) ,RSHO,OT,RVWM, beta=0 )
                 RVWMvalues[i,:] = RVWM
 
         btkTools.smartAppendPoint(aqui,"OT",OTvalues,desc="")
+        btkTools.smartAppendPoint(aqui,"LVWM",LVWMvalues,desc="")
+        btkTools.smartAppendPoint(aqui,"RVWM",RVWMvalues,desc="")
 
-        if self.m_bodypart is not enums.BodyPart.LowerLimbTrunk:
-            btkTools.smartAppendPoint(aqui,"LVWM",LVWMvalues,desc="")
-            btkTools.smartAppendPoint(aqui,"RVWM",RVWMvalues,desc="")
+        # --- LKJC
+        if  "useLeftSJCmarker" in options.keys():
+            LSJCvalues = aqui.GetPoint(options["useLeftSJCmarker"]).GetValues()
+            desc = aqui.GetPoint(options["useLeftSJCmarker"]).GetDescription()
+            btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=desc)
+        else:
+            desc = seg.getReferential('TF').static.getNode_byLabel("LSJC").m_desc
+            btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=str("Chord-"+desc))
 
-            # --- LKJC
-            if  "useLeftSJCmarker" in options.keys():
-                LSJCvalues = aqui.GetPoint(options["useLeftSJCmarker"]).GetValues()
-                desc = aqui.GetPoint(options["useLeftSJCmarker"]).GetDescription()
-                btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=desc)
-            else:
-                desc = seg.getReferential('TF').static.getNode_byLabel("LSJC").m_desc
-                btkTools.smartAppendPoint(aqui,"LSJC",LSJCvalues,desc=str("Chord-"+desc))
-
-            if  "useRightSJCmarker" in options.keys():
-                RSJCvalues = aqui.GetPoint(options["useRightSJCmarker"]).GetValues()
-                desc = aqui.GetPoint(options["useRightSJCmarker"]).GetDescription()
-                btkTools.smartAppendPoint(aqui,"RSJC",RSJCvalues,desc=desc)
-            else:
-                desc = seg.getReferential('TF').static.getNode_byLabel("RSJC").m_desc
-                btkTools.smartAppendPoint(aqui,"RSJC",RSJCvalues,desc=str("Chord-"+desc))
+        if  "useRightSJCmarker" in options.keys():
+            RSJCvalues = aqui.GetPoint(options["useRightSJCmarker"]).GetValues()
+            desc = aqui.GetPoint(options["useRightSJCmarker"]).GetDescription()
+            btkTools.smartAppendPoint(aqui,"RSJC",RSJCvalues,desc=desc)
+        else:
+            desc = seg.getReferential('TF').static.getNode_byLabel("RSJC").m_desc
+            btkTools.smartAppendPoint(aqui,"RSJC",RSJCvalues,desc=str("Chord-"+desc))
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
+
         T5inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
         C7inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
         T10inThorax = np.zeros((aqui.GetPointFrameNumber(),3))
@@ -5332,6 +5430,8 @@ class CGM1(CGM):
 
         seg=self.getSegment(side+" Clavicle")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]   # reinit Technical Frame Motion ()
@@ -5370,6 +5470,7 @@ class CGM1(CGM):
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
+
 
         # additional markers
         # NA
@@ -5434,6 +5535,9 @@ class CGM1(CGM):
 
         seg=self.getSegment(side+" UpperArm")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
         if frameReconstruction == "Both" or frameReconstruction == "Technical":
             # --- motion of the technical referential
             seg.getReferential("TF").motion =[]   # reinit Technical Frame Motion ()
@@ -5489,7 +5593,8 @@ class CGM1(CGM):
                 CVM = aqui.GetPoint(prefix+"CVM").GetValues()[i,:]
 
                 #EJCvalues[i,:] =  modelDecorator.chord( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,LHE,SJC,CVM, beta=0 )
-                EJCvalues[i,:] =  modelDecorator.chord( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=0 )
+                if validFrames[i]:
+                    EJCvalues[i,:] =  modelDecorator.chord( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=0 )
 
 
             #btkTools.smartAppendPoint(aqui,"LKJC_Chord",LKJCvalues,desc="chord")
@@ -5518,6 +5623,7 @@ class CGM1(CGM):
         if frameReconstruction == "Both" or frameReconstruction == "Anatomical":
             # --- motion of the anatomical referential
             seg.anatomicalFrame.motion=[]
+
 
             # additional markers
             # NA
@@ -5583,6 +5689,9 @@ class CGM1(CGM):
 
         seg=self.getSegment(side+" ForeArm")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
         if frameReconstruction == "Both" or frameReconstruction == "Technical":
         # --- motion of the technical referential
             seg.getReferential("TF").motion =[]   # reinit Technical Frame Motion ()
@@ -5628,7 +5737,8 @@ class CGM1(CGM):
 
                 WJCaxis = np.cross((US-RS),(EJC-MWP))
                 WJCaxis = WJCaxis / np.linalg.norm(WJCaxis)
-                WJCvalues[i,:] =MWP +  (s*(self.mp[side +"WristWidth"]+markerDiameter)/2.0)*WJCaxis
+                if validFrames[i]:
+                    WJCvalues[i,:] =MWP +  (s*(self.mp[side +"WristWidth"]+markerDiameter)/2.0)*WJCaxis
 
 
                 EJC=aqui.GetPoint(prefix+"EJC").GetValues()[i,:]
@@ -5661,6 +5771,7 @@ class CGM1(CGM):
         if frameReconstruction == "Both" or frameReconstruction == "Anatomical":
             # --- motion of the anatomical referential
             seg.anatomicalFrame.motion=[]
+
 
             # computation
             csFrame=frame.Frame()
@@ -5727,6 +5838,8 @@ class CGM1(CGM):
 
         seg=self.getSegment(side+" Hand")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]   # reinit Technical Frame Motion ()
@@ -5769,7 +5882,8 @@ class CGM1(CGM):
             WJC=aqui.GetPoint(prefix+"WJC").GetValues()[i,:]
             MH2=aqui.GetPoint(prefix+"FIN").GetValues()[i,:]
             MWP=aqui.GetPoint(prefix+"MWP").GetValues()[i,:]
-            HOvalues[i,:] =  modelDecorator.chord( (self.mp[side+"HandThickness"]+ markerDiameter)/2.0 ,MH2, WJC, MWP, beta=0 )
+            if validFrames[i]:
+                HOvalues[i,:] =  modelDecorator.chord( (self.mp[side+"HandThickness"]+ markerDiameter)/2.0 ,MH2, WJC, MWP, beta=0 )
 
 
         if  "useLeftHOmarker" in options.keys():
@@ -5790,6 +5904,7 @@ class CGM1(CGM):
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
+
 
         # additional markers
         # NA
@@ -5834,6 +5949,9 @@ class CGM1(CGM):
 
         """
         seg=self.getSegment("Head")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]
@@ -5883,6 +6001,7 @@ class CGM1(CGM):
 
         # --- motion of the anatomical referential
         seg.anatomicalFrame.motion=[]
+
 
         # additional markers
         # NA
@@ -6062,29 +6181,13 @@ class CGM1(CGM):
                 nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKNE", acq)
 
         # export JC
+        jointcentres = ["LHJC","RHJC","LKJC","RKJC","LAJC","RAJC","LSJC","RSJC","LEJC","REJC","LHO","RHO"]
 
-        #centreOfMassLabel  = "CentreOfMass" + pointSuffix if pointSuffix is not None else "CentreOfMass"
-        if self.m_bodypart != enums.BodyPart.UpperLimb:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq,suffix = pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKJC", acq,suffix = pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHJC", acq,suffix = pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq,suffix = pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq,suffix = pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq,suffix = pointSuffix)
+        for jointCentre in jointcentres:
+            if btkTools.isPointExist(acq, jointCentre):
+                nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,jointCentre, acq,suffix = pointSuffix)
 
-        if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            pass
-
-        if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LSJC", acq,suffix = pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RSJC", acq,suffix = pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LEJC", acq,suffix = pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"REJC", acq,suffix = pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHO", acq,suffix = pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHO", acq,suffix = pointSuffix)
-
-            logging.debug("jc over")
-
+        logging.debug("jc over")
 
         # export angles
         for it in btk.Iterate(acq.GetPoints()):
@@ -6099,57 +6202,70 @@ class CGM1(CGM):
 
         # bones
         # -------------
-        if self.m_bodypart != enums.BodyPart.UpperLimb:
+        if btkTools.isPointExist(acq, "midHJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),
                 OriginValues = acq.GetPoint("midHJC").GetValues(), suffix = pointSuffix )
 
+        if btkTools.isPointExist(acq, "LKJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),
                 OriginValues = acq.GetPoint("LKJC").GetValues(),suffix = pointSuffix )
             #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
+        if btkTools.isPointExist(acq, "LAJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),
-                            OriginValues = acq.GetPoint("LAJC").GetValues(),suffix = pointSuffix )
-            nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"),
-                OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix )
-            nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left Foot"),
-                OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0,suffix = pointSuffix )
+                    OriginValues = acq.GetPoint("LAJC").GetValues(),suffix = pointSuffix )
 
+        nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"),
+            OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix )
+        nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left Foot"),
+            OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0,suffix = pointSuffix )
+
+        if btkTools.isPointExist(acq, "RKJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),
                 OriginValues = acq.GetPoint("RKJC").GetValues(),suffix = pointSuffix )
-            #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
+                #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
+        if btkTools.isPointExist(acq, "RAJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),
-            OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix = pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") ,
-                OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix )
-            nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right Foot") ,
-                OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"), manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0,suffix = pointSuffix)
+                OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix = pointSuffix)
 
-        if self.m_bodypart == enums.BodyPart.LowerLimbTrunk :
-            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),
-                OriginValues = acq.GetPoint("OT").GetValues(),
-                suffix = pointSuffix)
+        nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") ,
+            OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix )
+        nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right Foot") ,
+            OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"), manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0,suffix = pointSuffix)
 
-        if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+        if btkTools.isPointExist(acq, "OT"):
+
             nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),
                 OriginValues = acq.GetPoint("OT").GetValues(),
                 manualScale = self.getSegment("Thorax").m_info["Scale"],
                 suffix = pointSuffix )
 
+        if btkTools.isPointExist(acq, "LEJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),
                 OriginValues = acq.GetPoint("LEJC").GetValues(),suffix = pointSuffix )
+
+        if btkTools.isPointExist(acq, "LWJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"LFOREARM", self.getSegment("Left ForeArm"),
                 OriginValues = acq.GetPoint("LWJC").GetValues(),suffix = pointSuffix )
-            nexusTools.appendBones(NEXUS,vskName,acq,"LHAND", self.getSegment("Left Hand"),
-            OriginValues = acq.GetPoint("LHO").GetValues(),suffix = pointSuffix )
 
-            nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm")
-            ,OriginValues = acq.GetPoint("REJC").GetValues(),suffix = pointSuffix )
+        if btkTools.isPointExist(acq, "LHO"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"LHAND", self.getSegment("Left Hand"),
+                OriginValues = acq.GetPoint("LHO").GetValues(),suffix = pointSuffix )
+
+        if btkTools.isPointExist(acq, "REJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm"),
+                OriginValues = acq.GetPoint("REJC").GetValues(),suffix = pointSuffix )
+
+        if btkTools.isPointExist(acq, "RWJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"RFOREARM", self.getSegment("Right ForeArm"),
-            OriginValues = acq.GetPoint("RWJC").GetValues(),suffix = pointSuffix )
+                OriginValues = acq.GetPoint("RWJC").GetValues(),suffix = pointSuffix )
+
+        if btkTools.isPointExist(acq, "RHO"):
             nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),
-            OriginValues = acq.GetPoint("RHO").GetValues(),suffix = pointSuffix )
-            nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),
-                OriginValues = self.getSegment("Head").anatomicalFrame.getNodeTrajectory("SkullOriginOffset"),
-                manualScale = self.getSegment("Head").m_info["headScale"],suffix = pointSuffix )
+                OriginValues = acq.GetPoint("RHO").GetValues(),suffix = pointSuffix )
+
+        nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),
+            OriginValues = self.getSegment("Head").anatomicalFrame.getNodeTrajectory("SkullOriginOffset"),
+            manualScale = self.getSegment("Head").m_info["headScale"],suffix = pointSuffix )
         logging.debug("bones over")
 
         if not staticProcessingFlag:
@@ -6184,7 +6300,6 @@ class CGM1(CGM):
             logging.debug("power over")
 
         # centre of mass
-
         centreOfMassLabel  = "CentreOfMass" + pointSuffix if pointSuffix is not None else "CentreOfMass"
-        if self.m_centreOfMass is not None:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str(centreOfMassLabel), acq)
+        if btkTools.isPointExist(acq, centreOfMassLabel):
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,centreOfMassLabel, acq)
