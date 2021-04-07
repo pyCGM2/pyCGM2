@@ -263,7 +263,8 @@ def getValidFrames(acq,markerLabels):
         for marker in markerLabels:
             if not acq.GetPoint(marker).GetResidual(i) >= 0 :
                 flag_index = False
-            flag.append(flag_index)
+
+        flag.append(flag_index)
 
     return flag
 
