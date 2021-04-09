@@ -19,6 +19,8 @@ Examples:
 import os
 import logging
 import argparse
+import warnings
+warnings.filterwarnings("ignore")
 
 # pyCGM2 settings
 import pyCGM2
@@ -125,6 +127,7 @@ def main():
             forceBtkAcq=acq,
             ikAccuracy = ikAccuracy)
 
+        
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,acqIK,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,acqIK,["Left-FP","Right-FP"])

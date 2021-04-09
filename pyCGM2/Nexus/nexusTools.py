@@ -249,9 +249,17 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
-def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=None,suffix=""):
-    print (label)
+def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=None,suffix="",existFromPoint = None):
+
     if any(segment.getExistFrames()):
+
+        residuals = None
+        if existFromPoint is not None:
+            try:
+                residuals = np.invert(acq.GetPoint(existFromPoint).GetResiduals().astype(bool))
+            except RuntimeError:
+                pass
+
 
         output_label = label+suffix
         lst = NEXUS.GetModelOutputNames(vskName)
@@ -274,8 +282,17 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
                list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
         exists = [False]*framecount
 
+
         j=0
         for i in range(beg,end):
+
+            if residuals is not None:
+                existFlag = residuals[j]
+            else:
+                existFlag = segment.getExistFrames()[j]
+
+
+
             if OriginValues is None:
                 T= segment.anatomicalFrame.motion[j].getTranslation()
             else:
@@ -288,7 +305,7 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
             else:
                 S = manualScale
 
-            exists[i] = True if segment.getExistFrames()[j] else False
+            exists[i] = True if existFlag else False
             data[0][i] = R[0]
             data[1][i] = R[1]
             data[2][i] = R[2]

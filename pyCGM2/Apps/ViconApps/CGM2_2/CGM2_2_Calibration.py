@@ -29,6 +29,9 @@ import logging
 import argparse
 import matplotlib.pyplot as plt
 
+import warnings
+warnings.filterwarnings("ignore")
+
 # pyCGM2 settings
 import pyCGM2
 from pyCGM2 import log; log.setLoggingLevel(logging.INFO)

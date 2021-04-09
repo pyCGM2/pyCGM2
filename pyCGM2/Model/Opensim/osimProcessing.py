@@ -13,7 +13,7 @@ try:
 except:
     logging.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
     import opensim
-    
+
 from bs4 import BeautifulSoup
 
 
@@ -57,9 +57,9 @@ def smartTrcExport(acq,filenameNoExt):
 
 
 
-def sto2pointValues(stoFilename,label,R_LAB_OSIM):
+def sto2pointValues(storageObject,label,R_LAB_OSIM):
 
-    storageObject = opensim.Storage(stoFilename)
+    # storageObject = opensim.Storage(stoFilename)
     index_x =storageObject.getStateIndex(label+"_tx")
     index_y =storageObject.getStateIndex(label+"_ty")
     index_z =storageObject.getStateIndex(label+"_tz")

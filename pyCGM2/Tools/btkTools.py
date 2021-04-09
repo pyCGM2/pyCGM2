@@ -255,7 +255,9 @@ def isGap_inAcq(acq, markerList):
          if any(residualValues== -1.0):
              raise Exception("[pyCGM2] gap founded for markers %s " % m )
 
-def getValidFrames(acq,markerLabels):
+
+def getValidFrames(acq,markerLabels,frameBounds=None):
+    ff = acq.GetFirstFrame()
 
     flag = list()
     for i in range(0,acq.GetPointFrameNumber()):
@@ -266,9 +268,65 @@ def getValidFrames(acq,markerLabels):
 
         flag.append(flag_index)
 
+    if frameBounds is not None:
+        begin = frameBounds[0] - ff
+        end = frameBounds[1] - ff
+        flag[0:begin] = [False]*len(flag[0:begin])
+        flag[end:] = [False]*len(flag[end:])
+        flag[begin:end+1] = [True]*len(flag[begin:end+1])
+
+
     return flag
 
 
+def getFrameBoundaries(acq,markerLabels):
+
+    flag = getValidFrames(acq,markerLabels)
+
+    ff = acq.GetFirstFrame()
+
+    firstValidFrame = flag.index(True)+ff
+    lastValidFrame = ff+len(flag) - flag[::-1].index(True) - 1
+
+    return firstValidFrame,lastValidFrame
+
+
+def checkGap(acq, markerList,frameBounds=None):
+    """
+        Check if there is a gap
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `markerList` (list of str) - marker labels
+    """
+    ff = acq.GetFirstFrame()
+    flag = False
+    for m in markerList:
+        residualValues = acq.GetPoint(m).GetResiduals()
+        if frameBounds is not None:
+            begin = frameBounds[0] - ff
+            end = frameBounds[1] - ff
+            if any (residualValues[begin:end]==-1.0):
+                logging.warning("[pyCGM2] gap found for marker (%s)"%(m))
+                flag=True
+        else:
+            if any(residualValues== -1.0):
+                flag=True
+
+    return flag
+
+
+def applyOnValidFrames(acq,validFrames):
+
+    frameNumber=  acq.GetPointFrameNumber()
+    for it in btk.Iterate(acq.GetPoints()):
+        if it.GetType() in [btk.btkPoint.Angle, btk.btkPoint.Force, btk.btkPoint.Moment,btk.btkPoint.Power]:
+            for i in range(0,frameNumber):
+                if not validFrames[i]:
+                    it.SetResidual(i,-1)
+                    it.SetValue(i,0,0)
+                    it.SetValue(i,1,0)
+                    it.SetValue(i,2,0)
 
 
 

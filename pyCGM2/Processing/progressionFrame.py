@@ -36,9 +36,10 @@ class PointProgressionFrameProcedure(object):
         if not btkTools.isPointExist(acq,self.m_marker):
             raise Exception( "[pyCGM2] : origin point doesnt exist")
 
-        f,ff,lf = btkTools.findValidFrames(acq,[self.m_marker])
+        vff,vlf = btkTools.getFrameBoundaries(acq,[self.m_marker])
+        ff = acq.GetFirstFrame()
 
-        values = acq.GetPoint(self.m_marker).GetValues()[ff:lf,0:3]
+        values = acq.GetPoint(self.m_marker).GetValues()[vff-ff:vlf-ff+1,0:3]
 
         MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
         absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
@@ -82,10 +83,10 @@ class PelvisProgressionFrameProcedure(object):
             raise Exception( "[pyCGM2] : marker %s doesn't exist"%(self.m_marker))
 
         # find valid frames and get the first one
-        flag,vff,vlf = btkTools.findValidFrames(acq,[self.m_marker])
+        vff,vlf = btkTools.getFrameBoundaries(acq,[self.m_marker])
+        ff = acq.GetFirstFrame()
 
-        values = acq.GetPoint(self.m_marker).GetValues()[vff:vlf,:]
-
+        values = acq.GetPoint(self.m_marker).GetValues()[vff-ff:vlf-ff+1,:]
         MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
         absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
 
@@ -116,8 +117,9 @@ class PelvisProgressionFrameProcedure(object):
                     raise Exception( "[pyCGM2] : marker %s doesn't exist"%(marker))
 
             # find valid frames and get the first one
-            flag,vff,vlf = btkTools.findValidFrames(acq,self.m_frontmarkers+self.m_backmarkers)
-            index = vff
+            vff,vlf = btkTools.getFrameBoundaries(acq,self.m_frontmarkers+self.m_backmarkers)
+            ff = acq.GetFirstFrame()
+            index = vff-ff
 
 
             # barycentres
@@ -202,12 +204,12 @@ class ThoraxProgressionFrameProcedure(object):
     def compute(self,acq):
 
         if not btkTools.isPointExist(acq,self.m_marker):
-            raise Exception( "[pyCGM2] : marker %s doesn't exist"%(m_marker))
+            raise Exception( "[pyCGM2] : marker %s doesn't exist"%(self.m_marker))
 
         # find valid frames and get the first one
-        flag,vff,vlf = btkTools.findValidFrames(acq,[self.m_marker])
-
-        values = acq.GetPoint(self.m_marker).GetValues()[vff:vlf,:]
+        vff,vlf = btkTools.getFrameBoundaries(acq,[self.m_marker])
+        ff = acq.GetFirstFrame()
+        values = acq.GetPoint(self.m_marker).GetValues()[vff-ff:vlf-ff+1,:]
 
         MaxValues =[values[-1,0]-values[0,0], values[-1,1]-values[0,1]]
         absMaxValues =[np.abs(values[-1,0]-values[0,0]), np.abs(values[-1,1]-values[0,1])]
@@ -237,8 +239,9 @@ class ThoraxProgressionFrameProcedure(object):
                     raise Exception( "[pyCGM2] : marker %s doesn't exist"%(marker))
 
             # find valid frames and get the first one
-            flag,vff,vlf = btkTools.findValidFrames(acq,self.m_frontmarkers+self.m_backmarkers)
-            index = vff
+            vff,vlf = btkTools.getFrameBoundaries(acq,self.m_frontmarkers+self.m_backmarkers)
+            ff = acq.GetFirstFrame()
+            index = vff-ff
 
 
             # barycentres

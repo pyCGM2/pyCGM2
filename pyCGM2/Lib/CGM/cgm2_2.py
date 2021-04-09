@@ -16,7 +16,7 @@ from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Model.Opensim import opensimFilters
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Signal import signal_processing
-
+from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
 
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
@@ -45,14 +45,12 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     if "Fitting" in weights.keys():
         weights  = weights["Fitting"]["Weight"]
 
-
     # ---btk acquisition---
 
     if "forceBtkAcq" in kwargs.keys():
         acqStatic = kwargs["forceBtkAcq"]
     else:
         acqStatic = btkTools.smartReader((DATA_PATH+calibrateFilenameLabelled))
-
 
     btkTools.checkMultipleSubject(acqStatic)
     if btkTools.isPointExist(acqStatic,"SACR"):
@@ -61,6 +59,47 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         logging.info("[pyCGM2] Sacrum marker detected")
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+
+
+    trackingMarkers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS + cgm.CGM1.THORAX_TRACKING_MARKERS+ cgm.CGM1.UPPERLIMB_TRACKING_MARKERS
+    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
+
+    vff = acqStatic.GetFirstFrame()
+    vlf = acqStatic.GetLastFrame()
+    # vff,vlf = btkTools.getFrameBoundaries(acqStatic,actual_trackingMarkers)
+    flag = btkTools.getValidFrames(acqStatic,actual_trackingMarkers,frameBounds=[vff,vlf])
+
+    gapFlag = btkTools.checkGap(acqStatic,actual_trackingMarkers,frameBounds=[vff,vlf])
+    if gapFlag:
+        raise Exception("[pyCGM2] Calibration aborted. Gap find during interval [%i-%i]. Crop your c3d " %(vff,vlf))
+
+    # --------------------ANOMALY------------------------------
+    # --Check MP
+    adap = AnomalyDetectionProcedure.AnthropoDataAnomalyProcedure( required_mp)
+    adf = AnomalyFilter.AnomalyDetectionFilter(None,None,adap)
+    anomaly = adf.run()
+
+    # --marker presence
+    markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS, cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
+    for markerset in markersets:
+        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( markerset,verbose=False)
+        adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,mpdp)
+        anomaly = adf.run()
+        if anomaly["Output"]["In"] !=[] and anomaly["Output"]["Out"]!=[]:
+            for markerOut in anomaly["Output"]["Out"]:
+                logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(markerOut, calibrateFilenameLabelled))
+
+        # --marker outliers
+        # if anomaly["Output"]["In"] !=[]:
+        #     madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( anomaly["Output"]["In"], plot=False, window=10,threshold = 3)
+        #     adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,madp)
+        #     anomaly = adf.run()
+        #     anomalyIndexes = anomaly["Output"]
+
+
+    # --------------------MODELLING------------------------------
+
+
 
     # ---check marker set used----
     dcm= cgm.CGM.detectCalibrationMethods(acqStatic)
@@ -87,7 +126,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                         leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
                                         headFlat= headFlat,
-                                        markerDiameter=markerDiameter,
+                                        markerDiameter=markerDiameter
                                         ).compute()
 
     # ---- Decorators -----
@@ -100,7 +139,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
                            headFlat= headFlat,
-                           markerDiameter=markerDiameter).compute()
+                           markerDiameter=markerDiameter,
+                           ).compute()
 
     # ----------------------CGM MODELLING----------------------------------
     # ----motion filter----
@@ -136,6 +176,11 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             # --- opensim Fitting Filter ---
             iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
 
+            for target in weights.keys():
+                if target not in actual_trackingMarkers:
+                    weights[target] = 0
+                    logging.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,calibrateFilenameLabelled))
+
             cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
             cgmFittingProcedure.updateMarkerWeight("LASI",weights["LASI"])
             cgmFittingProcedure.updateMarkerWeight("RASI",weights["RASI"])
@@ -160,6 +205,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
                                                               cgmFittingProcedure,
                                                               DATA_PATH,
                                                               acqStatic )
+            osrf.setTimeRange(acqStatic,beginFrame = vff, lastFrame=vlf)
             acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled )
 
 
@@ -271,8 +317,34 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         logging.info("[pyCGM2] Sacrum marker detected")
 
     acqGait =  btkTools.applyTranslators(acqGait,translators)
-    trackingMarkers = model.getTrackingMarkers(acqGait)
-    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
+
+    trackingMarkers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS + cgm.CGM1.THORAX_TRACKING_MARKERS+ cgm.CGM1.UPPERLIMB_TRACKING_MARKERS
+    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqGait, trackingMarkers)
+    vff,vlf = btkTools.getFrameBoundaries(acqGait,actual_trackingMarkers)
+    flag = btkTools.getValidFrames(acqGait,actual_trackingMarkers,frameBounds=[vff,vlf])
+
+    # --------------------ANOMALY------------------------------
+    # --marker presence
+    markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS, cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
+
+    for markerset in markersets:
+        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( markerset,verbose=False)
+        adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,mpdp)
+        anomaly = adf.run()
+        if anomaly["Output"]["In"] !=[] and anomaly["Output"]["Out"]!=[]:
+            for markerOut in anomaly["Output"]["Out"]:
+                logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(markerOut, reconstructFilenameLabelled))
+
+        # --marker outliers
+        # if anomaly["Output"]["In"] !=[]:
+        #     madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( anomaly["Output"]["In"], plot=False, window=10,threshold = 3)
+        #     adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,madp, frameRange=[vff,vlf])
+        #     anomaly = adf.run()
+        #     anomalyIndexes = anomaly["Output"]
+
+   # --------------------MODELLING------------------------------
+
+
 
     # filtering
     # -----------------------
@@ -291,6 +363,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         signal_processing.forcePlateFiltering(acqGait,order=order, fc =fc)
 
     # --- initial motion Filter ---
+
     scp=modelFilters.StaticCalibrationProcedure(model)
     modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Determinist)
     modMotion.compute()
@@ -319,6 +392,12 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         # --- opensim Fitting Filter ---
         iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
 
+        for target in weights.keys():
+            if target not in actual_trackingMarkers:
+                weights[target] = 0
+                logging.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,reconstructFilenameLabelled))
+
+
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
         cgmFittingProcedure.updateMarkerWeight("LASI",weights["LASI"])
         cgmFittingProcedure.updateMarkerWeight("RASI",weights["RASI"])
@@ -343,6 +422,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                                           cgmFittingProcedure,
                                                           DATA_PATH,
                                                           acqGait)
+        osrf.setTimeRange(acqGait,beginFrame = vff, lastFrame=vlf)
         if "ikAccuracy" in kwargs.keys():
             osrf.setAccuracy(kwargs["ikAccuracy"])
 
@@ -444,9 +524,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
             #---- Joint energetics----
             modelFilters.JointPowerFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
 
-
+    btkTools.cleanAcq(finalAcqGait)
+    btkTools.applyOnValidFrames(finalAcqGait,flag)
     #---- zero unvalid frames ---
-    btkTools.applyValidFramesOnOutput(finalAcqGait,validFrames)
+    # btkTools.applyValidFramesOnOutput(finalAcqGait,validFrames)
 
-
+    btkTools.smartWriter(finalAcqGait, "checkIK.c3d")
     return finalAcqGait
