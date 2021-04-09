@@ -59,6 +59,86 @@ def footJointCentreFromMet(acq,side,frameInit,frameEnd,markerDiameter =14, offse
     return fjc
 
 
+def VCMJointCentre(HalfJoint, JointMarker, TopJoint, StickMarker, beta = 0 ):
+
+    OffsetAngle = np.deg2rad(beta)
+
+    if np.all(JointMarker==0) or np.all(TopJoint==0) or np.all(StickMarker==0):
+        return np.zeros((3))
+
+    X = TopJoint - JointMarker
+    T = StickMarker - JointMarker
+    P = np.cross( X, T )
+    E = np.cross( X, P )
+
+    E =np.divide(E,np.linalg.norm(E))
+
+    x2 = np.dot( X, X )
+    l = HalfJoint / x2
+    m = 1 - HalfJoint * l
+
+
+    if m > 0 :
+        if np.abs( OffsetAngle ) > np.spacing(np.single(1)) :
+            cosTheta = np.cos( OffsetAngle );
+            r2 = HalfJoint * HalfJoint;
+            r2cos2th = cosTheta * cosTheta * r2;
+            r2cos2th_h2 = r2cos2th / (x2-r2);
+            TdotX = np.dot( T, X );
+            EdotT = np.dot( E, T );
+
+            P =np.divide(P,np.linalg.norm(P))
+
+            # solve quadratic
+            a = 1 + r2cos2th_h2
+            b= 2*(r2cos2th-TdotX*r2cos2th_h2-r2)
+            c= r2*r2+r2cos2th_h2*TdotX*TdotX-r2cos2th*( np.dot( T, T )+r2 )
+
+            disc=b*b-4*a*c;
+            if disc < 0 :
+                if disc < -np.abs(b)/1e6:
+                    Solutions = [];
+                  # return;
+                else:
+                    disc = 0;
+
+            else:
+              disc = np.sqrt( disc );
+
+            Solutions = [ -b+disc, -b-disc ];
+            if np.abs( a ) * 1e8 <= np.abs(c) and  np.min( np.abs(Solutions)) < 1e-8*np.max( np.abs( Solutions ) ) :
+                Solutions = -c/b;
+            else:
+                a = a*2;
+                Solutions = np.divide(Solutions,a)
+
+            JointCentre = X * l * HalfJoint;
+            lxt = l * HalfJoint * TdotX;
+            r1l = r2 * m;
+
+            n = len( Solutions );
+            while( n > 0 ):
+                if ( Solutions[n-1] < r2 ) == ( cosTheta > 0 ) :
+                    mu = ( Solutions[n-1] - lxt ) / EdotT;
+                    nu = r1l - mu*mu;
+                    if nu > np.spacing(np.single(1)) :
+                      nu = np.sqrt( nu );
+                      if np.sin( OffsetAngle ) > 0 :
+                        nu = -nu;
+
+                      R = JointCentre + E*mu + P*nu;
+                      return  R + JointMarker;
+                n = n - 1;
+
+            # if no solutions to the quadratic equation...
+            E = X*l + E*(np.sqrt(m)*cosTheta) - P*np.sin(OffsetAngle);
+            return JointMarker + E*HalfJoint;
+        else:
+            return JointMarker + X*(l*HalfJoint) + E*(np.sqrt(m)*HalfJoint);
+    else:
+        return JointMarker + E * HalfJoint;
+
+
 def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
     """
         Modified Chord method
@@ -747,7 +827,7 @@ class Kad(DecoratorModel):
     #            LKJC = LKNE + LKAXO * (self.model.mp["leftKneeWidth"]+markerDiameter )/2.0
                 if btkTools.isPointExist(self.acq,"LHJC"):
                     LHJC = self.acq.GetPoint("LHJC").GetValues()[i,:]
-                    LKJCvalues[i,:] = chord( (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,LKNEvalues[i,:],LHJC,LKAX, beta= 0.0 )
+                    LKJCvalues[i,:] = VCMJointCentre( (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,LKNEvalues[i,:],LHJC,LKAX, beta= 0.0 )
                 else:
                     LKJCvalues[i,:] = LKNEvalues[i,:] + LKAXO * (self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0
 
@@ -760,7 +840,7 @@ class Kad(DecoratorModel):
 
 
                 LANK = self.acq.GetPoint("LANK").GetValues()[i,:]
-                LAJCvalues[i,:] = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKAX,beta= beta )
+                LAJCvalues[i,:] = VCMJointCentre( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,LANK,LKJCvalues[i,:],LKAX,beta= beta )
 
             tf_prox = self.model.getSegment("Left Thigh").getReferential("TF")
             tf_dist = self.model.getSegment("Left Shank").getReferential("TF")
@@ -819,7 +899,7 @@ class Kad(DecoratorModel):
     #            RKJC = RKNE + RKAXO * (self.model.mp["rightKneeWidth"]+markerDiameter )/2.0
                 if btkTools.isPointExist(self.acq,"RHJC"):
                     RHJC = self.acq.GetPoint("RHJC").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                    RKJCvalues[i,:] = chord( (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,RKNEvalues[i,:],RHJC,RKAX,beta= 0.0 )
+                    RKJCvalues[i,:] = VCMJointCentre( (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,RKNEvalues[i,:],RHJC,RKAX,beta= 0.0 )
                 else:
                     RKJCvalues[i,:] = RKNEvalues[i,:] + RKAXO * (self.model.mp["RightKneeWidth"]+markerDiameter )/2.0
 
@@ -831,7 +911,7 @@ class Kad(DecoratorModel):
 
                 # locate AJC
                 RANK = self.acq.GetPoint("RANK").GetValues()[i,:]
-                RAJCvalues[i,:] = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKAX,beta= beta )
+                RAJCvalues[i,:] = VCMJointCentre( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,RANK,RKJCvalues[i,:],RKAX,beta= beta )
 
             tf_prox = self.model.getSegment("Right Thigh").getReferential("TF")
             tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
@@ -916,7 +996,7 @@ class Cgm1ManualOffsets(DecoratorModel):
             KNE = acq.GetPoint("LKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             THI = acq.GetPoint("LTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-            KJC = chord((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= -1*thighoffset )
+            KJC = VCMJointCentre((self.model.mp["LeftKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= -1*thighoffset )
 
 
             # locate AJC
@@ -924,11 +1004,11 @@ class Cgm1ManualOffsets(DecoratorModel):
 
             if thighoffset !=0 :
                 ajcDesc = "manual ThighOffset" if tibialTorsion == 0 else "manualTHIoffset-manualTT"
-                AJC = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= -1.*tibialTorsion )
+                AJC = VCMJointCentre( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= -1.*tibialTorsion )
 
             else:
                 TIB = acq.GetPoint("LTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                AJC = chord( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
+                AJC = VCMJointCentre( (self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
                 ajcDesc = ""
 
             # add nodes to referential
@@ -972,17 +1052,17 @@ class Cgm1ManualOffsets(DecoratorModel):
             KNE = acq.GetPoint("RKNE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             THI = acq.GetPoint("RTHI").GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-            KJC = chord((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= thighoffset )
+            KJC = VCMJointCentre((self.model.mp["RightKneeWidth"]+markerDiameter )/2.0 ,KNE,HJC,THI, beta= thighoffset )
 
             # locate AJC
             ANK = acq.GetPoint("RANK").GetValues()[frameInit:frameEnd,:].mean(axis=0)
             if thighoffset != 0 :
-                AJC = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
+                AJC = VCMJointCentre( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,KNE,beta= tibialTorsion )
                 ajcDesc = "manual ThighOffset" if tibialTorsion == 0 else "manualTHIoffset-manualTT"
             else:
 
                 TIB = acq.GetPoint("RTIB").GetValues()[frameInit:frameEnd,:].mean(axis=0)
-                AJC = chord( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
+                AJC = VCMJointCentre( (self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0 ,ANK,KJC,TIB,beta= 0 )
                 ajcDesc = ""
 
 
@@ -1251,7 +1331,7 @@ class HipJointCenterDecorator(DecoratorModel):
             LKNE = acq.GetPoint("LKNE").GetValues()
             LGTR = acq.GetPoint("LGTR").GetValues()
 
-            LHJCvalues = chord ((offset+markerDiameter/2.0),LGTR,LKNM,LKNE,beta=0.0)
+            LHJCvalues = VCMJointCentre ((offset+markerDiameter/2.0),LGTR,LKNM,LKNE,beta=0.0)
 
             tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
             tf_dist = self.model.getSegment("Left Thigh").getReferential("TF")
@@ -1276,7 +1356,7 @@ class HipJointCenterDecorator(DecoratorModel):
             RKNE = acq.GetPoint("RKNE").GetValues()
             RGTR = acq.GetPoint("RGTR").GetValues()
 
-            RHJCvalues = chord ((offset+markerDiameter/2.0),RGTR,RKNM,RKNE,beta=0.0)
+            RHJCvalues = VCMJointCentre ((offset+markerDiameter/2.0),RGTR,RKNM,RKNE,beta=0.0)
 
 
             tf_prox = self.model.getSegment("Pelvis").getReferential("TF")
@@ -1381,7 +1461,7 @@ class KneeCalibrationDecorator(DecoratorModel):
             LKNE = acq.GetPoint(leftLateralKneeLabel).GetValues()
             LANK = acq.GetPoint("LANK").GetValues()
 
-            LAJCvalues = chord ((self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0,LANK,LKJCvalues,LKNE,beta=0.0)
+            LAJCvalues = VCMJointCentre ((self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0,LANK,LKJCvalues,LKNE,beta=0.0)
 
             tf_prox = self.model.getSegment("Left Thigh").getReferential("TF")
             tf_dist = self.model.getSegment("Left Shank").getReferential("TF")
@@ -1420,7 +1500,7 @@ class KneeCalibrationDecorator(DecoratorModel):
             RKNE = acq.GetPoint(rightLateralKneeLabel).GetValues()
             RANK = acq.GetPoint("RANK").GetValues()
 
-            RAJCvalues = chord ((self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0,RANK,RKJCvalues,RKNE,beta=0.0)
+            RAJCvalues = VCMJointCentre ((self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0,RANK,RKJCvalues,RKNE,beta=0.0)
 
             tf_prox = self.model.getSegment("Right Thigh").getReferential("TF")
             tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
