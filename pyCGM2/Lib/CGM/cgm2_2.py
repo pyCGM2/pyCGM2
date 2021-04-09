@@ -529,5 +529,5 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     #---- zero unvalid frames ---
     # btkTools.applyValidFramesOnOutput(finalAcqGait,validFrames)
 
-    btkTools.smartWriter(finalAcqGait, "checkIK.c3d")
+    # btkTools.smartWriter(finalAcqGait, "checkIK.c3d")
     return finalAcqGait
