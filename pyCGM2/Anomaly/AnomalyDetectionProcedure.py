@@ -247,7 +247,7 @@ class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
         self.anomaly["ErrorState"] = errorState
 
 class MarkerPresenceDetectionProcedure(AbstractDetectionProcedure):
-    def __init__(self,markers=None,verbose=True):
+    def __init__(self,markers=None, verbose=True):
         super(MarkerPresenceDetectionProcedure, self).__init__()
 
         self.markers = markers
@@ -269,7 +269,13 @@ class MarkerPresenceDetectionProcedure(AbstractDetectionProcedure):
                 if self.verbose: logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(marker, filename))
                 errorState = True
             else:
-                markersIn.append(marker)
+                if not btkTools.isPhantom(acq,marker):
+                    if self.verbose: logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(marker, filename))
+                    markersOut.append(marker)
+                else:
+                    markersIn.append(marker)
+
+
 
         self.anomaly["Output"] = dict()
         self.anomaly["Output"]["In"] = markersIn
