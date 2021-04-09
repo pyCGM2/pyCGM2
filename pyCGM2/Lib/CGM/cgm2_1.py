@@ -221,7 +221,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     :param pointSuffix [str]: suffix to add to model outputs
     :param momentProjection [str]: Coordinate system in which joint moment is expressed
     """
-    # --------------------------ACQUISITION ------------------------------------
 
     # --------------------------ACQUISITION ------------------------------------
 
