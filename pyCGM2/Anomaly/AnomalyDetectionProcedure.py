@@ -24,7 +24,7 @@ class AbstractDetectionProcedure(object):
         self.anomaly = {"Output": None,
                         "ErrorState": False}
 
-    def run(self,acq,filename):
+    def run(self,acq,filename,options):
         pass
 
     def getAnomaly(self):
@@ -49,17 +49,26 @@ class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
 
 
 
-    def run(self,acq,filename):
+    def run(self,acq,filename,options):
+
+
 
         errorState = False
 
         out = dict()
 
         ff = acq.GetFirstFrame()
+        lf = acq.GetLastFrame()
+
+        if "frameRange" in options.keys():
+            frameInit = options["frameRange"][0]-ff
+            frameEnd = options["frameRange"][1]-ff+1
+        else:
+            frameInit =ff-ff
+            frameEnd = lf-ff+1
 
         for marker in self.m_markers:
-            pointValues = acq.GetPoint(marker).GetValues()
-
+            pointValues = acq.GetPoint(marker).GetValues()[frameInit:frameEnd,:]
 
             values = pointValues[:,0] #np.linalg.norm(pointValues,axis=1)
             # values = derivation.firstOrderFiniteDifference(pointValues,100)[:,2]
@@ -120,6 +129,7 @@ class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
                 errorState = True
             out[marker] = indices_frameMatchedAll
 
+
         self.anomaly["Output"] = out
         self.anomaly["ErrorState"] = errorState
 
@@ -130,7 +140,7 @@ class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
 
         super(GaitEventAnomalyProcedure, self).__init__()
 
-    def run(self,acq,filename):
+    def run(self,acq,filename,options):
 
         errorState =  False
 
@@ -197,7 +207,17 @@ class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
     def __init__(self):
         super(ForcePlateAnomalyProcedure, self).__init__()
 
-    def run(self,acq,filename):
+    def run(self,acq,filename,options):
+
+        ff = acq.GetFirstFrame()
+        lf = acq.GetLastFrame()
+
+        if "frameRange" in options.keys():
+            frameInit = options["frameRange"][0]-ff
+            frameEnd = options["frameRange"][1]-ff+1
+        else:
+            frameInit =ff-ff
+            frameEnd = lf-ff+1
 
         errorState=False
 
@@ -212,7 +232,7 @@ class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
 
         fp_counter = 1
         for fpIt in btk.Iterate(grwc):
-            force_Z = fpIt.GetForce().GetValues()[:,2]
+            force_Z = fpIt.GetForce().GetValues()[frameInit:frameEnd,2]
 
             max =  np.max(force_Z)
             indexes = np.where(force_Z == max)
@@ -227,27 +247,33 @@ class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
         self.anomaly["ErrorState"] = errorState
 
 class MarkerPresenceDetectionProcedure(AbstractDetectionProcedure):
-    def __init__(self,markers=None):
+    def __init__(self,markers=None,verbose=True):
         super(MarkerPresenceDetectionProcedure, self).__init__()
 
         self.markers = markers
+        self.verbose = verbose
 
-    def run(self,acq,filename):
+
+    def run(self,acq,filename,options):
 
         errorState = False
 
         markersIn = list()
+        markersOut = list()
 
         for marker in self.markers:
             try:
                 acq.GetPoint(marker)
             except RuntimeError:
-                logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(marker, filename))
+                markersOut.append(marker)
+                if self.verbose: logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(marker, filename))
                 errorState = True
             else:
                 markersIn.append(marker)
 
-        self.anomaly["Output"] = markersIn
+        self.anomaly["Output"] = dict()
+        self.anomaly["Output"]["In"] = markersIn
+        self.anomaly["Output"]["Out"] = markersOut
         self.anomaly["ErrorState"] = errorState
 
 
@@ -257,7 +283,7 @@ class AnthropoDataAnomalyProcedure(AbstractDetectionProcedure):
 
         self.mp = mp
 
-    def run(self,acq,filename):
+    def run(self,acq,filename,options):
 
         errorState = False
 

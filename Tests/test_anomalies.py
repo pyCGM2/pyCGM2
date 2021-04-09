@@ -37,7 +37,6 @@ class Test_markerAnomalies:
         madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( markers, plot=False, window=10)
         adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename[filename.rfind("/")+1:],madp)
         anomaly = adf.run()
-        import ipdb; ipdb.set_trace()
         anomalyIndexes = anomaly["Output"]
 
         macp = AnomalyCorrectionProcedure.MarkerAnomalyCorrectionProcedure(markers,anomalyIndexes,plot=True,distance_threshold=20)
