@@ -11,6 +11,7 @@ from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Signal import signal_processing
+from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
               required_mp,optional_mp,
@@ -51,6 +52,43 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
+    trackingMarkers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS + cgm.CGM1.THORAX_TRACKING_MARKERS+ cgm.CGM1.UPPERLIMB_TRACKING_MARKERS
+    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
+
+    vff = acqStatic.GetFirstFrame()
+    vlf = acqStatic.GetLastFrame()
+    # vff,vlf = btkTools.getFrameBoundaries(acqStatic,actual_trackingMarkers)
+    flag = btkTools.getValidFrames(acqStatic,actual_trackingMarkers,frameBounds=[vff,vlf])
+
+    gapFlag = btkTools.checkGap(acqStatic,actual_trackingMarkers,frameBounds=[vff,vlf])
+    if gapFlag:
+        raise Exception("[pyCGM2] Calibration aborted. Gap find during interval [%i-%i]. Crop your c3d " %(vff,vlf))
+
+    # --------------------ANOMALY------------------------------
+    # --Check MP
+    adap = AnomalyDetectionProcedure.AnthropoDataAnomalyProcedure( required_mp)
+    adf = AnomalyFilter.AnomalyDetectionFilter(None,None,adap)
+    anomaly = adf.run()
+
+    # --marker presence
+    markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS , cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
+    for markerset in markersets:
+        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( markerset,verbose=False)
+        adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,mpdp)
+        anomaly = adf.run()
+        if anomaly["Output"]["In"] !=[] and anomaly["Output"]["Out"]!=[]:
+            for markerOut in anomaly["Output"]["Out"]:
+                logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(markerOut, calibrateFilenameLabelled))
+
+        # --marker outliers
+        # if anomaly["Output"]["In"] !=[]:
+        #     madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( anomaly["Output"]["In"], plot=False, window=10,threshold = 3)
+        #     adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,madp)
+        #     anomaly = adf.run()
+        #     anomalyIndexes = anomaly["Output"]
+
+
+    # --------------------MODELLING------------------------------
 
     # ---check marker set used----
     dcm = cgm.CGM.detectCalibrationMethods(acqStatic)
@@ -185,6 +223,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     """
     # --------------------------ACQUISITION ------------------------------------
 
+    # --------------------------ACQUISITION ------------------------------------
+
     # --- btk acquisition ----
     if "forceBtkAcq" in kwargs.keys():
         acqGait = kwargs["forceBtkAcq"]
@@ -198,8 +238,32 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         logging.info("[pyCGM2] Sacrum marker detected")
 
     acqGait =  btkTools.applyTranslators(acqGait,translators)
-    trackingMarkers = model.getTrackingMarkers(acqGait)
-    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
+
+    trackingMarkers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS + cgm.CGM1.THORAX_TRACKING_MARKERS+ cgm.CGM1.UPPERLIMB_TRACKING_MARKERS
+    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqGait, trackingMarkers)
+    vff,vlf = btkTools.getFrameBoundaries(acqGait,actual_trackingMarkers)
+    flag = btkTools.getValidFrames(acqGait,actual_trackingMarkers,frameBounds=[vff,vlf])
+
+    # --------------------ANOMALY------------------------------
+    # --marker presence
+    markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS, cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
+
+    for markerset in markersets:
+        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( markerset,verbose=False)
+        adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,mpdp)
+        anomaly = adf.run()
+        if anomaly["Output"]["In"] !=[] and anomaly["Output"]["Out"]!=[]:
+            for markerOut in anomaly["Output"]["Out"]:
+                logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(markerOut, reconstructFilenameLabelled))
+
+        # --marker outliers
+        # if anomaly["Output"]["In"] !=[]:
+        #     madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( anomaly["Output"]["In"], plot=False, window=10,threshold = 3)
+        #     adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,madp, frameRange=[vff,vlf])
+        #     anomaly = adf.run()
+        #     anomalyIndexes = anomaly["Output"]
+
+   # --------------------MODELLING------------------------------
 
     # filtering
     # -----------------------
@@ -309,8 +373,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
             #---- Joint energetics----
             modelFilters.JointPowerFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
+    btkTools.cleanAcq(acqGait)
+    btkTools.applyOnValidFrames(acqGait,flag)
     #---- zero unvalid frames ---
-    btkTools.applyValidFramesOnOutput(acqGait,validFrames)
+    # btkTools.applyValidFramesOnOutput(acqGait,validFrames)
 
 
 
