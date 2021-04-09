@@ -629,6 +629,17 @@ class CGM1(CGM):
 
         ff=aquiStatic.GetFirstFrame()
         lf=aquiStatic.GetLastFrame()
+
+        # if "frameRange" in options.keys():
+        #     if len(options["frameRange"])!=2:
+        #         raise Exception ("[pyCGM2] frame range badly set")
+        #     else:
+        #         frameInit=options["frameRange"][0]-ff
+        #         frameEnd=options["frameRange"][1]-ff+1
+        #         if frameEnd<frameInit:
+        #             raise Exception ("[pyCGM2] end frame < init frame")
+        #
+        # else:
         frameInit=ff-ff
         frameEnd=lf-ff+1
 
@@ -1096,7 +1107,7 @@ class CGM1(CGM):
         else:
             self.mp_computed["LeftThighRotationOffset"] = 0.0
 
-        LKJC = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
+        LKJC = modelDecorator.VCMJointCentre( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
 
         if tf.static.isNodeExist("LKJC"):
             nodeLKJC = tf.static.getNode_byLabel("LKJC")
@@ -1190,7 +1201,7 @@ class CGM1(CGM):
         else:
             self.mp_computed["RightThighRotationOffset"] = 0.0
 
-        RKJC = modelDecorator.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3,beta=self.mp_computed["RightThighRotationOffset"] ) # could consider a previous offset
+        RKJC = modelDecorator.VCMJointCentre( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3,beta=self.mp_computed["RightThighRotationOffset"] ) # could consider a previous offset
 
         if tf.static.isNodeExist("RKJC"):
             nodeRKJC = tf.static.getNode_byLabel("RKJC")
@@ -1285,7 +1296,7 @@ class CGM1(CGM):
         else:
             self.mp_computed["LeftShankRotationOffset"]=0.0
 
-        LAJC = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftShankRotationOffset"] )
+        LAJC = modelDecorator.VCMJointCentre( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftShankRotationOffset"] )
 
         # --- node manager
         if tf.static.isNodeExist("LAJC"):
@@ -1378,7 +1389,7 @@ class CGM1(CGM):
         else:
             self.mp_computed["RightShankRotationOffset"]=0.0
 
-        RAJC = modelDecorator.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
+        RAJC = modelDecorator.VCMJointCentre( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
 
         # --- node manager
         if tf.static.isNodeExist("RAJC"):
@@ -2853,7 +2864,7 @@ class CGM1(CGM):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
             if validFrames[i]:
-                LKJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
+                LKJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
 
         if  "useLeftKJCmarker" in options.keys() and options["useLeftKJCmarker"] is not "LKJC":
             logging.info("[pyCGM2] - LKJC marker forced to use %s"%(options["useLeftKJCmarker"]))
@@ -2966,7 +2977,7 @@ class CGM1(CGM):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
             if validFrames[i]:
-                RKJCvalues[i,:] = modelDecorator.chord( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
+                RKJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
 
 
         if  "useRightKJCmarker" in options.keys() and options["useRightKJCmarker"] is not "RKJC":
@@ -3092,7 +3103,7 @@ class CGM1(CGM):
             seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
 
             if validFrames[i]:
-                LAJCvalues[i,:] = modelDecorator.chord( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftShankRotationOffset"] )
+                LAJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftShankRotationOffset"] )
 
                 # update of the AJC location with rotation around abdAddAxis
                 LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,self.mp_computed["LeftAnkleAbAddOffset"])
@@ -3277,7 +3288,7 @@ class CGM1(CGM):
 
             # ajc position from chord modified by shank offset
             if validFrames[i]:
-                RAJCvalues[i,:] = modelDecorator.chord( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
+                RAJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
             # update of the AJC location with rotation around abdAddAxis
                 RAJCvalues[i,:] = self._rotateAjc(RAJCvalues[i,:],pt2,pt1,   self.mp_computed["RightAnkleAbAddOffset"])
 
@@ -4568,12 +4579,12 @@ class CGM1(CGM):
             LVWM = np.cross((LSHO - OT ),tf.static.m_axisX ) + LSHO
 
             btkTools.smartAppendPoint(aquiStatic,"LVWM", LVWM* np.ones((pfn,3)),desc="")
-            LSJC = modelDecorator.chord( -1.0* (self.mp["LeftShoulderOffset"]+ markerDiameter/2.0),LSHO,OT,LVWM, beta=0 )
+            LSJC = modelDecorator.VCMJointCentre( -1.0* (self.mp["LeftShoulderOffset"]+ markerDiameter/2.0),LSHO,OT,LVWM, beta=0 )
 
             RSHO=aquiStatic.GetPoint(str("RSHO")).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             RVWM = np.cross(( tf.static.m_axisX ),( OT-RSHO )) + RSHO
             btkTools.smartAppendPoint(aquiStatic,"RVWM", RVWM* np.ones((pfn,3)),desc="")
-            RSJC =  modelDecorator.chord( self.mp["RightShoulderOffset"]+ markerDiameter/2.0 ,RSHO,OT,RVWM, beta=0 )
+            RSJC =  modelDecorator.VCMJointCentre( self.mp["RightShoulderOffset"]+ markerDiameter/2.0 ,RSHO,OT,RVWM, beta=0 )
 
             # left
             if tf.static.isNodeExist("LSJC"):
@@ -4863,7 +4874,7 @@ class CGM1(CGM):
         tf.static.setTranslation(ptOrigin)
 
         # comuptation of EJC ( need virtual wand)
-        EJC =  modelDecorator.chord( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=0 ) #ELB,SJC,CVM
+        EJC =  modelDecorator.VCMJointCentre( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=0 ) #ELB,SJC,CVM
 
         if tf.static.isNodeExist(prefix +"EJC"):
             nodeEJC = tf.static.getNode_byLabel(prefix+"EJC")
@@ -5147,7 +5158,7 @@ class CGM1(CGM):
         tf.static.setTranslation(ptOrigin)
 
         # comuptation of Hand Origin
-        HO =  modelDecorator.chord( (self.mp[side+"HandThickness"]+ markerDiameter)/2.0 ,pt1, pt2, pt3, beta=0 )
+        HO =  modelDecorator.VCMJointCentre( (self.mp[side+"HandThickness"]+ markerDiameter)/2.0 ,pt1, pt2, pt3, beta=0 )
 
         tf.static.addNode(prefix+"HO",HO,positionType="Global",desc = "ch1-handOrigin")
         nodeHO = tf.static.getNode_byLabel(prefix+"HO")
@@ -5310,9 +5321,9 @@ class CGM1(CGM):
 
             if validFrames[i]:
                 OTvalues[i,:] = OT
-                LSJCvalues[i,:] = modelDecorator.chord( -1.0*(self.mp["LeftShoulderOffset"]+ markerDiameter/2.0) ,LSHO,OT,LVWM, beta=0 )
+                LSJCvalues[i,:] = modelDecorator.VCMJointCentre( -1.0*(self.mp["LeftShoulderOffset"]+ markerDiameter/2.0) ,LSHO,OT,LVWM, beta=0 )
                 LVWMvalues[i,:] = LVWM
-                RSJCvalues[i,:] = modelDecorator.chord( 1.0*(self.mp["RightShoulderOffset"]+ markerDiameter/2.0) ,RSHO,OT,RVWM, beta=0 )
+                RSJCvalues[i,:] = modelDecorator.VCMJointCentre( 1.0*(self.mp["RightShoulderOffset"]+ markerDiameter/2.0) ,RSHO,OT,RVWM, beta=0 )
                 RVWMvalues[i,:] = RVWM
 
         btkTools.smartAppendPoint(aqui,"OT",OTvalues,desc="")
@@ -5592,9 +5603,9 @@ class CGM1(CGM):
                 LHE=aqui.GetPoint(prefix+"ELB").GetValues()[i,:]
                 CVM = aqui.GetPoint(prefix+"CVM").GetValues()[i,:]
 
-                #EJCvalues[i,:] =  modelDecorator.chord( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,LHE,SJC,CVM, beta=0 )
+                #EJCvalues[i,:] =  modelDecorator.VCMJointCentre( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,LHE,SJC,CVM, beta=0 )
                 if validFrames[i]:
-                    EJCvalues[i,:] =  modelDecorator.chord( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=0 )
+                    EJCvalues[i,:] =  modelDecorator.VCMJointCentre( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=0 )
 
 
             #btkTools.smartAppendPoint(aqui,"LKJC_Chord",LKJCvalues,desc="chord")
@@ -5883,7 +5894,7 @@ class CGM1(CGM):
             MH2=aqui.GetPoint(prefix+"FIN").GetValues()[i,:]
             MWP=aqui.GetPoint(prefix+"MWP").GetValues()[i,:]
             if validFrames[i]:
-                HOvalues[i,:] =  modelDecorator.chord( (self.mp[side+"HandThickness"]+ markerDiameter)/2.0 ,MH2, WJC, MWP, beta=0 )
+                HOvalues[i,:] =  modelDecorator.VCMJointCentre( (self.mp[side+"HandThickness"]+ markerDiameter)/2.0 ,MH2, WJC, MWP, beta=0 )
 
 
         if  "useLeftHOmarker" in options.keys():
@@ -6183,6 +6194,7 @@ class CGM1(CGM):
         # export JC
         jointcentres = ["LHJC","RHJC","LKJC","RKJC","LAJC","RAJC","LSJC","RSJC","LEJC","REJC","LHO","RHO"]
 
+
         for jointCentre in jointcentres:
             if btkTools.isPointExist(acq, jointCentre):
                 nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,jointCentre, acq,suffix = pointSuffix)
@@ -6204,68 +6216,69 @@ class CGM1(CGM):
         # -------------
         if btkTools.isPointExist(acq, "midHJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),
-                OriginValues = acq.GetPoint("midHJC").GetValues(), suffix = pointSuffix )
+                OriginValues = acq.GetPoint("midHJC").GetValues(), suffix = pointSuffix, existFromPoint = "LPelvisAngles" )
 
         if btkTools.isPointExist(acq, "LKJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),
-                OriginValues = acq.GetPoint("LKJC").GetValues(),suffix = pointSuffix )
+                OriginValues = acq.GetPoint("LKJC").GetValues(),suffix = pointSuffix , existFromPoint = "LHipAngles")
             #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
         if btkTools.isPointExist(acq, "LAJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),
-                    OriginValues = acq.GetPoint("LAJC").GetValues(),suffix = pointSuffix )
+                    OriginValues = acq.GetPoint("LAJC").GetValues(),suffix = pointSuffix ,existFromPoint = "LKneeAngles")
 
         nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"),
-            OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix )
+            OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix, existFromPoint = "LAnkleAngles")
         nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left Foot"),
-            OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0,suffix = pointSuffix )
+            OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0,suffix = pointSuffix, existFromPoint = "LAnkleAngles" )
 
         if btkTools.isPointExist(acq, "RKJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),
-                OriginValues = acq.GetPoint("RKJC").GetValues(),suffix = pointSuffix )
+                OriginValues = acq.GetPoint("RKJC").GetValues(),suffix = pointSuffix, existFromPoint = "RHipAngles" )
                 #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
         if btkTools.isPointExist(acq, "RAJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),
-                OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix = pointSuffix)
+                OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix = pointSuffix, existFromPoint = "RKneeAngles")
 
         nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") ,
-            OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix )
+            OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix,existFromPoint = "RAnkleAngles" )
         nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right Foot") ,
-            OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"), manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0,suffix = pointSuffix)
+            OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),
+            manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0,suffix = pointSuffix, existFromPoint = "RAnkleAngles")
 
         if btkTools.isPointExist(acq, "OT"):
 
             nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),
                 OriginValues = acq.GetPoint("OT").GetValues(),
                 manualScale = self.getSegment("Thorax").m_info["Scale"],
-                suffix = pointSuffix )
+                suffix = pointSuffix, existFromPoint = "LThoraxAngles" )
 
         if btkTools.isPointExist(acq, "LEJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),
-                OriginValues = acq.GetPoint("LEJC").GetValues(),suffix = pointSuffix )
+                OriginValues = acq.GetPoint("LEJC").GetValues(),suffix = pointSuffix,existFromPoint = "LShoulderAngles" )
 
         if btkTools.isPointExist(acq, "LWJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"LFOREARM", self.getSegment("Left ForeArm"),
-                OriginValues = acq.GetPoint("LWJC").GetValues(),suffix = pointSuffix )
+                OriginValues = acq.GetPoint("LWJC").GetValues(),suffix = pointSuffix,existFromPoint = "LElbowAngles" )
 
         if btkTools.isPointExist(acq, "LHO"):
             nexusTools.appendBones(NEXUS,vskName,acq,"LHAND", self.getSegment("Left Hand"),
-                OriginValues = acq.GetPoint("LHO").GetValues(),suffix = pointSuffix )
+                OriginValues = acq.GetPoint("LHO").GetValues(),suffix = pointSuffix,existFromPoint = "LWristAngles" )
 
         if btkTools.isPointExist(acq, "REJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm"),
-                OriginValues = acq.GetPoint("REJC").GetValues(),suffix = pointSuffix )
+                OriginValues = acq.GetPoint("REJC").GetValues(),suffix = pointSuffix, existFromPoint = "RShoulderAngles" )
 
         if btkTools.isPointExist(acq, "RWJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"RFOREARM", self.getSegment("Right ForeArm"),
-                OriginValues = acq.GetPoint("RWJC").GetValues(),suffix = pointSuffix )
+                OriginValues = acq.GetPoint("RWJC").GetValues(),suffix = pointSuffix, existFromPoint = "RElbowAngles" )
 
         if btkTools.isPointExist(acq, "RHO"):
             nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),
-                OriginValues = acq.GetPoint("RHO").GetValues(),suffix = pointSuffix )
+                OriginValues = acq.GetPoint("RHO").GetValues(),suffix = pointSuffix, existFromPoint = "RWristAngles" )
 
         nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),
             OriginValues = self.getSegment("Head").anatomicalFrame.getNodeTrajectory("SkullOriginOffset"),
-            manualScale = self.getSegment("Head").m_info["headScale"],suffix = pointSuffix )
+            manualScale = self.getSegment("Head").m_info["headScale"],suffix = pointSuffix, existFromPoint = "LHeadAngles" )
         logging.debug("bones over")
 
         if not staticProcessingFlag:
