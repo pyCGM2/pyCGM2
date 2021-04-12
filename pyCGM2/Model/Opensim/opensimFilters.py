@@ -281,15 +281,17 @@ class opensimFittingFilter(object):
 
         acqMotion_forIK = btk.btkAcquisition.Clone(self.m_acqMotion)
 
-        if "progressionFrame" in kwargs:
-            globalFrame = kwargs["progressionFrame"]["globalFrame"]
-            progressionAxis = kwargs["progressionFrame"]["progressionAxis"]
-            forwardProgression = kwargs["progressionFrame"]["forwardProgression"]
+        if "progressionAxis" in kwargs:
+            progressionAxis = kwargs["progressionAxis"]
+            if "forwardProgression" in kwargs:
+                forwardProgression = kwargs["forwardProgression"]
+            else:
+                forwardProgression = True
+
         else:
             pfp = progressionFrame.PelvisProgressionFrameProcedure()
             pff = progressionFrame.ProgressionFrameFilter(self.m_acqMotion,pfp)
             pff.compute()
-            globalFrame = pff.outputs["globalFrame"]
             progressionAxis = pff.outputs["progressionAxis"]
             forwardProgression = pff.outputs["forwardProgression"]
 

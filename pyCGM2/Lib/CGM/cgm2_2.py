@@ -155,21 +155,22 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
         pff.compute()
+        progressionAxis = pff.outputs["progressionAxis"]
         globalFrame = pff.outputs["globalFrame"]
         forwardProgression = pff.outputs["forwardProgression"]
-
         progressionFlag = True
     elif btkTools.isPointsExist(acqStatic, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
         logging.info("[pyCGM2] - progression axis detected from Thoracic markers ")
         pfp = progressionFrame.ThoraxProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
         pff.compute()
-
+        progressionAxis = pff.outputs["progressionAxis"]
         globalFrame = pff.outputs["globalFrame"]
         forwardProgression = pff.outputs["forwardProgression"]
 
     else:
         globalFrame = "XYZ"
+        progressionAxis = "X"
         forwardProgression = True
         logging.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
 
@@ -234,7 +235,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
                                                               acqStatic )
             osrf.setTimeRange(acqStatic,beginFrame = vff, lastFrame=vlf)
             try:
-                acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled,progressionFrame = pff.outputs)
+                acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled,
+                            progressionAxis = progressionAxis ,
+                            forwardProgression = forwardProgression)
             except:
                 logging.error("[pyCGM2] - IK solver fails")
                 acqStaticIK = acqStatic
@@ -381,6 +384,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
         pff.compute()
+        progressionAxis = pff.outputs["progressionAxis"]
         globalFrame = pff.outputs["globalFrame"]
         forwardProgression = pff.outputs["forwardProgression"]
         progressionFlag = True
@@ -399,12 +403,13 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         pfp = progressionFrame.ThoraxProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
         pff.compute()
-
+        progressionAxis = pff.outputs["progressionAxis"]
         globalFrame = pff.outputs["globalFrame"]
         forwardProgression = pff.outputs["forwardProgression"]
 
     else:
         globalFrame = "XYZ"
+        progressionAxis = "X"
         forwardProgression = True
         logging.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
 
@@ -465,7 +470,9 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
         try:
-            acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled,progressionFrame = pff.outputs )
+            acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled,
+                            progressionAxis = progressionAxis ,
+                            forwardProgression = forwardProgression)
         except:
             logging.error("[pyCGM2] - IK solver fails")
             acqIK = acqGait
