@@ -124,7 +124,7 @@ def findMarkerGap(acq):
 
 
 
-def isPointExist(acq,label):
+def isPointExist(acq,label,ignorePhantom = True):
     """
         Check if a point label exists inside an acquisition
 
@@ -132,24 +132,29 @@ def isPointExist(acq,label):
             - `acq` (btkAcquisition) - a btk acquisition inctance
             - `label` (str) - point label
     """
-    if acq.GetPointNumber()==0:
+
+
+    try:
+        acq.GetPoint(label)
+    except RuntimeError:
         return False
     else:
-        i = acq.GetPoints().Begin()
-        while i != acq.GetPoints().End():
-            if i.value().GetLabel()== label:
-                flagPoint= True
-                break
-            else:
-                i.incr()
-                flagPoint= False
 
-        if flagPoint:
-            return True
-        else:
-            return False
+        frameNumber=  acq.GetPointFrameNumber()
+        for it in btk.Iterate(acq.GetPoints()):
+            if it.GetLabel() == label:
+                logging.debug("[pyCGM2] marker (%s) is a phantom "% label )
+                values = it.GetValues()
+                residuals = it.GetResiduals()
+                if not ignorePhantom:
+                    if all(residuals == -1):
+                        return False
+                    else:
+                        return True
+                else:
+                    return True
 
-def isPointsExist(acq,labels):
+def isPointsExist(acq,labels,ignorePhantom=True):
     """
         Check if point labels exist inside an acquisition
 
@@ -158,7 +163,7 @@ def isPointsExist(acq,labels):
             - `labels` (list of str) - point labels
     """
     for label in labels:
-        if not isPointExist(acq,label):
+        if not isPointExist(acq,label,ignorePhantom=ignorePhantom):
             logging.warning("[pyCGM2] markers (%s) doesn't exist"% label )
             return False
     return True
