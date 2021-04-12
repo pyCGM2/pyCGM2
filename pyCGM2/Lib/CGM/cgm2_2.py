@@ -106,8 +106,12 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     # ---definition---
     model=cgm2.CGM2_2()
     model.configure(acq=acqStatic,detectedCalibrationMethods=dcm)
-
     model.addAnthropoInputParameters(required_mp,optional=optional_mp)
+
+    if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD: actual_trackingMarkers.append("LKNE")
+    if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD: actual_trackingMarkers.append("RKNE")
+    model.setStaticTrackingMarkers(actual_trackingMarkers)
+
     # --store calibration parameters--
     model.setStaticFilename(calibrateFilenameLabelled)
     model.setCalibrationProperty("leftFlatFoot",leftFlatFoot)
@@ -330,9 +334,12 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     flag = btkTools.getValidFrames(acqGait,actual_trackingMarkers,frameBounds=[vff,vlf])
 
     # --------------------ANOMALY------------------------------
+    for marker in actual_trackingMarkers:
+        if marker not in model.getStaticTrackingMarkers():
+            logging.warning("[pyCGM2-Anomaly]  marker [%s] - not used during static calibration - wrong kinematic for the segment attached to this marker. "%(marker))
+
     # --marker presence
     markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS, cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
-
     for markerset in markersets:
         mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( markerset,verbose=False)
         adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,mpdp)
@@ -349,8 +356,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         #     anomalyIndexes = anomaly["Output"]
 
    # --------------------MODELLING------------------------------
-
-
 
     # filtering
     # -----------------------
