@@ -84,12 +84,19 @@ class CGM2_3(cgm.CGM1):
         self.decoratedModel = False
         self.version = "CGM2.3"
 
-
+        self.m_staticIkTargets = None
         #self.__configure()
 
 
     def __repr__(self):
         return "LowerLimb CGM2.3"
+
+
+    def setStaticIkTargets(self,targetNames):
+        self.m_staticIkTargets = targetNames
+
+    def getStaticIkTargets(self):
+        return self.m_staticIkTargets
 
     def _lowerLimbTrackingMarkers(self):
         return CGM2_3.LOWERLIMB_TRACKING_MARKERS
