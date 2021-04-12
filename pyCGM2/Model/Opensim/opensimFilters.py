@@ -269,7 +269,7 @@ class opensimFittingFilter(object):
 
 
 
-    def run(self, acqMotionFilename,exportSetUp=False):
+    def run(self, acqMotionFilename,exportSetUp=False,**kwargs):
         """
             Run kinematic fitting
             :Parameters:
@@ -281,12 +281,17 @@ class opensimFittingFilter(object):
 
         acqMotion_forIK = btk.btkAcquisition.Clone(self.m_acqMotion)
 
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(self.m_acqMotion,pfp)
-        pff.compute()
-        globalFrame = pff.outputs["globalFrame"]
-        progressionAxis = pff.outputs["progressionAxis"]
-        forwardProgression = pff.outputs["forwardProgression"]
+        if "progressionFrame" in kwargs:
+            globalFrame = kwargs["progressionFrame"]["globalFrame"]
+            progressionAxis = kwargs["progressionFrame"]["progressionAxis"]
+            forwardProgression = kwargs["progressionFrame"]["forwardProgression"]
+        else:
+            pfp = progressionFrame.PelvisProgressionFrameProcedure()
+            pff = progressionFrame.ProgressionFrameFilter(self.m_acqMotion,pfp)
+            pff.compute()
+            globalFrame = pff.outputs["globalFrame"]
+            progressionAxis = pff.outputs["progressionAxis"]
+            forwardProgression = pff.outputs["forwardProgression"]
 
         # --- ikTasks
         #  UPDATE method - ik tags ( need task in the initial iktools)
