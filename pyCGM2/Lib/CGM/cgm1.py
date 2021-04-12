@@ -42,9 +42,6 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     # ---btk acquisition---
         acqStatic = btkTools.smartReader((DATA_PATH+calibrateFilenameLabelled))
 
-    trackingMarkers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS + cgm.CGM1.THORAX_TRACKING_MARKERS+ cgm.CGM1.UPPERLIMB_TRACKING_MARKERS
-    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
-
     btkTools.checkMultipleSubject(acqStatic)
     if btkTools.isPointExist(acqStatic,"SACR"):
         translators["LPSI"] = "SACR"
@@ -53,6 +50,43 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
+    trackingMarkers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS + cgm.CGM1.THORAX_TRACKING_MARKERS+ cgm.CGM1.UPPERLIMB_TRACKING_MARKERS
+    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
+
+    vff = acqStatic.GetFirstFrame()
+    vlf = acqStatic.GetLastFrame()
+    # vff,vlf = btkTools.getFrameBoundaries(acqStatic,actual_trackingMarkers)
+    flag = btkTools.getValidFrames(acqStatic,actual_trackingMarkers,frameBounds=[vff,vlf])
+
+    gapFlag = btkTools.checkGap(acqStatic,actual_trackingMarkers,frameBounds=[vff,vlf])
+    if gapFlag:
+        raise Exception("[pyCGM2] Calibration aborted. Gap find during interval [%i-%i]. Crop your c3d " %(vff,vlf))
+
+    # --------------------ANOMALY------------------------------
+    # --Check MP
+    adap = AnomalyDetectionProcedure.AnthropoDataAnomalyProcedure( required_mp)
+    adf = AnomalyFilter.AnomalyDetectionFilter(None,None,adap)
+    anomaly = adf.run()
+
+    # --marker presence
+    markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS , cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
+    for markerset in markersets:
+        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( markerset,verbose=False)
+        adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,mpdp)
+        anomaly = adf.run()
+        if anomaly["Output"]["In"] !=[] and anomaly["Output"]["Out"]!=[]:
+            for markerOut in anomaly["Output"]["Out"]:
+                logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(markerOut, calibrateFilenameLabelled))
+
+        # --marker outliers
+        # if anomaly["Output"]["In"] !=[]:
+        #     madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( anomaly["Output"]["In"], plot=False, window=10,threshold = 3)
+        #     adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,madp)
+        #     anomaly = adf.run()
+        #     anomalyIndexes = anomaly["Output"]
+
+
+    # --------------------MODELLING------------------------------
 
     # ---check marker set used----
     dcm= cgm.CGM.detectCalibrationMethods(acqStatic)
@@ -61,7 +95,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     model=cgm.CGM1()
     model.configure(acq=acqStatic,detectedCalibrationMethods=dcm)
     model.addAnthropoInputParameters(required_mp,optional=optional_mp)
-    
+
 
     if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD: actual_trackingMarkers.append("LKNE")
     if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD: actual_trackingMarkers.append("RKNE")
@@ -170,8 +204,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
         bspModel = bodySegmentParameters.Bsp(model)
         bspModel.compute()
 
-        if  model.m_bodypart == enums.BodyPart.FullBody:
-            modelFilters.CentreOfMassFilter(model,acqStatic).compute(pointLabelSuffix=pointSuffix)
+        modelFilters.CentreOfMassFilter(model,acqStatic).compute(pointLabelSuffix=pointSuffix)
 
         btkTools.cleanAcq(acqStatic)
 
@@ -225,7 +258,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         if marker not in model.getStaticTrackingMarkers():
             logging.warning("[pyCGM2-Anomaly]  marker [%s] - not used during static calibration - wrong kinematic for the segment attached to this marker. "%(marker))
 
-    import ipdb; ipdb.set_trace()
     # --marker presence
     markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS, cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
 
