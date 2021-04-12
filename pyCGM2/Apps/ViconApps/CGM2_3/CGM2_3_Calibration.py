@@ -26,6 +26,8 @@ Examples:
 import os
 import logging
 import argparse
+import warnings
+warnings.filterwarnings("ignore")
 
 # pyCGM2 settings
 import pyCGM2
