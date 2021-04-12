@@ -418,6 +418,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         forwardProgression = True
         logging.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
 
+    for target in weights.keys():
+        if target not in actual_trackingMarkers or target not in model.getStaticIkTargets():
+            weights[target] = 0
+            logging.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,reconstructFilenameLabelled))
+
 
     ik_flag =  True
     if ik_flag:
@@ -438,12 +443,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         # --- opensim Fitting Filter ---
         iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm1\\cgm1-ikSetUp_template.xml" # ik tool file
-
-        for target in weights.keys():
-            if target not in actual_trackingMarkers or target not in model.getStaticIkTargets():
-                weights[target] = 0
-                logging.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,reconstructFilenameLabelled))
-
 
         cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
         cgmFittingProcedure.updateMarkerWeight("LASI",weights["LASI"])
