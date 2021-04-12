@@ -46,8 +46,16 @@ class CGM2_2(cgm.CGM1):
 
         self.version = "CGM2.2"
 
+        self.m_staticIkTargets = None
+
     def __repr__(self):
         return "LowerLimb CGM2.2"
+
+    def setStaticIkTargets(self,targetNames):
+        self.m_staticIkTargets = targetNames
+
+    def getStaticIkTargets(self):
+        return self.m_staticIkTargets
 
 
 class CGM2_3(cgm.CGM1):
