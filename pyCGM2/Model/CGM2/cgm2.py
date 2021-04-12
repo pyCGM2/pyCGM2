@@ -1688,7 +1688,8 @@ class CGM2_4(CGM2_3):
         """
         seg=self.getSegment("Left Foot")
 
-
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
         seg.getReferential("TF").motion =[]
@@ -1761,6 +1762,8 @@ class CGM2_4(CGM2_3):
 
         seg=self.getSegment("Left ForeFoot")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
 
@@ -1823,6 +1826,8 @@ class CGM2_4(CGM2_3):
         """
         seg=self.getSegment("Right Foot")
 
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
 
         # --- motion of the technical referential
@@ -1894,7 +1899,8 @@ class CGM2_4(CGM2_3):
         btkTools.smartAppendPoint(aqui,"RFJC",self.getSegment("Right Foot").getReferential("TF").getNodeTrajectory("RFJC"),desc="from hindFoot" )
 
         seg=self.getSegment("Right ForeFoot")
-
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         # --- motion of the technical referential
 
@@ -1953,6 +1959,8 @@ class CGM2_4(CGM2_3):
     def _leftHindFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
         seg=self.getSegment("Left Foot")
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- add RAJC if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -2010,6 +2018,8 @@ class CGM2_4(CGM2_3):
     def _leftForeFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
         seg=self.getSegment("Left ForeFoot")
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- add RvTOE if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -2069,6 +2079,8 @@ class CGM2_4(CGM2_3):
     def _rightHindFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
         seg=self.getSegment("Right Foot")
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- add RAJC if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -2125,6 +2137,8 @@ class CGM2_4(CGM2_3):
     def _rightForeFoot_motion_optimize(self,aqui, dictRef, motionMethod):
 
         seg=self.getSegment("Right ForeFoot")
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
 
         #  --- add RvTOE if marker list < 2  - check presence of tracking markers in the acquisition
         if seg.m_tracking_markers != []:
@@ -2434,29 +2448,14 @@ class CGM2_4(CGM2_3):
                 nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKNE", acq)
 
         # export JC
-        if self.m_bodypart != enums.BodyPart.UpperLimb:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LAJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RAJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LFJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RFJC", acq,suffix=pointSuffix)
+        jointcentres = ["LHJC","RHJC","LKJC","RKJC","LAJC","RAJC","LSJC","RSJC","LEJC","REJC","LHO","RHO"]
 
-        if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            pass
 
-        if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LSJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RSJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LEJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"REJC", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LHO", acq,suffix=pointSuffix)
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RHO", acq,suffix=pointSuffix)
+        for jointCentre in jointcentres:
+            if btkTools.isPointExist(acq, jointCentre):
+                nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,jointCentre, acq,suffix = pointSuffix)
 
-            logging.debug("jc over")
-
+        logging.debug("jc over")
 
         # export angles
         for it in btk.Iterate(acq.GetPoints()):
@@ -2471,44 +2470,72 @@ class CGM2_4(CGM2_3):
 
         # bones
         # -------------
-        if self.m_bodypart != enums.BodyPart.UpperLimb:
-            nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() ,suffix=pointSuffix)
+        if btkTools.isPointExist(acq, "midHJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),
+                OriginValues = acq.GetPoint("midHJC").GetValues(), suffix = pointSuffix, existFromPoint = "LPelvisAngles" )
 
-            nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() ,suffix=pointSuffix)
+        if btkTools.isPointExist(acq, "LKJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),
+                OriginValues = acq.GetPoint("LKJC").GetValues(),suffix = pointSuffix , existFromPoint = "LHipAngles")
             #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
-            nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LFJC").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() ,suffix=pointSuffix)
+        if btkTools.isPointExist(acq, "LAJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),
+                    OriginValues = acq.GetPoint("LAJC").GetValues(),suffix = pointSuffix ,existFromPoint = "LKneeAngles")
+
+        if btkTools.isPointExist(acq, "LFJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"),
+                        OriginValues = acq.GetPoint("LFJC").GetValues() ,suffix=pointSuffix,existFromPoint = "LAnkleAngles")
+            nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left ForeFoot"),
+                        OriginValues = acq.GetPoint("LFJC").GetValues() ,suffix=pointSuffix,existFromPoint = "LForeFootAngles")
+
+        if btkTools.isPointExist(acq, "RKJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),
+                OriginValues = acq.GetPoint("RKJC").GetValues(),suffix = pointSuffix, existFromPoint = "RHipAngles" )
+                #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
+        if btkTools.isPointExist(acq, "RAJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),
+                OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix = pointSuffix, existFromPoint = "RKneeAngles")
+
+        if btkTools.isPointExist(acq, "RFJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot"),
+                        OriginValues = acq.GetPoint("RFJC").GetValues() ,suffix=pointSuffix,existFromPoint = "RAnkleAngles")
+            nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot"),
+                        OriginValues = acq.GetPoint("RFJC").GetValues() ,suffix=pointSuffix,existFromPoint = "RForeFootAngles")
 
 
-            nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() ,suffix=pointSuffix)
-            #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
-            nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RFJC").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues(),suffix=pointSuffix)
-
-        if self.m_bodypart == enums.BodyPart.LowerLimbTrunk :
-            nexusTools.appendBones(NEXUS,vskName,acq,"THORAX",
-                self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues(),
-                manualScale = self.getSegment("Thorax").m_info["Scale"],
-                suffix=pointSuffix)
-
-        if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+        if btkTools.isPointExist(acq, "OT"):
             nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),
                 OriginValues = acq.GetPoint("OT").GetValues(),
                 manualScale = self.getSegment("Thorax").m_info["Scale"],
-                suffix=pointSuffix)
+                suffix = pointSuffix, existFromPoint = "LThoraxAngles" )
 
-            nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),OriginValues = acq.GetPoint("LEJC").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"LFOREARM", self.getSegment("Left ForeArm"),OriginValues = acq.GetPoint("LWJC").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"LHAND", self.getSegment("Left Hand"),OriginValues = acq.GetPoint("LHO").GetValues() ,suffix=pointSuffix)
+        if btkTools.isPointExist(acq, "LEJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),
+                OriginValues = acq.GetPoint("LEJC").GetValues(),suffix = pointSuffix,existFromPoint = "LShoulderAngles" )
 
-            nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm"),OriginValues = acq.GetPoint("REJC").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"RFOREARM", self.getSegment("Right ForeArm"),OriginValues = acq.GetPoint("RWJC").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),OriginValues = acq.GetPoint("RHO").GetValues() ,suffix=pointSuffix)
-            nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),
-                OriginValues = self.getSegment("Head").anatomicalFrame.getNodeTrajectory("SkullOriginOffset"),
-                manualScale = self.getSegment("Head").m_info["headScale"],suffix = pointSuffix )
+        if btkTools.isPointExist(acq, "LWJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFOREARM", self.getSegment("Left ForeArm"),
+                OriginValues = acq.GetPoint("LWJC").GetValues(),suffix = pointSuffix,existFromPoint = "LElbowAngles" )
+
+        if btkTools.isPointExist(acq, "LHO"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"LHAND", self.getSegment("Left Hand"),
+                OriginValues = acq.GetPoint("LHO").GetValues(),suffix = pointSuffix,existFromPoint = "LWristAngles" )
+
+        if btkTools.isPointExist(acq, "REJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm"),
+                OriginValues = acq.GetPoint("REJC").GetValues(),suffix = pointSuffix, existFromPoint = "RShoulderAngles" )
+
+        if btkTools.isPointExist(acq, "RWJC"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFOREARM", self.getSegment("Right ForeArm"),
+                OriginValues = acq.GetPoint("RWJC").GetValues(),suffix = pointSuffix, existFromPoint = "RElbowAngles" )
+
+        if btkTools.isPointExist(acq, "RHO"):
+            nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),
+                OriginValues = acq.GetPoint("RHO").GetValues(),suffix = pointSuffix, existFromPoint = "RWristAngles" )
+
+        nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),
+            OriginValues = self.getSegment("Head").anatomicalFrame.getNodeTrajectory("SkullOriginOffset"),
+            manualScale = self.getSegment("Head").m_info["headScale"],suffix = pointSuffix, existFromPoint = "LHeadAngles" )
         logging.debug("bones over")
 
         if not staticProcessingFlag:
@@ -2532,7 +2559,7 @@ class CGM2_4(CGM2_3):
                         nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
             logging.debug("Moment over")
 
-            # export Power
+            # export Moment
             for it in btk.Iterate(acq.GetPoints()):
                 if it.GetType() == btk.btkPoint.Power:
                     if pointSuffix is not None:
@@ -2544,8 +2571,115 @@ class CGM2_4(CGM2_3):
 
         # centre of mass
         centreOfMassLabel  = "CentreOfMass" + pointSuffix if pointSuffix is not None else "CentreOfMass"
-        if self.m_centreOfMass is not None:
-            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str(centreOfMassLabel), acq)
+        if btkTools.isPointExist(acq, centreOfMassLabel):
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,centreOfMassLabel, acq)
+
+        # pointSuffix  =  pointSuffix if pointSuffix is not None else ""
+        #
+        # if staticProcessingFlag:
+        #     if self.checkCalibrationProperty("LeftKAD",True):
+        #         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKNE", acq)
+        #     if self.checkCalibrationProperty("RightKAD",True):
+        #         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKNE", acq)
+        #
+        #
+        # # export JC
+        # jointcentres = ["LHJC","RHJC","LKJC","RKJC","LAJC","RAJC","LSJC","RSJC","LEJC","REJC","LHO","RHO"]
+        #
+        #
+        # for jointCentre in jointcentres:
+        #     if btkTools.isPointExist(acq, jointCentre):
+        #         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,jointCentre, acq,suffix = pointSuffix)
+        #
+        #
+        # # export angles
+        # for it in btk.Iterate(acq.GetPoints()):
+        #     if it.GetType() == btk.btkPoint.Angle:
+        #         if pointSuffix is not None:
+        #             if pointSuffix in it.GetLabel():
+        #                 nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+        #         else:
+        #             nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+        #
+        # logging.debug("angles over")
+        #
+        # # bones
+        # # -------------
+        # if self.m_bodypart != enums.BodyPart.UpperLimb:
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() ,suffix=pointSuffix)
+        #
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() ,suffix=pointSuffix)
+        #     #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() ,suffix=pointSuffix)
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LFJC").GetValues() ,suffix=pointSuffix)
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() ,suffix=pointSuffix)
+        #
+        #
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() ,suffix=pointSuffix)
+        #     #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix=pointSuffix)
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RFJC").GetValues() ,suffix=pointSuffix)
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues(),suffix=pointSuffix)
+        #
+        # if self.m_bodypart == enums.BodyPart.LowerLimbTrunk :
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"THORAX",
+        #         self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues(),
+        #         manualScale = self.getSegment("Thorax").m_info["Scale"],
+        #         suffix=pointSuffix)
+        #
+        # if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),
+        #         OriginValues = acq.GetPoint("OT").GetValues(),
+        #         manualScale = self.getSegment("Thorax").m_info["Scale"],
+        #         suffix=pointSuffix)
+        #
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),OriginValues = acq.GetPoint("LEJC").GetValues() ,suffix=pointSuffix)
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"LFOREARM", self.getSegment("Left ForeArm"),OriginValues = acq.GetPoint("LWJC").GetValues() ,suffix=pointSuffix)
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"LHAND", self.getSegment("Left Hand"),OriginValues = acq.GetPoint("LHO").GetValues() ,suffix=pointSuffix)
+        #
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm"),OriginValues = acq.GetPoint("REJC").GetValues() ,suffix=pointSuffix)
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"RFOREARM", self.getSegment("Right ForeArm"),OriginValues = acq.GetPoint("RWJC").GetValues() ,suffix=pointSuffix)
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),OriginValues = acq.GetPoint("RHO").GetValues() ,suffix=pointSuffix)
+        #     nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),
+        #         OriginValues = self.getSegment("Head").anatomicalFrame.getNodeTrajectory("SkullOriginOffset"),
+        #         manualScale = self.getSegment("Head").m_info["headScale"],suffix = pointSuffix )
+        # logging.debug("bones over")
+        #
+        # if not staticProcessingFlag:
+        #     # export Force
+        #     for it in btk.Iterate(acq.GetPoints()):
+        #         if it.GetType() == btk.btkPoint.Force:
+        #             if pointSuffix is not None:
+        #                 if pointSuffix in it.GetLabel():
+        #                     nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+        #             else:
+        #                 nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+        #     logging.debug("force over")
+        #
+        #     # export Moment
+        #     for it in btk.Iterate(acq.GetPoints()):
+        #         if it.GetType() == btk.btkPoint.Moment:
+        #             if pointSuffix is not None:
+        #                 if pointSuffix in it.GetLabel():
+        #                     nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+        #             else:
+        #                 nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+        #     logging.debug("Moment over")
+        #
+        #     # export Power
+        #     for it in btk.Iterate(acq.GetPoints()):
+        #         if it.GetType() == btk.btkPoint.Power:
+        #             if pointSuffix is not None:
+        #                 if pointSuffix in it.GetLabel():
+        #                     nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+        #             else:
+        #                 nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
+        #     logging.debug("power over")
+        #
+        # # centre of mass
+        # centreOfMassLabel  = "CentreOfMass" + pointSuffix if pointSuffix is not None else "CentreOfMass"
+        # if self.m_centreOfMass is not None:
+        #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str(centreOfMassLabel), acq)
 
 
 class CGM2_5(CGM2_4):
