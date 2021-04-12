@@ -47,8 +47,16 @@ class CGM(model.Model):
         self.m_useRightTibialTorsion=False
         self.staExpert= False
 
+        self.m_staticTrackingMarkers = None
+
     def setSTAexpertMode(self,boolFlag):
         self.staExpert= boolFlag
+
+    def setStaticTrackingMarkers(self,markers):
+        self.m_staticTrackingMarkers = markers
+
+    def getStaticTrackingMarkers(self):
+        return self.m_staticTrackingMarkers
 
     @classmethod
     def detectCalibrationMethods(cls,acqStatic):
