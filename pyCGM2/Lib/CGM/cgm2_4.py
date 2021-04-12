@@ -15,6 +15,7 @@ from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Model.Opensim import opensimFilters
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Signal import signal_processing
+from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
 
 
 
@@ -58,6 +59,44 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
+    trackingMarkers = cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_4.THORAX_TRACKING_MARKERS+ cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS
+    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
+
+    vff = acqStatic.GetFirstFrame()
+    vlf = acqStatic.GetLastFrame()
+    # vff,vlf = btkTools.getFrameBoundaries(acqStatic,actual_trackingMarkers)
+    flag = btkTools.getValidFrames(acqStatic,actual_trackingMarkers,frameBounds=[vff,vlf])
+
+    gapFlag = btkTools.checkGap(acqStatic,actual_trackingMarkers,frameBounds=[vff,vlf])
+    if gapFlag:
+        raise Exception("[pyCGM2] Calibration aborted. Gap find during interval [%i-%i]. Crop your c3d " %(vff,vlf))
+
+    # --------------------ANOMALY------------------------------
+    # --Check MP
+    adap = AnomalyDetectionProcedure.AnthropoDataAnomalyProcedure( required_mp)
+    adf = AnomalyFilter.AnomalyDetectionFilter(None,None,adap)
+    anomaly = adf.run()
+
+    # --marker presence
+    markersets = [cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS, cgm2.CGM2_4.THORAX_TRACKING_MARKERS, cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS]
+    for markerset in markersets:
+        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( markerset,verbose=False)
+        adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,mpdp)
+        anomaly = adf.run()
+        if anomaly["Output"]["In"] !=[] and anomaly["Output"]["Out"]!=[]:
+            for markerOut in anomaly["Output"]["Out"]:
+                logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(markerOut, calibrateFilenameLabelled))
+
+        # --marker outliers
+        # if anomaly["Output"]["In"] !=[]:
+        #     madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( anomaly["Output"]["In"], plot=False, window=10,threshold = 3)
+        #     adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,madp)
+        #     anomaly = adf.run()
+        #     anomalyIndexes = anomaly["Output"]
+
+
+    # --------------------MODELLING------------------------------
+
     # ---check marker set used----
     dcm = cgm.CGM.detectCalibrationMethods(acqStatic)
 
@@ -65,8 +104,11 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     # ---definition---
     model=cgm2.CGM2_4()
     model.configure(acq=acqStatic,detectedCalibrationMethods=dcm)
-
     model.addAnthropoInputParameters(required_mp,optional=optional_mp)
+
+    if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD: actual_trackingMarkers.append("LKNE")
+    if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD: actual_trackingMarkers.append("RKNE")
+    model.setStaticTrackingMarkers(actual_trackingMarkers)
 
     # --store calibration parameters--
     model.setStaticFilename(calibrateFilenameLabelled)
@@ -108,14 +150,47 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
     modMotion.compute()
 
+
+    # ----progression Frame----
+    progressionFlag = False
+    if btkTools.isPointsExist(acqStatic, ['LASI', 'RASI', 'RPSI', 'LPSI'],ignorePhantom=False):
+        logging.info("[pyCGM2] - progression axis detected from Pelvic markers ")
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
+        pff.compute()
+        progressionAxis = pff.outputs["progressionAxis"]
+        globalFrame = pff.outputs["globalFrame"]
+        forwardProgression = pff.outputs["forwardProgression"]
+        progressionFlag = True
+    elif btkTools.isPointsExist(acqStatic, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
+        logging.info("[pyCGM2] - progression axis detected from Thoracic markers ")
+        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
+        pff.compute()
+        progressionAxis = pff.outputs["progressionAxis"]
+        globalFrame = pff.outputs["globalFrame"]
+        forwardProgression = pff.outputs["forwardProgression"]
+
+    else:
+        globalFrame = "XYZ"
+        progressionAxis = "X"
+        forwardProgression = True
+        logging.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
+
+    # ----manage IK Targets----
+    ikTargets = list()
+    for target in weights.keys():
+        if target not in actual_trackingMarkers:
+            weights[target] = 0
+            logging.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,calibrateFilenameLabelled))
+        else:
+            ikTargets.append(target)
+    model.setStaticIkTargets(ikTargets)
+
     if "noKinematicsCalculation" in kwargs.keys() and kwargs["noKinematicsCalculation"]:
         logging.warning("[pyCGM2] No Kinematic calculation done for the static file")
         return model, acqStatic
     else:
-        if model.getBodyPart() == enums.BodyPart.UpperLimb:
-            ik_flag = False
-            logging.warning("[pyCGM2] Fitting only applied for the upper limb")
-
         if ik_flag:
             #                        ---OPENSIM IK---
 
@@ -185,8 +260,17 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
                                                               scalingOsim,
                                                               cgmFittingProcedure,
                                                               DATA_PATH,
-                                                              acqStatic )
-            acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled )
+                                                              acqStatic,
+                                                               accuracy = 1e-5)
+
+            osrf.setTimeRange(acqStatic,beginFrame = vff, lastFrame=vlf)
+            try:
+                acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled,
+                            progressionAxis = progressionAxis ,
+                            forwardProgression = forwardProgression)
+            except:
+                logging.error("[pyCGM2] - IK solver fails")
+                acqStaticIK = acqStatic
 
 
 
@@ -208,49 +292,18 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         # relative angles
         modelFilters.ModelJCSFilter(model,finalAcqStatic).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
-        # detection of traveling axis + absolute angle
-        if model.m_bodypart != enums.BodyPart.UpperLimb:
-            pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        else:
-            pfp = progressionFrame.ThoraxProgressionFrameProcedure()
+        modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqStatic,
+                                               segmentLabels=["Left Foot","Right Foot","Pelvis","Thorax","Head"],
+                                                angleLabels=["LFootProgress", "RFootProgress","Pelvis","Thorax", "Head"],
+                                                eulerSequences=["TOR","TOR", "ROT","YXZ","TOR"],
+                                                globalFrameOrientation = globalFrame,
+                                                forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
 
-        pff = progressionFrame.ProgressionFrameFilter(finalAcqStatic,pfp)
-        pff.compute()
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
-
-        if model.m_bodypart != enums.BodyPart.UpperLimb:
-                modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqStatic,
-                                                       segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                                        angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                                        eulerSequences=["TOR","TOR", "ROT"],
-                                                        globalFrameOrientation = globalFrame,
-                                                        forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
-
-        if model.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-                modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqStatic,
-                                              segmentLabels=["Thorax"],
-                                              angleLabels=["Thorax"],
-                                              eulerSequences=["YXZ"],
-                                              globalFrameOrientation = globalFrame,
-                                              forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
-
-        if model.m_bodypart == enums.BodyPart.UpperLimb or model.m_bodypart == enums.BodyPart.FullBody:
-
-                modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqStatic,
-                                              segmentLabels=["Thorax","Head"],
-                                              angleLabels=["Thorax", "Head"],
-                                              eulerSequences=["YXZ","TOR"],
-                                              globalFrameOrientation = globalFrame,
-                                              forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
-        # BSP model
         bspModel = bodySegmentParameters.Bsp(model)
         bspModel.compute()
 
-        if  model.m_bodypart == enums.BodyPart.FullBody:
-            modelFilters.CentreOfMassFilter(model,finalAcqStatic).compute(pointLabelSuffix=pointSuffix)
 
-
+        modelFilters.CentreOfMassFilter(model,finalAcqStatic).compute(pointLabelSuffix=pointSuffix)
 
         return model, finalAcqStatic
 
@@ -296,8 +349,34 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         logging.info("[pyCGM2] Sacrum marker detected")
 
     acqGait =  btkTools.applyTranslators(acqGait,translators)
-    trackingMarkers = model.getTrackingMarkers(acqGait)
-    validFrames,vff,vlf = btkTools.findValidFrames(acqGait,trackingMarkers)
+    trackingMarkers = cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_4.THORAX_TRACKING_MARKERS+ cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS
+    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqGait, trackingMarkers)
+    vff,vlf = btkTools.getFrameBoundaries(acqGait,actual_trackingMarkers)
+    flag = btkTools.getValidFrames(acqGait,actual_trackingMarkers,frameBounds=[vff,vlf])
+
+    # --------------------ANOMALY------------------------------
+    for marker in actual_trackingMarkers:
+        if marker not in model.getStaticTrackingMarkers():
+            logging.warning("[pyCGM2-Anomaly]  marker [%s] - not used during static calibration - wrong kinematic for the segment attached to this marker. "%(marker))
+
+    # --marker presence
+    markersets = [cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS, cgm2.CGM2_4.THORAX_TRACKING_MARKERS, cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS]
+    for markerset in markersets:
+        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( markerset,verbose=False)
+        adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,mpdp)
+        anomaly = adf.run()
+        if anomaly["Output"]["In"] !=[] and anomaly["Output"]["Out"]!=[]:
+            for markerOut in anomaly["Output"]["Out"]:
+                logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(markerOut, reconstructFilenameLabelled))
+
+        # --marker outliers
+        # if anomaly["Output"]["In"] !=[]:
+        #     madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( anomaly["Output"]["In"], plot=False, window=10,threshold = 3)
+        #     adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,madp, frameRange=[vff,vlf])
+        #     anomaly = adf.run()
+        #     anomalyIndexes = anomaly["Output"]
+
+    # --------------------MODELLING------------------------------
 
     # filtering
     # -----------------------
@@ -320,9 +399,50 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Sodervisk)
     modMotion.compute()
 
-    if model.getBodyPart() == enums.BodyPart.UpperLimb:
-        ik_flag = False
-        logging.warning("[pyCGM2] Fitting only applied for the upper limb")
+    progressionFlag = False
+    if btkTools.isPointExist(acqGait, 'LHEE',ignorePhantom=False) or btkTools.isPointExist(acqGait, 'RHEE',ignorePhantom=False):
+
+        pfp = progressionFrame.PointProgressionFrameProcedure(marker="LHEE") \
+            if btkTools.isPointExist(acqGait, 'LHEE',ignorePhantom=False) \
+            else  progressionFrame.PointProgressionFrameProcedure(marker="RHEE")
+
+
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        progressionAxis = pff.outputs["progressionAxis"]
+        globalFrame = pff.outputs["globalFrame"]
+        forwardProgression = pff.outputs["forwardProgression"]
+        progressionFlag = True
+
+    elif btkTools.isPointsExist(acqGait, ['LASI', 'RASI', 'RPSI', 'LPSI'],ignorePhantom=False) and not progressionFlag:
+        logging.info("[pyCGM2] - progression axis detected from Pelvic markers ")
+        pfp = progressionFrame.PelvisProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        globalFrame = pff.outputs["globalFrame"]
+        forwardProgression = pff.outputs["forwardProgression"]
+
+        progressionFlag = True
+    elif btkTools.isPointsExist(acqGait, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
+        logging.info("[pyCGM2] - progression axis detected from Thoracic markers ")
+        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
+        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff.compute()
+        progressionAxis = pff.outputs["progressionAxis"]
+        globalFrame = pff.outputs["globalFrame"]
+        forwardProgression = pff.outputs["forwardProgression"]
+
+    else:
+        globalFrame = "XYZ"
+        progressionAxis = "X"
+        forwardProgression = True
+        logging.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
+
+
+    for target in weights.keys():
+        if target not in actual_trackingMarkers or target not in model.getStaticIkTargets():
+            weights[target] = 0
+            logging.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,reconstructFilenameLabelled))
 
     if ik_flag:
         #                        ---OPENSIM IK---
@@ -396,14 +516,19 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                                           cgmFittingProcedure,
                                                           DATA_PATH,
                                                           acqGait )
+        osrf.setTimeRange(acqGait,beginFrame = vff, lastFrame=vlf)
         if "ikAccuracy" in kwargs.keys():
             osrf.setAccuracy(kwargs["ikAccuracy"])
 
         logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
-        acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled )
+        try:
+            acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled,
+                            progressionAxis = progressionAxis ,
+                            forwardProgression = forwardProgression)
+        except:
+            logging.error("[pyCGM2] - IK solver fails")
+            acqIK = acqGait
         logging.info("-------INVERSE KINEMATICS DONE-----------------")
-
-
 
     # eventual gait acquisition to consider for joint kinematics
     finalAcqGait = acqIK if ik_flag else acqGait
@@ -426,81 +551,48 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     # relative angles
     modelFilters.ModelJCSFilter(model,finalAcqGait).compute(description="vectoriel", pointLabelSuffix=pointSuffix)
 
-    # detection of traveling axis + absolute angle
-    if model.m_bodypart != enums.BodyPart.UpperLimb:
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
-    else:
-        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
-
-    pff = progressionFrame.ProgressionFrameFilter(finalAcqGait,pfp)
-    pff.compute()
-    globalFrame = pff.outputs["globalFrame"]
-    forwardProgression = pff.outputs["forwardProgression"]
-
-    if model.m_bodypart != enums.BodyPart.UpperLimb:
-            modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqGait,
-                                                   segmentLabels=["Left Foot","Right Foot","Pelvis"],
-                                                    angleLabels=["LFootProgress", "RFootProgress","Pelvis"],
-                                                    eulerSequences=["TOR","TOR", "ROT"],
-                                                    globalFrameOrientation = globalFrame,
-                                                    forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
-
-    if model.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqGait,
-                                          segmentLabels=["Thorax"],
-                                          angleLabels=["Thorax"],
-                                          eulerSequences=["YXZ"],
-                                          globalFrameOrientation = globalFrame,
-                                          forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
-
-    if model.m_bodypart == enums.BodyPart.UpperLimb or model.m_bodypart == enums.BodyPart.FullBody:
-
-            modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqGait,
-                                          segmentLabels=["Thorax","Head"],
-                                          angleLabels=["Thorax", "Head"],
-                                          eulerSequences=["YXZ","TOR"],
-                                          globalFrameOrientation = globalFrame,
-                                          forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
-
+    modelFilters.ModelAbsoluteAnglesFilter(model,finalAcqGait,
+                                           segmentLabels=["Left Foot","Right Foot","Pelvis","Thorax","Head"],
+                                            angleLabels=["LFootProgress", "RFootProgress","Pelvis","Thorax", "Head"],
+                                            eulerSequences=["TOR","TOR", "ROT","YXZ","TOR"],
+                                            globalFrameOrientation = globalFrame,
+                                            forwardProgression = forwardProgression).compute(pointLabelSuffix=pointSuffix)
     #---- Body segment parameters----
     bspModel = bodySegmentParameters.Bsp(model)
     bspModel.compute()
 
-    if  model.m_bodypart == enums.BodyPart.FullBody:
-        modelFilters.CentreOfMassFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
-
+    modelFilters.CentreOfMassFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
 
     # Inverse dynamics
     if btkTools.checkForcePlateExist(acqGait):
-        if model.m_bodypart != enums.BodyPart.UpperLimb:
-            # --- force plate handling----
-            # find foot  in contact
-            mappedForcePlate = forceplates.matchingFootSideOnForceplate(finalAcqGait,mfpa=mfpa)
-            forceplates.addForcePlateGeneralEvents(finalAcqGait,mappedForcePlate)
-            logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+        # --- force plate handling----
+        # find foot  in contact
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(finalAcqGait,mfpa=mfpa)
+        forceplates.addForcePlateGeneralEvents(finalAcqGait,mappedForcePlate)
+        logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
-            # assembly foot and force plate
-            modelFilters.ForcePlateAssemblyFilter(model,finalAcqGait,mappedForcePlate,
-                                     leftSegmentLabel="Left Foot",
-                                     rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
+        # assembly foot and force plate
+        modelFilters.ForcePlateAssemblyFilter(model,finalAcqGait,mappedForcePlate,
+                                 leftSegmentLabel="Left Foot",
+                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
-            #---- Joint kinetics----
-            idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
-            modelFilters.InverseDynamicFilter(model,
-                                 finalAcqGait,
-                                 procedure = idp,
-                                 projection = momentProjection,
-                                 globalFrameOrientation = globalFrame,
-                                 forwardProgression = forwardProgression
-                                 ).compute(pointLabelSuffix=pointSuffix)
+        #---- Joint kinetics----
+        idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
+        modelFilters.InverseDynamicFilter(model,
+                             finalAcqGait,
+                             procedure = idp,
+                             projection = momentProjection,
+                             globalFrameOrientation = globalFrame,
+                             forwardProgression = forwardProgression
+                             ).compute(pointLabelSuffix=pointSuffix)
 
 
-            #---- Joint energetics----
-            modelFilters.JointPowerFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
+        #---- Joint energetics----
+        modelFilters.JointPowerFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
 
     #---- zero unvalid frames ---
-    btkTools.applyValidFramesOnOutput(finalAcqGait,validFrames)
-
+    btkTools.cleanAcq(finalAcqGait)
+    btkTools.applyOnValidFrames(finalAcqGait,flag)
 
 
     return finalAcqGait
