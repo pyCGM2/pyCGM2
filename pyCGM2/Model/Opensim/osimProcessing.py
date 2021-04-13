@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 try:
     from pyCGM2 import opensim4 as opensim
 except:
-    logging.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
+    LOGGER.logger.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
     import opensim
 
 from bs4 import BeautifulSoup
@@ -175,7 +175,7 @@ class opensimModel(object):
         osimJointInChild.set(1,positionChild[1]/toMeter)
         osimJointInChild.set(2,positionChild[2]/toMeter)
 
-        logging.debug( "osim joint centres %s modified"%(jointLabelInOsim))
+        LOGGER.logger.debug( "osim joint centres %s modified"%(jointLabelInOsim))
 
 
 
@@ -193,7 +193,7 @@ class opensimModel(object):
 
             self.m_markers.append(m)
 
-        logging.debug( "marker (%s) added"%(label))
+        LOGGER.logger.debug( "marker (%s) added"%(label))
 
 
     def createMarkerSet(self):
@@ -210,7 +210,7 @@ class opensimModel(object):
 
        index = markers.findIndex(label)
        if index != -1:
-           logging.debug( "marker (%s) found"%(label))
+           LOGGER.logger.debug( "marker (%s) found"%(label))
            localPos = np.dot(rotation_osim_model,
                                   self.m_cgmModel.getSegment(modelSegmentLabel).anatomicalFrame.static.getNode_byLabel(label).m_local) # TODO : check node exist
 

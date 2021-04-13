@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
@@ -53,18 +53,18 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
     # motion
     if side is None:
         side = detectSide(acqFunc,"LANK","RANK")
-        logging.info("Detected motion side : %s" %(side) )
+        LOGGER.logger.info("Detected motion side : %s" %(side) )
 
     start,end = btkTools.getStartEndEvents(acqFunc,side)
 
     if start is not None:
-        logging.info("Start event detected")
+        LOGGER.logger.info("Start event detected")
         initFrame=start
     else:
         initFrame = beginFrame if beginFrame is not None else ff
 
     if end is not None:
-        logging.info("End event detected")
+        LOGGER.logger.info("End event detected")
         endFrame=end
     else:
         endFrame = endFrame if endFrame is not None else lf
@@ -180,18 +180,18 @@ def sara(model,
     #---motion side of the lower limb---
     if side is None:
         side = detectSide(acqFunc,"LANK","RANK")
-        logging.info("Detected motion side : %s" %(side) )
+        LOGGER.logger.info("Detected motion side : %s" %(side) )
 
     start,end = btkTools.getStartEndEvents(acqFunc,side)
 
     if start is not None:
-        logging.info("Start event detected")
+        LOGGER.logger.info("Start event detected")
         initFrame=start
     else:
         initFrame = beginFrame if beginFrame is not None else ff
 
     if end is not None:
-        logging.info("End event detected")
+        LOGGER.logger.info("End event detected")
         endFrame=end
     else:
         endFrame = endFrame if endFrame is not None else lf

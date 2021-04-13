@@ -25,7 +25,6 @@ Examples:
 """
 import os
 import traceback
-import logging
 import argparse
 import matplotlib.pyplot as plt
 
@@ -34,8 +33,10 @@ warnings.filterwarnings("ignore")
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+LOGGER = pyCGM2.LOGGER
 
+# from pyCGM2 import log; #log.setloggerLevel(LOGGER.logger.INFO)
+# logger = log.get_logger(__name__)
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -61,6 +62,7 @@ def main():
     parser.add_argument('--forceLHJC', nargs='+')
     parser.add_argument('--forceRHJC', nargs='+')
     parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
+    parser.add_argument('-ae','--anomalyException', action='store_true', help='stop if anomaly detected ')
     args = parser.parse_args()
 
 
@@ -69,6 +71,7 @@ def main():
 
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
+
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         # global setting ( in user/AppData)
@@ -100,11 +103,12 @@ def main():
         # --------------------------LOADING ------------------------------------
         DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
+        # log.setLogger(filename = DATA_PATH+"\\pycgm2.log")
+
         calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "calibration file: "+ calibrateFilenameLabelled)
-
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Calibration.log")
 
         # --------------------------SUBJECT -----------------------------------
 
@@ -131,7 +135,8 @@ def main():
                       ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
                       markerDiameter,
                       hjcMethod,
-                      pointSuffix,forceBtkAcq=acq)
+                      pointSuffix,forceBtkAcq=acq,
+                      anomalyException=args.anomalyException)
 
 
 

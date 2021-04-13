@@ -21,14 +21,14 @@ Examples:
 
 #import ipdb
 import os
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import warnings
 warnings.filterwarnings("ignore")
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -52,6 +52,7 @@ def main():
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix' )
     parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
+    parser.add_argument('-ae','--anomalyException', action='store_true', help='stop if anomaly detected ')
 
     args = parser.parse_args()
 
@@ -84,8 +85,9 @@ def main():
 
         calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "calibration file: "+ calibrateFilenameLabelled)
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Calibration.log")
+        LOGGER.logger.info( "calibration file: "+ calibrateFilenameLabelled)
 
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
@@ -109,7 +111,7 @@ def main():
         model,acqStatic = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                       required_mp,optional_mp,
                       leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
-                      pointSuffix,forceBtkAcq=acq)
+                      pointSuffix,forceBtkAcq=acq, anomalyException=args.anomalyException)
 
         # ----------------------SAVE-------------------------------------------
         #pyCGM2.model

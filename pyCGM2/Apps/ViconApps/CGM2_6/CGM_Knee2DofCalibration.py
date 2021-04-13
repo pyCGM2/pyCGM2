@@ -20,14 +20,14 @@ Examples:
 """
 import os
 import traceback
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -60,18 +60,18 @@ def main():
 
         reconstructFilenameLabelled = reconstructedFilenameLabelledNoExt+".c3d"
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "reconstructed file: "+ reconstructFilenameLabelled)
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.logger.info( "reconstructed file: "+ reconstructFilenameLabelled)
 
         # --------------------------SUBJECT -----------------------------------
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)
-        logging.info(  "Subject name : " + subject  )
+        LOGGER.logger.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL - INIT ------------------------------
         model = files.loadModel(DATA_PATH,subject)
-        logging.info("loaded model : %s" %(model.version ))
+        LOGGER.logger.info("loaded model : %s" %(model.version ))
 
 
         if model.version == "CGM1.0":
@@ -150,7 +150,7 @@ def main():
 
         # ----------------------SAVE-------------------------------------------
         files.saveModel(model,DATA_PATH,subject)
-        logging.warning("model updated with a  %s knee calibrated with 2Dof method" %(side))
+        LOGGER.logger.warning("model updated with a  %s knee calibrated with 2Dof method" %(side))
 
         # save mp
         files.saveMp(mpInfo,model,DATA_PATH,mpFilename)
@@ -182,10 +182,10 @@ def main():
         # -- add nexus Bones
         if side == "Left":
             nexusTools.appendBones(NEXUS,subject,acqFunc,"LFE1", model.getSegment("Left Thigh"),OriginValues = acqFunc.GetPoint("LKJC").GetValues() )
-            logging.warning("offset %s" %(str(model.mp_computed["LeftKneeFuncCalibrationOffset"] )))
+            LOGGER.logger.warning("offset %s" %(str(model.mp_computed["LeftKneeFuncCalibrationOffset"] )))
         elif side == "Right":
             nexusTools.appendBones(NEXUS,subject,acqFunc,"RFE1", model.getSegment("Right Thigh"),OriginValues = acqFunc.GetPoint("RKJC").GetValues() )
-            logging.warning("offset %s" %(str(model.mp_computed["RightKneeFuncCalibrationOffset"] )))
+            LOGGER.logger.warning("offset %s" %(str(model.mp_computed["RightKneeFuncCalibrationOffset"] )))
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")

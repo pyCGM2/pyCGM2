@@ -17,14 +17,14 @@ Examples:
 
 """
 import os
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import warnings
 warnings.filterwarnings("ignore")
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -46,6 +46,7 @@ def main():
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     parser.add_argument('-a','--accuracy', type=float, help='Inverse Kinematics accuracy')
+    parser.add_argument('-ae','--anomalyException', action='store_true', help='stop if anomaly detected ')
     args = parser.parse_args()
 
 
@@ -77,14 +78,15 @@ def main():
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "reconstructed file: "+ reconstructFilenameLabelled)
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
+        LOGGER.logger.info( "reconstructed file: "+ reconstructFilenameLabelled)
 
         # --------------------------SUBJECT -----------------------------------
         # Notice : Work with ONE subject by session
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)
-        logging.info(  "Subject name : " + subject  )
+        LOGGER.logger.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
         model = files.loadModel(DATA_PATH,subject)
@@ -97,7 +99,7 @@ def main():
 
 
         # check model
-        logging.info("loaded model : %s" %(model.version))
+        LOGGER.logger.info("loaded model : %s" %(model.version))
         if model.version != "CGM2.4":
             raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.4e calibration pipeline"%subject)
 
@@ -123,7 +125,9 @@ def main():
             ik_flag,markerDiameter,
             pointSuffix,
             mfpa,
-            momentProjection,forceBtkAcq=acq)
+            momentProjection,forceBtkAcq=acq,
+            anomalyException=args.anomalyException,
+                ikAccuracy = ikAccuracy)
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,finalAcqGait,subject,pointSuffix).run()

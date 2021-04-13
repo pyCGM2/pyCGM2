@@ -17,14 +17,13 @@ Examples:
 """
 #import ipdb
 import os
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import warnings
 warnings.filterwarnings("ignore")
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -79,14 +78,15 @@ def main():
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "calibration file: "+ reconstructFilenameLabelled)
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
+        LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
 
 
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)
-        logging.info(  "Subject name : " + subject  )
+        LOGGER.logger.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
         model = files.loadModel(DATA_PATH,subject)
@@ -99,7 +99,7 @@ def main():
 
 
         # check model
-        logging.info("loaded model : %s" %(model.version))
+        LOGGER.logger.info("loaded model : %s" %(model.version))
         if model.version != "CGM2.2":
             raise Exception ("%s-pyCGM2.model file was not calibrated from the CGM2.2 calibration pipeline"%subject)
 
@@ -127,7 +127,7 @@ def main():
             forceBtkAcq=acq,
             ikAccuracy = ikAccuracy)
 
-        
+
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,acqIK,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,acqIK,["Left-FP","Right-FP"])

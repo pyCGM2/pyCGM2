@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 from bs4 import BeautifulSoup
 
 # pyCGM2
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.Opensim import osimProcessing
@@ -17,7 +17,7 @@ from pyCGM2.Processing import progressionFrame
 try:
     from pyCGM2 import opensim4 as opensim
 except:
-    logging.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
+    LOGGER.logger.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
     import opensim
 
 # ---- PROCEDURES -----
@@ -80,7 +80,7 @@ class GeneralOpensimFittingProcedure(object):
 
         """
         self.ikTags[markerLabel] = weight
-        logging.warning( "marker (%s) weight altered. New weight = %d" %(markerLabel,weight))
+        LOGGER.logger.info( "marker (%s) weight altered. New weight = %d" %(markerLabel,weight))
 
 
 
@@ -137,7 +137,7 @@ class CgmOpensimFittingProcedure(object):
 
         if self.ikTags[markerLabel] != weight:
             self.ikTags[markerLabel] = weight
-            logging.warning( "marker (%s) weight altered. New weight = %d" %(markerLabel,weight))
+            LOGGER.logger.info( "marker (%s) weight altered. New weight = %d" %(markerLabel,weight))
 
 
 # ---- FILTERS -----
@@ -335,7 +335,7 @@ class opensimFittingFilter(object):
                 # lenOsim  = len(values)
                 # lenc3d  = self.m_acqMotion.GetPoint(marker).GetFrameNumber()
                 # if lenOsim < lenc3d:
-                #     logging.warning(" size osim (%i) inferior to c3d (%i)" % (lenOsim,lenc3d))
+                #     LOGGER.logger.warning(" size osim (%i) inferior to c3d (%i)" % (lenOsim,lenc3d))
                 #     values2 = np.zeros((lenc3d,3))
                 #     values2[0:lenOsim,:]=values
                 #     values2[lenOsim:lenc3d,:]=self.m_acqMotion.GetPoint(marker).GetValues()[lenOsim:lenc3d,:]

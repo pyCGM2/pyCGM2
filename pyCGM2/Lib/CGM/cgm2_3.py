@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #import ipdb
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 # pyCGM2 settings
 import pyCGM2
@@ -17,6 +17,7 @@ from pyCGM2.Model.Opensim import opensimFilters
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
+from pyCGM2.Inspector import InspectorFilter, InspectorProcedure
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               required_mp,optional_mp,
@@ -40,6 +41,14 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     :param pointSuffix [str]: suffix to add to model outputs
 
     """
+    detectAnomaly = False
+
+
+    if "anomalyException" in kwargs.keys():
+        anomalyException = kwargs["anomalyException"]
+    else:
+        anomalyException=False
+
     # --------------------------STATIC FILE WITH TRANSLATORS --------------------------------------
 
     if "Fitting" in weights.keys():
@@ -56,7 +65,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     if btkTools.isPointExist(acqStatic,"SACR"):
         translators["LPSI"] = "SACR"
         translators["RPSI"] = "SACR"
-        logging.info("[pyCGM2] Sacrum marker detected")
+        LOGGER.logger.info("[pyCGM2] Sacrum marker detected")
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
     trackingMarkers = cgm2.CGM2_3.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_3.THORAX_TRACKING_MARKERS+ cgm2.CGM2_3.UPPERLIMB_TRACKING_MARKERS
@@ -75,25 +84,27 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     # --Check MP
     adap = AnomalyDetectionProcedure.AnthropoDataAnomalyProcedure( required_mp)
     adf = AnomalyFilter.AnomalyDetectionFilter(None,None,adap)
-    anomaly = adf.run()
+    mp_anomaly = adf.run()
+    if mp_anomaly["ErrorState"]: detectAnomaly = True
 
     # --marker presence
-    markersets = [cgm2.CGM2_3.LOWERLIMB_TRACKING_MARKERS, cgm2.CGM2_3.THORAX_TRACKING_MARKERS, cgm2.CGM2_3.UPPERLIMB_TRACKING_MARKERS]
+    markersets = [cgm.CGM2_3.LOWERLIMB_TRACKING_MARKERS, cgm.CGM2_3.THORAX_TRACKING_MARKERS, cgm.CGM2_3.UPPERLIMB_TRACKING_MARKERS]
     for markerset in markersets:
-        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( markerset,verbose=False)
-        adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,mpdp)
-        anomaly = adf.run()
-        if anomaly["Output"]["In"] !=[] and anomaly["Output"]["Out"]!=[]:
-            for markerOut in anomaly["Output"]["Out"]:
-                logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(markerOut, calibrateFilenameLabelled))
+        ipdp = InspectorProcedure.MarkerPresenceDetectionProcedure( markerset)
+        idf = InspectorFilter.InspectorFilter(acqStatic,calibrateFilenameLabelled,ipdp)
+        inspector = idf.run()
 
-        # --marker outliers
-        # if anomaly["Output"]["In"] !=[]:
-        #     madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( anomaly["Output"]["In"], plot=False, window=10,threshold = 3)
-        #     adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,madp)
-        #     anomaly = adf.run()
-        #     anomalyIndexes = anomaly["Output"]
+        # # --marker outliers
+        if inspector["In"] !=[]:
+            madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure(inspector["In"], plot=False, window=4,threshold = 3)
+            adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,madp)
+            anomaly = adf.run()
+            anomalyIndexes = anomaly["Output"]
+            if anomaly["ErrorState"]: detectAnomaly = True
 
+
+    if detectAnomaly and anomalyException:
+        raise Exception ("Anomalies has been detected - Check Warning message of the log file")
 
     # --------------------MODELLING------------------------------
 
@@ -157,7 +168,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     # ----progression Frame----
     progressionFlag = False
     if btkTools.isPointsExist(acqStatic, ['LASI', 'RASI', 'RPSI', 'LPSI'],ignorePhantom=False):
-        logging.info("[pyCGM2] - progression axis detected from Pelvic markers ")
+        LOGGER.logger.info("[pyCGM2] - progression axis detected from Pelvic markers ")
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
         pff.compute()
@@ -166,7 +177,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         forwardProgression = pff.outputs["forwardProgression"]
         progressionFlag = True
     elif btkTools.isPointsExist(acqStatic, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
-        logging.info("[pyCGM2] - progression axis detected from Thoracic markers ")
+        LOGGER.logger.info("[pyCGM2] - progression axis detected from Thoracic markers ")
         pfp = progressionFrame.ThoraxProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
         pff.compute()
@@ -178,20 +189,20 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         globalFrame = "XYZ"
         progressionAxis = "X"
         forwardProgression = True
-        logging.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
+        LOGGER.logger.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
 
     # ----manage IK Targets----
     ikTargets = list()
     for target in weights.keys():
         if target not in actual_trackingMarkers:
             weights[target] = 0
-            logging.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,calibrateFilenameLabelled))
+            LOGGER.logger.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,calibrateFilenameLabelled))
         else:
             ikTargets.append(target)
     model.setStaticIkTargets(ikTargets)
 
     if "noKinematicsCalculation" in kwargs.keys() and kwargs["noKinematicsCalculation"]:
-        logging.warning("[pyCGM2] No Kinematic calculation done for the static file")
+        LOGGER.logger.warning("[pyCGM2] No Kinematic calculation done for the static file")
         return model, acqStatic
     else:
         if ik_flag:
@@ -248,13 +259,16 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
                                                               acqStatic,
                                                               accuracy = 1e-5)
             osrf.setTimeRange(acqStatic,beginFrame = vff, lastFrame=vlf)
+            LOGGER.logger.info("-------INVERSE KINEMATICS IN PROGRESS----------")
             try:
                 acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled,
                             progressionAxis = progressionAxis ,
                             forwardProgression = forwardProgression)
+                LOGGER.logger.info("[pyCGM2] - IK solver complete")
             except:
-                logging.error("[pyCGM2] - IK solver fails")
+                LOGGER.logger.error("[pyCGM2] - IK solver fails")
                 acqStaticIK = acqStatic
+            LOGGER.logger.info("-----------------------------------------------")
 
 
 
@@ -289,6 +303,11 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
         modelFilters.CentreOfMassFilter(model,finalAcqStatic).compute(pointLabelSuffix=pointSuffix)
 
+        btkTools.cleanAcq(finalAcqStatic)
+        if detectAnomaly and not anomalyException:
+            LOGGER.logger.error("Anomalies has been detected - Check Warning messages of the log file")
+
+
         return model, finalAcqStatic
 
 
@@ -313,6 +332,15 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     :param momentProjection [str]: Coordinate system in which joint moment is expressed
     """
 
+    detectAnomaly = False
+
+    # --------------------ACQUISITION------------------------------
+
+    if "anomalyException" in kwargs.keys():
+        anomalyException = kwargs["anomalyException"]
+    else:
+        anomalyException=False
+
     if "Fitting" in weights.keys():
         weights  = weights["Fitting"]["Weight"]
 
@@ -332,7 +360,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     if btkTools.isPointExist(acqGait,"SACR"):
         translators["LPSI"] = "SACR"
         translators["RPSI"] = "SACR"
-        logging.info("[pyCGM2] Sacrum marker detected")
+        LOGGER.logger.info("[pyCGM2] Sacrum marker detected")
 
     acqGait =  btkTools.applyTranslators(acqGait,translators)
 
@@ -344,25 +372,32 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     # --------------------ANOMALY------------------------------
     for marker in actual_trackingMarkers:
         if marker not in model.getStaticTrackingMarkers():
-            logging.warning("[pyCGM2-Anomaly]  marker [%s] - not used during static calibration - wrong kinematic for the segment attached to this marker. "%(marker))
+            LOGGER.logger.warning("[pyCGM2-Anomaly]  marker [%s] - not used during static calibration - wrong kinematic for the segment attached to this marker. "%(marker))
 
     # --marker presence
-    markersets = [cgm2.CGM2_3.LOWERLIMB_TRACKING_MARKERS, cgm2.CGM2_3.THORAX_TRACKING_MARKERS, cgm2.CGM2_3.UPPERLIMB_TRACKING_MARKERS]
+    markersets = [cgm.CGM2_3.LOWERLIMB_TRACKING_MARKERS, cgm.CGM2_3.THORAX_TRACKING_MARKERS, cgm.CGM2_3.UPPERLIMB_TRACKING_MARKERS]
     for markerset in markersets:
-        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( markerset,verbose=False)
-        adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,mpdp)
-        anomaly = adf.run()
-        if anomaly["Output"]["In"] !=[] and anomaly["Output"]["Out"]!=[]:
-            for markerOut in anomaly["Output"]["Out"]:
-                logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(markerOut, reconstructFilenameLabelled))
+        ipdp = InspectorProcedure.MarkerPresenceDetectionProcedure( markerset)
+        idf = InspectorFilter.InspectorFilter(acqGait,reconstructFilenameLabelled,ipdp)
+        inspector = idf.run()
 
         # --marker outliers
-        # if anomaly["Output"]["In"] !=[]:
-        #     madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( anomaly["Output"]["In"], plot=False, window=10,threshold = 3)
-        #     adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,madp, frameRange=[vff,vlf])
-        #     anomaly = adf.run()
-        #     anomalyIndexes = anomaly["Output"]
+        if inspector["In"] !=[]:
+            madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( inspector["In"], plot=False, window=5,threshold = 3)
+            adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,madp, frameRange=[vff,vlf])
+            anomaly = adf.run()
+            anomalyIndexes = anomaly["Output"]
+            if anomaly["ErrorState"]: detectAnomaly = True
 
+
+    if btkTools.checkForcePlateExist(acqGait):
+        afpp = AnomalyDetectionProcedure.ForcePlateAnomalyProcedure()
+        adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,afpp, frameRange=[vff,vlf])
+        anomaly = adf.run()
+        if anomaly["ErrorState"]: detectAnomaly = True
+
+    if detectAnomaly and anomalyException:
+        raise Exception ("Anomalies has been detected - Check Warning message of the log file")
     # --------------------MODELLING------------------------------
 
 
@@ -406,7 +441,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         progressionFlag = True
 
     elif btkTools.isPointsExist(acqGait, ['LASI', 'RASI', 'RPSI', 'LPSI'],ignorePhantom=False) and not progressionFlag:
-        logging.info("[pyCGM2] - progression axis detected from Pelvic markers ")
+        LOGGER.logger.info("[pyCGM2] - progression axis detected from Pelvic markers ")
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
         pff.compute()
@@ -415,7 +450,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         progressionFlag = True
     elif btkTools.isPointsExist(acqGait, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
-        logging.info("[pyCGM2] - progression axis detected from Thoracic markers ")
+        LOGGER.logger.info("[pyCGM2] - progression axis detected from Thoracic markers ")
         pfp = progressionFrame.ThoraxProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
         pff.compute()
@@ -427,13 +462,13 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         globalFrame = "XYZ"
         progressionAxis = "X"
         forwardProgression = True
-        logging.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
+        LOGGER.logger.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
 
 
     for target in weights.keys():
         if target not in actual_trackingMarkers or target not in model.getStaticIkTargets():
             weights[target] = 0
-            logging.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,reconstructFilenameLabelled))
+            LOGGER.logger.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,reconstructFilenameLabelled))
 
     if ik_flag:
 
@@ -491,15 +526,16 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         if "ikAccuracy" in kwargs.keys():
             osrf.setAccuracy(kwargs["ikAccuracy"])
 
-        logging.info("-------INVERSE KINEMATICS IN PROGRESS----------")
+        LOGGER.logger.info("-------INVERSE KINEMATICS IN PROGRESS----------")
         try:
             acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled,
                             progressionAxis = progressionAxis ,
                             forwardProgression = forwardProgression)
+            LOGGER.logger.info("[pyCGM2] - IK solver complete")
         except:
-            logging.error("[pyCGM2] - IK solver fails")
+            LOGGER.logger.error("[pyCGM2] - IK solver fails")
             acqIK = acqGait
-        logging.info("-------INVERSE KINEMATICS DONE-----------------")
+        LOGGER.logger.info("---------------------------------------------------")
 
     # eventual gait acquisition to consider for joint kinematics
     finalAcqGait = acqIK if ik_flag else acqGait
@@ -541,7 +577,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         # find foot  in contact
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(finalAcqGait,mfpa=mfpa)
         forceplates.addForcePlateGeneralEvents(finalAcqGait,mappedForcePlate)
-        logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+        LOGGER.logger.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
         # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,finalAcqGait,mappedForcePlate,
@@ -566,5 +602,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     btkTools.cleanAcq(finalAcqGait)
     btkTools.applyOnValidFrames(finalAcqGait,flag)
 
+    if detectAnomaly and not anomalyException:
+        LOGGER.logger.error("Anomalies has been detected - Check Warning messages of the log file")
 
     return finalAcqGait
