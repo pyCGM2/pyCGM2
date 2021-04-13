@@ -369,6 +369,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     vff,vlf = btkTools.getFrameBoundaries(acqGait,actual_trackingMarkers)
     flag = btkTools.getValidFrames(acqGait,actual_trackingMarkers,frameBounds=[vff,vlf])
 
+    LOGGER.logger.info("[pyCGM2]  Computation from frame [%s] to frame [%s]"%(vff,vlf))
     # --------------------ANOMALY------------------------------
     for marker in actual_trackingMarkers:
         if marker not in model.getStaticTrackingMarkers():
