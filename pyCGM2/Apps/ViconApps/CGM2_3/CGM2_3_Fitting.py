@@ -125,7 +125,7 @@ def main():
         acq = nacf.build()
 
         # --------------------------MODELLING PROCESSING -----------------------
-        finalAcqGait = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        finalAcqGait,detectAnomaly = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,settings,
             ik_flag,markerDiameter,
             pointSuffix,

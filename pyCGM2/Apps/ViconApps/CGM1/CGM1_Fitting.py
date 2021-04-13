@@ -107,7 +107,7 @@ def main():
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
         acq = nacf.build()
         # --------------------------MODELLING PROCESSING -----------------------
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,detectAnomaly = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,
             markerDiameter,
             pointSuffix,

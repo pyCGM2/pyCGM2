@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+model,acqStatic,detectAnomaly =# -*- coding: utf-8 -*-
 """Nexus Operation : **CGM2.1 Calibration**
 
 :param -l, --leftFlatFoot [int]: enable or disable the flat foot option on the left foot
@@ -124,7 +124,7 @@ def main():
         acq = nacf.build()
 
         # --------------------------MODELLING PROCESSING -----------------------
-        model,acqStatic = cgm2_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
+        model,acqStatic,detectAnomaly = cgm2_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                       required_mp,optional_mp,
                       leftFlatFoot,rightFlatFoot,headFlat,
                       markerDiameter,

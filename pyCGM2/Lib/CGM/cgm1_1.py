@@ -207,7 +207,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
         if detectAnomaly and not anomalyException:
             LOGGER.logger.error("Anomalies has been detected - Check Warning messages of the log file")
 
-        return model, acqStatic
+        return model, acqStatic,detectAnomaly
 
 
 
@@ -428,4 +428,4 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     #---- zero unvalid frames ---
     # btkTools.applyValidFramesOnOutput(acqGait,validFrames)
 
-    return acqGait
+    return acqGait,detectAnomaly

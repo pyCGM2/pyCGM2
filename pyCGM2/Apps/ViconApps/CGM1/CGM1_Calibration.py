@@ -107,7 +107,7 @@ def main():
         acq = nacf.build()
 
         # --------------------------MODELLING PROCESSING -----------------------
-        model,acqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
+        model,acqStatic,detectAnomaly = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                       required_mp,optional_mp,
                       leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
                       pointSuffix,forceBtkAcq=acq, anomalyException=args.anomalyException)

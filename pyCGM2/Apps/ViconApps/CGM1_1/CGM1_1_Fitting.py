@@ -107,7 +107,7 @@ def main():
         mfpa = nexusTools.getForcePlateAssignment(NEXUS)
 
         # --------------------------MODELLING PROCESSING -----------------------
-        acqGait = cgm1_1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,detectAnomaly = cgm1_1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,
             markerDiameter,
             pointSuffix,

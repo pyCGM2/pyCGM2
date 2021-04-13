@@ -130,7 +130,7 @@ def main():
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,calibrateFilenameLabelledNoExt,subject)
         acq = nacf.build()
 
-        model,finalAcqStatic = cgm2_2.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+        model,finalAcqStatic,detectAnomaly = cgm2_2.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                       required_mp,optional_mp,
                       ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
                       markerDiameter,

@@ -108,7 +108,7 @@ def main():
 
 
         # --------------------------MODELLING PROCESSING -----------------------
-        model,acqStatic = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
+        model,acqStatic,detectAnomaly = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                       required_mp,optional_mp,
                       leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
                       pointSuffix,forceBtkAcq=acq, anomalyException=args.anomalyException)

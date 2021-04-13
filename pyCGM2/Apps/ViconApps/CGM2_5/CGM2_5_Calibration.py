@@ -128,7 +128,7 @@ def main():
         acq = nacf.build()
 
         # --------------------------CONFIG ------------------------------------
-        model,finalAcqStatic = cgm2_5.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+        model,finalAcqStatic,detectAnomaly = cgm2_5.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                       required_mp,optional_mp,
                       ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
                       markerDiameter,
