@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import os
 import shutil
 
@@ -18,32 +18,29 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import argparse
 
-from pyCGM2.Inspect import inspectFilters, inspectProcedures
-
-from pyCGM2 import log;
-log.setLogger(level = logging.INFO)
-with open('pyCGM2.log', 'w'):   pass
+from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
 
 
 
-MARKERSETS={"Lower limb tracking markers": cgm2.CGM2_5.LOWERLIMB_TRACKING_MARKERS,
-            "Thorax tracking markers": cgm2.CGM2_5.THORAX_TRACKING_MARKERS,
-            "Upper limb tracking markers": cgm2.CGM2_5.UPPERLIMB_TRACKING_MARKERS,
-            "Calibration markers": ["LKNM","RKNM","LMED","RMED","LKAX","LKD1","LKD2","RKAX","RKD1","RKD2"]}
+
 
 def command():
     parser = argparse.ArgumentParser(description='CGM26 workflow')
     parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
+    parser.add_argument('-ae','--anomalyException', action='store_true', help='stop if anomaly detected ')
 
     args = parser.parse_args()
     sessionFilename = args.sessionFile
-    main(sessionFilename)
+    main(sessionFilename,anomalyException=args.anomalyException)
 
 
-def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
-    logging.info("------------------------------------------------")
-    logging.info("------------QTM - pyCGM2 Workflow---------------")
-    logging.info("------------------------------------------------")
+def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyException=False):
+
+    detectAnomaly = False
+    LOGGER.set_file_handler("pyCGM2-QTM-Workflow.log")
+
+
+    LOGGER.logger.info("------------QTM - pyCGM2 Workflow---------------")
 
     sessionXML = files.readXml(os.getcwd()+"\\",sessionFilename)
     sessionDate = files.getFileCreationDate(os.getcwd()+"\\"+sessionFilename)
@@ -58,7 +55,7 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
     calibrateFilenameLabelled = qtmTools.getFilename(staticMeasurement)
     if not os.path.isfile(DATA_PATH+calibrateFilenameLabelled):
         shutil.copyfile(os.getcwd()+"\\"+calibrateFilenameLabelled,DATA_PATH+calibrateFilenameLabelled)
-        logging.info("qualisys exported c3d file [%s] copied to processed folder"%(calibrateFilenameLabelled))
+        LOGGER.logger.info("qualisys exported c3d file [%s] copied to processed folder"%(calibrateFilenameLabelled))
 
 
     leftKneeFuncMeasurement = qtmTools.findKneeCalibration(sessionXML,"Left")
@@ -83,7 +80,7 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
 
         if not os.path.isfile(DATA_PATH+reconstructFilenameLabelled):
             shutil.copyfile(os.getcwd()+"\\"+reconstructFilenameLabelled,DATA_PATH+reconstructFilenameLabelled)
-            logging.info("qualisys exported c3d file [%s] copied to processed folder"%(reconstructFilenameLabelled))
+            LOGGER.logger.info("qualisys exported c3d file [%s] copied to processed folder"%(reconstructFilenameLabelled))
 
             acq=btkTools.smartReader(str(DATA_PATH+reconstructFilenameLabelled))
 
@@ -107,11 +104,6 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
     # --------------------------MP ------------------------------------
     required_mp,optional_mp = qtmTools.SubjectMp(sessionXML)
 
-    # --Check MP
-    inspectprocedure = inspectProcedures.AnthropometricDataQualityProcedure(required_mp)
-    inspector = inspectFilters.QualityFilter(inspectprocedure)
-    inspector.run()
-
 
     #  translators management
     translators = files.getTranslators(os.getcwd()+"\\","CGM2_5.translators")
@@ -124,11 +116,11 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
 
 
     # --------------------------MODEL CALIBRATION -----------------------
-    logging.info("--------------------------MODEL CALIBRATION -----------------------")
+    LOGGER.logger.info("--------------------------MODEL CALIBRATION -----------------------")
     staticMeasurement = qtmTools.findStatic(sessionXML)
     calibrateFilenameLabelled = qtmTools.getFilename(staticMeasurement)
 
-    logging.info("----- CALIBRATION-  static file [%s]--"%(calibrateFilenameLabelled))
+    LOGGER.logger.info("----- CALIBRATION-  static file [%s]--"%(calibrateFilenameLabelled))
 
     leftFlatFoot = utils.toBool(sessionXML.Left_foot_normalised_to_static_trial.text)
     rightFlatFoot = utils.toBool(sessionXML.Right_foot_normalised_to_static_trial.text)
@@ -140,49 +132,25 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
     # Calibration checking
     # --------------------
     acqStatic = btkTools.smartReader(DATA_PATH+calibrateFilenameLabelled)
-    for key in MARKERSETS.keys():
-        logging.info("[pyCGM2] Checking of the %s"%(key))
-
-        # presence
-        ip_presence = inspectProcedures.MarkerPresenceQualityProcedure(acqStatic,
-                                        markers = MARKERSETS[key])
-        inspector = inspectFilters.QualityFilter(ip_presence)
-        inspector.run()
-
-        if ip_presence.markersIn !=[]:
-
-            ip_gap = inspectProcedures.GapQualityProcedure(acqStatic,
-                                         markers = ip_presence.markersIn)
-            inspector = inspectFilters.QualityFilter(ip_gap)
-            inspector.run()
-
-            ip_swap = inspectProcedures.SwappingMarkerQualityProcedure(acqStatic,
-                                                markers = ip_presence.markersIn)
-            inspector = inspectFilters.QualityFilter(ip_swap)
-            inspector.run()
-
-            ip_pos = inspectProcedures.MarkerPositionQualityProcedure(acqStatic,
-                                         markers = ip_presence.markersIn)
-            inspector = inspectFilters.QualityFilter(ip_pos)
 
     # Calibration operation
     # --------------------
-    logging.info("[pyCGM2] --- calibration operation ---")
-    model,acqStatic = cgm2_5.calibrate(DATA_PATH,
+    model,acqStatic,detectAnomaly = cgm2_5.calibrate(DATA_PATH,
         calibrateFilenameLabelled,
         translators,settings,
         required_mp,optional_mp,
         False,
         leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
         hjcMethod,
-        pointSuffix)
+        pointSuffix,
+        anomalyException=anomalyException)
 
 
-    logging.info("----- CALIBRATION-  static file [%s]-----> DONE"%(calibrateFilenameLabelled))
+    LOGGER.logger.info("----- CALIBRATION-  static file [%s]-----> DONE"%(calibrateFilenameLabelled))
 
 
     # --------------------------Knee Calibration ----------------------------------
-    logging.info("--------------------------Knee Calibration ----------------------------------")
+    LOGGER.logger.info("--------------------------Knee Calibration ----------------------------------")
 
 
     if leftKneeFuncMeasurement is not None:
@@ -205,7 +173,7 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
                                   fc_lowPass_marker = order_marker,
                                   order_lowPass_marker = fc_marker)
 
-        logging.info("Left Knee functional Calibration ----> Done")
+        LOGGER.logger.info("Left Knee functional Calibration ----> Done")
 
 
     if rightKneeFuncMeasurement is not None:
@@ -230,11 +198,11 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
                                   order_lowPass_marker = fc_marker)
 
 
-        logging.info("Right Knee functional Calibration ----> Done")
+        LOGGER.logger.info("Right Knee functional Calibration ----> Done")
 
 
     # --------------------------MODEL FITTING ----------------------------------
-    logging.info("--------------------------MODEL FITTING ----------------------------------")
+    LOGGER.logger.info("--------------------------MODEL FITTING ----------------------------------")
     dynamicMeasurements= qtmTools.findDynamic(sessionXML)
 
     ik_flag = True
@@ -245,7 +213,7 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
 
         reconstructFilenameLabelled = qtmTools.getFilename(dynamicMeasurement)
 
-        logging.info("----Processing of [%s]-----"%(reconstructFilenameLabelled))
+        LOGGER.logger.info("----Processing of [%s]-----"%(reconstructFilenameLabelled))
         mfpa = qtmTools.getForcePlateAssigment(dynamicMeasurement)
         momentProjection_text = sessionXML.Moment_Projection.text
         if momentProjection_text == "Default":
@@ -263,33 +231,6 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
 
         acq = btkTools.smartReader(DATA_PATH+reconstructFilenameLabelled)
 
-        # Fitting checking
-        # --------------------
-        for key in MARKERSETS.keys():
-            if key != "Calibration markers":
-
-                logging.info("[pyCGM2] Checking of the %s"%(key))
-                # presence
-                ip_presence = inspectProcedures.MarkerPresenceQualityProcedure(acq,
-                                                markers = MARKERSETS[key])
-                inspector = inspectFilters.QualityFilter(ip_presence)
-                inspector.run()
-
-                if ip_presence.markersIn !=[]:
-
-                    ip_gap = inspectProcedures.GapQualityProcedure(acq,
-                                                 markers = ip_presence.markersIn)
-                    inspector = inspectFilters.QualityFilter(ip_gap)
-                    inspector.run()
-
-                    ip_swap = inspectProcedures.SwappingMarkerQualityProcedure(acq,
-                                                        markers = ip_presence.markersIn)
-                    inspector = inspectFilters.QualityFilter(ip_swap)
-                    inspector.run()
-
-                    ip_pos = inspectProcedures.MarkerPositionQualityProcedure(acq,
-                                                 markers = ip_presence.markersIn)
-                    inspector = inspectFilters.QualityFilter(ip_pos)
 
 
         # filtering
@@ -303,19 +244,22 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
         order_fp = int(float(dynamicMeasurement.Forceplate_lowpass_filter_order.text))
         fc_fp = float(dynamicMeasurement.Forceplate_lowpass_filter_frequency.text)
 
+        # ik accuracy
+        ikAccuracy = float(dynamicMeasurement.IkAccuracy.text)
 
         # event checking
         # -----------------------
-        inspectprocedureEvents = inspectProcedures.GaitEventQualityProcedure(acq)
-        inspector = inspectFilters.QualityFilter(inspectprocedureEvents)
-        inspector.run()
-        eventInspectorStates.append(inspectprocedureEvents.state)
+        geap = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
+        adf = AnomalyFilter.AnomalyDetectionFilter(acq,reconstructFilenameLabelled,geap)
+        anomaly = adf.run()
+        if anomaly["ErrorState"]:
+            raise Exception ("[pyCGM2] Badly gait event detection. check the log file")
 
 
         # fitting operation
         # -----------------------
-        logging.info("[pyCGM2] --- Fitting operation ---")
-        acqGait = cgm2_5.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        LOGGER.logger.info("[pyCGM2] --- Fitting operation ---")
+        acqGait,detectAnomaly = cgm2_5.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,settings,
             ik_flag,markerDiameter,
             pointSuffix,
@@ -324,21 +268,20 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
             fc_lowPass_marker=fc_marker,
             order_lowPass_marker=order_marker,
             fc_lowPass_forcePlate = fc_fp,
-            order_lowPass_forcePlate = order_fp)
+            order_lowPass_forcePlate = order_fp,
+            anomalyException=anomalyException,
+            ikAccuracy = ikAccuracy)
 
 
         outFilename = reconstructFilenameLabelled
         btkTools.smartWriter(acqGait, str(DATA_PATH + outFilename))
         modelledC3ds.append(outFilename)
 
-        logging.info("----Processing of [%s]-----> DONE"%(reconstructFilenameLabelled))
+        LOGGER.logger.info("----Processing of [%s]-----> DONE"%(reconstructFilenameLabelled))
 
 
-    # --------------------------GAIT PROCESSING -----------------------
-    if not all(eventInspectorStates):
-        raise Exception ("[pyCGM2] Impossible to run Gait processing. Badly gait event detection. check the log file")
 
-    logging.info("---------------------GAIT PROCESSING -----------------------")
+    LOGGER.logger.info("---------------------GAIT PROCESSING -----------------------")
 
     if createPDFReport:
         nds = normativeDatasets.NormativeData("Schwartz2008","Free")
@@ -353,4 +296,10 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
                     modelledTrials.append(filename)
 
             report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
-            logging.info("----- Gait Processing -----> DONE")
+            LOGGER.logger.info("----- Gait Processing -----> DONE")
+
+    LOGGER.logger.info("-------------------------------------------------------")
+    if detectAnomaly:
+        LOGGER.logger.error("Anomalies has been detected - Find Error messages, then check warning message in the log file")
+    else:
+        LOGGER.logger.info("workflow return with no detected anomalies")
