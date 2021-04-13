@@ -640,6 +640,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     btkTools.cleanAcq(finalAcqGait)
     btkTools.applyOnValidFrames(finalAcqGait,flag)
 
-
+    if detectAnomaly and not anomalyException:
+        LOGGER.logger.error("Anomalies has been detected - Check Warning messages of the log file")
 
     return finalAcqGait,detectAnomaly
