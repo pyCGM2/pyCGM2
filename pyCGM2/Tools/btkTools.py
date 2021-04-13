@@ -412,15 +412,15 @@ def applyTranslators(acq, translators):
             if initialLabel !="None":
                 if isPointExist(acq,wantedLabel):
                     smartAppendPoint(acqClone,(wantedLabel+"_origin"),acq.GetPoint(wantedLabel).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
-                    LOGGER.logger.warning("wantedLabel (%s)_origin created" %((wantedLabel)))
+                    LOGGER.logger.info("wantedLabel (%s)_origin created" %((wantedLabel)))
                 if isPointExist(acq,initialLabel):
                     if initialLabel in translators.keys():
                         if translators[initialLabel] == "None":
-                            LOGGER.logger.warning("Initial point (%s)and (%s) point to similar values" %((initialLabel), (wantedLabel)))
+                            LOGGER.logger.info("Initial point (%s)and (%s) point to similar values" %((initialLabel), (wantedLabel)))
                             smartAppendPoint(acqClone,(wantedLabel),acq.GetPoint(initialLabel).GetValues(),PointType=btk.btkPoint.Marker)
                             smartAppendPoint(acqClone,(initialLabel),acq.GetPoint(initialLabel).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
                         elif translators[initialLabel] == wantedLabel:
-                            LOGGER.logger.warning("Initial point (%s) swaped with (%s)" %((initialLabel), (wantedLabel)))
+                            LOGGER.logger.info("Initial point (%s) swaped with (%s)" %((initialLabel), (wantedLabel)))
                             initialValue = acq.GetPoint(initialLabel).GetValues()
                             wantedlValue = acq.GetPoint(wantedLabel).GetValues()
                             smartAppendPoint(acqClone,(wantedLabel),initialValue,PointType=btk.btkPoint.Marker)
@@ -429,12 +429,12 @@ def applyTranslators(acq, translators):
                             acqClone.RemovePoint(wantedLabel+"_origin")
                             acqClone.RemovePoint(initialLabel+"_origin")
                     else:
-                        LOGGER.logger.warning("Initial point (%s) renamed (%s)  added into the c3d" %((initialLabel), (wantedLabel)))
+                        LOGGER.logger.info("Initial point (%s) renamed (%s)  added into the c3d" %((initialLabel), (wantedLabel)))
                         smartAppendPoint(acqClone,(wantedLabel),acq.GetPoint(initialLabel).GetValues(),PointType=btk.btkPoint.Marker)
                         smartAppendPoint(acqClone,(initialLabel),acq.GetPoint(initialLabel).GetValues(),PointType=btk.btkPoint.Marker)
 
                 else:
-                    LOGGER.logger.warning("initialLabel (%s) doesn t exist  " %((initialLabel)))
+                    LOGGER.logger.info("initialLabel (%s) doesn t exist  " %((initialLabel)))
                     #raise Exception ("your translators are badly configured")
 
 
