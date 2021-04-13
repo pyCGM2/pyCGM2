@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import os
 import shutil
 
@@ -17,33 +17,27 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import argparse
 
-from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure #AnomalyCorrectionProcedure
+from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
 
-
-from pyCGM2 import log; log.setLogger(level = logging.INFO)
-
-
-# from qtmWebGaitReport import qtmFilters
-
-MARKERSETS={"Lower limb tracking markers": cgm.CGM1.LOWERLIMB_TRACKING_MARKERS,
-            "Thorax tracking markers": cgm.CGM1.THORAX_TRACKING_MARKERS,
-            "Upper limb tracking markers": cgm.CGM1.UPPERLIMB_TRACKING_MARKERS,
-            "Calibration markers": ["LMED","RMED","LKAX","LKD1","LKD2","RKAX","RKD1","RKD2"]}
 
 def command():
     parser = argparse.ArgumentParser(description='CGM1 workflow')
     parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
+    parser.add_argument('-ae','--anomalyException', action='store_true', help='stop if anomaly detected ')
 
     args = parser.parse_args()
     sessionFilename = args.sessionFile
-    main(sessionFilename)
+    main(sessionFilename, anomalyException=args.anomalyException)
 
 
 
-def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
-    logging.info("------------------------------------------------")
-    logging.info("------------QTM - pyCGM2 Workflow---------------")
-    logging.info("------------------------------------------------")
+def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyException=False):
+
+    detectAnomaly=False
+
+    LOGGER.set_file_handler("pyCGM2-QTM-Workflow.log")
+
+    LOGGER.logger.info("------------QTM - pyCGM2 Workflow---------------")
 
     sessionXML = files.readXml(os.getcwd()+"\\",sessionFilename)
     sessionDate = files.getFileCreationDate(os.getcwd()+"\\"+sessionFilename)
@@ -57,7 +51,7 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
     calibrateFilenameLabelled = qtmTools.getFilename(staticMeasurement)
     if not os.path.isfile(DATA_PATH+calibrateFilenameLabelled):
         shutil.copyfile(os.getcwd()+"\\"+calibrateFilenameLabelled,DATA_PATH+calibrateFilenameLabelled)
-        logging.info("qualisys exported c3d file [%s] copied to processed folder"%(calibrateFilenameLabelled))
+        LOGGER.logger.info("qualisys exported c3d file [%s] copied to processed folder"%(calibrateFilenameLabelled))
 
     dynamicMeasurements= qtmTools.findDynamic(sessionXML)
     for dynamicMeasurement in dynamicMeasurements:
@@ -69,7 +63,7 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
 
         if not os.path.isfile(DATA_PATH+reconstructFilenameLabelled):
             shutil.copyfile(os.getcwd()+"\\"+reconstructFilenameLabelled,DATA_PATH+reconstructFilenameLabelled)
-            logging.info("qualisys exported c3d file [%s] copied to processed folder"%(reconstructFilenameLabelled))
+            LOGGER.logger.info("qualisys exported c3d file [%s] copied to processed folder"%(reconstructFilenameLabelled))
 
             acq=btkTools.smartReader(str(DATA_PATH+reconstructFilenameLabelled))
 
@@ -95,24 +89,17 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
     # --------------------------MP ------------------------------------
     required_mp,optional_mp = qtmTools.SubjectMp(sessionXML)
 
-    # --Check MP
-    adap = AnomalyDetectionProcedure.AnthropoDataAnomalyProcedure( required_mp)
-    adf = AnomalyFilter.AnomalyDetectionFilter(None,None,adap)
-    anomaly = adf.run()
-
-
-
     #  translators management
     translators = files.getTranslators(os.getcwd()+"\\","CGM1.translators")
     if not translators:  translators = settings["Translators"]
 
 
     # --------------------------MODEL CALIBRATION -----------------------
-    logging.info("--------------------------MODEL CALIBRATION -----------------------")
+    LOGGER.logger.info("--------------------------MODEL CALIBRATION -----------------------")
     staticMeasurement = qtmTools.findStatic(sessionXML)
     calibrateFilenameLabelled = qtmTools.getFilename(staticMeasurement)
 
-    logging.info("----- CALIBRATION-  static file [%s]--"%(calibrateFilenameLabelled))
+    LOGGER.logger.info("----- CALIBRATION-  static file [%s]--"%(calibrateFilenameLabelled))
 
     leftFlatFoot = utils.toBool(sessionXML.Left_foot_normalised_to_static_trial.text)
     rightFlatFoot = utils.toBool(sessionXML.Right_foot_normalised_to_static_trial.text)
@@ -120,47 +107,26 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
     markerDiameter = float(sessionXML.Marker_diameter.text)*1000.0
     pointSuffix = None
 
-    # Calibration checking
-    # --------------------
     acqStatic = btkTools.smartReader(DATA_PATH+calibrateFilenameLabelled)
-
-
-    for key in MARKERSETS.keys():
-        logging.info("[pyCGM2] Checking of the %s"%(key))
-        # madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( MARKERSETS[key], plot=False, window=10,threshold = 3)
-        mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( MARKERSETS[key])
-        adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,mpdp)
-        anomaly = adf.run()
-        foundMarkers = anomaly["Output"]
-
-
-        if foundMarkers != []:
-            madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( foundMarkers, plot=False, window=10,threshold = 3)
-            adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,madp)
-            anomaly = adf.run()
-            anomalyIndexes = anomaly["Output"]
-
-
 
     # Calibration operation
     # --------------------
-    logging.info("[pyCGM2] --- calibration operation ---")
-    model,acqStatic = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
+    model,acqStatic,detectAnomaly = cgm1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                   required_mp,optional_mp,
                   leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
-                  pointSuffix)
-    logging.info("----- CALIBRATION-  static file [%s]-----> DONE"%(calibrateFilenameLabelled))
+                  pointSuffix,
+                  anomalyException=anomalyException)
+    LOGGER.logger.info("----- CALIBRATION-  static file [%s]-----> DONE"%(calibrateFilenameLabelled))
 
     # --------------------------MODEL FITTING ----------------------------------
-    logging.info("--------------------------MODEL FITTING ----------------------------------")
+    LOGGER.logger.info("--------------------------MODEL FITTING ----------------------------------")
     dynamicMeasurements= qtmTools.findDynamic(sessionXML)
     modelledC3ds = list()
-    eventInspectorStates = list()
-    for dynamicMeasurement in dynamicMeasurements:
 
+    for dynamicMeasurement in dynamicMeasurements:
         reconstructFilenameLabelled = qtmTools.getFilename(dynamicMeasurement)
 
-        logging.info("----Processing of [%s]-----"%(reconstructFilenameLabelled))
+        LOGGER.logger.info("----Processing of [%s]-----"%(reconstructFilenameLabelled))
         mfpa = qtmTools.getForcePlateAssigment(dynamicMeasurement)
         momentProjection_text = sessionXML.Moment_Projection.text
         if momentProjection_text == "Default":
@@ -175,26 +141,8 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
 
         acq = btkTools.smartReader(DATA_PATH+reconstructFilenameLabelled)
 
-        # Fitting checking
-        # --------------------
-        for key in MARKERSETS.keys():
-            if key != "Calibration markers":
-                # madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( MARKERSETS[key], plot=False, window=10,threshold = 3)
-                mpdp = AnomalyDetectionProcedure.MarkerPresenceDetectionProcedure( MARKERSETS[key])
-                adf = AnomalyFilter.AnomalyDetectionFilter(acq,calibrateFilenameLabelled,mpdp)
-                anomaly = adf.run()
-                foundMarkers = anomaly["Output"]
-
-
-                if foundMarkers != []:
-                    madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( foundMarkers, plot=False, window=10,threshold = 3)
-                    adf = AnomalyFilter.AnomalyDetectionFilter(acq,calibrateFilenameLabelled,madp)
-                    anomaly = adf.run()
-                    anomalyIndexes = anomaly["Output"]
-
         # filtering
         # -----------------------
-
         # marker
         order_marker = int(float(dynamicMeasurement.Marker_lowpass_filter_order.text))
         fc_marker = float(dynamicMeasurement.Marker_lowpass_filter_frequency.text)
@@ -209,18 +157,13 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
         geap = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
         adf = AnomalyFilter.AnomalyDetectionFilter(acq,reconstructFilenameLabelled,geap)
         anomaly = adf.run()
-        errorState = anomaly["ErrorState"]
-        eventInspectorStates.append(errorState)
+        if anomaly["ErrorState"]:
+            raise Exception ("[pyCGM2] Badly gait event detection. check the log file")
 
-        # ForcePlateAnomalyProcedure
-        fpap = AnomalyDetectionProcedure.ForcePlateAnomalyProcedure()
-        adf = AnomalyFilter.AnomalyDetectionFilter(acq,reconstructFilenameLabelled,fpap)
-        anomaly = adf.run()
 
         # fitting operation
         # -----------------------
-        logging.info("[pyCGM2] --- Fitting operation ---")
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait, detectAnomaly = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,
             markerDiameter,
             pointSuffix,
@@ -228,20 +171,18 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
             fc_lowPass_marker=fc_marker,
             order_lowPass_marker=order_marker,
             fc_lowPass_forcePlate = fc_fp,
-            order_lowPass_forcePlate = order_fp)
+            order_lowPass_forcePlate = order_fp,
+            anomalyException=anomalyException)
 
         outFilename = reconstructFilenameLabelled
         btkTools.smartWriter(acqGait, str(DATA_PATH + outFilename))
         modelledC3ds.append(outFilename)
 
-        logging.info("----Processing of [%s]-----> DONE"%(reconstructFilenameLabelled))
-
+        LOGGER.logger.info("----Processing of [%s]-----> DONE"%(reconstructFilenameLabelled))
 
     # --------------------------GAIT PROCESSING -----------------------
-    if True in eventInspectorStates:
-        raise Exception ("[pyCGM2] Impossible to run Gait processing. Badly gait event detection. check the log file")
 
-    logging.info("---------------------GAIT PROCESSING -----------------------")
+    LOGGER.logger.info("---------------------GAIT PROCESSING -----------------------")
     if createPDFReport:
         nds = normativeDatasets.NormativeData("Schwartz2008","Free")
         types = qtmTools.detectMeasurementType(sessionXML)
@@ -253,4 +194,10 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True):
                     modelledTrials.append(filename)
 
             report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
-            logging.info("----- Gait Processing -----> DONE")
+            LOGGER.logger.info("----- Gait Processing -----> DONE")
+
+    LOGGER.logger.info("-------------------------------------------------------")
+    if detectAnomaly:
+        LOGGER.logger.error("Anomalies has been detected - Find Error messages, then check warning message in the log file")
+    else:
+        LOGGER.logger.info("workflow return with no detected anomalies")
