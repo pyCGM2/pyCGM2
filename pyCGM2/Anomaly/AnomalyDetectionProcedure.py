@@ -8,13 +8,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 
@@ -123,9 +123,8 @@ class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
 
                 [indices_frameMatchedAll.append(x) for x in allIndexes if x not in indices_frameMatchedAll]
 
-
             if indices_frameMatchedAll !=[]:
-                logging.warning("[pyCGM2-Anomaly]  marker %s [file : %s]- anomalies found at %s"% (marker,filename,indices_frameMatchedAll))
+                LOGGER.logger.warning("[pyCGM2-Anomaly]  marker %s [file : %s]- anomalies found at %s"% (marker,filename,indices_frameMatchedAll))
                 errorState = True
             out[marker] = indices_frameMatchedAll
 
@@ -166,7 +165,7 @@ class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
                     label = labels[i]
                     frame = frames[i]
                     if label == init:
-                        logging.error("[pyCGM2-Anomaly] file (%s) - two consecutive (%s) detected at frame (%i)"%(filename,(label),frame))
+                        LOGGER.logger.error("[pyCGM2-Anomaly] file (%s) - two consecutive (%s) detected at frame (%i)"%(filename,(label),frame))
                         errorState = True
 
                     init = label
@@ -177,11 +176,11 @@ class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
                     for i in range(1,len(events_L)):
                         label = events_L[i].GetLabel()
                         if label == init:
-                            logging.error("[pyCGM2-Anomaly] file (%s) - Wrong Left Event - two consecutive (%s) detected at frane (%i)"%(filename,(label),events_L[i].GetFrame()) )
+                            LOGGER.logger.error("[pyCGM2-Anomaly] file (%s) - Wrong Left Event - two consecutive (%s) detected at frane (%i)"%(filename,(label),events_L[i].GetFrame()) )
                             errorState = True
                         init = label
                 else:
-                    logging.warning("[pyCGM2-Anomaly] Only one left events")
+                    LOGGER.logger.warning("[pyCGM2-Anomaly] Only one left events")
 
             if events_R!=[]:
                 init = events_R[0].GetLabel()
@@ -189,14 +188,14 @@ class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
                     for i in range(1,len(events_R)):
                         label = events_R[i].GetLabel()
                         if label == init:
-                            logging.error("[pyCGM2-Anomaly] file (%s) - Wrong Right Event - two consecutive (%s) detected at frane (%i)"%(filename,(label),events_R[i].GetFrame()) )
+                            LOGGER.logger.error("[pyCGM2-Anomaly] file (%s) - Wrong Right Event - two consecutive (%s) detected at frane (%i)"%(filename,(label),events_R[i].GetFrame()) )
                             errorState = True
                         init = label
                 else:
-                    logging.warning("[pyCGM2-Anomaly] Only one right events ")
+                    LOGGER.logger.warning("[pyCGM2-Anomaly] Only one right events ")
 
         else:
-            logging.error("[pyCGM2-Anomaly] No events are in trial (%s)"%(filename))
+            LOGGER.logger.error("[pyCGM2-Anomaly] No events are in trial (%s)"%(filename))
 
         self.anomaly["ErrorState"] = errorState
         return errorState
@@ -220,6 +219,7 @@ class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
             frameEnd = lf-ff+1
 
         errorState=False
+        indexes = []
 
         # --- ground reaction force wrench ---
         pfe = btk.btkForcePlatformsExtractor()
@@ -235,53 +235,17 @@ class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
             force_Z = fpIt.GetForce().GetValues()[frameInit:frameEnd,2]
 
             max =  np.max(force_Z)
-            indexes = np.where(force_Z == max)
+            if max !=0:
+                indexes = np.where(force_Z == max)
 
-            if indexes[0].shape[0] > 1:
-                logging.warning ("[pyCGM2-Anomaly] - check Force plate (%s) of file [%s] - signal Fz seems saturated" %(str(fp_counter),filename))
-                errorState = True
+                if indexes[0].shape[0] > 1:
+                    LOGGER.logger.warning ("[pyCGM2-Anomaly] - check Force plate (%s) of file [%s] - signal Fz seems saturated" %(str(fp_counter),filename))
+                    errorState = True
 
             fp_counter +=1
 
         self.anomaly["Output"] = indexes
         self.anomaly["ErrorState"] = errorState
-
-class MarkerPresenceDetectionProcedure(AbstractDetectionProcedure):
-    def __init__(self,markers=None, verbose=True):
-        super(MarkerPresenceDetectionProcedure, self).__init__()
-
-        self.markers = markers
-        self.verbose = verbose
-
-
-    def run(self,acq,filename,options):
-
-        errorState = False
-
-        markersIn = list()
-        markersOut = list()
-
-        for marker in self.markers:
-            try:
-                acq.GetPoint(marker)
-            except RuntimeError:
-                markersOut.append(marker)
-                if self.verbose: logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(marker, filename))
-                errorState = True
-            else:
-                if not btkTools.isPhantom(acq,marker):
-                    if self.verbose: logging.warning("[pyCGM2-Anomaly]  marker [%s] - not exist in the file [%s]"%(marker, filename))
-                    markersOut.append(marker)
-                else:
-                    markersIn.append(marker)
-
-
-
-        self.anomaly["Output"] = dict()
-        self.anomaly["Output"]["In"] = markersIn
-        self.anomaly["Output"]["Out"] = markersOut
-        self.anomaly["ErrorState"] = errorState
-
 
 class AnthropoDataAnomalyProcedure(AbstractDetectionProcedure):
     def __init__(self,mp):
@@ -293,31 +257,31 @@ class AnthropoDataAnomalyProcedure(AbstractDetectionProcedure):
 
         errorState = False
 
-        if self.mp["Bodymass"] < 15: logging.warning("[pyCGM2-Anomaly] Bodymass < 15 kg "); errorState = True
-        if self.mp["RightLegLength"] < 400: logging.warning("[pyCGM2-Anomaly] Right Leg Lenth < 400 mm"); errorState = True
-        if self.mp["LeftLegLength"] < 400: logging.warning("[pyCGM2-Anomaly] Left Leg Lenth < 400 mm");errorState = True
-        if self.mp["RightKneeWidth"] < self.mp["RightAnkleWidth"]: logging.error("[pyCGM2-Anomaly] Right ankle width > knee width ");errorState = True
-        if self.mp["LeftKneeWidth"] < self.mp["LeftAnkleWidth"]: logging.error("[pyCGM2-Anomaly] Right ankle width > knee width ");errorState = True
-        if self.mp["RightKneeWidth"] > self.mp["RightLegLength"]: logging.error("[pyCGM2-Anomaly]  Right knee width > leg length ");errorState = True
-        if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: logging.error(" [pyCGM2-Anomaly] Left knee width > leg length ");errorState = True
+        if self.mp["Bodymass"] < 15: LOGGER.logger.warning("[pyCGM2-Anomaly] Bodymass < 15 kg "); errorState = True
+        if self.mp["RightLegLength"] < 400: LOGGER.logger.warning("[pyCGM2-Anomaly] Right Leg Lenth < 400 mm"); errorState = True
+        if self.mp["LeftLegLength"] < 400: LOGGER.logger.warning("[pyCGM2-Anomaly] Left Leg Lenth < 400 mm");errorState = True
+        if self.mp["RightKneeWidth"] < self.mp["RightAnkleWidth"]: LOGGER.logger.error("[pyCGM2-Anomaly] Right ankle width > knee width ");errorState = True
+        if self.mp["LeftKneeWidth"] < self.mp["LeftAnkleWidth"]: LOGGER.logger.error("[pyCGM2-Anomaly] Right ankle width > knee width ");errorState = True
+        if self.mp["RightKneeWidth"] > self.mp["RightLegLength"]: LOGGER.logger.error("[pyCGM2-Anomaly]  Right knee width > leg length ");errorState = True
+        if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: LOGGER.logger.error(" [pyCGM2-Anomaly] Left knee width > leg length ");errorState = True
 
 
         if not utils.isInRange(self.mp["RightKneeWidth"],
             self.mp["LeftKneeWidth"]-0.3*self.mp["LeftKneeWidth"],
             self.mp["LeftKneeWidth"]+0.3*self.mp["LeftKneeWidth"]):
-            logging.warning("[pyCGM2-Anomaly] Knee widths differed by more than 30%")
+            LOGGER.logger.warning("[pyCGM2-Anomaly] Knee widths differed by more than 30%")
             errorState = True
 
         if not utils.isInRange(self.mp["RightAnkleWidth"],
             self.mp["LeftAnkleWidth"]-0.3*self.mp["LeftAnkleWidth"],
             self.mp["LeftAnkleWidth"]+0.3*self.mp["LeftAnkleWidth"]):
-            logging.warning("[pyCGM2-Anomaly] Ankle widths differed by more than 30%")
+            LOGGER.logger.warning("[pyCGM2-Anomaly] Ankle widths differed by more than 30%")
             errorState = True
 
         if not utils.isInRange(self.mp["RightLegLength"],
             self.mp["LeftLegLength"]-0.3*self.mp["LeftLegLength"],
             self.mp["LeftLegLength"]+0.3*self.mp["LeftLegLength"]):
-            logging.warning("[pyCGM2-Anomaly] Leg lengths differed by more than 30%")
+            LOGGER.logger.warning("[pyCGM2-Anomaly] Leg lengths differed by more than 30%")
             errorState = True
 
         # self.anomaly["Output"] =
@@ -380,7 +344,7 @@ class AnthropoDataAnomalyProcedure(AbstractDetectionProcedure):
 #
 #
 #             if path.contains_point(intersection[0]):
-#                 logging.error("[pyCGM2-Anomaly] wrong Labelling of pelvic markers at frame [%i]"%(i))
+#                 LOGGER.logger.error("[pyCGM2-Anomaly] wrong Labelling of pelvic markers at frame [%i]"%(i))
 #                 if self.exceptionMode:
 #                     raise Exception("[pyCGM2-Anomaly] wrong Labelling of pelvic markers at frame [%i]"%(i))
 #
@@ -419,13 +383,13 @@ class AnthropoDataAnomalyProcedure(AbstractDetectionProcedure):
 #                         local = np.dot(csFrame_R.getRotation().T,self.acq.GetPoint(marker).GetValues()[i,:]-csFrame_R.getTranslation())
 #                     if residual >0.0:
 #                         if marker[0] == "L" and local[1]<0:
-#                             logging.error("[pyCGM2-Anomaly] check location of the marker [%s] at frame [%i]"%(marker,i))
+#                             LOGGER.logger.error("[pyCGM2-Anomaly] check location of the marker [%s] at frame [%i]"%(marker,i))
 #                             self.state = False
 #                             if self.exceptionMode:
 #                                 raise Exception("[pyCGM2-Anomaly] check location of the marker [%s] at frame [%i]"%(marker,i))
 #
 #                         if marker[0] == "R" and local[1]>0:
-#                             logging.error("[pyCGM2-Anomaly] check location of the marker [%s] at frame [%i]"%(marker,i))
+#                             LOGGER.logger.error("[pyCGM2-Anomaly] check location of the marker [%s] at frame [%i]"%(marker,i))
 #                             self.state = False
 #                             if self.exceptionMode:
 #                                 raise Exception("[pyCGM2-Anomaly] check location of the marker [%s] at frame [%i]"%(marker,i))
@@ -446,28 +410,28 @@ class AnthropoDataAnomalyProcedure(AbstractDetectionProcedure):
 #         - use marker measurement
 #         """
 #
-#         if self.mp["RightLegLength"] < 500: logging.warning("[pyCGM2-Anomaly] Right Leg Lenth < 500 mm");self.state = False
-#         if self.mp["LeftLegLength"] < 500: logging.warning("[pyCGM2-Anomaly] Left Leg Lenth < 500 mm");self.state = False
-#         if self.mp["RightKneeWidth"] < self.mp["RightAnkleWidth"]: logging.error("[pyCGM2-Anomaly] Right ankle width > knee width ");self.state = False
-#         if self.mp["LeftKneeWidth"] < self.mp["LeftAnkleWidth"]: logging.error("[pyCGM2-Anomaly] Right ankle width > knee width ");self.state = False
-#         if self.mp["RightKneeWidth"] > self.mp["RightLegLength"]: logging.error("[pyCGM2-Anomaly]  Right knee width > leg length ");self.state = False
-#         if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: logging.error(" [pyCGM2-Anomaly] Left knee width > leg length ");self.state = False
+#         if self.mp["RightLegLength"] < 500: LOGGER.logger.warning("[pyCGM2-Anomaly] Right Leg Lenth < 500 mm");self.state = False
+#         if self.mp["LeftLegLength"] < 500: LOGGER.logger.warning("[pyCGM2-Anomaly] Left Leg Lenth < 500 mm");self.state = False
+#         if self.mp["RightKneeWidth"] < self.mp["RightAnkleWidth"]: LOGGER.logger.error("[pyCGM2-Anomaly] Right ankle width > knee width ");self.state = False
+#         if self.mp["LeftKneeWidth"] < self.mp["LeftAnkleWidth"]: LOGGER.logger.error("[pyCGM2-Anomaly] Right ankle width > knee width ");self.state = False
+#         if self.mp["RightKneeWidth"] > self.mp["RightLegLength"]: LOGGER.logger.error("[pyCGM2-Anomaly]  Right knee width > leg length ");self.state = False
+#         if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: LOGGER.logger.error(" [pyCGM2-Anomaly] Left knee width > leg length ");self.state = False
 #
 #
 #         if not utils.isInRange(self.mp["RightKneeWidth"],
 #             self.mp["LeftKneeWidth"]-0.3*self.mp["LeftKneeWidth"],
 #             self.mp["LeftKneeWidth"]+0.3*self.mp["LeftKneeWidth"]):
-#             logging.warning("[pyCGM2-Anomaly] Knee widths differed by more than 30%")
+#             LOGGER.logger.warning("[pyCGM2-Anomaly] Knee widths differed by more than 30%")
 #             self.state = False
 #
 #         if not utils.isInRange(self.mp["RightAnkleWidth"],
 #             self.mp["LeftAnkleWidth"]-0.3*self.mp["LeftAnkleWidth"],
 #             self.mp["LeftAnkleWidth"]+0.3*self.mp["LeftAnkleWidth"]):
-#             logging.warning("[pyCGM2-Anomaly] Ankle widths differed by more than 30%")
+#             LOGGER.logger.warning("[pyCGM2-Anomaly] Ankle widths differed by more than 30%")
 #             self.state = False
 #
 #         if not utils.isInRange(self.mp["RightLegLength"],
 #             self.mp["LeftLegLength"]-0.3*self.mp["LeftLegLength"],
 #             self.mp["LeftLegLength"]+0.3*self.mp["LeftLegLength"]):
-#             logging.warning("[pyCGM2-Anomaly] Leg lengths differed by more than 30%")
+#             LOGGER.logger.warning("[pyCGM2-Anomaly] Leg lengths differed by more than 30%")
 #             self.state = False

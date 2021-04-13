@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 from sklearn.cluster import AgglomerativeClustering
 from scipy.cluster.hierarchy import dendrogram
 
@@ -67,7 +67,7 @@ class MarkerAnomalyCorrectionProcedure(object):
                     for i in range(0, n_clusters):
                         beg = indices[np.where(clustering_model.labels_==i)[0][0]]
                         end = indices[np.where(clustering_model.labels_==i)[0][-1]]
-                        logging.warning("[pycgm2] correction from %i to %i"%(beg,end))
+                        LOGGER.logger.warning("[pycgm2] correction from %i to %i"%(beg,end))
                         values[beg:end+1]= np.nan
                         pointValues[beg:end+1] = 0
                         residualValues[beg:end+1] = -1.0
@@ -75,7 +75,7 @@ class MarkerAnomalyCorrectionProcedure(object):
                 else:
                     beg = indices[0]-1
                     end = indices[0]+1
-                    logging.warning("[pycgm2] correction from %i to %i"%(beg,end))
+                    LOGGER.logger.warning("[pycgm2] correction from %i to %i"%(beg,end))
                     values[beg:end+1]= np.nan
                     pointValues[beg:end+1] = 0
                     residualValues[beg:end+1] = -1.0
@@ -91,6 +91,6 @@ class MarkerAnomalyCorrectionProcedure(object):
                     #     # axs.set_ylim([2040,2100])
                     #     plt.show()
             else:
-                logging.info("[pyCGM2] -  No anomalies detected for marker %s"%marker)
+                LOGGER.logger.debug("[pyCGM2] -  No anomalies detected for marker %s"%marker)
 
         return acq

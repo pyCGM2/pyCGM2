@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 class AnomalyDetectionFilter(object):
     def __init__(self,acq,filename,procedure,**kwargs):
