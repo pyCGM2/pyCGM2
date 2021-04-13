@@ -8,7 +8,7 @@ import re
 
 
 
-try: 
+try:
     from pyCGM2 import btk
 except:
     LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
@@ -229,7 +229,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
         if mfpa is not None:
             correctedSuffix=""
             if type(mfpa) == dict:
-                LOGGER.logger.warning("[pyCGM2] : automatic force plate assigment corrected with context associated with the device Id  ")
+                LOGGER.logger.info("[pyCGM2] : automatic force plate assigment corrected with context associated with the device Id  ")
                 i=0
                 for id in pfIDS:
                     fpa = mfpa[id]
@@ -239,12 +239,12 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
                         correctedSuffix = correctedSuffix + suffix[i]
                     i+=1
             else:
-                LOGGER.logger.warning("[pyCGM2] : automatic force plate assigment corrected  ")
+                LOGGER.logger.info("[pyCGM2] : automatic force plate assigment corrected  ")
                 if len(mfpa) < len(suffix):
                     raise Exception("[pyCGM2] number of assigned force plate inferior to the number of force plate number. Your assignment should have  %s letters at least" %(str(len(suffix))))
                 else:
                     if len(mfpa) > len(suffix):
-                        LOGGER.logger.warning("[pyCGM2]: Your manual force plate assignement mentions more force plates than the number of force plates stored in the c3d")
+                        LOGGER.logger.info("[pyCGM2]: Your manual force plate assignement mentions more force plates than the number of force plates stored in the c3d")
                     for i in range(0, len(suffix)):
                         if mfpa[i] != "A":
                             correctedSuffix = correctedSuffix + mfpa[i]
