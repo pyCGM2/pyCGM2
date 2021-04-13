@@ -90,7 +90,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     if mp_anomaly["ErrorState"]: detectAnomaly = True
 
     # --marker presence
-    markersets = [cgm.CGM2_4.LOWERLIMB_TRACKING_MARKERS, cgm.CGM2_4.THORAX_TRACKING_MARKERS, cgm.CGM2_4.UPPERLIMB_TRACKING_MARKERS]
+    markersets = [cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS, cgm2.CGM2_4.THORAX_TRACKING_MARKERS, cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS]
     for markerset in markersets:
         ipdp = InspectorProcedure.MarkerPresenceDetectionProcedure( markerset)
         idf = InspectorFilter.InspectorFilter(acqStatic,calibrateFilenameLabelled,ipdp)
@@ -387,7 +387,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
             LOGGER.logger.warning("[pyCGM2-Anomaly]  marker [%s] - not used during static calibration - wrong kinematic for the segment attached to this marker. "%(marker))
 
     # --marker presence
-    markersets = [cgm.CGM2_4.LOWERLIMB_TRACKING_MARKERS, cgm.CGM2_4.THORAX_TRACKING_MARKERS, cgm.CGM2_4.UPPERLIMB_TRACKING_MARKERS]
+    markersets = [cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS, cgm2.CGM2_4.THORAX_TRACKING_MARKERS, cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS]
     for markerset in markersets:
         ipdp = InspectorProcedure.MarkerPresenceDetectionProcedure( markerset)
         idf = InspectorFilter.InspectorFilter(acqGait,reconstructFilenameLabelled,ipdp)
