@@ -2,8 +2,10 @@ import sys
 import glob
 import re
 import os
-import logging
+from . import log
 
+
+LOGGER = log.pyCGM2_Logger(__name__)
 NEXUS_VERSION = None
 
 def getLastNexusVersion():
@@ -23,7 +25,7 @@ try:
 
     version = float(NEXUS_VERSION[5:])
     if version<2.12:
-        logging.error ("This version of pyCGM2 is only compatible Nexus 2.12+. Nexus Apps will fail if you call them ")
+        LOGGER.logger.LOGGER.logger.error ("This version of pyCGM2 is only compatible Nexus 2.12+. Nexus Apps will fail if you call them ")
     else :
         if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusapi" in sys.path:
             sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusapi")
@@ -33,7 +35,7 @@ try:
 
 except Exception:
     # integration on Linux not needed
-    # logging.error ("Nexus Integration failed")
+    # LOGGER.logger.error ("Nexus Integration failed")
     pass
 
 
