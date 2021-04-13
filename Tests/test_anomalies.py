@@ -1,6 +1,6 @@
 # coding: utf-8
 # pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_anomalies.py::Test_markerAnomalies::test_anomalies
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import pyCGM2
 from pyCGM2.Tools import btkTools

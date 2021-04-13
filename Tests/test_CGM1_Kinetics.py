@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_CGM1_Kinetics.py::Test_LowerBody_progressionY::test_LowerBody_noOptions_proximal
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Tools import btkTools
@@ -40,7 +40,7 @@ class Test_FullBody:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.Distal.c3d"
 
@@ -143,7 +143,7 @@ class Test_FullBody:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.Proximal.c3d"
 
@@ -242,7 +242,7 @@ class Test_FullBody:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.Global.c3d"
 
@@ -343,7 +343,7 @@ class Test_LowerBody_progressionY:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.Distal.c3d"
 
@@ -439,7 +439,7 @@ class Test_LowerBody_progressionY:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.Global.c3d"
 
@@ -537,7 +537,7 @@ class Test_LowerBody_progressionY:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.Proximal.c3d"
 

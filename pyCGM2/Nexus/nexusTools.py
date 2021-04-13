@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 # from __future__ import unicode_literals
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 
@@ -44,7 +44,7 @@ def checkActivatedSubject(NEXUS,subjectNames):
     """
     Note : function should be improved in Nexus API by Vicon
     """
-    logging.warning("This method is deprecated. prefer getActiveSubject now")
+    LOGGER.logger.warning("This method is deprecated. prefer getActiveSubject now")
 
     subjectMarkerWithTraj=dict()
     for subject in subjectNames:
@@ -53,7 +53,7 @@ def checkActivatedSubject(NEXUS,subjectNames):
         for mark in markers:
             if  NEXUS.GetTrajectory(subject,mark) != ([], [], [], []):
                 marker = mark
-                logging.debug("Subject : %s ( marker (%s) with trajectory )" %(subject,marker))
+                LOGGER.logger.debug("Subject : %s ( marker (%s) with trajectory )" %(subject,marker))
                 subjectMarkerWithTraj[subject] = marker
                 break
 
@@ -69,7 +69,7 @@ def checkActivatedSubject(NEXUS,subjectNames):
         raise Exception("[pyCGM2] : two subjects are activated. Select one ony")
     else:
         index = flags.index(True)
-        logging.debug("Active subject is %s"%(subjectMarkerWithTraj.keys()[index]))
+        LOGGER.logger.debug("Active subject is %s"%(subjectMarkerWithTraj.keys()[index]))
 
     return subjectMarkerWithTraj.keys()[index]
 
@@ -122,7 +122,7 @@ def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq,suffix=""):
     lst = NEXUS.GetModelOutputNames(vskName)
     output_label = label+suffix
     if output_label in lst:
-        logging.debug( "marker (%s) already exist" %(output_label))
+        LOGGER.logger.debug( "marker (%s) already exist" %(output_label))
     else:
         NEXUS.CreateModeledMarker(vskName, output_label)
 
@@ -148,7 +148,7 @@ def appendAngleFromAcq(NEXUS,vskName,label, acq):
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
-        logging.debug( "angle (%s) already exist" %(label))
+        LOGGER.logger.debug( "angle (%s) already exist" %(label))
     else:
         NEXUS.CreateModelOutput( vskName, label, "Angles", ["X","Y","Z"], ["Angle","Angle","Angle"])
 
@@ -173,7 +173,7 @@ def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
-        logging.debug( "force (%s) already exist" %(label))
+        LOGGER.logger.debug( "force (%s) already exist" %(label))
     else:
         if normalizedData:
             NEXUS.CreateModelOutput( vskName, label, "Forces", ["X","Y","Z"], ["ForceNormalized","ForceNormalized","ForceNormalized"])
@@ -201,7 +201,7 @@ def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
-        logging.debug( "moment (%s) already exist" %(label))
+        LOGGER.logger.debug( "moment (%s) already exist" %(label))
     else:
         if normalizedData:
             NEXUS.CreateModelOutput( vskName, label, "Moments", ["X","Y","Z"], ["TorqueNormalized","TorqueNormalized","TorqueNormalized"])#
@@ -229,7 +229,7 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
-        logging.debug( "power (%s) already exist" %(label))
+        LOGGER.logger.debug( "power (%s) already exist" %(label))
     else:
         if normalizedData:
             NEXUS.CreateModelOutput( vskName, label, "Powers", ["X","Y","Z"], ["PowerNormalized","PowerNormalized","PowerNormalized"])

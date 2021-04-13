@@ -7,8 +7,8 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Utils import files
 
-import logging
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+import pyCGM2; LOGGER = pyCGM2.LOGGER
+
 from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1,cgm2_4
 from pyCGM2.Model import modelFilters
@@ -48,7 +48,7 @@ class Test_Data_withNoFP:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.c3d"
 
@@ -98,7 +98,7 @@ class Test_DifferentStaticDynamicMarkerSet:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        logging.info("Static Calibration -----> Done")
+        LOGGER.logger.info("Static Calibration -----> Done")
 
         # case 1 -  one marker on the upper limb misses
         gaitFilename="gait1_noRFIN.c3d"
@@ -147,7 +147,7 @@ class Test_DifferentStaticDynamicMarkerSet:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        logging.info("Static Calibration -----> Done")
+        LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1_noSTRN.c3d"
         mfpa = None
@@ -194,7 +194,7 @@ class Test_DifferentStaticDynamicMarkerSet:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        logging.info("Static Calibration -----> Done")
+        LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1_noLASI.c3d"
         mfpa = None
@@ -251,7 +251,7 @@ class Test_DifferentStaticDynamicMarkerSet:
             displayCoordinateSystem=True)
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        logging.info("Static Calibration -----> Done")
+        LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1_noFIN.c3d"
 
@@ -310,7 +310,7 @@ class Test_DifferentStaticDynamicMarkerSet:
             displayCoordinateSystem=True)
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        logging.info("Static Calibration -----> Done")
+        LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1_noCLAV.c3d"
 
@@ -369,7 +369,7 @@ class Test_DifferentStaticDynamicMarkerSet:
             displayCoordinateSystem=True)
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        logging.info("Static Calibration -----> Done")
+        LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1_noLASI.c3d"
 

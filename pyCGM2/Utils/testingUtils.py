@@ -4,7 +4,7 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 from pyCGM2.Math import numeric
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Utils import utils
 
 
@@ -32,7 +32,7 @@ def test_point_rms(acq,RefLabel,LabelToTest,threshold,init=-1,end=-1):
 
 #---------DISPLAY----------
 def print_offset(value,acq,viconLabel, decimal=3):
-    logging.info(" offset [%s] => %f ( my value) = %f ( reference)"%(viconLabel,
+    LOGGER.logger.info(" offset [%s] => %f ( my value) = %f ( reference)"%(viconLabel,
                             value,
                             np.rad2deg(acq.GetMetaData().FindChild("PROCESSING").value().FindChild(viconLabel).value().GetInfo().ToDouble()[0])))
 

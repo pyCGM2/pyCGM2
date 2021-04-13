@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 
 
@@ -20,7 +20,7 @@ for i in range(0,101):
 
 def isColumnNameExist( dataframe, name):
     if name in dataframe.columns.values:
-        logging.debug("column name :[%s] already in the dataFrame",name)
+        LOGGER.logger.debug("column name :[%s] already in the dataFrame",name)
 
 # ---- Spatio temporal parameters -----
 def buid_df_descriptiveCycle1_1(analysis_outputStats):

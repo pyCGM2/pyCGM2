@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 
 figsize = (7, 2.75)
@@ -30,7 +30,7 @@ def anomaly_rolling(values, aprioriError = 0, window=10 , threshold = 3, method 
 
     outlier0_idx = pd.Series( [False] * df.Values.shape[0])
     if len(df[df.Values == 0]) != 0:
-        logging.warning('[pyCGM2]  zeros found for label [%s]'%(label))
+        LOGGER.logger.warning('[pyCGM2]  zeros found for label [%s]'%(label))
         outlier0_idx =  df.Values == 0
         indices0 = df['Values'][df["Values"] == 0].index.to_list()
         df["Values"] = df.Values.replace(0, np.nan)#.fillna(method='ffill')
@@ -99,10 +99,10 @@ def anomaly_ewm(values,window_size = 3,threshold=3,plot=True):
     success =  False
     indexes = None
     if np.any(outlier_idx.values) == False:
-        logging.warning('[pyCGM2]  No outlier found')
+        LOGGER.logger.warning('[pyCGM2]  No outlier found')
         success =  True
     else:
-        logging.warning('[pyCGM2] outliers found !!!')
+        LOGGER.logger.warning('[pyCGM2] outliers found !!!')
         indexes = df['Values'][outlier_idx].index.to_list()
 
 

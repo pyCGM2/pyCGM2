@@ -4,12 +4,12 @@
 # pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_CGM1.py::Test_LowerBody::test_KadMed_options
 
 import os
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import numpy as np
 
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Tools import btkTools
@@ -98,7 +98,7 @@ class Test_FullBody:
 
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.c3d"
 
@@ -235,7 +235,7 @@ class Test_LowerBody():
         np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.c3d"
 
@@ -343,7 +343,7 @@ class Test_LowerBody():
         np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"mid")
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.c3d"
 
@@ -450,7 +450,7 @@ class Test_LowerBody():
         np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.c3d"
 
@@ -555,7 +555,7 @@ class Test_LowerBody():
         np.testing.assert_equal(model.getSegment("Right Foot").getReferential("TF").static.getNode_byLabel("RAJC").m_desc ,"KAD")
 
         # btkTools.smartWriter(finalAcqStatic, str( staticFilename[:-4]+"-pyCGM2modelled.c3d"))
-        # logging.info("Static Calibration -----> Done")
+        # LOGGER.logger.info("Static Calibration -----> Done")
 
         gaitFilename="gait1.c3d"
 

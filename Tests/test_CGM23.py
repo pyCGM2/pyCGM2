@@ -2,10 +2,10 @@
 # from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_CGM23.py::Test_CGM23::test_lowLevel
 
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.DEBUG)
+from pyCGM2 import log; log.setloggerLevel(LOGGER.logger.DEBUG)
 
 from pyCGM2.Utils import files
 from pyCGM2.Tools import  btkTools

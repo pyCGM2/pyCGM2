@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from pyCGM2.Lib import analysis
@@ -113,4 +113,4 @@ def pdfGaitReport(DATA_PATH,model,modelledTrials, normativeDataset,pointSuffix, 
         pdf.savefig()
 
 
-        logging.info("----- Gait Processing -----> DONE")
+        LOGGER.logger.info("----- Gait Processing -----> DONE")

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #import ipdb
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
 from pyCGM2.Processing import c3dManager, cycle, analysis
 from pyCGM2.Model.CGM2 import  cgm
@@ -232,7 +232,7 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],
         flag = False
         for channel in emgChannels:
             if not btkTools.isAnalogExist(acq,channel):
-                logging.error( "channel [%s] not detected in the c3d [%s]"%(channel,gaitTrial))
+                LOGGER.logger.error( "channel [%s] not detected in the c3d [%s]"%(channel,gaitTrial))
                 flag = True
         if flag:
             raise Exception ("[pyCGM2] One label has not been detected as analog. see above")
@@ -381,19 +381,19 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
         envnf = emgFilters.EmgNormalisationProcessingFilter(analysis,label,contexts[i])
 
         if fromOtherAnalysis is not None and mvcSettings is None:
-            logging.info("[pyCGM2] - %s normalized from another Analysis"%(label))
+            LOGGER.logger.info("[pyCGM2] - %s normalized from another Analysis"%(label))
             envnf.setThresholdFromOtherAnalysis(fromOtherAnalysis)
 
         if mvcSettings is not None:
             if label in mvcSettings.keys():
-                logging.info("[pyCGM2] - %s normalized from MVC"%(label))
+                LOGGER.logger.info("[pyCGM2] - %s normalized from MVC"%(label))
                 envnf.setThresholdFromOtherAnalysis(mvcSettings[label])
             else:
                 if fromOtherAnalysis is not None:
-                    logging.info("[pyCGM2] - %s normalized from an external Analysis"%(label))
+                    LOGGER.logger.info("[pyCGM2] - %s normalized from an external Analysis"%(label))
                     envnf.setThresholdFromOtherAnalysis(fromOtherAnalysis)
                 else:
-                    logging.info("[pyCGM2] - %s normalized from current analysis"%(label))
+                    LOGGER.logger.info("[pyCGM2] - %s normalized from current analysis"%(label))
 
         if method != "MeanMax":
             envnf.setMaxMethod(enums.EmgAmplitudeNormalization.MeanMax)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Signal.detect_peaks import detect_peaks
 from pyCGM2.Math import derivation
@@ -217,7 +217,7 @@ class XlsJointPatternProcedure(object):
 
                     value = self._applyMethod(values,method,args,frames[0])
                 else:
-                    logging.warning("[pyGM2] :row (%i) -  key [%s,%s] not found in analysis data instance" %(index,variable,context) )
+                    LOGGER.logger.warning("[pyGM2] :row (%i) -  key [%s,%s] not found in analysis data instance" %(index,variable,context) )
 
 
             if value is not "NA":

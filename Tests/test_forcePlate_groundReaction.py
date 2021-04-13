@@ -5,8 +5,8 @@ import pyCGM2
 from pyCGM2.Tools import btkTools
 from pyCGM2.ForcePlates import forceplates
 
-import logging
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+import pyCGM2; LOGGER = pyCGM2.LOGGER
+
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Model import modelFilters
 from pyCGM2.Eclipse import vskTools
@@ -50,7 +50,7 @@ class Test_groundReactionForcePlate():
 
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait,mfpa=mfpa)
         forceplates.addForcePlateGeneralEvents(acqGait,mappedForcePlate)
-        logging.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+        LOGGER.logger.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
 
         # assembly foot and force plate

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 from  collections import OrderedDict
 import copy
 
@@ -29,7 +29,7 @@ def renameEmgInAnalysis(analysisInstance,emgChannels, emgMuscles, emgContexts):
             content = copiedAnalysis.emgStats.data[keyIt[0],context]
 
             analysisInstance.emgStats.data[newLabelFinal,context] = content
-            logging.info("label [%s] replaced with [%s]"%(keyIt[0],newLabelFinal))
+            LOGGER.logger.info("label [%s] replaced with [%s]"%(keyIt[0],newLabelFinal))
 
 
 class XlsExportDataFrameFilter(object):
@@ -293,7 +293,7 @@ class XlsAnalysisExportFilter(object):
                     df_label.to_excel(xlsxWriter,str(label+"."+context),index=False)
 
         xlsxWriter.save()
-        logging.info("basic dataFrame [%s- basic] Exported"%outputName)
+        LOGGER.logger.info("basic dataFrame [%s- basic] Exported"%outputName)
 
 
 
@@ -626,7 +626,7 @@ class XlsAnalysisExportFilter(object):
                     df_emg.to_csv((path+outputName + " - EMG - DataFrame.csv"),sep=";")
 
 
-        logging.info("advanced dataFrame [%s- Advanced] Exported"%outputName)
+        LOGGER.logger.info("advanced dataFrame [%s- Advanced] Exported"%outputName)
 
         xlsxWriter.save()
 
@@ -884,6 +884,6 @@ class AnalysisExportFilter(object):
 #                 ma.io.write(root,outputName+".c3d" )
 #             else:
 #                 ma.io.write(root,path + outputName+".c3d")
-#             logging.info("Analysis c3d  [%s.c3d] Exported" %( (outputName +".c3d")) )
+#             LOGGER.logger.info("Analysis c3d  [%s.c3d] Exported" %( (outputName +".c3d")) )
 #         except:
 #             raise Exception ("[pyCGM2] : analysis c3d doesn t export" )

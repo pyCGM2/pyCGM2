@@ -13,7 +13,7 @@ Examples:
 
 
 """
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt
 import warnings
@@ -23,7 +23,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -59,15 +59,15 @@ def main():
 
         modelledFilename = modelledFilenameNoExt+".c3d"
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "file: "+ modelledFilename)
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.logger.info( "file: "+ modelledFilename)
 
 
         # ----- Subject -----
         # need subject to find input files
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)
-        logging.info(  "Subject name : " + subject  )
+        LOGGER.logger.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
         model = files.loadModel(DATA_PATH,subject)

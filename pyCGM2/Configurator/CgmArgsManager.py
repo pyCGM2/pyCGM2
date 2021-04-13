@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2 import enums
 from pyCGM2.Model import modelFilters, modelDecorator
 
@@ -13,7 +13,7 @@ class argsManager_cgm(object):
 
     def getHeadFlat(self):
         if self.args.headFlat is not None:
-            logging.warning("Head flat option : %s"%(str(bool(self.args.headFlat))))
+            LOGGER.logger.warning("Head flat option : %s"%(str(bool(self.args.headFlat))))
             return  bool(self.args.headFlat)
         else:
             return bool(self.settings["Calibration"]["Head flat"])
@@ -22,14 +22,14 @@ class argsManager_cgm(object):
 
     def getLeftFlatFoot(self):
         if self.args.leftFlatFoot is not None:
-            logging.warning("Left flat foot forces : %s"%(str(bool(self.args.leftFlatFoot))))
+            LOGGER.logger.warning("Left flat foot forces : %s"%(str(bool(self.args.leftFlatFoot))))
             return  bool(self.args.leftFlatFoot)
         else:
             return bool(self.settings["Calibration"]["Left flat foot"])
 
     def getRightFlatFoot(self):
         if self.args.rightFlatFoot is not None:
-            logging.warning("Right flat foot forces : %s"%(str(bool(self.args.rightFlatFoot))))
+            LOGGER.logger.warning("Right flat foot forces : %s"%(str(bool(self.args.rightFlatFoot))))
             return bool(self.args.rightFlatFoot)
         else:
             return  bool(self.settings["Calibration"]["Right flat foot"])
@@ -37,14 +37,14 @@ class argsManager_cgm(object):
 
     def getMarkerDiameter(self):
         if self.args.markerDiameter is not None:
-            logging.warning("marker diameter forced : %s", str(float(self.args.markerDiameter)))
+            LOGGER.logger.warning("marker diameter forced : %s", str(float(self.args.markerDiameter)))
             return float(self.args.markerDiameter)
         else:
             return float(self.settings["Global"]["Marker diameter"])
 
     def getIkAccuracy(self):
         if self.args.accuracy is not None:
-            logging.warning("ik accuracy forced : %s", str(float(self.args.accuracy)))
+            LOGGER.logger.warning("ik accuracy forced : %s", str(float(self.args.accuracy)))
             return float(self.args.accuracy)
         else:
             return float(self.settings["Global"]["IkAccuracy"])

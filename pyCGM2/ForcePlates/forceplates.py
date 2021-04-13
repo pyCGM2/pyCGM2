@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
 
@@ -11,7 +11,7 @@ import re
 try: 
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 from pyCGM2.Tools import  btkTools
@@ -113,7 +113,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
             for i in range(0,pfc.GetItemNumber()):
                 pfIDS.append( re.findall( "\[(.*?)\]" ,pfc.GetItem(i).GetChannel(0).GetDescription())[0])
         except Exception:
-            logging.info("[pyCGM2]: Id of Force plate not detected")
+            LOGGER.logger.info("[pyCGM2]: Id of Force plate not detected")
             pass
 
     for i in range(0,grwc.GetItemNumber()):
@@ -131,13 +131,13 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
             ax.plot(diffR,'-b')
 
         if np.nanmin(diffL)<np.nanmin(diffR):
-            logging.debug(" Force plate " + str(i) + " : left foot")
+            LOGGER.logger.debug(" Force plate " + str(i) + " : left foot")
             suffix = suffix +  "L"
         else:
-            logging.debug(" Force plate " + str(i) + " : right foot")
+            LOGGER.logger.debug(" Force plate " + str(i) + " : right foot")
             suffix = suffix +  "R"
 
-    logging.debug("Matched Force plate ===> %s", (suffix))
+    LOGGER.logger.debug("Matched Force plate ===> %s", (suffix))
 
     if enableRefine:
         # refinement of suffix
@@ -164,7 +164,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
 
 
             if not enableDataFlag:
-                logging.debug("PF #%s not activated. It provides no data superior to threshold"%(str(indexFP)) )
+                LOGGER.logger.debug("PF #%s not activated. It provides no data superior to threshold"%(str(indexFP)) )
                 li = list(suffix)
                 li[indexFP]="X"
                 suffix ="".join(li)
@@ -215,7 +215,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
 
 
                 if not all(containFlags) == True:
-                    logging.debug("PF #%s not activated. While Rz superior to threshold, foot markers are not contained in force plate geometry  "%(str(indexFP)) )
+                    LOGGER.logger.debug("PF #%s not activated. While Rz superior to threshold, foot markers are not contained in force plate geometry  "%(str(indexFP)) )
                     # replace only one character
                     li = list(suffix)
                     li[indexFP]="X"
@@ -229,7 +229,7 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
         if mfpa is not None:
             correctedSuffix=""
             if type(mfpa) == dict:
-                logging.warning("[pyCGM2] : automatic force plate assigment corrected with context associated with the device Id  ")
+                LOGGER.logger.warning("[pyCGM2] : automatic force plate assigment corrected with context associated with the device Id  ")
                 i=0
                 for id in pfIDS:
                     fpa = mfpa[id]
@@ -239,12 +239,12 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
                         correctedSuffix = correctedSuffix + suffix[i]
                     i+=1
             else:
-                logging.warning("[pyCGM2] : automatic force plate assigment corrected  ")
+                LOGGER.logger.warning("[pyCGM2] : automatic force plate assigment corrected  ")
                 if len(mfpa) < len(suffix):
                     raise Exception("[pyCGM2] number of assigned force plate inferior to the number of force plate number. Your assignment should have  %s letters at least" %(str(len(suffix))))
                 else:
                     if len(mfpa) > len(suffix):
-                        logging.warning("[pyCGM2]: Your manual force plate assignement mentions more force plates than the number of force plates stored in the c3d")
+                        LOGGER.logger.warning("[pyCGM2]: Your manual force plate assignement mentions more force plates than the number of force plates stored in the c3d")
                     for i in range(0, len(suffix)):
                         if mfpa[i] != "A":
                             correctedSuffix = correctedSuffix + mfpa[i]

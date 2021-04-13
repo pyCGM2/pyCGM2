@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Tools import btkTools
@@ -147,7 +147,7 @@ class EmgNormalisationProcessingFilter(object):
                         'std':np.std(valuesNorm,axis=0),
                         'values': valuesNorm}
             else:
-                logging.warning("[pyCGM2] label [%s] - context [%s] dont find in the emgStats dictionnary"%(self.m_label,contextIt))
+                LOGGER.logger.warning("[pyCGM2] label [%s] - context [%s] dont find in the emgStats dictionnary"%(self.m_label,contextIt))
 
 
     def run(self):

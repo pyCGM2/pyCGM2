@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 #from __future__ import unicode_literals
 
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 
-# pyCGM2 settings
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -16,7 +14,7 @@ from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 from pyCGM2.Tools import btkTools
@@ -39,8 +37,8 @@ def main():
 
         DATA_PATH, filename = NEXUS.GetTrialName()
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( " file: "+ filename)
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.logger.info( " file: "+ filename)
 
 
         # --------------------------SUBJECT ------------------------------------

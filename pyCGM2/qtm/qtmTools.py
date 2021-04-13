@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pyCGM2.Utils.utils import toBool
 from datetime import datetime
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 
 def getFilename(measurement):
@@ -79,7 +79,7 @@ def SubjectMp(soup):
 
     bodymass = float(soup.Subject.Weight.text)
     if bodymass == 0.0:
-        logging.error("[pyCGM2] Null Bodymass detected - Kinetics will be unnormalized")
+        LOGGER.logger.error("[pyCGM2] Null Bodymass detected - Kinetics will be unnormalized")
         bodymass = 1.0
 
     required_mp={

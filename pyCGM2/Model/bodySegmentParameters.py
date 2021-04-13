@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 class Bsp(object):
     """
@@ -131,7 +131,7 @@ class Bsp(object):
                     length = self.m_model.getSegment(itSegment.name).m_bsp["length"]
                     (mass,com,Ixx,Iyy,Izz)  = Bsp.setParameters( it, length, bodymass)
                     if self.m_model.getSegment(itSegment.name).anatomicalFrame.static.getNode_byLabel("com"): # update com if defined during calibration.
-                        logging.debug("segment %s -- com already defined during calibration. " %(itSegment.name) )
+                        LOGGER.logger.debug("segment %s -- com already defined during calibration. " %(itSegment.name) )
                         com = self.m_model.getSegment(itSegment.name).anatomicalFrame.static.getNode_byLabel("com").m_local
 
                     self.m_model.getSegment(itSegment.name).setMass( mass)

@@ -3,12 +3,12 @@
 import pyCGM2
 from viconnexusapi import ViconNexus
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 
@@ -351,10 +351,10 @@ class NexusConstructAcquisitionFilter(object):
                         btkTools.smartAppendPoint(self.m_acq,modelOutputName,values_cut, PointType=btk.btkPoint.Marker,desc="",
                                                   residuals=E_cut)
                     else:
-                        logging.warning("[pyCGM2] : type unknown")
+                        LOGGER.logger.debug("[pyCGM2] : type unknown")
 
                 else:
-                    logging.warning("[pyCGM2] : Model Output (%s) from Nexus not added to the btk acquisition"%(modelOutputName))
+                    LOGGER.logger.debug("[pyCGM2] : Model Output (%s) from Nexus not added to the btk acquisition"%(modelOutputName))
 
 
 

@@ -2,7 +2,7 @@
 import numpy as np
 
 from pyCGM2.Tools import  btkTools
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 class ProgressionFrameFilter(object):
     """
@@ -58,9 +58,9 @@ class PointProgressionFrameProcedure(object):
 
         globalFrame = (progressionAxis+lateralAxis+"Z")
 
-        logging.debug("Progression axis : %s"%(progressionAxis))
-        logging.debug("forwardProgression : %s"%(forwardProgression))
-        logging.debug("globalFrame : %s"%(globalFrame))
+        LOGGER.logger.debug("Progression axis : %s"%(progressionAxis))
+        LOGGER.logger.debug("forwardProgression : %s"%(forwardProgression))
+        LOGGER.logger.debug("globalFrame : %s"%(globalFrame))
 
         return   progressionAxis,forwardProgression,globalFrame
 
@@ -93,7 +93,7 @@ class PelvisProgressionFrameProcedure(object):
         ind = np.argmax(absMaxValues)
 
         if absMaxValues[ind] > self.__threshold:
-            logging.debug("progression axis detected from displacement of the marker (%s)"%(self.m_marker))
+            LOGGER.logger.debug("progression axis detected from displacement of the marker (%s)"%(self.m_marker))
 
             diff = MaxValues[ind]
 
@@ -110,7 +110,7 @@ class PelvisProgressionFrameProcedure(object):
 
 
         else:
-            logging.debug("progression axis detected from pelvis longitudinal axis")
+            LOGGER.logger.debug("progression axis detected from pelvis longitudinal axis")
 
             for marker in self.m_frontmarkers+self.m_backmarkers:
                 if not btkTools.isPointExist(acq,marker):
@@ -180,9 +180,9 @@ class PelvisProgressionFrameProcedure(object):
 
 
 
-        logging.info("Progression axis : %s"%(progressionAxis))
-        logging.info("forwardProgression : %s"%((forwardProgression)))
-        logging.info("globalFrame : %s"%((globalFrame)))
+        LOGGER.logger.info("Progression axis : %s"%(progressionAxis))
+        LOGGER.logger.info("forwardProgression : %s"%((forwardProgression)))
+        LOGGER.logger.info("globalFrame : %s"%((globalFrame)))
 
 
         return   progressionAxis,forwardProgression,globalFrame
@@ -217,7 +217,7 @@ class ThoraxProgressionFrameProcedure(object):
         ind = np.argmax(absMaxValues)
 
         if absMaxValues[ind] > self.__threshold:
-            logging.debug("progression axis detected from displacement of the marker (%s)"%(self.m_marker))
+            LOGGER.logger.debug("progression axis detected from displacement of the marker (%s)"%(self.m_marker))
             diff = MaxValues[ind]
 
             if ind ==0 :
@@ -233,7 +233,7 @@ class ThoraxProgressionFrameProcedure(object):
 
 
         else:
-            logging.debug("progression axis detected from pelvis longitudinal axis")
+            LOGGER.logger.debug("progression axis detected from pelvis longitudinal axis")
             for marker in self.m_frontmarkers+self.m_backmarkers:
                 if not btkTools.isPointExist(acq,marker):
                     raise Exception( "[pyCGM2] : marker %s doesn't exist"%(marker))
@@ -301,9 +301,9 @@ class ThoraxProgressionFrameProcedure(object):
 
 
 
-        logging.info("Progression axis : %s"%(progressionAxis))
-        logging.info("forwardProgression : %s"%((forwardProgression)))
-        logging.info("globalFrame : %s"%((globalFrame)))
+        LOGGER.logger.info("Progression axis : %s"%(progressionAxis))
+        LOGGER.logger.info("forwardProgression : %s"%((forwardProgression)))
+        LOGGER.logger.info("globalFrame : %s"%((globalFrame)))
 
 
         return   progressionAxis,forwardProgression,globalFrame

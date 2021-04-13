@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 
 def getPhases(dataStats):
@@ -96,7 +96,7 @@ def isKeyExist(analysisInstance,label,context,exceptionMode = False):
         if exceptionMode:
             raise Exception ("[pyCGM2] label [%s] - context [%s] doesn t find in the analysis instance"%(label,context))
         else:
-            logging.error("[pyCGM2] label [%s] - context [%s] doesn t find in the analysis instance"%(label,context))
+            LOGGER.logger.error("[pyCGM2] label [%s] - context [%s] doesn t find in the analysis instance"%(label,context))
 
     return flag
 

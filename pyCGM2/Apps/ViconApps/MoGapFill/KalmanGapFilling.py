@@ -9,7 +9,7 @@ that smooths trajectories in low dimensional subspaces, together with a Python p
 """
 
 
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import pyCGM2
 from viconnexusapi import ViconNexus
@@ -28,11 +28,11 @@ def main():
 
         DATA_PATH, filenameLabelledNoExt = NEXUS.GetTrialName()
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "file: "+ filenameLabelledNoExt)
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.logger.info( "file: "+ filenameLabelledNoExt)
 
         subject = nexusTools.getActiveSubject(NEXUS) #checkActivatedSubject(NEXUS,subjects)
-        logging.info("Gap filling for subject %s"%(subject))
+        LOGGER.logger.info("Gap filling for subject %s"%(subject))
 
         # btkAcq builder
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameLabelledNoExt,subject)

@@ -16,12 +16,12 @@ Examples:
 
 """
 
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -51,8 +51,8 @@ def main():
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "calibration file: "+ reconstructFilenameLabelled)
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
 
         #acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
 
@@ -60,7 +60,7 @@ def main():
 
         # Notice : Work with ONE subject by session
         subject = nexusTools.getActiveSubject(NEXUS)
-        logging.info(  "Subject name : " + subject  )
+        LOGGER.logger.info(  "Subject name : " + subject  )
 
         # --- btk acquisition ----
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)

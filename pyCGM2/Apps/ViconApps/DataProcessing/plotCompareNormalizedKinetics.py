@@ -17,7 +17,7 @@ Examples:
 
 """
 
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt
 import warnings
@@ -26,7 +26,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -67,7 +67,7 @@ def main():
     if eclipse.getCurrentMarkedNodes() is None:
         raise Exception("No nodes marked")
     else:
-        logging.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
+        LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         # --- acquisition file and path----
         DATA_PATH, modelledFilenames =eclipse.getCurrentMarkedNodes()
         ECLIPSE_MODE = True
@@ -75,7 +75,7 @@ def main():
 
 
     subject = nexusTools.getActiveSubject(NEXUS)
-    logging.info(  "Subject name : " + subject  )
+    LOGGER.logger.info(  "Subject name : " + subject  )
 
     #-----------------------SETTINGS---------------------------------------
     normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}

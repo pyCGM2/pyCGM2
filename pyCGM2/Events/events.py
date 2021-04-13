@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Signal import detect_peaks
@@ -82,7 +82,7 @@ class ZeniProcedure(object):
             return indexes_fs_left+self.footStrikeOffset,indexes_fo_left+self.footOffOffset, indexes_fs_right+self.footStrikeOffset, indexes_fo_right+self.footOffOffset
 
         else:
-            logging.error("[pyCGM2]: Zeni event detector impossible to run. Pelvic LPSI-RPSI or foot markers(HEE or TOE) are missing ")
+            LOGGER.logger.error("[pyCGM2]: Zeni event detector impossible to run. Pelvic LPSI-RPSI or foot markers(HEE or TOE) are missing ")
             return 0
 
 class EventFilter(object):

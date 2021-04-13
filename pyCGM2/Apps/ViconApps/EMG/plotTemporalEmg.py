@@ -17,12 +17,12 @@ Examples:
 
 """
 import os
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 
 
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 from pyCGM2.Utils import files
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
@@ -57,7 +57,7 @@ def main():
         #--------------------------settings-------------------------------------
         if os.path.isfile(DATA_PATH + "emg.settings"):
             emgSettings = files.openFile(DATA_PATH,"emg.settings")
-            logging.warning("[pyCGM2]: emg.settings detected in the data folder")
+            LOGGER.logger.warning("[pyCGM2]: emg.settings detected in the data folder")
         else:
             emgSettings = None
 
@@ -71,12 +71,12 @@ def main():
                 raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
             else:
                 bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
-                logging.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
+                LOGGER.logger.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
         envelopCutOffFrequency = manager.EnvelopLowpassFrequency#emgSettings["Processing"]["EnvelopLowpassFrequency"]
         if args.EnvelopLowpassFrequency is not None:
             envelopCutOffFrequency =  args.EnvelopLowpassFrequency
-            logging.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
+            LOGGER.logger.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
 
         rectifyBool = False if args.raw else True
 

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import copy
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 from pyCGM2.Model import frame
@@ -106,7 +106,7 @@ class Model(object):
                 return False
         else:
             return False
-            logging.warning("[pyCGM2] : CalibrationParameterLabel doesn t exist")
+            LOGGER.logger.warning("[pyCGM2] : CalibrationParameterLabel doesn t exist")
 
     def setStaticFilename(self,name):
         self.m_staticFilename=name
@@ -458,7 +458,7 @@ class Model(object):
             infos=False
 
         if not infos:
-            logging.debug("[pyCGM2] : descriptor [ type: %s - label: %s]  not found" %(dataType.name,jointOrSegmentLabel))
+            LOGGER.logger.debug("[pyCGM2] : descriptor [ type: %s - label: %s]  not found" %(dataType.name,jointOrSegmentLabel))
 
         return infos
 
@@ -772,7 +772,7 @@ class Segment(object):
             self.m_tracking_markers.remove(label)
             self.m_markerLabels.remove(label)
         else:
-            logging.debug("tracking marker %s  remove" % label)
+            LOGGER.logger.debug("tracking marker %s  remove" % label)
 
 
     def addTrackingMarkerLabel(self,label):
@@ -786,7 +786,7 @@ class Segment(object):
             self.m_tracking_markers.append(label)
             self.m_markerLabels.append(label)
         else:
-            logging.debug("marker %s already in the tracking marker segment list" % label)
+            LOGGER.logger.debug("marker %s already in the tracking marker segment list" % label)
 
     def addCalibrationMarkerLabel(self,label):
         """
@@ -800,7 +800,7 @@ class Segment(object):
             self.m_calibration_markers.append(label)
             self.m_markerLabels.append(label)
         else:
-            logging.debug("marker %s already in the clibration marker segment list" % label)
+            LOGGER.logger.debug("marker %s already in the clibration marker segment list" % label)
 
 
     def resetMarkerLabels(self):
@@ -824,7 +824,7 @@ class Segment(object):
             i+=1
 
         if isFind:
-            logging.debug("marker %s already in the marker segment list" % label)
+            LOGGER.logger.debug("marker %s already in the marker segment list" % label)
 
 
         else:

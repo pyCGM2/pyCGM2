@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 # from __future__ import print_function
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 from scipy import signal, integrate
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 
@@ -167,7 +167,7 @@ def forcePlateFiltering(btkAcq,order=4, fc =5):
             try:
                 btkAcq.GetAnalog(label).SetValues(values_filt)
             except RuntimeError:
-                logging.error("[pyCGM2] filtering of the force place %i impossible - label %s not found"%(i,label))
+                LOGGER.logger.error("[pyCGM2] filtering of the force place %i impossible - label %s not found"%(i,label))
 
 # ----- methods ---------
 def arrayLowPassFiltering(valuesArray, freq, order=2, fc =6):

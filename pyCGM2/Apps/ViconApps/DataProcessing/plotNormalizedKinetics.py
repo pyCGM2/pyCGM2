@@ -16,7 +16,7 @@ Examples:
     (your gait panel will display as normative data, results from the modality VeryFast of the nomative dataset collected by Schwartz2008)
 
 """
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt
 import warnings
@@ -24,7 +24,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -76,23 +76,23 @@ def main():
     consistencyFlag = True if args.consistency else False
 
     if eclipse.getCurrentMarkedNodes() is not None:
-        logging.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
+        LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         # --- acquisition file and path----
         DATA_PATH, modelledFilenames =eclipse.getCurrentMarkedNodes()
         ECLIPSE_MODE = True
 
     if not ECLIPSE_MODE:
-        logging.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
+        LOGGER.logger.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
         # --- acquisition file and path----
         DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
         modelledFilename = modelledFilenameNoExt+".c3d"
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "file: "+ modelledFilename)
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.logger.info( "file: "+ modelledFilename)
 
     # subjects = NEXUS.GetSubjectNames()
     subject = nexusTools.getActiveSubject(NEXUS)
-    logging.info(  "Subject name : " + subject  )
+    LOGGER.logger.info(  "Subject name : " + subject  )
 
     # --------------------pyCGM2 MODEL ------------------------------
     model = files.loadModel(DATA_PATH,subject)

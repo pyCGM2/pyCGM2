@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 class QualityFilter(object):
     def __init__(self,procedure,verbose=True):
@@ -23,12 +23,12 @@ class QualityFilter(object):
         self.m_procedure.check()
 
         if self.verbose:
-            logging.info("----Quality test: %s ----"%(self.m_procedure.title))
+            LOGGER.logger.info("----Quality test: %s ----"%(self.m_procedure.title))
             if self.m_procedure.state:
-                logging.info("quality Test  => OK :-)")
+                LOGGER.logger.info("quality Test  => OK :-)")
             else :
                 if not self.exceptionMode:
-                    logging.info("quality Test => FAILED :-(")
+                    LOGGER.logger.info("quality Test => FAILED :-(")
                 else:
                     raise Exception ("[pyCGM2] Quality test (%s) fails"%(self.m_procedure.title))
-            logging.info("--------------------------")
+            LOGGER.logger.info("--------------------------")

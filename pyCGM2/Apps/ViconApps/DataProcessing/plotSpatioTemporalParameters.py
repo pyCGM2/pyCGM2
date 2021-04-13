@@ -33,7 +33,7 @@ Examples:
 
 """
 import traceback
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -43,7 +43,7 @@ import matplotlib.pyplot as plt
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -76,27 +76,27 @@ def main():
 
     #--------------------------Data Location and subject-------------------------------------
     if eclipse.getCurrentMarkedNodes() is not None:
-        logging.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
+        LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         # --- acquisition file and path----
         DATA_PATH, modelledFilenames =eclipse.getCurrentMarkedNodes()
         ECLIPSE_MODE = True
 
     if not ECLIPSE_MODE:
-        logging.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
+        LOGGER.logger.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
 
         # --------------------------INPUTS ------------------------------------
         DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
 
         modelledFilename = modelledFilenameNoExt+".c3d"
 
-        logging.info( "data Path: "+ DATA_PATH )
-        logging.info( "file: "+ modelledFilename)
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.logger.info( "file: "+ modelledFilename)
 
     # ----- Subject -----
     # need subject to find input files
     # subjects = NEXUS.GetSubjectNames()
     subject = nexusTools.getActiveSubject(NEXUS)
-    logging.info(  "Subject name : " + subject  )
+    LOGGER.logger.info(  "Subject name : " + subject  )
 
 
     if not ECLIPSE_MODE:

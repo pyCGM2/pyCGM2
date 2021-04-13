@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 import pandas as pd
 from collections import OrderedDict
@@ -7,7 +7,7 @@ from collections import OrderedDict
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 
@@ -62,7 +62,7 @@ class ScoreResidualFilter(object):
 
                 btkTools.smartAppendPoint(self.acq, str(nodeLabel+"_Score"),scoreValues, PointType=btk.btkPoint.Scalar,desc="Score")
             except:
-                logging.error("[pyCGM2] Score residual for node (%s) not computed"%(nodeLabel))
+                LOGGER.logger.error("[pyCGM2] Score residual for node (%s) not computed"%(nodeLabel))
 
     def getStats(self,ipp,jointLabels,EventContext="Overall",df=None):
 

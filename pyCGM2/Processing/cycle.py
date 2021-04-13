@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Processing import progressionFrame
 
@@ -9,7 +9,7 @@ import pyCGM2.Math.normalisation  as MathNormalisation
 try: 
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 from pyCGM2.Utils import utils
 from pyCGM2.Tools import btkTools
@@ -230,7 +230,7 @@ class Cycle(object):
         #     self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startFrame() * self.pointfrequency))
         #
         # except ValueError:
-        #     logging.warning("[pyCGM2] : there are no time sequence of type marker in the openmaTrial")
+        #     LOGGER.logger.warning("[pyCGM2] : there are no time sequence of type marker in the openmaTrial")
         #     self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).startFrame() * self.analogfrequency))/self.appf
 
         self.begin =  startFrame#int(round(startFrame * self.pointfrequency) + 1)
@@ -242,7 +242,7 @@ class Cycle(object):
 
         self.stps =dict()
 
-        logging.debug("cycle makes from Frame %d   to  %d   (%s) " % (self.begin, self.end, self.context))
+        LOGGER.logger.debug("cycle makes from Frame %d   to  %d   (%s) " % (self.begin, self.end, self.context))
 
 
 
@@ -271,7 +271,7 @@ class Cycle(object):
         if btkTools.isPointExist(self.acq,pointLabel):
             return self.acq.GetPoint(pointLabel).GetValues()[self.begin-self.firstFrame:self.end-self.firstFrame+1,0:3] # 0.3 because openma::Ts includes a forth column (i.e residual)
         else:
-            logging.debug("[pyCGM2] the point Label %s doesn t exist " % (pointLabel))
+            LOGGER.logger.debug("[pyCGM2] the point Label %s doesn t exist " % (pointLabel))
             return None
             #raise Exception("[pyCGM2] marker %s doesn t exist"% pointLabel )
 
@@ -304,7 +304,7 @@ class Cycle(object):
         if btkTools.isAnalogExist(self.acq,analogLabel):
             return  self.acq.GetAnalog(analogLabel).GetValues()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
         else:
-            logging.debug("[pyCGM2] the Analog Label %s doesn t exist" % (analogLabel))
+            LOGGER.logger.debug("[pyCGM2] the Analog Label %s doesn t exist" % (analogLabel))
             return None
 
 
@@ -627,25 +627,25 @@ class CyclesBuilder(object):
                 if left_fs_frames == [] and  right_fs_frames == []:
                     spatioTemporalCycles.append (Cycle(acq, startFrame,endFrame,"Left"))
                     spatioTemporalCycles.append (Cycle(acq, startFrame,endFrame,"Right"))
-                    logging.info("[pyCGM2] left and Right context - time normalization from time boudaries")
+                    LOGGER.logger.info("[pyCGM2] left and Right context - time normalization from time boudaries")
 
                 if len(left_fs_frames) >1:
                     for i in range(0, len(left_fs_frames)-1):
                         spatioTemporalCycles.append (Cycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                        "Left"))
                 elif len(left_fs_frames) ==1:
-                    logging.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
+                    LOGGER.logger.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
                 else:
-                    logging.warning("[pyCGM2] No left cycles")
+                    LOGGER.logger.warning("[pyCGM2] No left cycles")
 
                 if len(right_fs_frames)>1:
                     for i in range(0, len(right_fs_frames)-1):
                         spatioTemporalCycles.append (Cycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                        "Right"))
                 elif len(right_fs_frames) ==1:
-                    logging.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
+                    LOGGER.logger.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
                 else:
-                    logging.warning("[pyCGM2] No Right cycles")
+                    LOGGER.logger.warning("[pyCGM2] No Right cycles")
 
             return spatioTemporalCycles
         else:
@@ -675,25 +675,25 @@ class CyclesBuilder(object):
                 if left_fs_frames == [] and  right_fs_frames == []:
                     kinematicCycles.append (Cycle(acq, startFrame,endFrame,"Left"))
                     kinematicCycles.append (Cycle(acq, startFrame,endFrame,"Right"))
-                    logging.info("[pyCGM2] left and Right context - time normalization from time boudaries")
+                    LOGGER.logger.info("[pyCGM2] left and Right context - time normalization from time boudaries")
 
                 if len(left_fs_frames) >1:
                     for i in range(0, len(left_fs_frames)-1):
                         kinematicCycles.append (Cycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                        "Left"))
                 elif len(left_fs_frames) ==1:
-                    logging.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
+                    LOGGER.logger.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
                 else:
-                    logging.warning("[pyCGM2] No left cycles")
+                    LOGGER.logger.warning("[pyCGM2] No left cycles")
 
                 if len(right_fs_frames) >1:
                     for i in range(0, len(right_fs_frames)-1):
                         kinematicCycles.append (Cycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                        "Right"))
                 elif len(right_fs_frames) ==1:
-                    logging.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
+                    LOGGER.logger.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
                 else:
-                    logging.warning("[pyCGM2] No Right cycles")
+                    LOGGER.logger.warning("[pyCGM2] No Right cycles")
 
             return kinematicCycles
         else:
@@ -731,7 +731,7 @@ class CyclesBuilder(object):
                     if left_fs_frames == [] and right_fs_frames==[]:
                         kineticCycles.append (Cycle(acq, startFrame,endFrame,"Left"))
                         kineticCycles.append (Cycle(acq, startFrame,endFrame,"Right"))
-                        logging.info("[pyCGM2] left - time normalization from time boudaries")
+                        LOGGER.logger.info("[pyCGM2] left - time normalization from time boudaries")
 
 
                     count_L=0
@@ -743,16 +743,16 @@ class CyclesBuilder(object):
                             for frameKinetic in frames_left:
 
                                 if frameKinetic<=end and frameKinetic>=init:
-                                    logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_frames[i], left_fs_frames[i+1]))
+                                    LOGGER.logger.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_frames[i], left_fs_frames[i+1]))
                                     kineticCycles.append (Cycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                                "Left"))
 
                                     count_L+=1
-                        logging.debug("%i Left Kinetic cycles available" %(count_L))
+                        LOGGER.logger.debug("%i Left Kinetic cycles available" %(count_L))
                     elif len(left_fs_frames) ==1:
-                        logging.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
+                        LOGGER.logger.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
                     else:
-                        logging.warning("[pyCGM2] No left cycles")
+                        LOGGER.logger.warning("[pyCGM2] No left cycles")
 
                     count_R=0
                     if len(right_fs_frames)>1:
@@ -762,15 +762,15 @@ class CyclesBuilder(object):
 
                             for frameKinetic in frames_right:
                                 if frameKinetic<=end and frameKinetic>=init:
-                                    logging.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_frames[i], right_fs_frames[i+1]))
+                                    LOGGER.logger.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_frames[i], right_fs_frames[i+1]))
                                     kineticCycles.append (Cycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                                "Right"))
                                     count_R+=1
-                        logging.debug("%i Right Kinetic cycles available" %(count_R))
+                        LOGGER.logger.debug("%i Right Kinetic cycles available" %(count_R))
                     elif len(right_fs_frames) ==1:
-                        logging.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
+                        LOGGER.logger.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
                     else:
-                        logging.warning("[pyCGM2] No Right cycles")
+                        LOGGER.logger.warning("[pyCGM2] No Right cycles")
 
             return kineticCycles
         else:
@@ -800,25 +800,25 @@ class CyclesBuilder(object):
                 if left_fs_frames == [] and  right_fs_frames == []:
                     emgCycles.append (Cycle(acq, startFrame,endFrame,"Left"))
                     emgCycles.append (Cycle(acq, startFrame,endFrame,"Right"))
-                    logging.info("[pyCGM2] left and Right context - time normalization from time boudaries")
+                    LOGGER.logger.info("[pyCGM2] left and Right context - time normalization from time boudaries")
 
                 if len(left_fs_frames)>1:
                     for i in range(0, len(left_fs_frames)-1):
                         emgCycles.append (Cycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                        "Left"))
                 elif len(left_fs_frames) ==1:
-                    logging.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
+                    LOGGER.logger.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
                 else:
-                    logging.warning("[pyCGM2] No left cycles")
+                    LOGGER.logger.warning("[pyCGM2] No left cycles")
 
                 if len(right_fs_frames)>1:
                     for i in range(0, len(right_fs_frames)-1):
                         emgCycles.append (Cycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                        "Right"))
                 elif len(right_fs_frames) ==1:
-                    logging.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
+                    LOGGER.logger.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
                 else:
-                    logging.warning("[pyCGM2] No Right cycles")
+                    LOGGER.logger.warning("[pyCGM2] No Right cycles")
 
             return emgCycles
 
@@ -957,12 +957,12 @@ class GaitCyclesBuilder(CyclesBuilder):
                         for frameKinetic in frames_left:
 
                             if frameKinetic<=end and frameKinetic>=init:
-                                logging.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_frames[i], left_fs_frames[i+1]))
+                                LOGGER.logger.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_frames[i], left_fs_frames[i+1]))
                                 kineticCycles.append (GaitCycle(acq, left_fs_frames[i],left_fs_frames[i+1],
                                                            context))
 
                                 count_L+=1
-                    logging.debug("%i Left Kinetic cycles available" %(count_L))
+                    LOGGER.logger.debug("%i Left Kinetic cycles available" %(count_L))
 
 
 
@@ -979,11 +979,11 @@ class GaitCyclesBuilder(CyclesBuilder):
 
                         for frameKinetic in frames_right:
                             if frameKinetic<=end and frameKinetic>=init:
-                                logging.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_frames[i], right_fs_frames[i+1]))
+                                LOGGER.logger.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_frames[i], right_fs_frames[i+1]))
                                 kineticCycles.append (GaitCycle(acq, right_fs_frames[i],right_fs_frames[i+1],
                                                            context))
                                 count_R+=1
-                    logging.debug("%i Right Kinetic cycles available" %(count_R))
+                    LOGGER.logger.debug("%i Right Kinetic cycles available" %(count_R))
 
             return kineticCycles
         else:

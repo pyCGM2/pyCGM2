@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import scipy as sp
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 def segmentalLeastSquare(A, B):
     """
@@ -36,7 +36,7 @@ def segmentalLeastSquare(A, B):
         RMSE = np.sqrt(err/A.shape[0]/3)
     except:
         RMSE =-1
-        logging.warning("[pyCGM2] - residual of the least-square optimlization set to -1. gap presence ?")
+        LOGGER.logger.warning("[pyCGM2] - residual of the least-square optimlization set to -1. gap presence ?")
 
 
     return R, L, RMSE, Am, Bm

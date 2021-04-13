@@ -1,6 +1,6 @@
 # coding: utf-8
 # pytest -s --disable-pytest-warnings  test_NexusDevices.py::Tests
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 
 # pyCGM2 settings
@@ -9,7 +9,7 @@ import pyCGM2
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 

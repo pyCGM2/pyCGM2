@@ -1,6 +1,5 @@
 # coding: utf-8
 import pickle
-import logging
 import json
 import os
 from shutil import copyfile
@@ -12,7 +11,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import pandas as pd
 import pyCGM2
-
+LOGGER = pyCGM2.LOGGER
 
 def openFile(path,filename):
     """
@@ -24,11 +23,11 @@ def openFile(path,filename):
         jsonFlag = is_json(content)
         yamlFlag = is_yaml(content)
         if jsonFlag:
-            logging.debug("your file (%s) matches json syntax"%filename)
+            LOGGER.logger.debug("your file (%s) matches json syntax"%filename)
             struct = openJson(path ,(filename))
 
         if yamlFlag:
-            logging.debug("your file (%s) matches yaml syntax"%filename)
+            LOGGER.logger.debug("your file (%s) matches yaml syntax"%filename)
             struct = openYaml(path,filename)
 
         if not yamlFlag and not yamlFlag:
@@ -43,11 +42,11 @@ def readContent(stringContent):
     jsonFlag = is_json(stringContent)
     yamlFlag = is_yaml(stringContent)
     if jsonFlag:
-        logging.debug("your content  matches json syntax")
+        LOGGER.logger.debug("your content  matches json syntax")
         struct = json.loads(stringContent,object_pairs_hook=OrderedDict)
 
     if yamlFlag:
-        logging.debug("your content  matches yaml syntax")
+        LOGGER.logger.debug("your content  matches yaml syntax")
         struct =  yaml.load(stringContent,Loader=yamlordereddictloader.Loader)
 
     if not yamlFlag and not yamlFlag:
@@ -81,7 +80,7 @@ def saveModel(model,path,FilenameNoExt):
 
     #pyCGM2.model
     if os.path.isfile((path + filename)):
-        logging.warning("previous model removed")
+        LOGGER.logger.info("previous model removed")
         os.remove((path + filename))
 
     with open(path+filename, "wb") as modelFile:
@@ -113,7 +112,7 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
 
     #pyCGM2.model
     if os.path.isfile((path + filename)):
-        logging.warning("previous analysis removed")
+        LOGGER.logger.info("previous analysis removed")
         os.remove((path + filename))
 
     with open(path+filename, "wb") as analysisFile:
@@ -170,7 +169,7 @@ def openYaml(path,filename):
 def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
     #  translators management
     if os.path.isfile( (DATA_PATH + translatorType)):
-       logging.warning("local translator found")
+       LOGGER.logger.info("local translator found")
 
        sessionTranslators = openFile(DATA_PATH,translatorType)
        translators = sessionTranslators["Translators"]
@@ -181,7 +180,7 @@ def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
 def getIKweightSet(DATA_PATH, ikwf):
     #  translators management
     if os.path.isfile( (DATA_PATH + ikwf)):
-       logging.warning("local ik weightSet file found")
+       LOGGER.logger.info("local ik weightSet file found")
        ikWeight = openFile(DATA_PATH,ikwf)
        return ikWeight
     else:
@@ -196,7 +195,7 @@ def getMpFileContent(DATA_PATH,file,subject):
 
     if not os.path.isfile( (DATA_PATH + file)):
         copyfile((pyCGM2.PYCGM2_SETTINGS_FOLDER+file), (DATA_PATH + out))
-        logging.warning("Copy of %s from pyCGM2 Settings folder"%(file))
+        LOGGER.logger.info("Copy of %s from pyCGM2 Settings folder"%(file))
 
     content = openFile(DATA_PATH,out)
 
@@ -357,7 +356,7 @@ def createDir(fullPathName):
     if not os.path.isdir((pathOut)):
         os.makedirs((pathOut))
     else:
-        logging.warning("directory already exists")
+        LOGGER.logger.info("directory already exists")
 
 def getDirs(folderPath):
     folderPath = folderPath

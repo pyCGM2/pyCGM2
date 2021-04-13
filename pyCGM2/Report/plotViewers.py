@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import matplotlib.pyplot as plt
 
@@ -53,7 +53,7 @@ class SpatioTemporalPlotViewer(AbstractPlotViewer):
         if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
             pass
         else:
-            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+            LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
     def setNormativeDataset(self,iNormativeDataSet):
         """
@@ -162,7 +162,7 @@ class GpsMapPlotViewer(AbstractPlotViewer):
         if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
             pass
         else:
-            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+            LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
         self.m_pointLabelSuffix = pointLabelSuffix
 
@@ -264,7 +264,7 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
         if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
             pass
         else:
-            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+            LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
         self.m_bodyPart = bodyPart
 
@@ -898,7 +898,7 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
         if isinstance(self.m_input,pyCGM2.btk.btkAcquisition):
             pass
         else:
-            logging.error( "[pyCGM2] error input object type. must be a ma.Trial")
+            LOGGER.logger.error( "[pyCGM2] error input object type. must be a ma.Trial")
 
 
         self.m_bodyPart = bodyPart
@@ -1256,7 +1256,7 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
         if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
             pass
         else:
-            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+            LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
         self.m_bodyPart = bodyPart
         self.m_pointLabelSuffix = pointLabelSuffix
@@ -1512,7 +1512,7 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
         if isinstance(self.m_input,pyCGM2.btk.btkAcquisition):
             pass
         else:
-            logging.error( "[pyCGM2] error input object type. must be a ma.Trial")
+            LOGGER.logger.error( "[pyCGM2] error input object type. must be a ma.Trial")
 
         self.m_pointLabelSuffix = pointLabelSuffix
         self.m_normativeData = None

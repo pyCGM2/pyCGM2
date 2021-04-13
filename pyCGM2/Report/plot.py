@@ -8,12 +8,12 @@ from pyCGM2.Processing import cycle
 from pyCGM2.Tools import btkTools
 from pyCGM2.Report import plotUtils
 
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 from pyCGM2.EMG import normalActivation

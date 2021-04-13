@@ -4,12 +4,12 @@ from __future__ import unicode_literals
 """
 """
 #import ipdb
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 
 # pyCGM2 settings
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 
 
 

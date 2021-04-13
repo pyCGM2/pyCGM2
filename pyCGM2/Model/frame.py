@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 
 
@@ -328,7 +328,7 @@ class Frame(object):
         """
         #TODO : use an Enum for the argment positionType
 
-        logging.debug("new node (%s) added " % nodeLabel)
+        LOGGER.logger.debug("new node (%s) added " % nodeLabel)
 
         isFind=False
         i=0
@@ -348,10 +348,10 @@ class Frame(object):
             else :
                 raise Exception("positionType not Known (Global or Local")
 
-            logging.debug("[pyCGM2] node (%s) values updated"%(nodeLabel))
+            LOGGER.logger.debug("[pyCGM2] node (%s) values updated"%(nodeLabel))
             previousDesc = self._nodes[index].m_desc
             if previousDesc != desc:
-                logging.debug("[pyCGM2] node (%s) description updated [%s -> %s]"%(nodeLabel, previousDesc, desc))
+                LOGGER.logger.debug("[pyCGM2] node (%s) description updated [%s -> %s]"%(nodeLabel, previousDesc, desc))
                 self._nodes[index].m_desc = desc
 
         else:
@@ -389,7 +389,7 @@ class Frame(object):
 
         for nodeIt in self._nodes:
             if str(label+"_node") == nodeIt.m_name:
-                logging.debug( " target label ( %s) - label find (%s) " %(label,nodeIt.m_name) )
+                LOGGER.logger.debug( " target label ( %s) - label find (%s) " %(label,nodeIt.m_name) )
                 return nodeIt
             #else:
             #    raise Exception("Node label (%s) not found " %(label))
@@ -427,12 +427,12 @@ class Frame(object):
         flag = False
         for nodeIt in self._nodes:
             if str(nodeLabel+"_node") == nodeIt.m_name:
-                logging.debug( " target label ( %s) - label find (%s) " %(nodeLabel,nodeIt.m_name) )
+                LOGGER.logger.debug( " target label ( %s) - label find (%s) " %(nodeLabel,nodeIt.m_name) )
                 flag = True
                 break
 
         if not flag:
-            logging.debug( " node label ( %s) doesn t exist " %(nodeLabel))
+            LOGGER.logger.debug( " node label ( %s) doesn t exist " %(nodeLabel))
 
         return flag
 

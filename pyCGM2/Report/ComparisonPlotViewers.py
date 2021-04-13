@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 
 # pyCGM2
@@ -36,7 +36,7 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
             if isinstance(itAnalysis,pyCGM2.Processing.analysis.Analysis):
                 pass
             else:
-                logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+                LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
         self.m_analysis = self.m_input
         self.m_context = context
@@ -357,7 +357,7 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
             if isinstance(itAnalysis,pyCGM2.Processing.analysis.Analysis):
                 pass
             else:
-                logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+                LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
         self.m_analysis = self.m_input
         self.m_context = context

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import pyCGM2.Processing.cycle as CGM2cycle
 
@@ -184,28 +184,28 @@ class AnalysisBuilder(AbstractBuilder):
         out={}
         outPst={}
 
-        logging.info("--kinematic computation--")
+        LOGGER.logger.info("--kinematic computation--")
         if self.m_cycles.kinematicCycles is not None:
             if "Left" in self.m_kinematicLabelsDict.keys():
                 for label in self.m_kinematicLabelsDict["Left"]:
                     labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
                     out[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kinematicCycles,labelPlus,"Left")
 
-                logging.info("left kinematic computation---> done")
+                LOGGER.logger.info("left kinematic computation---> done")
             else:
-                logging.warning("No left Kinematic computation")
+                LOGGER.logger.warning("No left Kinematic computation")
 
             if "Right" in self.m_kinematicLabelsDict.keys():
                 for label in self.m_kinematicLabelsDict["Right"]:
                     labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
                     out[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kinematicCycles,labelPlus,"Right")
 
-                logging.info("right kinematic computation---> done")
+                LOGGER.logger.info("right kinematic computation---> done")
             else:
-                logging.warning("No right Kinematic computation")
+                LOGGER.logger.warning("No right Kinematic computation")
 
         else:
-            logging.warning("No Kinematic computation")
+            LOGGER.logger.warning("No Kinematic computation")
 
         return out,outPst
 
@@ -224,7 +224,7 @@ class AnalysisBuilder(AbstractBuilder):
         outPst={}
         outOptional={}
 
-        logging.info("--kinetic computation--")
+        LOGGER.logger.info("--kinetic computation--")
         if self.m_cycles.kineticCycles is not None:
 
            found_context = list()
@@ -240,9 +240,9 @@ class AnalysisBuilder(AbstractBuilder):
                    for label in self.m_kinematicLabelsDict["Left"]:
                        labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
                        outOptional[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
-                   logging.info("left kinetic computation---> done")
+                   LOGGER.logger.info("left kinetic computation---> done")
                else:
-                   logging.warning("No left Kinetic computation")
+                   LOGGER.logger.warning("No left Kinetic computation")
 
            if "Right" in self.m_kineticLabelsDict.keys():
                if  "Right" in found_context:
@@ -254,13 +254,13 @@ class AnalysisBuilder(AbstractBuilder):
                        labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
                        outOptional[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
 
-                   logging.info("right kinetic computation---> done")
+                   LOGGER.logger.info("right kinetic computation---> done")
                else:
-                   logging.warning("No right Kinetic computation")
+                   LOGGER.logger.warning("No right Kinetic computation")
 
 
         else:
-            logging.warning("No Kinetic computation")
+            LOGGER.logger.warning("No Kinetic computation")
 
         return out,outPst,outOptional
 
@@ -276,14 +276,14 @@ class AnalysisBuilder(AbstractBuilder):
         out={}
         outPst={}
 
-        logging.info("--emg computation--")
+        LOGGER.logger.info("--emg computation--")
         if self.m_cycles.emgCycles is not None:
             for rawLabel in self.m_emgLabelList:
                 out[rawLabel,"Left"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Left")
                 out[rawLabel,"Right"]=CGM2cycle.analog_descriptiveStats(self.m_cycles.emgCycles,rawLabel,"Right")
 
         else:
-            logging.warning("No emg computation")
+            LOGGER.logger.warning("No emg computation")
 
         return out,outPst
 
@@ -346,7 +346,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         """
         out={}
 
-        logging.info("--stp computation--")
+        LOGGER.logger.info("--stp computation--")
         if self.m_cycles.spatioTemporalCycles is not None :
 
             enableLeftComputation = len ([cycle for cycle in self.m_cycles.spatioTemporalCycles if cycle.enableFlag and cycle.context=="Left"])
@@ -359,11 +359,11 @@ class GaitAnalysisBuilder(AbstractBuilder):
                 if enableRightComputation:
                     out[label,"Right"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.spatioTemporalCycles,label,"Right")
             if enableLeftComputation:
-                logging.info("left stp computation---> done")
+                LOGGER.logger.info("left stp computation---> done")
             if enableRightComputation:
-                logging.info("right stp computation---> done")
+                LOGGER.logger.info("right stp computation---> done")
         else:
-            logging.warning("No spatioTemporal computation")
+            LOGGER.logger.warning("No spatioTemporal computation")
 
         return out
 
@@ -379,7 +379,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         out={}
         outPst={}
 
-        logging.info("--kinematic computation--")
+        LOGGER.logger.info("--kinematic computation--")
         if self.m_cycles.kinematicCycles is not None:
             if "Left" in self.m_kinematicLabelsDict.keys():
                 for label in self.m_kinematicLabelsDict["Left"]:
@@ -389,9 +389,9 @@ class GaitAnalysisBuilder(AbstractBuilder):
                 for label in CGM2cycle.GaitCycle.STP_LABELS:
                     outPst[label,"Left"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.kinematicCycles,label,"Left")
 
-                logging.info("left kinematic computation---> done")
+                LOGGER.logger.info("left kinematic computation---> done")
             else:
-                logging.warning("No left Kinematic computation")
+                LOGGER.logger.warning("No left Kinematic computation")
 
             if "Right" in self.m_kinematicLabelsDict.keys():
                 for label in self.m_kinematicLabelsDict["Right"]:
@@ -401,12 +401,12 @@ class GaitAnalysisBuilder(AbstractBuilder):
                 for label in CGM2cycle.GaitCycle.STP_LABELS:
                     outPst[label,"Right"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.kinematicCycles,label,"Right")
 
-                logging.info("right kinematic computation---> done")
+                LOGGER.logger.info("right kinematic computation---> done")
             else:
-                logging.warning("No right Kinematic computation")
+                LOGGER.logger.warning("No right Kinematic computation")
 
         else:
-            logging.warning("No Kinematic computation")
+            LOGGER.logger.warning("No Kinematic computation")
 
         return out,outPst
 
@@ -425,7 +425,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         outPst={}
         outOptional={}
 
-        logging.info("--kinetic computation--")
+        LOGGER.logger.info("--kinetic computation--")
         if self.m_cycles.kineticCycles is not None:
 
            found_context = list()
@@ -443,9 +443,9 @@ class GaitAnalysisBuilder(AbstractBuilder):
                    for label in self.m_kinematicLabelsDict["Left"]:
                        labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
                        outOptional[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
-                   logging.info("left kinetic computation---> done")
+                   LOGGER.logger.info("left kinetic computation---> done")
                else:
-                   logging.warning("No left Kinetic computation")
+                   LOGGER.logger.warning("No left Kinetic computation")
 
 
 
@@ -464,13 +464,13 @@ class GaitAnalysisBuilder(AbstractBuilder):
                        outOptional[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
 
 
-                   logging.info("right kinetic computation---> done")
+                   LOGGER.logger.info("right kinetic computation---> done")
                else:
-                   logging.warning("No right Kinetic computation")
+                   LOGGER.logger.warning("No right Kinetic computation")
 
 
         else:
-            logging.warning("No Kinetic computation")
+            LOGGER.logger.warning("No Kinetic computation")
 
         return out,outPst,outOptional
 
@@ -488,7 +488,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         out={}
         outPst={}
 
-        logging.info("--emg computation--")
+        LOGGER.logger.info("--emg computation--")
         if self.m_cycles.emgCycles is not None:
 
             for rawLabel in self.m_emgLabelList:
@@ -501,7 +501,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
                 outPst[label,"Right"]= CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Right")
 
         else:
-            logging.warning("No emg computation")
+            LOGGER.logger.warning("No emg computation")
 
         return out,outPst
 

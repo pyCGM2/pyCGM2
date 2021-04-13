@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # pytest -s --disable-pytest-warnings  test_NexusForcePlateId.py::Tests
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import pyCGM2
 from pyCGM2.ForcePlates import forceplates

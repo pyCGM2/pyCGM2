@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import matplotlib.pyplot as plt
 
@@ -34,7 +34,7 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         if isinstance(self.m_input,pyCGM2.btk.btkAcquisition):
             pass
         else:
-            logging.error( "[pyCGM2] error input object type. must be a ma.Trial")
+            LOGGER.logger.error( "[pyCGM2] error input object type. must be a ma.Trial")
 
         self.m_pointLabelSuffix = pointLabelSuffix
 
@@ -139,7 +139,7 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
         if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
             pass
         else:
-            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+            LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
         self.m_pointLabelSuffix = pointLabelSuffix
 
@@ -228,7 +228,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
             pass
         else:
-            logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+            LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
         self.m_pointLabelSuffix = pointLabelSuffix
 
@@ -350,7 +350,7 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
             if isinstance(itAnalysis,pyCGM2.Processing.analysis.Analysis):
                 pass
             else:
-                logging.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+                LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
         self.m_analysis = self.m_input
 

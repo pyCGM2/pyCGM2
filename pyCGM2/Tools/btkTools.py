@@ -1,12 +1,12 @@
 # coding: utf-8
 import numpy as np
 from scipy import spatial
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 
@@ -31,7 +31,7 @@ def smartReader(filename,translators=None):
     # management force plate type 5
     if checkForcePlateExist(acq):
         if "5" in smartGetMetadata(acq,"FORCE_PLATFORM","TYPE"):
-            logging.warning("[pyCGM2] Type 5 Force plate detected. Due to a BTK known-issue,  type 5 force plate has been corrected as type 2")
+            LOGGER.logger.warning("[pyCGM2] Type 5 Force plate detected. Due to a BTK known-issue,  type 5 force plate has been corrected as type 2")
             from pyCGM2.ForcePlates import forceplates # inelegant code but avoir circular import !!
             forceplates.correctForcePlateType5(acq)
 
@@ -108,7 +108,7 @@ def isGap(acq, markerLabel):
     """
     residualValues = acq.GetPoint(markerLabel).GetResiduals()
     if any(residualValues== -1.0):
-        logging.warning("[pyCGM2] gap found for marker (%s)"%(markerLabel))
+        LOGGER.logger.warning("[pyCGM2] gap found for marker (%s)"%(markerLabel))
         return True
     else:
         return False
@@ -143,7 +143,7 @@ def isPointExist(acq,label,ignorePhantom = True):
         frameNumber=  acq.GetPointFrameNumber()
         for it in btk.Iterate(acq.GetPoints()):
             if it.GetLabel() == label:
-                logging.debug("[pyCGM2] marker (%s) is a phantom "% label )
+                LOGGER.logger.debug("[pyCGM2] marker (%s) is a phantom "% label )
                 values = it.GetValues()
                 residuals = it.GetResiduals()
                 if not ignorePhantom:
@@ -164,7 +164,7 @@ def isPointsExist(acq,labels,ignorePhantom=True):
     """
     for label in labels:
         if not isPointExist(acq,label,ignorePhantom=ignorePhantom):
-            logging.warning("[pyCGM2] markers (%s) doesn't exist"% label )
+            LOGGER.logger.debug("[pyCGM2] markers (%s) doesn't exist"% label )
             return False
     return True
 
@@ -179,7 +179,7 @@ def smartAppendPoint(acq,label,values, PointType=btk.btkPoint.Marker,desc="",res
             - `PointType` (enums of btk.btkPoint) - type of Point
     """
 
-    logging.debug("new point (%s) added to the c3d" % label)
+    LOGGER.logger.debug("new point (%s) added to the c3d" % label)
 
     # TODO : si value = 1 lignes alors il faudrait dupliquer la lignes pour les n franes
     # valueProj *np.ones((aquiStatic.GetPointFrameNumber(),3))
@@ -223,10 +223,10 @@ def clearPoints(acq, pointlabelList):
         label =  i.value().GetLabel()
         if label not in pointlabelList:
             i = acq.RemovePoint(i)
-            logging.debug( label + " removed")
+            LOGGER.logger.debug( label + " removed")
         else:
             i.incr()
-            logging.debug( label + " found")
+            LOGGER.logger.debug( label + " found")
 
 
 
@@ -316,7 +316,7 @@ def checkGap(acq, markerList,frameBounds=None):
             begin = frameBounds[0] - ff
             end = frameBounds[1] - ff
             if any (residualValues[begin:end]==-1.0):
-                logging.warning("[pyCGM2] gap found for marker (%s)"%(m))
+                LOGGER.logger.warning("[pyCGM2] gap found for marker (%s)"%(m))
                 flag=True
         else:
             if any(residualValues== -1.0):
@@ -404,7 +404,7 @@ def applyTranslators(acq, translators):
                 label = point.GetLabel()
                 if label in modifiedMarkerList:
                     acqClone.RemovePoint(label)
-                    logging.debug("point (%s) remove in the clone acq  " %((label)))
+                    LOGGER.logger.debug("point (%s) remove in the clone acq  " %((label)))
 
         # Add Modify markers to clone
         for it in translators.items():
@@ -412,15 +412,15 @@ def applyTranslators(acq, translators):
             if initialLabel !="None":
                 if isPointExist(acq,wantedLabel):
                     smartAppendPoint(acqClone,(wantedLabel+"_origin"),acq.GetPoint(wantedLabel).GetValues(),PointType=btk.btkPoint.Marker) # modified marker
-                    logging.warning("wantedLabel (%s)_origin created" %((wantedLabel)))
+                    LOGGER.logger.warning("wantedLabel (%s)_origin created" %((wantedLabel)))
                 if isPointExist(acq,initialLabel):
                     if initialLabel in translators.keys():
                         if translators[initialLabel] == "None":
-                            logging.warning("Initial point (%s)and (%s) point to similar values" %((initialLabel), (wantedLabel)))
+                            LOGGER.logger.warning("Initial point (%s)and (%s) point to similar values" %((initialLabel), (wantedLabel)))
                             smartAppendPoint(acqClone,(wantedLabel),acq.GetPoint(initialLabel).GetValues(),PointType=btk.btkPoint.Marker)
                             smartAppendPoint(acqClone,(initialLabel),acq.GetPoint(initialLabel).GetValues(),PointType=btk.btkPoint.Marker) # keep initial marker
                         elif translators[initialLabel] == wantedLabel:
-                            logging.warning("Initial point (%s) swaped with (%s)" %((initialLabel), (wantedLabel)))
+                            LOGGER.logger.warning("Initial point (%s) swaped with (%s)" %((initialLabel), (wantedLabel)))
                             initialValue = acq.GetPoint(initialLabel).GetValues()
                             wantedlValue = acq.GetPoint(wantedLabel).GetValues()
                             smartAppendPoint(acqClone,(wantedLabel),initialValue,PointType=btk.btkPoint.Marker)
@@ -429,12 +429,12 @@ def applyTranslators(acq, translators):
                             acqClone.RemovePoint(wantedLabel+"_origin")
                             acqClone.RemovePoint(initialLabel+"_origin")
                     else:
-                        logging.warning("Initial point (%s) renamed (%s)  added into the c3d" %((initialLabel), (wantedLabel)))
+                        LOGGER.logger.warning("Initial point (%s) renamed (%s)  added into the c3d" %((initialLabel), (wantedLabel)))
                         smartAppendPoint(acqClone,(wantedLabel),acq.GetPoint(initialLabel).GetValues(),PointType=btk.btkPoint.Marker)
                         smartAppendPoint(acqClone,(initialLabel),acq.GetPoint(initialLabel).GetValues(),PointType=btk.btkPoint.Marker)
 
                 else:
-                    logging.warning("initialLabel (%s) doesn t exist  " %((initialLabel)))
+                    LOGGER.logger.warning("initialLabel (%s) doesn t exist  " %((initialLabel)))
                     #raise Exception ("your translators are badly configured")
 
 
@@ -798,8 +798,8 @@ def buildTrials(dataPath,filenames):
     acqs=[]
     acqFilenames =[]
     for filename in filenames:
-        logging.debug( dataPath)
-        logging.debug( filename)
+        LOGGER.logger.debug( dataPath)
+        LOGGER.logger.debug( filename)
         acq = smartReader(dataPath + filename)
         sortedEvents(acq)
 
@@ -857,7 +857,7 @@ def automaticKineticDetection(dataPath,filenames,acqs=None):
     i=0
     for filename in filenames:
         if filename in kineticFilenames:
-            logging.debug("[pyCGM2] : filename %s duplicated in the input list" %(filename))
+            LOGGER.logger.debug("[pyCGM2] : filename %s duplicated in the input list" %(filename))
         else:
             if acqs is None:
                 acq = smartReader(dataPath + filename)
@@ -936,5 +936,5 @@ def cleanAcq(acq):
             values = it.GetValues()
 
             if np.all(values == np.zeros(3)) or np.all(values==np.array([180,0,180])):
-                logging.info ( "point %s remove from acquisition"%(it.GetLabel()))
+                LOGGER.logger.debug ( "point %s remove from acquisition"%(it.GetLabel()))
                 acq.RemovePoint(it.GetLabel())

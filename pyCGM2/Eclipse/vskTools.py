@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from bs4 import BeautifulSoup
 import string
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
 from pyCGM2.Utils import files
 
@@ -13,7 +13,7 @@ def getVskFiles(path):
     path = path[:-1] if path[-1:]=="\\" else path
     vskFile = files.getFiles(path+"\\",".vsk")
     if len(vskFile)>1:
-        logging.warning("Folder with several vsk. %s selected"%(vskFile[0]))
+        LOGGER.logger.warning("Folder with several vsk. %s selected"%(vskFile[0]))
 
     return vskFile[0]
 
@@ -26,7 +26,7 @@ def checkSetReadOnly(vskfilename):
     file0.close()
 
     if flag:
-        logging.warning("read Only found")
+        LOGGER.logger.warning("read Only found")
         content2 = string.replace(content, 'READONLY="true"', 'READONLY="false"')
 
         with open(vskfilename, "w") as text_file:
@@ -59,7 +59,7 @@ class Vsk(object):
                 try:
                     val = sp.attrs["VALUE"]
                 except KeyError:
-                    logging.warning("static parameter (%s) has no value. Zero return"%(label))
+                    LOGGER.logger.warning("static parameter (%s) has no value. Zero return"%(label))
                     val=0
                 return val
 

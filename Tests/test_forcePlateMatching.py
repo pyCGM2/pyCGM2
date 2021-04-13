@@ -7,11 +7,11 @@ Created on Thu Jul 07 15:14:18 2016
 @author: aaa34169
 """
 
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 
 import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
+
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools

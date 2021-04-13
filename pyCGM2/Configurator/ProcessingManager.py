@@ -3,7 +3,7 @@ import pyCGM2
 from pyCGM2.Configurator import Manager
 from pyCGM2.Utils import files
 from pyCGM2 import enums
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy
 from pyCGM2.Report import normativeDatasets
 

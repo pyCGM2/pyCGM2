@@ -2,10 +2,8 @@
 # from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_translators.py::TestTranslatorScenario::test_scenario1Test
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.WARNING)
 
 
 # pyCGM2

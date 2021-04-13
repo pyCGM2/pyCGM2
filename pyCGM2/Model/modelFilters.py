@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 import copy
 
 try:
     from pyCGM2 import btk
 except:
-    logging.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 
 from pyCGM2.Model import frame
@@ -832,9 +832,9 @@ class ModelJCSFilter(object):
 
 
         for it in  self.m_model.m_jointCollection:
-            logging.debug("---Processing of %s---"  % it.m_label)
-            logging.debug(" proximal : %s "% it.m_proximalLabel)
-            logging.debug(" distal : %s "% it.m_distalLabel)
+            LOGGER.logger.debug("---Processing of %s---"  % it.m_label)
+            LOGGER.logger.debug(" proximal : %s "% it.m_proximalLabel)
+            LOGGER.logger.debug(" distal : %s "% it.m_distalLabel)
 
 
             jointLabel = it.m_label
@@ -874,13 +874,13 @@ class ModelJCSFilter(object):
 
             descriptorInfos = self.m_model.getClinicalDescriptor(enums.DataType.Angle,jointLabel)
             if  descriptorInfos:
-                logging.debug("joint label (%s) in clinical descriptors" %(jointLabel) )
+                LOGGER.logger.debug("joint label (%s) in clinical descriptors" %(jointLabel) )
                 jointFinalValues = np.zeros((jointValues.shape))
                 jointFinalValues[:,0] =  np.rad2deg(descriptorInfos["SaggitalCoeff"] * (jointValues[:,descriptorInfos["SaggitalIndex"]] + descriptorInfos["SaggitalOffset"]))
                 jointFinalValues[:,1] =  np.rad2deg(descriptorInfos["CoronalCoeff"] * (jointValues[:,descriptorInfos["CoronalIndex"]] + descriptorInfos["CoronalOffset"]))
                 jointFinalValues[:,2] =  np.rad2deg(descriptorInfos["TransversalCoeff"] * (jointValues[:,descriptorInfos["TransversalIndex"]] + descriptorInfos["TransversalOffset"]))
             else:
-                logging.debug("no clinical descriptor for joint label (%s)" %(jointLabel) )
+                LOGGER.logger.debug("no clinical descriptor for joint label (%s)" %(jointLabel) )
                 jointFinalValues = np.rad2deg(jointValues)
 
             if self.m_fixEuler:
@@ -976,20 +976,20 @@ class ModelAbsoluteAnglesFilter(object):
             eulerSequence = self.m_eulerSequences[index]
 
             if eulerSequence == "TOR":
-                logging.debug( "segment (%s) - sequence Tilt-Obliquity-Rotation used" %(seg.name) )
+                LOGGER.logger.debug( "segment (%s) - sequence Tilt-Obliquity-Rotation used" %(seg.name) )
             elif eulerSequence == "TRO":
-                logging.debug( "segment (%s) - sequence Tilt-Rotation-Obliquity used" %(seg.name) )
+                LOGGER.logger.debug( "segment (%s) - sequence Tilt-Rotation-Obliquity used" %(seg.name) )
             elif eulerSequence == "ROT":
-                logging.debug( "segment (%s) - sequence Rotation-Obliquity-Tilt used" %(seg.name) )
+                LOGGER.logger.debug( "segment (%s) - sequence Rotation-Obliquity-Tilt used" %(seg.name) )
             elif eulerSequence == "RTO":
-                logging.debug( "segment (%s) - sequence Rotation-Tilt-Obliquity used" %(seg.name) )
+                LOGGER.logger.debug( "segment (%s) - sequence Rotation-Tilt-Obliquity used" %(seg.name) )
             elif eulerSequence == "OTR":
-                logging.debug( "segment (%s) - sequence Obliquity-Tilt-Rotation used" %(seg.name) )
+                LOGGER.logger.debug( "segment (%s) - sequence Obliquity-Tilt-Rotation used" %(seg.name) )
             elif eulerSequence == "ORT":
-                logging.debug( "segment (%s) - sequence Obliquity-Rotation-Tilt used" %(seg.name) )
+                LOGGER.logger.debug( "segment (%s) - sequence Obliquity-Rotation-Tilt used" %(seg.name) )
             else:
                 pass
-                #logging.debug( "segment (%s) - sequence doest recognize - sequence Tilt-Obliquity-Rotation used by default" %(seg.name) )
+                #LOGGER.logger.debug( "segment (%s) - sequence doest recognize - sequence Tilt-Obliquity-Rotation used by default" %(seg.name) )
 
 
             for i in range (0, self.m_aqui.GetPointFrameNumber()):
@@ -1021,7 +1021,7 @@ class ModelAbsoluteAnglesFilter(object):
                 elif eulerSequence == "XZY":
                     tilt,obliquity,rotation = euler.euler_xzy(Rrelative)#,similarOrder = False)
                 else:
-                    logging.debug("no sequence defined for absolute angles. sequence YXZ selected by default" )
+                    LOGGER.logger.debug("no sequence defined for absolute angles. sequence YXZ selected by default" )
                     tilt,obliquity,rotation = euler.euler_yxz(Rrelative)
 
                 absoluteAngleValues[i,0] = tilt
@@ -1051,7 +1051,7 @@ class ModelAbsoluteAnglesFilter(object):
                                          absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
                 else:
-                    logging.debug("no clinical descriptor for segment label (%s)" %(segName))
+                    LOGGER.logger.debug("no clinical descriptor for segment label (%s)" %(segName))
                     absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValues)
 
                     fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else self.m_angleLabels[index]+"Angles"
@@ -1123,7 +1123,7 @@ class ModelAbsoluteAnglesFilter(object):
                                          absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
 
                 if not descriptorInfos1 and not descriptorInfos2 and not descriptorInfos3:
-                    logging.debug("no clinical descriptor for segment label (%s)" %(segName))
+                    LOGGER.logger.debug("no clinical descriptor for segment label (%s)" %(segName))
                     absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValues)
 
                     fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else self.m_angleLabels[index]+"Angles"
@@ -1203,7 +1203,7 @@ class ForcePlateAssemblyFilter(object):
                 right_momentValues = right_momentValues + fpwc.GetItem(i).GetMoment().GetValues()[::appf]
 
             else:
-                logging.debug("force plate %i sans donnees" %(i))
+                LOGGER.logger.debug("force plate %i sans donnees" %(i))
             i+=1
 
         if "L" in self.m_mappedForcePlate:
@@ -1216,7 +1216,7 @@ class ForcePlateAssemblyFilter(object):
             bodymass = self.m_model.mp["Bodymass"]
         else:
             bodymass = 1.0
-            logging.warning("[pyCGM2] - bodymass is not within your mp data. non-normalized GroundReaction Force and Moment ouput")
+            LOGGER.logger.warning("[pyCGM2] - bodymass is not within your mp data. non-normalized GroundReaction Force and Moment ouput")
 
         forceLabel  = "LGroundReactionForce_"+pointLabelSuffix if pointLabelSuffix is not None else "LGroundReactionForce"
         momentLabel  = "LGroundReactionMoment_"+pointLabelSuffix if pointLabelSuffix is not None else "LGroundReactionMoment"
@@ -1325,9 +1325,9 @@ class InverseDynamicFilter(object):
         for it in  self.m_model.m_jointCollection:
 
             if it.m_label not in ["ForeFoot"]:  # TODO : clumpsy... :-(  Think about a new method
-                logging.debug("kinetics of %s"  %(it.m_label))
-                logging.debug("proximal label :%s" %(it.m_proximalLabel))
-                logging.debug("distal label :%s" %(it.m_distalLabel))
+                LOGGER.logger.debug("kinetics of %s"  %(it.m_label))
+                LOGGER.logger.debug("proximal label :%s" %(it.m_proximalLabel))
+                LOGGER.logger.debug("distal label :%s" %(it.m_distalLabel))
 
                 jointLabel = it.m_label
                 nFrames = self.m_aqui.GetPointFrameNumber()
@@ -1513,9 +1513,9 @@ class JointPowerFilter(object):
 
         for it in  self.m_model.m_jointCollection:
             if "ForeFoot" not in it.m_label:
-                logging.debug("power of %s"  %(it.m_label))
-                logging.debug("proximal label :%s" %(it.m_proximalLabel))
-                logging.debug("distal label :%s" %(it.m_distalLabel))
+                LOGGER.logger.debug("power of %s"  %(it.m_label))
+                LOGGER.logger.debug("proximal label :%s" %(it.m_proximalLabel))
+                LOGGER.logger.debug("distal label :%s" %(it.m_distalLabel))
 
                 if self.m_model.getSegment(it.m_distalLabel).m_proximalWrench is not None:
                     jointLabel = it.m_label
@@ -1576,7 +1576,7 @@ class CoordinateSystemDisplayFilter(object):
                                                         definition["coordinateSystemLabel"],
                                                         referential = definition["referentialType"] )
                 else:
-                    logging.info("[pyCGM2] - referential not display because the segment [%s] is not in the model segment list "%(definition["segmentLabel"]))
+                    LOGGER.logger.info("[pyCGM2] - referential not display because the segment [%s] is not in the model segment list "%(definition["segmentLabel"]))
 
         else:
             for definition in definitions:
@@ -1586,7 +1586,7 @@ class CoordinateSystemDisplayFilter(object):
                                                         definition["coordinateSystemLabel"],
                                                         referential = definition["referentialType"] )
                 else:
-                    logging.info("[pyCGM2] - referential not display because the segment [%s] is not in the model segment list "%(definition["segmentLabel"]))
+                    LOGGER.logger.info("[pyCGM2] - referential not display because the segment [%s] is not in the model segment list "%(definition["segmentLabel"]))
 
 
 class CentreOfMassFilter(object):
@@ -1637,7 +1637,7 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
         self.m_threshold = threshold
         # self.m_virtual=dict()
 
-        logging.info("[pyCGM2] threshold of the Naim's correction method : %s"%(threshold))
+        LOGGER.logger.info("[pyCGM2] threshold of the Naim's correction method : %s"%(threshold))
 
     def correct(self):
         """
@@ -1660,7 +1660,7 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
             else:
                 raise Exception("[pyCGM2] : side not recognized ( Left or Right only)")
 
-            logging.warning("Naim knee Correction on the %s side "%(side))
+            LOGGER.logger.warning("Naim knee Correction on the %s side "%(side))
             seg = self.m_model.getSegment(side+" Thigh")
 
             hjc = self.m_model.getSegment(side+" Thigh").anatomicalFrame.getNodeTrajectory(letter+"HJC")
@@ -1725,7 +1725,7 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
                 seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
-            logging.warning("[pyCGM2] : %s thigh anatomical frame motion corrected according Naim et al, 2019"%(side))
+            LOGGER.logger.warning("[pyCGM2] : %s thigh anatomical frame motion corrected according Naim et al, 2019"%(side))
 
 
 class ModelMotionCorrectionFilter(object):

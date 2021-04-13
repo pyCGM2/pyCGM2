@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import argparse
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import os,sys
 import pyCGM2
 from pyCGM2.Utils import files

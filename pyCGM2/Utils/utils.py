@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pyCGM2
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 def toBool(text):
     return True if text == "True" else False
@@ -21,7 +21,7 @@ def checkSimilarElement(listData):
             return it
         return True
     else:
-        logging.error("[pyCGM2] items are different in the inputed list" )
+        LOGGER.logger.error("[pyCGM2] items are different in the inputed list" )
         return False
 
 def getSimilarElement(listData):

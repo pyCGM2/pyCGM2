@@ -3,7 +3,7 @@ import pyCGM2
 from pyCGM2.Configurator import Manager
 from pyCGM2.Utils import files
 from pyCGM2 import enums
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy
 from pyCGM2.Eclipse import vskTools,eclipse
 import os
@@ -85,7 +85,7 @@ class CGM1ConfigManager(ModelConfigManager):
             else:
                 self._internSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1-pyCGM2.settings")
         else:
-            logging.info("Local internal setting found")
+            LOGGER.logger.info("Local internal setting found")
             self._internSettings = self._localInternalSettings
 
 

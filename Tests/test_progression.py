@@ -14,10 +14,8 @@ TODO : these cases are lacking :
 """
 
 import numpy as np
-import logging
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-import pyCGM2
-from pyCGM2 import log; log.setLoggingLevel(logging.INFO)
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Utils import utils

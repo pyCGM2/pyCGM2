@@ -2070,7 +2070,7 @@ class GoldbergProcedure(object):
 #                         if not pass_rules:
 #                             if alternativeId>0:
 #                                 rules.loc[rules["Id"] == alternativeId, "Activate"] = 1.0
-#                                 logging.warning("rules (%i) activated" %(alternativeId) )
+#                                 LOGGER.logger.warning("rules (%i) activated" %(alternativeId) )
 #
 #                         if comment is not None:
 #
