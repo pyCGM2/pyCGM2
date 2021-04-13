@@ -19,7 +19,7 @@ if developMode:
 if sys.maxsize < 2**32:
     raise Exception ("32-bit python version detected. PyCGM2-python3 requires a 64 bits python version")
 
-VERSION ="4.0.2"
+VERSION ="4.1.0"
 
 # just get one of the site-package and install there (it can be dist-package)
 SITE_PACKAGE_PATH = site.getsitepackages()[0] + "\\"
@@ -251,6 +251,8 @@ setup(name = 'pyCGM2',
                 'QTM_CGM22_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM22_workflow:command',
                 'QTM_CGM23_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM23_workflow:command',
                 'QTM_CGM24_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM24_workflow:command',
+                'QTM_CGM25_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM25_workflow:command',
+                'QTM_CGM26_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM26_workflow:command',
 
           ]
       },
