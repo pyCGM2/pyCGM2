@@ -125,7 +125,8 @@ def main():
             mfpa,
             momentProjection,
             forceBtkAcq=acq,
-            ikAccuracy = ikAccuracy)
+            ikAccuracy = ikAccuracy,
+            anomalyException=args.anomalyException)
 
 
         # ----------------------DISPLAY ON VICON-------------------------------
