@@ -8,6 +8,7 @@ from pyCGM2.EMG import emgFilters
 
 from pyCGM2.Tools import btkTools
 from pyCGM2.Lib import analysis, plot
+from pyCGM2.Lib import emg
 
 from pyCGM2.Report import plot as reportPlot
 from pyCGM2.Report import plotFilters,emgPlotViewers
@@ -108,7 +109,7 @@ class Test_highLevel:
     def test_temporalEmgPlot(self):
         DATA_PATH, modelledFilenames,acq = dataTest2()
 
-        analysis.processEMG(DATA_PATH, modelledFilenames, emgChannels,
+        emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
             highPassFrequencies=[20,200],envelopFrequency=6.0,
             fileSuffix=None,outDataPath=None)
 

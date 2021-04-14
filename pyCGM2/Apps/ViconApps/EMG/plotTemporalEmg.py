@@ -26,6 +26,7 @@ import pyCGM2
 from pyCGM2.Utils import files
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
+from pyCGM2.Lib import emg
 from pyCGM2.Report import normativeDatasets
 
 from pyCGM2.Nexus import nexusFilters,nexusTools
@@ -96,7 +97,7 @@ def main():
         EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES  =  manager.getEmgConfiguration()
 
 
-        analysis.processEMG_fromBtkAcq(acq, EMG_LABELS,
+        emg.processEMG_fromBtkAcq(acq, EMG_LABELS,
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
 

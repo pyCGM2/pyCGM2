@@ -25,6 +25,7 @@ import pyCGM2
 from pyCGM2.Utils import files
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
+from pyCGM2.Lib import emg
 
 from pyCGM2.Nexus import nexusFilters,nexusTools
 from pyCGM2.Eclipse import eclipse
@@ -93,7 +94,7 @@ def main():
 
     if  ECLIPSE_MODE:
 
-        analysis.processEMG(DATA_PATH, inputFiles, EMG_LABELS, highPassFrequencies=bandPassFilterFrequencies,
+        emg.processEMG(DATA_PATH, inputFiles, EMG_LABELS, highPassFrequencies=bandPassFilterFrequencies,
                 envelopFrequency=envelopCutOffFrequency)
 
         if len(inputFiles) == 2:
@@ -107,7 +108,7 @@ def main():
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
 
-            analysis.normalizedEMG(analysisInstance1,EMG_LABELS,EMG_CONTEXT,method="MeanMax", fromOtherAnalysis=None)
+            emg.normalizedEMG(analysisInstance1,EMG_LABELS,EMG_CONTEXT,method="MeanMax", fromOtherAnalysis=None)
 
             analysisInstance2 = analysis.makeAnalysis(DATA_PATH,
                                 [inputFiles[1]],
@@ -118,7 +119,7 @@ def main():
                                 pointLabelSuffix=None,
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
-            analysis.normalizedEMG(analysisInstance2,EMG_LABELS,EMG_CONTEXT,method="MeanMax", fromOtherAnalysis=analysisInstance1)
+            emg.normalizedEMG(analysisInstance2,EMG_LABELS,EMG_CONTEXT,method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
             # outputName = "Eclipse - CompareNormalizedKinematics"
         #
