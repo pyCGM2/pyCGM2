@@ -258,6 +258,12 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     trackingMarkers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS + cgm.CGM1.THORAX_TRACKING_MARKERS+ cgm.CGM1.UPPERLIMB_TRACKING_MARKERS
     actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqGait, trackingMarkers)
     vff,vlf = btkTools.getFrameBoundaries(acqGait,actual_trackingMarkers)
+    if "frameInit" in kwargs.keys() and kwargs["frameInit"] is not None:
+        vff = kwargs["frameInit"]
+        LOGGER.logger.info("[pyCGM2]  first frame forced to frame [%s]"%(vff))
+    if "frameEnd" in kwargs.keys() and kwargs["frameEnd"] is not None:
+        vlf = kwargs["frameEnd"]
+        LOGGER.logger.info("[pyCGM2]  end frame forced to frame [%s]"%(vlf))
     flag = btkTools.getValidFrames(acqGait,actual_trackingMarkers,frameBounds=[vff,vlf])
 
     # --------------------ANOMALY------------------------------

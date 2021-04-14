@@ -47,6 +47,8 @@ def main():
     parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     parser.add_argument('-a','--accuracy', type=float, help='Inverse Kinematics accuracy')
     parser.add_argument('-ae','--anomalyException', action='store_true', help='stop if anomaly detected ')
+    parser.add_argument('-fi','--frameInit',type=int,  help='first frame to process')
+    parser.add_argument('-fe','--frameEnd',type=int,  help='last frame to process')
     args = parser.parse_args()
 
 
@@ -127,7 +129,8 @@ def main():
             mfpa,
             momentProjection,forceBtkAcq=acq,
             anomalyException=args.anomalyException,
-            ikAccuracy = ikAccuracy)
+            ikAccuracy = ikAccuracy,
+            frameInit= args.frameInit, frameEnd= args.frameEnd ))
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,finalAcqGait,subject,pointSuffix).run()

@@ -42,6 +42,9 @@ def main():
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('-ae','--anomalyException', action='store_true', help='stop if anomaly detected ')
+    parser.add_argument('-fi','--frameInit',type=int,  help='first frame to process')
+    parser.add_argument('-fe','--frameEnd',type=int,  help='last frame to process')
+
     args = parser.parse_args()
 
 
@@ -115,7 +118,9 @@ def main():
             markerDiameter,
             pointSuffix,
             mfpa,momentProjection,
-            forceBtkAcq=acq, anomalyException=args.anomalyException)
+            forceBtkAcq=acq,
+            anomalyException=args.anomalyException,
+            frameInit= args.frameInit, frameEnd= args.frameEnd )
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,acqGait,subject,pointSuffix).run()

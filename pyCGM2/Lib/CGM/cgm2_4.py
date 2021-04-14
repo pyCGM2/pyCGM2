@@ -285,6 +285,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             except:
                 LOGGER.logger.error("[pyCGM2] - IK solver fails")
                 acqStaticIK = acqStatic
+                detectAnomaly = True
             LOGGER.logger.info("-----------------------------------------------")
 
 
@@ -378,6 +379,12 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     trackingMarkers = cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_4.THORAX_TRACKING_MARKERS+ cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS
     actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqGait, trackingMarkers)
     vff,vlf = btkTools.getFrameBoundaries(acqGait,actual_trackingMarkers)
+    if "frameInit" in kwargs.keys() and kwargs["frameInit"] is not None:
+        vff = kwargs["frameInit"]
+        LOGGER.logger.info("[pyCGM2]  first frame forced to frame [%s]"%(vff))
+    if "frameEnd" in kwargs.keys() and kwargs["frameEnd"] is not None:
+        vlf = kwargs["frameEnd"]
+        LOGGER.logger.info("[pyCGM2]  end frame forced to frame [%s]"%(vlf))
     flag = btkTools.getValidFrames(acqGait,actual_trackingMarkers,frameBounds=[vff,vlf])
 
     LOGGER.logger.info("[pyCGM2]  Computation from frame [%s] to frame [%s]"%(vff,vlf))
@@ -564,6 +571,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         except:
             LOGGER.logger.error("[pyCGM2] - IK solver fails")
             acqIK = acqGait
+            detectAnomaly = True
         LOGGER.logger.info("---------------------------------------------------")
 
     # eventual gait acquisition to consider for joint kinematics
