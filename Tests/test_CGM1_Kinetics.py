@@ -26,7 +26,7 @@ class Test_FullBody:
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -47,7 +47,7 @@ class Test_FullBody:
         mfpa = "RLXX"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -83,7 +83,7 @@ class Test_FullBody:
         mfpa = "LRLX"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -129,7 +129,7 @@ class Test_FullBody:
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -150,7 +150,7 @@ class Test_FullBody:
         mfpa = "RLXX"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -184,7 +184,7 @@ class Test_FullBody:
         mfpa = "LRLX"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -228,7 +228,7 @@ class Test_FullBody:
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -249,7 +249,7 @@ class Test_FullBody:
         mfpa = "RLXX"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -284,7 +284,7 @@ class Test_FullBody:
         mfpa = "LRLX"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -329,7 +329,7 @@ class Test_LowerBody_progressionY:
         vsk = vskTools.Vsk(DATA_PATH + "Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -350,7 +350,7 @@ class Test_LowerBody_progressionY:
         mfpa = "RLX"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -383,7 +383,7 @@ class Test_LowerBody_progressionY:
         mfpa = "XLR"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -425,7 +425,7 @@ class Test_LowerBody_progressionY:
         vsk = vskTools.Vsk(DATA_PATH + "Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -446,7 +446,7 @@ class Test_LowerBody_progressionY:
         mfpa = "RLX"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -481,7 +481,7 @@ class Test_LowerBody_progressionY:
         mfpa = "XLR"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -523,7 +523,7 @@ class Test_LowerBody_progressionY:
         vsk = vskTools.Vsk(DATA_PATH + "Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -544,7 +544,7 @@ class Test_LowerBody_progressionY:
         mfpa = "RLX"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -579,7 +579,7 @@ class Test_LowerBody_progressionY:
         mfpa = "XLR"
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,

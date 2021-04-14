@@ -35,7 +35,7 @@ class Test_FullBody:
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -105,7 +105,7 @@ class Test_FullBody:
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -198,7 +198,7 @@ class Test_LowerBody():
         'RightThighRotation' :  0,#0,
         'RightShankRotation' : 0}
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -242,7 +242,7 @@ class Test_LowerBody():
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -306,7 +306,7 @@ class Test_LowerBody():
         'RightThighRotation' :  0,#0,
         'RightShankRotation' : 0}
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -350,7 +350,7 @@ class Test_LowerBody():
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -412,7 +412,7 @@ class Test_LowerBody():
         'RightThighRotation' :  0,#0,
         'RightShankRotation' : 0}
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -457,7 +457,7 @@ class Test_LowerBody():
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -517,7 +517,7 @@ class Test_LowerBody():
         'RightThighRotation' :  0,#0,
         'RightShankRotation' : 0}
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -562,7 +562,7 @@ class Test_LowerBody():
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,

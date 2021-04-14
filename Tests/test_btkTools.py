@@ -4,7 +4,7 @@
 import pyCGM2
 from pyCGM2.Utils import files
 from pyCGM2.Tools import btkTools
-try: 
+try:
     from pyCGM2 import btk
 except:
     LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
@@ -61,7 +61,6 @@ class Test_Btk:
 
         btkTools.getVisibleMarkersAtFrame(acq,["LASI","RASI"],0)
         btkTools.isAnalogExist(acq,"emg-Hän")
-        btkTools.createZeros(acq, ["LASI","RASI"])
         btkTools.constructEmptyMarker(acq,"zéros",desc="Hän")
 
         btkTools.getStartEndEvents(acq,"Left")

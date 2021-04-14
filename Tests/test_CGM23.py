@@ -5,7 +5,7 @@
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import pyCGM2
-from pyCGM2 import log; log.setloggerLevel(LOGGER.logger.DEBUG)
+
 
 from pyCGM2.Utils import files
 from pyCGM2.Tools import  btkTools
@@ -34,6 +34,14 @@ class Test_CGM23:
         'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
+        'LeftShoulderOffset' : 0,
+        'RightShoulderOffset' : 0,
+        'LeftElbowWidth' : 0,
+        'LeftWristWidth' : 0,
+        'LeftHandThickness' : 0,
+        'RightElbowWidth' : 0,
+        'RightWristWidth' : 0,
+        'RightHandThickness' : 0
         }
         optional_mp = {
             'LeftTibialTorsion' : 0,
@@ -138,6 +146,14 @@ class Test_CGM23:
         'RightAnkleWidth' : 72.9,
         'LeftSoleDelta' : 0,
         'RightSoleDelta' : 0,
+        'LeftShoulderOffset' : 0,
+        'RightShoulderOffset' : 0,
+        'LeftElbowWidth' : 0,
+        'LeftWristWidth' : 0,
+        'LeftHandThickness' : 0,
+        'RightElbowWidth' : 0,
+        'RightWristWidth' : 0,
+        'RightHandThickness' : 0
         }
         optional_mp = {
             'LeftTibialTorsion' : 0,
@@ -150,7 +166,7 @@ class Test_CGM23:
 
         settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
 
-        model,finalAcqStatic = cgm2_3.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm2_3.calibrate(DATA_PATH,
             staticFilename,
             settings["Translators"],
             settings["Fitting"]["Weight"],
@@ -167,7 +183,7 @@ class Test_CGM23:
             noKinematicsCalculation=False)
 
 
-        acqGait = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             settings["Translators"],
             settings,
             True,14.0,
