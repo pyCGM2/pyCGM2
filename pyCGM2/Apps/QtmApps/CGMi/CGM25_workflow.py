@@ -188,6 +188,14 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
         if anomaly["ErrorState"]:
             raise Exception ("[pyCGM2] Badly gait event detection. check the log file")
 
+        if dynamicMeasurement.First_frame_to_process.text != "":
+            vff = int(dynamicMeasurement.First_frame_to_process.text)
+        else: vff = None
+
+        if dynamicMeasurement.Last_frame_to_process.text != "":
+            vlf = int(dynamicMeasurement.Last_frame_to_process.text)
+        else: vlf = None
+
 
         # fitting operation
         # -----------------------
@@ -203,7 +211,8 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
             fc_lowPass_forcePlate = fc_fp,
             order_lowPass_forcePlate = order_fp,
             anomalyException=anomalyException,
-            ikAccuracy = ikAccuracy)
+            ikAccuracy = ikAccuracy,
+            frameInit= vff, frameEnd= vlf )
 
 
         outFilename = reconstructFilenameLabelled

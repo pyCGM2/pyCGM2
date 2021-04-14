@@ -161,6 +161,14 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
             raise Exception ("[pyCGM2] Badly gait event detection. check the log file")
 
 
+        if dynamicMeasurement.First_frame_to_process.text != "":
+            vff = int(dynamicMeasurement.First_frame_to_process.text)
+        else: vff = None
+
+        if dynamicMeasurement.Last_frame_to_process.text != "":
+            vlf = int(dynamicMeasurement.Last_frame_to_process.text)
+        else: vlf = None
+
         # fitting operation
         # -----------------------
         acqGait, detectAnomaly = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
@@ -172,7 +180,8 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
             order_lowPass_marker=order_marker,
             fc_lowPass_forcePlate = fc_fp,
             order_lowPass_forcePlate = order_fp,
-            anomalyException=anomalyException)
+            anomalyException=anomalyException,
+            frameInit= vff, frameEnd= vlf )
 
         outFilename = reconstructFilenameLabelled
         btkTools.smartWriter(acqGait, str(DATA_PATH + outFilename))
