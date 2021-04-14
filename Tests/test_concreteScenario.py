@@ -34,7 +34,7 @@ class Test_Data_withNoFP:
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -55,7 +55,7 @@ class Test_Data_withNoFP:
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -84,7 +84,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -105,7 +105,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -113,7 +113,7 @@ class Test_DifferentStaticDynamicMarkerSet:
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        assert model.m_bodypart  == enums.BodyPart.LowerLimbTrunk
+        assert model.m_bodypart  == enums.BodyPart.FullBody
 
 
     def test_CGM1_FullBody_noOptions_uncorrectThoraxMarker(self):
@@ -133,7 +133,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -153,7 +153,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -161,7 +161,7 @@ class Test_DifferentStaticDynamicMarkerSet:
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        assert model.m_bodypart  == enums.BodyPart.LowerLimb
+        assert model.m_bodypart  == enums.BodyPart.FullBody
 
     def test_CGM1_FullBody_noOptions_uncorrectPelvisMarker(self):
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "Scenarii\\different static and dynamic marker set\CGM1-fullBody\\"
@@ -180,7 +180,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,
@@ -200,7 +200,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm1.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             None,
             markerDiameter,
             pointSuffix,
@@ -208,7 +208,7 @@ class Test_DifferentStaticDynamicMarkerSet:
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        assert model.m_bodypart  == enums.BodyPart.UpperLimb
+        assert model.m_bodypart  == enums.BodyPart.FullBody
 
 
     def test_CGM24_FullBody_noOptions_uncorrectUpperLimbMarker(self):
@@ -235,7 +235,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         # if not translators:  translators = settings["Translators"]
 
 
-        model,finalAcqStatic = cgm2_4.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm2_4.calibrate(DATA_PATH,
             staticFilename,
             translators,
             settings,
@@ -258,7 +258,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm2_4.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm2_4.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,
             settings,
             False,
@@ -268,7 +268,7 @@ class Test_DifferentStaticDynamicMarkerSet:
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        assert model.m_bodypart  == enums.BodyPart.LowerLimbTrunk
+        assert model.m_bodypart  == enums.BodyPart.FullBody
 
     def test_CGM24_FullBody_noOptions_uncorrectThoraxMarker(self):
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "Scenarii\\different static and dynamic marker set\\CGM24-fullBody\\"
@@ -294,7 +294,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         # if not translators:  translators = settings["Translators"]
 
 
-        model,finalAcqStatic = cgm2_4.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm2_4.calibrate(DATA_PATH,
             staticFilename,
             translators,
             settings,
@@ -317,7 +317,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm2_4.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm2_4.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,
             settings,
             False,
@@ -327,7 +327,7 @@ class Test_DifferentStaticDynamicMarkerSet:
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        assert model.m_bodypart  == enums.BodyPart.LowerLimb
+        assert model.m_bodypart  == enums.BodyPart.FullBody
 
     def test_CGM24_FullBody_noOptions_uncorrectLowerLimbMarker(self):
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "Scenarii\\different static and dynamic marker set\\CGM24-fullBody\\"
@@ -353,7 +353,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         # if not translators:  translators = settings["Translators"]
 
 
-        model,finalAcqStatic = cgm2_4.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm2_4.calibrate(DATA_PATH,
             staticFilename,
             translators,
             settings,
@@ -376,7 +376,7 @@ class Test_DifferentStaticDynamicMarkerSet:
         mfpa = None
         reconstructFilenameLabelled = gaitFilename
 
-        acqGait = cgm2_4.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+        acqGait,error = cgm2_4.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,
             settings,
             False,
@@ -386,4 +386,4 @@ class Test_DifferentStaticDynamicMarkerSet:
             enums.MomentProjection.Proximal,
             displayCoordinateSystem=True)
 
-        assert model.m_bodypart  == enums.BodyPart.UpperLimb
+        assert model.m_bodypart  == enums.BodyPart.FullBody

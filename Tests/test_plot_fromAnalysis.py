@@ -263,7 +263,7 @@ class Test_highLevel:
         emg.normalizedEMG(analysisInstance1, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None)
         emg.normalizedEMG(analysisInstance2, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
-        fig = plot.compareEmgEnvelops([analysisInstance1,analysisInstance2], ["Session1", "Session2"],
+        fig = plot.compareEmgEnvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],
             emgChannels, muscles, contexts, normalActivityEmgs,
             normalized=True,
             plotType="Descriptive",show=False,title=None,type="Gait")
@@ -283,7 +283,7 @@ class Test_highLevel:
         emg.normalizedEMG(analysisInstance2, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
 
-        fig = plot.compareSelectedEmgEvelops([analysisInstance1,analysisInstance2], ["Session1", "Session2"],
+        fig = plot.compareSelectedEmgEvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],
                 ["Voltage.EMG1","Voltage.EMG1"],["Left","Left"],normalized=True,
                 plotType="Descriptive",type="Gait",show=False,title=None)
 

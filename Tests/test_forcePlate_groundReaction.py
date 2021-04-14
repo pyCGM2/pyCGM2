@@ -30,7 +30,7 @@ class Test_groundReactionForcePlate():
         required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
 
         # calibration according CGM1
-        model,finalAcqStatic = cgm1.calibrate(DATA_PATH,
+        model,finalAcqStatic,error = cgm1.calibrate(DATA_PATH,
             staticFilename,
             None,
             required_mp,

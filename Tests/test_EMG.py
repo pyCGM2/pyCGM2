@@ -21,19 +21,37 @@ class Test_EMG:
         # trials
         emg.processEMG(DATA_PATH, ["trial 01.c3d","trial 02.c3d","trial 03.c3d"], EMG_LABELS,fileSuffix ="filtered" )
         emgprocessFiles  = [it[0:it.rfind(".")]+"_filtered.c3d" for it in ["trial 01.c3d","trial 02.c3d","trial 03.c3d"]]
-        emgAnalysisInstance = analysis.makeEmgAnalysis(DATA_PATH, emgprocessFiles, EMG_LABELS, type="unknow")
 
+        emgAnalysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            emgprocessFiles,
+                            type="unknow",
+                            kinematicLabelsDict=None,
+                            kineticLabelsDict=None,
+                            emgChannels = EMG_LABELS
+                            )
 
         # MVCTA
         emg.processEMG(DATA_PATH, ["mvc TA 01.c3d","mvc TA 01.c3d","mvc TA 01.c3d"], EMG_LABELS,fileSuffix ="filtered" )
         emgprocessFilesMvc  = [it[0:it.rfind(".")]+"_filtered.c3d" for it in ["mvc TA 01.c3d","mvc TA 01.c3d","mvc TA 01.c3d"]]
-        emgAnalysisInstanceMvcTA = analysis.makeEmgAnalysis(DATA_PATH, emgprocessFilesMvc, EMG_LABELS, type="unknow")
-
+        emgAnalysisInstanceMvcTA = analysis.makeAnalysis(DATA_PATH,
+                            emgprocessFilesMvc,
+                            type="unknow",
+                            kinematicLabelsDict=None,
+                            kineticLabelsDict=None,
+                            emgChannels = EMG_LABELS
+                            )
 
         # MVCTA
         emg.processEMG(DATA_PATH, ["mvc SOL 01.c3d","mvc SOL 01.c3d","mvc SOL 01.c3d"], EMG_LABELS,fileSuffix ="filtered" )
         emgprocessFilesMvc  = [it[0:it.rfind(".")]+"_filtered.c3d" for it in ["mvc SOL 01.c3d","mvc SOL 01.c3d","mvc SOL 01.c3d"]]
-        emgAnalysisInstanceMvcSOL = analysis.makeEmgAnalysis(DATA_PATH, emgprocessFilesMvc, EMG_LABELS, type="unknow")
+        emgAnalysisInstanceMvcSOL = analysis.makeAnalysis(DATA_PATH,
+                            emgprocessFilesMvc,
+                            type="unknow",
+                            kinematicLabelsDict=None,
+                            kineticLabelsDict=None,
+                            emgChannels = EMG_LABELS
+                            )
+
 
         mvc_settings = {"Voltage.EMG7": emgAnalysisInstanceMvcTA,
                         "Voltage.EMG9": emgAnalysisInstanceMvcSOL,
