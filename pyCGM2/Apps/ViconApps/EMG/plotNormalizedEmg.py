@@ -62,6 +62,7 @@ def main():
         DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
         inputFile = inputFileNoExt+".c3d"
 
+    LOGGER.set_file_handler(DATA_PATH+"pyCGM2.log")
     #--------------------------settings-------------------------------------
     if os.path.isfile(DATA_PATH + "emg.settings"):
         emgSettings = files.openFile(DATA_PATH,"emg.settings")
@@ -103,17 +104,20 @@ def main():
         analysis.processEMG_fromBtkAcq(acq, EMG_LABELS,
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
+        
 
         emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS,btkAcqs = [acq])
 
         outputName = inputFile
     else:
+
         analysis.processEMG(DATA_PATH, inputFiles, EMG_LABELS, highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency)
 
         emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, inputFiles, EMG_LABELS)
 
         outputName = "Eclipse -  NormalizedEMG"
+
 
     if not consistencyFlag:
         plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False,exportPdf=True,outputName=outputName)
