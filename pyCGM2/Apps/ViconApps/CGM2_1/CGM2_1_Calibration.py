@@ -1,4 +1,4 @@
-model,acqStatic,detectAnomaly =# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Nexus Operation : **CGM2.1 Calibration**
 
 :param -l, --leftFlatFoot [int]: enable or disable the flat foot option on the left foot
