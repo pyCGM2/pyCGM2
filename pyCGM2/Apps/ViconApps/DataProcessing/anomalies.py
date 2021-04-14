@@ -60,12 +60,12 @@ def main():
         markers = args.markers
         # markers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS
 
-        madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( markers, plot=False, window=10,threshold = 3)
+        madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( markers, plot=False, window=5,threshold = 3)
         adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename,madp)
-        anomalyIndexes = adf.run()
+        anomaly = adf.run()
 
         if not args.noCorrection:
-            macp = AnomalyCorrectionProcedure.MarkerAnomalyCorrectionProcedure(markers,anomalyIndexes,plot=False,distance_threshold=20)
+            macp = AnomalyCorrectionProcedure.MarkerAnomalyCorrectionProcedure(markers,anomaly["Output"],plot=False,distance_threshold=20)
             acf = AnomalyFilter.AnomalyCorrectionFilter(acq,filename,macp)
             acqo = acf.run()
 
