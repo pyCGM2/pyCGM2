@@ -487,7 +487,6 @@ class GaitAnalysisBuilder(AbstractBuilder):
 
         out={}
         outPst={}
-
         LOGGER.logger.info("--emg computation--")
         if self.m_cycles.emgCycles is not None:
 
@@ -497,8 +496,12 @@ class GaitAnalysisBuilder(AbstractBuilder):
 
 
             for label in CGM2cycle.GaitCycle.STP_LABELS:
-                outPst[label,"Left"]= CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Left")
-                outPst[label,"Right"]= CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Right")
+                try:
+                    outPst[label,"Left"]= CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Left")
+                    outPst[label,"Right"]= CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Right")
+                except KeyError:
+                    LOGGER.logger.warning("the spatio temporal paramater %s is not computed"%(label))
+
 
         else:
             LOGGER.logger.warning("No emg computation")
