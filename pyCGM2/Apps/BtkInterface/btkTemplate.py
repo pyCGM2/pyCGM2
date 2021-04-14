@@ -38,6 +38,7 @@ def main():
         DATA_PATH, filename = NEXUS.GetTrialName()
 
         LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2.log")
         LOGGER.logger.info( " file: "+ filename)
 
 
