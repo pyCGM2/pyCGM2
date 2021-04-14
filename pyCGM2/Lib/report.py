@@ -16,6 +16,9 @@ def pdfGaitReport(DATA_PATH,model,modelledTrials, normativeDataset,pointSuffix, 
                             subjectInfo=None, experimentalInfo=None,modelInfo=None,
                             )
 
+
+    analysis.exportAnalysis(analysisInstance,DATA_PATH,title, mode="Advanced")
+
     with PdfPages(DATA_PATH + title+".pdf") as pdf:
         # spatiotemporal
         plot.plot_spatioTemporal(DATA_PATH,analysisInstance,
