@@ -8,12 +8,13 @@ from pyCGM2 import enums
 
 def pdfGaitReport(DATA_PATH,model,modelledTrials, normativeDataset,pointSuffix, title = "gait report"):
 
-    analysisInstance = analysis.makeAnalysis(
-        DATA_PATH,modelledTrials,
-        subjectInfo=None,
-        experimentalInfo=None,
-        modelInfo=None,
-        pointLabelSuffix=None)
+    analysisInstance =  analysis.makeAnalysis(DATA_PATH,
+                            modelledTrials,
+                            type="Gait",
+                            emgChannels = None,
+                            pointLabelSuffix=None,
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                            )
 
     with PdfPages(DATA_PATH + title+".pdf") as pdf:
         # spatiotemporal
@@ -25,83 +26,79 @@ def pdfGaitReport(DATA_PATH,model,modelledTrials, normativeDataset,pointSuffix, 
         pdf.savefig()
 
         #Kinematics
-        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",
-                normativeDataset,
-                exportPdf=False,
-                outputName=title,
-                pointLabelSuffix=pointSuffix,
-                show=False,
-                title=title)
-            pdf.savefig()
+        plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",
+            normativeDataset,
+            exportPdf=False,
+            outputName=title,
+            pointLabelSuffix=pointSuffix,
+            show=False,
+            title=title)
+        pdf.savefig()
 
-            plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"LowerLimb",
-                normativeDataset,
-                exportPdf=False,
-                outputName=title,
-                pointLabelSuffix=pointSuffix,
-                show=False,
-                title=title)
-            pdf.savefig()
+        plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"LowerLimb",
+            normativeDataset,
+            exportPdf=False,
+            outputName=title,
+            pointLabelSuffix=pointSuffix,
+            show=False,
+            title=title)
+        pdf.savefig()
 
-        if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",
-                normativeDataset,
-                exportPdf=False,
-                outputName=title,
-                pointLabelSuffix=pointSuffix,
-                show=False,
-                title=title)
-            pdf.savefig()
+        plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",
+            normativeDataset,
+            exportPdf=False,
+            outputName=title,
+            pointLabelSuffix=pointSuffix,
+            show=False,
+            title=title)
+        pdf.savefig()
 
-            plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"Trunk",
-                normativeDataset,
-                exportPdf=False,
-                outputName=title,
-                pointLabelSuffix=pointSuffix,
-                show=False,
-                title=title)
-            pdf.savefig()
+        plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"Trunk",
+            normativeDataset,
+            exportPdf=False,
+            outputName=title,
+            pointLabelSuffix=pointSuffix,
+            show=False,
+            title=title)
+        pdf.savefig()
 
-        if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-            plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"UpperLimb",
-                normativeDataset,
-                exportPdf=False,
-                outputName=title,
-                pointLabelSuffix=pointSuffix,
-                show=False,
-                title=title)
-            pdf.savefig()
+        plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"UpperLimb",
+            normativeDataset,
+            exportPdf=False,
+            outputName=title,
+            pointLabelSuffix=pointSuffix,
+            show=False,
+            title=title)
+        pdf.savefig()
 
-            plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"UpperLimb",
-                normativeDataset,
-                exportPdf=False,
-                outputName=title,
-                pointLabelSuffix=pointSuffix,
-                show=False,
-                title=title)
-            pdf.savefig()
+        plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"UpperLimb",
+            normativeDataset,
+            exportPdf=False,
+            outputName=title,
+            pointLabelSuffix=pointSuffix,
+            show=False,
+            title=title)
+        pdf.savefig()
 
 
         #Kinetics
-        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"LowerLimb",
-                normativeDataset,
-                exportPdf=False,
-                outputName=title,
-                pointLabelSuffix=pointSuffix,
-                show=False,
-                title=title)
-            pdf.savefig()
+        plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"LowerLimb",
+            normativeDataset,
+            exportPdf=False,
+            outputName=title,
+            pointLabelSuffix=pointSuffix,
+            show=False,
+            title=title)
+        pdf.savefig()
 
-            plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,"LowerLimb",
-                normativeDataset,
-                exportPdf=False,
-                outputName=title,
-                pointLabelSuffix=pointSuffix,
-                show=False,
-                title=title)
-            pdf.savefig()
+        plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,"LowerLimb",
+            normativeDataset,
+            exportPdf=False,
+            outputName=title,
+            pointLabelSuffix=pointSuffix,
+            show=False,
+            title=title)
+        pdf.savefig()
 
         #MAP
         plot.plot_MAP(DATA_PATH,analysisInstance,

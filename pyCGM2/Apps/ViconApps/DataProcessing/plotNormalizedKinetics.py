@@ -94,9 +94,6 @@ def main():
     subject = nexusTools.getActiveSubject(NEXUS)
     LOGGER.logger.info(  "Subject name : " + subject  )
 
-    # --------------------pyCGM2 MODEL ------------------------------
-    model = files.loadModel(DATA_PATH,subject)
-    # modelVersion = model.version
 
     if not ECLIPSE_MODE:
         # btkAcq builder
@@ -106,20 +103,33 @@ def main():
         outputName = modelledFilename
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix,
-                                                btkAcqs=[acq])
+
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            [modelledFilename],
+                            type="Gait",
+                            kinematicLabelsDict = None,
+                            emgChannels = None,
+                            pointLabelSuffix=pointSuffix,
+                            btkAcqs=[acq],
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None)
 
     else:
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames, pointLabelSuffix=pointSuffix)
+
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            modelledFilenames,
+                            type="Gait",
+                            kinematicLabelsDict = None,
+                            emgChannels = None,
+                            pointLabelSuffix=pointSuffix,
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None)
+
         outputName = "Eclipse - NormalizedKinetics"
 
     if not consistencyFlag:
-        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+        plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
     else:
-        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+        plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
 
 
 if __name__ == "__main__":

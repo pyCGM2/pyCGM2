@@ -86,10 +86,6 @@ def main():
     subject = nexusTools.getActiveSubject(NEXUS)
     LOGGER.logger.info(  "Subject name : " + subject  )
 
-    # --------------------pyCGM2 MODEL ------------------------------
-
-    model = files.loadModel(DATA_PATH,subject)
-
 
     #-----------------------SETTINGS---------------------------------------
     normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
@@ -112,33 +108,43 @@ def main():
         acq = nacf.build()
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix,
-                                                btkAcqs=[acq])
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            [modelledFilename],
+                            type="Gait",
+                            kineticLabelsDict = None,
+                            emgChannels = None,
+                            pointLabelSuffix=pointSuffix,
+                            btkAcqs=[acq],
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None)
+
         outputName = modelledFilename
 
     else:
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames, pointLabelSuffix=pointSuffix)
+
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            type="Gait",
+                            kineticLabelsDict = None,
+                            emgChannels = None,
+                            pointLabelSuffix=pointSuffix,
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None)
+
+
         outputName = "Eclipse - NormalizedKinematics"
 
 
 
 
     if not consistencyFlag:
-        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
-        if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
-        if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-            pass # TODO plot upperlimb panel
+        plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+        plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+        plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"UpperLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
 
     else:
-        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds, pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
-        if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
-        if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-            pass # TODO plot upperlimb panel
+        plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"LowerLimb",nds, pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+        plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"Trunk",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+        plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"UpperLimb",nds,pointLabelSuffix=pointSuffix, exportPdf=True,outputName=outputName)
+
 
 
 if __name__ == "__main__":

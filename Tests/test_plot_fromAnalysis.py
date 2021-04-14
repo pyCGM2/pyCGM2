@@ -45,12 +45,13 @@ def dataTest2():
                         "20180706_CS_PONC_S_NNNN dyn 03.c3d",
                         "20180706_CS_PONC_S_NNNN dyn 05.c3d"]
 
-    emgFilenames = modelledFilenames
-
-
-    analysisInstance = analysis.makeCGMGaitAnalysis(DATA_PATH,modelledFilenames,emgFilenames,emgChannels,
+    analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                        modelledFilenames,
+                        type="Gait",
+                        emgChannels = emgChannels,
+                        pointLabelSuffix=None,
                         subjectInfo=None, experimentalInfo=None,modelInfo=None,
-                        pointLabelSuffix=None)
+                        )
 
 
     return DATA_PATH,modelledFilenames,analysisInstance
@@ -62,21 +63,25 @@ def dataTest3():
                         "20180706_CS_PONC_S_NNNN dyn 03.c3d",
                         "20180706_CS_PONC_S_NNNN dyn 05.c3d"]
 
-    emgFilenames1 = modelledFilenames1
-
-    analysisInstance1 = analysis.makeCGMGaitAnalysis(DATA_PATH1,modelledFilenames1,emgFilenames1,emgChannels,
+    analysisInstance1 = analysis.makeAnalysis(DATA_PATH1,
+                        modelledFilenames1,
+                        type="Gait",
+                        emgChannels = emgChannels,
+                        pointLabelSuffix=None,
                         subjectInfo=None, experimentalInfo=None,modelInfo=None,
-                        pointLabelSuffix=None)
+                        )
 
     DATA_PATH2 = pyCGM2.TEST_DATA_PATH + "GaitData\\Patient\\session 2 - CGM23\\"
     modelledFilenames2 = ["20200729-SC-PONC-S-NNNN dyn 04.c3d",
                         "20200729-SC-PONC-S-NNNN dyn 06.c3d"]
 
-    emgFilenames2 = modelledFilenames2
-
-    analysisInstance2 = analysis.makeCGMGaitAnalysis(DATA_PATH2,modelledFilenames2,emgFilenames2,emgChannels,
+    analysisInstance2 = analysis.makeAnalysis(DATA_PATH2,
+                        modelledFilenames2,
+                        type="Gait",
+                        emgChannels = emgChannels,
+                        pointLabelSuffix=None,
                         subjectInfo=None, experimentalInfo=None,modelInfo=None,
-                        pointLabelSuffix=None)
+                        )
 
 
     return DATA_PATH1,modelledFilenames1,analysisInstance1,DATA_PATH2,modelledFilenames2,analysisInstance2

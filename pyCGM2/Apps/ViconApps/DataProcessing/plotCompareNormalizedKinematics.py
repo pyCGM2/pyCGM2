@@ -94,8 +94,23 @@ def main():
     if  ECLIPSE_MODE:
 
         if len(modelledFilenames) == 2:
-            analysisInstance1 = analysis.makeAnalysis(DATA_PATH,[modelledFilenames[0]], pointLabelSuffix=pointSuffix)
-            analysisInstance2 = analysis.makeAnalysis(DATA_PATH,[modelledFilenames[1]], pointLabelSuffix=pointSuffix)
+            analysisInstance1 = analysis.makeAnalysis(DATA_PATH,
+                                [modelledFilenames[0]],
+                                type="Gait",
+                                kineticLabelsDict=None,
+                                emgChannels = None,
+                                pointLabelSuffix=pointSuffix,
+                                subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                                )
+
+            analysisInstance2 =  analysis.makeAnalysis(DATA_PATH,
+                                [modelledFilenames[1]],
+                                type="Gait",
+                                kineticLabelsDict=None,
+                                emgChannels = None,
+                                pointLabelSuffix=pointSuffix,
+                                subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                                )
 
             # outputName = "Eclipse - CompareNormalizedKinematics"
         #
@@ -105,8 +120,17 @@ def main():
 
         plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Left","LowerLimb",nds,plotType=plotType,type="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
+        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Left","Trunk",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+                show=False, outputName=comparisonDetails,exportPdf=True)
+        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Left","UpperLimb",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+                show=False, outputName=comparisonDetails,exportPdf=True)
+
 
         plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Right","LowerLimb",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+                show=False, outputName=comparisonDetails,exportPdf=True)
+        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Right","Trunk",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+                show=False, outputName=comparisonDetails,exportPdf=True)
+        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Right","UpperLimb",nds,plotType=plotType,type="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
 
         plt.show()

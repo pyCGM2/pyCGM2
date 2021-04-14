@@ -104,9 +104,19 @@ def main():
         analysis.processEMG_fromBtkAcq(acq, EMG_LABELS,
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
-        
 
-        emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS,btkAcqs = [acq])
+        # emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, [inputFile], EMG_LABELS,btkAcqs = [acq])
+
+        emgAnalysis = analysis.makeAnalysis(DATA_PATH,
+                            [inputFile],
+                            type="Gait",
+                            kinematicLabelsDict=None,
+                            kineticLabelsDict=None,
+                            emgChannels = EMG_LABELS,
+                            pointLabelSuffix=None,
+                            btkAcqs=[acq],
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                            )
 
         outputName = inputFile
     else:
@@ -114,7 +124,15 @@ def main():
         analysis.processEMG(DATA_PATH, inputFiles, EMG_LABELS, highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency)
 
-        emgAnalysis = analysis.makeEmgAnalysis(DATA_PATH, inputFiles, EMG_LABELS)
+        emgAnalysis = analysis.makeAnalysis(DATA_PATH,
+                            [inputFile],
+                            type="Gait",
+                            kinematicLabelsDict=None,
+                            kineticLabelsDict=None,
+                            emgChannels = EMG_LABELS,
+                            pointLabelSuffix=None,
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                            )
 
         outputName = "Eclipse -  NormalizedEMG"
 

@@ -94,8 +94,24 @@ def main():
     if  ECLIPSE_MODE:
 
         if len(modelledFilenames) == 2:
-            analysisInstance1 = analysis.makeAnalysis(DATA_PATH,[modelledFilenames[0]], pointLabelSuffix=pointSuffix)
-            analysisInstance2 = analysis.makeAnalysis(DATA_PATH,[modelledFilenames[1]], pointLabelSuffix=pointSuffix)
+
+            analysisInstance1 = analysis.makeAnalysis(DATA_PATH,
+                                [modelledFilenames[0]],
+                                type="Gait",
+                                kinematicLabelsDict=None,
+                                emgChannels = None,
+                                pointLabelSuffix=pointSuffix,
+                                subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                                )
+
+            analysisInstance2 = analysisInstance1 = analysis.makeAnalysis(DATA_PATH,
+                                [modelledFilenames[1]],
+                                type="Gait",
+                                kinematicLabelsDict=None,
+                                emgChannels = None,
+                                pointLabelSuffix=pointSuffix,
+                                subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                                )
 
             # outputName = "Eclipse - CompareNormalizedKinematics"
         #

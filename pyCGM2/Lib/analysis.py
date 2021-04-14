@@ -11,69 +11,19 @@ from pyCGM2.Processing import exporter
 from pyCGM2.Processing import jointPatterns
 
 
-def makeCGMGaitAnalysis(DATA_PATH,modelledFilenames,
-                        emgFilenames, emgChannels,
-                        subjectInfo=None, experimentalInfo=None,modelInfo=None,
-                        pointLabelSuffix=None):
-    """
-    makeCGMGaitAnalysis : create the pyCGM2.Processing.analysis.Analysis instance with modelled c3d and  EMG c3d
-
-
-
-    """
-
-    if modelledFilenames == []: modelledFilenames=None
-    if emgFilenames == []: emgFilenames=None
-
-    c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(DATA_PATH, modelledFilenames, modelledFilenames, modelledFilenames, emgFilenames)
-
-    cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
-    cmf.enableSpatioTemporal(True) if modelledFilenames is not None else cmf.enableSpatioTemporal(False)
-    cmf.enableKinematic(True) if modelledFilenames is not None else cmf.enableKinematic(False)
-    cmf.enableKinetic(True) if modelledFilenames is not None else cmf.enableKinetic(False)
-    cmf.enableEmg(True) if emgFilenames is not None else cmf.enableEmg(False)
-    trialManager = cmf.generate()
-
-
-    #----cycles
-    cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalAcqs=trialManager.spatioTemporal["Acqs"],
-                                           kinematicAcqs = trialManager.kinematic["Acqs"],
-                                           kineticAcqs = trialManager.kinetic["Acqs"],
-                                           emgAcqs=trialManager.emg["Acqs"])
-
-    cyclefilter = cycle.CyclesFilter()
-    cyclefilter.setBuilder(cycleBuilder)
-    cycles = cyclefilter.build()
-
-    #----analysis
-    kinematicLabelsDict = cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT
-    kineticLabelsDict = cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT
-    emgLabelList  = [label+"_Rectify_Env" for label in emgChannels]
-
-
-    analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
-                                          kinematicLabelsDict = kinematicLabelsDict,
-                                          kineticLabelsDict = kineticLabelsDict,
-                                          pointlabelSuffix = pointLabelSuffix,
-                                          emgLabelList = emgLabelList)
-
-    analysisFilter = analysis.AnalysisFilter()
-    analysisFilter.setInfo(subject=subjectInfo, model=modelInfo, experimental=experimentalInfo)
-    analysisFilter.setBuilder(analysisBuilder)
-    analysisFilter.build()
-
-    return analysisFilter.analysis
-
 def makeAnalysis(DATA_PATH,
-                    modelledFilenames,
+                    filenames,
                     type="Gait",
-                    subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                    kinematicLabelsDict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
+                    kineticLabelsDict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
+                    emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3","Voltage.EMG4","Voltage.EMG5",
+                                   "Voltage.EMG6","Voltage.EMG7","Voltage.EMG8","Voltage.EMG9","Voltage.EMG10",
+                                   "Voltage.EMG11","Voltage.EMG12","Voltage.EMG13","Voltage.EMG14","Voltage.EMG15",
+                                   "Voltage.EMG16"],
                     pointLabelSuffix=None,
-                    kinematicLabelsDict=None,
-                    kineticLabelsDict=None,
-                    disableKinetics=False,
                     btkAcqs=None,
-                    emgFilenames=None, emgChannels=None):
+                    subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                    ):
 
     """
     makeAnalysis : create the pyCGM2.Processing.analysis.Analysis instance
@@ -84,38 +34,26 @@ def makeAnalysis(DATA_PATH,
 
     **optional**
 
-    :param type [str]: process files with gait events if selected type is Gait
-    :param subjectInfo [dict]:  dictionnary gathering info about the patient (name,dob...)
-    :param experimentalInfo [dict]:  dictionnary gathering info about the  data session (orthosis, gait task,... )
-    :param modelInfo [dict]:  dictionnary gathering info about the used model)
-    :param pointLabelSuffix [string]: suffix previously added to your model outputs
-    :param kinematicLabelsDict [dict]: dictionnary with two entries,Left and Right, pointing to kinematic model outputs you desire processes
-    :param kineticLabelsDict [dict]: dictionnary with two entries,Left and Right, pointing to kinetic model outputs you desire processes
-    :param disableKinetics [bool]: disable kinetics processing
-    :param btkAcqs [bool]: force the use of a list of openma trials
-
-    .. note::
-
-        The dictionnaries (subjectInfo,experimentalInfo,modelInfo) is interesting
-        if you want to find these information within the xls file
 
 
 
 
     """
-    if modelledFilenames == []: modelledFilenames=None
-    if emgFilenames == []: emgFilenames=None
+    if filenames == []: filenames=None
+
     #---- c3d manager
 
     if btkAcqs is not None:
-        c3dmanagerProcedure = c3dManager.UniqueBtkAcqSetProcedure(DATA_PATH,modelledFilenames,acqs=btkAcqs)
+        c3dmanagerProcedure = c3dManager.UniqueBtkAcqSetProcedure(DATA_PATH,filenames,acqs=btkAcqs)
 
     else:
-        c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(DATA_PATH, modelledFilenames, modelledFilenames, modelledFilenames, emgFilenames)
+        c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(DATA_PATH, filenames, filenames, filenames, filenames)
 
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
-    cmf.enableEmg(True) if emgFilenames is not None else cmf.enableEmg(False)
-    if disableKinetics: cmf.enableKinetic(False)
+
+    cmf.enableKinematic(True) if kinematicLabelsDict is not None else cmf.enableKinematic(False)
+    cmf.enableKinetic(True) if kineticLabelsDict is not None else cmf.enableKinetic(False)
+    cmf.enableEmg(True) if emgChannels is not None else cmf.enableEmg(False)
 
     trialManager = cmf.generate()
 
@@ -139,25 +77,10 @@ def makeAnalysis(DATA_PATH,
 
 
 
-    #----analysis
-    if kinematicLabelsDict is None:
-        kinematicLabelsDict = cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT
-
-    if kineticLabelsDict is None:
-        kineticLabelsDict = cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT
-
-    if emgFilenames is not None:
-        if emgChannels is not None:
-            emgLabelList  = [label+"_Rectify_Env" for label in emgChannels]
-        else:
-            emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3","Voltage.EMG4","Voltage.EMG5",
-                           "Voltage.EMG6","Voltage.EMG7","Voltage.EMG8","Voltage.EMG9","Voltage.EMG10",
-                           "Voltage.EMG11","Voltage.EMG12","Voltage.EMG13","Voltage.EMG14","Voltage.EMG15",
-                           "Voltage.EMG16"]
-
+    if emgChannels is not None:
+        emgLabelList = [label+"_Rectify_Env" for label in emgChannels]
     else:
         emgLabelList = None
-
 
     if type == "Gait":
         analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
@@ -172,7 +95,6 @@ def makeAnalysis(DATA_PATH,
                                                       pointlabelSuffix = pointLabelSuffix,
                                                       emgLabelList = emgLabelList)
 
-
     analysisFilter = analysis.AnalysisFilter()
     analysisFilter.setInfo(subject=subjectInfo, model=modelInfo, experimental=experimentalInfo)
     analysisFilter.setBuilder(analysisBuilder)
@@ -180,7 +102,7 @@ def makeAnalysis(DATA_PATH,
 
     return analysisFilter.analysis
 
-    #files.saveAnalysis(analysis,DATA_PATH,"Save_and_openAnalysis")
+
 
 def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
 
@@ -276,89 +198,6 @@ def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelop
     envf.run()
 
     return acq
-
-def makeEmgAnalysis(DATA_PATH,
-                    processedEmgFiles,
-                    emgChannels,
-                    subjectInfo=None, experimentalInfo=None,
-                    type="Gait",
-                    btkAcqs = None
-                    ):
-
-    """
-    makeEmgAnalysis : create the pyCGM2.Processing.analysis.Analysis instance with only EMG signals
-
-
-    :param DATA_PATH [str]: path to your data
-    :param processedEmgFiles [string list]: c3d files with emg processed outputs
-    :param emgChannels [string list]: label of your emg channels
-
-    **optional**
-
-    :param subjectInfo [dict]:  dictionnary gathering info about the patient (name,dob...)
-    :param experimentalInfo [dict]:  dictionnary gathering info about the  data session (orthosis, gait task,... )
-    :param type [str]: process files with gait events if selected type is Gait
-    :param btkAcqs [bool]: force the use of a list of openma trials
-    """
-
-    if btkAcqs is not None:
-        c3dmanagerProcedure = c3dManager.UniqueBtkAcqSetProcedure(DATA_PATH,processedEmgFiles,acqs=btkAcqs)
-    else:
-        c3dmanagerProcedure = c3dManager.UniqueC3dSetProcedure(DATA_PATH,processedEmgFiles)
-
-    cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
-    cmf.enableSpatioTemporal(False)
-    cmf.enableKinematic(False)
-    cmf.enableKinetic(False)
-    cmf.enableEmg(True)
-    trialManager = cmf.generate()
-
-    #---- GAIT CYCLES FILTER
-    #--------------------------------------------------------------------------
-
-    #----cycles
-    if type == "Gait":
-        cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalAcqs=trialManager.spatioTemporal["Acqs"],
-                                                   kinematicAcqs = trialManager.kinematic["Acqs"],
-                                                   kineticAcqs = trialManager.kinetic["Acqs"],
-                                                   emgAcqs=trialManager.emg["Acqs"])
-
-    else:
-        cycleBuilder = cycle.CyclesBuilder(spatioTemporalAcqs=trialManager.spatioTemporal["Acqs"],
-                                                   kinematicAcqs = trialManager.kinematic["Acqs"],
-                                                   kineticAcqs = trialManager.kinetic["Acqs"],
-                                                   emgAcqs=trialManager.emg["Acqs"])
-
-    cyclefilter = cycle.CyclesFilter()
-    cyclefilter.setBuilder(cycleBuilder)
-    cycles = cyclefilter.build()
-
-    emgLabelList  = [label+"_Rectify_Env" for label in emgChannels]
-
-    if type == "Gait":
-        analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
-                                                      kinematicLabelsDict = None,
-                                                      kineticLabelsDict = None,
-                                                      emgLabelList = emgLabelList,
-                                                      subjectInfos=subjectInfo,
-                                                      modelInfos=None,
-                                                      experimentalInfos=experimentalInfo)
-    else:
-        analysisBuilder = analysis.AnalysisBuilder(cycles,
-                                                      kinematicLabelsDict = None,
-                                                      kineticLabelsDict = None,
-                                                      emgLabelList = emgLabelList,
-                                                      subjectInfos=subjectInfo,
-                                                      modelInfos=None,
-                                                      experimentalInfos=experimentalInfo)
-
-    analysisFilter = analysis.AnalysisFilter()
-    analysisFilter.setBuilder(analysisBuilder)
-    analysisFilter.build()
-
-    analysisInstance = analysisFilter.analysis
-
-    return analysisInstance
 
 def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
     """

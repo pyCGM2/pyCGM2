@@ -97,11 +97,27 @@ def main():
                 envelopFrequency=envelopCutOffFrequency)
 
         if len(inputFiles) == 2:
-            analysisInstance1 = analysis.makeEmgAnalysis(DATA_PATH,[inputFiles[0]], EMG_LABELS)
+            analysisInstance1 = analysis.makeAnalysis(DATA_PATH,
+                                [inputFiles[0]],
+                                type="Gait",
+                                kinematicLabelsDict=None,
+                                kineticLabelsDict=None,
+                                emgChannels = EMG_LABELS,
+                                pointLabelSuffix=None,
+                                subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                                )
 
             analysis.normalizedEMG(analysisInstance1,EMG_LABELS,EMG_CONTEXT,method="MeanMax", fromOtherAnalysis=None)
 
-            analysisInstance2 = analysis.makeEmgAnalysis(DATA_PATH,[inputFiles[1]], EMG_LABELS)
+            analysisInstance2 = analysis.makeAnalysis(DATA_PATH,
+                                [inputFiles[1]],
+                                type="Gait",
+                                kinematicLabelsDict=None,
+                                kineticLabelsDict=None,
+                                emgChannels = EMG_LABELS,
+                                pointLabelSuffix=None,
+                                subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                                )
             analysis.normalizedEMG(analysisInstance2,EMG_LABELS,EMG_CONTEXT,method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
             # outputName = "Eclipse - CompareNormalizedKinematics"

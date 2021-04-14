@@ -104,10 +104,24 @@ def main():
         acq = nacf.build()
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename],None, None, None,pointLabelSuffix=pointSuffix,btkAcqs=[acq]) # analysis structure gathering Time-normalized Kinematic and kinetic CGM outputs
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            [modelledFilename],
+                            type="Gait",
+                            kineticLabelsDict = None,
+                            emgChannels = None,
+                            pointLabelSuffix=pointSuffix,
+                            btkAcqs=[acq],
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None)
+
         outputName = modelledFilename
     else:
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames,None, None, None,pointLabelSuffix=pointSuffix)
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            type="Gait",
+                            kineticLabelsDict = None,
+                            emgChannels = None,
+                            pointLabelSuffix=pointSuffix,
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None)
+
         outputName = "Eclipse-MAP"
 
     plot.plot_MAP(DATA_PATH,analysisInstance,nds,exportPdf=True,outputName=outputName,pointLabelSuffix=pointSuffix)

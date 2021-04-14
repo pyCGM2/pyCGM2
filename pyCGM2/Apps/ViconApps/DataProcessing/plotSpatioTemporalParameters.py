@@ -106,13 +106,26 @@ def main():
 
 
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,[modelledFilename], pointLabelSuffix=pointSuffix,
-                                                btkAcqs=[acq])
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            [modelledFilename],
+                            type="Gait",
+                            kineticLabelsDict = None,
+                            emgChannels = None,
+                            pointLabelSuffix=pointSuffix,
+                            btkAcqs=[acq],
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None)
+
 
         outputName = modelledFilename
     else:
         # --------------------------PROCESSING --------------------------------
-        analysisInstance = analysis.makeAnalysis(DATA_PATH,modelledFilenames, pointLabelSuffix=pointSuffix)
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            modelledFilenames,
+                            type="Gait",
+                            kineticLabelsDict = None,
+                            emgChannels = None,
+                            pointLabelSuffix=pointSuffix,
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None)
         outputName =  "Eclipse - SpatioTemporal parameters"
 
 

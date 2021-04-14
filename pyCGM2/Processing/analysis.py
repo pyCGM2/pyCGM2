@@ -354,10 +354,17 @@ class GaitAnalysisBuilder(AbstractBuilder):
 
             for label in CGM2cycle.GaitCycle.STP_LABELS:
                 if enableLeftComputation:
-                    out[label,"Left"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.spatioTemporalCycles,label,"Left")
+                    try:
+                        out[label,"Left"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.spatioTemporalCycles,label,"Left")
+                    except KeyError:
+                        LOGGER.logger.warning("the spatio temporal parameter [%s] is not computed for the left context"%(label))
 
                 if enableRightComputation:
-                    out[label,"Right"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.spatioTemporalCycles,label,"Right")
+                    try:
+                        out[label,"Right"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.spatioTemporalCycles,label,"Right")
+                    except KeyError:
+                        LOGGER.logger.warning("the spatio temporal parameter [%s] is not computed for the right context"%(label))
+
             if enableLeftComputation:
                 LOGGER.logger.info("left stp computation---> done")
             if enableRightComputation:
@@ -500,7 +507,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
                     outPst[label,"Left"]= CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Left")
                     outPst[label,"Right"]= CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.emgCycles,label,"Right")
                 except KeyError:
-                    LOGGER.logger.warning("the spatio temporal paramater %s is not computed"%(label))
+                    LOGGER.logger.warning("the spatio temporal parameter [%s] is not computed"%(label))
 
 
         else:

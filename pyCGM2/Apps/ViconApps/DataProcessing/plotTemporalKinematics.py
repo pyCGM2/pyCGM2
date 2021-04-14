@@ -73,17 +73,11 @@ def main():
         acq = nacf.build()
 
 
-        # --------------------pyCGM2 MODEL ------------------------------
-        model = files.loadModel(DATA_PATH,subject)
-        modelVersion = model.version
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plotTemporalKinematic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True,btkAcq=acq)
-        if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plotTemporalKinematic(DATA_PATH, modelledFilename,"Trunk", pointLabelSuffix=pointSuffix,exportPdf=True,btkAcq=acq)
-        if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-            pass # TODO plot upperlimb panel
+        plot.plotTemporalKinematic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True,btkAcq=acq)
+        plot.plotTemporalKinematic(DATA_PATH, modelledFilename,"Trunk", pointLabelSuffix=pointSuffix,exportPdf=True,btkAcq=acq)
+        plot.plotTemporalKinematic(DATA_PATH, modelledFilename,"UpperLimb", pointLabelSuffix=pointSuffix,exportPdf=True,btkAcq=acq)
 
 
 

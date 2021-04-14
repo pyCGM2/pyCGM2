@@ -69,9 +69,6 @@ def main():
         subject = nexusTools.getActiveSubject(NEXUS)
         LOGGER.logger.info(  "Subject name : " + subject  )
 
-        # --------------------pyCGM2 MODEL ------------------------------
-        model = files.loadModel(DATA_PATH,subject)
-        modelVersion = model.version
 
         # btkAcq builder
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,modelledFilenameNoExt,subject)
@@ -79,12 +76,8 @@ def main():
 
 
         # --------------------pyCGM2 MODEL ------------------------------
-        if model.m_bodypart in [enums.BodyPart.LowerLimb,enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-            plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True,btkAcq=acq)
-        # if model.m_bodypart in [enums.BodyPart.LowerLimbTrunk, enums.BodyPart.FullBody]:
-        #     plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"Trunk", pointLabelSuffix=pointSuffix,exportPdf=True)
-        # if model.m_bodypart in [enums.BodyPart.UpperLimb, enums.BodyPart.FullBody]:
-        #     pass # TODO plot upperlimb panel
+        plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True,btkAcq=acq)
+
 
 
 
