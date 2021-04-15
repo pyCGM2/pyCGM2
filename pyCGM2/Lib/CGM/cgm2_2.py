@@ -115,7 +115,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
     # ---definition---
     model=cgm2.CGM2_2()
-    model.configure(acq=acqStatic,detectedCalibrationMethods=dcm)
+    model.configure(detectedCalibrationMethods=dcm)
     model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
     if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD: actual_trackingMarkers.append("LKNE")

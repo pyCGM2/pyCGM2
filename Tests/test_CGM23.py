@@ -58,7 +58,7 @@ class Test_CGM23:
 
         dcm = cgm.CGM.detectCalibrationMethods(acqStatic)
         model=cgm2.CGM2_3()
-        model.configure(acq=acqStatic,detectedCalibrationMethods=dcm)
+        model.configure(detectedCalibrationMethods=dcm)
         model.addAnthropoInputParameters(required_mp,optional=optional_mp)
 
         # ---- Calibration ----

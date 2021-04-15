@@ -256,156 +256,35 @@ class CGM2_3(cgm.CGM1):
 
     def opensimIkTask(self):
         out={}
-
-        if self.staExpert:
-          out={"LASI":0,
-                 "LASI_posAnt":100,
-                 "LASI_medLat":100,
-                 "LASI_supInf":100,
-                 "RASI":0,
-                 "RASI_posAnt":100,
-                 "RASI_medLat":100,
-                 "RASI_supInf":100,
-                 "LPSI":0,
-                 "LPSI_posAnt":100,
-                 "LPSI_medLat":100,
-                 "LPSI_supInf":100,
-                 "RPSI":0,
-                 "RPSI_posAnt":100,
-                 "RPSI_medLat":100,
-                 "RPSI_supInf":100,
-
-                 "RTHI":0,
-                 "RTHI_posAnt":100,
-                 "RTHI_medLat":100,
-                 "RTHI_proDis":100,
-                 "RKNE":0,
-                 "RKNE_posAnt":100,
-                 "RKNE_medLat":100,
-                 "RKNE_proDis":100,
-                 "RTIB":0,
-                 "RTIB_posAnt":100,
-                 "RTIB_medLat":100,
-                 "RTIB_proDis":100,
-                 "RANK":0,
-                 "RANK_posAnt":100,
-                 "RANK_medLat":100,
-                 "RANK_proDis":100,
-                 "RHEE":0,
-                 "RHEE_supInf":100,
-                 "RHEE_medLat":100,
-                 "RHEE_proDis":100,
-                 "RTOE":0,
-                 "RTOE_supInf":100,
-                 "RTOE_medLat":100,
-                 "RTOE_proDis":100,
-
-                 "LTHI":0,
-                 "LTHI_posAnt":100,
-                 "LTHI_medLat":100,
-                 "LTHI_proDis":100,
-                 "LKNE":0,
-                 "LKNE_posAnt":100,
-                 "LKNE_medLat":100,
-                 "LKNE_proDis":100,
-                 "LTIB":0,
-                 "LTIB_posAnt":100,
-                 "LTIB_medLat":100,
-                 "LTIB_proDis":100,
-                 "LANK":0,
-                 "LANK_posAnt":100,
-                 "LANK_medLat":100,
-                 "LANK_proDis":100,
-                 "LHEE":0,
-                 "LHEE_supInf":100,
-                 "LHEE_medLat":100,
-                 "LHEE_proDis":100,
-                 "LTOE":0,
-                 "LTOE_supInf":100,
-                 "LTOE_medLat":100,
-                 "LTOE_proDis":100,
-
-                 "LTHAP":0,
-                 "LTHAP_posAnt":100,
-                 "LTHAP_medLat":100,
-                 "LTHAP_proDis":100,
-                 "LTHAD":0,
-                 "LTHAD_posAnt":100,
-                 "LTHAD_medLat":100,
-                 "LTHAD_proDis":100,
-                 "RTHAP":0,
-                 "RTHAP_posAnt":100,
-                 "RTHAP_medLat":100,
-                 "RTHAP_proDis":100,
-                 "RTHAD":0,
-                 "RTHAD_posAnt":100,
-                 "RTHAD_medLat":100,
-                 "RTHAD_proDis":100,
-                 "LTIAP":0,
-                 "LTIAP_posAnt":100,
-                 "LTIAP_medLat":100,
-                 "LTIAP_proDis":100,
-                 "LTIAD":0,
-                 "LTIAD_posAnt":100,
-                 "LTIAD_medLat":100,
-                 "LTIAD_proDis":100,
-                 "RTIAP":0,
-                 "RTIAP_posAnt":100,
-                 "RTIAP_medLat":100,
-                 "RTIAP_proDis":100,
-                 "RTIAD":0,
-                 "RTIAD_posAnt":100,
-                 "RTIAD_medLat":100,
-                 "RTIAD_proDis":100,
-
-                 "LTHLD":0,
-                 "LTHLD_posAnt":0,
-                 "LTHLD_medLat":0,
-                 "LTHLD_proDis":0,
-                 "LPAT":0,
-                 "LPAT_posAnt":0,
-                 "LPAT_medLat":0,
-                 "LPAT_proDis":0,
-                 "RTHLD":0,
-                 "RTHLD_posAnt":0,
-                 "RTHLD_medLat":0,
-                 "RTHLD_proDis":0,
-                 "RPAT":0,
-                 "RPAT_posAnt":0,
-                 "RPAT_medLat":0,
-                 "RPAT_proDis":0,
-
-                 }
-        else:
-            out={"LASI":100,
-                 "RASI":100,
-                 "LPSI":100,
-                 "RPSI":100,
-                 "RTHI":100,
-                 "RKNE":100,
-                 "RTHAP":100,
-                 "RTHAD":100,
-                 "RTIB":100,
-                 "RANK":100,
-                 "RTIAP":100,
-                 "RTIAD":100,
-                 "RHEE":100,
-                 "RTOE":100,
-                 "LTHI":100,
-                 "LKNE":100,
-                 "LTHAP":100,
-                 "LTHAD":100,
-                 "LTIB":100,
-                 "LANK":100,
-                 "LTIAP":100,
-                 "LTIAD":100,
-                 "LHEE":100,
-                 "LTOE":100,
-                 "RTHLD":0,
-                 "RPAT":0,
-                 "LTHLD":0,
-                 "LPAT":0
-                 }
+        out={"LASI":100,
+             "RASI":100,
+             "LPSI":100,
+             "RPSI":100,
+             "RTHI":100,
+             "RKNE":100,
+             "RTHAP":100,
+             "RTHAD":100,
+             "RTIB":100,
+             "RANK":100,
+             "RTIAP":100,
+             "RTIAD":100,
+             "RHEE":100,
+             "RTOE":100,
+             "LTHI":100,
+             "LKNE":100,
+             "LTHAP":100,
+             "LTHAD":100,
+             "LTIB":100,
+             "LANK":100,
+             "LTIAP":100,
+             "LTIAD":100,
+             "LHEE":100,
+             "LTOE":100,
+             "RTHLD":0,
+             "RPAT":0,
+             "LTHLD":0,
+             "LPAT":0
+             }
 
         return out
 
@@ -648,248 +527,184 @@ class CGM2_4(CGM2_3):
         frameInit=ff-ff
         frameEnd=lf-ff+1
 
-        if self.m_bodypart !=enums.BodyPart.UpperLimb:
-            if not self.decoratedModel:
-                LOGGER.logger.debug(" Native CGM")
-                if not btkTools.isPointExist(aquiStatic,"LKNE"):
-                    btkTools.smartAppendPoint(aquiStatic,"LKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
-                if not btkTools.isPointExist(aquiStatic,"RKNE"):
-                    btkTools.smartAppendPoint(aquiStatic,"RKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
 
+        if not self.decoratedModel:
+            LOGGER.logger.debug(" Native CGM")
+            if not btkTools.isPointExist(aquiStatic,"LKNE"):
+                btkTools.smartAppendPoint(aquiStatic,"LKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
+            if not btkTools.isPointExist(aquiStatic,"RKNE"):
+                btkTools.smartAppendPoint(aquiStatic,"RKNE",np.zeros((aquiStatic.GetPointFrameNumber(),3) ))
+
+        else:
+            LOGGER.logger.debug(" Decorated CGM")
+
+        # ---- Pelvis-THIGH-SHANK CALIBRATION
+        #-------------------------------------
+        # calibration of technical Referentials
+        self._pelvis_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+
+        self._left_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+
+        self._right_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+
+        self._left_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+
+
+        self._right_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+
+        # calibration of anatomical Referentials
+        self._pelvis_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+        self._left_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+        self._right_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+
+        if "LeftThighRotation" in self.mp and self.mp["LeftThighRotation"] != 0:
+            self.mp_computed["LeftThighRotationOffset"]= -self.mp["LeftThighRotation"]
+
+        else:
+            self.getThighOffset(side="left")
+
+        # management of Functional method
+        if self.mp_computed["LeftKneeFuncCalibrationOffset"] != 0:
+            offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+            # SARA
+            if self.checkCalibrationProperty("LeftFuncKneeMethod","SARA"):
+                LOGGER.logger.debug("Left knee functional calibration : SARA ")
+            # 2DOF
+            elif self.checkCalibrationProperty("LeftFuncKneeMethod","2DOF"):
+                LOGGER.logger.debug("Left knee functional calibration : 2Dof ")
+            self._rotateAnatomicalFrame("Left Thigh",offset,
+                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+
+        if "RightThighRotation" in self.mp  and self.mp["RightThighRotation"] != 0:
+            self.mp_computed["RightThighRotationOffset"]= self.mp["RightThighRotation"]
+        else:
+            self.getThighOffset(side="right")
+
+        # management of Functional method
+        if self.mp_computed["RightKneeFuncCalibrationOffset"] != 0:
+            offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+            # SARA
+            if self.checkCalibrationProperty("RightFuncKneeMethod","SARA"):
+                LOGGER.logger.debug("Left knee functional calibration : SARA ")
+            # 2DOF
+            elif self.checkCalibrationProperty("RightFuncKneeMethod","2DOF"):
+                LOGGER.logger.debug("Left knee functional calibration : 2Dof ")
+            self._rotateAnatomicalFrame("Right Thigh",offset,
+                                        aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+        self._left_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+        self._right_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+
+        # shakRotation
+        if "LeftShankRotation" in self.mp  and self.mp["LeftShankRotation"] != 0:
+            self.mp_computed["LeftShankRotationOffset"]= -self.mp["LeftShankRotation"]
+        else:
+            self.getShankOffsets(side="left")
+
+        if "RightShankRotation" in self.mp  and self.mp["RightShankRotation"] != 0:
+            self.mp_computed["RightShankRotationOffset"]= self.mp["RightShankRotation"]
+        else:
+            self.getShankOffsets(side="right")
+
+        # tibial Torsion
+
+        if "LeftTibialTorsion" in self.mp   and self.mp["LeftTibialTorsion"] != 0: #   - check if TibialTorsion whithin main mp
+            self.mp_computed["LeftTibialTorsionOffset"]= -self.mp["LeftTibialTorsion"]
+            self.m_useLeftTibialTorsion=True
+        else:
+            if self.m_useLeftTibialTorsion: # if useTibialTorsion flag enable from a decorator
+                self.getTibialTorsionOffset(side="left")
             else:
-                LOGGER.logger.debug(" Decorated CGM")
+                self.mp_computed["LeftTibialTorsionOffset"]= 0
 
-            # ---- Pelvis-THIGH-SHANK CALIBRATION
-            #-------------------------------------
-            # calibration of technical Referentials
-            LOGGER.logger.debug(" --- Pelvis - TF calibration ---")
-            LOGGER.logger.debug(" -------------------------------")
-            self._pelvis_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
-
-            LOGGER.logger.debug(" --- Left Thigh- TF calibration ---")
-            LOGGER.logger.debug(" ----------------------------------")
-            self._left_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
-
-            LOGGER.logger.debug(" --- Right Thigh - TF calibration ---")
-            LOGGER.logger.debug(" ------------------------------------")
-            self._right_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
-
-            LOGGER.logger.debug(" --- Left Shank - TF calibration ---")
-            LOGGER.logger.debug(" -----------------------------------")
-            self._left_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
-
-
-            LOGGER.logger.debug(" --- Richt Shank - TF calibration ---")
-            LOGGER.logger.debug(" ------------------------------------")
-            self._right_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
-
-            # calibration of anatomical Referentials
-            LOGGER.logger.debug(" --- Pelvis - AF calibration ---")
-            LOGGER.logger.debug(" -------------------------------")
-            self._pelvis_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-            LOGGER.logger.debug(" --- Left Thigh - AF calibration ---")
-            LOGGER.logger.debug(" -----------------------------------")
-            self._left_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-            LOGGER.logger.debug(" --- Right Thigh - AF calibration ---")
-            LOGGER.logger.debug(" ------------------------------------")
-            self._right_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-            LOGGER.logger.debug(" --- Thigh Offsets ---")
-            LOGGER.logger.debug(" --------------------")
-
-
-            LOGGER.logger.debug(" ------Left-------")
-            if "LeftThighRotation" in self.mp and self.mp["LeftThighRotation"] != 0:
-                self.mp_computed["LeftThighRotationOffset"]= -self.mp["LeftThighRotation"]
-
+        #   right
+        if "RightTibialTorsion" in self.mp   and self.mp["RightTibialTorsion"] != 0:
+            self.mp_computed["RightTibialTorsionOffset"]= self.mp["RightTibialTorsion"]
+            self.m_useRightTibialTorsion=True
+        else:
+            if self.m_useRightTibialTorsion:
+                self.getTibialTorsionOffset(side="right")
             else:
-                self.getThighOffset(side="left")
-
-            # management of Functional method
-            if self.mp_computed["LeftKneeFuncCalibrationOffset"] != 0:
-                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
-                # SARA
-                if self.checkCalibrationProperty("LeftFuncKneeMethod","SARA"):
-                    LOGGER.logger.debug("Left knee functional calibration : SARA ")
-                # 2DOF
-                elif self.checkCalibrationProperty("LeftFuncKneeMethod","2DOF"):
-                    LOGGER.logger.debug("Left knee functional calibration : 2Dof ")
-                self._rotateAnatomicalFrame("Left Thigh",offset,
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
+                self.mp_computed["RightTibialTorsionOffset"]= 0
 
 
-            LOGGER.logger.debug(" ------Right-------")
-            if "RightThighRotation" in self.mp  and self.mp["RightThighRotation"] != 0:
-                self.mp_computed["RightThighRotationOffset"]= self.mp["RightThighRotation"]
-            else:
-                self.getThighOffset(side="right")
+        # AbdAdd offset
+        self.getAbdAddAnkleJointOffset(side="left")
+        self.getAbdAddAnkleJointOffset(side="right")
 
-            # management of Functional method
-            if self.mp_computed["RightKneeFuncCalibrationOffset"] != 0:
-                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
-                # SARA
-                if self.checkCalibrationProperty("RightFuncKneeMethod","SARA"):
-                    LOGGER.logger.debug("Left knee functional calibration : SARA ")
-                # 2DOF
-                elif self.checkCalibrationProperty("RightFuncKneeMethod","2DOF"):
-                    LOGGER.logger.debug("Left knee functional calibration : 2Dof ")
-                self._rotateAnatomicalFrame("Right Thigh",offset,
-                                            aquiStatic, dictAnatomic,frameInit,frameEnd)
+        #   shank Prox ( copy )
+        self.updateSegmentFromCopy("Left Shank Proximal", self.getSegment("Left Shank")) # look out . I copied the shank instance and rename it
+        self._left_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
 
+        self.updateSegmentFromCopy("Right Shank Proximal", self.getSegment("Right Shank"))
+        self._right_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
 
+        # ---  FOOT segments ----
+        # -----------------------
+        # need anatomical flexion axis of the shank.
 
-            LOGGER.logger.debug(" --- Left Shank - AF calibration ---")
-            LOGGER.logger.debug(" -------------------------------")
-            self._left_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self._leftHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
 
+        self._leftHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
 
-            LOGGER.logger.debug(" --- Right Shank - AF calibration ---")
-            LOGGER.logger.debug(" -------------------------------")
-            self._right_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self.getHindFootOffset(side = "Left")
 
-            LOGGER.logger.debug(" ---Shank  Offsets ---")
-            LOGGER.logger.debug(" ---------------------")
-
-            # shakRotation
-            if "LeftShankRotation" in self.mp  and self.mp["LeftShankRotation"] != 0:
-                self.mp_computed["LeftShankRotationOffset"]= -self.mp["LeftShankRotation"]
-            else:
-                self.getShankOffsets(side="left")
-
-            if "RightShankRotation" in self.mp  and self.mp["RightShankRotation"] != 0:
-                self.mp_computed["RightShankRotationOffset"]= self.mp["RightShankRotation"]
-            else:
-                self.getShankOffsets(side="right")
-
-            # tibial Torsion
-
-            if "LeftTibialTorsion" in self.mp   and self.mp["LeftTibialTorsion"] != 0: #   - check if TibialTorsion whithin main mp
-                self.mp_computed["LeftTibialTorsionOffset"]= -self.mp["LeftTibialTorsion"]
-                self.m_useLeftTibialTorsion=True
-            else:
-                if self.m_useLeftTibialTorsion: # if useTibialTorsion flag enable from a decorator
-                    self.getTibialTorsionOffset(side="left")
-                else:
-                    self.mp_computed["LeftTibialTorsionOffset"]= 0
-
-            #   right
-            if "RightTibialTorsion" in self.mp   and self.mp["RightTibialTorsion"] != 0:
-                self.mp_computed["RightTibialTorsionOffset"]= self.mp["RightTibialTorsion"]
-                self.m_useRightTibialTorsion=True
-            else:
-                if self.m_useRightTibialTorsion:
-                    self.getTibialTorsionOffset(side="right")
-                else:
-                    self.mp_computed["RightTibialTorsionOffset"]= 0
+        self._leftForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
 
 
-            # AbdAdd offset
-            self.getAbdAddAnkleJointOffset(side="left")
-            self.getAbdAddAnkleJointOffset(side="right")
+        self._leftForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
 
 
-            LOGGER.logger.debug(" --- Left Shank Proximal- AF calibration ---")
-            LOGGER.logger.debug(" -------------------------------------------")
-            #   shank Prox ( copy )
-            self.updateSegmentFromCopy("Left Shank Proximal", self.getSegment("Left Shank")) # look out . I copied the shank instance and rename it
-            self._left_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
+        self._rightHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
 
-            LOGGER.logger.debug(" --- Right Shank Proximal- AF calibration ---")
-            LOGGER.logger.debug(" --------------------------------------------")
-            self.updateSegmentFromCopy("Right Shank Proximal", self.getSegment("Right Shank"))
-            self._right_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
+        self._rightHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
 
-            # ---  FOOT segments ----
-            # -----------------------
-            # need anatomical flexion axis of the shank.
+        self.getHindFootOffset(side = "Right")
 
+        # --- fore foot
+        # ----------------
+        self._rightForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
 
-            LOGGER.logger.debug(" --- Left Hind Foot  - TF calibration ---")
-            LOGGER.logger.debug(" -----------------------------------------")
-            self._leftHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+        self._rightForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
 
-            LOGGER.logger.debug(" --- Left Hind Foot  - AF calibration ---")
-            LOGGER.logger.debug(" -----------------------------------------")
-            self._leftHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
+        self._torso_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+        self._torso_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-            LOGGER.logger.debug(" --- Hind foot Offset---")
-            LOGGER.logger.debug(" -----------------------")
-            self.getHindFootOffset(side = "Left")
+        self._head_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+        self._head_AnatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-            LOGGER.logger.debug(" --- Left Fore Foot  - TF calibration ---")
-            LOGGER.logger.debug(" -----------------------------------------")
-            self._leftForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+        self._clavicle_calibrate("Left",aquiStatic,dictRef,frameInit,frameEnd,options=options)
+        self._clavicle_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
 
+        self._constructArmVirtualMarkers("Left", aquiStatic)
 
-            LOGGER.logger.debug(" --- Left Fore Foot  - AF calibration ---")
-            LOGGER.logger.debug(" -----------------------------------------")
-            self._leftForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
+        self._upperArm_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd, options=options)
+        self._foreArm_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd, options=options)
 
+        self._upperArm_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self._foreArm_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-            LOGGER.logger.debug(" --- Right Hind Foot  - TF calibration ---")
-            LOGGER.logger.debug(" -----------------------------------------")
-            self._rightHindFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+        self._hand_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd, options=options)
+        self._hand_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-            LOGGER.logger.debug(" --- Right Hind Foot  - AF calibration ---")
-            LOGGER.logger.debug(" -----------------------------------------")
-            self._rightHindFoot_anatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options)
+        self._clavicle_calibrate("Right",aquiStatic,dictRef,frameInit,frameEnd,options=options)
+        self._clavicle_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-            LOGGER.logger.debug(" --- Hind foot Offset---")
-            LOGGER.logger.debug(" -----------------------")
-            self.getHindFootOffset(side = "Right")
+        self._constructArmVirtualMarkers("Right", aquiStatic)
 
-            # --- fore foot
-            # ----------------
-            LOGGER.logger.debug(" --- Right Fore Foot  - TF calibration ---")
-            LOGGER.logger.debug(" -----------------------------------------")
-            self._rightForeFoot_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
+        self._upperArm_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd, options=options)
+        self._foreArm_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd, options=options)
 
-            LOGGER.logger.debug(" --- Right Fore Foot  - AF calibration ---")
-            LOGGER.logger.debug(" -----------------------------------------")
-            self._rightForeFoot_anatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
+        self._upperArm_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self._foreArm_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-        #------_upperLimb
-        if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-            self._torso_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
-            self._torso_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-        if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-
-            self._torso_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
-            self._torso_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-            self._head_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
-            self._head_AnatomicalCalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-            self._clavicle_calibrate("Left",aquiStatic,dictRef,frameInit,frameEnd,options=options)
-            self._clavicle_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-            self._constructArmVirtualMarkers("Left", aquiStatic)
-
-            self._upperArm_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd, options=options)
-            self._foreArm_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd, options=options)
-
-            self._upperArm_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
-            self._foreArm_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-            self._hand_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd, options=options)
-            self._hand_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-            self._clavicle_calibrate("Right",aquiStatic,dictRef,frameInit,frameEnd,options=options)
-            self._clavicle_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-            self._constructArmVirtualMarkers("Right", aquiStatic)
-
-            self._upperArm_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd, options=options)
-            self._foreArm_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd, options=options)
-
-            self._upperArm_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
-            self._foreArm_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
-
-            self._hand_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd, options=options)
-            self._hand_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self._hand_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd, options=options)
+        self._hand_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
 
@@ -1505,9 +1320,6 @@ class CGM2_4(CGM2_3):
            - `options` (dict) - dictionnary use to pass options
 
         """
-        LOGGER.logger.debug("=====================================================")
-        LOGGER.logger.debug("===================  CGM MOTION   ===================")
-        LOGGER.logger.debug("=====================================================")
 
         pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
         forceFoot6DoF= True if "forceFoot6DoF" in options.keys() and options["forceFoot6DoF"] else False
@@ -1515,167 +1327,145 @@ class CGM2_4(CGM2_3):
 
         if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
 
-            if self.m_bodypart != enums.BodyPart.UpperLimb:
-                #if not pigStaticProcessing:
-                LOGGER.logger.debug(" - Pelvis - motion -")
-                LOGGER.logger.debug(" -------------------")
-                self._pelvis_motion(aqui, dictRef, dictAnat)
+            #if not pigStaticProcessing:
 
-                LOGGER.logger.debug(" - Left Thigh - motion -")
-                LOGGER.logger.debug(" -----------------------")
-                self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
-
-                # if rotation offset from knee functional calibration methods
-                if self.mp_computed["LeftKneeFuncCalibrationOffset"]:
-                    offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
-                    self._rotate_anatomical_motion("Left Thigh",offset,
-                                            aqui,options=options)
+            self._pelvis_motion(aqui, dictRef, dictAnat)
 
 
-                LOGGER.logger.debug(" - Right Thigh - motion -")
-                LOGGER.logger.debug(" ------------------------")
-                self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
+            self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
-                if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
-                    offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
-                    self._rotate_anatomical_motion("Right Thigh",offset,
-                                            aqui,options=options)
-
-
-                LOGGER.logger.debug(" - Left Shank - motion -")
-                LOGGER.logger.debug(" -----------------------")
-                self._left_shank_motion(aqui, dictRef, dictAnat,options=options)
-
-                LOGGER.logger.debug(" - Right Shank - motion -")
-                LOGGER.logger.debug(" ------------------------")
-                self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
+            # if rotation offset from knee functional calibration methods
+            if self.mp_computed["LeftKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+                self._rotate_anatomical_motion("Left Thigh",offset,
+                                        aqui,options=options)
 
 
-                LOGGER.logger.debug(" - Left HindFoot - motion -")
-                LOGGER.logger.debug(" ---------------------------")
-                self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+            self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
 
-                LOGGER.logger.debug(" - Left ForeFoot - motion -")
-                LOGGER.logger.debug(" ---------------------------")
-                self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
+            if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+                self._rotate_anatomical_motion("Right Thigh",offset,
+                                        aqui,options=options)
 
 
-                LOGGER.logger.debug(" - Right Hindfoot - motion -")
-                LOGGER.logger.debug(" ---------------------------")
-                self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+            self._left_shank_motion(aqui, dictRef, dictAnat,options=options)
 
-                LOGGER.logger.debug(" - Right ForeFoot - motion -")
-                LOGGER.logger.debug(" ---------------------------")
-                self._right_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
+            self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
 
-            if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-                self._thorax_motion(aqui, dictRef,dictAnat,options=options)
 
-            if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-                self._thorax_motion(aqui, dictRef,dictAnat,options=options)
-                self._head_motion(aqui, dictRef,dictAnat,options=options)
+            self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
 
-                self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
-                self._constructArmVirtualMarkers("Left", aqui)
-                self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-                self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-                self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-                self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-                self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+            self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
 
-                self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
-                self._constructArmVirtualMarkers("Right", aqui)
-                self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-                self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-                self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-                self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-                self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
+
+            self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+
+            self._right_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
+
+            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+
+
+            self._head_motion(aqui, dictRef,dictAnat,options=options)
+
+            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Left", aqui)
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+
+            self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Right", aqui)
+            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
 
         if motionMethod == enums.motionMethod.Sodervisk:
 
-            # ---remove all  direction marker from tracking markers.
-            if self.staExpert:
-                for seg in self.m_segmentCollection:
-                    selectedTrackingMarkers=list()
-                    for marker in seg.m_tracking_markers:
-                        if marker in self.__class__.TRACKING_MARKERS : # get class variable MARKER even from child
-                            selectedTrackingMarkers.append(marker)
-                    seg.m_tracking_markers= selectedTrackingMarkers
+            # # ---remove all  direction marker from tracking markers.
+            # if self.staExpert:
+            #     for seg in self.m_segmentCollection:
+            #         selectedTrackingMarkers=list()
+            #         for marker in seg.m_tracking_markers:
+            #             if marker in self.__class__.TRACKING_MARKERS : # get class variable MARKER even from child
+            #                 selectedTrackingMarkers.append(marker)
+            #         seg.m_tracking_markers= selectedTrackingMarkers
 
-            if self.m_bodypart != enums.BodyPart.UpperLimb:
-                LOGGER.logger.debug("--- Segmental Least-square motion process ---")
-                self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
-                self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
+            LOGGER.logger.debug("--- Segmental Least-square motion process ---")
+            self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
+            self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
 
-                TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
+            TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
 
-                for i in range(0,aqui.GetPointFrameNumber()):
-                    lhjc = aqui.GetPoint("LHJC").GetValues()[i,:]
-                    rhjc =  aqui.GetPoint("RHJC").GetValues()[i,:]
-                    pelvisScale = np.linalg.norm(lhjc-rhjc)
-                    offset = (lhjc+rhjc)/2.0
-                    R = self.getSegment("Pelvis").anatomicalFrame.motion[i].getRotation()
-                    TopLumbar5[i,:] = offset +  np.dot(R,(np.array([ 0, 0, 0.925]))* pelvisScale)
+            for i in range(0,aqui.GetPointFrameNumber()):
+                lhjc = aqui.GetPoint("LHJC").GetValues()[i,:]
+                rhjc =  aqui.GetPoint("RHJC").GetValues()[i,:]
+                pelvisScale = np.linalg.norm(lhjc-rhjc)
+                offset = (lhjc+rhjc)/2.0
+                R = self.getSegment("Pelvis").anatomicalFrame.motion[i].getRotation()
+                TopLumbar5[i,:] = offset +  np.dot(R,(np.array([ 0, 0, 0.925]))* pelvisScale)
 
-                self._TopLumbar5 = TopLumbar5
+            self._TopLumbar5 = TopLumbar5
 
-                self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
-                self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))#HJC
+            self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))#HJC
 
-                self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
-                self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
+            self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
 
-                self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
-                self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3])) #KJC
-
-
-                self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
-                self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
+            self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3])) #KJC
 
 
-                if forceFoot6DoF:
-                    self._leftHindFoot_motion_optimize(aqui, dictRef,motionMethod)
-                    self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
-                    self._rightHindFoot_motion_optimize(aqui, dictRef,motionMethod)
-                    self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
+            self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
 
 
-                    self._leftForeFoot_motion_optimize(aqui, dictRef,motionMethod)
-                    self._anatomical_motion(aqui,"Left ForeFoot",originLabel = str(dictAnat["Left ForeFoot"]['labels'][3]))
+            if forceFoot6DoF:
+                self._leftHindFoot_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
+                self._rightHindFoot_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
 
-                    self._rightForeFoot_motion_optimize(aqui, dictRef,motionMethod)
-                    self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
-                else:
-                    # hindFoot ( because of singularities AJC- TOE and HEE align)
-                    self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
-                    self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
 
-                    # foreFoot (more robust than Sodervisk)
-                    self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
-                    self._right_foreFoot_motion(aqui, dictRef,dictAnat, options=options)
+                self._leftForeFoot_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Left ForeFoot",originLabel = str(dictAnat["Left ForeFoot"]['labels'][3]))
 
-            if self.m_bodypart == enums.BodyPart.LowerLimbTrunk:
-                self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+                self._rightForeFoot_motion_optimize(aqui, dictRef,motionMethod)
+                self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
+            else:
+                # hindFoot ( because of singularities AJC- TOE and HEE align)
+                self._left_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
+                self._right_hindFoot_motion(aqui, dictRef, dictAnat, options=options)
 
-            if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-                self._thorax_motion(aqui, dictRef,dictAnat,options=options)
-                self._head_motion(aqui, dictRef,dictAnat,options=options)
+                # foreFoot (more robust than Sodervisk)
+                self._left_foreFoot_motion(aqui, dictRef, dictAnat, options=options)
+                self._right_foreFoot_motion(aqui, dictRef,dictAnat, options=options)
 
-                self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
-                self._constructArmVirtualMarkers("Left", aqui)
-                self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-                self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-                self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-                self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-                self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
 
-                self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
-                self._constructArmVirtualMarkers("Right", aqui)
-                self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-                self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-                self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-                self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-                self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
+            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+            self._head_motion(aqui, dictRef,dictAnat,options=options)
+
+            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Left", aqui)
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+
+            self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Right", aqui)
+            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
 
     # ----- native motion ------
     def _left_hindFoot_motion(self,aqui, dictRef,dictAnat,options=None):
@@ -2220,199 +2010,44 @@ class CGM2_4(CGM2_3):
     def opensimIkTask(self):
         out={}
 
-        if self.staExpert:
-          out={"LASI":0,
-                 "LASI_posAnt":100,
-                 "LASI_medLat":100,
-                 "LASI_supInf":100,
-                 "RASI":0,
-                 "RASI_posAnt":100,
-                 "RASI_medLat":100,
-                 "RASI_supInf":100,
-                 "LPSI":0,
-                 "LPSI_posAnt":100,
-                 "LPSI_medLat":100,
-                 "LPSI_supInf":100,
-                 "RPSI":0,
-                 "RPSI_posAnt":100,
-                 "RPSI_medLat":100,
-                 "RPSI_supInf":100,
+        out={"LASI":100,
+             "RASI":100,
+             "LPSI":100,
+             "RPSI":100,
+             "RTHI":100,
+             "RKNE":100,
+             "RTHAP":100,
+             "RTHAD":100,
+             "RTIB":100,
+             "RANK":100,
+             "RTIAP":100,
+             "RTIAD":100,
+             "RHEE":100,
 
-                 "RTHI":0,
-                 "RTHI_posAnt":100,
-                 "RTHI_medLat":100,
-                 "RTHI_proDis":100,
-                 "RKNE":0,
-                 "RKNE_posAnt":100,
-                 "RKNE_medLat":100,
-                 "RKNE_proDis":100,
-                 "RTIB":0,
-                 "RTIB_posAnt":100,
-                 "RTIB_medLat":100,
-                 "RTIB_proDis":100,
-                 "RANK":0,
-                 "RANK_posAnt":100,
-                 "RANK_medLat":100,
-                 "RANK_proDis":100,
-                 "RHEE":0,
-                 "RHEE_supInf":100,
-                 "RHEE_medLat":100,
-                 "RHEE_proDis":100,
-                 "RSMH":0,
-                 "RSMH_supInf":100,
-                 "RSMH_medLat":100,
-                 "RSMH_proDis":100,
+             "RTOE":100,
+             "RFMH":100,
+             "RVMH":100,
+             "LTHI":100,
+             "LKNE":100,
+             "LTHAP":100,
+             "LTHAD":100,
+             "LTIB":100,
+             "LANK":100,
+             "LTIAP":100,
+             "LTIAD":100,
+             "LHEE":100,
 
-                 "RTOE":0,
-                 "RTOE_supInf":100,
-                 "RTOE_medLat":100,
-                 "RTOE_proDis":100,
+             "LTOE":100,
+             "LFMH":100,
+             "LVMH":100,
 
-                 "RFMH":0,
-                 "RFMH_supInf":100,
-                 "RFMH_medLat":100,
-                 "RFMH_proDis":100,
-
-                 "LTHI":0,
-                 "LTHI_posAnt":100,
-                 "LTHI_medLat":100,
-                 "LTHI_proDis":100,
-                 "LKNE":0,
-                 "LKNE_posAnt":100,
-                 "LKNE_medLat":100,
-                 "LKNE_proDis":100,
-                 "LTIB":0,
-                 "LTIB_posAnt":100,
-                 "LTIB_medLat":100,
-                 "LTIB_proDis":100,
-                 "LANK":0,
-                 "LANK_posAnt":100,
-                 "LANK_medLat":100,
-                 "LANK_proDis":100,
-                 "LHEE":0,
-                 "LHEE_supInf":100,
-                 "LHEE_medLat":100,
-                 "LHEE_proDis":100,
-
-                 "LTOE":0,
-                 "LTOE_supInf":100,
-                 "LTOE_medLat":100,
-                 "LTOE_proDis":100,
-
-                 "LFMH":0,
-                 "LFMH_supInf":100,
-                 "LFMH_medLat":100,
-                 "LFMH_proDis":100,
-
-                 "LVMH":0,
-                 "LVMH_supInf":100,
-                 "LVMH_medLat":100,
-                 "LVMH_proDis":100,
-
-
-                 "LTHAP":0,
-                 "LTHAP_posAnt":100,
-                 "LTHAP_medLat":100,
-                 "LTHAP_proDis":100,
-                 "LTHAD":0,
-                 "LTHAD_posAnt":100,
-                 "LTHAD_medLat":100,
-                 "LTHAD_proDis":100,
-                 "RTHAP":0,
-                 "RTHAP_posAnt":100,
-                 "RTHAP_medLat":100,
-                 "RTHAP_proDis":100,
-                 "RTHAD":0,
-                 "RTHAD_posAnt":100,
-                 "RTHAD_medLat":100,
-                 "RTHAD_proDis":100,
-                 "LTIAP":0,
-                 "LTIAP_posAnt":100,
-                 "LTIAP_medLat":100,
-                 "LTIAP_proDis":100,
-                 "LTIAD":0,
-                 "LTIAD_posAnt":100,
-                 "LTIAD_medLat":100,
-                 "LTIAD_proDis":100,
-                 "RTIAP":0,
-                 "RTIAP_posAnt":100,
-                 "RTIAP_medLat":100,
-                 "RTIAP_proDis":100,
-                 "RTIAD":0,
-                 "RTIAD_posAnt":100,
-                 "RTIAD_medLat":100,
-                 "RTIAD_proDis":100,
-
-
-
-                 "LSMH":0,
-                 "LSMH_supInf":0,
-                 "LSMH_medLat":0,
-                 "LSMH_proDis":0,
-
-                 "RVMH":0,
-                 "RVMH_supInf":100,
-                 "RVMH_medLat":100,
-                 "RVMH_proDis":100,
-
-                 "LTHLD":0,
-                 "LTHLD_posAnt":0,
-                 "LTHLD_medLat":0,
-                 "LTHLD_proDis":0,
-                 "LPAT":0,
-                 "LPAT_posAnt":0,
-                 "LPAT_medLat":0,
-                 "LPAT_proDis":0,
-                 "RTHLD":0,
-                 "RTHLD_posAnt":0,
-                 "RTHLD_medLat":0,
-                 "RTHLD_proDis":0,
-                 "RPAT":0,
-                 "RPAT_posAnt":0,
-                 "RPAT_medLat":0,
-                 "RPAT_proDis":0
-
-                 }
-        else:
-            out={"LASI":100,
-                 "RASI":100,
-                 "LPSI":100,
-                 "RPSI":100,
-                 "RTHI":100,
-                 "RKNE":100,
-                 "RTHAP":100,
-                 "RTHAD":100,
-                 "RTIB":100,
-                 "RANK":100,
-                 "RTIAP":100,
-                 "RTIAD":100,
-                 "RHEE":100,
-
-                 "RTOE":100,
-                 "RFMH":100,
-                 "RVMH":100,
-                 "LTHI":100,
-                 "LKNE":100,
-                 "LTHAP":100,
-                 "LTHAD":100,
-                 "LTIB":100,
-                 "LANK":100,
-                 "LTIAP":100,
-                 "LTIAD":100,
-                 "LHEE":100,
-
-                 "LTOE":100,
-                 "LFMH":100,
-                 "LVMH":100,
-
-                 "RSMH":0,
-                 "RTHLD":0,
-                 "RPAT":0,
-                 "LSMH":0,
-                 "LTHLD":0,
-                 "LPAT":0,
-
-                 }
+             "RSMH":0,
+             "RTHLD":0,
+             "RPAT":0,
+             "LSMH":0,
+             "LTHLD":0,
+             "LPAT":0,
+         }
 
         return out
 
@@ -2573,113 +2208,6 @@ class CGM2_4(CGM2_3):
         centreOfMassLabel  = "CentreOfMass" + pointSuffix if pointSuffix is not None else "CentreOfMass"
         if btkTools.isPointExist(acq, centreOfMassLabel):
             nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,centreOfMassLabel, acq)
-
-        # pointSuffix  =  pointSuffix if pointSuffix is not None else ""
-        #
-        # if staticProcessingFlag:
-        #     if self.checkCalibrationProperty("LeftKAD",True):
-        #         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"LKNE", acq)
-        #     if self.checkCalibrationProperty("RightKAD",True):
-        #         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKNE", acq)
-        #
-        #
-        # # export JC
-        # jointcentres = ["LHJC","RHJC","LKJC","RKJC","LAJC","RAJC","LSJC","RSJC","LEJC","REJC","LHO","RHO"]
-        #
-        #
-        # for jointCentre in jointcentres:
-        #     if btkTools.isPointExist(acq, jointCentre):
-        #         nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,jointCentre, acq,suffix = pointSuffix)
-        #
-        #
-        # # export angles
-        # for it in btk.Iterate(acq.GetPoints()):
-        #     if it.GetType() == btk.btkPoint.Angle:
-        #         if pointSuffix is not None:
-        #             if pointSuffix in it.GetLabel():
-        #                 nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-        #         else:
-        #             nexusTools.appendAngleFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-        #
-        # LOGGER.logger.debug("angles over")
-        #
-        # # bones
-        # # -------------
-        # if self.m_bodypart != enums.BodyPart.UpperLimb:
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"PELVIS", self.getSegment("Pelvis"),OriginValues = acq.GetPoint("midHJC").GetValues() ,suffix=pointSuffix)
-        #
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"LFEMUR", self.getSegment("Left Thigh"),OriginValues = acq.GetPoint("LKJC").GetValues() ,suffix=pointSuffix)
-        #     #nexusTools.appendBones(NEXUS,vskName,"LFEP", self.getSegment("Left Shank Proximal"),OriginValues = acq.GetPoint("LKJC").GetValues(),manualScale = 100 )
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),OriginValues = acq.GetPoint("LAJC").GetValues() ,suffix=pointSuffix)
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"), OriginValues = acq.GetPoint("LFJC").GetValues() ,suffix=pointSuffix)
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left ForeFoot"), OriginValues = acq.GetPoint("LFJC").GetValues() ,suffix=pointSuffix)
-        #
-        #
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),OriginValues = acq.GetPoint("RKJC").GetValues() ,suffix=pointSuffix)
-        #     #nexusTools.appendBones(NEXUS,vskName,"RFEP", self.getSegment("Right Shank Proximal"),OriginValues = acq.GetPoint("RKJC").GetValues(),manualScale = 100 )
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix=pointSuffix)
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") , OriginValues = acq.GetPoint("RFJC").GetValues() ,suffix=pointSuffix)
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right ForeFoot") ,  OriginValues = acq.GetPoint("RFJC").GetValues(),suffix=pointSuffix)
-        #
-        # if self.m_bodypart == enums.BodyPart.LowerLimbTrunk :
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"THORAX",
-        #         self.getSegment("Thorax"),OriginValues = acq.GetPoint("OT").GetValues(),
-        #         manualScale = self.getSegment("Thorax").m_info["Scale"],
-        #         suffix=pointSuffix)
-        #
-        # if self.m_bodypart == enums.BodyPart.UpperLimb or self.m_bodypart == enums.BodyPart.FullBody:
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"THORAX", self.getSegment("Thorax"),
-        #         OriginValues = acq.GetPoint("OT").GetValues(),
-        #         manualScale = self.getSegment("Thorax").m_info["Scale"],
-        #         suffix=pointSuffix)
-        #
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"LUPPERARM", self.getSegment("Left UpperArm"),OriginValues = acq.GetPoint("LEJC").GetValues() ,suffix=pointSuffix)
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"LFOREARM", self.getSegment("Left ForeArm"),OriginValues = acq.GetPoint("LWJC").GetValues() ,suffix=pointSuffix)
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"LHAND", self.getSegment("Left Hand"),OriginValues = acq.GetPoint("LHO").GetValues() ,suffix=pointSuffix)
-        #
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"RUPPERARM", self.getSegment("Right UpperArm"),OriginValues = acq.GetPoint("REJC").GetValues() ,suffix=pointSuffix)
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"RFOREARM", self.getSegment("Right ForeArm"),OriginValues = acq.GetPoint("RWJC").GetValues() ,suffix=pointSuffix)
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"RHAND", self.getSegment("Right Hand"),OriginValues = acq.GetPoint("RHO").GetValues() ,suffix=pointSuffix)
-        #     nexusTools.appendBones(NEXUS,vskName,acq,"HEAD", self.getSegment("Head"),
-        #         OriginValues = self.getSegment("Head").anatomicalFrame.getNodeTrajectory("SkullOriginOffset"),
-        #         manualScale = self.getSegment("Head").m_info["headScale"],suffix = pointSuffix )
-        # LOGGER.logger.debug("bones over")
-        #
-        # if not staticProcessingFlag:
-        #     # export Force
-        #     for it in btk.Iterate(acq.GetPoints()):
-        #         if it.GetType() == btk.btkPoint.Force:
-        #             if pointSuffix is not None:
-        #                 if pointSuffix in it.GetLabel():
-        #                     nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-        #             else:
-        #                 nexusTools.appendForceFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-        #     LOGGER.logger.debug("force over")
-        #
-        #     # export Moment
-        #     for it in btk.Iterate(acq.GetPoints()):
-        #         if it.GetType() == btk.btkPoint.Moment:
-        #             if pointSuffix is not None:
-        #                 if pointSuffix in it.GetLabel():
-        #                     nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-        #             else:
-        #                 nexusTools.appendMomentFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-        #     LOGGER.logger.debug("Moment over")
-        #
-        #     # export Power
-        #     for it in btk.Iterate(acq.GetPoints()):
-        #         if it.GetType() == btk.btkPoint.Power:
-        #             if pointSuffix is not None:
-        #                 if pointSuffix in it.GetLabel():
-        #                     nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-        #             else:
-        #                 nexusTools.appendPowerFromAcq(NEXUS,vskName,str(it.GetLabel()), acq)
-        #     LOGGER.logger.debug("power over")
-        #
-        # # centre of mass
-        # centreOfMassLabel  = "CentreOfMass" + pointSuffix if pointSuffix is not None else "CentreOfMass"
-        # if self.m_centreOfMass is not None:
-        #     nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,str(centreOfMassLabel), acq)
 
 
 class CGM2_5(CGM2_4):
