@@ -23,6 +23,8 @@ def makeAnalysis(DATA_PATH,
                     pointLabelSuffix=None,
                     btkAcqs=None,
                     subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                    pstfilenames=None,kinematicfilenames=None,kineticfilenames=None,emgfilenames=None,
+
                     ):
 
     """
@@ -39,7 +41,7 @@ def makeAnalysis(DATA_PATH,
 
 
     """
-    if filenames == []: filenames=None
+    if filenames == [] or filenames is None: filenames=None
 
     #---- c3d manager
 
@@ -47,7 +49,12 @@ def makeAnalysis(DATA_PATH,
         c3dmanagerProcedure = c3dManager.UniqueBtkAcqSetProcedure(DATA_PATH,filenames,acqs=btkAcqs)
 
     else:
-        c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(DATA_PATH, filenames, filenames, filenames, filenames)
+        iPstFilenames =  filenames if pstfilenames is None else pstfilenames
+        iKinematicFilenames =  filenames if kinematicfilenames is None else kinematicfilenames
+        iKineticFilenames =  filenames if kineticfilenames is None else kineticfilenames
+        iEmgFilenames =  filenames if emgfilenames is None else emgfilenames
+
+        c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(DATA_PATH, iPstFilenames, iKinematicFilenames, iKineticFilenames, iEmgFilenames)
 
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
 
