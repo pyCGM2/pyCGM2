@@ -20,7 +20,7 @@ import argparse
 from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
 
 
-
+MODEL = "CGM2.2"
 
 def command():
     parser = argparse.ArgumentParser(description='CGM22 workflow')
@@ -54,6 +54,9 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
     if not os.path.isfile(DATA_PATH+calibrateFilenameLabelled):
         shutil.copyfile(os.getcwd()+"\\"+calibrateFilenameLabelled,DATA_PATH+calibrateFilenameLabelled)
         LOGGER.logger.info("qualisys exported c3d file [%s] copied to processed folder"%(calibrateFilenameLabelled))
+
+    if qtmTools.findKneeCalibration(sessionXML,"Left") is not None or qtmTools.findKneeCalibration(sessionXML,"Right") is not None:
+        LOGGER.logger.info(" the %s not accepts functional knee calibration !!"%(MODEL))
 
     dynamicMeasurements= qtmTools.findDynamic(sessionXML)
     for dynamicMeasurement in dynamicMeasurements:
@@ -175,13 +178,6 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
         # ik accuracy
         ikAccuracy = float(dynamicMeasurement.IkAccuracy.text)
 
-        # event checking
-        # -----------------------
-        geap = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
-        adf = AnomalyFilter.AnomalyDetectionFilter(acq,reconstructFilenameLabelled,geap)
-        anomaly = adf.run()
-        if anomaly["ErrorState"]:
-            raise Exception ("[pyCGM2] Badly gait event detection. check the log file")
 
         if dynamicMeasurement.First_frame_to_process.text != "":
             vff = int(dynamicMeasurement.First_frame_to_process.text)
@@ -218,21 +214,31 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
 
 
     LOGGER.logger.info("---------------------GAIT PROCESSING -----------------------")
-
     if createPDFReport:
         nds = normativeDatasets.NormativeData("Schwartz2008","Free")
-
         types = qtmTools.detectMeasurementType(sessionXML)
         for type in types:
-
             modelledTrials = list()
             for dynamicMeasurement in dynamicMeasurements:
                 if  qtmTools.isType(dynamicMeasurement,type):
                     filename = qtmTools.getFilename(dynamicMeasurement)
-                    modelledTrials.append(filename)
+                    # event checking
+                    # -----------------------
+                    acq = btkTools.smartReader(DATA_PATH+filename)
+                    geap = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
+                    adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename,geap)
+                    anomaly_events = adf.run()
+                    if anomaly_events["ErrorState"]:
+                        detectAnomaly = True
+                        LOGGER.logger.warning("file [%s] not used for generating the gait report. bad gait event detected"%(filename))
+                    else:
+                        modelledTrials.append(filename)
+            try:
+                report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
+                LOGGER.logger.error("Generation of Gait report complete")
+            except:
+                LOGGER.logger.error("Generation of Gait report failed")
 
-            report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
-            LOGGER.logger.info("----- Gait Processing -----> DONE")
 
     LOGGER.logger.info("-------------------------------------------------------")
     if detectAnomaly:
