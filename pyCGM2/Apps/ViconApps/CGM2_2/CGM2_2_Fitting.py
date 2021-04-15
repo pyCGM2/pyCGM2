@@ -46,6 +46,8 @@ def main():
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('-a','--accuracy', type=float, help='Inverse Kinematics accuracy')
     parser.add_argument('-ae','--anomalyException', action='store_true', help='stop if anomaly detected ')
+    parser.add_argument('-fi','--frameInit',type=int,  help='first frame to process')
+    parser.add_argument('-fe','--frameEnd',type=int,  help='last frame to process')
     args = parser.parse_args()
 
 
@@ -127,7 +129,9 @@ def main():
             momentProjection,
             forceBtkAcq=acq,
             ikAccuracy = ikAccuracy,
-            anomalyException=args.anomalyException)
+            anomalyException=args.anomalyException,
+            frameInit= args.frameInit, frameEnd= args.frameEnd )
+
 
 
         # ----------------------DISPLAY ON VICON-------------------------------

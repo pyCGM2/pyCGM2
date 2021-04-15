@@ -128,7 +128,7 @@ def main():
             momentProjection,
             forceBtkAcq=acq, anomalyException=args.anomalyException,
             ikAccuracy = ikAccuracy,
-            frameInit= args.frameInit, frameEnd= args.frameEnd ))
+            frameInit= args.frameInit, frameEnd= args.frameEnd )
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,finalAcqGait,subject,pointSuffix).run()
