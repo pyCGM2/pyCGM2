@@ -9,11 +9,11 @@ from pyCGM2.Utils import files
 
 
 def getVskFiles(path):
-    
+
     path = path[:-1] if path[-1:]=="\\" else path
     vskFile = files.getFiles(path+"\\",".vsk")
     if len(vskFile)>1:
-        LOGGER.logger.warning("Folder with several vsk. %s selected"%(vskFile[0]))
+        LOGGER.logger.info("Folder with several vsk. %s selected"%(vskFile[0]))
 
     return vskFile[0]
 
@@ -26,7 +26,7 @@ def checkSetReadOnly(vskfilename):
     file0.close()
 
     if flag:
-        LOGGER.logger.warning("read Only found")
+        LOGGER.logger.info("read Only found")
         content2 = string.replace(content, 'READONLY="true"', 'READONLY="false"')
 
         with open(vskfilename, "w") as text_file:
@@ -59,7 +59,7 @@ class Vsk(object):
                 try:
                     val = sp.attrs["VALUE"]
                 except KeyError:
-                    LOGGER.logger.warning("static parameter (%s) has no value. Zero return"%(label))
+                    LOGGER.logger.info("static parameter (%s) has no value. Zero return"%(label))
                     val=0
                 return val
 
