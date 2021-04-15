@@ -165,7 +165,7 @@ class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
                     label = labels[i]
                     frame = frames[i]
                     if label == init:
-                        LOGGER.logger.error("[pyCGM2-Anomaly] file (%s) - two consecutive (%s) detected at frame (%i)"%(filename,(label),frame))
+                        LOGGER.logger.warning("[pyCGM2-Anomaly] file (%s) - two consecutive (%s) detected at frame (%i)"%(filename,(label),frame))
                         errorState = True
 
                     init = label
@@ -176,7 +176,7 @@ class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
                     for i in range(1,len(events_L)):
                         label = events_L[i].GetLabel()
                         if label == init:
-                            LOGGER.logger.error("[pyCGM2-Anomaly] file (%s) - Wrong Left Event - two consecutive (%s) detected at frane (%i)"%(filename,(label),events_L[i].GetFrame()) )
+                            LOGGER.logger.warning("[pyCGM2-Anomaly] file (%s) - Wrong Left Event - two consecutive (%s) detected at frane (%i)"%(filename,(label),events_L[i].GetFrame()) )
                             errorState = True
                         init = label
                 else:
@@ -188,14 +188,15 @@ class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
                     for i in range(1,len(events_R)):
                         label = events_R[i].GetLabel()
                         if label == init:
-                            LOGGER.logger.error("[pyCGM2-Anomaly] file (%s) - Wrong Right Event - two consecutive (%s) detected at frane (%i)"%(filename,(label),events_R[i].GetFrame()) )
+                            LOGGER.logger.warning("[pyCGM2-Anomaly] file (%s) - Wrong Right Event - two consecutive (%s) detected at frane (%i)"%(filename,(label),events_R[i].GetFrame()) )
                             errorState = True
                         init = label
                 else:
                     LOGGER.logger.warning("[pyCGM2-Anomaly] Only one right events ")
 
         else:
-            LOGGER.logger.error("[pyCGM2-Anomaly] No events are in trial (%s)"%(filename))
+            LOGGER.logger.info("[pyCGM2-Anomaly] No events are in trial (%s)"%(filename))
+            self.anomaly["Output"] = "No events"
 
         self.anomaly["ErrorState"] = errorState
         return errorState
