@@ -27,20 +27,64 @@ def makeAnalysis(DATA_PATH,
 
                     ):
 
+    """This function normalise data in time and return an **Analysis Instance** ie a nested dictionnary container containing
+       spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops from a list of c3d files.
+
+       By default: the function calls :
+
+        * kinematic and kinetic ouputs of the CGM
+        * emg channels names Voltage.EMG1 to Voltage.EMG16
+
+       You can also compute spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops
+       from different set of c3d files. For that  use the named arguments :
+
+         * pstfilenames
+         * kinematicfilenames
+         * kineticfilenames
+         * emgfilenames
+
+
+
+    Args:
+        DATA_PATH (str): folder path [REQUIRED]
+        filenames (list): list of c3d files to normalize [REQUIRED]
+        type (str): event type (choice : "Gait" or "unknown").
+        kinematicLabelsDict (dict): dictionnary containing kinematic data to normalize.
+        kineticLabelsDict (dict): dictionnary containing kinetic data to normalize.
+        emgChannels (list): list of emg channel
+        pointLabelSuffix (str): suffix associated to pont output
+        btkAcqs (list of btk.Acquisition): btkAcq instances to process instead of calling c3d file.
+        subjectInfo (dict): dictionnary with metadata information about the subject.
+        experimentalInfo (dict): dictionnary with metadata information about the expreiment.
+        modelInfo (dict): dictionnary with metadata information about the model.
+        pstfilenames (list): list of c3d files used for computing spatiotemporal parameters
+        kinematicfilenames (list): list of c3d files used to normalize kinematic data
+        kineticfilenames (list): list of c3d files used to normalize kinetic data
+        emgfilenames (list): list of c3d files used to normalize emg data
+
+    Returns:
+        pyCGM2.Processing.analysis.Analysis: analysis instance
+
+
+    Examples:
+
+        >>> analysisInstance2 = analysis.makeAnalysis(DATA_PATH,
+              [file1.c3d,"file2.c3d"],
+              type="Gait",
+              kinematicLabelsDict = {"Left": ["LHipAngles,LKneeAngles"], "Right": ["RHipAngles,RKneeAngles"]},
+              kineticLabelsDict = {"Left": ["LHipMoment,LKneePower"], "Right": ["RHipMoment,RKneeMoment"],
+              emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3"],
+              pointLabelSuffix="cgm1",
+              subjectInfo = {"Name":"Doe","Firstname":"John"},
+              experimentalInfo = {"Barefoot":"No"},
+              modelInfo = {"Model":"CGM1"})
+
+
+
+
     """
-    makeAnalysis : create the pyCGM2.Processing.analysis.Analysis instance
-
-    :param DATA_PATH [str]: path to your data
-    :param modelledFilenames [string list]: c3d files with model outputs
 
 
-    **optional**
-
-
-
-
-
-    """
     if filenames == [] or filenames is None: filenames=None
 
     #---- c3d manager
@@ -112,26 +156,17 @@ def makeAnalysis(DATA_PATH,
 
 
 def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
+    """export an Analysis instance as excel spreadsheet.
+
+    Args:
+        analysisInstance (pyCGM2.Processing.analysis.Analysis): Analysis instance.
+        DATA_PATH (str):folder path
+        name (str): name of your excel file.
+        mode (str): spreadsheet mode . ("Advanced or basic")
 
     """
-    exportAnalysis : export the pyCGM2.Processing.analysis.Analysis instance in a xls spreadsheet
-
-    :param analysisInstance [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-    :param DATA_PATH [str]: path to your data
-    :param name [string]: name of the output file
-
-    **optional**
-
-    :param mode [string]: structure of the output xls (choice: Advanced[Default] or Basic)
-
-    .. note::
-
-        the advanced xls organizes data by row ( one raw = on cycle)
-        whereas the Basic mode exports each model output in a new sheet
 
 
-
-    """
 
     exportFilter = exporter.XlsAnalysisExportFilter()
     exportFilter.setAnalysisInstance(analysisInstance)
@@ -139,12 +174,7 @@ def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
 
 
 def automaticCPdeviations(DATA_PATH,analysis,pointLabelSuffix=None,filterTrue=False, export=True, outputname ="Nieuwenhuys2017" ):
-    """
-    Detect gait deviation for CP according a Delphi Consensus (Nieuwenhuys2017 et al 2017)
 
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-
-    """
 
     RULES_PATH = pyCGM2.PYCGM2_SETTINGS_FOLDER +"jointPatterns\\"
     rulesXls = RULES_PATH+"Nieuwenhuys2017.xlsx"

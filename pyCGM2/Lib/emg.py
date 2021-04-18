@@ -10,21 +10,23 @@ from pyCGM2 import enums
 
 
 def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None,outDataPath=None):
+    """ basic filtering of EMG .
+
+    Args:
+        DATA_PATH (str): folder path.
+        gaitTrials (str): list of c3d files.
+        emgChannels (list): list or emg channel
+        highPassFrequencies (list ): boundaries of the bandpass filter
+        envelopFrequency (float): cut-off frequency of low pass emg
+        fileSuffix (str): add a suffix to the exported c3d files
+        outDataPath (str): path to place the exported c3d files.
+
+    Examples
+
+        >>> emg.processEMG(DATA_PATH, ["file1.c3d","file2.c3d"], ["Voltage.EMG1","Voltage.EMG2"])
 
     """
-    processEMG_fromC3dFiles : filters emg channels from a list of c3d files
 
-    :param DATA_PATH [String]: path to your folder
-    :param gaitTrials [string List]:c3d files with emg signals
-    :param emgChannels [string list]: label of your emg channels
-
-    **optional**
-
-    :param highPassFrequencies [list of float]: boundaries of the bandpass filter
-    :param envelopFrequency [float]: cut-off frequency for creating an emg envelop
-    :param fileSuffix [string]: suffix added to your ouput c3d files
-
-    """
     if fileSuffix is None: fileSuffix=""
 
     for gaitTrial in gaitTrials:
@@ -54,19 +56,6 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],
             btkTools.smartWriter(acq,outDataPath+outFilename)
 
 def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
-    """
-    processEMG_fromBtkAcq : filt emg from a btk acq
-
-    :param acq [btk::Acquisition]: btk acquisition
-    :param emgChannels [string list]: label of your emg channels
-
-    **optional**
-
-    :param highPassFrequencies [list of float]: boundaries of the bandpass filter
-    :param envelopFrequency [float]: cut-off frequency for creating an emg envelop
-
-    """
-
 
     bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
     bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
@@ -79,17 +68,27 @@ def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelop
     return acq
 
 def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
-    """
-    normalizedEMG : perform normalization of emg in amplitude
+    """Emg normalisation in amplitude.
 
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-    :param emgChannels [string list]: label of your emg channels
-    :param contexts [string list]: contexts associated with your emg channel
+    This function update the analysis instance with normalized emg signal in amplitude
 
-    **optional**
+    Args:
+        analysis (pyCGM2.Processing.analysis.Analysis): an analysis Instance
+        emgChannels (str): list or emg channel
+        contexts (list): indicate event context
+        method (str): normalisation method (choice : MeanMax[default], MaxMax, MedianMax ).
+        fromOtherAnalysis (pyCGM2.Processing.analysis.Analysis): normalise in amplitude from another analysis instance.
+        mvcSettings (dict): mvc settings.
 
-    :param method [str]: method of amplitude normalisation (choice MeanMax[default], MaxMax, MedianMax)
-    :param fromOtherAnalysis [pyCGM2.Processing.analysis.Analysis]: amplitude normalisation from another analysis instance
+
+
+    Examples
+
+        >>>emg.normalizedEMG(emgAnalysisInstance,
+                ["Voltage.EMG1","Voltage.EMG2"],
+                ["Left","Right"],
+                method="MeanMax",
+                fromOtherAnalysis=emgAnalysisInstancePreBloc)
 
     """
 
