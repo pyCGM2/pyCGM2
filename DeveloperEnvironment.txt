@@ -56,7 +56,7 @@ pandas==0.19.1
 pandocfilters==1.4.2
 pathlib2==2.3.5
 pickleshare==0.7.5
-Pillow==6.2.2
+Pillow==8.1.1
 pluggy==0.13.1
 pprintpp==0.4.0
 prometheus-client==0.8.0
