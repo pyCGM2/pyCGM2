@@ -83,7 +83,7 @@ def markerFiltering(btkAcq,markers,order=2, fc=6,zerosFiltering=True):
 
 
         N = len(array)
-        indexes = range(0,N)
+        indexes = list(range(0,N))
 
         for i in range(0,N):
             if array[i] == 0:
