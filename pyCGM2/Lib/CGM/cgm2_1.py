@@ -190,7 +190,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
 
     if "noKinematicsCalculation" in kwargs.keys() and kwargs["noKinematicsCalculation"]:
         LOGGER.logger.warning("[pyCGM2] No Kinematic calculation done for the static file")
-        return model, acqStatic
+
     else:
 
         #---- Joint kinematics----
@@ -214,7 +214,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
         if detectAnomaly and not anomalyException:
             LOGGER.logger.error("Anomalies has been detected - Check Warning messages of the log file")
 
-        return model, acqStatic,detectAnomaly
+    return model, acqStatic,detectAnomaly
 
 
 def fitting(model,DATA_PATH, reconstructFilenameLabelled,
