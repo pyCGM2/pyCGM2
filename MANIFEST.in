@@ -19,3 +19,4 @@ recursive-include pyCGM2\opensim4 *.pyo
 recursive-include pyCGM2\opensim4 *.py
 recursive-include pyCGM2\opensim4 *.pyc
 recursive-include pyCGM2\opensim4 *.lib
+include requirements.txt
