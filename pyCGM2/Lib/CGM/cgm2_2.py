@@ -309,6 +309,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
 def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     translators,weights,
+    ik_flag,
     markerDiameter,
     pointSuffix,
     mfpa,
@@ -462,8 +463,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
             weights[target] = 0
             LOGGER.logger.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,reconstructFilenameLabelled))
 
-
-    ik_flag =  True
     if ik_flag:
         #                        ---OPENSIM IK---
 

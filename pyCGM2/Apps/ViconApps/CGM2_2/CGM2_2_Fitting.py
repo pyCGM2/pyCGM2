@@ -122,7 +122,8 @@ def main():
 
         # --------------------------MODELLING PROCESSING -----------------------
         acqIK,detectAnomaly = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-            translators,settings,
+            translators,ikWeight,
+            True,
             markerDiameter,
             pointSuffix,
             mfpa,
