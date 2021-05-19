@@ -103,7 +103,7 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
             plot.temporalPlot(self.fig.axes[i],self.m_acq,
                                     label,0,
-                                    color=colorContext)
+                                    color=colorContext,linewidth=1)
 
             if not self.m_ignoreNormalActivity:
                 plot.addTemporalNormalActivationLayer(self.fig.axes[i],self.m_acq,self.m_normalActivEmgs[i],context)

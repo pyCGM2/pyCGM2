@@ -21,7 +21,7 @@ from pyCGM2.EMG import normalActivation
 
 # ---- convenient plot functions
 def temporalPlot(figAxis,acq,
-                pointLabel,axis,pointLabelSuffix=None,color=None,
+                pointLabel,axis,pointLabelSuffix=None,color=None,linewidth=None,
                 title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                 customLimits=None):
 
@@ -48,13 +48,13 @@ def temporalPlot(figAxis,acq,
     flag = btkTools.isPointExist(acq,pointLabel)
     if flag:
         point = acq.GetPoint(pointLabel)
-        lines=figAxis.plot(point.GetValues()[:,axis], '-', color= color)
+        lines=figAxis.plot(point.GetValues()[:,axis], '-', color= color,linewidth=linewidth)
         appf = 1
     else:
         flag = btkTools.isAnalogExist(acq,pointLabel)
         if flag:
             analog = acq.GetAnalog(pointLabel)
-            lines=figAxis.plot(analog.GetValues()[:,axis], '-', color= color)
+            lines=figAxis.plot(analog.GetValues()[:,axis], '-', color= color,linewidth=linewidth)
             appf = acq.GetNumberAnalogSamplePerFrame()
 
 
