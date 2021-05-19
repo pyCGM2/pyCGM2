@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #import ipdb
+import pandas as pd
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
 from pyCGM2.Tools import btkTools
@@ -92,7 +93,7 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
 
     """
 
-
+    rows = list()
     i=0
     for label in emgChannels:
         envnf = emgFilters.EmgNormalisationProcessingFilter(analysis,label,contexts[i])
@@ -121,4 +122,8 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
 
         envnf.run()
         i+=1
+        rows.append([envnf.m_label, envnf.m_threshold])
         del envnf
+
+    df = pd.DataFrame(rows, columns=["Label", "MvcThreshold"])
+    return df
