@@ -375,6 +375,12 @@ class XlsAnalysisExportFilter(object):
                 for key,value in condExpInfo.items():
                     exportTools.isColumnNameExist( df_descriptiveStp, key)
                     df_descriptiveStp[key] = value
+
+            if self.analysis.stpInfo is not None:
+                for key,value in self.analysis.stpInfo.items():
+                    exportTools.isColumnNameExist( df_descriptiveStp, key)
+                    df_descriptiveStp[key] = value
+
             df_descriptiveStp.to_excel(xlsxWriter,'descriptive stp',index=False)
 
 
@@ -393,6 +399,11 @@ class XlsAnalysisExportFilter(object):
                     df_stp[key] = value
             if condExpInfo is not None:
                 for key,value in condExpInfo.items():
+                    exportTools.isColumnNameExist( df_stp, key)
+                    df_stp[key] = value
+
+            if self.analysis.stpInfo is not None:
+                for key,value in self.analysis.stpInfo.items():
                     exportTools.isColumnNameExist( df_stp, key)
                     df_stp[key] = value
 
@@ -435,6 +446,10 @@ class XlsAnalysisExportFilter(object):
                         exportTools.isColumnNameExist( itdf, key)
                         itdf[key] = value
 
+                if self.analysis.scoreInfo is not None:
+                    for key,value in self.analysis.scoreInfo.items():
+                        exportTools.isColumnNameExist( itdf, key)
+                        itdf[key] = value
 
             df_descriptiveGps.to_excel(xlsxWriter,'descriptive GPS',index=False)
             df_allGpsByContext.to_excel(xlsxWriter,'GPS cycles',index=False)
@@ -457,6 +472,11 @@ class XlsAnalysisExportFilter(object):
                         itdf[key] = value
                 if condExpInfo is not None:
                     for key,value in condExpInfo.items():
+                        exportTools.isColumnNameExist( itdf, key)
+                        itdf[key] = value
+
+                if self.analysis.scoreInfo is not None:
+                    for key,value in self.analysis.scoreInfo.items():
                         exportTools.isColumnNameExist( itdf, key)
                         itdf[key] = value
 
@@ -489,6 +509,11 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_descriptiveKinematics, key)
                     df_descriptiveKinematics[key] = value
 
+            if self.analysis.kinematicInfo is not None:
+                for key,value in self.analysis.kinematicInfo.items():
+                    exportTools.isColumnNameExist( df_descriptiveKinematics, key)
+                    df_descriptiveKinematics[key] = value
+
             df_descriptiveKinematics.to_excel(xlsxWriter,'descriptive kinematics',index=False)
 
             # stage 2 : get cycle values
@@ -509,6 +534,11 @@ class XlsAnalysisExportFilter(object):
                     df_kinematics[key] = value
             if condExpInfo is not None:
                 for key,value in condExpInfo.items():
+                    exportTools.isColumnNameExist( df_kinematics, key)
+                    df_kinematics[key] = value
+
+            if self.analysis.kinematicInfo is not None:
+                for key,value in self.analysis.kinematicInfo.items():
                     exportTools.isColumnNameExist( df_kinematics, key)
                     df_kinematics[key] = value
 
@@ -542,6 +572,11 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_descriptiveKinetics, key)
                     df_descriptiveKinetics[key] = value
 
+            if self.analysis.kineticInfo is not None:
+                for key,value in self.analysis.kineticInfo.items():
+                    exportTools.isColumnNameExist( df_descriptiveKinetics, key)
+                    df_descriptiveKinetics[key] = value
+
             df_descriptiveKinetics.to_excel(xlsxWriter,'descriptive kinetics',index=False)
 
             # stage 2 : get cycle values
@@ -562,6 +597,11 @@ class XlsAnalysisExportFilter(object):
                     df_kinetics[key] = value
             if condExpInfo is not None:
                 for key,value in condExpInfo.items():
+                    exportTools.isColumnNameExist( df_kinetics, key)
+                    df_kinetics[key] = value
+
+            if self.analysis.kineticInfo is not None:
+                for key,value in self.analysis.kineticInfo.items():
                     exportTools.isColumnNameExist( df_kinetics, key)
                     df_kinetics[key] = value
 
@@ -595,6 +635,11 @@ class XlsAnalysisExportFilter(object):
                     exportTools.isColumnNameExist( df_descriptiveEMG, key)
                     df_descriptiveEMG[key] = value
 
+            if self.analysis.emgInfo is not None:
+                for key,value in self.analysis.emgInfo.items():
+                    exportTools.isColumnNameExist( df_descriptiveEMG, key)
+                    df_descriptiveEMG[key] = value
+
             df_descriptiveEMG.to_excel(xlsxWriter,'descriptive EMG',index=False)
 
             # stage 2 : get cycle values
@@ -615,6 +660,11 @@ class XlsAnalysisExportFilter(object):
                     df_emg[key] = value
             if condExpInfo is not None:
                 for key,value in condExpInfo.items():
+                    exportTools.isColumnNameExist( df_emg, key)
+                    df_emg[key] = value
+
+            if self.analysis.emgInfo is not None:
+                for key,value in self.analysis.emgInfo.items():
                     exportTools.isColumnNameExist( df_emg, key)
                     df_emg[key] = value
 

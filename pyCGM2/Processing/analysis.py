@@ -52,6 +52,12 @@ class Analysis():
         self.experimentalInfo=None
         self.modelInfo=None
 
+        self.emgInfo=None
+        self.kinematicInfo=None
+        self.kineticInfo=None
+        self.stpInfo=None
+        self.scoreInfo=None
+
     def setStp(self,inDict):
         self.stpStats = inDict
 
@@ -85,6 +91,23 @@ class Analysis():
 
     def setModelInfo(self,modeltDict):
         self.modelInfo = modeltDict
+
+    def setStpInfo(self,iDict):
+        self.stpInfo = iDict
+
+    def setKinematicInfo(self,iDict):
+        self.kinematicInfo = iDict
+
+    def setKineticInfo(self,iDict):
+        self.kineticInfo = iDict
+
+    def setEmgInfo(self,iDict):
+        self.emgInfo = iDict
+
+    def setScoreInfo(self,iDict):
+        self.scoreInfo = iDict
+
+
 
     def getKinematicCycleNumbers(self):
         for label,context in self.kinematicStats.data.keys():
@@ -542,7 +565,7 @@ class AnalysisFilter(object):
         self.__concreteAnalysisBuilder = concreteBuilder
 
 
-    def setInfo(self,subject=None,experimental=None,model=None ):
+    def setInfo(self,subject=None,experimental=None,model=None):
 
         if subject is not None:
             self.subjectInfo = subject
@@ -553,8 +576,10 @@ class AnalysisFilter(object):
         if model is not None:
             self.modelInfo = model
 
-
-
+        # self.stpInfo = dict()
+        # self.kinematicInfo = dict()
+        # self.kineticInfo = dict()
+        # self.emgInfo = dict()
 
     def build (self) :
         """
