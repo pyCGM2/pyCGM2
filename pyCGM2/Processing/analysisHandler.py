@@ -7,7 +7,7 @@ def getPhases(dataStats,context="Both"):
     phases = dict()
 
     # Left
-    if context == "Both" or context="Left":
+    if context == "Both" or context=="Left":
         phases["Left","ST"] = [0,int(dataStats.pst["stancePhase","Left"]["mean"])]
         phases["Left","SW"] = [int(dataStats.pst["stancePhase","Left"]["mean"]),
                             100]
@@ -36,7 +36,7 @@ def getPhases(dataStats,context="Both"):
         phases["Left","lSW"] = [int(dataStats.pst["stancePhase","Left"]["mean"] + 2/3.0* dataStats.pst["swingPhase","Left"]["mean"]),
                                         100]
 
-    if context == "Both" or context="Right":
+    if context == "Both" or context=="Right":
         # Right
         phases["Right","ST"] = [0,int(dataStats.pst["stancePhase","Right"]["mean"])]
         phases["Right","SW"] = [int(dataStats.pst["stancePhase","Right"]["mean"]),
