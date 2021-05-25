@@ -382,8 +382,13 @@ def copyPaste(src, dst):
                     dst)
 
 def copyPasteDirectory(src, dst):
-    shutil.copytree(src,
-                    dst)
+    try:
+        shutil.copytree(src, dst)
+    except FileExistsError:
+        LOGGER.logger.warning("directory already exists. delete and overwritten ")
+        shutil.rmtree(dst)
+        shutil.copytree(src, dst)
+
 
 def deleteDirectory(dir):
     shutil.rmtree(dir)
