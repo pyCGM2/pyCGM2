@@ -699,6 +699,11 @@ class AnalysisExportFilter(object):
 
 
         out=OrderedDict()
+        out["Stp"]=OrderedDict()
+        out["Kinematics"]=OrderedDict()
+        out["Kinetics"]=OrderedDict()
+        out["Emg"]=OrderedDict()
+
 
         if self.analysis.stpStats != {}:
             processedKeys=list()
@@ -708,13 +713,13 @@ class AnalysisExportFilter(object):
                 else:
                     raise Exception ( "[pyCGM2] - duplicated keys[ %s - %s] detected" %(keys[0],keys[1]))
 
-                if keys[0] not in out.keys():
-                    out[keys[0]]=dict()
-                    out[keys[0]][keys[1]]=dict()
-                    out[keys[0]][keys[1]]["values"]=self.analysis.stpStats[keys]["values"].tolist()
+                if keys[0] not in out["Stp"].keys():
+                    out["Stp"][keys[0]]=dict()
+                    out["Stp"][keys[0]][keys[1]]=dict()
+                    out["Stp"][keys[0]][keys[1]]["values"]=self.analysis.stpStats[keys]["values"].tolist()
                 else:
-                    out[keys[0]][keys[1]]=dict()
-                    out[keys[0]][keys[1]]["values"]=self.analysis.stpStats[keys]["values"].tolist()
+                    out["Stp"][keys[0]][keys[1]]=dict()
+                    out["Stp"][keys[0]][keys[1]]["values"]=self.analysis.stpStats[keys]["values"].tolist()
 
         if self.analysis.kinematicStats.data != {}:
             processedKeys=list()
@@ -726,13 +731,13 @@ class AnalysisExportFilter(object):
                     else:
                         raise Exception ( "[pyCGM2] - duplicated keys[ %s - %s] detected" %(keys[0],keys[1]))
 
-                    if keys[0] not in out.keys():
-                        out[keys[0]]=dict()
-                        out[keys[0]][keys[1]]=dict()
-                        out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+                    if keys[0] not in out["Kinematics"].keys():
+                        out["Kinematics"][keys[0]]=dict()
+                        out["Kinematics"][keys[0]][keys[1]]=dict()
+                        out["Kinematics"][keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
                     else:
-                        out[keys[0]][keys[1]]=dict()
-                        out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+                        out["Kinematics"][keys[0]][keys[1]]=dict()
+                        out["Kinematics"][keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
 
                     li_X = list()
                     for cycle in self.analysis.kinematicStats.data[keys]["values"]:
@@ -747,9 +752,9 @@ class AnalysisExportFilter(object):
                         li_Z.append(cycle[:,2].tolist())
 
 
-                    out[keys[0]][keys[1]]["values"]["X"] = li_X
-                    out[keys[0]][keys[1]]["values"]["Y"] = li_Y
-                    out[keys[0]][keys[1]]["values"]["Z"] = li_Z
+                    out["Kinematics"][keys[0]][keys[1]]["values"]["X"] = li_X
+                    out["Kinematics"][keys[0]][keys[1]]["values"]["Y"] = li_Y
+                    out["Kinematics"][keys[0]][keys[1]]["values"]["Z"] = li_Z
 
         if self.analysis.kineticStats.data != {}:
             processedKeys=list()
@@ -761,13 +766,13 @@ class AnalysisExportFilter(object):
                     else:
                         raise Exception ( "[pyCGM2] - duplicated keys[ %s - %s] detected" %(keys[0],keys[1]))
 
-                    if keys[0] not in out.keys():
-                        out[keys[0]]=dict()
-                        out[keys[0]][keys[1]]=dict()
-                        out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+                    if keys[0] not in out["Kinetics"].keys():
+                        out["Kinetics"][keys[0]]=dict()
+                        out["Kinetics"][keys[0]][keys[1]]=dict()
+                        out["Kinetics"][keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
                     else:
-                        out[keys[0]][keys[1]]=dict()
-                        out[keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+                        out["Kinetics"][keys[0]][keys[1]]=dict()
+                        out["Kinetics"][keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
 
                     li_X = list()
                     for cycle in self.analysis.kineticStats.data[keys]["values"]:
@@ -782,9 +787,9 @@ class AnalysisExportFilter(object):
                         li_Z.append(cycle[:,2].tolist())
 
 
-                    out[keys[0]][keys[1]]["values"]["X"] = li_X
-                    out[keys[0]][keys[1]]["values"]["Y"] = li_Y
-                    out[keys[0]][keys[1]]["values"]["Z"] = li_Z
+                    out["Kinetics"][keys[0]][keys[1]]["values"]["X"] = li_X
+                    out["Kinetics"][keys[0]][keys[1]]["values"]["Y"] = li_Y
+                    out["Kinetics"][keys[0]][keys[1]]["values"]["Z"] = li_Z
 
 
         if self.analysis.emgStats.data != {}:
@@ -796,19 +801,20 @@ class AnalysisExportFilter(object):
                     else:
                         raise Exception ( "[pyCGM2] - duplicated keys[ %s - %s] detected" %(keys[0],keys[1]))
 
-                    if keys[0] not in out.keys():
-                        out[keys[0]]=dict()
-                        out[keys[0]][keys[1]]=dict()
-                        out[keys[0]][keys[1]]["values"]=[]
+                    key = keys[0][keys[0].rfind(".")+1:] if "Voltage." in keys[0] else keys[0]
+                    if key not in out["Emg"].keys():
+                        out["Emg"][key]=dict()
+                        out["Emg"][key][keys[1]]=dict()
+                        out["Emg"][key][keys[1]]["values"]=[]
                     else:
-                        out[keys[0]][keys[1]]=dict()
-                        out[keys[0]][keys[1]]["values"]=[]
+                        out["Emg"][key][keys[1]]=dict()
+                        out["Emg"][key][keys[1]]["values"]=[]
 
                     li = list()
                     for cycle in self.analysis.emgStats.data[keys]["values"]:
                         li.append(cycle[:,0].tolist())
 
-                    out[keys[0]][keys[1]]["values"] = li
+                    out["Emg"][key][keys[1]]["values"] = li
 
         files.saveJson(path,outputName,out)
 
