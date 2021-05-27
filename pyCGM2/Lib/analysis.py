@@ -173,11 +173,11 @@ def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
     exportFilter.export(name, path=DATA_PATH,excelFormat = "xls",mode = mode)
 
 
-def automaticCPdeviations(DATA_PATH,analysis,pointLabelSuffix=None,filterTrue=False, export=True, outputname ="Nieuwenhuys2017" ):
+def automaticCPdeviations(DATA_PATH,analysis,reference="Nieuwenhuys2017",pointLabelSuffix=None,filterTrue=False, export=True, outputname ="Nieuwenhuys2017" ):
 
 
     RULES_PATH = pyCGM2.PYCGM2_SETTINGS_FOLDER +"jointPatterns\\"
-    rulesXls = RULES_PATH+"Nieuwenhuys2017.xlsx"
+    rulesXls = RULES_PATH+reference+".xlsx"
     jpp = jointPatterns.XlsJointPatternProcedure(rulesXls,pointSuffix=pointLabelSuffix)
     dpf = jointPatterns.JointPatternFilter(jpp, analysis)
     dataFrameValues = dpf.getValues()
