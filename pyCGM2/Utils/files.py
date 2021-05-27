@@ -37,6 +37,24 @@ def openFile(path,filename):
     else:
         return False
 
+def openPickleFile(path,filename):
+
+    with open(path+filename, 'rb') as f:
+        content = pickle.load(f)
+
+    return content
+
+def savePickleFile(instance,path,filename):
+
+    #pyCGM2.model
+    if os.path.isfile((path + filename)):
+        LOGGER.logger.info("previous file removed")
+        os.remove((path + filename))
+
+    with open(path+filename, "wb") as FILE:
+        pickle.dump(instance, FILE)
+
+
 def readContent(stringContent):
 
     jsonFlag = is_json(stringContent)
