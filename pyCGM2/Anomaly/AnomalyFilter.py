@@ -23,3 +23,5 @@ class AnomalyCorrectionFilter(object):
     def run(self):
 
         out = self.m_procedure.run(self.m_acq,self.m_filename)
+
+        return out
