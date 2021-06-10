@@ -292,7 +292,13 @@ class PatientEnfReader(EnfReader):
     def getPatientInfos(self):
         return self.m_patientInfos
 
+    def set(self,label,value):
+        self.m_patientInfos[label] = value
+        self.m_config.set('SUBJECT_INFO', label, value)
 
+    def save(self):
+        with open((self.m_path + self.m_file), 'w') as configfile:
+            self.m_config.write(configfile)
 
 class SessionEnfReader(EnfReader):
 
@@ -317,6 +323,13 @@ class SessionEnfReader(EnfReader):
     def getSessionInfos(self):
         return self.m_sessionInfos
 
+    def set(self,label,value):
+        self.m_sessionInfos[label] = value
+        self.m_config.set('SESSION_INFO', label, value)
+
+    def save(self):
+        with open((self.m_path + self.m_file), 'w') as configfile:
+            self.m_config.write(configfile)
 
 class TrialEnfReader(EnfReader):
 
