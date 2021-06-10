@@ -981,8 +981,8 @@ class BenedettiProcedure(object):
             valueMin = np.min(normalizedCycleValues["values"][i][0:int(stanceValues[i]),0])
             frameMin = np.argmin(normalizedCycleValues["values"][i][0:int(stanceValues[i]),0])
 
-            valueMax = np.max(normalizedCycleValues["values"][i][0:frameMin,0])
-            frameMax = np.argmax(normalizedCycleValues["values"][i][0:frameMin,0])
+            valueMax = np.max(normalizedCycleValues["values"][i][0:frameMin+1,0])
+            frameMax = np.argmax(normalizedCycleValues["values"][i][0:frameMin+1,0])
 
             label = ["HM1","THM1"]
             axis = "X"
