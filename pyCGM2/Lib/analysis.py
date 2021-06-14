@@ -68,16 +68,16 @@ def makeAnalysis(DATA_PATH,
 
     Examples:
 
-        >>> analysisInstance2 = analysis.makeAnalysis(DATA_PATH,
-              [file1.c3d,"file2.c3d"],
-              type="Gait",
-              kinematicLabelsDict = {"Left": ["LHipAngles,LKneeAngles"], "Right": ["RHipAngles,RKneeAngles"]},
-              kineticLabelsDict = {"Left": ["LHipMoment,LKneePower"], "Right": ["RHipMoment,RKneeMoment"],
-              emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3"],
-              pointLabelSuffix="cgm1",
-              subjectInfo = {"Name":"Doe","Firstname":"John"},
-              experimentalInfo = {"Barefoot":"No"},
-              modelInfo = {"Model":"CGM1"})
+        >>> analysisInstance2 = analysis.makeAnalysis(DATA_PATH, \
+        [file1.c3d,"file2.c3d"], \
+        type="Gait", \
+        kinematicLabelsDict = {"Left": ["LHipAngles,LKneeAngles"], "Right": ["RHipAngles,RKneeAngles"]}, \
+        kineticLabelsDict = {"Left": ["LHipMoment,LKneePower"], "Right": ["RHipMoment,RKneeMoment"], \
+        emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3"], \
+        pointLabelSuffix="cgm1", \
+        subjectInfo = {"Name":"Doe","Firstname":"John"}, \
+        experimentalInfo = {"Barefoot":"No"}, \
+        modelInfo = {"Model":"CGM1"})
 
 
 

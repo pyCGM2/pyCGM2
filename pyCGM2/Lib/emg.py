@@ -9,7 +9,6 @@ from pyCGM2 import enums
 
 
 
-
 def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None,outDataPath=None):
     """ basic filtering of EMG .
 
@@ -85,11 +84,11 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
 
     Examples
 
-        >>>emg.normalizedEMG(emgAnalysisInstance,
-                ["Voltage.EMG1","Voltage.EMG2"],
-                ["Left","Right"],
-                method="MeanMax",
-                fromOtherAnalysis=emgAnalysisInstancePreBloc)
+        >>> emg.normalizedEMG(emgAnalysisInstance, \
+                    ["Voltage.EMG1","Voltage.EMG2"], \
+                    ["Left","Right"], \
+                    method="MeanMax", \
+                    fromOtherAnalysis=emgAnalysisInstancePreBloc)
 
     """
 
