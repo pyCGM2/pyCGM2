@@ -27,7 +27,7 @@ def makeAnalysis(DATA_PATH,
 
                     ):
 
-    """This function normalise data in time and return an **Analysis Instance** ie a nested dictionnary container containing
+    """This function normalises data in time and returns an **Analysis Instance** ie a nested dictionnary  containing
        spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops from a list of c3d files.
 
        By default: the function calls :
@@ -36,7 +36,7 @@ def makeAnalysis(DATA_PATH,
         * emg channels names Voltage.EMG1 to Voltage.EMG16
 
        You can also compute spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops
-       from different set of c3d files. For that  use the named arguments :
+       from different set of c3d files. For that, use the named arguments :
 
          * pstfilenames
          * kinematicfilenames
