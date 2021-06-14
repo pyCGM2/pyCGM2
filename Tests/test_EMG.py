@@ -16,7 +16,9 @@ class Test_EMG:
         DATA_PATH = "C:\\Users\\fleboeuf\\Documents\\DATA\\pyCGM2-Data-Tests\\EMG\\Normalisation\\Mvc\\"
 
         emgSettings = files.openFile(DATA_PATH,"emg.settings")
-        EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES = configuration.getEmgConfiguration(None,emgSettings)
+
+        EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES = configuration.loadEmgConfiguration(DATA_PATH)
+
 
         # trials
         emg.processEMG(DATA_PATH, ["trial 01.c3d","trial 02.c3d","trial 03.c3d"], EMG_LABELS,fileSuffix ="filtered" )
