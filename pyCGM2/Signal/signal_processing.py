@@ -83,7 +83,7 @@ def markerFiltering(btkAcq,markers,order=2, fc=6,zerosFiltering=True):
 
 
         N = len(array)
-        indexes = range(0,N)
+        indexes = list(range(0,N))
 
         for i in range(0,N):
             if array[i] == 0:
@@ -101,8 +101,8 @@ def markerFiltering(btkAcq,markers,order=2, fc=6,zerosFiltering=True):
                 padlen = len(data) - 1
             filtValues_section.append(signal.filtfilt(b, a, data ,padlen=padlen,axis=0))
 
-        indexes = np.concatenate(splitIndexes)
-        values = np.concatenate(filtValues_section)
+        indexes = np.concatenate(splitIndexes) if splitIndexes != [] else []
+        values = np.concatenate(filtValues_section) if filtValues_section != [] else []
 
         out = np.zeros((N))
         j = 0
