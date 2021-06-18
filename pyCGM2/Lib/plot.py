@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+This module gathers convenient functions fro plotting Kinematic - Kinetic and EMG
+
+"""
 #import ipdb
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,26 +13,29 @@ from pyCGM2 import enums
 
 def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffix=None, exportPdf=False,outputName=None,show=True,title=None,
                           btkAcq=None,exportPng=False):
-    """
-    plotTemporalKinematic : display temporal trace of the Kinematics
+    """plotTemporalKinematic : display temporal trace of the CGM kinematic outputs
 
-    :param DATA_PATH [str]: path to your data
-    :param modelledFilenames [string list]: c3d files
-    :param bodyPart [str]: body part (choice : LowerLimb, Trunk, UpperLimb)
+    Args:
+        DATA_PATH (str): path to your data
+        modelledFilenames (str): name of your c3d including kinematic output
+        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+        pointLabelSuffix (str): suffix previously added to your model outputs.
+        exportPdf (bool): export as pdf (default: False).
+        outputName (type): name of the output file .
+        show (bool): show the matplotlib figure (default: True) .
+        title (str): modify plot panel title
+        btkAcq (btk.Acquisition): Description of parameter `btkAcq`.
+        exportPng (bool):export as png (default: False).
 
-    **optional**
-
-    :param pointLabelSuffix [string]: suffix previously added to your model outputs
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]: name of the output filed
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-    :param btkAcq [Btk::Acquisition]: force use of an openma trial instance
+    Returns:
 
 
     Examples:
 
+        >>> plotTemporalKinematic("C:\\myDATA\\", "file1.c3d","LowerLimb")
+
     """
+
 
     if bodyPart == "LowerLimb":
         bodyPart = enums.BodyPartPlot.LowerLimb
@@ -70,24 +77,26 @@ def plotTemporalKinematic(DATA_PATH, modelledFilenames,bodyPart, pointLabelSuffi
 def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=None,exportPdf=False,outputName=None,show=True,title=None,
                         btkAcq=None,exportPng=False):
 
-    """
-    plotTemporalKinetic : display temporal trace of the Kinetics
+    """plotTemporalKinetic : display temporal trace of the CGM kinetic outputs
 
+    Args:
+        DATA_PATH (str): path to your data
+        modelledFilenames (str): name of your c3d including kinematic output
+        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+        pointLabelSuffix (str): suffix previously added to your model outputs.
+        exportPdf (bool): export as pdf (default: False).
+        outputName (type): name of the output file .
+        show (bool): show the matplotlib figure (default: True) .
+        title (str): modify plot panel title
+        btkAcq (btk.Acquisition): btk acquisition use instead of `modelledFilenames`
+        exportPng (bool):export as png (default: False).
 
-    :param DATA_PATH [str]: path to your data
-    :param modelledFilenames [string list]: c3d files
-    :param bodyPart [str]: body part (choice : LowerLimb, Trunk, UpperLimb)
+    Returns:
 
-    **optional**
-
-    :param pointLabelSuffix [string]: suffix previously added to your model outputs
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]: name of the output filed
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-    :param btkAcq [Btk::Acquisition]: force use of an openma trial instance
 
     Examples:
+
+        >>> plotTemporalKinetic("C:\\myDATA\\", "file1.c3d","LowerLimb")
 
     """
 
@@ -129,30 +138,37 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
     else:
         return fig
 
-def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts, normalActivityEmgs, rectify = True,
+def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, sides, normalActivityEmgs, rectify = True,
                     exportPdf=False,outputName=None,show=True,title=None,
                     btkAcq=None,ignoreNormalActivity= False,exportPng=False,OUT_PATH=None):
+    """Display temporal traces of EMG signals
+
+    Args:
+        DATA_PATH (str): path to your data
+        processedEmgfile (str): name of your c3d file with emg.
+        emgChannels (list): names of your emg channels ( ie analog labels ).
+        muscles (list): names of the muscles associated to each channel.
+        sides (list): side ( Left or Right) where the emg device was positioned
+        normalActivityEmgs (list): muscle used as reference for displaying normal activity in the background.
+        rectify (bool): display rectify or raw signal (default: True).
+        exportPdf (bool): export as pdf (default: False).
+        outputName (str): name of the output file.
+        show (bool): show the matplotlib figure (default: True) .
+        title (str): modify the plot panel title.
+        btkAcq (btk.Acquisition): btk acquisition use instead of `modelledFilenames`.
+        ignoreNormalActivity (bool): disable display of normal activity in the background.
+        exportPng (bool): export as png.
+        OUT_PATH (str): specify an path different than the `DATA_PATH` to export plot
+
+    Returns:
+
+
+    Examples:
+
+        >>> plotTemporalEMG("C:\\myDATA\\", "file1.c3d", ["Voltage.EMG1","Voltage.EMG1"], ["RECFEM","VASLAT"], ["Left","Right"], ["RECFEM","VASLAT"])
+
     """
-    plotTemporalEMG : display temporal trace of EMG signals
 
-
-    :param DATA_PATH [str]: path to your data
-    :param processedEmgfile [string]: c3d file
-    :param emgChannels [string list]: labels of your emg channels
-    :param muscles [string list]: muscle labels associated with your emg channels
-    :param contexts [string list]: contexts associated with your emg channel
-    :param normalActivityEmgs [string list]: normal activities associated with your emg channels
-    :param btkAcq [Btk::Acquisition]: force use of an openma trial instance
-
-
-    **optional**
-
-    :param rectify [bool]:  plot rectify signals (True[default])
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]: name of the output filed
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-    """
 
     if OUT_PATH is None:
         OUT_PATH = DATA_PATH
@@ -164,7 +180,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
 
 
     emgChannels_list=  [emgChannels[i:i+10] for i in range(0, len(emgChannels), 10)]
-    contexts_list =  [contexts[i:i+10] for i in range(0, len(contexts), 10)]
+    contexts_list =  [sides[i:i+10] for i in range(0, len(sides), 10)]
     muscles_list =  [muscles[i:i+10] for i in range(0, len(muscles), 10)]
     normalActivityEmgs_list =  [normalActivityEmgs[i:i+10] for i in range(0, len(normalActivityEmgs), 10)]
 
@@ -230,28 +246,31 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, contexts,
         return figs
 
 def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+    """ display average and standard deviation of time-normalized EMG envelops.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        emgChannels (list): names of your emg channels ( ie analog labels ).
+        muscles (list): names of the muscles associated to each channel.
+        contexts (list): event context (Left or Right) used to display the emg envelop. It makes sense to use "Left" for event context if the emg was placed on the left RECFEM
+        normalActivityEmgs (list): muscle used as reference for displaying normal activity in the background.
+        normalized (bool): enable plot of emg normalized in amplitude (default:False).
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
+
+    Examples:
+
+        >>> plotDescriptiveEnvelopEMGpanel("C:\\myDATA\\", analysisInstance, ["Voltage.EMG1","Voltage.EMG1"], ["RECFEM","VASLAT"], ["Left","Right"], ["RECFEM","VASLAT"])
 
     """
-    plotDescriptiveEnvelopEMGpanel : display average and standard deviation of time-normalized traces of EMG envelops
 
-
-    :param DATA_PATH [str]: path to your data
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-    :param emgChannels [string list]: labels of your emg channels
-    :param muscles [string list]: muscle labels associated with your emg channels
-    :param contexts [string list]: contexts associated with your emg channels
-    :param normalActivityEmgs [string list]: normal emg activities associated with your emg channels
-
-
-    **optional**
-
-    :param normalized [bool]: plot normalized amplitude envelops (False[default])
-    :param type [string]:  display gait events (other choice than gait [default], display foot strikes only)
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-    """
 
     if outputName is None:
         outputName = "PyCGM2-Analysis"
@@ -292,27 +311,32 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,cont
 
 def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
 
+    """ display all-cycles of time-normalized EMG envelops.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        emgChannels (list): names of your emg channels ( ie analog labels ).
+        muscles (list): names of the muscles associated to each channel.
+        contexts (list): event context (Left or Right) used to display the emg envelop. It makes sense to use "Left" for event context if the emg was placed on the left RECFEM
+        normalActivityEmgs (list): muscle used as reference for displaying normal activity in the background.
+        normalized (bool): enable plot of emg normalized in amplitude (default:False).
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
+
+
+    Examples:
+
+        >>> plotConsistencyEnvelopEMGpanel("C:\\myDATA\\", analysisInstance, ["Voltage.EMG1","Voltage.EMG1"], ["RECFEM","VASLAT"], ["Left","Right"], ["RECFEM","VASLAT"])
+
     """
-    plotConsistencyEnvelopEMGpanel : display all cycle of time-normalized traces of EMG envelops
 
-
-    :param DATA_PATH [str]: path to your data
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-    :param emgChannels [string list]: labels of your emg channels
-    :param muscles [string list]: muscle labels associated with your emg channels
-    :param contexts [string list]: contexts associated with your emg channels
-    :param normalActivityEmgs [string list]: normal activities associated with your emg channels
-
-
-    **optional**
-
-    :param normalized [bool]: (**default**: False) plot normalized amplitude envelops
-    :param type [string]:  display gait events ( other choice than gait [default], display foot strikes only)
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-    """
 
     if outputName is None:
         outputName = "PyCGM2-Analysis"
@@ -353,21 +377,26 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, cont
 
 
 def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+    """display spatio-temporal parameters as horizontal histogram.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
+
+
+    Examples:
+
+        >>> plot_spatioTemporal("C:\\myDATA\\", analysisInstance)
+
     """
-    plot_spatioTemporal : display spatio-temporal parameters as horizontal histogram
 
-
-    :param DATA_PATH [str]: path to your data
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-
-    **optional**
-
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-
-    """
 
     if outputName is None:  outputName = "pyCGM2-analysis"
 
@@ -393,23 +422,27 @@ def plot_spatioTemporal(DATA_PATH,analysis,exportPdf=False,outputName=None,show=
         return fig
 
 def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
-    """
-    plot_DescriptiveKinematic : display average and standard deviation of time-normalized kinematic outputs
+    """display average and standard deviation of time-normalized kinematic output.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+        pointLabelSuffix (type):suffix previously added to your model outputs.
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
 
 
-    :param DATA_PATH [str]: path to your data
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-    :param bodyPart [str]: body part (choice : LowerLimb, Trunk, UpperLimb)
-    :param normativeDataset [pyCGM2.Report.normativeDatasets]: pyCGM2 normative dataset instance
+    Examples:
 
-    **optional**
-
-    :param pointLabelSuffix [string]: suffix previously added to your model outputs
-    :param type [string]:  display gait events ( other choice than gait [default], display foot strikes only)
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
+        >>> plot_DescriptiveKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
 
     """
 
@@ -463,24 +496,30 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
 
 def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
 
+    """display all cycles of time-normalized kinematic output.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+        pointLabelSuffix (type):suffix previously added to your model outputs.
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
+
+
+    Examples:
+
+        >>> plot_ConsistencyKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+
     """
-    plot_ConsistencyKinematic : display all gait cycle of time-normalized kinematic outputs
 
-
-    :param DATA_PATH [str]: path to your data
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-    :param bodyPart [str]: body part (choice : LowerLimb, Trunk, UpperLimb)
-    :param normativeDataset [pyCGM2.Report.normativeDatasets]: pyCGM2 normative dataset instance
-
-    **optional**
-
-    :param pointLabelSuffix [string]: suffix previously added to your model outputs
-    :param type [string]:  display gait events ( other choice than gait [default], display foot strikes only)
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-    """
     if bodyPart == "LowerLimb":
         bodyPart = enums.BodyPartPlot.LowerLimb
     elif bodyPart == "Trunk":
@@ -524,24 +563,30 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,point
         return fig
 
 def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+    """display average and standard deviation of time-normalized kinetic outputs.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+        pointLabelSuffix (type):suffix previously added to your model outputs.
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
+
+
+    Examples:
+
+        >>> plot_DescriptiveKinetic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+
     """
-    plot_DescriptiveKinetic : display average and standard deviation of time-normalized kinetic outputs
 
-
-    :param DATA_PATH [str]: path to your data
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-    :param bodyPart [str]: body part (choice : LowerLimb, Trunk, UpperLimb)
-    :param normativeDataset [pyCGM2.Report.normativeDatasets]: pyCGM2 normative dataset instance
-
-    **optional**
-
-    :param pointLabelSuffix [string]: suffix previously added to your model outputs
-    :param type [string]:  display gait events ( other choice than gait [default], display foot strikes only)
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-    """
 
     if bodyPart == "LowerLimb":
         bodyPart = enums.BodyPartPlot.LowerLimb
@@ -586,24 +631,30 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,pointLa
         return fig
 
 def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+    """display all cycles of time-normalized kinetic outputs.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+        pointLabelSuffix (type):suffix previously added to your model outputs.
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
+
+
+    Examples:
+
+        >>> plot_ConsistencyKinetic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+
     """
-    plot_ConsistencyKinetic : display all gait cycle of time-normalized kinetic outputs
 
-
-    :param DATA_PATH [str]: path to your data
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-    :param bodyPart [str]: body part (choice : LowerLimb, Trunk, UpperLimb)
-    :param normativeDataset [pyCGM2.Report.normativeDatasets]: pyCGM2 normative dataset instance
-
-    **optional**
-
-    :param pointLabelSuffix [string]: suffix previously added to your model outputs
-    :param type [string]:  display gait events ( other choice than gait [default], display foot strikes only)
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-    """
     if bodyPart == "LowerLimb":
         bodyPart = enums.BodyPartPlot.LowerLimb
     elif bodyPart == "Trunk":
@@ -644,22 +695,26 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,pointL
         return fig
 
 def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None,pointLabelSuffix=None,show=True,title=None,exportPng=False):
-    """
-    plot_MAP : display the Movement Analysis Profile
+    """display histogram of the Movement Analysis Profile.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+        pointLabelSuffix (type):suffix previously added to your model outputs.
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
 
 
-    :param DATA_PATH [str]: path to your data
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-    :param normativeDataset [pyCGM2.Report.normativeDatasets]: pyCGM2 normative dataset instance
+    Examples:
 
+        >>> plot_MAP("c:\\mydata\\",analysisInstance,normativeInstance)
 
-    **optional**
-
-    :param pointLabelSuffix [string]: (None) suffix added to outputs
-    :param exportPdf [bool]: save as pdf (False[default])
-    :param outputName [string]:  name of your pdf file (None[default] export your pdf with name : Global Analysis)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
     """
     if outputName is None:
         outputName = "PyCGM2-Analysis"
@@ -689,26 +744,34 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,exportPdf=False,outputName=None
         return fig
 
 def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None,outputName=None,exportPng=False,exportPdf=False):
+    """plot kinematics from different analysis instances.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (list): list of analysis instances.
+        legends (list): short label representing each analysis instances
+        context (str): event context
+        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+        plotType (str): descriptive (ie average + sd) or consistency plots ( choice: Descriptive, Consistency)
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        pointSuffixes (list):suffix previously added to your model outputs.
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
+
+
+    Examples:
+
+        >>> compareKinematic("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"],"Left","LowerLimb",normativeInstance)
     """
-    compareKinematic : compare kinematics of two pyCGM2 analysis instances
 
 
-    :param analysis [pyCGM2.Processing.analysis.Analysis list]: list of pyCGM2 analysis instances
-    :param legends [string list]: legend of each analysis instance
-    :param context [string]: gait context ( choice: Left, Right)
-    :param bodyPart [str]: body part (choice : LowerLimb, Trunk, UpperLimb)
-    :param normativeDataset [pyCGM2.Report.normativeDatasets]: pyCGM2 normative dataset instance
-
-    **optional**
-
-    :param plotType [string]: trace type ( Descriptive [default] or Consistency)
-    :param type [string]:  display events  (Gait [defaut] or None)
-
-    :example:
-
-    >>> normativeData = normativeDatasets.Schwartz2008("Free")
-    >>> plot.compareKinematic([analysisPre,analysisPost],["pre","post"],"Left","LowerLimb",normativeData)
-    """
     if outputName is None:
         outputName = "pyCGM2-Comparison"+"-"+context+" ["+ bodyPart+"]"
 
@@ -758,27 +821,31 @@ def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDatase
 
 def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None,outputName=None,exportPng=False,exportPdf=False):
 
-    """
-    compareKinetic : compare kinetics of two pyCGM2 analysis instances
+    """plot kinetics from different analysis instances.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (list): list of analysis instances.
+        legends (list): short label representing each analysis instances
+        context (str): event context
+        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+        plotType (str): descriptive (ie average + sd) or consistency plots ( choice: Descriptive, Consistency)
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        pointSuffixes (list):suffix previously added to your model outputs.
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
 
 
-    :param analysis [pyCGM2.Processing.analysis.Analysis list]: list of pyCGM2 analysis instances
-    :param legends [string list]: legend of each analysis instance
-    :param context [string]: gait context (choice: Left, Right)
-    :param bodyPart [str]: body part (choice : LowerLimb, Trunk, UpperLimb)
-    :param normativeDataset [pyCGM2.Report.normativeDatasets]: pyCGM2 normative dataset instance
+    Examples:
 
-    **optional**
-
-    :param plotType [string]: trace type ( Descriptive [default] or Consistency)
-    :param type [string]:  display events (Gait [defaut] or None)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-
-    :example:
-
-    >>> normativeData = normativeDatasets.Schwartz2008("Free")
-    >>> plot.compareKinetic([analysisPre,analysisPost],["pre","post"],"Left","LowerLimb",normativeData)
+        >>> compareKinetic("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"],"Left","LowerLimb",normativeInstance)
     """
     if outputName is None:
         outputName = "pyCGM2-Comparison"+"-"+context+" ["+ bodyPart+"]"
@@ -830,34 +897,33 @@ def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
         return fig
 
 def compareEmgEnvelops(DATA_PATH,analyses,legends, emgChannels, muscles, contexts, normalActivityEmgs, normalized=False,plotType="Descriptive",show=True,title=None,type="Gait",outputName=None,exportPng=False,exportPdf=False):
+    """plot EMG envelops from different analysis instances.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (list): list of analysis instances.
+        legends (list): short label representing each analysis instances
+        emgChannels (list): names of your emg channels ( ie analog labels ).
+        muscles (list): names of the muscles associated to each channel.
+        contexts (list): event context (Left or Right) used to display the emg envelop. It makes sense to use "Left" for event context if the emg was placed on the left RECFEM
+        normalActivityEmgs (list): muscle used as reference for displaying normal activity in the background.
+        normalized (bool): enable plot of emg normalized in amplitude (default:False).
+        plotType (str): descriptive (ie average + sd) or consistency plots ( choice: Descriptive, Consistency)
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
+
+
+    Examples:
+
+        >>> compareEmgEnvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"], ["Voltage.EMG1","Voltage.EMG1"], ["RECFEM","VASLAT"], ["Left","Right"], ["RECFEM","VASLAT"])
     """
-    compareEmgEvelops : compare emg envelops from  two pyCGM2 analysis instances
 
-
-    :param analysis [pyCGM2.Processing.analysis.Analysis list]: list of pyCGM2 analysis instances
-    :param legends [string list]: legend of each analysis instance
-    :param emgChannels [string list]: label of your emg channels
-    :param muscles [string list]: muscle label associated with your emg channels
-    :param contexts [string list]: context associated with your emg channels
-    :param normalActivityEmgs [string list]: normal activity associated with your emg channels
-
-
-
-    **optional**
-    :param normalized [bool]:  plot normalized-amplitude envelops
-    :param plotType [string]: trace type ( Descriptive [default] or Consistency)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-
-    :example:
-
-    >> plot.compareEmgEvelops([emgAnalysisPre,emgAnalysisPost],
-    >>>                       ["Pre","Post"],
-    >>>                       ["EMG1","EMG2"]
-    >>>                       ["Left","Right"]
-    >>>                       ["RECFEM","VASLAT"])
-
-    """
     if outputName is None:
         outputName = "pyCGM2-Comparison"
 
@@ -912,25 +978,36 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends, emgChannels, muscles, context
         return fig
 
 def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts, normalized=False,plotType="Descriptive",type="Gait",show=True,title=None,outputName=None,exportPng=False,exportPdf=False):
+    """compare selected EMG envelops from different analysis instances.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (list): list of analysis instances.
+        legends (list): short label representing each analysis instances
+        emgChannels (list): names of your emg channels ( ie analog labels ).
+        muscles (list): names of the muscles associated to each channel.
+        contexts (list): event context (Left or Right) used to display the emg envelop. It makes sense to use "Left" for event context if the emg was placed on the left RECFEM
+        normalized (bool): enable plot of emg normalized in amplitude (default:False).
+        plotType (str): descriptive (ie average + sd) or consistency plots ( choice: Descriptive, Consistency)
+        type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
+        exportPdf (bool): export as pdf
+        outputName (str): name of the output filename.
+        show (bool): show matplotlib figure.
+        title (str): modify the plot panel title.
+        exportPng (bool): export as png.
+
+    Returns:
+
+
+    Examples:
+    
+        The following code plots the channel *Voltage.EMG1* time-normalized according *Left* events included in *analysisInstance1* with
+        *Voltage.EMG2* time-normalized according *Left* events included in  *analysisInstance2*.
+
+        >>> compareSelectedEmgEvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"], ["Voltage.EMG1","Voltage.EMG2"], ["Left","Left"])
     """
-    compareSelectedEmgEvelops : compare selected emg envelops from  pyCGM2 analysis instances
-
-    :param analysis [pyCGM2.Processing.analysis.Analysis list]: list of pyCGM2 analysis instances
-    :param legends [string list]: legend of each analysis instance
-    :param emgChannels [string list]: label of your emg channels
-    :param contexts [string list]: context associated with your emg channels
 
 
-    **optional**
-    :param normalized [bool]:  display normalized amplitude envelop (false [defaut])
-    :param plotType [string]: trace type ( Descriptive [default] or Consistency)
-    :param type [string]:  display events (Gait [defaut] or None)
-    :param show [bool]: enable matplotlib show function
-    :param title [string]: change default title of the plot panel
-    :example:
-
-    >>> plot.compareSelectedEmgEvelops([emgAnalysisPre,emgAnalysisPost],["Pre","Post"],["EMG1","EMG1"],["Left","Left"],normalized=False)
-    """
 
     if outputName is None:
         outputName = "pyCGM2-Comparison"
