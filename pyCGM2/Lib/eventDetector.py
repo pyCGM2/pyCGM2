@@ -13,11 +13,12 @@ def zeni(acqGait,footStrikeOffset=0,footOffOffset=0,**kwargs):
 
     Args:
         acqGait (btkAcq): acquisition instance.
-        footStrikeOffset (int): systematic offset to add to all `footStrikeOffset` events.
-        footOffOffset (int): systematic offset to add to all `footOffOffset` events.
-        kwargs (known arguments):
 
-    Kwargs:
+    Keyword Args:
+        footStrikeOffset (int)[0]: systematic offset to add to all `footStrikeOffset` events.
+        footOffOffset (int)[0]: systematic offset to add to all `footOffOffset` events.
+
+    Keyword Args (low-level):
         fc_lowPass_marker (double) : cut-off frequency of the lowpass filter applied on markers
         order_lowPass_marker (int): order of the lowpass filter applied on markers
 

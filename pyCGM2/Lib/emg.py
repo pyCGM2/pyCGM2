@@ -9,17 +9,20 @@ from pyCGM2 import enums
 
 
 
-def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None,outDataPath=None):
-    """ basic filtering of EMG .
+def processEMG(DATA_PATH, gaitTrials, emgChannels,
+                highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None,outDataPath=None):
+    """ basic filtering of EMG from c3d files .
 
     Args:
         DATA_PATH (str): folder path.
         gaitTrials (str): list of c3d files.
         emgChannels (list): list or emg channel
-        highPassFrequencies (list ): boundaries of the bandpass filter
-        envelopFrequency (float): cut-off frequency of low pass emg
-        fileSuffix (str): add a suffix to the exported c3d files
-        outDataPath (str): path to place the exported c3d files.
+
+    Keyword Args:
+        highPassFrequencies (list)[20,200]: boundaries of the bandpass filter
+        envelopFrequency (float)[6.0]: cut-off frequency of low pass emg
+        fileSuffix (str)[None]: add a suffix to the exported c3d files
+        outDataPath (str)[None]: path to place the exported c3d files.
 
     Examples
 
@@ -55,17 +58,6 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],
         else:
             btkTools.smartWriter(acq,outDataPath+outFilename)
 
-def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
-
-    bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
-    bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
-    bf.run()
-
-    envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
-    envf.setCutoffFrequency(envelopFrequency)
-    envf.run()
-
-    return acq
 
 def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
     """Emg normalisation in amplitude.
@@ -76,9 +68,11 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
         analysis (pyCGM2.Processing.analysis.Analysis): an analysis Instance
         emgChannels (str): list or emg channel
         contexts (list): indicate event context
-        method (str): normalisation method (choice : MeanMax[default], MaxMax, MedianMax ).
-        fromOtherAnalysis (pyCGM2.Processing.analysis.Analysis): normalise in amplitude from another analysis instance.
-        mvcSettings (dict): mvc settings.
+
+    Keyword Args:
+        method (str)["MeanMax"]: normalisation method (choice : MeanMax, MaxMax, MedianMax ).
+        fromOtherAnalysis (pyCGM2.Processing.analysis.Analysis)[None]: normalise in amplitude from another analysis instance.
+        mvcSettings (dict)[None]: mvc settings.
 
 
 
@@ -126,3 +120,16 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
 
     df = pd.DataFrame(rows, columns=["Label", "MvcThreshold"])
     return df
+
+
+def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
+
+    bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
+    bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
+    bf.run()
+
+    envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
+    envf.setCutoffFrequency(envelopFrequency)
+    envf.run()
+
+    return acq
