@@ -8,7 +8,9 @@ from pyCGM2.Processing import exporter
 from pyCGM2.Processing import jointPatterns
 from pyCGM2.Utils import files
 
-EMG_CHANNELS = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings").keys()
+EMG_CHANNELS = list()
+for key in files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")["CHANNELS"].keys():
+    EMG_CHANNELS.append(key)
 
 def makeAnalysis(DATA_PATH,
                     filenames,
@@ -68,12 +70,14 @@ def makeAnalysis(DATA_PATH,
 
     Examples:
 
-        The code below takes 2 c3d files, the time normalized kinematics, kinetics and emg.
-        Kinematic , kinetic and emg labels are the default CGM output and emg channels from the emg.setting file
-        >>> analysisInstance = analysis.makeAnalysis(DATA_PATH,     [file1.c3d,"file2.c3d"])
+    The code below takes 2 c3d files, the time normalized kinematics, kinetics and emg.
+    Kinematic , kinetic and emg labels are the default CGM output and emg channels from the emg.setting file
 
-        a more advanced use ( see below) called specific model outputs and emg channels. This code also adds a subject, experimental and model metadata:
-        >>> analysisInstance2 = analysis.makeAnalysis(DATA_PATH, \
+    >>> analysisInstance = analysis.makeAnalysis(DATA_PATH,     [file1.c3d,"file2.c3d"])
+
+    A more advanced use ( see below) called specific model outputs and emg channels. This code also adds a subject, experimental and model metadata:
+
+    >>> analysisInstance2 = analysis.makeAnalysis(DATA_PATH, \
         [file1.c3d,"file2.c3d"], \
         kinematicLabelsDict = {"Left": ["LHipAngles,LKneeAngles"], "Right": ["RHipAngles,RKneeAngles"]}, \
         kineticLabelsDict = {"Left": ["LHipMoment,LKneePower"], "Right": ["RHipMoment,RKneeMoment"], \
@@ -172,6 +176,10 @@ def exportAnalysis(analysisInstance,DATA_PATH,name,
 
     Keyword Args:
         mode (str)[Advanced]: spreadsheet mode . ("Advanced or Basic")
+
+    Examples
+
+    >>> exportAnalysis(AnalysisInstance, "c:\\DATA\\","johnDoe")
 
     """
 

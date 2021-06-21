@@ -78,11 +78,11 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
 
     Examples
 
-        >>> emg.normalizedEMG(emgAnalysisInstance, \
-                    ["Voltage.EMG1","Voltage.EMG2"], \
-                    ["Left","Right"], \
-                    method="MeanMax", \
-                    fromOtherAnalysis=emgAnalysisInstancePreBloc)
+    >>> emg.normalizedEMG(emgAnalysisInstance, \
+                ["Voltage.EMG1","Voltage.EMG2"], \
+                ["Left","Right"], \
+                method="MeanMax", \
+                fromOtherAnalysis=emgAnalysisInstancePreBloc)
 
     """
 
