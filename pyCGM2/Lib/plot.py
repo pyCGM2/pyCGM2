@@ -138,7 +138,8 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,pointLabelSuffix=N
     else:
         return fig
 
-def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, sides, normalActivityEmgs, rectify = True,
+
+def plotTemporalEMG(DATA_PATH, processedEmgfile, emgSettings, rectify = True,
                     exportPdf=False,outputName=None,show=True,title=None,
                     btkAcq=None,ignoreNormalActivity= False,exportPng=False,OUT_PATH=None):
     """Display temporal traces of EMG signals
@@ -146,10 +147,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, sides, no
     Args:
         DATA_PATH (str): path to your data
         processedEmgfile (str): name of your c3d file with emg.
-        emgChannels (list): names of your emg channels ( ie analog labels ).
-        muscles (list): names of the muscles associated to each channel.
-        sides (list): side ( Left or Right) where the emg device was positioned
-        normalActivityEmgs (list): muscle used as reference for displaying normal activity in the background.
+        emgSettings (str): content of the emg.setting file.
         rectify (bool): display rectify or raw signal (default: True).
         exportPdf (bool): export as pdf (default: False).
         outputName (str): name of the output file.
@@ -165,7 +163,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, sides, no
 
     Examples:
 
-        >>> plotTemporalEMG("C:\\myDATA\\", "file1.c3d", ["Voltage.EMG1","Voltage.EMG1"], ["RECFEM","VASLAT"], ["Left","Right"], ["RECFEM","VASLAT"])
+        >>> plotTemporalEMG("C:\\myDATA\\", "file1.c3d", emgSettings)
 
     """
 
@@ -178,11 +176,12 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, sides, no
     else:
         acq =btkTools.smartReader(DATA_PATH+processedEmgfile)
 
-
+    emgChannels = list()
+    for channel in emgSettings["CHANNELS"].keys():
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None:
+            emgChannels.append(channel)
     emgChannels_list=  [emgChannels[i:i+10] for i in range(0, len(emgChannels), 10)]
-    contexts_list =  [sides[i:i+10] for i in range(0, len(sides), 10)]
-    muscles_list =  [muscles[i:i+10] for i in range(0, len(muscles), 10)]
-    normalActivityEmgs_list =  [normalActivityEmgs[i:i+10] for i in range(0, len(normalActivityEmgs), 10)]
+
 
     pageNumber = len(emgChannels_list)
 
@@ -190,7 +189,6 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, sides, no
     outfilenames=list()
 
     exportFlag = True if exportPdf or exportPng else False
-
 
     count = 0
     for i in range(0,pageNumber):
@@ -206,14 +204,10 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgChannels, muscles, sides, no
             else:
                 filenameOut =  outputName+"-TemporalEmgPlot"+"[rectify]" if rectify else title+"-TemporalEmgPlot"+"[raw]"
 
-        combinedEMGcontext=[]
-        for j in range(0,len(emgChannels_list[i])):
-            combinedEMGcontext.append([emgChannels_list[i][j],contexts_list[i][j], muscles_list[i][j]])
-
         # # viewer
         kv = emgPlotViewers.TemporalEmgPlotViewer(acq)
-        kv.setEmgs(combinedEMGcontext)
-        kv.setNormalActivationLabels(normalActivityEmgs_list[i])
+        kv.setEmgSettings(emgSettings)
+        kv.selectEmgChannels(emgChannels_list[i])
         kv.ignoreNormalActivty(ignoreNormalActivity)
         kv. setEmgRectify(rectify)
 
@@ -1000,7 +994,7 @@ def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts, 
 
 
     Examples:
-    
+
         The following code plots the channel *Voltage.EMG1* time-normalized according *Left* events included in *analysisInstance1* with
         *Voltage.EMG2* time-normalized according *Left* events included in  *analysisInstance2*.
 

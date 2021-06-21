@@ -41,9 +41,14 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         self.m_ignoreNormalActivity = False
 
 
-    def setEmgs(self,emgs):
-        for it in emgs:
-            self.emgs.append({"Label": it[0], "Context": it[1], "Muscle": it[2]})
+    def selectEmgChannels(self,channelNames):
+        self.m_selectChannels = channelNames
+
+    def setEmgSettings(self,emgSettings):
+        self.m_emgSettings = emgSettings["CHANNELS"]
+
+        # for it in emgs:
+        #     self.emgs.append({"Label": it[0], "Context": it[1], "Muscle": it[2]})
 
     def setEmgRectify(self, flag):
         self.rectify = flag
@@ -66,14 +71,20 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         ax8 = plt.subplot(10,1,9)
         ax9 = plt.subplot(10,1,10)
 
-        for i in range(0, len(self.emgs)):
-            label = self.emgs[i]["Label"]
-            context = self.emgs[i]["Context"]
-            muscle = self.emgs[i]["Muscle"]
 
-            normalActivity = self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
+        # for i in range(0, len(self.emgs)):
+
+        i=0
+        for channel in self.m_selectChannels:
+            label = channel
+            context = self.m_emgSettings[channel]["Context"]
+            muscle = self.m_emgSettings[channel]["Muscle"]
+            normalActivity = self.m_emgSettings[channel]["NormalActivity"] if self.m_emgSettings[channel]["NormalActivity"] is not None else ""
+
+            # self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
 
             self.fig.axes[i].set_title(label +":"+ muscle+"-"+context+"["+ normalActivity+"]" ,size=6)
+            i+=1
 
 
         for ax in self.fig.axes:
@@ -86,27 +97,28 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
     def setNormativeDataset(self,iNormativeDataSet):
         pass
 
-    def setNormalActivationLabels(self, labels):
-        self.m_normalActivEmgs = labels
 
     def ignoreNormalActivty(self, bool):
         self.m_ignoreNormalActivity = bool
 
     def __setData(self):
         #suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
-        for i in range(0, len(self.emgs)):
-            label = self.emgs[i]["Label"]+"_Rectify" if self.rectify  else self.emgs[i]["Label"]+"_HPF"
-            context = self.emgs[i]["Context"]
+        # for i in range(0, len(self.emgs)):
+        i=0
+        for channel in self.m_selectChannels:
+            label = channel+"_Rectify" if self.rectify  else channel+"_HPF"
+            context = self.m_emgSettings[channel]["Context"]
             colorContext = plotUtils.colorContext(context)
 
-            normalActivationLabel = self.m_normalActivEmgs[i]
+            normalActivationLabel = self.m_emgSettings[channel]["NormalActivity"] if self.m_emgSettings[channel]["NormalActivity"] is not None else ""
 
             plot.temporalPlot(self.fig.axes[i],self.m_acq,
                                     label,0,
                                     color=colorContext,linewidth=1)
 
             if not self.m_ignoreNormalActivity:
-                plot.addTemporalNormalActivationLayer(self.fig.axes[i],self.m_acq,self.m_normalActivEmgs[i],context)
+                plot.addTemporalNormalActivationLayer(self.fig.axes[i],self.m_acq,normalActivationLabel,context)
+            i+=1
 
 
     def plotPanel(self):
