@@ -8,16 +8,14 @@ from pyCGM2.Processing import exporter
 from pyCGM2.Processing import jointPatterns
 from pyCGM2.Utils import files
 
-EMG_CHANNELS = list()
-for key in files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")["CHANNELS"].keys():
-    EMG_CHANNELS.append(key)
+
 
 def makeAnalysis(DATA_PATH,
                     filenames,
                     type="Gait",
                     kinematicLabelsDict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
                     kineticLabelsDict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
-                    emgChannels = EMG_CHANNELS,
+                    emgChannels = pyCGM2.EMG_CHANNELS,
                     pointLabelSuffix=None,
                     subjectInfo=None, experimentalInfo=None,modelInfo=None,
                     **kwargs):

@@ -3,6 +3,8 @@ import glob
 import re
 import os
 from . import log
+import yaml
+import yamlordereddictloader
 
 
 LOGGER = log.pyCGM2_Logger(__name__)
@@ -46,6 +48,10 @@ MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pa
 
 #  [Optional] setting folder
 PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"pyCGM2\Settings\\"
+
+EMG_CHANNELS = list()
+for key in yaml.load(open((PYCGM2_SETTINGS_FOLDER+"emg.settings")).read(),Loader=yamlordereddictloader.Loader)["CHANNELS"].keys():
+    EMG_CHANNELS.append(key)
 
 
 #  [Optional]programData
