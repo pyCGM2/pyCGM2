@@ -264,8 +264,9 @@ class Test_highLevel:
         emg.normalizedEMG(analysisInstance1, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None)
         emg.normalizedEMG(analysisInstance2, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
+        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
         fig = plot.compareEmgEnvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],
-            emgChannels, muscles, contexts, normalActivityEmgs,
+            emgSettings,
             normalized=True,
             plotType="Descriptive",show=False,title=None,type="Gait")
 
@@ -275,7 +276,7 @@ class Test_highLevel:
     #@pytest.mark.mpl_image_compare
     def test_highLevel_compareSelectedEmgEvelops(self):
         DATA_PATH1,modelledFilenames1,analysisInstance1,DATA_PATH2,modelledFilenames2,analysisInstance2 = dataTest3()
-
+        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
 
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,

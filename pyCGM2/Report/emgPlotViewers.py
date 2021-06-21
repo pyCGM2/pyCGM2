@@ -256,9 +256,6 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.m_normalizedEmgFlag = flag
 
 
-    def setNormalActivationLabels(self, labels):
-        self.m_normalActivEmgs = labels
-
     def __setLayer(self):
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
@@ -378,15 +375,15 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.m_normalizedEmgFlag = False
         self.m_legends = legends
 
-    def setEmgs(self,emgs):
-        for it in emgs:
-            self.emgs.append({"Label": it[0], "Context": it[1],  "Muscle": it[2]})
+    def selectEmgChannels(self,channelNames):
+        self.m_selectChannels = channelNames
+
+    def setEmgSettings(self,emgSettings):
+        self.m_emgSettings = emgSettings["CHANNELS"]
 
     def setNormalizedEmgFlag(self,flag):
         self.m_normalizedEmgFlag = flag
 
-    def setNormalActivationLabels(self, labels):
-        self.m_normalActivEmgs = labels
 
     def __setLayer(self):
 
@@ -412,15 +409,16 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         ax14 = plt.subplot(4,4,15)
         ax15 = plt.subplot(4,4,16)
 
-        for i in range(0, len(self.emgs)):
-            label = self.emgs[i]["Label"]
-            context = self.emgs[i]["Context"]
-            muscle = self.emgs[i]["Muscle"]
-
-
-            normalActivity = self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
+        i=0
+        for channel in self.m_selectChannels:
+            label = channel
+            context = self.m_emgSettings[channel]["Context"]
+            muscle = self.m_emgSettings[channel]["Muscle"]
+            normalActivity = self.m_emgSettings[channel]["NormalActivity"] if self.m_emgSettings[channel]["NormalActivity"] is not None else ""
 
             self.fig.axes[i].set_title(label+":"+ muscle+"-"+context+"\n["+ normalActivity+"]" ,size=6)
+
+            i+=1
 
         for ax in self.fig.axes:
             ax.tick_params(axis='x', which='major', labelsize=6)
@@ -449,21 +447,21 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
             j = 0
             for analysis in self.m_analysis:
 
-                for i in range(0, len(self.emgs)):
+                i=0
+                for channel in self.m_selectChannels:
+                    label = channel+"_Rectify_Env" if not self.m_normalizedEmgFlag else channel+"_Rectify_Env_Norm"
+                    context = self.m_emgSettings[channel]["Context"]
 
-                    label = self.emgs[i]["Label"]+"_Rectify_Env" if not self.m_normalizedEmgFlag else self.emgs[i]["Label"]+"_Rectify_Env_Norm"
-                    context = self.emgs[i]["Context"]
                     if context == "Left":
                         self.m_concretePlotFunction(self.fig.axes[i],analysis.emgStats,
                                         label,context,0,color=colormap_i_left[j],legendLabel=self.m_legends[j])
                     elif context =="Right":
                         self.m_concretePlotFunction(self.fig.axes[i],analysis.emgStats,
                                         label,context,0,color=colormap_i_right[j],legendLabel=self.m_legends[j])
+                    i+=1
 
                 j+=1
 
-            #footOff = self.m_analysis.emgStats.pst['stancePhase', context]["mean"]
-            #plot.addNormalActivationLayer(self.fig.axes[i],self.m_normalActivEmgs[i], footOff)
 
 
     def plotPanel(self):

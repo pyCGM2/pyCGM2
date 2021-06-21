@@ -67,6 +67,7 @@ class Test_lowLevel:
     def test_lowLevel_temporalEmgPlot_4channels(self):
 
         DATA_PATH, modelledFilenames,acq = dataTest2()
+        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
 
         fig = plt.figure()
 
@@ -79,9 +80,10 @@ class Test_lowLevel:
 
         # # viewer
         kv = emgPlotViewers.TemporalEmgPlotViewer(acq)
-        kv.setEmgs([["Voltage.EMG1","Left","RF"],["Voltage.EMG2","Right","RF"],
-                    ["Voltage.EMG3","Left","vaste"],["Voltage.EMG4","Right","vaste"]])
-        kv.setNormalActivationLabels(["RECFEM","RECFEM",None,"VASLAT"])
+
+        kv.setEmgSettings(emgSettings)
+        kv.selectEmgChannels(EMG_LABELS)
+        kv.ignoreNormalActivty(False)
         kv. setEmgRectify(True)
 
         # # filter
