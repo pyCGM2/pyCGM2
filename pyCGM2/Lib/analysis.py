@@ -4,28 +4,22 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
 from pyCGM2.Processing import c3dManager, cycle, analysis
 from pyCGM2.Model.CGM2 import  cgm
-from pyCGM2.Tools import btkTools
-from pyCGM2.EMG import emgFilters
-from pyCGM2 import enums
 from pyCGM2.Processing import exporter
 from pyCGM2.Processing import jointPatterns
+from pyCGM2.Utils import files
 
+EMG_CHANNELS = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings").keys()
 
 def makeAnalysis(DATA_PATH,
                     filenames,
                     type="Gait",
                     kinematicLabelsDict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
                     kineticLabelsDict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
-                    emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3","Voltage.EMG4","Voltage.EMG5",
-                                   "Voltage.EMG6","Voltage.EMG7","Voltage.EMG8","Voltage.EMG9","Voltage.EMG10",
-                                   "Voltage.EMG11","Voltage.EMG12","Voltage.EMG13","Voltage.EMG14","Voltage.EMG15",
-                                   "Voltage.EMG16"],
+                    emgChannels = EMG_CHANNELS,
                     pointLabelSuffix=None,
-                    btkAcqs=None,
                     subjectInfo=None, experimentalInfo=None,modelInfo=None,
-                    pstfilenames=None,kinematicfilenames=None,kineticfilenames=None,emgfilenames=None,
+                    **kwargs):
 
-                    ):
 
     """This function normalises data in time and returns an **Analysis Instance** ie a nested dictionnary  containing
        spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops from a list of c3d files.
@@ -46,21 +40,27 @@ def makeAnalysis(DATA_PATH,
 
 
     Args:
-        DATA_PATH (str): folder path [REQUIRED]
-        filenames (list): list of c3d files to normalize [REQUIRED]
-        type (str): event type (choice : "Gait" or "unknown").
-        kinematicLabelsDict (dict): dictionnary containing kinematic data to normalize.
-        kineticLabelsDict (dict): dictionnary containing kinetic data to normalize.
-        emgChannels (list): list of emg channel
-        pointLabelSuffix (str): suffix associated to pont output
+        DATA_PATH (str): folder path
+        filenames (list): list of c3d files to normalize
+
+    Keyword Args:
+        type (str)[Gait]: event type (choice : "Gait" or "unknown").
+        kinematicLabelsDict (dict)[cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT]: dictionnary containing kinematic data to normalize.
+        kineticLabelsDict (dict)[cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT]: dictionnary containing kinetic data to normalize.
+        emgChannels (list)[channels of emg.settings]: list of emg channels
+        pointLabelSuffix (str)[None]: suffix associated to point output
+        subjectInfo (dict)[None]: dictionnary with metadata information about the subject.
+        experimentalInfo (dict)[None]: dictionnary with metadata information about the expreiment.
+        modelInfo (dict)[None]: dictionnary with metadata information about the model.
+
+    Keyword Args (low-level):
         btkAcqs (list of btk.Acquisition): btkAcq instances to process instead of calling c3d file.
-        subjectInfo (dict): dictionnary with metadata information about the subject.
-        experimentalInfo (dict): dictionnary with metadata information about the expreiment.
-        modelInfo (dict): dictionnary with metadata information about the model.
-        pstfilenames (list): list of c3d files used for computing spatiotemporal parameters
-        kinematicfilenames (list): list of c3d files used to normalize kinematic data
-        kineticfilenames (list): list of c3d files used to normalize kinetic data
-        emgfilenames (list): list of c3d files used to normalize emg data
+        pstfilenames (list)[None]: list of c3d files used for computing spatiotemporal parameters
+        kinematicfilenames (list)[None]: list of c3d files used to normalize kinematic data
+        kineticfilenames (list)[None]: list of c3d files used to normalize kinetic data
+        emgfilenames (list)[None]: list of c3d files used to normalize emg data
+
+
 
     Returns:
         pyCGM2.Processing.analysis.Analysis: analysis instance
@@ -68,17 +68,19 @@ def makeAnalysis(DATA_PATH,
 
     Examples:
 
+        The code below takes 2 c3d files, the time normalized kinematics, kinetics and emg.
+        Kinematic , kinetic and emg labels are the default CGM output and emg channels from the emg.setting file
+        >>> analysisInstance = analysis.makeAnalysis(DATA_PATH,     [file1.c3d,"file2.c3d"])
+
+        a more advanced use ( see below) called specific model outputs and emg channels. This code also adds a subject, experimental and model metadata:
         >>> analysisInstance2 = analysis.makeAnalysis(DATA_PATH, \
         [file1.c3d,"file2.c3d"], \
-        type="Gait", \
         kinematicLabelsDict = {"Left": ["LHipAngles,LKneeAngles"], "Right": ["RHipAngles,RKneeAngles"]}, \
         kineticLabelsDict = {"Left": ["LHipMoment,LKneePower"], "Right": ["RHipMoment,RKneeMoment"], \
         emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3"], \
-        pointLabelSuffix="cgm1", \
         subjectInfo = {"Name":"Doe","Firstname":"John"}, \
         experimentalInfo = {"Barefoot":"No"}, \
         modelInfo = {"Model":"CGM1"})
-
 
 
 
@@ -88,11 +90,15 @@ def makeAnalysis(DATA_PATH,
     if filenames == [] or filenames is None: filenames=None
 
     #---- c3d manager
-
-    if btkAcqs is not None:
-        c3dmanagerProcedure = c3dManager.UniqueBtkAcqSetProcedure(DATA_PATH,filenames,acqs=btkAcqs)
+    if "btkAcqs" in kwargs.keys() and  kwargs["btkAcqs"] is not None:
+        c3dmanagerProcedure = c3dManager.UniqueBtkAcqSetProcedure(DATA_PATH,filenames,acqs=kwargs["btkAcqs"])
 
     else:
+        pstfilenames =kwargs["pstfilenames"] if "pstfilenames" in kwargs.keys() else None
+        kinematicfilenames =kwargs["kinematicfilenames"] if "kinematicfilenames" in kwargs.keys() else None
+        kineticfilenames =kwargs["kineticfilenames"] if "kineticfilenames" in kwargs.keys() else None
+        emgfilenames =kwargs["emgfilenames"] if "emgfilenames" in kwargs.keys() else None
+
         iPstFilenames =  filenames if pstfilenames is None else pstfilenames
         iKinematicFilenames =  filenames if kinematicfilenames is None else kinematicfilenames
         iKineticFilenames =  filenames if kineticfilenames is None else kineticfilenames
@@ -155,14 +161,17 @@ def makeAnalysis(DATA_PATH,
 
 
 
-def exportAnalysis(analysisInstance,DATA_PATH,name, mode="Advanced"):
+def exportAnalysis(analysisInstance,DATA_PATH,name,
+                mode="Advanced"):
     """export an Analysis instance as excel spreadsheet.
 
     Args:
         analysisInstance (pyCGM2.Processing.analysis.Analysis): Analysis instance.
         DATA_PATH (str):folder path
         name (str): name of your excel file.
-        mode (str): spreadsheet mode . ("Advanced or basic")
+
+    Keyword Args:
+        mode (str)[Advanced]: spreadsheet mode . ("Advanced or Basic")
 
     """
 
