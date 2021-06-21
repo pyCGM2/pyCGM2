@@ -239,16 +239,13 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgSettings, rectify = True,
     else:
         return figs
 
-def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgSettings, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
     """ display average and standard deviation of time-normalized EMG envelops.
 
     Args:
         DATA_PATH (str): path to your data
         analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
-        emgChannels (list): names of your emg channels ( ie analog labels ).
-        muscles (list): names of the muscles associated to each channel.
-        contexts (list): event context (Left or Right) used to display the emg envelop. It makes sense to use "Left" for event context if the emg was placed on the left RECFEM
-        normalActivityEmgs (list): muscle used as reference for displaying normal activity in the background.
+        emgSettings (str): content of the emg.Settings file
         normalized (bool): enable plot of emg normalized in amplitude (default:False).
         type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
         exportPdf (bool): export as pdf
@@ -265,6 +262,10 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,cont
 
     """
 
+    emgChannels = list()
+    for channel in emgSettings["CHANNELS"].keys():
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None:
+            emgChannels.append(channel)
 
     if outputName is None:
         outputName = "PyCGM2-Analysis"
@@ -273,14 +274,10 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,cont
         filenameOut =  outputName+"-DescriptiveEmgEnv"+"[No Normalized]-" if not normalized else outputName+"-DescriptiveEmgEnv"+"[Normalized]"
 
     # viewer
-    combinedEMGcontext=[]
-    for i in range(0,len(emgChannels)):
-        combinedEMGcontext.append([emgChannels[i],contexts[i], muscles[i]])
-
 
     kv = emgPlotViewers.EnvEmgGaitPlotPanelViewer(analysis)
-    kv.setEmgs(combinedEMGcontext)
-    kv.setNormalActivationLabels(normalActivityEmgs)
+    kv.setEmgSettings(emgSettings)
+    kv.selectEmgChannels(emgChannels)
     kv.setNormalizedEmgFlag(normalized)
 
     if type == "Gait":
@@ -303,17 +300,14 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgChannels, muscles,cont
     else:
         return fig
 
-def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, contexts, normalActivityEmgs, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgSettings, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
 
     """ display all-cycles of time-normalized EMG envelops.
 
     Args:
         DATA_PATH (str): path to your data
         analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
-        emgChannels (list): names of your emg channels ( ie analog labels ).
-        muscles (list): names of the muscles associated to each channel.
-        contexts (list): event context (Left or Right) used to display the emg envelop. It makes sense to use "Left" for event context if the emg was placed on the left RECFEM
-        normalActivityEmgs (list): muscle used as reference for displaying normal activity in the background.
+        emgSettings (str): content of the emg.Settings file
         normalized (bool): enable plot of emg normalized in amplitude (default:False).
         type (str): type of events (default: Gait). if different to Gait, use foot strike only to define cycles
         exportPdf (bool): export as pdf
@@ -331,6 +325,10 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, cont
 
     """
 
+    emgChannels = list()
+    for channel in emgSettings["CHANNELS"].keys():
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None:
+            emgChannels.append(channel)
 
     if outputName is None:
         outputName = "PyCGM2-Analysis"
@@ -339,14 +337,9 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgChannels,muscles, cont
         filenameOut =  outputName+"-ConsistencyEmgEnv"+"[No Normalized]-" if not normalized else outputName+"-DescriptiveEmgEnv"+"[Normalized]"
 
     # viewer
-    combinedEMGcontext=[]
-    for i in range(0,len(emgChannels)):
-        combinedEMGcontext.append([emgChannels[i],contexts[i], muscles[i]])
-
-
     kv = emgPlotViewers.EnvEmgGaitPlotPanelViewer(analysis)
-    kv.setEmgs(combinedEMGcontext)
-    kv.setNormalActivationLabels(normalActivityEmgs)
+    kv.setEmgSettings(emgSettings)
+    kv.selectEmgChannels(emgChannels)
     kv.setNormalizedEmgFlag(normalized)
 
     if type == "Gait":

@@ -246,9 +246,11 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
         self.m_normalizedEmgFlag = False
 
-    def setEmgs(self,emgs):
-        for it in emgs:
-            self.emgs.append({"Label": it[0], "Context": it[1],  "Muscle": it[2]})
+    def selectEmgChannels(self,channelNames):
+        self.m_selectChannels = channelNames
+
+    def setEmgSettings(self,emgSettings):
+        self.m_emgSettings = emgSettings["CHANNELS"]
 
     def setNormalizedEmgFlag(self,flag):
         self.m_normalizedEmgFlag = flag
@@ -281,15 +283,15 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         ax14 = plt.subplot(4,4,15)
         ax15 = plt.subplot(4,4,16)
 
-        for i in range(0, len(self.emgs)):
-            label = self.emgs[i]["Label"]
-            context = self.emgs[i]["Context"]
-            muscle = self.emgs[i]["Muscle"]
-
-            normalActivity = self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
+        i=0
+        for channel in self.m_selectChannels:
+            label = channel
+            context = self.m_emgSettings[channel]["Context"]
+            muscle = self.m_emgSettings[channel]["Muscle"]
+            normalActivity = self.m_emgSettings[channel]["NormalActivity"] if self.m_emgSettings[channel]["NormalActivity"] is not None else ""
 
             self.fig.axes[i].set_title(label+":"+ muscle+"-"+context+"\n["+ normalActivity+"]" ,size=6)
-
+            i+=1
 
         for ax in self.fig.axes:
             ax.tick_params(axis='x', which='major', labelsize=6)
@@ -311,21 +313,22 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
 
 
-        for i in range(0, len(self.emgs)):
-
-
-            label = self.emgs[i]["Label"]+"_Rectify_Env" if not self.m_normalizedEmgFlag else self.emgs[i]["Label"]+"_Rectify_Env_Norm"
-            context = self.emgs[i]["Context"]
-
+        i=0
+        for channel in self.m_selectChannels:
+            label = channel+"_Rectify_Env" if not self.m_normalizedEmgFlag else channel+"_Rectify_Env_Norm"
+            context = self.m_emgSettings[channel]["Context"]
             colorContext = plotUtils.colorContext(context)
+
+            normalActivationLabel = self.m_emgSettings[channel]["NormalActivity"] if self.m_emgSettings[channel]["NormalActivity"] is not None else ""
 
 
             self.m_concretePlotFunction(self.fig.axes[i],self.m_analysis.emgStats,
                             label,context,0,color=colorContext)
 
             footOff = self.m_analysis.emgStats.pst['stancePhase', context]["mean"]
-            plot.addNormalActivationLayer(self.fig.axes[i],self.m_normalActivEmgs[i], footOff)
+            plot.addNormalActivationLayer(self.fig.axes[i],normalActivationLabel, footOff)
 
+            i+=1
 
     def plotPanel(self):
 

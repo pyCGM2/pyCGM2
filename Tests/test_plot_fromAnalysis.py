@@ -1,5 +1,5 @@
 # coding: utf-8
-#pytest -s --mpl --disable-pytest-warnings  test_plot_fromAnalysis.py::Test__highLevel_newNormativeData::test_gaitPanel_descriptiveKinematics
+#pytest -s --mpl --disable-pytest-warnings  test_plot_fromAnalysis.py::Test_highLevel::test_highLevel_plotDescriptiveEnvelopEMGpanel
 
 # from __future__ import unicode_literals
 import pytest
@@ -14,7 +14,7 @@ from pyCGM2.Lib import emg
 from pyCGM2.Report import plot as reportPlot
 from pyCGM2.Report import plotFilters,plotViewers,ComparisonPlotViewers
 from pyCGM2.Report import normativeDatasets
-
+from pyCGM2.Utils import files
 
 SHOW = False
 
@@ -219,12 +219,13 @@ class Test_highLevel:
     def test_highLevel_plotDescriptiveEnvelopEMGpanel(self):
         DATA_PATH,modelledFilenames,analysisInstance = dataTest2()
 
+        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,
         #     fileSuffix=None,outDataPath=None)
 
         fig = plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysisInstance,
-                emgChannels, muscles,contexts, normalActivityEmgs,
+                emgSettings,
                 normalized=False,
                 type="Gait",exportPdf=False,outputName=None,show=False,
                 title=None)
@@ -233,16 +234,16 @@ class Test_highLevel:
         return fig
 
     #@pytest.mark.mpl_image_compare
-    def test_highLevel_plotDescriptiveEnvelopEMGpanel(self):
+    def test_highLevel_plotConsistencyEnvelopEMGpanel(self):
         DATA_PATH,modelledFilenames,analysisInstance = dataTest2()
 
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,
         #     fileSuffix=None,outDataPath=None)
 
-
+        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
         fig = plot.plotConsistencyEnvelopEMGpanel(DATA_PATH,analysisInstance,
-                emgChannels, muscles,contexts, normalActivityEmgs,
+                emgSettings,
                 normalized=False,
                 type="Gait",exportPdf=False,outputName=None,show=False,
                 title=None)
