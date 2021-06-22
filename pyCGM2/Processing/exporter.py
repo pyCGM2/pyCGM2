@@ -10,7 +10,16 @@ import pyCGM2
 from pyCGM2.Utils import files
 from pyCGM2.Tools import exportTools
 
-def renameEmgInAnalysis(analysisInstance,emgChannels, emgMuscles, emgContexts):
+def renameEmgInAnalysis(analysisInstance,emgSettings):
+
+    emgChannels = list()
+    emgContexts = list()
+    emgMuscles = list()
+    for channel in emgSettings["CHANNELS"].keys():
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and  emgSettings["CHANNELS"][channel]["Muscle"] != "None":
+            emgChannels.append(channel)
+            emgContexts.append(emgSettings["CHANNELS"][channel]["Context"])
+            emgMuscles.append(emgSettings["CHANNELS"][channel]["Muscle"])
 
     copiedAnalysis = copy.deepcopy(analysisInstance)
 

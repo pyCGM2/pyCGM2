@@ -258,13 +258,13 @@ class Test_highLevel:
     def test_highLevel_compareEmgEnvelops(self):
         DATA_PATH1,modelledFilenames1,analysisInstance1,DATA_PATH2,modelledFilenames2,analysisInstance2 = dataTest3()
 
+        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,
         #     fileSuffix=None,outDataPath=None)
-        emg.normalizedEMG(analysisInstance1, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None)
-        emg.normalizedEMG(analysisInstance2, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=analysisInstance1)
+        emg.normalizedEMG(analysisInstance1, emgSettings, method="MeanMax", fromOtherAnalysis=None)
+        emg.normalizedEMG(analysisInstance2, emgSettings, method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
-        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
         fig = plot.compareEmgEnvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],
             emgSettings,
             normalized=True,
@@ -281,8 +281,8 @@ class Test_highLevel:
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,
         #     fileSuffix=None,outDataPath=None)
-        emg.normalizedEMG(analysisInstance1, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None)
-        emg.normalizedEMG(analysisInstance2, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=analysisInstance1)
+        emg.normalizedEMG(analysisInstance1, emgSettings, method="MeanMax", fromOtherAnalysis=None)
+        emg.normalizedEMG(analysisInstance2, emgSettings, method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
 
         fig = plot.compareSelectedEmgEvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],

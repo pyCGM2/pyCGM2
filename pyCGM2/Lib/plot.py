@@ -195,7 +195,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgSettings,
 
     emgChannels = list()
     for channel in emgSettings["CHANNELS"].keys():
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None:
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None":
             emgChannels.append(channel)
     emgChannels_list=  [emgChannels[i:i+10] for i in range(0, len(emgChannels), 10)]
 
@@ -284,8 +284,8 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgSettings,
     """
 
     emgChannels = list()
-    for channel in emgSettings["CHANNELS"].keys():
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None:
+    for channel in emgSettings["CHANNELS"].keys() :
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None":
             emgChannels.append(channel)
 
     if outputName is None:
@@ -352,7 +352,7 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgSettings, normalized=F
 
     emgChannels = list()
     for channel in emgSettings["CHANNELS"].keys():
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None:
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None":
             emgChannels.append(channel)
 
     if outputName is None:
@@ -959,7 +959,7 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends, emgSettings,
 
     emgChannels = list()
     for channel in emgSettings["CHANNELS"].keys():
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None:
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None":
             emgChannels.append(channel)
 
     if outputName is None:
