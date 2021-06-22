@@ -61,7 +61,7 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels,
             btkTools.smartWriter(acq,outDataPath+outFilename)
 
 
-def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
+def normalizedEMG(analysis, emgSettings, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
     """
     Emg normalisation in amplitude.
 
@@ -90,6 +90,13 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
     ```
 
     """
+    emgChannels = list()
+    contexts = list()
+
+    for channel in emgSettings["CHANNELS"].keys():
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None" :
+            emgChannels.append(channel)
+            contexts.append(emgSettings["CHANNELS"][channel]["Context"])
 
     rows = list()
     i=0
