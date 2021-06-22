@@ -26,7 +26,9 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels,
 
     Examples
 
-        >>> emg.processEMG(DATA_PATH, ["file1.c3d","file2.c3d"], ["Voltage.EMG1","Voltage.EMG2"])
+    ```python
+    emg.processEMG(DATA_PATH, ["file1.c3d","file2.c3d"], ["Voltage.EMG1","Voltage.EMG2"])
+    ```
 
     """
 
@@ -60,7 +62,8 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels,
 
 
 def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
-    """Emg normalisation in amplitude.
+    """
+    Emg normalisation in amplitude.
 
     This function update the analysis instance with normalized emg signal in amplitude
 
@@ -76,13 +79,15 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
 
 
 
-    Examples
+    Examples:
 
-    >>> emg.normalizedEMG(emgAnalysisInstance, \
-                ["Voltage.EMG1","Voltage.EMG2"], \
-                ["Left","Right"], \
-                method="MeanMax", \
-                fromOtherAnalysis=emgAnalysisInstancePreBloc)
+    ```python
+    emg.normalizedEMG(emgAnalysisInstance,
+    .................["Voltage.EMG1","Voltage.EMG2"],
+    .................["Left","Right"],
+    .................method="MeanMax",
+    .................fromOtherAnalysis=emgAnalysisInstancePreBloc)
+    ```
 
     """
 

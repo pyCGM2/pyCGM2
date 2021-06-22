@@ -38,7 +38,9 @@ def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix
 
     Examples:
 
-        >>> plotTemporalKinematic("C:\\myDATA\\", "file1.c3d","LowerLimb")
+    ```python
+    plotTemporalKinematic("C:\\myDATA\\", "file1.c3d","LowerLimb")
+    ```
 
     """
 
@@ -106,7 +108,9 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,
 
     Examples:
 
-        >>> plotTemporalKinetic("C:\\myDATA\\", "file1.c3d","LowerLimb")
+    ```python
+    plotTemporalKinetic("C:\\myDATA\\", "file1.c3d","LowerLimb")
+    ```
 
     """
 
@@ -175,8 +179,9 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgSettings,
 
     Examples:
 
-        >>> plotTemporalEMG("C:\\myDATA\\", "file1.c3d", emgSettingsContent)
-
+    ```python
+    plotTemporalEMG("C:\\myDATA\\", "file1.c3d", emgSettingsContent)
+    ```
     """
 
 
@@ -272,7 +277,9 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgSettings,
 
     Examples:
 
-        >>> plotDescriptiveEnvelopEMGpanel("C:\\myDATA\\", analysisInstance, emgSettingsContent)
+    ```python
+    plotDescriptiveEnvelopEMGpanel("C:\\myDATA\\", analysisInstance, emgSettingsContent)
+    ```
 
     """
 
@@ -337,7 +344,9 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgSettings, normalized=F
 
     Examples:
 
-        >>> plotConsistencyEnvelopEMGpanel("C:\\myDATA\\", analysisInstance, emgSettingsContent)
+    ```python
+    plotConsistencyEnvelopEMGpanel("C:\\myDATA\\", analysisInstance, emgSettingsContent)
+    ```
 
     """
 
@@ -397,8 +406,9 @@ def plot_spatioTemporal(DATA_PATH,analysis,
 
     Examples:
 
-        >>> plot_spatioTemporal("C:\\myDATA\\", analysisInstance)
-
+    ```python
+    plot_spatioTemporal("C:\\myDATA\\", analysisInstance)
+    ```
     """
 
 
@@ -447,8 +457,9 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
 
     Examples:
 
-        >>> plot_DescriptiveKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
-
+    ```python
+    plot_DescriptiveKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+    ```
     """
 
 
@@ -521,8 +532,9 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
 
     Examples:
 
-        >>> plot_ConsistencyKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
-
+    ```python
+    plot_ConsistencyKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+    ```
     """
 
     if bodyPart == "LowerLimb":
@@ -589,7 +601,9 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,
 
     Examples:
 
-        >>> plot_DescriptiveKinetic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+    ```python
+    plot_DescriptiveKinetic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+    ```
 
     """
 
@@ -658,8 +672,9 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,
 
     Examples:
 
-        >>> plot_ConsistencyKinetic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
-
+    ```python
+    plot_ConsistencyKinetic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+    ```
     """
 
     if bodyPart == "LowerLimb":
@@ -721,8 +736,9 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,
 
     Examples:
 
-        >>> plot_MAP("c:\\mydata\\",analysisInstance,normativeInstance)
-
+    ```python
+    plot_MAP("c:\\mydata\\",analysisInstance,normativeInstance)
+    ```
     """
     if outputName is None:
         outputName = "PyCGM2-Analysis"
@@ -779,7 +795,9 @@ def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDatase
 
     Examples:
 
-        >>> compareKinematic("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"],"Left","LowerLimb",normativeInstance)
+    ```python
+    compareKinematic("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"],"Left","LowerLimb",normativeInstance)
+    ```
     """
 
 
@@ -856,7 +874,9 @@ def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
 
     Examples:
 
-        >>> compareKinetic("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"],"Left","LowerLimb",normativeInstance)
+    ```python
+    compareKinetic("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"],"Left","LowerLimb",normativeInstance)
+    ```
     """
     if outputName is None:
         outputName = "pyCGM2-Comparison"+"-"+context+" ["+ bodyPart+"]"
@@ -932,7 +952,9 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends, emgSettings,
 
     Examples:
 
-        >>> compareEmgEnvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"], emgSettings)
+    ```python
+    compareEmgEnvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"], emgSettings)
+    ```
     """
 
     emgChannels = list()
@@ -1017,7 +1039,9 @@ def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts, 
         The following code plots the channel *Voltage.EMG1* time-normalized according *Left* events included in *analysisInstance1* with
         *Voltage.EMG2* time-normalized according *Left* events included in  *analysisInstance2*.
 
-        >>> compareSelectedEmgEvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"], ["Voltage.EMG1","Voltage.EMG2"], ["Left","Left"])
+    ```python
+    compareSelectedEmgEvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"], ["Voltage.EMG1","Voltage.EMG2"], ["Left","Left"])
+    ```
     """
 
 

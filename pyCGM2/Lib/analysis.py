@@ -21,21 +21,22 @@ def makeAnalysis(DATA_PATH,
                     **kwargs):
 
 
-    """This function normalises data in time and returns an **Analysis Instance** ie a nested dictionnary  containing
-       spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops from a list of c3d files.
+    """
+    This function normalises data in time and returns an **Analysis Instance** ie a nested dictionnary  containing
+    spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops from a list of c3d files.
 
-       By default: the function calls :
+    By default: the function calls :
 
-        * kinematic and kinetic ouputs of the CGM
-        * emg channels names Voltage.EMG1 to Voltage.EMG16
+    - kinematic and kinetic ouputs of the CGM
+    - emg channels names Voltage.EMG1 to Voltage.EMG16
 
-       You can also compute spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops
-       from different set of c3d files. For that, use the named arguments :
+    You can also compute spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops
+    from different set of c3d files. For that, use the named arguments :
 
-         * pstfilenames
-         * kinematicfilenames
-         * kineticfilenames
-         * emgfilenames
+    - pstfilenames
+    - kinematicfilenames
+    - kineticfilenames
+    - emgfilenames
 
 
 
@@ -44,6 +45,7 @@ def makeAnalysis(DATA_PATH,
         filenames (list): list of c3d files to normalize
 
     Keyword Args:
+
         type (str)[Gait]: event type (choice : "Gait" or "unknown").
         kinematicLabelsDict (dict)[cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT]: dictionnary containing kinematic data to normalize.
         kineticLabelsDict (dict)[cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT]: dictionnary containing kinetic data to normalize.
@@ -53,7 +55,7 @@ def makeAnalysis(DATA_PATH,
         experimentalInfo (dict)[None]: dictionnary with metadata information about the expreiment.
         modelInfo (dict)[None]: dictionnary with metadata information about the model.
 
-    Keyword Args (low-level):
+    Low-level Keyword Args :
         btkAcqs (list of btk.Acquisition): btkAcq instances to process instead of calling c3d file.
         pstfilenames (list)[None]: list of c3d files used for computing spatiotemporal parameters
         kinematicfilenames (list)[None]: list of c3d files used to normalize kinematic data
@@ -71,18 +73,22 @@ def makeAnalysis(DATA_PATH,
     The code below takes 2 c3d files, the time normalized kinematics, kinetics and emg.
     Kinematic , kinetic and emg labels are the default CGM output and emg channels from the emg.setting file
 
-    >>> analysisInstance = analysis.makeAnalysis(DATA_PATH,     [file1.c3d,"file2.c3d"])
+    ```python
+    analysisInstance = analysis.makeAnalysis(DATA_PATH, [file1.c3d,"file2.c3d"])
+    ```
 
     A more advanced use ( see below) called specific model outputs and emg channels. This code also adds a subject, experimental and model metadata:
 
-    >>> analysisInstance2 = analysis.makeAnalysis(DATA_PATH, \
-        [file1.c3d,"file2.c3d"], \
-        kinematicLabelsDict = {"Left": ["LHipAngles,LKneeAngles"], "Right": ["RHipAngles,RKneeAngles"]}, \
-        kineticLabelsDict = {"Left": ["LHipMoment,LKneePower"], "Right": ["RHipMoment,RKneeMoment"], \
-        emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3"], \
-        subjectInfo = {"Name":"Doe","Firstname":"John"}, \
-        experimentalInfo = {"Barefoot":"No"}, \
-        modelInfo = {"Model":"CGM1"})
+    ```python
+    analysisInstance2 = analysis.makeAnalysis(DATA_PATH, [file1.c3d,"file2.c3d"],
+    ..........................................kinematicLabelsDict = {"Left": ["LHipAngles,LKneeAngles"], "Right": ["RHipAngles,RKneeAngles"]},
+    ..........................................kineticLabelsDict = {"Left": ["LHipMoment,LKneePower"], "Right": ["RHipMoment,RKneeMoment"],
+    ..........................................emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3"],
+    ..........................................subjectInfo = {"Name":"Doe","Firstname":"John"},
+    ..........................................experimentalInfo = {"Barefoot":"No"},
+    ..........................................modelInfo = {"Model":"CGM1"})
+    ```
+
 
 
 
