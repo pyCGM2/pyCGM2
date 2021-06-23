@@ -69,14 +69,15 @@ def main():
         emgSettings = files.openFile(DATA_PATH,"emg.settings")
         LOGGER.logger.warning("[pyCGM2]: emg.settings detected in the data folder")
     else:
-        emgSettings = None
+        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
 
-    manager = EmgManager.EmgConfigManager(None,localInternalSettings=emgSettings)
-    manager.contruct()
-
+    emgChannels = list()
+    for channel in emgSettings["CHANNELS"].keys():
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None" :
+            emgChannels.append(channel)
 
     # ----------------------INPUTS-------------------------------------------
-    bandPassFilterFrequencies = manager.BandpassFrequencies#emgSettings["Processing"]["BandpassFrequencies"]
+    bandPassFilterFrequencies = emgSettings["Processing"]["BandpassFrequencies"]
     if args.BandpassFrequencies is not None:
         if len(args.BandpassFrequencies) != 2:
             raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
@@ -84,7 +85,7 @@ def main():
             bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
             LOGGER.logger.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
-    envelopCutOffFrequency = manager.EnvelopLowpassFrequency#emgSettings["Processing"]["EnvelopLowpassFrequency"]
+    envelopCutOffFrequency = emgSettings["Processing"]["EnvelopLowpassFrequency"]
     if args.EnvelopLowpassFrequency is not None:
         envelopCutOffFrequency =  args.EnvelopLowpassFrequency
         LOGGER.logger.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
@@ -92,7 +93,6 @@ def main():
     consistencyFlag = True if args.consistency else False
 
     # --------------emg Processing--------------
-    EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES  =  manager.getEmgConfiguration()
 
     if not ECLIPSE_MODE:
         # --------------------------SUBJECT ------------------------------------
@@ -102,7 +102,9 @@ def main():
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
         acq = nacf.build()
 
-        emg.processEMG_fromBtkAcq(acq, EMG_LABELS,
+
+
+        emg.processEMG_fromBtkAcq(acq, emgChannels,
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
 
@@ -113,7 +115,7 @@ def main():
                             type="Gait",
                             kinematicLabelsDict=None,
                             kineticLabelsDict=None,
-                            emgChannels = EMG_LABELS,
+                            emgChannels = emgChannels,
                             pointLabelSuffix=None,
                             btkAcqs=[acq],
                             subjectInfo=None, experimentalInfo=None,modelInfo=None,
@@ -122,7 +124,8 @@ def main():
         outputName = inputFile
     else:
 
-        emg.processEMG(DATA_PATH, inputFiles, EMG_LABELS, highPassFrequencies=bandPassFilterFrequencies,
+        emg.processEMG(DATA_PATH, inputFiles, emgChannels,
+            highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency)
 
         emgAnalysis = analysis.makeAnalysis(DATA_PATH,
@@ -130,7 +133,7 @@ def main():
                             type="Gait",
                             kinematicLabelsDict=None,
                             kineticLabelsDict=None,
-                            emgChannels = EMG_LABELS,
+                            emgChannels = emgChannels,
                             pointLabelSuffix=None,
                             subjectInfo=None, experimentalInfo=None,modelInfo=None,
                             )
@@ -139,9 +142,9 @@ def main():
 
 
     if not consistencyFlag:
-        plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False,exportPdf=True,outputName=outputName)
+        plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,emgAnalysis, emgSettings, normalized=False,exportPdf=True,outputName=outputName)
     else:
-        plot.plotConsistencyEnvelopEMGpanel(DATA_PATH,emgAnalysis, EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT, NORMAL_ACTIVITIES, normalized=False,exportPdf=True,outputName=outputName)
+        plot.plotConsistencyEnvelopEMGpanel(DATA_PATH,emgAnalysis, emgSettings, normalized=False,exportPdf=True,outputName=outputName)
 
 
 

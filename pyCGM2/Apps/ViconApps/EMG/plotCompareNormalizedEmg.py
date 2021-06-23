@@ -67,14 +67,16 @@ def main():
         emgSettings = files.openFile(DATA_PATH,"emg.settings")
         LOGGER.logger.warning("[pyCGM2]: emg.settings detected in the data folder")
     else:
-        emgSettings = None
+        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
 
-    manager = EmgManager.EmgConfigManager(None,localInternalSettings=emgSettings)
-    manager.contruct()
+    emgChannels = list()
+    for channel in emgSettings["CHANNELS"].keys():
+        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None" :
+            emgChannels.append(channel)
 
 
     # ----------------------INPUTS-------------------------------------------
-    bandPassFilterFrequencies = manager.BandpassFrequencies#emgSettings["Processing"]["BandpassFrequencies"]
+    bandPassFilterFrequencies = emgSettings["Processing"]["BandpassFrequencies"]
     if args.BandpassFrequencies is not None:
         if len(args.BandpassFrequencies) != 2:
             raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
@@ -82,7 +84,7 @@ def main():
             bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
             LOGGER.logger.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
-    envelopCutOffFrequency = manager.EnvelopLowpassFrequency#emgSettings["Processing"]["EnvelopLowpassFrequency"]
+    envelopCutOffFrequency = emgSettings["Processing"]["EnvelopLowpassFrequency"]
     if args.EnvelopLowpassFrequency is not None:
         envelopCutOffFrequency =  args.EnvelopLowpassFrequency
         LOGGER.logger.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
@@ -90,11 +92,11 @@ def main():
     consistencyFlag = True if args.consistency else False
     plotType = "Consistency" if consistencyFlag else "Descriptive"
     # --------------emg Processing--------------
-    EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES  =  manager.getEmgConfiguration()
+
 
     if  ECLIPSE_MODE:
 
-        emg.processEMG(DATA_PATH, inputFiles, EMG_LABELS, highPassFrequencies=bandPassFilterFrequencies,
+        emg.processEMG(DATA_PATH, inputFiles, emgChannels, highPassFrequencies=bandPassFilterFrequencies,
                 envelopFrequency=envelopCutOffFrequency)
 
         if len(inputFiles) == 2:
@@ -103,23 +105,23 @@ def main():
                                 type="Gait",
                                 kinematicLabelsDict=None,
                                 kineticLabelsDict=None,
-                                emgChannels = EMG_LABELS,
+                                emgChannels = emgChannels,
                                 pointLabelSuffix=None,
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
 
-            emg.normalizedEMG(analysisInstance1,EMG_LABELS,EMG_CONTEXT,method="MeanMax", fromOtherAnalysis=None)
+            emg.normalizedEMG(analysisInstance1,emgSettings,method="MeanMax", fromOtherAnalysis=None)
 
             analysisInstance2 = analysis.makeAnalysis(DATA_PATH,
                                 [inputFiles[1]],
                                 type="Gait",
                                 kinematicLabelsDict=None,
                                 kineticLabelsDict=None,
-                                emgChannels = EMG_LABELS,
+                                emgChannels = emgChannels,
                                 pointLabelSuffix=None,
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
-            emg.normalizedEMG(analysisInstance2,EMG_LABELS,EMG_CONTEXT,method="MeanMax", fromOtherAnalysis=analysisInstance1)
+            emg.normalizedEMG(analysisInstance2,emgSettings,method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
             # outputName = "Eclipse - CompareNormalizedKinematics"
         #
@@ -129,7 +131,7 @@ def main():
 
         plot.compareEmgEnvelops(DATA_PATH,analysesToCompare,
                                 legends,
-                              EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES,
+                               emgSettings,
                               normalized=True,
                               plotType=plotType,show=True,
                               outputName=comparisonDetails,exportPng=False)
