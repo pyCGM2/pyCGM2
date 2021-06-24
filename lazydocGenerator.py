@@ -13,7 +13,7 @@ def generate(DATA_PATH,filenameNoExt,module):
 
 def main():
 
-    PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\Version 4.1.1\\Lib\\"
+    PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\Version 4.2\\Lib\\"
     from pyCGM2.Lib import emg
     generate(PATH,"pyCGM2.Lib.emg",emg)
 
