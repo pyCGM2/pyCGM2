@@ -265,8 +265,8 @@ class Test_highLevel:
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,
         #     fileSuffix=None,outDataPath=None)
-        emg.normalizedEMG(analysisInstance1, DATA_PATH1, method="MeanMax", fromOtherAnalysis=None)
-        emg.normalizedEMG(analysisInstance2, DATA_PATH2, method="MeanMax", fromOtherAnalysis=analysisInstance1)
+        emg.normalizedEMG(DATA_PATH1, analysisInstance1,  method="MeanMax", fromOtherAnalysis=None)
+        emg.normalizedEMG(DATA_PATH2, analysisInstance2, method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
         fig = plot.compareEmgEnvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],
             normalized=True,
@@ -278,13 +278,13 @@ class Test_highLevel:
     #@pytest.mark.mpl_image_compare
     def test_highLevel_compareSelectedEmgEvelops(self):
         DATA_PATH1,modelledFilenames1,analysisInstance1,DATA_PATH2,modelledFilenames2,analysisInstance2 = dataTest3()
-        
+
 
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,
         #     fileSuffix=None,outDataPath=None)
-        emg.normalizedEMG(analysisInstance1, DATA_PATH1, method="MeanMax", fromOtherAnalysis=None)
-        emg.normalizedEMG(analysisInstance2, DATA_PATH2, method="MeanMax", fromOtherAnalysis=analysisInstance1)
+        emg.normalizedEMG(DATA_PATH1, analysisInstance1,  method="MeanMax", fromOtherAnalysis=None)
+        emg.normalizedEMG(DATA_PATH2, analysisInstance2, method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
 
         fig = plot.compareSelectedEmgEvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],

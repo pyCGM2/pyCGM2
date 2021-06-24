@@ -103,7 +103,7 @@ def main():
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
 
-            emg.normalizedEMG(analysisInstance1,DATA_PATH,method="MeanMax", fromOtherAnalysis=None)
+            emg.normalizedEMG(DATA_PATH,analysisInstance1,method="MeanMax", fromOtherAnalysis=None)
 
             analysisInstance2 = analysis.makeAnalysis(DATA_PATH,
                                 [inputFiles[1]],
@@ -114,7 +114,7 @@ def main():
                                 pointLabelSuffix=None,
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
-            emg.normalizedEMG(analysisInstance2,DATA_PATH,method="MeanMax", fromOtherAnalysis=analysisInstance1)
+            emg.normalizedEMG(DATA_PATH,analysisInstance2,method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
             # outputName = "Eclipse - CompareNormalizedKinematics"
         #

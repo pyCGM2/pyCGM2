@@ -64,7 +64,7 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels,
             btkTools.smartWriter(acq,outDataPath+outFilename)
 
 
-def normalizedEMG(analysis, DATA_PATH, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
+def normalizedEMG(DATA_PATH,analysis, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
     """
     Emg normalisation in amplitude.
 
@@ -72,8 +72,7 @@ def normalizedEMG(analysis, DATA_PATH, method="MeanMax", fromOtherAnalysis=None,
 
     Args:
         analysis (pyCGM2.Processing.analysis.Analysis): an analysis Instance
-        emgChannels (str): list or emg channel
-        contexts (list): indicate event context
+        DATA_PATH (str): folder path
 
     Keyword Args:
         method (str)["MeanMax"]: normalisation method (choice : MeanMax, MaxMax, MedianMax ).

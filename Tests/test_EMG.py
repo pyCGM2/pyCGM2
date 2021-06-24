@@ -60,7 +60,7 @@ class Test_EMG:
                         "Voltage.EMG10": emgAnalysisInstanceMvcSOL}
 
 
-        emg.normalizedEMG(emgAnalysisInstance,DATA_PATH,method="MeanMax", mvcSettings=mvc_settings,fromOtherAnalysis=emgAnalysisInstance)
+        emg.normalizedEMG(DATA_PATH,emgAnalysisInstance,method="MeanMax", mvcSettings=mvc_settings,fromOtherAnalysis=emgAnalysisInstance)
 
 
         # plt.plot(emgAnalysisInstance.emgStats.data['Voltage.EMG7_Rectify_Env', 'Left']["mean"])
