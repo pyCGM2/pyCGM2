@@ -8,6 +8,17 @@ from pyCGM2.EMG import emgFilters,emgManager
 from pyCGM2 import enums
 
 def loadEmg(DATA_PATH):
+    """
+    Load and manage emg settings
+
+    Args:
+        DATA_PATH (str): folder path.
+
+    Returns:
+        pyCGM2.EMG.EmgManger: an emg manager class instance
+
+    """
+
 
     return emgManager.EmgManager(DATA_PATH)
 
