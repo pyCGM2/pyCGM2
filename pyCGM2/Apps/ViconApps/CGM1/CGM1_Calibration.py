@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -9,7 +7,6 @@ warnings.filterwarnings("ignore")
 
 # pyCGM2 settings
 import pyCGM2
-
 
 # vicon nexus
 from viconnexusapi import ViconNexus
