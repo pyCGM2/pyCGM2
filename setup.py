@@ -128,13 +128,13 @@ if "dist" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\dist")
 if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"/pyCGM2.egg-info")
 
 
-# delete everything in programData
-if os.getenv("PROGRAMDATA") is not None:
-    pd = os.getenv("PROGRAMDATA")
-    pddirs = getSubDirectories(pd)
-    if "pyCGM2" in  pddirs:
-        shutil.rmtree(pd+"\\pyCGM2")
-        logging.info("pprogramData/pyCGM2---> remove")
+# # delete everything in programData
+# if os.getenv("PROGRAMDATA") is not None:
+#     pd = os.getenv("PROGRAMDATA")
+#     pddirs = getSubDirectories(pd)
+#     if "pyCGM2" in  pddirs:
+#         shutil.rmtree(pd+"\\pyCGM2")
+#         logging.info("pprogramData/pyCGM2---> remove")
 
 if os.path.isdir(NEXUS_PUBLIC_PATH):
     # delete all previous vst and pipelines in Nexus Public Documents
@@ -158,10 +158,10 @@ if os.path.isdir(NEXUS_PUBLIC_PATH):
 #------------------------- PRE INSTALL---------------------------------------
 
 #--- management of the folder ProgramData/pyCGM2----
-if not developMode:
-    if os.getenv("PROGRAMDATA"):
-        PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2"
-        shutil.copytree(PYCGM2_SETTINGS_FOLDER[:-1], PYCGM2_APPDATA_PATH)
+# if not developMode:
+#     if os.getenv("PROGRAMDATA"):
+#         PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2"
+#         shutil.copytree(PYCGM2_SETTINGS_FOLDER[:-1], PYCGM2_APPDATA_PATH)
 
 #--- management of nexus-related files ( vst+pipelines)-----
 if os.path.isdir(NEXUS_PUBLIC_PATH):
