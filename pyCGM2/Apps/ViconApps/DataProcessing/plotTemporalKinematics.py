@@ -1,40 +1,20 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **plotTemporalKinematics**
-
-The script displays kinematics with time as x-axis
-
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -ps=py
-    (all points will be suffixed with py (LHipAngles_py))
-
-
-"""
-
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-
-
 # pyCGM2 settings
 import pyCGM2
-
 
 # vicon nexus
 from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2 import enums
 from pyCGM2.Lib import plot
 
 from pyCGM2.Nexus import  nexusTools,nexusFilters
-from pyCGM2.Utils import files
 
 def main():
 

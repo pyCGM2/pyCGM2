@@ -1,26 +1,6 @@
 # -*- coding: utf-8 -*-
-#from __future__ import unicode_literals
 
-"""Nexus Operation : **CGM1 Calibration**
 
-:param -l, --leftFlatFoot [int]: enable or disable the flat foot option on the left foot
-:param -r, --rightFlatFoot [int]: enable or disable the flat foot option on the right foot
-:param -hf, --headFlat [int]: enable or disable the head flat option
-:param -md, --markerDiameter [int]: marker diameter
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-:param --check [bool]: add "cgm1" as point suffix
-:param --resetMP [bool]: reset computation of optional parameters, like interAsisDistance, ShankOffsets...
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>> -l=1 -r=0 -ps=py
-    (if you want to add suffix py and enable the flat foot option on the left side only)
-    >>> --leftFlatFoot=1 -r=0 --pointSuffix=py --resetMP
-    (if you want to add suffix py, enable the flat foot option on the left side only and reset the computation of optional parameters, like interAsisDistance, ShankOffsets...)
-
-"""
-#import ipdb
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse

@@ -1,20 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **CGM2.3 Fitting**
-
-:param --proj [string]: define in which coordinate system joint moment will be expressed (Choice : Distal, Proximal, Global)
-:param -mfpa [string]: manual force plate assignement. (Choice: combinaison of  X, L, R depending of your force plate number)
-:param -md, --markerDiameter [int]: marker diameter
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-:param --check [bool]: add "cgm2.3" as point suffix
-:param --noIk [bool]: disable inverse kinematics
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>> --proj=Global --noIk
-    (means you disable the inverse kinematic solver and joint moments will be expressed into the Global Coordinate system, and )
-
-"""
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse

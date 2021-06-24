@@ -3,7 +3,7 @@
 This module gathers convenient functions fro plotting Kinematic - Kinetic and EMG
 
 """
-#import ipdb
+
 import matplotlib.pyplot as plt
 import numpy as np
 from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emgPlotViewers, ComparisonPlotViewers

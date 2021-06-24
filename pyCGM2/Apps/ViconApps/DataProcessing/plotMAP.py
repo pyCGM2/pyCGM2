@@ -1,22 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **plotMAP**
-
-The script displays Gait-Normalized kinematics
-
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-:param -nd, --normativeData [string]: Normative data set ( choice: Schwartz2008 [DEFAULT] or Pinzone2014)
-:param -ndm, --normativeDataModality [string]: modalities associated with the selected normative dataset. (choices: if  Schwartz2008: VerySlow,Slow,Free[DEFAULT],Fast,VeryFast.  if Pinzone2014 : CentreOne,CentreTwo)
-
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -normativeData=Schwartz2008 --normativeDataModality=VeryFast
-    (your gait panel will display as normative data, results from the modality VeryFast of the nomative dataset collected by Schwartz2008)
-
-"""
-
-
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt

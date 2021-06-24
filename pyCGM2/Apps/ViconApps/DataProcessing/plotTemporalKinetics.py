@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **plotTemporalKinetics**
 
-The script displays kinetics with time as x-axis
-
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -ps=py
-    (all points will be suffixed with py (LHipMoment_py))
-
-
-"""
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-
-
 
 # pyCGM2 settings
 import pyCGM2

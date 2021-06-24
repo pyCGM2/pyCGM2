@@ -1,21 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **CGM2.2 Fitting**
 
-:param --proj [string]: define in which coordinate system joint moment will be expressed (Choice : Distal, Proximal, Global)
-:param -mfpa [string]: manual force plate assignement. (Choice: combinaison of  X, L, R depending of your force plate number)
-:param -md, --markerDiameter [int]: marker diameter
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-:param --check [bool]: add "cgm2.2" as point suffix
-
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>> --proj=Global
-    (means joint moments will be expressed into the Global Coordinate system)
-
-"""
-#import ipdb
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -80,7 +64,7 @@ def main():
         momentProjection =  argsManager.getMomentProjection()
         ikAccuracy = argsManager.getIkAccuracy()
 
-        
+
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)

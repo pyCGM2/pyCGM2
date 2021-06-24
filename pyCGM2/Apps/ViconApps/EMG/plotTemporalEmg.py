@@ -1,36 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **plotTemporalEmg**
-
-The script displays rectified EMG with time as x-axis
-
-:param -bpf, --BandpassFrequencies [array]: bandpass frequencies
-:param -ecf, --EnvelopLowpassFrequency [double]: cut-off low pass frequency for getting emg envelop
-:param -r, --raw [bool]: display non-rectified emg instead of rectified
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -bpf 20 450 -ecf=8.9 --raw
-    (bandpass frequencies set to 20 and 450Hz and envelop made from a low-pass filter with a cutoff frequency of 8.9Hz,
-    non-rectified EMG  will be displayed)
-
-
-"""
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 
-
 import pyCGM2
 
-from pyCGM2.Utils import files
-from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Lib import emg
-from pyCGM2.Report import normativeDatasets
-
 from pyCGM2.Nexus import nexusFilters,nexusTools
-from pyCGM2.Configurator import EmgManager
 from viconnexusapi import ViconNexus
 
 

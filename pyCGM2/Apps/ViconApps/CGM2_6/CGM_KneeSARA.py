@@ -1,21 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **SARA**
-
-Calibration of the knee with the SARA method.
-
-The script considers all frames of the c3d and detects the side autmaticallt from ANK marker trajectories
-
-:param -s, --side [string]: lower limb side ( choice: Left or Right )
-:param -b, --beginFrame [int]:  manual selection of the first  frame
-:param -e, --endFrame [int]:   manual selection of the last  frame
-
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -side=Left -b=50 -e=100
-    (Left knee calibration between frames 50 and 100)
-"""
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse

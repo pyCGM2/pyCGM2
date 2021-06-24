@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
-#from __future__ import unicode_literals
-
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
-
-# pyCGM2 settings
-
 
 # vicon nexus
 from viconnexusapi import ViconNexus
