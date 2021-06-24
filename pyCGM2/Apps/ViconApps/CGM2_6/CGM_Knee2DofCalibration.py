@@ -75,44 +75,19 @@ def main():
 
 
         if model.version == "CGM1.0":
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1-pyCGM2.settings")
-
+            settings = files.loadModelSettings(DATA_PATH,"CGM1-pyCGM2.settings")
         elif model.version == "CGM1.1":
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1_1-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1_1-pyCGM2.settings")
-
+            settings = files.loadModelSettings(DATA_PATH,"CGM1_1-pyCGM2.settings")
         elif model.version == "CGM2.1":
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_1-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_1-pyCGM2.settings")
-
+            settings = files.loadModelSettings(DATA_PATH,"CGM2_1-pyCGM2.settings")
         elif model.version == "CGM2.2":
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_2-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_2-pyCGM2.settings")
+            settings = files.loadModelSettings(DATA_PATH,"CGM2_2-pyCGM2.settings")
         elif model.version == "CGM2.3":
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_3-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
+            settings = files.loadModelSettings(DATA_PATH,"CGM2_3-pyCGM2.settings")
         elif model.version in  ["CGM2.4"]:
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_4-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_4-pyCGM2.settings")
-
+            settings = files.loadModelSettings(DATA_PATH,"CGM2_4-pyCGM2.settings")
         elif model.version in  ["CGM2.5"]:
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_5-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_5-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_5-pyCGM2.settings")
+            settings = files.loadModelSettings(DATA_PATH,"CGM2_5-pyCGM2.settings")
 
         else:
             raise Exception ("model version not found [contact admin]")

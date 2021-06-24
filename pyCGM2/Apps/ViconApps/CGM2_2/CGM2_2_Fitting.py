@@ -60,12 +60,17 @@ def main():
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
 
+        # --------------------------LOADING ------------------------------------
+        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+
+        reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
+
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
+        LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
+
         # --------------------------GLOBAL SETTINGS ------------------------------------
-        # global setting ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_2-pyCGM2.settings"):
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
-        else:
-            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_2-pyCGM2.settings")
+        settings = files.loadModelSettings(DATA_PATH,"CGM2_2-pyCGM2.settings")
 
 
         # --------------------------CONFIG ------------------------------------
@@ -75,17 +80,7 @@ def main():
         momentProjection =  argsManager.getMomentProjection()
         ikAccuracy = argsManager.getIkAccuracy()
 
-        # --------------------------LOADING ------------------------------------
-        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
-
-
-        reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
-
-        LOGGER.logger.info( "data Path: "+ DATA_PATH )
-        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
-        LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
-
-
+        
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)

@@ -55,20 +55,6 @@ def main():
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # --------------------------GLOBAL SETTINGS ------------------------------------
-        # global setting ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_1-pyCGM2.settings"):
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
-        else:
-            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_1-pyCGM2.settings")
-
-
-        # --------------------------CONFIG ------------------------------------
-        argsManager = CgmArgsManager.argsManager_cgm(settings,args)
-        markerDiameter = argsManager.getMarkerDiameter()
-        pointSuffix = argsManager.getPointSuffix("cgm2.1")
-        momentProjection =  argsManager.getMomentProjection()
-
         # --------------------------LOADING ------------------------------------
         DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
@@ -77,6 +63,18 @@ def main():
         LOGGER.logger.info( "data Path: "+ DATA_PATH )
         LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
         LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
+
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        settings = files.loadModelSettings(DATA_PATH,"CGM2_1-pyCGM2.settings")
+
+
+        # --------------------------CONFIG ------------------------------------
+        argsManager = CgmArgsManager.argsManager_cgm(settings,args)
+        markerDiameter = argsManager.getMarkerDiameter()
+        pointSuffix = argsManager.getPointSuffix("cgm2.1")
+        momentProjection =  argsManager.getMomentProjection()
+
+
 
 
         # --------------------------SUBJECT ------------------------------------

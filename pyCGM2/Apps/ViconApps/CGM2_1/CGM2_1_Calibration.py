@@ -69,14 +69,17 @@ def main():
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # --------------------------GLOBAL SETTINGS ------------------------------------
-        # global setting ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_1-pyCGM2.settings"):
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
-        else:
-            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_1-pyCGM2.settings")
+        # --------------------------LOADING ------------------------------------
+        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
-        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
+        calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
+
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Calibration.log")
+        LOGGER.logger.info( "calibration file: "+ calibrateFilenameLabelled)
+
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        settings = files.loadModelSettings(DATA_PATH,"CGM2_1-pyCGM2.settings")
 
         # --------------------------CONFIG ------------------------------------
         argsManager = CgmArgsManager.argsManager_cgm(settings,args)
@@ -95,14 +98,7 @@ def main():
         if  rhjc is not None:
             hjcMethod["Right"] = rhjc
 
-        # --------------------------LOADING ------------------------------------
-        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
-        calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
-
-        LOGGER.logger.info( "data Path: "+ DATA_PATH )
-        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Calibration.log")
-        LOGGER.logger.info( "calibration file: "+ calibrateFilenameLabelled)
 
         # --------------------------SUBJECT ------------------------------------
         # Notice : Work with ONE subject by session

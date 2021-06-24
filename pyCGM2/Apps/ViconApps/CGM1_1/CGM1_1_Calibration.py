@@ -63,12 +63,15 @@ def main():
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
+        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+
+        reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
+        LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
+
         # --------------------------GLOBAL SETTINGS ------------------------------------
-        # global setting ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1_1-pyCGM2.settings"):
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
-        else:
-            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1_1-pyCGM2.settings")
+        settings = files.loadModelSettings(DATA_PATH,"CGM1_1-pyCGM2.settings")
 
 
         # --------------------------CONFIG ------------------------------------
@@ -78,16 +81,6 @@ def main():
         headFlat = argsManager.getHeadFlat()
         markerDiameter = argsManager.getMarkerDiameter()
         pointSuffix = argsManager.getPointSuffix("cgm1_1")
-
-
-        # --------------------------LOADING ------------------------------------
-        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
-
-        calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
-
-        LOGGER.logger.info( "data Path: "+ DATA_PATH )
-        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Calibration.log")
-        LOGGER.logger.info( "calibration file: "+ calibrateFilenameLabelled)
 
         # --------------------------SUBJECT ------------------------------------
         subjects = NEXUS.GetSubjectNames()

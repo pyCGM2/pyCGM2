@@ -73,12 +73,17 @@ def main():
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
 
+        # --------------------------LOADING ------------------------------------
+        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
+
+        calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
+
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Calibration.log")
+        LOGGER.logger.info( "calibration file: "+ calibrateFilenameLabelled)
+
         # --------------------------GLOBAL SETTINGS ------------------------------------
-        # global setting ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_2-pyCGM2.settings"):
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
-        else:
-            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_2-pyCGM2.settings")
+        settings = files.loadModelSettings(DATA_PATH,"CGM2_2-pyCGM2.settings")
 
 
         # --------------------------CONFIG ------------------------------------
@@ -100,16 +105,7 @@ def main():
 
         ik_flag = False if args.noIk else True
 
-        # --------------------------LOADING ------------------------------------
-        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
-
-        # log.setLogger(filename = DATA_PATH+"\\pycgm2.log")
-
-        calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
-
-        LOGGER.logger.info( "data Path: "+ DATA_PATH )
-        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Calibration.log")
-
+    
         # --------------------------SUBJECT -----------------------------------
 
         # Notice : Work with ONE subject by session

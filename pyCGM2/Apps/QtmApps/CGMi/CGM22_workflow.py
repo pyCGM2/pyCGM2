@@ -85,10 +85,7 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
     # --------------------------GLOBAL SETTINGS ------------------------------------
     # global setting ( in user/AppData)
 
-    if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_2-pyCGM2.settings"):
-        settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
-    else:
-        settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_2-pyCGM2.settings")
+        settings = files.loadModelSettings(DATA_PATH,"CGM2_2-pyCGM2.settings")
     # --------------------------MP ------------------------------------
     required_mp,optional_mp = qtmTools.SubjectMp(sessionXML)
 

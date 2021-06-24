@@ -13,6 +13,15 @@ import pandas as pd
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+
+def loadModelSettings(DATA_PATH,expertsettings_filename):
+    if os.path.isfile(DATA_PATH,expertsettings_filename):
+        settings = openFile(DATA_PATH,expertsettings_filename)
+    else:
+        settings = openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,expertsettings_filename)
+
+    return settings
+
 def openFile(path,filename):
     """
 

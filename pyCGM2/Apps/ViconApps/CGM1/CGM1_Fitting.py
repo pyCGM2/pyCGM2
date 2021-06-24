@@ -56,25 +56,21 @@ def main():
     args = parser.parse_args()
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
-        # --------------------------GLOBAL SETTINGS ------------------------------------
-        # global setting ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1-pyCGM2.settings"):
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
-        else:
-            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1-pyCGM2.settings")
-
-        # --------------------------CONFIG ------------------------------------
-        argsManager = CgmArgsManager.argsManager_cgm1(settings,args)
-        markerDiameter = argsManager.getMarkerDiameter()
-        pointSuffix = argsManager.getPointSuffix("cgm1")
-        momentProjection =  argsManager.getMomentProjection()
-
         DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
         LOGGER.logger.info( "data Path: "+ DATA_PATH )
         LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
         LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
+
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        settings = files.loadModelSettings(DATA_PATH,"CGM1-pyCGM2.settings")
+
+        # --------------------------CONFIG ------------------------------------
+        argsManager = CgmArgsManager.argsManager_cgm1(settings,args)
+        markerDiameter = argsManager.getMarkerDiameter()
+        pointSuffix = argsManager.getPointSuffix("cgm1")
+        momentProjection =  argsManager.getMomentProjection()
 
         # --------------------------SUBJECT ------------------------------------
         # Notice : Work with ONE subject by session
