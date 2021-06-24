@@ -6,7 +6,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pyCGM2.Lib import analysis
-from pyCGM2.Lib import configuration
 from pyCGM2.Lib import emg
 from pyCGM2.Utils import files
 
@@ -16,8 +15,8 @@ class Test_EMG:
         DATA_PATH = "C:\\Users\\fleboeuf\\Documents\\DATA\\pyCGM2-Data-Tests\\EMG\\Normalisation\\Mvc\\"
 
         emgManager = emg.loadEmg(DATA_PATH)
+        EMG_LABELS = emgManager.getChannels()
 
-        EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES = configuration.loadEmgConfiguration(DATA_PATH)
 
 
         # trials
