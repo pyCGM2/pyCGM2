@@ -67,7 +67,9 @@ class Test_lowLevel:
     def test_lowLevel_temporalEmgPlot_4channels(self):
 
         DATA_PATH, modelledFilenames,acq = dataTest2()
-        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
+        emgManager = emg.loadEmg(DATA_PATH)
+        # emgchannels = emgManager.getChannels()
+
 
         fig = plt.figure()
 
@@ -81,7 +83,7 @@ class Test_lowLevel:
         # # viewer
         kv = emgPlotViewers.TemporalEmgPlotViewer(acq)
 
-        kv.setEmgSettings(emgSettings)
+        kv.setEmgManager(emgManager)
         kv.selectEmgChannels(EMG_LABELS)
         kv.ignoreNormalActivty(False)
         kv. setEmgRectify(True)
@@ -112,15 +114,16 @@ class Test_highLevel:
     #@pytest.mark.mpl_image_compare
     def test_temporalEmgPlot(self):
 
-        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
         DATA_PATH, modelledFilenames,acq = dataTest2()
 
-        emg.processEMG(DATA_PATH, modelledFilenames, emgSettings["CHANNELS"],
+        emgManager = emg.loadEmg(DATA_PATH)
+
+
+        emg.processEMG(DATA_PATH, modelledFilenames, emgManager.getChannels(),
             highPassFrequencies=[20,200],envelopFrequency=6.0,
             fileSuffix=None,outDataPath=None)
 
         figs = plot.plotTemporalEMG(DATA_PATH, modelledFilenames[0],
-                emgSettings,
                 rectify = True,
                 exportPdf=False,outputName=None,show=False,title=None,
                 btkAcq=None)

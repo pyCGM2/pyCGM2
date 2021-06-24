@@ -56,14 +56,10 @@ def main():
 
 
         #--------------------------settings-------------------------------------
-        if os.path.isfile(DATA_PATH + "emg.settings"):
-            emgSettings = files.openFile(DATA_PATH,"emg.settings")
-            LOGGER.logger.warning("[pyCGM2]: emg.settings detected in the data folder")
-        else:
-            emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
+        emgManager = emg.loadEmg(DATA_PATH)
 
         # ----------------------INPUTS-------------------------------------------
-        bandPassFilterFrequencies = emgSettings["Processing"]["BandpassFrequencies"]
+        bandPassFilterFrequencies = emgManager.getProcessingSection()["BandpassFrequencies"]
         if args.BandpassFrequencies is not None:
             if len(args.BandpassFrequencies) != 2:
                 raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
@@ -71,7 +67,7 @@ def main():
                 bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
                 LOGGER.logger.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
-        envelopCutOffFrequency = emgSettings["Processing"]["EnvelopLowpassFrequency"]
+        envelopCutOffFrequency = emgManager.getProcessingSection()["EnvelopLowpassFrequency"]
         if args.EnvelopLowpassFrequency is not None:
             envelopCutOffFrequency =  args.EnvelopLowpassFrequency
             LOGGER.logger.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
@@ -86,16 +82,13 @@ def main():
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
         acq = nacf.build()
 
-        emgChannels = list()
-        for channel in emgSettings["CHANNELS"].keys():
-            if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None" :
-                emgChannels.append(channel)
+        emgChannels = emgManager.getChannels()
 
         emg.processEMG_fromBtkAcq(acq, emgChannels,
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency) # high pass then low pass for all c3ds
 
-        plot.plotTemporalEMG(DATA_PATH,inputFile, emgSettings,exportPdf=True,rectify=rectifyBool,
+        plot.plotTemporalEMG(DATA_PATH,inputFile,exportPdf=True,rectify=rectifyBool,
                             btkAcq=acq,ignoreNormalActivity= args.ignoreNormalActivity)
 
     else:

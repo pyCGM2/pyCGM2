@@ -10,6 +10,7 @@ from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emg
 from pyCGM2.Processing import scores
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
+from pyCGM2.EMG import emgManager
 
 def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix=None,
                           exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
@@ -153,7 +154,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,
         return fig
 
 
-def plotTemporalEMG(DATA_PATH, processedEmgfile, emgSettings,
+def plotTemporalEMG(DATA_PATH, processedEmgfile,
                     rectify = True, exportPdf=False,outputName=None,show=True,title=None,
                     ignoreNormalActivity= False,exportPng=False,OUT_PATH=None,
                     **kwargs):
@@ -193,10 +194,9 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgSettings,
     else:
         acq =btkTools.smartReader(DATA_PATH+processedEmgfile)
 
-    emgChannels = list()
-    for channel in emgSettings["CHANNELS"].keys():
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None":
-            emgChannels.append(channel)
+    emg = emgManager.EmgManager(DATA_PATH)
+    emgChannels = emg.getChannels()
+
     emgChannels_list=  [emgChannels[i:i+10] for i in range(0, len(emgChannels), 10)]
 
 
@@ -223,7 +223,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgSettings,
 
         # # viewer
         kv = emgPlotViewers.TemporalEmgPlotViewer(acq)
-        kv.setEmgSettings(emgSettings)
+        kv.setEmgManager(emg)
         kv.selectEmgChannels(emgChannels_list[i])
         kv.ignoreNormalActivty(ignoreNormalActivity)
         kv. setEmgRectify(rectify)
@@ -256,7 +256,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile, emgSettings,
     else:
         return figs
 
-def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgSettings,
+def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
                                 normalized=False, type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
     """ display average and standard deviation of time-normalized EMG envelops.
 
@@ -283,10 +283,8 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgSettings,
 
     """
 
-    emgChannels = list()
-    for channel in emgSettings["CHANNELS"].keys() :
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None":
-            emgChannels.append(channel)
+    emg = emgManager.EmgManager(DATA_PATH)
+    emgChannels = emg.getChannels()
 
     if outputName is None:
         outputName = "PyCGM2-Analysis"
@@ -297,7 +295,7 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgSettings,
     # viewer
 
     kv = emgPlotViewers.EnvEmgGaitPlotPanelViewer(analysis)
-    kv.setEmgSettings(emgSettings)
+    kv.setEmgManager(emg)
     kv.selectEmgChannels(emgChannels)
     kv.setNormalizedEmgFlag(normalized)
 
@@ -321,7 +319,7 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis, emgSettings,
     else:
         return fig
 
-def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgSettings, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
 
     """ display all-cycles of time-normalized EMG envelops.
 
@@ -350,10 +348,8 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgSettings, normalized=F
 
     """
 
-    emgChannels = list()
-    for channel in emgSettings["CHANNELS"].keys():
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None":
-            emgChannels.append(channel)
+    emg = emgManager.EmgManager(DATA_PATH)
+    emgChannels = emg.getChannels()
 
     if outputName is None:
         outputName = "PyCGM2-Analysis"
@@ -363,7 +359,7 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, emgSettings, normalized=F
 
     # viewer
     kv = emgPlotViewers.EnvEmgGaitPlotPanelViewer(analysis)
-    kv.setEmgSettings(emgSettings)
+    kv.setEmgManager(emg)
     kv.selectEmgChannels(emgChannels)
     kv.setNormalizedEmgFlag(normalized)
 
@@ -927,7 +923,7 @@ def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
     else:
         return fig
 
-def compareEmgEnvelops(DATA_PATH,analyses,legends, emgSettings,
+def compareEmgEnvelops(DATA_PATH,analyses,legends,
         normalized=False,plotType="Descriptive",show=True,title=None,type="Gait",outputName=None,exportPng=False,exportPdf=False):
     """plot EMG envelops from different analysis instances.
 
@@ -956,11 +952,9 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends, emgSettings,
     compareEmgEnvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"], emgSettings)
     ```
     """
+    emg = emgManager.EmgManager(DATA_PATH)
+    emgChannels = emg.getChannels()
 
-    emgChannels = list()
-    for channel in emgSettings["CHANNELS"].keys():
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None":
-            emgChannels.append(channel)
 
     if outputName is None:
         outputName = "pyCGM2-Comparison"
@@ -980,7 +974,7 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends, emgSettings,
 
     kv = emgPlotViewers.MultipleAnalysis_EnvEmgPlotPanelViewer(analyses,legends)
 
-    kv.setEmgSettings(emgSettings)
+    kv.setEmgManager(emg)
     kv.selectEmgChannels(emgChannels)
 
     if normalized:

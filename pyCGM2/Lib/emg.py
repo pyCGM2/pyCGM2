@@ -4,9 +4,12 @@ import pandas as pd
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
 from pyCGM2.Tools import btkTools
-from pyCGM2.EMG import emgFilters
+from pyCGM2.EMG import emgFilters,emgManager
 from pyCGM2 import enums
 
+def loadEmg(DATA_PATH):
+
+    return emgManager.EmgManager(DATA_PATH)
 
 
 def processEMG(DATA_PATH, gaitTrials, emgChannels,
@@ -61,7 +64,7 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels,
             btkTools.smartWriter(acq,outDataPath+outFilename)
 
 
-def normalizedEMG(analysis, emgSettings, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
+def normalizedEMG(analysis, DATA_PATH, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
     """
     Emg normalisation in amplitude.
 
@@ -90,13 +93,10 @@ def normalizedEMG(analysis, emgSettings, method="MeanMax", fromOtherAnalysis=Non
     ```
 
     """
-    emgChannels = list()
-    contexts = list()
 
-    for channel in emgSettings["CHANNELS"].keys():
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None" :
-            emgChannels.append(channel)
-            contexts.append(emgSettings["CHANNELS"][channel]["Context"])
+    emg = emgManager.EmgManager(DATA_PATH)
+    emgChannels = emg.getChannels()
+    contexts = emg.getSides()
 
     rows = list()
     i=0

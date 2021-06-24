@@ -219,13 +219,15 @@ class Test_highLevel:
     def test_highLevel_plotDescriptiveEnvelopEMGpanel(self):
         DATA_PATH,modelledFilenames,analysisInstance = dataTest2()
 
-        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
+        emgManager = emg.loadEmg(DATA_PATH)
+        # emgchannels = emgManager.getChannels()
+
+        # emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,
         #     fileSuffix=None,outDataPath=None)
 
         fig = plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysisInstance,
-                emgSettings,
                 normalized=False,
                 type="Gait",exportPdf=False,outputName=None,show=False,
                 title=None)
@@ -237,13 +239,13 @@ class Test_highLevel:
     def test_highLevel_plotConsistencyEnvelopEMGpanel(self):
         DATA_PATH,modelledFilenames,analysisInstance = dataTest2()
 
+        emgManager = emg.loadEmg(DATA_PATH)
+        # emgchannels = emgManager.getChannels()
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,
         #     fileSuffix=None,outDataPath=None)
 
-        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
         fig = plot.plotConsistencyEnvelopEMGpanel(DATA_PATH,analysisInstance,
-                emgSettings,
                 normalized=False,
                 type="Gait",exportPdf=False,outputName=None,show=False,
                 title=None)
@@ -258,15 +260,15 @@ class Test_highLevel:
     def test_highLevel_compareEmgEnvelops(self):
         DATA_PATH1,modelledFilenames1,analysisInstance1,DATA_PATH2,modelledFilenames2,analysisInstance2 = dataTest3()
 
-        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
+        # emgManager = emg.loadEmg(DATA_PATH1)
+        # emgchannels = emgManager.getChannels()
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,
         #     fileSuffix=None,outDataPath=None)
-        emg.normalizedEMG(analysisInstance1, emgSettings, method="MeanMax", fromOtherAnalysis=None)
-        emg.normalizedEMG(analysisInstance2, emgSettings, method="MeanMax", fromOtherAnalysis=analysisInstance1)
+        emg.normalizedEMG(analysisInstance1, DATA_PATH1, method="MeanMax", fromOtherAnalysis=None)
+        emg.normalizedEMG(analysisInstance2, DATA_PATH2, method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
         fig = plot.compareEmgEnvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],
-            emgSettings,
             normalized=True,
             plotType="Descriptive",show=False,title=None,type="Gait")
 
@@ -276,13 +278,13 @@ class Test_highLevel:
     #@pytest.mark.mpl_image_compare
     def test_highLevel_compareSelectedEmgEvelops(self):
         DATA_PATH1,modelledFilenames1,analysisInstance1,DATA_PATH2,modelledFilenames2,analysisInstance2 = dataTest3()
-        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
+        
 
         # emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
         #     highPassFrequencies=[20,200],envelopFrequency=6.0,
         #     fileSuffix=None,outDataPath=None)
-        emg.normalizedEMG(analysisInstance1, emgSettings, method="MeanMax", fromOtherAnalysis=None)
-        emg.normalizedEMG(analysisInstance2, emgSettings, method="MeanMax", fromOtherAnalysis=analysisInstance1)
+        emg.normalizedEMG(analysisInstance1, DATA_PATH1, method="MeanMax", fromOtherAnalysis=None)
+        emg.normalizedEMG(analysisInstance2, DATA_PATH2, method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
 
         fig = plot.compareSelectedEmgEvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],

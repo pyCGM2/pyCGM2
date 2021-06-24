@@ -15,13 +15,13 @@ class Test_EMG:
 
         DATA_PATH = "C:\\Users\\fleboeuf\\Documents\\DATA\\pyCGM2-Data-Tests\\EMG\\Normalisation\\Mvc\\"
 
-        emgSettings = files.openFile(DATA_PATH,"emg.settings")
+        emgManager = emg.loadEmg(DATA_PATH)
 
         EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES = configuration.loadEmgConfiguration(DATA_PATH)
 
 
         # trials
-        emg.processEMG(DATA_PATH, ["trial 01.c3d","trial 02.c3d","trial 03.c3d"], EMG_LABELS,fileSuffix ="filtered" )
+        emg.processEMG(DATA_PATH, ["trial 01.c3d","trial 02.c3d","trial 03.c3d"], emgManager.getChannels(),fileSuffix ="filtered" )
         emgprocessFiles  = [it[0:it.rfind(".")]+"_filtered.c3d" for it in ["trial 01.c3d","trial 02.c3d","trial 03.c3d"]]
 
         emgAnalysisInstance = analysis.makeAnalysis(DATA_PATH,
@@ -33,7 +33,7 @@ class Test_EMG:
                             )
 
         # MVCTA
-        emg.processEMG(DATA_PATH, ["mvc TA 01.c3d","mvc TA 01.c3d","mvc TA 01.c3d"], EMG_LABELS,fileSuffix ="filtered" )
+        emg.processEMG(DATA_PATH, ["mvc TA 01.c3d","mvc TA 01.c3d","mvc TA 01.c3d"], emgManager.getChannels(),fileSuffix ="filtered" )
         emgprocessFilesMvc  = [it[0:it.rfind(".")]+"_filtered.c3d" for it in ["mvc TA 01.c3d","mvc TA 01.c3d","mvc TA 01.c3d"]]
         emgAnalysisInstanceMvcTA = analysis.makeAnalysis(DATA_PATH,
                             emgprocessFilesMvc,
@@ -44,7 +44,7 @@ class Test_EMG:
                             )
 
         # MVCTA
-        emg.processEMG(DATA_PATH, ["mvc SOL 01.c3d","mvc SOL 01.c3d","mvc SOL 01.c3d"], EMG_LABELS,fileSuffix ="filtered" )
+        emg.processEMG(DATA_PATH, ["mvc SOL 01.c3d","mvc SOL 01.c3d","mvc SOL 01.c3d"], emgManager.getChannels(),fileSuffix ="filtered" )
         emgprocessFilesMvc  = [it[0:it.rfind(".")]+"_filtered.c3d" for it in ["mvc SOL 01.c3d","mvc SOL 01.c3d","mvc SOL 01.c3d"]]
         emgAnalysisInstanceMvcSOL = analysis.makeAnalysis(DATA_PATH,
                             emgprocessFilesMvc,
@@ -60,7 +60,7 @@ class Test_EMG:
                         "Voltage.EMG10": emgAnalysisInstanceMvcSOL}
 
 
-        emg.normalizedEMG(emgAnalysisInstance,EMG_LABELS,EMG_CONTEXT,method="MeanMax", mvcSettings=mvc_settings,fromOtherAnalysis=emgAnalysisInstance)
+        emg.normalizedEMG(emgAnalysisInstance,DATA_PATH,method="MeanMax", mvcSettings=mvc_settings,fromOtherAnalysis=emgAnalysisInstance)
 
 
         # plt.plot(emgAnalysisInstance.emgStats.data['Voltage.EMG7_Rectify_Env', 'Left']["mean"])

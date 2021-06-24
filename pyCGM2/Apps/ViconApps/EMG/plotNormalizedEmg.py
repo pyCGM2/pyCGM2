@@ -65,19 +65,11 @@ def main():
 
     LOGGER.set_file_handler(DATA_PATH+"pyCGM2.log")
     #--------------------------settings-------------------------------------
-    if os.path.isfile(DATA_PATH + "emg.settings"):
-        emgSettings = files.openFile(DATA_PATH,"emg.settings")
-        LOGGER.logger.warning("[pyCGM2]: emg.settings detected in the data folder")
-    else:
-        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
-
-    emgChannels = list()
-    for channel in emgSettings["CHANNELS"].keys():
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None" :
-            emgChannels.append(channel)
+    emgManager = emg.loadEmg(DATA_PATH)
+    emgChannels = emgManager.getChannels()
 
     # ----------------------INPUTS-------------------------------------------
-    bandPassFilterFrequencies = emgSettings["Processing"]["BandpassFrequencies"]
+    bandPassFilterFrequencies = emgManager.getProcessingSection()["BandpassFrequencies"]
     if args.BandpassFrequencies is not None:
         if len(args.BandpassFrequencies) != 2:
             raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
@@ -85,7 +77,7 @@ def main():
             bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
             LOGGER.logger.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
-    envelopCutOffFrequency = emgSettings["Processing"]["EnvelopLowpassFrequency"]
+    envelopCutOffFrequency = emgManager.getProcessingSection()["EnvelopLowpassFrequency"]
     if args.EnvelopLowpassFrequency is not None:
         envelopCutOffFrequency =  args.EnvelopLowpassFrequency
         LOGGER.logger.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
@@ -138,13 +130,13 @@ def main():
                             subjectInfo=None, experimentalInfo=None,modelInfo=None,
                             )
 
-        outputName = "Eclipse -  NormalizedEMG"
+        outputName = "Eclipse - Time-NormalizedEMG"
 
 
     if not consistencyFlag:
-        plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,emgAnalysis, emgSettings, normalized=False,exportPdf=True,outputName=outputName)
+        plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,emgAnalysis, normalized=False,exportPdf=True,outputName=outputName)
     else:
-        plot.plotConsistencyEnvelopEMGpanel(DATA_PATH,emgAnalysis, emgSettings, normalized=False,exportPdf=True,outputName=outputName)
+        plot.plotConsistencyEnvelopEMGpanel(DATA_PATH,emgAnalysis, normalized=False,exportPdf=True,outputName=outputName)
 
 
 

@@ -30,7 +30,7 @@ from pyCGM2.Lib import emg
 from pyCGM2.Nexus import nexusFilters,nexusTools
 from pyCGM2.Eclipse import eclipse
 
-from pyCGM2.Configurator import EmgManager
+
 from viconnexusapi import ViconNexus
 
 
@@ -63,20 +63,13 @@ def main():
 
 
     #--------------------------settings-------------------------------------
-    if os.path.isfile(DATA_PATH + "emg.settings"):
-        emgSettings = files.openFile(DATA_PATH,"emg.settings")
-        LOGGER.logger.warning("[pyCGM2]: emg.settings detected in the data folder")
-    else:
-        emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
+    emgManager = emg.loadEmg(DATA_PATH)
+    emgChannels = emgManager.getChannels()
 
-    emgChannels = list()
-    for channel in emgSettings["CHANNELS"].keys():
-        if emgSettings["CHANNELS"][channel]["Muscle"] is not None and emgSettings["CHANNELS"][channel]["Muscle"] != "None" :
-            emgChannels.append(channel)
 
 
     # ----------------------INPUTS-------------------------------------------
-    bandPassFilterFrequencies = emgSettings["Processing"]["BandpassFrequencies"]
+    bandPassFilterFrequencies = emgManager.getProcessingSection()["BandpassFrequencies"]
     if args.BandpassFrequencies is not None:
         if len(args.BandpassFrequencies) != 2:
             raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
@@ -84,7 +77,7 @@ def main():
             bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
             LOGGER.logger.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
-    envelopCutOffFrequency = emgSettings["Processing"]["EnvelopLowpassFrequency"]
+    envelopCutOffFrequency = emgManager.getProcessingSection()["EnvelopLowpassFrequency"]
     if args.EnvelopLowpassFrequency is not None:
         envelopCutOffFrequency =  args.EnvelopLowpassFrequency
         LOGGER.logger.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
@@ -110,7 +103,7 @@ def main():
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
 
-            emg.normalizedEMG(analysisInstance1,emgSettings,method="MeanMax", fromOtherAnalysis=None)
+            emg.normalizedEMG(analysisInstance1,DATA_PATH,method="MeanMax", fromOtherAnalysis=None)
 
             analysisInstance2 = analysis.makeAnalysis(DATA_PATH,
                                 [inputFiles[1]],
@@ -121,7 +114,7 @@ def main():
                                 pointLabelSuffix=None,
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
-            emg.normalizedEMG(analysisInstance2,emgSettings,method="MeanMax", fromOtherAnalysis=analysisInstance1)
+            emg.normalizedEMG(analysisInstance2,DATA_PATH,method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
             # outputName = "Eclipse - CompareNormalizedKinematics"
         #
@@ -131,7 +124,6 @@ def main():
 
         plot.compareEmgEnvelops(DATA_PATH,analysesToCompare,
                                 legends,
-                               emgSettings,
                               normalized=True,
                               plotType=plotType,show=True,
                               outputName=comparisonDetails,exportPng=False)

@@ -39,16 +39,15 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         self.m_pointLabelSuffix = pointLabelSuffix
 
         self.m_ignoreNormalActivity = False
+        self.m_selectChannels = None
 
+    def setEmgManager(self,emgManager):
+        self.m_emgmanager = emgManager
+        if self.m_selectChannels is None:
+            self.m_selectChannels = self.m_emgmanager.getChannels()
 
     def selectEmgChannels(self,channelNames):
         self.m_selectChannels = channelNames
-
-    def setEmgSettings(self,emgSettings):
-        self.m_emgSettings = emgSettings["CHANNELS"]
-
-        # for it in emgs:
-        #     self.emgs.append({"Label": it[0], "Context": it[1], "Muscle": it[2]})
 
     def setEmgRectify(self, flag):
         self.rectify = flag
@@ -77,9 +76,9 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         i=0
         for channel in self.m_selectChannels:
             label = channel
-            context = self.m_emgSettings[channel]["Context"]
-            muscle = self.m_emgSettings[channel]["Muscle"]
-            normalActivity = self.m_emgSettings[channel]["NormalActivity"] if self.m_emgSettings[channel]["NormalActivity"] is not None else ""
+            context = self.m_emgmanager.m_emgChannelSection[channel]["Context"]
+            muscle = self.m_emgmanager.m_emgChannelSection[channel]["Muscle"]
+            normalActivity = self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] if self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] is not None else ""
 
             # self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
 
@@ -107,10 +106,10 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         i=0
         for channel in self.m_selectChannels:
             label = channel+"_Rectify" if self.rectify  else channel+"_HPF"
-            context = self.m_emgSettings[channel]["Context"]
+            context = self.m_emgmanager.m_emgChannelSection[channel]["Context"]
             colorContext = plotUtils.colorContext(context)
 
-            normalActivationLabel = self.m_emgSettings[channel]["NormalActivity"] if self.m_emgSettings[channel]["NormalActivity"] is not None else ""
+            normalActivationLabel = self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] if self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] is not None else ""
 
             plot.temporalPlot(self.fig.axes[i],self.m_acq,
                                     label,0,
@@ -245,12 +244,16 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.m_pointLabelSuffix = pointLabelSuffix
 
         self.m_normalizedEmgFlag = False
+        self.m_selectChannels = None
 
     def selectEmgChannels(self,channelNames):
         self.m_selectChannels = channelNames
 
-    def setEmgSettings(self,emgSettings):
-        self.m_emgSettings = emgSettings["CHANNELS"]
+    def setEmgManager(self,emgManager):
+        self.m_emgmanager = emgManager
+        if self.m_selectChannels is None:
+            self.m_selectChannels = self.m_emgmanager.getChannels()
+
 
     def setNormalizedEmgFlag(self,flag):
         self.m_normalizedEmgFlag = flag
@@ -283,9 +286,9 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         i=0
         for channel in self.m_selectChannels:
             label = channel
-            context = self.m_emgSettings[channel]["Context"]
-            muscle = self.m_emgSettings[channel]["Muscle"]
-            normalActivity = self.m_emgSettings[channel]["NormalActivity"] if self.m_emgSettings[channel]["NormalActivity"] is not None else ""
+            context = self.m_emgmanager.m_emgChannelSection[channel]["Context"]
+            muscle = self.m_emgmanager.m_emgChannelSection[channel]["Muscle"]
+            normalActivity = self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] if self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] is not None else ""
 
             self.fig.axes[i].set_title(label+":"+ muscle+"-"+context+"\n["+ normalActivity+"]" ,size=6)
             i+=1
@@ -313,10 +316,10 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         i=0
         for channel in self.m_selectChannels:
             label = channel+"_Rectify_Env" if not self.m_normalizedEmgFlag else channel+"_Rectify_Env_Norm"
-            context = self.m_emgSettings[channel]["Context"]
+            context = self.m_emgmanager.m_emgChannelSection[channel]["Context"]
             colorContext = plotUtils.colorContext(context)
 
-            normalActivationLabel = self.m_emgSettings[channel]["NormalActivity"] if self.m_emgSettings[channel]["NormalActivity"] is not None else ""
+            normalActivationLabel = self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] if self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] is not None else ""
 
 
             self.m_concretePlotFunction(self.fig.axes[i],self.m_analysis.emgStats,
@@ -374,12 +377,15 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.m_pointLabelSuffix = pointLabelSuffix
         self.m_normalizedEmgFlag = False
         self.m_legends = legends
+        self.m_selectChannels = None
 
     def selectEmgChannels(self,channelNames):
         self.m_selectChannels = channelNames
 
-    def setEmgSettings(self,emgSettings):
-        self.m_emgSettings = emgSettings["CHANNELS"]
+    def setEmgManager(self,emgManager):
+        self.m_emgmanager = emgManager
+        if self.m_selectChannels is None:
+            self.m_selectChannels = self.m_emgmanager.getChannels()
 
     def setNormalizedEmgFlag(self,flag):
         self.m_normalizedEmgFlag = flag
@@ -412,9 +418,9 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         i=0
         for channel in self.m_selectChannels:
             label = channel
-            context = self.m_emgSettings[channel]["Context"]
-            muscle = self.m_emgSettings[channel]["Muscle"]
-            normalActivity = self.m_emgSettings[channel]["NormalActivity"] if self.m_emgSettings[channel]["NormalActivity"] is not None else ""
+            context = self.m_emgmanager.m_emgChannelSection[channel]["Context"]
+            muscle = self.m_emgmanager.m_emgChannelSection[channel]["Muscle"]
+            normalActivity = self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] if self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] is not None else ""
 
             self.fig.axes[i].set_title(label+":"+ muscle+"-"+context+"\n["+ normalActivity+"]" ,size=6)
 
@@ -450,7 +456,7 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
                 i=0
                 for channel in self.m_selectChannels:
                     label = channel+"_Rectify_Env" if not self.m_normalizedEmgFlag else channel+"_Rectify_Env_Norm"
-                    context = self.m_emgSettings[channel]["Context"]
+                    context = self.m_emgmanager.m_emgChannelSection[channel]["Context"]
 
                     if context == "Left":
                         self.m_concretePlotFunction(self.fig.axes[i],analysis.emgStats,
