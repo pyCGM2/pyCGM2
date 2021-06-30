@@ -10,13 +10,14 @@ class EmgManager(object):
 
     """
 
-    def __init__(self,DATA_PATH):
+    def __init__(self,DATA_PATH,emgSettings=None):
 
-        if os.path.isfile(DATA_PATH + "emg.settings"):
-            emgSettings = files.openFile(DATA_PATH,"emg.settings")
-            LOGGER.logger.warning("[pyCGM2]: emg.settings detected in the data folder")
-        else:
-            emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
+        if emgSettings is None:
+            if os.path.isfile(DATA_PATH + "emg.settings"):
+                emgSettings = files.openFile(DATA_PATH,"emg.settings")
+                LOGGER.logger.warning("[pyCGM2]: emg.settings detected in the data folder")
+            else:
+                emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
 
 
         self.m_emgSettings = emgSettings
