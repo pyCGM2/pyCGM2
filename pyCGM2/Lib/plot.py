@@ -175,8 +175,9 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile,
         exportPng (bool)[False]: export as png.
         OUT_PATH (str)[None]: specify an path different than the `DATA_PATH` to export plot
 
-    Keyword Args (low-level):
+    Low-level Keyword Args:
         btkAcq (btk.Acquisition)[None]: force use of a btkAcquisition instead of loading from `processedEmgfile`.
+        forceEmgManager (pyCGM2.Emg.EmgManager)[None]: force the use of a specific emgManager instance.
 
     Examples:
 
@@ -194,7 +195,10 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile,
     else:
         acq =btkTools.smartReader(DATA_PATH+processedEmgfile)
 
-    emg = emgManager.EmgManager(DATA_PATH)
+    if "forceEmgManager" in kwargs:
+        emg = kwargs["forceEmgManager"]
+    else:
+        emg = emgManager.EmgManager(DATA_PATH)
     emgChannels = emg.getChannels()
 
     emgChannels_list=  [emgChannels[i:i+10] for i in range(0, len(emgChannels), 10)]
@@ -257,13 +261,12 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile,
         return figs
 
 def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
-                                normalized=False, type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+                                normalized=False, type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False,**kwargs):
     """ display average and standard deviation of time-normalized EMG envelops.
 
     Args:
         DATA_PATH (str): path to your data
         analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
-        emgSettings (str): content of the emg.Settings file
 
     Keyword Args:
         normalized (bool)[False]: enable plot of emg normalized in amplitude .
@@ -274,16 +277,20 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
         title (str): modify the plot panel title.
         exportPng (bool): export as png.
 
+    Low-level Keyword Args:
+        forceEmgManager (pyCGM2.Emg.EmgManager)[None]: force the use of a specific emgManager instance.
 
     Examples:
 
     ```python
-    plotDescriptiveEnvelopEMGpanel("C:\\myDATA\\", analysisInstance, emgSettingsContent)
+    plotDescriptiveEnvelopEMGpanel("C:\\myDATA\\", analysisInstance)
     ```
 
     """
-
-    emg = emgManager.EmgManager(DATA_PATH)
+    if "forceEmgManager" in kwargs:
+        emg = kwargs["forceEmgManager"]
+    else:
+        emg = emgManager.EmgManager(DATA_PATH)
     emgChannels = emg.getChannels()
 
     if outputName is None:
@@ -319,14 +326,13 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
     else:
         return fig
 
-def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Gait",exportPdf=False,outputName=None,show=True,title=None,exportPng=False,**kwargs):
 
     """ display all-cycles of time-normalized EMG envelops.
 
     Args:
         DATA_PATH (str): path to your data
         analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
-        emgSettings (str): content of the emg.Settings file
 
     Keyword Args:
         normalized (bool)[False]: enable plot of emg normalized in amplitude.
@@ -337,18 +343,27 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Ga
         title (str)[None]: modify the plot panel title.
         exportPng (bool)[True]: export as png.
 
+    Low-level Keyword Args:
+        forceEmgManager (pyCGM2.Emg.EmgManager)[None]: force the use of a specific emgManager instance.
+
+
     Returns:
 
 
     Examples:
 
     ```python
-    plotConsistencyEnvelopEMGpanel("C:\\myDATA\\", analysisInstance, emgSettingsContent)
+    plotConsistencyEnvelopEMGpanel("C:\\myDATA\\", analysisInstance)
     ```
 
     """
 
-    emg = emgManager.EmgManager(DATA_PATH)
+
+    if "forceEmgManager" in kwargs:
+        emg = kwargs["forceEmgManager"]
+    else:
+        emg = emgManager.EmgManager(DATA_PATH)
+
     emgChannels = emg.getChannels()
 
     if outputName is None:
@@ -924,7 +939,7 @@ def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
         return fig
 
 def compareEmgEnvelops(DATA_PATH,analyses,legends,
-        normalized=False,plotType="Descriptive",show=True,title=None,type="Gait",outputName=None,exportPng=False,exportPdf=False):
+        normalized=False,plotType="Descriptive",show=True,title=None,type="Gait",outputName=None,exportPng=False,exportPdf=False,**kwargs):
     """plot EMG envelops from different analysis instances.
 
     Args:
@@ -945,14 +960,20 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends,
         title (str)[None]: modify the plot panel title.
         exportPng (bool)[False]: export as png.
 
+    Low-level Keyword Args:
+        forceEmgManager (pyCGM2.Emg.EmgManager)[None]: force the use of a specific emgManager instance.
+
 
     Examples:
 
     ```python
-    compareEmgEnvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"], emgSettings)
+    compareEmgEnvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"])
     ```
     """
-    emg = emgManager.EmgManager(DATA_PATH)
+    if "forceEmgManager" in kwargs:
+        emg = kwargs["forceEmgManager"]
+    else:
+        emg = emgManager.EmgManager(DATA_PATH)
     emgChannels = emg.getChannels()
 
 

@@ -75,7 +75,7 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels,
             btkTools.smartWriter(acq,outDataPath+outFilename)
 
 
-def normalizedEMG(DATA_PATH,analysis, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
+def normalizedEMG(DATA_PATH,analysis, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None,**kwargs):
     """
     Emg normalisation in amplitude.
 
@@ -89,6 +89,9 @@ def normalizedEMG(DATA_PATH,analysis, method="MeanMax", fromOtherAnalysis=None, 
         method (str)["MeanMax"]: normalisation method (choice : MeanMax, MaxMax, MedianMax ).
         fromOtherAnalysis (pyCGM2.Processing.analysis.Analysis)[None]: normalise in amplitude from another analysis instance.
         mvcSettings (dict)[None]: mvc settings.
+
+    Low-level Keyword Args:
+        forceEmgManager (pyCGM2.Emg.EmgManager)[None]: force the use of a specific emgManager instance.
 
 
 
@@ -104,7 +107,11 @@ def normalizedEMG(DATA_PATH,analysis, method="MeanMax", fromOtherAnalysis=None, 
 
     """
 
-    emg = emgManager.EmgManager(DATA_PATH)
+    if "forceEmgManager" in kwargs:
+        emg = kwargs["forceEmgManager"]
+    else:
+        emg = emgManager.EmgManager(DATA_PATH)
+
     emgChannels = emg.getChannels()
     contexts = emg.getSides()
 
