@@ -260,9 +260,11 @@ class AnalysisBuilder(AbstractBuilder):
                    for label in self.m_kineticLabelsDict["Left"]:
                        labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
                        out[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
-                   for label in self.m_kinematicLabelsDict["Left"]:
-                       labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
-                       outOptional[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
+
+                   if self.m_kinematicLabelsDict is not None:
+                       for label in self.m_kinematicLabelsDict["Left"]:
+                           labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                           outOptional[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
                    LOGGER.logger.info("left kinetic computation---> done")
                else:
                    LOGGER.logger.warning("No left Kinetic computation")
@@ -273,9 +275,10 @@ class AnalysisBuilder(AbstractBuilder):
                        labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
                        out[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
 
-                   for label in self.m_kinematicLabelsDict["Right"]:
-                       labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
-                       outOptional[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
+                   if self.m_kinematicLabelsDict is not None:
+                       for label in self.m_kinematicLabelsDict["Right"]:
+                           labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                           outOptional[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
 
                    LOGGER.logger.info("right kinetic computation---> done")
                else:
@@ -470,9 +473,11 @@ class GaitAnalysisBuilder(AbstractBuilder):
                        out[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
                    for label in CGM2cycle.GaitCycle.STP_LABELS:
                         outPst[label,"Left"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.kineticCycles,label,"Left")
-                   for label in self.m_kinematicLabelsDict["Left"]:
-                       labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
-                       outOptional[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
+
+                   if self.m_kinematicLabelsDict is not None:
+                       for label in self.m_kinematicLabelsDict["Left"]:
+                           labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                           outOptional[labelPlus,"Left"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Left")
                    LOGGER.logger.info("left kinetic computation---> done")
                else:
                    LOGGER.logger.warning("No left Kinetic computation")
@@ -489,9 +494,10 @@ class GaitAnalysisBuilder(AbstractBuilder):
                    for label in CGM2cycle.GaitCycle.STP_LABELS:
                         outPst[label,"Right"]=CGM2cycle.spatioTemporelParameter_descriptiveStats(self.m_cycles.kineticCycles,label,"Right")
 
-                   for label in self.m_kinematicLabelsDict["Right"]:
-                       labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
-                       outOptional[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
+                   if self.m_kinematicLabelsDict is not None:
+                       for label in self.m_kinematicLabelsDict["Right"]:
+                           labelPlus = label + "_" + self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                           outOptional[labelPlus,"Right"]=CGM2cycle.point_descriptiveStats(self.m_cycles.kineticCycles,labelPlus,"Right")
 
 
                    LOGGER.logger.info("right kinetic computation---> done")
