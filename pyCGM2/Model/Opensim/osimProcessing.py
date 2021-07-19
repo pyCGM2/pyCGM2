@@ -134,6 +134,13 @@ def setGlobalTransormation_lab_osim(axis,forwardProgression):
 
     return R_LAB_OSIM
 
+class opensimModel2(object):
+
+
+    def __init__(self,osimFile):
+        self.m_osimFile = osimFile
+        self.m_model = opensim.Model(osimFile)
+
 
 class opensimModel(object):
 

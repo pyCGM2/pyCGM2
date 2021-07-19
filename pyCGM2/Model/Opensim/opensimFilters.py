@@ -359,3 +359,112 @@ class opensimFittingFilter(object):
         """
         filename = filename if path is None else path+filename
         self._osimIK.m_ikTool.printToXML(filename)
+
+
+class opensimScalingFilter(object):
+    def __init__(self,model_input,markerSetFile,scaleToolFile, static_path, xml_output,required_mp,model_output = "OutPutModel.osim"):
+
+
+        self._osimModel = osimProcessing.opensimModel2(model_input)
+
+        self._osimModel.m_model.setName("pyCGM2-CGM-scaled")
+
+        markerSet= opensim.MarkerSet(markerSetFile)
+        self._osimModel.m_model.updateMarkerSet(markerSet)
+
+        self.model_output = model_output
+        self.model_with_markers_output = model_output.replace(".osim", "_markers.osim")
+        self.static_path = static_path
+        self.xml_output = xml_output
+
+        self.time_range = self.time_range_from_static()
+
+
+        # initialize scale tool from setup file
+        self.scale_tool = opensim.ScaleTool(scaleToolFile)
+        self.set_anthropometry(required_mp["Bodymass"], required_mp["Height"])
+        # Tell scale tool to use the loaded model
+        self.scale_tool.getGenericModelMaker().setModelFileName(model_input)
+
+        # self.scale_tool.getModelScaler().processModel(self.model, "", required_mp["Bodymass"])
+        self.run_model_scaler(required_mp["Bodymass"])
+        # self.run_marker_placer()
+
+    def time_range_from_static(self):
+        static = opensim.MarkerData(self.static_path)
+        initial_time = static.getStartFrameTime()
+        final_time = static.getLastFrameTime()
+        range_time = opensim.ArrayDouble()
+        range_time.set(0, initial_time)
+        range_time.set(1, final_time)
+        return range_time
+
+    def set_anthropometry(self, mass, height):#, age):
+        """
+        Set basic anthropometric parameters in scaling model
+        Parameters
+        ----------
+        mass : Double
+            mass (kg)
+        height : Double
+            height (mm)
+        age : int
+            age (year)
+        """
+        self.scale_tool.setSubjectMass(mass)
+        self.scale_tool.setSubjectHeight(height)
+        # self.scale_tool.setSubjectAge(age)
+
+    def run_model_scaler(self, mass):
+        model_scaler = self.scale_tool.getModelScaler()
+        # Whether or not to use the model scaler during scale
+        model_scaler.setApply(True)
+        # Set the marker file to be used for scaling
+        # model_scaler.setMarkerFileName(self.static_path)
+
+        # set time range
+        model_scaler.setTimeRange(self.time_range)
+
+        # Indicating whether or not to preserve relative mass between segments
+        model_scaler.setPreserveMassDist(True)
+
+        # Name of model file (.osim) to write when done scaling
+        model_scaler.setOutputModelFileName(self.model_output)
+
+        # Filename to write scale factors that were applied to the unscaled model (optional)
+        model_scaler.setOutputScaleFileName(
+            self.xml_output.replace(".xml", "_scaling_factor.xml")
+        )
+        self.scale_tool.printToXML(self.xml_output)
+
+        # import ipdb; ipdb.set_trace()
+        model_scaler.processModel(self._osimModel.m_model, "", mass)
+
+
+    def run_marker_placer(self):
+        # load a scaled model
+        scaled_model = opensim.Model(self.model_output)
+
+        marker_placer = self.scale_tool.getMarkerPlacer()
+        # Whether or not to use the model scaler during scale`
+        marker_placer.setApply(True)
+        marker_placer.setTimeRange(self.time_range)
+
+        marker_placer.setStaticPoseFileName(self.static_path)
+
+        # Name of model file (.osim) to write when done scaling
+        marker_placer.setOutputModelFileName(self.model_with_markers_output)
+
+        # Maximum amount of movement allowed in marker data when averaging
+        marker_placer.setMaxMarkerMovement(-1)
+
+        marker_placer.processModel(scaled_model)
+
+        # save processed model
+        scaled_model.printToXML(self.model_output)
+
+        # print scale config to xml
+        self.scale_tool.printToXML(self.xml_output)
+
+    def getScaledModel(self):
+        return self._osimModel

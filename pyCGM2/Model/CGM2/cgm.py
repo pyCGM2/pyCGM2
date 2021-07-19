@@ -737,8 +737,12 @@ class CGM1(CGM):
         valMidAsis=(aquiStatic.GetPoint("LASI").GetValues() + aquiStatic.GetPoint("RASI").GetValues()) / 2.0
         btkTools.smartAppendPoint(aquiStatic,"midASIS",valMidAsis,desc="")
 
+        val=(aquiStatic.GetPoint("LASI").GetValues() + aquiStatic.GetPoint("RASI").GetValues()+aquiStatic.GetPoint("LPSI").GetValues() + aquiStatic.GetPoint("RPSI").GetValues()) / 4.0
+        btkTools.smartAppendPoint(aquiStatic,"pelvisCentre",val, desc="")
+
         seg.addCalibrationMarkerLabel("SACR")
         seg.addCalibrationMarkerLabel("midASIS")
+        seg.addCalibrationMarkerLabel("pelvisCentre")
 
 
         # new mp
@@ -2508,6 +2512,9 @@ class CGM1(CGM):
 
         val=(aqui.GetPoint("LASI").GetValues() + aqui.GetPoint("RASI").GetValues()) / 2.0
         btkTools.smartAppendPoint(aqui,"midASIS",val, desc="")
+
+        val=(aqui.GetPoint("LASI").GetValues() + aqui.GetPoint("RASI").GetValues()+aqui.GetPoint("LPSI").GetValues() + aqui.GetPoint("RPSI").GetValues()) / 4.0
+        btkTools.smartAppendPoint(aqui,"pelvisCentre",val, desc="")
 
         validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
         seg.setExistFrames(validFrames)
