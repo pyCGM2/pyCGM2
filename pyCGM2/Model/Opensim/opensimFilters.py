@@ -388,7 +388,7 @@ class opensimScalingFilter(object):
 
         # self.scale_tool.getModelScaler().processModel(self.model, "", required_mp["Bodymass"])
         self.run_model_scaler(required_mp["Bodymass"])
-        # self.run_marker_placer()
+        self.run_marker_placer()
 
     def time_range_from_static(self):
         static = opensim.MarkerData(self.static_path)
@@ -420,7 +420,7 @@ class opensimScalingFilter(object):
         # Whether or not to use the model scaler during scale
         model_scaler.setApply(True)
         # Set the marker file to be used for scaling
-        # model_scaler.setMarkerFileName(self.static_path)
+        model_scaler.setMarkerFileName(self.static_path)
 
         # set time range
         model_scaler.setTimeRange(self.time_range)
@@ -435,15 +435,17 @@ class opensimScalingFilter(object):
         model_scaler.setOutputScaleFileName(
             self.xml_output.replace(".xml", "_scaling_factor.xml")
         )
-        self.scale_tool.printToXML(self.xml_output)
 
-        # import ipdb; ipdb.set_trace()
         model_scaler.processModel(self._osimModel.m_model, "", mass)
+
+        # self.scale_tool.printToXML(self.xml_output)
 
 
     def run_marker_placer(self):
         # load a scaled model
         scaled_model = opensim.Model(self.model_output)
+
+        self._osimScaledModel = osimProcessing.opensimModel2(self.model_output)
 
         marker_placer = self.scale_tool.getMarkerPlacer()
         # Whether or not to use the model scaler during scale`
@@ -458,13 +460,13 @@ class opensimScalingFilter(object):
         # Maximum amount of movement allowed in marker data when averaging
         marker_placer.setMaxMarkerMovement(-1)
 
-        marker_placer.processModel(scaled_model)
+        marker_placer.processModel(self._osimScaledModel.m_model)
 
         # save processed model
-        scaled_model.printToXML(self.model_output)
+        self._osimScaledModel.m_model.printToXML(self.model_output)
 
         # print scale config to xml
         self.scale_tool.printToXML(self.xml_output)
 
     def getScaledModel(self):
-        return self._osimModel
+        return self._osimScaledModel

@@ -57,7 +57,7 @@
 				<!--Location of a marker on the body segment.-->
 				<location>-0.0707 -0.0661 -0.0835</location>
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
-				<fixed>false</fixed>
+				<fixed>true</fixed>
 			</Marker>
 			<Marker name="RHJC">
 				<!--Body segment in the model on which the marker resides.-->
@@ -65,7 +65,7 @@
 				<!--Location of a marker on the body segment.-->
 				<location> -0.0707 -0.0661 0.0835</location>
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
-				<fixed>false</fixed>
+				<fixed>true</fixed>
 			</Marker>
 			<Marker name="midHJC">
 				<!--Body segment in the model on which the marker resides.-->
@@ -106,7 +106,7 @@
 				<!--Location of a marker on the body segment.-->
 				<location> 0 -0.395 0</location>
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
-				<fixed>false</fixed>
+				<fixed>true</fixed>
 			</Marker>
 			<Marker name="LKNM">
 				<!--Body segment in the model on which the marker resides.-->
@@ -138,7 +138,7 @@
 				<!--Location of a marker on the body segment.-->
 				<location> 0 -0.395 0</location>
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
-				<fixed>false</fixed>
+				<fixed>true</fixed>
 			</Marker>
 			<Marker name="RKNM">
 				<!--Body segment in the model on which the marker resides.-->
@@ -170,7 +170,7 @@
 				<!--Location of a marker on the body segment.-->
 				<location> 0 -0.43 0</location>
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
-				<fixed>false</fixed>
+				<fixed>true</fixed>
 			</Marker>
 			<Marker name="LMED">
 				<!--Body segment in the model on which the marker resides.-->
@@ -202,7 +202,7 @@
 				<!--Location of a marker on the body segment.-->
 				<location> 0 -0.43 0</location>
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
-				<fixed>false</fixed>
+				<fixed>true</fixed>
 			</Marker>
 			<Marker name="RMED">
 				<!--Body segment in the model on which the marker resides.-->
