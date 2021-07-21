@@ -55,6 +55,8 @@ class Test_CGM23:
         # --- Calibration ---
         # ---check marker set used----
         acqStatic = btkTools.smartReader(DATA_PATH +  staticFilename)
+        trackingMarkers = cgm2.CGM2_3.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_3.THORAX_TRACKING_MARKERS+ cgm2.CGM2_3.UPPERLIMB_TRACKING_MARKERS
+        actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
 
         dcm = cgm.CGM.detectCalibrationMethods(acqStatic)
         model=cgm2.CGM2_3()
@@ -78,6 +80,8 @@ class Test_CGM23:
 
         # ------ Fitting -------
         acqGait = btkTools.smartReader(DATA_PATH +  gaitFilename)
+        trackingMarkers = cgm2.CGM2_3.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_3.THORAX_TRACKING_MARKERS+ cgm2.CGM2_3.UPPERLIMB_TRACKING_MARKERS
+        actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqGait, trackingMarkers)
 
 
         # Motion FILTER

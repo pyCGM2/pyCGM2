@@ -163,15 +163,15 @@ def openJson(path,filename):
     except :
         raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
 
-def saveJson(path, filename, content):
+def saveJson(path, filename, content,ensure_ascii=False):
     if path is not None: path = path
     filename = filename
     if path is None:
         with open((filename), 'w') as outfile:
-            json.dump(content, outfile,indent=4)
+            json.dump(content, outfile,indent=4,ensure_ascii=ensure_ascii)
     else:
         with open((path+filename), 'w') as outfile:
-            json.dump(content, outfile,indent=4)
+            json.dump(content, outfile,indent=4,ensure_ascii=ensure_ascii)
 
 
 def prettyDictPrint(parsedContent):
