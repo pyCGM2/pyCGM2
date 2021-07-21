@@ -162,7 +162,7 @@ class XlsJointPatternProcedure(object):
         elif method == "peak":
             args = iArgs.split(",")
             indexes = detect_peaks(values, mph=float(args[0]), mpd=float(args[1]),  show = False, valley=False)
-            if indexes.shape[0]  > 2:
+            if indexes.shape[0]  > 0:
                 val = "True"
             else:
                 val = "False"
