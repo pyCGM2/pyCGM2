@@ -111,9 +111,6 @@ class opensimInterfaceHighLevelInverseKinematicsProcedure(object):
 
         self.finalize()
 
-        for it in self.m_osimModel.getMuscleList():
-            import ipdb; ipdb.set_trace()
-
 
 # NOT WORK : need opensim4.2 and bug fix of property
 class opensimInterfaceLowLevelInverseKinematicsProcedure(object):
