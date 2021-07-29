@@ -188,9 +188,13 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
 
         # fitting operation
         # -----------------------
+        ik_flag = True
+
+
         LOGGER.logger.info("[pyCGM2] --- Fitting operation ---")
         acqGait,detectAnomaly = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
             translators,settings,
+            ik_flag
             markerDiameter,
             pointSuffix,
             mfpa,momentProjection,
