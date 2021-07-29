@@ -15,7 +15,7 @@ from pyCGM2.Model.Opensim import osimProcessing
 from pyCGM2.Processing import progressionFrame
 
 from pyCGM2.Model.Opensim import opensimInterfaceFilters
-
+from pyCGM2.Tools import  opensimTools
 from pyCGM2.Utils import files
 try:
     from pyCGM2 import opensim4 as opensim
@@ -26,10 +26,9 @@ except:
 
 
 class opensimInterfaceHighLevelScalingProcedure(object):
-    def __init__(self,DATA_PATH, osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile,statictrcFile):
+    def __init__(self,DATA_PATH, osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile):
 
         self.m_DATA_PATH = DATA_PATH
-        self.m_staticFile = statictrcFile
 
 
         self.m_osimTemplateFullFile = osimTemplateFullFile
@@ -43,6 +42,13 @@ class opensimInterfaceHighLevelScalingProcedure(object):
 
         self.m_scaleToolFile = DATA_PATH + "ScaleTool-setup.xml" #"/scaleTool.xml"
         self.xml = opensimInterfaceFilters.opensimXmlInterface(scaleToolFullFile,self.m_scaleToolFile)
+
+    def preProcess(self, acq, staticFileNoExt):
+        self.m_staticFileNoExt =staticFileNoExt
+        opensimTools.smartTrcExport(acq,self.m_DATA_PATH +  self.m_staticFileNoExt[:-4])
+
+        self.m_staticFile = staticFileNoExt +".trc"
+
 
     def setAnthropometry(self, mass, height):
         self.xml.set_one("mass", str(mass))
@@ -74,12 +80,10 @@ class opensimInterfaceHighLevelScalingProcedure(object):
 
 
 class opensimInterfaceLowLevelScalingProcedure(object):
-    def __init__(self,DATA_PATH, osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile,statictrcFile):
+    def __init__(self,DATA_PATH, osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile):
 
         self.m_DATA_PATH = DATA_PATH
 
-
-        self.m_staticFile = self.m_DATA_PATH+ statictrcFile
 
         # initialize scale tool from setup file
         self.m_osimModel = opensim.Model(osimTemplateFullFile)
@@ -96,7 +100,11 @@ class opensimInterfaceLowLevelScalingProcedure(object):
         self._MODEL_MARKERS_OUTPUT = self._MODEL_OUTPUT.replace(".osim", "_markers.osim")
         self._SCALETOOL_OUTPUT = self.m_DATA_PATH+"__scaleTool.xml"
 
+    def preProcess(self, acq, staticFileNoExt):
+        self.m_staticFileNoExt =staticFileNoExt
+        opensimTools.smartTrcExport(acq,self.m_DATA_PATH +  self.m_staticFileNoExt[:-4])
 
+        self.m_staticFile = self.m_DATA_PATH+staticFileNoExt +".trc"
 
 
     def _timeRangeFromStatic(self):

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_Scaling::test_cgm23
+# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_Scaling::test_cgm23_lowLevel
 import os
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
@@ -105,9 +105,8 @@ def processCGM23(DATA_PATH,settings):
 def process_oldIK(DATA_PATH,model,acqGait,gaitFilename,scp):
     # --- osim builder ---
     cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
-    markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml"
-
-    osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"
+    markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\cgm23-markerset.xml"
+    osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\lowerLimb_ballsJoints.osim"
 
     # --- old implementation - No Scaling
     oscf = opensimFilters.opensimCalibrationFilter(osimfile,
@@ -118,7 +117,7 @@ def process_oldIK(DATA_PATH,model,acqGait,gaitFilename,scp):
     scalingOsim = oscf.build(exportOsim=False)
 
     cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model)
-    iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml"
+    iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
 
     osrf = opensimFilters.opensimFittingFilter(iksetupFile,
                                                       scalingOsim,
@@ -149,27 +148,23 @@ class Test_Scaling:
 
         # --- osim builder ---
 
-        OPENSIM_TEMPLATE_FOLDER = "C:/Users/fleboeuf/Documents/Programmation/pyCGM2/pyCGM2/Sandbox/opensim/setUpXmlFiles/"
-
-        markersetTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "cgm23-markerset.xml"
-        osimTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "lowerLimb_ballsJoints.osim"
+        markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\cgm23-markerset.xml"
+        osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\lowerLimb_ballsJoints.osim"
 
 
         # --- NEW implementation - WITH Scaling
         osimProcessing.smartTrcExport(acqStatic,DATA_PATH +  staticFilename[:-4])
 
-        scaleToolFullFile = OPENSIM_TEMPLATE_FOLDER + "CGM23_scaleSetup_template.xml"
-
-        statictrcFile = staticFilename[:-4]+".trc"
+        scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
 
 
-        proc = opensimScalingInterfaceProcedure.opensimInterfaceLowLevelScalingProcedure(DATA_PATH,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile,statictrcFile)
+        proc = opensimScalingInterfaceProcedure.opensimInterfaceLowLevelScalingProcedure(DATA_PATH,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
+        proc.preProcess( acqStatic, staticFilename[:-4])
         proc.setAnthropometry(71.0,1780.0)
         oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
         oisf.run()
 
-        # scale_tool = opensim.ScaleTool("C:/Users/fleboeuf/Documents/DATA/pyCGM2-Data-Tests/OpenSim/CGM23/gait/scaleTool_fill_forUI.xml")
-        # scale_tool.run()
+
 
     def test_cgm23_highLevel(self):
 
@@ -177,23 +172,17 @@ class Test_Scaling:
 
         settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
 
-        model, acqStatic,acqGait,staticFilename,gaitFilename = CGM23_processing(DATA_PATH,settings)
+        model, acqStatic,acqGait,staticFilename,gaitFilename,scp = processCGM23(DATA_PATH,settings)
+
         # --- osim builder ---
+        markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\cgm23-markerset.xml"
+        osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\lowerLimb_ballsJoints.osim"
 
-        OPENSIM_TEMPLATE_FOLDER = "C:/Users/fleboeuf/Documents/Programmation/pyCGM2/pyCGM2/Sandbox/opensim/setUpXmlFiles/"
-        markersetTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "cgm23-markerset.xml"
-        osimTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "lowerLimb_ballsJoints.osim"
-
-
-
-        # --- NEW implementation - WITH Scaling
-        osimProcessing.smartTrcExport(acqStatic,DATA_PATH +  staticFilename[:-4])
-        statictrcFile = staticFilename[:-4]+".trc"
-
-        scaleToolFullFile = OPENSIM_TEMPLATE_FOLDER + "CGM23_scaleSetup_template.xml"
+        scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23_scaleSetup_template.xml"
 
 
-        proc = opensimScalingInterfaceProcedure.opensimInterfaceHighLevelScalingProcedure(DATA_PATH,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile,statictrcFile)
+        proc = opensimScalingInterfaceProcedure.opensimInterfaceHighLevelScalingProcedure(DATA_PATH,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
+        proc.preProcess( acqStatic, staticFilename[:-4])
         proc.setAnthropometry(71.0,1780.0)
         oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
         oisf.run()
@@ -215,14 +204,14 @@ class Test_InverseKinematics:
         #
         # OPENSIM_TEMPLATE_FOLDER = "C:/Users/fleboeuf/Documents/Programmation/pyCGM2/pyCGM2/Sandbox/opensim/setUpXmlFiles/"
         #
-        # markersetTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "cgm23-markerset.xml"
-        # osimTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "lowerLimb_ballsJoints.osim"
+        # markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\cgm23-markerset.xml"
+        # osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\lowerLimb_ballsJoints.osim"
         #
         #
         # # scaling
         # osimProcessing.smartTrcExport(acqStatic,DATA_PATH +  staticFilename[:-4])
         #
-        # scaleToolFullFile = OPENSIM_TEMPLATE_FOLDER + "CGM23_scaleSetup_template.xml"
+        # scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
         #
         # statictrcFile = staticFilename[:-4]+".trc"
         #
@@ -255,19 +244,17 @@ class Test_InverseKinematics:
         acqIK_old = process_oldIK(DATA_PATH,model,acqGait,gaitFilename,scp)
 
         # --- osim builder ---
-
-        OPENSIM_TEMPLATE_FOLDER = "C:/Users/fleboeuf/Documents/Programmation/pyCGM2/pyCGM2/Sandbox/opensim/setUpXmlFiles/"
-        markersetTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "cgm23-markerset.xml"
-        osimTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "lowerLimb_ballsJoints.osim"
+        markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\cgm23-markerset.xml"
+        osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\lowerLimb_ballsJoints.osim"
 
         # scaling
         osimProcessing.smartTrcExport(acqStatic,DATA_PATH +  staticFilename[:-4])
         statictrcFile = staticFilename[:-4]+".trc"
 
-        scaleToolFullFile = OPENSIM_TEMPLATE_FOLDER + "CGM23_scaleSetup_template.xml"
+        scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23_scaleSetup_template.xml"
 
-
-        proc = opensimScalingInterfaceProcedure.opensimInterfaceHighLevelScalingProcedure(DATA_PATH,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile,statictrcFile)
+        proc = opensimScalingInterfaceProcedure.opensimInterfaceHighLevelScalingProcedure(DATA_PATH,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
+        proc.preProcess( acqStatic, staticFilename[:-4])
         proc.setAnthropometry(71.0,1780.0)
         oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
         oisf.run()
@@ -276,7 +263,7 @@ class Test_InverseKinematics:
         # --- IK ---
         ikWeights = settings["Fitting"]["Weight"]
 
-        ikTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "cgm2_3-ikSetUp_template.xml"
+        ikTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
         procIK = opensimInverseKinematicsInterfaceProcedure.opensimInterfaceHighLevelInverseKinematicsProcedure(DATA_PATH,scaledOsim, ikTemplateFullFile)
         procIK.preProcess(acqGait,gaitFilename)
         procIK.setAccuracy(1e-8)
@@ -328,55 +315,3 @@ class Test_InverseKinematics:
         ax3.plot(acqIK.GetPoint("LAnkleAngles").GetValues()[:,2],"-ob")
 
         plt.show()
-
-class Test_MuscleLength:
-    def test_cgm23_highLevel(self):
-
-        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\CGM23\\gait\\"
-
-        settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
-
-
-        model, acqStatic,acqGait,staticFilename,gaitFilename,scp = processCGM23(DATA_PATH,settings)
-        acqIK_old = process_oldIK(DATA_PATH,model,acqGait,gaitFilename,scp)
-
-        # --- osim builder ---
-
-        OPENSIM_TEMPLATE_FOLDER = "C:/Users/fleboeuf/Documents/Programmation/pyCGM2/pyCGM2/Sandbox/opensim/setUpXmlFiles/"
-        markersetTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "cgm23-markerset.xml"
-        osimTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "lowerLimb_ballsJoints-54.osim"
-
-        # scaling
-        osimProcessing.smartTrcExport(acqStatic,DATA_PATH +  staticFilename[:-4])
-        statictrcFile = staticFilename[:-4]+".trc"
-
-        scaleToolFullFile = OPENSIM_TEMPLATE_FOLDER + "CGM23_scaleSetup_template.xml"
-
-
-        proc = opensimScalingInterfaceProcedure.opensimInterfaceHighLevelScalingProcedure(DATA_PATH,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile,statictrcFile)
-        proc.setAnthropometry(71.0,1780.0)
-        oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
-        oisf.run()
-        scaledOsim = oisf.getOsim()
-
-        # --- IK ---
-        ikWeights = settings["Fitting"]["Weight"]
-
-        ikTemplateFullFile = OPENSIM_TEMPLATE_FOLDER + "cgm2_3-ikSetUp_template.xml"
-        procIK = opensimInverseKinematicsInterfaceProcedure.opensimInterfaceHighLevelInverseKinematicsProcedure(DATA_PATH,scaledOsim, ikTemplateFullFile)
-        procIK.preProcess(acqGait,gaitFilename)
-        procIK.setAccuracy(1e-8)
-        procIK.setWeights(ikWeights)
-        procIK.setTimeRange()
-        oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
-        oiikf.run()
-        acqIK =oiikf.getAcq()
-
-
-        # --- CHECKING ---
-        modMotion=modelFilters.ModelMotionFilter(scp,acqIK,model,enums.motionMethod.Sodervisk,
-                                                    useForMotionTest=True)
-        modMotion.compute()
-
-        finalJcs =modelFilters.ModelJCSFilter(model,acqIK)
-        finalJcs.compute(description="new", pointLabelSuffix = None)#
