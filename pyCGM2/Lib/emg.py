@@ -54,10 +54,8 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels,
         flag = False
         for channel in emgChannels:
             if not btkTools.isAnalogExist(acq,channel):
-                LOGGER.logger.error( "channel [%s] not detected in the c3d [%s]"%(channel,gaitTrial))
-                flag = True
-        if flag:
-            raise Exception ("[pyCGM2] One label has not been detected as analog. see above")
+                raise Exception("channel [%s] not detected in the c3d [%s]"%(channel,gaitTrial))
+
 
         bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
         bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
