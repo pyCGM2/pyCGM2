@@ -38,7 +38,7 @@ def renameEmgInAnalysis(analysisInstance,emgSettings):
             content = copiedAnalysis.emgStats.data[keyIt[0],context]
 
             analysisInstance.emgStats.data[newLabelFinal,context] = content
-            LOGGER.logger.info("label [%s] replaced with [%s]"%(keyIt[0],newLabelFinal))
+            LOGGER.logger.debug("label [%s] replaced with [%s]"%(keyIt[0],newLabelFinal))
 
 
 class XlsExportDataFrameFilter(object):
