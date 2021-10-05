@@ -232,6 +232,22 @@ def clearPoints(acq, pointlabelList):
 
     return acq
 
+def keepAndDeleteOtherPoints(acq, markerToKeep):
+    """
+        Clear points
+
+        :Parameters:
+            - `acq` (btkAcquisition) - a btk acquisition inctance
+            - `lapointlabelListel` (list of str) - point labels
+
+    """
+
+    for it in btk.Iterate(acq.GetPoints()):
+        if it.GetLabel() not in markerToKeep:
+            acq.RemovePoint(it.GetLabel())
+
+
+
 def checkFirstAndLastFrame (acq, markerLabel):
     """
         Check if extremity frames are correct
@@ -466,6 +482,18 @@ def clearEvents(acq,labels):
     newEvents=btk.btkEventCollection()
     for ev in btk.Iterate(events):
         if ev.GetLabel() not in labels:
+            newEvents.InsertItem(ev)
+
+    acq.ClearEvents()
+    acq.SetEvents(newEvents)
+
+
+def deleteContextEvents(acq,context):
+
+    events= acq.GetEvents()
+    newEvents=btk.btkEventCollection()
+    for ev in btk.Iterate(events):
+        if ev.GetContext() != context:
             newEvents.InsertItem(ev)
 
     acq.ClearEvents()
