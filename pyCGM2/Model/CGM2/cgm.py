@@ -208,10 +208,11 @@ class CGM1(CGM):
         self.setBodyPart(bodyPart)
         LOGGER.logger.info("BodyPart found : %s" %(bodyPart.name))
 
-        if detectedCalibrationMethods["Left Knee"] == enums.JointCalibrationMethod.KAD:
-            if "LKNE" in self._lowerLimbTrackingMarkers(): self._lowerLimbTrackingMarkers().remove("LKNE")
-        if detectedCalibrationMethods["Right Knee"] == enums.JointCalibrationMethod.KAD:
-            if "RKNE" in self._lowerLimbTrackingMarkers(): self._lowerLimbTrackingMarkers().remove("RKNE")
+        if detectedCalibrationMethods is not None:
+            if detectedCalibrationMethods["Left Knee"] == enums.JointCalibrationMethod.KAD:
+                if "LKNE" in self._lowerLimbTrackingMarkers(): self._lowerLimbTrackingMarkers().remove("LKNE")
+            if detectedCalibrationMethods["Right Knee"] == enums.JointCalibrationMethod.KAD:
+                if "RKNE" in self._lowerLimbTrackingMarkers(): self._lowerLimbTrackingMarkers().remove("RKNE")
 
         self._lowerLimbTrackingMarkers()+["LKNE","RKNE"]
 
