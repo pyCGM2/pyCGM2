@@ -356,8 +356,6 @@ class TrialEnfReader(EnfReader):
         with open((self.m_path + self.m_file), 'w') as configfile:
             self.m_config.write(configfile)
 
-
-
     def getTrialInfos(self):
         return self.m_trialInfos
 
@@ -366,8 +364,27 @@ class TrialEnfReader(EnfReader):
             return self.m_trialInfos[label]
 
     def getC3d(self):
+        return self.m_file.split(".")[0]+".c3d"
+        # return self.m_file.replace(".Trial.enf",".c3d")
 
-        return self.m_file.replace(".Trial.enf",".c3d")
+
+    def setForcePlates(self,mappedForcePlateCharacters):
+
+        index = 1
+        for character in  mappedForcePlateCharacters:
+            if character == "L":
+                self.set("FP"+str(index), "Left")
+            elif character == "R":
+                self.set("FP"+str(index), "Right")
+            elif character == "X":
+                self.set("FP"+str(index), "Invalid")
+            elif character == "A":
+                self.set("FP"+str(index), "Auto")
+            else:
+                LOGGER.logger.error("character of your mapped force plate characters not known (L,R,X,A only) ")
+                raise Exception()
+
+            index+=1
 
 
     def isSelected(self):
