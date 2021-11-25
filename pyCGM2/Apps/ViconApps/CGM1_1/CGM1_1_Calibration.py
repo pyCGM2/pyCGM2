@@ -75,12 +75,12 @@ def main():
         if not translators:  translators = settings["Translators"]
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,calibrateFilenameLabelledNoExt,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
         acq = nacf.build()
 
 
         # --------------------------MODELLING PROCESSING -----------------------
-        model,acqStatic,detectAnomaly = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
+        model,acqStatic,detectAnomaly = cgm1_1.calibrate(DATA_PATH,reconstructFilenameLabelledNoExt,translators,
                       required_mp,optional_mp,
                       leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
                       pointSuffix,forceBtkAcq=acq, anomalyException=args.anomalyException)
