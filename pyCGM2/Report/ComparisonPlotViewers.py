@@ -132,7 +132,7 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                 ax13.set_ylim([-30,30])
                 ax14.set_ylim([-30,30])
         else:
-            raise Exception ("Plot Panel not implemented yet")
+            LOGGER.logger.warning("Plot Panel not implemented yet")
 
 
     def __setLegend(self,axisIndex):
@@ -453,7 +453,7 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                 ax11.set_ylim( [-2.0, 5.0])
 
         else:
-            raise Exception ("Plot Panel not implemented yet")
+            LOGGER.logger.warning("Plot Panel not implemented yet")
 
     def __setLegend(self,axisIndex):
         self.fig.axes[axisIndex].legend(fontsize=6)
