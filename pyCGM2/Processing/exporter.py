@@ -716,8 +716,7 @@ class AnalysisExportFilter(object):
         out["Scores"]["GPS"]=OrderedDict()
         out["Scores"]["GVS"]=OrderedDict()
 
-
-        if self.analysis.stpStats != {}:
+        if self.analysis.stpStats != {} and self.analysis.stpStats is not None:
             processedKeys=list()
             for keys in self.analysis.stpStats.keys():
                 if keys not in processedKeys:
