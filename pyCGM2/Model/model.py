@@ -761,46 +761,58 @@ class Segment(object):
     def getExistFrames(self):
         return self.m_existFrames
 
-    def removeTrackingMarker(self,label):
+    def removeTrackingMarker(self,labels):
         """
             Add a tracking marker
 
             :Parameters:
                 - `label` (str) - marker label
         """
-        if label in self.m_tracking_markers:
-            self.m_tracking_markers.remove(label)
-            self.m_markerLabels.remove(label)
-        else:
-            LOGGER.logger.debug("tracking marker %s  remove" % label)
+        if not isinstance(labels,list):
+            labels = [labels]
+
+        for label in labels:
+            if label in self.m_tracking_markers:
+                self.m_tracking_markers.remove(label)
+                self.m_markerLabels.remove(label)
+            else:
+                LOGGER.logger.debug("tracking marker %s  remove" % label)
 
 
-    def addTrackingMarkerLabel(self,label):
+    def addTrackingMarkerLabel(self,labels):
         """
             Add a tracking marker
 
             :Parameters:
-                - `label` (str) - marker label
+                - `labels` (str or list) - marker labels
         """
-        if label not in self.m_tracking_markers:
-            self.m_tracking_markers.append(label)
-            self.m_markerLabels.append(label)
-        else:
-            LOGGER.logger.debug("marker %s already in the tracking marker segment list" % label)
 
-    def addCalibrationMarkerLabel(self,label):
+        if not isinstance(labels,list):
+            labels = [labels]
+
+        for label in labels:
+            if label not in self.m_tracking_markers:
+                self.m_tracking_markers.append(label)
+                self.m_markerLabels.append(label)
+            else:
+                LOGGER.logger.debug("marker %s already in the tracking marker segment list" % label)
+
+    def addCalibrationMarkerLabel(self,labels):
         """
             Add a calibration marker
 
             :Parameters:
-                - `label` (str) - marker label
+                - `labels` (str or list) - marker label
         """
+        if not isinstance(labels,list):
+            labels = [labels]
 
-        if label not in self.m_calibration_markers:
-            self.m_calibration_markers.append(label)
-            self.m_markerLabels.append(label)
-        else:
-            LOGGER.logger.debug("marker %s already in the clibration marker segment list" % label)
+        for label in labels:
+            if label not in self.m_calibration_markers:
+                self.m_calibration_markers.append(label)
+                self.m_markerLabels.append(label)
+            else:
+                LOGGER.logger.debug("marker %s already in the clibration marker segment list" % label)
 
 
     def resetMarkerLabels(self):
