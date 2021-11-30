@@ -38,7 +38,7 @@ class CGM(model.Model):
                             'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
                             'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
 
-
+    VERSIONS = ["CGM1", "CGM1.1", "CGM2.1",  "CGM2.2", "CGM2.3", "CGM2.4", "CGM2.5"]
 
 
     def __init__(self):
