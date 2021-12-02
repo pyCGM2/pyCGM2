@@ -22,6 +22,31 @@ from pyCGM2.Nexus import nexusFilters,nexusTools,nexusUtils
 
 
 def main():
+    """ run the CGM1 fitting operation from Nexus
+
+    Usage:
+
+    ```bash
+        python CGM1_Fitting.py -fi  100 -fe 150 --md 24 -ps "withSuffix"
+        python CGM1_Fitting.py --frameInit  100 --frameEnd 150 --markerDiameter 24 --pointSuffix "withSuffix"
+    ```
+
+    Args:
+        --proj (str) : segmental coordinate system selected to project the joint moment
+        -md, --markerDiameter (int) : marker diameter
+        -ps, --pointSuffix (str) : suffix of the model ouputs
+        --check (bool) :force _cgm1  as model output suffix
+        -ae,--anomalyException (bool) : return exception if one anomaly detected ')
+        -fi,--frameInit (int) : first frame to process
+        -fe,--frameEnd (int) : last frame to process
+
+    Note:
+        Marker diameter is used for locating joint centre from an origin ( eg LKNE) by an offset along a direction.
+        respect the same marker diameter for the following markers :
+        L(R)KNE - L(R)ANK - L(R)ASI - L(R)PSI
+
+    """
+
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
