@@ -3,6 +3,7 @@ import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
+from scipy.integrate import cumtrapz
 
 import re
 
@@ -17,7 +18,39 @@ except:
 from pyCGM2.Tools import  btkTools
 
 
+def ForcePlateIntegration(ReactionForce, mass, frameInit=0,frameEnd=None, v0 =[0,0,0], p0= [0,0,0], analogFrequency=1000):
 
+    g=9.81
+
+
+    frameInit = int(frameInit)
+    frameEnd =  int(ReactionForce.shape[0]) if frameEnd is None else int(frameEnd)
+    acceleration0 = np.zeros((ReactionForce.shape))
+    velocity0 = np.zeros((ReactionForce.shape))
+    position0 = np.zeros((ReactionForce.shape))
+
+    ReactionForce_cut = ReactionForce[frameInit:frameEnd]
+    acceleration = np.zeros((ReactionForce_cut.shape))
+    velocity = np.zeros((ReactionForce_cut.shape))
+    position = np.zeros((ReactionForce_cut.shape))
+
+    # vertical acceleration of the center of mass
+    acceleration[:,0] = (ReactionForce_cut[:,0] )/mass
+    acceleration[:,1] = (ReactionForce_cut[:,1] )/mass
+    acceleration[:,2] = (ReactionForce_cut[:,2] - mass*g)/mass
+
+    for j in range(0,3):
+        velocity[:,j] = cumtrapz(acceleration[:,j], dx=1/analogFrequency, initial=v0[j])
+        position[:,j] = cumtrapz(velocity[:,j], dx=1/analogFrequency, initial=v0[j])
+
+    index = 0
+    for i in range(frameInit,frameEnd):
+        position0[i,:] = position[index,:]
+        velocity0[i,:] = velocity[index,:]
+        acceleration0[i,:] = acceleration[index,:]
+        index+=1
+
+    return position0, velocity0, acceleration0
 
 
 def appendForcePlateCornerAsMarker (btkAcq):
