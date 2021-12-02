@@ -2,7 +2,7 @@
 # from __future__ import unicode_literals
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
-
+from pyCGM2.Tools import btkTools
 try:
     from pyCGM2 import btk
 except:
@@ -341,3 +341,9 @@ def getForcePlateAssignment(NEXUS):
             if forceplate.Context=="Auto":
                 out[str(id)]="A"
     return out
+
+def appendAnalysisParameters(NEXUS, acq):
+    parameters = btkTools.getAllParamAnalysis(acq)
+
+    for parameter in parameters:
+        NEXUS.CreateAnalysisParam(parameter["subject"],parameter["name"],parameter["value"], parameter["unit"])
