@@ -1014,7 +1014,7 @@ def smartCreateEvent(acq, label, context, frame, type=btk.btkEvent.Automatic, su
 
 
 # , label, context, values, frame, subject="", desc=""):
-def smartAppendParamAnalysis(btkAcq, name, context, value, description="", subject="", unit=""):
+def smartAppendParamAnalysis(btkAcq, name,eventcontext, value, description="", subject="", unit=""):
 
     used = smartGetMetadata(btkAcq, "ANALYSIS", "USED", returnType="Integer")
 
@@ -1028,7 +1028,7 @@ def smartAppendParamAnalysis(btkAcq, name, context, value, description="", subje
         subjects2 = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "SUBJECTS")]
 
         for i in range(0, itemNumber):
-            if name == names2[i] and context == contexts2[i] and subject == subjects2[i]:
+            if name == names2[i] and eventcontext == contexts2[i] and subject == subjects2[i]:
                 LOGGER.logger.debug(
                     "analysis parameter detected in the current parameters")
                 index = i
@@ -1071,7 +1071,7 @@ def smartAppendParamAnalysis(btkAcq, name, context, value, description="", subje
 
         else:
             descriptions = [description]
-            newMd = btk.btkMetaData('DESCRIPTIONS', btk.btkStringArray(names))
+            newMd = btk.btkMetaData('DESCRIPTIONS', btk.btkStringArray(descriptions))
             btkAcq.GetMetaData().FindChild("ANALYSIS").value().AppendChild(newMd)
 
         if checkMetadata(btkAcq, "ANALYSIS", "SUBJECTS"):
@@ -1085,20 +1085,20 @@ def smartAppendParamAnalysis(btkAcq, name, context, value, description="", subje
             btkAcq.GetMetaData().FindChild("ANALYSIS").value().AppendChild(newMd)
         else:
             subjects = [subject]
-            newMd = btk.btkMetaData('SUBJECTS', btk.btkStringArray(names))
+            newMd = btk.btkMetaData('SUBJECTS', btk.btkStringArray(subjects))
             btkAcq.GetMetaData().FindChild("ANALYSIS").value().AppendChild(newMd)
 
         if checkMetadata(btkAcq, "ANALYSIS", "CONTEXTS"):
             contexts = [it for it in smartGetMetadata(
                 btkAcq, "ANALYSIS", "CONTEXTS")]
 
-            contexts.append(context)
+            contexts.append(eventcontext)
 
             btkAcq.GetMetaData().FindChild("ANALYSIS").value().RemoveChild("CONTEXTS")
             newMd = btk.btkMetaData('CONTEXTS', btk.btkStringArray(contexts))
             btkAcq.GetMetaData().FindChild("ANALYSIS").value().AppendChild(newMd)
         else:
-            contexts = [context]
+            contexts = [eventcontext]
             newMd = btk.btkMetaData('CONTEXTS', btk.btkStringArray(contexts))
             btkAcq.GetMetaData().FindChild("ANALYSIS").value().AppendChild(newMd)
 
