@@ -76,17 +76,26 @@ class Test_Btk:
         filename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IO\\forcePlateType5\\hugGait.c3d"
         acq = btkTools.smartReader(filename, translators=None)
 
+    def test_btkReader_ParamAnalysis(self):
+        filename = pyCGM2.TEST_DATA_PATH + \
+            "LowLevel\\IO\\\paramAnalysis\\data_paramFromNexusAPI.c3d"
+        acq = btkTools.smartReader(filename, translators=None)
+        parameters = btkTools.smartGetAllParamAnalysis(acq)
+        parameter = btkTools.smartGetParamAnalysis(acq, "Vitesse", "Left","New Patient")
+
+
     def test_btkWriter_paramAnalysisNew(self):
         filename = pyCGM2.TEST_DATA_PATH + \
             "LowLevel\\IO\\\paramAnalysis\\data_paramFromNexusAPI.c3d"
         acq = btkTools.smartReader(filename, translators=None)
         btkTools.smartAppendParamAnalysis(acq, "new", "General", 3.0)
-        btkTools.smartWriter(acq, "testNew.c3d")
+        # btkTools.smartWriter(acq, "testNew.c3d")
 
     def test_btkWriter_paramAnalysisAmend(self):
         filename = pyCGM2.TEST_DATA_PATH + \
             "LowLevel\\IO\\\paramAnalysis\\data_paramFromNexusAPI.c3d"
         acq = btkTools.smartReader(filename, translators=None)
-        btkTools.smartAppendParamAnalysis(acq, "Vitesse", "Left", 3.5, subject="New Patient")
+        btkTools.smartAppendParamAnalysis(
+            acq, "Vitesse", "Left", 3.5, subject="New Patient")
 
-        btkTools.smartWriter(acq, "testAmend.c3d")
+        # btkTools.smartWriter(acq, "testAmend.c3d")

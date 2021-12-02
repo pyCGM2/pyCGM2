@@ -1013,7 +1013,6 @@ def smartCreateEvent(acq, label, context, frame, type=btk.btkEvent.Automatic, su
     acq.AppendEvent(ev)
 
 
-# , label, context, values, frame, subject="", desc=""):
 def smartAppendParamAnalysis(btkAcq, name,eventcontext, value, description="", subject="", unit=""):
 
     used = smartGetMetadata(btkAcq, "ANALYSIS", "USED", returnType="Integer")
@@ -1131,3 +1130,37 @@ def smartAppendParamAnalysis(btkAcq, name,eventcontext, value, description="", s
             btkAcq.GetMetaData().FindChild("ANALYSIS").value().AppendChild(newMd)
 
         smartSetMetadata(btkAcq, "ANALYSIS", "USED", 0, used[0]+1)
+
+
+def smartGetAllParamAnalysis(btkAcq):
+    names = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "NAMES")]
+    contexts = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "CONTEXTS")]
+    subjects = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "SUBJECTS")]
+    descriptions = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "DESCRIPTIONS")]
+    units = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "UNITS")]
+    values = [it for it in smartGetMetadata(btkAcq, "ANALYSIS", "VALUES")]
+
+    itemNumber = len(names)
+
+    items = list()
+    for i in range(0,itemNumber):
+        item = {"name": names[i], "context": contexts[i], "subject": subjects[i], "description": descriptions[i], "unit": units[i],"value": values[i]}
+        items.append(item)
+
+    return items
+
+def smartGetParamAnalysis(btkAcq,name,context,subject):
+    names = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "NAMES")]
+    contexts = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "CONTEXTS")]
+    subjects = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "SUBJECTS")]
+    descriptions = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "DESCRIPTIONS")]
+    units = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "UNITS")]
+    values = [it for it in smartGetMetadata(btkAcq, "ANALYSIS", "VALUES")]
+
+    itemNumber = len(names)
+
+    for i in range(0,itemNumber):
+        if name.strip() == names[i] and context.strip() == contexts[i] and subject.strip() == subjects[i] :
+            item = {"name": names[i], "context": contexts[i], "subject": subjects[i], "description": descriptions[i], "unit": units[i],"value": values[i]}
+            return item
+    LOGGER.logger.error("no analysis parameter found with specification [%s,%s,%s]"%(name,context,subject))
