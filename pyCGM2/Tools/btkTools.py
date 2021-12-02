@@ -1138,7 +1138,7 @@ def getAllParamAnalysis(btkAcq):
     subjects = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "SUBJECTS")]
     descriptions = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "DESCRIPTIONS")]
     units = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "UNITS")]
-    values = [it for it in smartGetMetadata(btkAcq, "ANALYSIS", "VALUES")]
+    values = [it for it in smartGetMetadata(btkAcq, "ANALYSIS", "VALUES", returnType="Double")]
 
     itemNumber = len(names)
 
@@ -1155,7 +1155,7 @@ def getParamAnalysis(btkAcq,name,context,subject):
     subjects = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "SUBJECTS")]
     descriptions = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "DESCRIPTIONS")]
     units = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "UNITS")]
-    values = [it for it in smartGetMetadata(btkAcq, "ANALYSIS", "VALUES")]
+    values = [it for it in smartGetMetadata(btkAcq, "ANALYSIS", "VALUES", returnType="Double")]
 
     itemNumber = len(names)
 
