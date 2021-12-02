@@ -1132,7 +1132,7 @@ def smartAppendParamAnalysis(btkAcq, name,eventcontext, value, description="", s
         smartSetMetadata(btkAcq, "ANALYSIS", "USED", 0, used[0]+1)
 
 
-def smartGetAllParamAnalysis(btkAcq):
+def getAllParamAnalysis(btkAcq):
     names = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "NAMES")]
     contexts = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "CONTEXTS")]
     subjects = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "SUBJECTS")]
@@ -1149,7 +1149,7 @@ def smartGetAllParamAnalysis(btkAcq):
 
     return items
 
-def smartGetParamAnalysis(btkAcq,name,context,subject):
+def getParamAnalysis(btkAcq,name,context,subject):
     names = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "NAMES")]
     contexts = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "CONTEXTS")]
     subjects = [it.strip() for it in smartGetMetadata(btkAcq, "ANALYSIS", "SUBJECTS")]

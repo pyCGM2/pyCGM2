@@ -80,8 +80,8 @@ class Test_Btk:
         filename = pyCGM2.TEST_DATA_PATH + \
             "LowLevel\\IO\\\paramAnalysis\\data_paramFromNexusAPI.c3d"
         acq = btkTools.smartReader(filename, translators=None)
-        parameters = btkTools.smartGetAllParamAnalysis(acq)
-        parameter = btkTools.smartGetParamAnalysis(acq, "Vitesse", "Left","New Patient")
+        parameters = btkTools.getAllParamAnalysis(acq)
+        parameter = btkTools.getParamAnalysis(acq, "Vitesse", "Left","New Patient")
 
 
     def test_btkWriter_paramAnalysisNew(self):
