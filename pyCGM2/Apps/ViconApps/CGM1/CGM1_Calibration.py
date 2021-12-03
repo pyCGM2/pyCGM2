@@ -30,14 +30,14 @@ def main():
     ```
 
     Args:
-        -l, --leftFlatFoot (int) : set the left longitudinal foot axis parallel to the ground
-        -r, --rightFlatFoot (int) : set the right longitudinal foot axis parallel to the ground
-        -hf, --headFlat (int) : set the  longitudinal head axis parallel to the ground
-        -md, --markerDiameter (int) : marker diameter
-        -ps, --pointSuffix (str) : suffix of the model ouputs
-        --check (bool) :force _cgm1  as model output suffix
-        --resetMP (bool) : reset optional mass parameters
-        -ae,--anomalyException (bool) : return exception if one anomaly detected ')
+        [-l, --leftFlatFoot] (int) : set the left longitudinal foot axis parallel to the ground
+        [-r, --rightFlatFoot] (int) : set the right longitudinal foot axis parallel to the ground
+        [-hf, --headFlat] (int) : set the  longitudinal head axis parallel to the ground
+        [-md, --markerDiameter] (int) : marker diameter
+        [-ps, --pointSuffix] (str) : suffix of the model ouputs
+        [--check] (bool) :force _cgm1  as model output suffix
+        [--resetMP] (bool) : reset optional mass parameters
+        [-ae,--anomalyException] (bool) : return exception if one anomaly detected ')
 
     Note:
         Marker diameter is used for locating joint centre from an origin ( eg LKNE) by an offset along a direction.

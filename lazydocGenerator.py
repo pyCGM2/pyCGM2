@@ -53,6 +53,38 @@ def main():
     from pyCGM2.Apps.Commands import commands
     generate(PATH, "pyCGM2.Apps.Commands", commands)
 
+    PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\Version 4.2\\Apps\\Vicon\\"
+    from pyCGM2.Apps.ViconApps.CGM1 import CGM1_Calibration, CGM1_Fitting
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM1.Calibration", CGM1_Calibration)
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM1.Fitting", CGM1_Fitting)
+
+    from pyCGM2.Apps.ViconApps.CGM1_1 import CGM1_1_Calibration, CGM1_1_Fitting
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM1_1.Calibration", CGM1_1_Calibration)
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM1_1.Fitting", CGM1_1_Fitting)
+
+    from pyCGM2.Apps.ViconApps.CGM2_1 import CGM2_1_Calibration, CGM2_1_Fitting
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_1.Calibration", CGM2_1_Calibration)
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_1.Fitting", CGM2_1_Fitting)
+
+    from pyCGM2.Apps.ViconApps.CGM2_2 import CGM2_2_Calibration, CGM2_2_Fitting
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_2.Calibration", CGM2_2_Calibration)
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_2.Fitting", CGM2_2_Fitting)
+
+    from pyCGM2.Apps.ViconApps.CGM2_3 import CGM2_3_Calibration, CGM2_3_Fitting
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_3.Calibration", CGM2_3_Calibration)
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_3.Fitting", CGM2_3_Fitting)
+
+    from pyCGM2.Apps.ViconApps.CGM2_4 import CGM2_4_Calibration, CGM2_4_Fitting
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_4.Calibration", CGM2_4_Calibration)
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_4.Fitting", CGM2_4_Fitting)
+
+    from pyCGM2.Apps.ViconApps.CGM2_5 import CGM2_5_Calibration, CGM2_5_Fitting
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_5.Calibration", CGM2_5_Calibration)
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_5.Fitting", CGM2_5_Fitting)
+
+    from pyCGM2.Apps.ViconApps.CGM2_6 import CGM_Knee2DofCalibration, CGM_KneeSARA
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_6.Calibration2dof", CGM_Knee2DofCalibration)
+    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_6.Sara", CGM_KneeSARA)
 
 if __name__ == '__main__':
     main()

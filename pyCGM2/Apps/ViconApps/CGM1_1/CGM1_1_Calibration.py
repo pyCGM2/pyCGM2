@@ -22,7 +22,31 @@ from pyCGM2.Lib.CGM import  cgm1_1
 
 
 def main():
+    """ run the CGM1.1 calibration operation from Nexus
 
+    Usage:
+
+    ```bash
+        python CGM1_1_Calibration.py -l  1 --md 24 -ps "withSuffix"
+        python CGM1_1_Calibration.py --leftFlatFoot  1 --markerDiameter 24 --pointSuffix "withSuffix"
+    ```
+
+    Args:
+        [-l, --leftFlatFoot] (int) : set the left longitudinal foot axis parallel to the ground
+        [-r, --rightFlatFoot] (int) : set the right longitudinal foot axis parallel to the ground
+        [-hf, --headFlat] (int) : set the  longitudinal head axis parallel to the ground
+        [-md, --markerDiameter] (int) : marker diameter
+        [-ps, --pointSuffix] (str) : suffix of the model ouputs
+        [--check] (bool) :force _cgm1  as model output suffix
+        [--resetMP] (bool) : reset optional mass parameters
+        [-ae,--anomalyException] (bool) : return exception if one anomaly detected ')
+
+    Note:
+        Marker diameter is used for locating joint centre from an origin ( eg LKNE) by an offset along a direction.
+        respect the same marker diameter for the following markers :
+        L(R)KNE - L(R)ANK - L(R)ASI - L(R)PSI
+
+    """
     parser = argparse.ArgumentParser(description='CGM1.1 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
     parser.add_argument('-r','--rightFlatFoot',type=int,  help='right flat foot option')

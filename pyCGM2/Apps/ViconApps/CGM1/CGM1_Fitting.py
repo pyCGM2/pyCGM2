@@ -32,13 +32,13 @@ def main():
     ```
 
     Args:
-        --proj (str) : segmental coordinate system selected to project the joint moment
-        -md, --markerDiameter (int) : marker diameter
-        -ps, --pointSuffix (str) : suffix of the model ouputs
-        --check (bool) :force _cgm1  as model output suffix
-        -ae,--anomalyException (bool) : return exception if one anomaly detected ')
-        -fi,--frameInit (int) : first frame to process
-        -fe,--frameEnd (int) : last frame to process
+        [--proj] (str) : segmental coordinate system selected to project the joint moment (Choice : Distal, Proximal, Global')
+        [-md, --markerDiameter] (int) : marker diameter
+        [-ps, --pointSuffix] (str) : suffix of the model ouputs
+        [--check] (bool) :force _cgm1  as model output suffix
+        [-ae,--anomalyException] (bool) : return exception if one anomaly detected ')
+        [-fi,--frameInit] (int) : first frame to process
+        [-fe,--frameEnd] (int) : last frame to process
 
     Note:
         Marker diameter is used for locating joint centre from an origin ( eg LKNE) by an offset along a direction.

@@ -21,6 +21,34 @@ from pyCGM2.Lib.CGM import  cgm2_3
 
 
 def main():
+    """ run the CGM2.3 fitting operation from Nexus
+
+    Usage:
+
+    ```bash
+        python CGM2_3_Fitting.py -fi  100 -fe 150 --md 24 -ps "withSuffix"
+        python CGM2_3_Fitting.py --frameInit  100 --frameEnd 150 --markerDiameter 24 --pointSuffix "withSuffix"
+        python CGM2_3_Fitting --accuracy 1e-5
+        python CGM2_3_Fitting --noIk
+    ```
+
+    Args:
+        [--proj] (str) : segmental coordinate system selected to project the joint moment (Choice : Distal, Proximal, Global,JCS"
+        [-md, --markerDiameter] (int) : marker diameter
+        [-ps, --pointSuffix] (str) : suffix of the model ouputs
+        [--check] (bool) :force _cgm1  as model output suffix
+        [-a,--accuracy] (float) : accuracy of the inverse kinematic solver (default: 1e-8)
+        [--noIk] ( bool) : disable inverse kinematics
+        [-ae,--anomalyException] (bool) : return exception if one anomaly detected ')
+        [-fi,--frameInit] (int) : first frame to process
+        [-fe,--frameEnd] (int) : last frame to process
+
+    Note:
+        Marker diameter is used for locating joint centre from an origin ( eg LKNE) by an offset along a direction.
+        respect the same marker diameter for the following markers :
+        L(R)KNE - L(R)ANK - L(R)ASI - L(R)PSI
+
+    """
 
     parser = argparse.ArgumentParser(description='CGM2-3 Fitting')
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')

@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
-import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
-import numpy as np
-
-# pyCGM2 settings
-import pyCGM2
-
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -19,12 +13,27 @@ from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 from pyCGM2.Model import  modelFilters
 
-from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  kneeCalibration
 
 
 
 def main():
+
+    """ run SARA functional knee method from Nexus.
+
+    Usage:
+
+    ```bash
+        python CGM_KneeSARA.py -s Left  -b 100 -e 200
+        python CGM_KneeSARA.py --side Left  --begin 100 --end 200
+
+    ```
+
+    Args:
+        [-s, --side] (str) : lower limb side (Left or Right)
+        [-b, --begin] (int) : start frame
+        [-e, --end] (int) : last frame to process
+    """
 
     parser = argparse.ArgumentParser(description='SARA Functional Knee Calibration')
     parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
