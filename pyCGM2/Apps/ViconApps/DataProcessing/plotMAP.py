@@ -22,6 +22,22 @@ from pyCGM2.Nexus import  nexusTools,nexusFilters
 from pyCGM2.Eclipse import eclipse
 
 def main():
+    """  Plot the Movement Ambulation profile (MAP) of the Nexus loaded trial c
+
+
+
+    Usage:
+
+    ```bash
+        python plotMAP.py
+        python plotMAP.py -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+    ```
+
+    Args:
+        [-nd,--normativeData] (str)[Schwartz2008]: normative dataset (Choice : Schwartz2008 or Pinzone2014)
+        [--ndm,normativeDataModality] (str) [free]: normative dataset modality (if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo])
+        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
+    """
 
     plt.close("all")
 

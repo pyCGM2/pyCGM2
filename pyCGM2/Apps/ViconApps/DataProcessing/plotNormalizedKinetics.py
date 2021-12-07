@@ -23,6 +23,24 @@ from pyCGM2.Utils import files
 from pyCGM2.Eclipse import eclipse
 
 def main():
+    """  Plot time-normalized Kinetics from nexus-loaded trial
+
+    By default, plot panel display the mean trace and the standard deviation corridor.
+    A command argument allows to plot all cycles
+
+    Usage:
+
+    ```bash
+        python plotNormalizedKinetics.py
+        python plotNormalizedKinetics.py -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+    ```
+
+    Args:
+        [-nd,--normativeData] (str)[Schwartz2008]: normative dataset (Choice : Schwartz2008 or Pinzone2014)
+        [--ndm,normativeDataModality] (str) [free]: normative dataset modality (if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo])
+        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
+        ['-c','--consistency'] (bool): plot all cycles instead of the mean and sd corridor
+    """
 
     plt.close("all")
 

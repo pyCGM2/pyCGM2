@@ -22,6 +22,19 @@ from pyCGM2.Nexus import  nexusTools,nexusFilters
 from pyCGM2.Eclipse import eclipse
 
 def main():
+    """  Plot spatio-temporal parameters from nexus-loaded trial
+
+
+    Usage:
+
+    ```bash
+        python ploSpatioTemporalParameters.py
+        python ploSpatioTemporalParameters.py  -ps CGM1
+    ```
+
+    Args:
+        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
+    """
 
     plt.close("all")
 
