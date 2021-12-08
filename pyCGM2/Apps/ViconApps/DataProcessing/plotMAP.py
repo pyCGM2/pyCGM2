@@ -22,7 +22,7 @@ from pyCGM2.Nexus import  nexusTools,nexusFilters
 from pyCGM2.Eclipse import eclipse
 
 def main():
-    """  Plot the Movement Ambulation profile (MAP) of the Nexus loaded trial c
+    """  Plot the Movement Ambulation profile (MAP) of the Nexus loaded trial or eclipse nodes from the **same** session
 
 
 

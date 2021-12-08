@@ -16,7 +16,23 @@ from viconnexusapi import ViconNexus
 
 
 def main():
+    """  Plot time-normalized EMG from nexus-loaded trial or eclipse nodes from the **same** session
 
+    By default, plot panel display the mean trace and the standard deviation corridor.
+    A command argument allows to plot all cycles
+
+    Usage:
+
+    ```bash
+        python plotNormalizedEmg.py
+        python plotNormalizedEmg.py -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+    ```
+
+    Args:
+        [-bpf,--BandpassFrequencies] (list): bandpass filter cutoff frequencies
+        [--elf,EnvelopLowpassFrequency] (double) : cutoff frequency for estimating emg envelops
+        ['-c','--consistency'] (bool): plot all cycles instead of the mean and sd corridor
+    """
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')

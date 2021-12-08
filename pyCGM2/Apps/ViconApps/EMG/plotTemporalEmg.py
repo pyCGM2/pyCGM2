@@ -12,11 +12,26 @@ from viconnexusapi import ViconNexus
 
 
 def main():
+    """  Plot temporal EMG from nexus-loaded trial
 
+
+    Usage:
+
+    ```bash
+        python plotTemporalEMG.py
+        python plotTemporalEMG.py -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+    ```
+
+    Args:
+        [-bpf,--BandpassFrequencies] (list): bandpass filter cutoff frequencies
+        [--elf,EnvelopLowpassFrequency] (double) : cutoff frequency for estimating emg envelops
+        ['-r','--raw'] (bool): plot non rectified signal
+        ['-ina','--ignoreNormalActivity'] (bool): not display normal EMG activity area
+    """
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
-    parser.add_argument('-ecf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
-    parser.add_argument('-r','--raw', action='store_true', help='rectified data')
+    parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
+    parser.add_argument('-r','--raw', action='store_true', help='non rectified data')
     parser.add_argument('-ina','--ignoreNormalActivity', action='store_true', help='do not display normal activity')
     args = parser.parse_args()
 

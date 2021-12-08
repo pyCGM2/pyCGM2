@@ -23,7 +23,7 @@ from pyCGM2.Utils import files
 from pyCGM2.Eclipse import eclipse
 
 def main():
-    """  Plot time-normalized Kinetics from nexus-loaded trial
+    """  Plot time-normalized Kinetics from nexus-loaded trial or eclipse nodes from the **same** session
 
     By default, plot panel display the mean trace and the standard deviation corridor.
     A command argument allows to plot all cycles

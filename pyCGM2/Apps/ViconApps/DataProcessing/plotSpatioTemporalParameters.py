@@ -22,7 +22,7 @@ from pyCGM2.Nexus import  nexusTools,nexusFilters
 from pyCGM2.Eclipse import eclipse
 
 def main():
-    """  Plot spatio-temporal parameters from nexus-loaded trial
+    """  Plot spatio-temporal parameters from nexus-loaded trial or eclipse nodes from the **same** session
 
 
     Usage:

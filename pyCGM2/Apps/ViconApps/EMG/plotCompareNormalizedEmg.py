@@ -16,7 +16,24 @@ from viconnexusapi import ViconNexus
 
 
 def main():
+    """ Plot time-normalized EMG from two c3d marked in Vicon Eclipse.
 
+    warning:
+        This function does not work from two file belonging to different sessions.
+
+    Usage:
+
+    ```bash
+        python plotCompareNormalizedEmg.py
+        python plotCompareNormalizedEmg.py  -c -bpf 20 400
+    ```
+
+    Args:
+        [-bpf,--BandpassFrequencies] (list): bandpass filter cutoff frequencies
+        [--elf,EnvelopLowpassFrequency] (double) : cutoff frequency for estimating emg envelops
+        ['-c','--consistency'] (bool): plot all cycles instead of the mean and sd corridor
+
+    """
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')

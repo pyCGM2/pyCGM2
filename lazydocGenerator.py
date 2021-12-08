@@ -47,6 +47,18 @@ def ViconApps_plots():
     generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.plotTemporalKinetics",
              plotTemporalKinetics)
 
+    from pyCGM2.Apps.ViconApps.Emg import plotCompareNormalizedEmg
+    generate(PATH, "pyCGM2.Apps.ViconApps.Emg.plotCompareNormalizedKinematics",
+             plotCompareNormalizedEmg)
+    from pyCGM2.Apps.ViconApps.Emg import plotNormalizedEmg
+    generate(PATH, "pyCGM2.Apps.ViconApps.Emg.plotNormalizedEmg",
+             plotNormalizedEmg)
+    from pyCGM2.Apps.ViconApps.Emg import plotTemporalEMG
+    generate(PATH, "pyCGM2.Apps.ViconApps.Emg.plotTemporalEMG",
+             plotTemporalEMG)
+
+
+
 
 def ViconApps_experimental():
 
