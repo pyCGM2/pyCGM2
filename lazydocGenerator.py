@@ -47,15 +47,29 @@ def ViconApps_plots():
     generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.plotTemporalKinetics",
              plotTemporalKinetics)
 
-    from pyCGM2.Apps.ViconApps.Emg import plotCompareNormalizedEmg
-    generate(PATH, "pyCGM2.Apps.ViconApps.Emg.plotCompareNormalizedKinematics",
+    from pyCGM2.Apps.ViconApps.EMG import plotCompareNormalizedEmg
+    generate(PATH, "pyCGM2.Apps.ViconApps.EMG.plotCompareNormalizedKinematics",
              plotCompareNormalizedEmg)
-    from pyCGM2.Apps.ViconApps.Emg import plotNormalizedEmg
-    generate(PATH, "pyCGM2.Apps.ViconApps.Emg.plotNormalizedEmg",
+    from pyCGM2.Apps.ViconApps.EMG import plotNormalizedEmg
+    generate(PATH, "pyCGM2.Apps.ViconApps.EMG.plotNormalizedEmg",
              plotNormalizedEmg)
-    from pyCGM2.Apps.ViconApps.Emg import plotTemporalEMG
-    generate(PATH, "pyCGM2.Apps.ViconApps.Emg.plotTemporalEMG",
-             plotTemporalEMG)
+    from pyCGM2.Apps.ViconApps.EMG import plotTemporalEmg
+    generate(PATH, "pyCGM2.Apps.ViconApps.EMG.plotTemporalEmg",
+             plotTemporalEmg)
+
+def ViconApps_Events():
+
+    PATH = API_PATH + "\\Version 4.2\\Apps\\Vicon\\Events\\"
+    from pyCGM2.Apps.ViconApps.Events import zeniDetector
+    generate(PATH, "pyCGM2.Apps.ViconApps.Events.zeniDetector",
+             zeniDetector)
+
+def ViconApps_GapFilling():
+
+    PATH = API_PATH + "\\Version 4.2\\Apps\\Vicon\\Gap filling\\"
+    from pyCGM2.Apps.ViconApps.MoGapFill import KalmanGapFilling
+    generate(PATH, "pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling",
+             KalmanGapFilling)
 
 
 
@@ -148,7 +162,8 @@ def main():
     ViconApps_experimental()
 
     ViconApps_plots()
-
+    ViconApps_Events()
+    ViconApps_GapFilling()
 
 if __name__ == '__main__':
     main()

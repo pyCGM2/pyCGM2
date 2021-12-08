@@ -14,6 +14,20 @@ from pyCGM2.Lib import eventDetector
 from pyCGM2.Nexus import nexusTools,nexusFilters
 
 def main():
+    """  Run Zeni's kinematic-basd event detector on the  nexus-loaded trial
+
+    Usage:
+
+    ```bash
+        python ZeniDetector.py
+        python ZeniDetector.py -fso 5 -foo 3
+    ```
+
+    Args:
+        [-fso,--footStrikeOffset] (int): systenatic offset added to all foot strike detected by the algorithm
+        [--foo,footOffOffset] (int) : systenatic offset added to all foot off detected by the algorithm
+
+    """
 
     parser = argparse.ArgumentParser(description='ZeniDetector')
     parser.add_argument('-fso','--footStrikeOffset', type=int, help='systenatic foot strike offset on both side')

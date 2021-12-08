@@ -11,6 +11,16 @@ from pyCGM2.Nexus import nexusTools,nexusFilters
 
 def main():
 
+    """  Run Kalman gap filling method on the  nexus-loaded trial
+
+    Usage:
+
+    ```bash
+        python KalmanGapFilling.py
+    ```
+
+    """
+
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
