@@ -38,6 +38,10 @@ def main():
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         # --- acquisition file and path----
         DATA_PATH, inputFiles =eclipse.getCurrentMarkedNodes()
+        if isinstance(DATA_PATH,list):
+            LOGGER.logger.error("[pyCGM2] - comparison of EMG from two distinct sessions is not allowed")
+            raise
+
         ECLIPSE_MODE = True
         if len(inputFiles)== 1:   raise Exception("Only one node marked")
 
