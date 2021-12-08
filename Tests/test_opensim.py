@@ -46,25 +46,5 @@ class Test_misc:
 
         acqGait = btkTools.smartReader(str(DATA_PATH + gaitFilename))
 
-        opensimTools.footReactionMotFile(acqGait)
-
-        # #forceplates.appendForcePlateCornerAsMarker(acqGait)
-        # mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
-        #
-        # pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        # pff = progressionFrame.ProgressionFrameFilter(acqGait, pfp)
-        # pff.compute()
-        # progressionAxis = pff.outputs["progressionAxis"]
-        # forwardProgression = pff.outputs["forwardProgression"]
-        #
-        # R_LAB_OSIM = opensimTools.setGlobalTransormation_lab_osim(
-        #     progressionAxis, forwardProgression)
-        #
-        # grw1 = btkTools.getForcePlateWrench(acqGait, fpIndex=1)
-
-        import ipdb
-        ipdb.set_trace()
-        # opensimTools.globalTransformationLabToOsim(
-        #     self.m_acqMotion_forIK, R_LAB_OSIM)
-        # opensimTools.smartTrcExport(
-        #     self.m_acqMotion_forIK, self.m_DATA_PATH + self.m_dynamicFileNoExt[:-4])
+        opensimTools.footReactionMotFile(
+            acqGait, DATA_PATH+gaitFilename[:-4]+"_grf.mot")

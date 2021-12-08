@@ -130,7 +130,7 @@ def mot2pointValues(motFilename, labels, orientation=[1, 1, 1]):
     return pointValues
 
 
-def footReactionMotFile(acq):
+def footReactionMotFile(acq,filename):
 
     mappedForcePlate = forceplates.matchingFootSideOnForceplate(acq)
 
@@ -176,7 +176,7 @@ def footReactionMotFile(acq):
                 R_LAB_OSIM, rightFootWrench.GetPosition().GetValues()[i, :])
 
 
-    file1 = open("MyFile.txt", "w")
+    file1 = open(filename, "w")
     file1.write("DataRate = %.5f\n" % (analogFreq))
     file1.write("DataType=double\n")
     file1.write("version=3\n")
