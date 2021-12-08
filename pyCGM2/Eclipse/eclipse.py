@@ -43,26 +43,24 @@ def getCurrentMarkedNodes(fileType="c3d"):
     infile = open(currentMarkedNodesFile,"r")
     soup = BeautifulSoup(infile.read(),'xml')
 
+    path = list()
     outFiles=list()
     nodes = soup.find_all("MarkedNode")
 
-    i=0
     for node in nodes:
         fullFilename = node.get("MarkedNodePath")
         nodepath = fullFilename[0:fullFilename.rfind("\\")+1]
-        if i ==0:
-            path = nodepath
-        else:
-            if nodepath != path:
-                raise Exception ("[pyCGM2] - marked nodes from different sessions")
-
 
         if fileType == "c3d" :   fullFilename = fullFilename.replace(".Trial.enf","."+fileType)
         outFiles.append(fullFilename.split("\\")[-1])
+        if nodepath not in path:
+            path.append(nodepath)
 
     if outFiles==[] :
         return None
     else:
+        if len(path) == 1:
+            path = path[0]
         return path, outFiles
 
 
