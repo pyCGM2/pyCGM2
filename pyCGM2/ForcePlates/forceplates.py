@@ -4,6 +4,8 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
 
+
+
 import re
 
 
@@ -387,3 +389,80 @@ def correctForcePlateType5(btkAcq):
     btkAcq.GetMetaData().FindChild(str("FORCE_PLATFORM")).value().FindChild(str("ZERO")).value().SetInfo(btk.btkMetaDataInfo(btk.btkDoubleArray(forcePlateNumber, 0)))
 
     return btkAcq
+
+
+def combineForcePlate(acq,mappedForcePlate):
+
+    analogFrames = acq.GetAnalogFrameNumber()
+
+    matchFp ={"Left":{"Force":list(),"Moment":list(),"Position":list()},
+          "Right":{"Force":list(),"Moment":list(),"Position":list()}
+     }
+
+    for i in range(0,len(mappedForcePlate)):
+        if mappedForcePlate[i] == "L":
+            grw = btkTools.getForcePlateWrench(acq, fpIndex=i+1)
+            matchFp["Left"]["Force"].append(grw.GetForce().GetValues())
+            matchFp["Left"]["Moment"].append(grw.GetMoment().GetValues())
+            matchFp["Left"]["Position"].append(grw.GetPosition().GetValues())
+        if mappedForcePlate[i] == "R":
+            grw = btkTools.getForcePlateWrench(acq, fpIndex=i+1)
+            matchFp["Right"]["Force"].append(grw.GetForce().GetValues())
+            matchFp["Right"]["Moment"].append(grw.GetMoment().GetValues())
+            matchFp["Right"]["Position"].append(grw.GetPosition().GetValues())
+
+    if matchFp["Left"]["Force"] !=[]:
+        left_wrench = btk.btkWrench()
+        LForceBtkPoint = btk.btkPoint(analogFrames)
+        LMomentBtkPoint = btk.btkPoint(analogFrames)
+        LPositionBtkPoint = btk.btkPoint(analogFrames)
+
+        force = np.sum(matchFp["Left"]["Force"], axis=0)
+        moment = np.sum(matchFp["Left"]["Moment"], axis=0)
+        position = np.sum(matchFp["Left"]["Position"], axis=0)
+
+        for i in range(0,force.shape[0]):
+            if np.abs(force[i,2]) <10:
+                position[i,0]=0
+                position[i,1]=0
+                position[i,2]=0
+
+
+        LForceBtkPoint.SetValues(force)
+        LMomentBtkPoint.SetValues(moment)
+        LPositionBtkPoint.SetValues(position)
+
+        left_wrench.SetForce(LForceBtkPoint)
+        left_wrench.SetMoment(LMomentBtkPoint)
+        left_wrench.SetPosition(LPositionBtkPoint)
+    else:
+        left_wrench = None
+
+    if matchFp["Right"]["Force"] !=[]:
+
+        right_wrench = btk.btkWrench()
+        RForceBtkPoint = btk.btkPoint(analogFrames)
+        RMomentBtkPoint = btk.btkPoint(analogFrames)
+        RPositionBtkPoint = btk.btkPoint(analogFrames)
+
+        force = np.sum(matchFp["Right"]["Force"], axis=0)
+        moment = np.sum(matchFp["Right"]["Moment"], axis=0)
+        position = np.sum(matchFp["Right"]["Position"], axis=0)
+
+        for i in range(0,force.shape[0]):
+            if np.abs(force[i,2]) <10:
+                position[i,0]=0
+                position[i,1]=0
+                position[i,2]=0
+
+        RForceBtkPoint.SetValues(force)
+        RMomentBtkPoint.SetValues(moment)
+        RPositionBtkPoint.SetValues(position)
+
+        right_wrench.SetForce(RForceBtkPoint)
+        right_wrench.SetMoment(RMomentBtkPoint)
+        right_wrench.SetPosition(RPositionBtkPoint)
+    else:
+        right_wrench = None
+
+    return left_wrench, right_wrench
