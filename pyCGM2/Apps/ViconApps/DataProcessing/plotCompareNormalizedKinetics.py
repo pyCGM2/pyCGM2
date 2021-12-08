@@ -4,7 +4,7 @@ import argparse
 import matplotlib.pyplot as plt
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-
+import os
 
 # pyCGM2 settings
 import pyCGM2
@@ -68,8 +68,9 @@ def main():
         raise Exception("No nodes marked")
     else:
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
+        DATA_PATH = os.getcwd()+"\\"
         # --- acquisition file and path----
-        DATA_PATH, modelledFilenames =eclipse.getCurrentMarkedNodes()
+        DATA_PATHS, modelledFilenames =eclipse.getCurrentMarkedNodes()
         ECLIPSE_MODE = True
         if len(modelledFilenames)== 1:   raise Exception("Only one node marked")
 
@@ -95,7 +96,7 @@ def main():
 
         if len(modelledFilenames) == 2:
 
-            analysisInstance1 = analysis.makeAnalysis(DATA_PATH,
+            analysisInstance1 = analysis.makeAnalysis(DATA_PATHS[0],
                                 [modelledFilenames[0]],
                                 type="Gait",
                                 kinematicLabelsDict=None,
@@ -104,7 +105,7 @@ def main():
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
 
-            analysisInstance2 = analysisInstance1 = analysis.makeAnalysis(DATA_PATH,
+            analysisInstance2 = analysisInstance1 = analysis.makeAnalysis(DATA_PATHS[1],
                                 [modelledFilenames[1]],
                                 type="Gait",
                                 kinematicLabelsDict=None,
