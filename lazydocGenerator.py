@@ -57,12 +57,14 @@ def ViconApps_plots():
     generate(PATH, "pyCGM2.Apps.ViconApps.EMG.plotTemporalEmg",
              plotTemporalEmg)
 
+
 def ViconApps_Events():
 
     PATH = API_PATH + "\\Version 4.2\\Apps\\Vicon\\Events\\"
     from pyCGM2.Apps.ViconApps.Events import zeniDetector
     generate(PATH, "pyCGM2.Apps.ViconApps.Events.zeniDetector",
              zeniDetector)
+
 
 def ViconApps_GapFilling():
 
@@ -71,7 +73,9 @@ def ViconApps_GapFilling():
     generate(PATH, "pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling",
              KalmanGapFilling)
 
-
+    from pyCGM2.Apps.ViconApps.MoGapFill import rigidGapFillingMarkers
+    generate(PATH, "pyCGM2.Apps.ViconApps.MoGapFill.rigidGapFillingMarkers",
+             rigidGapFillingMarkers)
 
 
 def ViconApps_experimental():
@@ -164,6 +168,7 @@ def main():
     ViconApps_plots()
     ViconApps_Events()
     ViconApps_GapFilling()
+
 
 if __name__ == '__main__':
     main()
