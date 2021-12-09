@@ -177,19 +177,37 @@ def footReactionMotFile(acq,filename):
 
 
     file1 = open(filename, "w")
-    file1.write("DataRate = %.5f\n" % (analogFreq))
-    file1.write("DataType=double\n")
-    file1.write("version=3\n")
-    file1.write("OpenSimVersion=4.1\n")
+    # file1.write("DataRate = %.5f\n" % (analogFreq))
+    # file1.write("DataType=double\n")
+    # file1.write("version=3\n")
+    # file1.write("OpenSimVersion=4.1\n")
+    # file1.write("endheader\n")
+
+    file1.write("subject01_walk1_grf.mot\n")
+    file1.write("version=1\n")
+    file1.write("nRows=%i\n"%(analogFrames))
+    file1.write("nColumns=19\n")
+    file1.write("inDegrees=yes\n")
     file1.write("endheader\n")
-    file1.write("time\tLeftFoot_Fx\tLeftFoot_Fy\tLeftFoot_Fz\tLeftFoot_Mx\tLeftFoot_My\tLeftFoot_Mz\tLeftFoot_Px\tLeftFoot_Py\tLeftFoot_Pz\tRightFoot_Fx\tRightFoot_Fy\tRightFoot_Fz\tRightFoot_Mx\tRightFoot_My\tRightFoot_Mz\tRightFoot_Px\tRightFoot_Py\tRightFoot_Pz\n")
+
+
+    file1.write("time	ground_force_vx	ground_force_vy	ground_force_vz	ground_force_px	ground_force_py	ground_force_pz	1_ground_force_vx	1_ground_force_vy	1_ground_force_vz	1_ground_force_px	1_ground_force_py	1_ground_force_pz	ground_torque_x	ground_torque_y	ground_torque_z	1_ground_torque_x	1_ground_torque_y	1_ground_torque_z\n")
+    #file1.write("time\tLeftFoot_Fx\tLeftFoot_Fy\tLeftFoot_Fz\tLeftFoot_Mx\tLeftFoot_My\tLeftFoot_Mz\tLeftFoot_Px\tLeftFoot_Py\tLeftFoot_Pz\tRightFoot_Fx\tRightFoot_Fy\tRightFoot_Fz\tRightFoot_Mx\tRightFoot_My\tRightFoot_Mz\tRightFoot_Px\tRightFoot_Py\tRightFoot_Pz\n")
     for i in range(0, analogFrames):
         file1.write("%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n"% (time[i],
-            LForce_osim[i, 0],    LForce_osim[i, 1],    LForce_osim[i, 2],
-            LMoment_osim[i, 0],   LMoment_osim[i, 1],   LMoment_osim[i, 2],
-            LPosition_osim[i, 0], LPosition_osim[i, 1], LPosition_osim[i, 2],
-            RForce_osim[i, 0],    RForce_osim[i, 1],    RForce_osim[i, 2],
-            RMoment_osim[i, 0],   RMoment_osim[i, 1],   RMoment_osim[i, 2],
-            RPosition_osim[i, 0], RPosition_osim[i, 1], RPosition_osim[i, 2]))
+        RForce_osim[i, 0],    RForce_osim[i, 1],    RForce_osim[i, 2],
+        RPosition_osim[i, 0]/1000.0, RPosition_osim[i, 1]/1000.0, RPosition_osim[i, 2]/1000.0,
+        LForce_osim[i, 0],    LForce_osim[i, 1],    LForce_osim[i, 2],
+        LPosition_osim[i, 0]/1000.0, LPosition_osim[i, 1]/1000.0, LPosition_osim[i, 2]/1000.0,
+        RMoment_osim[i, 0]/1000.0,   RMoment_osim[i, 1]/1000.0,   RMoment_osim[i, 2]/1000.0,
+        LMoment_osim[i, 0]/1000.0,   LMoment_osim[i, 1]/1000.0,   LMoment_osim[i, 2]/1000.0))
+
+
+            # LForce_osim[i, 0],    LForce_osim[i, 1],    LForce_osim[i, 2],
+            # LMoment_osim[i, 0],   LMoment_osim[i, 1],   LMoment_osim[i, 2],
+            # LPosition_osim[i, 0], LPosition_osim[i, 1], LPosition_osim[i, 2],
+            # RForce_osim[i, 0],    RForce_osim[i, 1],    RForce_osim[i, 2],
+            # RMoment_osim[i, 0],   RMoment_osim[i, 1],   RMoment_osim[i, 2],
+            # RPosition_osim[i, 0], RPosition_osim[i, 1], RPosition_osim[i, 2]))
 
     file1.close()
