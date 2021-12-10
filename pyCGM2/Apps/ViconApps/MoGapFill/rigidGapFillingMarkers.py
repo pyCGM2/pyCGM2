@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+
 import argparse
 import copy
 import pyCGM2; LOGGER = pyCGM2.LOGGER
@@ -16,7 +18,6 @@ from pyCGM2.Nexus import nexusTools,nexusFilters
 def main():
     """ rigid gap filling from tracking markers from a loaded trial in nexus.
     This function use the local position of the targeted marker collected during the static trial as reference.
-
     By default, the targeted marker is constructed from the selected first frame to the slected last frame
     of your trial loaded in Nexus
 
@@ -34,12 +35,10 @@ def main():
         [--target] (str): name of the targeted marker to reconstruct
         [--trackingMarkers] (list of 3 str): name of the tracking markers (3 marker at least)
         [--static] (str): name of the static file ( required to be save as c3d)
-        [--static] (str): name of the static file ( required to be save as c3d)
         [-b,--begin] (int): start frame
         [-e,--end] (int): last frame to process
 
     """
-
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
