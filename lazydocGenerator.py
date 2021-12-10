@@ -2,6 +2,15 @@ from lazydocs import MarkdownGenerator
 from pyCGM2.Utils import files
 API_PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\"
 
+import pyCGM2
+
+import pkgutil
+modules = list()
+for imp,mod,isp in pkgutil.walk_packages(path =pyCGM2.__path__,prefix=pyCGM2.__name__+"."):
+    modules.append(mod)
+import ipdb; ipdb.set_trace()
+
+
 
 def generate(DATA_PATH, filenameNoExt, module):
 
@@ -122,6 +131,27 @@ def viconApps_CGM():
     generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_6.Sara", CGM_KneeSARA)
 
 
+def QtmApps():
+    PATH = API_PATH + "\\Version 4.2\\Apps\\Qtm\\CGM workflows\\"
+    from pyCGM2.Apps.QtmApps.CGMi import CGM1_workflow,CGM11_workflow,CGM21_workflow,CGM22_workflow,CGM23_workflow,CGM24_workflow,CGM25_workflow,CGM26_workflow
+
+    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow",
+            CGM1_workflow)
+    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM11_workflow",
+            CGM11_workflow)
+    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM21_workflow",
+            CGM21_workflow)
+    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM22_workflow",
+            CGM22_workflow)
+    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM23_workflow",
+            CGM23_workflow)
+    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM24_workflow",
+            CGM24_workflow)
+    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM25_workflow",
+            CGM25_workflow)
+    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM26_workflow",
+            CGM26_workflow)
+
 def main():
 
     PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\Version 4.2\\Lib\\"
@@ -168,6 +198,7 @@ def main():
     ViconApps_plots()
     ViconApps_Events()
     ViconApps_GapFilling()
+    QtmApps()
 
 
 if __name__ == '__main__':
