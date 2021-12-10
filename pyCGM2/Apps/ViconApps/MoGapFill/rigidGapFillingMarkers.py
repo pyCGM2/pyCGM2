@@ -61,11 +61,8 @@ def main():
 
         # btkAcq builder
         nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
-        acq = nacf.build()
+        acqGait = nacf.build()
 
-        # import ipdb; ipdb.set_trace()
-        reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
-        acqGait = btkTools.smartReader(DATA_PATH + reconstructFilenameLabelled)
         ff = acqGait.GetFirstFrame()-1
         lf = acqGait.GetLastFrame()-1
 
