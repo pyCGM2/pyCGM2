@@ -24,11 +24,12 @@ except:
 
 
 class highLevelInverseKinematicsProcedure(object):
-    def __init__(self,DATA_PATH, scaleOsim,modelVersion,ikToolTemplateFile,
+    def __init__(self,DATA_PATH, scaledOsimName,modelVersion,ikToolTemplateFile,
                 localIkToolFile=None):
 
         self.m_DATA_PATH = DATA_PATH
-        self.m_osimModel = scaleOsim
+        # self.m_osimModel = scaleOsim
+        self.m_osimName = scaledOsimName
         self.m_modelVersion = modelVersion.replace(".", "")
 
         if localIkToolFile is None:
@@ -82,6 +83,7 @@ class highLevelInverseKinematicsProcedure(object):
         self.m_frameRange = [int((beginTime*freq)+ff),int((endTime*freq)+ff)]
 
     def _setXml(self):
+        self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("marker_file", files.getFilename(self.m_markerFile))
         self.xml.set_one("output_motion_file", self.m_dynamicFile+".mot")
         for marker in self.m_weights.keys():
@@ -99,7 +101,7 @@ class highLevelInverseKinematicsProcedure(object):
         self.xml.update()
 
         ikTool = opensim.InverseKinematicsTool(self.m_ikTool)
-        ikTool.setModel(self.m_osimModel)
+        # ikTool.setModel(self.m_osimModel)
         ikTool.run()
 
         self.finalize()
