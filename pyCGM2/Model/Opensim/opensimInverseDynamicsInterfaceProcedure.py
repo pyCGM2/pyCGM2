@@ -25,12 +25,12 @@ except:
 
 
 class highLevelInverseDynamicsProcedure(object):
-    def __init__(self,DATA_PATH, scaleOsim,modelVersion,idToolTemplateFile,externalLoadTemplateFile,
+    def __init__(self,DATA_PATH, scaledOsimName,modelVersion,idToolTemplateFile,externalLoadTemplateFile,
         localIdToolFile=None,
         localExternalLoadFile=None):
 
         self.m_DATA_PATH = DATA_PATH
-        self.m_osimModel = scaleOsim
+        self.m_osimName = scaledOsimName
         self.m_modelVersion = modelVersion.replace(".", "")
 
         if localIdToolFile is None:
@@ -79,15 +79,16 @@ class highLevelInverseDynamicsProcedure(object):
         self.m_frameRange = [int((beginTime*freq)+ff),int((endTime*freq)+ff)]
 
     def _setXml(self):
-
-        # self.xml.set_one("model_file", self.m_dynamicFile+".mot")
+        self.xml.getSoup().find("InverseDynamicsTool").attrs["name"] = self.m_modelVersion+"-InverseDynamics"
+        self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("coordinates_file", self.m_dynamicFile+".mot")
         self.xml.set_one("results_directory", self.m_DATA_PATH)
-        self.xml.set_one("output_gen_force_file", self.m_dynamicFile+"-inverse_dynamics.sto")
+        self.xml.set_one("output_gen_force_file", self.m_dynamicFile+"-"+self.m_modelVersion+"-inverse_dynamics.sto")
 
         self.xml.set_one("external_loads_file", files.getFilename(self.m_externalLoad))
 
     def _setXmlLoad(self):
+
         self.xml_load.set_one("datafile", self.m_dynamicFile+"_grf.mot")
 
     def run(self):
@@ -101,7 +102,7 @@ class highLevelInverseDynamicsProcedure(object):
 
 
         idTool = opensim.InverseDynamicsTool(self.m_idTool)
-        idTool.setModel(self.m_osimModel)
+        # idTool.setModel(self.m_osimModel)
         idTool.run()
 
         # self.finalize()
