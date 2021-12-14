@@ -2,6 +2,7 @@
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Tools import btkTools
+from pyCGM2.Utils import files
 import os
 import numpy as np
 
@@ -37,11 +38,13 @@ def createGroundReactionForceMOT_file(DATA_PATH, c3dFile):
     stoAdapter.write(forcesFlat, forcesFilename)
 
 
-def smartTrcExport(acq, filenameNoExt):
+def smartTrcExport(acq, filename):
     writerDyn = btk.btkAcquisitionFileWriter()
     writerDyn.SetInput(acq)
-    writerDyn.SetFilename(filenameNoExt + ".trc")
+    writerDyn.SetFilename(filename+ ".trc")
     writerDyn.Update()
+
+    return filename+ ".trc"
 
 
 def setGlobalTransormation_lab_osim(axis, forwardProgression):
@@ -177,13 +180,8 @@ def footReactionMotFile(acq,filename):
 
 
     file1 = open(filename, "w")
-    # file1.write("DataRate = %.5f\n" % (analogFreq))
-    # file1.write("DataType=double\n")
-    # file1.write("version=3\n")
-    # file1.write("OpenSimVersion=4.1\n")
-    # file1.write("endheader\n")
 
-    file1.write("subject01_walk1_grf.mot\n")
+    file1.write(files.getFilename(filename)+"\n")
     file1.write("version=1\n")
     file1.write("nRows=%i\n"%(analogFrames))
     file1.write("nColumns=19\n")
