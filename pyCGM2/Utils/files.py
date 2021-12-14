@@ -458,6 +458,9 @@ def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
 
     xlsxWriter.save()
 
+def getFilename(fullname):
+    return fullname[len(os.path.dirname(fullname))+1:]
+
 # def convertPickleToBinary(path,filename):
 #
 #     f = open(path+filename, 'r')
