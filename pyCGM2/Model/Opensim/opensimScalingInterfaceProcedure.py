@@ -86,7 +86,7 @@ class highLevelScalingProcedure(object):
         # self.xml.getSoup().GenericModelMaker.model_file.string = self.m_osim
         # self.xml.getSoup().GenericModelMaker.marker_set_file.string = self.m_markerset
         # self.xml.getSoup().MarkerPlacer.output_model_file.string =  self.m_modelVersion+"-ScaledModel.osim"
-
+        self.xml.getSoup().find("ScaleTool").attrs["name"] = self.m_modelVersion+"-Scale"
         self.xml.set_one(["GenericModelMaker","model_file"],self.m_osim)
         self.xml.set_one(["GenericModelMaker","marker_set_file"],self.m_markerset)
         self._timeRangeFromStatic()
@@ -101,7 +101,8 @@ class highLevelScalingProcedure(object):
 
         scale_tool = opensim.ScaleTool(self.m_scaleTool)
         scale_tool.run()
-        self.m_osimModel = opensim.Model( self.m_DATA_PATH+self.m_modelVersion+"-ScaledModel.osim")
+        self.m_osimModel_name = self.m_DATA_PATH+self.m_modelVersion+"-ScaledModel.osim"
+        self.m_osimModel = opensim.Model(self.m_DATA_PATH+self.m_modelVersion+"-ScaledModel.osim")
 
 
 class opensimInterfaceLowLevelScalingProcedure(object):
