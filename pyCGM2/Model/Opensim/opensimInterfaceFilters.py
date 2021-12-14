@@ -3,6 +3,7 @@ from pyCGM2.Utils import prettyfier
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Model.Opensim import osimProcessing
 from pyCGM2.Tools import btkTools
+from pyCGM2.Utils import files
 from bs4 import BeautifulSoup
 import os
 import numpy as np
@@ -23,17 +24,39 @@ except:
 
 
 class opensimXmlInterface(object):
-    def __init__(self, templateFullFilename, ouFullFilename):
+    def __init__(self, templateFullFilename, outFullFilename=None):
 
-        self.m_out = ouFullFilename
+        if outFullFilename is None:
+            outFullFilename = files.getFilename(templateFullFilename)
+
+        self.m_out = outFullFilename
         self.m_soup = BeautifulSoup(open(templateFullFilename), "xml")
 
     def getSoup(self):
         return self.m_soup
 
-    def set_one(self, label, text):
+    def set_one(self, labels, text):
 
-        self.m_soup.find(label).string = text
+        if isinstance(labels, str):
+            labels = [labels]
+
+        nitems = len(labels)
+        if nitems == 1:
+            self.m_soup.find(labels[0]).string = text
+
+        else:
+            count = 0
+            for label in labels:
+                if count == 0:
+                    current = self.m_soup.find(label)
+                else:
+                    current = current.find(label)
+                count += 1
+            current.string = text
+
+    # def set_one(self, label, text):
+    #
+    #     self.m_soup.find(label).string = text
 
     def set_many(self, label, text):
         items = self.m_soup.find_all(label)
@@ -78,4 +101,16 @@ class opensimInterfaceInverseKinematicsFilter(object):
         self.m_procedure.run()
 
     def getAcq(self):
+        return self.m_procedure.m_acqMotionFinal
+
+
+class opensimInterfaceInverseDynamicsFilter(object):
+    def __init__(self, procedure):
+        self.m_procedure = procedure
+
+    def run(self):
+        self.m_procedure.run()
+
+    def getAcq(self):
+        return self.m_procedure.m_acqMotionFinal
         return self.m_procedure.m_acqMotionFinal
