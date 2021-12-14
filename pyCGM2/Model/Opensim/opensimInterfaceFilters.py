@@ -89,6 +89,9 @@ class opensimInterfaceScalingFilter(object):
     def run(self):
         self.m_procedure.run()
 
+    def getOsimName(self):
+        return self.m_procedure.m_osimModel_name
+
     def getOsim(self):
         return self.m_procedure.m_osimModel
 
@@ -113,4 +116,14 @@ class opensimInterfaceInverseDynamicsFilter(object):
 
     def getAcq(self):
         return self.m_procedure.m_acqMotionFinal
+
+
+class opensimInterfaceAnalysesFilter(object):
+    def __init__(self, procedure):
+        self.m_procedure = procedure
+
+    def run(self):
+        self.m_procedure.run()
+
+    def getAcq(self):
         return self.m_procedure.m_acqMotionFinal
