@@ -13,9 +13,8 @@ except:
 from pyCGM2.Tools import  btkTools,opensimTools
 from pyCGM2.Model.Opensim import osimProcessing
 from pyCGM2.Processing import progressionFrame
-
 from pyCGM2.Model.Opensim import opensimInterfaceFilters
-
+from pyCGM2.Utils import files
 try:
     from pyCGM2 import opensim4 as opensim
 except:
@@ -24,20 +23,33 @@ except:
 
 
 
-class opensimInterfaceHighLevelInverseKinematicsProcedure(object):
-    def __init__(self,DATA_PATH, scaleOsim,ikToolsTemplate):
+class highLevelInverseKinematicsProcedure(object):
+    def __init__(self,DATA_PATH, scaleOsim,modelVersion,ikToolTemplateFile,
+                localIkToolFile=None):
 
         self.m_DATA_PATH = DATA_PATH
-
         self.m_osimModel = scaleOsim
+        self.m_modelVersion = modelVersion.replace(".", "")
 
+        if localIkToolFile is None:
+            if ikToolTemplateFile is None:
+                raise Exception("localIkToolFile or ikToolTemplateFile needs to be defined")
+            self.m_ikTool = DATA_PATH + self.m_modelVersion + "-IKTool-setup.xml"
+            self.xml = opensimInterfaceFilters.opensimXmlInterface(ikToolTemplateFile,self.m_ikTool)
+        else:
+            self.m_ikTool = DATA_PATH + localIkToolFile
+            self.xml = opensimInterfaceFilters.opensimXmlInterface(self.m_ikTool)
 
-        self.m_ikToolFile = DATA_PATH + "/IKTool-setup.xml" #"/IKTool-setup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(ikToolsTemplate,self.m_ikToolFile)
+        self.m_autoXmlDefinition=True
 
+    def setAutoXmlDefinition(boolean):
+        self.m_autoXmlDefinition=boolean
 
-    def preProcess(self, acq, m_dynamicFileNoExt):
-        self.m_dynamicFileNoExt =m_dynamicFileNoExt
+    def preProcess(self, acq, dynamicFile):
+
+        self.m_dynamicFile = dynamicFile
+        self.m_acq0 = acq
+        self.m_acqMotion_forIK = btk.btkAcquisition.Clone(acq)
 
         pfp = progressionFrame.PelvisProgressionFrameProcedure()
         pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
@@ -45,15 +57,11 @@ class opensimInterfaceHighLevelInverseKinematicsProcedure(object):
         progressionAxis = pff.outputs["progressionAxis"]
         forwardProgression = pff.outputs["forwardProgression"]
 
-        self.m_acq0 = acq
-        self.m_acqMotion_forIK = btk.btkAcquisition.Clone(acq)
-
         R_LAB_OSIM = opensimTools.setGlobalTransormation_lab_osim(progressionAxis,forwardProgression)
         opensimTools.globalTransformationLabToOsim(self.m_acqMotion_forIK,R_LAB_OSIM)
-        opensimTools.smartTrcExport(self.m_acqMotion_forIK,self.m_DATA_PATH +  self.m_dynamicFileNoExt[:-4])
+        self.m_markerFile = opensimTools.smartTrcExport(self.m_acqMotion_forIK,self.m_DATA_PATH +  dynamicFile)
 
         self.m_R_LAB_OSIM = R_LAB_OSIM
-        self.m_markerFile = self.m_DATA_PATH +  self.m_dynamicFileNoExt[:-4]+".trc"
 
 
     def setAccuracy(self,value):
@@ -61,7 +69,6 @@ class opensimInterfaceHighLevelInverseKinematicsProcedure(object):
 
     def setWeights(self,weights_dict):
         self.m_weights = weights_dict
-
 
     def setTimeRange(self,beginFrame=None,lastFrame=None):
 
@@ -74,9 +81,39 @@ class opensimInterfaceHighLevelInverseKinematicsProcedure(object):
 
         self.m_frameRange = [int((beginTime*freq)+ff),int((endTime*freq)+ff)]
 
+    def _setXml(self):
+        self.xml.set_one("marker_file", files.getFilename(self.m_markerFile))
+        self.xml.set_one("output_motion_file", self.m_dynamicFile+".mot")
+        for marker in self.m_weights.keys():
+            self.xml.set_inList_fromAttr("IKMarkerTask","weight","name",marker,str(self.m_weights[marker]))
+
+
+    def run(self):
+
+        if os.path.isfile(self.m_DATA_PATH +self.m_dynamicFile+"_ik_model_marker_locations.sto"):
+            os.remove(self.m_DATA_PATH +self.m_dynamicFile+"_ik_model_marker_locations.sto")
+        if os.path.isfile(self.m_DATA_PATH +self.m_dynamicFile+"_ik_marker_errors.sto"):
+            os.remove(self.m_DATA_PATH +self.m_dynamicFile+"_ik_marker_errors.sto")
+
+        if self.m_autoXmlDefinition: self._setXml()
+        self.xml.update()
+
+        ikTool = opensim.InverseKinematicsTool(self.m_ikTool)
+        ikTool.setModel(self.m_osimModel)
+        ikTool.run()
+
+        self.finalize()
+
     def finalize(self):
+
+        os.rename(self.m_DATA_PATH + "_ik_model_marker_locations.sto",
+                    self.m_DATA_PATH +self.m_dynamicFile+"_ik_model_marker_locations.sto")
+        os.rename(self.m_DATA_PATH + "_ik_marker_errors.sto",
+                    self.m_DATA_PATH +self.m_dynamicFile+"_ik_marker_errors.sto")
+
+
         acqMotionFinal = btk.btkAcquisition.Clone(self.m_acq0)
-        storageObject = opensim.Storage(self.m_DATA_PATH + "_ik_model_marker_locations.sto")
+        storageObject = opensim.Storage(self.m_DATA_PATH + self.m_dynamicFile +"_ik_model_marker_locations.sto")
         for marker in self.m_weights.keys():
             if self.m_weights[marker] != 0:
                 values =opensimTools.sto2pointValues(storageObject,marker,self.m_R_LAB_OSIM)
@@ -87,30 +124,6 @@ class opensimInterfaceHighLevelInverseKinematicsProcedure(object):
                 btkTools.smartAppendPoint(acqMotionFinal,marker, modelled, desc= "kinematic fitting" ) # new acq with marker overwrited
 
         self.m_acqMotionFinal = acqMotionFinal
-
-
-    def run(self):
-
-        if os.path.isfile(self.m_DATA_PATH +"_ik_model_marker_locations.sto"):
-            os.remove(self.m_DATA_PATH +"_ik_model_marker_locations.sto")
-
-
-        markerFileShort = self.m_markerFile[self.m_markerFile.rfind("\\")+1:]
-        self.xml.set_one("marker_file", markerFileShort)
-        self.xml.set_one("output_motion_file", markerFileShort[:-4]+".mot")
-
-        for marker in self.m_weights.keys():
-            self.xml.set_inList_fromAttr("IKMarkerTask","weight","name",marker,str(self.m_weights[marker]))
-
-
-        self.xml.update()
-
-        ikTool = opensim.InverseKinematicsTool(self.m_ikToolFile)
-        ikTool.setModel(self.m_osimModel)
-        ikTool.run()
-
-        self.finalize()
-
 
 # NOT WORK : need opensim4.2 and bug fix of property
 class opensimInterfaceLowLevelInverseKinematicsProcedure(object):
