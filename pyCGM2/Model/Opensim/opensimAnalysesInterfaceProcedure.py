@@ -111,10 +111,25 @@ class highLevelAnalysesProcedure(object):
         # idTool.setModel(self.m_osimModel)
         # idTool.run()
 
-        # self.finalize()
+        self.finalize()
 
     def finalize(self):
-        pass
+
+        # Muscle length
+        storageObject = opensim.Storage(self.m_DATA_PATH + self.m_dynamicFile+"-"+self.m_modelVersion+ "-analyses_MuscleAnalysis_Length.sto")
+        labels = storageObject.getColumnLabels()
+        for index in range(1,labels.getSize()):
+            index_x = storageObject.getStateIndex(labels.get(index))
+            array_x = opensim.ArrayDouble()
+            storageObject.getDataColumn(index_x, array_x)
+
+            n = array_x.getSize()
+            pointValues = np.zeros((n, 3))
+            for i in range(0, n):
+                pointValues[i, 0] = array_x.getitem(i)
+
+            btkTools.smartAppendPoint(self.m_acq, labels.get(index),pointValues, PointType=btk.btkPoint.Scalar,desc="Muscle Length")
+
 
 
 # NOT WORK : need opensim4.2 and bug fix of property
