@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_Scaling::test_cgm23_lowLevel
+# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_gait2354::test_cgm23_highLevel
 import os
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
@@ -16,7 +16,9 @@ from pyCGM2.Model.CGM2 import cgm,cgm2
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.Model import  modelFilters,modelDecorator
 from pyCGM2 import enums
-from pyCGM2.Model.Opensim import opensimFilters,opensimInterfaceFilters,opensimScalingInterfaceProcedure,opensimInverseKinematicsInterfaceProcedure
+from pyCGM2.Model.Opensim import opensimFilters,opensimInterfaceFilters,opensimScalingInterfaceProcedure,opensimInverseKinematicsInterfaceProcedure,opensimInverseDynamicsInterfaceProcedure
+from pyCGM2.Model.Opensim import opensimInverseDynamicsInterfaceProcedure
+from pyCGM2.Model.Opensim import opensimAnalysesInterfaceProcedure
 from pyCGM2.Model.Opensim import osimProcessing
 
 
@@ -315,3 +317,72 @@ class Test_InverseKinematics:
         ax3.plot(acqIK.GetPoint("LAnkleAngles").GetValues()[:,2],"-ob")
 
         plt.show()
+
+class Test_gait2354:
+    def test_cgm23_highLevel(self):
+
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\CGM23\\gait-2354\\"
+
+        settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
+
+        #-----
+        model, acqStatic,acqGait,staticFilename,gaitFilename,scp = processCGM23(DATA_PATH,settings)
+
+        modelVersion="CGM2.3"
+        # --- osim builder ---
+        markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\CGM23-markerset.xml"
+        osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\native\\gait2354_simbody.osim"
+
+        # scaling
+        scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23_scaleSetup_template.xml"
+
+        proc = opensimScalingInterfaceProcedure.highLevelScalingProcedure(DATA_PATH,modelVersion,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
+        proc.preProcess( acqStatic, staticFilename[:-4])
+        proc.setAnthropometry(71.0,1780.0)
+        oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
+        oisf.run()
+        scaledOsim = oisf.getOsim()
+        scaledOsimName = oisf.getOsimName()
+
+        # --- IK ---
+        ikWeights = settings["Fitting"]["Weight"]
+        ikTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
+
+        procIK = opensimInverseKinematicsInterfaceProcedure.highLevelInverseKinematicsProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
+        procIK.preProcess(acqGait,gaitFilename[:-4])
+        procIK.setAccuracy(1e-8)
+        procIK.setWeights(ikWeights)
+        procIK.setTimeRange()
+        oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
+        oiikf.run()
+        acqIK =oiikf.getAcq()
+
+        # ----- compute angles
+        modMotion=modelFilters.ModelMotionFilter(scp,acqIK,model,enums.motionMethod.Sodervisk,
+                                                    useForMotionTest=True)
+        modMotion.compute()
+
+        finalJcs =modelFilters.ModelJCSFilter(model,acqIK)
+        finalJcs.compute(description="new", pointLabelSuffix = None)#
+
+
+        # --- ID ------
+        idTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-idTool-setup.xml"
+        externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
+        procID = opensimInverseDynamicsInterfaceProcedure.highLevelInverseDynamicsProcedure(DATA_PATH,scaledOsimName,modelVersion,idTemplateFullFile,externalLoadTemplateFullFile)
+        procID.preProcess(acqIK,gaitFilename[:-4])
+        procIK.setTimeRange()
+        oiidf = opensimInterfaceFilters.opensimInterfaceInverseDynamicsFilter(procID)
+        oiidf.run()
+
+
+        # --- Analyses ------
+        anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-analysisSetup-template.xml"
+        externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
+        procAna = opensimAnalysesInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
+        procAna.preProcess(acqIK,gaitFilename[:-4])
+        procAna.setTimeRange()
+        oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
+        oiamf.run()
+
+        import ipdb; ipdb.set_trace()
