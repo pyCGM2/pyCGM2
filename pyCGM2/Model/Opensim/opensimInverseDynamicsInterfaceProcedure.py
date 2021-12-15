@@ -108,7 +108,23 @@ class highLevelInverseDynamicsProcedure(object):
         # self.finalize()
 
     def finalize(self):
+        # Muscle length
         pass
+        # TODO: extract moment from the sto file 
+        # storageObject = opensim.Storage(self.m_DATA_PATH + "gait1-CGM23-inverse_dynamics.sto)
+        # labels = storageObject.getColumnLabels()
+        # for index in range(1,labels.getSize()):
+        #     index_x = storageObject.getStateIndex(labels.get(index))
+        #     array_x = opensim.ArrayDouble()
+        #     storageObject.getDataColumn(index_x, array_x)
+        #
+        #     n = array_x.getSize()
+        #     pointValues = np.zeros((n, 3))
+        #     for i in range(0, n):
+        #         pointValues[i, 0] = array_x.getitem(i)
+        #
+        #     btkTools.smartAppendPoint(self.m_acq, labels.get(index),pointValues, PointType=btk.btkPoint.Scalar,desc="Muscle Length")
+
 
 
 # NOT WORK : need opensim4.2 and bug fix of property
