@@ -122,6 +122,7 @@ def main():
         # --------------------------PROCESSING --------------------------------
 
         analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            modelledFilenames,
                             type="Gait",
                             kineticLabelsDict = None,
                             emgChannels = None,
