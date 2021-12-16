@@ -27,6 +27,22 @@ def _setPointData(ftr,framecount,ff,values):
 
     return data,exists
 
+def _setData(ftr,framecount,ff,values):
+
+    beg = ff - ftr
+
+    data =[list(np.zeros((framecount)))]
+    exists = [False]*framecount
+
+    i=beg
+    for val in values:
+        data[0][i] = val[0]
+        exists[i] = False if val[0] ==0  else True
+        i+=1
+
+    return data,exists
+
+
 def getActiveSubject(NEXUS):
 
     names, templates, active = NEXUS.GetSubjectInfo()
@@ -130,7 +146,27 @@ def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq,suffix=""):
     NEXUS.SetModelOutput( vskName, output_label, data, exists )
 
 
+def appendBtkScalarFromAcq(NEXUS,vskName,groupName,label,nexusType,acq):
 
+    lst = NEXUS.GetModelOutputNames(vskName)
+    if label in lst:
+        NEXUS.GetModelOutput(vskName, label)
+        LOGGER.logger.debug( "parameter (%s) already exist" %(label))
+    else:
+        NEXUS.CreateModelOutput( vskName, label, groupName, ["X","Y","Z"],  [nexusType,"None","None"])
+
+    values = acq.GetPoint(label).GetValues()
+
+    #ff,lf = NEXUS.GetTrialRange()
+    ff = acq.GetFirstFrame()
+    lf = acq.GetLastFrame()
+
+    pfn = acq.GetPointFrameNumber()
+    trialRange_init = NEXUS.GetTrialRange()[0]
+    framecount = NEXUS.GetFrameCount()
+    data,exists = _setPointData(trialRange_init,framecount,ff,values)
+
+    NEXUS.SetModelOutput( vskName, label, data, exists )
 
 
 def appendAngleFromAcq(NEXUS,vskName,label, acq):

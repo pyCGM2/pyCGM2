@@ -18,7 +18,7 @@ from pyCGM2.Nexus import nexusFilters,nexusTools,nexusUtils
 
 from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm2_3
-
+from pyCGM2.Tools import  btkTools
 
 def main():
 
@@ -32,6 +32,7 @@ def main():
     parser.add_argument('-ae','--anomalyException', action='store_true', help='stop if anomaly detected ')
     parser.add_argument('-fi','--frameInit',type=int,  help='first frame to process')
     parser.add_argument('-fe','--frameEnd',type=int,  help='last frame to process')
+    parser.add_argument('--muscleLength', action='store_true', help='enable muscle length calculation')
     args = parser.parse_args()
 
 
@@ -64,6 +65,7 @@ def main():
         ik_flag = argsManager.enableIKflag
         ikAccuracy = argsManager.getIkAccuracy()
 
+        muscleLengthFlag = args.muscleLength
 
         # --------------------------SUBJECT -----------------------------------
         # Notice : Work with ONE subject by session
@@ -114,12 +116,18 @@ def main():
             forceBtkAcq=acq,
             ikAccuracy = ikAccuracy,
             anomalyException=args.anomalyException,
-            frameInit= args.frameInit, frameEnd= args.frameEnd )
+            frameInit= args.frameInit, frameEnd= args.frameEnd,
+            muscleLength = muscleLengthFlag )
 
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,finalAcqGait,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,finalAcqGait,["Left-FP","Right-FP"])
+
+        if muscleLengthFlag:
+            muscleLabels = btkTools.getLabelsFromScalar(finalAcqGait,"MuscleLength")
+            for label in muscleLabels:
+                nexusTools.appendBtkScalarFromAcq(NEXUS,subject,"MuscleLength",label,"Length",finalAcqGait)
 
 
         # ========END of the nexus OPERATION if run from Nexus  =========

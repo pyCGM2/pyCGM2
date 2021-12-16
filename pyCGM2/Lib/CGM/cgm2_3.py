@@ -7,6 +7,7 @@ import pyCGM2
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
+from pyCGM2.Tools import  opensimTools
 from pyCGM2 import enums
 
 from pyCGM2.Model import modelFilters,bodySegmentParameters
@@ -18,6 +19,10 @@ from pyCGM2.Processing import progressionFrame
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
 from pyCGM2.Inspector import InspectorFilter, InspectorProcedure
+
+from pyCGM2.Model.Opensim import opensimFilters,opensimInterfaceFilters,opensimScalingInterfaceProcedure,opensimInverseKinematicsInterfaceProcedure,opensimInverseDynamicsInterfaceProcedure
+from pyCGM2.Model.Opensim import opensimInverseDynamicsInterfaceProcedure
+from pyCGM2.Model.Opensim import opensimAnalysesInterfaceProcedure
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               required_mp,optional_mp,
@@ -218,70 +223,101 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         return model, acqStatic,detectAnomaly
     else:
         if ik_flag:
-            #                        ---OPENSIM IK---
 
-            # --- opensim calibration Filter ---
-            osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
-            markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml" # markerset
-            cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
+            modelVersion = "CGM2.3"
+            # --- osim builder ---
+            markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\CGM23-markerset.xml"
+            osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\pycgm2-gait2354_simbody.osim"
 
-            oscf = opensimFilters.opensimCalibrationFilter(osimfile,
-                                                    model,
-                                                    cgmCalibrationprocedure,
-                                                    DATA_PATH )
-            oscf.addMarkerSet(markersetFile)
-            scalingOsim = oscf.build()
+            # scaling
+            scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23_scaleSetup_template.xml"
+
+            proc = opensimScalingInterfaceProcedure.highLevelScalingProcedure(DATA_PATH,modelVersion,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
+            proc.preProcess( acqStatic, calibrateFilenameLabelled[:-4])
+            proc.setAnthropometry(71.0,1780.0)
+            oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
+            oisf.run()
+            scaledOsim = oisf.getOsim()
+            scaledOsimName = oisf.getOsimName()
+
+            # --- IK ---
+            # ikWeights = settings["Fitting"]["Weight"]
+            ikTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
+
+            procIK = opensimInverseKinematicsInterfaceProcedure.highLevelInverseKinematicsProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
+            procIK.preProcess(acqStatic,calibrateFilenameLabelled[:-4])
+            procIK.setAccuracy(1e-5)
+            procIK.setWeights(weights)
+            procIK.setTimeRange()
+            oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
+            oiikf.run()
+            acqStaticIK =oiikf.getAcq()
 
 
-            # --- opensim Fitting Filter ---
-            iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml" # ik tool file
-
-
-            cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
-            cgmFittingProcedure.updateMarkerWeight("LASI",weights["LASI"])
-            cgmFittingProcedure.updateMarkerWeight("RASI",weights["RASI"])
-            cgmFittingProcedure.updateMarkerWeight("LPSI",weights["LPSI"])
-            cgmFittingProcedure.updateMarkerWeight("RPSI",weights["RPSI"])
-            cgmFittingProcedure.updateMarkerWeight("RTHI",weights["RTHI"])
-            cgmFittingProcedure.updateMarkerWeight("RKNE",weights["RKNE"])
-            cgmFittingProcedure.updateMarkerWeight("RTIB",weights["RTIB"])
-            cgmFittingProcedure.updateMarkerWeight("RANK",weights["RANK"])
-            cgmFittingProcedure.updateMarkerWeight("RHEE",weights["RHEE"])
-            cgmFittingProcedure.updateMarkerWeight("RTOE",weights["RTOE"])
-            cgmFittingProcedure.updateMarkerWeight("LTHI",weights["LTHI"])
-            cgmFittingProcedure.updateMarkerWeight("LKNE",weights["LKNE"])
-            cgmFittingProcedure.updateMarkerWeight("LTIB",weights["LTIB"])
-            cgmFittingProcedure.updateMarkerWeight("LANK",weights["LANK"])
-            cgmFittingProcedure.updateMarkerWeight("LHEE",weights["LHEE"])
-            cgmFittingProcedure.updateMarkerWeight("LTOE",weights["LTOE"])
-
-            cgmFittingProcedure.updateMarkerWeight("LTHAP",weights["LTHAP"])
-            cgmFittingProcedure.updateMarkerWeight("LTHAD",weights["LTHAD"])
-            cgmFittingProcedure.updateMarkerWeight("LTIAP",weights["LTIAP"])
-            cgmFittingProcedure.updateMarkerWeight("LTIAD",weights["LTIAD"])
-            cgmFittingProcedure.updateMarkerWeight("RTHAP",weights["RTHAP"])
-            cgmFittingProcedure.updateMarkerWeight("RTHAD",weights["RTHAD"])
-            cgmFittingProcedure.updateMarkerWeight("RTIAP",weights["RTIAP"])
-            cgmFittingProcedure.updateMarkerWeight("RTIAD",weights["RTIAD"])
-
-            osrf = opensimFilters.opensimFittingFilter(iksetupFile,
-                                                              scalingOsim,
-                                                              cgmFittingProcedure,
-                                                              DATA_PATH,
-                                                              acqStatic,
-                                                              accuracy = 1e-5)
-            osrf.setTimeRange(acqStatic,beginFrame = vff, lastFrame=vlf)
-            LOGGER.logger.info("-------INVERSE KINEMATICS IN PROGRESS----------")
-            try:
-                acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled,
-                            progressionAxis = progressionAxis ,
-                            forwardProgression = forwardProgression)
-                LOGGER.logger.info("[pyCGM2] - IK solver complete")
-            except:
-                LOGGER.logger.error("[pyCGM2] - IK solver fails")
-                acqStaticIK = acqStatic
-                detectAnomaly = True
-            LOGGER.logger.info("-----------------------------------------------")
+            # #                        ---OPENSIM IK---
+            #
+            # # --- opensim calibration Filter ---
+            # osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
+            # markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml" # markerset
+            # cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
+            #
+            # oscf = opensimFilters.opensimCalibrationFilter(osimfile,
+            #                                         model,
+            #                                         cgmCalibrationprocedure,
+            #                                         DATA_PATH )
+            # oscf.addMarkerSet(markersetFile)
+            # scalingOsim = oscf.build()
+            #
+            #
+            # # --- opensim Fitting Filter ---
+            # iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml" # ik tool file
+            #
+            #
+            # cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
+            # cgmFittingProcedure.updateMarkerWeight("LASI",weights["LASI"])
+            # cgmFittingProcedure.updateMarkerWeight("RASI",weights["RASI"])
+            # cgmFittingProcedure.updateMarkerWeight("LPSI",weights["LPSI"])
+            # cgmFittingProcedure.updateMarkerWeight("RPSI",weights["RPSI"])
+            # cgmFittingProcedure.updateMarkerWeight("RTHI",weights["RTHI"])
+            # cgmFittingProcedure.updateMarkerWeight("RKNE",weights["RKNE"])
+            # cgmFittingProcedure.updateMarkerWeight("RTIB",weights["RTIB"])
+            # cgmFittingProcedure.updateMarkerWeight("RANK",weights["RANK"])
+            # cgmFittingProcedure.updateMarkerWeight("RHEE",weights["RHEE"])
+            # cgmFittingProcedure.updateMarkerWeight("RTOE",weights["RTOE"])
+            # cgmFittingProcedure.updateMarkerWeight("LTHI",weights["LTHI"])
+            # cgmFittingProcedure.updateMarkerWeight("LKNE",weights["LKNE"])
+            # cgmFittingProcedure.updateMarkerWeight("LTIB",weights["LTIB"])
+            # cgmFittingProcedure.updateMarkerWeight("LANK",weights["LANK"])
+            # cgmFittingProcedure.updateMarkerWeight("LHEE",weights["LHEE"])
+            # cgmFittingProcedure.updateMarkerWeight("LTOE",weights["LTOE"])
+            #
+            # cgmFittingProcedure.updateMarkerWeight("LTHAP",weights["LTHAP"])
+            # cgmFittingProcedure.updateMarkerWeight("LTHAD",weights["LTHAD"])
+            # cgmFittingProcedure.updateMarkerWeight("LTIAP",weights["LTIAP"])
+            # cgmFittingProcedure.updateMarkerWeight("LTIAD",weights["LTIAD"])
+            # cgmFittingProcedure.updateMarkerWeight("RTHAP",weights["RTHAP"])
+            # cgmFittingProcedure.updateMarkerWeight("RTHAD",weights["RTHAD"])
+            # cgmFittingProcedure.updateMarkerWeight("RTIAP",weights["RTIAP"])
+            # cgmFittingProcedure.updateMarkerWeight("RTIAD",weights["RTIAD"])
+            #
+            # osrf = opensimFilters.opensimFittingFilter(iksetupFile,
+            #                                                   scalingOsim,
+            #                                                   cgmFittingProcedure,
+            #                                                   DATA_PATH,
+            #                                                   acqStatic,
+            #                                                   accuracy = 1e-5)
+            # osrf.setTimeRange(acqStatic,beginFrame = vff, lastFrame=vlf)
+            # LOGGER.logger.info("-------INVERSE KINEMATICS IN PROGRESS----------")
+            # try:
+            #     acqStaticIK = osrf.run(DATA_PATH + calibrateFilenameLabelled,
+            #                 progressionAxis = progressionAxis ,
+            #                 forwardProgression = forwardProgression)
+            #     LOGGER.logger.info("[pyCGM2] - IK solver complete")
+            # except:
+            #     LOGGER.logger.error("[pyCGM2] - IK solver fails")
+            #     acqStaticIK = acqStatic
+            #     detectAnomaly = True
+            # LOGGER.logger.info("-----------------------------------------------")
 
 
 
@@ -512,69 +548,98 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         #                        ---OPENSIM IK---
 
-        # --- opensim calibration Filter ---
-        osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
-        markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml" # markerset
-        cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
+        # --- new ---
+        modelVersion="CGM2.3"
+        scaledOsimName = "CGM23-ScaledModel.osim"
+        # ikWeights = settings["Fitting"]["Weight"]
+        ikTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
 
-        oscf = opensimFilters.opensimCalibrationFilter(osimfile,
-                                                model,
-                                                cgmCalibrationprocedure,
-                                                DATA_PATH )
-        oscf.addMarkerSet(markersetFile)
-        scalingOsim = oscf.build()
+        procIK = opensimInverseKinematicsInterfaceProcedure.highLevelInverseKinematicsProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
+        procIK.preProcess(acqGait,reconstructFilenameLabelled[:-4])
+        procIK.setAccuracy(1e-8)
+        procIK.setWeights(weights)
+        procIK.setTimeRange()
+        oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
+        oiikf.run()
+        acqIK =oiikf.getAcq()
+
+        # --- Analyses ------
+        if "muscleLength" in kwargs.keys() and kwargs["muscleLength"]:
+            anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-analysisSetup-template.xml"
+            externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
+            procAna = opensimAnalysesInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
+            procAna.preProcess(acqIK,reconstructFilenameLabelled[:-4])
+            procAna.setTimeRange()
+            oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
+            oiamf.run()
 
 
-        # --- opensim Fitting Filter ---
-        iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml" # ik tl file
 
-        cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
-        cgmFittingProcedure.updateMarkerWeight("LASI",weights["LASI"])
-        cgmFittingProcedure.updateMarkerWeight("RASI",weights["RASI"])
-        cgmFittingProcedure.updateMarkerWeight("LPSI",weights["LPSI"])
-        cgmFittingProcedure.updateMarkerWeight("RPSI",weights["RPSI"])
-        cgmFittingProcedure.updateMarkerWeight("RTHI",weights["RTHI"])
-        cgmFittingProcedure.updateMarkerWeight("RKNE",weights["RKNE"])
-        cgmFittingProcedure.updateMarkerWeight("RTIB",weights["RTIB"])
-        cgmFittingProcedure.updateMarkerWeight("RANK",weights["RANK"])
-        cgmFittingProcedure.updateMarkerWeight("RHEE",weights["RHEE"])
-        cgmFittingProcedure.updateMarkerWeight("RTOE",weights["RTOE"])
-        cgmFittingProcedure.updateMarkerWeight("LTHI",weights["LTHI"])
-        cgmFittingProcedure.updateMarkerWeight("LKNE",weights["LKNE"])
-        cgmFittingProcedure.updateMarkerWeight("LTIB",weights["LTIB"])
-        cgmFittingProcedure.updateMarkerWeight("LANK",weights["LANK"])
-        cgmFittingProcedure.updateMarkerWeight("LHEE",weights["LHEE"])
-        cgmFittingProcedure.updateMarkerWeight("LTOE",weights["LTOE"])
-
-        cgmFittingProcedure.updateMarkerWeight("LTHAP",weights["LTHAP"])
-        cgmFittingProcedure.updateMarkerWeight("LTHAD",weights["LTHAD"])
-        cgmFittingProcedure.updateMarkerWeight("LTIAP",weights["LTIAP"])
-        cgmFittingProcedure.updateMarkerWeight("LTIAD",weights["LTIAD"])
-        cgmFittingProcedure.updateMarkerWeight("RTHAP",weights["RTHAP"])
-        cgmFittingProcedure.updateMarkerWeight("RTHAD",weights["RTHAD"])
-        cgmFittingProcedure.updateMarkerWeight("RTIAP",weights["RTIAP"])
-        cgmFittingProcedure.updateMarkerWeight("RTIAD",weights["RTIAD"])
-
-        osrf = opensimFilters.opensimFittingFilter(iksetupFile,
-                                                          scalingOsim,
-                                                          cgmFittingProcedure,
-                                                          DATA_PATH,
-                                                          acqGait)
-        osrf.setTimeRange(acqGait,beginFrame = vff, lastFrame=vlf)
-        if "ikAccuracy" in kwargs.keys():
-            osrf.setAccuracy(kwargs["ikAccuracy"])
-
-        LOGGER.logger.info("-------INVERSE KINEMATICS IN PROGRESS----------")
-        try:
-            acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled,
-                            progressionAxis = progressionAxis ,
-                            forwardProgression = forwardProgression)
-            LOGGER.logger.info("[pyCGM2] - IK solver complete")
-        except:
-            LOGGER.logger.error("[pyCGM2] - IK solver fails")
-            acqIK = acqGait
-            detectAnomaly = True
-        LOGGER.logger.info("---------------------------------------------------")
+        # # --- old ---
+        #
+        # # --- opensim calibration Filter ---
+        # osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\osim\\lowerLimb_ballsJoints.osim"    # osimfile
+        # markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-markerset.xml" # markerset
+        # cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model) # procedure
+        #
+        # oscf = opensimFilters.opensimCalibrationFilter(osimfile,
+        #                                         model,
+        #                                         cgmCalibrationprocedure,
+        #                                         DATA_PATH )
+        # oscf.addMarkerSet(markersetFile)
+        # scalingOsim = oscf.build()
+        #
+        #
+        # # --- opensim Fitting Filter ---
+        # iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "models\\settings\\cgm2_3\\cgm2_3-ikSetUp_template.xml" # ik tl file
+        #
+        # cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model) # procedure
+        # cgmFittingProcedure.updateMarkerWeight("LASI",weights["LASI"])
+        # cgmFittingProcedure.updateMarkerWeight("RASI",weights["RASI"])
+        # cgmFittingProcedure.updateMarkerWeight("LPSI",weights["LPSI"])
+        # cgmFittingProcedure.updateMarkerWeight("RPSI",weights["RPSI"])
+        # cgmFittingProcedure.updateMarkerWeight("RTHI",weights["RTHI"])
+        # cgmFittingProcedure.updateMarkerWeight("RKNE",weights["RKNE"])
+        # cgmFittingProcedure.updateMarkerWeight("RTIB",weights["RTIB"])
+        # cgmFittingProcedure.updateMarkerWeight("RANK",weights["RANK"])
+        # cgmFittingProcedure.updateMarkerWeight("RHEE",weights["RHEE"])
+        # cgmFittingProcedure.updateMarkerWeight("RTOE",weights["RTOE"])
+        # cgmFittingProcedure.updateMarkerWeight("LTHI",weights["LTHI"])
+        # cgmFittingProcedure.updateMarkerWeight("LKNE",weights["LKNE"])
+        # cgmFittingProcedure.updateMarkerWeight("LTIB",weights["LTIB"])
+        # cgmFittingProcedure.updateMarkerWeight("LANK",weights["LANK"])
+        # cgmFittingProcedure.updateMarkerWeight("LHEE",weights["LHEE"])
+        # cgmFittingProcedure.updateMarkerWeight("LTOE",weights["LTOE"])
+        #
+        # cgmFittingProcedure.updateMarkerWeight("LTHAP",weights["LTHAP"])
+        # cgmFittingProcedure.updateMarkerWeight("LTHAD",weights["LTHAD"])
+        # cgmFittingProcedure.updateMarkerWeight("LTIAP",weights["LTIAP"])
+        # cgmFittingProcedure.updateMarkerWeight("LTIAD",weights["LTIAD"])
+        # cgmFittingProcedure.updateMarkerWeight("RTHAP",weights["RTHAP"])
+        # cgmFittingProcedure.updateMarkerWeight("RTHAD",weights["RTHAD"])
+        # cgmFittingProcedure.updateMarkerWeight("RTIAP",weights["RTIAP"])
+        # cgmFittingProcedure.updateMarkerWeight("RTIAD",weights["RTIAD"])
+        #
+        # osrf = opensimFilters.opensimFittingFilter(iksetupFile,
+        #                                                   scalingOsim,
+        #                                                   cgmFittingProcedure,
+        #                                                   DATA_PATH,
+        #                                                   acqGait)
+        # osrf.setTimeRange(acqGait,beginFrame = vff, lastFrame=vlf)
+        # if "ikAccuracy" in kwargs.keys():
+        #     osrf.setAccuracy(kwargs["ikAccuracy"])
+        #
+        # LOGGER.logger.info("-------INVERSE KINEMATICS IN PROGRESS----------")
+        # try:
+        #     acqIK = osrf.run(DATA_PATH + reconstructFilenameLabelled,
+        #                     progressionAxis = progressionAxis ,
+        #                     forwardProgression = forwardProgression)
+        #     LOGGER.logger.info("[pyCGM2] - IK solver complete")
+        # except:
+        #     LOGGER.logger.error("[pyCGM2] - IK solver fails")
+        #     acqIK = acqGait
+        #     detectAnomaly = True
+        # LOGGER.logger.info("---------------------------------------------------")
 
     # eventual gait acquisition to consider for joint kinematics
     finalAcqGait = acqIK if ik_flag else acqGait
