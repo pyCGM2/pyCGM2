@@ -56,6 +56,12 @@ class highLevelAnalysesProcedure(object):
 
         self.m_autoXmlDefinition=True
 
+        self.m_muscles=list()
+
+    def getMuscles(self):
+        return self.m_muscles
+
+
     def setAutoXmlDefinition(boolean):
         self.m_autoXmlDefinition=boolean
 
@@ -118,7 +124,8 @@ class highLevelAnalysesProcedure(object):
         # Muscle length
         storageObject = opensim.Storage(self.m_DATA_PATH + self.m_dynamicFile+"-"+self.m_modelVersion+ "-analyses_MuscleAnalysis_Length.sto")
         labels = storageObject.getColumnLabels()
-        for index in range(1,labels.getSize()):
+        for index in range(1,labels.getSize()): #1 because 0 is time
+            self.m_muscles.append(labels.get(index))
             index_x = storageObject.getStateIndex(labels.get(index))
             array_x = opensim.ArrayDouble()
             storageObject.getDataColumn(index_x, array_x)
@@ -128,7 +135,7 @@ class highLevelAnalysesProcedure(object):
             for i in range(0, n):
                 pointValues[i, 0] = array_x.getitem(i)
 
-            btkTools.smartAppendPoint(self.m_acq, labels.get(index),pointValues, PointType=btk.btkPoint.Scalar,desc="Muscle Length")
+            btkTools.smartAppendPoint(self.m_acq, labels.get(index),pointValues, PointType=btk.btkPoint.Scalar,desc="MuscleLength")
 
 
 
