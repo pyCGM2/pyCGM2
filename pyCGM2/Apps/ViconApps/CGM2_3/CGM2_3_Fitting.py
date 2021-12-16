@@ -125,7 +125,7 @@ def main():
         nexusTools.createGeneralEvents(NEXUS,subject,finalAcqGait,["Left-FP","Right-FP"])
 
         if muscleLengthFlag:
-            muscleLabels = btkTools.getLabelsFromScalar(finalAcqGait,"MuscleLength")
+            muscleLabels = btkTools.getLabelsFromScalar(finalAcqGait,description = "MuscleLength")
             for label in muscleLabels:
                 nexusTools.appendBtkScalarFromAcq(NEXUS,subject,"MuscleLength",label,"Length",finalAcqGait)
 

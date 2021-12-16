@@ -155,7 +155,7 @@ def appendBtkScalarFromAcq(NEXUS,vskName,groupName,label,nexusType,acq):
     else:
         NEXUS.CreateModelOutput( vskName, label, groupName, ["X","Y","Z"],  [nexusType,"None","None"])
 
-    values = acq.GetPoint(label).GetValues()
+    values = acq.GetPoint(label+"["+groupName+"]").GetValues()
 
     #ff,lf = NEXUS.GetTrialRange()
     ff = acq.GetFirstFrame()

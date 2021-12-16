@@ -928,7 +928,8 @@ def applyRotation(btkAcq, markers, globalFrameOrientation, forwardProgression):
         for i in range(0, btkAcq.GetPointFrameNumber()):
             valuesRot[i, :] = np.dot(rot, values[i, :])
             if not forwardProgression:
-                valuesRot[i, :] = np.dot(np.array([[-1, 0, 0], [0, 1, 0], [0, 0, 1]]), valuesRot[i, :])
+                valuesRot[i, :] = np.dot(
+                    np.array([[-1, 0, 0], [0, 1, 0], [0, 0, 1]]), valuesRot[i, :])
         btkAcq.GetPoint(marker).SetValues(valuesRot)
 
 
@@ -957,10 +958,17 @@ def cleanAcq(acq):
                 acq.RemovePoint(it.GetLabel())
 
 
-def getLabelsFromScalar(acq, description):
+def getLabelsFromScalar(acq, description=None):
     out = list()
-    for it in btk.Iterate(acq.GetPoints()):
-        if it.GetType() == btk.btkPoint.Scalar and description in it.GetDescription():
-            out.append(it.GetLabel())
+
+    if description  is not None:
+        for it in btk.Iterate(acq.GetPoints()):
+            if it.GetType() == btk.btkPoint.Scalar and description in it.GetDescription():
+                index = it.GetLabel().find("[")
+                out.append(it.GetLabel()[:index])
+    else:
+        for it in btk.Iterate(acq.GetPoints()):
+            if it.GetType() == btk.btkPoint.Scalar:
+                out.append(it.GetLabel())
 
     return out
