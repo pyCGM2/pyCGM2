@@ -39,6 +39,18 @@ def smartReader(filename, translators=None):
     # sort events
     sortedEvents(acq)
 
+    # deal with user model ouputs made from Nexus
+    for it in btk.Iterate(acq.GetPoints()):
+        if "USERMO" in it.GetLabel():
+            description = it.GetDescription()
+            labelFromDescription = description[:description.find("[")]
+            groupname = smartGetMetadata(acq, "POINT", it.GetLabel())[0]
+            groupname = groupname[:groupname.find(":")]
+            smartAppendPoint(acq, labelFromDescription +"[" +groupname+"]", it.GetValues(),
+                PointType=btk.btkPoint.Scalar, desc= groupname)
+
+            acq.RemovePoint(it.GetLabel())
+
     return acq
 
 
@@ -961,7 +973,7 @@ def cleanAcq(acq):
 def getLabelsFromScalar(acq, description=None):
     out = list()
 
-    if description  is not None:
+    if description is not None:
         for it in btk.Iterate(acq.GetPoints()):
             if it.GetType() == btk.btkPoint.Scalar and description in it.GetDescription():
                 index = it.GetLabel().find("[")
