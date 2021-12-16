@@ -135,7 +135,7 @@ class highLevelAnalysesProcedure(object):
             for i in range(0, n):
                 pointValues[i, 0] = array_x.getitem(i)
 
-            btkTools.smartAppendPoint(self.m_acq, labels.get(index),pointValues, PointType=btk.btkPoint.Scalar,desc="MuscleLength")
+            btkTools.smartAppendPoint(self.m_acq, labels.get(index)+"[MuscleLength]",pointValues, PointType=btk.btkPoint.Scalar,desc="MuscleLength")
 
 
 
