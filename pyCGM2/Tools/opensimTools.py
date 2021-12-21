@@ -132,6 +132,19 @@ def mot2pointValues(motFilename, labels, orientation=[1, 1, 1]):
 
     return pointValues
 
+def smartGetValues(DATA_PATH,filename,label):
+    storageObject = opensim.Storage(DATA_PATH+filename)
+    labels = storageObject.getColumnLabels()
+    for index in range(1,labels.getSize()): #1 because 0 is time
+        if label == labels.get(index):
+            index_x = storageObject.getStateIndex(labels.get(index))
+            array_x = opensim.ArrayDouble()
+            storageObject.getDataColumn(index_x, array_x)
+            n = array_x.getSize()
+            values = np.zeros((n))
+            for i in range(0, n):
+                values[i] = array_x.getitem(i)
+    return values
 
 def footReactionMotFile(acq,filename):
 
