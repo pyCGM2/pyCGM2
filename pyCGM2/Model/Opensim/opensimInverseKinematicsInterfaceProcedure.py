@@ -125,6 +125,13 @@ class highLevelInverseKinematicsProcedure(object):
                 modelled[self.m_frameRange[0]-ff:self.m_frameRange[1]-ff+1,:] = values
                 btkTools.smartAppendPoint(acqMotionFinal,marker, modelled, desc= "kinematic fitting" ) # new acq with marker overwrited
 
+        # values0 = opensimTools.smartGetValues(self.m_DATA_PATH,self.m_dynamicFile+".mot","ankle_flexion_r")
+        # values1 = opensimTools.smartGetValues(self.m_DATA_PATH,self.m_dynamicFile+".mot","ankle_adduction_r")
+        # values2 = opensimTools.smartGetValues(self.m_DATA_PATH,self.m_dynamicFile+".mot","ankle_rotation_r")
+        #
+        # btkTools.smartAppendPoint(acqMotionFinal,"AnkleOpensim", np.array([values0,values1,values2]).T, desc= "opensim", PointType = btk.btkPoint.Angle )
+
+
         self.m_acqMotionFinal = acqMotionFinal
 
 # NOT WORK : need opensim4.2 and bug fix of property
