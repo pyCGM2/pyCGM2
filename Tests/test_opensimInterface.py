@@ -19,7 +19,9 @@ from pyCGM2 import enums
 from pyCGM2.Model.Opensim import opensimFilters,opensimInterfaceFilters,opensimScalingInterfaceProcedure,opensimInverseKinematicsInterfaceProcedure,opensimInverseDynamicsInterfaceProcedure
 from pyCGM2.Model.Opensim import opensimInverseDynamicsInterfaceProcedure
 from pyCGM2.Model.Opensim import opensimAnalysesInterfaceProcedure
+from pyCGM2.Model.Opensim import opensimStaticOptimizationInterfaceProcedure
 from pyCGM2.Model.Opensim import osimProcessing
+from pyCGM2.Model.Opensim import opensimIO
 
 
 
@@ -275,8 +277,6 @@ class Test_InverseKinematics:
         acqIK =oiikf.getAcq()
 
 
-
-
         # --- CHECKING ---
         modMotion=modelFilters.ModelMotionFilter(scp,acqIK,model,enums.motionMethod.Sodervisk,
                                                     useForMotionTest=True)
@@ -332,8 +332,6 @@ class Test_gait2354:
         modelVersion="CGM2.3"
         # --- osim builder ---
         markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\CGM23-markerset.xml"
-        # osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\native\\gait2354_simbody.osim"
-
         osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\pycgm2-gait2354_simbody.osim"
 
 
@@ -370,6 +368,18 @@ class Test_gait2354:
         finalJcs =modelFilters.ModelJCSFilter(model,acqIK)
         finalJcs.compute(description="new", pointLabelSuffix = None)#
 
+        #correct the ankle angles
+        motDataframe = opensimIO.OpensimDataFrame(DATA_PATH,gaitFilename[:-4]+".mot")
+        motDataframe.getDataFrame()["ankle_flexion_r"] = acqIK.GetPoint("RAnkleAngles").GetValues()[:,0]
+        motDataframe.getDataFrame()["ankle_adduction_r"] = acqIK.GetPoint("RAnkleAngles").GetValues()[:,1]
+        motDataframe.getDataFrame()["ankle_rotation_r"] = acqIK.GetPoint("RAnkleAngles").GetValues()[:,2]
+        motDataframe.getDataFrame()["ankle_flexion_l"] = acqIK.GetPoint("LAnkleAngles").GetValues()[:,0]
+        motDataframe.getDataFrame()["ankle_adduction_l"] = acqIK.GetPoint("LAnkleAngles").GetValues()[:,1]
+        motDataframe.getDataFrame()["ankle_rotation_l"] = acqIK.GetPoint("LAnkleAngles").GetValues()[:,2]
+        motDataframe.save()
+
+        # btkTools.smartWriter(acqIK, DATA_PATH+"verifOpensim.c3d")
+        #import ipdb; ipdb.set_trace()
 
         # --- ID ------
         idTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-idTool-setup.xml"
@@ -381,6 +391,17 @@ class Test_gait2354:
         oiidf.run()
 
 
+        # # --- opensimStaticOptimizationInterfaceProcedure ------
+        # opensimStaticOptimizationInterfaceProcedure
+        # anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-analysisSetup-template.xml"
+        # externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
+        # procAna = opensimStaticOptimizationInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
+        # procAna.preProcess(acqIK,gaitFilename[:-4])
+        # procAna.setTimeRange()
+        # oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
+        # oiamf.run()
+
+
         # --- Analyses ------
         anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-analysisSetup-template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
@@ -390,4 +411,5 @@ class Test_gait2354:
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
         oiamf.run()
 
+        btkTools.smartWriter(acqIK,DATA_PATH+ gaitFilename[:-4]+"-Muscles.c3d")
         import ipdb; ipdb.set_trace()
