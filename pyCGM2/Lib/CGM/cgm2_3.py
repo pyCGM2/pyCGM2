@@ -23,6 +23,7 @@ from pyCGM2.Inspector import InspectorFilter, InspectorProcedure
 from pyCGM2.Model.Opensim import opensimFilters,opensimInterfaceFilters,opensimScalingInterfaceProcedure,opensimInverseKinematicsInterfaceProcedure,opensimInverseDynamicsInterfaceProcedure
 from pyCGM2.Model.Opensim import opensimInverseDynamicsInterfaceProcedure
 from pyCGM2.Model.Opensim import opensimAnalysesInterfaceProcedure
+from pyCGM2.Model.Opensim import opensimIO
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               required_mp,optional_mp,
@@ -562,6 +563,16 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
         oiikf.run()
         acqIK =oiikf.getAcq()
+
+        #correct the ankle angle
+        motDataframe = opensimIO.OpensimDataFrame(DATA_PATH,reconstructFilenameLabelled[:-4]+".mot")
+        motDataframe.getDataFrame()["ankle_flexion_r"] = acqIK.GetPoint("RAnkleAngles").GetValues()[:,0]
+        motDataframe.getDataFrame()["ankle_adduction_r"] = acqIK.GetPoint("RAnkleAngles").GetValues()[:,1]
+        motDataframe.getDataFrame()["ankle_rotation_r"] = acqIK.GetPoint("RAnkleAngles").GetValues()[:,2]
+        motDataframe.getDataFrame()["ankle_flexion_l"] = acqIK.GetPoint("LAnkleAngles").GetValues()[:,0]
+        motDataframe.getDataFrame()["ankle_adduction_l"] = acqIK.GetPoint("LAnkleAngles").GetValues()[:,1]
+        motDataframe.getDataFrame()["ankle_rotation_l"] = acqIK.GetPoint("LAnkleAngles").GetValues()[:,2]
+        motDataframe.save()
 
         # --- Analyses ------
         if "muscleLength" in kwargs.keys() and kwargs["muscleLength"]:
