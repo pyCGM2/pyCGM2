@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_motFile
+# pytest -s --disable-pytest-warnings  test_opensim.py::Test_misc::test_prepareData
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Model.Opensim import osimProcessing
@@ -16,6 +17,8 @@ from pyCGM2 import opensim4 as opensim
 import os
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
+
+from pyCGM2.Lib import opensimtk
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -41,21 +44,17 @@ class Test_basics:
 class Test_IO:
     def test_motFile(self):
 
-
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim/IO\\"
 
         motDf = opensimIO.OpensimDataFrame(DATA_PATH, "gait1.mot")
         motDf.getDataFrame()["pelvis_tilt"] = 0.0
         motDf.save(filename="gait1_2.mot")
 
-
     def test_stoFile(self):
 
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim/IO\\"
-        stoDf = opensimIO.OpensimDataFrame(DATA_PATH, "cgm2-Osim-scaled_MuscleAnalysis_ActiveFiberForce.sto")
-
-
-
+        stoDf = opensimIO.OpensimDataFrame(
+            DATA_PATH, "cgm2-Osim-scaled_MuscleAnalysis_ActiveFiberForce.sto")
 
 
 class Test_misc:
@@ -69,3 +68,10 @@ class Test_misc:
 
         opensimTools.footReactionMotFile(
             acqGait, DATA_PATH+gaitFilename[:-4]+"_grf.mot")
+
+    def test_prepareData(self):
+
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim/prepareData\\"
+
+        opensimtk.prepareC3dFiles(
+            DATA_PATH, staticFilename="static.c3d", dynamicFilenames=["gait1.c3d", "gait2.c3d"])
