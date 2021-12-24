@@ -5,6 +5,8 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
 import os
 import numpy as np
+from pyCGM2.Lib import processing
+
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -146,15 +148,15 @@ def smartGetValues(DATA_PATH,filename,label):
                 values[i] = array_x.getitem(i)
     return values
 
-def footReactionMotFile(acq,filename):
+def footReactionMotFile(acq,filename,progressionAxis,forwardProgression,mfpa=None):
 
-    mappedForcePlate = forceplates.matchingFootSideOnForceplate(acq)
+    mappedForcePlate = forceplates.matchingFootSideOnForceplate(acq,mfpa=mfpa)
 
-    pfp = progressionFrame.PelvisProgressionFrameProcedure()
-    pff = progressionFrame.ProgressionFrameFilter(acq, pfp)
-    pff.compute()
-    progressionAxis = pff.outputs["progressionAxis"]
-    forwardProgression = pff.outputs["forwardProgression"]
+    # pfp = progressionFrame.PelvisProgressionFrameProcedure()
+    # pff = progressionFrame.ProgressionFrameFilter(acq, pfp)
+    # pff.compute()
+    # progressionAxis = pff.outputs["progressionAxis"]
+    # forwardProgression = pff.outputs["forwardProgression"]
 
     R_LAB_OSIM = setGlobalTransormation_lab_osim(
         progressionAxis, forwardProgression)
@@ -212,13 +214,5 @@ def footReactionMotFile(acq,filename):
         LPosition_osim[i, 0]/1000.0, LPosition_osim[i, 1]/1000.0, LPosition_osim[i, 2]/1000.0,
         RMoment_osim[i, 0]/1000.0,   RMoment_osim[i, 1]/1000.0,   RMoment_osim[i, 2]/1000.0,
         LMoment_osim[i, 0]/1000.0,   LMoment_osim[i, 1]/1000.0,   LMoment_osim[i, 2]/1000.0))
-
-
-            # LForce_osim[i, 0],    LForce_osim[i, 1],    LForce_osim[i, 2],
-            # LMoment_osim[i, 0],   LMoment_osim[i, 1],   LMoment_osim[i, 2],
-            # LPosition_osim[i, 0], LPosition_osim[i, 1], LPosition_osim[i, 2],
-            # RForce_osim[i, 0],    RForce_osim[i, 1],    RForce_osim[i, 2],
-            # RMoment_osim[i, 0],   RMoment_osim[i, 1],   RMoment_osim[i, 2],
-            # RPosition_osim[i, 0], RPosition_osim[i, 1], RPosition_osim[i, 2]))
 
     file1.close()
