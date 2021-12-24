@@ -1,7 +1,7 @@
 # coding: utf-8
 # pytest -s --disable-pytest-warnings  test_btkTools.py::Test_Btk::test_btkReader_userModelOutputs
-# from __future__ import unicode_literals
-import pyCGM2
+
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Utils import files
 from pyCGM2.Tools import btkTools
 try:
