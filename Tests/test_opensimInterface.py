@@ -270,7 +270,7 @@ class Test_CGM23:
         procIK = opensimInverseKinematicsInterfaceProcedure.highLevelInverseKinematicsProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
         procIK.setProgression(progressionAxis,forwardProgression)
         procIK.preProcess(acqGait,gaitFilename[:-4])
-        procIK.setAccuracy(1e-8)
+        procIK.setAccuracy(1e-5)
         procIK.setWeights(ikWeights)
         procIK.setTimeRange()
         # procIK.setResultsDirname("verif")
@@ -299,9 +299,8 @@ class Test_CGM23:
 
 
         # --- ID ------
-        idTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-idTool-setup.xml"
+        idTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-idToolSetup_template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
-
 
         procID = opensimInverseDynamicsInterfaceProcedure.highLevelInverseDynamicsProcedure(DATA_PATH,
             scaledOsimName,modelVersion,idTemplateFullFile,externalLoadTemplateFullFile)
@@ -376,19 +375,20 @@ class Test_CGM23:
 
 
 
-        # # --- opensimStaticOptimizationInterfaceProcedure ------
-        # opensimStaticOptimizationInterfaceProcedure
-        # anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-analysisSetup-template.xml"
-        # externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
-        # procAna = opensimStaticOptimizationInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
-        # procAna.preProcess(acqIK,gaitFilename[:-4])
-        # procAna.setTimeRange()
-        # oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
-        # oiamf.run()
+        # --- opensimStaticOptimizationInterfaceProcedure ------
+
+        soTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-soSetup_template.xml"
+        externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
+        procSO = opensimStaticOptimizationInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,soTemplateFullFile,externalLoadTemplateFullFile)
+        procSO.setProgression(progressionAxis,forwardProgression)
+        procSO.preProcess(acqIK,gaitFilename[:-4])
+        procSO.setTimeRange()
+        oiamf = opensimInterfaceFilters.opensimInterfaceStaticOptimizationFilter(procSO)
+        oiamf.run()
 
 
         # --- Analyses ------
-        anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-analysisSetup-template.xml"
+        anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-analysisSetup_template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
         procAna = opensimAnalysesInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
         procAna.setProgression(progressionAxis,forwardProgression)

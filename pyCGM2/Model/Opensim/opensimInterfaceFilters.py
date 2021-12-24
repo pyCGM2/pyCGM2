@@ -170,6 +170,46 @@ class opensimInterfaceInverseDynamicsFilter(object):
                                       values, PointType=btk.btkPoint.Moment, desc="opensim moment")
 
 
+class opensimInterfaceStaticOptimizationFilter(object):
+    def __init__(self, procedure):
+        self.m_procedure = procedure
+
+    def run(self):
+        self.m_procedure.run()
+
+    def getAcq(self):
+        return self.m_procedure.m_acq
+
+    def stoToC3d(self):
+        storageDataframe = opensimIO.OpensimDataFrame(
+            self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\",
+            self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_StaticOptimization_force.sto")
+
+        values = np.zeros(
+            (self.m_procedure.m_acq.GetPointFrameNumber(), 3))
+
+        for muscle in storageDataframe.m_dataframe.columns[1:]:
+            serie = storageDataframe.getDataFrame()[muscle]
+            values[:, 0] = serie.to_list()
+
+            btkTools.smartAppendPoint(self.m_procedure.m_acq, muscle
+                                      + "[StaticOptForce]", values, PointType=btk.btkPoint.Scalar, desc="StaticOptForce")
+
+        storageDataframe = opensimIO.OpensimDataFrame(
+            self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\",
+            self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_StaticOptimization_activation.sto")
+
+        values = np.zeros(
+            (self.m_procedure.m_acq.GetPointFrameNumber(), 3))
+
+        for muscle in storageDataframe.m_dataframe.columns[1:]:
+            serie = storageDataframe.getDataFrame()[muscle]
+            values[:, 0] = serie.to_list()
+
+            btkTools.smartAppendPoint(self.m_procedure.m_acq, muscle
+                                      + "[StaticOptActivation]", values, PointType=btk.btkPoint.Scalar, desc="StaticOptActivation")
+
+
 class opensimInterfaceAnalysesFilter(object):
     def __init__(self, procedure):
         self.m_procedure = procedure
