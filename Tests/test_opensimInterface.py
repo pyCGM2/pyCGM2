@@ -273,9 +273,10 @@ class Test_CGM23:
         procIK.setAccuracy(1e-8)
         procIK.setWeights(ikWeights)
         procIK.setTimeRange()
+        # procIK.setResultsDirname("verif")
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
         oiikf.run()
-        oiikf.stoToC3d(osimConverterSettings)
+        oiikf.motToC3d(osimConverterSettings)
         acqIK =oiikf.getAcq()
 
         # ----- compute angles from rigid
@@ -296,8 +297,6 @@ class Test_CGM23:
         motDataframe.getDataFrame()["ankle_rotation_l"] = acqIK.GetPoint("LAnkleAngles").GetValues()[:,2]
         motDataframe.save()
 
-        # btkTools.smartWriter(acqIK, DATA_PATH+"verifOpensim.c3d")
-        #import ipdb; ipdb.set_trace()
 
         # --- ID ------
         idTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-idTool-setup.xml"
@@ -308,12 +307,13 @@ class Test_CGM23:
             scaledOsimName,modelVersion,idTemplateFullFile,externalLoadTemplateFullFile)
         procID.setProgression(progressionAxis,forwardProgression)
         procID.preProcess(acqIK,gaitFilename[:-4])
+        # procID.setResultsDirname("verif")
         procID.setTimeRange()
         oiidf = opensimInterfaceFilters.opensimInterfaceInverseDynamicsFilter(procID)
         oiidf.run()
         oiidf.stoToC3d(model.mp["Bodymass"], osimConverterSettings)
 
-        btkTools.smartWriter(acqIK, DATA_PATH+"verifOpensim.c3d")
+        # btkTools.smartWriter(acqIK, DATA_PATH+"verifOpensim.c3d")
 
 
 
@@ -373,8 +373,7 @@ class Test_CGM23:
             # #---- Joint energetics----
             modelFilters.JointPowerFilter(model,acqIK).compute(pointLabelSuffix=None)
 
-            btkTools.smartWriter(acqIK, DATA_PATH+"verifDynOpensim.c3d")
-            import ipdb; ipdb.set_trace()
+
 
 
         # # --- opensimStaticOptimizationInterfaceProcedure ------
@@ -392,10 +391,13 @@ class Test_CGM23:
         anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-analysisSetup-template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
         procAna = opensimAnalysesInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
+        procAna.setProgression(progressionAxis,forwardProgression)
         procAna.preProcess(acqIK,gaitFilename[:-4])
+        # procAna.setResultsDirname("verif")
         procAna.setTimeRange()
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
         oiamf.run()
+        oiamf.stoToC3d()
 
         btkTools.smartWriter(acqIK,DATA_PATH+ gaitFilename[:-4]+"-Muscles.c3d")
         import ipdb; ipdb.set_trace()

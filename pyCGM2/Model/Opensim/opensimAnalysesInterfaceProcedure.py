@@ -30,6 +30,7 @@ class highLevelAnalysesProcedure(object):
         localExternalLoadFile=None):
 
         self.m_DATA_PATH = DATA_PATH
+        self._resultsDir = ""
         self.m_osimName = scaledOsimName
         self.m_modelVersion = modelVersion.replace(".", "")
 
@@ -56,13 +57,13 @@ class highLevelAnalysesProcedure(object):
 
         self.m_autoXmlDefinition=True
 
-        self.m_muscles=list()
 
-    def getMuscles(self):
-        return self.m_muscles
+    def setProgression(self,progressionAxis,forwardProgression):
+        self.m_progressionAxis = progressionAxis
+        self.m_forwardProgression = forwardProgression
 
 
-    def setAutoXmlDefinition(boolean):
+    def setAutoXmlDefinition(self,boolean):
         self.m_autoXmlDefinition=boolean
 
     def preProcess(self, acq, dynamicFile):
@@ -70,7 +71,12 @@ class highLevelAnalysesProcedure(object):
         self.m_acq = acq
 
         opensimTools.footReactionMotFile(
-            self.m_acq, self.m_DATA_PATH+self.m_dynamicFile+"_grf.mot")
+            self.m_acq, self.m_DATA_PATH+self.m_dynamicFile+"_grf.mot",
+            self.m_progressionAxis,self.m_forwardProgression)
+
+    def setResultsDirname(self,dirname):
+        self.xml.set_one("results_directory", dirname)
+        self._resultsDir = dirname
 
 
     def setTimeRange(self,beginFrame=None,lastFrame=None):
@@ -79,8 +85,6 @@ class highLevelAnalysesProcedure(object):
         freq = self.m_acq.GetPointFrequency()
         beginTime = 0.0 if beginFrame is None else (beginFrame-ff)/freq
         endTime = (self.m_acq.GetLastFrame() - ff)/freq  if lastFrame is  None else (lastFrame-ff)/freq
-
-
 
         self.xml.set_one("initial_time",str(beginTime))
         self.xml.set_one("final_time",str(endTime))
@@ -93,7 +97,7 @@ class highLevelAnalysesProcedure(object):
 
         self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("coordinates_file", self.m_dynamicFile+".mot")
-        self.xml.set_one("results_directory", self.m_DATA_PATH)
+        # self.xml.set_one("results_directory", self.m_DATA_PATH)
         self.xml.set_one("external_loads_file", files.getFilename(self.m_externalLoad))
 
     def _setXmlLoad(self):
@@ -120,22 +124,23 @@ class highLevelAnalysesProcedure(object):
         self.finalize()
 
     def finalize(self):
+        pass
 
-        # Muscle length
-        storageObject = opensim.Storage(self.m_DATA_PATH + self.m_dynamicFile+"-"+self.m_modelVersion+ "-analyses_MuscleAnalysis_Length.sto")
-        labels = storageObject.getColumnLabels()
-        for index in range(1,labels.getSize()): #1 because 0 is time
-            self.m_muscles.append(labels.get(index))
-            index_x = storageObject.getStateIndex(labels.get(index))
-            array_x = opensim.ArrayDouble()
-            storageObject.getDataColumn(index_x, array_x)
-
-            n = array_x.getSize()
-            pointValues = np.zeros((n, 3))
-            for i in range(0, n):
-                pointValues[i, 0] = array_x.getitem(i)
-
-            btkTools.smartAppendPoint(self.m_acq, labels.get(index)+"[MuscleLength]",pointValues, PointType=btk.btkPoint.Scalar,desc="MuscleLength")
+        # # Muscle length
+        # storageObject = opensim.Storage(self.m_DATA_PATH + self.m_dynamicFile+"-"+self.m_modelVersion+ "-analyses_MuscleAnalysis_Length.sto")
+        # labels = storageObject.getColumnLabels()
+        # for index in range(1,labels.getSize()): #1 because 0 is time
+        #     self.m_muscles.append(labels.get(index))
+        #     index_x = storageObject.getStateIndex(labels.get(index))
+        #     array_x = opensim.ArrayDouble()
+        #     storageObject.getDataColumn(index_x, array_x)
+        #
+        #     n = array_x.getSize()
+        #     pointValues = np.zeros((n, 3))
+        #     for i in range(0, n):
+        #         pointValues[i, 0] = array_x.getitem(i)
+        #
+        #     btkTools.smartAppendPoint(self.m_acq, labels.get(index)+"[MuscleLength]",pointValues, PointType=btk.btkPoint.Scalar,desc="MuscleLength")
 
 
 

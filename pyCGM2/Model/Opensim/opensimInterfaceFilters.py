@@ -107,7 +107,7 @@ class opensimInterfaceInverseKinematicsFilter(object):
     def getAcq(self):
         return self.m_procedure.m_acqMotionFinal
 
-    def stoToC3d(self, osimConverter):
+    def motToC3d(self, osimConverter):
 
         storageDataframe = opensimIO.OpensimDataFrame(
             self.m_procedure.m_DATA_PATH, self.m_procedure.m_dynamicFile+".mot")
@@ -146,7 +146,8 @@ class opensimInterfaceInverseDynamicsFilter(object):
     def stoToC3d(self, bodymass, osimConverter):
 
         storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH, self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion+"-inverse_dynamics.sto")
+            self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\",
+            self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion+"-inverse_dynamics.sto")
 
         for jointIt in osimConverter["Moments"]:
 
@@ -177,4 +178,39 @@ class opensimInterfaceAnalysesFilter(object):
         self.m_procedure.run()
 
     def getAcq(self):
-        return self.m_procedure.m_acqMotionFinal
+        return self.m_procedure.m_acq
+
+    def stoToC3d(self):
+
+        # "-analyses_MuscleAnalysis_MuscleActuatorPower.sto"
+        # "-analyses_MuscleAnalysis_NormalizedFiberLength.sto"
+        # "-analyses_MuscleAnalysis_NormFiberVelocity.sto"
+        # "-analyses_MuscleAnalysis_PassiveFiberForce.sto"
+        # "-analyses_MuscleAnalysis_PassiveFiberForceAlongTendon.sto"
+        # "-analyses_MuscleAnalysis_PennationAngle.sto"
+        # "-analyses_MuscleAnalysis_PennationAngularVelocity.sto"
+        # "-analyses_MuscleAnalysis_TendonForce.sto"
+        # "-analyses_MuscleAnalysis_TendonLength.sto"
+        # "-analyses_MuscleAnalysis_TendonPower.sto"
+        # "-analyses_MuscleAnalysis_ActiveFiberForce.sto"
+        # "-analyses_MuscleAnalysis_ActiveFiberForceAlongTendon.sto"
+        # "-analyses_MuscleAnalysis_FiberActivePower.sto"
+        # "-analyses_MuscleAnalysis_FiberForce.sto"
+        # "-analyses_MuscleAnalysis_FiberLength.sto"
+        # "-analyses_MuscleAnalysis_FiberPassivePower.sto"
+        # "-analyses_MuscleAnalysis_FiberVelocity.sto"
+        # "-analyses_MuscleAnalysis_Length.sto"
+
+        storageDataframe = opensimIO.OpensimDataFrame(
+            self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\",
+            self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_MuscleAnalysis_Length.sto")
+
+        values = np.zeros(
+            (self.m_procedure.m_acq.GetPointFrameNumber(), 3))
+
+        for muscle in storageDataframe.m_dataframe.columns[1:]:
+            serie = storageDataframe.getDataFrame()[muscle]
+            values[:, 0] = serie.to_list()
+
+            btkTools.smartAppendPoint(self.m_procedure.m_acq, muscle
+                                      + "[MuscleLength]", values, PointType=btk.btkPoint.Scalar, desc="MuscleLength")

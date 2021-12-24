@@ -32,6 +32,8 @@ class highLevelInverseDynamicsProcedure(object):
         localExternalLoadFile=None):
 
         self.m_DATA_PATH = DATA_PATH
+        self._resultsDir = ""
+
         self.m_osimName = scaledOsimName
         self.m_modelVersion = modelVersion.replace(".", "")
 
@@ -75,6 +77,9 @@ class highLevelInverseDynamicsProcedure(object):
             self.m_acq, self.m_DATA_PATH+self.m_dynamicFile+"_grf.mot",
             self.m_progressionAxis,self.m_forwardProgression,mfpa = self.m_mfpa)
 
+    def setResultsDirname(self,dirname):
+        self.xml.set_one("results_directory", dirname)
+        self._resultsDir = dirname
 
     def setTimeRange(self,beginFrame=None,lastFrame=None):
 
@@ -91,7 +96,7 @@ class highLevelInverseDynamicsProcedure(object):
         self.xml.getSoup().find("InverseDynamicsTool").attrs["name"] = self.m_modelVersion+"-InverseDynamics"
         self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("coordinates_file", self.m_dynamicFile+".mot")
-        self.xml.set_one("results_directory", self.m_DATA_PATH)
+        # self.xml.set_one("results_directory", self.m_DATA_PATH)
         self.xml.set_one("output_gen_force_file", self.m_dynamicFile+"-"+self.m_modelVersion+"-inverse_dynamics.sto")
         self.xml.set_one("lowpass_cutoff_frequency_for_coordinates","6")
 

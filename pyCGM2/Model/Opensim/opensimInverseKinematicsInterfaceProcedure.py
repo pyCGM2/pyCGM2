@@ -28,6 +28,8 @@ class highLevelInverseKinematicsProcedure(object):
                 localIkToolFile=None):
 
         self.m_DATA_PATH = DATA_PATH
+        self._resultsDir = ""
+
         # self.m_osimModel = scaleOsim
         self.m_osimName = scaledOsimName
         self.m_modelVersion = modelVersion.replace(".", "")
@@ -82,7 +84,12 @@ class highLevelInverseKinematicsProcedure(object):
 
         self.m_frameRange = [int((beginTime*freq)+ff),int((endTime*freq)+ff)]
 
+    def setResultsDirname(self,dirname):
+        self.xml.set_one("results_directory", dirname)
+        self._resultsDir = dirname
+
     def _setXml(self):
+
         self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("marker_file", files.getFilename(self.m_markerFile))
         self.xml.set_one("output_motion_file", self.m_dynamicFile+".mot")
@@ -108,14 +115,27 @@ class highLevelInverseKinematicsProcedure(object):
 
     def finalize(self):
 
-        os.rename(self.m_DATA_PATH + "_ik_model_marker_locations.sto",
-                    self.m_DATA_PATH +self.m_dynamicFile+"_ik_model_marker_locations.sto")
-        os.rename(self.m_DATA_PATH + "_ik_marker_errors.sto",
-                    self.m_DATA_PATH +self.m_dynamicFile+"_ik_marker_errors.sto")
 
+        marker_location_filename = self.m_DATA_PATH + self._resultsDir+"\\"+ self.m_dynamicFile+"_ik_model_marker_locations.sto"
+        if os.path.isfile(marker_location_filename):
+            os.remove(marker_location_filename)
+        os.rename(self.m_DATA_PATH + self._resultsDir+ "\\_ik_model_marker_locations.sto",
+                    marker_location_filename)
+
+        marker_errors_filename = self.m_DATA_PATH + self._resultsDir+"\\"+ self.m_dynamicFile+"_ik_marker_errors.sto"
+        if os.path.isfile(marker_errors_filename):
+            os.remove(marker_errors_filename)
+        os.rename(self.m_DATA_PATH + self._resultsDir+"\\_ik_marker_errors.sto",
+                 marker_errors_filename)
 
         acqMotionFinal = btk.btkAcquisition.Clone(self.m_acq0)
-        storageObject = opensim.Storage(self.m_DATA_PATH + self.m_dynamicFile +"_ik_model_marker_locations.sto")
+
+        # TODO : worl with storage datframe instead of the opensim sorage instance
+
+        storageDataframe = opensimIO.OpensimDataFrame(
+            self.m_DATA_PATH+self._resultsDir+"\\", self.m_dynamicFile+"_ik_model_marker_locations.sto")
+
+        storageObject = opensim.Storage(self.m_DATA_PATH + self._resultsDir+"\\"+self.m_dynamicFile +"_ik_model_marker_locations.sto")
         for marker in self.m_weights.keys():
             if self.m_weights[marker] != 0:
                 values =opensimTools.sto2pointValues(storageObject,marker,self.m_R_LAB_OSIM)
