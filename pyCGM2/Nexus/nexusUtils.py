@@ -6,6 +6,7 @@ def getNexusSubjectMp(NEXUS,subject, resetFlag=False):
 
     required_mp={
     'Bodymass'   : NEXUS.GetSubjectParamDetails( subject, "Bodymass")[0] if "Bodymass" in params else 0,#71.0,
+    'Height'   : NEXUS.GetSubjectParamDetails( subject, "Height")[0] if "Height" in params else 0,
     'LeftLegLength' : NEXUS.GetSubjectParamDetails( subject, "LeftLegLength")[0] if "LeftLegLength" in params else 0,#860.0,
     'RightLegLength' : NEXUS.GetSubjectParamDetails( subject, "RightLegLength")[0] if "RightLegLength" in params else 0,#865.0 ,
     'LeftKneeWidth' : NEXUS.GetSubjectParamDetails( subject, "LeftKneeWidth")[0]if "LeftKneeWidth" in params else 0,#102.0,
