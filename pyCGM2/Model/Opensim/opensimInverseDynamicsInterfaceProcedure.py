@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from bs4 import BeautifulSoup
+import matplotlib.pyplot as plt
 
 # pyCGM2
 try:
@@ -15,7 +16,7 @@ from pyCGM2.Model.Opensim import osimProcessing
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Utils import files
 from pyCGM2.Model.Opensim import opensimInterfaceFilters
-
+from pyCGM2.Model.Opensim import opensimIO
 try:
     from pyCGM2 import opensim4 as opensim
 except:
@@ -26,12 +27,15 @@ except:
 
 class highLevelInverseDynamicsProcedure(object):
     def __init__(self,DATA_PATH, scaledOsimName,modelVersion,idToolTemplateFile,externalLoadTemplateFile,
+        mfpa = None,
         localIdToolFile=None,
         localExternalLoadFile=None):
 
         self.m_DATA_PATH = DATA_PATH
         self.m_osimName = scaledOsimName
         self.m_modelVersion = modelVersion.replace(".", "")
+
+        self.m_mfpa = mfpa
 
         if localIdToolFile is None:
             if idToolTemplateFile is None:
@@ -56,7 +60,11 @@ class highLevelInverseDynamicsProcedure(object):
 
         self.m_autoXmlDefinition=True
 
-    def setAutoXmlDefinition(boolean):
+    def setProgression(self,progressionAxis,forwardProgression):
+        self.m_progressionAxis = progressionAxis
+        self.m_forwardProgression = forwardProgression
+
+    def setAutoXmlDefinition(self,boolean):
         self.m_autoXmlDefinition=boolean
 
     def preProcess(self, acq, dynamicFile):
@@ -64,7 +72,8 @@ class highLevelInverseDynamicsProcedure(object):
         self.m_acq = acq
 
         opensimTools.footReactionMotFile(
-            self.m_acq, self.m_DATA_PATH+self.m_dynamicFile+"_grf.mot")
+            self.m_acq, self.m_DATA_PATH+self.m_dynamicFile+"_grf.mot",
+            self.m_progressionAxis,self.m_forwardProgression,mfpa = self.m_mfpa)
 
 
     def setTimeRange(self,beginFrame=None,lastFrame=None):
@@ -84,6 +93,7 @@ class highLevelInverseDynamicsProcedure(object):
         self.xml.set_one("coordinates_file", self.m_dynamicFile+".mot")
         self.xml.set_one("results_directory", self.m_DATA_PATH)
         self.xml.set_one("output_gen_force_file", self.m_dynamicFile+"-"+self.m_modelVersion+"-inverse_dynamics.sto")
+        self.xml.set_one("lowpass_cutoff_frequency_for_coordinates","6")
 
         self.xml.set_one("external_loads_file", files.getFilename(self.m_externalLoad))
 
@@ -105,26 +115,9 @@ class highLevelInverseDynamicsProcedure(object):
         # idTool.setModel(self.m_osimModel)
         idTool.run()
 
-        # self.finalize()
-
+        self.finalize()
     def finalize(self):
-        # Muscle length
         pass
-        # TODO: extract moment from the sto file 
-        # storageObject = opensim.Storage(self.m_DATA_PATH + "gait1-CGM23-inverse_dynamics.sto)
-        # labels = storageObject.getColumnLabels()
-        # for index in range(1,labels.getSize()):
-        #     index_x = storageObject.getStateIndex(labels.get(index))
-        #     array_x = opensim.ArrayDouble()
-        #     storageObject.getDataColumn(index_x, array_x)
-        #
-        #     n = array_x.getSize()
-        #     pointValues = np.zeros((n, 3))
-        #     for i in range(0, n):
-        #         pointValues[i, 0] = array_x.getitem(i)
-        #
-        #     btkTools.smartAppendPoint(self.m_acq, labels.get(index),pointValues, PointType=btk.btkPoint.Scalar,desc="Muscle Length")
-
 
 
 # NOT WORK : need opensim4.2 and bug fix of property

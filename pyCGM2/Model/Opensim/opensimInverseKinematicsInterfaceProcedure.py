@@ -20,7 +20,7 @@ try:
 except:
     LOGGER.logger.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
     import opensim
-
+from pyCGM2.Model.Opensim import opensimIO
 
 
 class highLevelInverseKinematicsProcedure(object):
@@ -31,6 +31,8 @@ class highLevelInverseKinematicsProcedure(object):
         # self.m_osimModel = scaleOsim
         self.m_osimName = scaledOsimName
         self.m_modelVersion = modelVersion.replace(".", "")
+
+
 
         if localIkToolFile is None:
             if ikToolTemplateFile is None:
@@ -43,7 +45,11 @@ class highLevelInverseKinematicsProcedure(object):
 
         self.m_autoXmlDefinition=True
 
-    def setAutoXmlDefinition(boolean):
+    def setProgression(self,progressionAxis,forwardProgression):
+        self.m_progressionAxis = progressionAxis
+        self.m_forwardProgression = forwardProgression
+
+    def setAutoXmlDefinition(self,boolean):
         self.m_autoXmlDefinition=boolean
 
     def preProcess(self, acq, dynamicFile):
@@ -52,13 +58,7 @@ class highLevelInverseKinematicsProcedure(object):
         self.m_acq0 = acq
         self.m_acqMotion_forIK = btk.btkAcquisition.Clone(acq)
 
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
-        pff.compute()
-        progressionAxis = pff.outputs["progressionAxis"]
-        forwardProgression = pff.outputs["forwardProgression"]
-
-        R_LAB_OSIM = opensimTools.setGlobalTransormation_lab_osim(progressionAxis,forwardProgression)
+        R_LAB_OSIM = opensimTools.setGlobalTransormation_lab_osim(self.m_progressionAxis,self.m_forwardProgression)
         opensimTools.globalTransformationLabToOsim(self.m_acqMotion_forIK,R_LAB_OSIM)
         self.m_markerFile = opensimTools.smartTrcExport(self.m_acqMotion_forIK,self.m_DATA_PATH +  dynamicFile)
 
@@ -131,8 +131,9 @@ class highLevelInverseKinematicsProcedure(object):
         #
         # btkTools.smartAppendPoint(acqMotionFinal,"AnkleOpensim", np.array([values0,values1,values2]).T, desc= "opensim", PointType = btk.btkPoint.Angle )
 
-
         self.m_acqMotionFinal = acqMotionFinal
+
+
 
 # NOT WORK : need opensim4.2 and bug fix of property
 class opensimInterfaceLowLevelInverseKinematicsProcedure(object):
