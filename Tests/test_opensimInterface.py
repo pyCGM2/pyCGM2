@@ -16,7 +16,7 @@ from pyCGM2.Model.CGM2 import cgm,cgm2
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.Model import  modelFilters,modelDecorator
 from pyCGM2 import enums
-from pyCGM2.Model.Opensim import opensimFilters,opensimInterfaceFilters,opensimScalingInterfaceProcedure,opensimInverseKinematicsInterfaceProcedure,opensimInverseDynamicsInterfaceProcedure
+from pyCGM2.Model.Opensim import opensimFilters,opensimInterfaceFilters
 from pyCGM2.Model.Opensim import opensimScalingInterfaceProcedure
 from pyCGM2.Model.Opensim import opensimInverseKinematicsInterfaceProcedure
 from pyCGM2.Model.Opensim import opensimInverseDynamicsInterfaceProcedure
@@ -104,23 +104,57 @@ def processCGM23(DATA_PATH,settings,staticFilename,gaitFilename):
 
     return model, acqStatic,acqGait,staticFilename,gaitFilename,scp
 
+def process_oldIK(DATA_PATH,model,acqGait,gaitFilename,scp):
+    # --- osim builder ---
+    cgmCalibrationprocedure = opensimFilters.CgmOpensimCalibrationProcedures(model)
+    markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\cgm23-markerset.xml"
+    osimfile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\lowerLimb_ballsJoints.osim"
+
+    # --- old implementation - No Scaling
+    oscf = opensimFilters.opensimCalibrationFilter(osimfile,
+                                            model,
+                                            cgmCalibrationprocedure,
+                                            DATA_PATH)
+    oscf.addMarkerSet(markersetFile)
+    scalingOsim = oscf.build(exportOsim=False)
+
+    cgmFittingProcedure = opensimFilters.CgmOpensimFittingProcedure(model)
+    iksetupFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
+
+    osrf = opensimFilters.opensimFittingFilter(iksetupFile,
+                                                      scalingOsim,
+                                                      cgmFittingProcedure,
+                                                      DATA_PATH,
+                                                      acqGait )
+
+    acqIK = osrf.run(str(DATA_PATH + gaitFilename ),exportSetUp=False)
+
+
+
+    modMotion=modelFilters.ModelMotionFilter(scp,acqIK,model,enums.motionMethod.Sodervisk,
+                                                useForMotionTest=True)
+    modMotion.compute()
+
+    finalJcs =modelFilters.ModelJCSFilter(model,acqIK)
+    finalJcs.compute(description="old", pointLabelSuffix = None)#
+
+    return acqIK
+
+
 
 class Test_CGM23:
-    def test_cgm23_progressX(self):
+    def test_cgm23_progressX_CHECKING(self):
 
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\CGM23\\Hannibal-medial\\"
-
         settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
-
-
 
         #-----
         model, acqStatic,acqGait,staticFilename,gaitFilename,scp = processCGM23(DATA_PATH,settings,"static.c3d","gait1.c3d")
+        acqIK_old = process_oldIK(DATA_PATH,model,acqGait,gaitFilename,scp)
 
         modelVersion="CGM2.3"
 
         progressionAxis, forwardProgression, globalFrame =processing.detectProgressionFrame(acqGait)
-
 
         # --- osim builder ---
         markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\CGM23-markerset.xml"
@@ -132,7 +166,7 @@ class Test_CGM23:
 
         proc = opensimScalingInterfaceProcedure.highLevelScalingProcedure(DATA_PATH,modelVersion,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
         proc.preProcess( acqStatic, staticFilename[:-4])
-        proc.setAnthropometry(71.0,1780.0)
+        proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
         oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
         oisf.run()
         scaledOsim = oisf.getOsim()
@@ -161,6 +195,97 @@ class Test_CGM23:
         finalJcs =modelFilters.ModelJCSFilter(model,acqIK)
         finalJcs.compute(description="new", pointLabelSuffix = None)#
 
+
+        fig = plt.figure(figsize=(10,4), dpi=100,facecolor="white")
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+        ax1 = plt.subplot(1,3,1)
+        ax2 = plt.subplot(1,3,2)
+        ax3 = plt.subplot(1,3,3)
+
+
+        ax1.plot(acqIK_old.GetPoint("LKneeAngles").GetValues()[:,0],"-r")
+        ax1.plot(acqIK.GetPoint("LKneeAngles").GetValues()[:,0],"-ob")
+
+        ax2.plot(acqIK_old.GetPoint("LKneeAngles").GetValues()[:,1],"-r")
+        ax2.plot(acqIK.GetPoint("LKneeAngles").GetValues()[:,1],"-ob")
+
+        ax3.plot(acqIK_old.GetPoint("LKneeAngles").GetValues()[:,2],"-r")
+        ax3.plot(acqIK.GetPoint("LKneeAngles").GetValues()[:,2],"-ob")
+
+        fig = plt.figure(figsize=(10,4), dpi=100,facecolor="white")
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+        ax1 = plt.subplot(1,3,1)
+        ax2 = plt.subplot(1,3,2)
+        ax3 = plt.subplot(1,3,3)
+
+        ax1.plot(acqIK_old.GetPoint("LAnkleAngles").GetValues()[:,0],"-r")
+        ax1.plot(acqIK.GetPoint("LAnkleAngles").GetValues()[:,0],"-ob")
+
+        ax2.plot(acqIK_old.GetPoint("LAnkleAngles").GetValues()[:,1],"-r")
+        ax2.plot(acqIK.GetPoint("LAnkleAngles").GetValues()[:,1],"-ob")
+
+        ax3.plot(acqIK_old.GetPoint("LAnkleAngles").GetValues()[:,2],"-r")
+        ax3.plot(acqIK.GetPoint("LAnkleAngles").GetValues()[:,2],"-ob")
+
+        plt.show()
+
+
+
+    def test_cgm23_progressX_allOpensimSteps(self):
+
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\CGM23\\Hannibal-medial\\"
+
+        settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
+
+
+
+        #-----
+        model, acqStatic,acqGait,staticFilename,gaitFilename,scp = processCGM23(DATA_PATH,settings,"static.c3d","gait1.c3d")
+
+        modelVersion="CGM2.3"
+
+        progressionAxis, forwardProgression, globalFrame =processing.detectProgressionFrame(acqGait)
+
+
+        # --- osim builder ---
+        markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\CGM23-markerset.xml"
+        osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\pycgm2-gait2354_simbody.osim"
+        osimConverterSettings = files.openFile(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH,"setup\\CGM23\\OsimToC3dConverter.settings")
+
+        # scaling
+        scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23_scaleSetup_template.xml"
+
+        proc = opensimScalingInterfaceProcedure.highLevelScalingProcedure(DATA_PATH,modelVersion,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
+        proc.preProcess( acqStatic, staticFilename[:-4])
+        proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
+        oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
+        oisf.run()
+        scaledOsim = oisf.getOsim()
+        scaledOsimName = oisf.getOsimName()
+
+        # --- IK ---
+        ikWeights = settings["Fitting"]["Weight"]
+        ikTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
+
+        procIK = opensimInverseKinematicsInterfaceProcedure.highLevelInverseKinematicsProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
+        procIK.setProgression(progressionAxis,forwardProgression)
+        procIK.preProcess(acqGait,gaitFilename[:-4])
+        procIK.setAccuracy(1e-8)
+        procIK.setWeights(ikWeights)
+        procIK.setTimeRange()
+        oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
+        oiikf.run()
+        oiikf.stoToC3d(osimConverterSettings)
+        acqIK =oiikf.getAcq()
+
+        # ----- compute angles from rigid
+        modMotion=modelFilters.ModelMotionFilter(scp,acqIK,model,enums.motionMethod.Sodervisk,
+                                                    useForMotionTest=True)
+        modMotion.compute()
+
+        finalJcs =modelFilters.ModelJCSFilter(model,acqIK)
+        finalJcs.compute(description="new", pointLabelSuffix = None)#
+
         #correct the ankle angles
         motDataframe = opensimIO.OpensimDataFrame(DATA_PATH,gaitFilename[:-4]+".mot")
         motDataframe.getDataFrame()["ankle_flexion_r"] = acqIK.GetPoint("RAnkleAngles").GetValues()[:,0]
@@ -177,7 +302,6 @@ class Test_CGM23:
         # --- ID ------
         idTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-idTool-setup.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
-
 
 
         procID = opensimInverseDynamicsInterfaceProcedure.highLevelInverseDynamicsProcedure(DATA_PATH,
@@ -247,7 +371,7 @@ class Test_CGM23:
             #                      ).compute(pointLabelSuffix="Proximal")
             #
             # #---- Joint energetics----
-            # modelFilters.JointPowerFilter(model,acqIK).compute(pointLabelSuffix=None)
+            modelFilters.JointPowerFilter(model,acqIK).compute(pointLabelSuffix=None)
 
             btkTools.smartWriter(acqIK, DATA_PATH+"verifDynOpensim.c3d")
             import ipdb; ipdb.set_trace()
