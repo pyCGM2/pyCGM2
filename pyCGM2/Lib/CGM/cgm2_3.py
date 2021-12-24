@@ -7,23 +7,24 @@ import pyCGM2
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
-from pyCGM2.Tools import  opensimTools
 from pyCGM2 import enums
+from pyCGM2.Utils import files
 
 from pyCGM2.Model import modelFilters,bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm,cgm2
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
-from pyCGM2.Model.Opensim import opensimFilters
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
 from pyCGM2.Inspector import InspectorFilter, InspectorProcedure
 
-from pyCGM2.Model.Opensim import opensimFilters,opensimInterfaceFilters,opensimScalingInterfaceProcedure,opensimInverseKinematicsInterfaceProcedure,opensimInverseDynamicsInterfaceProcedure
-from pyCGM2.Model.Opensim import opensimInverseDynamicsInterfaceProcedure
+from pyCGM2.Model.Opensim import opensimInterfaceFilters
+from pyCGM2.Model.Opensim import opensimScalingInterfaceProcedure
+from pyCGM2.Model.Opensim import opensimInverseKinematicsInterfaceProcedure
 from pyCGM2.Model.Opensim import opensimAnalysesInterfaceProcedure
 from pyCGM2.Model.Opensim import opensimIO
+from pyCGM2.Lib import processing
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               required_mp,optional_mp,
@@ -184,30 +185,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
 
     # ----progression Frame----
-    progressionFlag = False
-    if btkTools.isPointsExist(acqStatic, ['LASI', 'RASI', 'RPSI', 'LPSI'],ignorePhantom=False):
-        LOGGER.logger.info("[pyCGM2] - progression axis detected from Pelvic markers ")
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
-        pff.compute()
-        progressionAxis = pff.outputs["progressionAxis"]
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
-        progressionFlag = True
-    elif btkTools.isPointsExist(acqStatic, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
-        LOGGER.logger.info("[pyCGM2] - progression axis detected from Thoracic markers ")
-        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
-        pff.compute()
-        progressionAxis = pff.outputs["progressionAxis"]
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
+    progressionAxis, forwardProgression, globalFrame =processing.detectProgressionFrame(acqStatic,staticFlag=True)
 
-    else:
-        globalFrame = "XYZ"
-        progressionAxis = "X"
-        forwardProgression = True
-        LOGGER.logger.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
 
     # ----manage IK Targets----
     ikTargets = list()
@@ -226,16 +205,18 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         if ik_flag:
 
             modelVersion = "CGM2.3"
+
             # --- osim builder ---
             markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "markerset\\CGM23-markerset.xml"
             osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "osim\\pycgm2-gait2354_simbody.osim"
+            # osimConverterSettings = files.openFile(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH,"setup\\CGM23\\OsimToC3dConverter.settings")
 
             # scaling
             scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23_scaleSetup_template.xml"
 
             proc = opensimScalingInterfaceProcedure.highLevelScalingProcedure(DATA_PATH,modelVersion,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
             proc.preProcess( acqStatic, calibrateFilenameLabelled[:-4])
-            proc.setAnthropometry(71.0,1780.0)
+            proc.setAnthropometry(required_mp["Bodymass"],required_mp["Height"])
             oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
             oisf.run()
             scaledOsim = oisf.getOsim()
@@ -243,16 +224,22 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
             # --- IK ---
             # ikWeights = settings["Fitting"]["Weight"]
+            # --- IK ---
             ikTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
 
             procIK = opensimInverseKinematicsInterfaceProcedure.highLevelInverseKinematicsProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
+            procIK.setProgression(progressionAxis,forwardProgression)
             procIK.preProcess(acqStatic,calibrateFilenameLabelled[:-4])
             procIK.setAccuracy(1e-5)
             procIK.setWeights(weights)
             procIK.setTimeRange()
+            # procIK.setResultsDirname("verif")
             oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
             oiikf.run()
+            # oiikf.motToC3d(osimConverterSettings)
             acqStaticIK =oiikf.getAcq()
+
+
 
 
             # #                        ---OPENSIM IK---
@@ -500,44 +487,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     modMotion.compute()
     # /section to remove
 
-    progressionFlag = False
-    if btkTools.isPointExist(acqGait, 'LHEE',ignorePhantom=False) or btkTools.isPointExist(acqGait, 'RHEE',ignorePhantom=False):
-
-        pfp = progressionFrame.PointProgressionFrameProcedure(marker="LHEE") \
-            if btkTools.isPointExist(acqGait, 'LHEE',ignorePhantom=False) \
-            else  progressionFrame.PointProgressionFrameProcedure(marker="RHEE")
-
-
-        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
-        pff.compute()
-        progressionAxis = pff.outputs["progressionAxis"]
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
-        progressionFlag = True
-
-    elif btkTools.isPointsExist(acqGait, ['LASI', 'RASI', 'RPSI', 'LPSI'],ignorePhantom=False) and not progressionFlag:
-        LOGGER.logger.info("[pyCGM2] - progression axis detected from Pelvic markers ")
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
-        pff.compute()
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
-
-        progressionFlag = True
-    elif btkTools.isPointsExist(acqGait, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
-        LOGGER.logger.info("[pyCGM2] - progression axis detected from Thoracic markers ")
-        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
-        pff.compute()
-        progressionAxis = pff.outputs["progressionAxis"]
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
-
-    else:
-        globalFrame = "XYZ"
-        progressionAxis = "X"
-        forwardProgression = True
-        LOGGER.logger.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
+    progressionAxis, forwardProgression, globalFrame =processing.detectProgressionFrame(acqGait)
 
 
     for target in weights.keys():
@@ -552,39 +502,24 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         # --- new ---
         modelVersion="CGM2.3"
         scaledOsimName = "CGM23-ScaledModel.osim"
-        # ikWeights = settings["Fitting"]["Weight"]
+
+        accuracy = kwargs["ikAccuracy"] if "ikAccuracy" in kwargs.keys() else 1e-8
+
+
+
         ikTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-ikSetUp_template.xml"
 
         procIK = opensimInverseKinematicsInterfaceProcedure.highLevelInverseKinematicsProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
+        procIK.setProgression(progressionAxis,forwardProgression)
         procIK.preProcess(acqGait,reconstructFilenameLabelled[:-4])
-        procIK.setAccuracy(1e-8)
+        procIK.setAccuracy(accuracy)
         procIK.setWeights(weights)
         procIK.setTimeRange()
+        # procIK.setResultsDirname("verif")
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
         oiikf.run()
+        # oiikf.motToC3d(osimConverterSettings)
         acqIK =oiikf.getAcq()
-
-        #correct the ankle angle
-        motDataframe = opensimIO.OpensimDataFrame(DATA_PATH,reconstructFilenameLabelled[:-4]+".mot")
-        motDataframe.getDataFrame()["ankle_flexion_r"] = acqIK.GetPoint("RAnkleAngles").GetValues()[:,0]
-        motDataframe.getDataFrame()["ankle_adduction_r"] = acqIK.GetPoint("RAnkleAngles").GetValues()[:,1]
-        motDataframe.getDataFrame()["ankle_rotation_r"] = acqIK.GetPoint("RAnkleAngles").GetValues()[:,2]
-        motDataframe.getDataFrame()["ankle_flexion_l"] = acqIK.GetPoint("LAnkleAngles").GetValues()[:,0]
-        motDataframe.getDataFrame()["ankle_adduction_l"] = acqIK.GetPoint("LAnkleAngles").GetValues()[:,1]
-        motDataframe.getDataFrame()["ankle_rotation_l"] = acqIK.GetPoint("LAnkleAngles").GetValues()[:,2]
-        motDataframe.save()
-
-        # --- Analyses ------
-        if "muscleLength" in kwargs.keys() and kwargs["muscleLength"]:
-            anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-analysisSetup-template.xml"
-            externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
-            procAna = opensimAnalysesInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
-            procAna.preProcess(acqIK,reconstructFilenameLabelled[:-4])
-            procAna.setTimeRange()
-            oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
-            oiamf.run()
-
-
 
         # # --- old ---
         #
@@ -712,6 +647,32 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         #---- Joint energetics----
         modelFilters.JointPowerFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
+
+
+
+    # --- Analyses ------
+    if "muscleLength" in kwargs.keys() and kwargs["muscleLength"]:
+
+        #correct the ankle angles
+        motDataframe = opensimIO.OpensimDataFrame(DATA_PATH,reconstructFilenameLabelled[:-4]+".mot")
+        motDataframe.getDataFrame()["ankle_flexion_r"] = finalAcqGait.GetPoint("RAnkleAngles").GetValues()[:,0]
+        motDataframe.getDataFrame()["ankle_adduction_r"] = finalAcqGait.GetPoint("RAnkleAngles").GetValues()[:,1]
+        motDataframe.getDataFrame()["ankle_rotation_r"] = finalAcqGait.GetPoint("RAnkleAngles").GetValues()[:,2]
+        motDataframe.getDataFrame()["ankle_flexion_l"] = finalAcqGait.GetPoint("LAnkleAngles").GetValues()[:,0]
+        motDataframe.getDataFrame()["ankle_adduction_l"] = finalAcqGait.GetPoint("LAnkleAngles").GetValues()[:,1]
+        motDataframe.getDataFrame()["ankle_rotation_l"] = finalAcqGait.GetPoint("LAnkleAngles").GetValues()[:,2]
+        motDataframe.save()
+
+        anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\CGM23\\CGM23-analysisSetup_template.xml"
+        externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "setup\\walk_grf.xml"
+        procAna = opensimAnalysesInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
+        procAna.setProgression(progressionAxis,forwardProgression)
+        procAna.preProcess(finalAcqGait,reconstructFilenameLabelled[:-4])
+        # procAna.setResultsDirname("verif")
+        procAna.setTimeRange()
+        oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
+        oiamf.run()
+        oiamf.stoToC3d()
 
     #---- zero unvalid frames ---
     btkTools.cleanAcq(finalAcqGait)
