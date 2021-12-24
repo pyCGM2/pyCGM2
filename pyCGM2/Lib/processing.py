@@ -8,6 +8,7 @@ LOGGER = pyCGM2.LOGGER
 def detectProgressionFrame(acq, staticFlag=False):
 
     progressionFlag = False
+
     if staticFlag:
         if btkTools.isPointsExist(acq, ['LASI', 'RASI', 'RPSI', 'LPSI'], ignorePhantom=False) and not progressionFlag:
             LOGGER.logger.info(
@@ -15,6 +16,7 @@ def detectProgressionFrame(acq, staticFlag=False):
             pfp = progressionFrame.PelvisProgressionFrameProcedure()
             pff = progressionFrame.ProgressionFrameFilter(acq, pfp)
             pff.compute()
+            progressionAxis = pff.outputs["progressionAxis"]
             globalFrame = pff.outputs["globalFrame"]
             forwardProgression = pff.outputs["forwardProgression"]
 
@@ -55,6 +57,7 @@ def detectProgressionFrame(acq, staticFlag=False):
             pfp = progressionFrame.PelvisProgressionFrameProcedure()
             pff = progressionFrame.ProgressionFrameFilter(acq, pfp)
             pff.compute()
+            progressionAxis = pff.outputs["progressionAxis"]
             globalFrame = pff.outputs["globalFrame"]
             forwardProgression = pff.outputs["forwardProgression"]
 
