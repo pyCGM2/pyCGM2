@@ -1,0 +1,62 @@
+Angles:
+    RHipAngles:
+        X: hip_flexion_r
+        Y: hip_adduction_r
+        Z: hip_rotation_r
+
+    RKneeAngles:
+        X: knee_flexion_r
+        Y: knee_adduction_r
+        Z: knee_rotation_r
+
+    RAnkleAngles:
+        X: ankle_flexion_r
+        Y: ankle_adduction_r
+        Z: ankle_rotation_r
+
+    LHipAngles:
+        X: hip_flexion_l
+        Y: hip_adduction_l
+        Z: hip_rotation_l
+
+    LKneeAngles:
+        X: knee_flexion_l
+        Y: knee_adduction_l
+        Z: knee_rotation_l
+
+    LAnkleAngles:
+        X: ankle_flexion_l
+        Y: ankle_adduction_l
+        Z: ankle_rotation_l
+
+
+Moments:
+    RHipMoment:
+        X: hip_flexion_r_moment
+        Y: hip_adduction_r_moment
+        Z: hip_rotation_r_moment
+
+    RKneeMoment:
+        X: knee_flexion_r_moment
+        Y: knee_adduction_r_moment
+        Z: knee_rotation_r_moment
+
+    RAnkleMoment:
+        X: ankle_flexion_r_moment
+        Y: ankle_adduction_r_moment
+        Z: ankle_rotation_r_moment
+
+    LHipMoment:
+        X: hip_flexion_l_moment
+        Y: hip_adduction_l_moment
+        Z: hip_rotation_l_moment
+
+    LKneeMoment:
+        X: knee_flexion_l_moment
+        Y: knee_adduction_l_moment
+        Z: knee_rotation_l_moment
+
+    LAnkleMoment:
+        X: ankle_flexion_l_moment
+        Y: ankle_adduction_l_moment
+        Z: ankle_rotation_l_moment
