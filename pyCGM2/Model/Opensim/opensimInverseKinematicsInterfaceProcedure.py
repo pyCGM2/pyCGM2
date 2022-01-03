@@ -25,7 +25,7 @@ from pyCGM2.Model.Opensim import opensimIO
 
 class highLevelInverseKinematicsProcedure(object):
     def __init__(self,DATA_PATH, scaledOsimName,modelVersion,ikToolTemplateFile,
-                localIkToolFile=None):
+                local=False):
 
         self.m_DATA_PATH = DATA_PATH
         self._resultsDir = ""
@@ -36,14 +36,17 @@ class highLevelInverseKinematicsProcedure(object):
 
 
 
-        if localIkToolFile is None:
+        if not local:
             if ikToolTemplateFile is None:
-                raise Exception("localIkToolFile or ikToolTemplateFile needs to be defined")
+                raise Exception("ikToolTemplateFile needs to be defined")
             self.m_ikTool = DATA_PATH + self.m_modelVersion + "-IKTool-setup.xml"
             self.xml = opensimInterfaceFilters.opensimXmlInterface(ikToolTemplateFile,self.m_ikTool)
         else:
-            self.m_ikTool = DATA_PATH + localIkToolFile
+            self.m_ikTool = DATA_PATH + ikToolTemplateFile
             self.xml = opensimInterfaceFilters.opensimXmlInterface(self.m_ikTool)
+
+        # markerself.xml.m_soup.find_all("IKMarkerTask")
+
 
         self.m_autoXmlDefinition=True
 
@@ -66,12 +69,13 @@ class highLevelInverseKinematicsProcedure(object):
 
         self.m_R_LAB_OSIM = R_LAB_OSIM
 
+    def setWeights(self,weights_dict):
+        self.m_weights = weights_dict
 
     def setAccuracy(self,value):
         self.xml.set_one("accuracy",str(value))
 
-    def setWeights(self,weights_dict):
-        self.m_weights = weights_dict
+
 
     def setTimeRange(self,beginFrame=None,lastFrame=None):
 
@@ -107,6 +111,17 @@ class highLevelInverseKinematicsProcedure(object):
         if self.m_autoXmlDefinition: self._setXml()
         self.xml.update()
 
+        if not hasattr(self, "m_frameRange"):
+            time_range_str = self.xml.m_soup.find("time_range").string
+            time_range = [float(it) for it in time_range_str.split(" ")]
+            self.m_frameRange = [int((time_range[0]*self.m_acq0.GetPointFrequency())+self.m_acq0.GetFirstFrame()),int((time_range[1]*self.m_acq0.GetPointFrequency())+self.m_acq0.GetFirstFrame())]
+
+        if not hasattr(self, "m_weights"):
+            markertasks = self.xml.m_soup.find_all("IKMarkerTask")
+            self.m_weights = dict()
+            for item in markertasks:
+                self.m_weights[item["name"]] = float(item.find("weight").string)
+
         ikTool = opensim.InverseKinematicsTool(self.m_ikTool)
         # ikTool.setModel(self.m_osimModel)
         ikTool.run()
@@ -114,45 +129,7 @@ class highLevelInverseKinematicsProcedure(object):
         self.finalize()
 
     def finalize(self):
-
-
-        marker_location_filename = self.m_DATA_PATH + self._resultsDir+"\\"+ self.m_dynamicFile+"_ik_model_marker_locations.sto"
-        if os.path.isfile(marker_location_filename):
-            os.remove(marker_location_filename)
-        os.rename(self.m_DATA_PATH + self._resultsDir+ "\\_ik_model_marker_locations.sto",
-                    marker_location_filename)
-
-        marker_errors_filename = self.m_DATA_PATH + self._resultsDir+"\\"+ self.m_dynamicFile+"_ik_marker_errors.sto"
-        if os.path.isfile(marker_errors_filename):
-            os.remove(marker_errors_filename)
-        os.rename(self.m_DATA_PATH + self._resultsDir+"\\_ik_marker_errors.sto",
-                 marker_errors_filename)
-
-        acqMotionFinal = btk.btkAcquisition.Clone(self.m_acq0)
-
-        # TODO : worl with storage datframe instead of the opensim sorage instance
-
-        storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_DATA_PATH+self._resultsDir+"\\", self.m_dynamicFile+"_ik_model_marker_locations.sto")
-
-        storageObject = opensim.Storage(self.m_DATA_PATH + self._resultsDir+"\\"+self.m_dynamicFile +"_ik_model_marker_locations.sto")
-        for marker in self.m_weights.keys():
-            if self.m_weights[marker] != 0:
-                values =opensimTools.sto2pointValues(storageObject,marker,self.m_R_LAB_OSIM)
-                btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" )
-                modelled = acqMotionFinal.GetPoint(marker).GetValues()
-                ff = acqMotionFinal.GetFirstFrame()
-                modelled[self.m_frameRange[0]-ff:self.m_frameRange[1]-ff+1,:] = values
-                btkTools.smartAppendPoint(acqMotionFinal,marker, modelled, desc= "kinematic fitting" ) # new acq with marker overwrited
-
-        # values0 = opensimTools.smartGetValues(self.m_DATA_PATH,self.m_dynamicFile+".mot","ankle_flexion_r")
-        # values1 = opensimTools.smartGetValues(self.m_DATA_PATH,self.m_dynamicFile+".mot","ankle_adduction_r")
-        # values2 = opensimTools.smartGetValues(self.m_DATA_PATH,self.m_dynamicFile+".mot","ankle_rotation_r")
-        #
-        # btkTools.smartAppendPoint(acqMotionFinal,"AnkleOpensim", np.array([values0,values1,values2]).T, desc= "opensim", PointType = btk.btkPoint.Angle )
-
-        self.m_acqMotionFinal = acqMotionFinal
-
+        pass
 
 
 # NOT WORK : need opensim4.2 and bug fix of property

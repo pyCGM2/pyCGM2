@@ -3,7 +3,7 @@ from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Utils import prettyfier
 from pyCGM2.Processing import progressionFrame
 from pyCGM2.Model.Opensim import osimProcessing
-from pyCGM2.Tools import btkTools
+from pyCGM2.Tools import  btkTools,opensimTools
 from pyCGM2.Utils import files
 from bs4 import BeautifulSoup
 import os
@@ -100,12 +100,49 @@ class opensimInterfaceScalingFilter(object):
 class opensimInterfaceInverseKinematicsFilter(object):
     def __init__(self, procedure):
         self.m_procedure = procedure
+        self.m_acq = None
 
     def run(self):
         self.m_procedure.run()
+        self.m_acq = self.m_procedure.m_acq0
 
     def getAcq(self):
-        return self.m_procedure.m_acqMotionFinal
+        return self.m_acq
+
+    def ikMarkerLocationToC3d(self):
+        marker_location_filename = self.m_procedure.m_DATA_PATH + self.m_procedure._resultsDir+"\\"+ self.m_procedure.m_dynamicFile+"_ik_model_marker_locations.sto"
+        if os.path.isfile(marker_location_filename):
+            os.remove(marker_location_filename)
+        os.rename(self.m_procedure.m_DATA_PATH + self.m_procedure._resultsDir+ "\\_ik_model_marker_locations.sto",
+                    marker_location_filename)
+
+        marker_errors_filename = self.m_procedure.m_DATA_PATH + self.m_procedure._resultsDir+"\\"+ self.m_procedure.m_dynamicFile+"_ik_marker_errors.sto"
+        if os.path.isfile(marker_errors_filename):
+            os.remove(marker_errors_filename)
+        os.rename(self.m_procedure.m_DATA_PATH + self.m_procedure._resultsDir+"\\_ik_marker_errors.sto",
+                 marker_errors_filename)
+
+        acqMotionFinal = btk.btkAcquisition.Clone(self.m_procedure.m_acq0)
+
+        # TODO : worl with storage datframe instead of the opensim sorage instance
+
+        storageDataframe = opensimIO.OpensimDataFrame(
+            self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\", self.m_procedure.m_dynamicFile+"_ik_model_marker_locations.sto")
+
+        storageObject = opensim.Storage(self.m_procedure.m_DATA_PATH + self.m_procedure._resultsDir+"\\"+self.m_procedure.m_dynamicFile +"_ik_model_marker_locations.sto")
+        for marker in self.m_procedure.m_weights.keys():
+            if self.m_procedure.m_weights[marker] != 0:
+                values =opensimTools.sto2pointValues(storageObject,marker,self.m_procedure.m_R_LAB_OSIM)
+                btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" )
+                modelled = acqMotionFinal.GetPoint(marker).GetValues()
+                ff = acqMotionFinal.GetFirstFrame()
+
+                modelled[self.m_procedure.m_frameRange[0]-ff:self.m_procedure.m_frameRange[1]-ff+1,:] = values
+                btkTools.smartAppendPoint(acqMotionFinal,marker, modelled, desc= "kinematic fitting" ) # new acq with marker overwrited
+
+
+        self.m_acq = acqMotionFinal
+
 
     def motToC3d(self, osimConverter):
 
@@ -115,7 +152,7 @@ class opensimInterfaceInverseKinematicsFilter(object):
         for jointIt in osimConverter["Angles"]:
 
             values = np.zeros(
-                (self.m_procedure.m_acqMotionFinal.GetPointFrameNumber(), 3))
+                (self.m_acq.GetPointFrameNumber(), 3))
 
             osimlabel_X = osimConverter["Angles"][jointIt]["X"]
             osimlabel_Y = osimConverter["Angles"][jointIt]["Y"]
@@ -129,7 +166,7 @@ class opensimInterfaceInverseKinematicsFilter(object):
             values[:, 1] = [+1*x for x in serie_Y.to_list()]
             values[:, 2] = [+1*x for x in serie_Z.to_list()]
 
-            btkTools.smartAppendPoint(self.m_procedure.m_acqMotionFinal, jointIt
+            btkTools.smartAppendPoint(self.m_acq, jointIt
                                       + "_osim", values, PointType=btk.btkPoint.Angle, desc="opensim angle")
 
 
@@ -145,8 +182,13 @@ class opensimInterfaceInverseDynamicsFilter(object):
 
     def stoToC3d(self, bodymass, osimConverter):
 
-        storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\",
+        if self.m_procedure._resultsDir == "":
+            path = self.m_procedure.m_DATA_PATH
+        else:
+            path = self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\"
+
+
+        storageDataframe = opensimIO.OpensimDataFrame(path,
             self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion+"-inverse_dynamics.sto")
 
         for jointIt in osimConverter["Moments"]:
