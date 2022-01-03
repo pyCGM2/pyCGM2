@@ -236,8 +236,10 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             # procIK.setResultsDirname("verif")
             oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
             oiikf.run()
+            oiikf.ikMarkerLocationToC3d()
             # oiikf.motToC3d(osimConverterSettings)
             acqStaticIK =oiikf.getAcq()
+
 
 
 
@@ -518,8 +520,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         # procIK.setResultsDirname("verif")
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
         oiikf.run()
+        oiikf.ikMarkerLocationToC3d()
         # oiikf.motToC3d(osimConverterSettings)
         acqIK =oiikf.getAcq()
+        
 
         # # --- old ---
         #

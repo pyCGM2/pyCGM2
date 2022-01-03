@@ -28,8 +28,7 @@ except:
 class highLevelInverseDynamicsProcedure(object):
     def __init__(self,DATA_PATH, scaledOsimName,modelVersion,idToolTemplateFile,externalLoadTemplateFile,
         mfpa = None,
-        localIdToolFile=None,
-        localExternalLoadFile=None):
+        local=False):
 
         self.m_DATA_PATH = DATA_PATH
         self._resultsDir = ""
@@ -39,25 +38,25 @@ class highLevelInverseDynamicsProcedure(object):
 
         self.m_mfpa = mfpa
 
-        if localIdToolFile is None:
+        if not local:
             if idToolTemplateFile is None:
-                raise Exception("localIdToolFile or idToolTemplateFile needs to be defined")
+                raise Exception("idToolTemplateFile needs to be defined")
 
             self.m_idTool = DATA_PATH + self.m_modelVersion + "-idTool-setup.xml"
             self.xml = opensimInterfaceFilters.opensimXmlInterface(idToolTemplateFile,self.m_idTool)
         else:
-            self.m_idTool = DATA_PATH + localIdToolFile
+            self.m_idTool = DATA_PATH + idToolTemplateFile
             self.xml = opensimInterfaceFilters.opensimXmlInterface(self.m_idTool,None)
 
-        if localExternalLoadFile is None:
+        if not local:
             if externalLoadTemplateFile is None:
-                raise Exception("localExternalLoadFile or externalLoadTemplateFile needs to be defined")
+                raise Exception("externalLoadTemplateFile needs to be defined")
 
             self.m_externalLoad = DATA_PATH + self.m_modelVersion + "-externalLoad.xml"
             self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
 
         else:
-            self.m_externalLoad = DATA_PATH+localExternalLoadFile
+            self.m_externalLoad = DATA_PATH + externalLoadTemplateFile
             self.xml_load = opensimInterfaceFilters.opensimXmlInterface(self.m_externalLoad,None)
 
         self.m_autoXmlDefinition=True

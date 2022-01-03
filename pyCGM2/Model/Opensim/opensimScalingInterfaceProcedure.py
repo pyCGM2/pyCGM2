@@ -27,41 +27,39 @@ except:
 
 class highLevelScalingProcedure(object):
     def __init__(self, DATA_PATH, modelVersion, osimTemplateFile, markersetTemplateFile, scaleToolTemplateFile,
-                localOsimFile=None,
-                localMarkersetFile=None,
-                localScaleToolFile=None):
+                local=False):
 
         self.m_DATA_PATH = DATA_PATH
         self.m_modelVersion = modelVersion.replace(".", "")
 
-        if localOsimFile is None:
+        if not local :
             if osimTemplateFile is None:
-                raise Exception("osimTemplateFile or localOsimFile needs to be defined")
+                raise Exception("osimTemplateFile needs to be defined")
             self.m_osim = files.getFilename(osimTemplateFile)
             files.copyPaste(osimTemplateFile, DATA_PATH + self.m_osim)
         else:
-            self.m_osim = localOsimFile
+            self.m_osim = self.m_DATA_PATH+osimTemplateFile
 
-        if localMarkersetFile is None:
+        if not local:
             if markersetTemplateFile is None:
                 raise Exception("localMarkersetFile or markersetTemplateFile needs to be defined")
             self.m_markerset =  files.getFilename(markersetTemplateFile)
             files.copyPaste(markersetTemplateFile, DATA_PATH + self.m_markerset)
         else:
-            self.m_markerset = localMarkersetFile
+            self.m_markerset = self.m_DATA_PATH+markersetTemplateFile
 
-        if localScaleToolFile is None:
+        if not local:
             if scaleToolTemplateFile is None:
-                raise Exception("localScaleToolFile or scaleToolTemplateFile needs to be defined")
+                raise Exception("scaleToolTemplateFile needs to be defined")
             self.m_scaleTool = DATA_PATH + self.m_modelVersion+"-ScaleToolSetup.xml" #files.getFilename(scaleToolTemplateFile)
             self.xml = opensimInterfaceFilters.opensimXmlInterface(scaleToolTemplateFile, self.m_scaleTool)
         else:
-            self.m_scaleTool = DATA_PATH +localScaleToolFile
-            self.xml = opensimInterfaceFilters.opensimXmlInterface(DATA_PATH+localScaleToolFile, None)
+            self.m_scaleTool = DATA_PATH + scaleToolTemplateFile
+            self.xml = opensimInterfaceFilters.opensimXmlInterface(DATA_PATH+scaleToolTemplateFile, None)
 
         self.m_autoXmlDefinition=True
 
-    def setAutoXmlDefinition(boolean):
+    def setAutoXmlDefinition(self,boolean):
         self.m_autoXmlDefinition=boolean
 
     def preProcess(self, acq, staticFileNoExt):

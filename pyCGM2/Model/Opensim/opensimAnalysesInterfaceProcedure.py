@@ -26,25 +26,24 @@ except:
 
 class highLevelAnalysesProcedure(object):
     def __init__(self,DATA_PATH, scaledOsimName,modelVersion,analysisToolTemplateFile,externalLoadTemplateFile,
-        localAnalysesToolFile=None,
-        localExternalLoadFile=None):
+        local=False):
 
         self.m_DATA_PATH = DATA_PATH
         self._resultsDir = ""
         self.m_osimName = scaledOsimName
         self.m_modelVersion = modelVersion.replace(".", "")
 
-        if localAnalysesToolFile is None:
+        if not local :
             if analysisToolTemplateFile is None:
                 raise Exception("localAnalysesToolFile or analysisToolTemplateFile needs to be defined")
 
             self.m_idAnalyses = DATA_PATH + self.m_modelVersion + "-analysesTool-setup.xml"
             self.xml = opensimInterfaceFilters.opensimXmlInterface(analysisToolTemplateFile,self.m_idAnalyses)
         else:
-            self.m_idAnalyses = DATA_PATH + localAnalysesToolFile
+            self.m_idAnalyses = DATA_PATH + analysisToolTemplateFile
             self.xml = opensimInterfaceFilters.opensimXmlInterface(self.m_idAnalyses,None)
 
-        if localExternalLoadFile is None:
+        if not local:
             if externalLoadTemplateFile is None:
                 raise Exception("localExternalLoadFile or externalLoadTemplateFile needs to be defined")
 
@@ -52,7 +51,7 @@ class highLevelAnalysesProcedure(object):
             self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
 
         else:
-            self.m_externalLoad = DATA_PATH+localExternalLoadFile
+            self.m_externalLoad = DATA_PATH+externalLoadTemplateFile
             self.xml_load = opensimInterfaceFilters.opensimXmlInterface(self.m_externalLoad,None)
 
         self.m_autoXmlDefinition=True
