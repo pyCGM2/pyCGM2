@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /High level Lib
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
@@ -208,7 +209,7 @@ def sara(model,
         str: processed body side
 
     """
-    
+
     # --- btk acquisition ----
     if "forceBtkAcq" in kwargs.keys():
         acqFunc = kwargs["forceBtkAcq"]

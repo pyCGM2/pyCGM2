@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /High level Lib
 
 # pyCGM2 libraries
 import pyCGM2

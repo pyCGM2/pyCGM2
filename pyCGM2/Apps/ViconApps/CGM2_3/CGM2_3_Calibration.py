@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+#APIDOC: /Apps/Vicon/CGM2
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse

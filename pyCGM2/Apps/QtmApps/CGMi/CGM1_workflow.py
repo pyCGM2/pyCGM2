@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Apps/Qtm/CGM workflows
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import os
 import shutil

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Apps/Vicon/Plots
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt

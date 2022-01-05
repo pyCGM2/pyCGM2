@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+#APIDOC: /Apps/Vicon/Events
 from pyCGM2.Nexus import nexusTools, nexusFilters
 from pyCGM2.Lib import eventDetector
 from viconnexusapi import ViconNexus

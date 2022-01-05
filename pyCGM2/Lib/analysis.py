@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+#APIDOC: /High level Lib
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
 from pyCGM2.Processing import c3dManager, cycle, analysis

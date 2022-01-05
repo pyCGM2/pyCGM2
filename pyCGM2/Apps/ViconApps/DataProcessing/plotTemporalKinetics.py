@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Apps/Vicon/Plots
 
 from pyCGM2.Nexus import nexusTools, nexusFilters
 import warnings

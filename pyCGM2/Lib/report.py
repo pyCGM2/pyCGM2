@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /High level Lib
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages

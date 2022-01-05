@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /High level Lib
 from pyCGM2.Events import events
 from pyCGM2.Signal import signal_processing
 
-def zeni(acqGait,footStrikeOffset=0,footOffOffset=0,**kwargs):
+
+def zeni(acqGait, footStrikeOffset=0, footOffOffset=0, **kwargs):
     """kinematic-based event detector according Zeni et al(2008).
 
     This method need the presence of the markers "LPSI","RPSI","LHEE","LTOE","RHEE","RTOE"
@@ -31,14 +33,13 @@ def zeni(acqGait,footStrikeOffset=0,footOffOffset=0,**kwargs):
 
     acqGait.ClearEvents()
 
-
-    if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"]!=0 :
+    if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"] != 0:
         fc = kwargs["fc_lowPass_marker"]
         order = 4
         if "order_lowPass_marker" in kwargs.keys():
             order = kwargs["order_lowPass_marker"]
-        signal_processing.markerFiltering(acqGait,["LPSI","RPSI","LHEE","LTOE","RHEE","RTOE"],order=order, fc =fc)
-
+        signal_processing.markerFiltering(
+            acqGait, ["LPSI", "RPSI", "LHEE", "LTOE", "RHEE", "RTOE"], order=order, fc=fc)
 
     # ----------------------EVENT DETECTOR-------------------------------
     evp = events.ZeniProcedure()
@@ -46,7 +47,7 @@ def zeni(acqGait,footStrikeOffset=0,footOffOffset=0,**kwargs):
     evp.setFootOffOffset(footOffOffset)
 
     # event filter
-    evf = events.EventFilter(evp,acqGait)
+    evf = events.EventFilter(evp, acqGait)
     evf.detect()
     state = evf.getState()
-    return acqGait,state
+    return acqGait, state

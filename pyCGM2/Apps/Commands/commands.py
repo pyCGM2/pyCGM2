@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Apps/Commands
+
 """
 Useful commands
 """

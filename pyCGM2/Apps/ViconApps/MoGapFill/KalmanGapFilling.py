@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
-import pyCGM2; LOGGER = pyCGM2.LOGGER
-
-import pyCGM2
-from viconnexusapi import ViconNexus
-
+#APIDOC: /Apps/Vicon/Gap filling
+from pyCGM2.Nexus import nexusTools, nexusFilters
 from pyCGM2.Gap import gapFilling
-from pyCGM2.Nexus import nexusTools,nexusFilters
-
+from viconnexusapi import ViconNexus
+import pyCGM2
+LOGGER = pyCGM2.LOGGER
 
 
 def main():
-
     """  Run Kalman gap filling method on the  nexus-loaded trial
 
     Usage:
@@ -24,36 +21,38 @@ def main():
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-    if NEXUS_PYTHON_CONNECTED: # run Operation
+    if NEXUS_PYTHON_CONNECTED:  # run Operation
 
         DATA_PATH, filenameLabelledNoExt = NEXUS.GetTrialName()
 
-        LOGGER.logger.info( "data Path: "+ DATA_PATH )
-        LOGGER.logger.info( "file: "+ filenameLabelledNoExt)
+        LOGGER.logger.info("data Path: " + DATA_PATH)
+        LOGGER.logger.info("file: " + filenameLabelledNoExt)
 
-        subject = nexusTools.getActiveSubject(NEXUS) #checkActivatedSubject(NEXUS,subjects)
-        LOGGER.logger.info("Gap filling for subject %s"%(subject))
+        # checkActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.getActiveSubject(NEXUS)
+        LOGGER.logger.info("Gap filling for subject %s" % (subject))
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameLabelledNoExt,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(
+            DATA_PATH, filenameLabelledNoExt, subject)
         acq = nacf.build()
 
         #acq = btkTools.smartReader(str(DATA_PATH+filenameLabelledNoExt+".c3d"))
 
-        gfp =  gapFilling.LowDimensionalKalmanFilterProcedure()
-        gff = gapFilling.GapFillingFilter(gfp,acq)
+        gfp = gapFilling.LowDimensionalKalmanFilterProcedure()
+        gff = gapFilling.GapFillingFilter(gfp, acq)
         gff.fill()
 
-        filledAcq  = gff.getFilledAcq()
-        filledMarkers  = gff.getFilledMarkers()
+        filledAcq = gff.getFilledAcq()
+        filledMarkers = gff.getFilledMarkers()
 
         for marker in filledMarkers:
-            nexusTools.setTrajectoryFromAcq(NEXUS,subject,marker,filledAcq)
+            nexusTools.setTrajectoryFromAcq(NEXUS, subject, marker, filledAcq)
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
 
     main()

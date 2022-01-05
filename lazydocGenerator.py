@@ -1,15 +1,43 @@
+import pkgutil
+import os
+import pyCGM2
 from lazydocs import MarkdownGenerator
 from pyCGM2.Utils import files
+import importlib
+
+
 API_PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\"
+VERSION = "Version 4.2"
 
-import pyCGM2
 
-import pkgutil
 modules = list()
-for imp,mod,isp in pkgutil.walk_packages(path =pyCGM2.__path__,prefix=pyCGM2.__name__+"."):
+for imp, mod, isp in pkgutil.walk_packages(path=pyCGM2.__path__, prefix=pyCGM2.__name__+"."):
     modules.append(mod)
-import ipdb; ipdb.set_trace()
 
+
+def en_index(title, weight):
+    content = """
+    ---
+    title: "%s"
+    #date: 2018-12-28T11:02:05+06:00
+    icon: "ti-credit-card" # themify icon pack : https://themify.me/themify-icons
+    description: "Documentation API  "
+    # type dont remove or customize
+    type : "docs"
+    weight: %s
+    ---
+    """ % (title, weight)
+
+    return content
+
+
+# def createDir(fullPathName):
+#     fullPathName = fullPathName
+#     pathOut = fullPathName[:-1] if fullPathName[-1:]=="\\" else fullPathName
+#     if not os.path.isdir((pathOut)):
+#         os.makedirs((pathOut))
+#     else:
+#         LOGGER.logger.info("directory already exists")
 
 
 def generate(DATA_PATH, filenameNoExt, module):
@@ -27,178 +55,42 @@ def generate(DATA_PATH, filenameNoExt, module):
         print(markdown_docs, file=f)
 
 
-def ViconApps_plots():
-
-    PATH = API_PATH + "\\Version 4.2\\Apps\\Vicon\\Plots\\"
-    from pyCGM2.Apps.ViconApps.DataProcessing import plotCompareNormalizedKinematics
-    from pyCGM2.Apps.ViconApps.DataProcessing import plotCompareNormalizedKinetics
-    from pyCGM2.Apps.ViconApps.DataProcessing import plotMAP
-    from pyCGM2.Apps.ViconApps.DataProcessing import plotNormalizedKinematics
-    from pyCGM2.Apps.ViconApps.DataProcessing import plotNormalizedKinetics
-    from pyCGM2.Apps.ViconApps.DataProcessing import plotSpatioTemporalParameters
-    from pyCGM2.Apps.ViconApps.DataProcessing import plotTemporalKinematics
-    from pyCGM2.Apps.ViconApps.DataProcessing import plotTemporalKinetics
-
-    generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.plotCompareNormalizedKinematics",
-             plotCompareNormalizedKinematics)
-    generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.plotCompareNormalizedKinetics",
-             plotCompareNormalizedKinetics)
-    generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.plotMAP",
-             plotMAP)
-    generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.plotNormalizedKinematics",
-             plotNormalizedKinematics)
-    generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.plotNormalizedKinetics",
-             plotNormalizedKinetics)
-    generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.plotSpatioTemporalParameters",
-             plotSpatioTemporalParameters)
-    generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.plotTemporalKinematics",
-             plotTemporalKinematics)
-    generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.plotTemporalKinetics",
-             plotTemporalKinetics)
-
-    from pyCGM2.Apps.ViconApps.EMG import plotCompareNormalizedEmg
-    generate(PATH, "pyCGM2.Apps.ViconApps.EMG.plotCompareNormalizedKinematics",
-             plotCompareNormalizedEmg)
-    from pyCGM2.Apps.ViconApps.EMG import plotNormalizedEmg
-    generate(PATH, "pyCGM2.Apps.ViconApps.EMG.plotNormalizedEmg",
-             plotNormalizedEmg)
-    from pyCGM2.Apps.ViconApps.EMG import plotTemporalEmg
-    generate(PATH, "pyCGM2.Apps.ViconApps.EMG.plotTemporalEmg",
-             plotTemporalEmg)
-
-
-def ViconApps_Events():
-
-    PATH = API_PATH + "\\Version 4.2\\Apps\\Vicon\\Events\\"
-    from pyCGM2.Apps.ViconApps.Events import zeniDetector
-    generate(PATH, "pyCGM2.Apps.ViconApps.Events.zeniDetector",
-             zeniDetector)
-
-
-def ViconApps_GapFilling():
-
-    PATH = API_PATH + "\\Version 4.2\\Apps\\Vicon\\Gap filling\\"
-    from pyCGM2.Apps.ViconApps.MoGapFill import KalmanGapFilling
-    generate(PATH, "pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling",
-             KalmanGapFilling)
-
-    from pyCGM2.Apps.ViconApps.MoGapFill import rigidGapFillingMarkers
-    generate(PATH, "pyCGM2.Apps.ViconApps.MoGapFill.rigidGapFillingMarkers",
-             rigidGapFillingMarkers)
-
-
-def ViconApps_experimental():
-
-    PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\Version 4.2\\Apps\\Vicon\\Experimental\\"
-    from pyCGM2.Apps.ViconApps.DataProcessing import anomalies
-    generate(PATH, "pyCGM2.Apps.ViconApps.DataProcessing.anomalies",
-             anomalies)
-
-
-def viconApps_CGM():
-    PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\Version 4.2\\Apps\\Vicon\\"
-    from pyCGM2.Apps.ViconApps.CGM1 import CGM1_Calibration, CGM1_Fitting
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM1.Calibration", CGM1_Calibration)
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM1.Fitting", CGM1_Fitting)
-
-    from pyCGM2.Apps.ViconApps.CGM1_1 import CGM1_1_Calibration, CGM1_1_Fitting
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM1_1.Calibration", CGM1_1_Calibration)
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM1_1.Fitting", CGM1_1_Fitting)
-
-    from pyCGM2.Apps.ViconApps.CGM2_1 import CGM2_1_Calibration, CGM2_1_Fitting
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_1.Calibration", CGM2_1_Calibration)
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_1.Fitting", CGM2_1_Fitting)
-
-    from pyCGM2.Apps.ViconApps.CGM2_2 import CGM2_2_Calibration, CGM2_2_Fitting
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_2.Calibration", CGM2_2_Calibration)
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_2.Fitting", CGM2_2_Fitting)
-
-    from pyCGM2.Apps.ViconApps.CGM2_3 import CGM2_3_Calibration, CGM2_3_Fitting
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_3.Calibration", CGM2_3_Calibration)
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_3.Fitting", CGM2_3_Fitting)
-
-    from pyCGM2.Apps.ViconApps.CGM2_4 import CGM2_4_Calibration, CGM2_4_Fitting
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_4.Calibration", CGM2_4_Calibration)
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_4.Fitting", CGM2_4_Fitting)
-
-    from pyCGM2.Apps.ViconApps.CGM2_5 import CGM2_5_Calibration, CGM2_5_Fitting
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_5.Calibration", CGM2_5_Calibration)
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_5.Fitting", CGM2_5_Fitting)
-
-    from pyCGM2.Apps.ViconApps.CGM2_6 import CGM_Knee2DofCalibration, CGM_KneeSARA
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_6.Calibration2dof",
-             CGM_Knee2DofCalibration)
-    generate(PATH, "pyCGM2.Apps.ViconApps.CGM2_6.Sara", CGM_KneeSARA)
-
-
-def QtmApps():
-    PATH = API_PATH + "\\Version 4.2\\Apps\\Qtm\\CGM workflows\\"
-    from pyCGM2.Apps.QtmApps.CGMi import CGM1_workflow,CGM11_workflow,CGM21_workflow,CGM22_workflow,CGM23_workflow,CGM24_workflow,CGM25_workflow,CGM26_workflow
-
-    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow",
-            CGM1_workflow)
-    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM11_workflow",
-            CGM11_workflow)
-    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM21_workflow",
-            CGM21_workflow)
-    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM22_workflow",
-            CGM22_workflow)
-    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM23_workflow",
-            CGM23_workflow)
-    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM24_workflow",
-            CGM24_workflow)
-    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM25_workflow",
-            CGM25_workflow)
-    generate(PATH, "pyCGM2.Apps.QtmApps.CGMi.CGM26_workflow",
-            CGM26_workflow)
-
 def main():
 
-    PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\Version 4.2\\Lib\\"
-    from pyCGM2.Lib import emg
-    generate(PATH, "pyCGM2.Lib.emg", emg)
+    # 1 iterer sur tous les modules
+    # lire le fichier py du module
+    # SI fichier py contient la ligne DOC : => creer le rep dans Doc
+    # charger le module
+    # generer le md
 
-    from pyCGM2.Lib import analysis
-    generate(PATH, "pyCGM2.Lib.analysis", analysis)
+    API_PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\"
+    VERSION = "Version 4.3"
 
-    from pyCGM2.Lib import eventDetector
-    generate(PATH, "pyCGM2.Lib.eventDetector", eventDetector)
+    for (dir, subdir, filenames) in os.walk("C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\Apps\\ViconApps\\"):
+        if "__init__.py" in filenames:
+            pyFiles = files.getFiles(dir, extension="py")
+            pyFiles.remove("__init__.py")
 
-    from pyCGM2.Lib import plot
-    generate(PATH, "pyCGM2.Lib.plot", plot)
+            for pyFile in pyFiles:
 
-    from pyCGM2.Lib.CGM import cgm1
-    generate(PATH, "pyCGM2.Lib.CGM.cgm1", cgm1)
+                flag = False
+                with open(dir+"\\"+pyFile, 'r') as f:
+                    for i, line in enumerate(f):
+                        if "#APIDOC:" in line:
+                            pathInApiDoc = line.split(
+                                ":")[1][:-1][1:]  # .replace(" ", "")
+                            flag = True
+                            break
+                if flag:
+                    newpath = API_PATH+VERSION+"/"+pathInApiDoc+"/"
+                    files.createDir(newpath)
 
-    from pyCGM2.Lib.CGM import cgm1_1
-    generate(PATH, "pyCGM2.Lib.CGM.cgm1_1", cgm1_1)
+                    moduleName = dir[dir.rfind("pyCGM2"):].replace(
+                        "\\", ".")+"."+pyFile[:-3]
+                    mod = importlib.import_module(moduleName)
 
-    from pyCGM2.Lib.CGM import cgm2_1
-    generate(PATH, "pyCGM2.Lib.CGM.cgm2_1", cgm2_1)
-
-    from pyCGM2.Lib.CGM import cgm2_2
-    generate(PATH, "pyCGM2.Lib.CGM.cgm2_2", cgm2_2)
-
-    from pyCGM2.Lib.CGM import cgm2_3
-    generate(PATH, "pyCGM2.Lib.CGM.cgm2_3", cgm2_3)
-
-    from pyCGM2.Lib.CGM import cgm2_4
-    generate(PATH, "pyCGM2.Lib.CGM.cgm2_4", cgm2_4)
-
-    from pyCGM2.Lib.CGM import cgm2_5
-    generate(PATH, "pyCGM2.Lib.CGM.cgm2_5", cgm2_5)
-
-    PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\Version 4.2\\Apps\\Commands\\"
-    from pyCGM2.Apps.Commands import commands
-    generate(PATH, "pyCGM2.Apps.Commands", commands)
-
-    viconApps_CGM()
-    ViconApps_experimental()
-
-    ViconApps_plots()
-    ViconApps_Events()
-    ViconApps_GapFilling()
-    QtmApps()
+                    generate(newpath, dir[dir.rfind("pyCGM2"):].replace(
+                        "\\", ".")+"."+pyFile[:-3], mod)
 
 
 if __name__ == '__main__':

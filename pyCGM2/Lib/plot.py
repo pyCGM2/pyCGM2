@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /High level Lib
 """
 This module gathers convenient functions fro plotting Kinematic - Kinetic and EMG
 
