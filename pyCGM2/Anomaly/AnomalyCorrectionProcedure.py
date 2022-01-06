@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 #APIDOC: /Low level/Anomaly
 
+""" This module gathers procedure for correcting detected anomalies
+
+check out the script : *\Tests\test_anomalies.py* for example
+
+"""
+
 from scipy.cluster.hierarchy import dendrogram
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np

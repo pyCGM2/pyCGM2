@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 #APIDOC: /Low level/Anomaly
+
+""" This module gathers anomaly detectors on markers, events, force plate signals and anthropometric data
+
+check out the script : *\Tests\test_anomalies.py* for example
+
+"""
+
 from pyCGM2.Tools import btkTools
 from pyCGM2.Signal import anomaly
 from pyCGM2.Math import derivation
