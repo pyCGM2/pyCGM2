@@ -66,7 +66,7 @@ def main():
     API_PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\"
     VERSION = "Version 4.3"
 
-    for (dir, subdir, filenames) in os.walk("C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\Apps\\ViconApps\\"):
+    for (dir, subdir, filenames) in os.walk("C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\"):
         if "__init__.py" in filenames:
             pyFiles = files.getFiles(dir, extension="py")
             pyFiles.remove("__init__.py")
