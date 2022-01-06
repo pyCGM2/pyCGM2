@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Low level/Anomaly
+
 from scipy.cluster.hierarchy import dendrogram
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
@@ -30,7 +32,25 @@ def plot_dendrogram(model, **kwargs):
 
 
 class MarkerAnomalyCorrectionProcedure(object):
+    """procedure to correct marker anomaly
+    """
+
     def __init__(self, markers, anomalyIndexes, plot=False, **options):
+        """Constructor
+
+        Args:
+            markers ([str,...]): marker labels
+            anomalyIndexes ([int,...]): indexes of the detected anomalies
+            **options (type): see low-level keyword args
+
+        Keyword Args:
+            plot (bool): enable plot
+
+        Low-level Keyword Args :
+            distance_threshold ( float) distance threshold between indexes
+
+
+        """
 
         if type(markers) == str:
             markers = [markers]
@@ -43,6 +63,16 @@ class MarkerAnomalyCorrectionProcedure(object):
             "distance_threshold"]
 
     def run(self, acq, filename):
+        """ run the procedure
+
+        Args:
+            acq (btk.Acquisition): a btk acquisition instantce
+            filename (str): filename
+
+        Returns:
+            btk.Acquisition: updated btk acquisition instance
+
+        """
 
         ff = acq.GetFirstFrame()
 

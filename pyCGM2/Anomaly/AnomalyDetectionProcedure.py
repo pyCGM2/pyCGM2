@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#APIDOC: /Low level/Anomaly
 from pyCGM2.Tools import btkTools
 from pyCGM2.Signal import anomaly
 from pyCGM2.Math import derivation
@@ -20,6 +22,9 @@ except:
 
 
 class AbstractDetectionProcedure(object):
+    """abstract marker detector procedure
+
+    """
     def __init__(self):
         self.anomaly = {"Output": None,
                         "ErrorState": False}
@@ -32,7 +37,24 @@ class AbstractDetectionProcedure(object):
 
 
 class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
+    """marker anomaly detection from rolling statistics
+    """
     def __init__(self,markers,plot=False,**options):
+        """Construtor
+
+        Args:
+            markers (list of str): marker labels
+            **options (type): see low-level keyword args
+
+        Keyword Args:
+            plot (bool): enable plot
+
+        Low-level Keyword Args :
+            aprioriError (double): a priori error on the marker trajectory
+            window (int): size of the rolling windows
+            treshold (int) : detector threshold assoiated to the standard deviation
+            method (str) : mean or median
+        """
 
         super(MarkerAnomalyDetectionRollingProcedure, self).__init__()
 
@@ -50,6 +72,17 @@ class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
 
 
     def run(self,acq,filename,options):
+        """ run the procedure
+
+        Args:
+            acq (btk.Acquisition): a btk acquisition instantce
+            filename (str): filename
+            options (dict) : passed options
+
+        Note
+            ``frameRange`` ([int, int]) is one key of the ``options`` argument
+
+        """
 
 
 
@@ -135,11 +168,24 @@ class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
 
 
 class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
+    """gait event anomaly detector
+    """
     def __init__(self):
+        """Constructor
+        """
 
         super(GaitEventAnomalyProcedure, self).__init__()
 
     def run(self,acq,filename,options):
+        """ run the procedure
+
+        Args:
+            acq (btk.Acquisition): a btk acquisition instantce
+            filename (str): filename
+            options (dict) : passed options ( Not used so far)
+
+        """
+
 
         errorState =  False
 
@@ -204,10 +250,25 @@ class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
 
 
 class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
+    """force plate anomaly detector
+    """
     def __init__(self):
+        """Constructor
+        """
         super(ForcePlateAnomalyProcedure, self).__init__()
 
     def run(self,acq,filename,options):
+        """ run the procedure
+
+        Args:
+            acq (btk.Acquisition): a btk acquisition instantce
+            filename (str): filename
+            options (dict) : passed options
+
+        Note
+            ``frameRange`` ([int, int]) is one key of the ``options`` argument
+
+        """
 
         ff = acq.GetFirstFrame()
         lf = acq.GetLastFrame()
@@ -249,12 +310,26 @@ class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
         self.anomaly["ErrorState"] = errorState
 
 class AnthropoDataAnomalyProcedure(AbstractDetectionProcedure):
+    """atnthropometric data anomaly detector
+    """
+
     def __init__(self,mp):
+        """Constructor
+        """
         super(AnthropoDataAnomalyProcedure, self).__init__()
 
         self.mp = mp
 
     def run(self,acq,filename,options):
+        """ run the procedure
+
+        Args:
+            acq (btk.Acquisition): a btk acquisition instantce
+            filename (str): filename
+            options (dict) : passed options ( Not used so far)
+
+
+        """
 
         errorState = False
 
