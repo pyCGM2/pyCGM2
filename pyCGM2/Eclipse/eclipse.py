@@ -1,62 +1,81 @@
 # -*- coding: utf-8 -*-
-# from __future__ import print_function
+#APIDOC: /Low level/Vicon/eclipse
+
+""" This module contains convenient classes and functions for dealing with the enf files associated with vicon Eclipse
+
+check out the script : *\Tests\test_eclipse.py* for examples
+
+"""
+
+from bs4 import BeautifulSoup
+from pyCGM2.Utils import files
+from pyCGM2.Tools import btkTools
+from pyCGM2 import enums
 import os
 import configparser
-import pyCGM2; LOGGER = pyCGM2.LOGGER
-
 import pyCGM2
-from pyCGM2 import enums
-
-from pyCGM2.Tools import btkTools
-from pyCGM2.Utils import files
-from bs4 import BeautifulSoup
-
-
-
-DEFAULT_SUBSESSION = {"Task":"","Shoes":"","ProthesisOrthosis":"","ExternalAid":"","PersonalAid":""}
+LOGGER = pyCGM2.LOGGER
 
 
 def generateEmptyENF(path):
-    c3ds = files.getFiles(path,"c3d")
+    """ generate empty enf files of a folder containing c3d files only"""
+
+    c3ds = files.getFiles(path, "c3d")
     for c3d in c3ds:
         enfName = c3d[:-4]+".Trial.enf"
         if enfName not in os.listdir(path):
             open((path+enfName), 'a').close()
 
+
 def getCurrentMarkedEnfs():
-    currentMarkedNodesFile = os.getenv("PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
+    """
+    Get marked enf files
+    """
+    currentMarkedNodesFile = os.getenv(
+        "PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
 
-    infile = open(currentMarkedNodesFile,"r")
-    soup = BeautifulSoup(infile.read(),'xml')
+    infile = open(currentMarkedNodesFile, "r")
+    soup = BeautifulSoup(infile.read(), 'xml')
 
-    out=list()
+    out = list()
     nodes = soup.find_all("MarkedNode")
     for node in nodes:
         fullFilename = node.get("MarkedNodePath")
         out.append(fullFilename.split("\\")[-1])
 
-    return out if out!=[] else None
+    return out if out != [] else None
+
 
 def getCurrentMarkedNodes(fileType="c3d"):
-    currentMarkedNodesFile = os.getenv("PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
+    """Get current marked node from the eclipse interface.
 
-    infile = open(currentMarkedNodesFile,"r")
-    soup = BeautifulSoup(infile.read(),'xml')
+    the argument `fileType` is set by default to c3d to return marked c3d files
+
+    Args:
+        fileType (str): file extension
+
+    """
+    currentMarkedNodesFile = os.getenv(
+        "PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
+
+    infile = open(currentMarkedNodesFile, "r")
+    soup = BeautifulSoup(infile.read(), 'xml')
 
     path = list()
-    outFiles=list()
+    outFiles = list()
     nodes = soup.find_all("MarkedNode")
 
     for node in nodes:
         fullFilename = node.get("MarkedNodePath")
         nodepath = fullFilename[0:fullFilename.rfind("\\")+1]
 
-        if fileType == "c3d" :   fullFilename = fullFilename.replace(".Trial.enf","."+fileType)
+        if fileType == "c3d":
+            fullFilename = fullFilename.replace(".Trial.enf", "."+fileType)
         outFiles.append(fullFilename.split("\\")[-1])
         if nodepath not in path:
             path.append(nodepath)
 
-    if outFiles==[] :
+    if outFiles == []:
         return None
     else:
         if len(path) == 1:
@@ -65,87 +84,43 @@ def getCurrentMarkedNodes(fileType="c3d"):
 
 
 def getEnfFiles(path, type):
-    path = path[:-1] if path[-1:]=="\\" else path
+    """return the list of enf files found in a folder
 
-    enfFiles = files.getFiles(path+"\\",type.value)
+    Args:
+        path (str): Description of parameter `path`.
+        type (pyCGM2.enums.EclipseType): type of enf file (Session,Patient or Trial)
+
+    Returns:
+        [str...]: enf files
+
+
+    """
+    path = path[:-1] if path[-1:] == "\\" else path
+
+    enfFiles = files.getFiles(path+"\\", type.value)
 
     if type == enums.EclipseType.Session:
-        if len(enfFiles)>1:
-            raise Exception ("Vicon Eclipse badly configured. Two session enf found")
+        if len(enfFiles) > 1:
+            raise Exception(
+                "Vicon Eclipse badly configured. Two session enf found")
         else:
-            return  enfFiles[0]
+            return enfFiles[0]
 
     elif type == enums.EclipseType.Patient:
-        if len(enfFiles)>1:
-            raise Exception ("Vicon Eclipse badly configured. Two Patient enf found")
+        if len(enfFiles) > 1:
+            raise Exception(
+                "Vicon Eclipse badly configured. Two Patient enf found")
         else:
-            return  enfFiles[0]
+            return enfFiles[0]
     elif type == enums.EclipseType.Trial:
         return enfFiles
     else:
-        raise Exception ("eclipse file type not recognize. Shoud be an item of enums.eClipseType")
+        raise Exception(
+            "eclipse file type not recognize. Shoud be an item of enums.eClipseType")
 
 
-def findCalibration(path, ignoreSelect=False):
-    enfs = getEnfFiles(path,enums.EclipseType.Trial)
-
-
-    detected = list()
-    for enf in enfs:
-        enfTrial = TrialEnfReader(path,enf)
-        if not ignoreSelect:
-            if enfTrial.isCalibrationTrial() and enfTrial.isSelected() :
-                detected.append(enf)
-        else:
-            if enfTrial.isCalibrationTrial() and enfTrial.get("Processing")=="Ready":
-                detected.append(enf)
-
-    if len(detected)>1:
-        raise Exception("You should have only one activated calibration c3d")
-    else:
-        if detected ==[] : raise Exception("No static file detected")
-        return detected[0]
-
-
-def findMotions(path,ignoreSelect=False):
-    enfs = getEnfFiles(path,enums.EclipseType.Trial)
-
-    detected = list()
-    for enf in enfs:
-        enfTrial = TrialEnfReader(path,enf)
-        if not ignoreSelect:
-            if enfTrial.isMotionTrial() and enfTrial.isSelected():
-                detected.append(enf)
-        else:
-            if enfTrial.isMotionTrial() and enfTrial.get("Processing")=="Ready":
-                detected.append(enf)
-
-    if detected ==[]:
-        raise Exception("No motion files detected")
-    else:
-        return detected
-
-def findKneeMotions(path,ignoreSelect=False):
-    enfs = getEnfFiles(path,enums.EclipseType.Trial)
-
-    detected = list()
-    for enf in enfs:
-        enfTrial = TrialEnfReader(path,enf)
-        if not ignoreSelect:
-            if enfTrial.isKneeCalibrationTrial() and enfTrial.isSelected():
-                detected.append(enf)
-        else:
-            if enfTrial.isKneeCalibrationTrial() and enfTrial.get("Processing")=="Ready":
-                detected.append(enf)
-
-    if detected ==[]:
-        return None
-    else:
-        return detected
-
-
-def cleanEnf(path,enf):
-    src = open((path+enf),"r")
+def cleanEnf(path, enf):
+    src = open((path+enf), "r")
     filteredContent = ""
     for line in src:
         if line[0] != "=":
@@ -158,95 +133,43 @@ def cleanEnf(path,enf):
     return filteredContent
 
 
-def classifyEnfMotions(path,ignoreSelect=False,
-    criteria=["Task","Shoes","ProthesisOrthosis","ExternalAid","PersonalAid"]):
-    """
-
-
-    """
-    enfs = getEnfFiles(path,enums.EclipseType.Trial)
-    subSessions = list()
-
-    # 1 : detect task
-
-    for enf in enfs:
-        subSession =dict(DEFAULT_SUBSESSION)
-        enfTrial = TrialEnfReader(path,enf)
-        if not ignoreSelect:
-            if enfTrial.isMotionTrial() and enfTrial.isSelected():
-                for it in criteria:
-                    subSession[it] = enfTrial.get(it)
-                if subSession not in subSessions:
-                    subSessions.append(subSession)
-        else:
-            if enfTrial.isMotionTrial() and enfTrial.get("Processing")=="Ready":
-                for it in criteria:
-                    subSession[it] = enfTrial.get(it)
-                if subSession not in subSessions:   subSessions.append(subSession)
-
-
-    #2 : match c3d
-    c3ds = list()
-    for subSessionIt in subSessions:
-        c3d_bySubSession = list()
-        for enf in enfs:
-            subSession =dict(DEFAULT_SUBSESSION)
-            enfTrial = TrialEnfReader(path,enf)
-            if not ignoreSelect:
-                if enfTrial.isMotionTrial() and enfTrial.isSelected():
-                    for it in criteria:
-                        subSession[it] = enfTrial.get(it)
-                    if subSession == subSessionIt:
-                        c3d_bySubSession.append(enfTrial.getFile())
-            else:
-                if enfTrial.isMotionTrial() and enfTrial.get("Processing")=="Ready":
-                    for it in criteria:
-                        subSession[it] = enfTrial.get(it)
-                    if subSession == subSessionIt:
-                        c3d_bySubSession.append(enfTrial.getFile())
-        c3ds.append(c3d_bySubSession)
-
-    shortNames = list()
-    for subSessionIt in subSessions:
-        shortNames.append(subSessionIt["Task"][0] +"_"+ subSessionIt["Shoes"][0]+ subSessionIt["ProthesisOrthosis"][0]+ subSessionIt["ExternalAid"][0]+ subSessionIt["PersonalAid"][0])
-
-
-    # zipped and retrun list of ClassifiedEnf object
-    zipped = zip(subSessions,c3ds,shortNames )
-    out = list()
-    for it in zipped:
-        out.append(ClassifiedEnf(it[0],it[1],it[2]))
-
-    return out
-
-
-
-
-
-
-
 class EnfReader(object):
+    """ class for handling a generic enf file"""
 
-    def __init__(self, path,enfFile):
+    def __init__(self, path, enfFile):
+        """constructor
+
+        Args:
+            path (str): folder path
+            enfFile (str): enf filename
+
+        """
 
         config = configparser.ConfigParser()
-        config.optionxform=str # keep letter case
+        config.optionxform = str  # keep letter case
 
         if not os.path.isfile((path+enfFile)):
-            raise Exception ("[pyCGM2] : enf file (%s) not find"%(path+enfFile))
+            raise Exception("[pyCGM2] : enf file (%s) not find" %
+                            (path+enfFile))
 
         try:
             config.read((path+enfFile))
         except configparser.ParsingError:
-            cleanEnf(path,enfFile)
+            cleanEnf(path, enfFile)
             config.read((path+enfFile))
 
-
-        self.m_path =  path
-        self.m_file =  enfFile
+        self.m_path = path
+        self.m_file = enfFile
         self.m_config = config
 
-    def getSection(self,section):
+    def getSection(self, section):
+        """section assessor
+
+        Args:
+            section (str): section name
+
+        """
+
         dict1 = {}
         options = self.m_config.options(section)
         for option in options:
@@ -260,116 +183,191 @@ class EnfReader(object):
         return dict1
 
     def getFile(self):
+        """ get the filename"""
         return self.m_file
 
     def getPath(self):
+        """ get the folder path"""
         return self.m_path
 
 
-
 class PatientEnfReader(EnfReader):
+    """ Class for handling the Patient.enf file created by Vicon Nexus"""
 
-    def __init__(self, path,enfFile):
-        super(PatientEnfReader, self).__init__(path,enfFile)
-        self.m_patientInfos = super(PatientEnfReader, self).getSection("SUBJECT_INFO")
+    def __init__(self, path, enfFile):
+        """constructor
+
+        Args:
+            path (str): folder path
+            enfFile (str): enf filename
+
+        """
+        super(PatientEnfReader, self).__init__(path, enfFile)
+        self.m_patientInfos = super(
+            PatientEnfReader, self).getSection("SUBJECT_INFO")
 
         for key in self.m_patientInfos:
             if self.m_patientInfos[key] == "":
                 self.m_patientInfos[key] = None
             elif self.m_patientInfos[key].lower() == "true":
-                self.m_patientInfos[key]=True
+                self.m_patientInfos[key] = True
             elif self.m_patientInfos[key].lower() == "false":
-                self.m_patientInfos[key]=False
+                self.m_patientInfos[key] = False
             else:
                 pass
 
-    def get(self,label):
+    def get(self, label):
+        """get value of a given parameter ( ie column name)
+
+        Args:
+            label (str): name of the parameter
+        """
+
         if label in self.m_patientInfos.keys():
             return self.m_patientInfos[label]
 
     def getPatientInfos(self):
+        """ get the patient section"""
         return self.m_patientInfos
 
-    def set(self,label,value):
+    def set(self, label, value):
+        """set value of a given parameter ( ie column name)
+
+        Args:
+            label (str): name of the parameter
+            value (str): value
+        """
         self.m_patientInfos[label] = value
         self.m_config.set('SUBJECT_INFO', label, value)
 
     def save(self):
+        """ save the enf file"""
         with open((self.m_path + self.m_file), 'w') as configfile:
             self.m_config.write(configfile)
 
-class SessionEnfReader(EnfReader):
 
-    def __init__(self, path,enfFile):
-        super(SessionEnfReader, self).__init__(path,enfFile)
-        self.m_sessionInfos = super(SessionEnfReader, self).getSection("SESSION_INFO")
+class SessionEnfReader(EnfReader):
+    """ Class for handling the Session.enf file created by Vicon Eclipse"""
+
+    def __init__(self, path, enfFile):
+        """constructor
+
+        Args:
+            path (str): folder path
+            enfFile (str): enf filename
+
+        """
+        super(SessionEnfReader, self).__init__(path, enfFile)
+        self.m_sessionInfos = super(
+            SessionEnfReader, self).getSection("SESSION_INFO")
 
         for key in self.m_sessionInfos:
             if self.m_sessionInfos[key] == "":
                 self.m_sessionInfos[key] = None
             elif self.m_sessionInfos[key].lower() == "true":
-                self.m_sessionInfos[key]=True
+                self.m_sessionInfos[key] = True
             elif self.m_sessionInfos[key].lower() == "false":
-                self.m_sessionInfos[key]=False
+                self.m_sessionInfos[key] = False
             else:
                 pass
 
-    def get(self,label):
+    def get(self, label):
+        """get value of a given parameter ( ie column name)
+
+        Args:
+            label (str): name of the parameter
+        """
         if label in self.m_sessionInfos.keys():
             return self.m_sessionInfos[label]
 
     def getSessionInfos(self):
+        """ return the session section as a dict"""
         return self.m_sessionInfos
 
-    def set(self,label,value):
+    def set(self, label, value):
+        """set value of a given parameter ( ie column name)
+
+        Args:
+            label (str): name of the parameter
+            value (str): value
+        """
         self.m_sessionInfos[label] = value
         self.m_config.set('SESSION_INFO', label, value)
 
     def save(self):
+        """ save the enf file"""
         with open((self.m_path + self.m_file), 'w') as configfile:
             self.m_config.write(configfile)
 
-class TrialEnfReader(EnfReader):
 
-    def __init__(self, path,enfFile):
-        super(TrialEnfReader, self).__init__(path,enfFile)
-        self.m_trialInfos = super(TrialEnfReader, self).getSection("TRIAL_INFO")
+class TrialEnfReader(EnfReader):
+    """Class for handing the Trial.enf file created by Vicon Eclipse"""
+
+    def __init__(self, path, enfFile):
+        """constructor
+
+        Args:
+            path (str): folder path
+            enfFile (str): enf filename
+
+        """
+        super(TrialEnfReader, self).__init__(path, enfFile)
+        self.m_trialInfos = super(
+            TrialEnfReader, self).getSection("TRIAL_INFO")
 
         for key in self.m_trialInfos:
             if self.m_trialInfos[key] == "" or self.m_trialInfos[key] == "None":
                 self.m_trialInfos[key] = None
             elif self.m_trialInfos[key].lower() == "true":
-                self.m_trialInfos[key]=True
+                self.m_trialInfos[key] = True
             elif self.m_trialInfos[key].lower() == "false":
-                self.m_trialInfos[key]=False
+                self.m_trialInfos[key] = False
             else:
                 pass
 
-    def set(self,label,value):
+    def set(self, label, value):
+        """set value of a given parameter ( ie column name)
+
+        Args:
+            label (str): name of the parameter
+            value (str): value
+        """
         self.m_trialInfos[label] = value
         self.m_config.set('TRIAL_INFO', label, value)
 
-
     def save(self):
+        """ save the enf file"""
         with open((self.m_path + self.m_file), 'w') as configfile:
             self.m_config.write(configfile)
 
     def getTrialInfos(self):
+        """ return the trial section as a dict"""
         return self.m_trialInfos
 
-    def get(self,label):
+    def get(self, label):
+        """get value of a given parameter ( ie column name)
+
+        Args:
+            label (str): name of the parameter
+        """
         if label in self.m_trialInfos.keys():
             return self.m_trialInfos[label]
 
     def getC3d(self):
+        """ return the c3d name"""
         return self.m_file.split(".")[0]+".c3d"
         # return self.m_file.replace(".Trial.enf",".c3d")
 
+    def setForcePlates(self, mappedForcePlateCharacters):
+        """set the force plate parameters
 
-    def setForcePlates(self,mappedForcePlateCharacters):
+        Args:
+            mappedForcePlateCharacters (str): letters caracterizing foot contact on a force plate
+            ( ex : XLR : foot contact not assign to FP1, left foot assign to FP2, right foot assigned to FP3)
+        """
 
         index = 1
-        for character in  mappedForcePlateCharacters:
+        for character in mappedForcePlateCharacters:
             if character == "L":
                 self.set("FP"+str(index), "Left")
             elif character == "R":
@@ -379,98 +377,86 @@ class TrialEnfReader(EnfReader):
             elif character == "A":
                 self.set("FP"+str(index), "Auto")
             else:
-                LOGGER.logger.error("character of your mapped force plate characters not known (L,R,X,A only) ")
+                LOGGER.logger.error(
+                    "character of your mapped force plate characters not known (L,R,X,A only) ")
                 raise Exception()
 
-            index+=1
-
+            index += 1
 
     def isSelected(self):
+        """check if the trial enf parameter *Selected* is checked  """
         flag = False
         if "Selected" in self.m_trialInfos.keys():
-            if self.m_trialInfos["Selected"] == "Selected" :
+            if self.m_trialInfos["Selected"] == "Selected":
                 flag = True
         return flag
 
-
-
     def isCalibrationTrial(self):
+        """check if the enf file is a *Static* trial type  """
         flag = False
         if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Static":
             flag = True
         return flag
 
     def isKneeCalibrationTrial(self):
+        """check if the enf file is a *Knee calibration* trial Type  """
         flag = False
         if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Knee Calibration":
             flag = True
         return flag
 
-
     def isC3dExist(self):
-        return os.path.isfile(self.m_path + self.m_file.replace(".Trial.enf",".c3d"))
-
-
+        """check if c3d matches  the enf  """
+        return os.path.isfile(self.m_path + self.m_file.replace(".Trial.enf", ".c3d"))
 
     def isMotionTrial(self):
+        """check if the enf file is a *Motion* trial type  """
         flag = False
         if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Motion":
-            flag =  True
+            flag = True
         return flag
 
     def getForcePlateAssigment(self):
+        """return the force plate foot contact assignement letters """
 
-        c3dFilename = self.m_file.replace(".Trial.enf",".c3d")
+        c3dFilename = self.m_file.replace(".Trial.enf", ".c3d")
         acq = btkTools.smartReader((self.m_path + c3dFilename))
         nfp = btkTools.getNumberOfForcePlate(acq)
 
         mfpa = ""
-        for i in range(1,nfp+1):
+        for i in range(1, nfp+1):
             try:
-                if self.m_trialInfos["FP"+str(i)]=="Left": mfpa = mfpa +"L"
-                if self.m_trialInfos["FP"+str(i)]=="Right": mfpa = mfpa +"R"
-                if self.m_trialInfos["FP"+str(i)]=="Invalid": mfpa = mfpa +"X"
-                if self.m_trialInfos["FP"+str(i)]=="Auto": mfpa = mfpa +"A"
+                if self.m_trialInfos["FP"+str(i)] == "Left":
+                    mfpa = mfpa + "L"
+                if self.m_trialInfos["FP"+str(i)] == "Right":
+                    mfpa = mfpa + "R"
+                if self.m_trialInfos["FP"+str(i)] == "Invalid":
+                    mfpa = mfpa + "X"
+                if self.m_trialInfos["FP"+str(i)] == "Auto":
+                    mfpa = mfpa + "A"
             except KeyError:
-                LOGGER.logger.info("[pyCGM2] force plate [%i] not assigned manually. set to Auto "%(i))
-                mfpa = mfpa +"A"
+                LOGGER.logger.info(
+                    "[pyCGM2] force plate [%i] not assigned manually. set to Auto " % (i))
+                mfpa = mfpa + "A"
 
         return mfpa
 
     def getMarkerDiameter(self):
+        """return marker diameter"""
         if "MarkerDiameter" in self.m_trialInfos.keys():
             return float(self.m_trialInfos["MarkerDiameter"]) if self.m_trialInfos["MarkerDiameter"] is not None else 14.0
 
     def getFlatFootOptions(self):
+        """ return flat foot options"""
         if "LeftFlatFoot" in self.m_trialInfos.keys():
-             leftFlatFoot =  self.m_trialInfos["LeftFlatFoot"]
+            leftFlatFoot = self.m_trialInfos["LeftFlatFoot"]
 
         if "RightFlatFoot" in self.m_trialInfos.keys():
-            RightFlatFoot  = self.m_trialInfos["LeftFlatFoot"]
+            RightFlatFoot = self.m_trialInfos["LeftFlatFoot"]
 
             return leftFlatFoot, RightFlatFoot
 
     def isMarked(self):
+        """ check if the enf is marked"""
         markedFiles = getCurrentMarkedEnfs()
         return True if self.m_file in markedFiles else False
-
-
-
-class ClassifiedEnf(object):
-
-    def __init__(self,criteria,enfFiles,shortName):
-        self.__criteria = criteria
-        self.__enfFiles = enfFiles
-        self.__shortName = shortName
-
-
-
-
-    def getEnfFiles(self):
-        return self.__enfFiles
-
-    def getCriteria(self):
-        return self.__criteria
-
-    def getshortName(self):
-        return self.__shortName

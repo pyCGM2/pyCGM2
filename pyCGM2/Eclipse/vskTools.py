@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Low level/Vicon/vsk
+"""
+Module containing classed and convenient function for dealing with a Vicon Skeleton File ( vsk)
+
+"""
 from __future__ import unicode_literals
 
 from bs4 import BeautifulSoup
@@ -9,6 +14,12 @@ from pyCGM2.Utils import files
 
 
 def getVskFiles(path):
+    """return vsk files detected in a folder
+
+    Args:
+        path (str): folder path
+
+    """
 
     path = path[:-1] if path[-1:]=="\\" else path
     vskFile = files.getFiles(path+"\\",".vsk")
@@ -35,11 +46,14 @@ def checkSetReadOnly(vskfilename):
 
 
 class Vsk(object):
-    """
-
-    """
+    """ class for handling vsk file"""
 
     def __init__(self,file):
+        """constructor
+
+        Args:
+            file (str): name of the vsk file
+        """
 
         self.m_file=file
 
@@ -52,6 +66,11 @@ class Vsk(object):
 
 
     def getStaticParameterValue(self, label):
+        """return value of a given parameter
+
+        Args:
+            label (str): name of the desired parameter
+        """
 
         staticParameters = self.m_soup.find_all('StaticParameter')
         for sp in staticParameters:
@@ -65,6 +84,17 @@ class Vsk(object):
 
 
 def getFromVskSubjectMp(vskInstance, resetFlag=False):
+    """return CGM anthropometric data ( mp data) of a pyCGM2.Eclipse.Vsk instance
+
+    Args:
+        vskInstance (pyCGM2.Eclipse.Vsk): vsk instance
+        resetFlag (bool)[False]: zero optional parameters
+
+    Returns
+        [dict,dict] : list of 2 dictionnaries containing  *required* and *optional* anthropometric data of the CGM
+
+
+    """
 
     required_mp={
     'Bodymass'   : float(vskInstance.getStaticParameterValue("Bodymass")) if vskInstance.getStaticParameterValue("Bodymass") is not None else 0,
