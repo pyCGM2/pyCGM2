@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Low level/Event/
+"""
+The module contains filter and procedure for detecting foot contact event.
+
+check out the script : *\Tests\test_events.py* for examples
+"""
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:
@@ -14,10 +20,9 @@ from pyCGM2.Processing import progressionFrame
 #-------- EVENT PROCEDURES  ----------
 
 
-# --- calibration procedure
 class ZeniProcedure(object):
     """
-        Gait Event detection from Zeni
+        Gait Event detection from Zeni et al, 2008
     """
 
     def __init__(self):
@@ -26,14 +31,35 @@ class ZeniProcedure(object):
         self.footOffOffset = 0
 
     def setFootStrikeOffset(self,value):
+        """set a systematic offset to each foot strike event
+
+        Args:
+            value (int): frame offset
+        """
+
         self.footStrikeOffset = value
 
     def setFootOffOffset(self,value):
+        """set a systematic offset to each foot off event
+
+        Args:
+            value (int): frame offset
+        """
         self.footOffOffset = value
 
     def detect(self,acq):
+        """detect events
+
+        Args:
+            acq (Btk.Acquisition): a btk acquisition instance
+
+        Return:
+            int,int,int,int: frames indicating the left foot strike, the left foot off,
+            the right foot strike and the right foot off respectively
+
         """
-        """
+
+
         ff=acq.GetFirstFrame()
 
 
@@ -87,12 +113,17 @@ class ZeniProcedure(object):
 
 class EventFilter(object):
     """
-
+    Event filter to handle an event procedure
     """
     def __init__(self,procedure,acq):
+        """Constructor
+
+        Args:
+            procedure (pyCGM2.Events.events): event procedure
+            acq (Btk.Acquisition): a btk acquisition
+
         """
-            :Parameters:
-        """
+
 
         self.m_aqui = acq
         self.m_procedure = procedure
