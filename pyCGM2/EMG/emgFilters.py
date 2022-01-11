@@ -1,4 +1,17 @@
 # -*- coding: utf-8 -*-
+# @Author: Fabien Leboeuf
+# @Date:   2021-04-20T06:55:08+02:00
+# @Last modified by:   Fabien Leboeuf
+# @Last modified time: 2022-01-11T10:32:19+01:00
+#APIDOC: /Low level/EMG/Filters
+
+""" This module contains emg filters handling emg procedures
+
+check out the script : *\Tests\test_EMG.py* for examples
+
+"""
+
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 from pyCGM2.Signal import signal_processing
@@ -8,19 +21,33 @@ from pyCGM2 import enums
 
 class BasicEmgProcessingFilter(object):
     """
-
+    Filter for filtering emg signals with a high pass filter
     """
 
     def __init__(self,acq, labels):
+        """constructor.
+
+        Args:
+            acq (Btk.Acquisition): btk acquisition instance
+            labels ([str]): emg labels.
+        """
 
         self.m_acq = acq
         self.m_labels = labels
 
     def setHighPassFrequencies(self,low,up):
+        """Set the frequency boudaries of your emg Butterworth high-pass filter.
+
+        Args:
+            low (float): lower frequency
+            up (float): upper frequency
+
+        """
         self.m_hpf_up = up
         self.m_hpf_low = low
 
     def run(self):
+        """Run the filter  """
         fa=self.m_acq.GetAnalogFrequency()
         for label in self.m_labels:
             values =  self.m_acq.GetAnalog(label).GetValues()
@@ -42,19 +69,31 @@ class BasicEmgProcessingFilter(object):
 
 class EmgEnvelopProcessingFilter(object):
     """
-
+    Filter for processing emg envelop from low-pass filter
     """
 
     def __init__(self,acq, labels):
+        """constructor.
+
+        Args:
+            acq (Btk.Acquisition): btk acquisition instance
+            labels ([str]): emg labels.
+        """
 
         self.m_acq = acq
         self.m_labels = [ label+"_Rectify" for label in labels]
 
     def setCutoffFrequency(self,fc):
+        """Set the cut-off frequency.
+
+        Args:
+            fc (float): cut-off frequency
+        """
         self.m_fc = fc
 
 
     def run(self):
+        """Run the filter  """
         fa=self.m_acq.GetAnalogFrequency()
         for label in self.m_labels:
             values =  self.m_acq.GetAnalog(label).GetValues()
@@ -74,10 +113,18 @@ class EmgEnvelopProcessingFilter(object):
 
 class EmgNormalisationProcessingFilter(object):
     """
-
+    Filter for normalizing emg signals in amplitude
     """
 
     def __init__(self,analysis, label,context):
+        """Constructor
+
+        Args:
+            analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
+            label (str): emg label.
+            context (str): Event context.
+
+        """
 
         self.m_analysis = analysis
         self.m_label = label+"_Rectify_Env"
@@ -90,6 +137,13 @@ class EmgNormalisationProcessingFilter(object):
 
 
     def setC3ds(self,datPath,c3ds,fileSuffix=None):
+        """Set a list of c3d.
+
+        Args:
+            datPath (str): Folder data path
+            c3ds ([str]): the names of c3d
+            fileSuffix (str,optional): suffix added to c3d filenames
+        """
 
         self.__c3dProcess = True
         self.m_c3dPath = datPath
@@ -98,9 +152,22 @@ class EmgNormalisationProcessingFilter(object):
 
 
     def setThresholdFromOtherAnalysis(self,analysis):
+        """Set an other pyCGM2 analysis instance as normalisation denominator
+
+        Args:
+            analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
+
+        """
         self.m_thresholdFromAnalysis = analysis
 
     def setMaxMethod(self,EnumEmgNorm, Value=None):
+        """set a normalisation method
+
+        Args:
+            EnumEmgNorm (pyCGM2.Enums): method
+            Value (float,Optional): force the denominator value
+
+        """
 
         if self.m_thresholdFromAnalysis is None:
             value = self.m_analysis.emgStats.data[self.m_label,self.m_context]
@@ -119,6 +186,12 @@ class EmgNormalisationProcessingFilter(object):
 
 
     def processC3d(self):
+        """ Process all c3d filenames
+
+        Each c3d are updated and include a new analog label with the suffix *_Norm*
+
+        """
+
         for c3d in self.m_c3ds:
             filenameOut  = c3d[:-4] + "_" + self.m_fileSuffix+".c3d" if self.m_fileSuffix is not None else c3d
             acq = btkTools.smartReader((self.m_c3dPath+c3d))
@@ -132,6 +205,11 @@ class EmgNormalisationProcessingFilter(object):
 
 
     def processAnalysis(self):
+        """
+        Process the pyCGM2 analysis instance
+
+        New labels with the suffix *_Norm* is created in the section emgStats.data of the pyCGM2 analysis instance
+        """
 
         for contextIt in ["Left","Right"]:
             if (self.m_label,contextIt) in self.m_analysis.emgStats.data:
@@ -151,6 +229,8 @@ class EmgNormalisationProcessingFilter(object):
 
 
     def run(self):
+        """ run the filter"""
+
         if self.__c3dProcess:
             self.processC3d()
         self.processAnalysis()
@@ -160,10 +240,16 @@ class EmgNormalisationProcessingFilter(object):
 
 class EmgCoActivationFilter(object):
     """
-
+    Filter for computing coactivation index
     """
 
     def __init__(self,analysis,context):
+        """Constructor.
+
+        Args:
+            analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
+            context (str): event context
+        """
 
         self.m_analysis = analysis
         self.m_context = context
@@ -171,17 +257,39 @@ class EmgCoActivationFilter(object):
         self.m_labelEMG2 = None
 
     def setEMG1(self,label):
+        """set the label of the first emg signal
+
+        Args:
+            label (str): emg label
+        """
         self.m_labelEMG1 = label
 
 
     def setEMG2(self,label):
+        """set the label of the second emg signal
+
+        Args:
+            label (str): emg label
+        """
+
         self.m_labelEMG2 = label
 
 
     def setCoactivationMethod(self, concreteCA):
+        """set the coactivation procedure
+
+        Args:
+            concreteCA (pyCGM2.EMG.Coactivation): Coactivation procedure instance
+
+        """
+
         self.m_concreteCA = concreteCA
 
     def run(self):
+        """ run ethe filter
+
+        The coactivation section of the pyCGM2-Analysis instance is updated with descriptive statistics
+        """
         emg1v = self.m_analysis.emgStats.data[self.m_labelEMG1+"_Rectify_Env_Norm",self.m_context]["values"]
         emg2v = self.m_analysis.emgStats.data[self.m_labelEMG2+"_Rectify_Env_Norm",self.m_context]["values"]
 
