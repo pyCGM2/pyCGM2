@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Obsolete module : work with anomaly instead
+"""
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 class QualityFilter(object):
