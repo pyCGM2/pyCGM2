@@ -1,17 +1,25 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Low level/ForcePlates/
+"""
+The module contains filter and procedure for filling gap
+
+check out the script : *\Tests\test_gap.py* for examples
+"""
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 
 from pyCGM2.Tools import  btkTools
 
 
-#-------- EVENT PROCEDURES  ----------
 
 
 # --- calibration procedure
 class LowDimensionalKalmanFilterProcedure(object):
     """
-        method from Burke et al. (Job 2016)
+        gap fill procedure according  Burke et al. (Job 2016)
+
+        Burke, M.; Lasenby, J. (2016) Estimating missing marker positions using low dimensional Kalman smoothing. In : Journal of biomechanics, vol. 49, n° 9, p. 1854–1858. DOI: 10.1016/j.jbiomech.2016.04.016.
     """
 
     def __init__(self):
@@ -76,6 +84,12 @@ class LowDimensionalKalmanFilterProcedure(object):
 
 
     def fill(self,acq):
+        """fill gap
+
+        Args:
+            acq (Btk.Acquisition): a btk acquisition instance
+
+        """
         LOGGER.logger.info("----LowDimensionalKalmanFilter gap filling----")
         btkmarkersLoaded  = btkTools.GetMarkerNames(acq)
         ff = acq.GetFirstFrame()
@@ -122,14 +136,18 @@ class LowDimensionalKalmanFilterProcedure(object):
 
         return acq, filledMarkers
 
-
+#  --- FILTER -----
 class GapFillingFilter(object):
     """
-
+    Gap filter
     """
     def __init__(self,procedure,acq):
-        """
-            :Parameters:
+        """Constructor
+
+        Args:
+            procedure (pyCGM2.Gap.gapFilling.procedure): a gap filling procedure
+            acq (Btk.Acquisition): a btk acquisition instance
+
         """
 
         self.m_aqui = acq
@@ -147,7 +165,7 @@ class GapFillingFilter(object):
 
     def fill(self):
         """
-
+        fill gap according the specified procedure
         """
         filledAcq,filledMarkers = self.m_procedure.fill(self.m_aqui)
 
