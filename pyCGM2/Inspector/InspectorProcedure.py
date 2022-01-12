@@ -1,3 +1,11 @@
+#APIDOC: /Low level/Inspector
+"""
+Module contains inspector procedure.
+
+An inspector just inspect the content of an acquisition. It doesn't alter it.
+
+"""
+
 from pyCGM2.Tools import btkTools
 from pyCGM2.Signal import anomaly
 from pyCGM2.Math import derivation
@@ -27,6 +35,12 @@ class AbstractInspectorProcedure(object):
         pass
 
 class MarkerPresenceDetectionProcedure(AbstractInspectorProcedure):
+    """Procedure to check marker presence in the acquisition.
+
+    Args:
+        markers ([str],Optional):marker labels. Defaults to None.
+
+    """
     def __init__(self,markers=None):
         super(MarkerPresenceDetectionProcedure, self).__init__()
 
