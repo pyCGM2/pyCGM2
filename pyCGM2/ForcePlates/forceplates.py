@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Low level/ForcePlates/
+"""
+The module contains convenient functions for working with force plate.
+
+check out the script : *\Tests\test_forcePlateMatching.py* for examples
+"""
+
+
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
@@ -19,6 +28,22 @@ from pyCGM2.Tools import  btkTools
 
 
 def ForcePlateIntegration(ReactionForce, mass, frameInit=0,frameEnd=None, v0 =[0,0,0], p0= [0,0,0], analogFrequency=1000):
+    """integration of the reaction force
+
+    Args:
+        ReactionForce (array[frames,3]): ground reaction force
+        mass (float): bodymass
+        frameInit (int,Optional): initial frame of the area of interest
+        frameEnd (int,Optional): initial frame of the area of interest. Defaults to None.
+        v0 ([float,float,float],Optional): initial velocity. Defaults to [0,0,0].
+        p0 ([float,float,float],Optional): initial position. Defaults to [0,0,0].
+        analogFrequency (float): analog frequency. Defaults to 1000.
+
+    Returns:
+        array[frames,3],array[frames,3],array[frames,3]: position, velocity and acceleration
+
+
+    """
 
     g=9.81
 
@@ -54,14 +79,12 @@ def ForcePlateIntegration(ReactionForce, mass, frameInit=0,frameEnd=None, v0 =[0
 
 
 def appendForcePlateCornerAsMarker (btkAcq):
+    """update a btk acquisition with force plate corners as marker
+
+    Args:
+        btkAcq (Btk.Acquisition): a btk acquisition instance
+
     """
-        Add a marker at each force plate corners
-
-        :Parameters:
-           - `btkAcq` (btkAcquisition) : Btk acquisition instance from a c3d
-
-    """
-
 
     # --- ground reaction force wrench ---
     pfe = btk.btkForcePlatformsExtractor()
@@ -97,27 +120,31 @@ def appendForcePlateCornerAsMarker (btkAcq):
 
 def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, left_markerLabelToe ="LTOE", left_markerLabelHeel ="LHEE",
                  right_markerLabelToe ="RTOE", right_markerLabelHeel ="RHEE",  display = False, mfpa=None):
+    """Convenient function detecting foot in contact with a force plate
+
+    This function firsly assign foot side to FP from minimal distance with the application point of reaction force.
+    A refinement is done subsequently, it confirm if foot side is valid. A foot is invalided if :
+
+      - FP output no data superior to the set threshold
+      - Foot markers are not contain in the polygon defined by force plate corner
+
+    Args:
+        btkAcq (Btk.Acquisition) - Btk acquisition instance
+        enableRefine (bool,Optional): enable refinement from vertical force of the foot assigned from marker position. Defaults to True.
+        forceThreshold (float,Optional): vertical force threshold. Defaults to 50.
+        left_markerLabelToe (type,Optional): marker label of the left toe. Defaults to "LTOE".
+        left_markerLabelHeel (type,Optional): marker label of the left heel. Defaults to "LHEE".
+        right_markerLabelToe (type,Optional): marker label of the right toe. Defaults to "RTOE".
+        right_markerLabelHeel (type,Optional): marker label of the right heel. Defaults to "RHEE".
+        display (bool,Optional): display n figures (where n is the force plate number) presenting relative distance between mid foot and the orgin of the force plate.
+        Defaults to False.
+        mfpa (str,Optional): force plate manually assigned from Vicon Eclipse.
+
+    Returns:
+        str: letters indicating foot assigned to a force plate
+
     """
-        Convenient function detecting foot in contact with a force plate
 
-        **synopsis**
-
-        This function firsly assign foot side to FP from minimal distance with the application point of reaction force.
-        A refinement is done subsequently, it confirm if foot side is valid. A foot is invalided if :
-
-         - FP output no data superior to the set threshold
-         - Foot markers are not contain in the polygon defined by force plate corner
-
-        :Parameters:
-           - `btkAcq` (btkAcquisition) - Btk acquisition instance from a c3d
-           - `left_markerLabelToe` (str) - label of the left toe marker
-           - `left_markerLabelHeel` (str) - label of the left heel marker
-           - `right_markerLabelToe` (str) - label of the right toe marker
-           - `right_markerLabelHeel` (str) - label of the right heel marker
-           - `display` (bool) - display n figures ( n depend on force plate number) presenting relative distance between mid foot and the orgin of the force plate
-           - `mfpa` (string or dict) - manual force plate assigmenment from another method. Can be a string (XLRA, A stand for automatic) or a dict returing assigned foot to a Force plate ID.
-
-    """
 
     appendForcePlateCornerAsMarker(btkAcq)
 
@@ -290,10 +317,15 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
 
 
 
-def addForcePlateGeneralEvents (btkAcq,mappedForcePlate ):
+def addForcePlateGeneralEvents (btkAcq,mappedForcePlate):
+    """add maximum force plate as general event
+
+    Args:
+        btkAcq (btk.acquisition): btk acquisition instance
+        mappedForcePlate (str): letters indicated foot assigned to a force plate (eg LRX)
     """
-        Add General events from force plate assignmenet
-    """
+    ## TODO: rename this function
+
 
     ff=btkAcq.GetFirstFrame()
     lf=btkAcq.GetLastFrame()
@@ -336,6 +368,12 @@ def addForcePlateGeneralEvents (btkAcq,mappedForcePlate ):
         indexFP+=1
 
 def correctForcePlateType5(btkAcq):
+    """Correct acquisition with force plate of type 5
+
+    Args:
+        btkAcq (btk.acquisition): btk acquisition instance
+
+    """
 
     pfe = btk.btkForcePlatformsExtractor()
     pfe.SetInput(btkAcq)
