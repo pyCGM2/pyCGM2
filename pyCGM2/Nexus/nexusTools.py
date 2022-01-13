@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# from __future__ import unicode_literals
+#APIDOC: /Low level/Nexus
+
+"""
+Convenient functions for working with viconnexusapi
+"""
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Tools import btkTools
@@ -10,85 +15,119 @@ except:
     import btk
 
 
-def _setPointData(ftr,framecount,ff,values):
+def _setPointData(ftr, framecount, ff, values):
 
     beg = ff - ftr
 
-    data =[list(np.zeros((framecount))), list(np.zeros((framecount))),list(np.zeros((framecount)))]
+    data = [list(np.zeros((framecount))), list(
+        np.zeros((framecount))), list(np.zeros((framecount)))]
     exists = [False]*framecount
 
-    i=beg
+    i = beg
     for val in values:
         data[0][i] = val[0]
         data[1][i] = val[1]
         data[2][i] = val[2]
-        exists[i] = False if val[0] ==0 and val[1] ==0 and val[2] ==0 else True
-        i+=1
+        exists[i] = False if val[0] == 0 and val[1] == 0 and val[2] == 0 else True
+        i += 1
 
-    return data,exists
+    return data, exists
+
 
 def getActiveSubject(NEXUS):
+    """return the active subject
+
+    Args:
+        NEXUS (): viconnexusapi handle
+
+    """
 
     names, templates, active = NEXUS.GetSubjectInfo()
-    if active.count(True)>1:
-        raise Exception("[pyCGM2] : two subjects are activated. Select one only")
+    if active.count(True) > 1:
+        raise Exception(
+            "[pyCGM2] : two subjects are activated. Select one only")
 
-    for i in range(0,len(names)):
+    for i in range(0, len(names)):
         if active[i]:
             return names[i]
 
-
     return names, templates, active
 
-def checkActivatedSubject(NEXUS,subjectNames):
-    """
-    Note : function should be improved in Nexus API by Vicon
-    """
-    LOGGER.logger.warning("This method is deprecated. prefer getActiveSubject now")
 
-    subjectMarkerWithTraj=dict()
+def checkActivatedSubject(NEXUS, subjectNames):
+    """
+    **Obsolete**  prefer the function getActiveSubject instead
+    """
+    LOGGER.logger.warning(
+        "This method is deprecated. prefer getActiveSubject now")
+
+    subjectMarkerWithTraj = dict()
     for subject in subjectNames:
-        markers  = NEXUS.GetMarkerNames(subject)
+        markers = NEXUS.GetMarkerNames(subject)
         marker = None
         for mark in markers:
-            if  NEXUS.GetTrajectory(subject,mark) != ([], [], [], []):
+            if NEXUS.GetTrajectory(subject, mark) != ([], [], [], []):
                 marker = mark
-                LOGGER.logger.debug("Subject : %s ( marker (%s) with trajectory )" %(subject,marker))
+                LOGGER.logger.debug(
+                    "Subject : %s ( marker (%s) with trajectory )" % (subject, marker))
                 subjectMarkerWithTraj[subject] = marker
                 break
 
-
-    flags=list()
+    flags = list()
     for value in subjectMarkerWithTraj.itervalues():
         if value is not None:
             flags.append(True)
         else:
             flags.append(False)
 
-    if flags.count(True)>1:
-        raise Exception("[pyCGM2] : two subjects are activated. Select one ony")
+    if flags.count(True) > 1:
+        raise Exception(
+            "[pyCGM2] : two subjects are activated. Select one ony")
     else:
         index = flags.index(True)
-        LOGGER.logger.debug("Active subject is %s"%(subjectMarkerWithTraj.keys()[index]))
+        LOGGER.logger.debug("Active subject is %s" %
+                            (subjectMarkerWithTraj.keys()[index]))
 
     return subjectMarkerWithTraj.keys()[index]
 
 
-def setTrajectoryFromArray(NEXUS,vskName,label,array,firstFrame = 0):
+def setTrajectoryFromArray(NEXUS, vskName, label, array, firstFrame=0):
+    """Set a trajectory ( eq. marker) from an array
 
+    Args:
+        NEXUS (): vicon nexus handle.
+        vskName (str): vsk name.
+        label (str): trajectory label ( eq. marker label)
+        array (np.array(n,3)): array
+        firstFrame (int,optional): first frame of the acquisition. Defaults to 0.
+
+
+    """
 
     trialRange_init = NEXUS.GetTrialRange()[0]
-    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
-    data,exists = _setPointData(trialRange_init,framecount,firstFrame,array)
+    # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
+    framecount = NEXUS.GetFrameCount()
+    data, exists = _setPointData(
+        trialRange_init, framecount, firstFrame, array)
 
-    NEXUS.SetTrajectory( vskName, label, data[0],data[1],data[2], exists )
+    NEXUS.SetTrajectory(vskName, label, data[0], data[1], data[2], exists)
 
 
-def setTrajectoryFromAcq(NEXUS,vskName,label,acq):
+def setTrajectoryFromAcq(NEXUS, vskName, label, acq):
+    """Set a trajectory ( eq. marker) from an btk.acquisition
+
+    Args:
+        NEXUS (): vicon nexus handle.
+        vskName (str): vsk name.
+        label (str): trajectory label ( eq. marker label)
+        acq (btk.acquisition): a btk.acquisition instance
+
+    """
 
     markers = NEXUS.GetMarkerNames(vskName)
     if label not in markers:
-        raise Exception ("[pyCGM2] - trajectory of marker (%s) not found. update of trajectory impossible "%(label))
+        raise Exception(
+            "[pyCGM2] - trajectory of marker (%s) not found. update of trajectory impossible " % (label))
 
     values = acq.GetPoint(label).GetValues()
 
@@ -98,21 +137,29 @@ def setTrajectoryFromAcq(NEXUS,vskName,label,acq):
     pfn = acq.GetPointFrameNumber()
 
     trialRange_init = NEXUS.GetTrialRange()[0]
-    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
-    data,exists = _setPointData(trialRange_init,framecount,ff,values)
+    # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
+    framecount = NEXUS.GetFrameCount()
+    data, exists = _setPointData(trialRange_init, framecount, ff, values)
 
-    NEXUS.SetTrajectory( vskName, label, data[0],data[1],data[2], exists )
-
-
-
-def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq,suffix=""):
+    NEXUS.SetTrajectory(vskName, label, data[0], data[1], data[2], exists)
 
 
+def appendModelledMarkerFromAcq(NEXUS, vskName, label, acq, suffix=""):
+    """append a modelled marker ( eg HJC) from a btk.acquisition
+
+    Args:
+        NEXUS (): vicon nexus handle.
+        vskName (str): vsk name.
+        label (str): modelled marker label ( eq. marker label)
+        acq (btk.acquisition): a btk.acquisition instance
+        suffix (str,Optional): suffix added to the model outputs
+
+    """
 
     lst = NEXUS.GetModelOutputNames(vskName)
     output_label = label+suffix
     if output_label in lst:
-        LOGGER.logger.debug( "marker (%s) already exist" %(output_label))
+        LOGGER.logger.debug("marker (%s) already exist" % (output_label))
     else:
         NEXUS.CreateModeledMarker(vskName, output_label)
 
@@ -124,16 +171,24 @@ def appendModelledMarkerFromAcq(NEXUS,vskName,label, acq,suffix=""):
     pfn = acq.GetPointFrameNumber()
 
     trialRange_init = NEXUS.GetTrialRange()[0]
-    framecount = NEXUS.GetFrameCount() # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
-    data,exists = _setPointData(trialRange_init,framecount,ff,values)
+    # instead of GetFrameCount ( nexus7 API differed from nexus 2.6 API)
+    framecount = NEXUS.GetFrameCount()
+    data, exists = _setPointData(trialRange_init, framecount, ff, values)
 
-    NEXUS.SetModelOutput( vskName, output_label, data, exists )
-
-
-
+    NEXUS.SetModelOutput(vskName, output_label, data, exists)
 
 
-def appendAngleFromAcq(NEXUS,vskName,label, acq):
+def appendAngleFromAcq(NEXUS, vskName, label, acq):
+    """append a angle from a btk.acquisition
+
+    Args:
+        NEXUS (): vicon nexus handle.
+        vskName (str): vsk name.
+        label (str): trajectory label ( eq. marker label)
+        acq (btk.acquisition): a btk.acquisition instance
+
+    """
+
 
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
@@ -159,6 +214,17 @@ def appendAngleFromAcq(NEXUS,vskName,label, acq):
 
 
 def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
+    """append a Force  from an btk.acquisition
+
+    Args:
+        NEXUS (): vicon nexus handle.
+        vskName (str): vsk name.
+        label (str): force label
+        acq (btk.acquisition): a btk.acquisition instance
+        normalizedData (bool,Optional): indicate if values are normalized in amplitude. Default set to True
+
+    """
+
 
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
@@ -187,6 +253,16 @@ def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
 
 
 def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
+    """append a Moment  from an btk.acquisition
+
+    Args:
+        NEXUS (): vicon nexus handle.
+        vskName (str): vsk name.
+        label (str): moment label
+        acq (btk.acquisition): a btk.acquisition instance
+        normalizedData (bool,Optional): indicate if values are normalized in amplitude. Default set to True
+
+    """
 
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
@@ -216,6 +292,16 @@ def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
 def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
+    """append a power  from an btk.acquisition
+
+    Args:
+        NEXUS (): vicon nexus handle.
+        vskName (str): vsk name.
+        label (str): power label
+        acq (btk.acquisition): a btk.acquisition instance
+        normalizedData (bool,Optional): indicate if values are normalized in amplitude. Default set to True
+
+    """
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
@@ -240,6 +326,18 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
 def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=None,suffix="",existFromPoint = None):
+    """append a vicon bone  from an btk.acquisition
+
+    Args:
+        NEXUS (): vicon nexus handle.
+        vskName (str): vsk name.
+        label (str): bone label
+        acq (btk.acquisition): a btk.acquisition instance
+        OriginValues (np.array(n,3),Optional): manual assignement of the bone origin. Default set to None
+        manualScale (np.array(1,3),Optional): manual scale. Default set to None
+        existFromPoint (str,Optional): btk point label conditionning presence or absence of the bone. Default set to None
+
+    """
 
     if any(segment.getExistFrames()):
 
@@ -312,6 +410,15 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
 
 
 def createGeneralEvents(NEXUS,subject,acq,labels):
+    """append general events from an btk.acquisition
+
+    Args:
+        NEXUS (): vicon nexus handle.
+        vskName (str): vsk name.
+        labels ([str]): general event labels
+        acq (btk.acquisition): a btk.acquisition instance
+
+    """
 
     freq = acq.GetPointFrequency()
     events= acq.GetEvents()
@@ -320,6 +427,15 @@ def createGeneralEvents(NEXUS,subject,acq,labels):
             NEXUS.CreateAnEvent( subject, "General", ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
 def createEvents(NEXUS,subject,acq,labels):
+    """append events from an btk.acquisition
+
+    Args:
+        NEXUS (): vicon nexus handle.
+        vskName (str): vsk name.
+        labels ([str]): general event labels
+        acq (btk.acquisition): a btk.acquisition instance
+
+    """
 
     freq = acq.GetPointFrequency()
     events= acq.GetEvents()
@@ -328,6 +444,12 @@ def createEvents(NEXUS,subject,acq,labels):
             NEXUS.CreateAnEvent( subject, ev.GetContext(), ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
 def getForcePlateAssignment(NEXUS):
+    """get Force plate assignement
+
+    Args:
+        NEXUS (): vicon nexus handle.
+
+    """
     out = dict()
     for id in NEXUS.GetDeviceIDs():
         name, type, rate, output_ids, forceplate, eyetracker = NEXUS.GetDeviceDetails(id)
@@ -343,6 +465,13 @@ def getForcePlateAssignment(NEXUS):
     return out
 
 def appendAnalysisParameters(NEXUS, acq):
+    """append analysis parameter an btk.acquisition
+
+    Args:
+        NEXUS (): vicon nexus handle.
+        acq (btk.acquisition): a btk.acquisition instance
+
+    """
     parameters = btkTools.getAllParamAnalysis(acq)
 
     for parameter in parameters:

@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Low level/Nexus
+
+"""
+The module is a viconnexus interface. it contains Object (ie Device) which can be contructed from viconnexusapi
+"""
+
 from viconnexusapi import ViconNexus
 import numpy as np
 
-# vicon nexus
+
 try:
     import ViconNexus
 except:
@@ -11,6 +17,14 @@ except:
 NEXUS = ViconNexus.ViconNexus()
 
 class Channel(object):
+    """Channel
+
+    Args:
+        label (str): channel label
+        values (array): values
+        unit (str): init
+        description (str): short description of the channel
+    """
 
     def __init__(self, label,values,unit,description):
         self.m_label = label
@@ -19,17 +33,27 @@ class Channel(object):
         self.m_unit = unit
 
     def getLabel(self):
+        """ return the channel label"""
         return  self.m_label
     def getValues(self):
+        """ return the channel values"""
         return self.m_values
     def getDescription(self):
+        """ return the channel description"""
         return  self.m_description
     def getUnit(self):
+        """ return the channel unit"""
         return self.m_unit
 
 
 
 class Device(object):
+    """Device
+
+    Args:
+        id (str): device ID
+
+    """
 
     def __init__(self, id):
         self.m_id = id
@@ -44,12 +68,15 @@ class Device(object):
 
 
     def getDeviceName(self):
+        """return device name"""
         return self.m_name
 
     def getDeviceFrequency(self):
+        """return device sample m_frequency"""
         return self.m_frequency
 
     def getOutputNames(self):
+        """return the list of ouputs"""
         out = list()
         for i in self.m_outputIds:
             out.append(NEXUS.GetDeviceOutputDetails(self.m_id,i)[0])
@@ -58,6 +85,12 @@ class Device(object):
 
 
 class AnalogDevice(Device):
+    """Analog Device
+
+    Args:
+        id (str): device ID
+
+    """
 
     def __init__(self, id):
         super(AnalogDevice, self).__init__(id)
@@ -65,6 +98,7 @@ class AnalogDevice(Device):
         #self.m_id = id
 
     def getUnit(self):
+        """ return device unit""""
         unit = list()
         for outputId in self.m_outputIds:
             unit.append(str(NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[2]))
@@ -72,6 +106,7 @@ class AnalogDevice(Device):
 
 
     def getChannels(self):
+        """ return channel names"""
 
         for outputId in self.m_outputIds:
             outputName = NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
@@ -90,28 +125,39 @@ class AnalogDevice(Device):
 
 
 class ForcePlate(Device):
+    """force plate device
+
+    Args:
+        id (str): device ID
+
+    """
 
     def __init__(self, id):
         super(ForcePlate, self).__init__(id)
 
 
     def getDescription(self):
-            return str("Force Plate [" +str(self.m_id) + "]")
+        """ return force plate description """
+        return str("Force Plate [" +str(self.m_id) + "]")
 #
     def getOrigin(self):
+        """ return force plate origin """
         nfp_info = self.m_forcePlateInfo
         return np.asarray(nfp_info.WorldT)
 
     def getLocalOrigin(self):
+        """ return force plate local Origin """
         nfp_info = self.m_forcePlateInfo
         return np.asarray(nfp_info.LocalT)
 
 
     def getContext(self):
+        """ return event context """
         nfp_info = self.m_forcePlateInfo
         return nfp_info.Context
 
     def getPhysicalOrigin(self):
+        """ return physical origin location """
         nfp_info = self.m_forcePlateInfo
         worldR =  np.asarray(nfp_info.WorldR).reshape((3,3))
         origin = self.getOrigin()
@@ -120,6 +166,7 @@ class ForcePlate(Device):
 
 
     def getOrientation(self):
+        """ return force plate orientation """
         nfp_info = self.m_forcePlateInfo
         worldR =  np.asarray(nfp_info.WorldR).reshape((3,3))
         localR =  np.asarray(nfp_info.LocalR).reshape((3,3))
@@ -127,6 +174,7 @@ class ForcePlate(Device):
         return np.dot(worldR,localR)
 
     def getForceUnit(self):
+        """ return force unit """
 
         for outputId in self.m_outputIds:
             if NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Fx","Fy","Fz"]:
@@ -136,6 +184,7 @@ class ForcePlate(Device):
         return str(NEXUS.GetDeviceOutputDetails(self.m_id,deviceOutputID)[2])
 
     def getMomentUnit(self):
+        """ return moment unit """
 
         for outputId in self.m_outputIds:
             if NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Mx","My","Fz"]:
@@ -148,6 +197,7 @@ class ForcePlate(Device):
 
 
     def getGlobalForce(self):
+        """ return force in the global coordinate system """
 
         for outputId in self.m_outputIds:
             if NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Fx","Fy","Fz"]:
@@ -167,6 +217,7 @@ class ForcePlate(Device):
 
 
     def getGlobalMoment(self):
+        """ return moment in the global coordinate system """
 
         for outputId in self.m_outputIds:
             if NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Mx","My","Mz"]:
@@ -186,6 +237,7 @@ class ForcePlate(Device):
 
 
     def getGlobalCoP(self):
+        """ return COP in the global coordinate system """
 
         for outputId in self.m_outputIds:
             if NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Cx","Cy","Cz"]:
@@ -205,6 +257,7 @@ class ForcePlate(Device):
 
 
     def getLocalReactionForce(self):
+        """ return force in the local force plate coordinate system """
 
         force = -1* self.getGlobalForce()
         R = self.getOrientation()
@@ -215,6 +268,7 @@ class ForcePlate(Device):
         return out
 
     def getLocalReactionMoment(self):
+        """ return moment in the local force plate coordinate system """
 
         moment = self.getGlobalMoment()
         force = self.getGlobalForce()
@@ -240,8 +294,8 @@ class ForcePlate(Device):
 
 
     def getCorners(self):
+        """ return corners location in the coordinate system """
         nfp_info = self.m_forcePlateInfo
-
 
         R = np.asarray(nfp_info.WorldR).reshape((3,3))
         t = np.asarray(nfp_info.WorldT)

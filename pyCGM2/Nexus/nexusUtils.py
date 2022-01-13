@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
+#APIDOC: /Low level/Nexus
+
 
 def getNexusSubjectMp(NEXUS,subject, resetFlag=False):
+    """ return required and optional anthropometric parameters
+
+    Args:
+        NEXUS (): viconnexusapi handle.
+        subject (str): subject ( eq. vsk) name.
+        resetFlag (bool,optional):  reset optional mp. Defaults to False.
+
+    """
 
     params = NEXUS.GetSubjectParamNames(subject)
 
@@ -53,6 +63,14 @@ def getNexusSubjectMp(NEXUS,subject, resetFlag=False):
     return required_mp,optional_mp
 
 def updateNexusSubjectMp(NEXUS,model,subjectName):
+    """ update anthropometric from  a pyCGM2.Model instance
+
+    Args:
+        NEXUS (): viconnexusapi handle.
+        model (pyCGM2.Model.model.Model): a model instance.
+        subjectName (str):  subject ( eq. vsk) name
+
+    """
 
     NEXUS.SetSubjectParam( subjectName, "InterAsisDistance",model.mp_computed["InterAsisDistance"],True)
     NEXUS.SetSubjectParam( subjectName, "LeftAsisTrocanterDistance",model.mp_computed["LeftAsisTrocanterDistance"],True)

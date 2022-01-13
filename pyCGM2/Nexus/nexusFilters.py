@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# from __future__ import unicode_literals
+#APIDOC: /Low level/Nexus
+
+"""
+
+"""
+
 from pyCGM2.Utils import utils
 from pyCGM2.Nexus import nexusTools, Devices
 from pyCGM2.Tools import btkTools
@@ -27,17 +32,20 @@ NEXUS = ViconNexus.ViconNexus()
 
 
 class NexusModelFilter(object):
+    """Nexus Model Filter is an interface running the method **viconExport* of a pyCGM2 Model instance.
+
+    Args:
+        NEXUS (): vicon nexus handle
+        iModel (pyCGM2.Model.model): model instance
+        iAcq (btk.acquisition): a btk acquisition
+        vskName (str): name of the vsk
+        pointSuffix (str): suffix added to the model ouput name
+        staticProcessing (bool,Optional): enable static mode. Defaults to False.
+
+    """
+
     def __init__(self, NEXUS, iModel, iAcq, vskName, pointSuffix, staticProcessing=False):
-        """
-            Constructor
 
-            :Parameters:
-                - `NEXUS` () - Nexus environment
-                - `iModel` (pyCGM2.Model.CGM2.Model) - model instance
-                - `vskName` (str) . subject name create in Nexus
-                - `staticProcessingFlag` (bool`) : flag indicating only static model ouput will be export
-
-        """
         self.m_model = iModel
         self.m_acq = iAcq
         self.m_vskName = vskName
@@ -46,17 +54,25 @@ class NexusModelFilter(object):
         self.m_pointSuffix = pointSuffix if pointSuffix is None else "_"+pointSuffix
 
     def run(self):
-        """
-            method calling embedded-model method : viconExport
+        """  run the  *viconExport* model method
         """
         self.m_model.viconExport(
             self.NEXUS, self.m_acq, self.m_vskName, self.m_pointSuffix, self.staticProcessing)
 
 
 class NexusConstructAcquisitionFilter(object):
+    """filter constructing a btkAcquisition from nexusAPI
+
+    Args:
+        dataPath (str): data folder path
+        filenameNoExt (str): filename without its extension
+        subject (str): subject name (eq. vsk name)
+
+
+    """
+
     def __init__(self, dataPath, filenameNoExt, subject):
-        """
-        """
+
         self.m_dataPath = dataPath
         self.m_filenameNoExt = filenameNoExt
         self.m_subject = subject
@@ -99,6 +115,7 @@ class NexusConstructAcquisitionFilter(object):
         self.m_acq.SetFirstFrame(self.m_firstFrame)
 
     def appendEvents(self):
+        """ append events"""
 
         eventType = "Foot Strike"
         eventContext = "Left"
@@ -200,6 +217,7 @@ class NexusConstructAcquisitionFilter(object):
                     self.m_acq.AppendEvent(ev)
 
     def appendMarkers(self):
+        """ append markers"""
 
         markersLoaded = NEXUS.GetMarkerNames(self.m_subject)
         markers = []
@@ -226,6 +244,7 @@ class NexusConstructAcquisitionFilter(object):
                                       residuals=E_cut)
 
     def appendAnalogs(self):
+        """ append analogs"""
 
         ftr = NEXUS.GetTrialRange()[0]
 
@@ -247,6 +266,7 @@ class NexusConstructAcquisitionFilter(object):
                 self.m_acq.AppendAnalog(analog)
 
     def appendForcePlates(self):
+        """ append force plates"""
 
         forcePlateNumber = len(self.m_nexusForcePlates)
 
@@ -322,6 +342,7 @@ class NexusConstructAcquisitionFilter(object):
         md_force_platform.AppendChild(md_channel)
 
     def appendModelOutputs(self):
+        """ append model outputs"""
 
         modelOutputNames = NEXUS.GetModelOutputNames(self.m_subject)
 
@@ -366,12 +387,14 @@ class NexusConstructAcquisitionFilter(object):
                         "[pyCGM2] : Model Output (%s) from Nexus not added to the btk acquisition" % (modelOutputName))
 
     def initMetaData(self):
+        """ initiate metadata with a section ANALYSIS """
         # ANALYSIS Section
         self.m_acq.GetMetaData().AppendChild(btk.btkMetaData("ANALYSIS"))
         self.m_acq.GetMetaData().FindChild(
             "ANALYSIS").value().AppendChild(btk.btkMetaData('USED', 0))
 
     def build(self):
+        """ Build the btkAcquisition"""
         self.appendEvents()
         self.appendMarkers()
         if self.m_nexusForcePlates != []:
@@ -384,6 +407,12 @@ class NexusConstructAcquisitionFilter(object):
         return self.m_acq
 
     def exportC3d(self, filenameNoExt=None):
+        """export built acquisition to c3d
+
+        Args:
+            filenameNoExt (str,Optional): specific filename without its extension. Defaults to None.
+
+        """
 
         if filenameNoExt is None:
             btkTools.smartWriter(
