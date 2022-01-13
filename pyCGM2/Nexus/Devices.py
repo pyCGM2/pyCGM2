@@ -98,7 +98,7 @@ class AnalogDevice(Device):
         #self.m_id = id
 
     def getUnit(self):
-        """ return device unit""""
+        """ return device unit"""
         unit = list()
         for outputId in self.m_outputIds:
             unit.append(str(NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[2]))
