@@ -1,4 +1,11 @@
-"""Detects onset in data based on amplitude threshold."""
+# -*- coding: utf-8 -*-
+#APIDOC: /Low level/Signal
+"""
+The module only contains the function "detect_onset" implemenented by Marcos Duarte, available in [BMC](https://github.com/demotu/BMC)
+
+**note** : I keep the Marcos's  documentation
+
+"""
 
 import numpy as np
 
@@ -88,7 +95,7 @@ def detect_onset(x, threshold=0, n_above=1, n_below=0,
     inds = np.nonzero(x >= threshold)[0]
     if inds.size:
         # initial and final indexes of almost continuous data
-        inds = np.vstack((inds[np.diff(np.hstack((-np.inf, inds))) > n_below+1], \
+        inds = np.vstack((inds[np.diff(np.hstack((-np.inf, inds))) > n_below+1],
                           inds[np.diff(np.hstack((inds, np.inf))) > n_below+1])).T
         # indexes of almost continuous data longer than or equal to n_above
         inds = inds[inds[:, 1]-inds[:, 0] >= n_above-1, :]
@@ -143,6 +150,7 @@ def _plot(x, threshold, n_above, n_below, threshold2, n_above2, inds, ax):
             text = 'threshold=%.3g, n_above=%d, n_below=%d, threshold2=%.3g, n_above2=%d'
         else:
             text = 'threshold=%.3g, n_above=%d, n_below=%d, threshold2=%r, n_above2=%d'
-        ax.set_title(text % (threshold, n_above, n_below, threshold2, n_above2))
+        ax.set_title(text % (threshold, n_above,
+                             n_below, threshold2, n_above2))
         # plt.grid()
         plt.show()

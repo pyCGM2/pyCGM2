@@ -1,6 +1,13 @@
-"""Cumulative sum algorithm (CUSUM) to detect abrupt changes in data."""
+# -*- coding: utf-8 -*-
+#APIDOC: /Low level/Signal
+"""
+The module only contains the function "detect_changes" implemenented by Marcos Duarte, available in [BMC](https://github.com/demotu/BMC)
 
-# from __future__ import division, print_function
+**note** : I keep the Marcos's  documentation
+
+"""
+
+
 import numpy as np
 
 __author__ = 'Marcos Duarte, https://github.com/demotu/BMC'
@@ -11,6 +18,7 @@ __license__ = "MIT"
 def detect_cusum(x, threshold=1, drift=0, ending=False, show=True, ax=None):
     """Cumulative sum algorithm (CUSUM) to detect abrupt changes in data.
 
+    ```
     Parameters
     ----------
     x : 1D array_like
@@ -65,12 +73,13 @@ def detect_cusum(x, threshold=1, drift=0, ending=False, show=True, ax=None):
     See this IPython Notebook [2]_.
 
     References
-    ----------
+
     .. [1] Gustafsson (2000) Adaptive Filtering and Change Detection.
     .. [2] http://nbviewer.ipython.org/github/demotu/BMC/blob/master/notebooks/DetectCUSUM.ipynb
 
-    Examples
-    --------
+    Examples:
+
+    ```python
     >>> from detect_cusum import detect_cusum
     >>> x = np.random.randn(300)/5
     >>> x[100:200] += np.arange(0, 4, 4/100)
@@ -82,6 +91,10 @@ def detect_cusum(x, threshold=1, drift=0, ending=False, show=True, ax=None):
 
     >>> x = 2*np.sin(2*np.pi*np.arange(0, 3, .01))
     >>> ta, tai, taf, amp = detect_cusum(x, 1, .05, True, True)
+
+    ```
+
+    ```
     """
 
     x = np.atleast_1d(x).astype('float64')
@@ -163,8 +176,8 @@ def _plot(x, threshold, drift, ending, ax, ta, tai, taf, gp, gn):
         ymin, ymax = x[np.isfinite(x)].min(), x[np.isfinite(x)].max()
         yrange = ymax - ymin if ymax > ymin else 1
         ax1.set_ylim(ymin - 0.1*yrange, ymax + 0.1*yrange)
-        ax1.set_title('Time series and detected changes ' +
-                      '(threshold= %.3g, drift= %.3g): N changes = %d'
+        ax1.set_title('Time series and detected changes '
+                      + '(threshold= %.3g, drift= %.3g): N changes = %d'
                       % (threshold, drift, len(tai)))
         ax2.plot(t, gp, 'y-', label='+')
         ax2.plot(t, gn, 'm-', label='-')
@@ -173,8 +186,8 @@ def _plot(x, threshold, drift, ending, ax, ta, tai, taf, gp, gn):
         ax2.set_ylim(-0.01*threshold, 1.1*threshold)
         ax2.axhline(threshold, color='r')
         ax1.set_ylabel('Amplitude', fontsize=14)
-        ax2.set_title('Time series of the cumulative sums of ' +
-                      'positive and negative changes')
+        ax2.set_title('Time series of the cumulative sums of '
+                      + 'positive and negative changes')
         ax2.legend(loc='best', framealpha=.5, numpoints=1)
         plt.tight_layout()
         plt.show()
