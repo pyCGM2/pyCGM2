@@ -6,9 +6,9 @@ class ordict(dict):
 
     # ========================================================================
     def __init__(self, *args, **kwargs):
-        dict.__init__(self) # initialisation du parent
-        self._keys = [] # conserve les clés dans l'ordre initial d'insertion
-        self.update(*args, **kwargs) # initialise avec les arguments donnés
+        dict.__init__(self)
+        self._keys = []
+        self.update(*args, **kwargs)
 
     # ========================================================================
     def __setitem__(self, key, value):
@@ -125,7 +125,7 @@ class ordict(dict):
     # ========================================================================
     def update(self, *args, **kwargs):
         """update the dictionnary"""
-        if len(args)>0:
+        if len(args) > 0:
             args = args[0]
             if isinstance(args, (dict, ordict)):
                 for key, value in args.items():
