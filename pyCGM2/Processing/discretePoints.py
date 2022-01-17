@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from collections import OrderedDict
 
 from pyCGM2.Tools import exportTools
+from pyCGM2.Processing import exporter
 from pyCGM2.Signal.detect_peaks import detect_peaks
 from pyCGM2.Math import derivation
 
@@ -42,17 +43,17 @@ class DiscretePointsFilter(object):
         # add infos
         if self.m_modelInfo is not None:
             for key,value in self.m_modelInfo.items():
-                exportTools.isColumnNameExist( self.dataframe, key)
+                exporter.isColumnNameExist( self.dataframe, key)
                 self.dataframe[key] = value
 
         if self.m_subjInfo is not None:
             for key,value in self.m_subjInfo.items():
-                exportTools.isColumnNameExist( self.dataframe, key)
+                exporter.isColumnNameExist( self.dataframe, key)
                 self.dataframe[key] = value
 
         if self.m_condExpInfo is not None:
             for key,value in self.m_condExpInfo.items():
-                exportTools.isColumnNameExist( self.dataframe, key)
+                exporter.isColumnNameExist( self.dataframe, key)
                 self.dataframe[key] = value
 
         return self.dataframe

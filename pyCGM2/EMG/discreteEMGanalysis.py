@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 
 from collections import OrderedDict
-from pyCGM2.Tools import exportTools
+from pyCGM2.Processing import exporter
 
 
 # --- FILTER ----
@@ -87,12 +87,12 @@ class DiscreteEMGFilter(object):
 
         if self.m_subjInfo is not None:
             for key, value in self.m_subjInfo.items():
-                exportTools.isColumnNameExist(self.dataframe, key)
+                exporter.isColumnNameExist(self.dataframe, key)
                 self.dataframe[key] = value
 
         if self.m_condExpInfo is not None:
             for key, value in self.m_condExpInfo.items():
-                exportTools.isColumnNameExist(self.dataframe, key)
+                exporter.isColumnNameExist(self.dataframe, key)
                 self.dataframe[key] = value
 
         return self.dataframe
