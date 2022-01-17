@@ -52,8 +52,6 @@ class Test_Btk:
         btkTools.isPointsExist(acq, ["LASI", "RASI"])
 
         btkTools.clearPoints(acq, ["LASI", "RASI"])
-        btkTools.checkFirstAndLastFrame(acq, "LASI")
-        btkTools.isGap_inAcq(acq, ["LASI", "RASI"])
         btkTools.findValidFrames(acq, ["LASI", "RASI"])
 
         btkTools.checkMultipleSubject(acq)
@@ -64,7 +62,7 @@ class Test_Btk:
 
         btkTools.getVisibleMarkersAtFrame(acq, ["LASI", "RASI"], 0)
         btkTools.isAnalogExist(acq, "emg-Hän")
-        btkTools.constructEmptyMarker(acq, "zéros", desc="Hän")
+        btkTools.constructPhantom(acq, "zéros", desc="Hän")
 
         btkTools.getStartEndEvents(acq, "Left")
 
@@ -81,8 +79,8 @@ class Test_Btk:
             "LowLevel\\IO\\\paramAnalysis\\data_paramFromNexusAPI.c3d"
         acq = btkTools.smartReader(filename, translators=None)
         parameters = btkTools.getAllParamAnalysis(acq)
-        parameter = btkTools.getParamAnalysis(acq, "Vitesse", "Left","New Patient")
-
+        parameter = btkTools.getParamAnalysis(
+            acq, "Vitesse", "Left", "New Patient")
 
     def test_btkWriter_paramAnalysisNew(self):
         filename = pyCGM2.TEST_DATA_PATH + \
