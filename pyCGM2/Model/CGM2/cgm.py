@@ -13,7 +13,7 @@ except:
 
 from pyCGM2 import enums
 from pyCGM2.Model import model, modelDecorator, frame, motion
-from pyCGM2.Math import euler, geometry
+from pyCGM2.Math import euler
 from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusTools
 
@@ -2130,10 +2130,6 @@ class CGM1(CGM):
         options:
             * pigStatic (bool)
             * forceFoot6DoF (bool)
-
-
-
-
         """
 
         LOGGER.logger.debug("=====================================================")
@@ -5385,7 +5381,7 @@ class CGM1(CGM):
 
     def opensimGeometry(self):
         """
-        return dict used for configure the osim file
+        return dict used to configure the osim file
         """
 
         out={}
@@ -5430,7 +5426,7 @@ class CGM1(CGM):
     # ----- vicon API -------
     def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):
         """
-        method exporting model outputs to Nexus =
+        method exporting model outputs to Nexus 
 
         Args:
             NEXUS (viconnexus): Nexus handle
