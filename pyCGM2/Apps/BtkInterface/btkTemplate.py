@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#from __future__ import unicode_literals
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
