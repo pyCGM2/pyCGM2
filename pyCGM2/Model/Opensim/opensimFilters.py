@@ -324,9 +324,11 @@ class opensimFittingFilter(object):
                 btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" )
 
                 modelled = acqMotionFinal.GetPoint(marker).GetValues()
+                residuals = acqMotionFinal.GetPoint(marker).GetResiduals()
+
                 ff = acqMotionFinal.GetFirstFrame()
                 modelled[self.m_frameRange[0]-ff:self.m_frameRange[1]-ff+1,:] = values
-                btkTools.smartAppendPoint(acqMotionFinal,marker, modelled, desc= "kinematic fitting" ) # new acq with marker overwrited
+                btkTools.smartAppendPoint(acqMotionFinal,marker, modelled, desc= "kinematic fitting",residuals=residuals ) # new acq with marker overwrited
 
 
                 # btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", measuredValues, desc= "measured" ) # measured marker suffix with _m
