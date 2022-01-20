@@ -5482,7 +5482,6 @@ class CGM1(CGM):
             nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),
                     OriginValues = acq.GetPoint("LAJC").GetValues(),suffix = pointSuffix ,existFromPoint = "LKneeAngles")
 
-        import ipdb; ipdb.set_trace()
         if btkTools.isPointExist(acq, "LAJC") and  btkTools.isPointExist(acq,"LTOE",ignorePhantom=False):
             nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"),
                 OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix, existFromPoint = "LAnkleAngles")
