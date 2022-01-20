@@ -5426,7 +5426,7 @@ class CGM1(CGM):
     # ----- vicon API -------
     def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):
         """
-        method exporting model outputs to Nexus 
+        method exporting model outputs to Nexus
 
         Args:
             NEXUS (viconnexus): Nexus handle
@@ -5482,10 +5482,12 @@ class CGM1(CGM):
             nexusTools.appendBones(NEXUS,vskName,acq,"LTIBIA", self.getSegment("Left Shank"),
                     OriginValues = acq.GetPoint("LAJC").GetValues(),suffix = pointSuffix ,existFromPoint = "LKneeAngles")
 
-        nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"),
-            OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix, existFromPoint = "LAnkleAngles")
-        nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left Foot"),
-            OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0,suffix = pointSuffix, existFromPoint = "LAnkleAngles" )
+        import ipdb; ipdb.set_trace()
+        if btkTools.isPointExist(acq, "LAJC") and  btkTools.isPointExist(acq,"LTOE",ignorePhantom=False):
+            nexusTools.appendBones(NEXUS,vskName,acq,"LFOOT", self.getSegment("Left Foot"),
+                OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix, existFromPoint = "LAnkleAngles")
+            nexusTools.appendBones(NEXUS,vskName,acq,"LTOES", self.getSegment("Left Foot"),
+                OriginValues = self.getSegment("Left Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),  manualScale = self.getSegment("Left Foot").m_bsp["length"]/3.0,suffix = pointSuffix, existFromPoint = "LAnkleAngles" )
 
         if btkTools.isPointExist(acq, "RKJC"):
             nexusTools.appendBones(NEXUS,vskName,acq,"RFEMUR", self.getSegment("Right Thigh"),
@@ -5495,11 +5497,12 @@ class CGM1(CGM):
             nexusTools.appendBones(NEXUS,vskName,acq,"RTIBIA", self.getSegment("Right Shank"),
                 OriginValues = acq.GetPoint("RAJC").GetValues() ,suffix = pointSuffix, existFromPoint = "RKneeAngles")
 
-        nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") ,
-            OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix,existFromPoint = "RAnkleAngles" )
-        nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right Foot") ,
-            OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),
-            manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0,suffix = pointSuffix, existFromPoint = "RAnkleAngles")
+        if btkTools.isPointExist(acq, "RAJC") and  btkTools.isPointExist(acq,"RTOE",ignorePhantom=False):
+            nexusTools.appendBones(NEXUS,vskName,acq,"RFOOT", self.getSegment("Right Foot") ,
+                OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("FootOriginOffset"),suffix = pointSuffix,existFromPoint = "RAnkleAngles" )
+            nexusTools.appendBones(NEXUS,vskName,acq,"RTOES", self.getSegment("Right Foot") ,
+                OriginValues = self.getSegment("Right Foot").anatomicalFrame.getNodeTrajectory("ToeOrigin"),
+                manualScale = self.getSegment("Right Foot").m_bsp["length"]/3.0,suffix = pointSuffix, existFromPoint = "RAnkleAngles")
 
         if btkTools.isPointExist(acq, "OT"):
 
