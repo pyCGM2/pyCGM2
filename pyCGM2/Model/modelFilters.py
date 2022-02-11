@@ -1678,6 +1678,7 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
             for i in range(0,va.shape[0]):
                 angle[i] = np.rad2deg(np.arctan2(np.linalg.norm(np.cross(va[i,:],vb[i,:])), np.dot(va[i,:],vb[i,:])))
 
+
             # extract v> threshold
             v_sup = list()
             for i in range(0,va.shape[0]):
@@ -1685,8 +1686,10 @@ class Naim2019ThighMisaligmentCorrectionProcedure(object):
                     v_sup.append(v[i,:])
             v_sup = np.asarray(v_sup)
 
+            vmean = v_sup.mean(axis=0)
+
             # normalized axis
-            v = np.nan_to_num(np.divide(v_sup.mean(axis=0),np.linalg.norm(v.mean(axis =0))))
+            v = np.nan_to_num(np.divide(vmean,np.linalg.norm(vmean)))
 
             # virtual point along the mean axis
             virtual = np.zeros((len(ajc),3))
