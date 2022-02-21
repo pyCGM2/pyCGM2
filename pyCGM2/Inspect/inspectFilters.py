@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Obsolete module : work with anomaly instead
+Obsolete module : work with anomaly and inspector modules instead
 """
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
