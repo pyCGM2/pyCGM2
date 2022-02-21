@@ -18,8 +18,8 @@ class InspectorFilter(object):
             procedure (pyCGM2.Inspector.InspectorProcedure): an inspector procedure instance
 
 
-        Low-level Keyword Args
-            **kwargs (): passed options to the procedure
+        Low-level Keyword Args:
+            **kwargs (): passed arguments to the procedure
 
 
         """
