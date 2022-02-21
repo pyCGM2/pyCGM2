@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #APIDOC: /Low level/Anomaly
 
-""" This module contains pyCGM2 anomaly fiters to deal with either the anomaly detector procedure or
-the anomaly correction procedure
+""" This module contains pyCGM2 anomaly filters to deal with either an anomaly
+detector procedure or an anomaly correction procedure
 
-check out the script : *\Tests\test_anomalies.py* for examples
+check out the script : `\Tests\test_anomalies.py` for examples
+
 
 """
 
@@ -13,27 +14,24 @@ LOGGER = pyCGM2.LOGGER
 
 
 class AnomalyDetectionFilter(object):
-    """ anomaly detector filter
+    """ Anomaly detector filter
 
     Args:
         acq (btk.Acquisition): a btk acquisition instantce
         filename (str): filename
         procedure(pyCGM2.Anomaly.AnomalyDetectionProcedure): anomaly detector procedure instance
 
-    Low-level Keyword Args :
-        frameRange ([int, int]) frame boundaries
+    Kwargs:
+        frameRange (list,Optional): frame boundaries
     """
 
     def __init__(self, acq, filename, procedure, **kwargs):
-
         self.m_procedure = procedure
         self.m_acq = acq
         self.m_filename = filename
         self.options = kwargs
 
     def run(self):
-        """ run the filter
-        """
         self.m_procedure.run(self.m_acq, self.m_filename, self.options)
         anomaly = self.m_procedure.getAnomaly()
         return anomaly
@@ -43,10 +41,9 @@ class AnomalyCorrectionFilter(object):
     """ anomaly corrector filter
 
     Args:
-        acq (btk.Acquisition): a btk acquisition instantce
+        acq (btk.Acquisition): a btk acquisition instance
         filename (str): filename
         procedure(pyCGM2.Anomaly.AnomalyDetectionProcedure): anomaly correction procedure instance
-
     """
 
     def __init__(self, acq, filename, procedure):
@@ -55,7 +52,6 @@ class AnomalyCorrectionFilter(object):
         self.m_filename = filename
 
     def run(self):
-        """ run the filter """
         out = self.m_procedure.run(self.m_acq, self.m_filename)
 
         return out

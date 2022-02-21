@@ -3,7 +3,9 @@
 
 """ This module gathers procedure for correcting detected anomalies
 
-check out the script : *\Tests\test_anomalies.py* for example
+check out the script : `\Tests\test_anomalies.py` for example
+
+
 
 """
 
@@ -43,13 +45,11 @@ class MarkerAnomalyCorrectionProcedure(object):
     Args:
         markers ([str,...]): marker labels
         anomalyIndexes ([int,...]): indexes of the detected anomalies
-        **options (type): see low-level keyword args
+        plot (bool,Optional): enable plot
+        **options (kwargs,Optional): see low-level keyword args
 
-    Keyword Args:
-        plot (bool): enable plot
-
-    Low-level Keyword Args :
-        distance_threshold ( float) distance threshold between indexes
+    Kwargs:
+        distance_threshold (float): distance threshold between indexes
 
 
     """

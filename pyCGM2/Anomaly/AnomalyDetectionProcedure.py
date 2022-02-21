@@ -3,7 +3,7 @@
 
 """ This module gathers anomaly detectors on markers, events, force plate signals and anthropometric data
 
-check out the script : *\Tests\test_anomalies.py* for example
+check out the script : `\Tests\test_anomalies.py` for example
 
 """
 
@@ -45,13 +45,11 @@ class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
     """marker anomaly detection from rolling statistics
 
     Args:
-        markers (list of str): marker labels
-        **options (type): see low-level keyword args
+        markers (list): marker labels;
+        plot (bool,Optional): enable plot
+        **options (kwargs,Optional): see low-level keyword args
 
-    Keyword Args:
-        plot (bool): enable plot
-
-    Low-level Keyword Args :
+    Kwargs:
         aprioriError (double): a priori error on the marker trajectory
         window (int): size of the rolling windows
         treshold (int) : detector threshold assoiated to the standard deviation
@@ -86,8 +84,6 @@ class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
             ``frameRange`` ([int, int]) is one key of the ``options`` argument
 
         """
-
-
 
         errorState = False
 
@@ -174,8 +170,6 @@ class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
     """gait event anomaly detector
     """
     def __init__(self):
-        """Constructor
-        """
 
         super(GaitEventAnomalyProcedure, self).__init__()
 
@@ -256,8 +250,7 @@ class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
     """force plate anomaly detector
     """
     def __init__(self):
-        """Constructor
-        """
+
         super(ForcePlateAnomalyProcedure, self).__init__()
 
     def run(self,acq,filename,options):
@@ -317,8 +310,7 @@ class AnthropoDataAnomalyProcedure(AbstractDetectionProcedure):
     """
 
     def __init__(self,mp):
-        """Constructor
-        """
+
         super(AnthropoDataAnomalyProcedure, self).__init__()
 
         self.mp = mp
