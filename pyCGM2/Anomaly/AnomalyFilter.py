@@ -14,21 +14,18 @@ LOGGER = pyCGM2.LOGGER
 
 class AnomalyDetectionFilter(object):
     """ anomaly detector filter
+
+    Args:
+        acq (btk.Acquisition): a btk acquisition instantce
+        filename (str): filename
+        procedure(pyCGM2.Anomaly.AnomalyDetectionProcedure): anomaly detector procedure instance
+
+    Low-level Keyword Args :
+        frameRange ([int, int]) frame boundaries
     """
 
     def __init__(self, acq, filename, procedure, **kwargs):
-        """ constructor
 
-        Args:
-            acq (btk.Acquisition): a btk acquisition instantce
-            filename (str): filename
-            procedure(pyCGM2.Anomaly.AnomalyDetectionProcedure): anomaly detector procedure instance
-
-        Low-level Keyword Args :
-            frameRange ([int, int]) frame boundaries
-
-
-        """
         self.m_procedure = procedure
         self.m_acq = acq
         self.m_filename = filename
@@ -43,24 +40,22 @@ class AnomalyDetectionFilter(object):
 
 
 class AnomalyCorrectionFilter(object):
-    """ anomaly corrector filter"""
+    """ anomaly corrector filter
+
+    Args:
+        acq (btk.Acquisition): a btk acquisition instantce
+        filename (str): filename
+        procedure(pyCGM2.Anomaly.AnomalyDetectionProcedure): anomaly correction procedure instance
+
+    """
 
     def __init__(self, acq, filename, procedure):
-        """ constructor
-
-        Args:
-            acq (btk.Acquisition): a btk acquisition instantce
-            filename (str): filename
-            procedure(pyCGM2.Anomaly.AnomalyDetectionProcedure): anomaly correction procedure instance
-
-        """
         self.m_procedure = procedure
         self.m_acq = acq
         self.m_filename = filename
 
     def run(self):
-        """ run the fiter
-        """
+        """ run the filter """
         out = self.m_procedure.run(self.m_acq, self.m_filename)
 
         return out

@@ -39,24 +39,23 @@ def plot_dendrogram(model, **kwargs):
 
 class MarkerAnomalyCorrectionProcedure(object):
     """procedure to correct marker anomaly
+
+    Args:
+        markers ([str,...]): marker labels
+        anomalyIndexes ([int,...]): indexes of the detected anomalies
+        **options (type): see low-level keyword args
+
+    Keyword Args:
+        plot (bool): enable plot
+
+    Low-level Keyword Args :
+        distance_threshold ( float) distance threshold between indexes
+
+
     """
 
     def __init__(self, markers, anomalyIndexes, plot=False, **options):
-        """Constructor
 
-        Args:
-            markers ([str,...]): marker labels
-            anomalyIndexes ([int,...]): indexes of the detected anomalies
-            **options (type): see low-level keyword args
-
-        Keyword Args:
-            plot (bool): enable plot
-
-        Low-level Keyword Args :
-            distance_threshold ( float) distance threshold between indexes
-
-
-        """
 
         if type(markers) == str:
             markers = [markers]

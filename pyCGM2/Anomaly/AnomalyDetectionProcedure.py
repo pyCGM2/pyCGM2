@@ -29,9 +29,7 @@ except:
 
 
 class AbstractDetectionProcedure(object):
-    """abstract marker detector procedure
-
-    """
+    """abstract marker detector procedure """
     def __init__(self):
         self.anomaly = {"Output": None,
                         "ErrorState": False}
@@ -45,23 +43,21 @@ class AbstractDetectionProcedure(object):
 
 class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
     """marker anomaly detection from rolling statistics
+
+    Args:
+        markers (list of str): marker labels
+        **options (type): see low-level keyword args
+
+    Keyword Args:
+        plot (bool): enable plot
+
+    Low-level Keyword Args :
+        aprioriError (double): a priori error on the marker trajectory
+        window (int): size of the rolling windows
+        treshold (int) : detector threshold assoiated to the standard deviation
+        method (str) : mean or median
     """
     def __init__(self,markers,plot=False,**options):
-        """Construtor
-
-        Args:
-            markers (list of str): marker labels
-            **options (type): see low-level keyword args
-
-        Keyword Args:
-            plot (bool): enable plot
-
-        Low-level Keyword Args :
-            aprioriError (double): a priori error on the marker trajectory
-            window (int): size of the rolling windows
-            treshold (int) : detector threshold assoiated to the standard deviation
-            method (str) : mean or median
-        """
 
         super(MarkerAnomalyDetectionRollingProcedure, self).__init__()
 
