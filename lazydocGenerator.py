@@ -42,17 +42,43 @@ def en_index(title, weight):
 
 def generate(DATA_PATH, filenameNoExt, module):
 
+    splitFilename = filenameNoExt.split(".")
+    shortfilenameNoExt = splitFilename[-1]
+
     files.createDir(DATA_PATH)
 
     generator = MarkdownGenerator()
 
     markdown_docs = generator.import2md(module)
 
+
     with open(DATA_PATH+filenameNoExt+".md", 'w') as f:
         print("---", file=f)
-        print("title: "+filenameNoExt, file=f)
+        print("title: "+shortfilenameNoExt, file=f)
         print("---", file=f)
+        print("```python", file=f)
+        print("from " + ".".join(splitFilename[0:-1])+ " import "+shortfilenameNoExt, file=f)
+        print("```", file=f)
         print(markdown_docs, file=f)
+
+def generateIndex():
+    path = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\API\\Version 4.3.1"
+
+    for root, dirs, filenames in os.walk(path):
+
+
+        i=0
+        name = root.split("\\")[-1]
+
+        with open(root+"\\"+"_index.en.md", 'w') as f:
+            f.writelines(["---\n",
+             "title: \"%s\"\n"%(name),
+             "icon: \"ti-credit-card\"\n",
+             "description: \"Documentation API\"\n",
+             "type :\n",
+             "weight: %s\n"%(str(i+1)),
+             "---"])
+
 
 
 def main():
@@ -64,7 +90,7 @@ def main():
     # generer le md
 
     API_PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\"
-    VERSION = "Version 4.3"
+    VERSION = "Version 4.3.1"
 
     for (dir, subdir, filenames) in os.walk("C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\"):
         if "__init__.py" in filenames:
@@ -92,6 +118,7 @@ def main():
                     generate(newpath, dir[dir.rfind("pyCGM2"):].replace(
                         "\\", ".")+"."+pyFile[:-3], mod)
 
+    generateIndex()
 
 if __name__ == '__main__':
     main()
