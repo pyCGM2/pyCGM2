@@ -3,6 +3,7 @@
 
 import argparse
 import copy
+import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 # vicon nexus
@@ -44,7 +45,7 @@ def main():
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
     parser = argparse.ArgumentParser(description='rigidLabelling')
-    parser.add_argument('--static', type=str, help='filename of the static',required=True)
+    parser.add_argument('--static', type=str, help='filename of the static',required=False)
     parser.add_argument('--target', type=str, help='marker to reconstruct',required=True)
     parser.add_argument('--trackingMarkers', nargs='*', help='list of tracking markers',required=True)
     parser.add_argument('--begin', type=int, help='initial Frame')
@@ -66,11 +67,43 @@ def main():
         ff = acqGait.GetFirstFrame()-1
         lf = acqGait.GetLastFrame()-1
 
-        # # input arguments management
+        # static calibration
+        if args.static is None:
+            staticFilenames = list()
+            for filename in  os.listdir(DATA_PATH):
+                if " Cal " in filename and filename.endswith(".c3d"):
+                    staticFilenames.append(filename)
 
-        # print eclipse.findCalibrationFromEnfs(DATA_PATH,enfFiles)
-        staticFilenameNoExt = args.static
-        acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilenameNoExt+".c3d"))
+            if len(staticFilenames) == 1:
+                LOGGER.logger.info("A single static file ( Cal file) has been detected")
+                acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilenames[0]))
+            elif len(staticFilenames) > 1:
+                text = "Mutiple cal file detected, select your file[0]\n"
+                i = 0
+                for filename in staticFilenames:
+                    text = text + "[%i]  %s \n" % (i, filename)
+                    i += 1
+                reply = input(text)
+
+                if reply == "":
+                    acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilenames[0]))
+                else:
+                    try:
+                        reply = int(reply)
+                    except ValueError:
+                        LOGGER.logger.info("Wrong input. Select the  correct index")
+
+                    acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilenames[reply]))
+
+            else:
+                LOGGER.logger.warning("None cal file detected")
+                staticFilename = input("input the name of your static file ( without the extension)")
+                acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilename+".c3d"))
+
+
+        else:
+            staticFilenameNoExt = args.static
+            acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilenameNoExt+".c3d"))
 
         targetMarker = args.target
         trackingMarkers = args.trackingMarkers
