@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/Plots
+#APIDOC["Path"]=/Executable Apps/Vicon/Plot
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
 
 from pyCGM2.Nexus import nexusTools, nexusFilters
 import warnings
@@ -28,8 +31,8 @@ def main():
     Usage:
 
     ```bash
-        python plotTemporalKinetics.py
-        python plotTemporalKinetics.py  -ps CGM1
+        Nexus_plotTemporalKinetics.exe
+        Nexus_plotTemporalKinetics.exe  -ps CGM1
     ```
 
     Args:

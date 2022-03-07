@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/Plots
+#APIDOC["Path"]=/Executable Apps/Vicon/Plot
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import warnings
@@ -29,8 +32,8 @@ def main():
     Usage:
 
     ```bash
-        python ploSpatioTemporalParameters.py
-        python ploSpatioTemporalParameters.py  -ps CGM1
+        Nexus_plotSpatioTemporalParameters.exe
+        Nexus_plotSpatioTemporalParameters.exe  -ps CGM1
     ```
 
     Args:

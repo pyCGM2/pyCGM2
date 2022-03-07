@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/Plots
+#APIDOC["Path"]=/Executable Apps/Vicon/Plot
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt
@@ -32,8 +35,8 @@ def main():
     Usage:
 
     ```bash
-        python plotNormalizedKinetics.py
-        python plotNormalizedKinetics.py -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+        Nexus_plotNormalizedKinetics.exe
+        Nexus_plotNormalizedKinetics.exe -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
     ```
 
     Args:

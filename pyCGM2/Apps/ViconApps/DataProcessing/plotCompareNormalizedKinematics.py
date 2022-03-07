@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/Plots
+#APIDOC["Path"]=/Executable Apps/Vicon/Plot
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -35,8 +38,8 @@ def main():
     Mark two trials in the Vicon Eclipse panel, first. Then, run the script
 
     ```bash
-        python plotCompareNormalizedKinematics.py
-        python plotCompareNormalizedKinematics.py -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+        Nexus_plotCompareNormalizedKinematics.exe
+        Nexus_plotCompareNormalizedKinematics.exe -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
     ```
 
     Args:

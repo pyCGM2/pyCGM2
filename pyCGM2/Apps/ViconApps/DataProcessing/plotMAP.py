@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/Plots
+#APIDOC["Path"]=/Executable Apps/Vicon/Plot
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt
@@ -30,8 +33,8 @@ def main():
     Usage:
 
     ```bash
-        python plotMAP.py
-        python plotMAP.py -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+        Nexus_plotMAP.exe
+        Nexus_plotMAP.exe -ps CGM1 -nd Schwartz2008 -ndm VerySlow
     ```
 
     Args:
