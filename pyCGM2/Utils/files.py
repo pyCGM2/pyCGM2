@@ -384,7 +384,7 @@ def createDir(fullPathName):
         os.makedirs((pathOut))
     else:
         LOGGER.logger.info("directory already exists")
-    return pathOut
+    return pathOut+"\\"
 
 def getDirs(folderPath):
     folderPath = folderPath
