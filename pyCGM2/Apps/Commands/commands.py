@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Commands
+#APIDOC["Path"]=Executable Apps/Miscellaneous Commands
+#APIDOC["Draft"]=False
+#APIDOC["Import"]=False
+
+#--end--
 
 """
-Useful commands
+Miscellaneous functions, each registered as a command script in `setup.py`.
+Therefore, they could be call from the console through its associated executable file.
 """
-
 
 from pyCGM2.Model.CGM2 import cgm
 import sys
@@ -22,7 +26,7 @@ def copyPasteEmgSettings():
     Usage:
 
     ```bash
-        python copyPasteEmgSettings.py
+        pyCGM2-copyPasteEmgSettings.exe
     ```
 
     """
@@ -38,8 +42,8 @@ def copyPasteCgmSettings():
     Usage:
 
     ```bash
-        python copyPasteCgmSettings.py -m  CGM1
-        python copyPasteCgmSettings.py --model  CGM1
+        pyCGM2-copyPasteCgmSettings.exe -m  CGM1
+        pyCGM2-copyPasteCgmSettings.exe --model  CGM1
     ```
 
     Args:
@@ -93,7 +97,7 @@ def displayAllScripts():
     Usage:
 
     ```bash
-        python displayAllScripts.py
+        pyCGM2-displayAllScripts.exe
     ```
 
     """
