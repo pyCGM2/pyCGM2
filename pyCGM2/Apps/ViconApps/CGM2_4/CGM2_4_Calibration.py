@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/CGM2
-
+#APIDOC["Path"]=/Executable Apps/Vicon/CGM2.4
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
 
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
@@ -31,10 +33,10 @@ def main():
     Usage:
 
     ```bash
-        python CGM2_4_Calibration.py -l  1 --md 24 -ps "withSuffix"
-        python CGM2_4_Calibration.py --leftFlatFoot  1 --markerDiameter 24 --pointSuffix "withSuffix"
-        python CGM2_4_Calibration.py --forceLHJC 0.3 0.25 1.2
-        python CGM2_4_Calibration.py --noIk
+        nexus_CGM24_Calibration.exe -l  1 --md 24 -ps "withSuffix"
+        nexus_CGM24_Calibration.exe --leftFlatFoot  1 --markerDiameter 24 --pointSuffix "withSuffix"
+        nexus_CGM24_Calibration.exe --forceLHJC 0.3 0.25 1.2
+        nexus_CGM24_Calibration.exe --noIk
     ```
 
     Args:

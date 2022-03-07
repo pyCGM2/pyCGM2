@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/CGM2
+#APIDOC["Path"]=/Executable Apps/Vicon/CGM2.6
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 
@@ -25,8 +28,8 @@ def main():
     Usage:
 
     ```bash
-        python CGM_KneeSARA.py -s Left  -b 100 -e 200
-        python CGM_KneeSARA.py --side Left  --begin 100 --end 200
+        Nexus_CGM26_SARA.exe -s Left  -b 100 -e 200
+        Nexus_CGM26_SARA.exe --side Left  --begin 100 --end 200
 
     ```
 

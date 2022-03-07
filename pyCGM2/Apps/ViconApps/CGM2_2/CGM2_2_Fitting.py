@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/CGM2
+#APIDOC["Path"]=/Executable Apps/Vicon/CGM2.2
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
 
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
@@ -28,9 +31,9 @@ def main():
     Usage:
 
     ```bash
-        python CGM2_2_Fitting.py -fi  100 -fe 150 --md 24 -ps "withSuffix"
-        python CGM2_2_Fitting.py --frameInit  100 --frameEnd 150 --markerDiameter 24 --pointSuffix "withSuffix"
-        python CGM2_2_Fitting --accuracy 1e-5
+        nexus_CGM22_Fitting.exe -fi  100 -fe 150 --md 24 -ps "withSuffix"
+        nexus_CGM22_Fitting.exe --frameInit  100 --frameEnd 150 --markerDiameter 24 --pointSuffix "withSuffix"
+        nexus_CGM22_Fitting.exe --accuracy 1e-5
     ```
 
     Args:
