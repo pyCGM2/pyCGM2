@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Qtm/CGM workflows
+#APIDOC["Path"]=/Executable Apps/Qtm/CGM workflows/CGM24
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import os
 import shutil
@@ -28,12 +32,9 @@ def command():
 
     Usage:
 
-    Contrary to Vicon App scripts, you need to call the *command* function from the module with the option "-m"
-
-
     ```bash
-        python -m pyCGM2.Apps.QtmApps.CGMi.CGM24_workflow.command
-        python -m pyCGM2.Apps.QtmApps.CGMi.CGM24_workflow.command --sessionFile "my session.xml"
+        QTM_CGM24_workflow.exe
+        QTM_CGM24_workflow.exe --sessionFile "my session.xml"
     ```
 
     Args:
