@@ -40,45 +40,46 @@ def en_index(title, weight):
 #         LOGGER.logger.info("directory already exists")
 
 
-def generate(DATA_PATH, filenameNoExt, module):
+def generateAPI(path, module, fullmoduleName, options):
 
-    splitFilename = filenameNoExt.split(".")
-    shortfilenameNoExt = splitFilename[-1]
-
-    files.createDir(DATA_PATH)
+    moduleName = fullmoduleName.split(".")[-1]
 
     generator = MarkdownGenerator()
-
     markdown_docs = generator.import2md(module)
 
-
-    with open(DATA_PATH+filenameNoExt+".md", 'w') as f:
+    with open(path+"_index.en.md", 'w') as f:
         print("---", file=f)
-        print("title: "+shortfilenameNoExt, file=f)
+        print("title: "+moduleName, file=f)
+        print("icon: \"ti-credit-card\"", file=f)
+        print("description: \"Documentation API\"", file=f)
+        print("type :", file=f)
+        print("weight: 1", file=f)
         print("---", file=f)
-        print("```python", file=f)
-        print("from " + ".".join(splitFilename[0:-1])+ " import "+shortfilenameNoExt, file=f)
-        print("```", file=f)
+        if options["Import"]:
+            print("```python", file=f)
+            print(
+                "from " + ".".join(fullmoduleName.split(".")[0:-1]) + " import "+moduleName.split(".")[-1], file=f)
+            print("```", file=f)
         print(markdown_docs, file=f)
 
+
 def generateIndex():
-    path = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\API\\Version 4.3.1"
+    path = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\API\\Documentation"
 
     for root, dirs, filenames in os.walk(path):
 
-
-        i=0
+        i = 0
         name = root.split("\\")[-1]
 
-        with open(root+"\\"+"_index.en.md", 'w') as f:
-            f.writelines(["---\n",
-             "title: \"%s\"\n"%(name),
-             "icon: \"ti-credit-card\"\n",
-             "description: \"Documentation API\"\n",
-             "type :\n",
-             "weight: %s\n"%(str(i+1)),
-             "---"])
-
+        if "_index.en.md" not in filenames:
+            with open(root+"\\"+"_index.en.md", 'w') as f:
+                f.writelines(["---\n",
+                              "title: \"%s\"\n" % (name),
+                              "icon: \"ti-credit-card\"\n",
+                              "description: \"Documentation API\"\n",
+                              "type :\n",
+                              "weight: %s\n" % (str(i+1)),
+                              "---"])
 
 
 def main():
@@ -90,7 +91,7 @@ def main():
     # generer le md
 
     API_PATH = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\Doc\\content\\API\\"
-    VERSION = "Version 4.3.1"
+    VERSION = "Version 4.2.0"
 
     for (dir, subdir, filenames) in os.walk("C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\"):
         if "__init__.py" in filenames:
@@ -99,26 +100,41 @@ def main():
 
             for pyFile in pyFiles:
 
-                flag = False
+                options = {"Import": True,
+                           "Draft": False,
+                           "Version": VERSION}
+
                 with open(dir+"\\"+pyFile, 'r') as f:
                     for i, line in enumerate(f):
-                        if "#APIDOC:" in line:
-                            pathInApiDoc = line.split(
-                                ":")[1][:-1][1:]  # .replace(" ", "")
-                            flag = True
+
+                        if "#APIDOC[" in line:
+                            key = line[line.find("[")+2:line.find("=")-2]
+                            val = line[line.find("=")+1:-1]
+
+                            if val == "True":
+                                val = True
+                            elif val == "False":
+                                val = False
+                            options.update({key: val})
+                        if "#--end--" in line:
                             break
-                if flag:
-                    newpath = API_PATH+VERSION+"/"+pathInApiDoc+"/"
-                    files.createDir(newpath)
+
+                if options != {} and "Path" in options and options["Path"]:
+
+                    path = API_PATH+"Documentation"+"/" + options["Path"]+"/"
 
                     moduleName = dir[dir.rfind("pyCGM2"):].replace(
                         "\\", ".")+"."+pyFile[:-3]
+
+                    newpath = path+moduleName+"/"
+
                     mod = importlib.import_module(moduleName)
 
-                    generate(newpath, dir[dir.rfind("pyCGM2"):].replace(
-                        "\\", ".")+"."+pyFile[:-3], mod)
+                    files.createDir(newpath)
+                    generateAPI(newpath, mod, moduleName, options)
 
     generateIndex()
+
 
 if __name__ == '__main__':
     main()
