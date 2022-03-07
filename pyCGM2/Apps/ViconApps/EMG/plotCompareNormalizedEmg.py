@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Executable Apps/Vicon/EMG
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -19,13 +23,13 @@ def main():
     """ Plot time-normalized EMG from two c3d marked in Vicon Eclipse.
 
     warning:
-        This function does not work from two file belonging to different sessions.
+        This function does not work from two files belonging to different sessions.
 
     Usage:
 
     ```bash
-        python plotCompareNormalizedEmg.py
-        python plotCompareNormalizedEmg.py  -c -bpf 20 400
+        Nexus_plotCompareNormalizedEmg.exe
+        Nexus_plotCompareNormalizedEmg.exe  -c -bpf 20 400
     ```
 
     Args:

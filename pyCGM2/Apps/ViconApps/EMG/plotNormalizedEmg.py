@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Executable Apps/Vicon/EMG
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
+
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -24,8 +29,8 @@ def main():
     Usage:
 
     ```bash
-        python plotNormalizedEmg.py
-        python plotNormalizedEmg.py -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+        Nexus_plotNormalizedEmg.exe
+        Nexus_plotNormalizedEmg.exe -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
     ```
 
     Args:

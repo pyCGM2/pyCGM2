@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Executable Apps/Vicon/EMG
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#----
+
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -18,13 +23,13 @@ def main():
     Usage:
 
     ```bash
-        python plotTemporalEMG.py
-        python plotTemporalEMG.py -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+        Nexus_plotTemporalEmg.exe
+        Nexus_plotTemporalEmg.exe -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
     ```
 
     Args:
         [-bpf,--BandpassFrequencies] (list): bandpass filter cutoff frequencies
-        [--elf,EnvelopLowpassFrequency] (double) : cutoff frequency for estimating emg envelops
+        [--elf,EnvelopLowpassFrequency] (float) : cutoff frequency for estimating emg envelops
         ['-r','--raw'] (bool): plot non rectified signal
         ['-ina','--ignoreNormalActivity'] (bool): not display normal EMG activity area
     """
