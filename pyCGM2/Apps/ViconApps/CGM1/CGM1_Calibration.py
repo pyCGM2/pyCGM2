@@ -2,7 +2,7 @@
 #APIDOC["Path"]=/Executable Apps/Vicon/CGM1
 #APIDOC["Import"]=False
 #APIDOC["Draft"]=False
-#----
+#--end--
 from pyCGM2.Nexus import nexusFilters, nexusUtils, nexusTools
 import warnings
 import argparse

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/Experimental
+
 
 from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure, AnomalyCorrectionProcedure
 from pyCGM2.Nexus import nexusFilters, nexusUtils, nexusTools

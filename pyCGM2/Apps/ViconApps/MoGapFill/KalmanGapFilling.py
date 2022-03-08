@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/Gap filling
+#APIDOC["Path"]=/Executable Apps/Vicon/Gap Filling
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 from pyCGM2.Nexus import nexusTools, nexusFilters
 from pyCGM2.Gap import gapFilling
 from viconnexusapi import ViconNexus

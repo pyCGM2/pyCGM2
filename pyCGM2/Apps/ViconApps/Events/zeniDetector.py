@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/Events
+#APIDOC["Path"]=/Executable Apps/Vicon/Events
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 from pyCGM2.Nexus import nexusTools, nexusFilters
 from pyCGM2.Lib import eventDetector
 from viconnexusapi import ViconNexus
@@ -9,13 +12,13 @@ LOGGER = pyCGM2.LOGGER
 
 
 def main():
-    """  Run Zeni's kinematic-basd event detector on the  nexus-loaded trial
+    """  Run Zeni's kinematic-basd event detector from Nexus
 
     Usage:
 
     ```bash
-        python ZeniDetector.py
-        python ZeniDetector.py -fso 5 -foo 3
+        Nexus_zeniDetector.exe
+        Nexus_zeniDetector.exe -fso 5 -foo 3
     ```
 
     Args:

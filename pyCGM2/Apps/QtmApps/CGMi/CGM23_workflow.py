@@ -2,7 +2,7 @@
 #APIDOC["Path"]=/Executable Apps/Qtm/CGM workflows/CGM23
 #APIDOC["Import"]=False
 #APIDOC["Draft"]=False
-#----
+#--end--
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import os

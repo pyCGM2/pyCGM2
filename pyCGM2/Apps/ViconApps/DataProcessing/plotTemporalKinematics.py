@@ -2,7 +2,7 @@
 #APIDOC["Path"]=/Executable Apps/Vicon/Plot
 #APIDOC["Import"]=False
 #APIDOC["Draft"]=False
-#----
+#--end--
 from pyCGM2.Nexus import nexusTools, nexusFilters
 import warnings
 import matplotlib.pyplot as plt

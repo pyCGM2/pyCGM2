@@ -17,29 +17,7 @@ from pyCGM2 import enums
 from pyCGM2.Nexus import nexusTools,nexusFilters
 
 def main():
-    """ rigid gap filling from tracking markers from a loaded trial in nexus.
-    This function use the local position of the targeted marker collected during the static trial as reference.
-    By default, the targeted marker is constructed from the selected first frame to the slected last frame
-    of your trial loaded in Nexus
-
-
-    Usage:
-
-    load you trial in nexus, then run
-
-    ```bash
-        python rigidGapFillingMarkers.py --static="Kevin Cal 01" --target=RASI --trackingMarkers LASI LPSI RPSI
-        python rigidGapFillingMarkers.py --static="Kevin Cal 01" --target=RASI --trackingMarkers LASI LPSI RPSI --begin=3589 --last=3600
-    ```
-
-    Args:
-        [--target] (str): name of the targeted marker to reconstruct
-        [--trackingMarkers] (list of 3 str): name of the tracking markers (3 marker at least)
-        [--static] (str): name of the static file ( required to be save as c3d)
-        [-b,--begin] (int): start frame
-        [-e,--end] (int): last frame to process
-
-    """
+    
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()

@@ -2,7 +2,7 @@
 #APIDOC["Path"]=/Executable Apps/Vicon/Plot
 #APIDOC["Import"]=False
 #APIDOC["Draft"]=False
-#----
+#--end--
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import warnings
