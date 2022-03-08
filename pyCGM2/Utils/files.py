@@ -321,16 +321,21 @@ def saveMp(mpInfo,model,DATA_PATH,mpFilename):
 
 
 
-def getFiles(path, extension, ignore=None):
+def getFiles(path, extension, ignore=None,raiseFlag=False):
 
-    out=list()
-    for file in os.listdir(path):
-        if ignore is None:
-            if file.endswith(extension):
-                out.append(file)
-        else:
-            if file.endswith(extension) and ignore not in file:
-                out.append(file)
+    try:
+        out=list()
+        for file in os.listdir(path):
+            if ignore is None:
+                if file.endswith(extension):
+                    out.append(file)
+            else:
+                if file.endswith(extension) and ignore not in file:
+                    out.append(file)
+    except FileNotFoundError as e:
+        LOGGER.logger.error(str(e))
+        if raiseFlag: raise
+
 
     return out
 
