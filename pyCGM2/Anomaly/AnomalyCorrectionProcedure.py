@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Anomaly
+#APIDOC["Path"]=/Core/Anomaly
+#APIDOC["Draft"]=False
+#--end--
+"""
 
-""" This module gathers procedure for correcting detected anomalies
+This module gathers procedure for correcting detected anomalies
 
-check out the script : `\Tests\test_anomalies.py` for example
+check out the script : `\Tests\\test_anomalies.py` for example
 
 
 
@@ -46,7 +49,6 @@ class MarkerAnomalyCorrectionProcedure(object):
         markers ([str,...]): marker labels
         anomalyIndexes ([int,...]): indexes of the detected anomalies
         plot (bool,Optional): enable plot
-        **options (kwargs,Optional): see low-level keyword args
 
     Kwargs:
         distance_threshold (float): distance threshold between indexes
@@ -54,8 +56,7 @@ class MarkerAnomalyCorrectionProcedure(object):
 
     """
 
-    def __init__(self, markers, anomalyIndexes, plot=False, **options):
-
+    def __init__(self, markers, anomalyIndexes, plot=False, **kwargs):
 
         if type(markers) == str:
             markers = [markers]
@@ -64,7 +65,7 @@ class MarkerAnomalyCorrectionProcedure(object):
         self.m_anomalyIndexes = anomalyIndexes
         self._plot = plot
 
-        self._distance_threshold = 10 if "distance_threshold" not in options else options[
+        self._distance_threshold = 10 if "distance_threshold" not in kwargs else kwargs[
             "distance_threshold"]
 
     def run(self, acq, filename):

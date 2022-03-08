@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Anomaly
+#APIDOC["Path"]=/Core/Anomaly
+#APIDOC["Draft"]=False
+#--end--
 
 """ This module contains pyCGM2 anomaly filters to deal with either an anomaly
 detector procedure or an anomaly correction procedure
 
-check out the script : `\Tests\test_anomalies.py` for examples
-
+check out the script : `\Tests\\test_anomalies.py` for examples
 
 """
 
@@ -17,7 +18,7 @@ class AnomalyDetectionFilter(object):
     """ Anomaly detector filter
 
     Args:
-        acq (btk.Acquisition): a btk acquisition instantce
+        acq (btk.Acquisition): a btk acquisition instance
         filename (str): filename
         procedure(pyCGM2.Anomaly.AnomalyDetectionProcedure): anomaly detector procedure instance
 

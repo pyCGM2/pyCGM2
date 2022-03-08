@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /High level Lib
-import pyCGM2; LOGGER = pyCGM2.LOGGER
-import pyCGM2
-from pyCGM2.Processing import c3dManager, cycle, analysis
-from pyCGM2.Model.CGM2 import  cgm
-from pyCGM2.Processing import exporter
-from pyCGM2.Processing import jointPatterns
-from pyCGM2.Utils import files
+#APIDOC["Path"]=/Functions
+#APIDOC["Draft"]=False
+#--end--
 
+from pyCGM2.Utils import files
+from pyCGM2.Processing import jointPatterns
+from pyCGM2.Processing import exporter
+from pyCGM2.Model.CGM2 import cgm
+from pyCGM2.Processing import c3dManager, cycle, analysis
+import pyCGM2
+LOGGER = pyCGM2.LOGGER
 
 
 def makeAnalysis(DATA_PATH,
-                    filenames,
-                    type="Gait",
-                    kinematicLabelsDict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
-                    kineticLabelsDict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
-                    emgChannels = pyCGM2.EMG_CHANNELS,
-                    pointLabelSuffix=None,
-                    subjectInfo=None, experimentalInfo=None,modelInfo=None,
-                    **kwargs):
-
-
+                 filenames,
+                 type="Gait",
+                 kinematicLabelsDict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
+                 kineticLabelsDict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
+                 emgChannels=pyCGM2.EMG_CHANNELS,
+                 pointLabelSuffix=None,
+                 subjectInfo=None, experimentalInfo=None, modelInfo=None,
+                 **kwargs):
     """
     This function normalises data in time and returns an **Analysis Instance** ie a nested dictionnary  containing
     spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops from a list of c3d files.
@@ -38,14 +38,9 @@ def makeAnalysis(DATA_PATH,
     - kineticfilenames
     - emgfilenames
 
-
-
     Args:
         DATA_PATH (str): folder path
         filenames (list): list of c3d files to normalize
-
-    Keyword Args:
-
         type (str)[Gait]: event type (choice : "Gait" or "unknown").
         kinematicLabelsDict (dict)[cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT]: dictionnary containing kinematic data to normalize.
         kineticLabelsDict (dict)[cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT]: dictionnary containing kinetic data to normalize.
@@ -55,14 +50,12 @@ def makeAnalysis(DATA_PATH,
         experimentalInfo (dict)[None]: dictionnary with metadata information about the expreiment.
         modelInfo (dict)[None]: dictionnary with metadata information about the model.
 
-    Low-level Keyword Args :
+    Kwargs :
         btkAcqs (list of btk.Acquisition): btkAcq instances to process instead of calling c3d file.
         pstfilenames (list)[None]: list of c3d files used for computing spatiotemporal parameters
         kinematicfilenames (list)[None]: list of c3d files used to normalize kinematic data
         kineticfilenames (list)[None]: list of c3d files used to normalize kinetic data
         emgfilenames (list)[None]: list of c3d files used to normalize emg data
-
-
 
     Returns:
         pyCGM2.Processing.analysis.Analysis: analysis instance
@@ -70,14 +63,14 @@ def makeAnalysis(DATA_PATH,
 
     Examples:
 
-    The code below takes 2 c3d files, the time normalized kinematics, kinetics and emg.
-    Kinematic , kinetic and emg labels are the default CGM output and emg channels from the emg.setting file
-
     ```python
     analysisInstance = analysis.makeAnalysis(DATA_PATH, [file1.c3d,"file2.c3d"])
     ```
 
-    A more advanced use ( see below) called specific model outputs and emg channels. This code also adds a subject, experimental and model metadata:
+    The code takes 2 c3d files, then time normalized kinematics, kinetics and emg.
+    Kinematic and  kinetic labels  are the default CGM output labels.
+    The Emg channels are defined in the emg.setting file
+
 
     ```python
     analysisInstance2 = analysis.makeAnalysis(DATA_PATH, [file1.c3d,"file2.c3d"],
@@ -89,58 +82,63 @@ def makeAnalysis(DATA_PATH,
     ..........................................modelInfo = {"Model":"CGM1"})
     ```
 
-
-
+    the code called specific model outputs and emg channels.
+    In addition, the code also adds  subject, experimental and model metadata:
 
     """
 
-
-    if filenames == [] or filenames is None: filenames=None
+    if filenames == [] or filenames is None:
+        filenames = None
 
     #---- c3d manager
-    if "btkAcqs" in kwargs.keys() and  kwargs["btkAcqs"] is not None:
-        c3dmanagerProcedure = c3dManager.UniqueBtkAcqSetProcedure(DATA_PATH,filenames,acqs=kwargs["btkAcqs"])
+    if "btkAcqs" in kwargs.keys() and kwargs["btkAcqs"] is not None:
+        c3dmanagerProcedure = c3dManager.UniqueBtkAcqSetProcedure(
+            DATA_PATH, filenames, acqs=kwargs["btkAcqs"])
 
     else:
-        pstfilenames =kwargs["pstfilenames"] if "pstfilenames" in kwargs.keys() else None
-        kinematicfilenames =kwargs["kinematicfilenames"] if "kinematicfilenames" in kwargs.keys() else None
-        kineticfilenames =kwargs["kineticfilenames"] if "kineticfilenames" in kwargs.keys() else None
-        emgfilenames =kwargs["emgfilenames"] if "emgfilenames" in kwargs.keys() else None
+        pstfilenames = kwargs["pstfilenames"] if "pstfilenames" in kwargs.keys(
+        ) else None
+        kinematicfilenames = kwargs["kinematicfilenames"] if "kinematicfilenames" in kwargs.keys(
+        ) else None
+        kineticfilenames = kwargs["kineticfilenames"] if "kineticfilenames" in kwargs.keys(
+        ) else None
+        emgfilenames = kwargs["emgfilenames"] if "emgfilenames" in kwargs.keys(
+        ) else None
 
-        iPstFilenames =  filenames if pstfilenames is None else pstfilenames
-        iKinematicFilenames =  filenames if kinematicfilenames is None else kinematicfilenames
-        iKineticFilenames =  filenames if kineticfilenames is None else kineticfilenames
-        iEmgFilenames =  filenames if emgfilenames is None else emgfilenames
+        iPstFilenames = filenames if pstfilenames is None else pstfilenames
+        iKinematicFilenames = filenames if kinematicfilenames is None else kinematicfilenames
+        iKineticFilenames = filenames if kineticfilenames is None else kineticfilenames
+        iEmgFilenames = filenames if emgfilenames is None else emgfilenames
 
-        c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(DATA_PATH, iPstFilenames, iKinematicFilenames, iKineticFilenames, iEmgFilenames)
+        c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(
+            DATA_PATH, iPstFilenames, iKinematicFilenames, iKineticFilenames, iEmgFilenames)
 
     cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
 
-    cmf.enableKinematic(True) if kinematicLabelsDict is not None else cmf.enableKinematic(False)
-    cmf.enableKinetic(True) if kineticLabelsDict is not None else cmf.enableKinetic(False)
+    cmf.enableKinematic(
+        True) if kinematicLabelsDict is not None else cmf.enableKinematic(False)
+    cmf.enableKinetic(
+        True) if kineticLabelsDict is not None else cmf.enableKinetic(False)
     cmf.enableEmg(True) if emgChannels is not None else cmf.enableEmg(False)
 
     trialManager = cmf.generate()
 
-
     #----cycles
     if type == "Gait":
         cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalAcqs=trialManager.spatioTemporal["Acqs"],
-                                                   kinematicAcqs = trialManager.kinematic["Acqs"],
-                                                   kineticAcqs = trialManager.kinetic["Acqs"],
-                                                   emgAcqs=trialManager.emg["Acqs"])
+                                               kinematicAcqs=trialManager.kinematic["Acqs"],
+                                               kineticAcqs=trialManager.kinetic["Acqs"],
+                                               emgAcqs=trialManager.emg["Acqs"])
 
     else:
         cycleBuilder = cycle.CyclesBuilder(spatioTemporalAcqs=trialManager.spatioTemporal["Acqs"],
-                                                   kinematicAcqs = trialManager.kinematic["Acqs"],
-                                                   kineticAcqs = trialManager.kinetic["Acqs"],
-                                                   emgAcqs=trialManager.emg["Acqs"])
+                                           kinematicAcqs=trialManager.kinematic["Acqs"],
+                                           kineticAcqs=trialManager.kinetic["Acqs"],
+                                           emgAcqs=trialManager.emg["Acqs"])
 
     cyclefilter = cycle.CyclesFilter()
     cyclefilter.setBuilder(cycleBuilder)
     cycles = cyclefilter.build()
-
-
 
     if emgChannels is not None:
         emgLabelList = [label+"_Rectify_Env" for label in emgChannels]
@@ -149,60 +147,58 @@ def makeAnalysis(DATA_PATH,
 
     if type == "Gait":
         analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
-                                                      kinematicLabelsDict = kinematicLabelsDict,
-                                                      kineticLabelsDict = kineticLabelsDict,
-                                                      pointlabelSuffix = pointLabelSuffix,
-                                                      emgLabelList = emgLabelList)
+                                                       kinematicLabelsDict=kinematicLabelsDict,
+                                                       kineticLabelsDict=kineticLabelsDict,
+                                                       pointlabelSuffix=pointLabelSuffix,
+                                                       emgLabelList=emgLabelList)
     else:
         analysisBuilder = analysis.AnalysisBuilder(cycles,
-                                                      kinematicLabelsDict = kinematicLabelsDict,
-                                                      kineticLabelsDict = kineticLabelsDict,
-                                                      pointlabelSuffix = pointLabelSuffix,
-                                                      emgLabelList = emgLabelList)
+                                                   kinematicLabelsDict=kinematicLabelsDict,
+                                                   kineticLabelsDict=kineticLabelsDict,
+                                                   pointlabelSuffix=pointLabelSuffix,
+                                                   emgLabelList=emgLabelList)
 
     analysisFilter = analysis.AnalysisFilter()
-    analysisFilter.setInfo(subject=subjectInfo, model=modelInfo, experimental=experimentalInfo)
+    analysisFilter.setInfo(subject=subjectInfo,
+                           model=modelInfo, experimental=experimentalInfo)
     analysisFilter.setBuilder(analysisBuilder)
     analysisFilter.build()
 
     return analysisFilter.analysis
 
 
-
-def exportAnalysis(analysisInstance,DATA_PATH,name,
-                mode="Advanced"):
+def exportAnalysis(analysisInstance, DATA_PATH, name,
+                   mode="Advanced"):
     """export an Analysis instance as excel spreadsheet.
 
     Args:
         analysisInstance (pyCGM2.Processing.analysis.Analysis): Analysis instance.
         DATA_PATH (str):folder path
         name (str): name of your excel file.
-
-    Keyword Args:
         mode (str)[Advanced]: spreadsheet mode . ("Advanced or Basic")
 
     Examples
 
-    >>> exportAnalysis(AnalysisInstance, "c:\\DATA\\","johnDoe")
+    ```python
+    exportAnalysis(AnalysisInstance, "c:\\DATA\\","johnDoe")
+    ```
 
     """
 
-
-
     exportFilter = exporter.XlsAnalysisExportFilter()
     exportFilter.setAnalysisInstance(analysisInstance)
-    exportFilter.export(name, path=DATA_PATH,excelFormat = "xls",mode = mode)
+    exportFilter.export(name, path=DATA_PATH, excelFormat="xls", mode=mode)
 
 
-def automaticCPdeviations(DATA_PATH,analysis,reference="Nieuwenhuys2017",pointLabelSuffix=None,filterTrue=False, export=True, outputname ="Nieuwenhuys2017",language="-fr" ):
+def automaticCPdeviations(DATA_PATH, analysis, reference="Nieuwenhuys2017", pointLabelSuffix=None, filterTrue=False, export=True, outputname="Nieuwenhuys2017", language="-fr"):
 
-
-    RULES_PATH = pyCGM2.PYCGM2_SETTINGS_FOLDER +"jointPatterns\\"
+    RULES_PATH = pyCGM2.PYCGM2_SETTINGS_FOLDER + "jointPatterns\\"
     rulesXls = RULES_PATH+reference+language+".xlsx"
-    jpp = jointPatterns.XlsJointPatternProcedure(rulesXls,pointSuffix=pointLabelSuffix)
+    jpp = jointPatterns.XlsJointPatternProcedure(
+        rulesXls, pointSuffix=pointLabelSuffix)
     dpf = jointPatterns.JointPatternFilter(jpp, analysis)
     dataFrameValues = dpf.getValues()
-    dataFramePatterns = dpf.getPatterns(filter = filterTrue)
+    dataFramePatterns = dpf.getPatterns(filter=filterTrue)
 
     if export:
         xlsExport = exporter.XlsExportDataFrameFilter()
