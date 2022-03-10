@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /High level Lib
+#APIDOC["Path"]=/Functions
+#APIDOC["Draft"]=False
+#--end--
 from pyCGM2.Events import events
 from pyCGM2.Signal import signal_processing
 
@@ -14,13 +16,11 @@ def zeni(acqGait, footStrikeOffset=0, footOffOffset=0, **kwargs):
     Zeni, J. A.; Richards, J. G.; Higginson, J. S. (2008) Two simple methods for determining gait events during treadmill and overground walking using kinematic data. In : Gait & posture, vol. 27, n° 4, p. 710–714. DOI: 10.1016/j.gaitpost.2007.07.007.
 
     Args:
-        acqGait (btkAcq): acquisition instance.
+        acqGait (btk.Acquisition): an acquisition instance.
+        footStrikeOffset (int): systematic offset to add to all `footStrikeOffset` events. Default is 0.
+        footOffOffset (int): systematic offset to add to all `footOffOffset` events. Default is 0.
 
-    Keyword Args:
-        footStrikeOffset (int)[0]: systematic offset to add to all `footStrikeOffset` events.
-        footOffOffset (int)[0]: systematic offset to add to all `footOffOffset` events.
-
-    Low-level Keyword Args:
+    Kargs
         fc_lowPass_marker (double) : cut-off frequency of the lowpass filter applied on markers
         order_lowPass_marker (int): order of the lowpass filter applied on markers
 
