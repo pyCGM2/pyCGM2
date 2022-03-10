@@ -82,8 +82,9 @@ def makeAnalysis(DATA_PATH,
     ..........................................modelInfo = {"Model":"CGM1"})
     ```
 
-    the code called specific model outputs and emg channels.
-    In addition, the code also adds  subject, experimental and model metadata:
+    The code called specific model outputs and emg channels.
+    In addition, the code also adds subject, experimental and model metadata.
+    These information will be displayed in the exported spreadsheet.  
 
     """
 
