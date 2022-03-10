@@ -149,6 +149,22 @@ def normalizedEMG(DATA_PATH,analysis, method="MeanMax", fromOtherAnalysis=None, 
 
 
 def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
+    """ Process EMG from a btk.acquisition
+
+    Args:
+        acq (btk.Acquisition): an acquisition instance
+        emgChannels (list): emg channels ( ie analog labels )
+        highPassFrequencies (list): high pass frequencies. Defaults to [20,200].
+        envelopFrequency (float): low pass filter frequency. Defaults to 6.0.
+
+    Examples:
+
+    ```python
+    emg.processEMG_fromBtkAcq(acq,
+    .................["Voltage.EMG1","Voltage.EMG2"])
+    ```
+
+    """
 
     bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
     bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
