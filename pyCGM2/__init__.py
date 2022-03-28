@@ -27,7 +27,7 @@ try:
 
     version = float(NEXUS_VERSION[5:])
     if version<2.12:
-        LOGGER.logger.LOGGER.logger.error ("This version of pyCGM2 is only compatible Nexus 2.12+. Nexus Apps will fail if you call them ")
+        LOGGER.logger.error ("This version of pyCGM2 is only compatible Nexus 2.12+. Nexus Apps will fail if you call them ")
     else :
         if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusapi" in sys.path:
             sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusapi")
