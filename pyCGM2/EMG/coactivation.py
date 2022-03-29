@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-# @Author: Fabien Leboeuf
-# @Date:   2021-04-20T06:55:08+02:00
-# @Last modified by:   Fabien Leboeuf
-# @Last modified time: 2022-01-11T09:38:16+01:00
-
-#APIDOC: /Low level/EMG/coactivation
+#APIDOC["Path"]=/Core/EMG
+#APIDOC["Draft"]=False
+#--end--
 
 """ This module contains co-activation procedures
 

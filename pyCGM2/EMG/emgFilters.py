@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-# @Author: Fabien Leboeuf
-# @Date:   2021-04-20T06:55:08+02:00
-# @Last modified by:   Fabien Leboeuf
-# @Last modified time: 2022-01-11T10:32:19+01:00
-#APIDOC: /Low level/EMG/Filters
+#APIDOC["Path"]=/Core/EMG
+#APIDOC["Draft"]=False
+#--end--
 
 """ This module contains emg filters handling emg procedures
 
@@ -22,15 +20,13 @@ from pyCGM2 import enums
 class BasicEmgProcessingFilter(object):
     """
     Filter for filtering emg signals with a high pass filter
+
+    Args:
+        acq (Btk.Acquisition): btk acquisition instance
+        labels ([str]): emg labels.
     """
 
     def __init__(self,acq, labels):
-        """constructor.
-
-        Args:
-            acq (Btk.Acquisition): btk acquisition instance
-            labels ([str]): emg labels.
-        """
 
         self.m_acq = acq
         self.m_labels = labels
@@ -70,15 +66,12 @@ class BasicEmgProcessingFilter(object):
 class EmgEnvelopProcessingFilter(object):
     """
     Filter for processing emg envelop from low-pass filter
+    Args:
+        acq (Btk.Acquisition): btk acquisition instance
+        labels ([str]): emg labels.
     """
 
     def __init__(self,acq, labels):
-        """constructor.
-
-        Args:
-            acq (Btk.Acquisition): btk acquisition instance
-            labels ([str]): emg labels.
-        """
 
         self.m_acq = acq
         self.m_labels = [ label+"_Rectify" for label in labels]
@@ -114,17 +107,15 @@ class EmgEnvelopProcessingFilter(object):
 class EmgNormalisationProcessingFilter(object):
     """
     Filter for normalizing emg signals in amplitude
+
+    Args:
+        analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
+        label (str): emg label.
+        context (str): Event context.
     """
 
     def __init__(self,analysis, label,context):
-        """Constructor
 
-        Args:
-            analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
-            label (str): emg label.
-            context (str): Event context.
-
-        """
 
         self.m_analysis = analysis
         self.m_label = label+"_Rectify_Env"
@@ -241,15 +232,14 @@ class EmgNormalisationProcessingFilter(object):
 class EmgCoActivationFilter(object):
     """
     Filter for computing coactivation index
+
+    Args:
+        analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
+        context (str): event context
     """
 
     def __init__(self,analysis,context):
-        """Constructor.
 
-        Args:
-            analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
-            context (str): event context
-        """
 
         self.m_analysis = analysis
         self.m_context = context

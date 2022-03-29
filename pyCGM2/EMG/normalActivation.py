@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-# @Author: Fabien Leboeuf
-# @Date:   2021-04-20T06:55:08+02:00
-# @Last modified by:   Fabien Leboeuf
-
-#APIDOC: /Low level/EMG/normalActivation
+#APIDOC["Path"]=/Core/EMG
+#APIDOC["Draft"]=False
+#--end--
 
 
 """

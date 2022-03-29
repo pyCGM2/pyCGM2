@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-# @Author: Fabien Leboeuf
-# @Date:   2021-04-20T06:55:08+02:00
-# @Last modified by:   Fabien Leboeuf
-# @Last modified time: 2022-01-11T10:52:42+01:00
-
-#APIDOC: /Low level/EMG/discreEMGanalysis
+#APIDOC["Path"]=/Core/EMG
+#APIDOC["Draft"]=False
+#--end--
 
 """
 Module containes Filter and Procedure for extracting discrete value ( e.g : amplitude) from each emg signal
@@ -27,22 +24,20 @@ class DiscreteEMGFilter(object):
     Filter for handing procedure.
 
     the goal of this filter is to return a Pandas dataframe.
+
+    Args:
+        discreteEMGProcedure (pyCGM2.EMG.discreteEMGanalysis.procedure): a discrete emg procedure instance.
+        analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
+        emgLabels ([str]): emg labels
+        emgMuscles ([str]): muscle matching emg labels
+        emgContexts ([str]):  side of each emg labels
+        subjInfo (dict,Optional): dictionnary decribing the subject. Items will be added to the generated pandas dataframe
+        condExpInfo (dict,Optional): dictionnary decribing the experiment conditions. Items will be added to the generated pandas dataframe
+
     """
 
     def __init__(self, discreteEMGProcedure, analysis, emgLabels, emgMuscles, emgContexts, subjInfo=None, condExpInfo=None):
-        """Constructor.
-
-        Args:
-            discreteEMGProcedure (pyCGM2.EMG.discreteEMGanalysis.procedure): a discrete emg procedure instance.
-            analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
-            emgLabels ([str]): emg labels
-            emgMuscles ([str]): muscle matching emg labels
-            emgContexts ([str]):  side of each emg labels
-            subjInfo (dict,Optional): dictionnary decribing the subject. Items will be added to the generated pandas dataframe
-            condExpInfo (dict,Optional): dictionnary decribing the experiment conditions. Items will be added to the generated pandas dataframe
-
-        """
-
+        
         self.m_procedure = discreteEMGProcedure
         self.m_analysis = analysis
         self.dataframe = None

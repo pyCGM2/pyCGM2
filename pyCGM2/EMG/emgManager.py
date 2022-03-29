@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-# @Author: Fabien Leboeuf
-# @Date:   2021-06-24T08:06:27+02:00
-# @Last modified by:   Fabien Leboeuf
-
-
-#APIDOC: /Low level/EMG/emgManager
+#APIDOC["Path"]=/Core/EMG
+#APIDOC["Draft"]=False
+#--end--
 
 from pyCGM2.Utils import files
 import os
@@ -16,16 +13,15 @@ LOGGER = pyCGM2.LOGGER
 class EmgManager(object):
     """
     Class to manage  emg settings ( ie the emg.settings file)
+
+    Args:
+        DATA_PATH (str): data folder path
+        emgSettings (str,Optional): content of the emg.settings file
+
     """
 
     def __init__(self, DATA_PATH, emgSettings=None):
-        """Constructor
-
-        Args:
-            DATA_PATH (str): data folder path
-            emgSettings (str,Optional): content of the emg.settings file
-
-        """
+        
 
         if emgSettings is None:
             if os.path.isfile(DATA_PATH + "emg.settings"):
