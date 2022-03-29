@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Vicon/vsk
+#APIDOC["Path"]=/Core/Eclipse
+#APIDOC["Draft"]=False
+#--end--
 """
 Module containing classed and convenient function for dealing with a Vicon Skeleton File ( vsk)
 
@@ -46,14 +48,14 @@ def checkSetReadOnly(vskfilename):
 
 
 class Vsk(object):
-    """ class for handling vsk file"""
+    """ class for handling vsk file
+
+    Args:
+        file (str): name of the vsk file
+    """
 
     def __init__(self,file):
-        """constructor
 
-        Args:
-            file (str): name of the vsk file
-        """
 
         self.m_file=file
 

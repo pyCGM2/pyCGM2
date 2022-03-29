@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Vicon/eclipse
+#APIDOC["Path"]=/Core/Eclipse
+#APIDOC["Draft"]=False
+#--end--
 
 """ This module contains convenient classes and functions for dealing with the enf files associated with vicon Eclipse
 
@@ -18,7 +20,12 @@ LOGGER = pyCGM2.LOGGER
 
 
 def generateEmptyENF(path):
-    """ generate empty enf files of a folder containing c3d files only"""
+    """ generate empty enf files of a folder containing c3d files only
+
+    Args:
+        path (str): path to a folder with c3d and no enf
+
+    """
 
     c3ds = files.getFiles(path, "c3d")
     for c3d in c3ds:
@@ -91,7 +98,7 @@ def getEnfFiles(path, type):
         type (pyCGM2.enums.EclipseType): type of enf file (Session,Patient or Trial)
 
     Returns:
-        [str...]: enf files
+        list: enf files
 
 
     """
@@ -134,16 +141,14 @@ def cleanEnf(path, enf):
 
 
 class EnfReader(object):
-    """ class for handling a generic enf file"""
+    """ class for handling a generic enf file
+
+    Args:
+        path (str): folder path
+        enfFile (str): enf filename
+    """
 
     def __init__(self, path, enfFile):
-        """constructor
-
-        Args:
-            path (str): folder path
-            enfFile (str): enf filename
-
-        """
 
         config = configparser.ConfigParser()
         config.optionxform = str  # keep letter case
@@ -163,7 +168,7 @@ class EnfReader(object):
         self.m_config = config
 
     def getSection(self, section):
-        """section assessor
+        """ return content of a section
 
         Args:
             section (str): section name
@@ -192,16 +197,14 @@ class EnfReader(object):
 
 
 class PatientEnfReader(EnfReader):
-    """ Class for handling the Patient.enf file created by Vicon Nexus"""
+    """ Class for handling the Patient.enf file created by Vicon Nexus
+
+    Args:
+        path (str): folder path
+        enfFile (str): enf filename
+    """
 
     def __init__(self, path, enfFile):
-        """constructor
-
-        Args:
-            path (str): folder path
-            enfFile (str): enf filename
-
-        """
         super(PatientEnfReader, self).__init__(path, enfFile)
         self.m_patientInfos = super(
             PatientEnfReader, self).getSection("SUBJECT_INFO")
@@ -247,16 +250,15 @@ class PatientEnfReader(EnfReader):
 
 
 class SessionEnfReader(EnfReader):
-    """ Class for handling the Session.enf file created by Vicon Eclipse"""
+    """ Class for handling the Session.enf file created by Vicon Eclipse
+
+    Args:
+        path (str): folder path
+        enfFile (str): enf filename
+    """
 
     def __init__(self, path, enfFile):
-        """constructor
 
-        Args:
-            path (str): folder path
-            enfFile (str): enf filename
-
-        """
         super(SessionEnfReader, self).__init__(path, enfFile)
         self.m_sessionInfos = super(
             SessionEnfReader, self).getSection("SESSION_INFO")
@@ -301,16 +303,15 @@ class SessionEnfReader(EnfReader):
 
 
 class TrialEnfReader(EnfReader):
-    """Class for handing the Trial.enf file created by Vicon Eclipse"""
+    """Class for handing the Trial.enf file created by Vicon Eclipse
+
+    Args:
+        path (str): folder path
+        enfFile (str): enf filename
+    """
 
     def __init__(self, path, enfFile):
-        """constructor
-
-        Args:
-            path (str): folder path
-            enfFile (str): enf filename
-
-        """
+        
         super(TrialEnfReader, self).__init__(path, enfFile)
         self.m_trialInfos = super(
             TrialEnfReader, self).getSection("TRIAL_INFO")
