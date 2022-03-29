@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /High level Lib
+#APIDOC["Path"]=/Functions/CGM
+#APIDOC["Draft"]=False
+#--end--
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
@@ -42,7 +44,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         hjcMethod (dict): hip joint centre regressions
         pointSuffix (str): suffix to add to ouputs
 
-    Low-level Keyword Args :
+    Kwargs :
         anomalyException (bool): raise exception if anomaly detected
         forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         displayCoordinateSystem (bool): return virtual markers for visualisation of the anatomical refentials
@@ -365,7 +367,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         mfpa (str): force plate assignment
         momentProjection (str) : referential for projection of joint moment
 
-    Low-level Keyword Args :
+    Kwargs :
         anomalyException (bool): raise exception if anomaly detected
         forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         frameInit (int):  frame index.

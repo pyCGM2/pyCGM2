@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /High level Lib
+#APIDOC["Path"]=/Functions/CGM
+#APIDOC["Draft"]=False
+#--end--
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
@@ -40,7 +43,7 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
         endFrame (int):  frame index
         jointRange (list) : joint range of motion boundaries
 
-    Low-level Keyword Args :
+    Kwargs :
         forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         fc_lowPass_marker (float): low-pass fiter cutoff frequency applied on marker trajectories
         order_lowPass_marker (int): order of the low-pass filter applied on marker trajectories
@@ -196,7 +199,7 @@ def sara(model,
         endFrame (int):  frame index
         jointRange (list) : joint range of motion boundaries
 
-    Low-level Keyword Args :
+    Kwargs :
         forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         fc_lowPass_marker (float): low-pass fiter cutoff frequency applied on marker trajectories
         order_lowPass_marker (int): order of the low-pass filter applied on marker trajectories
