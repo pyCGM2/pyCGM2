@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Model/CGM2
-
+#APIDOC["Path"]=/Core/Model/CGM2
+#APIDOC["Draft"]=False
+#--end--
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy
@@ -44,6 +45,7 @@ class CGM(model.Model):
 
 
     def __init__(self):
+
         super(CGM, self).__init__()
         self.m_useLeftTibialTorsion=False
         self.m_useRightTibialTorsion=False
@@ -55,25 +57,29 @@ class CGM(model.Model):
         self.staExpert= boolFlag
 
     def setStaticTrackingMarkers(self,markers):
-        """set static markers"""
+        """Set tracking markers
+
+        Args:
+            markers (list): tracking markers
+
+        """
+
 
         self.m_staticTrackingMarkers = markers
 
     def getStaticTrackingMarkers(self):
-        """set tracking markers"""
+        """get tracking markers"""
 
         return self.m_staticTrackingMarkers
 
     @classmethod
-    def detectCalibrationMethods(cls,acqStatic):
-        """class method to detect method use to calibrate knee and ankle joint centres
+    def detectCalibrationMethods(cls, acqStatic):
+        """ *Class method* to detect the method used to calibrate knee and ankle joint centres
 
         Args:
             acqStatic (btk.Acquisition): acquisition.
 
         """
-
-
         # Left knee
         LKnee = enums.JointCalibrationMethod.Basic
         if btkTools.isPointsExist(acqStatic,["LKAX","LKD1","LKD2"]):
@@ -108,6 +114,12 @@ class CGM(model.Model):
 
     @classmethod
     def get_markerLabelForPiGStatic(cls,dcm):
+        """ *Class method* returning marker label of the knee and ankle joint centres
+
+        Args:
+            dcm (dict): dictionnary returned from the function `detectCalibrationMethods`
+
+        """
 
         useLeftKJCmarkerLabel = "LKJC"
         useLeftAJCmarkerLabel = "LAJC"
@@ -134,7 +146,7 @@ class CGM(model.Model):
 
 class CGM1(CGM):
     """
-    Lower limb conventional Gait Model 1 (i.e. Vicon Plugin Gait Clone)
+    Conventional Gait Model 1 (aka Vicon Plugin Gait Clone)
     """
 
     LOWERLIMB_TRACKING_MARKERS=["LASI", "RASI","RPSI", "LPSI","LTHI","LKNE","LTIB","LANK","LHEE","LTOE","RTHI","RKNE","RTIB","RANK","RHEE","RTOE"]
@@ -152,6 +164,7 @@ class CGM1(CGM):
 
 
     def __init__(self):
+
         super(CGM1, self).__init__()
         self.decoratedModel = False
         self.version = "CGM1.0"
@@ -197,10 +210,10 @@ class CGM1(CGM):
         """return static markers
 
         Args:
-            dcm (dict): output of the detected calibration method
+            dcm (dict): dictionnary returned from the function `detectCalibrationMethods`
 
         """
-        static_markers = self.getTrackingMarkers() # initiate with tracking
+        static_markers = self.getTrackingMarkers()
 
         if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD:
             static_markers.remove("LKNE")
@@ -226,7 +239,7 @@ class CGM1(CGM):
         """" configure the model
 
         Args:
-            detectedCalibrationMethods (dict,optional[None]): output of the detected calibration method
+            detectedCalibrationMethods (dict,optional[None]): dictionnary returned from the function `detectCalibrationMethods`
 
         """
 
@@ -525,14 +538,14 @@ class CGM1(CGM):
         self._trunkCoordinateSystemDefinitions()
         self._upperLimbCoordinateSystemDefinitions()
 
-    def calibrate(self,aquiStatic, dictRef, dictAnatomic,  options=None):
+    def calibrate(self, aquiStatic, dictRef, dictAnatomic, options=None):
         """calibrate the model
 
         Args:
             aquiStatic (btk.acquisition): acquisition
             dictRef (dict): markers and sequence used for building the technical coordinate system
             dictAnatomic (dict): markers and sequence used for building the anatomical coordinate system
-            options (kargs): passed arguments to sub calibration methods
+            options (dict, optional[None]): passed arguments to embedded methods
 
         """
         #TODO : to input Frane init and Frame end manually
@@ -1922,6 +1935,9 @@ class CGM1(CGM):
     def getThighOffset(self,side= "both"):
         """
         return the thigh offset. Angle between the projection of the lateral thigh marker and the knee flexion axis
+
+        Args:
+            side (string, Optional[both]): lower limb side (both, left or right)
         """
 
         if side == "both" or side=="left":
@@ -1946,10 +1962,10 @@ class CGM1(CGM):
 
     def getShankOffsets(self, side = "both"):
         """
-        return  the shank offsets :
+        return  the shank offset, ie the angle between the projection of the lateral shank marker and the ankle flexion axis
 
-             - Angle between the projection of the lateral shank marker and the ankle flexion axis
-             - Angle between the projection of the lateral ankle marker and the ankle flexion axis
+        Args:
+            side (string, Optional[both]): lower limb side (both, left or right)
 
         """
 
@@ -1976,6 +1992,9 @@ class CGM1(CGM):
     def getTibialTorsionOffset(self, side = "both"):
         """
         return the tibial torsion offsets :
+
+        Args:
+            side (string, Optional[both]): lower limb side (both, left or right)
         """
 
         if side == "both" or side == "left" :
@@ -2011,7 +2030,10 @@ class CGM1(CGM):
 
     def getAbdAddAnkleJointOffset(self,side="both"):
         """
-        return the  Abd/Add ankle offset : angle n the frontal plan between the ankle marker and the ankle flexion axis
+        return the  Abd/Add ankle offset, ie angle in the frontal plan between the ankle marker and the ankle flexion axis
+
+        Args:
+            side (string, Optional[both]): lower limb side (both, left or right)
         """
         if side == "both" or side == "left" :
 
@@ -2040,10 +2062,10 @@ class CGM1(CGM):
 
     def getFootOffset(self, side = "both"):
         """
-        return the foot offsets :
+        return the foot offsets, ie the plantar flexion offset and the rotation offset
 
-            -  plantar flexion offset
-            -  rotation offset
+        Args:
+            side (string, Optional[both]): lower limb side (both, left or right)
         """
 
 
@@ -2070,6 +2092,19 @@ class CGM1(CGM):
 
     # ----- Motion --------------
     def computeOptimizedSegmentMotion(self,aqui,segments, dictRef,dictAnat,motionMethod,options ):
+        """Compute poses of both **Technical and Anatomical** coordinate systems
+        for specific segments of the model
+
+        Args:
+            aqui (btk.Acquisition): motion acquisitiuon
+            segments (list): segments of the model
+            dictRef (dict): technical referential definitions
+            dictAnat (dict): anatomical referential definitions
+            motionMethod (enums.motionMethod): segmental motion method to apply
+            options (dict): passed known-arguments
+
+        """
+
 
         # ---remove all  direction marker from tracking markers.
         if self.staExpert:
@@ -2118,18 +2153,18 @@ class CGM1(CGM):
 
     def computeMotion(self,aqui, dictRef,dictAnat, motionMethod,options=None ):
         """
-        Compute Motion of both **Technical and Anatomical** coordinate systems
+        Compute poses of both **Technical and Anatomical** coordinate systems
 
         Args:
             aqui (btk.acquisition): acquisition
-            dictRef (dict): markers and sequence used for building the technical coordinate system
-            dictAnat (dict): markers and sequence used for building the anatomical coordinate system
+            dictRef (dict): technical referential definitions
+            dictAnat (dict): anatomical referential definitions
             motionMethod (enums.motionMethod): segmental motion method
-            options (kargs,optional[None]): passed arguments to sub calibration methods
+            options (dict,optional[None]): passed arguments to embedded functions
 
         options:
-            * pigStatic (bool)
-            * forceFoot6DoF (bool)
+            * pigStatic (bool) : compute foot cordinate system according the Vicon Plugin-gait
+            * forceFoot6DoF (bool): apply 6DOF pose optimisation on the foot
         """
 
         LOGGER.logger.debug("=====================================================")
@@ -5424,14 +5459,14 @@ class CGM1(CGM):
 
 
     # ----- vicon API -------
-    def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):
+    def viconExport(self, NEXUS, acq, vskName, pointSuffix, staticProcessingFlag):
         """
         method exporting model outputs to Nexus
 
         Args:
             NEXUS (viconnexus): Nexus handle
             vskName (str): vsk name
-            staticProcessingFlag (bool):  only static model ouputs will be export
+            staticProcessingFlag (bool):  only static model ouputs will be exported
 
         """
 

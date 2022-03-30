@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Model/CGM2
+#APIDOC["Path"]=/Core/Model/CGM2
+#APIDOC["Draft"]=False
+#--end--
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy
@@ -23,10 +26,8 @@ class CGM2_1(cgm.CGM1):
     """
     Implementation of the CGM2.1
     """
-
-    #nativeCgm1 = True
-
     def __init__(self):
+
         super(CGM2_1, self).__init__()
         self.decoratedModel = False
 
@@ -39,8 +40,6 @@ class CGM2_2(cgm.CGM1):
     """
     Implementation of the CGM2.2
     """
-
-
     def __init__(self):
         super(CGM2_2, self).__init__()
         self.decoratedModel = False
@@ -56,7 +55,7 @@ class CGM2_2(cgm.CGM1):
         """set markers used to fit the static with IK
 
         Args:
-            targetNames ([str,..]): marker labels
+            targetNames (list): marker labels
 
         """
         self.m_staticIkTargets = targetNames
@@ -99,7 +98,7 @@ class CGM2_3(cgm.CGM1):
         """set markers used to fit the static with IK
 
         Args:
-            targetNames ([str,..]): marker labels
+            targetNames (list): marker labels
 
         """
         self.m_staticIkTargets = targetNames
@@ -266,7 +265,7 @@ class CGM2_3(cgm.CGM1):
             aquiStatic (btk.acquisition): acquisition
             dictRef (dict): markers and sequence used for building the technical coordinate system
             dictAnatomic (dict): markers and sequence used for building the anatomical coordinate system
-            options (kargs): passed arguments to sub calibration methods
+            options (dict, optional[None]): passed arguments to embedded methods
 
         """
 
@@ -308,8 +307,9 @@ class CGM2_3(cgm.CGM1):
         return out
 
 class CGM2_4(CGM2_3):
-    """ Implementation of the CGM2.4"""
-
+    """
+    Implementation of the CGM2.4
+    """
     ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles","LForeFoot"],
                        'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles","LForeFoot"]}
 
@@ -522,7 +522,7 @@ class CGM2_4(CGM2_3):
             aquiStatic (btk.acquisition): acquisition
             dictRef (dict): markers and sequence used for building the technical coordinate system
             dictAnatomic (dict): markers and sequence used for building the anatomical coordinate system
-            options (kargs): passed arguments to sub calibration methods
+            options (dict, optional[None]): passed arguments to embedded methods
 
         """
 
@@ -835,9 +835,6 @@ class CGM2_4(CGM2_3):
 
 
     def _leftHindFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd, options = None):
-        """
-        idem foot of cgm1
-        """
 
         if "markerDiameter" in options.keys():
             LOGGER.logger.debug(" option (markerDiameter) found ")
@@ -1234,6 +1231,12 @@ class CGM2_4(CGM2_3):
 
     #---- Offsets -------
     def getHindFootOffset(self, side = "Both"):
+        """
+        return the hindfoot offsets, ie the plantar flexion offset and the rotation offset
+
+        Args:
+            side (string, Optional[Both]): lower limb side (Both, Left or Right)
+        """
 
 
         if side == "Both" or side == "Left" :
@@ -1262,6 +1265,18 @@ class CGM2_4(CGM2_3):
 
     #---- Motion -------
     def computeOptimizedSegmentMotion(self,aqui,segments, dictRef,dictAnat,motionMethod,options):
+        """Compute poses of both **Technical and Anatomical** coordinate systems
+        for specific segments of the model
+
+        Args:
+            aqui (btk.Acquisition): motion acquisitiuon
+            segments (list): segments of the model
+            dictRef (dict): technical referential definitions
+            dictAnat (dict): anatomical referential definitions
+            motionMethod (enums.motionMethod): segmental motion method to apply
+            options (dict): passed known-arguments
+
+        """
 
         # ---remove all  direction marker from tracking markers.
         if self.staExpert:
@@ -1315,18 +1330,18 @@ class CGM2_4(CGM2_3):
 
     def computeMotion(self,aqui, dictRef,dictAnat, motionMethod,options=None ):
         """
-        Compute Motion of both **Technical and Anatomical** coordinate systems
+        Compute poses of both **Technical and Anatomical** coordinate systems
 
         Args:
             aqui (btk.acquisition): acquisition
-            dictRef (dict): markers and sequence used for building the technical coordinate system
-            dictAnat (dict): markers and sequence used for building the anatomical coordinate system
+            dictRef (dict): technical referential definitions
+            dictAnat (dict): anatomical referential definitions
             motionMethod (enums.motionMethod): segmental motion method
-            options (kargs,optional[None]): passed arguments to sub calibration methods
+            options (dict,optional[None]): passed arguments to embedded functions
 
         options:
-            * pigStatic (bool)
-            * forceFoot6DoF (bool)
+            * pigStatic (bool) : compute foot cordinate system according the Vicon Plugin-gait
+            * forceFoot6DoF (bool): apply 6DOF pose optimisation on the foot
         """
 
         pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
@@ -2035,12 +2050,9 @@ class CGM2_4(CGM2_3):
 
     def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):
         """
-        method exporting model outputs to Nexus
+        Method exporting model outputs to Nexus
 
-        Args:
-            NEXUS (viconnexus): Nexus handle
-            vskName (str): vsk name
-            staticProcessingFlag (bool):  only static model ouputs will be export
+        see [cgm.CGM1.viconExport](/Low level/Model/CGM2)
 
         """
 
@@ -2186,11 +2198,11 @@ class CGM2_4(CGM2_3):
 
 
 class CGM2_5(CGM2_4):
-    """
-    Implementation of the CGM2.5
-    """
 
     def __init__(self):
+        """
+        Implementation of the CGM2.5
+        """
         super(CGM2_5, self).__init__()
         self.decoratedModel = False
         self.version = "CGM2.5"

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Model/CGM2
+#APIDOC["Path"]=/Core/Model/CGM2
+#APIDOC["Draft"]=False
+#--end--
+"""
+this module gathers decorators specific to the CGM
+"""
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2 import enums
@@ -11,8 +16,8 @@ def applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1onl
     """Apply decorators from detected calibration method
 
     Args:
-        dcm (): output of the method `cgm.detectCalibrationMethods`.
-        model (pyCGM2.Model.CGM2.cgm): a CGM model
+        dcm (dict): dictionnary returned from the function `detectCalibrationMethods`
+        model (pyCGM2.Model.CGM2.cgm): a CGM model instance
         acqStatic (btk.acquisition): a btk acquisition instance of a static file
         optional_mp (dict): optional anthropometric parameters of the CGM
         markerDiameter (float): marker diameter
@@ -72,7 +77,7 @@ def applyHJCDecorators(model, method):
     """apply hip joint centre decorators
 
     Args:
-        model (pyCGM2.Model.CGM2.cgm): a CGM model
+        model (pyCGM2.Model.CGM2.cgm): a CGM model instance
         method (dict): dict indicating HJC method to use
 
     Example:
