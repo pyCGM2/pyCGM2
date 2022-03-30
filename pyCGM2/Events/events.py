@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Event/
+#APIDOC["Path"]=/Core/Events
+#APIDOC["Draft"]=False
+#--end--
 """
 The module contains filter and procedure for detecting foot contact event.
 

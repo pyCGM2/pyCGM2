@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/ForcePlates/
+#APIDOC["Path"]=/Core/Gap
+#APIDOC["Draft"]=False
+#--end--
 """
 The module contains filter and procedure for filling gap
 

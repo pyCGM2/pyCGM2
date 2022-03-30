@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Math
+#APIDOC["Path"]=/Core/Math
+#APIDOC["Draft"]=False
+#--end--
 
 import numpy as np
 

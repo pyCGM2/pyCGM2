@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/ForcePlates/
+#APIDOC["Path"]=/Core/ForcePlates
+#APIDOC["Draft"]=False
+#--end--
 """
 The module contains convenient functions for working with force plate.
 
@@ -27,7 +29,8 @@ except:
 from pyCGM2.Tools import  btkTools
 
 
-def ForcePlateIntegration(ReactionForce, mass, frameInit=0,frameEnd=None, v0 =[0,0,0], p0= [0,0,0], analogFrequency=1000):
+def ForcePlateIntegration(ReactionForce, mass, frameInit=0,frameEnd=None,
+                            v0 =[0,0,0], p0= [0,0,0], analogFrequency=1000):
     """integration of the reaction force
 
     Args:

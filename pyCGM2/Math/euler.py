@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Math
+#APIDOC["Path"]=/Core/Math
+#APIDOC["Draft"]=False
+#--end--
 
 """
 Module contains function for working with euler angles
