@@ -33,6 +33,7 @@ def smartReader(filename, translators=None):
     reader.SetFilename(filename)
     reader.Update()
     acq = reader.GetOutput()
+
     if translators is not None:
         acq = applyTranslators(acq, translators)
 
@@ -49,8 +50,11 @@ def smartReader(filename, translators=None):
     sortedEvents(acq)
 
     # ANALYSIS Section
+
     md = acq.GetMetaData()
     if "ANALYSIS" not in _getSectionFromMd(md):
+        analysis = btk.btkMetaData('ANALYSIS')
+        acq.GetMetaData().AppendChild(analysis)
         used = btk.btkMetaData('USED', 0)
         acq.GetMetaData().FindChild("ANALYSIS").value().AppendChild(used)
 
@@ -1389,7 +1393,7 @@ def getParamAnalysis(btkAcq, name, context, subject):
         acq (btkAcquisition): a btk acquisition instance
         name (str): parameter labels
         context (str): event contexts
-        subject (str): subject name    
+        subject (str): subject name
     """
 
     names = [it.strip()
