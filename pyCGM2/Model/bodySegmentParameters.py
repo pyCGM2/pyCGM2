@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Model
+#APIDOC["Draft"]=False
+#--end--
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
@@ -66,10 +70,10 @@ class Bsp(object):
         """
         Compute body parameter of a selected lower limb segment
 
-        :Parameters:
-           - `bspSegmentLabel` (str) - segment label defined in the class object `TABLE`
-           - `segmentLength` (double) - length of the segment
-           - `bodymass` (double) - mass of the subject
+        Args:
+           -bspSegmentLabel(str): segment label defined in the class object `TABLE`
+           -segmentLength(double): length of the segment
+           -bodymass(double): mass of the subject
         """
         # TODO Pelvis
         # % Length = distance from midpoint of hip joint centres to junction between L4 and L5. (see Winter/Dempster)
@@ -100,8 +104,8 @@ class Bsp(object):
 
     def __init__(self,iModel):
         """
-        :Parameters:
-           - `iModel` (pyCGM2.Model.CGM2.Model) - pyCGM2.Model.CGM2.Model instance
+        Args:
+           -iModel(pyCGM2.Model.CGM2.Model): pyCGM2.Model.CGM2.Model instance
 
         """
         self.m_model = iModel

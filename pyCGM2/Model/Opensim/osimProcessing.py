@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Model/Opensim
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+This module contains  convenient functions and classes for working with opensim.
+"""
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 
@@ -31,7 +39,7 @@ R_OSIM_CGM = {"Pelvis" : np.array([[1,0,0],[0,0,1],[0,-1,0]]) ,
               "Right ForeFoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
               "Left HindFoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
               "Left ForeFoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
-              "Right Hindfoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]), # use for julie's model
+              "Right Hindfoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]]),
               "Right Forefoot" : np.array([[0,0,-1],[1,0,0],[0,-1,0]])
 
               }
@@ -40,6 +48,13 @@ R_OSIM_CGM = {"Pelvis" : np.array([[1,0,0],[0,0,1],[0,-1,0]]) ,
 
 
 def globalTransformationLabToOsim(acq,R_LAB_OSIM):
+    """transform all markers into the the opensim global coordinate system
+
+    Args:
+        acq (Btk.Acquisition): an acquisition
+        R_LAB_OSIM (array(3,3)): rotation matrix for passing from the lab to opensim coordinate sytem
+
+    """
 
     points = acq.GetPoints()
     for it in btk.Iterate(points):
@@ -50,6 +65,13 @@ def globalTransformationLabToOsim(acq,R_LAB_OSIM):
             it.SetValues(values)
 
 def smartTrcExport(acq,filenameNoExt):
+    """save as a trc file
+
+    Args:
+        acq (Btk.Acquisition): an acquisition
+        filenameNoExt (str): filename without extension
+
+    """
     writerDyn = btk.btkAcquisitionFileWriter()
     writerDyn.SetInput(acq)
     writerDyn.SetFilename(filenameNoExt + ".trc")
@@ -58,6 +80,14 @@ def smartTrcExport(acq,filenameNoExt):
 
 
 def sto2pointValues(storageObject,label,R_LAB_OSIM):
+    """transform an element of a storage instance into the Laboratory coordinate system.
+
+    Args:
+        storageObject (opensim.Storage): an opensim storage instance.
+        label (str): label to extract from the storage instance
+        R_LAB_OSIM (array(3,3)): rotation matrix for passing from the lab to opensim coordinate sytem
+
+    """
 
     # storageObject = opensim.Storage(stoFilename)
     index_x =storageObject.getStateIndex(label+"_tx")
@@ -89,6 +119,14 @@ def sto2pointValues(storageObject,label,R_LAB_OSIM):
 
 
 def mot2pointValues(motFilename,labels,orientation =[1,1,1]):
+    """convert  an element of an opensim mot file into a btk-point values
+    (ie array(n,3) with n: the number of frames)
+
+    Args:
+        motFilename (str): full filename of the mot file
+        label (str): label to convert
+        orientation (list): scales to apply before returning final values. Default is [1,1,1]
+    """
     storageObject = opensim.Storage(motFilename)
 
     index_x =storageObject.getStateIndex(labels[0])
@@ -115,7 +153,17 @@ def mot2pointValues(motFilename,labels,orientation =[1,1,1]):
     return pointValues
 
 def setGlobalTransormation_lab_osim(axis,forwardProgression):
-    """ Todo : incomplet, il faut traiter tous les cas """
+    """return the rotation matrix expressing the opensim global coordinate system
+    to the laboratory coordinate system
+
+    Args:
+        axis (str): defined progression axis  (ie X or Y ).
+        forwardProgression (bool):  forward progression flag.
+        (if True, the movement progression is along the positive value of
+        your progression axis )
+
+    """
+
     if axis =="X":
         if forwardProgression:
             R_LAB_OSIM=np.array([[1,0,0],[0,0,1],[0,-1,0]])
