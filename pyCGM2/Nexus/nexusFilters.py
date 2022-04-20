@@ -28,7 +28,10 @@ except:
     from viconnexusapi import ViconNexus
 
 
-NEXUS = ViconNexus.ViconNexus()
+try:
+    NEXUS = ViconNexus.ViconNexus()
+except:
+    LOGGER.logger.error("Nexus is not running")    
 
 
 class NexusModelFilter(object):

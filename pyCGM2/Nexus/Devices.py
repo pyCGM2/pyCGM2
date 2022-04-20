@@ -8,13 +8,17 @@ The module is a viconnexus interface. it contains Object (ie Device) which can b
 from viconnexusapi import ViconNexus
 import numpy as np
 
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:
     import ViconNexus
 except:
     from viconnexusapi import ViconNexus
 
-NEXUS = ViconNexus.ViconNexus()
+try:
+    NEXUS = ViconNexus.ViconNexus()
+except:
+    LOGGER.logger.error("Nexus is not running")
 
 class Channel(object):
     """Channel
