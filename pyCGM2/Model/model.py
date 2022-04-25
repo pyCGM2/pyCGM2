@@ -33,7 +33,7 @@ class ClinicalDescriptor(object):
         coefficients (list(3)): coefficients to apply on the ouputs
         offsets (list(3)): offset to apply on the ouputs ( eg, 180 degree substraction )
 
-    kwargs:
+    Kwargs:
         projection(enums.MomentProjection): coordinate system used to project the joint moment
 
     ```python
@@ -457,7 +457,7 @@ class Model(object):
             coefficients (list): coefficients to apply on outputs
             offsets (list): offsets to apply on outputs
 
-        kwargs:
+        Kwargs:
             projection(enums.MomentProjection): coordinate system used to project the joint moment
 
         ```python
@@ -470,7 +470,7 @@ class Model(object):
         self.m_clinicalDescriptors.append(descriptor)
 
     def getClinicalDescriptor(self,dataType,jointOrSegmentLabel,projection=None):
-        """gat a clinical descriptor
+        """return a clinical descriptor
 
         Args:
             jointOrSegmentLabel (str): segment or joint label.
@@ -666,7 +666,7 @@ class Referential(object):
         Set the static pose
 
         Args:
-            Frame(pyCGM2.Model.CGM2.frame.Frame): a `Frame` instance
+            Frame (pyCGM2.Model.CGM2.frame.Frame): a `Frame` instance
         """
         self.static = Frame
 
@@ -676,7 +676,7 @@ class Referential(object):
         Append  a `Frame` to the `motion` attribute
 
         Args:
-            Frame(pyCGM2.Model.CGM2.frame.Frame):  a `Frame` instance
+            Frame (pyCGM2.Model.CGM2.frame.Frame):  a `Frame` instance
 
         """
         self.motion.append(Frame)
@@ -686,7 +686,7 @@ class Referential(object):
         Return the trajectory of a node
 
         Args:
-            label(str): label of the desired node
+            label (str): label of the desired node
         """
 
         node=self.static.getNode_byLabel(label)
@@ -731,7 +731,7 @@ class TechnicalReferential(Referential):
     A `TechnicalReferential` inherits from `Referential`.
 
     Args:
-        label(str): label of the technical referential
+        label (str): label of the technical referential
     """
 
     def __init__(self, label):
@@ -747,7 +747,7 @@ class TechnicalReferential(Referential):
         expressed in the technical referential (:math:`R^a_t`).
 
         Args:
-            array(numpy.array(3,3): rigid rotation
+            array (numpy.array(3,3): rigid rotation
         """
         self.relativeMatrixAnatomic = array
 
@@ -770,11 +770,11 @@ class Segment(object):
     A `Segment` represents a rigid body
 
     Args:
-        label(str): label
-        index(str): index
-        sideEnum(pyCGM2.enums): body side
-        lst_markerlabel(list ): calibration and tracking markers
-        tracking_markers(list): tracking markers
+        label (str): label
+        index (str): index
+        sideEnum (pyCGM2.enums): body side
+        lst_markerlabel (list): calibration and tracking markers
+        tracking_markers (list): tracking markers
 
     """
     ## TODO:
@@ -833,7 +833,7 @@ class Segment(object):
         Aemove a tracking marker
 
         Args:
-            label(str): label
+            label (str): label
         """
         if not isinstance(labels,list):
             labels = [labels]
@@ -851,7 +851,7 @@ class Segment(object):
         Add a tracking marker
 
         Args:
-            labels(str or list): marker labels
+            labels (str or list): marker labels
         """
 
         if not isinstance(labels,list):
@@ -869,7 +869,7 @@ class Segment(object):
         Add a calibration marker
 
         Args:
-            labels(str or list): marker label
+            labels (str or list): marker label
         """
         if not isinstance(labels,list):
             labels = [labels]
@@ -923,7 +923,7 @@ class Segment(object):
         Downsample external device wrenchs
 
         Args:
-            appf(int): analog point per frame
+            appf (int): analog point per frame
         """
         if self.isExternalDeviceWrenchsConnected():
 
@@ -955,7 +955,7 @@ class Segment(object):
         Add an external device wrench
 
         Args:
-            btkWrench(btk.Wrench): a btk wrench instance
+            btkWrench (btk.Wrench): a btk wrench instance
 
         """
         self.m_externalDeviceWrenchs.append(btkWrench)
@@ -966,7 +966,7 @@ class Segment(object):
         Set segment mass
 
         Args:
-            value(double): mass
+            value (double): mass
 
         """
         self.m_bsp["mass"] = value
@@ -976,7 +976,7 @@ class Segment(object):
         Set segment length
 
         Args:
-            value(double): length
+            value (double): length
 
         """
         self.m_bsp["length"] = value
@@ -986,7 +986,7 @@ class Segment(object):
         Set segment radius of giration
 
         Args:
-            value(double): radius of giration
+            value (double): radius of giration
 
         """
         self.m_bsp["rog"] = value
@@ -1006,7 +1006,7 @@ class Segment(object):
         Set segment inertia tensor
 
         Args:
-            array(array(3,3)): tensor of inertia
+            array (array(3,3)): tensor of inertia
 
         """
         self.m_bsp["inertia"] = array33
@@ -1017,7 +1017,7 @@ class Segment(object):
         Add a technical referential
 
         Args:
-            label(str): given label of the technical frame
+            label (str): given label of the technical frame
         """
 
 
@@ -1031,7 +1031,7 @@ class Segment(object):
         Return a referential from its label
 
         Args:
-            label(str): technical referential label
+            label (str): technical referential label
 
         """
 
@@ -1046,8 +1046,8 @@ class Segment(object):
         Return the trajectory of the centre of mass
 
         Args:
-            exportBtkPoint(bool): enable export as btk.point
-            btkAcq(btk acquisition): a btk acquisition instance
+            exportBtkPoint (bool): enable export as btk.point
+            btkAcq (btk acquisition): a btk acquisition instance
 
         """
 
@@ -1067,8 +1067,8 @@ class Segment(object):
         Get the linear velocity of the centre of mass
 
         Args:
-            pointFrequency(double): point frequency
-            method(str,Optional): derivation method (spline, spline fitting)
+            pointFrequency (double): point frequency
+            method (str,Optional): derivation method (spline, spline fitting)
 
         """
 
@@ -1119,7 +1119,7 @@ class Segment(object):
 
         Args:
             sampleFrequency(double): point frequency
-            method(str,Optional): method used for computing the angular velocity
+            method (str,Optional): method used for computing the angular velocity
             (conventional or pig)
 
         **Notes:**
@@ -1178,10 +1178,10 @@ class Joint(object):
         a `Joint` is the common point between a proximal and a distal segment
 
         Args:
-            label(str): label of the chain
-            proxLabel(str): label of the proximal segment
-            distLabel(str): label of the distal segment
-            sequence(str): sequence angle
+            label (str): label of the chain
+            proxLabel (str): label of the proximal segment
+            distLabel (str): label of the distal segment
+            sequence (str): sequence angle
     """
 
     def __init__(self, label, proxLabel,distLabel,sequence,nodeLabel):

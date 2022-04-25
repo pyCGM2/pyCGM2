@@ -71,9 +71,9 @@ class Bsp(object):
         Compute body parameter of a selected lower limb segment
 
         Args:
-           -bspSegmentLabel(str): segment label defined in the class object `TABLE`
-           -segmentLength(double): length of the segment
-           -bodymass(double): mass of the subject
+           bspSegmentLabel (str): segment label defined in the class object `TABLE`
+           segmentLength (double): length of the segment
+           bodymass (double): mass of the subject
         """
         # TODO Pelvis
         # % Length = distance from midpoint of hip joint centres to junction between L4 and L5. (see Winter/Dempster)
@@ -105,7 +105,7 @@ class Bsp(object):
     def __init__(self,iModel):
         """
         Args:
-           -iModel(pyCGM2.Model.CGM2.Model): pyCGM2.Model.CGM2.Model instance
+           iModel (pyCGM2.Model.CGM2.Model): pyCGM2.Model.CGM2.Model instance
 
         """
         self.m_model = iModel
