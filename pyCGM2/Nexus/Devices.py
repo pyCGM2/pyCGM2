@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Nexus
+#APIDOC["Path"]=/Core/Nexus
+#APIDOC["Draft"]=False
+#--end--
 
 """
-The module is a viconnexus interface. it contains Object (ie Device) which can be contructed from viconnexusapi
+The module is a viconnexus interface. it contains Object (ie Device) which can be contructed from vicon nexus api
 """
 
 from viconnexusapi import ViconNexus

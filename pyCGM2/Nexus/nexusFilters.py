@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Nexus
+#APIDOC["Path"]=/Core/Nexus
+#APIDOC["Draft"]=False
+#--end--
 
 """
-
+This module contains conveninet classes interacting with the nexus API
 """
 
 from pyCGM2.Utils import utils
@@ -31,11 +33,11 @@ except:
 try:
     NEXUS = ViconNexus.ViconNexus()
 except:
-    LOGGER.logger.error("Nexus is not running")    
+    LOGGER.logger.error("Nexus is not running")
 
 
 class NexusModelFilter(object):
-    """Nexus Model Filter is an interface running the method **viconExport* of a pyCGM2 Model instance.
+    """Nexus Model Filter is an interface running the method `viconExport` of a pyCGM2 Model instance.
 
     Args:
         NEXUS (): vicon nexus handle
@@ -43,7 +45,7 @@ class NexusModelFilter(object):
         iAcq (btk.acquisition): a btk acquisition
         vskName (str): name of the vsk
         pointSuffix (str): suffix added to the model ouput name
-        staticProcessing (bool,Optional): enable static mode. Defaults to False.
+        staticProcessing (bool,Optional[False]): enable static mode.
 
     """
 
@@ -64,7 +66,7 @@ class NexusModelFilter(object):
 
 
 class NexusConstructAcquisitionFilter(object):
-    """filter constructing a btkAcquisition from nexusAPI
+    """filter constructing a btk.Acquisition from nexusAPI
 
     Args:
         dataPath (str): data folder path
@@ -413,7 +415,7 @@ class NexusConstructAcquisitionFilter(object):
         """export built acquisition to c3d
 
         Args:
-            filenameNoExt (str,Optional): specific filename without its extension. Defaults to None.
+            filenameNoExt (str,Optional[None]): specific filename without its extension.
 
         """
 

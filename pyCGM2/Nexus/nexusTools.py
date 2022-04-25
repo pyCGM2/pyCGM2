@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Nexus
+#APIDOC["Path"]=/Core/Nexus
+#APIDOC["Draft"]=False
+#--end--
 
 """
-Convenient functions for working with viconnexusapi
+Convenient functions for working with nexus API
 """
 
 import numpy as np
@@ -38,7 +40,7 @@ def getActiveSubject(NEXUS):
     """return the active subject
 
     Args:
-        NEXUS (): viconnexusapi handle
+        NEXUS (): vicon nexus handle
 
     """
 
@@ -92,14 +94,14 @@ def checkActivatedSubject(NEXUS, subjectNames):
 
 
 def setTrajectoryFromArray(NEXUS, vskName, label, array, firstFrame=0):
-    """Set a trajectory ( eq. marker) from an array
+    """Set a trajectory (ie marker) from an array
 
     Args:
         NEXUS (): vicon nexus handle.
         vskName (str): vsk name.
         label (str): trajectory label ( eq. marker label)
         array (np.array(n,3)): array
-        firstFrame (int,optional): first frame of the acquisition. Defaults to 0.
+        firstFrame (int,Optional[0]): first frame of the acquisition.
 
 
     """
@@ -152,7 +154,7 @@ def appendModelledMarkerFromAcq(NEXUS, vskName, label, acq, suffix=""):
         vskName (str): vsk name.
         label (str): modelled marker label ( eq. marker label)
         acq (btk.acquisition): a btk.acquisition instance
-        suffix (str,Optional): suffix added to the model outputs
+        suffix (str,Optional[""]): suffix added to the model outputs
 
     """
 
@@ -221,7 +223,7 @@ def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
         vskName (str): vsk name.
         label (str): force label
         acq (btk.acquisition): a btk.acquisition instance
-        normalizedData (bool,Optional): indicate if values are normalized in amplitude. Default set to True
+        normalizedData (bool,Optional[True]): indicate if values are normalized in amplitude.
 
     """
 
@@ -253,14 +255,14 @@ def appendForceFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
 
 
 def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
-    """append a Moment  from an btk.acquisition
+    """append a Moment  from a btk.acquisition
 
     Args:
         NEXUS (): vicon nexus handle.
         vskName (str): vsk name.
         label (str): moment label
         acq (btk.acquisition): a btk.acquisition instance
-        normalizedData (bool,Optional): indicate if values are normalized in amplitude. Default set to True
+        normalizedData (bool,Optional[True]): indicate if values are normalized in amplitude.
 
     """
 
@@ -292,14 +294,14 @@ def appendMomentFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
 def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
-    """append a power  from an btk.acquisition
+    """append a power from a btk.acquisition
 
     Args:
         NEXUS (): vicon nexus handle.
         vskName (str): vsk name.
         label (str): power label
         acq (btk.acquisition): a btk.acquisition instance
-        normalizedData (bool,Optional): indicate if values are normalized in amplitude. Default set to True
+        normalizedData (bool,Optional[True]): indicate if values are normalized in amplitude.
 
     """
     lst = NEXUS.GetModelOutputNames(vskName)
@@ -326,16 +328,17 @@ def appendPowerFromAcq(NEXUS,vskName,label, acq,normalizedData=True):
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
 def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=None,suffix="",existFromPoint = None):
-    """append a vicon bone  from an btk.acquisition
+    """append a vicon bone  from a btk.acquisition
 
     Args:
         NEXUS (): vicon nexus handle.
         vskName (str): vsk name.
         label (str): bone label
         acq (btk.acquisition): a btk.acquisition instance
-        OriginValues (np.array(n,3),Optional): manual assignement of the bone origin. Default set to None
-        manualScale (np.array(1,3),Optional): manual scale. Default set to None
-        existFromPoint (str,Optional): btk point label conditionning presence or absence of the bone. Default set to None
+        OriginValues (np.array(n,3),Optional[None]): manual assignement of the bone origin.
+        manualScale (np.array(1,3),Optional[None]): manual scale.
+        suffix (str,optional("")): suffix added to bone outputs
+        existFromPoint (str,Optional[None]): btk point label conditioning presence or absence of the bone.
 
     """
 
@@ -465,7 +468,7 @@ def getForcePlateAssignment(NEXUS):
     return out
 
 def appendAnalysisParameters(NEXUS, acq):
-    """append analysis parameter an btk.acquisition
+    """append analysis parameter to a btk.acquisition
 
     Args:
         NEXUS (): vicon nexus handle.

@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Model
+#APIDOC["Draft"]=False
+#--end--
+"""
+This module contains pose algorithms
+"""
+
 import numpy as np
 import scipy as sp
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 def segmentalLeastSquare(A, B):
-    """
-        Compute the transformation between two coordinate systems using SVD.
+    """Compute the transformation between two coordinate systems using SVD.
 
-        :Parameters:
-            - `A` (numpy.array(n,3)) - Coordinates [x,y,z] of at least three markers
-            - `B` (numpy.array(n,3)) - Coordinates [x,y,z] of at least three markers
-
-        :Return:
-            - `R` (numpy.array(3,3)) - Rotation matrix between A and B
-            - `L` (numpy.array(3,)) - Translation vector between A and B
-            - `RMSE` (float) - Root-mean-squared error for the rigid body model( :math:` B = R*A + L + err`).
+    Args:
+        A (numpy.array(n,3)) - Coordinates [x,y,z] of at least three markers
+        B (numpy.array(n,3)) - Coordinates [x,y,z] of at least three markers
 
     """
 

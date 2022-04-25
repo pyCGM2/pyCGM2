@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Nexus
+#APIDOC["Path"]=/Core/Nexus
+#APIDOC["Draft"]=False
+#--end--
 
 
 def getNexusSubjectMp(NEXUS,subject, resetFlag=False):
@@ -8,7 +10,7 @@ def getNexusSubjectMp(NEXUS,subject, resetFlag=False):
     Args:
         NEXUS (): viconnexusapi handle.
         subject (str): subject ( eq. vsk) name.
-        resetFlag (bool,optional):  reset optional mp. Defaults to False.
+        resetFlag (bool,Optional[False]):  reset optional mp.
 
     """
 
@@ -66,9 +68,9 @@ def updateNexusSubjectMp(NEXUS,model,subjectName):
     """ update anthropometric from  a pyCGM2.Model instance
 
     Args:
-        NEXUS (): viconnexusapi handle.
+        NEXUS (): vicon nexus api handle.
         model (pyCGM2.Model.model.Model): a model instance.
-        subjectName (str):  subject ( eq. vsk) name
+        subjectName (str):  subject (ie vsk) name
 
     """
 
