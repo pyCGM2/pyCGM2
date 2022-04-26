@@ -1,4 +1,18 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Processing
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+The main goal of this module is to construct an `Analysis` instance. It's a matlab-like structure with
+spatio temporal (stp), kinematics, kinetics and emg parameters as attributes.
+
+The implementation uses a *Builder pattern* design.
+The `AnalysisFilter` calls a `procedure` and return the final `Analysis` instance
+
+"""
+
+
 import pyCGM2.Processing.cycle as CGM2cycle
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -14,26 +28,23 @@ class AnalysisStructure:
 
 # --- OBJECT TO BUILD-----
 class Analysis():
-    """
-       Object built from AnalysisFilter.build().
+    """Object built from AnalysisFilter.build().
 
-       Analysis work as **class-container**. Its attribute members return descriptive statistics
-
-       Attributes :
+    Analysis work as **class-container**. Its attributes are:
 
           - `stpStats` (dict)  - descritive statictics of stapiotemporal parameters
           - `kinematicStats` (AnalysisStructure)  - descritive statictics of kinematics data.
           - `kineticStats` (AnalysisStructure)  - descritive statictics of kinetics data.
           - `emgStats` (AnalysisStructure)  - descritive statictics of emg data.
 
-       .. note:
+    Two sublevels characterized  `kinematicStats`, `kineticStats` and `emgStats`:
 
-           Notice kinematicStats, kineticStats and emgStats are `AnalysisStructure object`. This object implies two dictionnary as sublevels.
+        - `data` collect descriptive statistics of either kinematics, kinetics or emg.
+        - `pst` returns the spatiotemporal parameters of cycles used for either kinematic, kinetics or emg.
 
-             - `data` collect descriptive statistics of either kinematics, kinetics or emg.
-             - `pst` returns the spatiotemporal parameters of all cycles involved in either kinematics, kinetics or emg processing.
+    **Note**
 
-
+    stp, kinematics, kinetics and emg stats can be computed from separated acquisitions.
     """
 
     def __init__(self):
@@ -122,7 +133,6 @@ class Analysis():
 
 # --- BUILDERS-----
 
-
 class AbstractBuilder(object):
     def __init__(self, cycles=None):
         self.m_cycles = cycles
@@ -141,8 +151,27 @@ class AbstractBuilder(object):
 
 
 class AnalysisBuilder(AbstractBuilder):
-    """
-        **Description** :
+    """Analysis builder
+
+    Unlike `GaitAnalysisBuilder`, this builder does not compute spatiotemporal parameters
+
+
+    Args:
+         cycles(pyCGM2.Processing.cycle.Cycles): Cycles instance built from CycleFilter
+         kinematicLabelsDict (dict): dictionnary with two items (Left and Right) grouping kinematic output label
+         kineticLabelsDict (dict): dictionnary with two items (Left and Right) grouping kinetic output label
+         pointlabelSuffix (dict) - suffix ending kinematicLabels and kineticLabels dictionnaries
+         emgLabelList (list of str): labels of used emg
+         subjectInfos (dict): information about the subject
+         modelInfos (dict): information about the model
+         experimentalInfos (dict): information about the experimental conditions
+
+
+    **Notes**
+
+        `modelInfos`,`experimentalInfos`, `subjectInfos` are simple dictionaries used to store basic information.
+        When the analysis is exported as speadsheet, these informations appear as columns.
+
     """
 
     def __init__(self, cycles,
@@ -151,29 +180,7 @@ class AnalysisBuilder(AbstractBuilder):
                  pointlabelSuffix=None,
                  emgLabelList=None,
                  modelInfos=None, subjectInfos=None, experimentalInfos=None, emgs=None):
-        """
-            :Parameters:
-                 - `cycles` (pyCGM2.Processing.cycle.Cycles) - Cycles instance built from CycleFilter
-                 - `kinematicLabelsDict` (dict) - dictionnary with two items (Left and Right) grouping kinematic output label
-                 - `kineticLabelsDict` (dict) - dictionnary with two items (Left and Right) grouping kinetic output label
-                 - `pointlabelSuffix` (dict) - suffix ending kinematicLabels and kineticLabels dictionnaries
-                 - `emgLabelList` (list of str) - labels of used emg
-                 - `subjectInfos` (dict) - information about the subject
-                 - `modelInfos` (dict) - information about the model
-                 - `experimentalInfos` (dict) - information about the experimental conditions
-                 -  .. attention:: `emgs` (pyCGM2emg) - object in progress
 
-
-            .. note::
-
-                modelInfos,experimentalInfos, subjectInfos are convenient dictionnaries in which you can store different sort of information
-
-
-
-
-
-
-        """
 
         super(AnalysisBuilder, self).__init__(cycles=cycles)
 
@@ -187,12 +194,7 @@ class AnalysisBuilder(AbstractBuilder):
         pass
 
     def computeKinematics(self):
-        """ compute descriptive of kinematics parameters
-
-            :return:
-                - `out` (dict) - dictionnary with descriptive statictics of kinematics parameters
-                - `outPst` ( dict) - dictionnary with descriptive statictics of spatio-temporal parameters matching  kinematics parameters
-
+        """ Compute descriptive stats of the kinematic parameters
         """
 
         out = {}
@@ -228,12 +230,7 @@ class AnalysisBuilder(AbstractBuilder):
         return out, outPst
 
     def computeKinetics(self):
-        """ compute descriptive of kinetics parameters
-
-            :return:
-                - `out` (dict) - dictionnary with descriptive statictics of kinetics parameters
-                - `outPst` ( dict) - dictionnary with descriptive statictics of spatio-temporal parameters matching  kinetics parameters
-
+        """ Compute descriptive stats of the kinetic parameters
         """
 
         out = {}
@@ -290,12 +287,7 @@ class AnalysisBuilder(AbstractBuilder):
         return out, outPst, outOptional
 
     def computeEmgEnvelopes(self):
-        """
-            Compute descriptive of emg values
-
-            :return:
-                - `out` (dict) - dictionnary with descriptive statictics of emg envelopes
-                - `outPst` ( dict) - dictionnary with descriptive statictics of spatio-temporal parameters matching emg envelopes
+        """Compute descriptive stats of the  emg envelops
         """
         out = {}
         outPst = {}
@@ -315,8 +307,24 @@ class AnalysisBuilder(AbstractBuilder):
 
 
 class GaitAnalysisBuilder(AbstractBuilder):
-    """
-        **Description** : builder of a common clinical gait analysis
+    """Gait analysis Builder.
+
+    Args:
+         cycles(pyCGM2.Processing.cycle.Cycles): Cycles instance built from `CycleFilter`
+         kinematicLabelsDict (dict): dictionnary with two items (Left and Right) grouping kinematic output label
+         kineticLabelsDict (dict): dictionnary with two items (Left and Right) grouping kinetic output label
+         pointlabelSuffix (dict) - suffix ending kinematicLabels and kineticLabels dictionnaries
+         emgLabelList (list of str): labels of used emg
+         subjectInfos (dict): information about the subject
+         modelInfos (dict): information about the model
+         experimentalInfos (dict): information about the experimental conditions
+
+
+    **Notes**
+
+        `modelInfos`,`experimentalInfos`, `subjectInfos` are simple dictionaries used to store basic information.
+        When the analysis is exported as speadsheet, these informations appear as columns.
+
     """
 
     def __init__(self, cycles,
@@ -325,29 +333,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
                  pointlabelSuffix=None,
                  emgLabelList=None,
                  modelInfos=None, subjectInfos=None, experimentalInfos=None, emgs=None):
-        """
-            :Parameters:
-                 - `cycles` (pyCGM2.Processing.cycle.Cycles) - Cycles instance built from CycleFilter
-                 - `kinematicLabelsDict` (dict) - dictionnary with two items (Left and Right) grouping kinematic output label
-                 - `kineticLabelsDict` (dict) - dictionnary with two items (Left and Right) grouping kinetic output label
-                 - `pointlabelSuffix` (dict) - suffix ending kinematicLabels and kineticLabels dictionnaries
-                 - `emgLabelList` (list of str) - labels of used emg
-                 - `subjectInfos` (dict) - information about the subject
-                 - `modelInfos` (dict) - information about the model
-                 - `experimentalInfos` (dict) - information about the experimental conditions
-                 -  .. attention:: `emgs` (pyCGM2emg) - object in progress
 
-
-            .. note::
-
-                modelInfos,experimentalInfos, subjectInfos are convenient dictionnaries in which you can store different sort of information
-
-
-
-
-
-
-        """
 
         super(GaitAnalysisBuilder, self).__init__(cycles=cycles)
 
@@ -357,12 +343,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         self.m_emgLabelList = emgLabelList
 
     def computeSpatioTemporel(self):
-        """
-            **Description:** compute descriptive of spatio-temporal parameters
-
-            :return:
-                - `out` (dict) - dictionnary with descriptive statictics of spatio-temporal parameters
-
+        """ compute descriptive stats of the spatio-temporal parameters
         """
         out = {}
 
@@ -401,12 +382,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         return out
 
     def computeKinematics(self):
-        """ compute descriptive of kinematics parameters
-
-            :return:
-                - `out` (dict) - dictionnary with descriptive statictics of kinematics parameters
-                - `outPst` ( dict) - dictionnary with descriptive statictics of spatio-temporal parameters matching  kinematics parameters
-
+        """ Compute descriptive stats of the kinematic parameters
         """
 
         out = {}
@@ -450,12 +426,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         return out, outPst
 
     def computeKinetics(self):
-        """ compute descriptive of kinetics parameters
-
-            :return:
-                - `out` (dict) - dictionnary with descriptive statictics of kinetics parameters
-                - `outPst` ( dict) - dictionnary with descriptive statictics of spatio-temporal parameters matching  kinetics parameters
-
+        """ Compute descriptive stats of the kinetic parameters
         """
 
         out = {}
@@ -519,12 +490,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         return out, outPst, outOptional
 
     def computeEmgEnvelopes(self):
-        """
-            Compute descriptive of emg values
-
-            :return:
-                - `out` (dict) - dictionnary with descriptive statictics of emg envelopes
-                - `outPst` ( dict) - dictionnary with descriptive statictics of spatio-temporal parameters matching emg envelopes
+        """ Compute descriptive stats of the emg envelops
         """
 
         out = {}
@@ -557,8 +523,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
 
 
 class AnalysisFilter(object):
-    """
-         Filter building an Analysis instance.
+    """ Filter building an `Analysis` instance.
     """
 
     def __init__(self):
@@ -570,17 +535,24 @@ class AnalysisFilter(object):
         self.modelInfo = None
 
     def setBuilder(self, concreteBuilder):
-        """
-             set a concrete builder
+        """Set a concrete builder
 
-            :Parameters:
-                - `concreteBuilder` (Builder) - a concrete Builder
+        Args:
+            concreteBuilder (Builder) - a concrete Builder
 
         """
 
         self.__concreteAnalysisBuilder = concreteBuilder
 
     def setInfo(self, subject=None, experimental=None, model=None):
+        """Set informations
+
+        Args:
+            subject (dict,Optional[None]): subject info
+            experimental (dict,Optional[None]): xperimental info
+            model (dict,Optional[None]): model info
+
+        """
 
         if subject is not None:
             self.subjectInfo = subject
@@ -591,15 +563,9 @@ class AnalysisFilter(object):
         if model is not None:
             self.modelInfo = model
 
-        # self.stpInfo = dict()
-        # self.kinematicInfo = dict()
-        # self.kineticInfo = dict()
-        # self.emgInfo = dict()
 
     def build(self):
-        """
-            build member analysis from a concrete builder
-
+        """ Run the filter and build the analysis 
         """
         pstOut = self.__concreteAnalysisBuilder.computeSpatioTemporel()
         self.analysis.setStp(pstOut)

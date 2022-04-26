@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-from pyCGM2.Tools import btkTools
-from pyCGM2.Model.CGM2 import cgm
+#APIDOC["Path"]=/Core/Processing
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+This module aims to classify gait
+"""
 import numpy as np
-import pandas as pd
 import  matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
@@ -12,6 +16,24 @@ LOGGER = pyCGM2.LOGGER
 from pyCGM2.Report import plot
 
 class PFKEprocedure(object):
+    """PlantarFlexor-KneeExtensor classification procedure defined by Sangeux et al 2015
+
+    Args:
+        normativeData (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance
+        midStanceDefinition (str,Optional[PFKE]): mid stance frame boundaries. Choice: PFKE (20,45), Perry (10,30) or Baker (10,50))
+        dataType (str,Optional[cycle]): chosen data type for classification. Choice cycle,mean,median.
+        If cycle, knee and ankle scores are the median score from all cycle values with the normative mean value
+        side (str,Optional[Both]): event context (Both,Left or Right)
+
+    **Reference**
+
+      - Sangeux, Morgan; Rodda, Jill; Graham, H. Kerr (2015)
+      Sagittal gait patterns in cerebral palsy: the plantarflexor-knee extension couple index.
+      In : Gait & posture, vol. 41, n° 2, p. 586–591. DOI: 10.1016/j.gaitpost.2014.12.019.
+
+
+
+    """
 
     def __init__(self, normativeData,midStanceDefinition = "PFKE",dataType = "cycle",side = "Both"):
 
@@ -70,6 +92,13 @@ class PFKEprocedure(object):
         return SagPatternClass,DistPFKE
 
     def run(self, analysis,pointSuffix):
+        """run the procedure
+
+        Args:
+            analysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+            pointSuffix (str): suffix added to model outputs.
+
+        """
 
         if pointSuffix is None:
             pointSuffix =""
@@ -163,6 +192,11 @@ class PFKEprocedure(object):
         return self.m_sagPattern
 
     def plot(self,analysis, title=None):
+        """plot PFKE panels
+
+        Args:
+            analysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+        """
         fig = plt.figure(facecolor="white")
         gs = gridspec.GridSpec(nrows=2, ncols=2, height_ratios=[1, 3])
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
@@ -259,7 +293,13 @@ class PFKEprocedure(object):
 
 
 class ClassificationFilter(object):
-    """
+    """ Classification Filter
+
+    Args:
+        analysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+        procedure (pyCGM2.Processing.classification.(procedure)): a procedure instance
+        pointSuffix (str): suffix added to model outputs.
+
     """
 
     def __init__(self, analysisInstance, procedure,pointSuffix=None):
@@ -269,6 +309,7 @@ class ClassificationFilter(object):
         self.m_pointSuffix = pointSuffix
 
     def run(self):
+        """ Run the filter"""
 
         classification = self.m_procedure.run(self.m_analysis,self.m_pointSuffix)
 

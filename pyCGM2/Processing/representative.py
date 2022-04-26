@@ -1,4 +1,15 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Processing
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+This module aims to detect a representative cycle
+
+The  filter `RepresentativeCycleFilter` calls a specific procedure, and return
+indexes of the representive cycle for the Left and right event contexts
+
+"""
 import numpy as np
 import pandas as pd
 
@@ -10,6 +21,15 @@ from pyCGM2.Tools import btkTools
 
 
 class Sangeux2015Procedure(object):
+    """Representative detection method of Sangeux 2015
+
+    **reference**
+
+    Sangeux, Morgan A simple method to choose the most representative stride and detect outliers.
+
+
+
+    """
 
 
     def __init__(self):
@@ -20,6 +40,8 @@ class Sangeux2015Procedure(object):
 
 
     def setDefaultData(self):
+        """set default data according Sangeux 2015
+        """
 
         self.setData('Left',"LPelvisAngles",[0,1,2])
         self.setData('Left',"LHipAngles",[0,1,2])
@@ -34,8 +56,21 @@ class Sangeux2015Procedure(object):
         self.setData('Right',"RFootProgressAngles",[2])
 
 
-    def setData(self,EventContext,Label,axes):
-        self.m_data[EventContext].append([Label,axes])
+    def setData(self,EventContext,Label,indexes):
+        """populate data
+
+        Args:
+            EventContext (str): event context
+            Label (str): kinematic model output label
+            indexes (list): axis indexes
+
+        ```python
+           proc = Sangeux2015Procedure
+           proc.setData("Left","LHipAngles",[0,2]) # 0:flexion and 2:transverse rotation
+        ```
+
+        """
+        self.m_data[EventContext].append([Label,indexes])
 
 
     def _calculateFmd(self,medianeValues,values):
@@ -44,7 +79,7 @@ class Sangeux2015Procedure(object):
                             np.abs(values[100]-medianeValues[100])), 100)
 
 
-    def run(self, analysis):
+    def _run(self, analysis):
 
         out=dict()
         for eventContext in self.m_data:
@@ -79,7 +114,13 @@ class Sangeux2015Procedure(object):
 
 
 class RepresentativeCycleFilter(object):
-    """
+    """Representative cycle filter
+
+    Args:
+        analysisInstance (pyCGM2.Processing.analysis.Analysis): an `analysis` instance.
+        representativeProcedure (pyCGM2.Processing.representative.(procedure)): a procedure instance
+
+
     """
 
     def __init__(self, analysisInstance, representativeProcedure):
@@ -90,7 +131,9 @@ class RepresentativeCycleFilter(object):
 
 
     def run(self):
+        """Run the filter
+        """
 
-        representativeCycleIndex = self.m_procedure.run(self.m_analysis)
+        representativeCycleIndex = self.m_procedure._run(self.m_analysis)
 
         return representativeCycleIndex

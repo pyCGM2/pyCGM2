@@ -1,12 +1,31 @@
 # -*- coding: utf-8 -*-
-import numpy as np
+#APIDOC["Path"]=/Core/Processing
+#APIDOC["Draft"]=False
+#--end--
 
+"""
+This module is dedicated to the quantification of a Score, i e a Global index
+caracterizing the movement performed
+
+The  filter `ScoreFilter` calls a specific procedure, and return scores values.
+
+"""
+import numpy as np
 from pyCGM2.Math import numeric
+import pyCGM2
+LOGGER = pyCGM2.LOGGER
 
 
 class ScoreFilter(object):
+    """the score filter
+
+    Args:
+        scoreProcedure (pyCGM2.processing.score.(procedure)): a score procedure instance
+        analysis (pyCGM2.Processing.analysis.Analysis): and `analysis` instance
+        normativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance
+
     """
-    """
+
 
     def __init__(self, scoreProcedure, analysis, normativeDataSet):
 
@@ -19,15 +38,36 @@ class ScoreFilter(object):
 
 
     def compute(self):
-        descriptiveGvsStats,descriptiveGpsStats_context,descriptiveGpsStats = self.m_score.compute(self.m_analysis,self.m_normativeData)
-        self.m_analysis.setGps(descriptiveGpsStats,descriptiveGpsStats_context)
-        self.m_analysis.setGvs(descriptiveGvsStats)
+
+        import ipdb; ipdb.set_trace()
+        if isinstance(self.m_score,pyCGM2.Processing.scores.ScoreProcedure):
+            descriptiveGvsStats,descriptiveGpsStats_context,descriptiveGpsStats = self.m_score._compute(self.m_analysis,self.m_normativeData)
+            self.m_analysis.setGps(descriptiveGpsStats,descriptiveGpsStats_context)
+            self.m_analysis.setGvs(descriptiveGvsStats)
+        else:
+            raise Exception("[pyCGM2] - the loaded procedure is not a ScoreProcedure instance")
+
+class ScoreProcedure(object):
+    def __init__(self):
+        pass
 
 
-class CGM1_GPS(object):
+class CGM1_GPS(ScoreProcedure):
+    """Gait profile score accordin Baker et al. 2009
+
+    Args:
+        pointSuffix (str,Optional[None]): suffix added to model ouputs
+
+    **Reference**
+
+    Baker, Richard; McGinley, Jennifer L.; Schwartz, Michael H.; Beynon, Sarah; Rozumalski, Adam; Graham, H. Kerr; Tirosh, Oren (2009) The gait profile score and movement analysis profile. In : Gait & posture, vol. 30, n° 3, p. 265–269. DOI: 10.1016/j.gaitpost.2009.05.020.
+
+    """
 
 
     def __init__(self,pointSuffix=None):
+        super(CGM1_GPS, self).__init__()
+
 
         pointSuffix = ("_"+pointSuffix)  if (pointSuffix is not None) else ""
 
@@ -50,7 +90,7 @@ class CGM1_GPS(object):
         self.matchingNormativeDataLabel = matchingNormativeDataLabel
         self.axes = axes
 
-    def compute(self,analysis,normativeData):
+    def _compute(self,analysis,normativeData):
 
         gvs = dict()
 
@@ -155,10 +195,11 @@ class CGM1_GPS(object):
 
         return outDict_gvs, outDict_gps_context,outDict_gps
 
+## TODO:
+#class GDI(ScoreProcedure):
+#    def __init__(self):
+#        super(GDI, self).__init__()
+#        self.name = "Gait Deviation index"
 
-class GDI(object):
-    def __init__(self):
-        self.name = "Gait Deviation index"
-
-    def compute(self):
-        pass
+#    def _compute(self):
+#        pass

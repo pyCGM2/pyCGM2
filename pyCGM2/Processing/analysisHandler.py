@@ -1,8 +1,20 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Processing
+#APIDOC["Draft"]=False
+#--end--
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 
 def getPhases(dataStats,context="Both"):
+    """get phases
+
+    Args:
+        dataStats (pyCGM2.Processing.analysis.Analysis.kinematicStats.data): `data` level
+        of the `kinematicStats` or `kineticStats` attributes of an `Analysis` instance
+        context (str,Optional[Both]): event context
+
+    """
     #phases
     phases = dict()
 
@@ -70,6 +82,14 @@ def getPhases(dataStats,context="Both"):
 
 
 def getNumberOfCycle(analysisInstance,label,context):
+    """return the number of cycle from a given ouput and its event context.
+
+    Args:
+        analysisInstance (pyCGM2.Processing.analysis.Analysis): an analysis instance
+        label (str): givel ouput label (eg LKneeAngles)
+        context (str): event context
+
+    """
 
     statSection = getAnalysisSection(analysisInstance,label,context)
     values = statSection.data[label,context]["values"]
@@ -78,6 +98,14 @@ def getNumberOfCycle(analysisInstance,label,context):
     return n_cycle
 
 def getValues(analysisInstance,label,context):
+    """return  the values from a given ouput and its event context.
+
+    Args:
+        analysisInstance (pyCGM2.Processing.analysis.Analysis): an analysis instance
+        label (str): givel ouput label (eg LKneeAngles)
+        context (str): event context
+
+    """
 
     statSection = getAnalysisSection(analysisInstance,label,context)
     values = statSection.data[label,context]["values"]
@@ -87,6 +115,15 @@ def getValues(analysisInstance,label,context):
 
 
 def isKeyExist(analysisInstance,label,context,exceptionMode = False):
+    """check if the combinaison label/context exist in the analysis instance
+
+    Args:
+        analysisInstance (pyCGM2.Processing.analysis.Analysis): an analysis instance
+        label (str): givel ouput label (eg LKneeAngles)
+        context (str): event context
+        exceptionMode (bool,Optional[False]): enable exception raising
+
+    """
 
     flag = False
     for item in  [analysisInstance.kinematicStats.data,analysisInstance.kineticStats.data,analysisInstance.emgStats.data]:
@@ -103,6 +140,14 @@ def isKeyExist(analysisInstance,label,context,exceptionMode = False):
     return flag
 
 def getAnalysisSection(analysisInstance,label,context):
+    """return the section ( ie kinematic, kinetic or emg) of a given label and its context
+
+    Args:
+        analysisInstance (pyCGM2.Processing.analysis.Analysis): an analysis instance
+        label (str): givel ouput label (eg LKneeAngles)
+        context (str): event context
+
+    """
 
     if (label,context) in analysisInstance.kinematicStats.data.keys():
         return analysisInstance.kinematicStats
