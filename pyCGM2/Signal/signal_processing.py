@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Signal
+#APIDOC["Path"]=/Core/Signal
+#APIDOC["Draft"]=False
+#--end--
+
 """
 The module only contains functions for filtering data
 """
