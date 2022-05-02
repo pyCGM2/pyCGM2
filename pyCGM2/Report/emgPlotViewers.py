@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Report
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+Module contains `plotViewers` for displaying emg data
+"""
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
@@ -13,16 +21,16 @@ from pyCGM2.Report import plot, plotViewers, plotUtils
 
 
 class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
-    """
+    """plot temporal emg plot
+
+    Args:
+        iAcq (btk.Acquisition): an acquisition
+        pointLabelSuffix (str,Optional[None]): suffix added to emg outputs
+
 
     """
 
     def __init__(self,iAcq,pointLabelSuffix=None):
-
-        """
-            :Parameters:
-                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
-        """
 
 
         super(TemporalEmgPlotViewer, self).__init__(iAcq)
@@ -42,14 +50,34 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         self.m_selectChannels = None
 
     def setEmgManager(self,emgManager):
+        """set the `emgManager` instance
+
+        Args:
+            emgManager (pyCGM2.EMG.EmgManager): `emgManager` instance
+
+        """
+
         self.m_emgmanager = emgManager
         if self.m_selectChannels is None:
             self.m_selectChannels = self.m_emgmanager.getChannels()
 
     def selectEmgChannels(self,channelNames):
+        """set the emg channels
+
+        Args:
+            channelNames (str): channel labels
+
+        """
         self.m_selectChannels = channelNames
 
     def setEmgRectify(self, flag):
+        """Enable/disable rectify mode
+
+        Args:
+            flag (bool): boolean flag
+
+        """
+
         self.rectify = flag
 
     def __setLayer(self):
@@ -71,16 +99,12 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         ax9 = plt.subplot(10,1,10)
 
 
-        # for i in range(0, len(self.emgs)):
-
         i=0
         for channel in self.m_selectChannels:
             label = channel
             context = self.m_emgmanager.m_emgChannelSection[channel]["Context"]
             muscle = self.m_emgmanager.m_emgChannelSection[channel]["Muscle"]
             normalActivity = self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] if self.m_emgmanager.m_emgChannelSection[channel]["NormalActivity"] is not None else ""
-
-            # self.m_normalActivEmgs[i] if self.m_normalActivEmgs[i] is not None else ""
 
             self.fig.axes[i].set_title(label +":"+ muscle+"-"+context+"["+ normalActivity+"]" ,size=6)
             i+=1
@@ -98,11 +122,17 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
 
     def ignoreNormalActivty(self, bool):
+        """Enable/disable normal actividy display
+
+        Args:
+            bool (bool): boolean flag
+
+        """
+
         self.m_ignoreNormalActivity = bool
 
     def __setData(self):
-        #suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
-        # for i in range(0, len(self.emgs)):
+
         i=0
         for channel in self.m_selectChannels:
             label = channel+"_Rectify" if self.rectify  else channel+"_HPF"
@@ -121,30 +151,28 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
 
     def plotPanel(self):
+        """ plot the panel
+        """
 
         self.__setLayer()
         self.__setData()
-
-        # normative dataset not implemented
 
         return self.fig
 
 
 class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
-    """
+    """plot coactivation plot
+
+    Args:
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+        pointLabelSuffix (str,Optional[None]): suffix added to emg outputs
+
 
     """
 
     def __init__(self,iAnalysis,pointLabelSuffix=None):
 
-        """
-            :Parameters:
-                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
-        """
-
-
         super(CoactivationEmgPlotViewer, self).__init__(iAnalysis)
-
 
         self.m_analysis = self.m_input
         if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
@@ -155,14 +183,34 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
         self.m_pointLabelSuffix = pointLabelSuffix
 
     def setEmgs(self,label1,label2):
+        """set the 2 emg labels to plot
+
+        Args:
+            label1 (str): emg channel label
+            label2 (str): emg channel label
+
+        """
         self.m_emg1 = label1+"_Rectify_Env_Norm"
         self.m_emg2 = label2+"_Rectify_Env_Norm"
 
     def setMuscles(self,label1,label2):
+        """set the 2 measured muscle names
+
+        Args:
+            label1 (str): muscle name
+            label2 (str): muscle name
+
+        """
         self.m_muscleLabel1 = label1
         self.m_muscleLabel2 = label2
 
     def setContext(self,context):
+        """set event context
+
+        Args:
+            context (str): event context
+
+        """
         self.m_context = context
 
     def __setLayer(self):
@@ -186,12 +234,16 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
         pass
 
     def setConcretePlotFunction(self, concreteplotFunction):
+        """set a concrete plot function
+
+        Args:
+            concreteplotFunction (pyCGM2.Report.plot): plot function
+
+        """
         self.m_concretePlotFunction = concreteplotFunction
 
 
     def __setData(self):
-        #suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
-
 
         self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.emgStats,
                         self.m_emg1,self.m_context,0,color="red")
@@ -206,9 +258,10 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
             commonEmg[i]=np.minimum(mean1[i],mean2[i])
 
         self.fig.axes[0].fill_between(np.arange(0,101,1), 0, commonEmg,facecolor='grey', alpha=0.7)
-        #self.fig.axes[0].plot(np.arange(0,101,1), commonEmg, color='black')
+
 
     def plotPanel(self):
+        """plot the panel"""
 
         self.__setLayer()
         self.__setData()
@@ -218,17 +271,16 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
         return self.fig
 
 class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
-    """
+    """plot emg envelops
+
+    Args:
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+        pointLabelSuffix (str,Optional[None]): suffix added to emg outputs
+
 
     """
 
     def __init__(self,iAnalysis,pointLabelSuffix=None):
-
-        """
-            :Parameters:
-                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
-        """
-
 
         super(EnvEmgGaitPlotPanelViewer, self).__init__(iAnalysis)
 
@@ -247,15 +299,33 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.m_selectChannels = None
 
     def selectEmgChannels(self,channelNames):
+        """set the emg channels
+
+        Args:
+            channelNames (str): channel labels
+
+        """
         self.m_selectChannels = channelNames
 
     def setEmgManager(self,emgManager):
+        """set the `emgManager` instance
+
+        Args:
+            emgManager (pyCGM2.EMG.EmgManager): `emgManager` instance
+
+        """
         self.m_emgmanager = emgManager
         if self.m_selectChannels is None:
             self.m_selectChannels = self.m_emgmanager.getChannels()
 
 
     def setNormalizedEmgFlag(self,flag):
+        """Enable/Disable amplitude-normalized emg
+
+        Args:
+            flag (bool): boolean flag
+
+        """
         self.m_normalizedEmgFlag = flag
 
 
@@ -305,13 +375,16 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         pass
 
     def setConcretePlotFunction(self, concreteplotFunction):
+        """set a concrete plot function
+
+        Args:
+            concreteplotFunction (pyCGM2.Report.plot): plot function
+
+        """
         self.m_concretePlotFunction = concreteplotFunction
 
 
     def __setData(self):
-        #suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
-
-
 
         i=0
         for channel in self.m_selectChannels:
@@ -331,27 +404,27 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
             i+=1
 
     def plotPanel(self):
+        """plot the panel"""
 
         self.__setLayer()
         self.__setData()
-
-        # normative dataset not implemented
 
         return self.fig
 
 
 
 class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
-    """
+    """plot emg envelops from multiple `analysis` instances
+
+    Args:
+        iAnalyses (list):  `analysis` instances
+        legend(str): label assoaciated to each instance
+        pointLabelSuffix (str,Optional[None]): suffix added to emg outputs
+
 
     """
 
     def __init__(self,iAnalyses,legends,pointLabelSuffix=None):
-
-        """
-            :Parameters:
-                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
-        """
 
 
         super(MultipleAnalysis_EnvEmgPlotPanelViewer, self).__init__(iAnalyses)
@@ -380,14 +453,32 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.m_selectChannels = None
 
     def selectEmgChannels(self,channelNames):
+        """set the emg channels
+
+        Args:
+            channelNames (str): channel labels
+
+        """
         self.m_selectChannels = channelNames
 
     def setEmgManager(self,emgManager):
+        """set the `emgManager` instance
+
+        Args:
+            emgManager (pyCGM2.EMG.EmgManager): `emgManager` instance
+
+        """
         self.m_emgmanager = emgManager
         if self.m_selectChannels is None:
             self.m_selectChannels = self.m_emgmanager.getChannels()
 
     def setNormalizedEmgFlag(self,flag):
+        """Enable/Disable amplitude-normalized emg
+
+        Args:
+            flag (bool): boolean flag
+
+        """
         self.m_normalizedEmgFlag = flag
 
 
@@ -440,6 +531,12 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         pass
 
     def setConcretePlotFunction(self, concreteplotFunction):
+        """set a concrete plot function
+
+        Args:
+            concreteplotFunction (pyCGM2.Report.plot): plot function
+
+        """
         self.m_concretePlotFunction = concreteplotFunction
 
 
@@ -471,6 +568,7 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
 
     def plotPanel(self):
+        """plot the panel"""
 
 
         self.__setLayer()

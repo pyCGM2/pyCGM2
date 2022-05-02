@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Report
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+Module contains low-level plot functions
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -25,20 +33,22 @@ def temporalPlot(figAxis,acq,
                 title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                 customLimits=None):
 
-    '''
+    '''Plot temporal traces from an acquisition
 
-        **Description :** plot descriptive statistical (average and sd corridor) gait traces from a pyCGM2.Processing.analysis.Analysis instance
-
-        :Parameters:
-             - `figAxis` (matplotlib::Axis )
-             - `acq` (ma.Trial) - a Structure item of an Analysis instance built from AnalysisFilter
-
-        :Return:
-            - matplotlib figure
-
-        **Usage**
-
-        .. code:: python
+    Args:
+         figAxis (matplotlib.pyplot.Axis): a matplotlib figure axis
+         acq (btk.Acquisition): an acquisition
+         pointLabel (str): point label
+         axis (int): column index of the point values
+         pointLabelSuffix (type,Optional[None]): suffix added to the point label
+         color (type,Optional[None]): line color
+         linewidth (type,Optional[None]): line width
+         title (type,Optional[None]): plot title
+         xlabel (type,Optional[None]): x-axis label
+         ylabel (type,Optional[None]): y-axis label
+         ylim (list,Optional[None]): y boundaries
+         legendLabel (type,Optional[None]): legend
+         customLimits (list,Optional[None]): horizontal lines
 
     '''
 
@@ -81,22 +91,23 @@ def descriptivePlot(figAxis,analysisStructureItem,
                         title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                         customLimits=None):
 
+    '''Plot descriptive (average and sd corridor) time-normalized traces from an attribute of an `analysis` instance
+
+    Args:
+         figAxis (matplotlib.pyplot.Axis): a matplotlib figure axis
+         analysisStructureItem (pyCGM2.Processing.analysis.Analysis.(attribute)): an attribute of an `analysis` instance
+         pointLabel (str): point label
+         contextPointLabel (str): event context
+         axis (int): column index of the point values
+         color (type,Optional[None]): line color
+         title (type,Optional[None]): plot title
+         xlabel (type,Optional[None]): x-axis label
+         ylabel (type,Optional[None]): y-axis label
+         ylim (list,Optional[None]): y boundaries
+         legendLabel (type,Optional[None]): legend
+         customLimits (list,Optional[None]): horizontal lines
+
     '''
-
-        **Description :** plot descriptive statistical (average and sd corridor) gait traces from a pyCGM2.Processing.analysis.Analysis instance
-
-        :Parameters:
-             - `figAxis` (matplotlib::Axis )
-             - `analysisStructureItem` (pyCGM2.Processing.analysis.Analysis.Structure) - a Structure item of an Analysis instance built from AnalysisFilter
-
-        :Return:
-            - matplotlib figure
-
-        **Usage**
-
-        .. code:: python
-
-   '''
 
 
     # check if [ pointlabel , context ] in keys of analysisStructureItem
@@ -133,22 +144,24 @@ def consistencyPlot(figAxis,analysisStructureItem,
                         title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                         customLimits=None):
 
+    '''Plot all time-normalized traces from an attribute of an `analysis` instance
+
+    Args:
+         figAxis (matplotlib.pyplot.Axis): a matplotlib figure axis
+         analysisStructureItem (pyCGM2.Processing.analysis.Analysis.(attribute)): an attribute of an `analysis` instance
+         pointLabel (str): point label
+         contextPointLabel (str): event context
+         axis (int): column index of the point values
+         color (type,Optional[None]): line color
+         title (type,Optional[None]): plot title
+         xlabel (type,Optional[None]): x-axis label
+         ylabel (type,Optional[None]): y-axis label
+         ylim (list,Optional[None]): y boundaries
+         legendLabel (type,Optional[None]): legend
+         customLimits (list,Optional[None]): horizontal lines
+
     '''
 
-        **Description :** plot descriptive statistical (average and sd corridor) gait traces from a pyCGM2.Processing.analysis.Analysis instance
-
-        :Parameters:
-             - `figAxis` (matplotlib::Axis )
-             - `analysisStructureItem` (pyCGM2.Processing.analysis.Analysis.Structure) - a Structure item of an Analysis instance built from AnalysisFilter
-
-        :Return:
-            - matplotlib figure
-
-        **Usage**
-
-        .. code:: python
-
-    '''
 
     flag = False
     for key in analysisStructureItem.data.keys():
@@ -188,22 +201,24 @@ def meanPlot(figAxis,analysisStructureItem,
                         title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                         customLimits=None):
 
+    '''Plot the  average time-normalized traces from an attribute of an `analysis` instance
+
+    Args:
+         figAxis (matplotlib.pyplot.Axis): a matplotlib figure axis
+         analysisStructureItem (pyCGM2.Processing.analysis.Analysis.(attribute)): an attribute of an `analysis` instance
+         pointLabel (str): point label
+         contextPointLabel (str): event context
+         axis (int): column index of the point values
+         color (type,Optional[None]): line color
+         title (type,Optional[None]): plot title
+         xlabel (type,Optional[None]): x-axis label
+         ylabel (type,Optional[None]): y-axis label
+         ylim (list,Optional[None]): y boundaries
+         legendLabel (type,Optional[None]): legend
+         customLimits (list,Optional[None]): horizontal lines
+
     '''
 
-        **Description :** plot descriptive statistical (average and sd corridor) gait traces from a pyCGM2.Processing.analysis.Analysis instance
-
-        :Parameters:
-             - `figAxis` (matplotlib::Axis )
-             - `analysisStructureItem` (pyCGM2.Processing.analysis.Analysis.Structure) - a Structure item of an Analysis instance built from AnalysisFilter
-
-        :Return:
-            - matplotlib figure
-
-        **Usage**
-
-        .. code:: python
-
-   '''
 
 
     # check if [ pointlabel , context ] in keys of analysisStructureItem
@@ -238,22 +253,24 @@ def gaitDescriptivePlot(figAxis,analysisStructureItem,
                         title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                         customLimits=None):
 
+    '''Plot descriptive (average and sd corridor) gait traces from an attribute of an `analysis` instance
+
+    Args:
+         figAxis (matplotlib.pyplot.Axis): a matplotlib figure axis
+         analysisStructureItem (pyCGM2.Processing.analysis.Analysis.(attribute)): an attribute of an `analysis` instance
+         pointLabel (str): point label
+         contextPointLabel (str): event context
+         axis (int): column index of the point values
+         color (type,Optional[None]): line color
+         title (type,Optional[None]): plot title
+         xlabel (type,Optional[None]): x-axis label
+         ylabel (type,Optional[None]): y-axis label
+         ylim (list,Optional[None]): y boundaries
+         legendLabel (type,Optional[None]): legend
+         customLimits (list,Optional[None]): horizontal lines
+
     '''
 
-        **Description :** plot descriptive statistical (average and sd corridor) gait traces from a pyCGM2.Processing.analysis.Analysis instance
-
-        :Parameters:
-             - `figAxis` (matplotlib::Axis )
-             - `analysisStructureItem` (pyCGM2.Processing.analysis.Analysis.Structure) - a Structure item of an Analysis instance built from AnalysisFilter
-
-        :Return:
-            - matplotlib figure
-
-        **Usage**
-
-        .. code:: python
-
-   '''
 
 
     # check if [ pointlabel , context ] in keys of analysisStructureItem
@@ -296,22 +313,24 @@ def gaitConsistencyPlot(figAxis,analysisStructureItem,
                         title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                         customLimits=None):
 
+    '''Plot all gait traces from an attribute of an `analysis` instance
+
+    Args:
+         figAxis (matplotlib.pyplot.Axis): a matplotlib figure axis
+         analysisStructureItem (pyCGM2.Processing.analysis.Analysis.(attribute)): an attribute of an `analysis` instance
+         pointLabel (str): point label
+         contextPointLabel (str): event context
+         axis (int): column index of the point values
+         color (type,Optional[None]): line color
+         title (type,Optional[None]): plot title
+         xlabel (type,Optional[None]): x-axis label
+         ylabel (type,Optional[None]): y-axis label
+         ylim (list,Optional[None]): y boundaries
+         legendLabel (type,Optional[None]): legend
+         customLimits (list,Optional[None]): horizontal lines
+
     '''
 
-        **Description :** plot descriptive statistical (average and sd corridor) gait traces from a pyCGM2.Processing.analysis.Analysis instance
-
-        :Parameters:
-             - `figAxis` (matplotlib::Axis )
-             - `analysisStructureItem` (pyCGM2.Processing.analysis.Analysis.Structure) - a Structure item of an Analysis instance built from AnalysisFilter
-
-        :Return:
-            - matplotlib figure
-
-        **Usage**
-
-        .. code:: python
-
-    '''
 
     flag = False
     for key in analysisStructureItem.data.keys():
@@ -360,22 +379,24 @@ def gaitMeanPlot(figAxis,analysisStructureItem,
                         title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
                         customLimits=None):
 
+    '''Plot average gait traces from an attribute of an `analysis` instance
+
+    Args:
+         figAxis (matplotlib.pyplot.Axis): a matplotlib figure axis
+         analysisStructureItem (pyCGM2.Processing.analysis.Analysis.(attribute)): an attribute of an `analysis` instance
+         pointLabel (str): point label
+         contextPointLabel (str): event context
+         axis (int): column index of the point values
+         color (type,Optional[None]): line color
+         title (type,Optional[None]): plot title
+         xlabel (type,Optional[None]): x-axis label
+         ylabel (type,Optional[None]): y-axis label
+         ylim (list,Optional[None]): y boundaries
+         legendLabel (type,Optional[None]): legend
+         customLimits (list,Optional[None]): horizontal lines
+
     '''
 
-        **Description :** plot descriptive statistical (average and sd corridor) gait traces from a pyCGM2.Processing.analysis.Analysis instance
-
-        :Parameters:
-             - `figAxis` (matplotlib::Axis )
-             - `analysisStructureItem` (pyCGM2.Processing.analysis.Analysis.Structure) - a Structure item of an Analysis instance built from AnalysisFilter
-
-        :Return:
-            - matplotlib figure
-
-        **Usage**
-
-        .. code:: python
-
-   '''
 
 
     # check if [ pointlabel , context ] in keys of analysisStructureItem
@@ -414,6 +435,18 @@ def stpHorizontalHistogram(figAxis,analysisStructureItem,
                         stpLabel,
                         overall= False,
                         title=None, xlabel=None,xlim=None):
+    '''Plot spatio-temporal parameters as histogram from an attribute of an `analysis` instance
+
+    Args:
+         figAxis (matplotlib.pyplot.Axis): a matplotlib figure axis
+         analysisStructureItem (pyCGM2.Processing.analysis.Analysis.(attribute)): an attribute of an `analysis` instance
+         stpLabel (str): spatio-temporal label
+         title (type,Optional[None]): plot title
+         xlabel (type,Optional[None]): x-axis label
+         xlim (list,Optional[None]): x boundaries
+
+    '''
+
 
     if (stpLabel,"Right") in analysisStructureItem.keys() and (stpLabel,"Left") in analysisStructureItem.keys():
         overallData = np.concatenate([analysisStructureItem[stpLabel,"Left"]["values"],analysisStructureItem[stpLabel,"Right"]["values"]] )
@@ -459,6 +492,15 @@ def stpHorizontalHistogram(figAxis,analysisStructureItem,
 
 
 def addNormalActivationLayer(figAxis,normalActivationLabel,fo):
+    """display normal muscle activation in the background of a time-normalized trace
+
+    Args:
+        figAxis (matplotlib.pyplot.Axis): a matplotlib figure axis
+        normalActivationLabel (str): muscle label
+        fo (int): time-normalized foot off frame
+
+    """
+
     pos,burstDuration=normalActivation.getNormalBurstActivity(normalActivationLabel,fo)
     for j in range(0,len(pos)):
         figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , color='g',alpha=0.1))
@@ -466,6 +508,15 @@ def addNormalActivationLayer(figAxis,normalActivationLabel,fo):
 
 
 def addTemporalNormalActivationLayer(figAxis,acq,normalActivationLabel,context):
+    """display normal muscle activation in the background of a temporal trace
+
+    Args:
+        figAxis (matplotlib.pyplot.Axis): a matplotlib figure axis
+        acq (btk.Acquisition): an acquisition
+        normalActivationLabel (str): muscle label
+        context (str): event context
+    """
+    
     if normalActivationLabel:
         gaitCycles = cycle.construcGaitCycle(acq)
 
