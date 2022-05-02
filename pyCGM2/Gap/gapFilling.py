@@ -85,7 +85,7 @@ class LowDimensionalKalmanFilterProcedure(object):
     	return y
 
 
-    def fill(self,acq):
+    def _fill(self,acq):
         """fill gap
 
         Args:
@@ -169,7 +169,7 @@ class GapFillingFilter(object):
         """
         fill gap according the specified procedure
         """
-        filledAcq,filledMarkers = self.m_procedure.fill(self.m_aqui)
+        filledAcq,filledMarkers = self.m_procedure._fill(self.m_aqui)
 
 
         self.filledMarkers  = filledMarkers
