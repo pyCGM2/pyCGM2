@@ -418,7 +418,7 @@ def createGeneralEvents(NEXUS,subject,acq,labels):
     Args:
         NEXUS (): vicon nexus handle.
         vskName (str): vsk name.
-        labels ([str]): general event labels
+        labels (list): general event labels
         acq (btk.acquisition): a btk.acquisition instance
 
     """
@@ -435,7 +435,7 @@ def createEvents(NEXUS,subject,acq,labels):
     Args:
         NEXUS (): vicon nexus handle.
         vskName (str): vsk name.
-        labels ([str]): general event labels
+        labels (list): general event labels
         acq (btk.acquisition): a btk.acquisition instance
 
     """

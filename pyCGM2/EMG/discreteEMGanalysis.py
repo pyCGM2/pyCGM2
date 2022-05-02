@@ -112,9 +112,9 @@ class AmplitudesProcedure(object):
 
         Args:
             analysis(pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
-            emgLabels([str]): emg labels
-            emgMuscles([str]): muscle matching emg labels
-            emgContexts([str]):  side of each eamg labels
+            emgLabels(list): emg labels
+            emgMuscles(list): muscle matching emg labels
+            emgContexts(list):  side of each eamg labels
 
         """
         ## TODO: rename the method

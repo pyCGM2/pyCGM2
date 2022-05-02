@@ -38,7 +38,7 @@ class MarkerPresenceDetectionProcedure(AbstractInspectorProcedure):
     """Procedure to check marker presence in the acquisition.
 
     Args:
-        markers ([str],Optional[None]):marker labels
+        markers (list,Optional[None]):marker labels
 
     """
     def __init__(self,markers=None):

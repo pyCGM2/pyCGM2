@@ -23,7 +23,7 @@ class BasicEmgProcessingFilter(object):
 
     Args:
         acq (Btk.Acquisition): btk acquisition instance
-        labels ([str]): emg labels.
+        labels (list): emg labels.
     """
 
     def __init__(self,acq, labels):
@@ -68,7 +68,7 @@ class EmgEnvelopProcessingFilter(object):
     Filter for processing emg envelop from low-pass filter
     Args:
         acq (Btk.Acquisition): btk acquisition instance
-        labels ([str]): emg labels.
+        labels (list): emg labels.
     """
 
     def __init__(self,acq, labels):
@@ -132,7 +132,7 @@ class EmgNormalisationProcessingFilter(object):
 
         Args:
             datPath (str): Folder data path
-            c3ds ([str]): the names of c3d
+            c3ds (list): the names of c3d
             fileSuffix (str,optional): suffix added to c3d filenames
         """
 

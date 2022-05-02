@@ -114,7 +114,7 @@ def isGap(acq, markerLabel):
 
     Args:
         acq (btk.acquisition): a btk acquisition instance
-        markerLabel ([str]): marker labels
+        markerLabel (list): marker labels
 
     """
     residualValues = acq.GetPoint(markerLabel).GetResiduals()
@@ -182,7 +182,7 @@ def isPointsExist(acq, labels, ignorePhantom=True):
 
     Args:
         acq (btk.acquisition): a btk acquisition instance
-        label ([str]): marker labels
+        label (list): marker labels
         ignorePhantom (bool,optional) ignore zero markers. Default set to True
 
     """
@@ -242,7 +242,7 @@ def clearPoints(acq, pointlabelList):
 
     Args:
         acq (btk.acquisition): a btk acquisition instance
-        pointlabelList ([str]): point labels
+        pointlabelList (list): point labels
 
     """
 
@@ -322,7 +322,7 @@ def getFrameBoundaries(acq, markerLabels):
 
     Args:
         acq (btkAcquisition): a btk acquisition inctance
-        markerLabels ([str]): marker labels
+        markerLabels (list): marker labels
 
     """
 
