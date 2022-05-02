@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/QTM
+#APIDOC["Path"]=/Core/qtm
+#APIDOC["Draft"]=False
+#--end--
 
 """
 Module contains convenient functions dealing with the session.xml file generated from QTM.
