@@ -1,5 +1,7 @@
-# coding: utf-8
-#APIDOC: /Low level/Tools
+# -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Tools
+#APIDOC["Draft"]=False
+#--end--
 
 """"
 This module contains convenient functions for working with btk

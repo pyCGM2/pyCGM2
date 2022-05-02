@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-#APIDOC: /Low level/Tools
+#APIDOC["Path"]=/Core/Report
+#APIDOC["Draft"]=False
+#--end--
 
 class ordict(dict):
     """ordered dictionnary"""

@@ -1,4 +1,7 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Utils
+#APIDOC["Draft"]=False
+#--end--
 import pickle
 import json
 import os
@@ -15,6 +18,13 @@ LOGGER = pyCGM2.LOGGER
 
 
 def loadModelSettings(DATA_PATH,expertsettings_filename):
+    """Load a pyCGM2 model settings.
+
+    Args:
+        DATA_PATH (str): data folder path
+        expertsettings_filename (str): setting filename
+
+    """
     if os.path.isfile(DATA_PATH+expertsettings_filename):
         settings = openFile(DATA_PATH,expertsettings_filename)
     else:
@@ -23,7 +33,12 @@ def loadModelSettings(DATA_PATH,expertsettings_filename):
     return settings
 
 def openFile(path,filename):
-    """
+    """open a json/yaml file.
+
+    Args:
+        path (str): data folder path
+        filename (str):  filename with Extension
+
 
     """
     if os.path.isfile( (path + filename)):
@@ -47,6 +62,13 @@ def openFile(path,filename):
         return False
 
 def openPickleFile(path,filename):
+    """open a serialized file.
+
+    Args:
+        path (str): data folder path
+        filename (str):  filename with Extension
+    """
+
 
     with open(path+filename, 'rb') as f:
         content = pickle.load(f)
@@ -54,8 +76,14 @@ def openPickleFile(path,filename):
     return content
 
 def savePickleFile(instance,path,filename):
+    """serialized a pyCGM2 instance , then save it.
 
-    #pyCGM2.model
+    Args:
+        instance (object): a object instance
+        path (str): data folder path
+        filename (str):  filename with Extension
+    """
+
     if os.path.isfile((path + filename)):
         LOGGER.logger.info("previous file removed")
         os.remove((path + filename))
@@ -65,6 +93,12 @@ def savePickleFile(instance,path,filename):
 
 
 def readContent(stringContent):
+    """read a json/yaml content
+
+    Args:
+        stringContent (str): json or yaml content
+
+    """
 
     jsonFlag = is_json(stringContent)
     yamlFlag = is_yaml(stringContent)
@@ -84,6 +118,12 @@ def readContent(stringContent):
 
 
 def loadModel(path,FilenameNoExt):
+    """load a pyCGM2 model instance
+
+    Args:
+        path (str): data folder path
+        FilenameNoExt (str):  model filename wthout extension
+    """
     if FilenameNoExt is not None:
         filename = FilenameNoExt + "-pyCGM2.model"
     else:
@@ -99,6 +139,13 @@ def loadModel(path,FilenameNoExt):
         return model
 
 def saveModel(model,path,FilenameNoExt):
+    """save a pyCGM2 model instance
+
+    Args:
+        model pyCGM2.Model.model.Model): a model instance
+        path (str): data folder path
+        FilenameNoExt (str):  model filename wthout extension
+    """
 
     if FilenameNoExt is not None:
         filename = FilenameNoExt + "-pyCGM2.model"
@@ -116,6 +163,13 @@ def saveModel(model,path,FilenameNoExt):
 
 
 def loadAnalysis(path,FilenameNoExt):
+    """load an `analysis` instance
+
+    Args:
+        path (str): data folder path
+        FilenameNoExt (str):  analysis filename without extension
+
+    """
     if FilenameNoExt is not None:
         filename = FilenameNoExt + "-pyCGM2.analysis"
     else:
@@ -131,7 +185,13 @@ def loadAnalysis(path,FilenameNoExt):
         return analysis
 
 def saveAnalysis(analysisInstance,path,FilenameNoExt):
+    """save a pyCGM2 analysis instance
 
+    Args:
+        model pyCGM2.Processing.analysis.Analysis): an analysis instance
+        path (str): data folder path
+        FilenameNoExt (str):  model filename wthout extension
+    """
     if FilenameNoExt is not None:
         filename = FilenameNoExt + "-pyCGM2.analysis"
     else:
@@ -147,23 +207,15 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
     # modelFile.close()
 
 
-
-
-def openJson(path,filename):
-
-    if path is not None: path = path
-    filename = filename
-
-    try:
-        if path is None:
-            jsonStuct= json.loads(open((filename)).read(),object_pairs_hook=OrderedDict)
-        else:
-            jsonStuct= json.loads(open((path+filename)).read(),object_pairs_hook=OrderedDict)
-        return jsonStuct
-    except :
-        raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
-
 def saveJson(path, filename, content,ensure_ascii=False):
+    """save as json file
+
+    Args:
+        path (str): data folder path
+        filename (str):  json filename
+        content (dict): dictionnary to save
+    """
+
     if path is not None: path = path
     filename = filename
     if path is None:
@@ -174,26 +226,14 @@ def saveJson(path, filename, content,ensure_ascii=False):
             json.dump(content, outfile,indent=4,ensure_ascii=ensure_ascii)
 
 
-def prettyDictPrint(parsedContent):
-    print (json.dumps(parsedContent, indent=4, sort_keys=True))
-
-
-
-def openYaml(path,filename):
-    if path is not None: path = path
-    filename = filename
-    try:
-        if path is None:
-            struct = yaml.load(open((filename)).read(),Loader=yamlordereddictloader.Loader)
-        else:
-            struct= yaml.load(open((path+filename)).read(),Loader=yamlordereddictloader.Loader)
-        return struct
-    except :
-        raise Exception ("[pyCGM2] : yaml syntax of file (%s) is incorrect. check it" %(filename))
-
-
-
 def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
+    """get CGM marker translators
+
+    Args:
+        DATA_PATH (str): data folder path
+        translatorType (str,Optional[CGM1.translators]): translator filename
+    """
+
     #  translators management
     if os.path.isfile( (DATA_PATH + translatorType)):
        LOGGER.logger.info("local translator found")
@@ -205,7 +245,13 @@ def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
        return False
 
 def getIKweightSet(DATA_PATH, ikwf):
-    #  translators management
+    """get marker weights for kinematic fitting
+
+    Args:
+        DATA_PATH (str): data folder path
+        ikwf (str): weights filename
+    """
+
     if os.path.isfile( (DATA_PATH + ikwf)):
        LOGGER.logger.info("local ik weightSet file found")
        ikWeight = openFile(DATA_PATH,ikwf)
@@ -214,6 +260,13 @@ def getIKweightSet(DATA_PATH, ikwf):
        return False
 
 def getMpFileContent(DATA_PATH,file,subject):
+    """get anthropometric data
+
+    Args:
+        DATA_PATH (str): data folder path
+        file (str): Filename
+        subject  (str): subject name
+    """
 
     if subject is not None:
         out = subject+"-" + file
@@ -229,6 +282,13 @@ def getMpFileContent(DATA_PATH,file,subject):
     return content,out
 
 def getMp(mpInfo,resetFlag=True):
+    """return required and optional anthropometric parameters
+
+    Args:
+        mpInfo (dict): global mp dictionnary
+        resetFlag (bool,Optional[True]): reset optional parameters
+
+    """
 
     required_mp={
     'Bodymass'   : mpInfo["MP"]["Required"]["Bodymass"],
@@ -282,6 +342,15 @@ def getMp(mpInfo,resetFlag=True):
 
 
 def saveMp(mpInfo,model,DATA_PATH,mpFilename):
+    """Save anthropometric parameters as json
+
+    Args:
+        mpInfo (dict): global anthropometric parameters
+        model (pyCGM2.Model.model.Model): a model instance
+        DATA_PATH (str): data folder path
+        mpFilename (str): filename
+
+    """
 
     # update optional mp and save a new info file
     mpInfo["MP"]["Required"][ "Bodymass"] = model.mp["Bodymass"]
@@ -322,6 +391,15 @@ def saveMp(mpInfo,model,DATA_PATH,mpFilename):
 
 
 def getFiles(path, extension, ignore=None,raiseFlag=False):
+    """get all files in a folder
+
+    Args:
+        path (str): folder path
+        extension (str): file extension
+        ignore (str,Optional[None]): ignored filenames
+        raiseFlag (bool,Optional[False]): raise exception
+
+    """
 
     try:
         out=list()
@@ -341,6 +419,12 @@ def getFiles(path, extension, ignore=None,raiseFlag=False):
 
 
 def getC3dFiles(path, text="", ignore=None ):
+    """get all c3d files in a folder
+
+    Args:
+        path (str): folder path
+        text (str,Optional[""]): included text in the filename
+    """
 
     out=list()
     for file in os.listdir(path):
@@ -354,6 +438,14 @@ def getC3dFiles(path, text="", ignore=None ):
     return out
 
 def copySessionFolder(folderPath, folder2copy, newFolder, selectedFiles=None):
+    """copy a vicon-session folder
+
+    Args:
+        folderPath (str): new session folder path
+        folder2copy (str): session folder path to copy
+        selectedFiles (str,Optional[none]): selected files to copy
+    """
+
 
     if not os.path.isdir((folderPath+"\\"+newFolder)):
         os.makedirs((folderPath+"\\"+newFolder))
@@ -383,6 +475,12 @@ def copySessionFolder(folderPath, folder2copy, newFolder, selectedFiles=None):
                     shutil.copyfile(src, dst)
 
 def createDir(fullPathName):
+    """Create a folder
+
+    Args:
+        fullPathName (str): path
+
+    """
     fullPathName = fullPathName
     pathOut = fullPathName[:-1] if fullPathName[-1:]=="\\" else fullPathName
     if not os.path.isdir((pathOut)):
@@ -392,6 +490,12 @@ def createDir(fullPathName):
     return pathOut+"\\"
 
 def getDirs(folderPath):
+    """get all folders
+
+    Args:
+        folderPath (str): folder path
+
+    """
     folderPath = folderPath
     pathOut = folderPath[:-1] if folderPath[-1:]=="\\" else folderPath
     dirs = [ name for name in os.listdir(pathOut) if os.path.isdir(os.path.join(pathOut, name)) ]
@@ -411,10 +515,22 @@ def is_yaml(s):
     return try_as(yaml.safe_load, s, yaml.scanner.ScannerError)
 
 def copyPaste(src, dst):
+    """file copy/paste
+
+    Args:
+        src (str): source
+        dst (str): destination
+    """
     shutil.copyfile(src,
                     dst)
 
 def copyPasteDirectory(src, dst):
+    """folder copy/paste
+
+    Args:
+        src (str): source
+        dst (str): destination
+    """
     try:
         shutil.copytree(src, dst)
     except FileExistsError:
@@ -422,12 +538,24 @@ def copyPasteDirectory(src, dst):
         shutil.rmtree(dst)
         shutil.copytree(src, dst)
 
-
 def deleteDirectory(dir):
+    """Delete a folder
+
+    Args:
+        dir (str): folder path
+
+    """
     shutil.rmtree(dir)
 
 
 def readXml(DATA_PATH,filename):
+    """Read a xml file
+
+    Args:
+        DATA_PATH (str): folder path
+        filename (str): xlm filename
+
+    """
     with open((DATA_PATH+filename),"rb",) as f:
         content = f.read()
 
@@ -437,9 +565,11 @@ def readXml(DATA_PATH,filename):
 
 
 def getFileCreationDate(file):
-    """
-    str(getFileCreationDate(file).date())
-    str(getFileCreationDate(file))
+    """ return file creation date
+
+    Args:
+        file (str): full filename (path+filename)
+
     """
     stat = os.stat(file)
     try:
@@ -465,13 +595,3 @@ def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
         df_total.to_excel(xlsxWriter,sheet,index=False)
 
     xlsxWriter.save()
-
-# def convertPickleToBinary(path,filename):
-#
-#     f = open(path+filename, 'r')
-#     analysis = cPickle.load(f)
-#     f.close()
-#
-#     f2 = open(path+filename,  "wb")   # 'wb' instead 'w' for binary file
-#     cPickle.dump(analysis, f2, -1)       # -1 specifies highest binary protocol
-#     f2.close()
