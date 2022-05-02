@@ -877,14 +877,14 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
         return self.fig
 
 class TemporalKinematicsPlotViewer(AbstractPlotViewer):
-        """ Plot temporal Kinematics
+    """ Plot temporal Kinematics
 
-        Args:
-            iAcq (btk.Acquisition): an acquisition
-            pointLabelSuffix (str): suffix added model outputs
-            bodyPart (enums.BodyPartPlot,Optional[enums.BodyPartPlot.LowerLimb]): body part
+    Args:
+        iAcq (btk.Acquisition): an acquisition
+        pointLabelSuffix (str): suffix added model outputs
+        bodyPart (enums.BodyPartPlot,Optional[enums.BodyPartPlot.LowerLimb]): body part
 
-        """
+    """
 
     def __init__(self,iAcq,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
 

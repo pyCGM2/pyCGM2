@@ -126,6 +126,8 @@ def main():
                     moduleName = dir[dir.rfind("pyCGM2"):].replace(
                         "\\", ".")+"."+pyFile[:-3]
 
+                    if moduleName == "pyCGM2..enums":  moduleName = "pyCGM2.enums"
+
                     newpath = path+moduleName+"/"
 
                     mod = importlib.import_module(moduleName)
