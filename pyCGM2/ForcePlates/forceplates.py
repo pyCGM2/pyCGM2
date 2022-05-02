@@ -34,17 +34,13 @@ def ForcePlateIntegration(ReactionForce, mass, frameInit=0,frameEnd=None,
     """integration of the reaction force
 
     Args:
-        ReactionForce (array[frames,3]): ground reaction force
-        mass (float): bodymass
-        frameInit (int,Optional): initial frame of the area of interest
-        frameEnd (int,Optional): initial frame of the area of interest. Defaults to None.
-        v0 ([float,float,float],Optional): initial velocity. Defaults to [0,0,0].
-        p0 ([float,float,float],Optional): initial position. Defaults to [0,0,0].
-        analogFrequency (float): analog frequency. Defaults to 1000.
-
-    Returns:
-        array[frames,3],array[frames,3],array[frames,3]: position, velocity and acceleration
-
+        ReactionForce (array[frames,3)]: ground reaction force
+        mass (double): bodymass
+        frameInit (int,Optional[0]): initial frame of the area of interest
+        frameEnd (int,Optional[None]): initial frame of the area of interest.
+        v0 (list,Optional[0,0,0]): initial velocity.
+        p0 (list,Optional[0,0,0]): initial position.
+        analogFrequency (double,optional[1000]): analog frequency.
 
     """
 
@@ -133,18 +129,14 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
 
     Args:
         btkAcq (Btk.Acquisition) - Btk acquisition instance
-        enableRefine (bool,Optional): enable refinement from vertical force of the foot assigned from marker position. Defaults to True.
-        forceThreshold (float,Optional): vertical force threshold. Defaults to 50.
-        left_markerLabelToe (type,Optional): marker label of the left toe. Defaults to "LTOE".
-        left_markerLabelHeel (type,Optional): marker label of the left heel. Defaults to "LHEE".
-        right_markerLabelToe (type,Optional): marker label of the right toe. Defaults to "RTOE".
-        right_markerLabelHeel (type,Optional): marker label of the right heel. Defaults to "RHEE".
-        display (bool,Optional): display n figures (where n is the force plate number) presenting relative distance between mid foot and the orgin of the force plate.
-        Defaults to False.
-        mfpa (str,Optional): force plate manually assigned from Vicon Eclipse.
-
-    Returns:
-        str: letters indicating foot assigned to a force plate
+        enableRefine (bool,Optional): enable refinement from vertical force of the foot assigned from marker position.
+        forceThreshold (double,Optional[50]): vertical force threshold.
+        left_markerLabelToe (type,Optional[LTOE]): marker label of the left toe.
+        left_markerLabelHeel (type,Optional[LHEE]): marker label of the left heel.
+        right_markerLabelToe (type,Optional[RTOE]): marker label of the right toe.
+        right_markerLabelHeel (type,Optional[RHEE]): marker label of the right heel.
+        display (bool,Optional[false]): display n figures (where n is the force plate number) presenting relative distance between mid foot and the orgin of the force plate.
+        mfpa (str,Optional[None]): force plate manually assigned from Vicon Eclipse.
 
     """
 

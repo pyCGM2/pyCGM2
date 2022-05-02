@@ -3,7 +3,7 @@
 #APIDOC["Draft"]=False
 #--end--
 """ this module gathers classes/ functions for calibrating a model,
-ie locating  joint centres and axis   
+ie locating  joint centres and axis
 
 """
 
@@ -28,8 +28,8 @@ def footJointCentreFromMet(acq,side,frameInit,frameEnd,markerDiameter =14, offse
         side (str): body sideEnum
         frameInit (int): start frame
         frameEnd (int): end frame
-        markerDiameter (double,Optional): marker diameter. Defaults to 14.
-        offset (double,Optional): marker offset. Defaults to 0.
+        markerDiameter (double,Optional[14]): marker diameter.
+        offset (double,Optional[0]): marker offset.
 
     """
 
@@ -75,7 +75,7 @@ def VCMJointCentre(HalfJoint, JointMarker, TopJoint, StickMarker, beta = 0 ):
         JointMarker (array(1,3)): joint marker trajectory at a specific frame
         TopJoint (type): proximal joint centre trajectory at a specific frame
         StickMarker (type): lateral marker trajectory at a specific frame
-        beta (double,Optional): rotation angle offset. Defaults to 0.
+        beta (double,Optional[0]): rotation angle offset.
 
     **Reference**
 
@@ -315,7 +315,7 @@ def midPoint(acq,lateralMarkerLabel,medialMarkerLabel,offset=0):
         acq (btk.Acquisition): An acquisition
         lateralMarkerLabel (str): label of the lateral marker
         medialMarkerLabel (str):  label of the medial marker
-        offset (double,Optional): offset. Defaults to 0.
+        offset (double,Optional[0]): offset
 
     **Note**
 
@@ -348,9 +348,9 @@ def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,j
         indexFirstFrame (int): start frame
         indexLastFrame (int): end frame
         jointRange (list): minimum and maximum joint angle to process
-        sequence (str,Optional): Euler sequence. Defaults to "YXZ".
-        index (int,Optional): coronal plane index. Default to 1
-        flexInd (int,Optional): sagital plane index. Default to 0.
+        sequence (str,Optional[YXZ]): Euler sequence
+        index (int,Optional[1]): coronal plane index
+        flexInd (int,Optional[0]): sagital plane index
 
     """
 
@@ -441,8 +441,8 @@ def saraCalibration(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame, 
     Args:
         proxMotionRef (pyCGM2.Model.Referential.motion): motion attribute of the proximal referential
         distMotionRef (pyCGM2.Model.Referential.motion): motion attribute of the distal referential
-        offset (double,Optional) - distance in mm for positionning  axis boundaries
-        method (int,Optional) - method index . Affect the objective function (see Ehrig et al.).
+        offset (double,Optional[100]): distance in mm for positionning  axis boundaries
+        method (int,Optional[1]): method index . Affect the objective function (see Ehrig et al.).
 
 
 

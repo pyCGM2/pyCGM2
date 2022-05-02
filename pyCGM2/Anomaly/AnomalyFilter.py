@@ -23,7 +23,7 @@ class AnomalyDetectionFilter(object):
         procedure(pyCGM2.Anomaly.AnomalyDetectionProcedure): anomaly detector procedure instance
 
     Kwargs:
-        frameRange (list,Optional): frame boundaries
+        frameRange (list): frame boundaries
     """
 
     def __init__(self, acq, filename, procedure, **kwargs):

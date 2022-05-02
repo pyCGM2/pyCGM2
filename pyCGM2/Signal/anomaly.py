@@ -18,13 +18,13 @@ def anomaly_rolling(values, aprioriError=0, window=10, threshold=3, method="medi
 
     Args:
         values (np.array): values
-        aprioriError (int): a priori error. Defaults to 0.
-        window (int): size of the window. Defaults to 10.
-        threshold (int):  standard deviation factor . Defaults to 3.
-        method (str,Optional): descriptive statistic method. Defaults to "median".
-        plot (bool,Optional): enable plot. Defaults to False.
-        label (str,Optional): Description of parameter `label`. Defaults to "Unknow".
-        referenceValues (np.array,Optional): values used as reference instead of the values computing from the rolling windows. Defaults to None.
+        aprioriError (int,Optional[0]): a priori error.
+        window (int,Optional[10]): size of the window.
+        threshold (int,Optional[3]):  standard deviation factor
+        method (str,Optional[median]): descriptive statistic method
+        plot (bool,Optional[False]): enable plot
+        label (str,Optional[Unknown]): Description of parameter `label`
+        referenceValues (np.array,Optional[None]): values used as reference instead of the values computing from the rolling windows
 
     """
 

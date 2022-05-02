@@ -154,8 +154,8 @@ def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelop
     Args:
         acq (btk.Acquisition): an acquisition instance
         emgChannels (list): emg channels ( ie analog labels )
-        highPassFrequencies (list): high pass frequencies. Defaults to [20,200].
-        envelopFrequency (float): low pass filter frequency. Defaults to 6.0.
+        highPassFrequencies (list,Optional[20,200]): high pass frequencies 
+        envelopFrequency (float,Optional[6.0]): low pass filter frequency
 
     Examples:
 

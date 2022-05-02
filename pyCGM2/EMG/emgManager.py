@@ -16,12 +16,12 @@ class EmgManager(object):
 
     Args:
         DATA_PATH (str): data folder path
-        emgSettings (str,Optional): content of the emg.settings file
+        emgSettings (str,Optional[None]): content of the emg.settings file
 
     """
 
     def __init__(self, DATA_PATH, emgSettings=None):
-        
+
 
         if emgSettings is None:
             if os.path.isfile(DATA_PATH + "emg.settings"):

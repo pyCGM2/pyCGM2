@@ -44,7 +44,7 @@ class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
 
     Args:
         markers (list): marker labels;
-        plot (bool,Optional): enable plot
+        plot (bool,Optional[False]): enable plot
 
     Kwargs:
         aprioriError (double): a priori error on the marker trajectory

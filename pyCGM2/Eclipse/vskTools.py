@@ -90,7 +90,7 @@ def getFromVskSubjectMp(vskInstance, resetFlag=False):
 
     Args:
         vskInstance (pyCGM2.Eclipse.Vsk): vsk instance
-        resetFlag (bool)[False]: zero optional parameters
+        resetFlag (bool,Optional[False]): zero optional parameters
 
     Returns
         [dict,dict] : list of 2 dictionnaries containing  *required* and *optional* anthropometric data of the CGM

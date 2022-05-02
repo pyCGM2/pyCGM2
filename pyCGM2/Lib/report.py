@@ -15,10 +15,10 @@ def pdfGaitReport(DATA_PATH,modelledTrials, normativeDataset,pointSuffix, title 
 
     Args:
         DATA_PATH (str): data folder path
-        modelledTrials (type): Description of parameter `modelledTrials`.
-        normativeDataset (type): Description of parameter `normativeDataset`.
-        pointSuffix (type): Description of parameter `pointSuffix`.
-        title (type): Description of parameter `title`. Defaults to "gait report".
+        modelledTrials (list): modelled trial names
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): a `normativeDataset` instance
+        pointSuffix (str): suffix added to model outputs
+        title (str,Optional[gait report]): title
 
     """
 

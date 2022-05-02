@@ -59,7 +59,7 @@ def getCurrentMarkedNodes(fileType="c3d"):
     the argument `fileType` is set by default to c3d to return marked c3d files
 
     Args:
-        fileType (str): file extension
+        fileType (str,Optional[c3d]): file extension
 
     """
     currentMarkedNodesFile = os.getenv(
@@ -311,7 +311,7 @@ class TrialEnfReader(EnfReader):
     """
 
     def __init__(self, path, enfFile):
-        
+
         super(TrialEnfReader, self).__init__(path, enfFile)
         self.m_trialInfos = super(
             TrialEnfReader, self).getSection("TRIAL_INFO")
@@ -359,105 +359,6 @@ class TrialEnfReader(EnfReader):
         return self.m_file.split(".")[0]+".c3d"
         # return self.m_file.replace(".Trial.enf",".c3d")
 
-    def setForcePlates(self, mappedForcePlateCharacters):
-        """set the force plate parameters
-
-        Args:
-            mappedForcePlateCharacters (str): letters caracterizing foot contact on a force plate
-            ( ex : XLR : foot contact not assign to FP1, left foot assign to FP2, right foot assigned to FP3)
-        """
-
-        index = 1
-        for character in mappedForcePlateCharacters:
-            if character == "L":
-                self.set("FP"+str(index), "Left")
-            elif character == "R":
-                self.set("FP"+str(index), "Right")
-            elif character == "X":
-                self.set("FP"+str(index), "Invalid")
-            elif character == "A":
-                self.set("FP"+str(index), "Auto")
-            else:
-                LOGGER.logger.error(
-                    "character of your mapped force plate characters not known (L,R,X,A only) ")
-                raise Exception()
-
-            index += 1
-
-    def isSelected(self):
-        """check if the trial enf parameter *Selected* is checked  """
-        flag = False
-        if "Selected" in self.m_trialInfos.keys():
-            if self.m_trialInfos["Selected"] == "Selected":
-                flag = True
-        return flag
-
-    def isCalibrationTrial(self):
-        """check if the enf file is a *Static* trial type  """
-        flag = False
-        if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Static":
-            flag = True
-        return flag
-
-    def isKneeCalibrationTrial(self):
-        """check if the enf file is a *Knee calibration* trial Type  """
-        flag = False
-        if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Knee Calibration":
-            flag = True
-        return flag
-
     def isC3dExist(self):
         """check if c3d matches  the enf  """
         return os.path.isfile(self.m_path + self.m_file.replace(".Trial.enf", ".c3d"))
-
-    def isMotionTrial(self):
-        """check if the enf file is a *Motion* trial type  """
-        flag = False
-        if "TrialType" in self.m_trialInfos.keys() and self.m_trialInfos["TrialType"] == "Motion":
-            flag = True
-        return flag
-
-    def getForcePlateAssigment(self):
-        """return the force plate foot contact assignement letters """
-
-        c3dFilename = self.m_file.replace(".Trial.enf", ".c3d")
-        acq = btkTools.smartReader((self.m_path + c3dFilename))
-        nfp = btkTools.getNumberOfForcePlate(acq)
-
-        mfpa = ""
-        for i in range(1, nfp+1):
-            try:
-                if self.m_trialInfos["FP"+str(i)] == "Left":
-                    mfpa = mfpa + "L"
-                if self.m_trialInfos["FP"+str(i)] == "Right":
-                    mfpa = mfpa + "R"
-                if self.m_trialInfos["FP"+str(i)] == "Invalid":
-                    mfpa = mfpa + "X"
-                if self.m_trialInfos["FP"+str(i)] == "Auto":
-                    mfpa = mfpa + "A"
-            except KeyError:
-                LOGGER.logger.info(
-                    "[pyCGM2] force plate [%i] not assigned manually. set to Auto " % (i))
-                mfpa = mfpa + "A"
-
-        return mfpa
-
-    def getMarkerDiameter(self):
-        """return marker diameter"""
-        if "MarkerDiameter" in self.m_trialInfos.keys():
-            return float(self.m_trialInfos["MarkerDiameter"]) if self.m_trialInfos["MarkerDiameter"] is not None else 14.0
-
-    def getFlatFootOptions(self):
-        """ return flat foot options"""
-        if "LeftFlatFoot" in self.m_trialInfos.keys():
-            leftFlatFoot = self.m_trialInfos["LeftFlatFoot"]
-
-        if "RightFlatFoot" in self.m_trialInfos.keys():
-            RightFlatFoot = self.m_trialInfos["LeftFlatFoot"]
-
-            return leftFlatFoot, RightFlatFoot
-
-    def isMarked(self):
-        """ check if the enf is marked"""
-        markedFiles = getCurrentMarkedEnfs()
-        return True if self.m_file in markedFiles else False

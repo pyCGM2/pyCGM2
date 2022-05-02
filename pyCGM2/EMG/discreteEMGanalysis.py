@@ -28,16 +28,16 @@ class DiscreteEMGFilter(object):
     Args:
         discreteEMGProcedure (pyCGM2.EMG.discreteEMGanalysis.procedure): a discrete emg procedure instance.
         analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
-        emgLabels ([str]): emg labels
-        emgMuscles ([str]): muscle matching emg labels
-        emgContexts ([str]):  side of each emg labels
-        subjInfo (dict,Optional): dictionnary decribing the subject. Items will be added to the generated pandas dataframe
-        condExpInfo (dict,Optional): dictionnary decribing the experiment conditions. Items will be added to the generated pandas dataframe
+        emgLabels (list): emg labels
+        emgMuscles (list): muscle matching emg labels
+        emgContexts (list):  side of each emg labels
+        subjInfo (dict,Optional[None]): dictionnary decribing the subject. Items will be added to the generated pandas dataframe
+        condExpInfo (dict,Optional[None]): dictionnary decribing the experiment conditions. Items will be added to the generated pandas dataframe
 
     """
 
     def __init__(self, discreteEMGProcedure, analysis, emgLabels, emgMuscles, emgContexts, subjInfo=None, condExpInfo=None):
-        
+
         self.m_procedure = discreteEMGProcedure
         self.m_analysis = analysis
         self.dataframe = None

@@ -15,7 +15,7 @@ def splineFittingDerivation(values,sampleFrequency,order=1):
     Args
         values (array[m,n]): array of values
         sampleFrequency (double): sample frequency
-        order (int,Optional): order of derivation,Defaults to 1.
+        order (int,Optional[1]): order of derivation
 
     Return
         array(m,n) - derivative values
@@ -50,7 +50,7 @@ def splineDerivation(values,sampleFrequency,order=1):
     Args
         values (array[m,n]): array of values
         sampleFrequency (double): sample frequency
-        order (int,Optional): order of derivation,Defaults to 1.
+        order (int,Optional[1]): order of derivation
 
     Return
         array(m,n) - derivative values
