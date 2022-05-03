@@ -91,11 +91,7 @@ def markerFiltering(btkAcq, markers, order=2, fc=6, zerosFiltering=True):
     def filterZeros(array, b, a):
 
         N = len(array)
-<<<<<<< HEAD
-        indexes = list(range(0,N))
-=======
         indexes = list(range(0, N))
->>>>>>> development
 
         for i in range(0, N):
             if array[i] == 0:
@@ -116,12 +112,7 @@ def markerFiltering(btkAcq, markers, order=2, fc=6, zerosFiltering=True):
                 b, a, data, padlen=padlen, axis=0))
 
         indexes = np.concatenate(splitIndexes) if splitIndexes != [] else []
-<<<<<<< HEAD
         values = np.concatenate(filtValues_section) if filtValues_section != [] else []
-=======
-        values = np.concatenate(
-            filtValues_section) if filtValues_section != [] else []
->>>>>>> development
 
         out = np.zeros((N))
         j = 0
