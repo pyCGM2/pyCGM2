@@ -5,9 +5,11 @@ build:
   tools:
     python: "3.7"
 
-sphinx:
-  configuration: docs/source/conf.py
 
 python:
   install:
-    - requirements: docs/requirements.txt
+    - requirements: "docs/requirements.txt"
+
+sphinx:
+  configuration: docs/source/conf.py
+  builder: "html"
