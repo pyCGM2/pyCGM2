@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Model/CGM2
+#APIDOC["Draft"]=False
+#--end--
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy
@@ -12,7 +16,7 @@ except:
 from pyCGM2.Model.CGM2 import cgm
 
 from pyCGM2 import enums
-from  pyCGM2.Model import frame, motion, modelDecorator
+from pyCGM2.Model import frame, motion, modelDecorator
 from pyCGM2.Math import euler
 from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusTools
@@ -20,26 +24,22 @@ from pyCGM2.Nexus import nexusTools
 
 class CGM2_1(cgm.CGM1):
     """
-
+    Implementation of the CGM2.1
     """
-
-    #nativeCgm1 = True
-
     def __init__(self):
+
         super(CGM2_1, self).__init__()
         self.decoratedModel = False
 
         self.version = "CGM2.1"
 
     def __repr__(self):
-        return "LowerLimb CGM2.1"
+        return "CGM2.1"
 
 class CGM2_2(cgm.CGM1):
     """
-
+    Implementation of the CGM2.2
     """
-
-
     def __init__(self):
         super(CGM2_2, self).__init__()
         self.decoratedModel = False
@@ -49,18 +49,25 @@ class CGM2_2(cgm.CGM1):
         self.m_staticIkTargets = None
 
     def __repr__(self):
-        return "LowerLimb CGM2.2"
+        return "CGM2.2"
 
     def setStaticIkTargets(self,targetNames):
+        """set markers used to fit the static with IK
+
+        Args:
+            targetNames (list): marker labels
+
+        """
         self.m_staticIkTargets = targetNames
 
     def getStaticIkTargets(self):
+        """ return markers used to fit the static"""
         return self.m_staticIkTargets
 
 
 class CGM2_3(cgm.CGM1):
     """
-        implementation of the cgm2.3 skin marker added
+    Implementation of the CGM2.3
     """
 
     LOWERLIMB_TRACKING_MARKERS= ["LASI", "RASI","RPSI", "LPSI",
@@ -72,12 +79,7 @@ class CGM2_3(cgm.CGM1):
                "RHEE","RTOE"]
 
     def __init__(self):
-        """Constructor
 
-           - Run configuration internally
-           - Initialize deviation data
-
-        """
         super(CGM2_3, self).__init__()
 
 
@@ -89,13 +91,20 @@ class CGM2_3(cgm.CGM1):
 
 
     def __repr__(self):
-        return "LowerLimb CGM2.3"
+        return "CGM2.3"
 
 
     def setStaticIkTargets(self,targetNames):
+        """set markers used to fit the static with IK
+
+        Args:
+            targetNames (list): marker labels
+
+        """
         self.m_staticIkTargets = targetNames
 
     def getStaticIkTargets(self):
+        """ return markers used to fit the static"""
         return self.m_staticIkTargets
 
     def _lowerLimbTrackingMarkers(self):
@@ -249,7 +258,16 @@ class CGM2_3(cgm.CGM1):
         self.setCoordinateSystemDefinition( "Left Foot", "LFOOT", "Anatomic")
         self.setCoordinateSystemDefinition( "Right Foot", "RFOOT", "Anatomic")
 
-    def calibrate(self,aquiStatic, dictRef, dictAnatomic,  options=None): #
+    def calibrate(self,aquiStatic, dictRef, dictAnatomic,  options=None):
+        """calibrate the model
+
+        Args:
+            aquiStatic (btk.acquisition): acquisition
+            dictRef (dict): markers and sequence used for building the technical coordinate system
+            dictAnatomic (dict): markers and sequence used for building the anatomical coordinate system
+            options (dict, optional[None]): passed arguments to embedded methods
+
+        """
 
         super(CGM2_3, self).calibrate(aquiStatic, dictRef, dictAnatomic,  options=options)
 
@@ -289,7 +307,9 @@ class CGM2_3(cgm.CGM1):
         return out
 
 class CGM2_4(CGM2_3):
-
+    """
+    Implementation of the CGM2.4
+    """
     ANALYSIS_KINEMATIC_LABELS_DICT ={ 'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles","LForeFoot"],
                        'Right': ["RHipAngles","RKneeAngles","RAnkleAngles","RFootProgressAngles","RPelvisAngles","LForeFoot"]}
 
@@ -311,12 +331,7 @@ class CGM2_4(CGM2_3):
 
 
     def __init__(self):
-        """Constructor
 
-           - Run configuration internally
-           - Initialize deviation data
-
-        """
         super(CGM2_4, self).__init__()
 
         self.decoratedModel = False
@@ -326,7 +341,7 @@ class CGM2_4(CGM2_3):
         #self.__configure()
 
     def __repr__(self):
-        return "LowerLimb CGM2.4"
+        return "CGM2.4"
 
     def _lowerLimbTrackingMarkers(self):
         return CGM2_4.LOWERLIMB_TRACKING_MARKERS
@@ -367,7 +382,6 @@ class CGM2_4(CGM2_3):
 
         self.setClinicalDescriptor("LForeFoot",enums.DataType.Angle, [0,2,1],[-1.0,-1.0,-1.0], [0.0,0.0,0.0]) # TODO check
         self.setClinicalDescriptor("RForeFoot",enums.DataType.Angle, [0,2,1],[-1.0,+1.0,+1.0], [ 0.0,0.0,0.0])
-
 
         self.setClinicalDescriptor("LPelvis",enums.DataType.Angle,[0,1,2],[1.0,1.0,-1.0], [0.0,0.0,0.0])
         self.setClinicalDescriptor("RPelvis",enums.DataType.Angle,[0,1,2],[1.0,-1.0,+1.0], [0.0,0.0,0.0])
@@ -502,21 +516,15 @@ class CGM2_4(CGM2_3):
 
 
     def calibrate(self,aquiStatic, dictRef, dictAnatomic,  options=None):
-        """
-            Perform full CGM1 calibration.
+        """calibrate the model
 
-            :Parameters:
-               - `aquiStatic` (btkAcquisition) - btkAcquisition instance from a static c3d
-               - `dictRef` (dict) - dictionnary reporting markers and sequence use for building **Technical** coordinate system
-               - `dictAnatomic` (dict) - dictionnary reporting markers and sequence use for building **Anatomical**  coordinate system
-               - `options` (dict) - use to pass options, like options altering the standard segment construction.
-
-            .. note:: This method constructs technical and anatomical frane sucessively.
-
-            .. warning : Foot Calibration need attention. Indeed, its technical coordinate system builder requires the anatomical coordinate system of the shank
+        Args:
+            aquiStatic (btk.acquisition): acquisition
+            dictRef (dict): markers and sequence used for building the technical coordinate system
+            dictAnatomic (dict): markers and sequence used for building the anatomical coordinate system
+            options (dict, optional[None]): passed arguments to embedded methods
 
         """
-        #TODO : to input Frane init and Frame end manually
 
         LOGGER.logger.debug("=====================================================")
         LOGGER.logger.debug("===================CGM CALIBRATION===================")
@@ -827,9 +835,6 @@ class CGM2_4(CGM2_3):
 
 
     def _leftHindFoot_anatomicalCalibrate(self,aquiStatic, dictAnatomic,frameInit,frameEnd, options = None):
-        """
-        idem foot of cgm1
-        """
 
         if "markerDiameter" in options.keys():
             LOGGER.logger.debug(" option (markerDiameter) found ")
@@ -1226,6 +1231,12 @@ class CGM2_4(CGM2_3):
 
     #---- Offsets -------
     def getHindFootOffset(self, side = "Both"):
+        """
+        return the hindfoot offsets, ie the plantar flexion offset and the rotation offset
+
+        Args:
+            side (string, Optional[Both]): lower limb side (Both, Left or Right)
+        """
 
 
         if side == "Both" or side == "Left" :
@@ -1254,9 +1265,19 @@ class CGM2_4(CGM2_3):
 
     #---- Motion -------
     def computeOptimizedSegmentMotion(self,aqui,segments, dictRef,dictAnat,motionMethod,options):
-        """
+        """Compute poses of both **Technical and Anatomical** coordinate systems
+        for specific segments of the model
+
+        Args:
+            aqui (btk.Acquisition): motion acquisitiuon
+            segments (list): segments of the model
+            dictRef (dict): technical referential definitions
+            dictAnat (dict): anatomical referential definitions
+            motionMethod (enums.motionMethod): segmental motion method to apply
+            options (dict): passed known-arguments
 
         """
+
         # ---remove all  direction marker from tracking markers.
         if self.staExpert:
             for seg in self.m_segmentCollection:
@@ -1309,16 +1330,18 @@ class CGM2_4(CGM2_3):
 
     def computeMotion(self,aqui, dictRef,dictAnat, motionMethod,options=None ):
         """
-        Compute Motion of both **Technical and Anatomical** coordinate systems
+        Compute poses of both **Technical and Anatomical** coordinate systems
 
-        :Parameters:
+        Args:
+            aqui (btk.acquisition): acquisition
+            dictRef (dict): technical referential definitions
+            dictAnat (dict): anatomical referential definitions
+            motionMethod (enums.motionMethod): segmental motion method
+            options (dict,optional[None]): passed arguments to embedded functions
 
-           - `aqui` (btkAcquisition) - acquisition instance of a dynamic trial
-           - `dictRef` (dict) - dictionnary reporting markers and sequence use for building Technical coordinate system
-           - `dictAnat` (dict) - dictionnary reporting markers and sequence use for building Anatomical coordinate system
-           - `motionMethod` (pyCGM2.enums) - method use to compute segment pose
-           - `options` (dict) - dictionnary use to pass options
-
+        options:
+            * pigStatic (bool) : compute foot cordinate system according the Vicon Plugin-gait
+            * forceFoot6DoF (bool): apply 6DOF pose optimisation on the foot
         """
 
         pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
@@ -1469,13 +1492,7 @@ class CGM2_4(CGM2_3):
 
     # ----- native motion ------
     def _left_hindFoot_motion(self,aqui, dictRef,dictAnat,options=None):
-        """
-        :Parameters:
 
-           - `aqui` (btkAcquisition) - acquisition
-           - `dictRef` (dict) - instance of Model
-           - `frameInit` (int) - starting frame
-        """
         seg=self.getSegment("Left Foot")
 
         validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
@@ -1499,8 +1516,6 @@ class CGM2_4(CGM2_3):
                 v=(pt3-pt1)
             else:
                 v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY
-
-
 
             ptOrigin=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[i,:]
 
@@ -1540,13 +1555,6 @@ class CGM2_4(CGM2_3):
 
 
     def _left_foreFoot_motion(self,aqui, dictRef,dictAnat,options=None):
-        """
-        :Parameters:
-
-           - `aqui` (btkAcquisition) - acquisition
-           - `dictRef` (dict) - instance of Model
-           - `frameInit` (int) - starting frame
-        """
 
         btkTools.smartAppendPoint(aqui,"LFJC",self.getSegment("Left Foot").getReferential("TF").getNodeTrajectory("LFJC"),desc="from hindFoot" )
 
@@ -1607,13 +1615,7 @@ class CGM2_4(CGM2_3):
 
 
     def _right_hindFoot_motion(self,aqui, dictRef,dictAnat,options=None):
-        """
-        :Parameters:
 
-           - `aqui` (btkAcquisition) - acquisition
-           - `dictRef` (dict) - instance of Model
-           - `frameInit` (int) - starting frame
-        """
         seg=self.getSegment("Right Foot")
 
         validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
@@ -1678,13 +1680,7 @@ class CGM2_4(CGM2_3):
 
 
     def _right_foreFoot_motion(self,aqui, dictRef,dictAnat,options=None):
-        """
-        :Parameters:
 
-           - `aqui` (btkAcquisition) - acquisition
-           - `dictRef` (dict) - instance of Model
-           - `frameInit` (int) - starting frame
-        """
 
         btkTools.smartAppendPoint(aqui,"RFJC",self.getSegment("Right Foot").getReferential("TF").getNodeTrajectory("RFJC"),desc="from hindFoot" )
 
@@ -1986,12 +1982,10 @@ class CGM2_4(CGM2_3):
 
     # --- opensim --------
     def opensimGeometry(self):
-        """
-        TODO require : joint name from opensim -> find alternative
 
-        rather a class method than a method instance
         """
-
+        return dict used to configure the osim file
+        """
 
         out={}
         out["hip_r"]= {"joint label":"RHJC", "proximal segment label":"Pelvis", "distal segment label":"Right Thigh" }
@@ -2008,6 +2002,7 @@ class CGM2_4(CGM2_3):
         return out
 
     def opensimIkTask(self):
+        """ return marker weights used for IK"""
         out={}
 
         out={"LASI":100,
@@ -2055,22 +2050,9 @@ class CGM2_4(CGM2_3):
 
     def viconExport(self,NEXUS,acq,vskName,pointSuffix,staticProcessingFlag):
         """
-            method exporting model outputs to Nexus UI
+        Method exporting model outputs to Nexus
 
-            This method exports :
-
-                - joint centres as modelled-marker
-                - angles
-                - moment
-                - force
-                - power
-                - bones
-
-
-            :Parameters:
-                - `NEXUS` () - Nexus environment
-                - `vskName` (str) - name of the subject created in Nexus
-                - `staticProcessingFlag` (bool`) : flag indicating only static model ouput will be export
+        see [cgm.CGM1.viconExport](/Low level/Model/CGM2)
 
         """
 
@@ -2082,9 +2064,14 @@ class CGM2_4(CGM2_3):
             if self.checkCalibrationProperty("RightKAD",True):
                 nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,"RKNE", acq)
 
+        # export measured markers ( for CGM2.2 and 2.3)
+        for it in btk.Iterate(acq.GetPoints()):
+            if "_m" in it.GetLabel():
+                nexusTools.appendModelledMarkerFromAcq(NEXUS, vskName, it.GetLabel(), acq)
+
+
         # export JC
         jointcentres = ["LHJC","RHJC","LKJC","RKJC","LAJC","RAJC","LSJC","RSJC","LEJC","REJC","LHO","RHO"]
-
 
         for jointCentre in jointcentres:
             if btkTools.isPointExist(acq, jointCentre):
@@ -2211,14 +2198,14 @@ class CGM2_4(CGM2_3):
 
 
 class CGM2_5(CGM2_4):
-    """
-
-    """
 
     def __init__(self):
+        """
+        Implementation of the CGM2.5
+        """
         super(CGM2_5, self).__init__()
         self.decoratedModel = False
         self.version = "CGM2.5"
 
     def __repr__(self):
-        return "LowerLimb CGM2.5"
+        return "CGM2.5"

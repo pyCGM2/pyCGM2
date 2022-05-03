@@ -1,11 +1,29 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Utils
+#APIDOC["Draft"]=False
+#--end--
+
 import pyCGM2
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 def toBool(text):
+    """convert text to bool
+
+    Args:
+        text (str): text
+
+    """
     return True if text == "True" else False
 
 def isInRange(val, min, max):
+    """check if value is in range
+
+    Args:
+        val (double): value
+        min (double): minimim value
+        max (double): maximum value
+
+    """
 
     if val<min or val>max:
         return False

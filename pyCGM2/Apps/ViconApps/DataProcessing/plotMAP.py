@@ -1,22 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **plotMAP**
-
-The script displays Gait-Normalized kinematics
-
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-:param -nd, --normativeData [string]: Normative data set ( choice: Schwartz2008 [DEFAULT] or Pinzone2014)
-:param -ndm, --normativeDataModality [string]: modalities associated with the selected normative dataset. (choices: if  Schwartz2008: VerySlow,Slow,Free[DEFAULT],Fast,VeryFast.  if Pinzone2014 : CentreOne,CentreTwo)
-
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -normativeData=Schwartz2008 --normativeDataModality=VeryFast
-    (your gait panel will display as normative data, results from the modality VeryFast of the nomative dataset collected by Schwartz2008)
-
-"""
-
-
+#APIDOC["Path"]=/Executable Apps/Vicon/Plot
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt
@@ -40,6 +26,22 @@ from pyCGM2.Nexus import  nexusTools,nexusFilters
 from pyCGM2.Eclipse import eclipse
 
 def main():
+    """  Plot the Movement Ambulation profile (MAP) of the Nexus loaded trial or eclipse nodes from the **same** session
+
+
+
+    Usage:
+
+    ```bash
+        Nexus_plotMAP.exe
+        Nexus_plotMAP.exe -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+    ```
+
+    Args:
+        [-nd,--normativeData] (str)[Schwartz2008]: normative dataset (Choice : Schwartz2008 or Pinzone2014)
+        [--ndm,normativeDataModality] (str) [free]: normative dataset modality (if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo])
+        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
+    """
 
     plt.close("all")
 

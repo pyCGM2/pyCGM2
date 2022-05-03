@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Report
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+Module contains `plotViewers` for displaying convenient gait plot
+"""
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
@@ -12,9 +20,6 @@ from pyCGM2.Report import plot
 
 
 class AbstractPlotViewer(object):
-    """
-    Abstract Builder
-    """
     def __init__(self,input,AutomaticYlimits=False):
         self.m_input =input
         self.m_automaticYlim_flag = AutomaticYlimits
@@ -35,17 +40,14 @@ class AbstractPlotViewer(object):
         self.m_automaticYlim_flag = bool
 
 class SpatioTemporalPlotViewer(AbstractPlotViewer):
-    """
+    """ Plot viewer to display spatio-temporal parameters as histogram
 
+    Args:
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
 
     """
 
     def __init__(self,iAnalysis):
-
-        """
-            :Parameters:
-                 - `iAnalysis` (pyCGM2.Processing.analysis.Analysis ) - Analysis instance built from AnalysisFilter
-        """
 
         super(SpatioTemporalPlotViewer, self).__init__(iAnalysis)
 
@@ -56,14 +58,13 @@ class SpatioTemporalPlotViewer(AbstractPlotViewer):
             LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
     def setNormativeDataset(self,iNormativeDataSet):
-        """
-            **Description :** set a normative gait dataset
+        """Set the normative dataset
 
-            :Parameters:
-                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
 
+        Args:
+             iNormativeDataSet(pyCGM2.Report.normativeDatasets.NormalSTP): a spatio-temporal normative dataset instance
         """
-        iNormativeDataSet.constructNormativeData()
+
         self.m_normativeData = iNormativeDataSet.data
 
     def __setLayer(self):
@@ -127,6 +128,7 @@ class SpatioTemporalPlotViewer(AbstractPlotViewer):
 
 
     def plotPanel(self):
+        "Plot the panel"
         self.__setLayer()
         self.__setData()
 
@@ -144,17 +146,16 @@ class SpatioTemporalPlotViewer(AbstractPlotViewer):
         return self.fig
 
 class GpsMapPlotViewer(AbstractPlotViewer):
-    """
+    """ Plot viewer to display GPS and MAP panel
 
+    Args:
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
 
     """
 
     def __init__(self,iAnalysis,pointLabelSuffix=None):
 
-        """
-            :Parameters:
-                 - `iAnalysis` (pyCGM2.Processing.analysis.Analysis ) - Analysis instance built from AnalysisFilter
-        """
+
 
         super(GpsMapPlotViewer, self).__init__(iAnalysis)
 
@@ -166,15 +167,8 @@ class GpsMapPlotViewer(AbstractPlotViewer):
 
         self.m_pointLabelSuffix = pointLabelSuffix
 
-    def setNormativeDataset(self,iNormativeDataSet):
-        """
-            **Description :** set a normative gait dataset
-
-            :Parameters:
-                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
-
-        """
-        pass
+    # def setNormativeDataset(self,iNormativeDataSet):
+    #     pass
 
     def __setLayer(self):
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
@@ -239,24 +233,23 @@ class GpsMapPlotViewer(AbstractPlotViewer):
 
 
     def plotPanel(self):
+        """ plat the panel"""
         self.__setLayer()
         self.__setData()
 
         return self.fig
 
 class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
-    """
+    """ Plot time-Normalized Kinematics
+
+    Args:
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis instance`
+        pointLabelSuffix (str): suffix added model outputs
+        bodyPart (enums.BodyPartPlot,Optional[enums.BodyPartPlot.LowerLimb]): body part
 
     """
 
     def __init__(self,iAnalysis,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
-
-        """
-            :Parameters:
-                 - `iAnalysis` (pyCGM2.Processing.analysis.Analysis ) - Analysis instance built from AnalysisFilter
-                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
-    """
-
 
         super(NormalizedKinematicsPlotViewer, self).__init__(iAnalysis)
 
@@ -274,9 +267,13 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
         self.m_concretePlotFunction = None
 
 
-
-
     def setConcretePlotFunction(self, concreteplotFunction):
+        """set a plot function ( see `plot`)
+
+        Args:
+            concreteplotFunction (function): plot function
+
+        """
         self.m_concretePlotFunction = concreteplotFunction
 
 
@@ -434,11 +431,10 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
                 ax14.set_ylim([-30,30])
 
     def setNormativeDataset(self,iNormativeDataSet):
-        """
-            **Description :** set a normative gait dataset
+        """ Set the normative dataset
 
-            :Parameters:
-                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
+        Args:
+            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): a normative dataset instance
 
         """
         # iNormativeDataSet.constructNormativeData()
@@ -667,6 +663,7 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
 
 
     def plotPanel(self):
+        """ Plot the panel"""
 
         if self.m_concretePlotFunction is None:
             raise Exception ("[pyCGM2] need definition of the concrete plot function")
@@ -880,17 +877,16 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
         return self.fig
 
 class TemporalKinematicsPlotViewer(AbstractPlotViewer):
-    """
+    """ Plot temporal Kinematics
+
+    Args:
+        iAcq (btk.Acquisition): an acquisition
+        pointLabelSuffix (str): suffix added model outputs
+        bodyPart (enums.BodyPartPlot,Optional[enums.BodyPartPlot.LowerLimb]): body part
 
     """
 
     def __init__(self,iAcq,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
-
-        """
-            :Parameters:
-                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
-        """
-
 
         super(TemporalKinematicsPlotViewer, self).__init__(iAcq)
 
@@ -1042,8 +1038,6 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
                 ax13.set_ylim([-30,30])
                 ax14.set_ylim([-30,30])
 
-    def setNormativeDataset(self,iNormativeDataSet):
-        pass
 
     def __setData(self):
 
@@ -1225,6 +1219,7 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
 
 
     def plotPanel(self):
+        """Plot the panel"""
 
         self.__setLayer()
         self.__setData()
@@ -1235,20 +1230,16 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
 
 
 class NormalizedKineticsPlotViewer(AbstractPlotViewer):
-    """
+    """ Plot time-Normalized kinetics
 
-
+    Args:
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis instance`
+        pointLabelSuffix (str): suffix added model outputs
+        bodyPart (enums.BodyPartPlot,Optional[enums.BodyPartPlot.LowerLimb]): body part
 
     """
 
     def __init__(self,iAnalysis,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
-
-        """
-            :Parameters:
-                 - `iAnalysis` (pyCGM2.Processing.analysis.Analysis ) - Analysis instance built from AnalysisFilter
-                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
-    """
-
 
         super(NormalizedKineticsPlotViewer, self).__init__(iAnalysis)
 
@@ -1265,6 +1256,12 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
         self.m_concretePlotFunction = None
 
     def setConcretePlotFunction(self, concreteplotFunction):
+        """set a plot function ( see `plot`)
+
+        Args:
+            concreteplotFunction (function): plot function
+
+        """
         self.m_concretePlotFunction = concreteplotFunction
 
     def __setLayer(self):
@@ -1349,14 +1346,12 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
 
 
     def setNormativeDataset(self,iNormativeDataSet):
-        """
-            **Description :** set a normative gait dataset
+        """ Set the normative dataset
 
-            :Parameters:
-                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
-
+        Args:
+            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): a normative dataset instance
         """
-        # iNormativeDataSet.constructNormativeData()
+
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
@@ -1426,8 +1421,8 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
             self.m_concretePlotFunction(self.fig.axes[11],self.m_analysis.kineticStats,
                     "RAnklePower"+suffixPlus,"Right",2, color="blue", customLimits=None)
 
-#
     def plotPanel(self):
+        """Plot the panel"""
 
         if self.m_concretePlotFunction is None:
             raise Exception ("[pyCGM2] need definition of the concrete plot function")
@@ -1493,18 +1488,16 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
 
 
 class TemporalKineticsPlotViewer(AbstractPlotViewer):
-    """
+    """ Plot temporal Kinetics
 
+    Args:
+        iAcq (btk.Acquisition): an acquisition
+        pointLabelSuffix (str): suffix added model outputs
+        bodyPart (enums.BodyPartPlot,Optional[enums.BodyPartPlot.LowerLimb]): body part
 
     """
 
     def __init__(self,iAcq,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
-
-        """
-            :Parameters:
-                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
-        """
-
 
         super(TemporalKineticsPlotViewer, self).__init__(iAcq)
 
@@ -1594,15 +1587,6 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
         else:
             raise Exception ("Plot Panel not implemented yet")
 
-    def setNormativeDataset(self,iNormativeDataSet):
-        """
-            **Description :** set a normative gait dataset
-
-            :Parameters:
-                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
-
-        """
-        pass
 
     def __setData(self):
 
@@ -1664,6 +1648,7 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
 
 
     def plotPanel(self):
+        """plot the panel"""
 
         self.__setLayer()
         self.__setData()

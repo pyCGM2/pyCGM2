@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Report
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+Module contains `plotViewers` for comparing data from different `analysis` instances
+
+"""
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
@@ -14,20 +23,20 @@ from pyCGM2.Report import  plotViewers
 
 
 class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
+    """ Compare kinematics
+
+    Args:
+        iAnalyses (list ): `pyCGM2.Processing.analysis.Analysis` instances
+        context (str): event context
+        pointLabelSuffix (str) - suffix added to model outputs
+        legends(list): labels caracterizing the `analysis` instances
+        pointLabelSuffix_lst(list,Optional[None]): suffix added to model outputs of the `analysis` instances
+        bodyPart(pyCGM2.enums.BodyPartPlot,Optional[pyCGM2.enums.BodyPartPlot.LowerLimb]):body part
+
     """
 
-
-    """
 
     def __init__(self,iAnalyses,context,legends,pointLabelSuffix_lst=None,bodyPart=enums.BodyPartPlot.LowerLimb):
-
-        """
-            :Parameters:
-                 - `iAnalyses` (list ) - list of ` of pyCGM2.Processing.analysis.Analysis`
-                 - `context` (str ) - list of ` of pyCGM2.Processing.analysis.Analysis`
-                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
-    """
-
 
         super(KinematicsPlotComparisonViewer, self).__init__(iAnalyses)
 
@@ -55,6 +64,12 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         self.m_concretePlotFunction = None
 
     def setConcretePlotFunction(self, concreteplotFunction):
+        """set a plot function ( see `plot`)
+
+        Args:
+            concreteplotFunction (function): plot function
+
+        """
         self.m_concretePlotFunction = concreteplotFunction
 
     def __setLayer(self):
@@ -132,7 +147,7 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                 ax13.set_ylim([-30,30])
                 ax14.set_ylim([-30,30])
         else:
-            raise Exception ("Plot Panel not implemented yet")
+            LOGGER.logger.warning("Plot Panel not implemented yet")
 
 
     def __setLegend(self,axisIndex):
@@ -141,13 +156,13 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         #    mode="None", borderaxespad=0, ncol=len(self.m_analysis))
 
     def setNormativeDataset(self,iNormativeDataSet):
-        """
-            **Description :** set a normative gait dataset
+        """Set a normative dataset
 
-            :Parameters:
-                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
+        Args:
+            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance
 
         """
+
         # iNormativeDataSet.constructNormativeData()
         self.m_normativeData = iNormativeDataSet.data
 
@@ -276,6 +291,8 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                 i+=1
 
     def plotPanel(self):
+        """ plot the panel"""
+
 
         if self.m_concretePlotFunction is None:
             raise Exception ("[pyCGM2] need definition of the concrete plot function")
@@ -336,19 +353,19 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         return self.fig
 
 class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
-    """
+    """ Compare kinetics
 
+    Args:
+        iAnalyses (list ):  `pyCGM2.Processing.analysis.Analysis` instances
+        context (str): event context
+        pointLabelSuffix (str) - suffix added to model outputs
+        legends(list): labels caracterizing the `analysis` instances
+        pointLabelSuffix_lst(list,Optional[None]): suffix added to model outputs of the `analysis` instances
+        bodyPart(pyCGM2.enums.BodyPartPlot,Optional[pyCGM2.enums.BodyPartPlot.LowerLimb]):body part
 
     """
 
     def __init__(self,iAnalyses,context,legends,pointLabelSuffix_lst=None,bodyPart= enums.BodyPartPlot.LowerLimb):
-
-        """
-            :Parameters:
-                 - `iAnalyses` (list ) - list of ` of pyCGM2.Processing.analysis.Analysis`
-                 - `context` (str ) - list of ` of pyCGM2.Processing.analysis.Analysis`
-                 - `pointLabelSuffix` (str) - suffix ending conventional kinetic CGM labels
-    """
 
 
         super(KineticsPlotComparisonViewer, self).__init__(iAnalyses)
@@ -376,6 +393,12 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         self.m_concretePlotFunction = None
 
     def setConcretePlotFunction(self, concreteplotFunction):
+        """set a plot function ( see `plot`)
+
+        Args:
+            concreteplotFunction (function): plot function
+
+        """
         self.m_concretePlotFunction = concreteplotFunction
 
     def __setLayer(self):
@@ -453,7 +476,7 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                 ax11.set_ylim( [-2.0, 5.0])
 
         else:
-            raise Exception ("Plot Panel not implemented yet")
+            LOGGER.logger.warning("Plot Panel not implemented yet")
 
     def __setLegend(self,axisIndex):
         self.fig.axes[axisIndex].legend(fontsize=6)
@@ -461,11 +484,10 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         #    mode="None", borderaxespad=0, ncol=len(self.m_analysis))
 
     def setNormativeDataset(self,iNormativeDataSet):
-        """
-            **Description :** set a normative gait dataset
+        """Set a normative dataset
 
-            :Parameters:
-                 - `iNormativeDataSet` (a class of the pyCGM2.Report.normativeDataset module) - normative gait dataset from pyCGM2.Report.normativeDatabaseProcedure module
+        Args:
+            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance
 
         """
         # iNormativeDataSet.constructNormativeData()
@@ -590,6 +612,7 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
 
         #
     def plotPanel(self):
+        """ plot the panel"""
 
         if self.m_concretePlotFunction is None:
             raise Exception ("[pyCGM2] need definition of the concrete plot function")

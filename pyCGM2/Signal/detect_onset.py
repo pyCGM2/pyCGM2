@@ -1,4 +1,13 @@
-"""Detects onset in data based on amplitude threshold."""
+# -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Signal
+#APIDOC["Draft"]=False
+#--end--
+"""
+The module only contains the function "detect_onset" implemenented by Marcos Duarte, available in [BMC](https://github.com/demotu/BMC)
+
+see BMC documentation for details
+
+"""
 
 import numpy as np
 
@@ -10,75 +19,6 @@ __license__ = "MIT"
 def detect_onset(x, threshold=0, n_above=1, n_below=0,
                  threshold2=None, n_above2=1, show=False, ax=None):
     """Detects onset in data based on amplitude threshold.
-    Parameters
-    ----------
-    x : 1D array_like
-        data.
-    threshold : number, optional (default = 0)
-        minimum amplitude of `x` to detect.
-    n_above : number, optional (default = 1)
-        minimum number of continuous samples >= `threshold`
-        to detect (but see the parameter `n_below`).
-    n_below : number, optional (default = 0)
-        minimum number of continuous samples below `threshold` that
-        will be ignored in the detection of `x` >= `threshold`.
-    threshold2 : number or None, optional (default = None)
-        minimum amplitude of `n_above2` values in `x` to detect.
-    n_above2 : number, optional (default = 1)
-        minimum number of samples >= `threshold2` to detect.
-    show  : bool, optional (default = False)
-        True (1) plots data in matplotlib figure, False (0) don't plot.
-    ax : a matplotlib.axes.Axes instance, optional (default = None).
-    Returns
-    -------
-    inds : 2D array_like [indi, indf]
-        initial and final indeces of the onset events.
-    Notes
-    -----
-    You might have to tune the parameters according to the signal-to-noise
-    characteristic of the data.
-    See this IPython Notebook [1]_.
-    References
-    ----------
-    .. [1] https://github.com/demotu/detecta/blob/master/docs/detect_onset.ipynb
-    Examples
-    --------
-    >>> x = np.random.randn(200)/10
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> detect_onset(x, np.std(x[:50]), n_above=10, n_below=0, show=True)
-    >>> x = np.random.randn(200)/10
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> x[80:140:20] = 0
-    >>> detect_onset(x, np.std(x[:50]), n_above=10, n_below=0, show=True)
-    >>> x = np.random.randn(200)/10
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> x[80:140:20] = 0
-    >>> detect_onset(x, np.std(x[:50]), n_above=10, n_below=2, show=True)
-    >>> x = [0, 0, 2, 0, np.nan, 0, 2, 3, 3, 0, 1, 1, 0]
-    >>> detect_onset(x, threshold=1, n_above=1, n_below=0, show=True)
-    >>> x = np.random.randn(200)/10
-    >>> x[11:41] = np.ones(30)*.3
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> x[80:140:20] = 0
-    >>> detect_onset(x, .1, n_above=10, n_below=1, show=True)
-    >>> x = np.random.randn(200)/10
-    >>> x[11:41] = np.ones(30)*.3
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> x[80:140:20] = 0
-    >>> detect_onset(x, .4, n_above=10, n_below=1, show=True)
-    >>> x = np.random.randn(200)/10
-    >>> x[11:41] = np.ones(30)*.3
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> x[80:140:20] = 0
-    >>> detect_onset(x, .1, n_above=10, n_below=1,
-                     threshold2=.4, n_above2=5, show=True)
-    Version history
-    ---------------
-    '1.0.7':
-        Part of the detecta module - https://pypi.org/project/detecta/
-    '1.0.6':
-        Deleted 'from __future__ import'
-        added parameters `threshold2` and `n_above2`
     """
 
     x = np.atleast_1d(x).astype('float64')
@@ -88,7 +28,7 @@ def detect_onset(x, threshold=0, n_above=1, n_below=0,
     inds = np.nonzero(x >= threshold)[0]
     if inds.size:
         # initial and final indexes of almost continuous data
-        inds = np.vstack((inds[np.diff(np.hstack((-np.inf, inds))) > n_below+1], \
+        inds = np.vstack((inds[np.diff(np.hstack((-np.inf, inds))) > n_below+1],
                           inds[np.diff(np.hstack((inds, np.inf))) > n_below+1])).T
         # indexes of almost continuous data longer than or equal to n_above
         inds = inds[inds[:, 1]-inds[:, 0] >= n_above-1, :]
@@ -143,6 +83,7 @@ def _plot(x, threshold, n_above, n_below, threshold2, n_above2, inds, ax):
             text = 'threshold=%.3g, n_above=%d, n_below=%d, threshold2=%.3g, n_above2=%d'
         else:
             text = 'threshold=%.3g, n_above=%d, n_below=%d, threshold2=%r, n_above2=%d'
-        ax.set_title(text % (threshold, n_above, n_below, threshold2, n_above2))
+        ax.set_title(text % (threshold, n_above,
+                             n_below, threshold2, n_above2))
         # plt.grid()
         plt.show()

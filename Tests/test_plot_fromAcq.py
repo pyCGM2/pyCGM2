@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings  test_plot_fromAcq.py::Test_lowLevel::test_temporalPlot
+# pytest -s --disable-pytest-warnings  test_plot_fromAcq.py::Test_highLevel::test_temporalEmgPlot
 # from __future__ import unicode_literals
 import matplotlib.pyplot as plt
 
@@ -12,8 +12,10 @@ from pyCGM2.Lib import emg
 
 from pyCGM2.Report import plot as reportPlot
 from pyCGM2.Report import plotFilters,emgPlotViewers
+from pyCGM2.Utils import files
 
 SHOW = False
+
 
 
 emgChannels=['Voltage.EMG1','Voltage.EMG2','Voltage.EMG3','Voltage.EMG4','Voltage.EMG5',
@@ -65,6 +67,9 @@ class Test_lowLevel:
     def test_lowLevel_temporalEmgPlot_4channels(self):
 
         DATA_PATH, modelledFilenames,acq = dataTest2()
+        emgManager = emg.loadEmg(DATA_PATH)
+        # emgchannels = emgManager.getChannels()
+
 
         fig = plt.figure()
 
@@ -77,9 +82,10 @@ class Test_lowLevel:
 
         # # viewer
         kv = emgPlotViewers.TemporalEmgPlotViewer(acq)
-        kv.setEmgs([["Voltage.EMG1","Left","RF"],["Voltage.EMG2","Right","RF"],
-                    ["Voltage.EMG3","Left","vaste"],["Voltage.EMG4","Right","vaste"]])
-        kv.setNormalActivationLabels(["RECFEM","RECFEM",None,"VASLAT"])
+
+        kv.setEmgManager(emgManager)
+        kv.selectEmgChannels(EMG_LABELS)
+        kv.ignoreNormalActivty(False)
         kv. setEmgRectify(True)
 
         # # filter
@@ -107,15 +113,17 @@ class Test_highLevel:
 
     #@pytest.mark.mpl_image_compare
     def test_temporalEmgPlot(self):
+
         DATA_PATH, modelledFilenames,acq = dataTest2()
 
-        emg.processEMG(DATA_PATH, modelledFilenames, emgChannels,
+        emgManager = emg.loadEmg(DATA_PATH)
+
+
+        emg.processEMG(DATA_PATH, modelledFilenames, emgManager.getChannels(),
             highPassFrequencies=[20,200],envelopFrequency=6.0,
             fileSuffix=None,outDataPath=None)
 
-
         figs = plot.plotTemporalEMG(DATA_PATH, modelledFilenames[0],
-                emgChannels, muscles, contexts, normalActivityEmgs,
                 rectify = True,
                 exportPdf=False,outputName=None,show=False,title=None,
                 btkAcq=None)

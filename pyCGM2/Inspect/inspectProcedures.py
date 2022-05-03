@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Obsolete module : work with anomaly and inspector modules instead
+"""
+
 import numpy as np
 from matplotlib.path import Path
 import pyCGM2; LOGGER = pyCGM2.LOGGER

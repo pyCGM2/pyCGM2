@@ -74,7 +74,7 @@ class XlsJointPatternProcedure(object):
 
     def _getFrameLimits(self,cyclePeriod,context,data):
 
-        phases = analysisHandler.getPhases(data)
+        phases = analysisHandler.getPhases(data,context=context)
 
         if cyclePeriod == "CYCLE":
             frameLimits = [0, 100]
@@ -162,7 +162,7 @@ class XlsJointPatternProcedure(object):
         elif method == "peak":
             args = iArgs.split(",")
             indexes = detect_peaks(values, mph=float(args[0]), mpd=float(args[1]),  show = False, valley=False)
-            if indexes.shape[0]  > 2:
+            if indexes.shape[0]  > 0:
                 val = "True"
             else:
                 val = "False"
@@ -228,8 +228,8 @@ class XlsJointPatternProcedure(object):
             else:
                 valueStatus = "NA"
 
-            xlsData.set_value(index,"Value", value)
-            xlsData.set_value(index,"ValueStatus", valueStatus)
+            xlsData.at[index,"Value"]= value
+            xlsData.at[index,"ValueStatus"]= valueStatus
 
             self.data = xlsData
 
@@ -282,25 +282,25 @@ class XlsJointPatternProcedure(object):
             # final
             if secondaries == []:
                 if flag1:
-                    xlsPatterns.set_value(index,"Success", "TRUE")
+                    xlsPatterns.at[index,"Success"]= "TRUE"
                 else:
-                    xlsPatterns.set_value(index,"Success", "FALSE")
+                    xlsPatterns.at[index,"Success"]= "FALSE"
 
             if primaries == []:
                 if flag2:
-                    xlsPatterns.set_value(index,"Success", "TRUE")
+                    xlsPatterns.at[index,"Success"]= "TRUE"
                 else:
-                    xlsPatterns.set_value(index,"Success", "FALSE")
+                    xlsPatterns.at[index,"Success"]= "FALSE"
 
             if primaries != [] and secondaries != []:
                 if flag1 and flag2:
-                    xlsPatterns.set_value(index,"Success", "TRUE")
+                    xlsPatterns.at[index,"Success"]= "TRUE"
                 if flag1 and not flag2:
-                    xlsPatterns.set_value(index,"Success", "partial-primary")
+                    xlsPatterns.at[index,"Success"]= "partial-primary"
                 if not flag1 and flag2:
-                    xlsPatterns.set_value(index,"Success", "partial-secondary")
+                    xlsPatterns.at[index,"Success"]= "partial-secondary"
                 if not flag1 and not flag2:
-                    xlsPatterns.set_value(index,"Success", "FALSE")
+                    xlsPatterns.at[index,"Success"]= "FALSE"
 
         self.patterns = xlsPatterns
 

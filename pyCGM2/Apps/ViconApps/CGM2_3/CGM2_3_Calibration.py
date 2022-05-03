@@ -1,28 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **CGM2.3 Calibration**
-
-:param -l, --leftFlatFoot [int]: enable or disable the flat foot option on the left foot
-:param -r, --rightFlatFoot [int]: enable or disable the flat foot option on the right foot
-:param -hf, --headFlat [int]: enable or disable the head flat option
-:param -md, --markerDiameter [int]: marker diameter
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-:param --check [bool]: add "cgm2.3" as point suffix
-:param --resetMP [bool]: reset computation of optional parameters, like interAsisDistance, ShankOffsets...
-:param --forceLHJC [array]: force the local position of the left hip joint centre in the pelvic coordinate system
-:param --forceRHJC [array]: force the local position of the left hip joint centre in the pelvic coordinate system
-
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>> -l=1 -r=0 -ps=py
-    (if you want to add suffix py and enable the flat foot option on the left side only)
-    >>> --leftFlatFoot=1 -r=0 --pointSuffix=py --resetMP
-    (if you want to add suffix py, enable the flat foot option on the left side only and reset the computation of optional parameters, like interAsisDistance, ShankOffsets...)
-    >>>  --forceLHJC 10 20 30  --forceRHJC 10 20 30
-    (force the left and right hip joint centre positions (10 mm along the pelvic X-axis, 20 mm along the pelvic Y-axis, 30 mm along the pelvic Z-axis)
-
-"""
+#APIDOC["Path"]=/Executable Apps/Vicon/CGM2.3
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -46,7 +26,36 @@ from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 
 def main():
+    """ run the CGM2.3 calibration operation from Nexus.
 
+    Usage:
+
+    ```bash
+        nexus_CGM23_Calibration.exe -l  1 --md 24 -ps "withSuffix"
+        nexus_CGM23_Calibration.exe --leftFlatFoot  1 --markerDiameter 24 --pointSuffix "withSuffix"
+        nexus_CGM23_Calibration.exe --forceLHJC 0.3 0.25 1.2
+        nexus_CGM23_Calibration.exe --noIk
+    ```
+
+    Args:
+        [-l, --leftFlatFoot] (int) : set the left longitudinal foot axis parallel to the ground
+        [-r, --rightFlatFoot] (int) : set the right longitudinal foot axis parallel to the ground
+        [-hf, --headFlat] (int) : set the  longitudinal head axis parallel to the ground
+        [-md, --markerDiameter] (int) : marker diameter
+        [-ps, --pointSuffix] (str) : suffix of the model ouputs
+        [--check] (bool) :force _cgm1  as model output suffix
+        [--resetMP] (bool) : reset optional mass parameters
+        [--forceLHJC] (array) : force the left hip joint centre position in the pelvic coordinate system
+        [--forceRHJC] (array) : force the right hip joint centre position in the pelvic coordinate system
+        [-ae,--anomalyException] (bool) : return exception if one anomaly detected ')
+        [--noIk] (bool): disable inverse kinematics
+
+    Note:
+        Marker diameter is used for locating joint centre from an origin ( eg LKNE) by an offset along a direction.
+        respect the same marker diameter for the following markers :
+        L(R)KNE - L(R)ANK - L(R)ASI - L(R)PSI
+
+    """
 
     parser = argparse.ArgumentParser(description='CGM2.3 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -71,12 +80,17 @@ def main():
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # --------------------GLOBAL SETTINGS ------------------------------
-        # ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_3-pyCGM2.settings"):
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
-        else:
-            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
+        # --------------------------LOADING ------------------------------------
+        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
+
+        calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
+
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Calibration.log")
+        LOGGER.logger.info( "calibration file: "+ calibrateFilenameLabelled)
+
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        settings = files.loadModelSettings(DATA_PATH,"CGM2_3-pyCGM2.settings")
 
 
 
@@ -99,17 +113,6 @@ def main():
         if  rhjc is not None:
             hjcMethod["Right"] = rhjc
 
-
-        # --------------------------LOADING------------------------------
-
-        # --- acquisition file and path----
-        DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
-
-        calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
-
-        LOGGER.logger.info( "data Path: "+ DATA_PATH )
-        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Calibration.log")
-        LOGGER.logger.info( "calibration file: "+ calibrateFilenameLabelled)
 
 
         # --------------------------SUBJECT -----------------------------------

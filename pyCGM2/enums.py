@@ -1,41 +1,32 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Enums
+#APIDOC["Draft"]=False
+#--end--
 from enum import Enum
 
 
 def enumFromtext(memberStr, enum):
+    """get the enum value from text
+
+    Args:
+        memberStr (str): enum attribute label.
+        enum (pyCGM2.Enum):  enum
+
+    ```python
+    enums.enumFromtext("Global",enums.MomentProjection)
+    ```
+
+    """
     if memberStr  in enum.__members__.keys():
         return enum.__members__[memberStr]
     else:
         raise Exception ("[pyCGM2] %s not found in targeted enum"%(memberStr))
 
 
-def isValueBelongToEnum(value, enum):
-    """
-
-    """
-    flag = False
-    for it in enum.__members__.items():
-        if it[1].value == value:
-            flag = True
-    return flag
-
-
-
-
-def isEnumMember(member, enum):
-    """
-        check if member of an enum
-    """
-
-    flag = False
-    for enumIt in enum:
-           if enumIt == member:
-                flag = True
-    return flag
-
 
 class DataType(Enum):
-    """  """
+    """Enum defining model ouput data type
+    """
     Marker = 0
     Angle = 1
     Segment = 3
@@ -52,7 +43,7 @@ class motionMethod(Enum):
 
 
 class MomentProjection(Enum):
-    """ Enum defining in which Segment expressed kinetics"""
+    """ Enum defining in which Segment is expressed kinetics"""
     Global = "Global"
     Proximal = "Proximal"
     Distal = "Distal"
@@ -81,6 +72,7 @@ class EmgAmplitudeNormalization(Enum):
     Threshold = "Threshold"
 
 class BodyPart(Enum):
+    """ Enum defining the body part of a model"""
     LowerLimb=0
     LowerLimbTrunk=1
     FullBody=2
@@ -88,37 +80,29 @@ class BodyPart(Enum):
 
 
 class JointCalibrationMethod(Enum):
+    """ Enum defining how a joint centre is calibrated"""
+
     Basic = "lateralMarker"
     KAD = "KAD"
     Medial = "medial"
 
 class BodyPartPlot(Enum):
+    """ Enum defining plot panel from a body part"""
+
     LowerLimb="LowerLimb"
     Trunk="Trunk"
     UpperLimb="UpperLimb"
 
 class EclipseType(Enum):
+    """Enum defining a Vicon Eclipse node
+    """
     Session="Session.enf"
     Trial="Trial.enf"
     Patient="Patient.enf"
 
 class AnalysisSection(Enum):
+    """Enum defining a section of an `analysis` instance
+    """
     Kinematic="Kinematic"
     Kinetic="Kinetic"
     Emg="Emg"
-# --- enum used with Btk-Models
-# obsolete
-#class BspModel(Enum):
-#    Dempster = "Dempster"
-#    DempsterVicon = "DempsterVicon"
-#    DeLeva = "DeLeva"
-#
-#class Sex(Enum):
-#    Male = "M"
-#    Female = "F"
-#
-#
-#class InverseDynamicAlgo(Enum):
-#    Quaternion = "quaternion"
-#    Generic = "generic"
-#    RotationMatrix = "rotationMatrix"

@@ -1,38 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **plotSpatioTemporalParameters**
-
-The script displays spatio-temporal parameters (Velocity, cadence, duration of the gait phases...)
-
-:param -ps, --pointSuffix [string]: suffix adds to the pyCGM2 nomenclature
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -ps=py
-
-.. note::
-    the spatio-temporal parameters are :
-        * duration
-        * cadence
-        * stanceDuration
-        * stancePhase
-        * swingDuration
-        * swingPhase
-        * doubleStance1
-        * doubleStance2
-        * simpleStance
-        * strideLength
-        * stepLength
-        * strideWidth
-        * speed
-
-.. warning::
-    the spatio-temporal parameters are not stored in the c3d file yet.
-
-
-
-"""
-import traceback
+#APIDOC["Path"]=/Executable Apps/Vicon/Plot
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import warnings
@@ -51,13 +21,24 @@ from viconnexusapi import ViconNexus
 # pyCGM2 libraries
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
-from pyCGM2.Report import normativeDatasets
 
 from pyCGM2.Nexus import  nexusTools,nexusFilters
-from pyCGM2.Utils import files
 from pyCGM2.Eclipse import eclipse
 
 def main():
+    """  Plot spatio-temporal parameters from nexus-loaded trial or eclipse nodes from the **same** session
+
+
+    Usage:
+
+    ```bash
+        Nexus_plotSpatioTemporalParameters.exe
+        Nexus_plotSpatioTemporalParameters.exe  -ps CGM1
+    ```
+
+    Args:
+        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
+    """
 
     plt.close("all")
 

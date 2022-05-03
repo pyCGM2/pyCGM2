@@ -1,33 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **2DofCalibration**
-
-Calibration of the knee with the Calibration2Dof method (dynaKad like method).
-
-The script considers all frames of the c3d and detects the side autmaticallt from ANK marker trajectories
-
-:param -s, --side [string]: lower limb side ( choice: Left or Right )
-:param -b, --beginFrame [int]:  manual selection of the first  frame
-:param -e, --endFrame [int]:   manual selection of the last  frame
-
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -side=Left -b=50 -e=100
-    (Left knee calibration between frames 50 and 100)
-
-
-"""
-import os
-import traceback
+#APIDOC["Path"]=/Executable Apps/Vicon/CGM2.6
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
-import matplotlib.pyplot as plt
-import numpy as np
-
-# pyCGM2 settings
-import pyCGM2
-
 
 # vicon nexus
 from viconnexusapi import ViconNexus
@@ -39,10 +16,24 @@ from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
 
 from pyCGM2.Model import  modelFilters
 
-from pyCGM2.Configurator import CgmArgsManager
 from pyCGM2.Lib.CGM import  kneeCalibration
 
 def main():
+    """ run the calibration 2DOF knee functional method from Nexus.
+
+    Usage:
+
+    ```bash
+        Nexus_CGM26_2DOF.exe -s Left  -b 100 -e 200
+        Nexus_CGM26_2DOF.exe --side Left  --begin 100 --end 200
+    ```
+
+    Args:
+        [-s,--side] (str): lower limb side (Left or Right)
+        [-b,--begin] (int): start frame
+        [-e,--end] (int): last frame to process
+
+    """
 
     parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
     parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
@@ -75,44 +66,19 @@ def main():
 
 
         if model.version == "CGM1.0":
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1-pyCGM2.settings")
-
+            settings = files.loadModelSettings(DATA_PATH,"CGM1-pyCGM2.settings")
         elif model.version == "CGM1.1":
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM1_1-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM1_1-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM1_1-pyCGM2.settings")
-
+            settings = files.loadModelSettings(DATA_PATH,"CGM1_1-pyCGM2.settings")
         elif model.version == "CGM2.1":
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_1-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_1-pyCGM2.settings")
-
+            settings = files.loadModelSettings(DATA_PATH,"CGM2_1-pyCGM2.settings")
         elif model.version == "CGM2.2":
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_2-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_2-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_2-pyCGM2.settings")
+            settings = files.loadModelSettings(DATA_PATH,"CGM2_2-pyCGM2.settings")
         elif model.version == "CGM2.3":
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_3-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_3-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
+            settings = files.loadModelSettings(DATA_PATH,"CGM2_3-pyCGM2.settings")
         elif model.version in  ["CGM2.4"]:
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_4-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_4-pyCGM2.settings")
-
+            settings = files.loadModelSettings(DATA_PATH,"CGM2_4-pyCGM2.settings")
         elif model.version in  ["CGM2.5"]:
-            if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_5-pyCGM2.settings"):
-                settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_5-pyCGM2.settings")
-            else:
-                settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_5-pyCGM2.settings")
+            settings = files.loadModelSettings(DATA_PATH,"CGM2_5-pyCGM2.settings")
 
         else:
             raise Exception ("model version not found [contact admin]")

@@ -1,45 +1,64 @@
 # -*- coding: utf-8 -*-
-#import ipdb
+#APIDOC["Path"]=/Functions
+#APIDOC["Draft"]=False
+#--end--
+import pandas as pd
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
 from pyCGM2.Tools import btkTools
-from pyCGM2.EMG import emgFilters
+from pyCGM2.EMG import emgFilters,emgManager
 from pyCGM2 import enums
 
+def loadEmg(DATA_PATH):
+    """
+    Load and manage emg settings
+
+    Args:
+        DATA_PATH (str): folder path.
+
+    Returns:
+        pyCGM2.EMG.EmgManager: an emg manager class instance
+    """
+
+    return emgManager.EmgManager(DATA_PATH)
 
 
+def processEMG(DATA_PATH, gaitTrials, emgChannels,
+                highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None,outDataPath=None):
+    """ basic filtering of EMG from c3d files .
 
-def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None,outDataPath=None):
+    Args:
+        DATA_PATH (str): folder path.
+        gaitTrials (str): list of c3d files.
+        emgChannels (list): list or emg channel
+        highPassFrequencies (list)[20,200]: boundaries of the bandpass filter
+        envelopFrequency (float)[6.0]: cut-off frequency of low pass emg
+        fileSuffix (str)[None]: add a suffix to the exported c3d files
+        outDataPath (str)[None]: path to place the exported c3d files.
+
+    Examples
+
+    ```python
+    emg.processEMG(DATA_PATH, ["file1.c3d","file2.c3d"], ["Voltage.EMG1","Voltage.EMG2"])
+    ```
+
+    The code loads 2 c3d files, then processes the analog channel name `Voltage.EMG1`
+    and `Voltage.EMG2`
 
     """
-    processEMG_fromC3dFiles : filters emg channels from a list of c3d files
 
-    :param DATA_PATH [String]: path to your folder
-    :param gaitTrials [string List]:c3d files with emg signals
-    :param emgChannels [string list]: label of your emg channels
-
-    **optional**
-
-    :param highPassFrequencies [list of float]: boundaries of the bandpass filter
-    :param envelopFrequency [float]: cut-off frequency for creating an emg envelop
-    :param fileSuffix [string]: suffix added to your ouput c3d files
-
-    """
-    if fileSuffix is None: fileSuffix=""
+    if fileSuffix is None: fileSuffix = ""
 
     for gaitTrial in gaitTrials:
-        acq = btkTools.smartReader(DATA_PATH +gaitTrial)
+        acq = btkTools.smartReader(DATA_PATH + gaitTrial)
 
-        flag = False
         for channel in emgChannels:
             if not btkTools.isAnalogExist(acq,channel):
-                LOGGER.logger.error( "channel [%s] not detected in the c3d [%s]"%(channel,gaitTrial))
-                flag = True
-        if flag:
-            raise Exception ("[pyCGM2] One label has not been detected as analog. see above")
+                raise Exception("channel [%s] not detected in the c3d [%s]" % (channel, gaitTrial))
 
-        bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
-        bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
+
+        bf = emgFilters.BasicEmgProcessingFilter(acq, emgChannels)
+        bf.setHighPassFrequencies(highPassFrequencies[0], highPassFrequencies[1])
         bf.run()
 
         envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
@@ -53,47 +72,47 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels, highPassFrequencies=[20,200],
         else:
             btkTools.smartWriter(acq,outDataPath+outFilename)
 
-def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
+
+def normalizedEMG(DATA_PATH,analysis, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None,**kwargs):
     """
-    processEMG_fromBtkAcq : filt emg from a btk acq
+    Emg normalisation in amplitude.
 
-    :param acq [btk::Acquisition]: btk acquisition
-    :param emgChannels [string list]: label of your emg channels
+    This function update the analysis instance with normalized emg signal in amplitude
 
-    **optional**
+    Args:
+        analysis (pyCGM2.Processing.analysis.Analysis): an analysis Instance
+        DATA_PATH (str): folder path
+        method (str)["MeanMax"]: normalisation method (choice : MeanMax, MaxMax, MedianMax ).
+        fromOtherAnalysis (pyCGM2.Processing.analysis.Analysis)[None]: normalise in amplitude from another analysis instance.
+        mvcSettings (dict)[None]: mvc settings.
 
-    :param highPassFrequencies [list of float]: boundaries of the bandpass filter
-    :param envelopFrequency [float]: cut-off frequency for creating an emg envelop
-
-    """
+    Kargs:
+        forceEmgManager (pyCGM2.Emg.EmgManager)[None]: force the use of a specific emgManager instance.
 
 
-    bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
-    bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
-    bf.run()
 
-    envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
-    envf.setCutoffFrequency(envelopFrequency)
-    envf.run()
+    Examples:
 
-    return acq
+    ```python
+    emg.normalizedEMG(emgAnalysisInstance,
+    .................method="MeanMax",
+    .................fromOtherAnalysis=emgAnalysisInstancePreBloc)
+    ```
 
-def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None):
-    """
-    normalizedEMG : perform normalization of emg in amplitude
-
-    :param analysis [pyCGM2.Processing.analysis.Analysis]: pyCGM2 analysis instance
-    :param emgChannels [string list]: label of your emg channels
-    :param contexts [string list]: contexts associated with your emg channel
-
-    **optional**
-
-    :param method [str]: method of amplitude normalisation (choice MeanMax[default], MaxMax, MedianMax)
-    :param fromOtherAnalysis [pyCGM2.Processing.analysis.Analysis]: amplitude normalisation from another analysis instance
+    The code normalized emg channels of the current analysis instance `emgAnalysisInstance`
+    from the mean maximum values of an other analysis instance `emgAnalysisInstancePreBloc`
 
     """
 
+    if "forceEmgManager" in kwargs:
+        emg = kwargs["forceEmgManager"]
+    else:
+        emg = emgManager.EmgManager(DATA_PATH)
 
+    emgChannels = emg.getChannels()
+    contexts = emg.getSides()
+
+    rows = list()
     i=0
     for label in emgChannels:
         envnf = emgFilters.EmgNormalisationProcessingFilter(analysis,label,contexts[i])
@@ -122,4 +141,37 @@ def normalizedEMG(analysis, emgChannels,contexts, method="MeanMax", fromOtherAna
 
         envnf.run()
         i+=1
+        rows.append([envnf.m_label, envnf.m_threshold])
         del envnf
+
+    df = pd.DataFrame(rows, columns=["Label", "MvcThreshold"])
+    return df
+
+
+def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
+    """ Process EMG from a btk.acquisition
+
+    Args:
+        acq (btk.Acquisition): an acquisition instance
+        emgChannels (list): emg channels ( ie analog labels )
+        highPassFrequencies (list,Optional[20,200]): high pass frequencies 
+        envelopFrequency (float,Optional[6.0]): low pass filter frequency
+
+    Examples:
+
+    ```python
+    emg.processEMG_fromBtkAcq(acq,
+    .................["Voltage.EMG1","Voltage.EMG2"])
+    ```
+
+    """
+
+    bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)
+    bf.setHighPassFrequencies(highPassFrequencies[0],highPassFrequencies[1])
+    bf.run()
+
+    envf = emgFilters.EmgEnvelopProcessingFilter(acq,emgChannels)
+    envf.setCutoffFrequency(envelopFrequency)
+    envf.run()
+
+    return acq

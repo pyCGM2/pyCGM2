@@ -102,34 +102,34 @@ CHANNELS:
         NormalActivity : SOLEUS
 
     Voltage.EMG11 :
-        Muscle : None
-        Context : None
-        NormalActivity : None
+        Muscle :
+        Context :
+        NormalActivity :
 
     Voltage.EMG12 :
-        Muscle : None
-        Context : None
-        NormalActivity : None
+        Muscle :
+        Context :
+        NormalActivity :
 
     Voltage.EMG13 :
-        Muscle : None
-        Context : None
-        NormalActivity : None
+        Muscle :
+        Context :
+        NormalActivity :
 
     Voltage.EMG14 :
-        Muscle : None
-        Context : None
-        NormalActivity : None
+        Muscle :
+        Context :
+        NormalActivity :
 
     Voltage.EMG15 :
-        Muscle : None
-        Context : None
-        NormalActivity : None
+        Muscle :
+        Context :
+        NormalActivity :
 
     Voltage.EMG16 :
-        Muscle : None
-        Context : None
-        NormalActivity : None
+        Muscle :
+        Context :
+        NormalActivity : 
 
 
 ################

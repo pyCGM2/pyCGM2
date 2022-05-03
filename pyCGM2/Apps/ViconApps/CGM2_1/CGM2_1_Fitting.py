@@ -1,19 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **CGM2.1 Fitting**
-
-:param --proj [string]: define in which coordinate system joint moment will be expressed (Choice : Distal, Proximal, Global)
-:param -md, --markerDiameter [int]: marker diameter
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-:param --check [bool]: add "cgm2.1" as point suffix
-
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>> --proj=Global
-    (means joint moments will be expressed into the Global Coordinate system)
-
-"""
+#APIDOC["Path"]=/Executable Apps/Vicon/CGM2.1
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -35,7 +24,30 @@ from pyCGM2.Nexus import nexusFilters,nexusTools,nexusUtils,nexusUtils
 
 
 def main():
+    """ run the CGM2.1 fitting operation from Nexus
 
+    Usage:
+
+    ```bash
+        nexus_CGM21_Fitting.exe -fi  100 -fe 150 --md 24 -ps "withSuffix"
+        nexus_CGM21_Fitting.exe --frameInit  100 --frameEnd 150 --markerDiameter 24 --pointSuffix "withSuffix"
+    ```
+
+    Args:
+        [--proj] (str) : segmental coordinate system selected to project the joint moment (Choice : Distal, Proximal, Global,JCS"
+        [-md, --markerDiameter] (int) : marker diameter
+        [-ps, --pointSuffix] (str) : suffix of the model ouputs
+        [--check] (bool) :force _cgm1  as model output suffix
+        [-ae,--anomalyException] (bool) : return exception if one anomaly detected ')
+        [-fi,--frameInit] (int) : first frame to process
+        [-fe,--frameEnd] (int) : last frame to process
+
+    Note:
+        Marker diameter is used for locating joint centre from an origin ( eg LKNE) by an offset along a direction.
+        respect the same marker diameter for the following markers :
+        L(R)KNE - L(R)ANK - L(R)ASI - L(R)PSI
+
+    """
     parser = argparse.ArgumentParser(description='CGM2-1 Fitting')
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
@@ -55,20 +67,6 @@ def main():
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # --------------------------GLOBAL SETTINGS ------------------------------------
-        # global setting ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_1-pyCGM2.settings"):
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_1-pyCGM2.settings")
-        else:
-            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_1-pyCGM2.settings")
-
-
-        # --------------------------CONFIG ------------------------------------
-        argsManager = CgmArgsManager.argsManager_cgm(settings,args)
-        markerDiameter = argsManager.getMarkerDiameter()
-        pointSuffix = argsManager.getPointSuffix("cgm2.1")
-        momentProjection =  argsManager.getMomentProjection()
-
         # --------------------------LOADING ------------------------------------
         DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
@@ -77,6 +75,18 @@ def main():
         LOGGER.logger.info( "data Path: "+ DATA_PATH )
         LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
         LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
+
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        settings = files.loadModelSettings(DATA_PATH,"CGM2_1-pyCGM2.settings")
+
+
+        # --------------------------CONFIG ------------------------------------
+        argsManager = CgmArgsManager.argsManager_cgm(settings,args)
+        markerDiameter = argsManager.getMarkerDiameter()
+        pointSuffix = argsManager.getPointSuffix("cgm2.1")
+        momentProjection =  argsManager.getMomentProjection()
+
+
 
 
         # --------------------------SUBJECT ------------------------------------

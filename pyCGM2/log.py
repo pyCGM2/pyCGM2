@@ -23,3 +23,13 @@ class pyCGM2_Logger(object):
         file_handler = logging.FileHandler(filename,mode='w')
         file_handler.setFormatter(logging.Formatter(_log_format))
         self.logger.addHandler(file_handler)
+
+    def setLevel(self,level):
+        if level == "error":
+            self.logger.setLevel(logging.ERROR)
+        if level == "warning":
+            self.logger.setLevel(logging.WARNING)
+        if level == "info":
+            self.logger.setLevel(logging.INFO)
+        if level == "debug":
+            self.logger.setLevel(logging.DEBUG)

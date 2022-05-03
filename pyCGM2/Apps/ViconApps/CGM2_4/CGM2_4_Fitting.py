@@ -1,21 +1,8 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
-"""Nexus Operation : **CGM2.4 Fitting**
-
-:param --proj [string]: define in which coordinate system joint moment will be expressed (Choice : Distal, Proximal, Global)
-:param -mfpa [string]: manual force plate assignement. (Choice: combinaison of  X, L, R depending of your force plate number)
-:param -md, --markerDiameter [int]: marker diameter
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-:param --check [bool]: add "cgm2.4" as point suffix
-:param --noIk [bool]: disable inverse kinematics
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>> --proj=Global --noIk
-    (means you disable the inverse kinematic solver and joint moments will be expressed into the Global Coordinate system, and )
-
-"""
+#APIDOC["Path"]=/Executable Apps/Vicon/CGM2.4
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -38,7 +25,34 @@ from pyCGM2.Lib.CGM import  cgm2_4
 
 
 def main():
+    """ run the CGM2.4 fitting operation from Nexus
 
+    Usage:
+
+    ```bash
+        nexus_CGM24_Fitting.exe -fi  100 -fe 150 --md 24 -ps "withSuffix"
+        nexus_CGM24_Fitting.exe --frameInit  100 --frameEnd 150 --markerDiameter 24 --pointSuffix "withSuffix"
+        nexus_CGM24_Fitting.exe --accuracy 1e-5
+        nexus_CGM24_Fitting.exe --noIk
+    ```
+
+    Args:
+        [--proj] (str) : segmental coordinate system selected to project the joint moment (Choice : Distal, Proximal, Global,JCS"
+        [-md, --markerDiameter] (int) : marker diameter
+        [-ps, --pointSuffix] (str) : suffix of the model ouputs
+        [--check] (bool) :force _cgm1  as model output suffix
+        [-a,--accuracy] (float) : accuracy of the inverse kinematic solver (default: 1e-8)
+        [--noIk] ( bool) : disable inverse kinematics
+        [-ae,--anomalyException] (bool) : return exception if one anomaly detected ')
+        [-fi,--frameInit] (int) : first frame to process
+        [-fe,--frameEnd] (int) : last frame to process
+
+    Note:
+        Marker diameter is used for locating joint centre from an origin ( eg LKNE) by an offset along a direction.
+        respect the same marker diameter for the following markers :
+        L(R)KNE - L(R)ANK - L(R)ASI - L(R)PSI
+
+    """
     parser = argparse.ArgumentParser(description='CGM2-4 Fitting')
     parser.add_argument('--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
     parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
@@ -58,12 +72,17 @@ def main():
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        # --------------------GLOBAL SETTINGS ------------------------------
-        # global setting ( in user/AppData)
-        if os.path.isfile(pyCGM2.PYCGM2_APPDATA_PATH + "CGM2_4-pyCGM2.settings"):
-            settings = files.openFile(pyCGM2.PYCGM2_APPDATA_PATH,"CGM2_4-pyCGM2.settings")
-        else:
-            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_4-pyCGM2.settings")
+        # --------------------------LOADING ------------------------------------
+        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+
+        reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
+
+        LOGGER.logger.info( "data Path: "+ DATA_PATH )
+        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
+        LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
+
+        # --------------------------GLOBAL SETTINGS ------------------------------------
+        settings = files.loadModelSettings(DATA_PATH,"CGM2_4-pyCGM2.settings")
 
 
         # --------------------------CONFIG ------------------------------------
@@ -74,15 +93,6 @@ def main():
         ik_flag = argsManager.enableIKflag()
         ikAccuracy = argsManager.getIkAccuracy()
 
-
-        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
-
-
-        reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
-
-        LOGGER.logger.info( "data Path: "+ DATA_PATH )
-        LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
-        LOGGER.logger.info( "reconstructed file: "+ reconstructFilenameLabelled)
 
         # --------------------------SUBJECT -----------------------------------
         # Notice : Work with ONE subject by session

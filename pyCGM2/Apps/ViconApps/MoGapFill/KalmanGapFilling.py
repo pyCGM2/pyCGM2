@@ -1,59 +1,61 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **KalmanGapFilling**
-
-Low dimensional Kalman smoother that fills gaps in motion capture marker trajectories
-
-This repository is a  Python implementation of a gap filling algorithm
-(http://dx.doi.org/10.1016/j.jbiomech.2016.04.016)
-that smooths trajectories in low dimensional subspaces, together with a Python plugin for Vicon Nexus.
-"""
-
-
-import pyCGM2; LOGGER = pyCGM2.LOGGER
-
-import pyCGM2
-from viconnexusapi import ViconNexus
-
+#APIDOC["Path"]=/Executable Apps/Vicon/Gap Filling
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
+from pyCGM2.Nexus import nexusTools, nexusFilters
 from pyCGM2.Gap import gapFilling
-from pyCGM2.Nexus import nexusTools,nexusFilters
-
+from viconnexusapi import ViconNexus
+import pyCGM2
+LOGGER = pyCGM2.LOGGER
 
 
 def main():
+    """  Run Kalman gap filling method on the  nexus-loaded trial
+
+    Usage:
+
+    ```bash
+        python KalmanGapFilling.py
+    ```
+
+    """
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-    if NEXUS_PYTHON_CONNECTED: # run Operation
+    if NEXUS_PYTHON_CONNECTED:  # run Operation
 
         DATA_PATH, filenameLabelledNoExt = NEXUS.GetTrialName()
 
-        LOGGER.logger.info( "data Path: "+ DATA_PATH )
-        LOGGER.logger.info( "file: "+ filenameLabelledNoExt)
+        LOGGER.logger.info("data Path: " + DATA_PATH)
+        LOGGER.logger.info("file: " + filenameLabelledNoExt)
 
-        subject = nexusTools.getActiveSubject(NEXUS) #checkActivatedSubject(NEXUS,subjects)
-        LOGGER.logger.info("Gap filling for subject %s"%(subject))
+        # checkActivatedSubject(NEXUS,subjects)
+        subject = nexusTools.getActiveSubject(NEXUS)
+        LOGGER.logger.info("Gap filling for subject %s" % (subject))
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameLabelledNoExt,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(
+            DATA_PATH, filenameLabelledNoExt, subject)
         acq = nacf.build()
 
         #acq = btkTools.smartReader(str(DATA_PATH+filenameLabelledNoExt+".c3d"))
 
-        gfp =  gapFilling.LowDimensionalKalmanFilterProcedure()
-        gff = gapFilling.GapFillingFilter(gfp,acq)
+        gfp = gapFilling.LowDimensionalKalmanFilterProcedure()
+        gff = gapFilling.GapFillingFilter(gfp, acq)
         gff.fill()
 
-        filledAcq  = gff.getFilledAcq()
-        filledMarkers  = gff.getFilledMarkers()
+        filledAcq = gff.getFilledAcq()
+        filledMarkers = gff.getFilledMarkers()
 
         for marker in filledMarkers:
-            nexusTools.setTrajectoryFromAcq(NEXUS,subject,marker,filledAcq)
+            nexusTools.setTrajectoryFromAcq(NEXUS, subject, marker, filledAcq)
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
 
     main()

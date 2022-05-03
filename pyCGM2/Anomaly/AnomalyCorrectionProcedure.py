@@ -1,13 +1,24 @@
-from pyCGM2.Tools import btkTools
-from pyCGM2.Signal import anomaly
+# -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Anomaly
+#APIDOC["Draft"]=False
+#--end--
+"""
 
-import matplotlib.pyplot as plt
-import pandas as pd
+This module gathers procedure for correcting detected anomalies
+
+check out the script : `\Tests\\test_anomalies.py` for example
+
+
+
+"""
+
+from scipy.cluster.hierarchy import dendrogram
+from sklearn.cluster import AgglomerativeClustering
 import numpy as np
 
-import pyCGM2; LOGGER = pyCGM2.LOGGER
-from sklearn.cluster import AgglomerativeClustering
-from scipy.cluster.hierarchy import dendrogram
+import pyCGM2
+LOGGER = pyCGM2.LOGGER
+
 
 def plot_dendrogram(model, **kwargs):
     # Create linkage matrix and then plot the dendrogram
@@ -32,7 +43,20 @@ def plot_dendrogram(model, **kwargs):
 
 
 class MarkerAnomalyCorrectionProcedure(object):
-    def __init__(self,markers,anomalyIndexes,plot=False,**options):
+    """procedure to correct marker anomaly
+
+    Args:
+        markers ([str,...]): marker labels
+        anomalyIndexes ([int,...]): indexes of the detected anomalies
+        plot (bool,Optional): enable plot
+
+    Kwargs:
+        distance_threshold (float): distance threshold between indexes
+
+
+    """
+
+    def __init__(self, markers, anomalyIndexes, plot=False, **kwargs):
 
         if type(markers) == str:
             markers = [markers]
@@ -41,56 +65,71 @@ class MarkerAnomalyCorrectionProcedure(object):
         self.m_anomalyIndexes = anomalyIndexes
         self._plot = plot
 
-        self._distance_threshold = 10 if "distance_threshold" not in options else options["distance_threshold"]
+        self._distance_threshold = 10 if "distance_threshold" not in kwargs else kwargs[
+            "distance_threshold"]
 
+    def run(self, acq, filename):
+        """ run the procedure
 
-    def run(self,acq,filename):
+        Args:
+            acq (btk.Acquisition): a btk acquisition instantce
+            filename (str): filename
+
+        Returns:
+            btk.Acquisition: updated btk acquisition instance
+
+        """
 
         ff = acq.GetFirstFrame()
 
         for marker in self.m_markers:
 
-            if marker in self.m_anomalyIndexes and self.m_anomalyIndexes[marker] !=[]:
+            if marker in self.m_anomalyIndexes and self.m_anomalyIndexes[marker] != []:
                 indices_frameMatched = self.m_anomalyIndexes[marker]
                 indices = [it-ff for it in indices_frameMatched]
 
                 pointValues = acq.GetPoint(marker).GetValues()
-                values = np.linalg.norm(pointValues,axis=1)
-                values0 = np.linalg.norm(pointValues,axis=1)
+                values = np.linalg.norm(pointValues, axis=1)
+                values0 = np.linalg.norm(pointValues, axis=1)
                 residualValues = acq.GetPoint(marker).GetResiduals()
 
-                if len(indices)>1:
-                    clustering_model = AgglomerativeClustering(distance_threshold=self._distance_threshold, n_clusters=None).fit(np.array(indices).reshape((len(indices),1)))
+                if len(indices) > 1:
+                    clustering_model = AgglomerativeClustering(distance_threshold=self._distance_threshold, n_clusters=None).fit(
+                        np.array(indices).reshape((len(indices), 1)))
                     n_clusters = clustering_model.n_clusters_
 
-
                     for i in range(0, n_clusters):
-                        beg = indices[np.where(clustering_model.labels_==i)[0][0]]
-                        end = indices[np.where(clustering_model.labels_==i)[0][-1]]
-                        LOGGER.logger.warning("[pycgm2] correction from %i to %i"%(beg,end))
-                        values[beg:end+1]= np.nan
+                        beg = indices[np.where(
+                            clustering_model.labels_ == i)[0][0]]
+                        end = indices[np.where(
+                            clustering_model.labels_ == i)[0][-1]]
+                        LOGGER.logger.warning(
+                            "[pycgm2] correction from %i to %i" % (beg, end))
+                        values[beg:end+1] = np.nan
                         pointValues[beg:end+1] = 0
                         residualValues[beg:end+1] = -1.0
 
                 else:
                     beg = indices[0]-1
                     end = indices[0]+1
-                    LOGGER.logger.warning("[pycgm2] correction from %i to %i"%(beg,end))
-                    values[beg:end+1]= np.nan
+                    LOGGER.logger.warning(
+                        "[pycgm2] correction from %i to %i" % (beg, end))
+                    values[beg:end+1] = np.nan
                     pointValues[beg:end+1] = 0
                     residualValues[beg:end+1] = -1.0
 
                 acq.GetPoint(marker).SetResiduals(residualValues)
                 acq.GetPoint(marker).SetValues(pointValues)
 
-                    # if self._plot:
-                    #     fig, axs = plt.subplots(1)
-                    #     fig.suptitle('trajectory of marker %s'%(marker))
-                    #     axs.plot(values0)
-                    #     axs.plot(values,"-r")
-                    #     # axs.set_ylim([2040,2100])
-                    #     plt.show()
+                # if self._plot:
+                #     fig, axs = plt.subplots(1)
+                #     fig.suptitle('trajectory of marker %s'%(marker))
+                #     axs.plot(values0)
+                #     axs.plot(values,"-r")
+                #     # axs.set_ylim([2040,2100])
+                #     plt.show()
             else:
-                LOGGER.logger.debug("[pyCGM2] -  No anomalies detected for marker %s"%marker)
+                LOGGER.logger.debug(
+                    "[pyCGM2] -  No anomalies detected for marker %s" % marker)
 
         return acq

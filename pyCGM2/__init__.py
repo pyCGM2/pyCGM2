@@ -3,6 +3,8 @@ import glob
 import re
 import os
 from . import log
+import yaml
+import yamlordereddictloader
 
 
 LOGGER = log.pyCGM2_Logger(__name__)
@@ -25,7 +27,7 @@ try:
 
     version = float(NEXUS_VERSION[5:])
     if version<2.12:
-        LOGGER.logger.LOGGER.logger.error ("This version of pyCGM2 is only compatible Nexus 2.12+. Nexus Apps will fail if you call them ")
+        LOGGER.logger.error ("This version of pyCGM2 is only compatible Nexus 2.12+. Nexus Apps will fail if you call them ")
     else :
         if not "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusapi" in sys.path:
             sys.path.append( "C:/Program Files (x86)/Vicon/"+NEXUS_VERSION+"/SDK/Win64/Python/viconnexusapi")
@@ -46,6 +48,10 @@ MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pa
 
 #  [Optional] setting folder
 PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"pyCGM2\Settings\\"
+
+EMG_CHANNELS = list()
+for key in yaml.load(open((PYCGM2_SETTINGS_FOLDER+"emg.settings")).read(),Loader=yamlordereddictloader.Loader)["CHANNELS"].keys():
+    EMG_CHANNELS.append(key)
 
 
 #  [Optional]programData

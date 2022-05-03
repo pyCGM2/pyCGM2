@@ -1,11 +1,27 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Processing
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+This module aims to detect the progression frame of a trial.
+
+The  filter `ProgressionFrameFilter` calls a specific procedure, and
+return the progression axis and a flag indicating the forward/backward progression.
+
+"""
 import numpy as np
 
 from pyCGM2.Tools import  btkTools
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 class ProgressionFrameFilter(object):
-    """
+    """Progression Filter
+
+    Args:
+        acq (btk.Acquisition): an acquisition
+        progressionProcedure (pyCGM2.Processing.progressionFrame.(procedure)): a procedure instance
+
     """
 
     def __init__(self, acq,progressionProcedure):
@@ -17,6 +33,7 @@ class ProgressionFrameFilter(object):
 
 
     def compute(self):
+        """ run the filter"""
         progressionAxis,forwardProgression,globalFrame= self.m_procedure.compute(self.m_acq)
 
         self.outputs["progressionAxis"] = progressionAxis
@@ -24,6 +41,12 @@ class ProgressionFrameFilter(object):
         self.outputs["globalFrame"] = globalFrame
 
 class PointProgressionFrameProcedure(object):
+    """detect the progression from the trajectory of a single marker
+
+    Args:
+        marker (str,Optional[LHEE]): marker label
+
+    """
 
     def __init__(self,marker="LHEE"):
         self.m_marker=marker
@@ -65,6 +88,14 @@ class PointProgressionFrameProcedure(object):
         return   progressionAxis,forwardProgression,globalFrame
 
 class PelvisProgressionFrameProcedure(object):
+    """detect the progression from the trajectory of pelvic markers
+
+    Args:
+        marker (str,Optional[LASI]): marker label
+        frontMarkers (list,Optional["LASI","RASI"]): anterior pelvic marker labels
+        backMarkers (list,Optional["LPSI","RPSI"]): posterior pelvic markers labels
+
+    """
 
 
     def __init__(self,marker="LASI",frontMarkers = ["LASI","RASI"], backMarkers =  ["LPSI","RPSI"]):
@@ -189,6 +220,14 @@ class PelvisProgressionFrameProcedure(object):
 
 
 class ThoraxProgressionFrameProcedure(object):
+    """detect the progression from the trajectory of thoracic markers
+
+    Args:
+        marker (str,Optional[CLAV]): marker label
+        frontMarkers (list,Optional["CLAV"]): anterior pelvic marker labels
+        backMarkers (list,Optional["C7"]): posterior pelvic markers labels
+
+    """
 
 
     def __init__(self,marker="CLAV",frontMarkers = ["CLAV"], backMarkers =  ["C7"]):

@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Model/Opensim
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+This module contains  Filters and procedures used as interface for working with
+the opensim API
+"""
+
 import os
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
@@ -35,9 +44,9 @@ class GeneralOpensimCalibrationProcedure(object):
         """
             Add tracking markers to a pycgm2-model segment
 
-            :Parameters:
-                - `segmentLabel` (str) - segment label of a pyCGM2 model
-                - `trackingMarkers` (list) - list of traking markers
+            Args:
+                segmentLabel (str): segment label of a pyCGM2 model
+                trackingMarkers (list):  traking markers
 
         """
         self.markers[segmentLabel] = trackingMarkers
@@ -46,11 +55,11 @@ class GeneralOpensimCalibrationProcedure(object):
         """
             Design the opensim model geometry
 
-            :Parameters:
-                - `opensimJointLabel` (str) - joint label of the opensim model (see inside osim file)
-                - `jointLabel` (str) - joint label of a pyCGM2 model
-                - `proximalSegmentLabel` (str) - proximal segment label of a pyCGM2 model
-                - `distalSegmentLabel` (str) - distal segment label of a pyCGM2 model
+            Args:
+                opensimJointLabel (str): joint label of the opensim model (see inside osim file)
+                jointLabel (str): joint label of the pyCGM2 model
+                proximalSegmentLabel (str): proximal segment label of LTHI_perturbTraj pyCGM2 model
+                distalSegmentLabel (str): distal segment label of the pyCGM2 model
 
         """
 
@@ -74,9 +83,9 @@ class GeneralOpensimFittingProcedure(object):
         """
             Set weigth of a tracking marker
 
-            :Parameters:
-                - `markerLabel` (str) - marker label
-                - `weight` (double) - joint label of a pyCGM2 model
+            Args:
+                markerLabel (str): marker label
+                weight (double): joint label of a pyCGM2 model
 
         """
         self.ikTags[markerLabel] = weight
@@ -88,8 +97,8 @@ class CgmOpensimCalibrationProcedures(object):
     """ Model-embedded Procedure for calibrating an opensim model """
     def __init__(self,model):
         """
-            :Parameters:
-                - `model` (Model) - instance of a pyCGM2 Model
+            Args:
+                model (Model): instance of a pyCGM2 Model
 
         """
         self.model=model
@@ -112,8 +121,8 @@ class CgmOpensimFittingProcedure(object):
 
     def __init__(self,model):
         """
-            :Parameters:
-           - `model` (Model) - instance of Model
+            Args:
+           model (Model): instance of Model
 
         """
         self.model=model
@@ -129,9 +138,9 @@ class CgmOpensimFittingProcedure(object):
         """
             Update weigth of a tracking marker
 
-            :Parameters:
-                - `markerLabel` (str) - marker label
-                - `weight` (double) - joint label of a pyCGM2 model
+            Args:
+                markerLabel (str): marker label
+                weight (double): joint label of a pyCGM2 model
 
         """
 
@@ -146,10 +155,10 @@ class opensimCalibrationFilter(object):
 
     def __init__(self,osimFile,model,procedure,dataDir):
         """
-            :Parameters:
-                - `osimFile` (str) - full filename of the osim file
-                - `model` (pyCGM2.Model) - joint label of a pyCGM2 model
-                - `procedure` (pyCGM2.opensim.procedure) - calibration procedure
+            Args:
+                osimFile (str): full filename of the osim file
+                model (pyCGM2.Model): joint label of a pyCGM2 model
+                procedure (pyCGM2.opensim.procedure): calibration procedure
 
         """
         self.m_osimFile = osimFile
@@ -163,8 +172,8 @@ class opensimCalibrationFilter(object):
     def addMarkerSet(self,markerSetFile):
         """
             Add a marker set file
-            :Parameters:
-                - `markerSetFile` (str) - full filename of the opensim marker set file
+            Args:
+                markerSetFile (str): full filename of the opensim marker set file
         """
         self._osimModel.addMarkerSet(markerSetFile)
 
@@ -204,8 +213,8 @@ class opensimCalibrationFilter(object):
     def exportXml(self,filename, path=None):
         """
             Export the calibrated model as an osim file
-            :Parameters:
-                - `filename` (str) - filename of the calibrated osim file
+            Args:
+                filename (str): filename of the calibrated osim file
 
 
         """
@@ -216,12 +225,12 @@ class opensimCalibrationFilter(object):
 class opensimFittingFilter(object):
     def __init__(self,ikToolFile,calibratedOsim, ikTagProcedure,dataDir,acqMotion, accuracy = 1e-8 ):
         """
-            :Parameters:
-                - `ikToolFile` (str) - full filename of the opensim inverse kinematic tool file
-                - `calibratedOsim` (osim file) - calibrated opensim file
-                - `ikTagProcedure` (pyCGM2.opensim.procedure) - fitting procedure
-                - `dataDir` (str) - path to opensim result directory
-                - `accuracy` (double) - accuracy of the kinematic fitter
+            Args:
+                ikToolFile (str): full filename of the opensim inverse kinematic tool file
+                calibratedOsim (osim file): calibrated opensim file
+                ikTagProcedure (pyCGM2.opensim.procedure): fitting procedure
+                dataDir (str): path to opensim result directory
+                accuracy (double): accuracy of the kinematic fitter
 
         """
         self.m_calibratedOsim = calibratedOsim
@@ -272,9 +281,9 @@ class opensimFittingFilter(object):
     def run(self, acqMotionFilename,exportSetUp=False,**kwargs):
         """
             Run kinematic fitting
-            :Parameters:
-                - `acqMotion` (btk.Acquisition) - acquisition of a motion trial
-                - `acqMotionFilename` (filename) - filename of the motion trial
+            Args:
+                acqMotion (btk.Acquisition): acquisition of a motion trial
+                acqMotionFilename (filename): filename of the motion trial
 
         """
 
@@ -324,9 +333,11 @@ class opensimFittingFilter(object):
                 btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", acqMotionFinal.GetPoint(marker).GetValues(), desc= "measured" )
 
                 modelled = acqMotionFinal.GetPoint(marker).GetValues()
+                residuals = acqMotionFinal.GetPoint(marker).GetResiduals()
+
                 ff = acqMotionFinal.GetFirstFrame()
                 modelled[self.m_frameRange[0]-ff:self.m_frameRange[1]-ff+1,:] = values
-                btkTools.smartAppendPoint(acqMotionFinal,marker, modelled, desc= "kinematic fitting" ) # new acq with marker overwrited
+                btkTools.smartAppendPoint(acqMotionFinal,marker, modelled, desc= "kinematic fitting",residuals=residuals ) # new acq with marker overwrited
 
 
                 # btkTools.smartAppendPoint(acqMotionFinal,marker+"_m", measuredValues, desc= "measured" ) # measured marker suffix with _m
@@ -352,8 +363,8 @@ class opensimFittingFilter(object):
     def exportXml(self,filename, path=None):
         """
             Export the generated inverse kinematic Tool
-            :Parameters:
-                - `filename` (str) - filename of the generated inverse kinematic Tool
+            Args:
+                filename (str): filename of the generated inverse kinematic Tool
 
 
         """

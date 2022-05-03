@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Functions/CGM
+#APIDOC["Draft"]=False
+#--end--
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
@@ -25,6 +29,34 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
     side, beginFrame, endFrame, jointRange,
     **kwargs):
+
+    """
+    calibration2Dof
+
+    Args:
+        model (pyCGM2.Model): model instance
+        DATA_PATH (str): folder path.
+        reconstructFilenameLabelled (str): filename of your gait trial.
+        translators (dict): marker translators.
+        side (str): body side (Left or Right)
+        beginFrame (int):  frame index.
+        endFrame (int):  frame index
+        jointRange (list) : joint range of motion boundaries
+
+    Kwargs :
+        forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
+        fc_lowPass_marker (float): low-pass fiter cutoff frequency applied on marker trajectories
+        order_lowPass_marker (int): order of the low-pass filter applied on marker trajectories
+        fc_lowPass_forcePlate (float): low-pass fiter cutoff frequency applied on force plate measurements
+        order_lowPass_forcePlate: order fiter cutoff frequency applied on force plate measurements
+
+    Returns:
+        pyCGM2.Model: updated model instance
+        Btk.Acquisition :  updated btkAcquisition instance
+        str: processed body side
+
+    """
+
 
     # --- btk acquisition ----
     if "forceBtkAcq" in kwargs.keys():
@@ -153,6 +185,33 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
 def sara(model,
     DATA_PATH,reconstructFilenameLabelled,translators,
     side,beginFrame,endFrame,**kwargs):
+
+    """
+    calibration2Dof
+
+    Args:
+        model (pyCGM2.Model): model instance
+        DATA_PATH (str): folder path.
+        reconstructFilenameLabelled (str): filename of your gait trial.
+        translators (dict): marker translators.
+        side (str): body side (Left or Right)
+        beginFrame (int):  frame index.
+        endFrame (int):  frame index
+        jointRange (list) : joint range of motion boundaries
+
+    Kwargs :
+        forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
+        fc_lowPass_marker (float): low-pass fiter cutoff frequency applied on marker trajectories
+        order_lowPass_marker (int): order of the low-pass filter applied on marker trajectories
+        fc_lowPass_forcePlate (float): low-pass fiter cutoff frequency applied on force plate measurements
+        order_lowPass_forcePlate: order fiter cutoff frequency applied on force plate measurements
+
+    Returns:
+        pyCGM2.Model: updated model instance
+        Btk.Acquisition :  updated btkAcquisition instance
+        str: processed body side
+
+    """
 
     # --- btk acquisition ----
     if "forceBtkAcq" in kwargs.keys():

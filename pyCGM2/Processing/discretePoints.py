@@ -1,10 +1,27 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Processing
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+A *discrete point* is a value at a specific frame of a cycle.
+
+In this module, through the filter `DiscretePointsFilter`, the goal is to get series of discrete value extracted according a
+specific strategy (ie a procedure). For instance, the `BenedettiProcedure` extracts dicrete points
+recommanded in Benededdi et al (1998):
+
+**References**:
+
+Benedetti, M. G.; Catani, F.; Leardini, A.; Pignotti, E.; Giannini, S. (1998) Data management in gait analysis for clinical applications. In : Clinical biomechanics (Bristol, Avon), vol. 13, n° 3, p. 204–215. DOI: 10.1016/s0268-0033(97)00041-7.
+
+
+"""
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from collections import OrderedDict
 
-from pyCGM2.Tools import exportTools
+from pyCGM2.Processing import exporter
 from pyCGM2.Signal.detect_peaks import detect_peaks
 from pyCGM2.Math import derivation
 
@@ -13,7 +30,15 @@ from pyCGM2.Math import derivation
 
 
 class DiscretePointsFilter(object):
-    """
+    """Discrete point filter
+
+    Args:
+        discretePointProcedure (pyCGM2.Processing.discrePoints.(Procedure)): a procedure
+        analysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+        modelInfo (dict,Optional[None]): information about the model
+        subjInfo (dict,Optional[None]): information about the subject
+        condExpInfo (dict,Optional[None]): information about the experiment
+
     """
 
     def __init__(self, discretePointProcedure, analysis,modelInfo=None,subjInfo=None,condExpInfo=None):
@@ -27,32 +52,52 @@ class DiscretePointsFilter(object):
         self.m_condExpInfo = condExpInfo
 
     def setModelInfo(self, modelInfo):
+        """Set model information
+
+        Args:
+            modelInfo (dict): model information
+
+        """
         self.m_modelInfo = modelInfo
 
     def setSubjInfo(self, subjInfo):
+        """Set subject information
+
+        Args:
+            subjInfo (dict): subject information
+
+        """
         self.m_subjInfo = subjInfo
 
     def setCondExpInf(self, condExpInfo):
+        """Set experimental information
+
+        Args:
+            condExpInfo (dict): experimental information
+
+        """
         self.m_condExpInfo = condExpInfo
 
 
     def getOutput(self):
+        """ get the output dataframe with all discrete values according to the procedure
+        """
         self.dataframe = self.m_procedure.detect(self.m_analysis)
 
         # add infos
         if self.m_modelInfo is not None:
             for key,value in self.m_modelInfo.items():
-                exportTools.isColumnNameExist( self.dataframe, key)
+                exporter.isColumnNameExist( self.dataframe, key)
                 self.dataframe[key] = value
 
         if self.m_subjInfo is not None:
             for key,value in self.m_subjInfo.items():
-                exportTools.isColumnNameExist( self.dataframe, key)
+                exporter.isColumnNameExist( self.dataframe, key)
                 self.dataframe[key] = value
 
         if self.m_condExpInfo is not None:
             for key,value in self.m_condExpInfo.items():
-                exportTools.isColumnNameExist( self.dataframe, key)
+                exporter.isColumnNameExist( self.dataframe, key)
                 self.dataframe[key] = value
 
         return self.dataframe
@@ -63,6 +108,21 @@ class DiscretePointsFilter(object):
 
 # --- PROCEDURE ----
 class BenedettiProcedure(object):
+    """ discrete points recommanded by benededdi et al(1998).
+
+    Args:
+        pointSuffix (str,Optional[None]): suffix added to model ouputs
+
+
+    **References**:
+
+    Benedetti, M. G.; Catani, F.; Leardini, A.; Pignotti, E.; Giannini, S. (1998) Data management in gait analysis for clinical applications. In : Clinical biomechanics (Bristol, Avon), vol. 13, n° 3, p. 204–215. DOI: 10.1016/s0268-0033(97)00041-7.
+
+
+    """
+
+
+
 
     NAME = "Benedetti"
 
@@ -72,6 +132,12 @@ class BenedettiProcedure(object):
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
 
     def detect (self,analysisInstance):
+        """extract discrete points
+
+        Args:
+            analysisInstance (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+
+        """
 
         # self.__detectTest(analysisInstance,"RHipMoment","Right") # TEST
 
@@ -139,18 +205,12 @@ class BenedettiProcedure(object):
                      ('Comment', comment)])
         return pd.Series(iDict)
 
-    # TEST -----------------
-    def __detectTest(self,analysisInstance,pointLabel,context):
 
-#        normalizedCycleValues = analysisInstance.kinematicStats.data [pointLabel+self.pointSuffix,context]
-#        loadingResponseValues = analysisInstance.kinematicStats.pst['doubleStance1', context]['values']
-#        stanceValues =         analysisInstance.kinematicStats.pst['stancePhase', context]['values']
+    def __detectTest(self,analysisInstance,pointLabel,context):
 
         normalizedCycleValues = analysisInstance.kineticStats.data [pointLabel+self.pointSuffix,context]
         loadingResponseValues = analysisInstance.kineticStats.pst['doubleStance1', context]['values']
         stanceValues =         analysisInstance.kineticStats.pst['stancePhase', context]['values']
-
-
 
         # experiment with detect_peaks, marcos's function
         i=1
@@ -167,9 +227,6 @@ class BenedettiProcedure(object):
         for it in indexes:
             plt.plot(begin+it,fullValues[begin+it],"+r",mew=2, ms=8)
 
-
-
-    # /TEST -----------------
 
     def __getPelvis_kinematics(self,analysisInstance,pointLabel,context):
 
@@ -328,9 +385,6 @@ class BenedettiProcedure(object):
                                                label[1],frame,desc[1],
                                                "")
             series.append(serie)
-
-
-
 
 
         #---flexion at toe-off (H4)
@@ -981,8 +1035,8 @@ class BenedettiProcedure(object):
             valueMin = np.min(normalizedCycleValues["values"][i][0:int(stanceValues[i]),0])
             frameMin = np.argmin(normalizedCycleValues["values"][i][0:int(stanceValues[i]),0])
 
-            valueMax = np.max(normalizedCycleValues["values"][i][0:frameMin,0])
-            frameMax = np.argmax(normalizedCycleValues["values"][i][0:frameMin,0])
+            valueMax = np.max(normalizedCycleValues["values"][i][0:frameMin+1,0])
+            frameMax = np.argmax(normalizedCycleValues["values"][i][0:frameMin+1,0])
 
             label = ["HM1","THM1"]
             axis = "X"
@@ -1457,7 +1511,12 @@ class BenedettiProcedure(object):
 
 
 class MaxMinProcedure(object):
+    """ extract extrema values.
 
+    Args:
+        pointSuffix (str,Optional[None]): suffix added to model ouputs
+
+    """
     NAME = "MaxMin"
 
 
@@ -1466,7 +1525,12 @@ class MaxMinProcedure(object):
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
 
     def detect (self,analysisInstance):
+        """extract discrete points
 
+        Args:
+            analysisInstance (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+
+        """
 
         dataframes = list()
         # Left
@@ -1638,6 +1702,16 @@ class MaxMinProcedure(object):
 
 
 class GoldbergProcedure(object):
+    """ discrete points recommanded by Goldberg et al(1998).
+
+    Args:
+        pointSuffix (str,Optional[None]): suffix added to model ouputs
+
+    **References**:
+
+    Goldberg, Saryn R.; Ounpuu, Sylvia; Arnold, Allison S.; Gage, James R.; Delp, Scott L. (2006) Kinematic and kinetic factors that correlate with improved knee flexion following treatment for stiff-knee gait. In : Journal of biomechanics, vol. 39, n° 4, p. 689–698. DOI: 10.1016/j.jbiomech.2005.01.015.
+
+    """
 
     NAME = "Goldberg"
 
@@ -1647,7 +1721,12 @@ class GoldbergProcedure(object):
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
 
     def detect (self,analysisInstance):
+        """extract discrete points
 
+        Args:
+            analysisInstance (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+
+        """
 
         dataframes = list()
 

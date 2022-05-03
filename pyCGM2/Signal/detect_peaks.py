@@ -1,6 +1,14 @@
-"""Detect peaks in data based on their amplitude and other features."""
+# -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Signal
+#APIDOC["Draft"]=False
+#--end--
+"""
+The module only contains the function "detect_peaks" implemenented by Marcos Duarte, available in [BMC](https://github.com/demotu/BMC)
 
-# from __future__ import division, print_function
+see BMC documentation for details
+
+"""
+
 import numpy as np
 
 __author__ = "Marcos Duarte, https://github.com/demotu/BMC"
@@ -10,79 +18,7 @@ __license__ = "MIT"
 
 def detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
                  kpsh=False, valley=False, show=False, ax=None):
-
     """Detect peaks in data based on their amplitude and other features.
-
-    Parameters
-    ----------
-    x : 1D array_like
-        data.
-    mph : {None, number}, optional (default = None)
-        detect peaks that are greater than minimum peak height.
-    mpd : positive integer, optional (default = 1)
-        detect peaks that are at least separated by minimum peak distance (in
-        number of data).
-    threshold : positive number, optional (default = 0)
-        detect peaks (valleys) that are greater (smaller) than `threshold`
-        in relation to their immediate neighbors.
-    edge : {None, 'rising', 'falling', 'both'}, optional (default = 'rising')
-        for a flat peak, keep only the rising edge ('rising'), only the
-        falling edge ('falling'), both edges ('both'), or don't detect a
-        flat peak (None).
-    kpsh : bool, optional (default = False)
-        keep peaks with same height even if they are closer than `mpd`.
-    valley : bool, optional (default = False)
-        if True (1), detect valleys (local minima) instead of peaks.
-    show : bool, optional (default = False)
-        if True (1), plot data in matplotlib figure.
-    ax : a matplotlib.axes.Axes instance, optional (default = None).
-
-    Returns
-    -------
-    ind : 1D array_like
-        indeces of the peaks in `x`.
-
-    Notes
-    -----
-    The detection of valleys instead of peaks is performed internally by simply
-    negating the data: `ind_valleys = detect_peaks(-x)`
-
-    The function can handle NaN's
-
-    See this IPython Notebook [1]_.
-
-    References
-    ----------
-    .. [1] http://nbviewer.ipython.org/github/demotu/BMC/blob/master/notebooks/DetectPeaks.ipynb
-
-    Examples
-    --------
-    >>> from detect_peaks import detect_peaks
-    >>> x = np.random.randn(100)
-    >>> x[60:81] = np.nan
-    >>> # detect all peaks and plot data
-    >>> ind = detect_peaks(x, show=True)
-    >>> print(ind)
-
-    >>> x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
-    >>> # set minimum peak height = 0 and minimum peak distance = 20
-    >>> detect_peaks(x, mph=0, mpd=20, show=True)
-
-    >>> x = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0]
-    >>> # set minimum peak distance = 2
-    >>> detect_peaks(x, mpd=2, show=True)
-
-    >>> x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
-    >>> # detection of valleys instead of peaks
-    >>> detect_peaks(x, mph=0, mpd=20, valley=True, show=True)
-
-    >>> x = [0, 1, 1, 0, 1, 1, 0]
-    >>> # detect both edges
-    >>> detect_peaks(x, edge='both', show=True)
-
-    >>> x = [-2, 1, -2, 2, 1, 1, 3, 0]
-    >>> # set threshold = 2
-    >>> detect_peaks(x, threshold = 2, show=True)
     """
 
     x = np.atleast_1d(x).astype('float64')
@@ -102,14 +38,17 @@ def detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
         ine = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) > 0))[0]
     else:
         if edge.lower() in ['rising', 'both']:
-            ire = np.where((np.hstack((dx, 0)) <= 0) & (np.hstack((0, dx)) > 0))[0]
+            ire = np.where((np.hstack((dx, 0)) <= 0)
+                           & (np.hstack((0, dx)) > 0))[0]
         if edge.lower() in ['falling', 'both']:
-            ife = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) >= 0))[0]
+            ife = np.where((np.hstack((dx, 0)) < 0)
+                           & (np.hstack((0, dx)) >= 0))[0]
     ind = np.unique(np.hstack((ine, ire, ife)))
     # handle NaN's
     if ind.size and indnan.size:
         # NaN's and values close to NaN's cannot be peaks
-        ind = ind[np.in1d(ind, np.unique(np.hstack((indnan, indnan-1, indnan+1))), invert=True)]
+        ind = ind[np.in1d(ind, np.unique(
+            np.hstack((indnan, indnan-1, indnan+1))), invert=True)]
     # first and last values of x cannot be peaks
     if ind.size and ind[0] == 0:
         ind = ind[1:]

@@ -1,51 +1,51 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **plotTemporalKinetics**
+#APIDOC["Path"]=/Executable Apps/Vicon/Plot
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 
-The script displays kinetics with time as x-axis
-
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -ps=py
-    (all points will be suffixed with py (LHipMoment_py))
-
-
-"""
-import pyCGM2; LOGGER = pyCGM2.LOGGER
-import argparse
-import matplotlib.pyplot as plt
+from pyCGM2.Nexus import nexusTools, nexusFilters
 import warnings
+import matplotlib.pyplot as plt
+import argparse
+from pyCGM2.Utils import files
+from pyCGM2.Lib import plot
+from pyCGM2 import enums
+from viconnexusapi import ViconNexus
+import pyCGM2
+import pyCGM2
+LOGGER = pyCGM2.LOGGER
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-
-
 # pyCGM2 settings
-import pyCGM2
 
 
 # vicon nexus
-from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2 import enums
-from pyCGM2.Lib import plot
 
-from pyCGM2.Nexus import  nexusTools,nexusFilters
-from pyCGM2.Utils import files
 
 def main():
+    """  Plot  temporal Kinetics from nexus-loaded trial
 
+    Usage:
+
+    ```bash
+        Nexus_plotTemporalKinetics.exe
+        Nexus_plotTemporalKinetics.exe  -ps CGM1
+    ```
+
+    Args:
+        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
+
+    """
     plt.close("all")
 
     parser = argparse.ArgumentParser(description='CGM plot temporal Kinetics')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+    parser.add_argument('-ps', '--pointSuffix', type=str,
+                        help='suffix of model outputs')
 
     args = parser.parse_args()
-
-
-
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -56,34 +56,29 @@ def main():
         # --------------------------INPUTS ------------------------------------
         DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
 
-
         modelledFilename = modelledFilenameNoExt+".c3d"
 
-        LOGGER.logger.info( "data Path: "+ DATA_PATH )
-        LOGGER.logger.info( "file: "+ modelledFilename)
-
+        LOGGER.logger.info("data Path: " + DATA_PATH)
+        LOGGER.logger.info("file: " + modelledFilename)
 
         # ----- Subject -----
         # need subject to find input files
         subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)
-        LOGGER.logger.info(  "Subject name : " + subject  )
-
+        LOGGER.logger.info("Subject name : " + subject)
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,modelledFilenameNoExt,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(
+            DATA_PATH, modelledFilenameNoExt, subject)
         acq = nacf.build()
 
-
         # --------------------pyCGM2 MODEL ------------------------------
-        plot.plotTemporalKinetic(DATA_PATH, modelledFilename,"LowerLimb", pointLabelSuffix=pointSuffix,exportPdf=True,btkAcq=acq)
-
-
-
-
+        plot.plotTemporalKinetic(DATA_PATH, modelledFilename, "LowerLimb",
+                                 pointLabelSuffix=pointSuffix, exportPdf=True, btkAcq=acq)
 
     else:
         raise Exception("NO Nexus connection. Turn on Nexus")
+
 
 if __name__ == "__main__":
 

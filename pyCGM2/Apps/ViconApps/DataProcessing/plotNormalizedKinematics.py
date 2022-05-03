@@ -1,22 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **plotNormalizedKinematics**
-
-The script displays Gait-Normalized kinematics
-
-:param -ps, --pointSuffix [string]: suffix adds to the vicon nomenclature outputs
-:param -c, --consistency [bool]: display consistency plot ( ie : all gait cycle) instead of a descriptive statistics view
-:param -nd, --normativeData [string]: Normative data set ( choice: Schwartz2008 [DEFAULT] or Pinzone2014)
-:param -ndm, --normativeDataModality [string]: modalities associated with the selected normative dataset. (choices: if  Schwartz2008: VerySlow,Slow,Free[DEFAULT],Fast,VeryFast.  if Pinzone2014 : CentreOne,CentreTwo)
-
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -normativeData=Schwartz2008 --normativeDataModality=VeryFast
-    (your gait panel will display as normative data, results from the modality VeryFast of the nomative dataset collected by Schwartz2008)
-
-"""
-
+#APIDOC["Path"]=/Executable Apps/Vicon/Plot
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 import matplotlib.pyplot as plt
@@ -33,16 +19,33 @@ from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
 
-from pyCGM2 import enums
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
 from pyCGM2.Nexus import  nexusTools,nexusFilters
-from pyCGM2.Utils import files
 from pyCGM2.Eclipse import eclipse
 
 def main():
+    """  Plot time-normalized Kinematics from nexus-loaded trial or eclipse nodes from the **same** session
+
+    By default, plot panel display the mean trace and the standard deviation corridor.
+    A command argument allows to plot all cycles
+
+    Usage:
+
+    ```bash
+        Nexus_plotNormalizedKinematics.exe
+        Nexus_plotNormalizedKinematics.exe -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
+    ```
+
+    Args:
+        [-nd,--normativeData] (str)[Schwartz2008]: normative dataset (Choice : Schwartz2008 or Pinzone2014)
+        [--ndm,normativeDataModality] (str) [free]: normative dataset modality (if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo])
+        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
+        ['-c','--consistency'] (bool): plot all cycles instead of the mean and sd corridor
+    """
+
 
     plt.close("all")
 
@@ -123,6 +126,7 @@ def main():
         # --------------------------PROCESSING --------------------------------
 
         analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            modelledFilenames,
                             type="Gait",
                             kineticLabelsDict = None,
                             emgChannels = None,

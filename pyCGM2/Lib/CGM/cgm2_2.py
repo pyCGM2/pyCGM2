@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-
-# pyCGM2 libraries
+#APIDOC["Path"]=/Functions/CGM
+#APIDOC["Draft"]=False
+#--end--
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 from pyCGM2.Tools import btkTools
@@ -23,22 +24,34 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               markerDiameter,hjcMethod,
               pointSuffix,**kwargs):
     """
-    Calibration of the CGM2.2
+    CGM22 calibration.
 
-    :param DATA_PATH [str]: path to your data
-    :param calibrateFilenameLabelled [str]: c3d file
-    :param translators [dict]:  translators to apply
-    :param required_mp [dict]: required anthropometric data
-    :param optional_mp [dict]: optional anthropometric data (ex: LThighOffset,...)
-    :param ik_flag [bool]: enable the inverse kinematic solver
-    :param leftFlatFoot [bool]: enable of the flat foot option for the left foot
-    :param rightFlatFoot [bool]: enable of the flat foot option for the right foot
-    :param headFlat [bool]: enable of the head flat  option
-    :param markerDiameter [double]: marker diameter (mm)
-    :param hjcMethod [str or list of 3 float]: method for locating the hip joint centre
-    :param pointSuffix [str]: suffix to add to model outputs
+    Args:
+        DATA_PATH (str): folder path.
+        calibrateFilenameLabelled (str): filename of your static file.
+        translators (dict): marker translators.
+        required_mp (dict):  required anthropometric parameter.
+        optional_mp (dict): optional anthropometric parameter..
+        leftFlatFoot (bool): flat foot option.
+        rightFlatFoot (bool): flat foot option.
+        headFlat (bool): flat head option.
+        markerDiameter (float): marker diameter
+        hjcMethod (dict): hip joint centre regressions
+        pointSuffix (str): suffix to add to ouputs
+
+    Kwargs :
+        anomalyException (bool): raise exception if anomaly detected
+        forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
+        displayCoordinateSystem (bool): return virtual markers for visualisation of the anatomical refentials
+        noKinematicsCalculation (bool) : disable computation of joint kinematics
+
+    Returns:
+        pyCGM2.Model: the calibrated Model
+        Btk.Acquisition : static btkAcquisition instance with model ouputs
+        bool: presence of deteced anomalies
 
     """
+
     detectAnomaly = False
 
     # --------------------ACQUISITION------------------------------
@@ -309,23 +322,44 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
 def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     translators,weights,
+    ik_flag,
     markerDiameter,
     pointSuffix,
     mfpa,
     momentProjection,**kwargs):
 
     """
-    Fitting of the CGM2.2
+    CGM22 Fitting.
 
-    :param model [str]: pyCGM2 model previously calibrated
-    :param DATA_PATH [str]: path to your data
-    :param reconstructFilenameLabelled [string list]: c3d files
-    :param translators [dict]:  translators to apply
-    :param mfpa [str]: manual force plate assignement
-    :param markerDiameter [double]: marker diameter (mm)
-    :param pointSuffix [str]: suffix to add to model outputs
-    :param momentProjection [str]: Coordinate system in which joint moment is expressed
+    Args:
+        DATA_PATH (str): folder path.
+        reconstructFilenameLabelled (str): filename of your gait trial.
+        translators (dict): marker translators.
+        weights (dict): marker weights
+        ik_flag (bool): enable/disable inverse kinematics
+        markerDiameter (float): marker diameter
+        pointSuffix (str): suffix to add to ouputs
+        mfpa (str): force plate assignment
+        momentProjection (str) : referential for projection of joint moment
+
+    Kwargs :
+        anomalyException (bool): raise exception if anomaly detected
+        forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
+        frameInit (int):  frame index.
+        frameEnd (int):  frame index
+        fc_lowPass_marker (float): low-pass fiter cutoff frequency applied on marker trajectories
+        order_lowPass_marker (int): order of the low-pass filter applied on marker trajectories
+        fc_lowPass_forcePlate (float): low-pass fiter cutoff frequency applied on force plate measurements
+        order_lowPass_forcePlate: order fiter cutoff frequency applied on force plate measurements
+        displayCoordinateSystem (bool): return virtual markers for visualisation of the anatomical refentials
+        noKinematicsCalculation (bool) : disable computation of joint kinematics
+
+    Returns:
+        Btk.Acquisition :  btkAcquisition instance with model ouputs
+        bool: presence of deteced anomalies
+
     """
+
     detectAnomaly = False
 
     if "anomalyException" in kwargs.keys():
@@ -462,8 +496,6 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
             weights[target] = 0
             LOGGER.logger.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,reconstructFilenameLabelled))
 
-
-    ik_flag =  True
     if ik_flag:
         #                        ---OPENSIM IK---
 

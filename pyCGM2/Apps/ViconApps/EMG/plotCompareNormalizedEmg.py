@@ -1,41 +1,43 @@
 # -*- coding: utf-8 -*-
-"""Nexus Operation : **plotNormalizedEmg**
-
-The script displays gait-normalized emg envelops
-
-:param -bpf, --BandpassFrequencies [array]: bandpass frequencies
-:param -ecf, --EnvelopLowpassFrequency [double]: cut-off low pass frequency for getting emg envelop
-:param -c, --consistency [bool]: display consistency plot ( ie : all gait cycles) instead of a descriptive statistics view
-
-Examples:
-    In the script argument box of a python nexus operation, you can edit:
-
-    >>>  -bpf 20 450 -ecf=8.9 --consistency
-    (bandpass frequencies set to 20 and 450Hz and envelop made from a low-pass filter with a cutoff frequency of 8.9Hz,
-    all gait cycles will be displayed)
-
-
-"""
+#APIDOC["Path"]=/Executable Apps/Vicon/EMG
+#APIDOC["Import"]=False
+#APIDOC["Draft"]=False
+#--end--
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 
 import pyCGM2
 
-from pyCGM2.Utils import files
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Lib import emg
 
-from pyCGM2.Nexus import nexusFilters,nexusTools
 from pyCGM2.Eclipse import eclipse
 
-from pyCGM2.Configurator import EmgManager
+
 from viconnexusapi import ViconNexus
 
 
 def main():
+    """ Plot time-normalized EMG from two c3d marked in Vicon Eclipse.
 
+    warning:
+        This function does not work from two files belonging to different sessions.
+
+    Usage:
+
+    ```bash
+        Nexus_plotCompareNormalizedEmg.exe
+        Nexus_plotCompareNormalizedEmg.exe  -c -bpf 20 400
+    ```
+
+    Args:
+        [-bpf,--BandpassFrequencies] (list): bandpass filter cutoff frequencies
+        [--elf,EnvelopLowpassFrequency] (double) : cutoff frequency for estimating emg envelops
+        ['-c','--consistency'] (bool): plot all cycles instead of the mean and sd corridor
+
+    """
     parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
@@ -57,24 +59,23 @@ def main():
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         # --- acquisition file and path----
         DATA_PATH, inputFiles =eclipse.getCurrentMarkedNodes()
+        if isinstance(DATA_PATH,list):
+            LOGGER.logger.error("[pyCGM2] - comparison of EMG from two distinct sessions is not allowed")
+            raise
+
         ECLIPSE_MODE = True
         if len(inputFiles)== 1:   raise Exception("Only one node marked")
 
 
 
     #--------------------------settings-------------------------------------
-    if os.path.isfile(DATA_PATH + "emg.settings"):
-        emgSettings = files.openFile(DATA_PATH,"emg.settings")
-        LOGGER.logger.warning("[pyCGM2]: emg.settings detected in the data folder")
-    else:
-        emgSettings = None
+    emgManager = emg.loadEmg(DATA_PATH)
+    emgChannels = emgManager.getChannels()
 
-    manager = EmgManager.EmgConfigManager(None,localInternalSettings=emgSettings)
-    manager.contruct()
 
 
     # ----------------------INPUTS-------------------------------------------
-    bandPassFilterFrequencies = manager.BandpassFrequencies#emgSettings["Processing"]["BandpassFrequencies"]
+    bandPassFilterFrequencies = emgManager.getProcessingSection()["BandpassFrequencies"]
     if args.BandpassFrequencies is not None:
         if len(args.BandpassFrequencies) != 2:
             raise Exception("[pyCGM2] - bad configuration of the bandpass frequencies ... set 2 frequencies only")
@@ -82,7 +83,7 @@ def main():
             bandPassFilterFrequencies = [float(args.BandpassFrequencies[0]),float(args.BandpassFrequencies[1])]
             LOGGER.logger.info("Band pass frequency set to %i - %i instead of 20-200Hz",bandPassFilterFrequencies[0],bandPassFilterFrequencies[1])
 
-    envelopCutOffFrequency = manager.EnvelopLowpassFrequency#emgSettings["Processing"]["EnvelopLowpassFrequency"]
+    envelopCutOffFrequency = emgManager.getProcessingSection()["EnvelopLowpassFrequency"]
     if args.EnvelopLowpassFrequency is not None:
         envelopCutOffFrequency =  args.EnvelopLowpassFrequency
         LOGGER.logger.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
@@ -90,11 +91,11 @@ def main():
     consistencyFlag = True if args.consistency else False
     plotType = "Consistency" if consistencyFlag else "Descriptive"
     # --------------emg Processing--------------
-    EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES  =  manager.getEmgConfiguration()
+
 
     if  ECLIPSE_MODE:
 
-        emg.processEMG(DATA_PATH, inputFiles, EMG_LABELS, highPassFrequencies=bandPassFilterFrequencies,
+        emg.processEMG(DATA_PATH, inputFiles, emgChannels, highPassFrequencies=bandPassFilterFrequencies,
                 envelopFrequency=envelopCutOffFrequency)
 
         if len(inputFiles) == 2:
@@ -103,23 +104,23 @@ def main():
                                 type="Gait",
                                 kinematicLabelsDict=None,
                                 kineticLabelsDict=None,
-                                emgChannels = EMG_LABELS,
+                                emgChannels = emgChannels,
                                 pointLabelSuffix=None,
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
 
-            emg.normalizedEMG(analysisInstance1,EMG_LABELS,EMG_CONTEXT,method="MeanMax", fromOtherAnalysis=None)
+            emg.normalizedEMG(DATA_PATH,analysisInstance1,method="MeanMax", fromOtherAnalysis=None)
 
             analysisInstance2 = analysis.makeAnalysis(DATA_PATH,
                                 [inputFiles[1]],
                                 type="Gait",
                                 kinematicLabelsDict=None,
                                 kineticLabelsDict=None,
-                                emgChannels = EMG_LABELS,
+                                emgChannels = emgChannels,
                                 pointLabelSuffix=None,
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
-            emg.normalizedEMG(analysisInstance2,EMG_LABELS,EMG_CONTEXT,method="MeanMax", fromOtherAnalysis=analysisInstance1)
+            emg.normalizedEMG(DATA_PATH,analysisInstance2,method="MeanMax", fromOtherAnalysis=analysisInstance1)
 
             # outputName = "Eclipse - CompareNormalizedKinematics"
         #
@@ -129,7 +130,6 @@ def main():
 
         plot.compareEmgEnvelops(DATA_PATH,analysesToCompare,
                                 legends,
-                              EMG_LABELS,EMG_MUSCLES,EMG_CONTEXT,NORMAL_ACTIVITIES,
                               normalized=True,
                               plotType=plotType,show=True,
                               outputName=comparisonDetails,exportPng=False)

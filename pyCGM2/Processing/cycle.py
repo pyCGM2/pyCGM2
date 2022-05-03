@@ -1,34 +1,43 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Processing
+#APIDOC["Draft"]=False
+#--end--
+
+"""
+
+This module aims to construct a `Cycles` instance. Based on a *builder pattern design*,
+the Filter `CyclesFilter` calls a builder, ie `CyclesBuilder` or
+a `GaitCyclesBuilder` in the context of gait Analysis, then return a `Cycles` instance.
+
+As attributes,  the  `Cycles` instance distinguished series of `Cycle` (or `GaitCycle`) instance
+according to computational objectives ( ie computation of spatio-temporal parameters, kinematics,
+kinetics or emg.)
+
+"""
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Processing import progressionFrame
 
-import pyCGM2.Math.normalisation  as MathNormalisation
+import pyCGM2.Math.normalisation as MathNormalisation
 
-try: 
+try:
     from pyCGM2 import btk
 except:
     LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 from pyCGM2.Utils import utils
 from pyCGM2.Tools import btkTools
-#----module methods ------
 
 
 def spatioTemporelParameter_descriptiveStats(cycles,label,context):
 
-    """
-        Compute descriptive statistics of spatio-temporal parameters from a `cycles` instance
+    """Compute descriptive statistics of spatio-temporal parameters from a `cycles` instance
 
-        :Parameters:
-             - `cycles` (pyCGM2.Processing.cycle.Cycles) - Cycles instance built fron CycleFilter
-             - `label` (str) - spatio-temporal label
-             - `context` (str) - cycle side context ( Left, Right)
-
-        :Return:
-            - `outDict` (dict)  - dictionnary with descriptive statistics ( mean, std, median).  Addictional Item *val* collects cycle values
-
+    Args:
+        cycles (pyCGM2.Processing.cycle.Cycles): Cycles instance
+        label (str): spatio-temporal label
+        context (str): event context ( Left, Right)
     """
 
     outDict=dict()
@@ -47,16 +56,12 @@ def spatioTemporelParameter_descriptiveStats(cycles,label,context):
 
 
 def point_descriptiveStats(cycles,label,context):
-    """
-        Compute descriptive statistics of point parameters from a `cycles` instance
+    """Compute descriptive statistics of point parameters from a `cycles` instance
 
-        :Parameters:
-             - `cycles` (pyCGM2.Processing.cycle.Cycles) - Cycles instance built fron CycleFilter
-             - `label` (str) - point label
-             - `context` (str) - cycle side context ( Left, Right)
-
-        :Return:
-            - `outDict` (dict)  - dictionnary with descriptive statistics ( mean, std, median).  Addictional Item *values* collects cycle values
+    Args:
+        cycles (pyCGM2.Processing.cycle.Cycles): Cycles instance
+        label (str): point label
+        context (str): event context ( Left, Right)
 
     """
 
@@ -115,24 +120,15 @@ def point_descriptiveStats(cycles,label,context):
 
 
 def analog_descriptiveStats(cycles,label,context):
+    """Compute descriptive statistics of analog parameters from a `cycles` instance
+
+    Args:
+        cycles (pyCGM2.Processing.cycle.Cycles): Cycles instance
+        label (str): analog label
+        context (str): event context ( Left, Right)
     """
-        Compute descriptive statistics of analog parameters from a `cycles` instance
-
-        :Parameters:
-             - `cycles` (pyCGM2.Processing.cycle.Cycles) - Cycles instance built fron CycleFilter
-             - `label` (str) - analog label
-             - `context` (str) - cycle side context ( Left, Right)
-
-        :Return:
-            - `outDict` (dict)  - dictionnary with descriptive statistics ( mean, std, median).  Addictional Item *values* collects cycle values
-
-    """
-
-
 
     outDict=dict()
-
-
 
     n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle
 
@@ -168,6 +164,13 @@ def analog_descriptiveStats(cycles,label,context):
 
 
 def construcGaitCycle(acq):
+    """Construct gait cycle
+
+    Args:
+        acq (btk.Acquisition): an acquisition
+
+    """
+
     gaitCycles=list()
 
     context = "Left"
@@ -192,49 +195,32 @@ def construcGaitCycle(acq):
 
     return gaitCycles
 
-#----module classes ------
+
 
 class Cycle(object):
-    """
-        Cut out a acq and create a generic Cycle from specific times
-    """
-    #pour definir un label, il faut passer par la methode setName de l objet node
+    """ Generic Cycle
 
+    Args:
+        acq (btk.Acquisituion): an acquisition
+        startFrame (int):  start frame of the cycle
+        endFrame (double): end frame of the cycle
+        enableFlag (bool): flag  to indicate the cycle will be use in further computation.
+
+    """
 
 
     def __init__(self,acq,startFrame,endFrame,context, enableFlag = True):
-        """
-        :Parameters:
-             - `trial` (openma-trial) - openma from a c3d
-             - `startFrame` (double) -  start time of the cycle
-             - `endFrame` (double) - end time of the cycle
-             - `enableFlag` (bool) - flag the Cycle in order to indicate if we can use it in a analysis process.
-
-        .. note:
-
-            no need Time sequence of type Analog
-        """
-
 
         self.acq=acq
 
         self.pointfrequency = float(acq.GetPointFrequency())
         self.analogfrequency = float(acq.GetAnalogFrequency())
 
-        #self.pointfrequency = float(btkTools.smartGetMetadata(self.acq,"POINT","RATE")[0]) #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
-        #self.analogfrequency = float(btkTools.smartGetMetadata(self.acq,"ANALOG","RATE")[0]) #trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).sampleRate()
         self.appf =  self.analogfrequency / self.pointfrequency
         self.firstFrame = acq.GetFirstFrame()
-        # try:
-        #     trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).sampleRate()
-        #     self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Marker]]).startFrame() * self.pointfrequency))
-        #
-        # except ValueError:
-        #     LOGGER.logger.warning("[pyCGM2] : there are no time sequence of type marker in the openmaTrial")
-        #     self.firstFrame = int(round(trial.findChild(ma.T_TimeSequence,"",[["type",ma.TimeSequence.Type_Analog]]).startFrame() * self.analogfrequency))/self.appf
 
-        self.begin =  startFrame#int(round(startFrame * self.pointfrequency) + 1)
-        self.end = endFrame# int(round(endFrame * self.pointfrequency) + 1)
+        self.begin =  startFrame
+        self.end = endFrame
         self.context=context
         self.enableFlag = enableFlag
 
@@ -247,24 +233,22 @@ class Cycle(object):
 
 
     def setEnableFlag(self,flag):
-        """
-        set the cycle flag
+        """enable/disable the cycle
 
-        :Parameters:
-             - `flag` (bool) - boolean flag
+        Args:
+             flag (bool): boolean flag
 
         """
         self.enableFlag = flag
 
     def addDiscreteData(self,label,value,instant):
-        pass #todo
+        pass
 
     def getPointTimeSequenceData(self,pointLabel):
-        """
-            Get temporal point data of the cycle
+        """Get temporal point data of the cycle
 
-            :Parameters:
-                - `pointLabel` (str) - point Label
+        Args:
+            pointLabel (str): point Label
 
         """
 
@@ -273,15 +257,14 @@ class Cycle(object):
         else:
             LOGGER.logger.debug("[pyCGM2] the point Label %s doesn t exist " % (pointLabel))
             return None
-            #raise Exception("[pyCGM2] marker %s doesn t exist"% pointLabel )
+
 
 
     def getPointTimeSequenceDataNormalized(self,pointLabel):
-        """
-            Normalisation of a point label
+        """Time-Normalise  a point label
 
-            :Parameters:
-                - `pointLabel` (str) - point Label
+        Args:
+            pointLabel (str): point Label
 
         """
 
@@ -294,11 +277,10 @@ class Cycle(object):
         return out
 
     def getAnalogTimeSequenceData(self,analogLabel):
-        """
-            Get analog data of the cycle
+        """Get analog data of the cycle
 
-            :Parameters:
-                - `analogLabel` (str) - analog Label
+        Args:
+            analogLabel (str): analog Label
 
         """
         if btkTools.isAnalogExist(self.acq,analogLabel):
@@ -309,11 +291,10 @@ class Cycle(object):
 
 
     def getAnalogTimeSequenceDataNormalized(self,analogLabel):
-        """
-            Get analog data of the cycle
+        """Time-normalize an analog data
 
-            :Parameters:
-                - `analogLabel` (str) - analog Label
+        Args:
+            analogLabel (str): analog Label
         """
 
         data = self.getAnalogTimeSequenceData(analogLabel)
@@ -325,11 +306,10 @@ class Cycle(object):
         return  out
 
     def getEvents(self,context="All"):
-        """
-            Get all events of the cycle
+        """Get all events of the cycle
 
-            :Parameters:
-                - `context` (str) - event context ( All, Left or Right)
+        Args:
+            context (str,Optional[All]): event context (All, Left or Right)
 
         """
         events = list()
@@ -347,20 +327,25 @@ class Cycle(object):
 
 class GaitCycle(Cycle):
 
-    """
-        Herited method of Cycle specifying a Gait Cycle
+    """Inherited class from Cycle defining a Gait cycle.
 
-        .. note::
+    Args:
+        acq (btk.Acquisituion): an acquisition
+        startFrame (int):  start frame of the cycle
+        endFrame (double): end frame of the cycle
+        enableFlag (bool): flag  to indicate the cycle will be use in further computation.
 
-            - By default, X0 and Yo are the longitudinal and lateral global axis respectively
-            - Each GaitCycle creation computes spatio-temporal parameters automatically.
-            - spatio-temporal parameters are :
-                "duration", "cadence",
-                "stanceDuration", "stepDuration", "doubleStance1Duration",
-                "doubleStance2Duration", "simpleStanceDuration", "stancePhase",
-                "swingDuration", "swingPhase", "doubleStance1", "doubleStance2",
-                "simpleStance", "stepPhase", "strideLength", "stepLength",
-                "strideWidth", "speed"
+    **Notes**
+
+        - By default, X0 and Y0 are the longitudinal and lateral global axis respectively
+        - `GaitCycle` construction computes spatio-temporal parameters automatically.
+        - spatio-temporal parameters are :
+            "duration", "cadence",
+            "stanceDuration", "stepDuration", "doubleStance1Duration",
+            "doubleStance2Duration", "simpleStanceDuration", "stancePhase",
+            "swingDuration", "swingPhase", "doubleStance1", "doubleStance2",
+            "simpleStance", "stepPhase", "strideLength", "stepLength",
+            "strideWidth", "speed"
     """
 
 
@@ -373,22 +358,9 @@ class GaitCycle(Cycle):
 
 
     def __init__(self,gaitAcq,startFrame,endFrame,context, enableFlag = True):
-        """
-        :Parameters:
-             - `trial` (openma-trial) - openma from a c3d
-             - `startFrame` (double) -  start time of the cycle
-             - `endFrame` (double) - end time of the cycle
-             - `enableFlag` (bool) - flag the Cycle in order to indicate if we can use it in a analysis process.
-
-        """
-
-
-
         super(GaitCycle, self).__init__(gaitAcq,startFrame,endFrame,context, enableFlag = enableFlag)
 
-        #ajout des oppositeFO, contraFO,oopositeFS
         evs=self.getEvents()
-
 
         if context=="Right":
             oppositeSide="Left"
@@ -501,11 +473,10 @@ class GaitCycle(Cycle):
                 self.stps["speed"] = np.divide(strideLength,duration)
 
     def getSpatioTemporalParameter(self,label):
-        """
-        Return a spatio-temporal parameter
+        """ Return a spatio-temporal parameter
 
-        :Parameters:
-             - `label` (str) - label of the desired spatio-temporal parameter
+        Args:
+             label (str): label of the desired spatio-temporal parameter
         """
 
         return self.stps[label]
@@ -515,26 +486,23 @@ class GaitCycle(Cycle):
 
 # ----- FILTER -----
 class CyclesFilter:
-    """
-        Filter buiding a Cycles instance.
+    """ Filter buiding a `Cycles` instance.
     """
 
     __builder = None
 
     def setBuilder(self, builder):
-        """
-            Set the cycle builder
+        """Set the builder
 
-            :Parameters:
-                 - `builder` (concrete cycleBuilder) - a concrete cycle builder
+        Args:
+            builder (pyCGM2.Processing.Cycle.(Builder)): a concrete cycle builder
 
         """
         self.__builder = builder
 
 
     def build(self):
-        """
-            Build a `Cycles` instance
+        """ Build a `Cycles` instance
         """
         cycles = Cycles()
 
@@ -553,19 +521,20 @@ class CyclesFilter:
         return cycles
 
 
-# --- OBJECT TO BUILD
+
 class Cycles():
     """
     Object to build from CycleFilter.
 
-    Cycles work as **class-container**. Its attribute member collects list of build Cycle
+    Cycles work as **class-container**. Its attribute members collect list of `Cycle`
+    or `GaitCycle` according to computational objectives
 
-    Attribute :
+    **Attributes** are
 
-      - `spatioTemporalCycles` - (list of Cycle) - collect list of build cycles uses for spatiotemporal analysis
-      - `kinematicCycles` - (list of Cycle) - collect list of build cycles uses for kinematic analysis
-      - `kineticCycles` - (list of Cycle) - collect list of build cycles uses for kinetic analysis
-      - `emgCycles` - (list of Cycle) - collect list of build cycles uses for emg analysis
+      - spatioTemporalCycles:  list of cycles uses for spatiotemporal parameter computation
+      - kinematicCycles: list of cycles uses for kinematic computation
+      - kineticCycles: list of cycles uses for kinetic computation
+      - emgCycles: list of cycles uses for emg computation
 
     """
 
@@ -591,6 +560,15 @@ class Cycles():
 
 # --- BUILDER
 class CyclesBuilder(object):
+    """Builder of generic cycles
+
+    Args:
+        spatioTemporalAcqs (list,Optional[None]): acquisitions used for  spatio-temporal parameter computation
+        kinematicAcqs (list,Optional[None]):acquisitions used for  kinematics computation
+        kineticAcqs (list,Optional[None]): acquisitions used for kinetics computation
+        emgAcqs (list,Optional[None]): acquisitions used for emg computation
+
+    """
 
     def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None):
 
@@ -600,6 +578,8 @@ class CyclesBuilder(object):
         self.emgAcqs =emgAcqs
 
     def getSpatioTemporal(self):
+        """get the list of Cycle used for  spatio-temporal parameter computation
+        """
 
         if self.spatioTemporalAcqs is not None:
             spatioTemporalCycles=list()
@@ -652,6 +632,8 @@ class CyclesBuilder(object):
             return None
 
     def getKinematics(self):
+        """get the list of Cycle used for  kinematic computation
+        """
         if self.kinematicAcqs is not None:
             kinematicCycles=list()
             for acq in  self.kinematicAcqs:
@@ -700,7 +682,8 @@ class CyclesBuilder(object):
             return None
 
     def getKinetics(self):
-
+        """get the list of Cycle used for  kinetic computation
+        """
         if self.kineticAcqs is not None:
 
             detectionTimeOffset = 0.02
@@ -777,6 +760,8 @@ class CyclesBuilder(object):
             return None
 
     def getEmg(self):
+        """get the list of Cycle used for emg computation
+        """
         if self.emgAcqs is not None:
             emgCycles=list()
             for acq in  self.emgAcqs:
@@ -826,25 +811,16 @@ class CyclesBuilder(object):
             return None
 
 class GaitCyclesBuilder(CyclesBuilder):
-    """
-        Concrete builder extracting Cycles from gait trials
+    """ Builder of gait cycle
 
-        .. important:: The underlying concept is spatio-temporal parameters, kinematic outputs, kinetic ouputs or emg  could be extracted from different gait trials.
-
+    Args:
+        spatioTemporalAcqs (list,Optional[None]): acquisitions used for  spatio-temporal parameter computation
+        kinematicAcqs (list,Optional[None]):acquisitions used for  kinematics computation
+        kineticAcqs (list,Optional[None]): acquisitions used for kinetics computation
+        emgAcqs (list,Optional[None]): acquisitions used for emg computation
     """
 
     def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None):
-        """
-            :Parameters:
-                 - `spatioTemporalAcqs` (list of openma trials) - list of trials of which Cycles will be extracted for computing spatio-temporal parameters
-                 - `kinematicAcqs` (list of openma trials) - list of trials of which Cycles will be extracted for computing kinematic outputs
-                 - `kineticAcqs` (list of openma trials) - list of trials of which Cycles will be extracted for computing kinetic outputs
-                 - `emgAcqs` (list of openma trials) - list of trials of which Cycles will be extracted for emg
-                 - `longitudinal_axis` (str) - label of the  longitudinal global axis (X, Y or Z)
-                 - `lateral_axis` (str) - label of the  longitudinal global axis (X, Y or Z)
-
-        """
-
 
         super(GaitCyclesBuilder, self).__init__(
             spatioTemporalAcqs = spatioTemporalAcqs,
@@ -855,11 +831,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
 
     def getSpatioTemporal(self):
-        """
-           extract Cycles used for  spatio Temporal parameters
-
-           :return:
-               -`spatioTemporalCycles` (list of GaitCycle)
+        """get the list of Cycle used for  spatio-temporal parameter computation
         """
 
         if self.spatioTemporalAcqs is not None:
@@ -893,11 +865,7 @@ class GaitCyclesBuilder(CyclesBuilder):
             return None
 
     def getKinematics(self):
-        """
-           extract Cycles used for kinematic outputs
-
-           :return:
-             -`kinematicCycles` (list of GaitCycle)
+        """get the list of Cycle used for kinematic computation
         """
 
         if self.kinematicAcqs is not None:
@@ -931,6 +899,8 @@ class GaitCyclesBuilder(CyclesBuilder):
             return None
 
     def getKinetics(self):
+        """get the list of Cycle used for kinetic computation
+        """
 
         if self.kineticAcqs is not None:
 
@@ -990,11 +960,7 @@ class GaitCyclesBuilder(CyclesBuilder):
             return None
 
     def getEmg(self):
-        """
-            Extract Cycles used for emg
-
-            :return:
-                -`emgCycles` (list of GaitCycle)
+        """get the list of Cycle used for emg computation
         """
 
         if self.emgAcqs is not None:

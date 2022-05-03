@@ -1,12 +1,30 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Core/Model/CGM2
+#APIDOC["Draft"]=False
+#--end--
+"""
+this module gathers decorators specific to the CGM
+"""
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2 import enums
-from pyCGM2.Model import modelFilters, modelDecorator
+from pyCGM2.Model import  modelDecorator
 
 
 
 def applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1only=False):
+    """Apply decorators from detected calibration method
+
+    Args:
+        dcm (dict): dictionnary returned from the function `detectCalibrationMethods`
+        model (pyCGM2.Model.CGM2.cgm): a CGM model instance
+        acqStatic (btk.acquisition): a btk acquisition instance of a static file
+        optional_mp (dict): optional anthropometric parameters of the CGM
+        markerDiameter (float): marker diameter
+        cgm1only (bool, optional[False]): enable computation for the CGM1 only
+
+    """
+
     if model.getBodyPart() != enums.BodyPart.UpperLimb:
         # native but thighRotation altered in mp
         if dcm["Left Knee"] == enums.JointCalibrationMethod.Basic and  dcm["Left Ankle"] == enums.JointCalibrationMethod.Basic and optional_mp["LeftThighRotation"] !=0:
@@ -55,7 +73,21 @@ def applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1onl
                 modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
 
 
-def applyHJCDecorators(model,method):
+def applyHJCDecorators(model, method):
+    """apply hip joint centre decorators
+
+    Args:
+        model (pyCGM2.Model.CGM2.cgm): a CGM model instance
+        method (dict): dict indicating HJC method to use
+
+    Example:
+
+    ```python
+    method = {"Left": "Hara", "Right": [1,3,4]} # a string or a list (ie. position in the pelvic coordinate system)
+    applyHJCDecorators(model, method)
+    ```
+
+    """
     if model.getBodyPart() != enums.BodyPart.UpperLimb:
         if method["Left"] == "Hara":
             LOGGER.logger.info("[pyCGM2] Left HJC : Hara")

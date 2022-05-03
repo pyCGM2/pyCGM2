@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#APIDOC["Path"]=/Functions
+#APIDOC["Draft"]=False
+#--end--
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -6,7 +10,17 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2 import enums
 
-def pdfGaitReport(DATA_PATH,model,modelledTrials, normativeDataset,pointSuffix, title = "gait report"):
+def pdfGaitReport(DATA_PATH,modelledTrials, normativeDataset,pointSuffix, title = "gait report"):
+    """generate pdf with Kinematic-Kinetic-MAP gait plots .
+
+    Args:
+        DATA_PATH (str): data folder path
+        modelledTrials (list): modelled trial names
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): a `normativeDataset` instance
+        pointSuffix (str): suffix added to model outputs
+        title (str,Optional[gait report]): title
+
+    """
 
     analysisInstance =  analysis.makeAnalysis(DATA_PATH,
                             modelledTrials,

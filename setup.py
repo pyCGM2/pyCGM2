@@ -19,7 +19,7 @@ if developMode:
 if sys.maxsize < 2**32:
     raise Exception ("32-bit python version detected. PyCGM2-python3 requires a 64 bits python version")
 
-VERSION ="4.1.1"
+VERSION ="4.2"
 
 # just get one of the site-package and install there (it can be dist-package)
 SITE_PACKAGE_PATH = site.getsitepackages()[0] + "\\"
@@ -128,13 +128,13 @@ if "dist" in  localDirPathDirs:     shutil.rmtree(localDirPath+"\\dist")
 if "pyCGM2.egg-info" in  localDirPathDirs:     shutil.rmtree(localDirPath+"/pyCGM2.egg-info")
 
 
-# delete everything in programData
-if os.getenv("PROGRAMDATA") is not None:
-    pd = os.getenv("PROGRAMDATA")
-    pddirs = getSubDirectories(pd)
-    if "pyCGM2" in  pddirs:
-        shutil.rmtree(pd+"\\pyCGM2")
-        logging.info("pprogramData/pyCGM2---> remove")
+# # delete everything in programData
+# if os.getenv("PROGRAMDATA") is not None:
+#     pd = os.getenv("PROGRAMDATA")
+#     pddirs = getSubDirectories(pd)
+#     if "pyCGM2" in  pddirs:
+#         shutil.rmtree(pd+"\\pyCGM2")
+#         logging.info("pprogramData/pyCGM2---> remove")
 
 if os.path.isdir(NEXUS_PUBLIC_PATH):
     # delete all previous vst and pipelines in Nexus Public Documents
@@ -158,10 +158,10 @@ if os.path.isdir(NEXUS_PUBLIC_PATH):
 #------------------------- PRE INSTALL---------------------------------------
 
 #--- management of the folder ProgramData/pyCGM2----
-if not developMode:
-    if os.getenv("PROGRAMDATA"):
-        PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2"
-        shutil.copytree(PYCGM2_SETTINGS_FOLDER[:-1], PYCGM2_APPDATA_PATH)
+# if not developMode:
+#     if os.getenv("PROGRAMDATA"):
+#         PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2"
+#         shutil.copytree(PYCGM2_SETTINGS_FOLDER[:-1], PYCGM2_APPDATA_PATH)
 
 #--- management of nexus-related files ( vst+pipelines)-----
 if os.path.isdir(NEXUS_PUBLIC_PATH):
@@ -236,7 +236,6 @@ setup(name = 'pyCGM2',
                 'Nexus_zeniDetector     =  pyCGM2.Apps.ViconApps.Events.zeniDetector:main',
                 'Nexus_KalmanGapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling:main',
 
-                'Nexus_resetProgramData =  pyCGM2.Apps.ViconApps.Miscellaneous.pyCGM2_resetProgramData:main',
                 'Nexus_check_inputArgs  =  pyCGM2.Apps.ViconApps.Miscellaneous.check_inputArgs:main',
 
                 'pyCGM2-copyPasteCgmSettings  =  pyCGM2.Apps.Commands.commands:copyPasteCgmSettings',
