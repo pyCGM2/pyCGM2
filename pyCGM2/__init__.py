@@ -50,8 +50,12 @@ MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pa
 PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"pyCGM2\Settings\\"
 
 EMG_CHANNELS = list()
-for key in yaml.load(open((PYCGM2_SETTINGS_FOLDER+"emg.settings")).read(),Loader=yamlordereddictloader.Loader)["CHANNELS"].keys():
-    EMG_CHANNELS.append(key)
+try:
+    for key in yaml.load(open((PYCGM2_SETTINGS_FOLDER+"emg.settings")).read(),Loader=yamlordereddictloader.Loader)["CHANNELS"].keys():
+        EMG_CHANNELS.append(key)
+except:
+    LOGGER.logger.error ("EMG_CHANNELS is empty ")
+
 
 
 #  [Optional]programData
