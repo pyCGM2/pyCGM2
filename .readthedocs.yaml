@@ -10,6 +10,8 @@ python:
   install:
     - requirements: "docs/requirements.txt"
 
+
 sphinx:
   configuration: docs/source/conf.py
   builder: "html"
+  fail_on_warning: True
