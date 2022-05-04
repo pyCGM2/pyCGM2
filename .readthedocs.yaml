@@ -12,7 +12,7 @@ python:
     - requirements: "requirements.txt"
 
 conda:
-    environment: docs/environment.yml
+    environment: "docs/environment.yml"
 
 sphinx:
   configuration: docs/source/conf.py
