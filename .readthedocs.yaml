@@ -5,14 +5,9 @@ build:
   tools:
     python: "miniconda3-4.7"
 
-
-python:
-  install:
-    - requirements: "docs/requirements.txt"
-    - requirements: "requirements.txt"
-
 conda:
     environment: "docs/environment.yml"
+
 
 sphinx:
   configuration: docs/source/conf.py
