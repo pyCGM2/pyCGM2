@@ -11,6 +11,10 @@ python:
     - requirements: "docs/requirements.txt"
     - requirements: "requirements.txt"
 
+python:
+  install:
+      - method: pip
+        path: btk
 
 sphinx:
   configuration: docs/source/conf.py
