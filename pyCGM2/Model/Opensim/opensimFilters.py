@@ -18,7 +18,11 @@ try:
     from pyCGM2 import btk
 except:
     LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
-    import btk
+    try:
+        import btk
+    except:
+        LOGGER.logger.error("[pyCGM2] btk not found on your system. install it for working with the API")
+
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.Opensim import osimProcessing
 from pyCGM2.Processing import progressionFrame
@@ -27,7 +31,10 @@ try:
     from pyCGM2 import opensim4 as opensim
 except:
     LOGGER.logger.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
-    import opensim
+    try:
+        import opensim
+    except:
+        LOGGER.logger.error("[pyCGM2] : opensim not find on your system. Install it for working with the API")
 
 # ---- PROCEDURES -----
 

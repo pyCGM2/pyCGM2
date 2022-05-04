@@ -10,7 +10,10 @@ try:
     from pyCGM2 import btk
 except:
     LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
-    import btk
+    try:
+        import btk
+    except:
+        LOGGER.logger.error("[pyCGM2] btk not found on your system. install it for working with the API")
 
 from pyCGM2 import enums
 from pyCGM2.Model import model, modelDecorator, frame, motion
