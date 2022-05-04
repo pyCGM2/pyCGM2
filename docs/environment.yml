@@ -1,3 +1,6 @@
-name: readthedocs
+name: docs
+channels:
+  - conda-forge
+  - defaults
 dependencies:
   - btk=0.4.dev0
