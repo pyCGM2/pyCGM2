@@ -61,6 +61,33 @@ def openFile(path,filename):
     else:
         return False
 
+
+def openJson(path,filename):
+
+    if path is not None: path = path
+    filename = filename
+
+    try:
+        if path is None:
+            jsonStuct= json.loads(open((filename)).read(),object_pairs_hook=OrderedDict)
+        else:
+            jsonStuct= json.loads(open((path+filename)).read(),object_pairs_hook=OrderedDict)
+        return jsonStuct
+    except :
+        raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
+
+def openYaml(path,filename):
+    if path is not None: path = path
+    filename = filename
+    try:
+        if path is None:
+            struct = yaml.load(open((filename)).read(),Loader=yamlordereddictloader.Loader)
+        else:
+            struct= yaml.load(open((path+filename)).read(),Loader=yamlordereddictloader.Loader)
+        return struct
+    except :
+        raise Exception ("[pyCGM2] : yaml syntax of file (%s) is incorrect. check it" %(filename))
+
 def openPickleFile(path,filename):
     """open a serialized file.
 

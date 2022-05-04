@@ -362,3 +362,22 @@ class TrialEnfReader(EnfReader):
     def isC3dExist(self):
         """check if c3d matches  the enf  """
         return os.path.isfile(self.m_path + self.m_file.replace(".Trial.enf", ".c3d"))
+
+
+    def getForcePlateAssigment(self):
+        """ return the first letter of force plates  
+
+        """
+
+        c3dFilename = self.m_file.replace(".Trial.enf",".c3d")
+        acq = btkTools.smartReader((self.m_path + c3dFilename))
+        nfp = btkTools.getNumberOfForcePlate(acq)
+
+        mfpa = ""
+        for i in range(1,nfp+1):
+            if self.m_trialInfos["FP"+str(i)]=="Left": mfpa = mfpa +"L"
+            if self.m_trialInfos["FP"+str(i)]=="Right": mfpa = mfpa +"R"
+            if self.m_trialInfos["FP"+str(i)]=="Invalid": mfpa = mfpa +"X"
+            if self.m_trialInfos["FP"+str(i)]=="Auto": mfpa = mfpa +"A"
+
+        return mfpa
