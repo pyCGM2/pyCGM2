@@ -1,0 +1,3 @@
+name: readthedocs
+dependencies:
+  - btk=0.4.dev0

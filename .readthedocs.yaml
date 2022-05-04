@@ -11,10 +11,8 @@ python:
     - requirements: "docs/requirements.txt"
     - requirements: "requirements.txt"
 
-python:
-  install:
-      - method: pip
-        path: btk
+conda:
+    environment: docs/environment.yml
 
 sphinx:
   configuration: docs/source/conf.py
