@@ -2,4 +2,8 @@
 
 # installation
 
-TODO
+```{eval-rst}
+.. automodule:: pyCGM2.Anomaly.AnomalyDetectionProcedure
+   :members:
+
+```
