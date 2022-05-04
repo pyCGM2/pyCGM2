@@ -10,7 +10,7 @@
 :maxdepth: 2
 
 usage
-anomaly
+
 ```
 
 
