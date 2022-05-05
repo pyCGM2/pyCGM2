@@ -365,7 +365,7 @@ class TrialEnfReader(EnfReader):
 
 
     def getForcePlateAssigment(self):
-        """ return the first letter of force plates  
+        """ return the first letter of force plates
 
         """
 
@@ -381,3 +381,21 @@ class TrialEnfReader(EnfReader):
             if self.m_trialInfos["FP"+str(i)]=="Auto": mfpa = mfpa +"A"
 
         return mfpa
+
+    def setForcePlates(self,mappedForcePlateCharacters):
+
+        index = 1
+        for character in  mappedForcePlateCharacters:
+            if character == "L":
+                self.set("FP"+str(index), "Left")
+            elif character == "R":
+                self.set("FP"+str(index), "Right")
+            elif character == "X":
+                self.set("FP"+str(index), "Invalid")
+            elif character == "A":
+                self.set("FP"+str(index), "Auto")
+            else:
+                LOGGER.logger.error("character of your mapped force plate characters not known (L,R,X,A only) ")
+                raise Exception()
+
+            index+=1
