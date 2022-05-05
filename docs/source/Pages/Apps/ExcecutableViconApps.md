@@ -1,14 +1,8 @@
-# Excecutable Vicon Apps
+## Excecutable Vicon Apps
 
-## CGM apps
+### CGM apps
 
-### CGM1
-
-```python
-note = "Python syntax highlighting"
-print(node)
-```
-
+#### CGM1
 
 ```{eval-rst}
 .. automodule:: pyCGM2.Apps.ViconApps.CGM1.CGM1_Calibration
@@ -20,7 +14,7 @@ print(node)
    :members:
 ```
 
-### CGM1.1
+#### CGM1.1
 
 ```{eval-rst}
 .. automodule:: pyCGM2.Apps.ViconApps.CGM1_1.CGM1_1_Calibration
@@ -32,7 +26,7 @@ print(node)
    :members:
 ```
 
-### CGM2.1
+#### CGM2.1
 
 ```{eval-rst}
 .. automodule:: pyCGM2.Apps.ViconApps.CGM2_1.CGM2_1_Calibration
@@ -44,7 +38,7 @@ print(node)
    :members:
 ```
 
-### CGM2.2
+#### CGM2.2
 
 ```{eval-rst}
 .. automodule:: pyCGM2.Apps.ViconApps.CGM2_2.CGM2_2_Calibration
@@ -56,7 +50,7 @@ print(node)
    :members:
 ```
 
-### CGM2.3
+#### CGM2.3
 
 ```{eval-rst}
 .. automodule:: pyCGM2.Apps.ViconApps.CGM2_3.CGM2_3_Calibration
@@ -68,7 +62,7 @@ print(node)
    :members:
 ```
 
-### CGM2.4
+#### CGM2.4
 
 ```{eval-rst}
 .. automodule:: pyCGM2.Apps.ViconApps.CGM2_4.CGM2_4_Calibration
@@ -80,7 +74,7 @@ print(node)
    :members:
 ```
 
-### CGM2.6
+#### CGM2.6
 
 ```{eval-rst}
 .. automodule:: pyCGM2.Apps.ViconApps.CGM2_6.CGM_Knee2DofCalibration
@@ -92,9 +86,9 @@ print(node)
    :members:
 ```
 
-## Plot
+### Plot
 
-### Temporal Plot
+#### Temporal Plot
 
 
 ```{eval-rst}
@@ -112,7 +106,7 @@ print(node)
    :members:
 ```
 
-### Time-normalized Plot
+#### Time-normalized Plot
 
 
 ```{eval-rst}
@@ -130,7 +124,7 @@ print(node)
    :members:
 ```
 
-### specific gait Plot
+#### specific gait Plot
 
 
 ```{eval-rst}
@@ -145,7 +139,7 @@ print(node)
 
 
 
-### Comparison plot
+#### Comparison plot
 ```{eval-rst}
 .. automodule:: pyCGM2.Apps.ViconApps.Plot.plotCompareNormalizedKinematics
    :members:
