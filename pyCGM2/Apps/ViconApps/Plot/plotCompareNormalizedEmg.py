@@ -13,7 +13,7 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Lib import emg
 
-from pyCGM2.Eclipse import eclipse
+from pyCGM2.Nexus import eclipse
 
 
 from viconnexusapi import ViconNexus

@@ -24,7 +24,7 @@ from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
 from pyCGM2.Nexus import  nexusTools
-from pyCGM2.Eclipse import eclipse
+from pyCGM2.Nexus import eclipse
 
 def main():
     """  Plot time-normalized Kinetics from two c3d marked in Vicon Eclipse

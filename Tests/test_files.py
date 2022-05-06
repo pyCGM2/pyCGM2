@@ -6,7 +6,9 @@ from pyCGM2.Utils import testingUtils,files
 import ipdb
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
-from pyCGM2.Eclipse import vskTools,eclipse
+from pyCGM2.Nexus import eclipse
+from pyCGM2.Nexus import vskTools
+
 from pyCGM2 import enums
 
 import pytest

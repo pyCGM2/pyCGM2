@@ -23,7 +23,7 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 
 from pyCGM2.Nexus import  nexusTools,nexusFilters
-from pyCGM2.Eclipse import eclipse
+from pyCGM2.Nexus import eclipse
 
 def main():
     """  Plot spatio-temporal parameters from nexus-loaded trial or eclipse nodes from the **same** session

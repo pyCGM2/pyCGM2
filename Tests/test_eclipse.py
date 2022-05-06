@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 import pyCGM2
 from pyCGM2 import enums
-from pyCGM2.Eclipse import eclipse
+from pyCGM2.Nexus import eclipse
 
 from pyCGM2.Tools import  btkTools
 from pyCGM2.ForcePlates import forceplates
