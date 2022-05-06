@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 import pyCGM2
 from pyCGM2.Lib import analysis
-from pyCGM2.Processing import representative
+from pyCGM2.Processing.Representative import representativeFilters, representativeProcedures
 
 
 
@@ -31,9 +31,9 @@ class Test_lowLevel:
 
         DATA_PATH,analysisInstance = dataTest1()
 
-        procedure = representative.Sangeux2015Procedure()
+        procedure = representativeProcedures.Sangeux2015Procedure()
         procedure.setDefaultData()
 
-        filt = representative.RepresentativeCycleFilter(analysisInstance, procedure)
+        filt = representativeFilters.RepresentativeCycleFilter(analysisInstance, procedure)
         representativeIndex = filt.run()
         import ipdb; ipdb.set_trace()

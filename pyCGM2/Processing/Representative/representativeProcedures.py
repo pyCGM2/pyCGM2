@@ -110,30 +110,3 @@ class Sangeux2015Procedure(object):
             out[eventContext] = sortedStrideIndex[0]
 
         return out
-
-
-
-class RepresentativeCycleFilter(object):
-    """Representative cycle filter
-
-    Args:
-        analysisInstance (pyCGM2.Processing.analysis.Analysis): an `analysis` instance.
-        representativeProcedure (pyCGM2.Processing.representative.(procedure)): a procedure instance
-
-
-    """
-
-    def __init__(self, analysisInstance, representativeProcedure):
-
-        self.m_procedure = representativeProcedure
-        self.m_analysis = analysisInstance
-
-
-
-    def run(self):
-        """Run the filter
-        """
-
-        representativeCycleIndex = self.m_procedure._run(self.m_analysis)
-
-        return representativeCycleIndex
