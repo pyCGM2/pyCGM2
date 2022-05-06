@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pyCGM2.Report.Viewers import plotViewers
 from pyCGM2.Report.Viewers import emgPlotViewers
-from pyCGM2.Report.Viewers import  ComparisonPlotViewers
+from pyCGM2.Report.Viewers import  comparisonPlotViewers
 from pyCGM2.Report import plot, plotFilters, normativeDatasets
 from pyCGM2.Processing.Scores import scoreFilters,scoreProcedures
 from pyCGM2.Tools import btkTools
@@ -851,7 +851,7 @@ def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDatase
     else:
         raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
-    kv = ComparisonPlotViewers.KinematicsPlotComparisonViewer(analyses,context,legends,bodyPart=bodyPart,pointLabelSuffix_lst=pointSuffixes)
+    kv = comparisonPlotViewers.KinematicsPlotComparisonViewer(analyses,context,legends,bodyPart=bodyPart,pointLabelSuffix_lst=pointSuffixes)
 
     if plotType == "Descriptive":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if type =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )
@@ -934,7 +934,7 @@ def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
         raise Exception("[pyCGM2] - bodyPart argument not recognized ( must be LowerLimb, Trunk or UpperLimb) ")
 
 
-    kv = ComparisonPlotViewers.KineticsPlotComparisonViewer(analyses,context,legends,bodyPart=bodyPart,pointLabelSuffix_lst=pointSuffixes)
+    kv = comparisonPlotViewers.KineticsPlotComparisonViewer(analyses,context,legends,bodyPart=bodyPart,pointLabelSuffix_lst=pointSuffixes)
 
     if plotType == "Descriptive":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if type =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )

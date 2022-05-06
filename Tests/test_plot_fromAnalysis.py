@@ -14,7 +14,7 @@ from pyCGM2.Lib import emg
 from pyCGM2.Report import plot as reportPlot
 from pyCGM2.Report import plotFilters
 from pyCGM2.Report.Viewers import plotViewers
-from pyCGM2.Report.Viewers import  ComparisonPlotViewers
+from pyCGM2.Report.Viewers import  comparisonPlotViewers
 from pyCGM2.Report import normativeDatasets
 from pyCGM2.Utils import files
 
