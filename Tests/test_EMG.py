@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import emg
 from pyCGM2.Utils import files
-from pyCGM2.EMG import coactivation
+from pyCGM2.EMG import coactivationProcedures
 from pyCGM2.EMG import emgFilters
 
 class Test_EMG:
