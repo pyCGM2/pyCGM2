@@ -2,7 +2,7 @@
 #APIDOC["Path"]=/Functions
 #APIDOC["Draft"]=False
 #--end--
-from pyCGM2.Events import events
+from pyCGM2.Events import eventFilters, eventProcedures
 from pyCGM2.Signal import signal_processing
 
 
@@ -42,12 +42,12 @@ def zeni(acqGait, footStrikeOffset=0, footOffOffset=0, **kwargs):
             acqGait, ["LPSI", "RPSI", "LHEE", "LTOE", "RHEE", "RTOE"], order=order, fc=fc)
 
     # ----------------------EVENT DETECTOR-------------------------------
-    evp = events.ZeniProcedure()
+    evp = eventProcedures.ZeniProcedure()
     evp.setFootStrikeOffset(footStrikeOffset)
     evp.setFootOffOffset(footOffOffset)
 
     # event filter
-    evf = events.EventFilter(evp, acqGait)
+    evf = eventFilters.EventFilter(evp, acqGait)
     evf.detect()
     state = evf.getState()
     return acqGait, state
