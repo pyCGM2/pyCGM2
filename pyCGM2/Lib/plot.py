@@ -780,7 +780,7 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,
 
     #compute
     gps =scoreProcedures.CGM1_GPS(pointSuffix=pointLabelSuffix)
-    scf = scores.ScoreFilter(gps,analysis, normativeDataset)
+    scf = scoreFilters.ScoreFilter(gps,analysis, normativeDataset)
     scf.compute()
 
     #plot
