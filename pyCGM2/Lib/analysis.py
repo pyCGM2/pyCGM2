@@ -4,7 +4,7 @@
 #--end--
 
 from pyCGM2.Utils import files
-from pyCGM2.Processing import jointPatterns
+from pyCGM2.Processing.JointPatterns import jointPatternFilters, jointPatternProcedures
 from pyCGM2.Processing import exporter
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Processing import c3dManager, cycle, analysis
@@ -84,7 +84,7 @@ def makeAnalysis(DATA_PATH,
 
     The code called specific model outputs and emg channels.
     In addition, the code also adds subject, experimental and model metadata.
-    These information will be displayed in the exported spreadsheet.  
+    These information will be displayed in the exported spreadsheet.
 
     """
 
@@ -195,9 +195,9 @@ def automaticCPdeviations(DATA_PATH, analysis, reference="Nieuwenhuys2017", poin
 
     RULES_PATH = pyCGM2.PYCGM2_SETTINGS_FOLDER + "jointPatterns\\"
     rulesXls = RULES_PATH+reference+language+".xlsx"
-    jpp = jointPatterns.XlsJointPatternProcedure(
+    jpp = jointPatternProcedures.XlsJointPatternProcedure(
         rulesXls, pointSuffix=pointLabelSuffix)
-    dpf = jointPatterns.JointPatternFilter(jpp, analysis)
+    dpf = jointPatternFilters.JointPatternFilter(jpp, analysis)
     dataFrameValues = dpf.getValues()
     dataFramePatterns = dpf.getPatterns(filter=filterTrue)
 
