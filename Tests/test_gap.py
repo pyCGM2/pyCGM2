@@ -10,7 +10,7 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 # pyCGM2
 from pyCGM2.Tools import  btkTools
-from pyCGM2.Gap import gapFilling
+from pyCGM2.Gap import gapFilters, gapFillingProcedures
 
 class Test_gap:
     def test_kalman(self):
@@ -22,8 +22,8 @@ class Test_gap:
         gaitFilename="gait Trial 01.c3d"
         acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
 
-        gfp = gapFilling.LowDimensionalKalmanFilterProcedure()
-        gff = gapFilling.GapFillingFilter(gfp, acq)
+        gfp = gapFillingProcedures.LowDimensionalKalmanFilterProcedure()
+        gff = gapFilters.GapFillingFilter(gfp, acq)
         gff.fill()
 
         filledAcq = gff.getFilledAcq()

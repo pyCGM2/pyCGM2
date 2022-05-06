@@ -4,7 +4,7 @@
 #APIDOC["Draft"]=False
 #--end--
 from pyCGM2.Nexus import nexusTools, nexusFilters
-from pyCGM2.Gap import gapFilling
+from pyCGM2.Gap import gapFilters, gapFillingProcedures
 from viconnexusapi import ViconNexus
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -42,8 +42,8 @@ def main():
 
         #acq = btkTools.smartReader(str(DATA_PATH+filenameLabelledNoExt+".c3d"))
 
-        gfp = gapFilling.LowDimensionalKalmanFilterProcedure()
-        gff = gapFilling.GapFillingFilter(gfp, acq)
+        gfp = gapFillingProcedures.LowDimensionalKalmanFilterProcedure()
+        gff = gapFilters.GapFillingFilter(gfp, acq)
         gff.fill()
 
         filledAcq = gff.getFilledAcq()
