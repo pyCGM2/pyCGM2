@@ -3,8 +3,10 @@
 #APIDOC["Import"]=False
 #APIDOC["Draft"]=False
 #--end--
-from pyCGM2.Nexus import nexusTools, nexusFilters
-from pyCGM2.Gap import gapFilters, gapFillingProcedures
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusTools
+from pyCGM2.Gap import gapFillingProcedures
+from pyCGM2.Gap import gapFilters
 from viconnexusapi import ViconNexus
 import pyCGM2
 LOGGER = pyCGM2.LOGGER

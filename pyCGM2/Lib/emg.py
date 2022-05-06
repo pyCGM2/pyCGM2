@@ -6,7 +6,8 @@ import pandas as pd
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
 from pyCGM2.Tools import btkTools
-from pyCGM2.EMG import emgFilters,emgManager
+from pyCGM2.EMG import emgFilters
+from pyCGM2.EMG import emgManager
 from pyCGM2 import enums
 
 def loadEmg(DATA_PATH):
@@ -154,7 +155,7 @@ def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelop
     Args:
         acq (btk.Acquisition): an acquisition instance
         emgChannels (list): emg channels ( ie analog labels )
-        highPassFrequencies (list,Optional[20,200]): high pass frequencies 
+        highPassFrequencies (list,Optional[20,200]): high pass frequencies
         envelopFrequency (float,Optional[6.0]): low pass filter frequency
 
     Examples:

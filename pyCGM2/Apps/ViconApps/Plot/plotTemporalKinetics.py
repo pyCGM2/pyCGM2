@@ -4,7 +4,8 @@
 #APIDOC["Draft"]=False
 #--end--
 
-from pyCGM2.Nexus import nexusTools, nexusFilters
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusTools
 import warnings
 import matplotlib.pyplot as plt
 import argparse

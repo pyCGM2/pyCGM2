@@ -4,7 +4,9 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import pyCGM2
 from pyCGM2.Tools import btkTools
-from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure, AnomalyCorrectionProcedure
+from pyCGM2.Anomaly import AnomalyFilter
+from pyCGM2.Anomaly import AnomalyDetectionProcedure
+from pyCGM2.Anomaly import AnomalyCorrectionProcedure
 
 from pyCGM2.Model.CGM2 import cgm
 

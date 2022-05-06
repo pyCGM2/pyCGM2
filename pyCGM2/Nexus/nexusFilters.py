@@ -8,7 +8,8 @@ This module contains conveninet classes interacting with the nexus API
 """
 
 from pyCGM2.Utils import utils
-from pyCGM2.Nexus import nexusTools, Devices
+from pyCGM2.Nexus import nexusTools
+from pyCGM2.Nexus import Devices
 from pyCGM2.Tools import btkTools
 import pyCGM2
 from viconnexusapi import ViconNexus

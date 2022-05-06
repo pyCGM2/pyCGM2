@@ -26,7 +26,8 @@ from pyCGM2.Model import frame
 from pyCGM2.Model import motion
 
 from pyCGM2 import enums
-from  pyCGM2.Math import euler,numeric
+from  pyCGM2.Math import euler
+from  pyCGM2.Math import numeric
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Utils import timer
 

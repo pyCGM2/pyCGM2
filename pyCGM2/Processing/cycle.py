@@ -17,7 +17,8 @@ kinetics or emg.)
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
+from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
+from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 
 import pyCGM2.Math.normalisation as MathNormalisation
 

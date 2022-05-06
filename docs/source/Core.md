@@ -20,6 +20,7 @@
 
 ```{include} Pages/Core/Processing.md
 
+```{include} Pages/Core/Report.md
 
 ```{include} Pages/Core/Signal.md
 

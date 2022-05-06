@@ -18,7 +18,9 @@ from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
 from pyCGM2.Utils import files
-from pyCGM2.Nexus import nexusFilters,nexusTools,nexusUtils
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusUtils
+from pyCGM2.Nexus import nexusTools
 
 from pyCGM2.Apps.ViconApps import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm2_5

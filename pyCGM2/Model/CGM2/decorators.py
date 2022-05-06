@@ -8,7 +8,7 @@ this module gathers decorators specific to the CGM
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2 import enums
-from pyCGM2.Model import  modelDecorator
+from pyCGM2.Model import modelDecorator
 
 
 

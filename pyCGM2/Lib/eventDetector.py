@@ -2,7 +2,8 @@
 #APIDOC["Path"]=/Functions
 #APIDOC["Draft"]=False
 #--end--
-from pyCGM2.Events import eventFilters, eventProcedures
+from pyCGM2.Events import eventFilters
+from pyCGM2.Events import eventProcedures
 from pyCGM2.Signal import signal_processing
 
 

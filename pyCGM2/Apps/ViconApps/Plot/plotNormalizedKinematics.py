@@ -23,7 +23,8 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
-from pyCGM2.Nexus import  nexusTools,nexusFilters
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusTools
 from pyCGM2.Nexus import eclipse
 
 def main():

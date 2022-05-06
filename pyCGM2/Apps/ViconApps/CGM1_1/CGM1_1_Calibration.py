@@ -4,7 +4,9 @@
 #APIDOC["Draft"]=False
 #--end--
 
-from pyCGM2.Nexus import nexusFilters, nexusUtils, nexusTools
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusUtils
+from pyCGM2.Nexus import nexusTools
 import warnings
 import argparse
 from pyCGM2.Lib.CGM import cgm1_1

@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 import pyCGM2
 from  pyCGM2.Math import numeric
-from pyCGM2.Tools import  btkTools
+from pyCGM2.Tools import btkTools
 LOGGER = pyCGM2.LOGGER
 try:
     from pyCGM2 import btk

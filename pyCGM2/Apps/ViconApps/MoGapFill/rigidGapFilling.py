@@ -10,14 +10,16 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
-from pyCGM2.Model import model, modelFilters
+from pyCGM2.Model import model
+from pyCGM2.Model import modelFilters
 from pyCGM2.Tools import btkTools
 
 from pyCGM2 import enums
-from pyCGM2.Nexus import nexusTools,nexusFilters
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusTools
 
 def main():
-    
+
 
     NEXUS = ViconNexus.ViconNexus()
     NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()

@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 
 # pyCGM2
 import pyCGM2
-from pyCGM2.Report import plot, plotUtils
-
+from pyCGM2.Report import plot
+from pyCGM2.Report import plotUtils
 from pyCGM2.Report.Viewers import plotViewers
 
 

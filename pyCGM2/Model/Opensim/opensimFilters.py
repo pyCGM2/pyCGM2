@@ -25,7 +25,8 @@ except:
 
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.Opensim import osimProcessing
-from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
+from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
+from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 
 try:
     from pyCGM2 import opensim4 as opensim

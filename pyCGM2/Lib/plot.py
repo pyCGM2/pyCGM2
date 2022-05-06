@@ -13,8 +13,11 @@ import numpy as np
 from pyCGM2.Report.Viewers import plotViewers
 from pyCGM2.Report.Viewers import emgPlotViewers
 from pyCGM2.Report.Viewers import  comparisonPlotViewers
-from pyCGM2.Report import plot, plotFilters, normativeDatasets
-from pyCGM2.Processing.Scores import scoreFilters,scoreProcedures
+from pyCGM2.Report import plot
+from pyCGM2.Report import plotFilters
+from pyCGM2.Report import normativeDatasets
+from pyCGM2.Processing.Scores import scoreFilters
+from pyCGM2.Processing.Scores import scoreProcedures
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 from pyCGM2.EMG import emgManager

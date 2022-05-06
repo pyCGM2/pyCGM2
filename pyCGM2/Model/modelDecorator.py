@@ -14,7 +14,9 @@ import pyCGM2
 from pyCGM2.Model import model
 from pyCGM2 import enums
 from pyCGM2.Tools import btkTools
-from pyCGM2.Math import numeric, geometry, euler
+from pyCGM2.Math import numeric
+from pyCGM2.Math import geometry
+from pyCGM2.Math import euler
 from pyCGM2.Model import frame
 
 LOGGER = pyCGM2.LOGGER

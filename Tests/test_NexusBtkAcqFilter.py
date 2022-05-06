@@ -6,7 +6,8 @@ import numpy as np
 
 import pyCGM2
 from pyCGM2.Tools import btkTools
-from pyCGM2.Nexus import nexusFilters,nexusTools
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusTools
 try:
     from pyCGM2 import btk
 except:

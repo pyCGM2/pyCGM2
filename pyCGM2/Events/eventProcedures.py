@@ -20,7 +20,8 @@ except:
 
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Signal import detect_peaks
-from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
+from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
+from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 
 
 #-------- EVENT PROCEDURES  ----------

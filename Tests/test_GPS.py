@@ -4,7 +4,8 @@
 
 import pyCGM2
 from pyCGM2.Lib import analysis
-from pyCGM2.Processing.Scores import scoreFilters,scoreProcedures
+from pyCGM2.Processing.Scores import scoreFilters
+from pyCGM2.Processing.Scores import scoreProcedures
 
 from pyCGM2.Report import normativeDatasets
 

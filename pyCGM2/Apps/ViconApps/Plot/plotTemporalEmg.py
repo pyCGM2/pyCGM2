@@ -12,7 +12,8 @@ import pyCGM2
 
 from pyCGM2.Lib import plot
 from pyCGM2.Lib import emg
-from pyCGM2.Nexus import nexusFilters,nexusTools
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusTools
 from viconnexusapi import ViconNexus
 
 

@@ -4,10 +4,13 @@
 #--end--
 
 from pyCGM2.Utils import files
-from pyCGM2.Processing.JointPatterns import jointPatternFilters, jointPatternProcedures
+from pyCGM2.Processing.JointPatterns import jointPatternFilters
+from pyCGM2.Processing.JointPatterns import jointPatternProcedures
 from pyCGM2.Processing import exporter
 from pyCGM2.Model.CGM2 import cgm
-from pyCGM2.Processing import c3dManager, cycle, analysis
+from pyCGM2.Processing import c3dManager
+from pyCGM2.Processing import cycle
+from pyCGM2.Processing import analysis
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 

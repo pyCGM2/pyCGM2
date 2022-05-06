@@ -15,12 +15,14 @@ from pyCGM2.Utils import utils
 from pyCGM2.QTM import qtmTools
 from pyCGM2 import enums
 from pyCGM2.Tools import btkTools
-from  pyCGM2.Lib import eventDetector,report
+from pyCGM2.Lib import eventDetector
+from pyCGM2.Lib import report
 from pyCGM2.Report import normativeDatasets
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import argparse
-from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
+from pyCGM2.Anomaly import AnomalyFilter
+from pyCGM2.Anomaly import AnomalyDetectionProcedure
 
 MODEL="CGM1.1"
 

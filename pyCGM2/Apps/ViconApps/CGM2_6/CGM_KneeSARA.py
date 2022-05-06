@@ -13,7 +13,9 @@ from viconnexusapi import ViconNexus
 from pyCGM2 import enums
 from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
-from pyCGM2.Nexus import nexusFilters, nexusUtils,nexusTools
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusUtils
+from pyCGM2.Nexus import nexusTools
 
 from pyCGM2.Model import  modelFilters
 

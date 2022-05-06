@@ -9,7 +9,8 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2.Model.CGM2 import cgm
-from pyCGM2.Model import  modelFilters, modelDecorator
+from pyCGM2.Model import modelFilters
+from pyCGM2.Model import modelDecorator
 from pyCGM2 import enums
 from pyCGM2.Signal import signal_processing
 

@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 
 
-from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure, AnomalyCorrectionProcedure
-from pyCGM2.Nexus import nexusFilters, nexusUtils, nexusTools
+from pyCGM2.Anomaly import AnomalyFilter
+from pyCGM2.Anomaly import AnomalyDetectionProcedure
+from pyCGM2.Anomaly import AnomalyCorrectionProcedure
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusUtils
+from pyCGM2.Nexus import nexusTools
 from viconnexusapi import ViconNexus
 import argparse
 import pyCGM2

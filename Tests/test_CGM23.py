@@ -9,7 +9,8 @@ import pyCGM2
 
 from pyCGM2.Utils import files
 from pyCGM2.Tools import  btkTools
-from pyCGM2.Model.CGM2 import cgm,cgm2
+from pyCGM2.Model.CGM2 import cgm
+from pyCGM2.Model.CGM2 import cgm2
 from pyCGM2.Model import  modelFilters,modelDecorator
 from pyCGM2 import enums
 from pyCGM2.Model.Opensim import opensimFilters

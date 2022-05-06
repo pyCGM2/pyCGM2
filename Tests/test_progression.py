@@ -17,7 +17,8 @@ import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Tools import  btkTools
-from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
+from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
+from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 from pyCGM2.Utils import utils
 # ---- BTK ------
 

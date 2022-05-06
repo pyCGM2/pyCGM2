@@ -11,15 +11,20 @@ import pyCGM2
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 
-from pyCGM2.Model import modelFilters, bodySegmentParameters
-from pyCGM2.Model.CGM2 import cgm,cgm2
+from pyCGM2.Model import modelFilters
+from pyCGM2.Model import bodySegmentParameters
+from pyCGM2.Model.CGM2 import cgm
+from pyCGM2.Model.CGM2 import cgm2
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Model.Opensim import opensimFilters
-from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
+from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
+from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 from pyCGM2.Signal import signal_processing
-from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
-from pyCGM2.Inspector import inspectorFilters, inspectorProcedures
+from pyCGM2.Anomaly import AnomalyFilter
+from pyCGM2.Anomaly import AnomalyDetectionProcedure
+from pyCGM2.Inspector import inspectorFilters
+from pyCGM2.Inspector import inspectorProcedures
 
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,

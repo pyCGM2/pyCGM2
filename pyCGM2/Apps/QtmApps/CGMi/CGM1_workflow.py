@@ -6,7 +6,8 @@
 
 import warnings
 from pyCGM2.Report import normativeDatasets
-from pyCGM2.Lib import eventDetector, report
+from pyCGM2.Lib import eventDetector
+from pyCGM2.Lib import report
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 from pyCGM2.QTM import qtmTools
@@ -15,7 +16,8 @@ from pyCGM2.Utils import files
 from pyCGM2.Lib.CGM import cgm1
 import shutil
 import os
-from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
+from pyCGM2.Anomaly import AnomalyFilter
+from pyCGM2.Anomaly import AnomalyDetectionProcedure
 import argparse
 import pyCGM2
 LOGGER = pyCGM2.LOGGER

@@ -6,7 +6,8 @@
 """
 The module only contains functions for filtering data
 """
-from scipy import signal, integrate
+from scipy import signal
+from scipy import integrate
 import numpy as np
 import pyCGM2
 LOGGER = pyCGM2.LOGGER

@@ -3,7 +3,8 @@
 #APIDOC["Import"]=False
 #APIDOC["Draft"]=False
 #--end--
-from pyCGM2.Nexus import nexusTools, nexusFilters
+from pyCGM2.Nexus import nexusFilters
+from pyCGM2.Nexus import nexusTools
 from pyCGM2.Lib import eventDetector
 from viconnexusapi import ViconNexus
 import argparse
