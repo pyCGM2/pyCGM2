@@ -18,6 +18,9 @@
 ```{include} Pages/Core/QTM.md
 
 
+```{include} Pages/Core/Processing.md
+
+
 ```{include} Pages/Core/Signal.md
 
 ```{include} Pages/Core/Tools.md
