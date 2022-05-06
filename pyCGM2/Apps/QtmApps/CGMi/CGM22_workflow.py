@@ -13,7 +13,7 @@ from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Lib.CGM import  cgm2_2
 from pyCGM2.Utils import files
 from pyCGM2.Utils import utils
-from pyCGM2.qtm import qtmTools
+from pyCGM2.QTM import qtmTools
 from pyCGM2 import enums
 from pyCGM2.Tools import btkTools
 from  pyCGM2.Lib import eventDetector,report
