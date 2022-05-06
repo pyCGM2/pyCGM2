@@ -7,7 +7,7 @@ from pyCGM2.Nexus import nexusFilters, nexusUtils, nexusTools
 import warnings
 import argparse
 from pyCGM2.Lib.CGM import cgm1
-from pyCGM2.Configurator import CgmArgsManager
+from pyCGM2.Apps.ViconApps import CgmArgsManager
 from pyCGM2.Utils import files
 from viconnexusapi import ViconNexus
 import pyCGM2
@@ -28,10 +28,11 @@ def main():
 
     Usage:
 
-    ```bash
-        nexus_CGM1_Calibration.exe -l  1 --md 24 -ps "withSuffix"
-        nexus_CGM1_Calibration.exe --leftFlatFoot  1 --markerDiameter 24 --pointSuffix "withSuffix"
-    ```
+
+
+    >>> nexus_CGM1_Calibration.exe -l  1 --md 24 -ps "withSuffix"
+    >>> nexus_CGM1_Calibration.exe --leftFlatFoot  1 --markerDiameter 24 --pointSuffix "withSuffix"
+
 
     Args:
         [-l, --leftFlatFoot] (int) : set the left longitudinal foot axis parallel to the ground

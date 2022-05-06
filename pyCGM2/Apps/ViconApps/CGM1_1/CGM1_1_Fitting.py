@@ -9,7 +9,7 @@ import argparse
 from pyCGM2.Nexus import nexusFilters, nexusTools, nexusUtils
 from pyCGM2.Utils import files
 from pyCGM2.Lib.CGM import cgm1_1
-from pyCGM2.Configurator import CgmArgsManager
+from pyCGM2.Apps.ViconApps import CgmArgsManager
 from viconnexusapi import ViconNexus
 import pyCGM2
 import os
