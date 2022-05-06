@@ -10,7 +10,10 @@ All functions return a matplotlib figure instance
 
 import matplotlib.pyplot as plt
 import numpy as np
-from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emgPlotViewers, ComparisonPlotViewers
+from pyCGM2.Report.Viewers import plotViewers
+from pyCGM2.Report.Viewers import emgPlotViewers
+from pyCGM2.Report.Viewers import  ComparisonPlotViewers
+from pyCGM2.Report import plot, plotFilters, normativeDatasets
 from pyCGM2.Processing.Scores import scoreFilters,scoreProcedures
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums

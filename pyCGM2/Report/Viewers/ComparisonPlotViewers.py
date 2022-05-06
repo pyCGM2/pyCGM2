@@ -15,8 +15,7 @@ import matplotlib.pyplot as plt
 # pyCGM2
 import pyCGM2
 from pyCGM2 import enums
-from pyCGM2.Report import  plotViewers
-
+from pyCGM2.Report.Viewers import plotViewers
 
 
 

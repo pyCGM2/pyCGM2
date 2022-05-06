@@ -11,7 +11,8 @@ from pyCGM2.Lib import analysis, plot
 from pyCGM2.Lib import emg
 
 from pyCGM2.Report import plot as reportPlot
-from pyCGM2.Report import plotFilters,emgPlotViewers
+from pyCGM2.Report import plotFilters
+from pyCGM2.Report.Viewers import emgPlotViewers
 from pyCGM2.Utils import files
 
 SHOW = False
