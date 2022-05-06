@@ -95,7 +95,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     # --marker presence
     markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS, cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
     for markerset in markersets:
-        ipdp = inspectorProcedure.MarkerPresenceDetectionProcedure( markerset)
+        ipdp = inspectorProcedures.MarkerPresenceDetectionProcedure( markerset)
         idf = inspectorFilters.InspectorFilter(acqStatic,calibrateFilenameLabelled,ipdp)
         inspector = idf.run()
 
@@ -314,7 +314,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     # --marker presence
     markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS, cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
     for markerset in markersets:
-        ipdp = inspectorProcedure.MarkerPresenceDetectionProcedure( markerset)
+        ipdp = inspectorProcedures.MarkerPresenceDetectionProcedure( markerset)
         idf = inspectorFilters.InspectorFilter(acqGait,reconstructFilenameLabelled,ipdp)
         inspector = idf.run()
 

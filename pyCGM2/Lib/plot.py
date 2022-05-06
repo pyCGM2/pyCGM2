@@ -11,7 +11,7 @@ All functions return a matplotlib figure instance
 import matplotlib.pyplot as plt
 import numpy as np
 from pyCGM2.Report import plot, plotFilters, plotViewers, normativeDatasets, emgPlotViewers, ComparisonPlotViewers
-from pyCGM2.Processing import scores
+from pyCGM2.Processing.Scores import scoreFilters,scoreProcedures
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 from pyCGM2.EMG import emgManager
@@ -773,7 +773,7 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,
         filenameOut =  outputName+"-Map"
 
     #compute
-    gps =scores.CGM1_GPS(pointSuffix=pointLabelSuffix)
+    gps =scoreProcedures.CGM1_GPS(pointSuffix=pointLabelSuffix)
     scf = scores.ScoreFilter(gps,analysis, normativeDataset)
     scf.compute()
 

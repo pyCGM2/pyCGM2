@@ -4,7 +4,7 @@
 
 import pyCGM2
 from pyCGM2.Lib import analysis
-from pyCGM2.Processing import scores
+from pyCGM2.Processing.Scores import scoreFilters,scoreProcedures
 
 from pyCGM2.Report import normativeDatasets
 
@@ -91,6 +91,6 @@ class Test_GPS:
 
         DATA_PATH,analysisInstance = dataTest1()
 
-        gps =scores.CGM1_GPS()
+        gps =scoreProcedures.CGM1_GPS()
         scf = scores.ScoreFilter(gps,analysisInstance, newNormativeDataset)
         scf.compute()
