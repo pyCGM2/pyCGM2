@@ -7,13 +7,13 @@
 This module aims to classify gait
 """
 import numpy as np
-import  matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
 
 import pyCGM2
-LOGGER = pyCGM2.LOGGER
 from pyCGM2.Report import plot
+
+LOGGER = pyCGM2.LOGGER
 
 class PFKEprocedure(object):
     """PlantarFlexor-KneeExtensor classification procedure defined by Sangeux et al 2015
@@ -285,32 +285,3 @@ class PFKEprocedure(object):
 
         ax2.set_title("PFKE Score" ,size=8)
         return fig
-
-
-
-
-
-
-
-class ClassificationFilter(object):
-    """ Classification Filter
-
-    Args:
-        analysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
-        procedure (pyCGM2.Processing.classification.(procedure)): a procedure instance
-        pointSuffix (str): suffix added to model outputs.
-
-    """
-
-    def __init__(self, analysisInstance, procedure,pointSuffix=None):
-
-        self.m_procedure = procedure
-        self.m_analysis = analysisInstance
-        self.m_pointSuffix = pointSuffix
-
-    def run(self):
-        """ Run the filter"""
-
-        classification = self.m_procedure.run(self.m_analysis,self.m_pointSuffix)
-
-        return classification

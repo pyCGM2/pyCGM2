@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 import pyCGM2
 from pyCGM2.Lib import analysis
-from pyCGM2.Processing import classification
+from pyCGM2.Processing.Classification import classificationFilters, classificationProcedures
 from pyCGM2.Utils import files
 
 
