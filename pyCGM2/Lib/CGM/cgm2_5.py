@@ -20,7 +20,7 @@ from pyCGM2.Model.Opensim import opensimFilters
 from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
-from pyCGM2.Inspector import inspectorFilter, inspectorProcedure
+from pyCGM2.Inspector import inspectorFilters, inspectorProcedures
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               required_mp,optional_mp,
