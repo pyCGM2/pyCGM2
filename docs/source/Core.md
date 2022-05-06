@@ -15,8 +15,9 @@
 ```{include} Pages/Core/Inspector.md
 
 
-```{include} Pages/Core/QTM.md
+```{include} Pages/Core/Model.md
 
+```{include} Pages/Core/QTM.md
 
 ```{include} Pages/Core/Processing.md
 
