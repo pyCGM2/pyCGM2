@@ -33,9 +33,9 @@ class Test_lowLevel:
 
         nds = normativeDatasets.NormativeData("Schwartz2008","Free")
 
-        procedure = classification.PFKEprocedure(nds)
+        procedure = classificationProcedures.PFKEprocedure(nds)
 
-        filt = classification.ClassificationFilter(analysisInstance, procedure)
+        filt = classificationFilters.ClassificationFilter(analysisInstance, procedure)
         sagClass = filt.run()
 
         procedure.plot(analysisInstance)
@@ -46,8 +46,8 @@ class Test_lowLevel:
 
 
         nds = normativeDatasets.NormativeData("Schwartz2008","Free")
-        procedure = classification.PFKEprocedure(nds)
-        filt = classification.ClassificationFilter(analysisInstance, procedure)
+        procedure = classificationProcedures.PFKEprocedure(nds)
+        filt = classificationFilters.ClassificationFilter(analysisInstance, procedure)
         sagClass = filt.run()
 
         procedure.plot(analysisInstance)
