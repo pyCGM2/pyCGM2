@@ -17,7 +17,7 @@ kinetics or emg.)
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-from pyCGM2.Processing import progressionFrame
+from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
 
 import pyCGM2.Math.normalisation as MathNormalisation
 
@@ -420,8 +420,8 @@ class GaitCycle(Cycle):
 
             if btkTools.isPointExist(self.acq,"LHEE") and btkTools.isPointExist(self.acq,"RHEE") and btkTools.isPointExist(self.acq,"LTOE"):
 
-                pfp = progressionFrame.PointProgressionFrameProcedure(marker="LHEE")
-                pff = progressionFrame.ProgressionFrameFilter(self.acq,pfp)
+                pfp = progressionFrameProcedures.PointProgressionFrameProcedure(marker="LHEE")
+                pff = progressionFrameFilters.ProgressionFrameFilter(self.acq,pfp)
                 pff.compute()
                 progressionAxis =  pff.outputs["progressionAxis"]
                 forwardProgression = pff.outputs["forwardProgression"]
@@ -451,8 +451,8 @@ class GaitCycle(Cycle):
 
             if btkTools.isPointExist(self.acq,"RHEE") and btkTools.isPointExist(self.acq,"LHEE") and btkTools.isPointExist(self.acq,"RTOE"):
 
-                pfp = progressionFrame.PointProgressionFrameProcedure(marker="RHEE")
-                pff = progressionFrame.ProgressionFrameFilter(self.acq,pfp)
+                pfp = progressionFrameProcedures.PointProgressionFrameProcedure(marker="RHEE")
+                pff = progressionFrameFilters.ProgressionFrameFilter(self.acq,pfp)
                 pff.compute()
                 progressionAxis =  pff.outputs["progressionAxis"]
                 forwardProgression = pff.outputs["forwardProgression"]

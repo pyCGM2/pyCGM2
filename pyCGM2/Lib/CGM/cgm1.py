@@ -12,7 +12,7 @@ from pyCGM2.Model import modelFilters, bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
-from pyCGM2.Processing import progressionFrame
+from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
 from pyCGM2.Inspector import inspectorFilter, inspectorProcedure
@@ -95,8 +95,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     # --marker presence
     markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS, cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
     for markerset in markersets:
-        ipdp = InspectorProcedure.MarkerPresenceDetectionProcedure( markerset)
-        idf = InspectorFilter.InspectorFilter(acqStatic,calibrateFilenameLabelled,ipdp)
+        ipdp = inspectorProcedure.MarkerPresenceDetectionProcedure( markerset)
+        idf = inspectorFilters.InspectorFilter(acqStatic,calibrateFilenameLabelled,ipdp)
         inspector = idf.run()
 
         # # --marker outliers
@@ -180,8 +180,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     progressionFlag = False
     if btkTools.isPointsExist(acqStatic, ['LASI', 'RASI', 'RPSI', 'LPSI'],ignorePhantom=False):
         LOGGER.logger.info("[pyCGM2] - progression axis detected from Pelvic markers ")
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
+        pfp = progressionFrameProcedures.PelvisProgressionFrameProcedure()
+        pff = progressionFrameFilters.ProgressionFrameFilter(acqStatic,pfp)
         pff.compute()
         progressionAxis = pff.outputs["progressionAxis"]
         globalFrame = pff.outputs["globalFrame"]
@@ -189,8 +189,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
         progressionFlag = True
     elif btkTools.isPointsExist(acqStatic, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
         LOGGER.logger.info("[pyCGM2] - progression axis detected from Thoracic markers ")
-        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acqStatic,pfp)
+        pfp = progressionFrameProcedures.ThoraxProgressionFrameProcedure()
+        pff = progressionFrameFilters.ProgressionFrameFilter(acqStatic,pfp)
         pff.compute()
         progressionAxis = pff.outputs["progressionAxis"]
         globalFrame = pff.outputs["globalFrame"]
@@ -318,8 +318,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     # --marker presence
     markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS, cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
     for markerset in markersets:
-        ipdp = InspectorProcedure.MarkerPresenceDetectionProcedure( markerset)
-        idf = InspectorFilter.InspectorFilter(acqGait,reconstructFilenameLabelled,ipdp)
+        ipdp = inspectorProcedure.MarkerPresenceDetectionProcedure( markerset)
+        idf = inspectorFilters.InspectorFilter(acqGait,reconstructFilenameLabelled,ipdp)
         inspector = idf.run()
 
         # --marker outliers
@@ -369,12 +369,12 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     progressionFlag = False
     if btkTools.isPointExist(acqGait, 'LHEE',ignorePhantom=False) or btkTools.isPointExist(acqGait, 'RHEE',ignorePhantom=False):
 
-        pfp = progressionFrame.PointProgressionFrameProcedure(marker="LHEE") \
+        pfp = progressionFrameProcedures.PointProgressionFrameProcedure(marker="LHEE") \
             if btkTools.isPointExist(acqGait, 'LHEE',ignorePhantom=False) \
-            else  progressionFrame.PointProgressionFrameProcedure(marker="RHEE")
+            else  progressionFrameProcedures.PointProgressionFrameProcedure(marker="RHEE")
 
 
-        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pff = progressionFrameFilters.ProgressionFrameFilter(acqGait,pfp)
         pff.compute()
         progressionAxis = pff.outputs["progressionAxis"]
         globalFrame = pff.outputs["globalFrame"]
@@ -383,8 +383,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     elif btkTools.isPointsExist(acqGait, ['LASI', 'RASI', 'RPSI', 'LPSI'],ignorePhantom=False) and not progressionFlag:
         LOGGER.logger.info("[pyCGM2] - progression axis detected from Pelvic markers ")
-        pfp = progressionFrame.PelvisProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pfp = progressionFrameProcedures.PelvisProgressionFrameProcedure()
+        pff = progressionFrameFilters.ProgressionFrameFilter(acqGait,pfp)
         pff.compute()
         globalFrame = pff.outputs["globalFrame"]
         forwardProgression = pff.outputs["forwardProgression"]
@@ -392,8 +392,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         progressionFlag = True
     elif btkTools.isPointsExist(acqGait, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
         LOGGER.logger.info("[pyCGM2] - progression axis detected from Thoracic markers ")
-        pfp = progressionFrame.ThoraxProgressionFrameProcedure()
-        pff = progressionFrame.ProgressionFrameFilter(acqGait,pfp)
+        pfp = progressionFrameProcedures.ThoraxProgressionFrameProcedure()
+        pff = progressionFrameFilters.ProgressionFrameFilter(acqGait,pfp)
         pff.compute()
         progressionAxis = pff.outputs["progressionAxis"]
         globalFrame = pff.outputs["globalFrame"]

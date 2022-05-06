@@ -25,7 +25,7 @@ except:
 
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.Opensim import osimProcessing
-from pyCGM2.Processing import progressionFrame
+from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
 
 try:
     from pyCGM2 import opensim4 as opensim
@@ -305,8 +305,8 @@ class opensimFittingFilter(object):
                 forwardProgression = True
 
         else:
-            pfp = progressionFrame.PelvisProgressionFrameProcedure()
-            pff = progressionFrame.ProgressionFrameFilter(self.m_acqMotion,pfp)
+            pfp = progressionFrameProcedures.PelvisProgressionFrameProcedure()
+            pff = progressionFrameFilters.ProgressionFrameFilter(self.m_acqMotion,pfp)
             pff.compute()
             progressionAxis = pff.outputs["progressionAxis"]
             forwardProgression = pff.outputs["forwardProgression"]

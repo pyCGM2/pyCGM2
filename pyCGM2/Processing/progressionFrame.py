@@ -20,7 +20,7 @@ class ProgressionFrameFilter(object):
 
     Args:
         acq (btk.Acquisition): an acquisition
-        progressionProcedure (pyCGM2.Processing.progressionFrame.(procedure)): a procedure instance
+        progressionProcedure (pyCGM2.Processing.progressionFrameProcedures.(procedure)): a procedure instance
 
     """
 

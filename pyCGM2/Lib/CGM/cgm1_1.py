@@ -13,7 +13,7 @@ from pyCGM2.Model import modelFilters, bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
-from pyCGM2.Processing import progressionFrame
+from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Anomaly import AnomalyFilter, AnomalyDetectionProcedure
 from pyCGM2.Inspector import inspectorFilter, inspectorProcedure

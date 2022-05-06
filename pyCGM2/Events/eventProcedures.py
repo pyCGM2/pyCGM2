@@ -20,7 +20,7 @@ except:
 
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Signal import detect_peaks
-from pyCGM2.Processing import progressionFrame
+from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures
 
 
 #-------- EVENT PROCEDURES  ----------
@@ -70,8 +70,8 @@ class ZeniProcedure(object):
 
 
         if btkTools.isPointsExist(acq,["LPSI","RPSI","LHEE","LTOE","RHEE","RTOE"]):
-            pfp = progressionFrame.PelvisProgressionFrameProcedure()
-            pff = progressionFrame.ProgressionFrameFilter(acq,pfp)
+            pfp = progressionFrameProcedures.PelvisProgressionFrameProcedure()
+            pff = progressionFrameFilters.ProgressionFrameFilter(acq,pfp)
             pff.compute()
             progressionAxis = pff.outputs["progressionAxis"]
             globalFrame = pff.outputs["globalFrame"]
