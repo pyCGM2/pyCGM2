@@ -47,7 +47,6 @@ class Test_Btk:
         acq = btkTools.smartReader(filename, translators=None)
 
         btkTools.GetMarkerNames(acq)
-        btkTools.findNearestMarker(acq, 0, "LASI")
         btkTools.GetAnalogNames(acq)
         btkTools.isGap(acq, "LASI")
         btkTools.findMarkerGap(acq)

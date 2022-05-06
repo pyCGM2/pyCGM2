@@ -40,7 +40,7 @@ class ScoreFilter(object):
     def compute(self):
 
 
-        if isinstance(self.m_score,pyCGM2.Processing.scores.ScoreProcedure):
+        if isinstance(self.m_score,pyCGM2.Processing.Scores.scoreProcedures.ScoreProcedure):
             descriptiveGvsStats,descriptiveGpsStats_context,descriptiveGpsStats = self.m_score._compute(self.m_analysis,self.m_normativeData)
             self.m_analysis.setGps(descriptiveGpsStats,descriptiveGpsStats_context)
             self.m_analysis.setGvs(descriptiveGvsStats)

@@ -10,7 +10,6 @@ from pyCGM2.Processing.Scores import scoreProcedures
 from pyCGM2.Report import normativeDatasets
 
 
-normativeDataset = normativeDatasets.Schwartz2008("Free")
 newNormativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
 
 emgChannels=['Voltage.EMG1','Voltage.EMG2','Voltage.EMG3','Voltage.EMG4','Voltage.EMG5',
@@ -93,5 +92,5 @@ class Test_GPS:
         DATA_PATH,analysisInstance = dataTest1()
 
         gps =scoreProcedures.CGM1_GPS()
-        scf = scores.ScoreFilter(gps,analysisInstance, newNormativeDataset)
+        scf = scoreFilters.ScoreFilter(gps,analysisInstance, newNormativeDataset)
         scf.compute()

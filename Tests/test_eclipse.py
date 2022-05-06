@@ -16,13 +16,6 @@ class Test_eclipse:
 
         files = eclipse.getEnfFiles(pyCGM2.TEST_DATA_PATH+"LowLevel\\eclipse\\Hännibål\\", enums.EclipseType.Trial)
 
-    def test_findCalibration(self):
-        calib = eclipse.findCalibration(pyCGM2.TEST_DATA_PATH+"LowLevel\\eclipse\\Hännibål\\")
-        assert calib == "PN01OP01S01STAT.Trial.enf"
-
-    def test_findMotions(self):
-        motions = eclipse.findMotions(pyCGM2.TEST_DATA_PATH+"LowLevel\\eclipse\\Hännibål\\")
-        assert motions == ['PN01OP01S01SS02.Trial.enf', 'PN01OP01S01SS02[CGM1].Trial.enf', 'PN01OP01S01SS03[CGM1].Trial.enf']
 
     def test_modipyForcePlate(self):
 

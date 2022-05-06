@@ -8,7 +8,7 @@ This module aims to classify gait
 """
 import numpy as np
 import matplotlib.gridspec as gridspec
-
+import matplotlib.pyplot as plt
 
 import pyCGM2
 from pyCGM2.Report import plot

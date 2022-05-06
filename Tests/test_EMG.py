@@ -94,7 +94,7 @@ class Test_EMG:
         emg.normalizedEMG(DATA_PATH,emgAnalysisInstance,method="MeanMax", mvcSettings=None,fromOtherAnalysis=None)
 
 
-        cap = coactivation.UnithanCoActivationProcedure()
+        cap = coactivationProcedures.UnithanCoActivationProcedure()
         caf = emgFilters.EmgCoActivationFilter(emgAnalysisInstance,"Left")
         caf.setEMG1("Voltage.EMG1")
         caf.setEMG2("Voltage.EMG2")
@@ -127,7 +127,7 @@ class Test_EMG:
         emg.normalizedEMG(DATA_PATH,emgAnalysisInstance,method="MeanMax", mvcSettings=None,fromOtherAnalysis=None)
 
 
-        cap = coactivation.FalconerCoActivationProcedure()
+        cap = coactivationProcedures.FalconerCoActivationProcedure()
         caf = emgFilters.EmgCoActivationFilter(emgAnalysisInstance,"Left")
         caf.setEMG1("Voltage.EMG1")
         caf.setEMG2("Voltage.EMG2")
