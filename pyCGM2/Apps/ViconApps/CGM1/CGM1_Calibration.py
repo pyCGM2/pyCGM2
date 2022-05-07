@@ -15,14 +15,11 @@ from viconnexusapi import ViconNexus
 import pyCGM2
 import os
 import pyCGM2
+
 LOGGER = pyCGM2.LOGGER
 warnings.filterwarnings("ignore")
 
-# pyCGM2 settings
 
-# vicon nexus
-
-# pyCGM2 libraries
 
 
 def main():
@@ -37,7 +34,7 @@ def main():
 
 
     Args:
-        [-l, --leftFlatFoot] (int) : set the left longitudinal foot axis parallel to the ground
+        -l, --leftFlatFoot (int) : set the left longitudinal foot axis parallel to the ground
         [-r, --rightFlatFoot] (int) : set the right longitudinal foot axis parallel to the ground
         [-hf, --headFlat] (int) : set the  longitudinal head axis parallel to the ground
         [-md, --markerDiameter] (int) : marker diameter
