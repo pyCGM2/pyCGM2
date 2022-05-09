@@ -44,17 +44,19 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
         endFrame (int):  frame index
         jointRange (list) : joint range of motion boundaries
 
-    Kwargs :
+    Keyword Arguments:
         forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         fc_lowPass_marker (float): low-pass fiter cutoff frequency applied on marker trajectories
         order_lowPass_marker (int): order of the low-pass filter applied on marker trajectories
         fc_lowPass_forcePlate (float): low-pass fiter cutoff frequency applied on force plate measurements
         order_lowPass_forcePlate: order fiter cutoff frequency applied on force plate measurements
 
+
     Returns:
-        pyCGM2.Model: updated model instance
-        Btk.Acquisition :  updated btkAcquisition instance
-        str: processed body side
+        model (pyCGM2.Model): updated model instance
+        acqFunc (Btk.Acquisition): static btkAcquisition instance with model ouputs
+        side  (str): body side
+
 
     """
 
@@ -200,7 +202,7 @@ def sara(model,
         endFrame (int):  frame index
         jointRange (list) : joint range of motion boundaries
 
-    Kwargs :
+    Keyword Arguments:
         forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         fc_lowPass_marker (float): low-pass fiter cutoff frequency applied on marker trajectories
         order_lowPass_marker (int): order of the low-pass filter applied on marker trajectories
@@ -208,9 +210,9 @@ def sara(model,
         order_lowPass_forcePlate: order fiter cutoff frequency applied on force plate measurements
 
     Returns:
-        pyCGM2.Model: updated model instance
-        Btk.Acquisition :  updated btkAcquisition instance
-        str: processed body side
+        model (pyCGM2.Model): updated model instance
+        acqFunc (Btk.Acquisition): static btkAcquisition instance with model ouputs
+        side  (str): body side
 
     """
 

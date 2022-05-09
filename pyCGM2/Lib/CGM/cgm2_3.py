@@ -49,16 +49,16 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         hjcMethod (dict): hip joint centre regressions
         pointSuffix (str): suffix to add to ouputs
 
-    Kwargs :
+    Keyword Arguments:
         anomalyException (bool): raise exception if anomaly detected
         forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         displayCoordinateSystem (bool): return virtual markers for visualisation of the anatomical refentials
         noKinematicsCalculation (bool) : disable computation of joint kinematics
 
     Returns:
-        pyCGM2.Model: the calibrated Model
-        Btk.Acquisition : static btkAcquisition instance with model ouputs
-        bool: presence of deteced anomalies
+        model (pyCGM2.Model): the calibrated Model
+        acqStatic (Btk.Acquisition): static btkAcquisition instance with model ouputs
+        detectAnomaly  (bool): presence of anomaly
 
     """
     detectAnomaly = False
@@ -353,7 +353,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         mfpa (str): force plate assignment
         momentProjection (str) : referential for projection of joint moment
 
-    Kwargs :
+    Keyword Arguments:
         anomalyException (bool): raise exception if anomaly detected
         forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         frameInit (int):  frame index.
@@ -366,8 +366,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         noKinematicsCalculation (bool) : disable computation of joint kinematics
 
     Returns:
-        Btk.Acquisition :  btkAcquisition instance with model ouputs
-        bool: presence of deteced anomalies
+        acqGait (Btk.Acquisition): static btkAcquisition instance with model ouputs
+        detectAnomaly  (bool): presence of anomaly
 
     """
 
