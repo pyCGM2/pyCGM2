@@ -53,7 +53,7 @@ def makeAnalysis(DATA_PATH,
         experimentalInfo (dict)[None]: dictionnary with metadata information about the expreiment.
         modelInfo (dict)[None]: dictionnary with metadata information about the model.
 
-    Kwargs :
+    Keyword Arguments:
         btkAcqs (list of btk.Acquisition): btkAcq instances to process instead of calling c3d file.
         pstfilenames (list)[None]: list of c3d files used for computing spatiotemporal parameters
         kinematicfilenames (list)[None]: list of c3d files used to normalize kinematic data
@@ -61,29 +61,29 @@ def makeAnalysis(DATA_PATH,
         emgfilenames (list)[None]: list of c3d files used to normalize emg data
 
     Returns:
-        pyCGM2.Processing.analysis.Analysis: analysis instance
+        analysisFilter.analysis (pyCGM2.Processing.analysis.Analysis): an analysis instance
 
 
     Examples:
 
-    ```python
-    analysisInstance = analysis.makeAnalysis(DATA_PATH, [file1.c3d,"file2.c3d"])
-    ```
+    .. code-block:: python
+
+        analysisInstance = analysis.makeAnalysis(DATA_PATH, [file1.c3d,"file2.c3d"])
 
     The code takes 2 c3d files, then time normalized kinematics, kinetics and emg.
     Kinematic and  kinetic labels  are the default CGM output labels.
     The Emg channels are defined in the emg.setting file
 
 
-    ```python
-    analysisInstance2 = analysis.makeAnalysis(DATA_PATH, [file1.c3d,"file2.c3d"],
-    ..........................................kinematicLabelsDict = {"Left": ["LHipAngles,LKneeAngles"], "Right": ["RHipAngles,RKneeAngles"]},
-    ..........................................kineticLabelsDict = {"Left": ["LHipMoment,LKneePower"], "Right": ["RHipMoment,RKneeMoment"],
-    ..........................................emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3"],
-    ..........................................subjectInfo = {"Name":"Doe","Firstname":"John"},
-    ..........................................experimentalInfo = {"Barefoot":"No"},
-    ..........................................modelInfo = {"Model":"CGM1"})
-    ```
+    .. code-block:: python
+
+        analysisInstance2 = analysis.makeAnalysis(DATA_PATH, [file1.c3d,"file2.c3d"],
+        ..........................................kinematicLabelsDict = {"Left": ["LHipAngles,LKneeAngles"], "Right": ["RHipAngles,RKneeAngles"]},
+        ..........................................kineticLabelsDict = {"Left": ["LHipMoment,LKneePower"], "Right": ["RHipMoment,RKneeMoment"],
+        ..........................................emgChannels = ["Voltage.EMG1","Voltage.EMG2","Voltage.EMG3"],
+        ..........................................subjectInfo = {"Name":"Doe","Firstname":"John"},
+        ..........................................experimentalInfo = {"Barefoot":"No"},
+        ..........................................modelInfo = {"Model":"CGM1"})
 
     The code called specific model outputs and emg channels.
     In addition, the code also adds subject, experimental and model metadata.
@@ -181,11 +181,12 @@ def exportAnalysis(analysisInstance, DATA_PATH, name,
         name (str): name of your excel file.
         mode (str)[Advanced]: spreadsheet mode . ("Advanced or Basic")
 
-    Examples
+    Example:
 
-    ```python
-    exportAnalysis(AnalysisInstance, "c:\\DATA\\","johnDoe")
-    ```
+    .. code-block:: python
+
+        exportAnalysis(AnalysisInstance, "c:\\DATA\\","johnDoe")
+
 
     """
 

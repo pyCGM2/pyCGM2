@@ -18,7 +18,7 @@ def loadEmg(DATA_PATH):
         DATA_PATH (str): folder path.
 
     Returns:
-        pyCGM2.EMG.EmgManager: an emg manager class instance
+        emgManager (pyCGM2.EMG.EmgManager): an emg manager instance
     """
 
     return emgManager.EmgManager(DATA_PATH)
@@ -37,11 +37,11 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels,
         fileSuffix (str)[None]: add a suffix to the exported c3d files
         outDataPath (str)[None]: path to place the exported c3d files.
 
-    Examples
+    Examples:
 
-    ```python
-    emg.processEMG(DATA_PATH, ["file1.c3d","file2.c3d"], ["Voltage.EMG1","Voltage.EMG2"])
-    ```
+    .. code-block:: python
+
+        emg.processEMG(DATA_PATH, ["file1.c3d","file2.c3d"], ["Voltage.EMG1","Voltage.EMG2"])
 
     The code loads 2 c3d files, then processes the analog channel name `Voltage.EMG1`
     and `Voltage.EMG2`
@@ -87,18 +87,19 @@ def normalizedEMG(DATA_PATH,analysis, method="MeanMax", fromOtherAnalysis=None, 
         fromOtherAnalysis (pyCGM2.Processing.analysis.Analysis)[None]: normalise in amplitude from another analysis instance.
         mvcSettings (dict)[None]: mvc settings.
 
-    Kargs:
+    Keyword Arguments:
         forceEmgManager (pyCGM2.Emg.EmgManager)[None]: force the use of a specific emgManager instance.
 
 
 
     Examples:
 
-    ```python
-    emg.normalizedEMG(emgAnalysisInstance,
-    .................method="MeanMax",
-    .................fromOtherAnalysis=emgAnalysisInstancePreBloc)
-    ```
+    .. code-block:: python
+
+        emg.normalizedEMG(emgAnalysisInstance,
+        .................method="MeanMax",
+        .................fromOtherAnalysis=emgAnalysisInstancePreBloc)
+
 
     The code normalized emg channels of the current analysis instance `emgAnalysisInstance`
     from the mean maximum values of an other analysis instance `emgAnalysisInstancePreBloc`
@@ -160,10 +161,10 @@ def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelop
 
     Examples:
 
-    ```python
-    emg.processEMG_fromBtkAcq(acq,
-    .................["Voltage.EMG1","Voltage.EMG2"])
-    ```
+    .. code-block:: python
+
+        emg.processEMG_fromBtkAcq(acq,
+        .................["Voltage.EMG1","Voltage.EMG2"])
 
     """
 

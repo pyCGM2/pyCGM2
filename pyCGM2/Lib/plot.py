@@ -39,14 +39,15 @@ def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix
         title (str)[Optional,None]: modify plot panel title
         exportPng (Optional,bool)[False]:export as png .
 
-    Kargs:
+    Keyword Arguments:
         btkAcq (btk.Acquisition)[None]: force use of a btkAcquisition instead of loading from `modelledFilename`.
 
     Examples:
 
-    ```python
-    plotTemporalKinematic("C:\\myDATA\\", "file1.c3d","LowerLimb")
-    ```
+    .. code-block:: python
+
+        plotTemporalKinematic("C:\\myDATA\\", "file1.c3d","LowerLimb")
+
 
     """
 
@@ -108,14 +109,15 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,
         title (str)[Optional,None]: modify plot panel title
         exportPng (bool)[Optional,False]:export as png .
 
-    Kargs
+    Keyword Arguments:
         btkAcq (btk.Acquisition): force use of a btkAcquisition instead of loading from `modelledFilename`.
 
     Examples:
 
-    ```python
-    plotTemporalKinetic("C:\\myDATA\\", "file1.c3d","LowerLimb")
-    ```
+    .. code-block:: python
+
+        plotTemporalKinetic("C:\\myDATA\\", "file1.c3d","LowerLimb")
+
 
     """
     if OUT_PATH is None:
@@ -183,15 +185,16 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile,
         exportPng (bool)[Optional,False]: export as png.
         OUT_PATH (str)[Optional,None]: specify an path different than the `DATA_PATH` to export plot
 
-    Kargs
+    Keyword Arguments:
         btkAcq (btk.Acquisition): force use of a btkAcquisition instead of loading from `processedEmgfile`.
         forceEmgManager (pyCGM2.Emg.EmgManager): force the use of a specific emgManager instance.
 
     Examples:
 
-    ```python
-    plotTemporalEMG("C:\\myDATA\\", "file1.c3d")
-    ```
+    .. code-block:: python
+
+        plotTemporalEMG("C:\\myDATA\\", "file1.c3d")
+
     """
 
 
@@ -286,14 +289,15 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
         title (str)[Optional, None]: modify the plot panel title.
         exportPng (bool)[Optional, None]: export as png.
 
-    Kargs:
+    Keyword Arguments:
         forceEmgManager (pyCGM2.Emg.EmgManager): force the use of a specific emgManager instance.
 
     Examples:
 
-    ```python
-    plotDescriptiveEnvelopEMGpanel("C:\\myDATA\\", analysisInstance)
-    ```
+    .. code-block:: python
+
+        plotDescriptiveEnvelopEMGpanel("C:\\myDATA\\", analysisInstance)
+
 
     """
     if OUT_PATH is None:
@@ -356,15 +360,16 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Ga
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,True]: export as png.
 
-    Kargs:
+    Keyword Arguments:
         forceEmgManager (pyCGM2.Emg.EmgManager)[None]: force the use of a specific emgManager instance.
 
 
     Examples:
 
-    ```python
-    plotConsistencyEnvelopEMGpanel("C:\\myDATA\\", analysisInstance)
-    ```
+    .. code-block:: python
+
+        plotConsistencyEnvelopEMGpanel("C:\\myDATA\\", analysisInstance)
+
 
     """
     if OUT_PATH is None:
@@ -428,9 +433,10 @@ def plot_spatioTemporal(DATA_PATH,analysis,
 
     Examples:
 
-    ```python
-    plot_spatioTemporal("C:\\myDATA\\", analysisInstance)
-    ```
+    .. code-block:: python
+
+        plot_spatioTemporal("C:\\myDATA\\", analysisInstance)
+
     """
 
     if OUT_PATH is None:
@@ -481,9 +487,10 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
 
     Examples:
 
-    ```python
-    plot_DescriptiveKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
-    ```
+    .. code-block:: python
+
+        plot_DescriptiveKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+
     """
     if OUT_PATH is None:
         OUT_PATH = DATA_PATH
@@ -557,9 +564,10 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
 
     Examples:
 
-    ```python
-    plot_ConsistencyKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
-    ```
+    .. code-block:: python
+
+        plot_ConsistencyKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+
     """
     if OUT_PATH is None:
         OUT_PATH = DATA_PATH
@@ -626,9 +634,10 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,
 
     Examples:
 
-    ```python
-    plot_DescriptiveKinetic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
-    ```
+    .. code-block:: python
+
+        plot_DescriptiveKinetic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+
 
     """
 
@@ -698,9 +707,10 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,
 
     Examples:
 
-    ```python
-    plot_ConsistencyKinetic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
-    ```
+    .. code-block:: python
+
+        plot_ConsistencyKinetic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+
     """
 
     if OUT_PATH is None:
@@ -765,9 +775,10 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,
 
     Examples:
 
-    ```python
-    plot_MAP("c:\\mydata\\",analysisInstance,normativeInstance)
-    ```
+    .. code-block:: python
+
+        plot_MAP("c:\\mydata\\",analysisInstance,normativeInstance)
+
     """
     if OUT_PATH is None:
         OUT_PATH = DATA_PATH
@@ -824,9 +835,10 @@ def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDatase
 
     Examples:
 
-    ```python
-    compareKinematic("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"],"Left","LowerLimb",normativeInstance)
-    ```
+    .. code-block:: python
+
+        compareKinematic("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"],"Left","LowerLimb",normativeInstance)
+
     """
 
     if OUT_PATH is None:
@@ -905,9 +917,10 @@ def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
 
     Examples:
 
-    ```python
-    compareKinetic("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"],"Left","LowerLimb",normativeInstance)
-    ```
+    .. code-block:: python
+
+        compareKinetic("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"],"Left","LowerLimb",normativeInstance)
+
     """
 
     if OUT_PATH is None:
@@ -984,15 +997,16 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends,
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
 
-    Kargs:
+    Keyword Arguments:
         forceEmgManager (pyCGM2.Emg.EmgManager): force the use of a specific emgManager instance.
 
 
     Examples:
 
-    ```python
-    compareEmgEnvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"])
-    ```
+    .. code-block:: python
+
+        compareEmgEnvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"])
+
     """
     if OUT_PATH is None:
         OUT_PATH = DATA_PATH
@@ -1079,9 +1093,10 @@ def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts,
 
     Examples:
 
-    ```python
-    compareSelectedEmgEvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"], ["Voltage.EMG1","Voltage.EMG2"], ["Left","Right"])
-    ```
+    .. code-block:: python
+
+        compareSelectedEmgEvelops("c:\\mydata\\",[analysisInstance1,analysisInstance2],["pre","post"], ["Voltage.EMG1","Voltage.EMG2"], ["Left","Right"])
+
 
     The  code plots :
 

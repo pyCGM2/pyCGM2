@@ -21,13 +21,13 @@ def zeni(acqGait, footStrikeOffset=0, footOffOffset=0, **kwargs):
         footStrikeOffset (int): systematic offset to add to all `footStrikeOffset` events. Default is 0.
         footOffOffset (int): systematic offset to add to all `footOffOffset` events. Default is 0.
 
-    Kargs
+    Keyword Arguments:
         fc_lowPass_marker (double) : cut-off frequency of the lowpass filter applied on markers
         order_lowPass_marker (int): order of the lowpass filter applied on markers
 
     Returns:
-        btkAcq: updated acquisition with detected events.
-        bool : state of the detector
+        acqGait ( btk.Acquisition): updated acquisition with detected events.
+        state (bool): state of the detector
 
 
     """
