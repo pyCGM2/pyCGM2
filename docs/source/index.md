@@ -6,15 +6,28 @@
 # Welcome to pyCGM2's documentation!
 
 ```{toctree}
-:caption: 'Contents:'
+:caption: 'Apps:'
 :maxdepth: 2
 
 Apps
+
+```
+
+
+```{toctree}
+:caption: 'High-level functions:'
+:maxdepth: 2
+
 Lib
 
+```
+
+
+```{toctree}
+:caption: 'Modules:'
+:maxdepth: 2
+
 Core
-
-
 ```
 
 

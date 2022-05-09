@@ -1,4 +1,4 @@
-# Core
+# Modules
 
 ```{include} Pages/Core/Anomaly.md
 ```
