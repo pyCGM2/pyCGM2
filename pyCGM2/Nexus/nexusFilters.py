@@ -249,7 +249,7 @@ class NexusConstructAcquisitionFilter(object):
             values_cut = values[start:end+1, :]
             E_cut = E[start:end+1]
 
-            btkTools.smartAppendPoint(self.m_acq, marker, values_cut, PointType=btk.btkPoint.Marker, desc="",
+            btkTools.smartAppendPoint(self.m_acq, marker, values_cut, PointType="Marker", desc="",
                                       residuals=E_cut)
 
     def appendAnalogs(self):
@@ -374,19 +374,19 @@ class NexusConstructAcquisitionFilter(object):
                     E_cut = E[start:end+1]
 
                     if type == "Angles":
-                        btkTools.smartAppendPoint(self.m_acq, modelOutputName, values_cut, PointType=btk.btkPoint.Angle, desc="",
+                        btkTools.smartAppendPoint(self.m_acq, modelOutputName, values_cut, PointType="Angle", desc="",
                                                   residuals=E_cut)
                     elif type == "Forces":
-                        btkTools.smartAppendPoint(self.m_acq, modelOutputName, values_cut, PointType=btk.btkPoint.Force, desc="",
+                        btkTools.smartAppendPoint(self.m_acq, modelOutputName, values_cut, PointType="Force", desc="",
                                                   residuals=E_cut)
                     elif type == "Moments":
-                        btkTools.smartAppendPoint(self.m_acq, modelOutputName, values_cut, PointType=btk.btkPoint.Moment, desc="",
+                        btkTools.smartAppendPoint(self.m_acq, modelOutputName, values_cut, PointType="Moment", desc="",
                                                   residuals=E_cut)
                     elif type == "Powers":
-                        btkTools.smartAppendPoint(self.m_acq, modelOutputName, values_cut, PointType=btk.btkPoint.Power, desc="",
+                        btkTools.smartAppendPoint(self.m_acq, modelOutputName, values_cut, PointType="Power", desc="",
                                                   residuals=E_cut)
                     elif type == "Modeled Markers":
-                        btkTools.smartAppendPoint(self.m_acq, modelOutputName, values_cut, PointType=btk.btkPoint.Marker, desc="",
+                        btkTools.smartAppendPoint(self.m_acq, modelOutputName, values_cut, PointType="Marker", desc="",
                                                   residuals=E_cut)
                     else:
                         LOGGER.logger.debug("[pyCGM2] : type unknown")

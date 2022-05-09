@@ -196,7 +196,7 @@ def isPointsExist(acq, labels, ignorePhantom=True):
     return True
 
 
-def smartAppendPoint(acq, label, values, PointType="btk.btkPoint.Marker", desc="", residuals=None):
+def smartAppendPoint(acq, label, values, PointType="Marker", desc="", residuals=None):
     """
     Append or Update a point
 
@@ -204,11 +204,30 @@ def smartAppendPoint(acq, label, values, PointType="btk.btkPoint.Marker", desc="
         acq (btk.acquisition): a btk acquisition instance
         label (str): marker label
         values (np.array(n,3)): point values
-        PointType ( enum btk.btkPoint,optional): ignore zero markers. Default set to Btk.btkPoint.Marker
+        PointType (str): point type (choice : Marker,Angle,Moment,Force,Power,Reaction,Scalar)
         desc (str,optional): point description. Default set to ""
         residuals (np.array(n,1)): point residual values
 
     """
+
+    if PointType == "Marker":
+        PointType = btk.btkPoint.Marker
+    elif PointType == "Angle":
+        PointType = btk.btkPoint.Angle
+    elif PointType == "Force":
+        PointType = btk.btkPoint.Force
+    elif PointType == "Moment":
+        PointType = btk.btkPoint.Moment
+    elif PointType == "Power":
+        PointType = btk.btkPoint.Power
+    elif PointType == "Scalar":
+        PointType = btk.btkPoint.Scalar
+    elif PointType == "Reaction":
+        PointType = btk.btkPoint.Reaction
+    else:
+        raise Exception ("[pyCGM2] point type unknown. ")
+
+
 
     LOGGER.logger.debug("new point (%s) added to the c3d" % label)
 
@@ -488,7 +507,7 @@ def applyTranslators(acq, translators):
             if initialLabel != "None":
                 if isPointExist(acq, wantedLabel):
                     smartAppendPoint(acqClone, (wantedLabel+"_origin"), acq.GetPoint(
-                        wantedLabel).GetValues(), PointType=btk.btkPoint.Marker)  # modified marker
+                        wantedLabel).GetValues(), PointType="Marker")  # modified marker
                     LOGGER.logger.info(
                         "wantedLabel (%s)_origin created" % ((wantedLabel)))
                 if isPointExist(acq, initialLabel):
@@ -497,9 +516,9 @@ def applyTranslators(acq, translators):
                             LOGGER.logger.info("Initial point (%s)and (%s) point to similar values" % (
                                 (initialLabel), (wantedLabel)))
                             smartAppendPoint(acqClone, (wantedLabel), acq.GetPoint(
-                                initialLabel).GetValues(), PointType=btk.btkPoint.Marker)
+                                initialLabel).GetValues(), PointType="Marker")
                             smartAppendPoint(acqClone, (initialLabel), acq.GetPoint(
-                                initialLabel).GetValues(), PointType=btk.btkPoint.Marker)  # keep initial marker
+                                initialLabel).GetValues(), PointType="Marker")  # keep initial marker
                         elif translators[initialLabel] == wantedLabel:
                             LOGGER.logger.info("Initial point (%s) swaped with (%s)" % (
                                 (initialLabel), (wantedLabel)))
@@ -508,9 +527,9 @@ def applyTranslators(acq, translators):
                             wantedlValue = acq.GetPoint(
                                 wantedLabel).GetValues()
                             smartAppendPoint(
-                                acqClone, (wantedLabel), initialValue, PointType=btk.btkPoint.Marker)
+                                acqClone, (wantedLabel), initialValue, PointType="Marker")
                             smartAppendPoint(
-                                acqClone, ("TMP"), wantedlValue, PointType=btk.btkPoint.Marker)
+                                acqClone, ("TMP"), wantedlValue, PointType="Marker")
                             acqClone.GetPoint("TMP").SetLabel(initialLabel)
                             acqClone.RemovePoint(wantedLabel+"_origin")
                             acqClone.RemovePoint(initialLabel+"_origin")
@@ -518,9 +537,9 @@ def applyTranslators(acq, translators):
                         LOGGER.logger.info("Initial point (%s) renamed (%s)  added into the c3d" % (
                             (initialLabel), (wantedLabel)))
                         smartAppendPoint(acqClone, (wantedLabel), acq.GetPoint(
-                            initialLabel).GetValues(), PointType=btk.btkPoint.Marker)
+                            initialLabel).GetValues(), PointType="Marker")
                         smartAppendPoint(acqClone, (initialLabel), acq.GetPoint(
-                            initialLabel).GetValues(), PointType=btk.btkPoint.Marker)
+                            initialLabel).GetValues(), PointType="Marker")
 
                 else:
                     LOGGER.logger.info(
@@ -1200,7 +1219,7 @@ def cleanAcq(acq):
                 acq.RemovePoint(it.GetLabel())
 
 
-def smartCreateEvent(acq, label, context, frame, type="btk.btkEvent.Automatic", subject="", desc=""):
+def smartCreateEvent(acq, label, context, frame, type="Automatic", subject="", desc=""):
     """
     set an event
 
@@ -1214,6 +1233,11 @@ def smartCreateEvent(acq, label, context, frame, type="btk.btkEvent.Automatic", 
         desc (str,optional ): description. Defaut set to ""
 
     """
+
+    if type=="Automatic":
+        type = btk.btkEvent.Automatic
+
+
 
     time = frame / acq.GetPointFrequency()
     ev = btk.btkEvent(label, time, context, type, subject, desc)

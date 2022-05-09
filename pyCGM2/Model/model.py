@@ -372,9 +372,9 @@ class Model(object):
                 markerTrajectoryZ=np.array( [ nodeTraj[:,0], nodeTraj[:,1], markersTraj[:,2]]).T
 
 
-                btkTools.smartAppendPoint(acq,marker+"-X",markerTrajectoryX,PointType=btk.btkPoint.Marker, desc="")
-                btkTools.smartAppendPoint(acq,marker+"-Y",markerTrajectoryY,PointType=btk.btkPoint.Marker, desc="")
-                btkTools.smartAppendPoint(acq,marker+"-Z",markerTrajectoryZ,PointType=btk.btkPoint.Marker, desc="")
+                btkTools.smartAppendPoint(acq,marker+"-X",markerTrajectoryX,PointType="Marker", desc="")
+                btkTools.smartAppendPoint(acq,marker+"-Y",markerTrajectoryY,PointType="Marker", desc="")
+                btkTools.smartAppendPoint(acq,marker+"-Z",markerTrajectoryZ,PointType="Marker", desc="")
 
 
     def displayStaticCoordinateSystem(self,aquiStatic,  segmentLabel, targetPointLabel, referential = "Anatomic" ):

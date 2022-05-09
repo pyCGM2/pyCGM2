@@ -109,7 +109,7 @@ class ScoreResidualFilter(object):
 
                 scoreValues = np.array([score, np.zeros(self.acq.GetPointFrameNumber()), np.zeros(self.acq.GetPointFrameNumber())]).T
 
-                btkTools.smartAppendPoint(self.acq, str(nodeLabel+"_Score"),scoreValues, PointType=btk.btkPoint.Scalar,desc="Score")
+                btkTools.smartAppendPoint(self.acq, str(nodeLabel+"_Score"),scoreValues, PointType="Scalar",desc="Score")
             except:
                 LOGGER.logger.error("[pyCGM2] Score residual for node (%s) not computed"%(nodeLabel))
 

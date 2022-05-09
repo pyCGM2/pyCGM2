@@ -34,7 +34,7 @@ class Test_Btk:
         acq = btkTools.smartReader(filename, translators=None)
         values = acq.GetPoint("LASI").GetValues()
         btkTools.smartAppendPoint(
-            acq, "LASI2", values, PointType=btk.btkPoint.Marker, desc="toto", residuals=None)
+            acq, "LASI2", values, PointType="Marker", desc="toto", residuals=None)
 
     def test_appendAnalog(self):
         filename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IO\\Hannibal_c3d\\static.c3d"

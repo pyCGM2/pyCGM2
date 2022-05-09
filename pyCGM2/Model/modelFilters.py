@@ -814,9 +814,9 @@ class TrackingMarkerDecompositionFilter(object):
                     markerTrajectoryY=np.array( [ nodeTraj[:,0],    markersTraj[:,1], nodeTraj[:,2]]).T
                     markerTrajectoryZ=np.array( [ nodeTraj[:,0],    nodeTraj[:,1],    markersTraj[:,2]]).T
 
-                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[0],markerTrajectoryX,PointType=btk.btkPoint.Marker, desc="")
-                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[1],markerTrajectoryY,PointType=btk.btkPoint.Marker, desc="")
-                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[2],markerTrajectoryZ,PointType=btk.btkPoint.Marker, desc="")
+                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[0],markerTrajectoryX,PointType="Marker", desc="")
+                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[1],markerTrajectoryY,PointType="Marker", desc="")
+                    btkTools.smartAppendPoint(self.m_acq,marker+suffix[2],markerTrajectoryZ,PointType="Marker", desc="")
 
 
 
@@ -909,7 +909,7 @@ class ModelJCSFilter(object):
             fulljointLabel  = jointLabel + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else jointLabel+"Angles"
             btkTools.smartAppendPoint(self.m_aqui,
                              fulljointLabel,
-                             jointFinalValues,PointType=btk.btkPoint.Angle, desc=description)
+                             jointFinalValues,PointType="Angle", desc=description)
 
 
 class ModelAbsoluteAnglesFilter(object):
@@ -1058,7 +1058,7 @@ class ModelAbsoluteAnglesFilter(object):
                     absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValuesFinal)
 
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+                                         absoluteAngleValuesFinal,PointType="Angle", desc=description)
 
                 else:
                     LOGGER.logger.debug("no clinical descriptor for segment label (%s)" %(segName))
@@ -1068,7 +1068,7 @@ class ModelAbsoluteAnglesFilter(object):
 
 
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+                                         absoluteAngleValuesFinal,PointType="Angle", desc=description)
 
             if side == enums.SegmentSide.Central:
                 descriptorInfos1 = self.m_model.getClinicalDescriptor(enums.DataType.Angle,segName)
@@ -1088,7 +1088,7 @@ class ModelAbsoluteAnglesFilter(object):
 
 
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+                                         absoluteAngleValuesFinal,PointType="Angle", desc=description)
 
                 # case Left
                 descriptorInfos2 = self.m_model.getClinicalDescriptor(enums.DataType.Angle,str("L"+segName))
@@ -1110,7 +1110,7 @@ class ModelAbsoluteAnglesFilter(object):
 
 
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+                                         absoluteAngleValuesFinal,PointType="Angle", desc=description)
 
 
                 # case Right
@@ -1130,7 +1130,7 @@ class ModelAbsoluteAnglesFilter(object):
                     absoluteAngleValuesFinal = np.rad2deg(absoluteAngleValuesFinal)
 
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+                                         absoluteAngleValuesFinal,PointType="Angle", desc=description)
 
                 if not descriptorInfos1 and not descriptorInfos2 and not descriptorInfos3:
                     LOGGER.logger.debug("no clinical descriptor for segment label (%s)" %(segName))
@@ -1138,7 +1138,7 @@ class ModelAbsoluteAnglesFilter(object):
 
                     fullAngleLabel  = self.m_angleLabels[index] + "Angles_" + pointLabelSuffix if pointLabelSuffix is not None else self.m_angleLabels[index]+"Angles"
                     btkTools.smartAppendPoint(self.m_aqui, fullAngleLabel,
-                                         absoluteAngleValuesFinal,PointType=btk.btkPoint.Angle, desc=description)
+                                         absoluteAngleValuesFinal,PointType="Angle", desc=description)
 
 
 
@@ -1235,19 +1235,19 @@ class ForcePlateAssemblyFilter(object):
 
         btkTools.smartAppendPoint(self.m_aqui,forceLabel,
                          left_forceValues / bodymass,
-                         PointType=btk.btkPoint.Force, desc="")
+                         PointType="Force", desc="")
         btkTools.smartAppendPoint(self.m_aqui,momentLabel,
                          left_momentValues / bodymass,
-                         PointType=btk.btkPoint.Moment, desc="")
+                         PointType="Moment", desc="")
 
         forceLabel  = "RGroundReactionForce_"+pointLabelSuffix if pointLabelSuffix is not None else "RGroundReactionForce"
         momentLabel  = "RGroundReactionMoment_"+pointLabelSuffix if pointLabelSuffix is not None else "RGroundReactionMoment"
         btkTools.smartAppendPoint(self.m_aqui,forceLabel,
                          right_forceValues / bodymass,
-                         PointType=btk.btkPoint.Force, desc="")
+                         PointType="Force", desc="")
         btkTools.smartAppendPoint(self.m_aqui,momentLabel,
                          right_momentValues / bodymass,
-                         PointType=btk.btkPoint.Moment, desc="")
+                         PointType="Moment", desc="")
 
 
 
@@ -1464,12 +1464,12 @@ class InverseDynamicFilter(object):
 
                     btkTools.smartAppendPoint(self.m_aqui,
                                      fulljointLabel_force,
-                                     finalForceValues,PointType=btk.btkPoint.Force, desc="")
+                                     finalForceValues,PointType="Force", desc="")
 
                     fulljointLabel_moment  = jointLabel + "Moment_" + pointLabelSuffix if pointLabelSuffix is not None else jointLabel+"Moment"
                     btkTools.smartAppendPoint(self.m_aqui,
                                      fulljointLabel_moment,
-                                     finalMomentValues,PointType=btk.btkPoint.Moment, desc="")
+                                     finalMomentValues,PointType="Moment", desc="")
 
                     # Todo - Validate
                     # if self.m_exportMomentContributions:
@@ -1489,7 +1489,7 @@ class InverseDynamicFilter(object):
                     #         fulljointLabel_moment  = jointLabel + "Moment_" + pointLabelSuffix + "_" + contIt if pointLabelSuffix!="" else jointLabel+"Moment" + "_" + contIt
                     #         btkTools.smartAppendPoint(self.m_aqui,
                     #                          fulljointLabel_moment,
-                    #                          finalMomentValues,PointType=btk.btkPoint.Moment, desc= contIt + " Moment contribution")
+                    #                          finalMomentValues,PointType="Moment", desc= contIt + " Moment contribution")
 
 
 
@@ -1539,7 +1539,7 @@ class JointPowerFilter(object):
                     fulljointLabel  = jointLabel + "Power_" + pointLabelSuffix if pointLabelSuffix is not None else jointLabel+"Power"
                     btkTools.smartAppendPoint(self.m_aqui,
                                      fulljointLabel,
-                                     power,PointType=btk.btkPoint.Power, desc="")
+                                     power,PointType="Power", desc="")
 
 
 class GeneralCoordinateSystemProcedure(object):

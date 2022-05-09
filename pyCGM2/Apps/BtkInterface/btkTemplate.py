@@ -60,7 +60,7 @@ def main():
         # --------------------------process ------------------------------------
         # Work with BTK Here
         values = (acq.GetPoint("LTIAP").GetValues() + acq.GetPoint("LTIB").GetValues()) /2.0
-        btkTools.smartAppendPoint(acq,"LTIAD",values, PointType=btk.btkPoint.Marker,desc="",residuals = None)
+        btkTools.smartAppendPoint(acq,"LTIAD",values, PointType="Marker",desc="",residuals = None)
 
 
 
