@@ -60,3 +60,5 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 napoleon_custom_sections = [('Returns', 'params_style')]
+
+html_logo = '_static/pyCGM2-logo2.png'
