@@ -33,7 +33,8 @@ release = '4.2.0'
 extensions = ["myst_parser",
              "sphinx.ext.autosectionlabel",
              'sphinx.ext.napoleon',
-             "sphinx.ext.autodoc" ]
+             "sphinx.ext.autodoc",
+             'sphinxarg.ext' ]
 
 source_suffix = ['.md']
 
