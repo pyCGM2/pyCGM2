@@ -6,7 +6,7 @@
 
 """
 The module contains convenient function for getting the normal emg activity of the muscles listed in the file
-(pyCGM2\Data\normativeData\emg\normalActivation.json).
+(``pyCGM2/Data/normativeData/emg/normalActivation.json``).
 
 """
 import pyCGM2
@@ -17,11 +17,8 @@ def getNormalBurstActivity(muscle, fo):
     """get onsets and offsets of a specific muscle.
 
     Args:
-        muscle (str): muscle label listed in  normalActivation.json (pyCGM2\Data\normativeData\emg\)
+        muscle (str): muscle label listed in  normalActivation.json
         fo (int): foot off frame
-
-    Returns:
-        [float],[float]: onset frames and burst duration
 
     """
 
@@ -70,15 +67,13 @@ def getNormalBurstActivity_fromCycles(muscle, ff, begin, fo, end, apf):
     """get onsets and offsets of a specific muscle from .
 
     Args:
-        muscle (str): muscle label listed in  normalActivation.json (pyCGM2\Data\normativeData\emg\)
+        muscle (str): muscle label listed in  normalActivation.json
         ff (int): first frame of the btk.acquisition
         begin (int): initial frame of cycle
         fo (int): foot off frame
         end (int): final frame of the cycle
         apf (int): nNumber of analog sample per frame
 
-    Returns:
-        [float],[float]: onset frames and burst duration
 
     """
 
