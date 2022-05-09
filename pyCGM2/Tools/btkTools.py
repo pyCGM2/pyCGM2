@@ -196,7 +196,7 @@ def isPointsExist(acq, labels, ignorePhantom=True):
     return True
 
 
-def smartAppendPoint(acq, label, values, PointType=btk.btkPoint.Marker, desc="", residuals=None):
+def smartAppendPoint(acq, label, values, PointType="btk.btkPoint.Marker", desc="", residuals=None):
     """
     Append or Update a point
 
@@ -1200,7 +1200,7 @@ def cleanAcq(acq):
                 acq.RemovePoint(it.GetLabel())
 
 
-def smartCreateEvent(acq, label, context, frame, type=btk.btkEvent.Automatic, subject="", desc=""):
+def smartCreateEvent(acq, label, context, frame, type="btk.btkEvent.Automatic", subject="", desc=""):
     """
     set an event
 
