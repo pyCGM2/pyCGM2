@@ -4,6 +4,14 @@
 
 #### CGM1
 
+
+```{eval-rst}
+.. argparse::
+   :module: pyCGM2.Apps.ViconApps.CGM1.CGM1_Calibration
+   :func: main
+   :prog: nexus_CGM1_calibration.exe
+```
+
 ```{eval-rst}
 .. automodule:: pyCGM2.Apps.ViconApps.CGM1.CGM1_Calibration
    :members:
