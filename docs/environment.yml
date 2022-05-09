@@ -25,3 +25,4 @@ dependencies:
     - pytest==6.1.2
     - pytest-mpl==0.12
     - pathlib2==2.3.5
+    - sphinx-argparse==0.3.1
