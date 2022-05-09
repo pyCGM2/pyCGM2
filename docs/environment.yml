@@ -26,3 +26,4 @@ dependencies:
     - pytest-mpl==0.12
     - pathlib2==2.3.5
     - sphinx-argparse==0.3.1
+    - scikit-learn== 0.23.2
