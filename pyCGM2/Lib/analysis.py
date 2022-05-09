@@ -25,7 +25,7 @@ def makeAnalysis(DATA_PATH,
                  subjectInfo=None, experimentalInfo=None, modelInfo=None,
                  **kwargs):
     """
-    This function normalises data in time and returns an **Analysis Instance** ie a nested dictionnary  containing
+    This function normalises data in time and returns an **Analysis Instance** ie a nested dictionary  containing
     spatiotemporal parameters, normalized kinematics, normalized kinetics and normalized EMG envelops from a list of c3d files.
 
     By default: the function calls :
@@ -45,13 +45,13 @@ def makeAnalysis(DATA_PATH,
         DATA_PATH (str): folder path
         filenames (list): list of c3d files to normalize
         type (str)[Gait]: event type (choice : "Gait" or "unknown").
-        kinematicLabelsDict (dict)[cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT]: dictionnary containing kinematic data to normalize.
-        kineticLabelsDict (dict)[cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT]: dictionnary containing kinetic data to normalize.
+        kinematicLabelsDict (dict)[cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT]: dictionary containing kinematic data to normalize.
+        kineticLabelsDict (dict)[cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT]: dictionary containing kinetic data to normalize.
         emgChannels (list)[channels of emg.settings]: list of emg channels
         pointLabelSuffix (str)[None]: suffix associated to point output
-        subjectInfo (dict)[None]: dictionnary with metadata information about the subject.
-        experimentalInfo (dict)[None]: dictionnary with metadata information about the expreiment.
-        modelInfo (dict)[None]: dictionnary with metadata information about the model.
+        subjectInfo (dict)[None]: dictionary with metadata information about the subject.
+        experimentalInfo (dict)[None]: dictionary with metadata information about the expreiment.
+        modelInfo (dict)[None]: dictionary with metadata information about the model.
 
     Keyword Arguments:
         btkAcqs (list of btk.Acquisition): btkAcq instances to process instead of calling c3d file.

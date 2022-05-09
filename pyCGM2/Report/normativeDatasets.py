@@ -9,7 +9,7 @@ Module deals with normative datasets.
 Normative datasets are embedded in pyCGM2. they are placed in the folder *pyCGM2/Data* as a json file.
 
 The construction of a `NormativeData` instance automatically populate its attribute
-`data`, an intuitive dictionnary with model ouput as key, reporting mean and
+`data`, an intuitive dictionary with model ouput as key, reporting mean and
 standard deviation as sub-key.
 
 The `NormativeSTP` class replicates the process for the spatio-temporal excel file (normal_stp.xlsx) placed in
@@ -26,7 +26,7 @@ from pyCGM2.Utils import files
 class NormativeData(object):
     """Normative dataset.
 
-    The instance contruction populates the attribute `data` which reports normative data as a dictionnary
+    The instance contruction populates the attribute `data` which reports normative data as a dictionary
 
     Args:
         filenameNoExt (str): filename of the targeted json file.
@@ -75,7 +75,7 @@ class NormativeData(object):
 class NormalSTP(object):
     """Normative spatio-temporal dataset.
 
-    The instance contruction populates the attribute `data` which reports normative data as a dictionnary
+    The instance contruction populates the attribute `data` which reports normative data as a dictionary
     """
 
     def __init__(self):

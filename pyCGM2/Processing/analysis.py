@@ -158,8 +158,8 @@ class AnalysisBuilder(AbstractBuilder):
 
     Args:
          cycles(pyCGM2.Processing.cycle.Cycles): Cycles instance built from CycleFilter
-         kinematicLabelsDict (dict): dictionnary with two items (Left and Right) grouping kinematic output label
-         kineticLabelsDict (dict): dictionnary with two items (Left and Right) grouping kinetic output label
+         kinematicLabelsDict (dict): dictionary with two items (Left and Right) grouping kinematic output label
+         kineticLabelsDict (dict): dictionary with two items (Left and Right) grouping kinetic output label
          pointlabelSuffix (dict) - suffix ending kinematicLabels and kineticLabels dictionnaries
          emgLabelList (list of str): labels of used emg
          subjectInfos (dict): information about the subject
@@ -311,8 +311,8 @@ class GaitAnalysisBuilder(AbstractBuilder):
 
     Args:
          cycles(pyCGM2.Processing.cycle.Cycles): Cycles instance built from `CycleFilter`
-         kinematicLabelsDict (dict): dictionnary with two items (Left and Right) grouping kinematic output label
-         kineticLabelsDict (dict): dictionnary with two items (Left and Right) grouping kinetic output label
+         kinematicLabelsDict (dict): dictionary with two items (Left and Right) grouping kinematic output label
+         kineticLabelsDict (dict): dictionary with two items (Left and Right) grouping kinetic output label
          pointlabelSuffix (dict) - suffix ending kinematicLabels and kineticLabels dictionnaries
          emgLabelList (list of str): labels of used emg
          subjectInfos (dict): information about the subject

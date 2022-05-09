@@ -91,7 +91,7 @@ class Pinzone2014(object):
             from pyCGM2.Report import normativeDatabaseProcedure
             nd = normativeDatabaseProcedure.Pinzone2014_normativeDataBases("CentreOne")
             nd.constructNormativeData() # this function
-            nd.data # dictionnary with all parameters extracted from the dataset CentreOne reference in Pinzone2014
+            nd.data # dictionary with all parameters extracted from the dataset CentreOne reference in Pinzone2014
 
 
         """
@@ -101,7 +101,7 @@ class Pinzone2014(object):
         self.data = dict()
 
     def __setDict(self,dataframe,JointLabel,axisLabel, dataType):
-        """ populate an item of the member dictionnary (data)
+        """ populate an item of the member dictionary (data)
 
         """
 
@@ -158,7 +158,7 @@ class Pinzone2014(object):
     def constructNormativeData(self):
 
         """
-            **Description :**  Read initial xls file and construct the member dictionnary (data)
+            **Description :**  Read initial xls file and construct the member dictionary (data)
         """
 
         angles =pd.read_excel(self.m_filename,sheet_name = "Angles")
@@ -198,7 +198,7 @@ class Schwartz2008(object):
             from pyCGM2.Report import normativeDatabaseProcedure
             nd = normativeDatabaseProcedure.Schwartz2008_normativeDataBases("Free")
             nd.constructNormativeData() # this function
-            nd.data # dictionnary with all parameters extracted from the dataset CentreOne reference in Pinzone2014
+            nd.data # dictionary with all parameters extracted from the dataset CentreOne reference in Pinzone2014
 
 
         """
@@ -210,7 +210,7 @@ class Schwartz2008(object):
 
     def __setDict(self,dataframe,JointLabel,axisLabel, dataType):
         """
-            Populate an item of the member dictionnary (data)
+            Populate an item of the member dictionary (data)
 
         """
 
@@ -274,7 +274,7 @@ class Schwartz2008(object):
 
     def constructNormativeData(self):
         """
-            **Description :**  Read initial xls file and construct the member dictionnary (data)
+            **Description :**  Read initial xls file and construct the member dictionary (data)
         """
 
         angles =pd.read_excel(self.m_filename,sheet_name = "Joint Rotations")

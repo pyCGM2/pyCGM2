@@ -41,7 +41,7 @@ class GeneralScoreResidualProcedure(object):
         self.model = model
 
     def setDefinition(self, nodeLabel, proxSegLabel, distSegLabel):
-        """set the definition dictionnary.
+        """set the definition dictionary.
 
         Args:
             nodeLabel (str): node label.

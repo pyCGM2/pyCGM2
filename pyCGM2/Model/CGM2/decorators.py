@@ -16,7 +16,7 @@ def applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1onl
     """Apply decorators from detected calibration method
 
     Args:
-        dcm (dict): dictionnary returned from the function `detectCalibrationMethods`
+        dcm (dict): dictionary returned from the function `detectCalibrationMethods`
         model (pyCGM2.Model.CGM2.cgm): a CGM model instance
         acqStatic (btk.acquisition): a btk acquisition instance of a static file
         optional_mp (dict): optional anthropometric parameters of the CGM

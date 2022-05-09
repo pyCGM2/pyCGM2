@@ -240,7 +240,7 @@ def saveJson(path, filename, content,ensure_ascii=False):
     Args:
         path (str): data folder path
         filename (str):  json filename
-        content (dict): dictionnary to save
+        content (dict): dictionary to save
     """
 
     if path is not None: path = path
@@ -312,7 +312,7 @@ def getMp(mpInfo,resetFlag=True):
     """return required and optional anthropometric parameters
 
     Args:
-        mpInfo (dict): global mp dictionnary
+        mpInfo (dict): global mp dictionary
         resetFlag (bool,Optional[True]): reset optional parameters
 
     """

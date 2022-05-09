@@ -120,7 +120,7 @@ class CGM(model.Model):
         """ *Class method* returning marker label of the knee and ankle joint centres
 
         Args:
-            dcm (dict): dictionnary returned from the function `detectCalibrationMethods`
+            dcm (dict): dictionary returned from the function `detectCalibrationMethods`
 
         """
 
@@ -213,7 +213,7 @@ class CGM1(CGM):
         """return static markers
 
         Args:
-            dcm (dict): dictionnary returned from the function `detectCalibrationMethods`
+            dcm (dict): dictionary returned from the function `detectCalibrationMethods`
 
         """
         static_markers = self.getTrackingMarkers()
@@ -242,7 +242,7 @@ class CGM1(CGM):
         """" configure the model
 
         Args:
-            detectedCalibrationMethods (dict,optional[None]): dictionnary returned from the function `detectCalibrationMethods`
+            detectedCalibrationMethods (dict,optional[None]): dictionary returned from the function `detectCalibrationMethods`
 
         """
 

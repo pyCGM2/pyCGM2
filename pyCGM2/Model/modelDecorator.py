@@ -566,8 +566,8 @@ def haraRegression(mp_input,mp_computed,markerDiameter = 14.0,  basePlate = 2.0)
     """Hip joint centre regression from Hara et al, 2016
 
     Args
-        mp_input (dict):  dictionnary of the measured anthropometric parameters
-        mp_computed (dict):  dictionnary of the cgm-computed anthropometric parameters
+        mp_input (dict):  dictionary of the measured anthropometric parameters
+        mp_computed (dict):  dictionary of the cgm-computed anthropometric parameters
         markerDiameter (double,Optional[14.0]):  diameter of the marker
         basePlate (double,Optional[2.0]): thickness of the base plate
 
@@ -604,8 +604,8 @@ def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0
     """ Hip joint centre regression from Harrington et al, 2007
 
     Args:
-        mp_input (dict):  dictionnary of the measured anthropometric parameters
-        mp_computed (dict):  dictionnary of the cgm-computed anthropometric parameters
+        mp_input (dict):  dictionary of the measured anthropometric parameters
+        mp_computed (dict):  dictionary of the cgm-computed anthropometric parameters
         predictors (str): predictor choice of the regression (full,PWonly,LLonly)
         markerDiameter (double,Optional[14.0]):  diameter of the marker
         basePlate (double,Optional[2.0]): thickness of the base plate
@@ -685,8 +685,8 @@ def davisRegression(mp_input,mp_computed, markerDiameter = 14.0, basePlate = 2.0
     """Hip joint centre regression according Davis et al, 1991
 
     Args
-        mp_input (dict):  dictionnary of the measured anthropometric parameters
-        mp_computed (dict):  dictionnary of the cgm-computed anthropometric parameters
+        mp_input (dict):  dictionary of the measured anthropometric parameters
+        mp_computed (dict):  dictionary of the cgm-computed anthropometric parameters
         markerDiameter (double,Optional[14.0]):  diameter of the marker
         basePlate (double,Optional[2.0]): thickness of the base plate
 
@@ -717,8 +717,8 @@ def bellRegression(mp_input,mp_computed,  markerDiameter = 14.0, basePlate = 2.0
     """Hip joint centre regression from Bell and Brand et al, 2007
 
     Args
-        mp_input (dict):  dictionnary of the measured anthropometric parameters
-        mp_computed (dict):  dictionnary of the cgm-computed anthropometric parameters
+        mp_input (dict):  dictionary of the measured anthropometric parameters
+        mp_computed (dict):  dictionary of the cgm-computed anthropometric parameters
         markerDiameter (double,Optional[14.0]):  diameter of the marker
         basePlate (double,Optional[2.0]): thickness of the base plate
         cgmReferential (bool,optional[True]) - flag indicating HJC position will be expressed in the CGM pelvis Coordinate system

@@ -4,7 +4,7 @@
 #--end--
 
 class ordict(dict):
-    """ordered dictionnary"""
+    """ordered dictionary"""
 
     # ========================================================================
     def __init__(self, *args, **kwargs):
@@ -31,7 +31,7 @@ class ordict(dict):
 
     # ========================================================================
     def clear(self):
-        """clear the dictionnary"""
+        """clear the dictionary"""
         self._keys = []
         dict.clear(self)
 
@@ -107,13 +107,13 @@ class ordict(dict):
 
     # ========================================================================
     def __repr__(self):
-        """set strings representative of the dictionnary"""
+        """set strings representative of the dictionary"""
         lst = ['%r: %r' % (key, self[key]) for key in self._keys]
         return type(self).__name__ + '{' + ', '.join(lst) + '}'
 
     # ========================================================================
     def __str__(self):
-        """return strings representative of the dictionnary"""
+        """return strings representative of the dictionary"""
         return self.__repr__()
 
     # ========================================================================
@@ -126,7 +126,7 @@ class ordict(dict):
 
     # ========================================================================
     def update(self, *args, **kwargs):
-        """update the dictionnary"""
+        """update the dictionary"""
         if len(args) > 0:
             args = args[0]
             if isinstance(args, (dict, ordict)):

@@ -216,7 +216,7 @@ class EmgNormalisationProcessingFilter(object):
                         'std':np.std(valuesNorm,axis=0),
                         'values': valuesNorm}
             else:
-                LOGGER.logger.warning("[pyCGM2] label [%s] - context [%s] dont find in the emgStats dictionnary"%(self.m_label,contextIt))
+                LOGGER.logger.warning("[pyCGM2] label [%s] - context [%s] dont find in the emgStats dictionary"%(self.m_label,contextIt))
 
 
     def run(self):
@@ -304,8 +304,8 @@ class DiscreteEMGFilter(object):
         emgLabels (list): emg labels
         emgMuscles (list): muscle matching emg labels
         emgContexts (list):  side of each emg labels
-        subjInfo (dict,Optional[None]): dictionnary decribing the subject. Items will be added to the generated pandas dataframe
-        condExpInfo (dict,Optional[None]): dictionnary decribing the experiment conditions. Items will be added to the generated pandas dataframe
+        subjInfo (dict,Optional[None]): dictionary decribing the subject. Items will be added to the generated pandas dataframe
+        condExpInfo (dict,Optional[None]): dictionary decribing the experiment conditions. Items will be added to the generated pandas dataframe
 
     """
 
@@ -326,7 +326,7 @@ class DiscreteEMGFilter(object):
         """ set subject info
 
         Args:
-            subjInfo (dict): dictionnary decribing the subject. Items will be added to the generated pandas dataframe
+            subjInfo (dict): dictionary decribing the subject. Items will be added to the generated pandas dataframe
 
         """
 
@@ -336,7 +336,7 @@ class DiscreteEMGFilter(object):
         """ set experiment condition info
 
         Args:
-            condExpInfo (dict): dictionnary decribing the experiment conditions. Items will be added to the generated pandas dataframe
+            condExpInfo (dict): dictionary decribing the experiment conditions. Items will be added to the generated pandas dataframe
 
         """
         self.m_condExpInfo = condExpInfo

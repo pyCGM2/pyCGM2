@@ -135,7 +135,7 @@ class CGM1_GPS(ScoreProcedure):
                         cumAxis+=1
 
 
-        # output dictionnary
+        # output dictionary
         outDict_gvs = dict()
         outDict_gps_context = dict()
         outDict_gps = dict()
@@ -147,7 +147,7 @@ class CGM1_GPS(ScoreProcedure):
                                           'values':gvs[label,context]}
         for context in ["Left","Right"]:
             gpsValues = left_rms_global if context == "Left" else right_rms_global
-            # construction of the global dictionnary outputs
+            # construction of the global dictionary outputs
             outDict_gps_context[context]={'mean':np.array([np.mean(gpsValues.mean(axis=1))]),
                                       'std':np.array([np.std(gpsValues.mean(axis=1))]),
                                        'median': np.array([np.median(gpsValues.mean(axis=1))]),
