@@ -3,6 +3,6 @@
 ### forcePlates
 
 ```{eval-rst}
-.. automodule:: pyCGM2.ForcePlates.forcePlates
+.. automodule:: pyCGM2.ForcePlates.forceplates
    :members:
 ```

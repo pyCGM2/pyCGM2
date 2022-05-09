@@ -12,4 +12,4 @@ conda:
 sphinx:
   configuration: docs/source/conf.py
   builder: "html"
-  fail_on_warning: True
+  fail_on_warning: False
