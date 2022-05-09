@@ -20,20 +20,23 @@ from pyCGM2.Nexus import nexusTools
 
 def main():
 
-
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
-
-    parser = argparse.ArgumentParser(description='rigidLabelling')
+    parser = argparse.ArgumentParser(description='rigid gap Labeling')
     parser.add_argument('--static', type=str, help='filename of the static',required=False)
     parser.add_argument('--target', type=str, help='marker to reconstruct',required=True)
     parser.add_argument('--trackingMarkers', nargs='*', help='list of tracking markers',required=True)
     parser.add_argument('--begin', type=int, help='initial Frame')
     parser.add_argument('--last', type=int, help='last Frame')
-    args = parser.parse_args()
+
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
+
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
-
+        args = parser.parse_args()
         DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         # enfFiles = eclipse.getEnfTrials(DATA_PATH)
@@ -138,6 +141,8 @@ def main():
 
         # nexus display
         nexusTools.setTrajectoryFromArray(NEXUS,subject,targetMarker,val_final,firstFrame = ff)
+    else:
+        return parser
 
 if __name__ == "__main__":
     main()

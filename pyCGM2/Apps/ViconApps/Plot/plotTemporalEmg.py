@@ -18,35 +18,23 @@ from viconnexusapi import ViconNexus
 
 
 def main():
-    """  Plot temporal EMG from nexus-loaded trial
 
-
-    Usage:
-
-    ```bash
-        Nexus_plotTemporalEmg.exe
-        Nexus_plotTemporalEmg.exe -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
-    ```
-
-    Args:
-        [-bpf,--BandpassFrequencies] (list): bandpass filter cutoff frequencies
-        [--elf,EnvelopLowpassFrequency] (float) : cutoff frequency for estimating emg envelops
-        ['-r','--raw'] (bool): plot non rectified signal
-        ['-ina','--ignoreNormalActivity'] (bool): not display normal EMG activity area
-    """
-    parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
+    parser = argparse.ArgumentParser(description='plot temporal emg panel')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
     parser.add_argument('-r','--raw', action='store_true', help='non rectified data')
     parser.add_argument('-ina','--ignoreNormalActivity', action='store_true', help='do not display normal activity')
-    args = parser.parse_args()
 
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
 
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
-
+        args = parser.parse_args()
 
         # --- acquisition file and path----
         DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
@@ -90,9 +78,7 @@ def main():
                             btkAcq=acq,ignoreNormalActivity= args.ignoreNormalActivity)
 
     else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+        return parser
 
 if __name__ == "__main__":
-
-
     main()

@@ -33,7 +33,7 @@ def main():
     parser.add_argument('-ps', '--pointSuffix', type=str,
                         help='suffix of the model outputs')
     parser.add_argument('--check', action='store_true',
-                        help='model suffix force to cgm1')
+                        help='force cgm1 as model ouput suffix')
     parser.add_argument('--resetMP', action='store_true',
                         help='reset optional anthropometric parameters')
     parser.add_argument('-ae', '--anomalyException',

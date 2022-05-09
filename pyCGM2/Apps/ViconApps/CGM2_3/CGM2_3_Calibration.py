@@ -28,36 +28,7 @@ from pyCGM2.Nexus import nexusTools
 
 
 def main():
-    """ run the CGM2.3 calibration operation from Nexus.
 
-    Usage:
-
-    ```bash
-        nexus_CGM23_Calibration.exe -l  1 --md 24 -ps "withSuffix"
-        nexus_CGM23_Calibration.exe --leftFlatFoot  1 --markerDiameter 24 --pointSuffix "withSuffix"
-        nexus_CGM23_Calibration.exe --forceLHJC 0.3 0.25 1.2
-        nexus_CGM23_Calibration.exe --noIk
-    ```
-
-    Args:
-        [-l, --leftFlatFoot] (int) : set the left longitudinal foot axis parallel to the ground
-        [-r, --rightFlatFoot] (int) : set the right longitudinal foot axis parallel to the ground
-        [-hf, --headFlat] (int) : set the  longitudinal head axis parallel to the ground
-        [-md, --markerDiameter] (int) : marker diameter
-        [-ps, --pointSuffix] (str) : suffix of the model ouputs
-        [--check] (bool) :force _cgm1  as model output suffix
-        [--resetMP] (bool) : reset optional mass parameters
-        [--forceLHJC] (array) : force the left hip joint centre position in the pelvic coordinate system
-        [--forceRHJC] (array) : force the right hip joint centre position in the pelvic coordinate system
-        [-ae,--anomalyException] (bool) : return exception if one anomaly detected ')
-        [--noIk] (bool): disable inverse kinematics
-
-    Note:
-        Marker diameter is used for locating joint centre from an origin ( eg LKNE) by an offset along a direction.
-        respect the same marker diameter for the following markers :
-        L(R)KNE - L(R)ANK - L(R)ASI - L(R)PSI
-
-    """
 
     parser = argparse.ArgumentParser(description='CGM2.3 Calibration')
     parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')
@@ -67,21 +38,22 @@ def main():
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
-    parser.add_argument('--resetMP', action='store_true', help='reset optional mass parameters')
+    parser.add_argument('--resetMP', action='store_true', help='reset optional anthropometric parameters')
     parser.add_argument('--forceLHJC', nargs='+')
     parser.add_argument('--forceRHJC', nargs='+')
-    parser.add_argument('-ae','--anomalyException', action='store_true', help='stop if anomaly detected ')
-    args = parser.parse_args()
+    parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
 
 
-
-
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
 
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
-
+        args = parser.parse_args()
         # --------------------------LOADING ------------------------------------
         DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
 
@@ -163,7 +135,7 @@ def main():
         # ========END of the nexus OPERATION if run from Nexus  =========
 
     else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+        return parser
 
 
 

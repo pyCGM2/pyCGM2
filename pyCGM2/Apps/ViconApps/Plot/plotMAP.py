@@ -27,26 +27,11 @@ from pyCGM2.Nexus import nexusTools
 from pyCGM2.Nexus import eclipse
 
 def main():
-    """  Plot the Movement Ambulation profile (MAP) of the Nexus loaded trial or eclipse nodes from the **same** session
 
-
-
-    Usage:
-
-    ```bash
-        Nexus_plotMAP.exe
-        Nexus_plotMAP.exe -ps CGM1 -nd Schwartz2008 -ndm VerySlow
-    ```
-
-    Args:
-        [-nd,--normativeData] (str)[Schwartz2008]: normative dataset (Choice : Schwartz2008 or Pinzone2014)
-        [--ndm,normativeDataModality] (str) [free]: normative dataset modality (if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo])
-        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
-    """
 
     plt.close("all")
 
-    parser = argparse.ArgumentParser(description='CGM plotMAP')
+    parser = argparse.ArgumentParser(description='plot MAP')
     parser.add_argument('-nd','--normativeData', type=str, help='normative Data set (Schwartz2008 or Pinzone2014)', default="Schwartz2008")
     parser.add_argument('-ndm','--normativeDataModality', type=str,
                         help="if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
@@ -54,17 +39,17 @@ def main():
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
 
 
-    args = parser.parse_args()
-
-
-
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
 
     if not NEXUS_PYTHON_CONNECTED:
-        raise Exception("Vicon Nexus is not running")
+        return parser
 
-
+    args = parser.parse_args()
     #-----------------------SETTINGS---------------------------------------
     pointSuffix = args.pointSuffix
 

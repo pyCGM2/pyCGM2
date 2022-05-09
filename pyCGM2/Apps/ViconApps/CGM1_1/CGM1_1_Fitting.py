@@ -28,33 +28,10 @@ warnings.filterwarnings("ignore")
 
 
 def main():
-    """ run the CGM11 fitting operation from Nexus
 
-    Usage:
-
-    ```bash
-        nexus_CGM11_Fitting.exe -fi  100 -fe 150 --md 24 -ps "withSuffix"
-        nexus_CGM11_Fitting.exe --frameInit  100 --frameEnd 150 --markerDiameter 24 --pointSuffix "withSuffix"
-    ```
-
-    Args:
-        [--proj] (str) : segmental coordinate system selected to project the joint moment (Choice : Distal, Proximal, Global,JCS"
-        [-md, --markerDiameter] (int) : marker diameter
-        [-ps, --pointSuffix] (str) : suffix of the model ouputs
-        [--check] (bool) :force _cgm1  as model output suffix
-        [-ae,--anomalyException] (bool) : return exception if one anomaly detected ')
-        [-fi,--frameInit] (int) : first frame to process
-        [-fe,--frameEnd] (int) : last frame to process
-
-    Note:
-        Marker diameter is used for locating joint centre from an origin ( eg LKNE) by an offset along a direction.
-        respect the same marker diameter for the following markers :
-        L(R)KNE - L(R)ANK - L(R)ASI - L(R)PSI
-
-    """
     parser = argparse.ArgumentParser(description='CGM1.1 Fitting')
     parser.add_argument(
-        '--proj', type=str, help='Moment Projection. Choice : Distal, Proximal, Global')
+        '--proj', type=str, help='Referential to project joint moment. Choice : Distal, Proximal, Global')
     parser.add_argument('-md', '--markerDiameter',
                         type=float, help='marker diameter')
     parser.add_argument('-ps', '--pointSuffix', type=str,
@@ -62,19 +39,22 @@ def main():
     parser.add_argument('--check', action='store_true',
                         help='force model output suffix')
     parser.add_argument('-ae', '--anomalyException',
-                        action='store_true', help='stop if anomaly detected ')
+                        action='store_true', help='raise an exception if an anomaly is detected')
     parser.add_argument('-fi', '--frameInit', type=int,
                         help='first frame to process')
     parser.add_argument('-fe', '--frameEnd', type=int,
                         help='last frame to process')
 
-    args = parser.parse_args()
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
 
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-    if NEXUS_PYTHON_CONNECTED:  # run Operation
-
+    if NEXUS_PYTHON_CONNECTED: # run Operation
+        args = parser.parse_args()
         DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
 
         reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
@@ -151,7 +131,7 @@ def main():
         # ========END of the nexus OPERATION if run from Nexus  =========
 
     else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+        return parser
 
 
 if __name__ == "__main__":

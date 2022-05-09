@@ -20,42 +20,30 @@ from viconnexusapi import ViconNexus
 
 
 def main():
-    """ Plot time-normalized EMG from two c3d marked in Vicon Eclipse.
 
-    warning:
-        This function does not work from two files belonging to different sessions.
-
-    Usage:
-
-    ```bash
-        Nexus_plotCompareNormalizedEmg.exe
-        Nexus_plotCompareNormalizedEmg.exe  -c -bpf 20 400
-    ```
-
-    Args:
-        [-bpf,--BandpassFrequencies] (list): bandpass filter cutoff frequencies
-        [--elf,EnvelopLowpassFrequency] (double) : cutoff frequency for estimating emg envelops
-        ['-c','--consistency'] (bool): plot all cycles instead of the mean and sd corridor
-
-    """
-    parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
+    parser = argparse.ArgumentParser(description='Comparison plot panel of normalized emg from marked nodes of Nexus Eclipse')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
     parser.add_argument('-c','--consistency', action='store_true', help='consistency plots')
-    args = parser.parse_args()
 
 
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
+
     ECLIPSE_MODE = False
-
     if not NEXUS_PYTHON_CONNECTED:
-        raise Exception("Vicon Nexus is not running")
+        return parser
 
     #--------------------------Data Location and subject-------------------------------------
     if eclipse.getCurrentMarkedNodes() is None:
         raise Exception("No nodes marked")
     else:
+        args = parser.parse_args()
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         # --- acquisition file and path----
         DATA_PATH, inputFiles =eclipse.getCurrentMarkedNodes()

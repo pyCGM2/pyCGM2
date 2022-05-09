@@ -21,33 +21,25 @@ from pyCGM2.Model import  modelFilters
 from pyCGM2.Lib.CGM import  kneeCalibration
 
 def main():
-    """ run the calibration 2DOF knee functional method from Nexus.
 
-    Usage:
-
-    ```bash
-        Nexus_CGM26_2DOF.exe -s Left  -b 100 -e 200
-        Nexus_CGM26_2DOF.exe --side Left  --begin 100 --end 200
-    ```
-
-    Args:
-        [-s,--side] (str): lower limb side (Left or Right)
-        [-b,--begin] (int): start frame
-        [-e,--end] (int): last frame to process
-
-    """
 
     parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
     parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
     parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
     parser.add_argument('-e','--endFrame', type=int, help="end frame")
 
-    args = parser.parse_args()
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
+
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
 
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
+        args = parser.parse_args()
 
         DATA_PATH, reconstructedFilenameLabelledNoExt = NEXUS.GetTrialName()
 
@@ -156,7 +148,7 @@ def main():
             LOGGER.logger.warning("offset %s" %(str(model.mp_computed["RightKneeFuncCalibrationOffset"] )))
 
     else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+        return parser
 
 if __name__ == "__main__":
 

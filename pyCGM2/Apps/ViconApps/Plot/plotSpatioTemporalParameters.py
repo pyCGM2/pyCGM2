@@ -27,32 +27,26 @@ from pyCGM2.Nexus import nexusTools
 from pyCGM2.Nexus import eclipse
 
 def main():
-    """  Plot spatio-temporal parameters from nexus-loaded trial or eclipse nodes from the **same** session
 
-
-    Usage:
-
-    ```bash
-        Nexus_plotSpatioTemporalParameters.exe
-        Nexus_plotSpatioTemporalParameters.exe  -ps CGM1
-    ```
-
-    Args:
-        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
-    """
 
     plt.close("all")
 
-    parser = argparse.ArgumentParser(description='CGM plot stp')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix added to pyCGM2 outputs')
-    args = parser.parse_args()
+    parser = argparse.ArgumentParser(description='plot SpatioTemporal parameters')
+    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix added to model outputs')
 
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
+
     ECLIPSE_MODE = False
 
     if not NEXUS_PYTHON_CONNECTED:
-        raise Exception("Vicon Nexus is not running")
+        return parser
+
+    args = parser.parse_args()
 
     pointSuffix = args.pointSuffix
 

@@ -22,36 +22,25 @@ from viconnexusapi import ViconNexus
 
 
 def main():
-    """  Plot time-normalized EMG from nexus-loaded trial or eclipse nodes from the **same** session
 
-    By default, plot panel display the mean trace and the standard deviation corridor.
-    A command argument allows to plot all cycles
-
-    Usage:
-
-    ```bash
-        Nexus_plotNormalizedEmg.exe
-        Nexus_plotNormalizedEmg.exe -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
-    ```
-
-    Args:
-        [-bpf,--BandpassFrequencies] (list): bandpass filter cutoff frequencies
-        [--elf,EnvelopLowpassFrequency] (double) : cutoff frequency for estimating emg envelops
-        ['-c','--consistency'] (bool): plot all cycles instead of the mean and sd corridor
-    """
-    parser = argparse.ArgumentParser(description='EMG-plot_temporalEMG')
+    parser = argparse.ArgumentParser(description='plot time normalized EMG panel from the current trial or marked trials of Vicon Eclipse ')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
     parser.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
     parser.add_argument('-c','--consistency', action='store_true', help='consistency plots')
-    args = parser.parse_args()
 
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
 
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
     ECLIPSE_MODE = False
 
     if not NEXUS_PYTHON_CONNECTED:
-        raise Exception("Vicon Nexus is not running")
+        return parser
+
+    args = parser.parse_args()
 
     #--------------------------Data Location-------------------------------------
     if eclipse.getCurrentMarkedNodes() is not None:

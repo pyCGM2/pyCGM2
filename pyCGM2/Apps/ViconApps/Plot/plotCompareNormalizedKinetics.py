@@ -27,24 +27,7 @@ from pyCGM2.Nexus import  nexusTools
 from pyCGM2.Nexus import eclipse
 
 def main():
-    """  Plot time-normalized Kinetics from two c3d marked in Vicon Eclipse
 
-    By default, plot panel display the mean trace and the standard deviation corridor.
-    A command argument allows to plot all cycles
-
-    Usage:
-
-    ```bash
-        Nexus_plotCompareNormalizedKinetics.exe
-        Nexus_plotCompareNormalizedKinetics.exe -c -ps CGM1 -nd Schwartz2008 -ndm VerySlow
-    ```
-
-    Args:
-        [-nd,--normativeData] (str)[Schwartz2008]: normative dataset (Choice : Schwartz2008 or Pinzone2014)
-        [--ndm,normativeDataModality] (str) [free]: normative dataset modality (if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo])
-        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
-        ['-c','--consistency'] (bool): plot all cycles instead of the mean and sd corridor
-    """
 
     plt.close("all")
 
@@ -56,21 +39,25 @@ def main():
     parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
     parser.add_argument('-c','--consistency', action='store_true', help='consistency plots')
 
-    args = parser.parse_args()
 
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
 
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
     ECLIPSE_MODE = False
 
     if not NEXUS_PYTHON_CONNECTED:
-        raise Exception("Vicon Nexus is not running")
+        return parser
 
 
     #--------------------------Data Location and subject-------------------------------------
     if eclipse.getCurrentMarkedNodes() is None:
         raise Exception("No nodes marked")
     else:
+        args = parser.parse_args()
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         DATA_PATH = os.getcwd()+"\\"
         # --- acquisition file and path----

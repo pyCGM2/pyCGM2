@@ -23,19 +23,6 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 def main():
-    """  Plot  temporal Kinematics from nexus-loaded trial
-
-    Usage:
-
-    ```bash
-        Nexus_plotTemporalKinematics.exe
-        Nexus_plotTemporalKinematics.exe  -ps CGM1
-    ```
-
-    Args:
-        ['-ps','--pointSuffix'] (str): suffix added to model outputs ()
-
-    """
 
     plt.close("all")
 
@@ -44,12 +31,15 @@ def main():
     parser.add_argument('-ps', '--pointSuffix', type=str,
                         help='suffix of model outputs')
 
-    args = parser.parse_args()
-
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
 
     if NEXUS_PYTHON_CONNECTED:
+        args = parser.parse_args()
 
         pointSuffix = args.pointSuffix
         # --------------------------INPUTS ------------------------------------
@@ -80,7 +70,7 @@ def main():
                                    pointLabelSuffix=pointSuffix, exportPdf=True, btkAcq=acq)
 
     else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+        return parser
 
 
 if __name__ == "__main__":

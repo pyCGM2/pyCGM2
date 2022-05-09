@@ -13,32 +13,22 @@ LOGGER = pyCGM2.LOGGER
 
 
 def main():
-    """  Run Zeni's kinematic-basd event detector from Nexus
 
-    Usage:
-
-    ```bash
-        Nexus_zeniDetector.exe
-        Nexus_zeniDetector.exe -fso 5 -foo 3
-    ```
-
-    Args:
-        [-fso,--footStrikeOffset] (int): systenatic offset added to all foot strike detected by the algorithm
-        [--foo,footOffOffset] (int) : systenatic offset added to all foot off detected by the algorithm
-
-    """
-
-    parser = argparse.ArgumentParser(description='ZeniDetector')
+    parser = argparse.ArgumentParser(description='Zeni kinematic-based gait event Detector')
     parser.add_argument('-fso', '--footStrikeOffset', type=int,
                         help='systenatic foot strike offset on both side')
     parser.add_argument('-foo', '--footOffOffset', type=int,
                         help='systenatic foot off offset on both side')
-    args = parser.parse_args()
+    try:
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
 
-    NEXUS = ViconNexus.ViconNexus()
-    NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
-    if NEXUS_PYTHON_CONNECTED:  # run Operation
+    if NEXUS_PYTHON_CONNECTED: # run Operation
+        args = parser.parse_args()
 
         # ----------------------INPUTS-------------------------------------------
         # --- acquisition file and path----
@@ -79,7 +69,7 @@ def main():
         # ========END of the nexus OPERATION if run from Nexus  =========
 
     else:
-        raise Exception("NO Nexus connection. Turn on Nexus")
+        return parser
 
 
 if __name__ == "__main__":
