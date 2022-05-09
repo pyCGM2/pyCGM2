@@ -1236,7 +1236,12 @@ def smartCreateEvent(acq, label, context, frame, type="Automatic", subject="", d
 
     if type=="Automatic":
         type = btk.btkEvent.Automatic
-
+    if type=="Manual":
+        type = btk.btkEvent.Manual
+    if type=="Unknown":
+        type = btk.btkEvent.Unknown
+    if type=="FromForcePlatform":
+        type = btk.btkEvent.FromForcePlatform
 
 
     time = frame / acq.GetPointFrequency()
