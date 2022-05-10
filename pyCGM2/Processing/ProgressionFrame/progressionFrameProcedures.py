@@ -16,7 +16,11 @@ from pyCGM2.Tools import  btkTools
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 
-class PointProgressionFrameProcedure(object):
+class ProgressionFrameProcedure(object):
+    def __init__(self):
+        pass
+
+class PointProgressionFrameProcedure(ProgressionFrameProcedure):
     """detect the progression from the trajectory of a single marker
 
     Args:
@@ -25,6 +29,7 @@ class PointProgressionFrameProcedure(object):
     """
 
     def __init__(self,marker="LHEE"):
+        super(PointProgressionFrameProcedure, self).__init__()
         self.m_marker=marker
 
         self.__threshold = 800
@@ -63,7 +68,7 @@ class PointProgressionFrameProcedure(object):
 
         return   progressionAxis,forwardProgression,globalFrame
 
-class PelvisProgressionFrameProcedure(object):
+class PelvisProgressionFrameProcedure(ProgressionFrameProcedure):
     """detect the progression from the trajectory of pelvic markers
 
     Args:
@@ -75,6 +80,7 @@ class PelvisProgressionFrameProcedure(object):
 
 
     def __init__(self,marker="LASI",frontMarkers = ["LASI","RASI"], backMarkers =  ["LPSI","RPSI"]):
+        super(PelvisProgressionFrameProcedure, self).__init__()
 
         self.m_marker=marker
 
@@ -195,7 +201,7 @@ class PelvisProgressionFrameProcedure(object):
         return   progressionAxis,forwardProgression,globalFrame
 
 
-class ThoraxProgressionFrameProcedure(object):
+class ThoraxProgressionFrameProcedure(ProgressionFrameProcedure):
     """detect the progression from the trajectory of thoracic markers
 
     Args:
@@ -207,7 +213,7 @@ class ThoraxProgressionFrameProcedure(object):
 
 
     def __init__(self,marker="CLAV",frontMarkers = ["CLAV"], backMarkers =  ["C7"]):
-
+        super(ThoraxProgressionFrameProcedure, self).__init__()
         self.m_marker=marker
 
         self.m_frontmarkers = frontMarkers

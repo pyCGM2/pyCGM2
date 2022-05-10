@@ -9,11 +9,16 @@ from pyCGM2.Math import derivation
 from pyCGM2.Processing import analysisHandler
 import re
 
+class JointPatternProcedure(object):
+    def __init__(self):
+        pass
 
-class XlsJointPatternProcedure(object):
+
+class XlsJointPatternProcedure(JointPatternProcedure):
 
 
     def __init__(self,xlsFiles,pointSuffix=None):
+        super(XlsJointPatternProcedure,self).__init__()
 
         self.pointSuffix = ("_"+pointSuffix)  if pointSuffix is not None else ""
         self.m_xls = pd.ExcelFile(xlsFiles)

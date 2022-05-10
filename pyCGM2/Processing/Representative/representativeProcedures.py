@@ -19,20 +19,23 @@ from pyCGM2.Model.CGM2 import  cgm
 from pyCGM2.Tools import btkTools
 
 
+class RepresentativeProcedure(object):
+    def __init__(self):
+        pass
 
-class Sangeux2015Procedure(object):
+
+
+class Sangeux2015Procedure(RepresentativeProcedure):
     """Representative detection method of Sangeux 2015
 
     **reference**
 
     Sangeux, Morgan A simple method to choose the most representative stride and detect outliers.
 
-
-
     """
 
-
     def __init__(self):
+        super(Sangeux2015Procedure, self).__init__()
 
         self.m_data = dict()
         self.m_data["Left"] = []
