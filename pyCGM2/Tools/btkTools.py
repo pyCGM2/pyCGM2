@@ -3,7 +3,7 @@
 #APIDOC["Draft"]=False
 #--end--
 
-""""
+"""
 This module contains convenient functions for working with btk
 
 check out **test_btkTools** for examples
@@ -393,7 +393,7 @@ def applyOnValidFrames(acq, validFrames):
 
     Args:
         acq (btkAcquisition): a btk acquisition inctance
-        validFrames ([int...]): list of n frames with 1 or 0 indicating if the frame is valid or not
+        validFrames (list): list of n frames with 1 or 0 indicating if the frame is valid or not
 
     """
 
@@ -414,7 +414,7 @@ def findValidFrames(acq, markerLabels):
 
     Args:
         acq (btkAcquisition): a btk acquisition inctance
-        markerLabels ([str,...]): marker labels
+        markerLabels (list): marker labels
 
     """
 
@@ -444,7 +444,7 @@ def applyValidFramesOnOutput(acq, validFrames):
 
     Args:
         acq (btkAcquisition): a btk acquisition inctance
-        validFrames ([0 or 1,...]): valid frame flags
+        validFrames (list): valid frame flags
 
     """
 
@@ -555,7 +555,7 @@ def checkMarkers(acq, markerList):
 
     Args:
         acq (btk.Acquisition) : a btk acquisition instance
-        markerList ([str,...]) : marker labels
+        markerList (list) : marker labels
     """
     for m in markerList:
         if not isPointExist(acq, m):
@@ -568,7 +568,7 @@ def clearEvents(acq, labels):
 
     Args:
         acq (btk.Acquisition) : a btk acquisition instance
-        label ([str,...]) : event labels
+        label (list) : event labels
     """
 
     events = acq.GetEvents()
@@ -795,7 +795,7 @@ def createPhantoms(acq, markerLabels):
 
     Args
         acq (btkAcquisition): a btk acquisition instance
-        markerLabels ([str,...]): phantom marker labels
+        markerLabels (list): phantom marker labels
     """
     phantom_markers = list()
     actual_markers = list()
@@ -1037,7 +1037,7 @@ def buildTrials(dataPath, filenames):
 
     Args
         dataPath (str): data folder dataPath
-        filenames([str,...]): c3d filenames
+        filenames(list): c3d filenames
 
     """
 
@@ -1153,7 +1153,7 @@ def applyRotation(acq, markers, globalFrameOrientation, forwardProgression):
 
     Args
         acq (btkAcquisition): a btk acquisition instance
-        markers ([str,...]): marker labels
+        markers (list): marker labels
         globalFrameOrientation (str): orientation of the global frame ( eg XYZ stands for X:long, y: transversal, Z:normal)
         forwardProgression (bool): indicate progression along the positive axis of the progression frame
 
