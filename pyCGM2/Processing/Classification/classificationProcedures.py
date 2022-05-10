@@ -15,7 +15,13 @@ from pyCGM2.Report import plot
 
 LOGGER = pyCGM2.LOGGER
 
-class PFKEprocedure(object):
+# --- abstract procedure
+class ClassificationProcedure(object):
+    def __init__(self):
+        pass
+
+
+class PFKEprocedure(ClassificationProcedure):
     """PlantarFlexor-KneeExtensor classification procedure defined by Sangeux et al 2015
 
     Args:
@@ -36,6 +42,7 @@ class PFKEprocedure(object):
     """
 
     def __init__(self, normativeData,midStanceDefinition = "PFKE",dataType = "cycle",side = "Both"):
+        super(PFKEprocedure, self).__init__()
 
         self.m_normativeData = normativeData
 

@@ -26,9 +26,13 @@ from pyCGM2.Signal.detect_peaks import detect_peaks
 from pyCGM2.Math import derivation
 
 
+# --- abstract procedure
+class DiscretePointProcedure(object):
+    def __init__(self):
+        pass
 
 # --- PROCEDURE ----
-class BenedettiProcedure(object):
+class BenedettiProcedure(DiscretePointProcedure):
     """ discrete points recommanded by benededdi et al(1998).
 
     Args:
@@ -49,6 +53,7 @@ class BenedettiProcedure(object):
 
 
     def __init__(self,pointSuffix=None):
+        super(BenedettiProcedure, self).__init__()
 
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
 
@@ -1431,7 +1436,7 @@ class BenedettiProcedure(object):
         return pd.DataFrame(series)
 
 
-class MaxMinProcedure(object):
+class MaxMinProcedure(DiscretePointProcedure):
     """ extract extrema values.
 
     Args:
@@ -1442,7 +1447,7 @@ class MaxMinProcedure(object):
 
 
     def __init__(self,pointSuffix=None):
-
+        super(MaxMinProcedure, self).__init__()
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
 
     def detect (self,analysisInstance):
@@ -1622,7 +1627,7 @@ class MaxMinProcedure(object):
         return pd.DataFrame(series)
 
 
-class GoldbergProcedure(object):
+class GoldbergProcedure(DiscretePointProcedure):
     """ discrete points recommanded by Goldberg et al(1998).
 
     Args:
@@ -1638,7 +1643,7 @@ class GoldbergProcedure(object):
 
 
     def __init__(self,pointSuffix=None):
-
+        super(GoldbergProcedure, self).__init__()
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
 
     def detect (self,analysisInstance):
