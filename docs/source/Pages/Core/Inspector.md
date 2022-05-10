@@ -1,13 +1,13 @@
 ## Inspector
 
-### inspectFilters
+### inspectorFilters
 ```{eval-rst}
-.. automodule:: pyCGM2.Inspector.inspectFilters
+.. automodule:: pyCGM2.Inspector.inspectorFilters
    :members:
 ```
 
-### inspectProcedures
+### inspectorProcedures
 ```{eval-rst}
-.. automodule:: pyCGM2.Inspector.inspectProcedures
+.. automodule:: pyCGM2.Inspector.inspectorProcedures
    :members:
 ```

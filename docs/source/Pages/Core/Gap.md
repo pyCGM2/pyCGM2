@@ -2,12 +2,12 @@
 
 ### GapFilters
 ```{eval-rst}
-.. automodule:: pyCGM2.Gap.GapFilters
+.. automodule:: pyCGM2.Gap.gapFilters
    :members:
 ```
 
 ### GapProcedures
 ```{eval-rst}
-.. automodule:: pyCGM2.Gap.GapProcedures
+.. automodule:: pyCGM2.Gap.gapFillingProcedures
    :members:
 ```
