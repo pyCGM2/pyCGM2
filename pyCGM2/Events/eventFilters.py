@@ -27,7 +27,7 @@ class EventFilter(object):
         """Constructor
 
         Args:
-            procedure (pyCGM2.Events.events): event procedure
+            procedure (pyCGM2.Events.eventProcedures.EventProcedure):an event procedure instance
             acq (Btk.Acquisition): a btk acquisition
 
         """

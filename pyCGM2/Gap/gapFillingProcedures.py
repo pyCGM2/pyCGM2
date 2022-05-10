@@ -13,11 +13,13 @@ import numpy as np
 
 from pyCGM2.Tools import  btkTools
 
+# --- abstract procedure
+class GapProcedure(object):
+    def __init__(self):
+        pass
 
-
-
-# --- calibration procedure
-class LowDimensionalKalmanFilterProcedure(object):
+# --- concrete procedure
+class LowDimensionalKalmanFilterProcedure(GapProcedure):
     """
         gap fill procedure according  Burke et al. (Job 2016)
 
@@ -25,6 +27,7 @@ class LowDimensionalKalmanFilterProcedure(object):
     """
 
     def __init__(self):
+        super(LowDimensionalKalmanFilterProcedure, self).__init__()
         self.description = "Burke (2016)"
 
 
@@ -85,7 +88,7 @@ class LowDimensionalKalmanFilterProcedure(object):
     	return y
 
 
-    def _fill(self,acq):
+    def _fill(self,acq,**kwargs):
         """fill gap
 
         Args:
@@ -98,11 +101,13 @@ class LowDimensionalKalmanFilterProcedure(object):
         lf = acq.GetLastFrame()
         pfn = acq.GetPointFrameNumber()
 
-        btkmarkers =[]
-        for ml in btkmarkersLoaded:
-            if btkTools.isPointExist(acq,ml) :
-                btkmarkers.append(ml)
-
+        if "markers" in kwargs:
+            btkmarkers = kwargs["markers"]
+        else:
+            btkmarkers =[]
+            for ml in btkmarkersLoaded:
+                if btkTools.isPointExist(acq,ml) :
+                    btkmarkers.append(ml)
         # --------
 
         LOGGER.logger.debug("Populating data matrix")

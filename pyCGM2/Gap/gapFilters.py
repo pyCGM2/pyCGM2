@@ -16,15 +16,12 @@ import numpy as np
 class GapFillingFilter(object):
     """
     Gap filter
+
+    Args:
+        procedure (pyCGM2.Gap.gapFillingProcedures.GapProcedure): a gap filling procedure instance
+        acq (Btk.Acquisition): a btk acquisition instance
     """
     def __init__(self,procedure,acq):
-        """Constructor
-
-        Args:
-            procedure (pyCGM2.Gap.gapFilling.procedure): a gap filling procedure
-            acq (Btk.Acquisition): a btk acquisition instance
-
-        """
 
         self.m_aqui = acq
         self.m_procedure = procedure
@@ -39,11 +36,14 @@ class GapFillingFilter(object):
         return self.filledMarkers
 
 
-    def fill(self):
+    def fill(self,markers=None):
         """
         fill gap according the specified procedure
         """
-        filledAcq,filledMarkers = self.m_procedure._fill(self.m_aqui)
+        if markers is None:
+            filledAcq,filledMarkers = self.m_procedure._fill(self.m_aqui)
+        else:
+            filledAcq,filledMarkers = self.m_procedure._fill(self.m_aqui,markers=markers)
 
 
         self.filledMarkers  = filledMarkers

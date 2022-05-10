@@ -24,15 +24,22 @@ from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
 from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 
 
+# --- abstract procedure
+class EventProcedure(object):
+    def __init__(self):
+        pass
+
+
 #-------- EVENT PROCEDURES  ----------
 
 
-class ZeniProcedure(object):
+class ZeniProcedure(EventProcedure):
     """
         Gait Event detection from Zeni et al, 2008
     """
 
     def __init__(self):
+        super(ZeniProcedure, self).__init__()
         self.description = "Zeni (2008)"
         self.footStrikeOffset = 0
         self.footOffOffset = 0
