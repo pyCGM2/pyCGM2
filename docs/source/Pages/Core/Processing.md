@@ -20,11 +20,6 @@
    :members:
 ```
 
-#### c3dManager
-```{eval-rst}
-.. automodule:: pyCGM2.Processing.c3dManager
-   :members:
-```
 
 #### cycle
 ```{eval-rst}
@@ -35,6 +30,21 @@
 #### exporter
 ```{eval-rst}
 .. automodule:: pyCGM2.Processing.exporter
+   :members:
+```
+
+
+#### c3dManager submodule
+
+#### c3dManagerFilters
+```{eval-rst}
+.. automodule:: pyCGM2.Processing.C3dManager.c3dManagerFilters
+   :members:
+```
+
+#### c3dManagerProcedures
+```{eval-rst}
+.. automodule:: pyCGM2.Processing.C3dManager.c3dManagerProcedures
    :members:
 ```
 

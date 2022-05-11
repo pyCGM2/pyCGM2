@@ -4,15 +4,7 @@
 #--end--
 
 """
-This module aims to organize the c3d trials according to computational objectives,
-ie computation of spatio-temporal, kinematic, kinetics or emg parameters.
-In practice, a unique c3d set (`UniqueC3dSetProcedure`) or separate c3d set (`DistinctC3dSetProcedure`)
-can be considered whether you want to use the same c3d set or a different c3d set for acheiving objectives
-
-The `C3dManager` instance is final object instance built from the `C3dManagerFilter`.
-The `C3dManager` is a structure listing for each objectives,  the Btk.Acquisition instances and their associated
-c3d filenames
-
+This module gathers the procedures callable from the c3dManagerFilters
 """
 
 

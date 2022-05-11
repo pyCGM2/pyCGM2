@@ -6,12 +6,11 @@
 """
 This module aims to organize the c3d trials according to computational objectives,
 ie computation of spatio-temporal, kinematic, kinetics or emg parameters.
-In practice, a unique c3d set (`UniqueC3dSetProcedure`) or separate c3d set (`DistinctC3dSetProcedure`)
-can be considered whether you want to use the same c3d set or a different c3d set for acheiving objectives
 
-The `C3dManager` instance is final object instance built from the `C3dManagerFilter`.
-The `C3dManager` is a structure listing for each objectives,  the Btk.Acquisition instances and their associated
-c3d filenames
+The implementation is based on a *builder pattern*.
+The filter `C3dManagerFilter` calls a procedure, then return a `C3dManager` instance, a
+ie ,  a structure listing both Btk.Acquisition instances and their associated filename
+according the computational objectives
 
 """
 
@@ -38,7 +37,7 @@ class C3dManagerFilter(object):
     pyCGM2 Filter used for disseminate c3d trial set(s)
 
     Args:
-        procedure ( pyCGM2.Processing.c3dManager.(Procedure)): a procedure instance
+        procedure ( pyCGM2.Processing.C3dManager.c3dManagerProcedures.C3dManagerProcedure): a C3dManagerProcedure instance
     """
 
     def __init__(self,procedure):
