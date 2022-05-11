@@ -67,7 +67,6 @@ def main():
         ECLIPSE_MODE = True
         if len(modelledFilenames)== 1:   raise Exception("Only one node marked")
 
-
     subject = nexusTools.getActiveSubject(NEXUS)
     LOGGER.logger.info(  "Subject name : " + subject  )
 
@@ -87,8 +86,15 @@ def main():
 
     if  ECLIPSE_MODE:
 
+        if isinstance(DATA_PATHS,list):
+            path0 =DATA_PATHS[0]
+            path1 =DATA_PATHS[1]
+        if isinstance(DATA_PATHS,str):
+            path0 = DATA_PATHS
+            path1 =DATA_PATHS
+
         if len(modelledFilenames) == 2:
-            analysisInstance1 = analysis.makeAnalysis(DATA_PATHS[0],
+            analysisInstance1 = analysis.makeAnalysis(path0,
                                 [modelledFilenames[0]],
                                 type="Gait",
                                 kineticLabelsDict=None,
@@ -97,7 +103,7 @@ def main():
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
 
-            analysisInstance2 =  analysis.makeAnalysis(DATA_PATHS[1],
+            analysisInstance2 =  analysis.makeAnalysis(path1,
                                 [modelledFilenames[1]],
                                 type="Gait",
                                 kineticLabelsDict=None,
