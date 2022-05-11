@@ -8,7 +8,9 @@ from pyCGM2.Processing.JointPatterns import jointPatternFilters
 from pyCGM2.Processing.JointPatterns import jointPatternProcedures
 from pyCGM2.Processing import exporter
 from pyCGM2.Model.CGM2 import cgm
-from pyCGM2.Processing import c3dManager
+# from pyCGM2.Processing import c3dManager
+from pyCGM2.Processing.C3dManager import c3dManagerProcedures
+from pyCGM2.Processing.C3dManager import c3dManagerFilters
 from pyCGM2.Processing import cycle
 from pyCGM2.Processing import analysis
 import pyCGM2
@@ -96,7 +98,7 @@ def makeAnalysis(DATA_PATH,
 
     #---- c3d manager
     if "btkAcqs" in kwargs.keys() and kwargs["btkAcqs"] is not None:
-        c3dmanagerProcedure = c3dManager.UniqueBtkAcqSetProcedure(
+        c3dmanagerProcedure = c3dManagerProcedures.UniqueBtkAcqSetProcedure(
             DATA_PATH, filenames, acqs=kwargs["btkAcqs"])
 
     else:
@@ -114,10 +116,10 @@ def makeAnalysis(DATA_PATH,
         iKineticFilenames = filenames if kineticfilenames is None else kineticfilenames
         iEmgFilenames = filenames if emgfilenames is None else emgfilenames
 
-        c3dmanagerProcedure = c3dManager.DistinctC3dSetProcedure(
+        c3dmanagerProcedure = c3dManagerProcedures.DistinctC3dSetProcedure(
             DATA_PATH, iPstFilenames, iKinematicFilenames, iKineticFilenames, iEmgFilenames)
 
-    cmf = c3dManager.C3dManagerFilter(c3dmanagerProcedure)
+    cmf = c3dManagerFilters.C3dManagerFilter(c3dmanagerProcedure)
 
     cmf.enableKinematic(
         True) if kinematicLabelsDict is not None else cmf.enableKinematic(False)
