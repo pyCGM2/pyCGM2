@@ -314,7 +314,7 @@ class Cycle(object):
         """Get all events of the cycle
 
         Args:
-            context (str,Optional[All]): event context (All, Left or Right)
+            context (str): event context (All, Left or Right)
 
         """
         events = list()
@@ -568,10 +568,10 @@ class CyclesBuilder(object):
     """Builder of generic cycles
 
     Args:
-        spatioTemporalAcqs (list,Optional[None]): acquisitions used for  spatio-temporal parameter computation
-        kinematicAcqs (list,Optional[None]):acquisitions used for  kinematics computation
-        kineticAcqs (list,Optional[None]): acquisitions used for kinetics computation
-        emgAcqs (list,Optional[None]): acquisitions used for emg computation
+        spatioTemporalAcqs (list): acquisitions used for  spatio-temporal parameter computation
+        kinematicAcqs (list):acquisitions used for  kinematics computation
+        kineticAcqs (list): acquisitions used for kinetics computation
+        emgAcqs (list): acquisitions used for emg computation
 
     """
 
@@ -819,10 +819,10 @@ class GaitCyclesBuilder(CyclesBuilder):
     """ Builder of gait cycle
 
     Args:
-        spatioTemporalAcqs (list,Optional[None]): acquisitions used for  spatio-temporal parameter computation
-        kinematicAcqs (list,Optional[None]):acquisitions used for  kinematics computation
-        kineticAcqs (list,Optional[None]): acquisitions used for kinetics computation
-        emgAcqs (list,Optional[None]): acquisitions used for emg computation
+        spatioTemporalAcqs (list): acquisitions used for  spatio-temporal parameter computation
+        kinematicAcqs (list):acquisitions used for  kinematics computation
+        kineticAcqs (list): acquisitions used for kinetics computation
+        emgAcqs (list): acquisitions used for emg computation
     """
 
     def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None):

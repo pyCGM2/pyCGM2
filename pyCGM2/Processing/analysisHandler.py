@@ -12,7 +12,7 @@ def getPhases(dataStats,context="Both"):
     Args:
         dataStats (pyCGM2.Processing.analysis.Analysis.kinematicStats.data): `data` level
         of the `kinematicStats` or `kineticStats` attributes of an `Analysis` instance
-        context (str,Optional[Both]): event context
+        context (str): event context
 
     """
     #phases
@@ -121,7 +121,7 @@ def isKeyExist(analysisInstance,label,context,exceptionMode = False):
         analysisInstance (pyCGM2.Processing.analysis.Analysis): an analysis instance
         label (str): givel ouput label (eg LKneeAngles)
         context (str): event context
-        exceptionMode (bool,Optional[False]): enable exception raising
+        exceptionMode (bool): enable exception raising
 
     """
 

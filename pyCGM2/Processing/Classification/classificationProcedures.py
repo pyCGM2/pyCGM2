@@ -3,9 +3,7 @@
 #APIDOC["Draft"]=False
 #--end--
 
-"""
-This module aims to classify gait
-"""
+
 import numpy as np
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
@@ -26,10 +24,9 @@ class PFKEprocedure(ClassificationProcedure):
 
     Args:
         normativeData (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance
-        midStanceDefinition (str,Optional[PFKE]): mid stance frame boundaries. Choice: PFKE (20,45), Perry (10,30) or Baker (10,50))
-        dataType (str,Optional[cycle]): chosen data type for classification. Choice cycle,mean,median.
-        If cycle, knee and ankle scores are the median score from all cycle values with the normative mean value
-        side (str,Optional[Both]): event context (Both,Left or Right)
+        midStanceDefinition (str): mid stance frame boundaries. Choice: PFKE (20,45), Perry (10,30) or Baker (10,50))
+        dataType (str): chosen data type for classification. Choice cycle,mean,median.If cycle, knee and ankle scores are the median score from all cycle values with the normative mean value
+        side (str): event context (Both,Left or Right)
 
     **Reference**
 

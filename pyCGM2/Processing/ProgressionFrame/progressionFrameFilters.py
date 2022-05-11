@@ -6,7 +6,7 @@
 """
 This module aims to detect the progression frame of a trial.
 
-The  filter `ProgressionFrameFilter` calls a specific procedure, and
+The  filter `ProgressionFrameFilter` calls a  procedure, and
 return the progression axis and a flag indicating the forward/backward progression.
 
 """
@@ -20,7 +20,7 @@ class ProgressionFrameFilter(object):
 
     Args:
         acq (btk.Acquisition): an acquisition
-        progressionProcedure (pyCGM2.Processing.progressionFrameProcedures.(procedure)): a procedure instance
+        progressionProcedure (pyCGM2.Processing.ProgressionFrame.progressionFrameProcedures.ProgressionFrameProcedure): a procedure instance
 
     """
 

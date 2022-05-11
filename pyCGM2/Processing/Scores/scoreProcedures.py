@@ -3,13 +3,7 @@
 #APIDOC["Draft"]=False
 #--end--
 
-"""
-This module is dedicated to the quantification of a Score, i e a Global index
-caracterizing the movement performed
 
-The  filter `ScoreFilter` calls a specific procedure, and return scores values.
-
-"""
 import numpy as np
 from pyCGM2.Math import numeric
 import pyCGM2

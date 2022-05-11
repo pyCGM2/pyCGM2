@@ -860,8 +860,8 @@ class XlsExportDataFrameFilter(object):
 
         Args:
             outputName (str): filename without extension
-            path (str,Optional[None]): Path
-            excelFormat (str,Optional[xls]): format (xls,xlsx)
+            path (str): Path
+            excelFormat (str): format (xls,xlsx)
 
         """
         i=0
@@ -910,9 +910,9 @@ class XlsAnalysisExportFilter(object):
 
         Args:
             outputName (str): filename without extension
-            path (str,Optional[None]): Path
-            excelFormat (str,Optional[xls]): format (xls,xlsx)
-            mode (str,Optional[Advanced]): structure mode of the spreadsheet (Advanced,Basic)
+            path (str): Path
+            excelFormat (str): format (xls,xlsx)
+            mode (str): structure mode of the spreadsheet (Advanced,Basic)
 
         """
 
@@ -1497,7 +1497,7 @@ class AnalysisExportFilter(object):
 
         Args:
             outputName (str): filename without extension
-            path (str,Optional[None]): Path
+            path (str): Path
         """
 
         out=OrderedDict()

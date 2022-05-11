@@ -7,7 +7,7 @@
 The main goal of this module is to construct an `Analysis` instance. It's a matlab-like structure with
 spatio temporal (stp), kinematics, kinetics and emg parameters as attributes.
 
-The implementation uses a *Builder pattern* design.
+The implementation is based on a *Builder pattern* .
 The `AnalysisFilter` calls a `procedure` and return the final `Analysis` instance
 
 """
@@ -565,7 +565,7 @@ class AnalysisFilter(object):
 
 
     def build(self):
-        """ Run the filter and build the analysis 
+        """ Run the filter and build the analysis
         """
         pstOut = self.__concreteAnalysisBuilder.computeSpatioTemporel()
         self.analysis.setStp(pstOut)

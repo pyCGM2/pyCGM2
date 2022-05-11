@@ -1,15 +1,4 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
-
-"""
-This module aims to detect the progression frame of a trial.
-
-The  filter `ProgressionFrameFilter` calls a specific procedure, and
-return the progression axis and a flag indicating the forward/backward progression.
-
-"""
 import numpy as np
 
 from pyCGM2.Tools import  btkTools

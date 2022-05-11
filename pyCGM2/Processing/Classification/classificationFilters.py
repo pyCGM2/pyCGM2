@@ -18,7 +18,7 @@ class ClassificationFilter(object):
 
     Args:
         analysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
-        procedure (pyCGM2.Processing.classification.(procedure)): a procedure instance
+        procedure (pyCGM2.Processing.Classification.classificationProcedures.ClassificationProcedure): a procedure instance
         pointSuffix (str): suffix added to model outputs.
 
     """

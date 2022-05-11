@@ -20,7 +20,7 @@ class ScoreFilter(object):
     """the score filter
 
     Args:
-        scoreProcedure (pyCGM2.processing.score.(procedure)): a score procedure instance
+        scoreProcedure (pyCGM2.processing.Scores.scoreProcedures.ScoreProcedure): a  procedure instance
         analysis (pyCGM2.Processing.analysis.Analysis): and `analysis` instance
         normativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance
 

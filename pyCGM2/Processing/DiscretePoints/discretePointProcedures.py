@@ -3,19 +3,6 @@
 #APIDOC["Draft"]=False
 #--end--
 
-"""
-A *discrete point* is a value at a specific frame of a cycle.
-
-In this module, through the filter `DiscretePointsFilter`, the goal is to get series of discrete value extracted according a
-specific strategy (ie a procedure). For instance, the `BenedettiProcedure` extracts dicrete points
-recommanded in Benededdi et al (1998):
-
-**References**:
-
-Benedetti, M. G.; Catani, F.; Leardini, A.; Pignotti, E.; Giannini, S. (1998) Data management in gait analysis for clinical applications. In : Clinical biomechanics (Bristol, Avon), vol. 13, n° 3, p. 204–215. DOI: 10.1016/s0268-0033(97)00041-7.
-
-
-"""
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -36,7 +23,7 @@ class BenedettiProcedure(DiscretePointProcedure):
     """ discrete points recommanded by benededdi et al(1998).
 
     Args:
-        pointSuffix (str,Optional[None]): suffix added to model ouputs
+        pointSuffix (str): suffix added to model ouputs
 
 
     **References**:
@@ -1440,7 +1427,7 @@ class MaxMinProcedure(DiscretePointProcedure):
     """ extract extrema values.
 
     Args:
-        pointSuffix (str,Optional[None]): suffix added to model ouputs
+        pointSuffix (str): suffix added to model ouputs
 
     """
     NAME = "MaxMin"
@@ -1631,7 +1618,7 @@ class GoldbergProcedure(DiscretePointProcedure):
     """ discrete points recommanded by Goldberg et al(1998).
 
     Args:
-        pointSuffix (str,Optional[None]): suffix added to model ouputs
+        pointSuffix (str): suffix added to model ouputs
 
     **References**:
 

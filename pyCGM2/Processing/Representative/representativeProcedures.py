@@ -1,15 +1,5 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
 
-"""
-This module aims to detect a representative cycle
-
-The  filter `RepresentativeCycleFilter` calls a specific procedure, and return
-indexes of the representive cycle for the Left and right event contexts
-
-"""
 import numpy as np
 import pandas as pd
 

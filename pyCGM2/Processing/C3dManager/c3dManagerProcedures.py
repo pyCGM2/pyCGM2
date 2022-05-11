@@ -9,7 +9,7 @@ This module gathers the procedures callable from the c3dManagerFilters
 
 
 from pyCGM2.Tools import btkTools
-from pyCGM2.Processing.C3dManager import c3dManagerFilters
+
 
 
 class C3dManagerProcedure(object):

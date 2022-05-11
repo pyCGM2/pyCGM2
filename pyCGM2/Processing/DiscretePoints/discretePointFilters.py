@@ -6,7 +6,7 @@
 """
 A *discrete point* is a value at a specific frame of a cycle.
 
-In this module, through the filter `DiscretePointsFilter`, the goal is to get series of discrete value extracted according a
+In this module, through the filter `DiscretePointsFilter`, the goal is to get series of discrete values extracted according a
 specific strategy (ie a procedure). For instance, the `BenedettiProcedure` extracts dicrete points
 recommanded in Benededdi et al (1998):
 
@@ -33,11 +33,11 @@ class DiscretePointsFilter(object):
     """Discrete point filter
 
     Args:
-        discretePointProcedure (pyCGM2.Processing.discrePoints.(Procedure)): a procedure
+        discretePointProcedure (pyCGM2.Processing.DiscrePoints.discretePointProcedures.DiscretePointProcedure): a procedure
         analysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
-        modelInfo (dict,Optional[None]): information about the model
-        subjInfo (dict,Optional[None]): information about the subject
-        condExpInfo (dict,Optional[None]): information about the experiment
+        modelInfo (dict): information about the model
+        subjInfo (dict): information about the subject
+        condExpInfo (dict): information about the experiment
 
     """
 

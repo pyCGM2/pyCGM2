@@ -25,7 +25,7 @@ class RepresentativeCycleFilter(object):
 
     Args:
         analysisInstance (pyCGM2.Processing.analysis.Analysis): an `analysis` instance.
-        representativeProcedure (pyCGM2.Processing.representative.(procedure)): a procedure instance
+        representativeProcedure (pyCGM2.Processing.Representative.representativeProcedures.RepresentativeProcedure): a procedure instance
 
 
     """
