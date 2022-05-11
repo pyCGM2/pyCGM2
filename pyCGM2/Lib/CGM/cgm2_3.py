@@ -22,8 +22,8 @@ from pyCGM2.Model.Opensim import opensimFilters
 from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
 from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 from pyCGM2.Signal import signal_processing
-from pyCGM2.Anomaly import AnomalyFilter
-from pyCGM2.Anomaly import AnomalyDetectionProcedure
+from pyCGM2.Anomaly import anomalyFilters
+from pyCGM2.Anomaly import anomalyDetectionProcedures
 from pyCGM2.Inspector import inspectorFilters
 from pyCGM2.Inspector import inspectorProcedures
 
@@ -102,8 +102,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
     # --------------------ANOMALY------------------------------
     # --Check MP
-    adap = AnomalyDetectionProcedure.AnthropoDataAnomalyProcedure( required_mp)
-    adf = AnomalyFilter.AnomalyDetectionFilter(None,None,adap)
+    adap = anomalyDetectionProcedures.AnthropoDataAnomalyProcedure( required_mp)
+    adf = anomalyFilters.AnomalyDetectionFilter(None,None,adap)
     mp_anomaly = adf.run()
     if mp_anomaly["ErrorState"]: detectAnomaly = True
 
@@ -116,8 +116,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
         # # --marker outliers
         if inspector["In"] !=[]:
-            madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure(inspector["In"], plot=False, window=4,threshold = 3)
-            adf = AnomalyFilter.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,madp)
+            madp = anomalyDetectionProcedures.MarkerAnomalyDetectionRollingProcedure(inspector["In"], plot=False, window=4,threshold = 3)
+            adf = anomalyFilters.AnomalyDetectionFilter(acqStatic,calibrateFilenameLabelled,madp)
             anomaly = adf.run()
             anomalyIndexes = anomaly["Output"]
             if anomaly["ErrorState"]: detectAnomaly = True
@@ -429,16 +429,16 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         # --marker outliers
         if inspector["In"] !=[]:
-            madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure( inspector["In"], plot=False, window=5,threshold = 3)
-            adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,madp, frameRange=[vff,vlf])
+            madp = anomalyDetectionProcedures.MarkerAnomalyDetectionRollingProcedure( inspector["In"], plot=False, window=5,threshold = 3)
+            adf = anomalyFilters.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,madp, frameRange=[vff,vlf])
             anomaly = adf.run()
             anomalyIndexes = anomaly["Output"]
             if anomaly["ErrorState"]: detectAnomaly = True
 
 
     if btkTools.checkForcePlateExist(acqGait):
-        afpp = AnomalyDetectionProcedure.ForcePlateAnomalyProcedure()
-        adf = AnomalyFilter.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,afpp, frameRange=[vff,vlf])
+        afpp = anomalyDetectionProcedures.ForcePlateAnomalyProcedure()
+        adf = anomalyFilters.AnomalyDetectionFilter(acqGait,reconstructFilenameLabelled,afpp, frameRange=[vff,vlf])
         anomaly = adf.run()
         if anomaly["ErrorState"]: detectAnomaly = True
 

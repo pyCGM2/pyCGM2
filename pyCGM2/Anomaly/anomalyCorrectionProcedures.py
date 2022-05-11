@@ -41,22 +41,27 @@ def plot_dendrogram(model, **kwargs):
     # Plot the corresponding dendrogram
     dendrogram(linkage_matrix, **kwargs)
 
+class AnomalyCorrectionProcedure(object):
+    def __init__(self):
+        pass
 
-class MarkerAnomalyCorrectionProcedure(object):
+
+class MarkerAnomalyCorrectionProcedure(AnomalyCorrectionProcedure):
     """procedure to correct marker anomaly
 
     Args:
-        markers ([str,...]): marker labels
-        anomalyIndexes ([int,...]): indexes of the detected anomalies
-        plot (bool,Optional): enable plot
+        markers (list): marker labels
+        anomalyIndexes (list): indexes of the detected anomalies
+        plot (bool): enable plot
 
-    Kwargs:
+    Keyword Arguments:
         distance_threshold (float): distance threshold between indexes
 
 
     """
 
     def __init__(self, markers, anomalyIndexes, plot=False, **kwargs):
+        super(MarkerAnomalyCorrectionProcedure,self).__init__()
 
         if type(markers) == str:
             markers = [markers]
@@ -74,9 +79,6 @@ class MarkerAnomalyCorrectionProcedure(object):
         Args:
             acq (btk.Acquisition): a btk acquisition instantce
             filename (str): filename
-
-        Returns:
-            btk.Acquisition: updated btk acquisition instance
 
         """
 

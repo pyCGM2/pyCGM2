@@ -25,8 +25,8 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import argparse
 
-from pyCGM2.Anomaly import AnomalyFilter
-from pyCGM2.Anomaly import AnomalyDetectionProcedure
+from pyCGM2.Anomaly import anomalyFilters
+from pyCGM2.Anomaly import anomalyDetectionProcedures
 
 
 MODEL = "CGM2.6"
@@ -304,8 +304,8 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
                     # event checking
                     # -----------------------
                     acq = btkTools.smartReader(DATA_PATH+filename)
-                    geap = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
-                    adf = AnomalyFilter.AnomalyDetectionFilter(acq,filename,geap)
+                    geap = anomalyDetectionProcedures.GaitEventAnomalyProcedure()
+                    adf = anomalyFilters.AnomalyDetectionFilter(acq,filename,geap)
                     anomaly_events = adf.run()
                     if anomaly_events["ErrorState"]:
                         detectAnomaly = True

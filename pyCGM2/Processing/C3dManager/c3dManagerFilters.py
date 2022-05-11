@@ -17,7 +17,6 @@ according the computational objectives
 from pyCGM2.Tools import btkTools
 
 
-
 class C3dManager(object):
     """ A `c3d manager` instance is a structure listing btk.Acquisition instances and
     the associated filenames for the 4 computational objectives

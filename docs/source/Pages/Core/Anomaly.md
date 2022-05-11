@@ -3,19 +3,19 @@
 ### AnomalyDetectionProcedure
 
 ```{eval-rst}
-.. automodule:: pyCGM2.Anomaly.AnomalyDetectionProcedure
+.. automodule:: pyCGM2.Anomaly.anomalyDetectionProcedures
    :members:
 ```
 
 ### AnomalyCorrectionProcedure
 ```{eval-rst}
-.. automodule:: pyCGM2.Anomaly.AnomalyCorrectionProcedure
+.. automodule:: pyCGM2.Anomaly.anomalyCorrectionProcedures
    :members:
 ```
 
 ### Anomaly Filter
 
 ```{eval-rst}
-.. automodule:: pyCGM2.Anomaly.AnomalyFilter
+.. automodule:: pyCGM2.Anomaly.anomalyFilters
    :members:
 ```

@@ -20,7 +20,7 @@ class AnomalyDetectionFilter(object):
     Args:
         acq (btk.Acquisition): a btk acquisition instance
         filename (str): filename
-        procedure(pyCGM2.Anomaly.AnomalyDetectionProcedure): anomaly detector procedure instance
+        procedure(pyCGM2.Anomaly.anomalyDetectionProcedures.AnomalyDetectionProcedure): a procedure instance
 
     Kwargs:
         frameRange (list): frame boundaries
@@ -44,7 +44,7 @@ class AnomalyCorrectionFilter(object):
     Args:
         acq (btk.Acquisition): a btk acquisition instance
         filename (str): filename
-        procedure(pyCGM2.Anomaly.AnomalyDetectionProcedure): anomaly correction procedure instance
+        procedure(pyCGM2.Anomaly.anomalyDetectionProcedures.AnomalyDetectionProcedure): a  procedure instance
     """
 
     def __init__(self, acq, filename, procedure):

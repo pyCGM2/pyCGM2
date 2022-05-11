@@ -16,8 +16,8 @@ from pyCGM2.Utils import files
 from pyCGM2.Lib.CGM import cgm1
 import shutil
 import os
-from pyCGM2.Anomaly import AnomalyFilter
-from pyCGM2.Anomaly import AnomalyDetectionProcedure
+from pyCGM2.Anomaly import anomalyFilters
+from pyCGM2.Anomaly import anomalyDetectionProcedures
 import argparse
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -229,8 +229,8 @@ def main(sessionFilename, createPDFReport=True, checkEventsInMokka=True, anomaly
                     # event checking
                     # -----------------------
                     acq = btkTools.smartReader(DATA_PATH+filename)
-                    geap = AnomalyDetectionProcedure.GaitEventAnomalyProcedure()
-                    adf = AnomalyFilter.AnomalyDetectionFilter(
+                    geap = anomalyDetectionProcedures.GaitEventAnomalyProcedure()
+                    adf = anomalyFilters.AnomalyDetectionFilter(
                         acq, filename, geap)
                     anomaly_events = adf.run()
                     if anomaly_events["ErrorState"]:

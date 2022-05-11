@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-from pyCGM2.Anomaly import AnomalyFilter
-from pyCGM2.Anomaly import AnomalyDetectionProcedure
-from pyCGM2.Anomaly import AnomalyCorrectionProcedure
+from pyCGM2.Anomaly import anomalyFilters
+from pyCGM2.Anomaly import anomalyDetectionProcedures
+from pyCGM2.Anomaly import anomalyCorrectionProcedures
 from pyCGM2.Nexus import nexusFilters
 from pyCGM2.Nexus import nexusUtils
 from pyCGM2.Nexus import nexusTools
@@ -77,15 +77,15 @@ def main():
         markers = args.markers
         # markers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS
 
-        madp = AnomalyDetectionProcedure.MarkerAnomalyDetectionRollingProcedure(
+        madp = anomalyDetectionProcedures.MarkerAnomalyDetectionRollingProcedure(
             markers, plot=False, window=5, threshold=3)
-        adf = AnomalyFilter.AnomalyDetectionFilter(acq, filename, madp)
+        adf = anomalyFilters.AnomalyDetectionFilter(acq, filename, madp)
         anomaly = adf.run()
 
         if not args.noCorrection:
-            macp = AnomalyCorrectionProcedure.MarkerAnomalyCorrectionProcedure(
+            macp = anomalyCorrectionProcedures.MarkerAnomalyCorrectionProcedure(
                 markers, anomaly["Output"], plot=False, distance_threshold=20)
-            acf = AnomalyFilter.AnomalyCorrectionFilter(acq, filename, macp)
+            acf = anomalyFilters.AnomalyCorrectionFilter(acq, filename, macp)
             acqo = acf.run()
 
             # --------------------------PUSH ------------------------------------

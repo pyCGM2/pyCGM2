@@ -5,7 +5,7 @@
 
 """ This module gathers anomaly detectors on markers, events, force plate signals and anthropometric data
 
-check out the script : `\Tests\\test_anomalies.py` for example
+check out the script : `\\Tests\\test_anomalies.py` for example
 
 """
 
@@ -27,7 +27,7 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system. install it for working with the API")
 
-class AbstractDetectionProcedure(object):
+class AnomalyDetectionProcedure(object):
     """abstract marker detector procedure """
 
     def __init__(self):
@@ -41,12 +41,12 @@ class AbstractDetectionProcedure(object):
         return self.anomaly
 
 
-class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
+class MarkerAnomalyDetectionRollingProcedure(AnomalyDetectionProcedure):
     """marker anomaly detection from rolling statistics
 
     Args:
         markers (list): marker labels;
-        plot (bool,Optional[False]): enable plot
+        plot (bool): enable plot
 
     Kwargs:
         aprioriError (double): a priori error on the marker trajectory
@@ -163,7 +163,7 @@ class MarkerAnomalyDetectionRollingProcedure(AbstractDetectionProcedure):
         self.anomaly["ErrorState"] = errorState
 
 
-class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
+class GaitEventAnomalyProcedure(AnomalyDetectionProcedure):
     """gait event anomaly detector
     """
 
@@ -249,7 +249,7 @@ class GaitEventAnomalyProcedure(AbstractDetectionProcedure):
         return errorState
 
 
-class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
+class ForcePlateAnomalyProcedure(AnomalyDetectionProcedure):
     """force plate anomaly detector
     """
 
@@ -311,7 +311,7 @@ class ForcePlateAnomalyProcedure(AbstractDetectionProcedure):
         self.anomaly["ErrorState"] = errorState
 
 
-class AnthropoDataAnomalyProcedure(AbstractDetectionProcedure):
+class AnthropoDataAnomalyProcedure(AnomalyDetectionProcedure):
     """atnthropometric data anomaly detector
     """
 
