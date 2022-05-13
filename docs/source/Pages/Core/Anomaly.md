@@ -1,5 +1,12 @@
 ## Anomaly
 
+### Anomaly Filter
+
+```{eval-rst}
+.. automodule:: pyCGM2.Anomaly.anomalyFilters
+   :members:
+```
+
 ### AnomalyDetectionProcedure
 
 ```{eval-rst}
@@ -10,12 +17,5 @@
 ### AnomalyCorrectionProcedure
 ```{eval-rst}
 .. automodule:: pyCGM2.Anomaly.anomalyCorrectionProcedures
-   :members:
-```
-
-### Anomaly Filter
-
-```{eval-rst}
-.. automodule:: pyCGM2.Anomaly.anomalyFilters
    :members:
 ```

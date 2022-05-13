@@ -31,6 +31,14 @@ Core
 ```
 
 
+```{toctree}
+:caption: 'Third-party:'
+:maxdepth: 2
+
+NexusAPI
+NexusUtils
+```
+
 
 # Indices and tables
 
