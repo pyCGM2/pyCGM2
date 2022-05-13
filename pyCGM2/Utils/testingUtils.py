@@ -30,6 +30,26 @@ def test_point_rms(acq,RefLabel,LabelToTest,threshold,init=-1,end=-1):
         acq.GetPoint(LabelToTest).GetValues()[init:end,:], axis = 0),threshold)
 
 
+
+def test_point_compareToRef(acqRef,acqToTest, labelToTest,decimal = 3):
+
+    ref = acqRef.GetPoint(labelToTest).GetValues()
+    values = acqToTest.GetPoint(labelToTest).GetValues()
+
+    np.testing.assert_almost_equal(ref,values,decimal = decimal)
+
+
+def test_point_rms_compareToRef(acqRef,acqToTest,labelToTest,threshold):
+
+    ref = acqRef.GetPoint(labelToTest).GetValues()
+    values = acqToTest.GetPoint(labelToTest).GetValues()
+
+
+    np.testing.assert_array_less(numeric.rms( ref -
+        values, axis = 0),threshold)
+
+
+
 #---------DISPLAY----------
 def print_offset(value,acq,viconLabel, decimal=3):
     LOGGER.logger.info(" offset [%s] => %f ( my value) = %f ( reference)"%(viconLabel,
