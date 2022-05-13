@@ -1,4 +1,4 @@
-# Apps
+# Executable scripts
 
 ```{include} Pages/Apps/ExcecutableQTMApps.md
 ```

@@ -5,11 +5,22 @@
 
 # Welcome to pyCGM2's documentation!
 
+
+```{toctree}
+:caption: 'Guidelines'
+:maxdepth: 2
+
+Pages/guidelines/installation
+Pages/guidelines/howToRead
+
+```
+
+
 ```{toctree}
 :caption: 'Apps:'
 :maxdepth: 2
 
-Apps
+Pages/Executables
 
 ```
 
@@ -18,7 +29,7 @@ Apps
 :caption: 'High-level functions:'
 :maxdepth: 2
 
-Lib
+Pages/Lib
 
 ```
 
@@ -27,7 +38,7 @@ Lib
 :caption: 'Modules:'
 :maxdepth: 2
 
-Core
+Pages/Core
 ```
 
 
@@ -35,8 +46,8 @@ Core
 :caption: 'Third-party:'
 :maxdepth: 2
 
-NexusAPI
-NexusUtils
+Pages/thirdparty/NexusAPI
+Pages/thirdparty/NexusUtils
 ```
 
 
