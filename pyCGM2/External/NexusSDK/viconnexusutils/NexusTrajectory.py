@@ -8,7 +8,7 @@
 #     import NexusSegment
 
 
-class NexusTrajectory(NexusObject.NexusObject):
+class NexusTrajectory(NexusObject):
 
     def __init__(self, subject_name=None):
 
@@ -213,3 +213,4 @@ class NexusTrajectory(NexusObject.NexusObject):
         result = NexusTrajectory(self.subject_name)
         result._position = np.mean(self._position, axis=0)
         return result
+NexusObject

@@ -3,7 +3,7 @@
 # from . import NexusObject
 
 
-class NexusAngles(NexusObject.NexusObject):
+class NexusAngles(NexusObject):
 
     def __init__(self, subject_name=None):
         super(NexusAngles, self).__init__(subject_name)

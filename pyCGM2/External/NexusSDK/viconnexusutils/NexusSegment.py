@@ -8,7 +8,7 @@
 # from . import NexusTrajectory
 
 
-class NexusSegment(NexusObject.NexusObject):
+class NexusSegment(NexusObject):
 
     def __init__(self, subject=None, axisOrder='xyz'):
 
