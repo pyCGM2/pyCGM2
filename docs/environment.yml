@@ -9,6 +9,7 @@ dependencies:
     - sphinx == 4.5.0
     - myst-parser == 0.17.2
     - sphinx-rtd-theme == 1.0.0
+    - sphinxcontrib-mermaid == 0.7.1
     - numpy==1.18.5
     - scipy==1.5.4
     - matplotlib==3.3.3
