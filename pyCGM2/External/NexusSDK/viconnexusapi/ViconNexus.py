@@ -160,11 +160,13 @@ class ViconNexus(object):
           path = string, path to the trial on disk
           name = string, name of the trial
 
-        Usage Example: create a filename to be used for a user
-        generated output file
+        .. code-block::
 
-          path, name = vicon.gettrialname()
-          MyFilename = path % name %'.MyFile'
+            Usage Example: create a filename to be used for a user
+            generated output file
+
+              path, name = vicon.gettrialname()
+              MyFilename = path % name %'.MyFile'
         """
         info = self.Client.GetTrialName()
         return ViconNexus._get_safe_string_value(info.Path), \
@@ -177,11 +179,13 @@ class ViconNexus(object):
         Returns
          names = list of strings, one for each subject
 
-        Usage Example: list the names of the currently loaded subjects
+        .. code-block::
 
-         subjects = vicon.GetSubjectNames()
-         for subject in subjects:
-           print subject
+            Usage Example: list the names of the currently loaded subjects
+
+             subjects = vicon.GetSubjectNames()
+             for subject in subjects:
+               print subject
         """
         result = self.Client.GetSubjectNames()
         if result.Error() and self.GenerateErrors:
@@ -199,11 +203,13 @@ class ViconNexus(object):
            templates = list of strings, one for each subject
            active = list of bools, one for each subject
 
-        Usage Example: list the names of the currently loaded subjects
+        .. code-block::
 
-         subjects, templates, activeStates = vicon.GetSubjectInfo()
-         for subject, template, active in zip( subjects, templates, activeStates ):
-           print 'Subject Name: {}, Template Name: {}, Active: {}'.format( subject, template, active )
+            Usage Example: list the names of the currently loaded subjects
+
+             subjects, templates, activeStates = vicon.GetSubjectInfo()
+             for subject, template, active in zip( subjects, templates, activeStates ):
+               print 'Subject Name: {}, Template Name: {}, Active: {}'.format( subject, template, active )
         """
         result = self.Client.GetSubjectNames()
         if result.Error() and self.GenerateErrors:
@@ -260,11 +266,13 @@ class ViconNexus(object):
         Returns
           names  = list of strings, one for each marker
 
-        Usage Example: Display the name of the first marker
+        .. code-block::
 
-          markers = vicon.GetMarkerNames( 'Colin' )
-          firstmarker = markers[0]
-          print firstmarker
+            Usage Example: Display the name of the first marker
+
+              markers = vicon.GetMarkerNames( 'Colin' )
+              firstmarker = markers[0]
+              print firstmarker
         """
         result = self.Client.GetMarkerNames(subject.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -282,11 +290,13 @@ class ViconNexus(object):
         Returns
           names  = list of strings, one for each segment
 
-        Usage Example: Display the name of the first segment
+        .. code-block::
 
-          segments = vicon.GetSegmentNames( 'Colin' )
-          firstsegment = segments[0]
-          print firstsegment
+            Usage Example: Display the name of the first segment
+
+              segments = vicon.GetSegmentNames( 'Colin' )
+              firstsegment = segments[0]
+              print firstsegment
         """
         result = self.Client.GetSegmentNames(subject.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -304,12 +314,14 @@ class ViconNexus(object):
         Returns
           name  = string, name of the root segment
 
-        Usage Example: Display the children of the root segment
+        .. code-block::
 
-          root = vicon.GetRootSegment( 'Colin' )
-          children = vicon.GetSegmentDetails( 'Colin', root )[1]
-          for child in children:
-            print child
+            Usage Example: Display the children of the root segment
+
+              root = vicon.GetRootSegment( 'Colin' )
+              children = vicon.GetSegmentDetails( 'Colin', root )[1]
+              for child in children:
+                print child
         """
         result = self.Client.GetRootSegment(subject.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -331,12 +343,14 @@ class ViconNexus(object):
           children = list of strings, names of the child segments
           markers = list of strings, names of the markers associated with the segment
 
-        Usage Example: Display the children of the root segment
+        .. code-block::
 
-          root = vicon.GetRootSegment( 'Colin' )
-          children = vicon.GetSegmentDetails( 'Colin', root )[1]
-          for child in children:
-            print child
+            Usage Example: Display the children of the root segment
+
+              root = vicon.GetRootSegment( 'Colin' )
+              children = vicon.GetSegmentDetails( 'Colin', root )[1]
+              for child in children:
+                print child
         """
         result = self.Client.GetSegmentDetails(subject.encode('utf-8'), segment.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -357,11 +371,13 @@ class ViconNexus(object):
         Returns
           names  = list of strings, one for each joint
 
-        Usage Example: Display the name of the first joint
+        .. code-block::
 
-          joints = vicon.GetJointNames( 'Colin' )
-          firstjoint = joints[0]
-          print firstjoint
+            Usage Example: Display the name of the first joint
+
+              joints = vicon.GetJointNames( 'Colin' )
+              firstjoint = joints[0]
+              print firstjoint
         """
         result = self.Client.GetJointNames(subject.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -381,13 +397,15 @@ class ViconNexus(object):
           parent  = string, name of the parent segment
           child  = string, name of the child segment
 
-        Usage Example: Display information about the first joint
+        .. code-block::
 
-          joints = vicon.GetJointNames( 'Colin' )
-          firstjoint = joints[0]
-          parent, child = vicon.GetJointDetails( 'Colin', firstjoint )
-          JointDisplay = 'Joint: ' % firstjoint % ' ( ' % parent % ' - ' % child, ' )'
-          print JointDisplay
+            Usage Example: Display information about the first joint
+
+              joints = vicon.GetJointNames( 'Colin' )
+              firstjoint = joints[0]
+              parent, child = vicon.GetJointDetails( 'Colin', firstjoint )
+              JointDisplay = 'Joint: ' % firstjoint % ' ( ' % parent % ' - ' % child, ' )'
+              print JointDisplay
         """
         result = self.Client.GetJointDetails(subject.encode('utf-8'), joint.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -406,11 +424,13 @@ class ViconNexus(object):
         Returns
           names  = list of strings, one for each model output
 
-        Usage Example: Display the name of the first model output
+        .. code-block::
 
-          modeloutputs = vicon.GetModelOutputNames( 'Colin' )
-          firstmodeloutput = modeloutputs[0]
-          print firstmodeloutput
+            Usage Example: Display the name of the first model output
+
+              modeloutputs = vicon.GetModelOutputNames( 'Colin' )
+              firstmodeloutput = modeloutputs[0]
+              print firstmodeloutput
         """
         result = self.Client.GetModelOutputNames(subject.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -431,10 +451,12 @@ class ViconNexus(object):
           components = list of strings, list of component names for the model output
           types   = list of strings, list of the quantity types for each component
 
-        Usage Example: Create a new model output with the same properties as an existing model output
+        .. code-block::
 
-          group, components, types = vicon.GetModelOutputDetails( 'Colin', 'LeftHipAngle' )
-          vicon.CreateModelOutput( 'Colin', 'NewModelOutput', group, components, types )
+            Usage Example: Create a new model output with the same properties as an existing model output
+
+              group, components, types = vicon.GetModelOutputDetails( 'Colin', 'LeftHipAngle' )
+              vicon.CreateModelOutput( 'Colin', 'NewModelOutput', group, components, types )
         """
         info = self.Client.GetModelOutputDetails(subject.encode('utf-8'), modelOutputName.encode('utf-8'))
         if info.Error() and self.GenerateErrors:
@@ -455,10 +477,12 @@ class ViconNexus(object):
         Returns
           names  = list of strings, one for each analysis parameter
 
-        Usage Example: Display all of the analysis parameters
+        .. code-block::
 
-          params = vicon.GetAnalysisParamNames( 'Colin' )
-          print params
+            Usage Example: Display all of the analysis parameters
+
+              params = vicon.GetAnalysisParamNames( 'Colin' )
+              print params
         """
         result = self.Client.GetAnalysisParamNames(subject.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -479,12 +503,14 @@ class ViconNexus(object):
           unit   = string, unit associated with the value
           hasvalue = logical, indication as to whether the analysis parameter has a value
 
-        Usage Example: Display analysis parameter details
+        .. code-block::
 
-          value, unit, default, required = vicon.GetAnalysisParamDetails( 'Colin', 'MyParam' )
+            Usage Example: Display analysis parameter details
 
-          ParamInfo = 'MyParam = {0} [{1}]'.format( value, unit )
-          print ParamInfo
+              value, unit, default, required = vicon.GetAnalysisParamDetails( 'Colin', 'MyParam' )
+
+              ParamInfo = 'MyParam = {0} [{1}]'.format( value, unit )
+              print ParamInfo
         """
         info = self.Client.GetAnalysisParamDetails(subject.encode('utf-8'), param.encode('utf-8'))
         if info.Error() and self.GenerateErrors:
@@ -507,11 +533,13 @@ class ViconNexus(object):
           value  = floating point number, current value of the analysis parameter
           hasvalue = logical, indication as to whether the analysis parameter has a value
 
-        Usage Example: negate the value of a analysis parameter
+        .. code-block::
 
-          value = vicon.GetAnalysisParam( 'Colin', 'MyParam' )
-          value = value * (-1)
-          vicon.SetAnalysisParam( 'Colin', 'MyParam', value )
+            Usage Example: negate the value of a analysis parameter
+
+              value = vicon.GetAnalysisParam( 'Colin', 'MyParam' )
+              value = value * (-1)
+              vicon.SetAnalysisParam( 'Colin', 'MyParam', value )
         """
         data = self.Client.GetAnalysisParam(subject.encode('utf-8'), param.encode('utf-8'))
         if data.Error() and self.GenerateErrors:
@@ -528,11 +556,13 @@ class ViconNexus(object):
           param  = string, name of an existing analysis parameter
           value  = floating point number, desired value of the analysis parameter
 
-        Usage Example: negate the value of a analysis parameter
+        .. code-block::
 
-          value = vicon.GetAnalysisParam( 'Colin', 'MyParam' )
-          value = value * (-1)
-          vicon.SetAnalysisParam( 'Colin', 'MyParam', value )
+            Usage Example: negate the value of a analysis parameter
+
+              value = vicon.GetAnalysisParam( 'Colin', 'MyParam' )
+              value = value * (-1)
+              vicon.SetAnalysisParam( 'Colin', 'MyParam', value )
         """
         result = self.Client.SetAnalysisParam(subject.encode('utf-8'), param.encode('utf-8'), value)
         if result.Error() and self.GenerateErrors:
@@ -549,9 +579,11 @@ class ViconNexus(object):
           value  = floating point number, desired value of the analysis parameter
           unit   = string, unit associated with the value
 
-        Usage Example: create a new analysis parameter
+        .. code-block::
 
-          vicon.CreateAnalysisParam( 'Colin', 'MyParam', 1.23, 'mm' )
+            Usage Example: create a new analysis parameter
+
+              vicon.CreateAnalysisParam( 'Colin', 'MyParam', 1.23, 'mm' )
         """
         result = self.Client.CreateAnalysisParam(subject.encode('utf-8'), param.encode('utf-8'),
                                                  unit.encode('utf-8'), value)
@@ -567,10 +599,12 @@ class ViconNexus(object):
         Returns
           names  = list of strings, one for each subject parameter
 
-        Usage Example: Display all of the subject parameters
+        .. code-block::
 
-          subjectparams = vicon.GetSubjectParamNames( 'Colin' )
-          print subjectparams
+            Usage Example: Display all of the subject parameters
+
+              subjectparams = vicon.GetSubjectParamNames( 'Colin' )
+              print subjectparams
         """
         result = self.Client.GetSubjectParamNames(subject.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -593,15 +627,17 @@ class ViconNexus(object):
           required = logical, indication as to whether the subject parameter is a required parameter
           hasvalue = logical, indication as to whether the subject parameter has a value
 
-        Usage Example: Display subject parameter details
+        .. code-block::
 
-          value, unit, default, required = vicon.GetSubjectParamDetails( 'Colin', 'MyParam' )
-          isRequired = ' Not Required'
-          if( required ):
-            isRequired = ' Required'
+            Usage Example: Display subject parameter details
 
-          SubjectParamInfo = 'MyParam = {0} [{1}] Default={2}, {3}'.format( value, unit, default, isRequired )
-          print SubjectParamInfo
+              value, unit, default, required = vicon.GetSubjectParamDetails( 'Colin', 'MyParam' )
+              isRequired = ' Not Required'
+              if( required ):
+                isRequired = ' Required'
+
+              SubjectParamInfo = 'MyParam = {0} [{1}] Default={2}, {3}'.format( value, unit, default, isRequired )
+              print SubjectParamInfo
         """
         info = self.Client.GetSubjectParamDetails(subject.encode('utf-8'), param.encode('utf-8'))
         if info.Error() and self.GenerateErrors:
@@ -626,11 +662,13 @@ class ViconNexus(object):
           value  = floating point number, current value of the subject parameter
           hasvalue = logical, indication as to whether the subject parameter has a value
 
-        Usage Example: negate the value of a subject parameter
+        .. code-block::
 
-          value = vicon.GetSubjectParam( 'Colin', 'MyParam' )
-          value = value * (-1)
-          vicon.SetSubjectParam( 'Colin', 'MyParam', value )
+            Usage Example: negate the value of a subject parameter
+
+              value = vicon.GetSubjectParam( 'Colin', 'MyParam' )
+              value = value * (-1)
+              vicon.SetSubjectParam( 'Colin', 'MyParam', value )
         """
         data = self.Client.GetSubjectParam(subject.encode('utf-8'), param.encode('utf-8'))
         if data.Error() and self.GenerateErrors:
@@ -647,11 +685,14 @@ class ViconNexus(object):
           param  = string, name of an existing subject parameter
           value  = floating point number, desired value of the subject parameter
 
-        Usage Example: negate the value of a subject parameter
 
-          value = vicon.GetSubjectParam( 'Colin', 'MyParam' )
-          value = value * (-1)
-          vicon.SetSubjectParam( 'Colin', 'MyParam', value )
+        .. code-block::
+
+            Usage Example: negate the value of a subject parameter
+
+              value = vicon.GetSubjectParam( 'Colin', 'MyParam' )
+              value = value * (-1)
+              vicon.SetSubjectParam( 'Colin', 'MyParam', value )
         """
         result = self.Client.SetSubjectParam(subject.encode('utf-8'), param.encode('utf-8'), value, bForce)
         if result.Error() and self.GenerateErrors:
@@ -670,9 +711,11 @@ class ViconNexus(object):
           default = floating point number, PRIOR value of the subject parameter
           required = logical, indication as to whether the subject parameter is a required parameter
 
-        Usage Example: create a new subject parameter
+        .. code-block::
 
-          vicon.CreateSubjectParam( 'Colin', 'MyParam', 1.23, 'mm', 0, False )
+            Usage Example: create a new subject parameter
+
+              vicon.CreateSubjectParam( 'Colin', 'MyParam', 1.23, 'mm', 0, False )
         """
         result = self.Client.CreateSubjectParam(subject.encode('utf-8'), param.encode('utf-8'), required,
                                                 unit.encode('utf-8'), value, default)
@@ -686,9 +729,11 @@ class ViconNexus(object):
         Returns
           count = integer value, the number of unlabeled trajectories in the loaded trial
 
-        Usage Example:
+        .. code-block::
 
-          nUnlabeled = vicon.GetUnlabeledCount();
+            Usage Example:
+
+              nUnlabeled = vicon.GetUnlabeledCount();
         """
         return self.Client.GetUnlabeledCount()
 
@@ -704,15 +749,17 @@ class ViconNexus(object):
           z    = numerical(double) list, z-coordinates of the trajectory
           e    = logical list, T/F indication as to whether the data exists for each frame
 
-        Usage Example: Display trajectory coordinate at frame 50 of unlabeled trajectory 25
+        .. code-block::
 
-          trajX, trajY, trajZ, trajExists = vicon.GetUnlabeled( 25 )
-          doesexist = ' - Missing Data'
-          if( trajExists[49] ):
-            doesexist = ' - exists'
+            Usage Example: Display trajectory coordinate at frame 50 of unlabeled trajectory 25
 
-          framedata = 'frame 50 = ({0}, {1}, {2}){3}'.format( trajX[49], trajY[49], trajZ[49], doesexist )
-          print framedata
+              trajX, trajY, trajZ, trajExists = vicon.GetUnlabeled( 25 )
+              doesexist = ' - Missing Data'
+              if( trajExists[49] ):
+                doesexist = ' - exists'
+
+              framedata = 'frame 50 = ({0}, {1}, {2}){3}'.format( trajX[49], trajY[49], trajZ[49], doesexist )
+              print framedata
         """
         data = self.Client.GetUnlabeled(index)
         if data.Error() and self.GenerateErrors:
@@ -735,9 +782,11 @@ class ViconNexus(object):
         Returns
           exists   = T/F indication as to whether the specified marker is associated with a trajectory
 
-        Usage Example:
+        .. code-block::
 
-          bExists = vicon.HasTrajectory( 'Colin', 'C7' );
+            Usage Example:
+
+              bExists = vicon.HasTrajectory( 'Colin', 'C7' );
         """
         data = self.Client.HasTrajectory(subject.encode('utf-8'), marker.encode('utf-8'))
         if data.Error() and self.GenerateErrors:
@@ -759,15 +808,17 @@ class ViconNexus(object):
           z    = numerical(double) list, z-coordinates of the trajectory
           e    = logical list, T/F indication as to whether the data exists for each frame
 
-        Usage Example: Display trajectory coordinate at frame 50
+        .. code-block::
 
-          trajX, trajY, trajZ, trajExists = vicon.GetTrajectory( 'Colin', 'C7' )
-          doesexist = ' - Missing Data'
-          if( trajExists[49] ):
-            doesexist = ' - exists'
+            Usage Example: Display trajectory coordinate at frame 50
 
-          framedata = 'frame 50 = ({0}, {1}, {2}){3}'.format( trajX[49], trajY[49], trajZ[49], doesexist )
-          print framedata
+              trajX, trajY, trajZ, trajExists = vicon.GetTrajectory( 'Colin', 'C7' )
+              doesexist = ' - Missing Data'
+              if( trajExists[49] ):
+                doesexist = ' - exists'
+
+              framedata = 'frame 50 = ({0}, {1}, {2}){3}'.format( trajX[49], trajY[49], trajZ[49], doesexist )
+              print framedata
         """
         data = self.Client.GetTrajectory(subject.encode('utf-8'), marker.encode('utf-8'))
         if data.Error() and self.GenerateErrors:
@@ -792,15 +843,17 @@ class ViconNexus(object):
           z    = numerical(double) list, z-coordinate of the trajectory
           e    = logical list, T/F indication as to whether the data exists for each frame
 
-        Usage Example: Put the trajectory at 0,0,0 for all frames
+        .. code-block::
 
-          frameCount = vicon.GetFrameCount()
-          trajX  = [0]*frameCount
-          trajY  = [0]*frameCount
-          trajZ  = [0]*frameCount
-          exists = [True]*frameCount
+            Usage Example: Put the trajectory at 0,0,0 for all frames
 
-          vicon.SetTrajectory('Colin','C7',trajX,trajY,trajZ,exists)
+              frameCount = vicon.GetFrameCount()
+              trajX  = [0]*frameCount
+              trajY  = [0]*frameCount
+              trajZ  = [0]*frameCount
+              exists = [True]*frameCount
+
+              vicon.SetTrajectory('Colin','C7',trajX,trajY,trajZ,exists)
         """
         for i in range(len(x)):
             if any(map(math.isnan, [x[i], y[i], z[i]])):
@@ -827,15 +880,17 @@ class ViconNexus(object):
           z    = double value, z-coordinate of the trajectory
           e    = logical value, T/F indication as to whether the data exists for the frame
 
-        Usage Example: Display trajectory coordinate at frame 50
+        .. code-block::
 
-          markerX, markerY, markerZ, markerExists = vicon.GetTrajectoryAtFrame( 'Colin', 'C7', 50 )
-          doesexist = ' - Missing Data'
-          if markerExists:
-            doesexist = ' - exists'
+            Usage Example: Display trajectory coordinate at frame 50
 
-          framedata = 'frame 50 = {}, {}, {}, {}'.format(markerX, markerY, markerZ, doesexist)
-          print framedata
+              markerX, markerY, markerZ, markerExists = vicon.GetTrajectoryAtFrame( 'Colin', 'C7', 50 )
+              doesexist = ' - Missing Data'
+              if markerExists:
+                doesexist = ' - exists'
+
+              framedata = 'frame 50 = {}, {}, {}, {}'.format(markerX, markerY, markerZ, doesexist)
+              print framedata
         """
         data = self.Client.GetTrajectoryAtFrame(subject.encode('utf-8'), marker.encode('utf-8'), frame)
         if data.Error() and self.GenerateErrors:
@@ -861,9 +916,11 @@ class ViconNexus(object):
           z    = double value, z-coordinate of the trajectory
           e    = logical value, T/F indication as to whether the data exists for the frame
 
-        Usage Example: Create a gap at frame 50
+        .. code-block::
 
-          vicon.SetTrajectoryAtFrame( 'Colin', 'C7', 50, 0.0, 0.0, 0.0, False )
+            Usage Example: Create a gap at frame 50
+
+              vicon.SetTrajectoryAtFrame( 'Colin', 'C7', 50, 0.0, 0.0, 0.0, False )
         """
         if any(map(math.isnan, [x, y, z])):
             e = False
@@ -887,10 +944,12 @@ class ViconNexus(object):
           components   = numerical(double) NxM matrix where N is the number of components, M is the number of frames
           e        = logical list, T/F indication as to whether the data exists for each frame
 
-        Usage Example: Copy the data from one model output to another
+        .. code-block::
 
-          [data, exists] = vicon.GetModelOutput( 'Colin', 'LeftHipAngle' )
-          vicon.SetModelOutput( 'Colin', 'NewAngle', data, exists )
+            Usage Example: Copy the data from one model output to another
+
+              [data, exists] = vicon.GetModelOutput( 'Colin', 'LeftHipAngle' )
+              vicon.SetModelOutput( 'Colin', 'NewAngle', data, exists )
         """
         data = self.Client.GetModelOutput(subject.encode('utf-8'), modelOutputName.encode('utf-8'))
         if data.Error() and self.GenerateErrors:
@@ -912,10 +971,12 @@ class ViconNexus(object):
           components   = numerical(double) NxM matrix where N is the number of components, M is the number of frames
           e        = logical list, T/F indication as to whether the data exists for each frame
 
-        Usage Example: Copy the data from one model output to another
+        .. code-block::
 
-          [data, exists] = vicon.GetModelOutput( 'Colin', 'LeftHipAngle' )
-          vicon.SetModelOutput( 'Colin', 'NewAngle', data, exists )
+            Usage Example: Copy the data from one model output to another
+
+              [data, exists] = vicon.GetModelOutput( 'Colin', 'LeftHipAngle' )
+              vicon.SetModelOutput( 'Colin', 'NewAngle', data, exists )
         """
         componentDict = nexusclient.map_ui_vd()
         bad_frames = set()
@@ -957,13 +1018,15 @@ class ViconNexus(object):
           components = numerical(double) list, one value for each component
           e          = logical value, T/F indication as to whether the data exists for the frame
 
-        Usage Example: offset model output data by 100.0 at frame 50
+        .. code-block::
 
-          data, exists = vicon.GetModelOutputAtFrame( 'Colin', 'NewAngle', 50 )
-          for value in data:
-            value = value + 100.0
+            Usage Example: offset model output data by 100.0 at frame 50
 
-          vicon.SetModelOutputAtFrame( 'Colin', 'NewAngle', 50, data, True )
+              data, exists = vicon.GetModelOutputAtFrame( 'Colin', 'NewAngle', 50 )
+              for value in data:
+                value = value + 100.0
+
+              vicon.SetModelOutputAtFrame( 'Colin', 'NewAngle', 50, data, True )
         """
         data = self.Client.GetModelOutputAtFrame(subject.encode('utf-8'), modelOutputName.encode('utf-8'),
                                                  frame)
@@ -986,13 +1049,15 @@ class ViconNexus(object):
           components      = numerical(double) list, one value for each component
           e               = logical value, T/F indication as to whether the data exists for the frame
 
-        Usage Example: offset model output data by 100.0 at frame 50
+        .. code-block::
 
-          data, exists = vicon.GetModelOutputAtFrame( 'Colin', 'NewAngle', 50 )
-          for value in data:
-            value = value + 100.0
+            Usage Example: offset model output data by 100.0 at frame 50
 
-          vicon.SetModelOutputAtFrame( 'Colin', 'NewAngle', 50, data, True )
+              data, exists = vicon.GetModelOutputAtFrame( 'Colin', 'NewAngle', 50 )
+              for value in data:
+                value = value + 100.0
+
+              vicon.SetModelOutputAtFrame( 'Colin', 'NewAngle', 50, data, True )
         """
         if any(map(math.isnan, components)):
             e = False
@@ -1016,11 +1081,13 @@ class ViconNexus(object):
           types   = list of strings, list of the quantity types for each component
                     Valid values are: Length, Mass, Angle, Acceleration, Angular Acceleration, Angular Velocity, Frequency, Force, ForceNormalized, Torque, TorqueNormalized, Power, PowerNormalized, Pressure, Electric Potential, Velocity
 
-        Usage Example: Create model output matching the Plug-in Gait Bone HED
+        .. code-block::
 
-          BonesNames = ['RX','RY','RZ','TX','TY','TZ','SX','SY','SZ']
-          BonesTypes = ['Angle','Angle','Angle','Length','Length','Length','Length','Length','Length']
-          vicon.CreateModelOutput( 'Patricia', 'HED', 'Plug-in Gait Bones', BonesNames, BonesTypes )
+            Usage Example: Create model output matching the Plug-in Gait Bone HED
+
+              BonesNames = ['RX','RY','RZ','TX','TY','TZ','SX','SY','SZ']
+              BonesTypes = ['Angle','Angle','Angle','Length','Length','Length','Length','Length','Length']
+              vicon.CreateModelOutput( 'Patricia', 'HED', 'Plug-in Gait Bones', BonesNames, BonesTypes )
         """
         SafeComps = []
         for name in componentNames:
@@ -1048,23 +1115,25 @@ class ViconNexus(object):
           subject     = string, name of an existing subject
           modelOutputName = string, name of new model output associated with the subject
 
-        Usage Example: Create a midpoint
+        .. code-block::
 
-          vicon.CreateModeledMarker( 'Colin', 'Midpoint' )
-          kneeX, kneeY, kneeZ, kneeExists = vicon.GetTrajectory( 'Colin', 'RKNE' )
-          ankX, ankY, ankZ, ankExists = vicon.GetTrajectory( 'Colin', 'RANK' )
-          data, exists = vicon.GetModelOutput( 'Colin', 'Midpoint' )
-          framecount = vicon.GetFrameCount()
-          for i in xrange(framecount):
-            if kneeExists[i] and ankExists[i]
-              exists[i] = True
-              data[0][i] = ( kneeX[i] + ankX[i] ) / 2
-              data[1][i] = ( kneeY[i] + ankY[i] ) / 2
-              data[2][i] = ( kneeZ[i] + ankZ[i] ) / 2
-            else:
-              exists[i] = False
+            Usage Example: Create a midpoint
 
-          vicon.SetModelOutput( 'Colin', 'Midpoint', data, exists )
+              vicon.CreateModeledMarker( 'Colin', 'Midpoint' )
+              kneeX, kneeY, kneeZ, kneeExists = vicon.GetTrajectory( 'Colin', 'RKNE' )
+              ankX, ankY, ankZ, ankExists = vicon.GetTrajectory( 'Colin', 'RANK' )
+              data, exists = vicon.GetModelOutput( 'Colin', 'Midpoint' )
+              framecount = vicon.GetFrameCount()
+              for i in xrange(framecount):
+                if kneeExists[i] and ankExists[i]
+                  exists[i] = True
+                  data[0][i] = ( kneeX[i] + ankX[i] ) / 2
+                  data[1][i] = ( kneeY[i] + ankY[i] ) / 2
+                  data[2][i] = ( kneeZ[i] + ankZ[i] ) / 2
+                else:
+                  exists[i] = False
+
+              vicon.SetModelOutput( 'Colin', 'Midpoint', data, exists )
         """
         XYZNames = [str('X'), str('Y'), str('Z')]
         Names = []
@@ -1087,9 +1156,11 @@ class ViconNexus(object):
         """
         Delete all events currently defined in the loaded trial
 
-        Usage Example:
+        .. code-block::
 
-          vicon.ClearAllEvents();
+            Usage Example:
+
+              vicon.ClearAllEvents();
         """
         result = self.Client.ClearAllEvents()
         if result.Error() and self.GenerateErrors:
@@ -1110,9 +1181,11 @@ class ViconNexus(object):
                        to the event occurrence for each event
                        The value should be in the range of 0.00 to 1/FrameRate
 
-        Usage Example:
+        .. code-block::
 
-          frames, offsets = vicon.GetEvents( 'Patricia', 'Left', 'Foot Strike' )
+            Usage Example:
+
+              frames, offsets = vicon.GetEvents( 'Patricia', 'Left', 'Foot Strike' )
         """
         data = self.Client.GetEvents(subject.encode('utf-8'), context.encode('utf-8'),
                                      event.encode('utf-8'))
@@ -1136,9 +1209,11 @@ class ViconNexus(object):
           offset     = double value, offset (in seconds) from the beginning of the frame to the event occurrence
                        The value should be in the range of 0.00 to 1/FrameRate
 
-        Usage Example:
+        .. code-block::
 
-         vicon.CreateAnEvent( 'Patricia', 'Foot Strike', 'Left', 137, 0.0 )
+            Usage Example:
+
+             vicon.CreateAnEvent( 'Patricia', 'Foot Strike', 'Left', 137, 0.0 )
         """
         result = self.Client.CreateAnEvent(subject.encode('utf-8'), context.encode('utf-8'),
                                            event.encode('utf-8'), frame, offset)
@@ -1161,9 +1236,11 @@ class ViconNexus(object):
                             the timeout value has no effect in the host application itself and the pipeline
                             may continue to run after the time allocated has expired.
 
-        Usage Example:
+        .. code-block::
 
-          vicon.RunPipeline( 'Reconstruct', '', 45 )
+            Usage Example:
+
+              vicon.RunPipeline( 'Reconstruct', '', 45 )
         """
         result = self.Client.RunPipeline(pipeline.encode('utf-8'), location.encode('utf-8'), timeout)
         if result.Error() and self.GenerateErrors:
@@ -1188,9 +1265,11 @@ class ViconNexus(object):
                        the timeout value has no effect in the host application itself and the trial
                        may continue to load after the time allocated has expired.
 
-        Usage Example:
+        .. code-block::
 
-        vicon.OpenTrial('C:\\Users\\Public\\Documents\\Vicon\\Nexus Sample Data\\Colin\\Walking Trials\\Walking 2', 30)
+            Usage Example:
+
+            vicon.OpenTrial('C:\\Users\\Public\\Documents\\Vicon\\Nexus Sample Data\\Colin\\Walking Trials\\Walking 2', 30)
         """
         result = self.Client.OpenTrial(trial.encode('utf-8'), timeout)
         if result.Error() and self.GenerateErrors:
@@ -1209,9 +1288,11 @@ class ViconNexus(object):
                         the timeout value has no effect in the host application itself and the trial
                         may continue to save after the time allocated has expired.
 
-        Usage Example:
+        .. code-block::
 
-          vicon.SaveTrial( 30 )
+            Usage Example:
+
+              vicon.SaveTrial( 30 )
         """
         result = self.Client.SaveTrial(timeout)
         if result.Error() and self.GenerateErrors:
@@ -1230,9 +1311,11 @@ class ViconNexus(object):
                         the timeout value has no effect in the host application itself and the trial
                         may continue to save after the time allocated has expired.
 
-        Usage Example:
+        .. code-block::
 
-          vicon.CloseTrial( 30 )
+            Usage Example:
+
+              vicon.CloseTrial( 30 )
         """
         result = self.Client.CloseTrial(timeout)
         if result.Error() and self.GenerateErrors:
@@ -1247,11 +1330,13 @@ class ViconNexus(object):
         Returns
           deviceIDs = list of unsigned ints, one for each device
 
-        Usage Example: retrieve the list of device identifiers
+        .. code-block::
 
-          devices = vicon.GetDeviceIDs()
-          for device in devices:
-            print device
+            Usage Example: retrieve the list of device identifiers
+
+              devices = vicon.GetDeviceIDs()
+              for device in devices:
+                print device
         """
         result = self.Client.GetDeviceIDs()
         if result.Error() and self.GenerateErrors:
@@ -1267,9 +1352,11 @@ class ViconNexus(object):
         Returns
           deviceNames = list of strings, one for each named device
 
-        Usage Example:
+        .. code-block::
 
-          deviceNames = vicon.GetDeviceNames()
+            Usage Example:
+
+              deviceNames = vicon.GetDeviceNames()
         """
         result = self.Client.GetDeviceNames()
         if result.Error() and self.GenerateErrors:
@@ -1287,9 +1374,11 @@ class ViconNexus(object):
         Returns
           deviceID = string, DeviceID of the device with name 'name'
 
-        Usage Example: retrieve the DeviceID for a named forceplate
+        .. code-block::
 
-          DeviceID = vicon.GetDeviceIDFromName( 'MyForcePlate' )
+            Usage Example: retrieve the DeviceID for a named forceplate
+
+              DeviceID = vicon.GetDeviceIDFromName( 'MyForcePlate' )
         """
         result = self.Client.GetDeviceIDFromName(name.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -1317,11 +1406,13 @@ class ViconNexus(object):
           eyetracker   = NexusEyeTracker, additional info if the device
                          is an eye tracker
 
-        Usage Example: Display the name and type of a device
+        .. code-block::
 
-          name, type, rate, deviceOutputIDs, forceplate, eyetracker = vicon.GetDeviceDetails( '1' )
-          DeviceDisplay = 'DeviceID: {0} is named {1} and it is a {2} device' ].format( deviceID, name, type )
-          print DeviceDisplay
+            Usage Example: Display the name and type of a device
+
+              name, type, rate, deviceOutputIDs, forceplate, eyetracker = vicon.GetDeviceDetails( '1' )
+              DeviceDisplay = 'DeviceID: {0} is named {1} and it is a {2} device' ].format( deviceID, name, type )
+              print DeviceDisplay
         """
         info = self.Client.GetDeviceDetails(deviceID)
         if info.Error() and self.GenerateErrors:
@@ -1360,9 +1451,11 @@ class ViconNexus(object):
           deviceOutputID = unsigned int, DeviceOutputID of the device output with name 'name' from device with
           the ID 'deviceID'
 
-        Usage Example: retrieve the DeviceOutputID for a named output
+        .. code-block::
 
-          DeviceOutputID = vicon.GetDeviceOutputIDFromName( 1, 'Force' )
+            Usage Example: retrieve the DeviceOutputID for a named output
+
+              DeviceOutputID = vicon.GetDeviceOutputIDFromName( 1, 'Force' )
         """
         result = self.Client.GetDeviceOutputIDFromName(deviceID, name.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -1385,9 +1478,11 @@ class ViconNexus(object):
         Returns
           channelID    = unsigned int, ChannelID of the device with name 'name'
 
-        Usage Example:
+        .. code-block::
 
-          channelID = vicon.GetDeviceChannelIDFromName( 1, 1, 'Fx' )
+            Usage Example:
+
+              channelID = vicon.GetDeviceChannelIDFromName( 1, 1, 'Fx' )
         """
         result = self.Client.GetDeviceChannelIDFromName(deviceID, deviceOutputID, name.encode('utf-8'))
         if result.Error() and self.GenerateErrors:
@@ -1411,9 +1506,11 @@ class ViconNexus(object):
                           channel names are not required, data access is acheived using the channelID
           channelIDs   = unsigned int list, list of channel IDs associated with the output
 
-        Usage Example:
+        .. code-block::
 
-          name, type, unit, ready, channelNames, channelIDs = vicon.GetDeviceOutputDetails( 1, 1 );
+            Usage Example:
+
+              name, type, unit, ready, channelNames, channelIDs = vicon.GetDeviceOutputDetails( 1, 1 );
         """
         info = self.Client.GetDeviceOutputDetails(deviceID, deviceOutputID)
         if info.Error() and self.GenerateErrors:
@@ -1451,12 +1548,14 @@ class ViconNexus(object):
                        associated with this device output component
           rate       = double value, sample rate of the channel data
 
-        Usage Example:
+        .. code-block::
 
-          deviceIDs = vicon.GetDeviceIDs();
-          _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
-          _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
-          data, ready, rate = vicon.GetDeviceChannel(deviceIDs[0],outputIDs[0],channelIDs[0]);
+            Usage Example:
+
+              deviceIDs = vicon.GetDeviceIDs();
+              _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
+              _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
+              data, ready, rate = vicon.GetDeviceChannel(deviceIDs[0],outputIDs[0],channelIDs[0]);
         """
         data = self.Client.GetDeviceChannel(deviceID, deviceOutputID, channelID)
         if data.Error() and self.GenerateErrors:
@@ -1492,12 +1591,14 @@ class ViconNexus(object):
                        associated with this device output component
           rate       = double value, sample rate of the channel data
 
-        Usage Example:
+        .. code-block::
 
-          deviceIDs = vicon.GetDeviceIDs();
-          _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
-          _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
-          data, ready, rate = vicon.GetDeviceChannelAtFrame(deviceIDs[0],outputIDs[0],channelIDs[0], 200);
+            Usage Example:
+
+              deviceIDs = vicon.GetDeviceIDs();
+              _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
+              _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
+              data, ready, rate = vicon.GetDeviceChannelAtFrame(deviceIDs[0],outputIDs[0],channelIDs[0], 200);
         """
         data = self.Client.GetDeviceChannelAtFrame(deviceID, deviceOutputID, channelID, frame)
         if data.Error() and self.GenerateErrors:
@@ -1534,11 +1635,13 @@ class ViconNexus(object):
                        associated with this device output component
           rate       = double value, sample rate of the channel data
 
-        Usage Example:
-          deviceIDs = vicon.GetDeviceIDs();
-          _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
-          _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
-          data, ready, rate = vicon.GetDeviceChannelForFrame(deviceIDs[0],outputIDs[0],channelIDs[0], 200);
+        .. code-block::
+
+            Usage Example:
+              deviceIDs = vicon.GetDeviceIDs();
+              _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
+              _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
+              data, ready, rate = vicon.GetDeviceChannelForFrame(deviceIDs[0],outputIDs[0],channelIDs[0], 200);
         """
         data = self.Client.GetDeviceChannelForFrame(deviceID, deviceOutputID, channelID, frame)
         if data.Error() and self.GenerateErrors:
@@ -1573,12 +1676,14 @@ class ViconNexus(object):
                        associated with this device output component
           rate       = double value, sample rate of the channel data
 
-        Usage Example:
+        .. code-block::
 
-          deviceIDs = vicon.GetDeviceIDs();
-          _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
-          _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
-          data, ready, rate = vicon.GetDeviceChannelGlobal(deviceIDs[0],outputIDs[0],channelIDs[0]);
+            Usage Example:
+
+              deviceIDs = vicon.GetDeviceIDs();
+              _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
+              _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
+              data, ready, rate = vicon.GetDeviceChannelGlobal(deviceIDs[0],outputIDs[0],channelIDs[0]);
         """
         data = self.Client.GetDeviceChannelGlobal(deviceID, deviceOutputID, channelID)
         if data.Error() and self.GenerateErrors:
@@ -1614,12 +1719,14 @@ class ViconNexus(object):
                        associated with this device output component
           rate      = double value, sample rate of the channel data
 
-        Usage Example:
+        .. code-block::
 
-          deviceIDs = vicon.GetDeviceIDs();
-          _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
-          _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
-          data, ready, rate = vicon.GetDeviceChannelGlobalAtFrame(deviceIDs[0],outputIDs[0],channelIDs[0], 200);
+            Usage Example:
+
+              deviceIDs = vicon.GetDeviceIDs();
+              _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
+              _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
+              data, ready, rate = vicon.GetDeviceChannelGlobalAtFrame(deviceIDs[0],outputIDs[0],channelIDs[0], 200);
         """
         data = self.Client.GetDeviceChannelGlobalAtFrame(deviceID, deviceOutputID, channelID, frame)
         if data.Error() and self.GenerateErrors:
@@ -1656,12 +1763,14 @@ class ViconNexus(object):
                        associated with this device output component
           rate      = double value, sample rate of the channel data
 
-        Usage Example:
+        .. code-block::
 
-          deviceIDs = vicon.GetDeviceIDs();
-          _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
-          _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
-          data, ready, rate = vicon.GetDeviceChannelGlobalForFrame(deviceIDs[0],outputIDs[0],channelIDs[0], 200);
+            Usage Example:
+
+              deviceIDs = vicon.GetDeviceIDs();
+              _,_,_,outputIDs,_,_ = vicon.GetDeviceDetails(deviceIDs[0]);
+              _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceIDs[0],outputIDs[0]);
+              data, ready, rate = vicon.GetDeviceChannelGlobalForFrame(deviceIDs[0],outputIDs[0],channelIDs[0], 200);
         """
         data = self.Client.GetDeviceChannelGlobalForFrame(deviceID, deviceOutputID, channelID, frame)
         if data.Error() and self.GenerateErrors:
@@ -1700,27 +1809,29 @@ class ViconNexus(object):
          channelID    = unsigned int, ID of the channel
          channelData   = numerical(double) list, channel data list of size NumberOfFrames * samplesPerFrame
 
-        Usage Example:
-          # Threshold forceplate data at 25N magnitude
-          import math
-          deviceIDs = vicon.GetDeviceIDs();
-          for deviceID in deviceIDs:
-              _,type,_,_,_,_ = vicon.GetDeviceDetails(deviceID);
-              if type == 'ForcePlate'
-                  forceID = vicon.GetDeviceOutputIDFromName(deviceID, 'Force');
-                  _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceID,forceID);
-                  fx = vicon.GetDeviceChannel(deviceID,forceID,channelIDs[0]);
-                  fy = vicon.GetDeviceChannel(deviceID,forceID,channelIDs[1]);
-                  fz = vicon.GetDeviceChannel(deviceID,forceID,channelIDs[2]);
-                  fmag = [x for x in map(lambda x,y: math.sqrt( x**2 + y**2 ), a, b) ]
-                  for (i, item) in enumerate(fmag):
-                      if item < 25:
-                          fx[i] = 0
-                          fy[i] = 0
-                          fz[i] = 0
-                  vicon.SetDeviceChannel(deviceID,forceID,channelIDs[0], fx);
-                  vicon.SetDeviceChannel(deviceID,forceID,channelIDs[1], fy);
-                  vicon.SetDeviceChannel(deviceID,forceID,channelIDs[2], fz);
+        .. code-block::
+
+            Usage Example:
+              # Threshold forceplate data at 25N magnitude
+              import math
+              deviceIDs = vicon.GetDeviceIDs();
+              for deviceID in deviceIDs:
+                  _,type,_,_,_,_ = vicon.GetDeviceDetails(deviceID);
+                  if type == 'ForcePlate'
+                      forceID = vicon.GetDeviceOutputIDFromName(deviceID, 'Force');
+                      _,_,_,_,_,channelIDs = vicon.GetDeviceOutputDetails(deviceID,forceID);
+                      fx = vicon.GetDeviceChannel(deviceID,forceID,channelIDs[0]);
+                      fy = vicon.GetDeviceChannel(deviceID,forceID,channelIDs[1]);
+                      fz = vicon.GetDeviceChannel(deviceID,forceID,channelIDs[2]);
+                      fmag = [x for x in map(lambda x,y: math.sqrt( x**2 + y**2 ), a, b) ]
+                      for (i, item) in enumerate(fmag):
+                          if item < 25:
+                              fx[i] = 0
+                              fy[i] = 0
+                              fz[i] = 0
+                      vicon.SetDeviceChannel(deviceID,forceID,channelIDs[0], fx);
+                      vicon.SetDeviceChannel(deviceID,forceID,channelIDs[1], fy);
+                      vicon.SetDeviceChannel(deviceID,forceID,channelIDs[2], fz);
         """
         result = self.Client.SetDeviceChannel(deviceID, deviceOutputID, channelID, channelData)
         if result.Error() and self.GenerateErrors:
@@ -1756,11 +1867,13 @@ class ViconNexus(object):
           frame      = integer value, trial frame number as displayed in the application time bar
           channelData   = numerical(double) list, component data list for the frame of size samplesPerFrame
 
-        Usage Example:
+        .. code-block::
 
-          fx,_,_ = vicon.GetDeviceChannelAtFrame(1,1,1,200);
-          fx = [x/2 for x in fx];
-          vicon.SetDeviceChannelAtFrame(1,1,1,200,fx);
+            Usage Example:
+
+              fx,_,_ = vicon.GetDeviceChannelAtFrame(1,1,1,200);
+              fx = [x/2 for x in fx];
+              vicon.SetDeviceChannelAtFrame(1,1,1,200,fx);
         """
         result = self.Client.SetDeviceChannelAtFrame(deviceID, deviceOutputID, channelID, frame, channelData)
         if result.Error() and self.GenerateErrors:
@@ -1777,19 +1890,21 @@ class ViconNexus(object):
           z         = numerical(double) list, z-coordinate of the trajectory
           frameRate = double, frame rate of the supplied data
 
-        Usage Example:
+        .. code-block::
 
-          frameRate = vicon.GetFrameRate()
-          startFrame, endFrame = vicon.GetTrialRange()
-          frames = range( startFrame, endFrame + 1 )
-          [trajX, trajY, trajZ, e] = vicon.GetTrajectory( 'Colin', 'LKNE' )
-          # get valid indices; we only want to submit good values here!
-          validIndices = [ x for x, y in enumerate(e) if y ]
-          validF = [ frames[ Index ] for Index in validIndices ]
-          validX = [ trajX[ Index ] for Index in validIndices ]
-          validY = [ trajY[ Index ] for Index in validIndices ]
-          validZ = [ trajZ[ Index ] for Index in validIndices ]
-          vicon.SubmitSplineTrajectory(validF, validX, validY, validZ, frameRate)
+            Usage Example:
+
+              frameRate = vicon.GetFrameRate()
+              startFrame, endFrame = vicon.GetTrialRange()
+              frames = range( startFrame, endFrame + 1 )
+              [trajX, trajY, trajZ, e] = vicon.GetTrajectory( 'Colin', 'LKNE' )
+              # get valid indices; we only want to submit good values here!
+              validIndices = [ x for x, y in enumerate(e) if y ]
+              validF = [ frames[ Index ] for Index in validIndices ]
+              validX = [ trajX[ Index ] for Index in validIndices ]
+              validY = [ trajY[ Index ] for Index in validIndices ]
+              validZ = [ trajZ[ Index ] for Index in validIndices ]
+              vicon.SubmitSplineTrajectory(validF, validX, validY, validZ, frameRate)
         """
         ClientFrames = nexusclient.vectori()
         for frame in frames:
@@ -1822,21 +1937,23 @@ class ViconNexus(object):
           z         = numerical(double) list, z-coordinate of the trajectory
           frameRate = double, frame rate of the supplied data
 
-        Usage Example:
+        .. code-block::
 
-          frameRate = vicon.GetFrameRate()
-          startFrame, endFrame = vicon.GetTrialRange()
-          frames = range( startFrame, endFrame + 1 )
-          [trajX, trajY, trajZ, e] = vicon.GetTrajectory( 'Colin', 'LKNE' )
-          # get valid indices; we only want to submit good values here!
-          validIndices = [ x for x, y in enumerate(e) if y ]
-          validF = [ frames[ Index ] for Index in validIndices ]
-          validX = [ trajX[ Index ] for Index in validIndices ]
-          validY = [ trajY[ Index ] for Index in validIndices ]
-          validZ = [ trajZ[ Index ] for Index in validIndices ]
-          vicon.SubmitSplineTrajectory(validF, validX, validY, validZ, frameRate)
+            Usage Example:
 
-          accX, accY, accZ = vicon.GetSplineResults(2);
+              frameRate = vicon.GetFrameRate()
+              startFrame, endFrame = vicon.GetTrialRange()
+              frames = range( startFrame, endFrame + 1 )
+              [trajX, trajY, trajZ, e] = vicon.GetTrajectory( 'Colin', 'LKNE' )
+              # get valid indices; we only want to submit good values here!
+              validIndices = [ x for x, y in enumerate(e) if y ]
+              validF = [ frames[ Index ] for Index in validIndices ]
+              validX = [ trajX[ Index ] for Index in validIndices ]
+              validY = [ trajY[ Index ] for Index in validIndices ]
+              validZ = [ trajZ[ Index ] for Index in validIndices ]
+              vicon.SubmitSplineTrajectory(validF, validX, validY, validZ, frameRate)
+
+              accX, accY, accZ = vicon.GetSplineResults(2);
         """
         data = self.Client.GetSplineResults(derivative)
         if data.Error() and self.GenerateErrors:

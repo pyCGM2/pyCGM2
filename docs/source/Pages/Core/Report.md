@@ -1,33 +1,32 @@
 ## Report
 
-### module level
 
-#### normativeDatasets
+### normativeDatasets
 ```{eval-rst}
 .. automodule:: pyCGM2.Report.normativeDatasets
    :members:
 ```
 
-#### plot
+### plot
 ```{eval-rst}
 .. automodule:: pyCGM2.Report.plot
    :members:
 ```
 
-#### plotFilters
+### plotFilters
 ```{eval-rst}
 .. automodule:: pyCGM2.Report.plotFilters
    :members:
 ```
 
-#### plotUtils
+### plotUtils
 ```{eval-rst}
 .. automodule:: pyCGM2.Report.plotUtils
    :members:
 ```
 
 
-### Viewers submodule
+### Viewers
 
 #### plotViewers
 ```{eval-rst}

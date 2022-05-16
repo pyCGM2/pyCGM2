@@ -1,56 +1,54 @@
 ## Model
 
-### module level
-
-#### anthropometricMeasurement
+### anthropometricMeasurement
 ```{eval-rst}
 .. automodule:: pyCGM2.Model.anthropometricMeasurement
    :members:
 ```
 
-#### bodySegmentParameters
+### bodySegmentParameters
 ```{eval-rst}
 .. automodule:: pyCGM2.Model.bodySegmentParameters
    :members:
 ```
 
-#### frame
+### frame
 ```{eval-rst}
 .. automodule:: pyCGM2.Model.frame
    :members:
 ```
 
-#### model
+### model
 ```{eval-rst}
 .. automodule:: pyCGM2.Model.model
    :members:
 ```
 
-#### modelDecorator
+### modelDecorator
 ```{eval-rst}
 .. automodule:: pyCGM2.Model.modelDecorator
    :members:
 ```
 
-#### modelFilters
+### modelFilters
 ```{eval-rst}
 .. automodule:: pyCGM2.Model.modelFilters
    :members:
 ```
 
-#### modelQualityFilter
+### modelQualityFilter
 ```{eval-rst}
 .. automodule:: pyCGM2.Model.modelQualityFilter
    :members:
 ```
 
-#### motion
+### motion
 ```{eval-rst}
 .. automodule:: pyCGM2.Model.motion
    :members:
 ```
 
-### CGM2 submodule
+### CGM2
 
 #### cgm
 ```{eval-rst}
@@ -70,7 +68,7 @@
    :members:
 ```
 
-### Opensim submodule
+### Opensim
 
 #### opensimFilters
 ```{eval-rst}

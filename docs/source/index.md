@@ -12,7 +12,7 @@
 
 Pages/guidelines/installation
 Pages/guidelines/howToRead
-
+Pages/guidelines/knownissues
 ```
 
 
@@ -46,8 +46,10 @@ Pages/Core
 :caption: 'Third-party:'
 :maxdepth: 2
 
-Pages/thirdparty/NexusAPI
-Pages/thirdparty/NexusUtils
+Pages/thirdParty/NexusAPI
+Pages/thirdParty/NexusUtils
+Pages/thirdParty/btk
+Pages/thirdParty/opensim
 ```
 
 

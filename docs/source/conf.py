@@ -34,7 +34,8 @@ extensions = ["myst_parser",
              "sphinx.ext.autosectionlabel",
              'sphinx.ext.napoleon',
              "sphinx.ext.autodoc",
-             'sphinxarg.ext' ]
+             'sphinxarg.ext',
+             'sphinxcontrib.mermaid' ]
 
 source_suffix = ['.md']
 

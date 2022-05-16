@@ -157,7 +157,7 @@
 
 ```{eval-rst}
 .. argparse::
-   :module: pyCGM2.Apps.ViconApps.Plot.plotTemporalEMG
+   :module: pyCGM2.Apps.ViconApps.Plot.plotTemporalEmg
    :func: main
    :prog: Nexus_plot_temporalEMG.exe
 ```

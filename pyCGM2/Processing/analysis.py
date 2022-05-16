@@ -32,19 +32,27 @@ class Analysis():
 
     Analysis work as **class-container**. Its attributes are:
 
-          - `stpStats` (dict)  - descritive statictics of stapiotemporal parameters
+          - `stpStats` (dict)  - descritive statictics (mean,sd,median) of satiotemporal parameters
           - `kinematicStats` (AnalysisStructure)  - descritive statictics of kinematics data.
           - `kineticStats` (AnalysisStructure)  - descritive statictics of kinetics data.
           - `emgStats` (AnalysisStructure)  - descritive statictics of emg data.
 
-    Two sublevels characterized  `kinematicStats`, `kineticStats` and `emgStats`:
+    Two items constitute the  `AnalysisStructure` returns by `kinematicStats`, `kineticStats` and `emgStats`
 
-        - `data` collect descriptive statistics of either kinematics, kinetics or emg.
-        - `pst` returns the spatiotemporal parameters of cycles used for either kinematic, kinetics or emg.
+        - `data` is a a dict collecting descriptive statistics of kinematic, kinetic or emg output.
+        - `pst` returns the spatiotemporal parameters of the cycles associated to kinematic, kinetics or emg outputs.
 
-    **Note**
+    Examples:
+        If you want to return the mean, sd, and median of the left hip angles, time normalized from left gait events
 
-    stp, kinematics, kinetics and emg stats can be computed from separated acquisitions.
+        >>> analysis.kinematicStats.data["LHipAngles", "Left"]["mean"] #return array(101,3)
+        >>> analysis.kinematicStats.data["LHipAngles", "Left"]["sd"] #return array(101,3)
+        >>> analysis.kinematicStats.data["LHipAngles", "Left"]["median"] #return array(101,3)
+
+        You can also get all-cycle values from the below code.
+
+        >>> analysis.kinematicStats.data["LHipAngles", "Left"]["values"] #return list (length=number of cycle) of array(101,3)
+
     """
 
     def __init__(self):

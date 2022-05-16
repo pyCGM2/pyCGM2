@@ -1,7 +1,8 @@
 # Executable scripts
 
-```{include} Pages/Apps/ExcecutableQTMApps.md
+```{include} Apps/ExecutableQTMApps.md
+
 ```
 
-```{include} Pages/Apps/ExcecutableViconApps.md
+```{include} Apps/ExcecutableViconApps.md
 ```

@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Executable Apps/Qtm/CGM workflows
-#APIDOC["Import"]=False
-#APIDOC["Draft"]=False
-#--end--
 
 import warnings
 from pyCGM2.Report import normativeDatasets
@@ -40,7 +36,7 @@ def command():
         args = parser.parse_args()
         sessionFilename = args.sessionFile
         main(sessionFilename, anomalyException=args.anomalyException)
-    except: 
+    except:
         return parser
 
 

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Executable Apps/Qtm/CGM workflows
-#APIDOC["Import"]=False
-#APIDOC["Draft"]=False
-#--end--
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import os
 import shutil

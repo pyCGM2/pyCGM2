@@ -1,40 +1,38 @@
 ## Processing
 
-### module level
-
-#### analysis
+### analysis
 ```{eval-rst}
 .. automodule:: pyCGM2.Processing.analysis
    :members:
 ```
 
-#### analysisHandler
+### analysisHandler
 ```{eval-rst}
 .. automodule:: pyCGM2.Processing.analysisHandler
    :members:
 ```
 
-#### analysisProcessing
+### analysisProcessing
 ```{eval-rst}
 .. automodule:: pyCGM2.Processing.analysisProcessing
    :members:
 ```
 
 
-#### cycle
+### cycle
 ```{eval-rst}
 .. automodule:: pyCGM2.Processing.cycle
    :members:
 ```
 
-#### exporter
+### exporter
 ```{eval-rst}
 .. automodule:: pyCGM2.Processing.exporter
    :members:
 ```
 
 
-#### c3dManager submodule
+### c3dManager
 
 #### c3dManagerFilters
 ```{eval-rst}
@@ -48,7 +46,7 @@
    :members:
 ```
 
-### Classification submodule
+### Classification
 
 #### classificationFilters
 ```{eval-rst}
@@ -62,7 +60,7 @@
    :members:
 ```
 
-### DiscretePoints submodule
+### DiscretePoints
 
 #### discretePointFilters
 ```{eval-rst}
@@ -76,7 +74,7 @@
    :members:
 ```
 
-### JointPatterns submodule
+### JointPatterns
 
 #### jointPatternFilters
 ```{eval-rst}
@@ -90,7 +88,7 @@
    :members:
 ```
 
-### ProgressionFrame submodule
+### ProgressionFrame
 
 #### progressionFrameFilters
 ```{eval-rst}
@@ -104,7 +102,7 @@
    :members:
 ```
 
-### Representative submodule
+### Representative
 
 #### representativeFilters
 ```{eval-rst}
@@ -118,7 +116,7 @@
    :members:
 ```
 
-### Scores submodule
+### Scores
 
 #### scoreFilters
 ```{eval-rst}
