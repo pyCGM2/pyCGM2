@@ -4,7 +4,20 @@
 #--end--
 
 """
-This module aims to classify gait
+This module aims to classify the model ouputs according a gait pattern.
+
+The implementation is based on a *adapter pattern*. The classication filter calls a procedure, then return the gait pattern for both limbs
+
+example:
+
+.. code-block:: python
+
+    nds = normativeDatasets.NormativeData("Schwartz2008","Free")
+
+    procedure = classificationProcedures.PFKEprocedure(nds)
+    filt = classificationFilters.ClassificationFilter(analysisInstance, procedure)
+    sagClass = filt.run()
+
 """
 
 import pyCGM2

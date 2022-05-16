@@ -12,6 +12,17 @@ The filter `C3dManagerFilter` calls a procedure, then return a `C3dManager` inst
 ie ,  a structure listing both Btk.Acquisition instances and their associated filename
 according the computational objectives
 
+.. code-block:: python
+
+    c3dmanagerProcedure = c3dManagerProcedures.DistinctC3dSetProcedure(
+        DATA_PATH, iPstFilenames, iKinematicFilenames, iKineticFilenames, iEmgFilenames)
+
+    cmf = c3dManagerFilters.C3dManagerFilter(c3dmanagerProcedure)
+    cmf.enableKinematic(True)
+    cmf.enableKinetic(True)
+    cmf.enableEmg(True)
+    trialManager = cmf.generate()
+
 """
 
 from pyCGM2.Tools import btkTools
