@@ -7,6 +7,7 @@ from pyCGM2.Signal.detect_peaks import detect_peaks
 from pyCGM2.Math import derivation
 
 from pyCGM2.Processing import analysisHandler
+from pyCGM2.Processing.JointPatterns import jointPatternFilters
 import re
 
 class JointPatternProcedure(object):
@@ -199,7 +200,7 @@ class XlsJointPatternProcedure(JointPatternProcedure):
             row = xlsPatterns.iloc[index,:]
 
             criteria = row["Criteria"]
-            primaries,secondaries = JointPatternFilter.interpretCriteria(criteria)
+            primaries,secondaries = jointPatternFilters.JointPatternFilter.interpretCriteria(criteria)
 
 
             # criteria test
