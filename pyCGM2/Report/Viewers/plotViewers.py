@@ -20,7 +20,7 @@ from pyCGM2.Report import plot
 
 
 class AbstractPlotViewer(object):
-    def __init__(self,input,AutomaticYlimits=False):
+    def __init__(self,input,AutomaticYlimits=True):
         self.m_input =input
         self.m_automaticYlim_flag = AutomaticYlimits
 
@@ -409,7 +409,7 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
             ax7.set_title("Wrist Extension" ,size=8)
             ax8.set_title("Wrist Rotation" ,size=8)
 
-            if not self.m_automaticYlim_flag:
+            if self.m_automaticYlim_flag:
                 ax0.set_ylim([-60,60])
                 ax1.set_ylim([-30,30])
                 ax2.set_ylim([-30,30])
