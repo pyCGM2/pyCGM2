@@ -6,6 +6,7 @@ import pyCGM2
 LOGGER = pyCGM2.LOGGER
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
+from pyCGM2.Utils import utils
 
 from pyCGM2.Model import modelFilters
 from pyCGM2.Model import bodySegmentParameters
@@ -27,7 +28,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               required_mp,optional_mp,
               ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
               markerDiameter,hjcMethod,
-              pointSuffix,**kwargs):
+              pointSuffix,*argv,**kwargs):
     """
     CGM22 calibration.
 
@@ -56,6 +57,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         detectAnomaly  (bool): presence of anomaly
 
     """
+    utils.homogeneizeArguments(argv,kwargs)
 
     detectAnomaly = False
 
@@ -331,7 +333,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     markerDiameter,
     pointSuffix,
     mfpa,
-    momentProjection,**kwargs):
+    momentProjection,*argv, **kwargs):
 
     """
     CGM22 Fitting.
@@ -364,7 +366,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         detectAnomaly  (bool): presence of anomaly
 
     """
+    
 
+    utils.homogeneizeArguments(argv,kwargs)
+    
     detectAnomaly = False
 
     if "anomalyException" in kwargs.keys():
@@ -594,6 +599,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     #---- Body segment parameters----
     bspModel = bodySegmentParameters.Bsp(model)
     bspModel.compute()
+    import ipdb; ipdb.set_trace()
 
     modelFilters.CentreOfMassFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
 

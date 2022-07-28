@@ -7,6 +7,7 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
+from pyCGM2.Utils import utils
 
 from pyCGM2.Model import modelFilters
 from pyCGM2.Model import bodySegmentParameters
@@ -25,7 +26,7 @@ from pyCGM2.Inspector import inspectorProcedures
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
               required_mp,optional_mp,
               leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
-              pointSuffix,**kwargs):
+              pointSuffix,*argv, **kwargs):
     """
     CGM1 calibration.
 
@@ -55,6 +56,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     """
 
 
+    utils.homogeneizeArguments(argv,kwargs)
     detectAnomaly = False
 
     if "anomalyException" in kwargs.keys():
@@ -248,7 +250,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     markerDiameter,
     pointSuffix,
     mfpa,
-    momentProjection,**kwargs):
+    momentProjection,*argv, **kwargs):
 
     """
     CGM1 Fitting.
@@ -284,7 +286,9 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
 
 
+    utils.homogeneizeArguments(argv,kwargs)
     detectAnomaly = False
+    
     if "anomalyException" in kwargs.keys():
         anomalyException = kwargs["anomalyException"]
     else:

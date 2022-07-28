@@ -13,6 +13,7 @@ from pyCGM2.Model import modelFilters
 from pyCGM2.Model import modelDecorator
 from pyCGM2 import enums
 from pyCGM2.Signal import signal_processing
+from pyCGM2.Utils import utils
 
 
 
@@ -29,7 +30,7 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 
 def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
     side, beginFrame, endFrame, jointRange,
-    **kwargs):
+    *argv, **kwargs):
 
     """
     calibration2Dof
@@ -60,6 +61,7 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
 
     """
 
+    utils.homogeneizeArguments(argv,kwargs)
 
     # --- btk acquisition ----
     if "forceBtkAcq" in kwargs.keys():
@@ -187,7 +189,8 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
 
 def sara(model,
     DATA_PATH,reconstructFilenameLabelled,translators,
-    side,beginFrame,endFrame,**kwargs):
+    side,beginFrame,endFrame,
+    *argv, **kwargs):
 
     """
     calibration2Dof
@@ -215,6 +218,8 @@ def sara(model,
         side  (str): body side
 
     """
+
+    utils.homogeneizeArguments(argv,kwargs)
 
     # --- btk acquisition ----
     if "forceBtkAcq" in kwargs.keys():

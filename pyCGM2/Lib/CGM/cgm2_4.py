@@ -10,6 +10,7 @@ import pyCGM2
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
+from pyCGM2.Utils import utils
 
 from pyCGM2.Model import modelFilters
 from pyCGM2.Model import bodySegmentParameters
@@ -31,7 +32,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               required_mp,optional_mp,
               ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
               markerDiameter,hjcMethod,
-              pointSuffix,**kwargs):
+              pointSuffix,*argv, **kwargs):
     """
     CGM24 calibration.
 
@@ -63,6 +64,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     """
 
 
+    utils.homogeneizeArguments(argv,kwargs)
     detectAnomaly = False
 
 
@@ -354,7 +356,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     ik_flag,markerDiameter,
     pointSuffix,
     mfpa,
-    momentProjection,**kwargs):
+    momentProjection,*argv, **kwargs):
 
     """
     CGM24 Fitting.
@@ -388,6 +390,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     """
 
+    utils.homogeneizeArguments(argv,kwargs)
     detectAnomaly = False
     if "anomalyException" in kwargs.keys():
         anomalyException = kwargs["anomalyException"]

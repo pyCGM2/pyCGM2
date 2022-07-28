@@ -11,6 +11,7 @@ import pyCGM2
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
+from pyCGM2.Utils import utils
 
 from pyCGM2.Model import modelFilters
 from pyCGM2.Model import bodySegmentParameters
@@ -31,7 +32,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               required_mp,optional_mp,
               ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
               markerDiameter,hjcMethod,
-              pointSuffix,**kwargs):
+              pointSuffix,*argv, **kwargs):
     """
     CGM25 calibration.
 
@@ -63,6 +64,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     """
 
 
+    utils.homogeneizeArguments(argv,kwargs)
     detectAnomaly = False
 
 
@@ -87,8 +89,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         LOGGER.logger.info("[pyCGM2] Sacrum marker detected")
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
-
-    trackingMarkers = cgm2.CGM2_5.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_5.THORAX_TRACKING_MARKERS+ cgm2.CGM2_5.UPPERLIMB_TRACKING_MARKERS
+    trackingMarkers = cgm2.CGM2_5.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_5.THORAX_TRACKING_MARKERS+ cgm2.CGM2_5.UPPERLIMB_TRACKING_MARKERS+["LSMH","RSMH"]
     actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
 
     vff = acqStatic.GetFirstFrame()
@@ -356,7 +357,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     ik_flag,markerDiameter,
     pointSuffix,
     mfpa,
-    momentProjection,**kwargs):
+    momentProjection,*argv, **kwargs):
 
     """
     CGM25 Fitting.
@@ -390,6 +391,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     """
 
+    utils.homogeneizeArguments(argv,kwargs)
     detectAnomaly = False
 
 

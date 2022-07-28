@@ -47,3 +47,13 @@ def getSimilarElement(listData):
     for it in set(listData):
         out = it
     return out
+
+
+def homogeneizeArguments(argv,kwargs):
+    for arg in argv:
+        if isinstance(arg,dict):
+            for argvKey in arg.keys():
+                if argvKey in kwargs.keys():
+                    LOGGER.logger.warning("The positional argument (%s) is already defined as keyword argument. Keyword argument value will be used")
+                else:
+                    kwargs[argvKey] = arg[argvKey]
