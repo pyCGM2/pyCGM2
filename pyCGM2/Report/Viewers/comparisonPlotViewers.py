@@ -145,6 +145,38 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                 ax12.set_ylim([-50,30])
                 ax13.set_ylim([-30,30])
                 ax14.set_ylim([-30,30])
+        elif self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
+
+            ax0.set_title("Shoulder flexion" ,size=8)
+            ax1.set_title("Shoulder Adduction" ,size=8)
+            ax2.set_title("Shoulder Rotation" ,size=8)
+            ax3.set_title("Elbow Flexion" ,size=8)
+            # ax4.set_title("Elbow Adduction" ,size=8)
+            # ax5.set_title("Spine Rotation" ,size=8)
+            ax6.set_title("Ulnar Deviation" ,size=8)
+            ax7.set_title("Wrist Extension" ,size=8)
+            ax8.set_title("Wrist Rotation" ,size=8)
+
+            if self.m_automaticYlim_flag:
+                ax0.set_ylim([-60,60])
+                ax1.set_ylim([-30,30])
+                ax2.set_ylim([-30,30])
+
+                ax3.set_ylim( [-60,60])
+                ax4.set_ylim([-30,30])
+                ax5.set_ylim([-30,30])
+
+                ax6.set_ylim([-30,30])
+                ax7.set_ylim([-30,30])
+                ax8.set_ylim([0,160])
+
+                ax9.set_ylim([-30,30])
+                ax10.set_ylim([-30,30])
+                ax11.set_ylim([-30,30])
+
+                ax12.set_ylim([-50,30])
+                ax13.set_ylim([-30,30])
+                ax14.set_ylim([-30,30])
         else:
             LOGGER.logger.warning("Plot Panel not implemented yet")
 
@@ -226,6 +258,37 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                     self.m_concretePlotFunction(self.fig.axes[14],analysis.kinematicStats,
                             "LForeFootAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
 
+                elif self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
+                    self.m_concretePlotFunction(self.fig.axes[0],analysis.kinematicStats,
+                            "LShoulderAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[1],analysis.kinematicStats,
+                            "LShoulderAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[2],analysis.kinematicStats,
+                            "LShoulderAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+                    self.m_concretePlotFunction(self.fig.axes[3],analysis.kinematicStats,
+                            "LElbowAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    # self.m_concretePlotFunction(self.fig.axes[4],analysis.kinematicStats,
+                    #         "LElbowAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None,
+                    # legendLabel=legend)
+                    # self.m_concretePlotFunction(self.fig.axes[5],analysis.kinematicStats,
+                    #         "LElbowAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None,
+                    # legendLabel=legend)
+
+                    self.m_concretePlotFunction(self.fig.axes[6],analysis.kinematicStats,
+                            "LWristAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[7],analysis.kinematicStats,
+                            "LWristAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[8],analysis.kinematicStats,
+                            "LWristAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
                 i+=1
 
         if self.m_context == "Right":
@@ -286,6 +349,38 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                             "RForeFootAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None)
                     self.m_concretePlotFunction(self.fig.axes[14],analysis.kinematicStats,
                             "RForeFootAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
+
+                elif self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
+                    self.m_concretePlotFunction(self.fig.axes[0],analysis.kinematicStats,
+                            "RShoulderAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[1],analysis.kinematicStats,
+                            "RShoulderAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[2],analysis.kinematicStats,
+                            "RShoulderAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+                    self.m_concretePlotFunction(self.fig.axes[3],analysis.kinematicStats,
+                            "RElbowAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    # self.m_concretePlotFunction(self.fig.axes[4],analysis.kinematicStats,
+                    #         "LElbowAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None,
+                    # legendLabel=legend)
+                    # self.m_concretePlotFunction(self.fig.axes[5],analysis.kinematicStats,
+                    #         "LElbowAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None,
+                    # legendLabel=legend)
+
+                    self.m_concretePlotFunction(self.fig.axes[6],analysis.kinematicStats,
+                            "RWristAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[7],analysis.kinematicStats,
+                            "RWristAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[8],analysis.kinematicStats,
+                            "RWristAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
 
                 i+=1
 
