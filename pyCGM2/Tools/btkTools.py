@@ -42,14 +42,18 @@ def smartReader(filename, translators=None):
     if translators is not None:
         acq = applyTranslators(acq, translators)
 
-    # management force plate type 5
-    if checkForcePlateExist(acq):
-        if "5" in smartGetMetadata(acq, "FORCE_PLATFORM", "TYPE"):
-            LOGGER.logger.warning(
-                "[pyCGM2] Type 5 Force plate detected. Due to a BTK known-issue,  type 5 force plate has been corrected as type 2")
-            # inelegant code but avoir circular import !!
-            from pyCGM2.ForcePlates import forceplates
-            forceplates.correctForcePlateType5(acq)
+    try:
+        # management force plate type 5
+        if checkForcePlateExist(acq):
+            if "5" in smartGetMetadata(acq, "FORCE_PLATFORM", "TYPE"):
+                LOGGER.logger.warning(
+                    "[pyCGM2] Type 5 Force plate detected. Due to a BTK known-issue,  type 5 force plate has been corrected as type 2")
+                # inelegant code but avoir circular import !!
+                from pyCGM2.ForcePlates import forceplates
+                forceplates.correctForcePlateType5(acq)
+    except:
+        LOGGER.logger.error("[pyCGM2] import of Force plate FAILED. you may work with different force plate types")
+
 
     # sort events
     sortedEvents(acq)
@@ -1159,9 +1163,9 @@ def applyRotation(acq, markers, globalFrameOrientation, forwardProgression):
 
     """
     if globalFrameOrientation == "XYZ":
-	    rot = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        rot = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     elif globalFrameOrientation == "YXZ":
-	    rot = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]])
+        rot = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]])
     else:
         raise Exception("[pyCGM2] code cannot work with Z as non-normal axis")
 
