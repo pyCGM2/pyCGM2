@@ -1,0 +1,67 @@
+# custom segmental anthropometric parameters updating those of the CGM ( ie from Dempster table)
+# put the file into your data folder and run CGM#i fitting operation. the file will be detected
+# and segmental anthropometric parameters updated
+# example  
+# mp:
+#     Pelvis:
+#         mass: 13
+#         length:
+#         com: [0,0,3]
+#         rog:
+#         inertia: [1,2,3,4,5,6,7,8,9]
+
+# This file uses the yaml syntax. use an online yaml validator to check your file  
+
+
+
+mp:
+    Pelvis:
+        mass:           #double
+        length:         #double
+        com:            #list of 3 elements
+        rog:            # double
+        inertia:        #list of 9 elements
+
+    Left Thigh:
+        mass:
+        length:
+        com:
+        rog:
+        inertia:
+
+    Left Shank:
+        mass:
+        length:
+        com:
+        rog:
+        inertia:
+
+    Left Foot:
+        mass:
+        length:
+        com:
+        rog:
+        inertia:
+
+    Right Thigh:
+        mass:
+        length:
+        com:
+        rog:
+        inertia:
+
+    Right Shank:
+        mass:
+        length:
+        com:
+        rog:
+        inertia:
+
+    Right Foot:
+        mass:
+        length:
+        com:
+        rog:
+        inertia:
+
+

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Functions/CGM1
-#APIDOC["Draft"]=False
-#--end--
+import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 # pyCGM2 libraries
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 from pyCGM2.Utils import utils
-
+from pyCGM2.Utils import files
 from pyCGM2.Model import modelFilters
 from pyCGM2.Model import bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm
@@ -438,6 +436,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     #---- Body segment parameters----
     bspModel = bodySegmentParameters.Bsp(model)
     bspModel.compute()
+
+    if os.path.isfile(DATA_PATH+"mp.settings"):
+        custom_mp = files.openFile(DATA_PATH,"mp.settings")
+        bodySegmentParameters.updateFromcustomMp(model,custom_mp)
+
 
     #---- CentreOfMass----
     if  model.m_bodypart == enums.BodyPart.FullBody:

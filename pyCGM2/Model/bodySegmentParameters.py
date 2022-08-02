@@ -6,6 +6,49 @@
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
+def updateFromcustomMp(model, custom_mp):
+    """
+    update the anthropometric parameters fo your model
+
+    Args:
+        model (pyCGM2.Model): a model instance.
+        custom_mp (dict): mp from the file mp.settings
+    """
+    for segment in model.m_segmentCollection:
+        name = segment.name
+        if name in custom_mp["mp"]:
+            mass = custom_mp["mp"][name]["mass"]
+            length = custom_mp["mp"][name]["length"]
+            com = custom_mp["mp"][name]["com"]
+            rog = custom_mp["mp"][name]["rog"]
+            inertia = custom_mp["mp"][name]["inertia"]
+
+            if inertia is not None:
+                if len(inertia) !=9:
+                    LOGGER.logger.error("Incorrect dimensions of your inertia parameter. 9 elements required")
+                    raise 
+                segment.m_bsp["inertia"] = np.array(inertia).reshape((3,3))
+                LOGGER.logger.info("default inertia of the segment [%s] updated"%(name))
+
+            if mass is not None: 
+                segment.m_bsp["mass"] = mass
+                LOGGER.logger.info("default mass of the segment [%s] updated"%(name))
+
+            if length is not None: 
+                segment.m_bsp["length"] = length
+                LOGGER.logger.info("default length of the segment [%s] updated"%(name))
+
+            if com is not None:
+                if len(com) !=3:
+                    LOGGER.logger.error("Incorrect dimensions of your com position. 3 elements required")
+                    raise
+                segment.m_bsp["com"] = com
+                LOGGER.logger.info("default com position of the segment [%s] updated"%(name))
+
+            if rog is not None: 
+                segment.m_bsp["rog"] = rog
+                LOGGER.logger.info("default rog of the segment [%s] updated"%(name))
+
 class Bsp(object):
     """
         Body Segment Parameter of the lower limb according Dempster 1995
