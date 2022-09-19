@@ -20,7 +20,83 @@ from pyCGM2.Tools import  btkTools
 from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
 from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 from pyCGM2.Utils import utils
-# ---- BTK ------
+from pyCGM2.Lib.Processing import progression
+
+class Test_LibProgression():
+
+    def test_gaitTrialProgression(self):
+        """
+        """
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
+
+
+        gaitFilename="gait_X_forward.c3d"
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
+        progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acq, staticFlag=False)
+        np.testing.assert_equal( progressionAxis,"X")
+        np.testing.assert_equal( forwardProgression ,True)
+        np.testing.assert_equal( globalFrame,"XYZ")
+
+        gaitFilename="gait_X_backward.c3d"
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
+        progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acq, staticFlag=False)
+        np.testing.assert_equal( progressionAxis,"X")
+        np.testing.assert_equal( forwardProgression ,False)
+        np.testing.assert_equal( globalFrame,"XYZ")
+
+
+        gaitFilename="gait_Y_forward.c3d"
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
+        progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acq, staticFlag=False)
+        np.testing.assert_equal( progressionAxis,"Y")
+        np.testing.assert_equal( forwardProgression ,True)
+        np.testing.assert_equal( globalFrame,"YXZ")
+
+        gaitFilename="gait_Y_backward.c3d"
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
+        progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acq, staticFlag=False)
+        np.testing.assert_equal( progressionAxis,"Y")
+        np.testing.assert_equal( forwardProgression ,False)
+        np.testing.assert_equal( globalFrame,"YXZ")
+
+
+    def test_staticTrialProgression(self):
+        """
+        """
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
+
+
+        gaitFilename="static_X.c3d"
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
+        progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acq, staticFlag=True)
+        np.testing.assert_equal( progressionAxis,"X")
+        np.testing.assert_equal( forwardProgression ,True)
+        np.testing.assert_equal( globalFrame,"XYZ")
+
+        gaitFilename="static_X_backward.c3d"
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
+        progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acq, staticFlag=True)
+        np.testing.assert_equal( progressionAxis,"X")
+        np.testing.assert_equal( forwardProgression ,False)
+        np.testing.assert_equal( globalFrame,"XYZ")
+
+
+        gaitFilename="upperBody_StaticX.c3d"
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
+        progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acq, staticFlag=True)
+        np.testing.assert_equal( progressionAxis,"X")
+        np.testing.assert_equal( forwardProgression ,True)
+        np.testing.assert_equal( globalFrame,"XYZ")
+
+
+        gaitFilename="static_Y_backward.c3d"
+        acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
+        progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acq, staticFlag=True)
+        np.testing.assert_equal( progressionAxis,"Y")
+        np.testing.assert_equal( forwardProgression ,False)
+        np.testing.assert_equal( globalFrame,"YXZ")
+
+
 
 # Gait
 class Test_btkProgression():
@@ -53,6 +129,9 @@ class Test_btkProgression():
         np.testing.assert_equal( pff.outputs["progressionAxis"],"X")
         np.testing.assert_equal( pff.outputs["forwardProgression"] ,True)
         np.testing.assert_equal( pff.outputs["globalFrame"],"XYZ")
+
+
+        
 
 
     def test_gaitTrialProgressionX_backward_lateralY(self):
@@ -178,7 +257,7 @@ class Test_btkProgression():
         MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
 
-        gaitFilename="fullBody_GaitX_backward.c3d"
+        gaitFilename="UpperBody_GaitX_backward.c3d"
         acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
         pfp = progressionFrameProcedures.ThoraxProgressionFrameProcedure()
@@ -293,7 +372,7 @@ class Test_btkProgression_static():
         MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ProgressionFrame\\sample 1\\"
 
 
-        gaitFilename="fullBody_StaticX.c3d"
+        gaitFilename="upperBody_StaticX.c3d"
         acq = btkTools.smartReader(MAIN_PATH +  gaitFilename)
 
         pfp = progressionFrameProcedures.ThoraxProgressionFrameProcedure()

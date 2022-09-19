@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
-
 """
 This module aims to detect the progression frame of a trial.
 
