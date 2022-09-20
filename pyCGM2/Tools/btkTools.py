@@ -70,18 +70,24 @@ def smartReader(filename, translators=None):
     return acq
 
 
-def smartWriter(acq, filename):
+def smartWriter(acq, filename, extension=None):
     """
     Convenient function to write a c3d with Btk
 
     Args:
         acq (btk.acquisition): a btk acquisition instance
         filename (str): filename with its path
+        extension (str): format extension (default c3d, accpted : trc)
     """
+    if extension == "trc":
+        filename = filename+ ".trc"
+
     writer = btk.btkAcquisitionFileWriter()
     writer.SetInput(acq)
     writer.SetFilename(filename)
     writer.Update()
+
+
 
 
 def GetMarkerNames(acq):
