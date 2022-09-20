@@ -622,3 +622,7 @@ def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
         df_total.to_excel(xlsxWriter,sheet,index=False)
 
     xlsxWriter.save()
+
+
+def getFilename(fullname):
+    return fullname[len(os.path.dirname(fullname))+1:]
