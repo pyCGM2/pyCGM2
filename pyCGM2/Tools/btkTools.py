@@ -87,6 +87,8 @@ def smartWriter(acq, filename, extension=None):
     writer.SetFilename(filename)
     writer.Update()
 
+    return filename
+
 
 
 
