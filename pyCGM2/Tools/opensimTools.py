@@ -37,28 +37,7 @@ except:
 
 
 
-# def setGlobalTransormation_lab_osim(axis, forwardProgression):
-#     """ Todo : incomplet, il faut traiter tous les cas """
-#     if axis == "X":
-#         if forwardProgression:
-#             R_LAB_OSIM = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
-#         else:
-#             R_LAB_OSIM = np.array([[-1, 0, 0], [0, 0, 1], [0, 1, 0]])
-
-#     elif axis == "Y":
-#         if forwardProgression:
-#             R_LAB_OSIM = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
-#         else:
-#             R_LAB_OSIM = np.array([[0, -1, 0], [0, 0, 1], [-1, 0, 0]])
-
-#     else:
-#         raise Exception("[pyCGM2] - Global Referential not configured yet")
-
-#     return R_LAB_OSIM
-
-
-def transformMarker_ToOsimReferencial(acq, axis, forwardProgression):
-
+def rotationMatrix_labToOsim(axis,forwardProgression):
     if axis == "X":
         if forwardProgression:
             R_LAB_OSIM = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
@@ -73,6 +52,13 @@ def transformMarker_ToOsimReferencial(acq, axis, forwardProgression):
 
     else:
         raise Exception("[pyCGM2] - Global Referential with Z axis as progression not configured yet")
+    
+    return R_LAB_OSIM
+
+
+def transformMarker_ToOsimReferencial(acq, axis, forwardProgression):
+
+    R_LAB_OSIM = rotationMatrix_labToOsim(axis,forwardProgression)
 
     points = acq.GetPoints()
     for it in btk.Iterate(points):
@@ -156,20 +142,7 @@ def footReactionMotFile(acq,filename,progressionAxis,forwardProgression,mfpa=Non
     
     mappedForcePlate = forceplates.matchingFootSideOnForceplate(acq,mfpa=mfpa)
 
-    if progressionAxis == "X":
-        if forwardProgression:
-            R_LAB_OSIM = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
-        else:
-            R_LAB_OSIM = np.array([[-1, 0, 0], [0, 0, 1], [0, 1, 0]])
-
-    elif progressionAxis == "Y":
-        if forwardProgression:
-            R_LAB_OSIM = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
-        else:
-            R_LAB_OSIM = np.array([[0, -1, 0], [0, 0, 1], [-1, 0, 0]])
-
-    else:
-        raise Exception("[pyCGM2] - Global Referential with Z axis as progression not configured yet")
+    R_LAB_OSIM = rotationMatrix_labToOsim(progressionAxis,forwardProgression)
 
     leftFootWrench, rightFootWrench = forceplates.combineForcePlate(
         acq, mappedForcePlate)
