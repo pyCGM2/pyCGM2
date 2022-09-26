@@ -414,6 +414,27 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
 
         NEXUS.SetModelOutput( vskName, output_label, data, exists )
 
+def appendBtkScalarFromAcq(NEXUS,vskName,groupName,label,nexusType,acq):
+
+    lst = NEXUS.GetModelOutputNames(vskName)
+    if label in lst:
+        NEXUS.GetModelOutput(vskName, label)
+        LOGGER.logger.debug( "parameter (%s) already exist" %(label))
+    else:
+        NEXUS.CreateModelOutput( vskName, label, groupName, ["X","Y","Z"],  [nexusType,"None","None"])
+
+    values = acq.GetPoint(label+"["+groupName+"]").GetValues()
+
+    #ff,lf = NEXUS.GetTrialRange()
+    ff = acq.GetFirstFrame()
+    lf = acq.GetLastFrame()
+
+    pfn = acq.GetPointFrameNumber()
+    trialRange_init = NEXUS.GetTrialRange()[0]
+    framecount = NEXUS.GetFrameCount()
+    data,exists = _setPointData(trialRange_init,framecount,ff,values)
+
+    NEXUS.SetModelOutput( vskName, label, data, exists )
 
 def createGeneralEvents(NEXUS,subject,acq,labels):
     """append general events from an btk.acquisition
