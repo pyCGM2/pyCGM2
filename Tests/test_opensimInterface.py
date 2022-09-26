@@ -18,7 +18,6 @@ from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.Model import  modelFilters,modelDecorator
 from pyCGM2 import enums
 from pyCGM2.Model.Opensim import opensimFilters
-from pyCGM2.Model.Opensim import osimProcessing
 from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Lib.Processing import progression
 from pyCGM2.ForcePlates import forceplates
@@ -26,12 +25,12 @@ from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Model.Opensim import opensimFilters
 
 from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
-from pyCGM2.Model.Opensim.interface import opensimScalingInterfaceProcedure
-from pyCGM2.Model.Opensim.interface import opensimInverseKinematicsInterfaceProcedure
-from pyCGM2.Model.Opensim.interface import opensimInverseDynamicsInterfaceProcedure
-
-from pyCGM2.Model.Opensim.interface import opensimAnalysesInterfaceProcedure
-from pyCGM2.Model.Opensim.interface import opensimStaticOptimizationInterfaceProcedure
+from pyCGM2.Model.Opensim.interface.procedures.scaling import opensimScalingInterfaceProcedure
+#from pyCGM2.Model.Opensim.interface import opensimScalingInterfaceProcedure
+from pyCGM2.Model.Opensim.interface.procedures.inverseKinematics import opensimInverseKinematicsInterfaceProcedure
+from pyCGM2.Model.Opensim.interface.procedures.inverseDynamics import opensimInverseDynamicsInterfaceProcedure
+from pyCGM2.Model.Opensim.interface.procedures.analysisReport import opensimAnalysesInterfaceProcedure
+from pyCGM2.Model.Opensim.interface.procedures.staticOptimisation import opensimStaticOptimizationInterfaceProcedure
 
 
 
@@ -163,8 +162,8 @@ class Test_CGM23:
         # scaling
         scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23_scaleSetup_template.xml"
 
-        proc = opensimScalingInterfaceProcedure.highLevelScalingProcedure(DATA_PATH,modelVersion,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
-        proc.preProcess( acqStatic, staticFilename[:-4])
+        proc = opensimScalingInterfaceProcedure.ScalingXMLProcedure(DATA_PATH,modelVersion,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
+        proc.setStaticTrial( acqStatic, staticFilename[:-4])
         proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
         oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
         oisf.run()
@@ -177,16 +176,17 @@ class Test_CGM23:
 
         progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
-        procIK = opensimInverseKinematicsInterfaceProcedure.highLevelInverseKinematicsProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
+        procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXMLProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
         procIK.setProgression(progressionAxis,forwardProgression)
-        procIK.preProcess(acqGait,gaitFilename[:-4])
+        procIK.prepareDynamicTrial(acqGait,gaitFilename[:-4])
         procIK.setAccuracy(1e-8)
         procIK.setWeights(ikWeights)
         procIK.setTimeRange()
+
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
         oiikf.run()
-        oiikf.ikMarkerLocationToC3d()
-        oiikf.motToC3d(osimConverterSettings)
+        oiikf.pushFittedMarkersIntoAcquisition()
+        oiikf.pushMotToAcq(osimConverterSettings)
         acqIK =oiikf.getAcq()
 
 
@@ -209,36 +209,36 @@ class Test_CGM23:
         motDataframe.save()
 
 
-        fig = plt.figure(figsize=(10,4), dpi=100,facecolor="white")
-        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
-        ax1 = plt.subplot(1,3,1)
-        ax2 = plt.subplot(1,3,2)
-        ax3 = plt.subplot(1,3,3)
+        # fig = plt.figure(figsize=(10,4), dpi=100,facecolor="white")
+        # plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+        # ax1 = plt.subplot(1,3,1)
+        # ax2 = plt.subplot(1,3,2)
+        # ax3 = plt.subplot(1,3,3)
 
         
-        ax1.plot(acqIK_old.GetPoint("LKneeAngles_old").GetValues()[:,0],"-r")
-        ax1.plot(acqIK.GetPoint("LKneeAngles_new").GetValues()[:,0],"-ob")
+        # ax1.plot(acqIK_old.GetPoint("LKneeAngles_old").GetValues()[:,0],"-r")
+        # ax1.plot(acqIK.GetPoint("LKneeAngles_new").GetValues()[:,0],"-ob")
 
-        ax2.plot(acqIK_old.GetPoint("LKneeAngles_old").GetValues()[:,1],"-r")
-        ax2.plot(acqIK.GetPoint("LKneeAngles_new").GetValues()[:,1],"-ob")
+        # ax2.plot(acqIK_old.GetPoint("LKneeAngles_old").GetValues()[:,1],"-r")
+        # ax2.plot(acqIK.GetPoint("LKneeAngles_new").GetValues()[:,1],"-ob")
 
-        ax3.plot(acqIK_old.GetPoint("LKneeAngles_old").GetValues()[:,2],"-r")
-        ax3.plot(acqIK.GetPoint("LKneeAngles_new").GetValues()[:,2],"-ob")
+        # ax3.plot(acqIK_old.GetPoint("LKneeAngles_old").GetValues()[:,2],"-r")
+        # ax3.plot(acqIK.GetPoint("LKneeAngles_new").GetValues()[:,2],"-ob")
 
-        fig = plt.figure(figsize=(10,4), dpi=100,facecolor="white")
-        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
-        ax1 = plt.subplot(1,3,1)
-        ax2 = plt.subplot(1,3,2)
-        ax3 = plt.subplot(1,3,3)
+        # fig = plt.figure(figsize=(10,4), dpi=100,facecolor="white")
+        # plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+        # ax1 = plt.subplot(1,3,1)
+        # ax2 = plt.subplot(1,3,2)
+        # ax3 = plt.subplot(1,3,3)
 
-        ax1.plot(acqIK_old.GetPoint("LAnkleAngles_old").GetValues()[:,0],"-r")
-        ax1.plot(acqIK.GetPoint("LAnkleAngles_new").GetValues()[:,0],"-ob")
+        # ax1.plot(acqIK_old.GetPoint("LAnkleAngles_old").GetValues()[:,0],"-r")
+        # ax1.plot(acqIK.GetPoint("LAnkleAngles_new").GetValues()[:,0],"-ob")
 
-        ax2.plot(acqIK_old.GetPoint("LAnkleAngles_old").GetValues()[:,1],"-r")
-        ax2.plot(acqIK.GetPoint("LAnkleAngles_new").GetValues()[:,1],"-ob")
+        # ax2.plot(acqIK_old.GetPoint("LAnkleAngles_old").GetValues()[:,1],"-r")
+        # ax2.plot(acqIK.GetPoint("LAnkleAngles_new").GetValues()[:,1],"-ob")
 
-        ax3.plot(acqIK_old.GetPoint("LAnkleAngles_old").GetValues()[:,2],"-r")
-        ax3.plot(acqIK.GetPoint("LAnkleAngles_new").GetValues()[:,2],"-ob")
+        # ax3.plot(acqIK_old.GetPoint("LAnkleAngles_old").GetValues()[:,2],"-r")
+        # ax3.plot(acqIK.GetPoint("LAnkleAngles_new").GetValues()[:,2],"-ob")
 
         plt.show()
         
@@ -247,16 +247,16 @@ class Test_CGM23:
         idTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-idToolSetup_template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
 
-        procID = opensimInverseDynamicsInterfaceProcedure.highLevelInverseDynamicsProcedure(DATA_PATH,
+        procID = opensimInverseDynamicsInterfaceProcedure.InverseDynamicsXMLProcedure(DATA_PATH,
             scaledOsimName,modelVersion,idTemplateFullFile,externalLoadTemplateFullFile)
         procID.setProgression(progressionAxis,forwardProgression)
-        procID.preProcess(acqIK,gaitFilename[:-4])
-        # procID.setResultsDirname("verif")
+        procID.prepareDynamicTrial(acqIK,gaitFilename[:-4])
         procID.setTimeRange()
+
         oiidf = opensimInterfaceFilters.opensimInterfaceInverseDynamicsFilter(procID)
         oiidf.run()
-        oiidf.stoToC3d(model.mp["Bodymass"], osimConverterSettings)        
-
+        oiidf.pushStoToAcq(model.mp["Bodymass"], osimConverterSettings)        
+        ipdb.set_trace()
        
         # --- ----
         # find foot  in contact
@@ -285,27 +285,27 @@ class Test_CGM23:
 
        # --- opensimStaticOptimizationInterfaceProcedure ------
 
-        # soTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-soSetup_template.xml"
-        # externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
-        # procSO = opensimStaticOptimizationInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,soTemplateFullFile,externalLoadTemplateFullFile)
-        # procSO.setProgression(progressionAxis,forwardProgression)
-        # procSO.preProcess(acqIK,gaitFilename[:-4])
-        # procSO.setTimeRange()
-        # oiamf = opensimInterfaceFilters.opensimInterfaceStaticOptimizationFilter(procSO)
-        # oiamf.run()
+        soTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-soSetup_template.xml"
+        externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
+        procSO = opensimStaticOptimizationInterfaceProcedure.StaticOptimisationXMLProcedure(DATA_PATH,scaledOsimName,modelVersion,soTemplateFullFile,externalLoadTemplateFullFile)
+        procSO.setProgression(progressionAxis,forwardProgression)
+        procSO.prepareDynamicTrial(acqIK,gaitFilename[:-4])
+        procSO.setTimeRange()
+        oiamf = opensimInterfaceFilters.opensimInterfaceStaticOptimizationFilter(procSO)
+        oiamf.run()
 
 
         # --- Analyses ------
         anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-analysisSetup_template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
-        procAna = opensimAnalysesInterfaceProcedure.highLevelAnalysesProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
+        procAna = opensimAnalysesInterfaceProcedure.AnalysesXMLProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
         procAna.setProgression(progressionAxis,forwardProgression)
-        procAna.preProcess(acqIK,gaitFilename[:-4])
+        procAna.prepareDynamicTrial(acqIK,gaitFilename[:-4])
         # procAna.setResultsDirname("verif")
         procAna.setTimeRange()
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
         oiamf.run()
-        oiamf.stoToC3d()
+        oiamf.pushStoToAcq()
         
         
         btkTools.smartWriter(acqIK,"Opensim-check.c3d")

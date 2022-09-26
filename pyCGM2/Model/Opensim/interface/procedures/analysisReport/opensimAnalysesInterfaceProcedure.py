@@ -7,6 +7,7 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Tools import  btkTools,opensimTools
 from pyCGM2.Utils import files
 from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
+from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 
 try:
     from pyCGM2 import opensim4 as opensim
@@ -16,15 +17,19 @@ except:
 
 
 
-class highLevelAnalysesProcedure(object):
+class AnalysesXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
     def __init__(self,DATA_PATH, scaledOsimName,modelVersion,analysisToolTemplateFile,externalLoadTemplateFile,
+        mfpa = None,
         local=False):
 
+        super(AnalysesXMLProcedure,self).__init__()
+
         self.m_DATA_PATH = DATA_PATH
-        self._resultsDir = ""
-        self.m_osimName = scaledOsimName
+        self.m_resultsDir = ""
+        self.m_osimName = DATA_PATH+scaledOsimName
         self.m_modelVersion = modelVersion.replace(".", "")
 
+        self.m_mfpa = mfpa
         if not local :
             if analysisToolTemplateFile is None:
                 raise Exception("localAnalysesToolFile or analysisToolTemplateFile needs to be defined")
@@ -46,41 +51,38 @@ class highLevelAnalysesProcedure(object):
             self.m_externalLoad = DATA_PATH+externalLoadTemplateFile
             self.xml_load = opensimInterfaceFilters.opensimXmlInterface(self.m_externalLoad,None)
 
-        self.m_autoXmlDefinition=True
-
-
     def setProgression(self,progressionAxis,forwardProgression):
         self.m_progressionAxis = progressionAxis
         self.m_forwardProgression = forwardProgression
 
 
-    def setAutoXmlDefinition(self,boolean):
-        self.m_autoXmlDefinition=boolean
+    def setResultsDirname(self,dirname):
+        self.m_resultsDir = dirname    
 
-    def preProcess(self, acq, dynamicFile):
+    def prepareDynamicTrial(self, acq, dynamicFile):
         self.m_dynamicFile =dynamicFile
         self.m_acq = acq
 
+        self.m_ff = self.m_acq.GetFirstFrame()
+        self.m_freq = self.m_acq.GetPointFrequency()
+
+        self.m_beginTime = 0
+        self.m_endTime = (self.m_acq.GetLastFrame() - self.m_ff)/self.m_freq
+        self.m_frameRange = [int((self.m_beginTime*self.m_freq)+self.m_ff),int((self.m_endTime*self.m_freq)+self.m_ff)] 
+
         opensimTools.footReactionMotFile(
             self.m_acq, self.m_DATA_PATH+self.m_dynamicFile+"_grf.mot",
-            self.m_progressionAxis,self.m_forwardProgression)
-
-    def setResultsDirname(self,dirname):
-        self.xml.set_one("results_directory", dirname)
-        self._resultsDir = dirname
+            self.m_progressionAxis,self.m_forwardProgression,mfpa = self.m_mfpa)
 
 
     def setTimeRange(self,beginFrame=None,lastFrame=None):
 
-        ff = self.m_acq.GetFirstFrame()
-        freq = self.m_acq.GetPointFrequency()
-        beginTime = 0.0 if beginFrame is None else (beginFrame-ff)/freq
-        endTime = (self.m_acq.GetLastFrame() - ff)/freq  if lastFrame is  None else (lastFrame-ff)/freq
+        self.m_beginTime = 0.0 if beginFrame is None else (beginFrame-self.m_ff)/self.m_freq
+        self.m_endTime = (self.m_acq.GetLastFrame() - self.m_ff)/self.m_freq  if lastFrame is  None else (lastFrame-self.m_ff)/self.m_freq
 
-        self.xml.set_one("initial_time",str(beginTime))
-        self.xml.set_one("final_time",str(endTime))
 
-    def _setXml(self):
+
+    def _prepareXml(self):
 
 
         # self.xml.set_one("model_file", self.m_dynamicFile+".mot")
@@ -91,14 +93,19 @@ class highLevelAnalysesProcedure(object):
         # self.xml.set_one("results_directory", self.m_DATA_PATH)
         self.xml.set_one("external_loads_file", files.getFilename(self.m_externalLoad))
 
-    def _setXmlLoad(self):
+        if self.m_resultsDir !="":
+            self.xml.set_one("results_directory",  self.m_resultsDir)
+
+        self.xml.set_one("initial_time",str(self.m_beginTime))
+        self.xml.set_one("final_time",str(self.m_endTime))
+
         self.xml_load.set_one("datafile", self.m_dynamicFile+"_grf.mot")
+
 
     def run(self):
 
-        if self.m_autoXmlDefinition:
-            self._setXml()
-            self._setXmlLoad()
+        if self.m_autoXml:
+            self._prepareXml()
 
         self.xml.update()
         self.xml_load.update()
@@ -108,34 +115,8 @@ class highLevelAnalysesProcedure(object):
         # tool.setModel(self.m_osimModel)
         tool.run()
 
-        # idTool = opensim.AnalysisTool(self.m_idTool)
-        # idTool.setModel(self.m_osimModel)
-        # idTool.run()
 
         self.finalize()
 
     def finalize(self):
-        pass
-
-        # # Muscle length
-        # storageObject = opensim.Storage(self.m_DATA_PATH + self.m_dynamicFile+"-"+self.m_modelVersion+ "-analyses_MuscleAnalysis_Length.sto")
-        # labels = storageObject.getColumnLabels()
-        # for index in range(1,labels.getSize()): #1 because 0 is time
-        #     self.m_muscles.append(labels.get(index))
-        #     index_x = storageObject.getStateIndex(labels.get(index))
-        #     array_x = opensim.ArrayDouble()
-        #     storageObject.getDataColumn(index_x, array_x)
-        #
-        #     n = array_x.getSize()
-        #     pointValues = np.zeros((n, 3))
-        #     for i in range(0, n):
-        #         pointValues[i, 0] = array_x.getitem(i)
-        #
-        #     btkTools.smartAppendPoint(self.m_acq, labels.get(index)+"[MuscleLength]",pointValues, PointType=btk.btkPoint.Scalar,desc="MuscleLength")
-
-
-
-# NOT WORK : need opensim4.2 and bug fix of property
-class opensimInterfaceLowLevelInversedynamicsProcedure(object):
-    def __init__(self,DATA_PATH, scaleOsim,idToolsTemplate):
         pass

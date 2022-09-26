@@ -95,6 +95,8 @@ class opensimInterfaceScalingFilter(object):
         return self.m_procedure.m_osimModel
 
 
+
+
 class opensimInterfaceInverseKinematicsFilter(object):
     def __init__(self, procedure):
         self.m_procedure = procedure
@@ -107,17 +109,17 @@ class opensimInterfaceInverseKinematicsFilter(object):
     def getAcq(self):
         return self.m_acq
 
-    def ikMarkerLocationToC3d(self):
-        marker_location_filename = self.m_procedure.m_DATA_PATH + self.m_procedure._resultsDir+"\\"+ self.m_procedure.m_dynamicFile+"_ik_model_marker_locations.sto"
+    def pushFittedMarkersIntoAcquisition(self):
+        marker_location_filename = self.m_procedure.m_DATA_PATH + self.m_procedure.m_resultsDir+"\\"+ self.m_procedure.m_dynamicFile+"_ik_model_marker_locations.sto"
         if os.path.isfile(marker_location_filename):
             os.remove(marker_location_filename)
-        os.rename(self.m_procedure.m_DATA_PATH + self.m_procedure._resultsDir+ "\\_ik_model_marker_locations.sto",
+        os.rename(self.m_procedure.m_DATA_PATH + self.m_procedure.m_resultsDir+ "\\_ik_model_marker_locations.sto",
                     marker_location_filename)
 
-        marker_errors_filename = self.m_procedure.m_DATA_PATH + self.m_procedure._resultsDir+"\\"+ self.m_procedure.m_dynamicFile+"_ik_marker_errors.sto"
+        marker_errors_filename = self.m_procedure.m_DATA_PATH + self.m_procedure.m_resultsDir+"\\"+ self.m_procedure.m_dynamicFile+"_ik_marker_errors.sto"
         if os.path.isfile(marker_errors_filename):
             os.remove(marker_errors_filename)
-        os.rename(self.m_procedure.m_DATA_PATH + self.m_procedure._resultsDir+"\\_ik_marker_errors.sto",
+        os.rename(self.m_procedure.m_DATA_PATH + self.m_procedure.m_resultsDir+"\\_ik_marker_errors.sto",
                  marker_errors_filename)
 
         acqMotionFinal = btk.btkAcquisition.Clone(self.m_procedure.m_acq0)
@@ -125,9 +127,9 @@ class opensimInterfaceInverseKinematicsFilter(object):
         # TODO : worl with storage datframe instead of the opensim sorage instance
 
         storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\", self.m_procedure.m_dynamicFile+"_ik_model_marker_locations.sto")
+            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\", self.m_procedure.m_dynamicFile+"_ik_model_marker_locations.sto")
 
-        storageObject = opensim.Storage(self.m_procedure.m_DATA_PATH + self.m_procedure._resultsDir+"\\"+self.m_procedure.m_dynamicFile +"_ik_model_marker_locations.sto")
+        storageObject = opensim.Storage(self.m_procedure.m_DATA_PATH + self.m_procedure.m_resultsDir+"\\"+self.m_procedure.m_dynamicFile +"_ik_model_marker_locations.sto")
         for marker in self.m_procedure.m_weights.keys():
             if self.m_procedure.m_weights[marker] != 0:
                 values =opensimTools.sto2pointValues(storageObject,marker,self.m_procedure.m_R_LAB_OSIM)
@@ -142,7 +144,7 @@ class opensimInterfaceInverseKinematicsFilter(object):
         self.m_acq = acqMotionFinal
 
 
-    def motToC3d(self, osimConverter):
+    def pushMotToAcq(self, osimConverter):
 
         storageDataframe = opensimIO.OpensimDataFrame(
             self.m_procedure.m_DATA_PATH, self.m_procedure.m_dynamicFile+".mot")
@@ -178,12 +180,12 @@ class opensimInterfaceInverseDynamicsFilter(object):
     def getAcq(self):
         return self.m_procedure.m_acq
 
-    def stoToC3d(self, bodymass, osimConverter):
+    def pushStoToAcq(self, bodymass, osimConverter):
 
-        if self.m_procedure._resultsDir == "":
+        if self.m_procedure.m_resultsDir == "":
             path = self.m_procedure.m_DATA_PATH
         else:
-            path = self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\"
+            path = self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\"
 
 
         storageDataframe = opensimIO.OpensimDataFrame(path,
@@ -220,9 +222,9 @@ class opensimInterfaceStaticOptimizationFilter(object):
     def getAcq(self):
         return self.m_procedure.m_acq
 
-    def stoToC3d(self):
+    def pushStoToAcq(self):
         storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\",
+            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\",
             self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_StaticOptimization_force.sto")
 
         values = np.zeros(
@@ -236,7 +238,7 @@ class opensimInterfaceStaticOptimizationFilter(object):
                                       + "[StaticOptForce]", values, PointType="Scalar", desc="StaticOptForce")
 
         storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\",
+            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\",
             self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_StaticOptimization_activation.sto")
 
         values = np.zeros(
@@ -260,7 +262,7 @@ class opensimInterfaceAnalysesFilter(object):
     def getAcq(self):
         return self.m_procedure.m_acq
 
-    def stoToC3d(self):
+    def pushStoToAcq(self):
 
         # "-analyses_MuscleAnalysis_MuscleActuatorPower.sto"
         # "-analyses_MuscleAnalysis_NormalizedFiberLength.sto"
@@ -282,7 +284,7 @@ class opensimInterfaceAnalysesFilter(object):
         # "-analyses_MuscleAnalysis_Length.sto"
 
         storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH+self.m_procedure._resultsDir+"\\",
+            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\",
             self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_MuscleAnalysis_Length.sto")
 
         values = np.zeros(
