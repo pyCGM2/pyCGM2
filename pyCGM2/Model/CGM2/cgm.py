@@ -5483,8 +5483,9 @@ class CGM1(CGM):
 
         # export measured markers ( for CGM2.2 and 2.3)
         for it in btk.Iterate(acq.GetPoints()):
-            if "_m" in it.GetLabel():
+            if it.GetLabel()[-2:] == "_m":
                 nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,it.GetLabel(),acq)
+
 
         # export JC
         jointcentres = ["LHJC","RHJC","LKJC","RKJC","LAJC","RAJC","LSJC","RSJC","LEJC","REJC","LHO","RHO"]
