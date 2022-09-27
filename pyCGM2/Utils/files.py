@@ -626,3 +626,11 @@ def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
 
 def getFilename(fullname):
     return fullname[len(os.path.dirname(fullname))+1:]
+
+
+def renameFile( fileToRename,renamedFile ):
+    try:       
+        os.rename(fileToRename,renamedFile)                    
+    except FileExistsError:
+        os.remove(renamedFile)
+        os.rename(fileToRename,renamedFile)  
