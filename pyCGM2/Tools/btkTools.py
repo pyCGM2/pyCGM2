@@ -67,6 +67,21 @@ def smartReader(filename, translators=None):
         used = btk.btkMetaData('USED', 0)
         acq.GetMetaData().FindChild("ANALYSIS").value().AppendChild(used)
 
+    # deal with user model ouputs made from Nexus
+    for it in btk.Iterate(acq.GetPoints()):
+        if "USERMO" in it.GetLabel():
+            description = it.GetDescription()
+            labelFromDescription = description[:description.find("[")]
+            groupname = smartGetMetadata(acq, "POINT", it.GetLabel())[0]
+            groupname = groupname[:groupname.find(":")]
+            smartAppendPoint(acq, labelFromDescription +"[" +groupname+"]", it.GetValues(),
+                PointType="Scalar", desc= groupname)
+
+            acq.RemovePoint(it.GetLabel())
+
+            pointMd = acq.GetMetaData().FindChild("POINT").value()
+            pointMd.RemoveChild(it.GetLabel())
+
     return acq
 
 
@@ -1464,3 +1479,18 @@ def getParamAnalysis(btkAcq, name, context, subject):
             return item
     LOGGER.logger.error("no analysis parameter found with specification [%s,%s,%s]" % (
         name, context, subject))
+
+def getLabelsFromScalar(acq, description=None):
+    out = list()
+
+    if description is not None:
+        for it in btk.Iterate(acq.GetPoints()):
+            if it.GetType() == btk.btkPoint.Scalar and description in it.GetDescription():
+                index = it.GetLabel().find("[")
+                out.append(it.GetLabel()[:index])
+    else:
+        for it in btk.Iterate(acq.GetPoints()):
+            if it.GetType() == btk.btkPoint.Scalar:
+                out.append(it.GetLabel())
+
+    return out

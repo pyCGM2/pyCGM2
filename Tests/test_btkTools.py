@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings  test_btkTools.py::Test_Btk::test_btkWriter_paramAnalysisNew
+# pytest -s --disable-pytest-warnings  test_btkTools.py::Test_Btk::test_btkReader_userModelOutputs
 # from __future__ import unicode_literals
 from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
@@ -99,3 +99,10 @@ class Test_Btk:
             acq, "Vitesse", "Left", 3.5, subject="New Patient")
 
         # btkTools.smartWriter(acq, "testAmend.c3d")
+
+    def test_btkReader_userModelOutputs(self):
+        filename = pyCGM2.TEST_DATA_PATH + \
+            "LowLevel\\IO\\nexusUserModelOutputs\\muscleLength_saveFromNexus.c3d"
+        acq = btkTools.smartReader(filename, translators=None)
+
+        btkTools.smartWriter(acq, "veriFModelOuputs.c3d")

@@ -21,6 +21,7 @@ from viconnexusapi import ViconNexus
 # pyCGM2 libraries
 from pyCGM2.Apps.ViconApps import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm2_3
+from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_3 as cgm2_3exp
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters
 from pyCGM2.Nexus import nexusUtils
@@ -42,6 +43,7 @@ def main():
     parser.add_argument('--forceLHJC', nargs='+')
     parser.add_argument('--forceRHJC', nargs='+')
     parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
+    parser.add_argument('-msm','--musculoSkeletalModel', action='store_true', help='musculoskeletal model')
 
 
     try:
@@ -110,13 +112,22 @@ def main():
         acq = nacf.build()
 
         # --------------------------MODELLING PROCESSING -----------------------
-        model,finalAcqStatic,detectAnomaly = cgm2_3.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
-                              required_mp,optional_mp,
-                              ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
-                              markerDiameter,
-                              hjcMethod,
-                              pointSuffix,
-                              forceBtkAcq=acq, anomalyException=args.anomalyException)
+        if args.musculoSkeletalModel:
+            model,finalAcqStatic,detectAnomaly = cgm2_3exp.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+                                required_mp,optional_mp,
+                                ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
+                                markerDiameter,
+                                hjcMethod,
+                                pointSuffix,
+                                forceBtkAcq=acq, anomalyException=args.anomalyException)
+        else:
+            model,finalAcqStatic,detectAnomaly = cgm2_3.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
+                                required_mp,optional_mp,
+                                ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
+                                markerDiameter,
+                                hjcMethod,
+                                pointSuffix,
+                                forceBtkAcq=acq, anomalyException=args.anomalyException)
 
 
         # ----------------------SAVE-------------------------------------------

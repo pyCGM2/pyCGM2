@@ -21,9 +21,11 @@ from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters
 from pyCGM2.Nexus import nexusUtils
 from pyCGM2.Nexus import nexusTools
+from pyCGM2.Tools import btkTools
 
 from pyCGM2.Apps.ViconApps import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm2_3
+from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_3 as cgm2_3exp
 
 
 def main():
@@ -39,6 +41,7 @@ def main():
     parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
     parser.add_argument('-fi','--frameInit',type=int,  help='first frame to process')
     parser.add_argument('-fe','--frameEnd',type=int,  help='last frame to process')
+    parser.add_argument('--muscleLength', action='store_true', help='enable muscle length calculation')
 
     try:
         NEXUS = ViconNexus.ViconNexus()
@@ -114,22 +117,40 @@ def main():
         acq = nacf.build()
 
         # --------------------------MODELLING PROCESSING -----------------------
-        finalAcqGait,detectAnomaly = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-            translators,settings,
-            ik_flag,markerDiameter,
-            pointSuffix,
-            mfpa,
-            momentProjection,
-            forceBtkAcq=acq,
-            ikAccuracy = ikAccuracy,
-            anomalyException=args.anomalyException,
-            frameInit= args.frameInit, frameEnd= args.frameEnd )
+        if args.muscleLength:
+            finalAcqGait,detectAnomaly = cgm2_3exp.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                translators,settings,
+                ik_flag,markerDiameter,
+                pointSuffix,
+                mfpa,
+                momentProjection,
+                forceBtkAcq=acq,
+                ikAccuracy = ikAccuracy,
+                anomalyException=args.anomalyException,
+                frameInit= args.frameInit, frameEnd= args.frameEnd,
+                muscleLength=args.muscleLength )        
+
+        else:
+            finalAcqGait,detectAnomaly = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                translators,settings,
+                ik_flag,markerDiameter,
+                pointSuffix,
+                mfpa,
+                momentProjection,
+                forceBtkAcq=acq,
+                ikAccuracy = ikAccuracy,
+                anomalyException=args.anomalyException,
+                frameInit= args.frameInit, frameEnd= args.frameEnd )
 
 
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,finalAcqGait,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,finalAcqGait,["Left-FP","Right-FP"])
-
+        
+        if args.muscleLength:
+            muscleLabels = btkTools.getLabelsFromScalar(finalAcqGait,description = "MuscleLength")
+            for label in muscleLabels:
+                nexusTools.appendBtkScalarFromAcq(NEXUS,subject,"MuscleLength",label,"Length",finalAcqGait)
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 
