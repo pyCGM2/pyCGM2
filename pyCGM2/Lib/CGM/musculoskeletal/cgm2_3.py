@@ -242,6 +242,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             procIK.setAccuracy(1e-5)
             procIK.setWeights(weights)
             procIK.setTimeRange()
+            procIK.setResultsDirname("musculoskeletal_modelling")
 
             oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
             oiikf.run()
@@ -460,6 +461,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         procIK.setAccuracy(accuracy)
         procIK.setWeights(weights)
         procIK.setTimeRange()
+        procIK.setResultsDirname("musculoskeletal_modelling")
 
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
         oiikf.run()
@@ -550,7 +552,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         procAna = opensimAnalysesInterfaceProcedure.AnalysesXMLProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
         procAna.setProgression(progressionAxis,forwardProgression)
         procAna.prepareDynamicTrial(finalAcqGait,reconstructFilenameLabelled[:-4])
-        # procAna.setResultsDirname("verif")
+        procAna.setResultsDirname("musculoskeletal_modelling")
         procAna.setTimeRange()
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
         oiamf.run()
