@@ -68,7 +68,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     """
     detectAnomaly = False
 
-
+    
     if "anomalyException" in kwargs.keys():
         anomalyException = kwargs["anomalyException"]
     else:
@@ -227,6 +227,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             oisf.run()
             scaledOsim = oisf.getOsim()
             scaledOsimName = oisf.getOsimName()
+            
+            model.m_properties["scaledOsimName"] = scaledOsimName
+            
 
             # --- IK ---
             # ikWeights = settings["Fitting"]["Weight"]
@@ -439,7 +442,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         # --- new ---
         modelVersion="CGM2.3"
-        scaledOsimName = "CGM23-ScaledModel.osim"
+                
+        scaledOsimName = model.m_properties["scaledOsimName"]#"CGM23-ScaledModel.osim"
 
         accuracy = kwargs["ikAccuracy"] if "ikAccuracy" in kwargs.keys() else 1e-8
 
