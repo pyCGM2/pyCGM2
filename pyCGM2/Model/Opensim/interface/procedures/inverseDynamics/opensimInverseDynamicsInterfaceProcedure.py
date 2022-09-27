@@ -60,7 +60,6 @@ class InverseDynamicsXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
             self.m_externalLoad = DATA_PATH + externalLoadTemplateFile
             self.xml_load = opensimInterfaceFilters.opensimXmlInterface(self.m_externalLoad,None)
 
-        self.m_autoXmlDefinition=True
 
     def setProgression(self,progressionAxis,forwardProgression):
         self.m_progressionAxis = progressionAxis
@@ -126,5 +125,12 @@ class InverseDynamicsXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
         idTool.run()
 
         self.finalize()
+    
     def finalize(self):
-        pass
+
+        files.renameFile(self.m_idTool, 
+                    self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-IDTool-setup.xml")
+        files.renameFile(self.m_externalLoad,
+             self.m_DATA_PATH + self.m_dynamicFile + self.m_modelVersion + "-externalLoad.xml")
+
+

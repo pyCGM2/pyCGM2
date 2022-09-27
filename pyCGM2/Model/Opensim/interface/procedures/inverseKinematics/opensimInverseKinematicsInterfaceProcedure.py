@@ -34,6 +34,8 @@ class InverseKinematicXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         self.m_osimName = DATA_PATH + scaledOsimName
         self.m_modelVersion = modelVersion.replace(".", "")
 
+        self.m_accuracy = 1e-8
+
         if not local:
             if ikToolTemplateFile is None:
                 raise Exception("ikToolTemplateFile needs to be defined")
@@ -43,7 +45,7 @@ class InverseKinematicXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
             self.m_ikTool = DATA_PATH + ikToolTemplateFile
             self.xml = opensimInterfaceFilters.opensimXmlInterface(self.m_ikTool)
 
-        self.m_accuracy = 1e-8
+        
     
     def setProgression(self,progressionAxis,forwardProgression):
         self.m_progressionAxis = progressionAxis
@@ -126,4 +128,7 @@ class InverseKinematicXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         self.finalize()
 
     def finalize(self):
-        pass
+        # rename the xml setup file with the filename as suffix
+        files.renameFile(self.m_ikTool, 
+                    self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-IKTool-setup.xml")
+       

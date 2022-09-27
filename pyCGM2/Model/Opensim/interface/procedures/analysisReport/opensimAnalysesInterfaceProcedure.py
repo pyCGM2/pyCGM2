@@ -119,4 +119,8 @@ class AnalysesXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         self.finalize()
 
     def finalize(self):
-        pass
+        files.renameFile(self.m_idAnalyses, 
+            self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-analysesTool-setup.xml")
+
+        files.renameFile(self.m_externalLoad,
+             self.m_DATA_PATH + self.m_dynamicFile + self.m_modelVersion + "-externalLoad.xml")
