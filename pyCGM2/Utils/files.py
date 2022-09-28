@@ -548,8 +548,13 @@ def copyPaste(src, dst):
         src (str): source
         dst (str): destination
     """
-    shutil.copyfile(src,
-                    dst)
+    try:
+        shutil.copyfile(src,
+                        dst)
+    except shutil.SameFileError:
+        LOGGER.logger.debug(" source [%s] and destination [%s] are similar" %(src,dst))
+
+    
 
 def copyPasteDirectory(src, dst):
     """folder copy/paste
@@ -564,6 +569,7 @@ def copyPasteDirectory(src, dst):
         LOGGER.logger.warning("directory already exists. delete and overwritten ")
         shutil.rmtree(dst)
         shutil.copytree(src, dst)
+
 
 def deleteDirectory(dir):
     """Delete a folder
