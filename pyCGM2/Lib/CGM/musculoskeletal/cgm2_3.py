@@ -220,9 +220,12 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             # scaling
             scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23_scaleSetup_template.xml"
 
-            proc = opensimScalingInterfaceProcedure.ScalingXMLProcedure(DATA_PATH,modelVersion,osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
+            proc = opensimScalingInterfaceProcedure.ScalingXMLProcedure(DATA_PATH,"CGM2.3")
+            proc.setSetupFiles(osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
             proc.setStaticTrial( acqStatic, calibrateFilenameLabelled[:-4])
             proc.setAnthropometry(required_mp["Bodymass"],required_mp["Height"])
+            proc.prepareXml()    
+            
             oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
             oisf.run()
             scaledOsim = oisf.getOsim()

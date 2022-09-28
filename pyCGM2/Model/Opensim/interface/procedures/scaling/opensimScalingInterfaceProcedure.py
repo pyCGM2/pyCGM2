@@ -24,40 +24,17 @@ except:
 
 
 class ScalingXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
-    def __init__(self, DATA_PATH, modelVersion, osimTemplateFile, markersetTemplateFile, scaleToolTemplateFile,
-                local=False):
-        
+    def __init__(self, DATA_PATH,modelVersion):
+    
+         
         super(ScalingXMLProcedure,self).__init__()
 
         self.m_DATA_PATH = DATA_PATH
-        self.m_modelVersion = modelVersion.replace(".", "")
+        self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
 
-        if not local :
-            if osimTemplateFile is None:
-                raise Exception("osimTemplateFile needs to be defined")
-            self.m_osim = files.getFilename(osimTemplateFile)
-            files.copyPaste(osimTemplateFile, DATA_PATH + self.m_osim)
-        else:
-            self.m_osim = self.m_DATA_PATH+osimTemplateFile
+        self.m_staticFile = None
 
-        if not local:
-            if markersetTemplateFile is None:
-                raise Exception("localMarkersetFile or markersetTemplateFile needs to be defined")
-            self.m_markerset =  files.getFilename(markersetTemplateFile)
-            files.copyPaste(markersetTemplateFile, DATA_PATH + self.m_markerset)
-        else:
-            self.m_markerset = self.m_DATA_PATH+markersetTemplateFile
-
-        if not local:
-            if scaleToolTemplateFile is None:
-                raise Exception("scaleToolTemplateFile needs to be defined")
-            self.m_scaleTool = DATA_PATH + self.m_modelVersion+"-ScaleToolSetup.xml" #files.getFilename(scaleToolTemplateFile)
-            self.xml = opensimInterfaceFilters.opensimXmlInterface(scaleToolTemplateFile, self.m_scaleTool)
-        else:
-            self.m_scaleTool = DATA_PATH + scaleToolTemplateFile
-            self.xml = opensimInterfaceFilters.opensimXmlInterface(DATA_PATH+scaleToolTemplateFile, None)
-
-
+    
     def setStaticTrial(self, acq, staticFileNoExt):
         self.m_staticFile = staticFileNoExt
         self._staticTrc = btkTools.smartWriter( acq, self.m_DATA_PATH + staticFileNoExt, extension="trc")
@@ -66,26 +43,43 @@ class ScalingXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         self.m_initial_time = static.getStartFrameTime()
         self.m_final_time = static.getLastFrameTime()
 
+
+    def setSetupFiles(self,genericOsimFile, markersetFile, scaleToolFile):
+
+        self.m_osim = files.getFilename(genericOsimFile)
+        import ipdb; ipdb.set_trace()
+        files.copyPaste(genericOsimFile, self.m_DATA_PATH + self.m_osim)
+
+        self.m_markerset =  files.getFilename(markersetFile)
+        files.copyPaste(markersetFile, self.m_DATA_PATH + self.m_markerset)
+
+        self.m_scaleTool = self.m_DATA_PATH + self.m_modelVersion+"-ScaleToolSetup.xml"
+        self.xml = opensimInterfaceFilters.opensimXmlInterface(scaleToolFile, self.m_scaleTool)
+
     def setAnthropometry(self, mass, height):
-        self.xml.set_one("mass", str(mass))
-        self.xml.set_one("height", str(height))
+        self.m_mass=mass
+        self.m_height=height
 
+    def setModelVersion(self, modelVersion):
+        self.m_modelVersion = modelVersion.replace(".", "")
 
-    def _prepareXml(self):
-        # self.xml.getSoup().GenericModelMaker.model_file.string = self.m_osim
-        # self.xml.getSoup().GenericModelMaker.marker_set_file.string = self.m_markerset
-        # self.xml.getSoup().MarkerPlacer.output_model_file.string =  self.m_modelVersion+"-ScaledModel.osim"
+    def prepareXml(self):
+
+        self.xml.set_one("mass", str(self.m_mass))
+        self.xml.set_one("height", str(self.m_height))
+
         self.xml.getSoup().find("ScaleTool").attrs["name"] = self.m_modelVersion+"-Scale"
         self.xml.set_one(["GenericModelMaker","model_file"],self.m_osim)
         self.xml.set_one(["GenericModelMaker","marker_set_file"],self.m_markerset)
         self.xml.set_many("time_range", str(self.m_initial_time) + " " + str(self.m_final_time))
         self.xml.set_many("marker_file", files.getFilename(self._staticTrc))
         self.xml.set_one(["MarkerPlacer","output_model_file"],self.m_staticFile+ "-"+ self.m_modelVersion+"-ScaledModel.osim")
+        self.xml.set_one(["MarkerPlacer","output_marker_file"], self.m_staticFile+ "-"+ self.m_modelVersion+"-markerset.xml")
 
 
     def run(self):
 
-        if self.m_autoXml: self._prepareXml()
+        
         self.xml.update()
 
         scale_tool = opensim.ScaleTool(self.m_scaleTool)
