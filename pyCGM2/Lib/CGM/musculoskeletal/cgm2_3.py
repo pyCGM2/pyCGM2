@@ -541,7 +541,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     if "muscleLength" in kwargs.keys() and kwargs["muscleLength"]:
 
         #correct the ankle angles
-        motDataframe = opensimIO.OpensimDataFrame(DATA_PATH,reconstructFilenameLabelled[:-4]+".mot")
+        motDataframe = opensimIO.OpensimDataFrame(DATA_PATH+"musculoskeletal_modelling"+"\\",reconstructFilenameLabelled[:-4]+".mot")
         motDataframe.getDataFrame()["ankle_flexion_r"] = finalAcqGait.GetPoint("RAnkleAngles").GetValues()[:,0]
         motDataframe.getDataFrame()["ankle_adduction_r"] = finalAcqGait.GetPoint("RAnkleAngles").GetValues()[:,1]
         motDataframe.getDataFrame()["ankle_rotation_r"] = finalAcqGait.GetPoint("RAnkleAngles").GetValues()[:,2]
