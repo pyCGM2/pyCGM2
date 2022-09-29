@@ -239,13 +239,14 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             # --- IK ---
             ikTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-ikSetUp_template.xml"
 
-            procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXMLProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
+            procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXMLProcedure(DATA_PATH,scaledOsimName,"CGM2.3","musculoskeletal_modelling")
             procIK.setProgression(progressionAxis,forwardProgression)
+            procIK.setSetupFile(ikTemplateFullFile)
             procIK.prepareDynamicTrial(acqStatic,calibrateFilenameLabelled[:-4])
             procIK.setAccuracy(1e-5)
             procIK.setWeights(weights)
             procIK.setTimeRange()
-            procIK.setResultsDirname("musculoskeletal_modelling")
+            procIK.prepareXml()
 
             oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
             oiikf.run()
@@ -457,14 +458,14 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
-
-        procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXMLProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
+        procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXMLProcedure(DATA_PATH,scaledOsimName,"CGM2.3","musculoskeletal_modelling")
         procIK.setProgression(progressionAxis,forwardProgression)
+        procIK.setSetupFile(ikTemplateFullFile)
         procIK.prepareDynamicTrial(acqGait,reconstructFilenameLabelled[:-4])
         procIK.setAccuracy(accuracy)
         procIK.setWeights(weights)
         procIK.setTimeRange()
-        procIK.setResultsDirname("musculoskeletal_modelling")
+        procIK.prepareXml()
 
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
         oiikf.run()
@@ -552,11 +553,14 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-analysisSetup_template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
 
-        procAna = opensimAnalysesInterfaceProcedure.AnalysesXMLProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
+        procAna = opensimAnalysesInterfaceProcedure.AnalysesXMLProcedure(DATA_PATH,scaledOsimName,"CGM2.3","musculoskeletal_modelling")
+        procAna.setSetupFiles(anaTemplateFullFile,externalLoadTemplateFullFile)
         procAna.setProgression(progressionAxis,forwardProgression)
-        procAna.prepareDynamicTrial(finalAcqGait,reconstructFilenameLabelled[:-4])
-        procAna.setResultsDirname("musculoskeletal_modelling")
+        procAna.prepareDynamicTrial(finalAcqGait,reconstructFilenameLabelled[:-4],mappedForcePlate)
         procAna.setTimeRange()
+        procAna.prepareXml()
+
+
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
         oiamf.run()
         oiamf.pushStoToAcq()
