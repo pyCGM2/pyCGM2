@@ -2,11 +2,13 @@
 
 class OpensimInterfaceXmlProcedure(object):
     def __init__(self):
-        self.m_autoXml = True
-        
+        pass
 
-    def setAutoXmlPreparation(self,boolean):
-        self.m_autoXml=boolean
+    def setResultsDirname(self,dirname):
+        self.m_resultsDir = dirname    
+
+    def setModelVersion(self, modelVersion):
+        self.m_modelVersion = modelVersion.replace(".", "")
 
     def getXml(self):
         return self.xml

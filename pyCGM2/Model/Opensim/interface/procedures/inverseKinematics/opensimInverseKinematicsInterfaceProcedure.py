@@ -23,29 +23,20 @@ from pyCGM2.Model.Opensim import opensimIO
 
 
 class InverseKinematicXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
-    def __init__(self,DATA_PATH, scaledOsimName,modelVersion,ikToolTemplateFile,
-                local=False):
+    def __init__(self,DATA_PATH,scaledOsimName, modelVersion,resultsDirectory):
 
         super(InverseKinematicXMLProcedure,self).__init__()
         self.m_DATA_PATH = DATA_PATH
-        self.m_resultsDir = ""
+        self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
+        self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory
 
-        # self.m_osimModel = scaleOsim
         self.m_osimName = DATA_PATH + scaledOsimName
-        self.m_modelVersion = modelVersion.replace(".", "")
 
         self.m_accuracy = 1e-8
 
-        if not local:
-            if ikToolTemplateFile is None:
-                raise Exception("ikToolTemplateFile needs to be defined")
-            self.m_ikTool = DATA_PATH + self.m_modelVersion + "-IKTool-setup.xml"
-            self.xml = opensimInterfaceFilters.opensimXmlInterface(ikToolTemplateFile,self.m_ikTool)
-        else:
-            self.m_ikTool = DATA_PATH + ikToolTemplateFile
-            self.xml = opensimInterfaceFilters.opensimXmlInterface(self.m_ikTool)
-
-        
+    def setSetupFile(self, ikToolFile):
+        self.m_ikTool = self.m_DATA_PATH + self.m_modelVersion + "-IKTool-setup.xml"
+        self.xml = opensimInterfaceFilters.opensimXmlInterface(ikToolFile,self.m_ikTool)
     
     def setProgression(self,progressionAxis,forwardProgression):
         self.m_progressionAxis = progressionAxis
@@ -77,28 +68,20 @@ class InverseKinematicXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         self.m_accuracy = value
 
     def setTimeRange(self,beginFrame=None,lastFrame=None):
-
         self.m_beginTime = 0.0 if beginFrame is None else (beginFrame-self.m_ff)/self.m_freq
         self.m_endTime = (self.m_acqMotion_forIK.GetLastFrame() - self.m_ff)/self.m_freq  if lastFrame is  None else (lastFrame-self.m_ff)/self.m_freq
-        
         self.m_frameRange = [int((self.m_beginTime*self.m_freq)+self.m_ff),int((self.m_endTime*self.m_freq)+self.m_ff)]
 
-    def setResultsDirname(self,dirname):
-        self.m_resultsDir = dirname
-
-    def _prepareXml(self):
+    def prepareXml(self):
 
         self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("marker_file", files.getFilename(self.m_markerFile))
-        self.xml.set_one("output_motion_file", self.m_dynamicFile+".mot")
+        self.xml.set_one("output_motion_file", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+".mot")
         for marker in self.m_weights.keys():
             self.xml.set_inList_fromAttr("IKMarkerTask","weight","name",marker,str(self.m_weights[marker]))
-
         self.xml.set_one("accuracy",str(self.m_accuracy))
         self.xml.set_one("time_range",str(self.m_beginTime) + " " + str(self.m_endTime))
-
-        if self.m_resultsDir !="":
-            self.xml.set_one("results_directory",  self.m_resultsDir)
+        self.xml.set_one("results_directory",  self.m_resultsDir)
 
     def run(self):
 
@@ -107,7 +90,6 @@ class InverseKinematicXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         if os.path.isfile(self.m_DATA_PATH +self.m_dynamicFile+"_ik_marker_errors.sto"):
             os.remove(self.m_DATA_PATH +self.m_dynamicFile+"_ik_marker_errors.sto")
 
-        if self.m_autoXml: self._prepareXml()
         self.xml.update()
 
         if not hasattr(self, "m_frameRange"):

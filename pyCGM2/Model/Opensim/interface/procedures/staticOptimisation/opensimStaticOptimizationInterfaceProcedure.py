@@ -19,43 +19,21 @@ except:
 
 
 class StaticOptimisationXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
-    def __init__(self,DATA_PATH, scaledOsimName,modelVersion,analysisToolTemplateFile,externalLoadTemplateFile,
-        mfpa = None,
-        local=False):
-
+    def __init__(self,DATA_PATH,scaledOsimName, modelVersion,resultsDirectory):
         super(StaticOptimisationXMLProcedure,self).__init__()
 
         self.m_DATA_PATH = DATA_PATH
-        self.m_resultsDir = ""
+        self.m_osimName = DATA_PATH + scaledOsimName
+        self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
+        self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory
 
-        self.m_osimName = DATA_PATH+scaledOsimName
-        self.m_modelVersion = modelVersion.replace(".", "")
-
-        self.m_mfpa = mfpa
-
-        if not local:
-            if analysisToolTemplateFile is None:
-                raise Exception("localAnalysisToolTemplateFile or analysisToolTemplateFile needs to be defined")
-
-            self.m_soTool = DATA_PATH + self.m_modelVersion + "-idTool-setup.xml"
-            self.xml = opensimInterfaceFilters.opensimXmlInterface(analysisToolTemplateFile,self.m_soTool)
-        else:
-            self.m_soTool = DATA_PATH + analysisToolTemplateFile
-            self.xml = opensimInterfaceFilters.opensimXmlInterface(self.m_soTool,None)
-
-        if not local:
-            if externalLoadTemplateFile is None:
-                raise Exception("localExternalLoadFile or externalLoadTemplateFile needs to be defined")
-
-            self.m_externalLoad = DATA_PATH + self.m_modelVersion + "-externalLoad.xml"
-            self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
-
-        else:
-            self.m_externalLoad = DATA_PATH+externalLoadTemplateFile
-            self.xml_load = opensimInterfaceFilters.opensimXmlInterface(self.m_externalLoad,None)
-
-
-
+    def setSetupFiles(self,analysisToolTemplateFile,externalLoadTemplateFile):
+        self.m_soTool = self.m_DATA_PATH + self.m_modelVersion + "-SOTool-setup.xml"
+        self.xml = opensimInterfaceFilters.opensimXmlInterface(analysisToolTemplateFile,self.m_soTool)
+   
+        self.m_externalLoad = self.m_DATA_PATH + self.m_modelVersion + "-externalLoad.xml"
+        self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
+    
     def setProgression(self,progressionAxis,forwardProgression):
         self.m_progressionAxis = progressionAxis
         self.m_forwardProgression = forwardProgression
@@ -64,9 +42,10 @@ class StaticOptimisationXMLProcedure(opensimProcedures.OpensimInterfaceXmlProced
     def setResultsDirname(self,dirname):
         self.m_resultsDir = dirname    
 
-    def prepareDynamicTrial(self, acq, dynamicFile):
+    def prepareDynamicTrial(self, acq, dynamicFile,mfpa):
         self.m_dynamicFile =dynamicFile
         self.m_acq = acq
+        self.m_mfpa = mfpa
 
         self.m_ff = self.m_acq.GetFirstFrame()
         self.m_freq = self.m_acq.GetPointFrequency()
@@ -76,7 +55,7 @@ class StaticOptimisationXMLProcedure(opensimProcedures.OpensimInterfaceXmlProced
         self.m_frameRange = [int((self.m_beginTime*self.m_freq)+self.m_ff),int((self.m_endTime*self.m_freq)+self.m_ff)] 
 
         opensimTools.footReactionMotFile(
-            self.m_acq, self.m_DATA_PATH+self.m_dynamicFile+"_grf.mot",
+            self.m_acq, self.m_DATA_PATH+self.m_resultsDir+"\\"+self.m_dynamicFile+"_grf.mot",
             self.m_progressionAxis,self.m_forwardProgression,mfpa = self.m_mfpa)
 
 
@@ -87,7 +66,7 @@ class StaticOptimisationXMLProcedure(opensimProcedures.OpensimInterfaceXmlProced
 
 
 
-    def _prepareXml(self):
+    def prepareXml(self):
 
         # self.xml.set_one("model_file", self.m_dynamicFile+".mot")
         self.xml.getSoup().find("AnalyzeTool").attrs["name"] = self.m_dynamicFile+"-"+self.m_modelVersion+"-analyses"
@@ -105,24 +84,16 @@ class StaticOptimisationXMLProcedure(opensimProcedures.OpensimInterfaceXmlProced
         self.xml.m_soup.AnalysisSet.start_time.string =  str(self.m_beginTime)
         self.xml.m_soup.AnalysisSet.end_time.string =  str(self.m_endTime)
 
-        self.xml_load.set_one("datafile", self.m_dynamicFile+"_grf.mot")
+        self.xml_load.set_one("datafile", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+"_grf.mot")
 
 
     def run(self):
-
-        if self.m_autoXml:
-            self._prepareXml()
 
         self.xml.update()
         self.xml_load.update()
 
         tool = opensim.AnalyzeTool(self.m_soTool)
-        # tool.setModel(self.m_osimModel)
         tool.run()
-
-        # idTool = opensim.AnalysisTool(self.m_idTool)
-        # idTool.setModel(self.m_osimModel)
-        # idTool.run()
 
         self.finalize()
 
@@ -132,4 +103,4 @@ class StaticOptimisationXMLProcedure(opensimProcedures.OpensimInterfaceXmlProced
         files.renameFile(self.m_soTool, 
             self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-SOTool-setup.xml")
         files.renameFile(self.m_externalLoad,
-             self.m_DATA_PATH + self.m_dynamicFile + self.m_modelVersion + "-externalLoad.xml")
+             self.m_DATA_PATH + self.m_dynamicFile + "-"+self.m_modelVersion + "-externalLoad.xml")

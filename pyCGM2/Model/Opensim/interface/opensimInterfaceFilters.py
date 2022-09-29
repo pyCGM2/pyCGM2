@@ -147,7 +147,7 @@ class opensimInterfaceInverseKinematicsFilter(object):
     def pushMotToAcq(self, osimConverter):
 
         storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH, self.m_procedure.m_dynamicFile+".mot")
+            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\", self.m_procedure.m_dynamicFile+".mot")
 
         for jointIt in osimConverter["Angles"]:
 

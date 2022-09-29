@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM23
+from pickle import NONE
 import ipdb
 import os
 import matplotlib.pyplot as plt
@@ -181,13 +182,14 @@ class Test_CGM23:
 
         progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
-        procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXMLProcedure(DATA_PATH,scaledOsimName,modelVersion,ikTemplateFullFile)
-        procIK.setResultsDirname("musculoskeletal_modelling")
+        procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXMLProcedure(DATA_PATH,scaledOsimName,"CGM2.3","musculoskeletal_modelling")
         procIK.setProgression(progressionAxis,forwardProgression)
+        procIK.setSetupFile(ikTemplateFullFile)
         procIK.prepareDynamicTrial(acqGait,gaitFilename[:-4])
         procIK.setAccuracy(1e-8)
         procIK.setWeights(ikWeights)
         procIK.setTimeRange()
+        procIK.prepareXml()
         
 
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
@@ -195,6 +197,7 @@ class Test_CGM23:
         oiikf.pushFittedMarkersIntoAcquisition()
         oiikf.pushMotToAcq(osimConverterSettings)
         acqIK =oiikf.getAcq()
+
 
 
         # ----- compute angles
@@ -254,14 +257,14 @@ class Test_CGM23:
         idTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-idToolSetup_template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
 
-        procID = opensimInverseDynamicsInterfaceProcedure.InverseDynamicsXMLProcedure(DATA_PATH,
-            scaledOsimName,modelVersion,idTemplateFullFile,externalLoadTemplateFullFile)
-        procID.setResultsDirname("musculoskeletal_modelling")
-        procID.setProgression(progressionAxis,forwardProgression)
-        procID.prepareDynamicTrial(acqIK,gaitFilename[:-4])
-        procID.setTimeRange()
-        
 
+        procID = opensimInverseDynamicsInterfaceProcedure.InverseDynamicsXMLProcedure(DATA_PATH,scaledOsimName,"CGM2.3","musculoskeletal_modelling")
+        procID.setProgression(progressionAxis,forwardProgression)
+        procID.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
+        procID.setSetupFiles(idTemplateFullFile,externalLoadTemplateFullFile)
+        procID.setTimeRange()
+        procID.prepareXml()
+    
         oiidf = opensimInterfaceFilters.opensimInterfaceInverseDynamicsFilter(procID)
         oiidf.run()
         oiidf.pushStoToAcq(model.mp["Bodymass"], osimConverterSettings)        
@@ -295,12 +298,13 @@ class Test_CGM23:
 
         soTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-soSetup_template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
-        procSO = opensimStaticOptimizationInterfaceProcedure.StaticOptimisationXMLProcedure(DATA_PATH,scaledOsimName,modelVersion,soTemplateFullFile,externalLoadTemplateFullFile)
-        procSO.setResultsDirname("musculoskeletal_modelling")
+ 
+        procSO = opensimStaticOptimizationInterfaceProcedure.StaticOptimisationXMLProcedure(DATA_PATH,scaledOsimName,"CGM2.3","musculoskeletal_modelling")
         procSO.setProgression(progressionAxis,forwardProgression)
-        procSO.prepareDynamicTrial(acqIK,gaitFilename[:-4])
+        procSO.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
+        procSO.setSetupFiles(soTemplateFullFile,externalLoadTemplateFullFile)
         procSO.setTimeRange()
-        
+        procSO.prepareXml()
 
         oiamf = opensimInterfaceFilters.opensimInterfaceStaticOptimizationFilter(procSO)
         oiamf.run()
@@ -309,11 +313,13 @@ class Test_CGM23:
         # --- Analyses ------
         anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-analysisSetup_template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
-        procAna = opensimAnalysesInterfaceProcedure.AnalysesXMLProcedure(DATA_PATH,scaledOsimName,modelVersion,anaTemplateFullFile,externalLoadTemplateFullFile)
-        procAna.setResultsDirname("musculoskeletal_modelling")
+        procAna = opensimAnalysesInterfaceProcedure.AnalysesXMLProcedure(DATA_PATH,scaledOsimName,"CGM2.3","musculoskeletal_modelling")
+        procAna.setSetupFiles(anaTemplateFullFile,externalLoadTemplateFullFile)
         procAna.setProgression(progressionAxis,forwardProgression)
-        procAna.prepareDynamicTrial(acqIK,gaitFilename[:-4])
+        procAna.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
         procAna.setTimeRange()
+        procAna.prepareXml()
+
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
         oiamf.run()
         oiamf.pushStoToAcq()

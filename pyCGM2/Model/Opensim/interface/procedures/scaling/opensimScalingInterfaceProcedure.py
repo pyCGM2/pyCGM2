@@ -47,7 +47,6 @@ class ScalingXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
     def setSetupFiles(self,genericOsimFile, markersetFile, scaleToolFile):
 
         self.m_osim = files.getFilename(genericOsimFile)
-        import ipdb; ipdb.set_trace()
         files.copyPaste(genericOsimFile, self.m_DATA_PATH + self.m_osim)
 
         self.m_markerset =  files.getFilename(markersetFile)
