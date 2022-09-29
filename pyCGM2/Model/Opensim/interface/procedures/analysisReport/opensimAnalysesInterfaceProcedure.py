@@ -72,8 +72,7 @@ class AnalysesXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         # self.xml.set_one("results_directory", self.m_DATA_PATH)
         self.xml.set_one("external_loads_file", files.getFilename(self.m_externalLoad))
 
-        if self.m_resultsDir !="":
-            self.xml.set_one("results_directory",  self.m_resultsDir)
+        self.xml.set_one("results_directory",  self.m_resultsDir)
 
         self.xml.set_one("initial_time",str(self.m_beginTime))
         self.xml.set_one("final_time",str(self.m_endTime))

@@ -72,11 +72,10 @@ class StaticOptimisationXMLProcedure(opensimProcedures.OpensimInterfaceXmlProced
         self.xml.getSoup().find("AnalyzeTool").attrs["name"] = self.m_dynamicFile+"-"+self.m_modelVersion+"-analyses"
 
         self.xml.set_one("model_file", self.m_osimName)
-        self.xml.set_one("coordinates_file", self.m_dynamicFile+".mot")
+        self.xml.set_one("coordinates_file", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+".mot")
         self.xml.set_one("external_loads_file", files.getFilename(self.m_externalLoad))
 
-        if self.m_resultsDir !="":
-            self.xml.set_one("results_directory",  self.m_resultsDir)
+        self.xml.set_one("results_directory",  self.m_resultsDir)
 
         self.xml.set_one("initial_time",str(self.m_beginTime))
         self.xml.set_one("final_time",str(self.m_endTime))
