@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_motFile
+# pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_nexusC3d_withOutputs
 # pytest -s --disable-pytest-warnings  test_opensim.py::Test_misc::test_prepareData
 from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Tools import opensimTools
@@ -48,6 +48,17 @@ class Test_IO:
 
         opensimTools.footReactionMotFile(
             acqGait, DATA_PATH+ "_"+gaitFilename[:-4]+"_grf.mot","X",False)
+
+    def test_nexusC3d_withOutputs(self):
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\\processingC3dOutputs\\"
+
+
+        acq1 = btkTools.smartReader(DATA_PATH+"gait1.c3d")
+        btkTools.smartWriter(acq1, DATA_PATH+"gait1verif.c3d", extension=None)
+
+        acq2 = btkTools.smartReader(DATA_PATH+"gait2.c3d")
+        btkTools.smartWriter(acq2, DATA_PATH+"gait2verif.c3d", extension=None)
+
 
 class Test_preparation:
 
