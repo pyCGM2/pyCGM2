@@ -68,11 +68,13 @@ def smartReader(filename, translators=None):
         acq.GetMetaData().FindChild("ANALYSIS").value().AppendChild(used)
 
     # deal with user model ouputs made from Nexus
+    detectUsermoFlag = False
     labels = ["USERMOS"]
     for it in btk.Iterate(acq.GetPoints()):
         if "USERMO" in it.GetLabel():
+            detectUsermoFlag=True
             labels.append(it.GetLabel())
-            print ("user label [%s] found"%(it.GetLabel()))
+            #print ("user label [%s] found"%(it.GetLabel()))
             description = it.GetDescription()
             labelFromDescription = description[:description.find("[")]
             groupname = smartGetMetadata(acq, "POINT", it.GetLabel())[0]
@@ -83,10 +85,11 @@ def smartReader(filename, translators=None):
             acq.RemovePoint(it.GetLabel())
 
             # md.FindChild("POINT").value().RemoveChild(it.GetLabel())
-            print ("Processed")
+            #print ("Processed")
 
-    for label in labels:
-        acq.GetMetaData().FindChild("POINT").value().RemoveChild(label)
+    if detectUsermoFlag:
+        for label in labels:
+            acq.GetMetaData().FindChild("POINT").value().RemoveChild(label)
 
     return acq
 
