@@ -61,6 +61,9 @@ class Analysis():
         self.kinematicStats = AnalysisStructure()
         self.kineticStats = AnalysisStructure()
         self.emgStats = AnalysisStructure()
+        self.muscleGeometryStats = AnalysisStructure()
+        self.muscleDynamicStats = AnalysisStructure()
+
         self.gps = None
         self.gvs = None
         self.coactivations = dict()
@@ -89,6 +92,11 @@ class Analysis():
     def setEmg(self, data, pst=dict()):
         self.emgStats.data = data
         self.emgStats.pst = pst
+
+    def setMuscleGeometry(self, data, pst=dict()):
+        self.muscleGeometryStats.data = data
+        self.muscleGeometryStats.pst = pst
+
 
     def setGps(self, GpsStatsOverall, GpsStatsContext):
         self.gps = dict()
@@ -139,6 +147,7 @@ class Analysis():
     def setCoactivation(self, labelEmg1, labelEmg2, context, res):
         self.coactivations[labelEmg1, labelEmg2, context] = res
 
+
 # --- BUILDERS-----
 
 class AbstractBuilder(object):
@@ -187,6 +196,8 @@ class AnalysisBuilder(AbstractBuilder):
                  kineticLabelsDict=None,
                  pointlabelSuffix=None,
                  emgLabelList=None,
+                 geometryMuscleLabelsDict=None,
+                 dynamicMuscleLabelsDict=None,
                  modelInfos=None, subjectInfos=None, experimentalInfos=None, emgs=None):
 
 
@@ -197,6 +208,10 @@ class AnalysisBuilder(AbstractBuilder):
         self.m_pointlabelSuffix = pointlabelSuffix
         self.m_emgLabelList = emgLabelList
         self.m_emgs = emgs
+        self.m_geometryMuscleLabelsDict = geometryMuscleLabelsDict
+        self.m_dynamicMuscleLabelsDict = dynamicMuscleLabelsDict
+
+
 
     def computeSpatioTemporel(self):
         pass
@@ -313,6 +328,98 @@ class AnalysisBuilder(AbstractBuilder):
 
         return out, outPst
 
+    def computeMuscleGeometry(self):
+        """ Compute descriptive stats of the kinematic parameters
+        """
+
+        out = {}
+        outPst = {}
+
+        LOGGER.logger.info("--kinematic computation--")
+        if self.m_cycles.muscleGeometryCycles is not None:
+            if "Left" in self.m_muscleLabelsDict.keys():
+                for label in self.m_muscleLabelsDict["Left"]:
+                    labelPlus = label + "_" + \
+                        self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                    out[labelPlus, "Left"] = CGM2cycle.point_descriptiveStats(
+                        self.m_cycles.muscleGeometryCycles, labelPlus, "Left")
+
+                LOGGER.logger.info("left kinematic computation---> done")
+            else:
+                LOGGER.logger.warning("No left Kinematic computation")
+
+            if "Right" in self.m_muscleLabelsDict.keys():
+                for label in self.m_muscleLabelsDict["Right"]:
+                    labelPlus = label + "_" + \
+                        self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                    out[labelPlus, "Right"] = CGM2cycle.point_descriptiveStats(
+                        self.m_cycles.muscleGeometryCycles, labelPlus, "Right")
+
+                LOGGER.logger.info("right kinematic computation---> done")
+            else:
+                LOGGER.logger.warning("No right Kinematic computation")
+
+        else:
+            LOGGER.logger.warning("No Kinematic computation")
+
+        return out, outPst
+
+    def computeMuscleDynamic(self):
+        """ Compute descriptive stats of the kinetic parameters
+        """
+
+        out = {}
+        outPst = {}
+        outOptional = {}
+
+        LOGGER.logger.info("--kinetic computation--")
+        if self.m_cycles.muscleDynamicCycles is not None:
+
+           found_context = list()
+           for cycle in self.m_cycles.muscleDynamicCycles:
+               found_context.append(cycle.context)
+
+           if "Left" in self.m_muscleLabelsDict.keys():
+               if "Left" in found_context:
+                   for label in self.m_muscleLabelsDict["Left"]:
+                       labelPlus = label + "_" + \
+                           self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                       out[labelPlus, "Left"] = CGM2cycle.point_descriptiveStats(
+                           self.m_cycles.muscleDynamicCycles, labelPlus, "Left")
+
+                   if self.m_kinematicLabelsDict is not None:
+                       for label in self.m_kinematicLabelsDict["Left"]:
+                           labelPlus = label + "_" + \
+                               self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                           outOptional[labelPlus, "Left"] = CGM2cycle.point_descriptiveStats(
+                               self.m_cycles.muscleDynamicCycles, labelPlus, "Left")
+                   LOGGER.logger.info("left kinetic computation---> done")
+               else:
+                   LOGGER.logger.warning("No left Kinetic computation")
+
+           if "Right" in self.m_muscleLabelsDict.keys():
+               if "Right" in found_context:
+                   for label in self.m_muscleLabelsDict["Right"]:
+                       labelPlus = label + "_" + \
+                           self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                       out[labelPlus, "Right"] = CGM2cycle.point_descriptiveStats(
+                           self.m_cycles.muscleDynamicCycles, labelPlus, "Right")
+
+                   if self.m_kinematicLabelsDict is not None:
+                       for label in self.m_kinematicLabelsDict["Right"]:
+                           labelPlus = label + "_" + \
+                               self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                           outOptional[labelPlus, "Right"] = CGM2cycle.point_descriptiveStats(
+                               self.m_cycles.muscleDynamicCycles, labelPlus, "Right")
+
+                   LOGGER.logger.info("right kinetic computation---> done")
+               else:
+                   LOGGER.logger.warning("No right Kinetic computation")
+
+        else:
+            LOGGER.logger.warning("No Kinetic computation")
+
+        return out, outPst, outOptional
 
 class GaitAnalysisBuilder(AbstractBuilder):
     """Gait analysis Builder.
@@ -340,6 +447,8 @@ class GaitAnalysisBuilder(AbstractBuilder):
                  kineticLabelsDict=None,
                  pointlabelSuffix=None,
                  emgLabelList=None,
+                 geometryMuscleLabelsDict=None,
+                 dynamicMuscleLabelsDict=None,
                  modelInfos=None, subjectInfos=None, experimentalInfos=None, emgs=None):
 
 
@@ -349,6 +458,8 @@ class GaitAnalysisBuilder(AbstractBuilder):
         self.m_kineticLabelsDict = kineticLabelsDict
         self.m_pointlabelSuffix = pointlabelSuffix
         self.m_emgLabelList = emgLabelList
+        self.m_geometryMuscleLabelsDict = geometryMuscleLabelsDict
+        self.m_dynamicMuscleLabelsDict = dynamicMuscleLabelsDict
 
     def computeSpatioTemporel(self):
         """ compute descriptive stats of the spatio-temporal parameters
@@ -527,6 +638,114 @@ class GaitAnalysisBuilder(AbstractBuilder):
 
         return out, outPst
 
+    def computeMuscleGeometry(self):
+        """ Compute descriptive stats of the kinematic parameters
+        """
+
+        out = {}
+        outPst = {}
+
+        LOGGER.logger.info("--Muscle Geometry computation--")
+        if self.m_cycles.muscleGeometryCycles is not None:
+            if "Left" in self.m_geometryMuscleLabelsDict.keys():
+                for label in self.m_geometryMuscleLabelsDict["Left"]:
+                    labelPlus = label + "_" + \
+                        self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                    out[labelPlus, "Left"] = CGM2cycle.point_descriptiveStats(
+                        self.m_cycles.muscleGeometryCycles, labelPlus, "Left")
+
+                for label in CGM2cycle.GaitCycle.STP_LABELS:
+                    outPst[label, "Left"] = CGM2cycle.spatioTemporelParameter_descriptiveStats(
+                        self.m_cycles.muscleGeometryCycles, label, "Left")
+
+                LOGGER.logger.info("left kinematic computation---> done")
+            else:
+                LOGGER.logger.warning("No left Kinematic computation")
+
+            if "Right" in self.m_geometryMuscleLabelsDict.keys():
+                for label in self.m_geometryMuscleLabelsDict["Right"]:
+                    labelPlus = label + "_" + \
+                        self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                    out[labelPlus, "Right"] = CGM2cycle.point_descriptiveStats(
+                        self.m_cycles.muscleGeometryCycles, labelPlus, "Right")
+
+                for label in CGM2cycle.GaitCycle.STP_LABELS:
+                    outPst[label, "Right"] = CGM2cycle.spatioTemporelParameter_descriptiveStats(
+                        self.m_cycles.muscleGeometryCycles, label, "Right")
+
+                LOGGER.logger.info("right kinematic computation---> done")
+            else:
+                LOGGER.logger.warning("No right Kinematic computation")
+
+        else:
+            LOGGER.logger.warning("No Kinematic computation")
+
+        return out, outPst
+
+    def computeMuscleDynamic(self):
+        """ Compute descriptive stats of the kinetic parameters
+        """
+
+        out = {}
+        outPst = {}
+        outOptional = {}
+
+        LOGGER.logger.info("--kinetic computation--")
+        if self.m_cycles.muscleDynamicCycles is not None:
+
+           found_context = list()
+           for cycle in self.m_cycles.muscleDynamicCycles:
+               found_context.append(cycle.context)
+
+           if "Left" in self.m_muscleLabelsDict.keys():
+               if "Left" in found_context:
+                   for label in self.m_muscleLabelsDict["Left"]:
+                       labelPlus = label + "_" + \
+                           self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                       out[labelPlus, "Left"] = CGM2cycle.point_descriptiveStats(
+                           self.m_cycles.muscleDynamicCycles, labelPlus, "Left")
+                   for label in CGM2cycle.GaitCycle.STP_LABELS:
+                       outPst[label, "Left"] = CGM2cycle.spatioTemporelParameter_descriptiveStats(
+                           self.m_cycles.muscleDynamicCycles, label, "Left")
+
+                   if self.m_kinematicLabelsDict is not None:
+                       for label in self.m_kinematicLabelsDict["Left"]:
+                           labelPlus = label + "_" + \
+                               self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                           outOptional[labelPlus, "Left"] = CGM2cycle.point_descriptiveStats(
+                               self.m_cycles.muscleDynamicCycles, labelPlus, "Left")
+                   LOGGER.logger.info("left kinetic computation---> done")
+               else:
+                   LOGGER.logger.warning("No left Kinetic computation")
+
+           if "Right" in self.m_muscleLabelsDict.keys():
+               if "Right" in found_context:
+                   for label in self.m_muscleLabelsDict["Right"]:
+                       labelPlus = label + "_" + \
+                           self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                       out[labelPlus, "Right"] = CGM2cycle.point_descriptiveStats(
+                           self.m_cycles.muscleDynamicCycles, labelPlus, "Right")
+
+                   for label in CGM2cycle.GaitCycle.STP_LABELS:
+                       outPst[label, "Right"] = CGM2cycle.spatioTemporelParameter_descriptiveStats(
+                           self.m_cycles.muscleDynamicCycles, label, "Right")
+
+                   if self.m_kinematicLabelsDict is not None:
+                       for label in self.m_kinematicLabelsDict["Right"]:
+                           labelPlus = label + "_" + \
+                               self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
+                           outOptional[labelPlus, "Right"] = CGM2cycle.point_descriptiveStats(
+                               self.m_cycles.muscleDynamicCycles, labelPlus, "Right")
+
+                   LOGGER.logger.info("right kinetic computation---> done")
+               else:
+                   LOGGER.logger.warning("No right Kinetic computation")
+
+        else:
+            LOGGER.logger.warning("No Kinetic computation")
+
+        return out, outPst, outOptional
+
 # ---- FILTERS -----
 
 
@@ -588,6 +807,15 @@ class AnalysisFilter(object):
         if self.__concreteAnalysisBuilder.m_emgLabelList:
             emgOut, matchPst_emg = self.__concreteAnalysisBuilder.computeEmgEnvelopes()
             self.analysis.setEmg(emgOut, pst=matchPst_emg)
+
+        if self.__concreteAnalysisBuilder.m_geometryMuscleLabelsDict:
+            muscleGeoOut, matchPst_muscleGeo = self.__concreteAnalysisBuilder.computeMuscleGeometry()
+            self.analysis.setMuscleGeometry(muscleGeoOut, pst=matchPst_muscleGeo)
+
+        if self.__concreteAnalysisBuilder.m_dynamicMuscleLabelsDict:
+            muscleDynOut, matchPst_muscleDyn = self.__concreteAnalysisBuilder.computeMuscleDynamic()
+            self.analysis.setMuscleDynamic(muscleDynOut, pst=matchPst_muscleDyn)
+
 
         if self.subjectInfo is not None:
             self.analysis.setSubjectInfo(self.subjectInfo)

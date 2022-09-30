@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Functions
-#APIDOC["Draft"]=False
-#--end--
 
 from pyCGM2.Utils import files
 from pyCGM2.Processing.JointPatterns import jointPatternFilters
@@ -23,6 +20,8 @@ def makeAnalysis(DATA_PATH,
                  kinematicLabelsDict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
                  kineticLabelsDict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
                  emgChannels=pyCGM2.EMG_CHANNELS,
+                 geometryMuscleLabelsDict=None,
+                 dynamicMuscleLabelsDict=None,
                  pointLabelSuffix=None,
                  subjectInfo=None, experimentalInfo=None, modelInfo=None,
                  **kwargs):
@@ -110,14 +109,23 @@ def makeAnalysis(DATA_PATH,
         ) else None
         emgfilenames = kwargs["emgfilenames"] if "emgfilenames" in kwargs.keys(
         ) else None
+        muscleGeometryfilenames = kwargs["muscleGeometryfilenames"] if "muscleGeometryfilenames" in kwargs.keys(
+        ) else None
+        muscleDynamicfilenames = kwargs["muscleDynamicfilenames"] if "muscleDynamicfilenames" in kwargs.keys(
+        ) else None
+
 
         iPstFilenames = filenames if pstfilenames is None else pstfilenames
         iKinematicFilenames = filenames if kinematicfilenames is None else kinematicfilenames
         iKineticFilenames = filenames if kineticfilenames is None else kineticfilenames
         iEmgFilenames = filenames if emgfilenames is None else emgfilenames
 
+        iMuscleGeometryFilenames = filenames if muscleGeometryfilenames is None else muscleGeometryfilenames
+        iMuscleDynamicFilenames = filenames if muscleDynamicfilenames is None else muscleDynamicfilenames
+
         c3dmanagerProcedure = c3dManagerProcedures.DistinctC3dSetProcedure(
-            DATA_PATH, iPstFilenames, iKinematicFilenames, iKineticFilenames, iEmgFilenames)
+            DATA_PATH, iPstFilenames, iKinematicFilenames, iKineticFilenames, iEmgFilenames,
+            iMuscleGeometryFilenames,iMuscleDynamicFilenames)
 
     cmf = c3dManagerFilters.C3dManagerFilter(c3dmanagerProcedure)
 
@@ -127,6 +135,10 @@ def makeAnalysis(DATA_PATH,
         True) if kineticLabelsDict is not None else cmf.enableKinetic(False)
     cmf.enableEmg(True) if emgChannels is not None else cmf.enableEmg(False)
 
+
+    cmf.enableMuscleGeometry(True) if geometryMuscleLabelsDict is not None else cmf.enableMuscleGeometry(False)
+    cmf.enableMuscleDynamic(True) if dynamicMuscleLabelsDict is not None else cmf.enableMuscleDynamic(False)
+    
     trialManager = cmf.generate()
 
     #----cycles
@@ -134,13 +146,17 @@ def makeAnalysis(DATA_PATH,
         cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalAcqs=trialManager.spatioTemporal["Acqs"],
                                                kinematicAcqs=trialManager.kinematic["Acqs"],
                                                kineticAcqs=trialManager.kinetic["Acqs"],
-                                               emgAcqs=trialManager.emg["Acqs"])
+                                               emgAcqs=trialManager.emg["Acqs"],
+                                               muscleGeometryAcqs=trialManager.muscleGeometry["Acqs"],
+                                               muscleDynamicAcqs=trialManager.muscleDynamic["Acqs"])
 
     else:
         cycleBuilder = cycle.CyclesBuilder(spatioTemporalAcqs=trialManager.spatioTemporal["Acqs"],
                                            kinematicAcqs=trialManager.kinematic["Acqs"],
                                            kineticAcqs=trialManager.kinetic["Acqs"],
-                                           emgAcqs=trialManager.emg["Acqs"])
+                                           emgAcqs=trialManager.emg["Acqs"],
+                                           muscleGeometryAcqs=trialManager.muscleGeometry["Acqs"],
+                                           muscleDynamicAcqs=trialManager.muscleDynamic["Acqs"])
 
     cyclefilter = cycle.CyclesFilter()
     cyclefilter.setBuilder(cycleBuilder)
@@ -156,13 +172,17 @@ def makeAnalysis(DATA_PATH,
                                                        kinematicLabelsDict=kinematicLabelsDict,
                                                        kineticLabelsDict=kineticLabelsDict,
                                                        pointlabelSuffix=pointLabelSuffix,
-                                                       emgLabelList=emgLabelList)
+                                                       emgLabelList=emgLabelList,
+                                                       geometryMuscleLabelsDict=geometryMuscleLabelsDict,
+                                                       dynamicMuscleLabelsDict=dynamicMuscleLabelsDict)
     else:
         analysisBuilder = analysis.AnalysisBuilder(cycles,
                                                    kinematicLabelsDict=kinematicLabelsDict,
                                                    kineticLabelsDict=kineticLabelsDict,
                                                    pointlabelSuffix=pointLabelSuffix,
-                                                   emgLabelList=emgLabelList)
+                                                   emgLabelList=emgLabelList,
+                                                   geometryMuscleLabelsDict=geometryMuscleLabelsDict,
+                                                   dynamicMuscleLabelsDict=dynamicMuscleLabelsDict)
 
     analysisFilter = analysis.AnalysisFilter()
     analysisFilter.setInfo(subject=subjectInfo,

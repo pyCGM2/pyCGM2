@@ -42,7 +42,7 @@ class UniqueBtkAcqSetProcedure(C3dManagerProcedure):
 
 
 
-    def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag):
+    def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag,muscleGeometryFlag,muscleDynamicFlag ):
         """disseminate the combinaison (btk.Acquisition/c3d filenames)
 
         Args:
@@ -92,7 +92,7 @@ class UniqueC3dSetProcedure(C3dManagerProcedure):
 
 
 
-    def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag):
+    def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag,muscleGeometryFlag,muscleDynamicFlag):
         """disseminate c3d filenames
 
         Args:
@@ -123,6 +123,13 @@ class UniqueC3dSetProcedure(C3dManagerProcedure):
         if emgFlag:
             c3dManager.emg["Acqs"],c3dManager.emg["Filenames"], = btkTools.buildTrials(self.m_data_path,self.m_files)
 
+        #----muscleGeometryTrials
+        if muscleGeometryFlag:
+            c3dManager.muscleGeometry["Acqs"],c3dManager.muscleGeometry["Filenames"], = btkTools.buildTrials(self.m_data_path,self.m_files)
+
+        #----muscleDynamicTrials
+        if muscleDynamicFlag:
+            c3dManager.muscleDynamic["Acqs"],c3dManager.muscleDynamic["Filenames"], = btkTools.buildTrials(self.m_data_path,self.m_files)
 
 class DistinctC3dSetProcedure(C3dManagerProcedure):
     """Distinct c3d sets are for each computational objectives
@@ -135,7 +142,8 @@ class DistinctC3dSetProcedure(C3dManagerProcedure):
         emg_fileLst (list): c3d filenames for the emg computation
     """
 
-    def __init__(self, data_path, stp_fileLst, kinematic_fileLst, kinetic_fileLst, emg_fileLst):
+    def __init__(self, data_path, stp_fileLst, kinematic_fileLst, kinetic_fileLst, emg_fileLst, 
+                muscleGeometry_fileLst, muscleDynamic_fileLst):
         super(DistinctC3dSetProcedure,self).__init__()
         self.m_data_path = data_path
 
@@ -143,8 +151,10 @@ class DistinctC3dSetProcedure(C3dManagerProcedure):
         self.m_files_kinematic = kinematic_fileLst
         self.m_files_kinetic = kinetic_fileLst
         self.m_files_emg = emg_fileLst
+        self.m_files_muscleGeometry = muscleGeometry_fileLst
+        self.m_files_muscleDynamic = muscleDynamic_fileLst
 
-    def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag):
+    def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag,muscleGeometryFlag,muscleDynamicFlag):
         """disseminate c3d sets
 
         Args:
@@ -173,3 +183,12 @@ class DistinctC3dSetProcedure(C3dManagerProcedure):
         #----emgTrials
         if emgFlag:
             c3dManager.emg["Acqs"],c3dManager.emg["Filenames"], = btkTools.buildTrials(self.m_data_path,self.m_files_emg)
+
+        #----muscleGeometryTrials
+        if muscleGeometryFlag:
+            c3dManager.muscleGeometry["Acqs"],c3dManager.muscleGeometry["Filenames"], = btkTools.buildTrials(self.m_data_path,self.m_files_muscleGeometry)
+
+        #----muscleDynamicTrials
+        if muscleDynamicFlag:
+            c3dManager.muscleDynamic["Acqs"],c3dManager.muscleDynamic["Filenames"], c3dManager.muscleDynamicFlag = btkTools.automaticKineticDetection(self.m_data_path,self.m_files_muscleDynamic)
+            

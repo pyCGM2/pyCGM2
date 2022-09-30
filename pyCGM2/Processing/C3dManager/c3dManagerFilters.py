@@ -40,7 +40,10 @@ class C3dManager(object):
         self.kineticFlag = False
         self.kinetic={"Acqs": None, "Filenames":None }
         self.emg={"Acqs":None , "Filenames":None}
-
+        self.muscleGeometry={"Acqs": None , "Filenames":None}
+        
+        self.muscleDynamicFlag = False
+        self.muscleDynamic={"Acqs":None , "Filenames":None}
 
 class C3dManagerFilter(object):
     """
@@ -57,6 +60,8 @@ class C3dManagerFilter(object):
         self.m_kinematicFlag = True
         self.m_kineticFlag = True
         self.m_emgFlag = True
+        self.m_muscleGeometryFlag = False
+        self.m_muscleDynamicFlag = False
 
     def enableSpatioTemporal(self, boolean):
         """enable spatio-temporal computation
@@ -95,14 +100,39 @@ class C3dManagerFilter(object):
         self.m_emgFlag = boolean
 
 
+    def enableMuscleGeometry(self, boolean):
+        """enable emg computation
+
+        Args:
+            boolean (bool): boolean flag
+
+        """
+        self.m_muscleGeometryFlag = boolean
+
+    def enableMuscleDynamic(self, boolean):
+        """enable emg computation
+
+        Args:
+            boolean (bool): boolean flag
+
+        """
+        self.m_muscleDynamicFlag = boolean
+
+
 
     def generate(self):
         """ disseminate c3d trials according to the given Procedure
         """
 
         c3dManager = C3dManager()
+        
 
-
-        self.m_procedure.generate(c3dManager,self.m_spatioTempFlag, self.m_kinematicFlag, self.m_kineticFlag, self.m_emgFlag)
+        self.m_procedure.generate(c3dManager,
+                                self.m_spatioTempFlag,
+                                self.m_kinematicFlag, 
+                                self.m_kineticFlag, 
+                                self.m_emgFlag,
+                                self.m_muscleGeometryFlag,
+                                self.m_muscleDynamicFlag)
 
         return c3dManager

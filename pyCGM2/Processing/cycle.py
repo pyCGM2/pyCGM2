@@ -523,6 +523,12 @@ class CyclesFilter:
         emgElements = self.__builder.getEmg()
         cycles.setEmgCycles(emgElements)
 
+        muscleGeometryElements = self.__builder.getMuscleGeometry()
+        cycles.setMuscleGeometryCycles(muscleGeometryElements)
+
+        muscleDynamicElements = self.__builder.getMuscleDynamic()
+        cycles.setMuscleDynamicCycles(muscleDynamicElements)
+
         return cycles
 
 
@@ -548,6 +554,8 @@ class Cycles():
         self.kinematicCycles = None
         self.kineticCycles = None
         self.emgCycles = None
+        self.muscleGeometryCycles = None
+        self.muscleDynamicCycles = None
 
 
     def setSpatioTemporalCycles(self,spatioTemporalCycles_instance):
@@ -562,6 +570,11 @@ class Cycles():
     def setEmgCycles(self,emgCycles_instance):
         self.emgCycles = emgCycles_instance
 
+    def setMuscleGeometryCycles(self,muscleGeometryCycles_instance):
+        self.muscleGeometryCycles = muscleGeometryCycles_instance
+
+    def setMuscleDynamicCycles(self,muscleDynamicCycles_instance):
+        self.muscleDynamicCycles = muscleDynamicCycles_instance
 
 # --- BUILDER
 class CyclesBuilder(object):
@@ -575,12 +588,15 @@ class CyclesBuilder(object):
 
     """
 
-    def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None):
+    def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None,
+                muscleGeometryAcqs=None,muscleDynamicAcqs=None):
 
         self.spatioTemporalAcqs =spatioTemporalAcqs
         self.kinematicAcqs =kinematicAcqs
         self.kineticAcqs =kineticAcqs
         self.emgAcqs =emgAcqs
+        self.muscleGeometryAcqs = muscleGeometryAcqs
+        self.muscleDynamicAcqs = muscleDynamicAcqs
 
     def getSpatioTemporal(self):
         """get the list of Cycle used for  spatio-temporal parameter computation
@@ -814,6 +830,132 @@ class CyclesBuilder(object):
 
         else:
             return None
+    
+    def getMuscleGeometry(self):
+        if self.muscleGeometryAcqs is not None:
+            muscleGeometryCycles=list()
+            for acq in  self.muscleGeometryAcqs:
+
+                startFrame = acq.GetFirstFrame()
+                endFrame = acq.GetLastFrame()
+
+                context = "Left"
+                left_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        left_fs_frames.append(ev.GetFrame())
+
+
+                context = "Right"
+                right_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        right_fs_frames.append(ev.GetFrame())
+
+                if left_fs_frames == [] and  right_fs_frames == []:
+                    muscleGeometryCycles.append (Cycle(acq, startFrame,endFrame,"Left"))
+                    muscleGeometryCycles.append (Cycle(acq, startFrame,endFrame,"Right"))
+                    LOGGER.logger.info("[pyCGM2] left and Right context - time normalization from time boudaries")
+
+                if len(left_fs_frames) >1:
+                    for i in range(0, len(left_fs_frames)-1):
+                        muscleGeometryCycles.append (Cycle(acq, left_fs_frames[i],left_fs_frames[i+1],
+                                                       "Left"))
+                elif len(left_fs_frames) ==1:
+                    LOGGER.logger.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
+                else:
+                    LOGGER.logger.warning("[pyCGM2] No left cycles")
+
+                if len(right_fs_frames) >1:
+                    for i in range(0, len(right_fs_frames)-1):
+                        muscleGeometryCycles.append (Cycle(acq, right_fs_frames[i],right_fs_frames[i+1],
+                                                       "Right"))
+                elif len(right_fs_frames) ==1:
+                    LOGGER.logger.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
+                else:
+                    LOGGER.logger.warning("[pyCGM2] No Right cycles")
+
+            return muscleGeometryCycles
+        else:
+            return None
+
+    def getMuscleDynamic(self):
+        """get the list of Cycle used for  kinetic computation
+        """
+        if self.muscleDynamicAcqs is not None:
+
+            detectionTimeOffset = 0.02
+
+            muscleDynamicCycles=list()
+            for acq in  self.muscleDynamicAcqs:
+
+                flag_kinetics,frames,frames_left,frames_right = btkTools.isKineticFlag(acq)
+
+                startFrame = acq.GetFirstFrame()
+                endFrame = acq.GetLastFrame()
+
+                if flag_kinetics:
+
+                    context = "Left"
+                    left_fs_frames=list()
+                    for ev in btk.Iterate(acq.GetEvents()):
+                        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                            left_fs_frames.append(ev.GetFrame())
+
+                    context = "Right"
+                    right_fs_frames=list()
+                    for ev in btk.Iterate(acq.GetEvents()):
+                        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                            right_fs_frames.append(ev.GetFrame())
+
+
+                    if left_fs_frames == [] and right_fs_frames==[]:
+                        muscleDynamicCycles.append (Cycle(acq, startFrame,endFrame,"Left"))
+                        muscleDynamicCycles.append (Cycle(acq, startFrame,endFrame,"Right"))
+                        LOGGER.logger.info("[pyCGM2] left - time normalization from time boudaries")
+
+
+                    count_L=0
+                    if len(left_fs_frames)>1:
+                        for i in range(0, len(left_fs_frames)-1):
+                            init =  left_fs_frames[i]
+                            end =  left_fs_frames[i+1]
+
+                            for frameKinetic in frames_left:
+
+                                if frameKinetic<=end and frameKinetic>=init:
+                                    LOGGER.logger.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_frames[i], left_fs_frames[i+1]))
+                                    muscleDynamicCycles.append (Cycle(acq, left_fs_frames[i],left_fs_frames[i+1],
+                                                               "Left"))
+
+                                    count_L+=1
+                        LOGGER.logger.debug("%i Left Kinetic cycles available" %(count_L))
+                    elif len(left_fs_frames) ==1:
+                        LOGGER.logger.warning("[pyCGM2] No left cycles, only one left foot strike detected)")
+                    else:
+                        LOGGER.logger.warning("[pyCGM2] No left cycles")
+
+                    count_R=0
+                    if len(right_fs_frames)>1:
+                        for i in range(0, len(right_fs_frames)-1):
+                            init =  right_fs_frames[i]
+                            end =  right_fs_frames[i+1]
+
+                            for frameKinetic in frames_right:
+                                if frameKinetic<=end and frameKinetic>=init:
+                                    LOGGER.logger.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_frames[i], right_fs_frames[i+1]))
+                                    muscleDynamicCycles.append (Cycle(acq, right_fs_frames[i],right_fs_frames[i+1],
+                                                               "Right"))
+                                    count_R+=1
+                        LOGGER.logger.debug("%i Right Kinetic cycles available" %(count_R))
+                    elif len(right_fs_frames) ==1:
+                        LOGGER.logger.warning("[pyCGM2] No right cycles, only one right foot strike detected)")
+                    else:
+                        LOGGER.logger.warning("[pyCGM2] No Right cycles")
+
+            return kineticCycles
+        else:
+            return None
 
 class GaitCyclesBuilder(CyclesBuilder):
     """ Builder of gait cycle
@@ -825,15 +967,17 @@ class GaitCyclesBuilder(CyclesBuilder):
         emgAcqs (list): acquisitions used for emg computation
     """
 
-    def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None):
+    def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None,
+                 muscleGeometryAcqs=None,muscleDynamicAcqs=None):
 
         super(GaitCyclesBuilder, self).__init__(
             spatioTemporalAcqs = spatioTemporalAcqs,
             kinematicAcqs=kinematicAcqs,
             kineticAcqs = kineticAcqs,
             emgAcqs = emgAcqs,
+            muscleGeometryAcqs = muscleGeometryAcqs,
+            muscleDynamicAcqs = muscleDynamicAcqs
             )
-
 
     def getSpatioTemporal(self):
         """get the list of Cycle used for  spatio-temporal parameter computation
@@ -995,3 +1139,103 @@ class GaitCyclesBuilder(CyclesBuilder):
             return emgCycles
         else:
             return None
+
+
+    def getMuscleGeometry(self):
+        """get the list of Cycle used for the computation of the muscle Geometry
+        """
+        if self.muscleGeometryAcqs is not None:
+            muscleGeometryCycles=list()
+            for acq in  self.muscleGeometryAcqs:
+
+                context = "Left"
+                left_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        left_fs_frames.append(ev.GetFrame())
+
+                for i in range(0, len(left_fs_frames)-1):
+                    muscleGeometryCycles.append (GaitCycle(acq, left_fs_frames[i],left_fs_frames[i+1],
+                                                   context))
+
+                context = "Right"
+                right_fs_frames=list()
+                for ev in btk.Iterate(acq.GetEvents()):
+                    if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                        right_fs_frames.append(ev.GetFrame())
+
+
+
+                for i in range(0, len(right_fs_frames)-1):
+                    muscleGeometryCycles.append (GaitCycle(acq, right_fs_frames[i],right_fs_frames[i+1],
+                                                   context))
+
+            return muscleGeometryCycles
+        else:
+            return None
+
+    
+    def getMuscleDynamic(self):
+        """
+        """
+
+        if self.muscleDynamicAcqs is not None:
+
+            detectionTimeOffset = 0.02
+
+            muscleDynamicCycles=list()
+            for acq in  self.muscleDynamicAcqs:
+
+                flag_kinetics,frames,frames_left,frames_right = btkTools.isKineticFlag(acq)
+
+                if flag_kinetics:
+                    context = "Left"
+                    count_L=0
+                    left_fs_frames=list()
+                    for ev in btk.Iterate(acq.GetEvents()):
+                        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                            left_fs_frames.append(ev.GetFrame())
+
+
+                    for i in range(0, len(left_fs_frames)-1):
+                        init =  left_fs_frames[i]
+                        end =  left_fs_frames[i+1]
+
+                        for frameKinetic in frames_left:
+
+                            if frameKinetic<=end and frameKinetic>=init:
+                                LOGGER.logger.debug("Left kinetic cycle found from %.2f to %.2f" %(left_fs_frames[i], left_fs_frames[i+1]))
+                                muscleDynamicCycles.append (GaitCycle(acq, left_fs_frames[i],left_fs_frames[i+1],
+                                                           context))
+
+                                count_L+=1
+                    LOGGER.logger.debug("%i Left Kinetic cycles available" %(count_L))
+
+
+
+                    context = "Right"
+                    count_R=0
+                    right_fs_frames=list()
+                    for ev in btk.Iterate(acq.GetEvents()):
+                        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+                            right_fs_frames.append(ev.GetFrame())
+
+                    for i in range(0, len(right_fs_frames)-1):
+                        init =  right_fs_frames[i]
+                        end =  right_fs_frames[i+1]
+
+                        for frameKinetic in frames_right:
+                            if frameKinetic<=end and frameKinetic>=init:
+                                LOGGER.logger.debug("Right kinetic cycle found from %.2f to %.2f" %(right_fs_frames[i], right_fs_frames[i+1]))
+                                muscleDynamicCycles.append (GaitCycle(acq, right_fs_frames[i],right_fs_frames[i+1],
+                                                           context))
+                                count_R+=1
+                    LOGGER.logger.debug("%i Right Kinetic cycles available" %(count_R))
+
+            return muscleDynamicCycles
+        else:
+            return None
+
+
+
+    
