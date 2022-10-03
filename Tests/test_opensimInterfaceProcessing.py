@@ -66,6 +66,7 @@ class Test_opensimModelOuputprocessing_fromNexus:
         fig = pf.plot()
         plt.show()
 
+        analysis.exportAnalysis(analysisInstance,DATA_PATH,"analysisExported.xlsx")
 
     def test_specificMuscleLabels_highLevelViewer(self):
 

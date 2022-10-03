@@ -1469,6 +1469,129 @@ class XlsAnalysisExportFilter(object):
                 else:
                     df_emg.to_csv((path+outputName + " - EMG - DataFrame.csv"),sep=";")
 
+        # Muscle Geometry
+        #---------------------------
+        if self.analysis.muscleGeometryStats.data!={}:
+
+            # stage 1 : get descriptive data
+            # --------------------------------
+            df_descriptiveMuscleGeometry = build_df_descriptiveCycle101_3(self.analysis.muscleGeometryStats)
+
+            # add infos
+            if modelInfo is not None:
+                for key,value in modelInfo.items():
+                    isColumnNameExist( df_descriptiveMuscleGeometry, key)
+                    df_descriptiveMuscleGeometry[key] = value
+            if subjInfo is not None:
+                for key,value in subjInfo.items():
+                    isColumnNameExist( df_descriptiveMuscleGeometry, key)
+                    df_descriptiveMuscleGeometry[key] = value
+            if condExpInfo is not None:
+                for key,value in condExpInfo.items():
+                    isColumnNameExist( df_descriptiveMuscleGeometry, key)
+                    df_descriptiveMuscleGeometry[key] = value
+
+            if self.analysis.muscleGeometryInfo is not None:
+                for key,value in self.analysis.muscleGeometryInfo.items():
+                    isColumnNameExist( df_descriptiveMuscleGeometry, key)
+                    df_descriptiveMuscleGeometry[key] = value
+
+            df_descriptiveKinematics.to_excel(xlsxWriter,'descriptive muscleGeometry',index=False)
+
+            # stage 2 : get cycle values
+            # --------------------------------
+
+            # cycles
+            df_muscleGeometry =  build_df_cycles101_3(self.analysis.muscleGeometryStats)
+
+            # add infos
+            if modelInfo is not None:
+                for key,value in modelInfo.items():
+                    isColumnNameExist( df_muscleGeometry, key)
+                    df_muscleGeometry[key] = value
+
+            if subjInfo is not None:
+                for key,value in subjInfo.items():
+                    isColumnNameExist( df_muscleGeometry, key)
+                    df_muscleGeometry[key] = value
+            if condExpInfo is not None:
+                for key,value in condExpInfo.items():
+                    isColumnNameExist( df_muscleGeometry, key)
+                    df_muscleGeometry[key] = value
+
+            if self.analysis.muscleGeometryInfo is not None:
+                for key,value in self.analysis.muscleGeometryInfo.items():
+                    isColumnNameExist( df_muscleGeometry, key)
+                    df_muscleGeometry[key] = value
+
+            df_muscleGeometry.to_excel(xlsxWriter,'MuscleGeometry cycles',index=False)
+            if csvFileExport:
+                if path == None:
+                    df_muscleGeometry.to_csv((outputName + " - MuscleGeometry - DataFrame.csv"),sep=";")
+                else:
+                    df_muscleGeometry.to_csv((path+outputName + " - MuscleGeometry - DataFrame.csv"),sep=";")
+
+        # Muscle Dynamics
+        #---------------------------
+        if self.analysis.muscleDynamicStats.data!={}:
+
+            # stage 1 : get descriptive data
+            # --------------------------------
+            df_descriptiveMuscleDynamic = build_df_descriptiveCycle101_3(self.analysis.muscleDynamicStats)
+
+            # add infos
+            if modelInfo is not None:
+                for key,value in modelInfo.items():
+                    isColumnNameExist( df_descriptiveMuscleDynamic, key)
+                    df_descriptiveMuscleDynamic[key] = value
+            if subjInfo is not None:
+                for key,value in subjInfo.items():
+                    isColumnNameExist( df_descriptiveMuscleDynamic, key)
+                    df_descriptiveMuscleDynamic[key] = value
+            if condExpInfo is not None:
+                for key,value in condExpInfo.items():
+                    isColumnNameExist( df_descriptiveMuscleDynamic, key)
+                    df_descriptiveMuscleDynamic[key] = value
+
+            if self.analysis.muscleDynamicInfo is not None:
+                for key,value in self.analysis.muscleDynamicInfo.items():
+                    isColumnNameExist( df_descriptiveMuscleDynamic, key)
+                    df_descriptiveMuscleDynamic[key] = value
+
+            df_descriptiveMuscleDynamic.to_excel(xlsxWriter,'descriptive muscleDynamic',index=False)
+
+            # stage 2 : get cycle values
+            # --------------------------------
+
+            # cycles
+            df_muscleDynamic =  build_df_cycles101_3(self.analysis.muscleDynamicStats)
+
+            # add infos
+            if modelInfo is not None:
+                for key,value in modelInfo.items():
+                    isColumnNameExist( df_muscleDynamic, key)
+                    df_muscleDynamic[key] = value
+
+            if subjInfo is not None:
+                for key,value in subjInfo.items():
+                    isColumnNameExist( df_muscleDynamic, key)
+                    df_muscleDynamic[key] = value
+            if condExpInfo is not None:
+                for key,value in condExpInfo.items():
+                    isColumnNameExist( df_muscleDynamic, key)
+                    df_muscleDynamic[key] = value
+
+            if self.analysis.muscleDynamicInfo is not None:
+                for key,value in self.analysis.muscleDynamicInfo.items():
+                    isColumnNameExist( df_muscleDynamic, key)
+                    df_muscleDynamic[key] = value
+
+            df_muscleDynamic.to_excel(xlsxWriter,'MuscleDynamic cycles',index=False)
+            if csvFileExport:
+                if path == None:
+                    df_muscleDynamic.to_csv((outputName + " - MuscleDynamic - DataFrame.csv"),sep=";")
+                else:
+                    df_muscleDynamic.to_csv((path+outputName + " - MuscleDynamic - DataFrame.csv"),sep=";")
 
         LOGGER.logger.info("advanced dataFrame [%s- Advanced] Exported"%outputName)
 
