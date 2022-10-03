@@ -295,4 +295,4 @@ class opensimInterfaceAnalysesFilter(object):
             values[:, 0] = serie.to_list()
 
             btkTools.smartAppendPoint(self.m_procedure.m_acq, muscle
-                                      + "[MuscleLength]", values, PointType="Scalar", desc="MuscleLength")
+                                      + "[MuscleLength]", values*1000, PointType="Scalar", desc="MuscleLength")
