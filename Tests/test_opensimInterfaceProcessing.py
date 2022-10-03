@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_opensimInterfaceProcessing.py::Test_builder
+# pytest -s --disable-pytest-warnings  test_opensimInterfaceProcessing.py::Test_opensimModelOuputprocessing_fromNexus
 import ipdb
+import os
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Lib import analysis
+from pyCGM2.Lib import plot
 
-from pyCGM2.Report import plot as reportPlot
+
 import matplotlib.pyplot as plt
+from pyCGM2.Report import plot as reportPlot
+from pyCGM2.Report import plotFilters
+from pyCGM2.Report.Viewers import musclePlotViewers
+from pyCGM2.Utils import files
 
 
 
@@ -25,80 +31,84 @@ normalActivityEmgs=['RECFEM','RECFEM', None,None,None,
             None,None,None,None,None]
 
 
-def dataTest0():
-    DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitData//CGM1-NormalGaitData-Events//Hannibal Lecter\\"
-    modelledFilenames = ["gait Trial 01.c3d", "gait Trial 02.c3d"]
-    analysisInstance = analysis.makeAnalysis(DATA_PATH,
+   
+
+
+class Test_opensimModelOuputprocessing_fromNexus:
+
+    def test_specificMuscleLabels_lowLevelViewer(self):
+
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\\processingC3dOutputs\\"
+
+        opensimSettings = files.loadSettings(DATA_PATH,"opensim.settings")
+        
+        modelledFilenames = ["gait1.c3d", "gait2.c3d"]
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
                         modelledFilenames,
-                        type="Gait")
+                        type="Gait",
+                        emgChannels=None,
+                        geometryMuscleLabelsDict={"Left": ["glut_med1_l[MuscleLength]" , "bifemlh_l[MuscleLength]"],
+                                                  "Right" : ["glut_med1_r[MuscleLength]" , "bifemlh_r[MuscleLength]"]},
+                        dynamicMuscleLabelsDict = None)
+        
 
-    return DATA_PATH,analysisInstance
 
-def dataTest1_btkScalar():
-    DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\\processingC3dOutputs\\"
+        # viewer
+        kv =musclePlotViewers.MuscleNormalizedPlotPanelViewer(analysisInstance)
+        kv.setConcretePlotFunction(reportPlot.gaitDescriptivePlot)
+        kv.setMuscles(["glut_med1","bifemlh"])
+        kv.setMuscleOutputType("MuscleLength")
 
-    modelledFilenames = ["gait1verif.c3d", "gait2verif.c3d"]
-    analysisInstance = analysis.makeAnalysis(DATA_PATH,
-                    modelledFilenames,
-                    type="Gait",
-                    emgChannels=None,
-                    geometryMuscleLabelsDict={"Left":["add_mag2_l[MuscleLength]", "bifemlh_l[MuscleLength]"]},
-                    dynamicMuscleLabelsDict = None)
+
+        # filter
+        pf = plotFilters.PlottingFilter()
+        pf.setViewer(kv)
+        fig = pf.plot()
+        plt.show()
+
+
+    def test_specificMuscleLabels_highLevelViewer(self):
+
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\\processingC3dOutputs\\"
+
+        opensimSettings = files.loadSettings(DATA_PATH,"opensim.settings")
+        
+        modelledFilenames = ["gait1.c3d", "gait2.c3d"]
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                        modelledFilenames,
+                        type="Gait",
+                        emgChannels=None,
+                        geometryMuscleLabelsDict={"Left": ["glut_med1_l[MuscleLength]" , "bifemlh_l[MuscleLength]"],
+                                                  "Right" : ["glut_med1_r[MuscleLength]" , "bifemlh_r[MuscleLength]"]},
+                        dynamicMuscleLabelsDict = None)
+        
+        # high-level function
+        figs,filenames = plot.plot_DescriptiveMuscleLength(DATA_PATH,analysisInstance,None,exportPdf=True)
+
     
-    fig = plt.figure()
-    ax = plt.gca()
-    reportPlot.gaitDescriptivePlot(ax,analysisInstance.muscleGeometryStats,
-                                "add_mag2_l[MuscleLength]","Left",0,
-                                color="blue",
-                                title="", xlabel="", ylabel="",ylim=None,
-                                customLimits=None)
-    plt.show()
 
-    ipdb.set_trace
+    def test_AllMuscleLabels_highLevelViewer(self):
 
-    return DATA_PATH,analysisInstance
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\\processingC3dOutputs\\"
 
+        opensimSettings = files.loadSettings(DATA_PATH,"opensim.settings")
 
+        muscleDict= {"Left": [it +"_l[MuscleLength]" for it in opensimSettings["Muscles"]],
+                    "Right" : [it +"_r[MuscleLength]" for it in opensimSettings["Muscles"]]}
 
-class Test_builder:
-
-    # def test_0(self):
-
-    #     DATA_PATH,analysisInstance = dataTest0()
         
-    def test_1(self):
-
-        DATA_PATH,analysisInstance = dataTest1_btkScalar()
-
-
-
-# DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\\processingC3dOutputs\\"
-
-# modelledFilenames = ["gait1.c3d", "gait2.c3d"]
-# analysisInstance = analysis.makeAnalysis(DATA_PATH,
-#                 modelledFilenames,
-#                 type="Gait",
-#                 emgChannels=None)
-
-
-
-
-# class Test_opensimC3dProcessing:
-#     def test_processing(self):
-
-#         DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\\processingC3dOutputs\\"
-
-#         modelledFilenames = ["gait1.c3d", "gait2.c3d"]
-#         analysisInstance = analysis.makeAnalysis(DATA_PATH,
-#                             modelledFilenames,
-#                             type="Gait")
-
-#         ipdb.set_trace()
-
+        modelledFilenames = ["gait1.c3d", "gait2.c3d"]
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                        modelledFilenames,
+                        type="Gait",
+                        emgChannels=None,
+                        geometryMuscleLabelsDict=muscleDict,
+                        dynamicMuscleLabelsDict = None)
         
 
 
+        # gigh-level function
+        figs,filenames = plot.plot_DescriptiveMuscleLength(DATA_PATH,analysisInstance,None,exportPdf=True)
 
- 
-        
-        
+
+

@@ -10,6 +10,8 @@ All functions return a matplotlib figure instance
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+import pyCGM2
 from pyCGM2.Report.Viewers import plotViewers
 from pyCGM2.Report.Viewers import emgPlotViewers
 from pyCGM2.Report.Viewers import  comparisonPlotViewers
@@ -21,6 +23,8 @@ from pyCGM2.Processing.Scores import scoreProcedures
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 from pyCGM2.EMG import emgManager
+from pyCGM2.Report.Viewers import musclePlotViewers
+from pyCGM2.Utils import files
 
 def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix=None,
                           exportPdf=False,OUT_PATH = None, outputName=None,show=True,title=None,exportPng=False,
@@ -204,6 +208,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile,
         plotTemporalEMG("C:\\myDATA\\", "file1.c3d")
 
     """
+
 
 
     if OUT_PATH is None:
@@ -1231,3 +1236,80 @@ def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts,
         return fig,filenameOut+".png"
     else:
         return fig
+
+
+def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
+        pointLabelSuffix=None,type="Gait",
+        OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
+        ignoreYlim=True):
+    """display average and standard deviation of time-normalized muscle length output.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+        pointLabelSuffix (str)[Optional,None]:suffix previously added to your model outputs.
+        type (str): [Optional, "Gait"]. event type. By default cycle is defined from foot strike.  `Gait` searched for the foot off events.
+        OUT_PATH (str)[Optional,None]: path to your ouput folder
+        exportPdf (bool)[Optional,False]: export as pdf
+        outputName (str)[Optional,None]: name of the output filename.
+        show (bool)[Optional,True]: show matplotlib figure.
+        title (str)[Optional,None]: modify the plot panel title.
+        exportPng (bool)[Optional,False]: export as png.
+        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+
+
+    Examples:
+
+    .. code-block:: python
+
+        plot_DescriptiveMuscleLength("c:\\mydata\\",analysisInstance,normativeInstance)
+
+    """
+    if OUT_PATH is None:
+        OUT_PATH = DATA_PATH
+
+    opensimSettings = files.loadSettings(DATA_PATH,"opensim.settings")
+    opensimMuscles = opensimSettings["Muscles"]
+
+    opensimMuscles_grouped = [opensimMuscles[i:i+16] for i in range(0, len(opensimMuscles), 16)]
+   
+    pageNumber = len(opensimMuscles_grouped)
+
+    figs=list()
+    outfilenames=list()
+
+    exportFlag = True if exportPdf or exportPng else False
+
+    page = 0
+    for i in range(0,pageNumber):
+
+        if outputName is None:
+            outputName = "pyCGM2-analysis" 
+  
+        filenameOut =  outputName+"- descriptive muscleLength  ["+ str(page)+"]"
+
+        # viewer
+        kv =musclePlotViewers.MuscleNormalizedPlotPanelViewer(analysis)
+        kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
+        kv.setMuscles(opensimMuscles_grouped[page])
+        kv.setMuscleOutputType("MuscleLength")
+
+
+        # filter
+        pf = plotFilters.PlottingFilter()
+        pf.setViewer(kv)
+        if title is not None: pf.setTitle(title+"-descriptive MuscleLength ["+ str(page)+"]")
+        if exportPdf: pf.setExport(OUT_PATH,filenameOut,"pdf")
+        fig = pf.plot()
+        if exportPng:fig.savefig(OUT_PATH+filenameOut+".png")
+        
+        outfilenames.append(filenameOut+".png")
+        figs.append(fig)
+
+        page+=1
+    
+    if show: plt.show()
+
+    return figs,outfilenames
+
