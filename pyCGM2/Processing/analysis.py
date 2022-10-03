@@ -76,6 +76,8 @@ class Analysis():
         self.kineticInfo = None
         self.stpInfo = None
         self.scoreInfo = None
+        self.muscleGeometryInfo = None
+        self.muscleDynamicsInfo = None
 
     def setStp(self, inDict):
         self.stpStats = inDict
@@ -129,6 +131,13 @@ class Analysis():
 
     def setScoreInfo(self, iDict):
         self.scoreInfo = iDict
+
+    def setMuscleGeometryInfo(self, iDict):
+        self.muscleGeometryInfo = iDict
+
+    def setMuscleDynamicInfo(self, iDict):
+        self.muscleDynamicInfo = iDict
+
 
     def getKinematicCycleNumbers(self):
         for label, context in self.kinematicStats.data.keys():
