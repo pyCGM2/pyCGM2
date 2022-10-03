@@ -17,6 +17,16 @@ import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
 
+def loadSettings(DATA_PATH,settingFile,subfolder=""):
+    if os.path.isfile(DATA_PATH + settingFile):
+        settings = openFile(DATA_PATH, settingFile)
+        LOGGER.logger.warning(
+            "[pyCGM2]: settings [%s] detected in the data folder"%(settingFile))
+    else:
+        settings = openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER+subfolder, settingFile)
+
+    return settings
+
 def loadModelSettings(DATA_PATH,expertsettings_filename):
     """Load a pyCGM2 model settings.
 
