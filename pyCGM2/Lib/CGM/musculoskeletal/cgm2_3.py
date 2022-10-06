@@ -9,6 +9,7 @@ import pyCGM2
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 from pyCGM2.Utils import files
+from pyCGM2.Utils import utils
 
 from pyCGM2.Model import modelFilters,bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm,cgm2
@@ -36,7 +37,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
               required_mp,optional_mp,
               ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
               markerDiameter,hjcMethod,
-              pointSuffix,**kwargs):
+              pointSuffix,*argv,**kwargs):
     """
     CGM23 calibration.
 
@@ -66,7 +67,11 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         bool: presence of deteced anomalies
 
     """
+    modelVersion = "CGM2.3"
+
+    utils.homogeneizeArguments(argv,kwargs)
     detectAnomaly = False
+    
 
     
     if "anomalyException" in kwargs.keys():
@@ -204,35 +209,35 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             ikTargets.append(target)
     model.setStaticIkTargets(ikTargets)
 
+    # --- osim builder ---
+    markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\markerset\\CGM23-markerset.xml"
+    osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\osim\\pycgm2-gait2354_simbody.osim"
+    # osimConverterSettings = files.openFile(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH,"setup\\CGM23\\OsimToC3dConverter.settings")
+
+    # scaling
+    scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23_scaleSetup_template.xml"
+
+    proc = opensimScalingInterfaceProcedure.ScalingXMLProcedure(DATA_PATH,"CGM2.3")
+    proc.setSetupFiles(osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
+    proc.setStaticTrial( acqStatic, calibrateFilenameLabelled[:-4])
+    proc.setAnthropometry(required_mp["Bodymass"],required_mp["Height"])
+    proc.prepareXml()    
+    
+    oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
+    oisf.run()
+    scaledOsim = oisf.getOsim()
+    scaledOsimName = oisf.getOsimName()
+
+    import ipdb; ipdb.set_trace()
+    
+        
+    model.m_properties["scaledOsimName"] = scaledOsimName
+
     if "noKinematicsCalculation" in kwargs.keys() and kwargs["noKinematicsCalculation"]:
         LOGGER.logger.warning("[pyCGM2] No Kinematic calculation done for the static file")
         return model, acqStatic,detectAnomaly
     else:
         if ik_flag:
-
-            modelVersion = "CGM2.3"
-
-            # --- osim builder ---
-            markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\markerset\\CGM23-markerset.xml"
-            osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\osim\\pycgm2-gait2354_simbody.osim"
-            # osimConverterSettings = files.openFile(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH,"setup\\CGM23\\OsimToC3dConverter.settings")
-
-            # scaling
-            scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23_scaleSetup_template.xml"
-
-            proc = opensimScalingInterfaceProcedure.ScalingXMLProcedure(DATA_PATH,"CGM2.3")
-            proc.setSetupFiles(osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
-            proc.setStaticTrial( acqStatic, calibrateFilenameLabelled[:-4])
-            proc.setAnthropometry(required_mp["Bodymass"],required_mp["Height"])
-            proc.prepareXml()    
-            
-            oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
-            oisf.run()
-            scaledOsim = oisf.getOsim()
-            scaledOsimName = oisf.getOsimName()
-            
-            model.m_properties["scaledOsimName"] = scaledOsimName
-            
 
             # --- IK ---
             # ikWeights = settings["Fitting"]["Weight"]
@@ -299,7 +304,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
     ik_flag,markerDiameter,
     pointSuffix,
     mfpa,
-    momentProjection,**kwargs):
+    momentProjection,*argv, **kwargs):
 
     """
     CGM23 Fitting.
@@ -332,7 +337,9 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         bool: presence of deteced anomalies
 
     """
+    modelVersion="CGM2.3"
 
+    utils.homogeneizeArguments(argv,kwargs)
     detectAnomaly = False
 
     # --------------------ACQUISITION------------------------------
@@ -446,7 +453,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         #                        ---OPENSIM IK---
 
         # --- new ---
-        modelVersion="CGM2.3"
+
                 
         scaledOsimName = model.m_properties["scaledOsimName"]#"CGM23-ScaledModel.osim"
 
