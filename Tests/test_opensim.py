@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_nexusC3d_withOutputs
+# pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_zeroing_motFile
 # pytest -s --disable-pytest-warnings  test_opensim.py::Test_misc::test_prepareData
 from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Tools import opensimTools
@@ -28,6 +28,17 @@ class Test_IO:
         motDf = opensimIO.OpensimDataFrame(DATA_PATH, "gait1.mot")
         motDf.getDataFrame()["pelvis_tilt"] = 0.0
         motDf.save(filename="_mot_out.mot")
+
+    def test_zeroing_motFile(self):
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim/IO\\"
+
+        motDf = opensimIO.OpensimDataFrame(DATA_PATH, "gait1.mot")
+        for col in motDf.getDataFrame().columns:
+            if col != "time":
+                motDf.getDataFrame()[col] = 0.0
+        
+        motDf.save(filename="_motzeroing_out.mot")
+
 
     def test_opensimDataframe_stoFile(self):
 
