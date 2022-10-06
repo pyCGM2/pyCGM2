@@ -755,8 +755,12 @@ class CGM1(CGM):
         valMidAsis=(aquiStatic.GetPoint("LASI").GetValues() + aquiStatic.GetPoint("RASI").GetValues()) / 2.0
         btkTools.smartAppendPoint(aquiStatic,"midASIS",valMidAsis,desc="")
 
+        val=(aquiStatic.GetPoint("LASI").GetValues() + aquiStatic.GetPoint("RASI").GetValues()+aquiStatic.GetPoint("LPSI").GetValues() + aquiStatic.GetPoint("RPSI").GetValues()) / 4.0
+        btkTools.smartAppendPoint(aquiStatic,"pelvisCentre",val, desc="")
+
         seg.addCalibrationMarkerLabel("SACR")
         seg.addCalibrationMarkerLabel("midASIS")
+        seg.addCalibrationMarkerLabel("pelvisCentre")
 
 
         # new mp
