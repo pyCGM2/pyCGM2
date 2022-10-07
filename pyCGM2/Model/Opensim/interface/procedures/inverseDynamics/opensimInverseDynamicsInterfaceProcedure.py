@@ -24,21 +24,22 @@ except:
 
 
 
-class InverseDynamicsXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
+class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         
-    def __init__(self,DATA_PATH,scaledOsimName, modelVersion,resultsDirectory):
+    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory):
 
-        super(InverseDynamicsXMLProcedure,self).__init__()
+        super(InverseDynamicsXmlProcedure,self).__init__()
 
         self.m_DATA_PATH = DATA_PATH
         self.m_osimName = DATA_PATH + scaledOsimName
-        self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
         self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory
 
+        self.m_modelVersion=""
+
     def setSetupFiles(self,idToolTemplateFile,externalLoadTemplateFile):
-        self.m_idTool = self.m_DATA_PATH + self.m_modelVersion + "-idTool-setup.xml"
+        self.m_idTool = self.m_DATA_PATH +  "-idTool-setup.xml"
         self.xml = opensimInterfaceFilters.opensimXmlInterface(idToolTemplateFile,self.m_idTool)
-        self.m_externalLoad = self.m_DATA_PATH + self.m_modelVersion + "-externalLoad.xml"
+        self.m_externalLoad = self.m_DATA_PATH  + "-externalLoad.xml"
         self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
 
     def setProgression(self,progressionAxis,forwardProgression):
@@ -67,6 +68,59 @@ class InverseDynamicsXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
         self.m_endTime = (self.m_acq.GetLastFrame() - self.m_ff)/self.m_freq  if lastFrame is  None else (lastFrame-self.m_ff)/self.m_freq
         self.m_frameRange = [int((self.m_beginTime*self.m_freq)+self.m_ff),int((self.m_endTime*self.m_freq)+self.m_ff)]
 
+
+    def prepareXml(self):
+        self.xml.getSoup().find("InverseDynamicsTool").attrs["name"] = "InverseDynamics"
+        self.xml.set_one("model_file", self.m_osimName)
+        self.xml.set_one("coordinates_file", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+".mot")
+        self.xml.set_one("output_gen_force_file", self.m_dynamicFile+"-inverse_dynamics.sto")
+        self.xml.set_one("lowpass_cutoff_frequency_for_coordinates","6")
+
+        self.xml.set_one("external_loads_file", files.getFilename(self.m_externalLoad))
+
+        self.xml.set_one("time_range",str(self.m_beginTime) + " " + str(self.m_endTime))
+
+        self.xml.set_one("results_directory",  self.m_resultsDir)
+
+
+        self.xml_load.set_one("datafile", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+"_grf.mot")
+        
+
+    def run(self):
+
+        self.xml.update()
+        self.xml_load.update()
+        
+        idTool = opensim.InverseDynamicsTool(self.m_idTool)
+        idTool.run()
+
+        self.finalize()
+    
+    def finalize(self):
+
+        files.renameFile(self.m_idTool, 
+                    self.m_DATA_PATH + self.m_dynamicFile+ "-IDTool-setup.xml")
+        files.renameFile(self.m_externalLoad,
+             self.m_DATA_PATH + self.m_dynamicFile + "-externalLoad.xml")
+
+
+
+class InverseDynamicsXmlCgmProcedure(InverseDynamicsXmlProcedure):
+        
+    def __init__(self,DATA_PATH,scaledOsimName, modelVersion,resultsDirectory):
+
+        super(InverseDynamicsXmlCgmProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory)
+
+        self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
+
+        if self.m_modelVersion == "CGM2.3": 
+            idToolTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23-idToolSetup_template.xml"
+            externalLoadFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\walk_grf.xml"
+
+        self.m_idTool = self.m_DATA_PATH + self.m_modelVersion + "-idTool-setup.xml"
+        self.xml = opensimInterfaceFilters.opensimXmlInterface(idToolTemplateFile,self.m_idTool)
+        self.m_externalLoad = self.m_DATA_PATH + self.m_modelVersion + "-externalLoad.xml"
+        self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadFile,self.m_externalLoad)
 
     def prepareXml(self):
         self.xml.getSoup().find("InverseDynamicsTool").attrs["name"] = self.m_modelVersion+"-InverseDynamics"
@@ -101,5 +155,3 @@ class InverseDynamicsXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
                     self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-IDTool-setup.xml")
         files.renameFile(self.m_externalLoad,
              self.m_DATA_PATH + self.m_dynamicFile + "-"+self.m_modelVersion + "-externalLoad.xml")
-
-

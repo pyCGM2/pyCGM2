@@ -22,12 +22,11 @@ except:
 from pyCGM2.Model.Opensim import opensimIO
 
 
-class InverseKinematicXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
-    def __init__(self,DATA_PATH,scaledOsimName, modelVersion,resultsDirectory):
+class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
+    def __init__(self,DATA_PATH,scaledOsimName, resultsDirectory):
 
-        super(InverseKinematicXMLProcedure,self).__init__()
+        super(InverseKinematicXmlProcedure,self).__init__()
         self.m_DATA_PATH = DATA_PATH
-        self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
         self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory
 
         self.m_osimName = DATA_PATH + scaledOsimName
@@ -35,7 +34,7 @@ class InverseKinematicXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         self.m_accuracy = 1e-8
 
     def setSetupFile(self, ikToolFile):
-        self.m_ikTool = self.m_DATA_PATH + self.m_modelVersion + "-IKTool-setup.xml"
+        self.m_ikTool = self.m_DATA_PATH + "__IKTool-setup.xml"
         self.xml = opensimInterfaceFilters.opensimXmlInterface(ikToolFile,self.m_ikTool)
     
     def setProgression(self,progressionAxis,forwardProgression):
@@ -109,6 +108,26 @@ class InverseKinematicXMLProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
 
         self.finalize()
 
+    def finalize(self):
+        # rename the xml setup file with the filename as suffix
+        files.renameFile(self.m_ikTool, 
+                    self.m_DATA_PATH + self.m_dynamicFile + "-IKTool-setup.xml")
+       
+
+
+class InverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
+    def __init__(self,DATA_PATH,scaledOsimName, modelVersion,resultsDirectory):
+
+        super(InverseKinematicXmlCgmProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory)
+
+        self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
+
+        if self.m_modelVersion == "CGM2.3": 
+            ikToolFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-ikSetUp_template.xml"
+    
+        self.m_ikTool = self.m_DATA_PATH + self.m_modelVersion + "-IKTool-setup.xml"
+        self.xml = opensimInterfaceFilters.opensimXmlInterface(ikToolFile,self.m_ikTool)
+       
     def finalize(self):
         # rename the xml setup file with the filename as suffix
         files.renameFile(self.m_ikTool, 

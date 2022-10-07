@@ -187,10 +187,13 @@ class opensimInterfaceInverseDynamicsFilter(object):
         else:
             path = self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\"
 
+        if self.m_procedure.m_modelVersion == "":
+            filename = self.m_procedure.m_dynamicFile + "-inverse_dynamics.sto"
+        else:
+            filename = self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion+"-inverse_dynamics.sto"
 
-        storageDataframe = opensimIO.OpensimDataFrame(path,
-            self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion+"-inverse_dynamics.sto")
-
+        storageDataframe = opensimIO.OpensimDataFrame(path,filename)
+        
         for jointIt in osimConverter["Moments"]:
 
             values = np.zeros(
@@ -223,9 +226,13 @@ class opensimInterfaceStaticOptimizationFilter(object):
         return self.m_procedure.m_acq
 
     def pushStoToAcq(self):
+        if self.m_procedure.m_modelVersion == "":
+            filename = self.m_procedure.m_dynamicFile+"-analyses_StaticOptimization_force.sto"
+        else:
+            filename = self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_StaticOptimization_force.sto"
+
         storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\",
-            self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_StaticOptimization_force.sto")
+            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\",filename)
 
         values = np.zeros(
             (self.m_procedure.m_acq.GetPointFrameNumber(), 3))
@@ -237,9 +244,13 @@ class opensimInterfaceStaticOptimizationFilter(object):
             btkTools.smartAppendPoint(self.m_procedure.m_acq, muscle
                                       + "[StaticOptForce]", values, PointType="Scalar", desc="StaticOptForce")
 
+        if self.m_procedure.m_modelVersion == "":
+            filename = self.m_procedure.m_dynamicFile+"-analyses_StaticOptimization_activation.sto"
+        else:
+            filename = self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_StaticOptimization_activation.sto"
+ 
         storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\",
-            self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_StaticOptimization_activation.sto")
+            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\",filename)
 
         values = np.zeros(
             (self.m_procedure.m_acq.GetPointFrameNumber(), 3))
@@ -260,7 +271,11 @@ class opensimInterfaceAnalysesFilter(object):
         self.m_procedure.run()
 
     def getAcq(self):
-        return self.m_procedure.m_acq
+        if self.m_procedure.m_acq is not None:
+            return self.m_procedure.m_acq
+        else:
+            LOGGER.logger.warning("There is no Acquisition to return")
+
 
     def pushStoToAcq(self):
 
@@ -283,16 +298,26 @@ class opensimInterfaceAnalysesFilter(object):
         # "-analyses_MuscleAnalysis_FiberVelocity.sto"
         # "-analyses_MuscleAnalysis_Length.sto"
 
-        storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\",
-            self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_MuscleAnalysis_Length.sto")
+        if self.m_procedure.m_acq is not None:
+            
+            if self.m_procedure.m_modelVersion == "":
+                filename = self.m_procedure.m_dynamicFile+"-analyses_MuscleAnalysis_Length.sto"
+            else:
+                filename = self.m_procedure.m_dynamicFile+"-"+self.m_procedure.m_modelVersion + "-analyses_MuscleAnalysis_Length.sto"
 
-        values = np.zeros(
-            (self.m_procedure.m_acq.GetPointFrameNumber(), 3))
+            storageDataframe = opensimIO.OpensimDataFrame(
+                self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\",
+                filename)
 
-        for muscle in storageDataframe.m_dataframe.columns[1:]:
-            serie = storageDataframe.getDataFrame()[muscle]
-            values[:, 0] = serie.to_list()
+            values = np.zeros(
+                (self.m_procedure.m_acq.GetPointFrameNumber(), 3))
 
-            btkTools.smartAppendPoint(self.m_procedure.m_acq, muscle
-                                      + "[MuscleLength]", values*1000, PointType="Scalar", desc="MuscleLength")
+            for muscle in storageDataframe.m_dataframe.columns[1:]:
+                serie = storageDataframe.getDataFrame()[muscle]
+                values[:, 0] = serie.to_list()
+
+                btkTools.smartAppendPoint(self.m_procedure.m_acq, muscle
+                                        + "[MuscleLength]", values*1000, PointType="Scalar", desc="MuscleLength")
+        
+        else:
+            LOGGER.logger.warning("There is no Acquisition. Nothing to push into")
