@@ -209,16 +209,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
             ikTargets.append(target)
     model.setStaticIkTargets(ikTargets)
 
-    # --- osim builder ---
-    markersetTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\markerset\\CGM23-markerset.xml"
-    osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\osim\\pycgm2-gait2354_simbody.osim"
-    # osimConverterSettings = files.openFile(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH,"setup\\CGM23\\OsimToC3dConverter.settings")
 
     # scaling
-    scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23_scaleSetup_template.xml"
-
-    proc = opensimScalingInterfaceProcedure.ScalingXMLProcedure(DATA_PATH,"CGM2.3")
-    proc.setSetupFiles(osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
+    proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(DATA_PATH,"CGM2.3")
     proc.setStaticTrial( acqStatic, calibrateFilenameLabelled[:-4])
     proc.setAnthropometry(required_mp["Bodymass"],required_mp["Height"])
     proc.prepareXml()    
@@ -228,7 +221,6 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     scaledOsim = oisf.getOsim()
     scaledOsimName = oisf.getOsimName()
 
-    import ipdb; ipdb.set_trace()
     
         
     model.m_properties["scaledOsimName"] = scaledOsimName
@@ -239,14 +231,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     else:
         if ik_flag:
 
-            # --- IK ---
-            # ikWeights = settings["Fitting"]["Weight"]
-            # --- IK ---
-            ikTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-ikSetUp_template.xml"
-
-            procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXMLProcedure(DATA_PATH,scaledOsimName,"CGM2.3","musculoskeletal_modelling")
+            procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
             procIK.setProgression(progressionAxis,forwardProgression)
-            procIK.setSetupFile(ikTemplateFullFile)
             procIK.prepareDynamicTrial(acqStatic,calibrateFilenameLabelled[:-4])
             procIK.setAccuracy(1e-5)
             procIK.setWeights(weights)
@@ -452,22 +438,15 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         #                        ---OPENSIM IK---
 
-        # --- new ---
-
-                
         scaledOsimName = model.m_properties["scaledOsimName"]#"CGM23-ScaledModel.osim"
-
         accuracy = kwargs["ikAccuracy"] if "ikAccuracy" in kwargs.keys() else 1e-8
 
         
         # --- IK ---
-        ikTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-ikSetUp_template.xml"
-
         progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
-        procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXMLProcedure(DATA_PATH,scaledOsimName,"CGM2.3","musculoskeletal_modelling")
+        procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
         procIK.setProgression(progressionAxis,forwardProgression)
-        procIK.setSetupFile(ikTemplateFullFile)
         procIK.prepareDynamicTrial(acqGait,reconstructFilenameLabelled[:-4])
         procIK.setAccuracy(accuracy)
         procIK.setWeights(weights)
@@ -479,7 +458,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         oiikf.pushFittedMarkersIntoAcquisition()
         #oiikf.pushMotToAcq(osimConverterSettings)
         acqIK =oiikf.getAcq()
-
+        
 
     # eventual gait acquisition to consider for joint kinematics
     finalAcqGait = acqIK if ik_flag else acqGait
@@ -557,16 +536,11 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         motDataframe.getDataFrame()["ankle_rotation_l"] = finalAcqGait.GetPoint("LAnkleAngles").GetValues()[:,2]
         motDataframe.save()
 
-        anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-analysisSetup_template.xml"
-        externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
-
-        procAna = opensimAnalysesInterfaceProcedure.AnalysesXMLProcedure(DATA_PATH,scaledOsimName,"CGM2.3","musculoskeletal_modelling")
-        procAna.setSetupFiles(anaTemplateFullFile,externalLoadTemplateFullFile)
+        procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
         procAna.setProgression(progressionAxis,forwardProgression)
         procAna.prepareDynamicTrial(finalAcqGait,reconstructFilenameLabelled[:-4],mappedForcePlate)
         procAna.setTimeRange()
         procAna.prepareXml()
-
 
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
         oiamf.run()

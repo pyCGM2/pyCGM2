@@ -146,11 +146,11 @@ def main():
         # ----------------------DISPLAY ON VICON-------------------------------
         nexusFilters.NexusModelFilter(NEXUS,model,finalAcqGait,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,finalAcqGait,["Left-FP","Right-FP"])
-        
+
         if args.muscleLength:
             muscleLabels = btkTools.getLabelsFromScalar(finalAcqGait,description = "MuscleLength")
             for label in muscleLabels:
-                nexusTools.appendBtkScalarFromAcq(NEXUS,subject,"MuscleLength",label,"Length",finalAcqGait)
+                nexusTools.appendBtkScalarFromAcq(NEXUS,subject,"MuscleLength",label,"None",finalAcqGait) # None ( not Length) to keep meter unit
 
         # ========END of the nexus OPERATION if run from Nexus  =========
 
