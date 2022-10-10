@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import copy
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Report.Viewers import plotViewers
@@ -26,6 +27,11 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
         self.m_pointLabelSuffix = pointLabelSuffix
 
+        self.m_normalisationSuffix = ""
+
+
+    def setNormalizationSuffix(self,suffix):
+        self.m_normalisationSuffix = "_"+suffix
 
     def __setLayer(self):
 
@@ -72,15 +78,19 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
         if self.m_muscleOutputType == "MuscleLength":
 
-            for keys in self.m_analysis.muscleGeometryStats.data.keys():
-                if keys[1] == "Left": muscles_leftContext.append(keys[0])
-                if keys[1] == "Right": muscles_rightContext.append(keys[0])
+            
 
+            for keys in self.m_analysis.muscleGeometryStats.data:
+                
+                muscle = keys[0]
+                if keys[1] == "Left": muscles_leftContext.append(muscle)
+                if keys[1] == "Right": muscles_rightContext.append(muscle)
+            
 
             i=0
             for muscle in self.m_muscles:
-                leftLabel = muscle+"_l"+"["+self.m_muscleOutputType+"]"
-                rightLabel = muscle+"_r"+"["+self.m_muscleOutputType+"]"
+                leftLabel = muscle+"_l"+"["+self.m_muscleOutputType+"]"+self.m_normalisationSuffix
+                rightLabel = muscle+"_r"+"["+self.m_muscleOutputType+"]"+self.m_normalisationSuffix
 
                 if leftLabel in muscles_leftContext:
                     self.m_concretePlotFunction(self.fig.axes[i],self.m_analysis.muscleGeometryStats,
@@ -98,8 +108,6 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
         else:
             LOGGER.logger.error("[pyCGM2] -  muscle panel other than muscle length not implemented yet")
                 
-
-            
 
     def setNormativeDataset(self,iNormativeDataSet):
         pass

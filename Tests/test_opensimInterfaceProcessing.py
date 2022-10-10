@@ -5,6 +5,7 @@ import os
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Lib import analysis
+from pyCGM2.Lib import msm
 from pyCGM2.Lib import plot
 
 
@@ -13,6 +14,7 @@ from pyCGM2.Report import plot as reportPlot
 from pyCGM2.Report import plotFilters
 from pyCGM2.Report.Viewers import musclePlotViewers
 from pyCGM2.Utils import files
+from pyCGM2.Model.Opensim import opensimIO
 
 
 
@@ -51,10 +53,14 @@ class Test_opensimModelOuputprocessing_fromNexus:
                                                   "Right" : ["glut_med1_r[MuscleLength]" , "bifemlh_r[MuscleLength]"]},
                         dynamicMuscleLabelsDict = None)
         
+        
 
+        referenceLengths = opensimIO.OpensimDataFrame(DATA_PATH, "CGM23-Pose[standstill]_MuscleAnalysis_Length.sto")
+        msm.normalizedMuscleLength_withPose(analysisInstance,referenceLengths.getDataFrame())
 
         # viewer
         kv =musclePlotViewers.MuscleNormalizedPlotPanelViewer(analysisInstance)
+        kv.setNormalizationSuffix("PoseNormalized")
         kv.setConcretePlotFunction(reportPlot.gaitDescriptivePlot)
         kv.setMuscles(["glut_med1","bifemlh"])
         kv.setMuscleOutputType("MuscleLength")
@@ -106,10 +112,14 @@ class Test_opensimModelOuputprocessing_fromNexus:
                         geometryMuscleLabelsDict=muscleDict,
                         dynamicMuscleLabelsDict = None)
         
+        referenceLengths = opensimIO.OpensimDataFrame(DATA_PATH, "CGM23-Pose[standstill]_MuscleAnalysis_Length.sto")
+        msm.normalizedMuscleLength_withPose(analysisInstance,referenceLengths.getDataFrame())
 
 
         # gigh-level function
-        figs,filenames = plot.plot_DescriptiveMuscleLength(DATA_PATH,analysisInstance,None,exportPdf=True)
+        figs,filenames = plot.plot_DescriptiveMuscleLength(DATA_PATH,analysisInstance,None,
+            normalizedSuffix= "PoseNormalized",
+            exportPdf=True)
 
 
 

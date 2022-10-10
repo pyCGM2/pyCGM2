@@ -1240,6 +1240,7 @@ def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts,
 
 def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
         pointLabelSuffix=None,type="Gait",
+        normalizedSuffix=None,
         OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
         ignoreYlim=True):
     """display average and standard deviation of time-normalized muscle length output.
@@ -1294,6 +1295,10 @@ def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
         kv.setMuscles(opensimMuscles_grouped[page])
         kv.setMuscleOutputType("MuscleLength")
+        if normalizedSuffix is not None: kv.setNormalizationSuffix(normalizedSuffix) 
+
+
+
 
 
         # filter
