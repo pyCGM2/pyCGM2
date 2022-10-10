@@ -76,8 +76,8 @@ class Analysis():
         self.kineticInfo = None
         self.stpInfo = None
         self.scoreInfo = None
-        self.muscleGeometryInfo = None
-        self.muscleDynamicsInfo = None
+        self.muscleGeometryInfo = dict()
+        self.muscleDynamicsInfo = dict()
 
     def setStp(self, inDict):
         self.stpStats = inDict
