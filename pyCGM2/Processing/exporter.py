@@ -1496,7 +1496,7 @@ class XlsAnalysisExportFilter(object):
                     isColumnNameExist( df_descriptiveMuscleGeometry, key)
                     df_descriptiveMuscleGeometry[key] = value
 
-            df_descriptiveKinematics.to_excel(xlsxWriter,'descriptive muscleGeometry',index=False)
+            df_descriptiveMuscleGeometry.to_excel(xlsxWriter,'descriptive muscleGeometry',index=False)
 
             # stage 2 : get cycle values
             # --------------------------------
