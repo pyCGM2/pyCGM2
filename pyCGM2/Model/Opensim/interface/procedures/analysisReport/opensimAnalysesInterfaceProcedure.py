@@ -158,34 +158,37 @@ class AnalysesXmlCgmProcedure(AnalysesXmlProcedure):
 class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
 
     def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory,modelVersion):
-        super(AnalysesXmlCgmDrivenModelProcedure,self).__init__(DATA_PATH,scaledOsimName,modelVersion,resultsDirectory)
+        super(AnalysesXmlCgmDrivenModelProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory,modelVersion)
 
         self.m_acq = None
-
-        if self.m_modelVersion == "CGM2.3":
-            motFile = externalLoadTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\referencePose.mot"
-        self.m_refPose = opensimIO.OpensimDataFrame(self.m_DATA_PATH, motFile)
+    
+        if self.m_modelVersion == "CGM23":
+            self.m_refPose = opensimIO.OpensimDataFrame(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\", "referencePose.mot")
 
         self.m_beginTime = 0
         self.m_endTime = self.m_refPose.getDataFrame()["time"].iloc[-1]
 
-    def updateReferencePos(self,outMotFileName):
-       
-        self.m_refPose.getDataFrame()["hip_flexion_r"] = 90.0#np.deg2rad(90.0)
-        self.m_refPose.getDataFrame()["knee_flexion_r"] = -90.0#np.deg2rad(-90.0)
+        self.m_poseLabel = ""
 
-        self.m_refPose.save(filename=outMotFileName)
-        self.m_motionFile = outMotFileName
+        self._externalLoadApplied = False
+        
 
-
+    def setPose(self,poseLabel,qi = None):
+        self.m_poseLabel = poseLabel
+        # self.m_refPose.getDataFrame()["hip_flexion_r"] = 90.0#np.deg2rad(90.0)
+        # self.m_refPose.getDataFrame()["knee_flexion_r"] = -90.0#np.deg2rad(-90.0)
+        self.m_refPose.save( outDir = self.m_DATA_PATH+self.m_resultsDir+"\\" , filename=poseLabel+".mot")
+        
+        self.m_poseLabel+".mot"
+    
     def prepareXml(self):
 
 
         # self.xml.set_one("model_file", self.m_dynamicFile+".mot")
-        self.xml.getSoup().find("AnalyzeTool").attrs["name"] = self.m_modelVersion +"-Driven-analyses"
+        self.xml.getSoup().find("AnalyzeTool").attrs["name"] = self.m_modelVersion +"-Pose["+self.m_poseLabel+"]"
 
         self.xml.set_one("model_file", self.m_osimName)
-        self.xml.set_one("coordinates_file", self.m_DATA_PATH+self.m_motionFile)
+        self.xml.set_one("coordinates_file", self.m_DATA_PATH+self.m_resultsDir+"\\"+self.m_poseLabel+".mot")
         self.xml.set_one("results_directory",  self.m_resultsDir)
         self.xml.set_one("initial_time",str(self.m_beginTime))
         self.xml.set_one("final_time",str(self.m_endTime))
@@ -198,9 +201,9 @@ class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
 
     def finalize(self):
         files.renameFile(self.m_idAnalyses, 
-            self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-Driven-analysesTool-setup.xml")
+            self.m_DATA_PATH + self.m_modelVersion + "-Pose["+self.m_poseLabel+"]-analysesTool-setup.xml")
 
         if self._externalLoadApplied:
             files.renameFile(self.m_externalLoad,
-                self.m_DATA_PATH + self.m_dynamicFile + "-"+self.m_modelVersion + "-Driven-externalLoad.xml")
+                self.m_DATA_PATH + self.m_modelVersion + "-Pose["+self.m_poseLabel+"]-externalLoad.xml")
 
