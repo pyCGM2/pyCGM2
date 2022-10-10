@@ -325,7 +325,7 @@ class opensimInterfaceAnalysesFilter(object):
                     values[:, 0] = serie.to_list()
 
                     btkTools.smartAppendPoint(self.m_procedure.m_acq, muscle
-                                            + label, values, PointType="Scalar", desc=label)
+                                            + "["+label+"]", values, PointType="Scalar", desc=label)
         
         else:
             LOGGER.logger.warning("There is no Acquisition. Nothing to push into")
