@@ -48,11 +48,12 @@ class OpensimDataFrame(object):
     def getDataFrame(self):
         return self.m_dataframe
 
-    def save(self, filename=None):
-        if filename is None:
-            file1 = open(self.m_DATA_PATH + self.m_filename, "w")
-        else:
-            file1 = open(self.m_DATA_PATH + filename, "w")
+    def save(self, outDir = None, filename=None):
+
+        directory = self.m_DATA_PATH if outDir is None else  outDir
+        filename = self.m_filename if filename is None else  filename
+
+        file1 = open(directory + filename,"w")
 
         for it in self.m_header:
             file1.write(it)
