@@ -934,22 +934,10 @@ class Test_Generic_DrivenPose:
         scaledOsimName = oisf.getOsimName()
         
 
-        motDf = opensimIO.OpensimDataFrame(DATA_PATH, "referencePose.mot")
-        motDf.getDataFrame()["pelvis_ty"] = 0.95
-        motDf.save(filename="referencePose2.mot")
-
-
-
-        # --- Analyses ------
-        anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23-muscleAnalysisSetup_template.xml"
-        externalLoadTemplateFullFile = None#pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
-        procAna = opensimAnalysesInterfaceProcedure.AnalysesXmldrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/driven_standstill","CGM2.3")
-        procAna.setSetupFiles(anaTemplateFullFile,externalLoadTemplateFullFile)
-        procAna.setReferencePose("referencePose.mot")
-        procAna.updateReferencePos("hipKneeFlex.mot")
-        procAna.prepareXml()
-
-        oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
+        procAnaDriven = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/pose_standstill","CGM2.3")
+        procAnaDriven.setPose("standstill")
+        procAnaDriven.prepareXml()
+        oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAnaDriven)
         oiamf.run()
 
         muscleLengths = opensimIO.OpensimDataFrame(DATA_PATH, "musculoskeletal_modelling/driven_standstill/Driven-CGM23-analyses_MuscleAnalysis_Length.sto")

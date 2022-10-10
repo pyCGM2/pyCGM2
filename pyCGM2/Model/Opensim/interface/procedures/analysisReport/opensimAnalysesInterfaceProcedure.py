@@ -175,8 +175,12 @@ class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
 
     def setPose(self,poseLabel,qi = None):
         self.m_poseLabel = poseLabel
-        # self.m_refPose.getDataFrame()["hip_flexion_r"] = 90.0#np.deg2rad(90.0)
-        # self.m_refPose.getDataFrame()["knee_flexion_r"] = -90.0#np.deg2rad(-90.0)
+
+        if qi is not None:
+            for key in qi:
+                self.m_refPose.getDataFrame()[key] = qi[key]
+                # self.m_refPose.getDataFrame()["hip_flexion_r"] = 90.0#np.deg2rad(90.0)
+                # self.m_refPose.getDataFrame()["knee_flexion_r"] = -90.0#np.deg2rad(-90.0)
         self.m_refPose.save( outDir = self.m_DATA_PATH+self.m_resultsDir+"\\" , filename=poseLabel+".mot")
         
         self.m_poseLabel+".mot"
