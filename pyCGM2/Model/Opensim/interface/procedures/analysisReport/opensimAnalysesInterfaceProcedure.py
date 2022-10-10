@@ -109,14 +109,13 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
 
 class AnalysesXmlCgmProcedure(AnalysesXmlProcedure):
 
-    def __init__(self,DATA_PATH,scaledOsimName, modelVersion,resultsDirectory):
+    def __init__(self,DATA_PATH,scaledOsimName, resultsDirectory,modelVersion):
         super(AnalysesXmlCgmProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory)
-
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
 
-        if self.m_modelVersion == "CGM2.3":
-            analysisToolTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23-analysisSetup_template.xml"
+        if self.m_modelVersion == "CGM23":
+            analysisToolTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23-muscleAnalysisSetup_template.xml"
             externalLoadTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\walk_grf.xml"
 
         self.m_idAnalyses = self.m_DATA_PATH + self.m_modelVersion + "-analysesTool-setup.xml"
@@ -156,7 +155,7 @@ class AnalysesXmlCgmProcedure(AnalysesXmlProcedure):
 
 class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
 
-    def __init__(self,DATA_PATH,scaledOsimName,modelVersion,resultsDirectory):
+    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory,modelVersion):
         super(AnalysesXmlCgmDrivenModelProcedure,self).__init__(DATA_PATH,scaledOsimName,modelVersion,resultsDirectory)
 
         self.m_acq = None

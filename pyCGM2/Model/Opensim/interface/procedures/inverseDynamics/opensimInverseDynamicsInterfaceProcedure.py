@@ -107,13 +107,13 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
 
 class InverseDynamicsXmlCgmProcedure(InverseDynamicsXmlProcedure):
         
-    def __init__(self,DATA_PATH,scaledOsimName, modelVersion,resultsDirectory):
+    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory,modelVersion):
 
         super(InverseDynamicsXmlCgmProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory)
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
 
-        if self.m_modelVersion == "CGM2.3": 
+        if self.m_modelVersion == "CGM23": 
             idToolTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23-idToolSetup_template.xml"
             externalLoadFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\walk_grf.xml"
 

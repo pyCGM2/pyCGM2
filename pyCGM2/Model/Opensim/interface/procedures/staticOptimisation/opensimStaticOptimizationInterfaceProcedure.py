@@ -112,7 +112,7 @@ class StaticOptimisationXmlCgmProcedure(StaticOptimisationXmlProcedure):
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
 
-        if self.m_modelVersion == "CGM2.3":
+        if self.m_modelVersion == "CGM23":
             analysisToolTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-soSetup_template.xml"
             externalLoadTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
 

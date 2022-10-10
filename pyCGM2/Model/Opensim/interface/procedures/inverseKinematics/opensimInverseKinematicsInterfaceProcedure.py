@@ -116,13 +116,13 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
 
 
 class InverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
-    def __init__(self,DATA_PATH,scaledOsimName, modelVersion,resultsDirectory):
+    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory,modelVersion):
 
         super(InverseKinematicXmlCgmProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory)
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
 
-        if self.m_modelVersion == "CGM2.3": 
+        if self.m_modelVersion == "CGM23": 
             ikToolFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-ikSetUp_template.xml"
     
         self.m_ikTool = self.m_DATA_PATH + self.m_modelVersion + "-IKTool-setup.xml"
