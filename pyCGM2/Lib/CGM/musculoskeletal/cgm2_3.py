@@ -220,10 +220,19 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     oisf.run()
     scaledOsim = oisf.getOsim()
     scaledOsimName = oisf.getOsimName()
-
-    
         
     model.m_properties["scaledOsimName"] = scaledOsimName
+
+
+    # virtual standstill
+    procAnaDriven = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/pose_standstill","CGM2.3")
+    procAnaDriven.setPose("standstill")
+    procAnaDriven.prepareXml()
+    oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAnaDriven)
+    oiamf.run()
+
+
+
 
     if "noKinematicsCalculation" in kwargs.keys() and kwargs["noKinematicsCalculation"]:
         LOGGER.logger.warning("[pyCGM2] No Kinematic calculation done for the static file")
@@ -458,6 +467,9 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         oiikf.pushFittedMarkersIntoAcquisition()
         #oiikf.pushMotToAcq(osimConverterSettings)
         acqIK =oiikf.getAcq()
+
+
+
         
 
     # eventual gait acquisition to consider for joint kinematics
