@@ -34,6 +34,8 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
         self.m_osimName = DATA_PATH + scaledOsimName
         self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory
 
+        files.createDir(self.m_DATA_PATH+self.m_resultsDir)
+
         self.m_modelVersion=""
 
     def setSetupFiles(self,idToolTemplateFile,externalLoadTemplateFile):

@@ -29,6 +29,8 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory
         self._externalLoadApplied = True
 
+        files.createDir(self.m_DATA_PATH+self.m_resultsDir)
+
 
     def setSetupFiles(self,analysisToolTemplateFile,externalLoadTemplateFile):
         self.m_idAnalyses = self.m_DATA_PATH + "__analysesTool-setup.xml"

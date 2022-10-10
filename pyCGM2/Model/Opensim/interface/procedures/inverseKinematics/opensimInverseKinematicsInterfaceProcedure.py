@@ -29,6 +29,8 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         self.m_DATA_PATH = DATA_PATH
         self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory
 
+        files.createDir(self.m_DATA_PATH+self.m_resultsDir) # required to save the mot file. (opensim issue ?) 
+
         self.m_osimName = DATA_PATH + scaledOsimName
 
         self.m_accuracy = 1e-8
