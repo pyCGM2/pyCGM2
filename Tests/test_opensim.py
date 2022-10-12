@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_zeroing_motFile
+# pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_opensimDataframe_stoFile
 # pytest -s --disable-pytest-warnings  test_opensim.py::Test_misc::test_prepareData
 from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Tools import opensimTools
@@ -28,6 +28,14 @@ class Test_IO:
         motDf = opensimIO.OpensimDataFrame(DATA_PATH, "gait1.mot")
         motDf.getDataFrame()["pelvis_tilt"] = 0.0
         motDf.save(filename="_mot_out.mot")
+
+    def test_opensimDataframe_issueStoFile(self):
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim/IO\\"
+
+        motDf = opensimIO.OpensimDataFrame(DATA_PATH, "issue_ik_model_marker_locations.sto")
+        ipdb.set_trace()
+
+
 
     def test_zeroing_motFile(self):
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim/IO\\"

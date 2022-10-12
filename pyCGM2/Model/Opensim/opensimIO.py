@@ -12,6 +12,8 @@ class OpensimDataFrame(object):
         self.m_filename = filename
 
         storageObject = opensim.Storage(DATA_PATH+filename)
+        lastTime = storageObject.getLastTime()
+
         osimlabels = storageObject.getColumnLabels()
 
         data = dict()
@@ -36,10 +38,11 @@ class OpensimDataFrame(object):
             for i in range(0, n):
                 values[i] = array_x.getitem(i)
             data[label] = values
-
+                    
         self.m_dataframe = pd.DataFrame(data)
         timevalues = np.arange(
-            0, self.m_dataframe.shape[0]/freq, 1/freq)
+            0, self.m_dataframe.shape[0], 1)/freq
+        
         self.m_dataframe["time"] = timevalues
 
         first_column = self.m_dataframe.pop('time')
