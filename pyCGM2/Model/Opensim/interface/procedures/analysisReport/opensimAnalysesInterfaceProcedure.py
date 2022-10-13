@@ -6,7 +6,7 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 # pyCGM2
 from pyCGM2.Tools import  btkTools,opensimTools
 from pyCGM2.Utils import files
-from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
+from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 from pyCGM2.Model.Opensim import opensimIO
 
@@ -34,11 +34,11 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
 
     def setSetupFiles(self,analysisToolTemplateFile,externalLoadTemplateFile):
         self.m_idAnalyses = self.m_DATA_PATH + "__analysesTool-setup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(analysisToolTemplateFile,self.m_idAnalyses)
+        self.xml = opensimInterface.opensimXmlInterface(analysisToolTemplateFile,self.m_idAnalyses)
    
         if externalLoadTemplateFile is not None:
             self.m_externalLoad = self.m_DATA_PATH + "__externalLoad.xml"
-            self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
+            self.xml_load = opensimInterface.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
         else: 
             self._externalLoadApplied= False
 
@@ -121,11 +121,11 @@ class AnalysesXmlCgmProcedure(AnalysesXmlProcedure):
             externalLoadTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\walk_grf.xml"
 
         self.m_idAnalyses = self.m_DATA_PATH + self.m_modelVersion + "-analysesTool-setup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(analysisToolTemplateFile,self.m_idAnalyses)
+        self.xml = opensimInterface.opensimXmlInterface(analysisToolTemplateFile,self.m_idAnalyses)
    
         if externalLoadTemplateFile is not None:
             self.m_externalLoad = self.m_DATA_PATH + self.m_modelVersion + "-externalLoad.xml"
-            self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
+            self.xml_load = opensimInterface.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
         else: 
             self._externalLoadApplied= False
 

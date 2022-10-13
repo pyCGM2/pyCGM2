@@ -5,6 +5,7 @@ from weakref import finalize
 from pyCGM2.Utils import files
 from pyCGM2.Tools import btkTools
 from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
+from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -51,7 +52,7 @@ class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         files.copyPaste(markersetFile, self.m_DATA_PATH + self.m_markerset)
 
         self.m_scaleTool = self.m_DATA_PATH + "ScaleToolSetup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(scaleToolFile, self.m_scaleTool)
+        self.xml = opensimInterface.opensimXmlInterface(scaleToolFile, self.m_scaleTool)
 
     def setAnthropometry(self, mass, height):
         self.m_mass=mass
@@ -110,7 +111,7 @@ class ScalingXmlCgmProcedure(ScalingXmlProcedure):
         files.copyPaste(markersetFile, self.m_DATA_PATH + self.m_markerset)
 
         self.m_scaleTool = self.m_DATA_PATH + self.m_modelVersion+"-ScaleToolSetup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(scaleToolFile, self.m_scaleTool)
+        self.xml = opensimInterface.opensimXmlInterface(scaleToolFile, self.m_scaleTool)
 
 
     def prepareXml(self):

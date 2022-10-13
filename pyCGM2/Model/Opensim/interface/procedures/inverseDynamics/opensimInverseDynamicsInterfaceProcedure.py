@@ -13,7 +13,7 @@ except:
     import btk
 from pyCGM2.Tools import  btkTools,opensimTools
 from pyCGM2.Utils import files
-from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
+from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 
 try:
@@ -40,9 +40,9 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
 
     def setSetupFiles(self,idToolTemplateFile,externalLoadTemplateFile):
         self.m_idTool = self.m_DATA_PATH +  "-idTool-setup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(idToolTemplateFile,self.m_idTool)
+        self.xml = opensimInterface.opensimXmlInterface(idToolTemplateFile,self.m_idTool)
         self.m_externalLoad = self.m_DATA_PATH  + "-externalLoad.xml"
-        self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
+        self.xml_load = opensimInterface.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
 
     def setProgression(self,progressionAxis,forwardProgression):
         self.m_progressionAxis = progressionAxis
@@ -120,9 +120,9 @@ class InverseDynamicsXmlCgmProcedure(InverseDynamicsXmlProcedure):
             externalLoadFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\walk_grf.xml"
 
         self.m_idTool = self.m_DATA_PATH + self.m_modelVersion + "-idTool-setup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(idToolTemplateFile,self.m_idTool)
+        self.xml = opensimInterface.opensimXmlInterface(idToolTemplateFile,self.m_idTool)
         self.m_externalLoad = self.m_DATA_PATH + self.m_modelVersion + "-externalLoad.xml"
-        self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadFile,self.m_externalLoad)
+        self.xml_load = opensimInterface.opensimXmlInterface(externalLoadFile,self.m_externalLoad)
 
     def prepareXml(self):
         self.xml.getSoup().find("InverseDynamicsTool").attrs["name"] = self.m_modelVersion+"-InverseDynamics"

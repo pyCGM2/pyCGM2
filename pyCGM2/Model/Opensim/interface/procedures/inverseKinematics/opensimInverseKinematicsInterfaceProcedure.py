@@ -11,7 +11,7 @@ except:
     LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
 from pyCGM2.Tools import  btkTools,opensimTools
-from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
+from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 from pyCGM2.Utils import files
 try:
@@ -37,7 +37,7 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
 
     def setSetupFile(self, ikToolFile):
         self.m_ikTool = self.m_DATA_PATH + "__IKTool-setup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(ikToolFile,self.m_ikTool)
+        self.xml = opensimInterface.opensimXmlInterface(ikToolFile,self.m_ikTool)
     
     def setProgression(self,progressionAxis,forwardProgression):
         self.m_progressionAxis = progressionAxis
@@ -128,7 +128,7 @@ class InverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
             ikToolFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-ikSetUp_template.xml"
     
         self.m_ikTool = self.m_DATA_PATH + self.m_modelVersion + "-IKTool-setup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(ikToolFile,self.m_ikTool)
+        self.xml = opensimInterface.opensimXmlInterface(ikToolFile,self.m_ikTool)
        
     def finalize(self):
         # rename the xml setup file with the filename as suffix

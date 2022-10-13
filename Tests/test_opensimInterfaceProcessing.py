@@ -18,6 +18,8 @@ from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Report import normativeDatasets
 
 from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
+from pyCGM2.Model.Opensim.interface import opensimInterface
+opensimInterface
 
 SHOW = False
 
@@ -106,7 +108,7 @@ class Test_opensimModelOuputprocessing_fromNexus:
 
         # muscleDict= {"Left": [it +"_l[MuscleLength]" for it in opensimSettings["Muscles"]],
         #             "Right" : [it +"_r[MuscleLength]" for it in opensimSettings["Muscles"]]}
-        osimInterface = opensimInterfaceFilters.osimInterface(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\", "pycgm2-gait2354_simbody.osim")
+        osimInterface = opensimInterface.osimInterface(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\", "pycgm2-gait2354_simbody.osim")
         muscleDict = osimInterface.getMuscles_bySide(addToName="[MuscleLength]")
         
         modelledFilenames = ["gait1.c3d", "gait2.c3d"]

@@ -7,7 +7,7 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 # pyCGM2
 from pyCGM2.Tools import  opensimTools
 from pyCGM2.Utils import files
-from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
+from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 
 try:
@@ -31,10 +31,10 @@ class StaticOptimisationXmlProcedure(opensimProcedures.OpensimInterfaceXmlProced
 
     def setSetupFiles(self,analysisToolTemplateFile,externalLoadTemplateFile):
         self.m_soTool = self.m_DATA_PATH + "__SOTool-setup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(analysisToolTemplateFile,self.m_soTool)
+        self.xml = opensimInterface.opensimXmlInterface(analysisToolTemplateFile,self.m_soTool)
    
         self.m_externalLoad = self.m_DATA_PATH + "__externalLoad.xml"
-        self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
+        self.xml_load = opensimInterface.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
     
     def setProgression(self,progressionAxis,forwardProgression):
         self.m_progressionAxis = progressionAxis
@@ -118,10 +118,10 @@ class StaticOptimisationXmlCgmProcedure(StaticOptimisationXmlProcedure):
             externalLoadTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
 
         self.m_soTool = self.m_DATA_PATH + self.m_modelVersion + "-SOTool-setup.xml"
-        self.xml = opensimInterfaceFilters.opensimXmlInterface(analysisToolTemplateFile,self.m_soTool)
+        self.xml = opensimInterface.opensimXmlInterface(analysisToolTemplateFile,self.m_soTool)
    
         self.m_externalLoad = self.m_DATA_PATH + self.m_modelVersion + "-externalLoad.xml"
-        self.xml_load = opensimInterfaceFilters.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
+        self.xml_load = opensimInterface.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
     
    
     def prepareXml(self):

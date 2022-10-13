@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 from pyCGM2.Lib import opensimtk
 import ipdb
 from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
+from pyCGM2.Model.Opensim.interface import opensimInterface
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -91,7 +92,7 @@ class Test_preparation:
 
 class Test_osim:
     def test_osimInterface(self): 
-        osimInterface = opensimInterfaceFilters.osimInterface(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\", "pycgm2-gait2392_simbody.osim")
+        osimInterface = opensimInterface.osimInterface(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\", "pycgm2-gait2392_simbody.osim")
         muscles = osimInterface.getMuscles()
         print (muscles)
 
