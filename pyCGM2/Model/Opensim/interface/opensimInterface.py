@@ -35,7 +35,7 @@ class osimInterface(object):
 class osimCgmInterface(osimInterface):
     def __init__(self, modelversion):
         if modelversion == "CGM2.3":
-            super(osimCgmInterface,self).__init__(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\","pycgm2-gait2354_simbody.osim")
+            super(osimCgmInterface,self).__init__(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\","pycgm2-gait2392_simbody.osim")
 
 
 
