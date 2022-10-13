@@ -152,11 +152,15 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
             i=0
             for muscle in self.m_muscles:
                 label = muscle+"["+self.m_muscleOutputType+"]"+self.m_normalisationSuffix
-              
-                self.fig.axes[i].fill_between(np.linspace(0,100,self.m_normativeData[label]["mean"].shape[0]),
-                    self.m_normativeData[label]["mean"][:,0]-self.m_normativeData[label]["sd"][:,0],
-                    self.m_normativeData[label]["mean"][:,0]+self.m_normativeData[label]["sd"][:,0],
-                    facecolor="green", alpha=0.5,linewidth=0)
+
+                if label in self.m_normativeData:
+                    self.fig.axes[i].fill_between(np.linspace(0,100,self.m_normativeData[label]["mean"].shape[0]),
+                        self.m_normativeData[label]["mean"][:,0]-self.m_normativeData[label]["sd"][:,0],
+                        self.m_normativeData[label]["mean"][:,0]+self.m_normativeData[label]["sd"][:,0],
+                        facecolor="green", alpha=0.5,linewidth=0)
+                else:
+                    LOGGER.logger.warning("[pycgm2] label (%s) not detected in the normative dataset"%(label))
+
                 i+=1
 
         return self.fig
