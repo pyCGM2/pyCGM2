@@ -28,7 +28,7 @@ from pyCGM2.Utils import files
 
 def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix=None,
                           exportPdf=False,OUT_PATH = None, outputName=None,show=True,title=None,exportPng=False,
-                          ignoreYlim=True,
+                          autoYlim=False,
                           **kwargs):
     """plotTemporalKinematic : display temporal trace of the CGM kinematic outputs
 
@@ -43,7 +43,7 @@ def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix
         show (bool)[Optional,True]: show the matplotlib figure  .
         title (str)[Optional,None]: modify plot panel title
         exportPng (Optional,bool)[False]:export as png .
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
     Keyword Arguments:
         btkAcq (btk.Acquisition)[None]: force use of a btkAcquisition instead of loading from `modelledFilename`.
@@ -82,8 +82,7 @@ def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix
         acq =btkTools.smartReader(DATA_PATH + modelledFilename)
 
     kv = plotViewers.TemporalKinematicsPlotViewer(acq,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
@@ -101,7 +100,7 @@ def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix
 
 def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,
                         pointLabelSuffix=None,exportPdf=False,OUT_PATH= None, outputName=None,show=True,title=None,
-                        exportPng=False,ignoreYlim=True,**kwargs):
+                        exportPng=False,autoYlim=False,**kwargs):
 
     """plotTemporalKinetic : display temporal trace of the CGM kinetic outputs
 
@@ -116,7 +115,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,
         show (bool)[Optional,True]: show the matplotlib figure  .
         title (str)[Optional,None]: modify plot panel title
         exportPng (bool)[Optional,False]:export as png .
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
     Keyword Arguments:
         btkAcq (btk.Acquisition): force use of a btkAcquisition instead of loading from `modelledFilename`.
@@ -156,8 +155,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,
         acq =btkTools.smartReader(DATA_PATH+modelledFilenames)
 
     kv = plotViewers.TemporalKineticsPlotViewer(acq,pointLabelSuffix=pointLabelSuffix,bodyPart = bodyPart)
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
     # # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
@@ -176,7 +174,7 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,
 
 def plotTemporalEMG(DATA_PATH, processedEmgfile,
                     rectify = True, exportPdf=False,outputName=None,show=True,title=None,
-                    ignoreNormalActivity= False,exportPng=False,OUT_PATH=None,ignoreYlim=True,
+                    ignoreNormalActivity= False,exportPng=False,OUT_PATH=None,autoYlim=False,
                     **kwargs):
     """Display temporal traces of EMG signals
 
@@ -195,7 +193,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile,
         ignoreNormalActivity (Optional,bool)[False]: disable display of normal activity in the background.
         exportPng (bool)[Optional,False]: export as png.
         OUT_PATH (str)[Optional,None]: specify an path different than the `DATA_PATH` to export plot
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
     Keyword Arguments:
         btkAcq (btk.Acquisition): force use of a btkAcquisition instead of loading from `processedEmgfile`.
@@ -256,8 +254,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile,
         kv.ignoreNormalActivty(ignoreNormalActivity)
         kv. setEmgRectify(rectify)
 
-        if ignoreYlim:
-            kv.setAutomaticYlimits(False)
+        kv.setAutomaticYlimits(autoYlim)
 
         # # filter
 
@@ -290,7 +287,7 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile,
 def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
                                 normalized=False, type="Gait",exportPdf=False,
                                 OUT_PATH= None,outputName=None,
-                                show=True,title=None,exportPng=False,ignoreYlim=True,**kwargs):
+                                show=True,title=None,exportPng=False,autoYlim=False,**kwargs):
     """ display average and standard deviation of time-normalized EMG envelops.
 
     Args:
@@ -304,7 +301,7 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
         show (bool)[Optional, True]: show matplotlib figure.
         title (str)[Optional, None]: modify the plot panel title.
         exportPng (bool)[Optional, None]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
     Keyword Arguments:
         forceEmgManager (pyCGM2.Emg.EmgManager): force the use of a specific emgManager instance.
@@ -340,8 +337,7 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
     kv.selectEmgChannels(emgChannels)
     kv.setNormalizedEmgFlag(normalized)
 
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
 
     if type == "Gait":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
@@ -364,7 +360,7 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
         return fig
 
 def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Gait",exportPdf=False,
-    OUT_PATH=None, outputName=None,show=True,title=None,exportPng=False,ignoreYlim=True,**kwargs):
+    OUT_PATH=None, outputName=None,show=True,title=None,exportPng=False,autoYlim=False,**kwargs):
 
     """ display all-cycles of time-normalized EMG envelops.
 
@@ -379,7 +375,7 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Ga
         show (bool)[Optional,True]: show matplotlib figure.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,True]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
     Keyword Arguments:
         forceEmgManager (pyCGM2.Emg.EmgManager)[None]: force the use of a specific emgManager instance.
@@ -415,8 +411,7 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Ga
     kv.selectEmgChannels(emgChannels)
     kv.setNormalizedEmgFlag(normalized)
 
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
 
     if type == "Gait":
         kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
@@ -441,7 +436,7 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Ga
 
 def plot_spatioTemporal(DATA_PATH,analysis,
         exportPdf=False,
-        OUT_PATH=None,outputName=None,show=True,title=None,exportPng=False,ignoreYlim=True,):
+        OUT_PATH=None,outputName=None,show=True,title=None,exportPng=False,autoYlim=False):
     """display spatio-temporal parameters as horizontal histogram.
 
     Args:
@@ -453,7 +448,7 @@ def plot_spatioTemporal(DATA_PATH,analysis,
         show (bool)[Optional,True]: show matplotlib figure.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
 
     Examples:
@@ -475,8 +470,7 @@ def plot_spatioTemporal(DATA_PATH,analysis,
     stpv = plotViewers.SpatioTemporalPlotViewer(analysis)
     stpv.setNormativeDataset(normativeDatasets.NormalSTP())
 
-    if ignoreYlim:
-        stpv.setAutomaticYlimits(False)
+    stpv.setAutomaticYlimits(autoYlim)
     # filter
     stppf = plotFilters.PlottingFilter()
     stppf.setViewer(stpv)
@@ -495,7 +489,7 @@ def plot_spatioTemporal(DATA_PATH,analysis,
 def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
         pointLabelSuffix=None,type="Gait",
         OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
-        ignoreYlim=True):
+        autoYlim=False):
     """display average and standard deviation of time-normalized kinematic output.
 
     Args:
@@ -511,7 +505,7 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
         show (bool)[Optional,True]: show matplotlib figure.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
 
     Examples:
@@ -548,8 +542,7 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
     kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
     
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
 
     if type == "Gait":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
@@ -578,7 +571,8 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
 
 def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
                               pointLabelSuffix=None,type="Gait",
-                              OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,ignoreYlim=True):
+                              OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
+                              autoYlim=False):
 
     """display all cycles of time-normalized kinematic output.
 
@@ -595,7 +589,7 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
         show (bool)[Optional,True]: show matplotlib figure.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
     Examples:
 
@@ -626,8 +620,7 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
 
     kv = plotViewers.NormalizedKinematicsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
 
     if type == "Gait":
         kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
@@ -653,7 +646,8 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
         return fig
 
 def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,
-        pointLabelSuffix=None,type="Gait",OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,ignoreYlim=True):
+        pointLabelSuffix=None,type="Gait",OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,
+        exportPng=False,autoYlim=False):
     """display average and standard deviation of time-normalized kinetic outputs.
 
     Args:
@@ -669,7 +663,7 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,
         show (bool)[Optional,True]: show matplotlib figure.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
     Examples:
 
@@ -701,8 +695,7 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,
 
     kv = plotViewers.NormalizedKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
 
     if type == "Gait":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
@@ -729,7 +722,8 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,
         return fig
 
 def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,
-                            pointLabelSuffix=None,type="Gait",OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,ignoreYlim=True):
+                            pointLabelSuffix=None,type="Gait",OUT_PATH=None,exportPdf=False,outputName=None,show=True,
+                            title=None,exportPng=False,autoYlim=False):
     """display all cycles of time-normalized kinetic outputs.
 
     Args:
@@ -745,7 +739,7 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,
         show (bool)[Optional,True]: show matplotlib figure.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (Optional,bool)[False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
 
     Examples:
@@ -776,8 +770,7 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,
 
     kv = plotViewers.NormalizedKineticsPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodyPart=bodyPart)
 
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
 
     if type == "Gait":
         kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
@@ -802,7 +795,8 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,
         return fig
 
 def plot_MAP(DATA_PATH,analysis,normativeDataset,
-            exportPdf=False,outputName=None,pointLabelSuffix=None,show=True,title=None,exportPng=False,OUT_PATH=None,ignoreYlim=True):
+            exportPdf=False,outputName=None,pointLabelSuffix=None,show=True,title=None,exportPng=False,OUT_PATH=None,
+            autoYlim=False):
     """display histogram of the Movement Analysis Profile.
 
     Args:
@@ -817,7 +811,7 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,
         show (bool)[Optional,True]: show matplotlib figure.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
 
     Examples:
@@ -843,9 +837,7 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,
 
     #plot
     kv = plotViewers.GpsMapPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
-
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
 
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
@@ -862,7 +854,7 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,
 
 def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
                     plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None,
-                    OUT_PATH = None,outputName=None,exportPng=False,exportPdf=False,ignoreYlim=True):
+                    OUT_PATH = None,outputName=None,exportPng=False,exportPdf=False,autoYlim=False):
     """plot kinematics from different analysis instances.
 
     Args:
@@ -882,7 +874,7 @@ def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDatase
         outputName (str)[Optional,None]: name of the output filename.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
     Examples:
 
@@ -919,8 +911,7 @@ def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDatase
 
     kv = comparisonPlotViewers.KinematicsPlotComparisonViewer(analyses,context,legends,bodyPart=bodyPart,pointLabelSuffix_lst=pointSuffixes)
 
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
 
     if plotType == "Descriptive":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if type =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )
@@ -947,7 +938,7 @@ def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDatase
 
 def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
     plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None,
-    OUT_PATH=None,outputName=None,exportPng=False,exportPdf=False,ignoreYlim=True):
+    OUT_PATH=None,outputName=None,exportPng=False,exportPdf=False,autoYlim=False):
 
     """plot kinetics from different analysis instances.
 
@@ -967,7 +958,7 @@ def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
         outputName (str)[Optional,None]: name of the output filename.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
 
     Examples:
@@ -1007,8 +998,7 @@ def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
 
     kv = comparisonPlotViewers.KineticsPlotComparisonViewer(analyses,context,legends,bodyPart=bodyPart,pointLabelSuffix_lst=pointSuffixes)
 
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
 
     if plotType == "Descriptive":
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if type =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )
@@ -1036,7 +1026,7 @@ def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
 def compareEmgEnvelops(DATA_PATH,analyses,legends,
         normalized=False,plotType="Descriptive",show=True,title=None,
         type="Gait",
-        OUT_PATH=None,outputName=None,exportPng=False,exportPdf=False,ignoreYlim=True,**kwargs):
+        OUT_PATH=None,outputName=None,exportPng=False,exportPdf=False,autoYlim=False,**kwargs):
     """plot EMG envelops from different analysis instances.
 
     Args:
@@ -1054,7 +1044,7 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends,
         outputName (str)[Optional,None]: name of the output filename.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
     Keyword Arguments:
         forceEmgManager (pyCGM2.Emg.EmgManager): force the use of a specific emgManager instance.
@@ -1095,8 +1085,7 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends,
 
     kv = emgPlotViewers.MultipleAnalysis_EnvEmgPlotPanelViewer(analyses,legends)
 
-    if ignoreYlim:
-        kv.setAutomaticYlimits(False)
+    kv.setAutomaticYlimits(autoYlim)
 
     kv.setEmgManager(emg)
     kv.selectEmgChannels(emgChannels)
@@ -1133,7 +1122,7 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends,
 def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts,
     normalized=False,plotType="Descriptive",type="Gait",show=True,
     title=None,
-    OUT_PATH =None, outputName=None,exportPng=False,exportPdf=False,ignoreYlim=True):
+    OUT_PATH =None, outputName=None,exportPng=False,exportPdf=False,autoYlim=False):
     """compare selected EMG envelops from different analysis instances constructed from the same session.
 
     Args:
@@ -1152,7 +1141,7 @@ def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts,
         outputName (str)[Optional,None]: name of the output filename.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
     Examples:
 
@@ -1242,7 +1231,8 @@ def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
         pointLabelSuffix=None,type="Gait",
         normalizedSuffix=None,
         OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
-        ignoreYlim=True):
+        autoYlim=False,
+        analyticalData=None,muscles=None):
     """display average and standard deviation of time-normalized muscle length output.
 
     Args:
@@ -1257,7 +1247,7 @@ def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
         show (bool)[Optional,True]: show matplotlib figure.
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
-        ignoreYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
+        autoYlim (bool)[Optional,False]: ignore predefined Y-axis boundaries
 
 
     Examples:
@@ -1270,10 +1260,18 @@ def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
     if OUT_PATH is None:
         OUT_PATH = DATA_PATH
 
-    opensimSettings = files.loadSettings(DATA_PATH,"opensim.settings")
-    opensimMuscles = opensimSettings["Muscles"]
+    # detect muscle name in the analysis
+    if muscles is None:
+        detectedMuscles=list() 
+        for name,side in  analysis.muscleGeometryStats.data:
+            muscle = name[:name.find("[")-2]
+            if muscle not in detectedMuscles: 
+                detectedMuscles.append(muscle)
+    else:
+        detectedMuscles = muscles
+    
 
-    opensimMuscles_grouped = [opensimMuscles[i:i+16] for i in range(0, len(opensimMuscles), 16)]
+    opensimMuscles_grouped = [detectedMuscles[i:i+16] for i in range(0, len(detectedMuscles), 16)]
    
     pageNumber = len(opensimMuscles_grouped)
 
@@ -1296,8 +1294,9 @@ def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
         kv.setMuscles(opensimMuscles_grouped[page])
         kv.setMuscleOutputType("MuscleLength")
         if normalizedSuffix is not None: kv.setNormalizationSuffix(normalizedSuffix) 
+        if normativeDataset is not None: kv.setNormativeDataset(normativeDataset)
 
-
+        kv.setAutomaticYlimits(autoYlim)
 
 
 
@@ -1306,7 +1305,11 @@ def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
         pf.setViewer(kv)
         if title is not None: pf.setTitle(title+"-descriptive MuscleLength ["+ str(page)+"]")
         if exportPdf: pf.setExport(OUT_PATH,filenameOut,"pdf")
+
+
         fig = pf.plot()
+
+        if analyticalData is not None: pf.setHorizontalLines(analyticalData)
         if exportPng:fig.savefig(OUT_PATH+filenameOut+".png")
         
         outfilenames.append(filenameOut+".png")

@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 import copy
 
@@ -28,6 +29,8 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.m_pointLabelSuffix = pointLabelSuffix
 
         self.m_normalisationSuffix = ""
+
+        self.m_normativeData=None
 
 
     def setNormalizationSuffix(self,suffix):
@@ -71,6 +74,10 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
             
             i+=1
 
+        if not self.m_automaticYlim_flag:
+            for axisIt in self.fig.axes:
+                axisIt.set_ylim([0,1.5])
+
     def __setData(self):
 
         muscles_leftContext =[]
@@ -110,7 +117,13 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
                 
 
     def setNormativeDataset(self,iNormativeDataSet):
-        pass
+        """ Set the normative dataset
+
+        Args:
+            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): a normative dataset instance
+
+        """
+        self.m_normativeData = iNormativeDataSet.data
 
     def setConcretePlotFunction(self, concreteplotFunction):
         """set a concrete plot function
@@ -133,5 +146,17 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
         self.__setLayer()
         self.__setData()
+
+
+        if self.m_normativeData is not None:
+            i=0
+            for muscle in self.m_muscles:
+                label = muscle+"["+self.m_muscleOutputType+"]"+self.m_normalisationSuffix
+              
+                self.fig.axes[i].fill_between(np.linspace(0,100,self.m_normativeData[label]["mean"].shape[0]),
+                    self.m_normativeData[label]["mean"][:,0]-self.m_normativeData[label]["sd"][:,0],
+                    self.m_normativeData[label]["mean"][:,0]+self.m_normativeData[label]["sd"][:,0],
+                    facecolor="green", alpha=0.5,linewidth=0)
+                i+=1
 
         return self.fig
