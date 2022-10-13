@@ -21,6 +21,33 @@ except:
     LOGGER.logger.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
     import opensim
 
+class osimInterface(object):
+    def __init__(self, data_path,osimFile):
+        self.xml = opensimXmlInterface(data_path+osimFile, None)
+    
+    def getMuscles(self):
+        items = self.xml.getSoup().find("ForceSet").find("objects").find_all("Thelen2003Muscle")
+        muscles =[]
+        for it in items:
+            muscles.append(it.attrs["name"])
+        return muscles
+
+    def getMuscles_bySide(self,addToName=""):
+        muscles = self.getMuscles()
+        muscleBySide={"Left":[],"Right":[]}
+        for muscle in muscles:
+            if "_l" in muscle: muscleBySide["Left"].append(muscle+addToName)
+            if "_r" in muscle: muscleBySide["Right"].append(muscle+addToName)
+        
+        return muscleBySide
+
+
+class osimCgmInterface(osimInterface):
+    def __init__(self, modelversion):
+        if modelversion == "CGM2.3":
+            super(osimCgmInterface,self).__init__(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\","pycgm2-gait2354_simbody.osim")
+
+
 
 class opensimXmlInterface(object):
     def __init__(self, templateFullFilename, outFullFilename=None):
