@@ -9,8 +9,9 @@ from matplotlib.backends.backend_pdf import PdfPages
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2 import enums
+from pyCGM2.Model.Opensim.interface import opensimInterface
 
-def pdfGaitReport(DATA_PATH,modelledTrials, normativeDataset,pointSuffix, title = "gait report"):
+def pdfGaitReport(DATA_PATH,modelledTrials, normativeDataset,pointSuffix, title = "gait report", **kwargs):
     """generate pdf with Kinematic-Kinetic-MAP gait plots .
 
     Args:
@@ -19,13 +20,22 @@ def pdfGaitReport(DATA_PATH,modelledTrials, normativeDataset,pointSuffix, title 
         normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): a `normativeDataset` instance
         pointSuffix (str): suffix added to model outputs
         title (str,Optional[gait report]): title
-
     """
+
+    muscleDict=None
+    if "musculoSkeletalModel" in kwargs and kwargs["musculoSkeletalModel"]:
+        if "modelVersion" in kwargs and kwargs["modelVersion"] == "CGM2.3":
+            osimInterface = opensimInterface.osimCgmInterface("CGM2.3")
+            muscleDict = osimInterface.getMuscles_bySide(addToName="[MuscleLength]")
+
+
 
     analysisInstance =  analysis.makeAnalysis(DATA_PATH,
                             modelledTrials,
                             type="Gait",
                             emgChannels = None,
+                            geometryMuscleLabelsDict=muscleDict,
+                            dynamicMuscleLabelsDict = None,
                             pointLabelSuffix=None,
                             subjectInfo=None, experimentalInfo=None,modelInfo=None,
                             )
@@ -125,3 +135,13 @@ def pdfGaitReport(DATA_PATH,modelledTrials, normativeDataset,pointSuffix, title 
             show=False,
             title=title)
         pdf.savefig()
+
+        if "musculoSkeletalModel" in kwargs and kwargs["musculoSkeletalModel"]:
+            # muscle length
+            figs,filenames = plot.plot_DescriptiveMuscleLength(DATA_PATH,analysisInstance,
+                None,
+                normalizedSuffix= None,
+                exportPdf=False,
+                outputName=title,pointLabelSuffix=pointSuffix,
+                show=False,
+                title=title)
