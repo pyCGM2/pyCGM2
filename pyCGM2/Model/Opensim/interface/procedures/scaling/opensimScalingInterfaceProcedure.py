@@ -4,7 +4,6 @@ from distutils import extension
 from weakref import finalize
 from pyCGM2.Utils import files
 from pyCGM2.Tools import btkTools
-from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
 from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 import pyCGM2
