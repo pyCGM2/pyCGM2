@@ -17,7 +17,6 @@ from pyCGM2.Utils import files
 from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Report import normativeDatasets
 
-from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
 from pyCGM2.Model.Opensim.interface import opensimInterface
 
 
