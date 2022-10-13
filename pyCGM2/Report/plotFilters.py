@@ -89,16 +89,17 @@ class PlottingFilter(object):
 
         self.__concretePlotViewer.fig.axes[axisIndex].set_ylim([min,max])
 
-    def setHorizontalLine(self, axisIndex, value,color= "black"):
-        """set horizontal lines
+    def setHorizontalLines(self, idict):
+        
+        for key in idict:
+            for axisIt in self.__concretePlotViewer.fig.axes:
+                if axisIt.get_title() in key:
+                    for it in idict[key]:
+                        value=it[0]
+                        color=it[1]
+                        axisIt.axhline(value,color=color,ls='dashed')
+                    break
 
-        Args:
-            axisIndex (int): index of the `matplotlib.figure.axis` instance
-            value (double): y-axis value
-            color (str,Optional[black]): line color
-        """
-
-        self.__concretePlotViewer.fig.axes[axisIndex].axhline(value,color=color,ls='dashed')
 
 
     def setAutomaticYlimits(self):
