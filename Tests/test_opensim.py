@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_opensimDataframe_stoFile
+# pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_readXML
 # pytest -s --disable-pytest-warnings  test_opensim.py::Test_misc::test_prepareData
+# pytest -s --disable-pytest-warnings  test_opensim.py::Test_osim::test_osimInterface
+
 from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Tools import opensimTools
 from pyCGM2.Tools import btkTools
 from bs4 import BeautifulSoup
 from pyCGM2.Lib import opensimtk
 import ipdb
+from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -33,9 +36,6 @@ class Test_IO:
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim/IO\\"
 
         motDf = opensimIO.OpensimDataFrame(DATA_PATH, "issue_ik_model_marker_locations.sto")
-        ipdb.set_trace()
-
-
 
     def test_zeroing_motFile(self):
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim/IO\\"
@@ -88,3 +88,13 @@ class Test_preparation:
         opensimtk.prepareC3dFiles(DATA_PATH,
             staticFilename="static.c3d", 
             dynamicData=[["gait1.c3d",None], ["gait2.c3d",None]])
+
+class Test_osim:
+    def test_osimInterface(self): 
+        osimInterface = opensimInterfaceFilters.osimInterface(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\", "pycgm2-gait2392_simbody.osim")
+        muscles = osimInterface.getMuscles()
+        print (muscles)
+
+        bySide = osimInterface.getMuscles_bySide()
+        print (bySide)
+        ipdb.set_trace()

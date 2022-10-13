@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_opensimInterfaceProcessing.py::Test_opensimModelOuputprocessing_fromNexus
+# pytest -s --disable-pytest-warnings  test_opensimInterfaceProcessing.py::Test_opensimModelOuputprocessing_fromNexus::test_AllMuscleLabels_highLevelViewer
 import ipdb
 import os
 
@@ -15,8 +15,9 @@ from pyCGM2.Report import plotFilters
 from pyCGM2.Report.Viewers import musclePlotViewers
 from pyCGM2.Utils import files
 from pyCGM2.Model.Opensim import opensimIO
+from pyCGM2.Report import normativeDatasets
 
-
+from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
 
 SHOW = False
 
@@ -58,12 +59,15 @@ class Test_opensimModelOuputprocessing_fromNexus:
         referenceLengths = opensimIO.OpensimDataFrame(DATA_PATH, "CGM23-Pose[standstill]_MuscleAnalysis_Length.sto")
         msm.normalizedMuscleLength_withPose(analysisInstance,referenceLengths.getDataFrame())
 
+        normativeDataset_ml = normativeDatasets.NormativeData("CGM23-msm","Spont")
+
         # viewer
         kv =musclePlotViewers.MuscleNormalizedPlotPanelViewer(analysisInstance)
         kv.setNormalizationSuffix("PoseNormalized")
         kv.setConcretePlotFunction(reportPlot.gaitDescriptivePlot)
         kv.setMuscles(["glut_med1","bifemlh"])
         kv.setMuscleOutputType("MuscleLength")
+        kv.setNormativeDataset(normativeDataset_ml)
 
 
         # filter
@@ -98,11 +102,12 @@ class Test_opensimModelOuputprocessing_fromNexus:
 
         DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\\processingC3dOutputs\\"
 
-        opensimSettings = files.loadSettings(DATA_PATH,"opensim.settings")
+        # opensimSettings = files.loadSettings(DATA_PATH,"opensim.settings")
 
-        muscleDict= {"Left": [it +"_l[MuscleLength]" for it in opensimSettings["Muscles"]],
-                    "Right" : [it +"_r[MuscleLength]" for it in opensimSettings["Muscles"]]}
-
+        # muscleDict= {"Left": [it +"_l[MuscleLength]" for it in opensimSettings["Muscles"]],
+        #             "Right" : [it +"_r[MuscleLength]" for it in opensimSettings["Muscles"]]}
+        osimInterface = opensimInterfaceFilters.osimInterface(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\", "pycgm2-gait2354_simbody.osim")
+        muscleDict = osimInterface.getMuscles_bySide(addToName="[MuscleLength]")
         
         modelledFilenames = ["gait1.c3d", "gait2.c3d"]
         analysisInstance = analysis.makeAnalysis(DATA_PATH,
@@ -121,5 +126,9 @@ class Test_opensimModelOuputprocessing_fromNexus:
             normalizedSuffix= "PoseNormalized",
             exportPdf=True)
 
+        figs,filenames = plot.plot_DescriptiveMuscleLength(DATA_PATH,analysisInstance,None,
+            normalizedSuffix= "PoseNormalized",
+            exportPdf=True,
+            muscles=["tib_ant","rect_fem"])
 
 
