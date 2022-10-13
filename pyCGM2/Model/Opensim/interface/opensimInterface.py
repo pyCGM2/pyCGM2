@@ -9,17 +9,7 @@ import numpy as np
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
-# pyCGM2
-try:
-    from pyCGM2 import btk
-except:
-    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
-    import btk
-try:
-    from pyCGM2 import opensim4 as opensim
-except:
-    LOGGER.logger.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
-    import opensim
+
 
 class osimInterface(object):
     def __init__(self, data_path,osimFile):

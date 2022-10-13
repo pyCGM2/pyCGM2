@@ -8,6 +8,17 @@ LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Model.Opensim.interface import opensimInterface
 
+# pyCGM2
+try:
+    from pyCGM2 import btk
+except:
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    import btk
+try:
+    from pyCGM2 import opensim4 as opensim
+except:
+    LOGGER.logger.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
+    import opensim
 
 class opensimInterfaceScalingFilter(object):
     def __init__(self, procedure):
