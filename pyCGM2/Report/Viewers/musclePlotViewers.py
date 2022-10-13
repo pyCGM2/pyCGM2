@@ -76,7 +76,7 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
         if not self.m_automaticYlim_flag:
             for axisIt in self.fig.axes:
-                axisIt.set_ylim([0,1.5])
+                axisIt.set_ylim([0.5,1.5])
 
     def __setData(self):
 
