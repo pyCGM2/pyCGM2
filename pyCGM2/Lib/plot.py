@@ -25,6 +25,7 @@ from pyCGM2 import enums
 from pyCGM2.EMG import emgManager
 from pyCGM2.Report.Viewers import musclePlotViewers
 from pyCGM2.Utils import files
+from pyCGM2.Processing.Classification import classificationFilters, classificationProcedures
 
 def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix=None,
                           exportPdf=False,OUT_PATH = None, outputName=None,show=True,title=None,exportPng=False,
@@ -1321,3 +1322,28 @@ def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
 
     return figs,outfilenames
 
+
+def plotPFKE(DATA_PATH,analysisInstance,normativeDataset,
+    OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+
+    if OUT_PATH is None:
+        OUT_PATH = DATA_PATH
+
+    procedure = classificationProcedures.PFKEprocedure(normativeDataset)
+    filt = classificationFilters.ClassificationFilter(analysisInstance, procedure)
+    sagClass = filt.run()
+    classFig = procedure.plot(analysisInstance)
+
+    if outputName is None:
+        outputName = "pyCGM2-analysis"
+
+    filenameOut =  outputName+"- pfke"
+
+    if exportPng:plt.savefig(OUT_PATH+filenameOut+".png")
+    if exportPdf:plt.savefig(OUT_PATH+filenameOut+".pdf")
+    if show: plt.show()
+
+    if exportPng:
+        return classFig, filenameOut+".png"
+    else:
+        return classFig 
