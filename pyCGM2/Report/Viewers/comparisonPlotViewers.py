@@ -203,6 +203,7 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         if self.m_context == "Left":
             colormap = plt.cm.Reds
             colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+            colormap_i = [(0,0,0)] + colormap_i
 
             i = 0
             for analysis in self.m_analysis:
@@ -294,6 +295,7 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         if self.m_context == "Right":
             colormap = plt.cm.Blues
             colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+            colormap_i = [(0,0,0)] + colormap_i
 
             i = 0
             for analysis in self.m_analysis:
@@ -592,6 +594,7 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         if self.m_context == "Left":
             colormap = plt.cm.Reds
             colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+            colormap_i = [(0,0,0)] + colormap_i
 
             i = 0
             for analysis in self.m_analysis:
@@ -649,6 +652,7 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         if self.m_context == "Right":
             colormap = plt.cm.Blues
             colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+            colormap_i = [(0,0,0)] + colormap_i
 
             i = 0
             for analysis in self.m_analysis:

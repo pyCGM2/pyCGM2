@@ -544,7 +544,9 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         #suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
 
             colormap_i_left=[plt.cm.Reds(k) for k in np.linspace(0.2, 1, len(self.m_analysis))]
+            colormap_i_left = [(0,0,0)] + colormap_i_left
             colormap_i_right=[plt.cm.Blues(k) for k in np.linspace(0.2, 1, len(self.m_analysis))]
+            colormap_i_right = [(0,0,0)] + colormap_i_right
 
 
             j = 0
