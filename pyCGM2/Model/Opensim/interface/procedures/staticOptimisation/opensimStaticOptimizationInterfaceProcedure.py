@@ -117,6 +117,11 @@ class StaticOptimisationXmlCgmProcedure(StaticOptimisationXmlProcedure):
             analysisToolTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM23\\CGM23-soSetup_template.xml"
             externalLoadTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
 
+        if self.m_modelVersion == "CGM22":
+            analysisToolTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\CGM22\\CGM22-soSetup_template.xml"
+            externalLoadTemplateFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\setup\\walk_grf.xml"
+
+
         self.m_soTool = self.m_DATA_PATH + self.m_modelVersion + "-SOTool-setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(analysisToolTemplateFile,self.m_soTool)
    
