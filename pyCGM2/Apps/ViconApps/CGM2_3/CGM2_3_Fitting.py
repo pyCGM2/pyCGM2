@@ -41,7 +41,7 @@ def main():
     parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
     parser.add_argument('-fi','--frameInit',type=int,  help='first frame to process')
     parser.add_argument('-fe','--frameEnd',type=int,  help='last frame to process')
-    parser.add_argument('--muscleLength', action='store_true', help='enable muscle length calculation')
+    parser.add_argument('-msm','--musculoSkeletalModel', action='store_true', help='musculoskeletal model')
 
     try:
         NEXUS = ViconNexus.ViconNexus()
@@ -117,7 +117,7 @@ def main():
         acq = nacf.build()
 
         # --------------------------MODELLING PROCESSING -----------------------
-        if args.muscleLength:
+        if args.musculoSkeletalModel:
             finalAcqGait,detectAnomaly = cgm2_3exp.fitting(model,DATA_PATH, reconstructFilenameLabelled,
                 translators,settings,
                 ik_flag,markerDiameter,
@@ -128,7 +128,7 @@ def main():
                 ikAccuracy = ikAccuracy,
                 anomalyException=args.anomalyException,
                 frameInit= args.frameInit, frameEnd= args.frameEnd,
-                muscleLength=args.muscleLength )        
+                muscleLength=True )        
 
         else:
             finalAcqGait,detectAnomaly = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
@@ -147,7 +147,7 @@ def main():
         nexusFilters.NexusModelFilter(NEXUS,model,finalAcqGait,subject,pointSuffix).run()
         nexusTools.createGeneralEvents(NEXUS,subject,finalAcqGait,["Left-FP","Right-FP"])
 
-        if args.muscleLength:
+        if args.musculoSkeletalModel:
             muscleLabels = btkTools.getLabelsFromScalar(finalAcqGait,description = "MuscleLength")
             for label in muscleLabels:
                 nexusTools.appendBtkScalarFromAcq(NEXUS,subject,"MuscleLength",label,"None",finalAcqGait) # None ( not Length) to keep meter unit
