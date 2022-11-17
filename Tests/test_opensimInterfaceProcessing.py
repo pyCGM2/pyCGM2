@@ -16,6 +16,7 @@ from pyCGM2.Report.Viewers import musclePlotViewers
 from pyCGM2.Utils import files
 from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Report import normativeDatasets
+from pyCGM2.Processing import analysisHandler
 
 from pyCGM2.Model.Opensim.interface import opensimInterface
 
@@ -58,7 +59,7 @@ class Test_opensimModelOuputprocessing_fromNexus:
         
 
         referenceLengths = opensimIO.OpensimDataFrame(DATA_PATH, "CGM23-Pose[standstill]_MuscleAnalysis_Length.sto")
-        msm.normalizedMuscleLength_withPose(analysisInstance,referenceLengths.getDataFrame())
+        analysisHandler.normalizedMuscleLength_withPose(analysisInstance,referenceLengths.getDataFrame())
 
         normativeDataset_ml = normativeDatasets.NormativeData("CGM23-msm","Spont")
 
@@ -119,7 +120,7 @@ class Test_opensimModelOuputprocessing_fromNexus:
                         dynamicMuscleLabelsDict = None)
         
         referenceLengths = opensimIO.OpensimDataFrame(DATA_PATH, "CGM23-Pose[standstill]_MuscleAnalysis_Length.sto")
-        msm.normalizedMuscleLength_withPose(analysisInstance,referenceLengths.getDataFrame())
+        analysisHandler.normalizedMuscleLength_withPose(analysisInstance,referenceLengths.getDataFrame())
 
 
         # gigh-level function
