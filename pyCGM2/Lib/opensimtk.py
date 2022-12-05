@@ -75,4 +75,14 @@ def prepareC3dFiles(DATA_PATH, staticFilename=None, dynamicData=None):
                     acq, DATA_PATH+dynamicFilename[:-4]+"_grf.mot",
                     progressionAxis, forwardProgression, mfpa=mfpa)
 
+# def def driveOsim(DATA_PATH, staticFilename=None, dynamicData=None):
+#     scaledOsimName = "LOISEAU Matys Cal 01-CGM23-ScaledModel.osim"
+    
+#     # -- angle poplité
+#     procAnaDriven = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/Poplity","CGM2.3")
+#     procAnaDriven.setPose("Poplity",{"hip_flexion_r":90, "hip_flexion_l":90,
+#                                     "knee_flexion_r":-50, "knee_flexion_l":-25 })
+#     procAnaDriven.prepareXml()
+#     oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAnaDriven)
+#     oiamf.run()
 
