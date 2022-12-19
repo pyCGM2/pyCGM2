@@ -2,6 +2,8 @@ from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy.signal import find_peaks
+from scipy.linalg import norm
 
 class Imu(object):
     """
@@ -66,3 +68,23 @@ class Imu(object):
                 "Gyro.Z": self.m_gyro["Z"]}
 
         self.dataframe = pd.DataFrame(data)
+
+    def getAccelerationPeaks(self, threshold=12, distance=50, plot= True):
+
+        acceleration = norm(self.dataframe[["Accel.X","Accel.Y","Accel.Z"]],axis=1)  
+        peaks, _ = find_peaks(acceleration,height=threshold, distance = distance)
+        
+        if plot:
+            plt.plot(acceleration)
+            plt.plot(peaks, acceleration[peaks], "x")
+            plt.plot(np.zeros_like(acceleration), "--", color="gray")
+            plt.show()
+            
+        data = { "Peaks": acceleration[peaks]}
+
+        df = pd.DataFrame(data)
+
+        #plt.figure()
+        #df.Peaks.round(0).hist(orientation="horizontal")
+        return df
+        
