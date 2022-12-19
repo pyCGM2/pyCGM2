@@ -7,6 +7,7 @@ import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Model.Opensim.interface import opensimInterface
+from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
 
 # pyCGM2
 try:
@@ -258,10 +259,23 @@ class opensimInterfaceAnalysesFilter(object):
 
                 values = np.zeros(
                     (self.m_procedure.m_acq.GetPointFrameNumber(), 3))
+                
+                freq = self.m_procedure.m_acq.GetPointFrequency()
 
                 for muscle in storageDataframe.m_dataframe.columns[1:]:
-                    serie = storageDataframe.getDataFrame()[muscle]
-                    values[:, 0] = serie.to_list()
+                    serie = storageDataframe.getDataFrame()[muscle].to_list()
+                    
+                    if freq !=100.0:
+                        time = np.arange(0, self.m_procedure.m_endTime+1/100, 1/100)
+                        f = interp1d(time, serie, fill_value="extrapolate")
+                        newTime = np.arange(0, self.m_procedure.m_endTime+1/freq, 1/freq)
+                        values_interp = f(newTime)
+                                          
+
+                        values[:, 0] = values_interp
+                    else:
+                        values[:, 0] = serie
+
 
                     btkTools.smartAppendPoint(self.m_procedure.m_acq, muscle
                                             + "["+label+"]", values, PointType="Scalar", desc=label)
