@@ -391,6 +391,7 @@ def saveMp(mpInfo,model,DATA_PATH,mpFilename):
 
     # update optional mp and save a new info file
     mpInfo["MP"]["Required"][ "Bodymass"] = model.mp["Bodymass"]
+    mpInfo["MP"]["Required"][ "Height"] = model.mp["Height"]
     mpInfo["MP"]["Required"][ "LeftLegLength"] = model.mp["LeftLegLength"]
     mpInfo["MP"]["Required"][ "RightLegLength"] = model.mp["RightLegLength"]
     mpInfo["MP"]["Required"][ "LeftKneeWidth"] = model.mp["LeftKneeWidth"]
