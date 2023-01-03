@@ -38,6 +38,8 @@ def main():
                         help='force ggm1.1 as model output suffix')
     parser.add_argument('--resetMP', action='store_true',
                         help='reset optional anthropometric parameters')
+    parser.add_argument('--forceMP', action='store_true',
+                        help='force the use of MP offsets to compute knee and ankle joint centres')
     parser.add_argument('-ae', '--anomalyException',
                         action='store_true', help='raise an exception if an anomaly is detected')
 
@@ -95,7 +97,7 @@ def main():
         model, acqStatic, detectAnomaly = cgm1_1.calibrate(DATA_PATH, reconstructFilenameLabelledNoExt, translators,
                                                            required_mp, optional_mp,
                                                            leftFlatFoot, rightFlatFoot, headFlat, markerDiameter,
-                                                           pointSuffix, forceBtkAcq=acq, anomalyException=args.anomalyException)
+                                                           pointSuffix, forceBtkAcq=acq, anomalyException=args.anomalyException,forceMP=args.forceMP)
 
         # ----------------------SAVE-------------------------------------------
         #pyCGM2.model

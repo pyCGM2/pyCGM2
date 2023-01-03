@@ -40,6 +40,8 @@ def main():
     parser.add_argument('--check', action='store_true', help='force model output suffix')
     parser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     parser.add_argument('--resetMP', action='store_true', help='reset optional anthropometric parameters')
+    parser.add_argument('--forceMP', action='store_true',
+                        help='force the use of MP offsets to compute knee and ankle joint centres')
     parser.add_argument('--forceLHJC', nargs='+')
     parser.add_argument('--forceRHJC', nargs='+')
     parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
@@ -119,7 +121,7 @@ def main():
                                 markerDiameter,
                                 hjcMethod,
                                 pointSuffix,
-                                forceBtkAcq=acq, anomalyException=args.anomalyException)
+                                forceBtkAcq=acq, anomalyException=args.anomalyException,forceMP=args.forceMP)
         else:
             model,finalAcqStatic,detectAnomaly = cgm2_3.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,settings,
                                 required_mp,optional_mp,
@@ -127,7 +129,7 @@ def main():
                                 markerDiameter,
                                 hjcMethod,
                                 pointSuffix,
-                                forceBtkAcq=acq, anomalyException=args.anomalyException)
+                                forceBtkAcq=acq, anomalyException=args.anomalyException,forceMP=args.forceMP)
 
 
         # ----------------------SAVE-------------------------------------------

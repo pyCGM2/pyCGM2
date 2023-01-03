@@ -47,6 +47,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         markerDiameter (float): marker diameter
         hjcMethod (dict): hip joint centre regressions
         pointSuffix (str): suffix to add to ouputs
+        forceMP (bool) : force the use of mp offset to compute the knee and ankle joint centres
 
     Keyword Arguments:
         anomalyException (bool): raise exception if anomaly detected
@@ -164,7 +165,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
                                         ).compute()
 
     # ---- Decorators -----
-    decorators.applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter)
+    forceMP = False if not "forceMP" in kwargs else kwargs["forceMP"]
+    decorators.applyKJC_AJCDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,forceMP=forceMP)
     decorators.applyHJCDecorators(model,hjcMethod)
 
 

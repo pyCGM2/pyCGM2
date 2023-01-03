@@ -45,6 +45,8 @@ def main():
     parser.add_argument('--forceLHJC', nargs='+')
     parser.add_argument('--forceRHJC', nargs='+')
     parser.add_argument('--resetMP', action='store_true', help='reset optional anthropometric parameters')
+    parser.add_argument('--forceMP', action='store_true',
+                        help='force the use of MP offsets to compute knee and ankle joint centres')
     parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
 
 
@@ -120,7 +122,7 @@ def main():
                       markerDiameter,
                       hjcMethod,
                       pointSuffix,forceBtkAcq=acq,
-                      anomalyException=args.anomalyException)
+                      anomalyException=args.anomalyException,forceMP=args.forceMP)
 
 
 
