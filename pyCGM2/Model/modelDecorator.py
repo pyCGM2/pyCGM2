@@ -95,8 +95,8 @@ def VCMJointCentre(HalfJoint, JointMarker, TopJoint, StickMarker, beta = 0 ):
     E = np.cross( X, P )
 
     E =np.divide(E,np.linalg.norm(E))
-
     x2 = np.dot( X, X )
+        
     l = HalfJoint / x2
     m = 1 - HalfJoint * l
 
@@ -1462,8 +1462,10 @@ class KneeCalibrationDecorator(DecoratorModel):
             LKNM = acq.GetPoint(leftMedialKneeLabel).GetValues()
             LKNE = acq.GetPoint(leftLateralKneeLabel).GetValues()
             LANK = acq.GetPoint("LANK").GetValues()
-
-            LAJCvalues = VCMJointCentre ((self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0,LANK,LKJCvalues,LKNE,beta=0.0)
+    
+            LAJCvalues =  np.zeros((acq.GetPointFrameNumber(),3))
+            for i in range(0,acq.GetPointFrameNumber()):
+                LAJCvalues[i,:] = VCMJointCentre ((self.model.mp["LeftAnkleWidth"]+markerDiameter )/2.0,LANK[i,:],LKJCvalues[i,:],LKNE[i,:],beta=0.0)
 
             tf_prox = self.model.getSegment("Left Thigh").getReferential("TF")
             tf_dist = self.model.getSegment("Left Shank").getReferential("TF")
@@ -1502,7 +1504,9 @@ class KneeCalibrationDecorator(DecoratorModel):
             RKNE = acq.GetPoint(rightLateralKneeLabel).GetValues()
             RANK = acq.GetPoint("RANK").GetValues()
 
-            RAJCvalues = VCMJointCentre ((self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0,RANK,RKJCvalues,RKNE,beta=0.0)
+            RAJCvalues =  np.zeros((acq.GetPointFrameNumber(),3))
+            for i in range(0,acq.GetPointFrameNumber()):
+                RAJCvalues[i,:] = VCMJointCentre ((self.model.mp["RightAnkleWidth"]+markerDiameter )/2.0,RANK[i,:],RKJCvalues[i,:],RKNE[i,:],beta=0.0)
 
             tf_prox = self.model.getSegment("Right Thigh").getReferential("TF")
             tf_dist = self.model.getSegment("Right Shank").getReferential("TF")
