@@ -133,7 +133,7 @@ def main():
         if NEXUS_PYTHON_CONNECTED:
             mfpa = nexusTools.getForcePlateAssignment(NEXUS)
         else:
-            mfpa =  args.args.offline[2]
+            mfpa =  args.offline[2]
 
         if NEXUS_PYTHON_CONNECTED:
             nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)

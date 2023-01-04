@@ -125,15 +125,13 @@ def main():
             required_mp,optional_mp = nexusUtils.getNexusSubjectMp(NEXUS,subject,resetFlag=args.resetMP)
             mpInfo,mpFilename = files.getMpFileContent(DATA_PATH,"mp.pyCGM2",subject)
         else:
+            
             subject = args.offline[0]
             if not os.path.exists(DATA_PATH+subject+"-mp.pyCGM2"):
                 raise Exception("[pyCGM2]  the mp file [%s] not found in the folder"%(subject+"-mp.pyCGM2"))
             
             mpFilename = subject+"-mp.pyCGM2"
-            mpInfo = files.openFile(DATA_PATH,mpFilename)
-            
-            required_mp = mpInfo["MP"]["Required"].copy()
-            optional_mp = mpInfo["MP"]["Optional"].copy()
+            mpInfo, required_mp, optional_mp = files.loadMp(DATA_PATH,mpFilename)
 
         # --------------------------SESSIONS INFOS -----------------------------------
         
