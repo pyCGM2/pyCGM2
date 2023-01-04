@@ -58,6 +58,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         displayCoordinateSystem (bool): return virtual markers for visualisation of the anatomical refentials
         noKinematicsCalculation (bool) : disable computation of joint kinematics
+        forceMP (bool) : force the use of mp offset to compute the knee and ankle joint centres
 
     Returns:
         model (pyCGM2.Model): the calibrated Model
@@ -171,7 +172,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
                                         ).compute()
 
     # ---- Decorators -----
-    decorators.applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter)
+    forceMP = False if not "forceMP" in kwargs else kwargs["forceMP"]
+    decorators.applyKJC_AJCDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,forceMP=forceMP)
     decorators.applyHJCDecorators(model,hjcMethod)
 
     # ----Final Calibration filter if model previously decorated -----
