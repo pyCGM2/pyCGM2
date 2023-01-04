@@ -1,6 +1,7 @@
 MP:
     Required:
         Bodymass: 0
+        Height: 0
         LeftLegLength: 0
         RightLegLength: 0
         LeftKneeWidth: 0
