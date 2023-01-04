@@ -262,6 +262,28 @@ def saveJson(path, filename, content,ensure_ascii=False):
         with open((path+filename), 'w') as outfile:
             json.dump(content, outfile,indent=4,ensure_ascii=ensure_ascii)
 
+def saveYaml(path, filename, content):
+    """save as yaml file
+
+    Args:
+        path (str): data folder path
+        filename (str):  json filename
+        content (dict): dictionary to save
+
+
+    Note: Do not work well with orderdict
+
+    """
+
+    if path is not None: path = path
+    filename = filename
+    if path is None:
+        with open((filename), 'w') as outfile:
+            yaml.dump(content, outfile,indent=4)
+    else:
+        with open((path+filename), 'w') as outfile:
+            yaml.dump(content, outfile,indent=4)
+
 
 def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
     """get CGM marker translators
@@ -375,6 +397,25 @@ def getMp(mpInfo,resetFlag=True):
         }
 
     return required_mp,optional_mp
+
+
+def loadMp(path,filename):
+    """load a mp file.
+
+    Args:
+        path (str): data folder path
+        filename (str):  filename with Extension
+    """
+    content = openFile(path, filename)
+
+    for key in content["MP"]["Optional"]:
+        if  content["MP"]["Optional"][key] is None:
+            content["MP"]["Optional"][key] = 0
+
+    required_mp = content["MP"]["Required"].copy()
+    optional_mp = content["MP"]["Optional"].copy()
+
+    return content, required_mp,optional_mp
 
 
 
