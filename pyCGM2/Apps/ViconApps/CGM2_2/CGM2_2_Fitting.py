@@ -151,7 +151,8 @@ def main():
             forceBtkAcq=acq,
             ikAccuracy = ikAccuracy,
             anomalyException=args.anomalyException,
-            frameInit= args.frameInit, frameEnd= args.frameEnd )
+            frameInit= args.frameInit, frameEnd= args.frameEnd,
+            muscleLength=True  )
         else:
             acqIK,detectAnomaly = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
                 translators,ikWeight,
