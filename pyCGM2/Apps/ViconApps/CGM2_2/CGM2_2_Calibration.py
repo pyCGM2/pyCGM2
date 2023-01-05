@@ -19,10 +19,6 @@ LOGGER = pyCGM2.LOGGER
 # from pyCGM2 import log; #log.setloggerLevel(LOGGER.logger.INFO)
 # logger = log.get_logger(__name__)
 
-# vicon nexus
-from viconnexusapi import ViconNexus
-
-
 # pyCGM2 libraries
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters
@@ -62,6 +58,7 @@ def main():
 
     if not OFFLINE_MODE:
         try:
+            from viconnexusapi import ViconNexus
             NEXUS = ViconNexus.ViconNexus()
             NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
         except:

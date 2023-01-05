@@ -13,9 +13,6 @@ warnings.filterwarnings("ignore")
 # pyCGM2 settings
 import pyCGM2
 
-# vicon nexus
-from viconnexusapi import ViconNexus
-
 # pyCGM2 libraries
 from pyCGM2.Utils import files
 from pyCGM2.Nexus import nexusFilters
@@ -50,6 +47,7 @@ def main():
 
     if not OFFLINE_MODE:
         try:
+            from viconnexusapi import ViconNexus
             NEXUS = ViconNexus.ViconNexus()
             NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
         except:
