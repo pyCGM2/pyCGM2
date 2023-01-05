@@ -21,9 +21,6 @@ LOGGER = pyCGM2.LOGGER
 
 # pyCGM2 libraries
 from pyCGM2.Utils import files
-from pyCGM2.Nexus import nexusFilters
-from pyCGM2.Nexus import nexusUtils
-from pyCGM2.Nexus import nexusTools
 from pyCGM2.Apps.ViconApps import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm2_2
 from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_2 as cgm2_2exp
@@ -59,6 +56,10 @@ def main():
     if not OFFLINE_MODE:
         try:
             from viconnexusapi import ViconNexus
+            from pyCGM2.Nexus import nexusFilters
+            from pyCGM2.Nexus import nexusUtils
+            from pyCGM2.Nexus import nexusTools
+
             NEXUS = ViconNexus.ViconNexus()
             NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
         except:
