@@ -14,6 +14,8 @@ from pyCGM2.Model import modelDecorator
 from pyCGM2 import enums
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Utils import utils
+from pyCGM2.Model.CGM2 import cgm
+from pyCGM2.Model.CGM2 import cgm2
 
 
 
@@ -109,10 +111,9 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
     iff=initFrame-ff
     ilf=endFrame-ff
 
-
-
     if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2"]:
         validFrames,vff,vlf = btkTools.findValidFrames(acqFunc,cgm.CGM1.LOWERLIMB_TRACKING_MARKERS)
+    
 
     # --------------------------RESET OF THE STATIC File---------
     # load btkAcq from static file
@@ -120,6 +121,17 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
     acqStatic = btkTools.smartReader((DATA_PATH+staticFilename))
     btkTools.checkMultipleSubject(acqStatic)
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+
+    if model.version in  ["CGM1.0","CGM1.1","CGM2.1","CGM2.2"]:
+        trackingMarkers = cgm.CGM1.LOWERLIMB_TRACKING_MARKERS + cgm.CGM1.THORAX_TRACKING_MARKERS+ cgm.CGM1.UPPERLIMB_TRACKING_MARKERS
+    elif model.version == "CGM2.3":
+        trackingMarkers = cgm2.CGM2_3.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_3.THORAX_TRACKING_MARKERS+ cgm2.CGM2_3.UPPERLIMB_TRACKING_MARKERS
+    elif model.version == "CGM2.4":
+        trackingMarkers = cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_4.THORAX_TRACKING_MARKERS+ cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS
+    elif model.version == "CGM2.5":
+        trackingMarkers = cgm2.CGM2_5.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_5.THORAX_TRACKING_MARKERS+ cgm2.CGM2_5.UPPERLIMB_TRACKING_MARKERS
+    
+    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
 
     # initial calibration ( i.e calibration from Calibration operation)
     leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
@@ -193,7 +205,7 @@ def sara(model,
     *argv, **kwargs):
 
     """
-    calibration2Dof
+    Sara knee calibration
 
     Args:
         model (pyCGM2.Model): model instance
@@ -276,6 +288,14 @@ def sara(model,
     acqStatic = btkTools.smartReader((DATA_PATH+staticFilename))
     btkTools.checkMultipleSubject(acqStatic)
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+
+    if model.version == "CGM2.3":
+        trackingMarkers = cgm2.CGM2_3.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_3.THORAX_TRACKING_MARKERS+ cgm2.CGM2_3.UPPERLIMB_TRACKING_MARKERS
+    elif model.version == "CGM2.4":
+        trackingMarkers = cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_4.THORAX_TRACKING_MARKERS+ cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS
+    elif model.version == "CGM2.5":
+        trackingMarkers = cgm2.CGM2_5.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_5.THORAX_TRACKING_MARKERS+ cgm2.CGM2_5.UPPERLIMB_TRACKING_MARKERS
+    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
 
     # initial calibration ( i.e calibration from Calibration operation)
     leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
