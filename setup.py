@@ -217,7 +217,7 @@ setup(name = 'pyCGM2',
                 'Nexus_CGM25_Calibration =  pyCGM2.Apps.ViconApps.CGM2_5.CGM2_5_Calibration:main',
                 'Nexus_CGM25_Fitting     =  pyCGM2.Apps.ViconApps.CGM2_5.CGM2_5_Fitting:main',
                 'Nexus_CGM26_2DOF =  pyCGM2.Apps.ViconApps.CGM2_6.CGM_Knee2DofCalibration:main',
-                'Nexus_CGM26_SARA     =  pyCGM2.Apps.ViconApps.CGM2_6.CGM_Knee2DofCalibration:main',
+                'Nexus_CGM26_SARA     =  pyCGM2.Apps.ViconApps.CGM2_6.CGM_KneeSARA:main',
 
                 'Nexus_plot_MAP                      =  pyCGM2.Apps.ViconApps.Plot.plotMAP:main',
                 'Nexus_plot_normalizedKinematics     =  pyCGM2.Apps.ViconApps.Plot.plotNormalizedKinematics:main',
