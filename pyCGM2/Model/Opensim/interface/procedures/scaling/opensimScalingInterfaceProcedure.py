@@ -105,7 +105,7 @@ class ScalingXmlCgmProcedure(ScalingXmlProcedure):
 
 
         if self.m_modelVersion == "CGM22":  
-            markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM22\\markerset\\CGM23-markerset.xml"
+            markersetFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM22\\markerset\\CGM22-markerset.xml"
             genericOsimFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM22\\pycgm2-gait2392_simbody.osim"
             scaleToolFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM22\\setup\\CGM22_scaleSetup_template.xml"
 

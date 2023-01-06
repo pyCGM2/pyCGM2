@@ -169,6 +169,9 @@ class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
     
         if self.m_modelVersion == "CGM23":
             self.m_refPose = opensimIO.OpensimDataFrame(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\", "referencePose.mot")
+        
+        elif self.m_modelVersion == "CGM22":
+            self.m_refPose = opensimIO.OpensimDataFrame(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM22\\", "referencePose.mot")
 
         self.m_beginTime = 0
         self.m_endTime = self.m_refPose.getDataFrame()["time"].iloc[-1]

@@ -536,7 +536,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         motDataframe.getDataFrame()["ankle_rotation_l"] = finalAcqGait.GetPoint("LAnkleAngles").GetValues()[:,2]
         motDataframe.save()
 
-        procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
+        procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.2")
         procAna.setProgression(progressionAxis,forwardProgression)
         procAna.prepareDynamicTrial(finalAcqGait,reconstructFilenameLabelled[:-4],mappedForcePlate)
         procAna.setTimeRange()
