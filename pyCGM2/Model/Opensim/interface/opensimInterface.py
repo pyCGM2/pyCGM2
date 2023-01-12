@@ -31,6 +31,14 @@ class osimInterface(object):
         
         return muscleBySide
 
+    def  getCoordinates(self):
+        items = self.xml.getSoup().find("JointSet").find("objects").find_all("Coordinate")
+        jointNames =[]
+        for it in items:
+            jointNames.append(it.attrs["name"])
+            print (it.attrs["name"])
+        return jointNames
+
 
 class osimCgmInterface(osimInterface):
     def __init__(self, modelversion):
