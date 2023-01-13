@@ -2,6 +2,7 @@
 # pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_readXML
 # pytest -s --disable-pytest-warnings  test_opensim.py::Test_misc::test_prepareData
 # pytest -s --disable-pytest-warnings  test_opensim.py::Test_osim::test_osimInterface
+# pytest -s --disable-pytest-warnings  test_opensim.py::Test_IO::test_cgmOutputsToMot
 
 from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Tools import opensimTools
@@ -78,6 +79,20 @@ class Test_IO:
 
         acq2 = btkTools.smartReader(DATA_PATH+"gait2.c3d")
         btkTools.smartWriter(acq2, DATA_PATH+"gait2verif.c3d", extension=None)
+
+    def test_export_cgmToMot(self):
+
+        data_path = pyCGM2.TEST_DATA_PATH + "OpenSim\CGM23\\CGM23-progressionX-test\\"
+        staticFilename = "static.c3d" 
+        gaitFilename = "gait1.c3d"
+
+        osimInterface = opensimInterface.osimInterface(data_path,"static-CGM23-ScaledModel.osim")
+        #osimModel.getCoordinates()
+
+        acqGait = btkTools.smartReader(str(data_path + gaitFilename))
+
+        opensimTools.export_CgmToMot(
+            acqGait,data_path, "motGenerated.mot",osimInterface)
 
 
 class Test_preparation:

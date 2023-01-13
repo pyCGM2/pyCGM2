@@ -5,6 +5,7 @@ LOGGER = pyCGM2.LOGGER
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Utils import files
 import numpy as np
+import pandas as pd
 
 try:
     from pyCGM2 import btk
@@ -199,3 +200,56 @@ def footReactionMotFile(acq,filename,progressionAxis,forwardProgression,mfpa=Non
         LMoment_osim[i, 0]/1000.0,   LMoment_osim[i, 1]/1000.0,   LMoment_osim[i, 2]/1000.0))
 
     file1.close()
+
+
+
+
+def export_CgmToMot(acq,datapath,filename,osimModelInterface):
+    """Export the CGM kinematics outputs in a mot opensim-format
+
+    Args:
+        acq (btk.Acquisition): acquisition
+        datapath (str): data path
+        filename (str): filenama
+        osimModelInterface (pyCGM2.opensimInterface.osimInterface): opensim Interface
+    """
+
+    osim2cgm_converter = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"opensim\\interface\\CGM23\\CGMtoOsim.settings")
+
+    coordinateNames = osimModelInterface.getCoordinates()
+    coordNamesStr = "time"
+    for it in coordinateNames:
+        coordNamesStr = coordNamesStr +" " + it
+
+    pointFrames = acq.GetPointFrameNumber()
+    freq = acq.GetPointFrequency()
+    time = np.arange(0, pointFrames/freq, 1/freq)
+
+    dataFrame = pd.DataFrame()
+    dataFrame["time"] = time
+
+
+    for it in osim2cgm_converter["Angles"]:
+        orientation =  int(osim2cgm_converter["Angles"][it].split(".")[0])
+        name = osim2cgm_converter["Angles"][it].split(".")[1]
+        axis = int(osim2cgm_converter["Angles"][it].split(".")[2])
+        
+        try:
+            values =  orientation*acq.GetPoint(name).GetValues()[:,axis]
+            dataFrame[it] = values
+        except RuntimeError:
+            pass
+        
+    dataFrame.fillna(0,inplace=True)
+    dataFrame.to_csv(datapath+filename, index=False, sep="\t")
+
+    
+    with open(datapath+filename, 'r') as original: 
+        data = original.read()
+    with open(datapath+filename, 'w') as modified: 
+        modified.write(files.getFilename(datapath+filename)+"\n")
+        modified.write("version=1\n")
+        modified.write("nRows=%i\n"%(pointFrames))
+        modified.write("nColumns=%i\n"%(dataFrame.shape[1]))
+        modified.write("inDegrees=yes\n")
+        modified.write("endheader\n" + data)

@@ -1,0 +1,31 @@
+Angles:
+    
+    pelvis_tilt: 1.LPelvisAngles.0
+    pelvis_list: 1.LPelvisAngles.1
+    pelvis_rotation: 1.LPelvisAngles.2
+    
+    hip_flexion_r: 1.RHipAngles.0
+    hip_adduction_r: 1.RHipAngles.1
+    hip_rotation_r: 1.RHipAngles.2
+
+    knee_flexion_r: -1.RKneeAngles.0
+    knee_adduction_r: 1.RKneeAngles.1
+    knee_rotation_r: 1.RKneeAngles.2
+
+    
+    ankle_flexion_r: 1.RAnkleAngles.0
+    ankle_adduction_r: 1.RAnkleAngles.1
+    ankle_rotation_r: 1.RAnkleAngles.2
+
+    hip_flexion_l: 1.LHipAngles.0
+    hip_adduction_l: 1.LHipAngles.1
+    hip_rotation_l: 1.LHipAngles.2
+
+    knee_flexion_l: -1.LKneeAngles.0
+    knee_adduction_l: 1.LKneeAngles.1
+    knee_rotation_l: 1.LKneeAngles.2
+
+    ankle_flexion_l: 1.LAnkleAngles.0
+    ankle_adduction_l: 1.LAnkleAngles.1
+    ankle_rotation_l: 1.LAnkleAngles.2
+
