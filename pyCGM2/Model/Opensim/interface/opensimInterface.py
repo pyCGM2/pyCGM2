@@ -36,7 +36,6 @@ class osimInterface(object):
         jointNames =[]
         for it in items:
             jointNames.append(it.attrs["name"])
-            print (it.attrs["name"])
         return jointNames
 
 
