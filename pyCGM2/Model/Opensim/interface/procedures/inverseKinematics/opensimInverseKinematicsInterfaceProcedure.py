@@ -137,4 +137,64 @@ class InverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
         # rename the xml setup file with the filename as suffix
         files.renameFile(self.m_ikTool, 
                     self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-IKTool-setup.xml")
+
+
+class KalmanInverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
+    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory,modelVersion):
+
+        super(KalmanInverseKinematicXmlCgmProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory)
+
+        self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
+
+        if self.m_modelVersion == "CGM23": 
+            ikToolFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23-kalmanIkSetUp_template.xml"
+
+
+        self.m_ikTool = self.m_DATA_PATH + self.m_modelVersion + "-kalmanIk-setup.xml"
+        self.xml = opensimInterface.opensimXmlInterface(ikToolFile,self.m_ikTool)
        
+    def setWeights(self,weights_dict):
+        for key in weights_dict:
+            weights_dict[key]=weights_dict[key]/50
+
+        self.m_weights = weights_dict
+
+
+    def run(self):
+
+        if os.path.isfile(self.m_DATA_PATH +self.m_dynamicFile+"_ik_model_marker_locations.sto"):
+            os.remove(self.m_DATA_PATH +self.m_dynamicFile+"_ik_model_marker_locations.sto")
+        if os.path.isfile(self.m_DATA_PATH +self.m_dynamicFile+"_ik_marker_errors.sto"):
+            os.remove(self.m_DATA_PATH +self.m_dynamicFile+"_ik_marker_errors.sto")
+
+        self.xml.update()
+
+        if not hasattr(self, "m_frameRange"):
+            time_range_str = self.xml.m_soup.find("time_range").string
+            time_range = [float(it) for it in time_range_str.split(" ")]
+            self.m_frameRange = [int((time_range[0]*self.m_acq0.GetPointFrequency())+self.m_acq0.GetFirstFrame()),int((time_range[1]*self.m_acq0.GetPointFrequency())+self.m_acq0.GetFirstFrame())]
+
+        if not hasattr(self, "m_weights"):
+            markertasks = self.xml.m_soup.find_all("IKMarkerTask")
+            self.m_weights = dict()
+            for item in markertasks:
+                self.m_weights[item["name"]] = float(item.find("weight").string)
+
+        cmd = pyCGM2.OPENSIM_KSLIB_PATH+ "ks.exe -S \""+ self.m_DATA_PATH+"CGM23-kalmanIk-setup.xml\""
+        os.system(cmd)
+        # ikTool.setModel(self.m_osimModel)
+        
+
+        self.finalize()
+
+    def finalize(self):
+        # rename the xml setup file with the filename as suffix
+        files.renameFile(self.m_ikTool, 
+                    self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-kalmanIk-setup.xml")
+
+        files.renameFile(self.m_DATA_PATH+self.m_resultsDir + "\\_ks_model_marker_locations.sto", 
+                    self.m_DATA_PATH+self.m_resultsDir + "\\_ik_model_marker_locations.sto")
+
+        files.renameFile(self.m_DATA_PATH+self.m_resultsDir + "\\_ks_marker_errors.sto", 
+                    self.m_DATA_PATH+self.m_resultsDir + "\\_ik_marker_errors.sto")
+

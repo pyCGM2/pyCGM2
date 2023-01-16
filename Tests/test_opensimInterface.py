@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 # pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_GenericXmlprocedures::test_cgm23_complete
-# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_Xmlprocedures::test_cgm23_scaling_ik_muscle
-# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_Xmlprocedures::test_cgm22_scaling_ik_muscle
+# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_XmlProcedures::test_cgm23_scaling_ik_muscle
+# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_XmlProcedures::test_cgm22_scaling_ik_muscle
+
+# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_XmlProcedures::test_cgm23_scaling_kalmanIk_muscle
+
 from pickle import NONE
 import ipdb
 import os
@@ -979,6 +982,162 @@ class Test_CGM_XmlProcedures:
             oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
             oiamf.run()
             oiamf.pushStoToAcq()       
+
+    def test_cgm23_scaling_kalmanIk_muscle(self):
+
+            data_path = pyCGM2.TEST_DATA_PATH + "OpenSim\CGM23\\CGM23-progressionX-test\\"
+            settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_3-pyCGM2.settings")
+
+            staticFilename = "static.c3d" 
+            gaitFilename = "gait1.c3d"
+
+            modelVersion = "CGM2.3"
+
+            translators = settings["Translators"]
+            weights = settings["Fitting"]["Weight"]
+            hjcMethod = settings["Calibration"]["HJC"]
+
+
+            markerDiameter=14
+            required_mp={
+            'Bodymass'   : 71.0,
+            'Height'   : 1780.0,
+            'LeftLegLength' : 860.0,
+            'RightLegLength' : 865.0 ,
+            'LeftKneeWidth' : 102.0,
+            'RightKneeWidth' : 103.4,
+            'LeftAnkleWidth' : 75.3,
+            'RightAnkleWidth' : 72.9,
+            'LeftSoleDelta' : 0,
+            'RightSoleDelta' : 0,
+            'LeftShoulderOffset' : 0,
+            'RightShoulderOffset' : 0,
+            'LeftElbowWidth' : 0,
+            'LeftWristWidth' : 0,
+            'LeftHandThickness' : 0,
+            'RightElbowWidth' : 0,
+            'RightWristWidth' : 0,
+            'RightHandThickness' : 0
+            }
+            optional_mp = {
+                'LeftTibialTorsion' : 0,
+                'LeftThighRotation' : 0,
+                'LeftShankRotation' : 0,
+                'RightTibialTorsion' : 0,
+                'RightThighRotation' : 0,
+                'RightShankRotation' : 0
+                }
+
+            # --- Calibration ---
+            acqStatic = btkTools.smartReader(data_path +  staticFilename)
+            acqStatic =  btkTools.applyTranslators(acqStatic,translators)
+            trackingMarkers = cgm2.CGM2_3.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_3.THORAX_TRACKING_MARKERS+ cgm2.CGM2_3.UPPERLIMB_TRACKING_MARKERS
+            actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
+
+
+            dcm = cgm.CGM.detectCalibrationMethods(acqStatic)
+            model =cgm2.CGM2_3()
+            model.configure(detectedCalibrationMethods=dcm)
+            model.addAnthropoInputParameters(required_mp,optional=optional_mp)
+            model.setStaticTrackingMarkers(actual_trackingMarkers)
+
+            # ---- Calibration ----
+            scp = modelFilters.StaticCalibrationProcedure(model)
+            modelFilters.ModelCalibrationFilter(scp,acqStatic,model).compute()
+
+            # cgm decorator
+            modelDecorator.HipJointCenterDecorator(model).hara()
+            modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="both")
+            modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="both")
+
+            # final
+            modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+                            markerDiameter=markerDiameter).compute()
+
+            
+
+            # ------- FITTING 0--------------------------------------
+
+            acqGait = btkTools.smartReader(data_path +  gaitFilename)
+            trackingMarkers = cgm2.CGM2_3.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_3.THORAX_TRACKING_MARKERS+ cgm2.CGM2_3.UPPERLIMB_TRACKING_MARKERS
+            actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqGait, trackingMarkers)
+
+            # Motion FILTER
+            modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Sodervisk)
+            modMotion.compute()
+
+            
+            # ------- NEW OPENSIM --------------------------------------
+
+            # --- osim builder ---
+            
+            osimConverterSettings = files.openFile(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH,"interface\\CGM23\\OsimToCGM.settings")
+
+            # scaling
+            proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(data_path,"CGM2.3")
+            proc.setStaticTrial( acqStatic, staticFilename[:-4])
+            proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
+            proc.prepareXml()
+            
+            oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
+            oisf.run()
+            scaledOsim = oisf.getOsim()
+            scaledOsimName = oisf.getOsimName()
+            
+
+
+            # --- IK ---
+            ikWeights = settings["Fitting"]["Weight"]
+            progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
+
+            procIK = opensimInverseKinematicsInterfaceProcedure.KalmanInverseKinematicXmlCgmProcedure(data_path,scaledOsimName,"musculoskeletal_modelling2","CGM2.3")
+            procIK.setProgression(progressionAxis,forwardProgression)
+            procIK.prepareDynamicTrial(acqGait,gaitFilename[:-4])
+            procIK.setAccuracy(1e-8)
+            procIK.setWeights(ikWeights)
+            procIK.setTimeRange()
+            procIK.prepareXml()
+            
+            
+
+            oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
+            oiikf.run()            
+            oiikf.pushFittedMarkersIntoAcquisition()
+            oiikf.pushMotToAcq(osimConverterSettings)
+            acqIK =oiikf.getAcq()
+
+            
+            # ----- compute angles
+            modMotion=modelFilters.ModelMotionFilter(scp,acqIK,model,enums.motionMethod.Sodervisk,
+                                                        useForMotionTest=True)
+            modMotion.compute()
+
+            finalJcs =modelFilters.ModelJCSFilter(model,acqIK)
+            finalJcs.compute(description="new", pointLabelSuffix = "new")#
+
+
+
+            # #correct the ankle angles in the mot files
+            # motDataframe = opensimIO.OpensimDataFrame(data_path+"musculoskeletal_modelling\\",gaitFilename[:-4]+".mot")
+            # motDataframe.getDataFrame()["ankle_flexion_r"] = acqIK.GetPoint("RAnkleAngles_new").GetValues()[:,0]
+            # motDataframe.getDataFrame()["ankle_adduction_r"] = acqIK.GetPoint("RAnkleAngles_new").GetValues()[:,1]
+            # motDataframe.getDataFrame()["ankle_rotation_r"] = acqIK.GetPoint("RAnkleAngles_new").GetValues()[:,2]
+            # motDataframe.getDataFrame()["ankle_flexion_l"] = acqIK.GetPoint("LAnkleAngles_new").GetValues()[:,0]
+            # motDataframe.getDataFrame()["ankle_adduction_l"] = acqIK.GetPoint("LAnkleAngles_new").GetValues()[:,1]
+            # motDataframe.getDataFrame()["ankle_rotation_l"] = acqIK.GetPoint("LAnkleAngles_new").GetValues()[:,2]
+            # motDataframe.save()
+
+            # # --- Analyses ------
+            # procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmProcedure(data_path,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
+            # procAna.setProgression(progressionAxis,forwardProgression)
+            # procAna.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
+            # procAna.setTimeRange()
+            # procAna.prepareXml()
+
+            # oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
+            # oiamf.run()
+            # oiamf.pushStoToAcq()
+
 
 class Test_Generic_DrivenPose:
 
