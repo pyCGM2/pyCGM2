@@ -456,13 +456,24 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         # --- IK ---
         progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
-        procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
-        procIK.setProgression(progressionAxis,forwardProgression)
-        procIK.prepareDynamicTrial(acqGait,reconstructFilenameLabelled[:-4])
-        procIK.setAccuracy(accuracy)
-        procIK.setWeights(weights)
-        procIK.setTimeRange()
-        procIK.prepareXml()
+        if "kalmanIK" in kwargs and kwargs["kalmanIK"]: 
+            procIK = opensimInverseKinematicsInterfaceProcedure.KalmanInverseKinematicXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
+            procIK.setProgression(progressionAxis,forwardProgression)
+            procIK.prepareDynamicTrial(acqGait,reconstructFilenameLabelled[:-4])
+            procIK.setAccuracy(accuracy)
+            procIK.setWeights(weights)
+            procIK.setTimeRange()
+            procIK.prepareXml()
+
+
+        else:
+            procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
+            procIK.setProgression(progressionAxis,forwardProgression)
+            procIK.prepareDynamicTrial(acqGait,reconstructFilenameLabelled[:-4])
+            procIK.setAccuracy(accuracy)
+            procIK.setWeights(weights)
+            procIK.setTimeRange()
+            procIK.prepareXml()
 
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
         oiikf.run()
