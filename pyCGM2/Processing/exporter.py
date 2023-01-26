@@ -1743,41 +1743,42 @@ class AnalysisExportFilter(object):
 
                     out["Emg"][key][keys[1]]["values"] = li
 
-        if self.analysis.gvs != {}:
-            processedKeys=list()
-            for keys in self.analysis.gvs.keys():
-                if not np.all( self.analysis.gvs[keys]["mean"]==0):
+        if self.analysis.gvs is not None:
+            if self.analysis.gvs != {}:
+                processedKeys=list()
+                for keys in self.analysis.gvs.keys():
+                    if not np.all( self.analysis.gvs[keys]["mean"]==0):
 
-                    if keys not in processedKeys:
-                        processedKeys.append(keys)
-                    else:
-                        raise Exception ( "[pyCGM2] - duplicated keys[ %s - %s] detected" %(keys[0],keys[1]))
+                        if keys not in processedKeys:
+                            processedKeys.append(keys)
+                        else:
+                            raise Exception ( "[pyCGM2] - duplicated keys[ %s - %s] detected" %(keys[0],keys[1]))
 
-                    if keys[0] not in out["Scores"]["GVS"].keys():
-                        out["Scores"]["GVS"][keys[0]]=dict()
-                        out["Scores"]["GVS"][keys[0]][keys[1]]=dict()
-                        out["Scores"]["GVS"][keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
-                    else:
-                        out["Scores"]["GVS"][keys[0]][keys[1]]=dict()
-                        out["Scores"]["GVS"][keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+                        if keys[0] not in out["Scores"]["GVS"].keys():
+                            out["Scores"]["GVS"][keys[0]]=dict()
+                            out["Scores"]["GVS"][keys[0]][keys[1]]=dict()
+                            out["Scores"]["GVS"][keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
+                        else:
+                            out["Scores"]["GVS"][keys[0]][keys[1]]=dict()
+                            out["Scores"]["GVS"][keys[0]][keys[1]]["values"]= {"X":[],"Y":[],"Z":[]}
 
-                    li_X = list()
-                    li_Y = list()
-                    li_Z = list()
-                    for cycleIndex in range(0,self.analysis.gvs[keys]["values"].shape[0]):
-                        li_X.append(self.analysis.gvs[keys]["values"][cycleIndex,0])
-                        li_Y.append(self.analysis.gvs[keys]["values"][cycleIndex,1])
-                        li_Z.append(self.analysis.gvs[keys]["values"][cycleIndex,2])
+                        li_X = list()
+                        li_Y = list()
+                        li_Z = list()
+                        for cycleIndex in range(0,self.analysis.gvs[keys]["values"].shape[0]):
+                            li_X.append(self.analysis.gvs[keys]["values"][cycleIndex,0])
+                            li_Y.append(self.analysis.gvs[keys]["values"][cycleIndex,1])
+                            li_Z.append(self.analysis.gvs[keys]["values"][cycleIndex,2])
 
-                    out["Scores"]["GVS"][keys[0]][keys[1]]["values"]["X"] = li_X
-                    out["Scores"]["GVS"][keys[0]][keys[1]]["values"]["Y"] = li_Y
-                    out["Scores"]["GVS"][keys[0]][keys[1]]["values"]["Z"] = li_Z
-        if self.analysis.gps != {}:
+                        out["Scores"]["GVS"][keys[0]][keys[1]]["values"]["X"] = li_X
+                        out["Scores"]["GVS"][keys[0]][keys[1]]["values"]["Y"] = li_Y
+                        out["Scores"]["GVS"][keys[0]][keys[1]]["values"]["Z"] = li_Z
+            if self.analysis.gps != {}:
 
-            out["Scores"]["GPS"]["mean"] = self.analysis.gps["Overall"]["mean"][0]
-            out["Scores"]["GPS"]["std"] = self.analysis.gps["Overall"]["std"][0]
-            out["Scores"]["GPS"]["median"] = self.analysis.gps["Overall"]["median"][0]
-            out["Scores"]["GPS"]["values"] = self.analysis.gps["Overall"]["values"].tolist()
+                out["Scores"]["GPS"]["mean"] = self.analysis.gps["Overall"]["mean"][0]
+                out["Scores"]["GPS"]["std"] = self.analysis.gps["Overall"]["std"][0]
+                out["Scores"]["GPS"]["median"] = self.analysis.gps["Overall"]["median"][0]
+                out["Scores"]["GPS"]["values"] = self.analysis.gps["Overall"]["values"].tolist()
 
 
         files.saveJson(path,outputName,out)
