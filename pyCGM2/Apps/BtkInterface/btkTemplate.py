@@ -59,8 +59,52 @@ def main():
 
         # --------------------------process ------------------------------------
         # Work with BTK Here
+
+        # example 1 ! mid point
         values = (acq.GetPoint("LTIAP").GetValues() + acq.GetPoint("LTIB").GetValues()) /2.0
         btkTools.smartAppendPoint(acq,"LTIAD",values, PointType="Marker",desc="",residuals = None)
+
+        # example 2 place point on an axis
+        from pyCGM2.Model import modelDecorator
+        values2  = modelDecorator.midPoint(acq,"RMED","RANK",offset=68)
+        btkTools.smartAppendPoint(acq,"RANK",values2, PointType="Marker",desc="",residuals = None)
+
+        # example 3 - rigid filling
+        from pyCGM2 import enums
+        from pyCGM2.Model import model
+        from pyCGM2.Model import modelFilters
+
+        acqStatic = btkTools.smartReader(str(DATA_PATH+"Trial07.c3d"))
+        targetMarker = "RANK"
+        trackingMarkers = ["RTIAP","RTIAD","RTIB"]
+        mod=model.Model()
+        mod.addSegment("segment",0,enums.SegmentSide.Central,calibration_markers=[targetMarker], tracking_markers = trackingMarkers)
+
+
+        gcp=modelFilters.GeneralCalibrationProcedure()
+        gcp.setDefinition('segment',
+                          "TF",
+                          sequence='XYZ',
+                          pointLabel1=trackingMarkers[0],
+                          pointLabel2=trackingMarkers[1],
+                          pointLabel3=trackingMarkers[2],
+                          pointLabelOrigin=trackingMarkers[0])
+
+        modCal=modelFilters.ModelCalibrationFilter(gcp,acqStatic,mod)
+        modCal.compute()
+
+        # if not btkTools.isPointExist(acqGait,targetMarker):
+        #     # print "targer Marker not in the c3d"
+        #     mod.getSegment("segment").m_tracking_markers.remove(targetMarker)
+
+        modMotion=modelFilters.ModelMotionFilter(gcp,acq,mod,enums.motionMethod.Sodervisk)
+        modMotion.compute()
+
+
+        #populate values
+        valReconstruct=mod.getSegment('segment').getReferential('TF').getNodeTrajectory(targetMarker)
+
+        btkTools.smartAppendPoint(acq,"RANK",valReconstruct, PointType="Marker",desc="",residuals = None)
 
 
 
