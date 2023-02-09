@@ -60,7 +60,6 @@ def main():
 
     
     if NEXUS_PYTHON_CONNECTED or OFFLINE_MODE: # run Operation
-        args = parser.parse_args()
 
         # --------------------------LOADING ------------------------------------
         if NEXUS_PYTHON_CONNECTED:        
