@@ -171,6 +171,10 @@ def main():
             # ----------------------DISPLAY ON VICON-------------------------------
             nexusFilters.NexusModelFilter(NEXUS,model,acqIK,subject,pointSuffix).run()
             nexusTools.createGeneralEvents(NEXUS,subject,acqIK,["Left-FP","Right-FP"])
+            if args.musculoSkeletalModel:
+                muscleLabels = btkTools.getLabelsFromScalar(acqIK,description = "MuscleLength")
+                for label in muscleLabels:
+                    nexusTools.appendBtkScalarFromAcq(NEXUS,subject,"MuscleLength",label,"None",acqIK) # None ( not Length) to keep meter unit
             # ========END of the nexus OPERATION if run from Nexus  =========
         else:
             btkTools.smartWriter(acqIK, DATA_PATH+reconstructFilenameLabelled[:-4]+"-offlineProcessed.c3d")
