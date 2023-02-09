@@ -124,7 +124,10 @@ def main():
         if not ikWeight: ikWeight = settings["Fitting"]["Weight"]
 
         #force plate assignement from Nexus
-        mfpa = nexusTools.getForcePlateAssignment(NEXUS)
+        if NEXUS_PYTHON_CONNECTED:
+            mfpa = nexusTools.getForcePlateAssignment(NEXUS)
+        else:
+            mfpa =  args.offline[2]
 
         # btkAcquisition
         if NEXUS_PYTHON_CONNECTED:
