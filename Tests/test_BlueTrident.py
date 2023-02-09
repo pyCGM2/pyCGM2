@@ -26,6 +26,9 @@ class Test_BlueTrident:
         imu1.downsample()
         imu1.constructDataFrame()
 
+        imu1.dataframe 
+
+
         imu2 = BlueTrident.getBlueTrident(acq,"2")
         imu2.downsample()
         imu2.constructDataFrame()
