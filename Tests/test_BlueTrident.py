@@ -26,9 +26,6 @@ class Test_BlueTrident:
         imu1.downsample()
         imu1.constructDataFrame()
 
-        imu1.dataframe 
-
-
         imu2 = BlueTrident.getBlueTrident(acq,"2")
         imu2.downsample()
         imu2.constructDataFrame()
@@ -37,7 +34,6 @@ class Test_BlueTrident:
         imu3.downsample()
         imu3.constructDataFrame()
 
-        import ipdb; ipdb.set_trace()
 
     def test_reader_csv(self):
         fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\\BlueTridentCaptureU\\example_TS-01436.csv"
