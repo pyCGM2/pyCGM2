@@ -1,0 +1,15 @@
+call C:\Users\fleboeuf\Miniconda3\envs\pycgm3\Scripts\activate.bat
+
+echo "Calibration"
+echo "------------"
+nexus_CGM22_Calibration.exe --offline "Nick" "pyCGM2 lower limb CGM22 Static.c3d" -msm
+echo "Calibration------> OK"
+
+
+echo "Fitting - file 1"
+echo "------------"
+nexus_CGM22_Fitting.exe --offline "Nick" "pyCGM2 lower limb CGM22 Walking01.c3d" "XXX" -msm
+echo "Fitting - File 1------> OK"
+
+
+pause
