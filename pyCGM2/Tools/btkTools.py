@@ -24,6 +24,7 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system. install it for working with the API")
 
+from pyCGM2.External.ktk.kineticstoolkit import timeseries
 
 # --- acquisition -----
 def smartReader(filename, translators=None):
@@ -1503,3 +1504,47 @@ def getLabelsFromScalar(acq, description=None):
                 out.append(it.GetLabel())
 
     return out
+
+
+def btkPointToKtkTimeseries(acq, type=btk.btkPoint.Marker):
+    """convert the all btkPoint of a btkAcquisition in a Ktk timeseries 
+
+    Args:
+        acq (btk.btkAcquisition): acquisition
+        type (btk.btkPoint enum, optional): A btkPoint enum ( choice btk.btkPoint.Marker, btk.btkPoint.Angle,
+            btk.btkPoint.Moment,btk.btkPoint.Force,btk.btkPoint.Power) . Defaults to btk.btkPoint.Marker.
+
+    Returns:
+        ktk.kineticstoolkit.timeseries.TimeSeries: a ktk timeseries
+    """
+     
+    freq = acq.GetPointFrequency()
+    frames = np.arange(0, acq.GetPointFrameNumber())
+
+    ts = timeseries.TimeSeries()
+    ts.time = frames*1/freq
+    for point in btk.Iterate(acq.GetPoints()):
+        if point.GetType() == type:
+            ts.data[point.GetLabel()] = point.GetValues()
+    
+    return ts
+
+
+def btkAnalogToKtkTimeseries(acq):
+    """convert the all btkAnalog of a btkAcquisition in a Ktk timeseries 
+
+    Args:
+        acq (btk.btkAcquisition): acquisition
+
+    Returns:
+        ktk.kineticstoolkit.timeseries.TimeSeries: a ktk timeseries
+    """     
+    freq = acq.GetAnalogFrequency()
+    frames = np.arange(0, acq.GetAnalogFrameNumber())
+
+    ts = timeseries.TimeSeries()
+    ts.time = frames*1/freq
+    for analog in btk.Iterate(acq.GetAnalogs()):
+        ts.data[analog.GetLabel()] = analog.GetValues()
+    
+    return ts

@@ -106,3 +106,27 @@ class Test_Btk:
         acq = btkTools.smartReader(filename, translators=None)
 
         btkTools.smartWriter(acq, "veriFModelOuputs.c3d")
+
+class Test_Btk_Ktk:
+
+    def test_convertPointToTs(self):
+        filename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IO\\Hannibal_c3d\\gait1.c3d"
+        acq = btkTools.smartReader(filename, translators=None)
+
+        ts = btkTools.btkPointToKtkTimeseries(acq)
+        ts
+
+    def test_convertAngleToTs(self):
+        filename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IO\\Hannibal_c3d\\gait1.c3d"
+        acq = btkTools.smartReader(filename, translators=None)
+
+        ts = btkTools.btkPointToKtkTimeseries(acq, type = btk.btkPoint.Angle)
+        ts
+
+    def test_convertAnalogToTs(self):
+        filename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IO\\Hannibal_c3d\\gait1.c3d"
+        acq = btkTools.smartReader(filename, translators=None)
+
+        ts = btkTools.btkAnalogToKtkTimeseries(acq)
+        ts
+        import ipdb; ipdb.set_trace()
