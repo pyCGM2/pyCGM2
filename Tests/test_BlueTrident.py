@@ -52,6 +52,26 @@ class Test_BlueTrident:
         fullfilenames = [fullfilename,fullfilename1, fullfilename2]
         imus = BlueTrident.readmultipleBlueTridentCsv(fullfilenames,1125)
 
+    def test_reader_ktk(self):
+        fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\BlueTrident\\trial 1.c3d"
+        acq = btkTools.smartReader(fullfilename)
+        acq = BlueTrident.correctBlueTridentIds(acq)
+
+        imu1 = BlueTrident.getBlueTrident(acq,"1")
+        imu1.downsample()
+        imu1.constructTimeseries()
+
+        imu2 = BlueTrident.getBlueTrident(acq,"2")
+        imu2.downsample()
+        imu2.constructTimeseries()
+
+        imu3 = BlueTrident.getBlueTrident(acq,"3")
+        imu3.downsample()
+        imu3.constructTimeseries()
+
+        import ipdb; ipdb.set_trace()
+
+
 
 class Test_Garches:
 
