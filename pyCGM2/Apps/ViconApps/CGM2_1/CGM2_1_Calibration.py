@@ -36,6 +36,8 @@ def main():
     parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
     parser.add_argument('--offline', nargs=2, help=' subject name and static c3d file', required=False)
 
+    args = parser.parse_args()
+
     NEXUS_PYTHON_CONNECTED = False
     OFFLINE_MODE = False if args.offline is None else True
 
@@ -56,7 +58,7 @@ def main():
 
 
     if NEXUS_PYTHON_CONNECTED or OFFLINE_MODE: # run Operation
-        args = parser.parse_args()
+        
 
 
         # --------------------------LOADING ------------------------------------

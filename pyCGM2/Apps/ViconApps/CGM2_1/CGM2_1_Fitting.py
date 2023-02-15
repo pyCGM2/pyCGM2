@@ -30,6 +30,8 @@ def main():
     parser.add_argument('-fe','--frameEnd',type=int,  help='last frame to process')
     parser.add_argument('--offline', nargs= 3, help=' subject name - dynamic c3d file - mfpa', required=False)
 
+    args = parser.parse_args()
+
     NEXUS_PYTHON_CONNECTED = False
     OFFLINE_MODE = False if args.offline is None else True
 
@@ -48,7 +50,7 @@ def main():
 
 
     if NEXUS_PYTHON_CONNECTED or OFFLINE_MODE: # run Operation
-        args = parser.parse_args()
+
         # --------------------------LOADING ------------------------------------
         if NEXUS_PYTHON_CONNECTED:        
             DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
