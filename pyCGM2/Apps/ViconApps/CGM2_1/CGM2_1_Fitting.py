@@ -63,7 +63,7 @@ def main():
 
         LOGGER.logger.info( "data Path: "+ DATA_PATH )
         LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
-        LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
+        LOGGER.logger.info( "Fitting file: "+ reconstructFilenameLabelled)
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         settings = files.loadModelSettings(DATA_PATH,"CGM2_1-pyCGM2.settings")
@@ -95,9 +95,6 @@ def main():
             optional_mp = mpInfo["MP"]["Optional"].copy()
         
         
-        subjects = NEXUS.GetSubjectNames()
-        subject = nexusTools.getActiveSubject(NEXUS)
-        LOGGER.logger.info(  "Subject name : " + subject  )
 
         # --------------------pyCGM2 MODEL ------------------------------
         model = files.loadModel(DATA_PATH,subject)
