@@ -73,7 +73,7 @@ def main():
 
         LOGGER.logger.info( "data Path: "+ DATA_PATH )
         LOGGER.set_file_handler(DATA_PATH+"pyCGM2-Fitting.log")
-        LOGGER.logger.info( "calibration file: "+ reconstructFilenameLabelled)
+        LOGGER.logger.info( "Fitting file: "+ reconstructFilenameLabelled)
 
         # --------------------------GLOBAL SETTINGS ------------------------------------
         settings = files.loadModelSettings(DATA_PATH,"CGM2_3-pyCGM2.settings")
