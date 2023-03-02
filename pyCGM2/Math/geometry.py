@@ -5,6 +5,27 @@
 
 import numpy as np
 
+def computeAngle(u1,v1):
+        if len(u1)==3:
+        #     %3D, can use cross to resolve sign
+            uMod = np.linalg.norm(u1)
+            vMod = np.linalg.norm(v1)
+            uvPr = np.sum(u1*v1)
+            costheta = min(uvPr/uMod/vMod,1);
+
+            theta = np.arccos(costheta)
+        #
+        #     %resolve sign
+            cp=(np.cross(u1,v1))
+            idxM = np.argmax(abs(cp)) #idxM=find(abs(cp)==max(abs(cp)));
+
+            s= cp[idxM]
+            if s < 0:
+                theta = -theta;
+        elif len(u1)==2:
+            theta = (np.arctan2(v1[1],v1[0])-np.arctan2(u1[1],u1[0]))
+
+        return theta
 
 def angleFrom2Vectors(v1, v2, vn=None):
     """
