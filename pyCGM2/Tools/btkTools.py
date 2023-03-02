@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Tools
-#APIDOC["Draft"]=False
-#--end--
-
 """
 This module contains convenient functions for working with btk
 
@@ -12,6 +8,7 @@ check out **test_btkTools** for examples
 
 import numpy as np
 from scipy import spatial
+from  pyCGM2.Math import geometry
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
@@ -1548,3 +1545,26 @@ def btkAnalogToKtkTimeseries(acq):
         ts.data[analog.GetLabel()] = analog.GetValues()
     
     return ts
+
+
+def calculateAngleFrom3points( acq,pt1,pt2,pt3):
+    nrow = acq.GetPointFrameNumber()
+    out = np.zeros((nrow,3))
+
+    for i in range (0, nrow):
+        pt1r = acq.GetPoint(pt1).GetResiduals()[i,0]
+        pt2r = acq.GetPoint(pt2).GetResiduals()[i,0]
+        pt3r = acq.GetPoint(pt3).GetResiduals()[i,0]
+
+        if pt1r == -1.0 or pt2r == -1.0 or pt3r == -1.0:
+            out[i,0] = 0
+            LOGGER.logger.warning("there are gap at frame %i - value set to 0"%(i))
+        else:
+            u1 = acq.GetPoint(pt2).GetValues()[i,:] -acq.GetPoint(pt1).GetValues()[i,:]
+            v1 = acq.GetPoint(pt3).GetValues()[i,:] -acq.GetPoint(pt1).GetValues()[i,:]
+
+            theta = geometry.computeAngle(u1,v1)
+
+            out[i,0] = theta
+
+    return out
