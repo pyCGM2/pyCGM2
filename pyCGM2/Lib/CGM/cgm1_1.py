@@ -20,6 +20,8 @@ from pyCGM2.Anomaly import anomalyFilters
 from pyCGM2.Anomaly import anomalyDetectionProcedures
 from pyCGM2.Inspector import inspectorFilters
 from pyCGM2.Inspector import inspectorProcedures
+from pyCGM2.Model.Procedures import modelQuality
+from pyCGM2.Model.Procedures import modelMotionCorrection
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
               required_mp,optional_mp,
@@ -225,6 +227,13 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
 
         modelFilters.CentreOfMassFilter(model,acqStatic).compute(pointLabelSuffix=pointSuffix)
 
+
+        # computation of the wand planar angles        
+        proc = modelQuality.WandAngleQualityProcedure()
+        filter = modelFilters.ModelQualityFilter(acqStatic,proc)
+        filter.run()
+
+
         btkTools.cleanAcq(acqStatic)
         if detectAnomaly and not anomalyException:
             LOGGER.logger.error("Anomalies has been detected - Check Warning messages of the log file")
@@ -412,9 +421,9 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         # Apply Naim 2019 method
         if type(kwargs["NaimKneeCorrection"]) is float:
-            nmacp = modelFilters.Naim2019ThighMisaligmentCorrectionProcedure(model,"Both",threshold=(kwargs["NaimKneeCorrection"]))
+            nmacp = modelMotionCorrection.Naim2019ThighMisaligmentCorrectionProcedure(model,"Both",threshold=(kwargs["NaimKneeCorrection"]))
         else:
-            nmacp = modelFilters.Naim2019ThighMisaligmentCorrectionProcedure(model,"Both")
+            nmacp = modelMotionCorrection.Naim2019ThighMisaligmentCorrectionProcedure(model,"Both")
         mmcf = modelFilters.ModelMotionCorrectionFilter(nmacp)
         mmcf.correct()
 
@@ -442,6 +451,10 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         custom_mp = files.openFile(DATA_PATH,"mp.settings")
         bodySegmentParameters.updateFromcustomMp(model,custom_mp)
 
+    # computation of the wand planar angles        
+    proc = modelQuality.WandAngleQualityProcedure()
+    filter = modelFilters.ModelQualityFilter(acqGait,proc)
+    filter.run()
 
     modelFilters.CentreOfMassFilter(model,acqGait).compute(pointLabelSuffix=pointSuffix)
 
