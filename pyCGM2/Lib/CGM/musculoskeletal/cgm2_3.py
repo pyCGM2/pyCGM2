@@ -318,6 +318,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         momentProjection (str) : referential for projection of joint moment
 
     Low-level Keyword Args :
+        muscleLength (bool): enable muscle length
+        ikAccuracy (float) : accuracy of the IK solver
         anomalyException (bool): raise exception if anomaly detected
         forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         frameInit (int):  frame index.
@@ -545,6 +547,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         #---- Joint energetics----
         modelFilters.JointPowerFilter(model,finalAcqGait).compute(pointLabelSuffix=pointSuffix)
+    else:
+        mappedForcePlate = None
 
 
 

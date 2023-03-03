@@ -63,6 +63,8 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
             opensimTools.footReactionMotFile(
                 self.m_acq, self.m_DATA_PATH+self.m_resultsDir+"\\"+self.m_dynamicFile+"_grf.mot",
                 self.m_progressionAxis,self.m_forwardProgression,mfpa = self.m_mfpa)
+        else:
+            LOGGER.logger.info("Trial without force plate - No dynamic trials prepared ")
 
 
     def setTimeRange(self,beginFrame=None,lastFrame=None):

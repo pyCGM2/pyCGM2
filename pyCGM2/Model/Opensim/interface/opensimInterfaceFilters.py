@@ -244,6 +244,8 @@ class opensimInterfaceAnalysesFilter(object):
          
         if self.m_procedure.m_acq is not None:
             
+            nframes = self.m_procedure.m_acq.GetPointFrameNumber()
+
             for output in outputs:
 
                 label = type[:-8] + output
@@ -264,14 +266,11 @@ class opensimInterfaceAnalysesFilter(object):
 
                 for muscle in storageDataframe.m_dataframe.columns[1:]:
                     serie = storageDataframe.getDataFrame()[muscle].to_list()
-                    
                     if freq !=100.0:
-                        time = np.arange(0, self.m_procedure.m_endTime+1/100, 1/100)
+                        time = np.arange(0, len(serie)*(1/100), 1/100)
                         f = interp1d(time, serie, fill_value="extrapolate")
-                        newTime = np.arange(0, self.m_procedure.m_endTime+1/freq, 1/freq)
+                        newTime = np.arange(0, len(serie)*(1/100), 1/freq)
                         values_interp = f(newTime)
-                                          
-
                         values[:, 0] = values_interp
                     else:
                         values[:, 0] = serie
