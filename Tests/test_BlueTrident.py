@@ -69,7 +69,6 @@ class Test_BlueTrident:
         imu3.downsample()
         imu3.constructTimeseries()
 
-        import ipdb; ipdb.set_trace()
 
 
 
@@ -89,4 +88,3 @@ class Test_Garches:
 
         imu1.constructDataFrame()
 
-        import ipdb; ipdb.set_trace()

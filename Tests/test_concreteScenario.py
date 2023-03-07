@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_concreteScenario.py::TestData_withNoFP::test_CGM1_FullBody_noOptions_noFP
 # pytest -s --disable-pytest-warnings  test_concreteScenario.py::Test_DifferentStaticDynamicMarkerSet::test_CGM1_FullBody_noOptions_uncorrectPelvisMarker
 import pyCGM2
@@ -12,7 +11,7 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1,cgm2_4
 from pyCGM2.Model import modelFilters
-from pyCGM2.Eclipse import vskTools
+from pyCGM2.Nexus import vskTools
 from pyCGM2.Utils import testingUtils,utils
 
 

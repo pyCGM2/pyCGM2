@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 # pytest -s --disable-pytest-warnings  test_opensimInterfaceProcessing.py::Test_opensimModelOuputprocessing_fromNexus::test_AllMuscleLabels_highLevelViewer
-import ipdb
-import os
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Lib import analysis
-from pyCGM2.Lib import msm
 from pyCGM2.Lib import plot
 
 
@@ -76,7 +73,7 @@ class Test_opensimModelOuputprocessing_fromNexus:
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
         fig = pf.plot()
-        plt.show()
+        #plt.show()
 
         analysis.exportAnalysis(analysisInstance,DATA_PATH,"analysisExported.xlsx")
 
@@ -96,7 +93,7 @@ class Test_opensimModelOuputprocessing_fromNexus:
                         dynamicMuscleLabelsDict = None)
         
         # high-level function
-        figs,filenames = plot.plot_DescriptiveMuscleLength(DATA_PATH,analysisInstance,None,exportPdf=True)
+        figs,filenames = plot.plot_DescriptiveMuscleLength(DATA_PATH,analysisInstance,None,exportPdf=True,show=False)
 
     
 
@@ -126,11 +123,13 @@ class Test_opensimModelOuputprocessing_fromNexus:
         # gigh-level function
         figs,filenames = plot.plot_DescriptiveMuscleLength(DATA_PATH,analysisInstance,None,
             normalizedSuffix= "PoseNormalized",
-            exportPdf=True)
+            exportPdf=True,
+            show=False)
 
         figs,filenames = plot.plot_DescriptiveMuscleLength(DATA_PATH,analysisInstance,None,
             normalizedSuffix= "PoseNormalized",
             exportPdf=True,
-            muscles=["tib_ant","rect_fem"])
+            muscles=["tib_ant","rect_fem"],
+            show=False)
 
 

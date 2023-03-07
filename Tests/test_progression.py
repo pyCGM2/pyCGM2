@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_progression.py::Test_btkProgression
 """
 Created on Thu Sep 15 11:09:22 2016

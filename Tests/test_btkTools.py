@@ -129,4 +129,3 @@ class Test_Btk_Ktk:
 
         ts = btkTools.btkAnalogToKtkTimeseries(acq)
         ts
-        import ipdb; ipdb.set_trace()

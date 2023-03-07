@@ -6,7 +6,6 @@ from pyCGM2.Tools import opensimTools
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
-import ipdb
 
 try:
     from pyCGM2 import btk

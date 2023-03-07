@@ -9,21 +9,24 @@ from pyCGM2.Nexus import nexusTools
 
 
 # vicon nexus
-from viconnexusapi import ViconNexus
+try:
+    from viconnexusapi import ViconNexus
+    NEXUS = ViconNexus.ViconNexus()
+except:
+    LOGGER.logger.warning("No Nexus connection")
+else :
+    class Tests:
+        def test_0(self):
 
+            NEXUS = ViconNexus.ViconNexus()
 
-class Tests:
-    def test_0(self):
+            DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\forcePlatesDetection\\"
+            filename = "gait4FP"
 
-        NEXUS = ViconNexus.ViconNexus()
+            NEXUS.OpenTrial( str(DATA_PATH+filename), 30 )
 
-        DATA_PATH =  pyCGM2.TEST_DATA_PATH+"NexusAPI\\forcePlatesDetection\\"
-        filename = "gait4FP"
+            mfpa = nexusTools.getForcePlateAssignment(NEXUS)
 
-        NEXUS.OpenTrial( str(DATA_PATH+filename), 30 )
-
-        mfpa = nexusTools.getForcePlateAssignment(NEXUS)
-
-        acqGait = btkTools.smartReader(str(DATA_PATH +  filename+ ".c3d"))
-        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
-        mappedForcePlate1 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa=mfpa)
+            acqGait = btkTools.smartReader(str(DATA_PATH +  filename+ ".c3d"))
+            mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+            mappedForcePlate1 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa=mfpa)

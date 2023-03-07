@@ -6,7 +6,6 @@
 # pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_XmlProcedures::test_cgm23_scaling_ik_muscle_noForcePlate
 
 from pickle import NONE
-import ipdb
 import os
 import matplotlib.pyplot as plt
 
@@ -14,7 +13,7 @@ import matplotlib.pyplot as plt
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import pyCGM2
-from pyCGM2 import opensim4 as opensim
+
 
 from pyCGM2.Utils import files
 from pyCGM2.Tools import  btkTools
@@ -23,11 +22,9 @@ from pyCGM2.Model.CGM2 import cgm,cgm2
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.Model import  modelFilters,modelDecorator
 from pyCGM2 import enums
-from pyCGM2.Model.Opensim import opensimFilters
 from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Lib.Processing import progression
 from pyCGM2.ForcePlates import forceplates
-from pyCGM2.Model.Opensim import opensimFilters
 from pyCGM2.Nexus import vskTools
 from pyCGM2.Lib.CGM import  cgm2_3
 from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_3 as cgm2_3msm

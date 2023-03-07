@@ -303,7 +303,7 @@ class Test_highLevel_customNormative:
     #@pytest.mark.mpl_image_compare
     def test__highLevel_customNormative_plot_MAP(self):
         DATA_PATH,modelledFilenames,analysisInstance = dataTest2()
-        normativeDataset = normativeDatasets.NormativeData("CGM23","Spont")
+        normativeDataset = normativeDatasets.NormativeData("CGM23-msm","Spont")
 
         fig = plot.plot_MAP(DATA_PATH,analysisInstance,normativeDataset,
             exportPdf=False,
@@ -318,7 +318,7 @@ class Test_highLevel_customNormative:
     def test_highLevel_customNormative_gaitPanel_descriptiveKinematics(self):
 
         DATA_PATH,analysisInstance = dataTest1()
-        normativeDataset = normativeDatasets.NormativeData("CGM23","Spont")
+        normativeDataset = normativeDatasets.NormativeData("CGM23-msm","Spont")
 
         fig = plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",normativeDataset,
             pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=False,title=None)
@@ -332,7 +332,7 @@ class Test_highLevel_customNormative:
     def test_highLevel_customNormative_gaitPanel_descriptiveKinetics(self):
 
         DATA_PATH,analysisInstance = dataTest1()
-        normativeDataset = normativeDatasets.NormativeData("CGM23","Spont")
+        normativeDataset = normativeDatasets.NormativeData("CGM23-msm","Spont")
 
         fig = plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"LowerLimb",normativeDataset,
             pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=False,title=None)

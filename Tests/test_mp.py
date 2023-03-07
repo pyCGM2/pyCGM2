@@ -2,9 +2,6 @@
 #pytest -s --mpl --disable-pytest-warnings  test_mp.py::Test_CGM::test_cgm1
 
 import numpy as np
-from docutils import SettingsSpec
-import pytest
-from pyCGM2.Report import normativeDatasets
 
 import matplotlib.pyplot as plt
 
@@ -18,7 +15,6 @@ from pyCGM2.Nexus import vskTools
 
 from pyCGM2.Utils import files
 
-import ipdb
 
 class Test_customMp:
 
@@ -27,7 +23,6 @@ class Test_customMp:
 
         path = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\Settings\\"
         mpSettings = files.openFile(path, "mp.settings")
-        ipdb.set_trace()
 
 class Test_CGM:
 

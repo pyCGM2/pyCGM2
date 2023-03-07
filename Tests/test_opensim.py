@@ -9,7 +9,6 @@ from pyCGM2.Tools import opensimTools
 from pyCGM2.Tools import btkTools
 from bs4 import BeautifulSoup
 from pyCGM2.Lib import opensimtk
-import ipdb
 from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
 from pyCGM2.Model.Opensim.interface import opensimInterface
 
@@ -113,4 +112,3 @@ class Test_osim:
 
         bySide = osimInterface.getMuscles_bySide()
         print (bySide)
-        ipdb.set_trace()

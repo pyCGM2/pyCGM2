@@ -1,6 +1,5 @@
 # coding: utf-8
 #pytest -s --disable-pytest-warnings  test_GPS.py::Test_GPS::test_CGM1
-# from __future__ import unicode_literals
 
 import pyCGM2
 from pyCGM2.Lib import analysis

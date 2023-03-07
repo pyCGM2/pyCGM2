@@ -13,7 +13,7 @@ import pyCGM2
 from pyCGM2 import enums
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Tools import btkTools
-from pyCGM2.Eclipse import vskTools
+from pyCGM2.Nexus import vskTools
 from pyCGM2.Utils import testingUtils
 
 

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_forcePlate_groundReaction.py::Test_groundReactionForcePlate::test_sample0
 import pyCGM2
 from pyCGM2.Tools import btkTools

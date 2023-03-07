@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
-from pyCGM2 import opensim4 as opensim
+#from pyCGM2 import opensim4 as opensim
+
+import pyCGM2; LOGGER = pyCGM2.LOGGER
+try:
+    from pyCGM2 import opensim4 as opensim
+except:
+    LOGGER.logger.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
+    try:
+        import opensim
+    except:
+        LOGGER.logger.error("[pyCGM2] : opensim not find on your system. Install it for working with the API")
+
 import numpy as np
 import pandas as pd
 pd.set_option("display.precision", 8)

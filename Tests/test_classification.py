@@ -52,4 +52,4 @@ class Test_lowLevel:
 
         procedure.plot(analysisInstance)
         print (sagClass)
-        plt.show()
+        #plt.show()

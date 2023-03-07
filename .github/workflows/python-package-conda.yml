@@ -11,15 +11,15 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.9
     - name: Install dependencies
       run: |
-        C:\Miniconda\condabin\conda.bat env update --file environment.yml --name pycgm3
+        C:\Miniconda\condabin\conda.bat env update --file environment_py39.yml
         C:\Miniconda\condabin\conda.bat init powershell
     - name: Lint with flake8
       run: |
         # Activate the base environment
-        C:\Miniconda\condabin\conda.bat activate pycgm3
+        C:\Miniconda\condabin\conda.bat activate pycgm39
         C:\Miniconda\condabin\conda.bat install flake8
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics

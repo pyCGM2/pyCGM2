@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# from __future__ import unicode_literals
 # pytest -s --disable-pytest-warnings  test_translators.py::TestTranslatorScenario::test_scenario1Test
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER

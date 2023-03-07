@@ -1,19 +1,18 @@
 # coding: utf-8
 # pytest -s --disable-pytest-warnings  test_plot_fromAcq.py::Test_highLevel::test_temporalEmgPlot
-# from __future__ import unicode_literals
 import matplotlib.pyplot as plt
 
 import pyCGM2
 from pyCGM2.EMG import emgFilters
 
 from pyCGM2.Tools import btkTools
-from pyCGM2.Lib import analysis, plot
+from pyCGM2.Lib import plot
 from pyCGM2.Lib import emg
 
 from pyCGM2.Report import plot as reportPlot
 from pyCGM2.Report import plotFilters
 from pyCGM2.Report.Viewers import emgPlotViewers
-from pyCGM2.Utils import files
+
 
 SHOW = False
 

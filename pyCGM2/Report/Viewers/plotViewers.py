@@ -17,6 +17,14 @@ import pyCGM2
 from pyCGM2 import enums
 from pyCGM2.Report import plot
 
+try:
+    from pyCGM2 import btk
+except:
+    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
+    try:
+        import btk
+    except:
+        LOGGER.logger.error("[pyCGM2] btk not found on your system. install it for working with the API")
 
 
 class AbstractPlotViewer(object):
@@ -891,7 +899,7 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
         super(TemporalKinematicsPlotViewer, self).__init__(iAcq)
 
         self.m_acq = self.m_input
-        if isinstance(self.m_input,pyCGM2.btk.btkAcquisition):
+        if isinstance(self.m_input,btk.btkAcquisition):
             pass
         else:
             LOGGER.logger.error( "[pyCGM2] error input object type. must be a ma.Trial")
@@ -1502,7 +1510,7 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
         super(TemporalKineticsPlotViewer, self).__init__(iAcq)
 
         self.m_acq = self.m_input
-        if isinstance(self.m_input,pyCGM2.btk.btkAcquisition):
+        if isinstance(self.m_input,btk.btkAcquisition):
             pass
         else:
             LOGGER.logger.error( "[pyCGM2] error input object type. must be a ma.Trial")

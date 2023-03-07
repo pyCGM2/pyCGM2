@@ -2,14 +2,11 @@
 # @Author: Fabien Leboeuf
 
 # pytest -s --log-cli-level=INFO --disable-pytest-warnings  test_EMG.py::Test_EMG::test_Coactivation
-import os
-import pytest
 import numpy as np
 import matplotlib.pyplot as plt
 
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import emg
-from pyCGM2.Utils import files
 from pyCGM2.EMG import coactivationProcedures
 from pyCGM2.EMG import emgFilters
 

@@ -1,18 +1,10 @@
 # coding: utf-8
 # pytest -s --disable-pytest-warnings  test_files.py::Test_UtilsFiles::test_loadAndSaveAnalysis
-# from __future__ import unicode_literals
 import pyCGM2
 from pyCGM2.Utils import testingUtils,files
-import ipdb
-import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
-from pyCGM2.Nexus import eclipse
 from pyCGM2.Nexus import vskTools
 
-from pyCGM2 import enums
-
-import pytest
-from pyCGM2.Tools import btkTools
 
 
 

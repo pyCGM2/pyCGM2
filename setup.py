@@ -15,16 +15,25 @@ if len(sys.argv) >= 2:
 if developMode:
     logging.warning("You have sleected a developer model ( local install)")
 
-
 if sys.maxsize < 2**32:
     raise Exception ("32-bit python version detected. PyCGM2-python3 requires a 64 bits python version")
 
-VERSION ="4.2"
+VERSION ="4.3"
 
 # just get one of the site-package and install there (it can be dist-package)
 SITE_PACKAGE_PATH = site.getsitepackages()[0] + "\\"
 
-NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py3.7.egg"
+if "3.7" in sys.version:
+    pyversion = "3.7"
+elif "3.8" in sys.version:
+    pyversion = "3.8"
+elif "3.9" in sys.version:
+    pyversion = "3.9"
+else:
+    raise Exception ("pycgm2 not compatible with your python version")
+
+
+NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py"+pyversion+".egg"
 
 
 MAIN_PYCGM2_PATH = os.getcwd() + "\\"
@@ -52,11 +61,11 @@ NEXUS_PUBLIC_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\"
 NEXUS_PUBLIC_DOCUMENT_VST_PATH = NEXUS_PUBLIC_PATH + "ModelTemplates\\"
 NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = NEXUS_PUBLIC_PATH+"Configurations\\Pipelines\\"
 
-def parse_requirements(requirements):
-    with open(requirements) as f:
-        return [l.strip('\n') for l in f if l.strip('\n') and not l.startswith('#')]
+# def parse_requirements(requirements):
+#     with open(requirements) as f:
+#         return [l.strip('\n') for l in f if l.strip('\n') and not l.startswith('#')]
 
-reqs = parse_requirements("requirements.txt")
+# reqs = parse_requirements("requirements.txt")
 
 def scanViconTemplatePipeline(sourcePath,desPath,pyCGM2nexusAppsPath):
 
@@ -180,22 +189,23 @@ else:
     logging.error("[pyCGM2] - Nexus folder not detected - No generation of VST and pipelines")
 
 #------------------------- INSTALL--------------------------------------------
-# numpy 1.11 scipy==1.2.1'matplotlib<3.0.0' pandas ==0.19.1'enum34>=1.1.2 configparser>=3.5.0' beautifulsoup4>=3.5.0' 'pyyaml>=3.13.0 yamlordereddictloader>=0.4.0 'xlrd >=0.9.0
 setup(name = 'pyCGM2',
     version = VERSION,
     author = 'Fabien Leboeuf',
     author_email = 'fabien.leboeuf@gmail.com',
     description = "Conventional Gait models and Gait analysis",
-    long_description= "A python implementation of conventional gait models and methods for processing motion capture data",
-    url = 'https://pycgm2.github.io',
-    keywords = 'python CGM Vicon PluginGait',
+    long_description= "A python implementation of the conventional gait models and methods for processing gait motion capture data",
+    url = 'pycgm2.netlify.app',
+    keywords = 'python CGM Vicon PluginGait CGM Gait',
     packages=find_packages(),
 	include_package_data=True,
     license='CC-BY-SA',
-	install_requires = reqs,
+	#install_requires = reqs,
     #'qtmWebGaitReport>=0.0.1'],
     classifiers=['Programming Language :: Python',
                  'Programming Language :: Python :: 3.7',
+                 'Programming Language :: Python :: 3.8',
+                 'Programming Language :: Python :: 3.9',
                  'Operating System :: Microsoft :: Windows',
                  'Natural Language :: English'],
     #scripts=gen_data_files_forScripts("Apps/ViconApps")
