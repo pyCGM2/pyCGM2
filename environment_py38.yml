@@ -1,0 +1,29 @@
+# create a dev conda environment with: `make create_env` or `conda env create -f environment_py38.yml`
+name: pycgm38
+channels:
+- conda-forge
+- opensim-org
+- default
+
+dependencies:
+- python==3.8
+- opensim=4.4=py38np120
+- btk
+- scipy
+- matplotlib
+- pandas
+- enum34
+- configparser
+- pytest
+- pytest-mpl
+- scikit-learn
+- beautifulsoup4 
+- pyyaml
+- yamlordereddictloader
+- xlrd
+- openpyxl
+- xlwt
+- lxml
+- pip
+
+
