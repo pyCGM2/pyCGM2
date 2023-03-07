@@ -1,4 +1,4 @@
-name: Github Actions in Windows
+name: python-package conda in Windows - python 3.7
 
 on: [push]
 
