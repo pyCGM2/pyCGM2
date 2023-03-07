@@ -31,3 +31,5 @@ jobs:
     #    C:\Miniconda\condabin\conda.bat activate base
     #    C:\Miniconda\condabin\conda.bat install pytest
     #    pytest
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
