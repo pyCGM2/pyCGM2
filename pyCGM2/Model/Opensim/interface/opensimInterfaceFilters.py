@@ -77,7 +77,10 @@ class opensimInterfaceInverseKinematicsFilter(object):
                 modelled = acqMotionFinal.GetPoint(marker).GetValues()
                 ff = acqMotionFinal.GetFirstFrame()
 
-                modelled[self.m_procedure.m_frameRange[0]-ff:self.m_procedure.m_frameRange[1]-ff+1,:] = values
+                try:
+                    modelled[self.m_procedure.m_frameRange[0]-ff:self.m_procedure.m_frameRange[1]-ff+1,:] = values
+                except ValueError:
+                    modelled[self.m_procedure.m_frameRange[0]-ff:self.m_procedure.m_frameRange[1]-ff+2,:] = values # FIX - sometimes we come across incompatible size 
                 btkTools.smartAppendPoint(acqMotionFinal,marker, modelled, desc= "kinematic fitting" ) # new acq with marker overwrited
 
 
