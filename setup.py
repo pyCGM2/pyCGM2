@@ -27,8 +27,8 @@ SITE_PACKAGE_PATH = site.getsitepackages()[0] + "\\"
 pyversion = str(sys.version_info.major) + "."+ str(sys.version_info.minor)
 logging.info("python version used : " + pyversion)
 
-if pyversion not in ["3.7","3.8","3.9"]:
-    raise Exception ("pycgm2 not compatible with your python version")
+# if pyversion not in ["3.7","3.8","3.9"]:
+#     raise Exception ("pycgm2 not compatible with your python version")
 
 
 NAME_IN_SITEPACKAGE = "pyCGM2-"+VERSION+"-py"+pyversion+".egg"
