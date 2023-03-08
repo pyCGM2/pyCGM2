@@ -23,13 +23,11 @@ VERSION ="4.3"
 # just get one of the site-package and install there (it can be dist-package)
 SITE_PACKAGE_PATH = site.getsitepackages()[0] + "\\"
 
-if "3.7" in sys.version:
-    pyversion = "3.7"
-elif "3.8" in sys.version:
-    pyversion = "3.8"
-elif "3.9" in sys.version:
-    pyversion = "3.9"
-else:
+
+pyversion = str(sys.version_info.major) + "."+ str(sys.version_info.minor)
+logging.info("python version used : " + pyversion)
+
+if pyversion not in ["3.7","3.8","3.9"]:
     raise Exception ("pycgm2 not compatible with your python version")
 
 
