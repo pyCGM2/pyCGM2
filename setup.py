@@ -59,11 +59,14 @@ NEXUS_PUBLIC_PATH = user_folder+"\\Documents\\Vicon\\Nexus2.x\\"
 NEXUS_PUBLIC_DOCUMENT_VST_PATH = NEXUS_PUBLIC_PATH + "ModelTemplates\\"
 NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = NEXUS_PUBLIC_PATH+"Configurations\\Pipelines\\"
 
-# def parse_requirements(requirements):
-#     with open(requirements) as f:
-#         return [l.strip('\n') for l in f if l.strip('\n') and not l.startswith('#')]
+def parse_requirements(requirements):
+    try:
+        with open(requirements) as f:
+            return [l.strip('\n') for l in f if l.strip('\n') and not l.startswith('#')]
+    except:
+        return []
 
-# reqs = parse_requirements("requirements.txt")
+reqs = parse_requirements("requirements.txt")
 
 def scanViconTemplatePipeline(sourcePath,desPath,pyCGM2nexusAppsPath):
 
@@ -198,7 +201,7 @@ setup(name = 'pyCGM2',
     packages=find_packages(),
 	include_package_data=True,
     license='CC-BY-SA',
-	#install_requires = reqs,
+	install_requires = reqs,
     #'qtmWebGaitReport>=0.0.1'],
     classifiers=['Programming Language :: Python',
                  'Programming Language :: Python :: 3.7',
