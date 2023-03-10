@@ -4,9 +4,9 @@ channels:
 - opensim-org
 - default
 dependencies:
-- python==3.7
-- opensim=4.4=py37np120
-#- btk
+- python==3.9
+- opensim=4.4=py39np120
+- btk
 - scipy
 - matplotlib
 - pandas
