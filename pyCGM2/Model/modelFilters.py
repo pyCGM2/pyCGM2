@@ -1340,7 +1340,7 @@ class GroundReactionForceAdapterFilter(object):
             for i in range (0, self.m_aqui.GetPointFrameNumber()):
                     valuesL[i,:] = np.dot(Rglobal.T,LGroundReactionForceValues[i,:])
 
-            label =  LGroundReactionForce_label[0]+"Standardized"+LGroundReactionForce_label[1:]
+            label =  LGroundReactionForce_label[0]+"Stan"+LGroundReactionForce_label[1:]
             btkTools.smartAppendPoint(self.m_aqui,label,
                          valuesL,
                          PointType="Force", desc="[0]forward(+)backward(-) [1]lateral(+)medial(-) [2] upward(+)downward(-)")
@@ -1360,7 +1360,7 @@ class GroundReactionForceAdapterFilter(object):
 
             valuesR[:,1] = -1.0*valuesR[:,1] # +/- correct the lateral/medial for the right foot
 
-            label =  RGroundReactionForce_label[0]+"Standardized"+RGroundReactionForce_label[1:]
+            label =  RGroundReactionForce_label[0]+"Stan"+RGroundReactionForce_label[1:]
             btkTools.smartAppendPoint(self.m_aqui,label,
                             valuesR,
                             PointType="Force", desc="[0]forward(+)backward(-) [1]lateral(+)medial(-) [2] upward(+)downward(-)")
