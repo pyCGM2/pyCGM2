@@ -1325,29 +1325,45 @@ class GroundReactionForceAdapterFilter(object):
         LGroundReactionForce_label  = "LGroundReactionForce"+pointLabelSuffix if pointLabelSuffix is not None else "LGroundReactionForce"
         RGroundReactionForce_label  = "RGroundReactionForce"+pointLabelSuffix if pointLabelSuffix is not None else "RGroundReactionForce"
 
-        valuesL = np.zeros((self.m_aqui.GetPointFrameNumber(),3))
-        LGroundReactionForceValues = self.m_aqui.GetPoint(LGroundReactionForce_label).GetValues()
-        for i in range (0, self.m_aqui.GetPointFrameNumber()):
-                valuesL[i,:] = np.dot(Rglobal.T,LGroundReactionForceValues[i,:])
 
-        valuesR = np.zeros((self.m_aqui.GetPointFrameNumber(),3))
-        RGroundReactionForceValues = self.m_aqui.GetPoint(RGroundReactionForce_label).GetValues()
-        for i in range (0, self.m_aqui.GetPointFrameNumber()):
-                valuesR[i,:] = np.dot(Rglobal.T,RGroundReactionForceValues[i,:])
 
-        valuesR[:,1] = -1.0*valuesR[:,1] # +/- correct the lateral/medial for the right foot
-        
+        leftFlag= True
+        try:
+            LGroundReactionForceValues = self.m_aqui.GetPoint(LGroundReactionForce_label).GetValues()
+        except:
+            leftFlag= False
+            LOGGER.logger.warning("No LGroundReactionForce") 
+            
+        if leftFlag:
 
-   
-        label =  LGroundReactionForce_label[0]+"Standardized"+LGroundReactionForce_label[1:]
-        btkTools.smartAppendPoint(self.m_aqui,label,
+            valuesL = np.zeros((self.m_aqui.GetPointFrameNumber(),3))
+            for i in range (0, self.m_aqui.GetPointFrameNumber()):
+                    valuesL[i,:] = np.dot(Rglobal.T,LGroundReactionForceValues[i,:])
+
+            label =  LGroundReactionForce_label[0]+"Standardized"+LGroundReactionForce_label[1:]
+            btkTools.smartAppendPoint(self.m_aqui,label,
                          valuesL,
                          PointType="Force", desc="[0]forward(+)backward(-) [1]lateral(+)medial(-) [2] upward(+)downward(-)")
 
-        label =  RGroundReactionForce_label[0]+"Standardized"+RGroundReactionForce_label[1:]
-        btkTools.smartAppendPoint(self.m_aqui,label,
-                         valuesR,
-                         PointType="Force", desc="[0]forward(+)backward(-) [1]lateral(+)medial(-) [2] upward(+)downward(-)")
+
+        rightFlag= True
+        try:
+            RGroundReactionForceValues = self.m_aqui.GetPoint(RGroundReactionForce_label).GetValues()
+        except:
+            rightFlag= False
+            LOGGER.logger.warning("No RGroundReactionForce")
+
+        if rightFlag:
+            valuesR = np.zeros((self.m_aqui.GetPointFrameNumber(),3))
+            for i in range (0, self.m_aqui.GetPointFrameNumber()):
+                    valuesR[i,:] = np.dot(Rglobal.T,RGroundReactionForceValues[i,:])
+
+            valuesR[:,1] = -1.0*valuesR[:,1] # +/- correct the lateral/medial for the right foot
+
+            label =  RGroundReactionForce_label[0]+"Standardized"+RGroundReactionForce_label[1:]
+            btkTools.smartAppendPoint(self.m_aqui,label,
+                            valuesR,
+                            PointType="Force", desc="[0]forward(+)backward(-) [1]lateral(+)medial(-) [2] upward(+)downward(-)")
         
 # ----- Inverse dynamics -----
 
