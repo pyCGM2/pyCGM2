@@ -1215,7 +1215,7 @@ class ForcePlateAssemblyFilter(object):
                 right_momentValues = right_momentValues + fpwc.GetItem(i).GetMoment().GetValues()[::appf]
 
             else:
-                LOGGER.logger.debug("force plate %i sans donnees" %(i))
+                LOGGER.logger.debug("force plate %i with no data" %(i))
             i+=1
 
         if "L" in self.m_mappedForcePlate:
@@ -1249,8 +1249,106 @@ class ForcePlateAssemblyFilter(object):
                          right_momentValues / bodymass,
                          PointType="Moment", desc="")
 
+class GroundReactionForceAdapterFilter(object):
+    """filter to standardized the ground reaction force.
+
+    A new force ( btkPoint::Force), LStandardizedGroundReactionForce ( resp LStandardizedGroundReactionForce) is appended to the acquisition.
+
+    The point respects the nomenclature :
+
+     * [0]forward(+)backward(-) 
+     * [1]lateral(+)medial(-)
+     *[2] upward(+)downward(-)
+
+    Args:
+        btkAcq (btk.BtkAcquistion): the acquisition
+        globalFrameOrientation (str,Optional[XYZ]): configuration of the global referential 
+        forwardProgression (bool,Optional[True]):  flag to indicate if the subject work along the axis of progression
+    
+    Example:
+
+    ```python
+
+        gaitFilename="gait1.c3d"
+        acqGaitYf = btkTools.smartReader(data_path +  gaitFilename)
+        mfpa = "RLX"
+     
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGaitYf,mfpa=mfpa)
+        forceplates.addForcePlateGeneralEvents(acqGaitYf,mappedForcePlate)
+        LOGGER.logger.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+
+        # assembly foot and force plate
+        modelFilters.ForcePlateAssemblyFilter(model,acqGaitYf,mappedForcePlate,
+                                 leftSegmentLabel="Left Foot",
+                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=None)
+        progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGaitYf)
+
+        cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGaitYf,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
+        cgrff.compute()
+    ```
+    
+    """
+    def __init__(self, btkAcq, globalFrameOrientation = "XYZ", forwardProgression = True):
+        
+        self.m_aqui = btkAcq
+        self.m_globalFrameOrientation = globalFrameOrientation
+        self.m_forwardProgression = forwardProgression
+
+    def compute(self,pointLabelSuffix=None):
+        """run the filter
+
+        Args:
+            pointLabelSuffix (str, optional): suffix added to point labels. Defaults to None.
+        """        
+
+        if self.m_globalFrameOrientation == "XYZ":
+            if self.m_forwardProgression:
+               Rglobal= np.array([[1, 0, 0],
+                                  [0, 1, 0],
+                                  [0, 0, 1]])
+            else:
+                Rglobal= np.array([[-1, 0, 0],
+                                  [0, -1, 0],
+                                  [0, 0, 1]])
+
+        if self.m_globalFrameOrientation == "YXZ":
+            if self.m_forwardProgression:
+                Rglobal= np.array([[0, -1, 0],
+                                  [1, 0, 0],
+                                  [0, 0, 1]])
+            else:
+                Rglobal= np.array([[0, 1, 0],
+                                  [-1, 0, 0],
+                                  [0, 0, 1]])
 
 
+        LGroundReactionForce_label  = "LGroundReactionForce"+pointLabelSuffix if pointLabelSuffix is not None else "LGroundReactionForce"
+        RGroundReactionForce_label  = "RGroundReactionForce"+pointLabelSuffix if pointLabelSuffix is not None else "RGroundReactionForce"
+
+        valuesL = np.zeros((self.m_aqui.GetPointFrameNumber(),3))
+        LGroundReactionForceValues = self.m_aqui.GetPoint(LGroundReactionForce_label).GetValues()
+        for i in range (0, self.m_aqui.GetPointFrameNumber()):
+                valuesL[i,:] = np.dot(Rglobal.T,LGroundReactionForceValues[i,:])
+
+        valuesR = np.zeros((self.m_aqui.GetPointFrameNumber(),3))
+        RGroundReactionForceValues = self.m_aqui.GetPoint(RGroundReactionForce_label).GetValues()
+        for i in range (0, self.m_aqui.GetPointFrameNumber()):
+                valuesR[i,:] = np.dot(Rglobal.T,RGroundReactionForceValues[i,:])
+
+        valuesR[:,1] = -1.0*valuesR[:,1] # +/- correct the lateral/medial for the right foot
+        
+
+   
+        label =  LGroundReactionForce_label[0]+"Standardized"+LGroundReactionForce_label[1:]
+        btkTools.smartAppendPoint(self.m_aqui,label,
+                         valuesL,
+                         PointType="Force", desc="[0]forward(+)backward(-) [1]lateral(+)medial(-) [2] upward(+)downward(-)")
+
+        label =  RGroundReactionForce_label[0]+"Standardized"+RGroundReactionForce_label[1:]
+        btkTools.smartAppendPoint(self.m_aqui,label,
+                         valuesR,
+                         PointType="Force", desc="[0]forward(+)backward(-) [1]lateral(+)medial(-) [2] upward(+)downward(-)")
+        
 # ----- Inverse dynamics -----
 
 class InverseDynamicFilter(object):
