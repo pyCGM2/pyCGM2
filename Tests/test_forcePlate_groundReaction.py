@@ -15,6 +15,17 @@ from pyCGM2.Nexus import vskTools
 from pyCGM2.Utils import testingUtils
 from pyCGM2 import enums
 
+from pyCGM2.Report import plot
+from pyCGM2.Lib import analysis#, plot
+from pyCGM2.Lib import emg
+
+from pyCGM2.Report import plot as reportPlot
+from pyCGM2.Report import plotFilters
+from pyCGM2.Report.Viewers import plotViewers
+from pyCGM2.Report.Viewers import  comparisonPlotViewers
+from pyCGM2.Report import normativeDatasets
+from pyCGM2.Utils import files
+
 def getModel(data_path,progressionAxis):
     
     if progressionAxis == "X":
@@ -324,3 +335,75 @@ class Test_groundReactionForcePlate():
 
         plot(acqGaitYf,acqGaitYb)
         plt.show()
+
+class Test_groundReactionForcePlatePlot():
+
+    def test_GroundReactionCorrectionPlot(self):
+        data_path =  pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\LowerLimb-medMed_Yprogression\\"
+        model = getModel(data_path,"Y")
+
+        #------- Y axis forward
+        gaitFilename="gait1.c3d"
+        acqGaitYf = btkTools.smartReader(data_path +  gaitFilename)
+        mfpa = "RLX"
+     
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGaitYf,mfpa=mfpa)
+        forceplates.addForcePlateGeneralEvents(acqGaitYf,mappedForcePlate)
+        LOGGER.logger.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+
+
+        # assembly foot and force plate
+        modelFilters.ForcePlateAssemblyFilter(model,acqGaitYf,mappedForcePlate,
+                                 leftSegmentLabel="Left Foot",
+                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=None)
+
+        progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGaitYf)
+
+
+        cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGaitYf,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
+        cgrff.compute()
+
+        btkTools.smartWriter(acqGaitYf,data_path+"gait1.c3d")
+
+         #------ Y axis backward
+        gaitFilename="gait2.c3d"
+        acqGaitYb = btkTools.smartReader(data_path +  gaitFilename)
+        mfpa = "XLR"
+
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGaitYb,mfpa=mfpa)
+        forceplates.addForcePlateGeneralEvents(acqGaitYb,mappedForcePlate)
+        LOGGER.logger.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+
+        # assembly foot and force plate
+        modelFilters.ForcePlateAssemblyFilter(model,acqGaitYb,mappedForcePlate,
+                                 leftSegmentLabel="Left Foot",
+                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=None)
+
+        progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGaitYb)
+
+        cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGaitYb,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
+        cgrff.compute()
+
+        btkTools.smartWriter(acqGaitYb,data_path+"gait2.c3d")
+
+        # -----analysis------
+
+        analysisInstance = analysis.makeAnalysis(data_path,
+                        ["gait1.c3d","gait2.c3d"],
+                        type="Gait",
+                        emgChannels = None,
+                        pointLabelSuffix=None,
+                        subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                        )
+        
+        kv = plotViewers.NormalizedGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None)
+        kv.setAutomaticYlimits(True)
+        kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
+
+        # filter
+        pf = plotFilters.PlottingFilter()
+        pf.setViewer(kv)
+        fig = pf.plot()
+        plt.show()
+
+        import ipdb; ipdb.set_trace()

@@ -41,8 +41,8 @@ class CGM(model.Model):
                                     "RShoulderAngles","RElbowAngles","RWristAngles"]}
 
     ANALYSIS_KINETIC_LABELS_DICT ={
-                            'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
-                            'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
+                            'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower","LStanGroundReactionForce"],
+                            'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower","RStanGroundReactionForce"]}
 
     VERSIONS = ["CGM1", "CGM1.1", "CGM2.1",  "CGM2.2", "CGM2.3", "CGM2.4", "CGM2.5"]
 
