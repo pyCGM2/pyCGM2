@@ -9,10 +9,12 @@ import pyCGM2
 from pyCGM2.Report.Viewers import plotViewers
 
 class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
-    """ Plot time-Normalized Ground reaction force
+    """ Plot time-Normalized Ground reaction forces  and, optionaly the variation of the COM velocities and positions 
 
     Args:
-        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis instance`
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+        
+        gaitComKinematics (dict) : dictionnary return from `GroundReactionIntegrationFilter`
         
 
     """
