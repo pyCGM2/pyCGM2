@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pytest -s --disable-pytest-warnings  test_forcePlate_groundReaction.py::Test_groundReactionForcePlate::test_GroundReactionCorrection
+# pytest -s --disable-pytest-warnings  test_forcePlate_groundReaction.py::Test_groundReactionForcePlateIntegration
 
 import matplotlib.pyplot as plt
 import pyCGM2
@@ -22,6 +22,7 @@ from pyCGM2.Lib import emg
 from pyCGM2.Report import plot as reportPlot
 from pyCGM2.Report import plotFilters
 from pyCGM2.Report.Viewers import plotViewers
+from pyCGM2.Report.Viewers import groundReactionPlotViewers
 from pyCGM2.Report.Viewers import  comparisonPlotViewers
 from pyCGM2.Report import normativeDatasets
 from pyCGM2.Utils import files
@@ -338,7 +339,7 @@ class Test_groundReactionForcePlate():
 
 class Test_groundReactionForcePlatePlot():
 
-    def test_GroundReactionCorrectionPlot(self):
+    def test_plotFilter(self):
         data_path =  pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\LowerLimb-medMed_Yprogression\\"
         model = getModel(data_path,"Y")
 
@@ -396,14 +397,48 @@ class Test_groundReactionForcePlatePlot():
                         subjectInfo=None, experimentalInfo=None,modelInfo=None,
                         )
         
-        kv = plotViewers.NormalizedGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None)
+        kv = groundReactionPlotViewers.NormalizedGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None)
         kv.setAutomaticYlimits(True)
-        kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
+        kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
 
         # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
         fig = pf.plot()
+        pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
         plt.show()
 
-        import ipdb; ipdb.set_trace()
+class Test_groundReactionForcePlateIntegration():
+
+    def test_integration(self): 
+        data_path =  pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\LowerLimb-medMed_Yprogression\\"   
+
+        mass = 69.0
+        analysisInstance = analysis.makeAnalysis(data_path,
+                        ["gait1.c3d","gait2.c3d"],
+                        type="Gait",
+                        emgChannels = None,
+                        pointLabelSuffix=None,
+                        subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                        )
+       
+
+        from pyCGM2.Processing.GroundReactionForce import  grfIntegrationProcedures, groundReactionIntegrationFilter
+
+        proc =  grfIntegrationProcedures.gaitGrfIntegrationProcedure()
+        filter = groundReactionIntegrationFilter.GroundReactionIntegrationFilter(analysisInstance,proc)
+        comData = filter.run()
+
+
+        kv = groundReactionPlotViewers.NormalizedGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None, gaitComKinematics=comData)
+        kv.setAutomaticYlimits(True)
+        kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
+
+        # filter
+        pf = plotFilters.PlottingFilter()
+        pf.setViewer(kv)
+        fig = pf.plot()
+
+        pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
+        pf.setHorizontalLines({"Total Vertical Force":[[9.81,"black"]]})
+        plt.show()
