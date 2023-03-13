@@ -26,6 +26,7 @@ from pyCGM2.EMG import emgManager
 from pyCGM2.Report.Viewers import musclePlotViewers
 from pyCGM2.Utils import files
 from pyCGM2.Processing.Classification import classificationFilters, classificationProcedures
+from pyCGM2.Report.Viewers import groundReactionPlotViewers
 
 def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix=None,
                           exportPdf=False,OUT_PATH = None, outputName=None,show=True,title=None,exportPng=False,
@@ -1347,3 +1348,77 @@ def plotPFKE(DATA_PATH,analysisInstance,normativeDataset,
         return classFig, filenameOut+".png"
     else:
         return classFig 
+
+def plot_DescriptiveGRF(DATA_PATH,analysis,normativeDataset,
+        pointLabelSuffix=None,type="Gait",
+        OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
+        autoYlim=False, comVariation=False):
+    """display average and standard deviation of time-normalized ground reaction force.
+
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+        pointLabelSuffix (str)[Optional,None]:suffix previously added to your model outputs.
+        type (str): [Optional, "Gait"]. event type. By default cycle is defined from foot strike.  `Gait` searched for the foot off events.
+        OUT_PATH (str)[Optional,None]: path to your ouput folder
+        exportPdf (bool)[Optional,False]: export as pdf
+        outputName (str)[Optional,None]: name of the output filename.
+        show (bool)[Optional,True]: show matplotlib figure.
+        title (str)[Optional,None]: modify the plot panel title.
+        exportPng (bool)[Optional,False]: export as png.
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
+
+
+    Examples:
+
+    .. code-block:: python
+
+        plot_DescriptiveKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+
+    """
+    if OUT_PATH is None:
+        OUT_PATH = DATA_PATH
+
+    outputName = "pyCGM2-analysis ground reaction force"
+
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-descriptive GRF "
+
+
+    # filter 1 - descriptive kinematic panel
+    #-------------------------------------------
+    # viewer
+
+    kv = groundReactionPlotViewers.NormalizedGroundReactionForcePlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
+
+    
+    kv.setAutomaticYlimits(autoYlim)
+
+    if type == "Gait":
+        kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
+    else:
+        kv.setConcretePlotFunction(plot.descriptivePlot)
+
+
+    if normativeDataset is not None:
+        kv.setNormativeDataset(normativeDataset)
+
+
+    if comVariation:
+        kv.setDisplayComKinematics(True)
+
+    # filter
+    pf = plotFilters.PlottingFilter()
+    pf.setViewer(kv)
+    if title is not None: pf.setTitle(title+"-descriptive Ground reaction force")
+    if exportPdf: pf.setExport(OUT_PATH,filenameOut,"pdf")
+    fig = pf.plot()
+    if show: plt.show()
+
+    if exportPng:
+        fig.savefig(OUT_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
