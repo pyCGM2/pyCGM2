@@ -17,6 +17,7 @@ from pyCGM2 import enums
 
 from pyCGM2.Report import plot
 from pyCGM2.Lib import analysis#, plot
+from pyCGM2.Lib import plot as hlplot
 from pyCGM2.Lib import emg
 
 from pyCGM2.Report import plot as reportPlot
@@ -427,11 +428,12 @@ class Test_groundReactionForcePlateIntegration():
 
         proc =  grfIntegrationProcedures.gaitGrfIntegrationProcedure()
         filter = groundReactionIntegrationFilter.GroundReactionIntegrationFilter(analysisInstance,proc)
-        comData = filter.run()
+        filter.run()
 
 
-        kv = groundReactionPlotViewers.NormalizedGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None, gaitComKinematics=comData)
+        kv = groundReactionPlotViewers.NormalizedGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None)
         kv.setAutomaticYlimits(True)
+        kv.setDisplayComKinematics(True)
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
 
         # filter
@@ -439,6 +441,10 @@ class Test_groundReactionForcePlateIntegration():
         pf.setViewer(kv)
         fig = pf.plot()
 
-        pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
-        pf.setHorizontalLines({"Total Vertical Force":[[9.81,"black"]]})
+
+        hlplot.plot_DescriptiveGRF(data_path, analysisInstance, None,
+                                   pointLabelSuffix=None,
+                                   comVariation=True)
+
+        # pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
         plt.show()

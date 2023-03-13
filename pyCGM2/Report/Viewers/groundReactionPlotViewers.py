@@ -13,13 +13,9 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
 
     Args:
         iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
-        
-        gaitComKinematics (dict) : dictionnary return from `GroundReactionIntegrationFilter`
-        
-
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None, gaitComKinematics=None):
+    def __init__(self,iAnalysis,pointLabelSuffix=None):
 
         super(NormalizedGroundReactionForcePlotViewer, self).__init__(iAnalysis)
 
@@ -34,11 +30,12 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
         self.m_flagConsistencyOnly = False
         self.m_concretePlotFunction = None
 
-        self.m_gaitComKinematics = gaitComKinematics
-
-
-
-
+        self.__displayCom= False
+    
+    def setDisplayComKinematics(self,boolean):
+         self.__displayCom = boolean
+        
+        
     def setConcretePlotFunction(self, concreteplotFunction):
         """set a plot function ( see `plot`)
 
@@ -58,19 +55,19 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
         else :
             title=u"""\n"""
 
-        if self.m_gaitComKinematics is not None: 
+        if self.__displayCom: 
             title = title+" + Centre of mass velocity and position variations" 
 
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
-        nrow = 3 if self.m_gaitComKinematics is None else 4
+        nrow = 3 if not self.__displayCom else 4
 
         ax0 = plt.subplot(nrow,3,1)# 
         ax1 = plt.subplot(nrow,3,2)# 
         ax2 = plt.subplot(nrow,3,3)# 
 
-        if self.m_gaitComKinematics is not None:
+        if self.__displayCom:
             ax3 = plt.subplot(nrow,3,4)
             ax4 = plt.subplot(nrow,3,5)
             ax5 = plt.subplot(nrow,3,6)
@@ -97,7 +94,7 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
         self.fig.axes[2].axhline(9.81,color="black",ls='dashed')
 
 
-        if self.m_gaitComKinematics is not None:        
+        if self.__displayCom:        
 
             self.fig.axes[3].set_title("Total Longitudinal Force" ,size=8)
             self.fig.axes[4].set_title("Total Lateral Force" ,size=8) 
@@ -120,7 +117,10 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
             double1R = self.m_analysis.kineticStats.pst['doubleStance1', "Right"]["mean"]
             double2R = self.m_analysis.kineticStats.pst['doubleStance2', "Right"]["mean"]
 
-            for ax in self.fig.axes[3:12]:
+
+            self.fig.axes[2].axhline(9.81,color="black",ls='dashed')
+            self.fig.axes[5].axhline(0,color="black",ls='dashed')
+            for ax in self.fig.axes[6:12]:
                 ax.tick_params(axis='x', which='major', labelsize=0)
                 ax.tick_params(axis='y', which='major', labelsize=0)
 
@@ -188,27 +188,27 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
         self.__setData()
 
 
-        if self.m_gaitComKinematics is not None:
+        if self.__displayCom:
         
-            self.fig.axes[3].plot( self.m_gaitComKinematics["Left"]["Force"][:,0],"-r")
-            self.fig.axes[4].plot( self.m_gaitComKinematics["Left"]["Force"][:,1],"-r")
-            self.fig.axes[5].plot( self.m_gaitComKinematics["Left"]["Force"][:,2],"-r")
-            self.fig.axes[6].plot( self.m_gaitComKinematics["Left"]["Velocity"][:,0],"-r")
-            self.fig.axes[7].plot( self.m_gaitComKinematics["Left"]["Velocity"][:,1],"-r")
-            self.fig.axes[8].plot( self.m_gaitComKinematics["Left"]["Velocity"][:,2],"-r")
-            self.fig.axes[9].plot( self.m_gaitComKinematics["Left"]["Position"][:,0],"-r")
-            self.fig.axes[10].plot( self.m_gaitComKinematics["Left"]["Position"][:,1],"-r")
-            self.fig.axes[11].plot( self.m_gaitComKinematics["Left"]["Position"][:,2],"-r")
+            self.fig.axes[3].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"][:,0],"-r")
+            self.fig.axes[4].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"][:,1],"-r")
+            self.fig.axes[5].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"][:,2],"-r")
+            self.fig.axes[6].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Velocity"][:,0],"-r")
+            self.fig.axes[7].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Velocity"][:,1],"-r")
+            self.fig.axes[8].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Velocity"][:,2],"-r")
+            self.fig.axes[9].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Position"][:,0],"-r")
+            self.fig.axes[10].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Position"][:,1],"-r")
+            self.fig.axes[11].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Position"][:,2],"-r")
 
-            self.fig.axes[3].plot( self.m_gaitComKinematics["Right"]["Force"][:,0],"-b")
-            self.fig.axes[4].plot( self.m_gaitComKinematics["Right"]["Force"][:,1],"-b")
-            self.fig.axes[5].plot( self.m_gaitComKinematics["Right"]["Force"][:,2],"-b")
-            self.fig.axes[6].plot( self.m_gaitComKinematics["Right"]["Velocity"][:,0],"-b")
-            self.fig.axes[7].plot( self.m_gaitComKinematics["Right"]["Velocity"][:,1],"-b")
-            self.fig.axes[8].plot( self.m_gaitComKinematics["Right"]["Velocity"][:,2],"-b")
-            self.fig.axes[9].plot( self.m_gaitComKinematics["Right"]["Position"][:,0],"-b")
-            self.fig.axes[10].plot( self.m_gaitComKinematics["Right"]["Position"][:,1],"-b")
-            self.fig.axes[11].plot( self.m_gaitComKinematics["Right"]["Position"][:,2],"-b")
+            self.fig.axes[3].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Force"][:,0],"-b")
+            self.fig.axes[4].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Force"][:,1],"-b")
+            self.fig.axes[5].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Force"][:,2],"-b")
+            self.fig.axes[6].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Velocity"][:,0],"-b")
+            self.fig.axes[7].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Velocity"][:,1],"-b")
+            self.fig.axes[8].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Velocity"][:,2],"-b")
+            self.fig.axes[9].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Position"][:,0],"-b")
+            self.fig.axes[10].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Position"][:,1],"-b")
+            self.fig.axes[11].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Position"][:,2],"-b")
 
 
         return self.fig

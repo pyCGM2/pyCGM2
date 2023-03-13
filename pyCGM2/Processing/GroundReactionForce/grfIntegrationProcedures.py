@@ -32,7 +32,6 @@ class gaitGrfIntegrationProcedure(GrfIntegrationProcedure):
             analysisInstance (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
         """        
 
-        # left
         values_L = np.nan_to_num(analysisInstance.kineticStats.data["LStanGroundReactionForce","Left"]["mean"])
         values_R = np.nan_to_num(analysisInstance.kineticStats.data["RStanGroundReactionForce","Right"]["mean"])        
         
@@ -40,34 +39,45 @@ class gaitGrfIntegrationProcedure(GrfIntegrationProcedure):
         stanceL = analysisInstance.kineticStats.pst['stancePhase', "Left"]["mean"]
         stanceR = analysisInstance.kineticStats.pst['stancePhase', "Right"]["mean"]
         
-        
+
+        analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"] = {"Force": np.zeros((101,3)),"Acceleration": np.zeros((101,3)), "Velocity": np.zeros((101,3)),"Position": np.zeros((101,3))}
+        analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"] = {"Force": np.zeros((101,3)),"Acceleration": np.zeros((101,3)), "Velocity": np.zeros((101,3)),"Position": np.zeros((101,3))}
+
+
+
         for i in range(0,101):
-            self.centerOfmass["Left"]["Force"][i,:] =  values_L[i,:] + values_R[i+51,:] if i<50 else values_L[i,:]        
-            self.centerOfmass["Right"]["Force"][i,:] =  values_R[i,:]+values_L[i+51,:] if i<50 else values_R[i,:] 
+            analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"][i,:] =  values_L[i,:] + values_R[i+51,:] if i<50 else values_L[i,:]        
+            analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Force"][i,:] =  values_R[i,:]+values_L[i+51,:] if i<50 else values_R[i,:] 
 
-        self.centerOfmass["Left"]["Acceleration"] =  self.centerOfmass["Left"]["Force"]
-        self.centerOfmass["Left"]["Acceleration"][:,2] =  self.centerOfmass["Left"]["Force"][:,2]-9.81
+        analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Acceleration"] =  analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"]
+        analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Acceleration"][:,2] =  analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"][:,2]-9.81
 
-        self.centerOfmass["Right"]["Acceleration"] =  self.centerOfmass["Right"]["Force"]
-        self.centerOfmass["Right"]["Acceleration"][:,2] =  self.centerOfmass["Right"]["Force"][:,2]-9.81
+        analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Acceleration"] =  analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Force"]
+        analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Acceleration"][:,2] =  analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Force"][:,2]-9.81
 
 
         for j in range(0,3):
-            self.centerOfmass["Left"]["Velocity"][:,j] = sp.integrate.cumtrapz(self.centerOfmass["Left"]["Acceleration"][:,j],initial=0)
-            self.centerOfmass["Left"]["Position"][:,j] = sp.integrate.cumtrapz(self.centerOfmass["Left"]["Velocity"][:,j], initial=0)
+            analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Velocity"][:,j] = sp.integrate.cumtrapz( \
+                 analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Acceleration"][:,j],initial=0)
 
-            self.centerOfmass["Right"]["Velocity"][:,j] = sp.integrate.cumtrapz(self.centerOfmass["Right"]["Acceleration"][:,j],initial=0)
-            self.centerOfmass["Right"]["Position"][:,j] = sp.integrate.cumtrapz(self.centerOfmass["Right"]["Velocity"][:,j], initial=0)
+            analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Position"][:,j] = sp.integrate.cumtrapz( \
+                 analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Velocity"][:,j],initial=0)
+
+
+            analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Velocity"][:,j] = sp.integrate.cumtrapz( \
+                 analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Acceleration"][:,j],initial=0)
+
+            analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Position"][:,j] = sp.integrate.cumtrapz( \
+                 analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Velocity"][:,j],initial=0)
 
 
         for i in range(0,101):
             if i > round(stanceL):
-                self.centerOfmass["Left"]["Force"][i,:]=np.array([np.nan,np.nan,np.nan] )
-                self.centerOfmass["Left"]["Velocity"][i,:]=np.array([np.nan,np.nan,np.nan] ) 
-                self.centerOfmass["Left"]["Position"][i,:]=np.array([np.nan,np.nan,np.nan] )  
+                for key in analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"].keys():
+                    analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"][key][i,:]=np.array([np.nan,np.nan,np.nan] )
+
         
         for i in range(0,101):
             if i > round(stanceR):
-                self.centerOfmass["Right"]["Force"][i,:]=np.array([np.nan,np.nan,np.nan] )
-                self.centerOfmass["Right"]["Velocity"][i,:]=np.array([np.nan,np.nan,np.nan] ) 
-                self.centerOfmass["Right"]["Position"][i,:]=np.array([np.nan,np.nan,np.nan] )  
+                for key in analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"].keys():
+                    analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"][key][i,:]=np.array([np.nan,np.nan,np.nan] )
