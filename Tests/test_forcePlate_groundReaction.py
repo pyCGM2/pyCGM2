@@ -27,6 +27,7 @@ from pyCGM2.Report.Viewers import groundReactionPlotViewers
 from pyCGM2.Report.Viewers import  comparisonPlotViewers
 from pyCGM2.Report import normativeDatasets
 from pyCGM2.Utils import files
+from pyCGM2.Processing.GroundReactionForce import  grfIntegrationProcedures, groundReactionIntegrationFilter
 
 def getModel(data_path,progressionAxis):
     
@@ -398,7 +399,19 @@ class Test_groundReactionForcePlatePlot():
                         subjectInfo=None, experimentalInfo=None,modelInfo=None,
                         )
         
+        #   filter 1 
         kv = groundReactionPlotViewers.NormalizedGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None)
+        kv.setAutomaticYlimits(True)
+        kv.setConcretePlotFunction(plot.descriptivePlot)
+
+        pf = plotFilters.PlottingFilter()
+        pf.setViewer(kv)
+        fig = pf.plot()
+        #pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
+        plt.show()
+
+
+        kv = groundReactionPlotViewers.NormalizedGaitGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None)
         kv.setAutomaticYlimits(True)
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
 
@@ -406,12 +419,82 @@ class Test_groundReactionForcePlatePlot():
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
         fig = pf.plot()
-        pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
+        #pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
         plt.show()
+
+    def test_plot_highLevel(self):
+        data_path =  pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\LowerLimb-medMed_Yprogression\\"
+        model = getModel(data_path,"Y")
+
+        #------- Y axis forward
+        gaitFilename="gait1.c3d"
+        acqGaitYf = btkTools.smartReader(data_path +  gaitFilename)
+        mfpa = "RLX"
+     
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGaitYf,mfpa=mfpa)
+        forceplates.addForcePlateGeneralEvents(acqGaitYf,mappedForcePlate)
+        LOGGER.logger.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+
+
+        # assembly foot and force plate
+        modelFilters.ForcePlateAssemblyFilter(model,acqGaitYf,mappedForcePlate,
+                                 leftSegmentLabel="Left Foot",
+                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=None)
+
+        progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGaitYf)
+
+
+        cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGaitYf,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
+        cgrff.compute()
+
+        btkTools.smartWriter(acqGaitYf,data_path+"gait1.c3d")
+
+         #------ Y axis backward
+        gaitFilename="gait2.c3d"
+        acqGaitYb = btkTools.smartReader(data_path +  gaitFilename)
+        mfpa = "XLR"
+
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGaitYb,mfpa=mfpa)
+        forceplates.addForcePlateGeneralEvents(acqGaitYb,mappedForcePlate)
+        LOGGER.logger.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+
+        # assembly foot and force plate
+        modelFilters.ForcePlateAssemblyFilter(model,acqGaitYb,mappedForcePlate,
+                                 leftSegmentLabel="Left Foot",
+                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=None)
+
+        progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGaitYb)
+
+        cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGaitYb,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
+        cgrff.compute()
+
+        btkTools.smartWriter(acqGaitYb,data_path+"gait2.c3d")
+
+        # -----analysis------
+
+        analysisInstance = analysis.makeAnalysis(data_path,
+                        ["gait1.c3d","gait2.c3d"],
+                        type="Gait",
+                        emgChannels = None,
+                        pointLabelSuffix=None,
+                        subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                        )
+        
+        hlplot.plot_DescriptiveGRF(data_path, analysisInstance, None,
+                                   type="Gait",
+                                   pointLabelSuffix=None,
+                                   gaitComVariation=True)
+
+        hlplot.plot_DescriptiveGRF(data_path, analysisInstance, None,
+                                   type = "NoGa",
+                                   pointLabelSuffix=None)
+
+        plt.show()
+
 
 class Test_groundReactionForcePlateIntegration():
 
-    def test_integration(self): 
+    def test_integration_plot(self): 
         data_path =  pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\LowerLimb-medMed_Yprogression\\"   
 
         mass = 69.0
@@ -422,16 +505,22 @@ class Test_groundReactionForcePlateIntegration():
                         pointLabelSuffix=None,
                         subjectInfo=None, experimentalInfo=None,modelInfo=None,
                         )
-       
-
-        from pyCGM2.Processing.GroundReactionForce import  grfIntegrationProcedures, groundReactionIntegrationFilter
 
         proc =  grfIntegrationProcedures.gaitGrfIntegrationProcedure()
         filter = groundReactionIntegrationFilter.GroundReactionIntegrationFilter(analysisInstance,proc)
         filter.run()
 
-
         kv = groundReactionPlotViewers.NormalizedGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None)
+        kv.setAutomaticYlimits(True)
+        kv.setConcretePlotFunction(plot.descriptivePlot)
+
+        # filter
+        pf = plotFilters.PlottingFilter()
+        pf.setViewer(kv)
+        fig = pf.plot()
+
+
+        kv = groundReactionPlotViewers.NormalizedGaitGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None)
         kv.setAutomaticYlimits(True)
         kv.setDisplayComKinematics(True,variation=True)
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
@@ -443,8 +532,13 @@ class Test_groundReactionForcePlateIntegration():
 
 
         hlplot.plot_DescriptiveGRF(data_path, analysisInstance, None,
+                                   type="Gait",
                                    pointLabelSuffix=None,
-                                   comVariation=True)
+                                   gaitComVariation=True)
+
+        hlplot.plot_DescriptiveGRF(data_path, analysisInstance, None,
+                                   type = "NoGa",
+                                   pointLabelSuffix=None)
 
         # pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
         plt.show()
