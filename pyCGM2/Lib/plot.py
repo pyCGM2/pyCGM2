@@ -1352,7 +1352,7 @@ def plotPFKE(DATA_PATH,analysisInstance,normativeDataset,
 def plot_DescriptiveGRF(DATA_PATH,analysis,normativeDataset,
         pointLabelSuffix=None,type="Gait",
         OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
-        autoYlim=False, comGaitVariation=False):
+        autoYlim=False, gaitComVariation=False):
     """display average and standard deviation of time-normalized ground reaction force.
 
     Args:
@@ -1369,7 +1369,7 @@ def plot_DescriptiveGRF(DATA_PATH,analysis,normativeDataset,
         title (str)[Optional,None]: modify the plot panel title.
         exportPng (bool)[Optional,False]: export as png.
         autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
-        comGaitVariation(bool): display the COM kinematics variation ( only available for gait)
+        gaitComVariation(bool): display the COM kinematics variation ( only available for gait)
 
 
 
@@ -1410,7 +1410,7 @@ def plot_DescriptiveGRF(DATA_PATH,analysis,normativeDataset,
     if normativeDataset is not None:
         kv.setNormativeDataset(normativeDataset)
 
-    if comGaitVariation and type == "Gait":
+    if gaitComVariation and type == "Gait":
         kv.setDisplayComKinematics(True,variation=True)
 
     # filter
