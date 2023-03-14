@@ -20,6 +20,7 @@ from pyCGM2.Anomaly import anomalyDetectionProcedures
 from pyCGM2.Inspector import inspectorFilters
 from pyCGM2.Inspector import inspectorProcedures
 from pyCGM2.Model.Procedures import modelQuality
+from pyCGM2.Lib.Processing import progression
 
 
 def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
