@@ -186,30 +186,7 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
     modMotion.compute()
 
     # ----progression Frame----
-    progressionFlag = False
-    if btkTools.isPointsExist(acqStatic, ['LASI', 'RASI', 'RPSI', 'LPSI'],ignorePhantom=False):
-        LOGGER.logger.info("[pyCGM2] - progression axis detected from Pelvic markers ")
-        pfp = progressionFrameProcedures.PelvisProgressionFrameProcedure()
-        pff = progressionFrameFilters.ProgressionFrameFilter(acqStatic,pfp)
-        pff.compute()
-        progressionAxis = pff.outputs["progressionAxis"]
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
-        progressionFlag = True
-    elif btkTools.isPointsExist(acqStatic, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
-        LOGGER.logger.info("[pyCGM2] - progression axis detected from Thoracic markers ")
-        pfp = progressionFrameProcedures.ThoraxProgressionFrameProcedure()
-        pff = progressionFrameFilters.ProgressionFrameFilter(acqStatic,pfp)
-        pff.compute()
-        progressionAxis = pff.outputs["progressionAxis"]
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
-
-    else:
-        globalFrame = "XYZ"
-        progressionAxis = "X"
-        forwardProgression = True
-        LOGGER.logger.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
+    progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqStatic,staticFlag=True)
 
 
     if "displayCoordinateSystem" in kwargs.keys() and kwargs["displayCoordinateSystem"]:
@@ -385,44 +362,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     modMotion.compute()
 
-    progressionFlag = False
-    if btkTools.isPointExist(acqGait, 'LHEE',ignorePhantom=False) or btkTools.isPointExist(acqGait, 'RHEE',ignorePhantom=False):
-
-        pfp = progressionFrameProcedures.PointProgressionFrameProcedure(marker="LHEE") \
-            if btkTools.isPointExist(acqGait, 'LHEE',ignorePhantom=False) \
-            else  progressionFrameProcedures.PointProgressionFrameProcedure(marker="RHEE")
-
-
-        pff = progressionFrameFilters.ProgressionFrameFilter(acqGait,pfp)
-        pff.compute()
-        progressionAxis = pff.outputs["progressionAxis"]
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
-        progressionFlag = True
-
-    elif btkTools.isPointsExist(acqGait, ['LASI', 'RASI', 'RPSI', 'LPSI'],ignorePhantom=False) and not progressionFlag:
-        LOGGER.logger.info("[pyCGM2] - progression axis detected from Pelvic markers ")
-        pfp = progressionFrameProcedures.PelvisProgressionFrameProcedure()
-        pff = progressionFrameFilters.ProgressionFrameFilter(acqGait,pfp)
-        pff.compute()
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
-
-        progressionFlag = True
-    elif btkTools.isPointsExist(acqGait, ['C7', 'T10', 'CLAV', 'STRN'],ignorePhantom=False) and not progressionFlag:
-        LOGGER.logger.info("[pyCGM2] - progression axis detected from Thoracic markers ")
-        pfp = progressionFrameProcedures.ThoraxProgressionFrameProcedure()
-        pff = progressionFrameFilters.ProgressionFrameFilter(acqGait,pfp)
-        pff.compute()
-        progressionAxis = pff.outputs["progressionAxis"]
-        globalFrame = pff.outputs["globalFrame"]
-        forwardProgression = pff.outputs["forwardProgression"]
-
-    else:
-        globalFrame = "XYZ"
-        progressionAxis = "X"
-        forwardProgression = True
-        LOGGER.logger.error("[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
+    # progression frame
+    progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
 
     if "displayCoordinateSystem" in kwargs.keys() and kwargs["displayCoordinateSystem"]:
@@ -478,6 +419,9 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                      leftSegmentLabel="Left Foot",
                                      rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
+            # standardize GRF
+            cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGait,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
+            cgrff.compute(pointLabelSuffix=pointSuffix)
 
             #---- Joint kinetics----
             if type(momentProjection) == str:
