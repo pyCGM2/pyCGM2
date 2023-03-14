@@ -92,7 +92,8 @@ def descriptivePlot(figAxis,analysisStructureItem,
                         pointLabel,contextPointLabel,axis,
                         color=None,
                         title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
-                        customLimits=None):
+                        customLimits=None,
+                        nan_to_num=True):
 
     '''Plot descriptive (average and sd corridor) time-normalized traces from an attribute of an `analysis` instance
 
@@ -124,6 +125,12 @@ def descriptivePlot(figAxis,analysisStructureItem,
     if flag:
         mean=analysisStructureItem.data[pointLabel,contextPointLabel]["mean"][:,axis]
         std=analysisStructureItem.data[pointLabel,contextPointLabel]["std"][:,axis]
+
+        if nan_to_num:
+            mean = np.nan_to_num(mean)
+            std = np.nan_to_num(std)
+
+
         line= figAxis.plot(np.linspace(0,100,101), mean, color=color,linestyle="-")
         figAxis.fill_between(np.linspace(0,100,101), mean-std, mean+std, facecolor=color, alpha=0.5,linewidth=0)
 
@@ -202,7 +209,7 @@ def meanPlot(figAxis,analysisStructureItem,
                         pointLabel,contextPointLabel,axis,
                         color=None,
                         title=None, xlabel=None, ylabel=None,ylim=None,legendLabel=None,
-                        customLimits=None):
+                        customLimits=None,nan_to_num=True):
 
     '''Plot the  average time-normalized traces from an attribute of an `analysis` instance
 
@@ -234,6 +241,10 @@ def meanPlot(figAxis,analysisStructureItem,
     # plot
     if flag:
         mean=analysisStructureItem.data[pointLabel,contextPointLabel]["mean"][:,axis]
+
+        if nan_to_num:
+            mean = np.nan_to_num(mean)
+
         lines= figAxis.plot(np.linspace(0,100,101), mean, color=color,linestyle="-")
 
         if customLimits is not None:
