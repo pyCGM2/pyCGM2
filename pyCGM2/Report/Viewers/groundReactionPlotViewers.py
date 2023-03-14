@@ -9,7 +9,7 @@ import pyCGM2
 from pyCGM2.Report.Viewers import plotViewers
 
 class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
-    """ Plot time-Normalized Ground reaction forces  and, optionaly the variation of the COM velocities and positions 
+    """ Plot time-Normalized Ground reaction forces and optionaly the COM velocities and positions 
 
     Args:
         iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
@@ -31,9 +31,17 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
         self.m_concretePlotFunction = None
 
         self.__displayCom= False
+        self.__comVariation = False
     
-    def setDisplayComKinematics(self,boolean):
-         self.__displayCom = boolean
+    def setDisplayComKinematics(self,boolean,variation=False):
+        """add COM kinematic plots to the panel
+
+        Args:
+            boolean (bool): enable plots
+            variation (bool, optional): enable if you work with COM variations. Defaults to False.
+        """         
+        self.__displayCom = boolean
+        self.__comVariation = variation
         
         
     def setConcretePlotFunction(self, concreteplotFunction):
@@ -55,8 +63,10 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
         else :
             title=u"""\n"""
 
-        if self.__displayCom: 
-            title = title+" + Centre of mass velocity and position variations" 
+        if self.__displayCom and self.__comVariation: 
+            title = title+" + Variation of the COM velocities and positions" 
+        if self.__displayCom and not self.__comVariation:
+            title = title+" + the COM velocities and positions"
 
         self.fig.suptitle(title)
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
@@ -82,14 +92,13 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
             ax.tick_params(axis='x', which='major', labelsize=6)
             ax.tick_params(axis='y', which='major', labelsize=6)
 
+        #  GRF
         for ax in [self.fig.axes[0],self.fig.axes[1],self.fig.axes[2]]:
             ax.set_ylabel("Ground reaction force (N.kg-1)",size=8)
-
 
         self.fig.axes[0].set_title("Longitudinal Force" ,size=8)
         self.fig.axes[1].set_title("Lateral Force" ,size=8)
         self.fig.axes[2].set_title("Vertical Force" ,size=8)
-
 
         self.fig.axes[2].axhline(9.81,color="black",ls='dashed')
 
@@ -100,13 +109,12 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
             self.fig.axes[4].set_title("Total Lateral Force" ,size=8) 
             self.fig.axes[5].set_title("Total Vertical Force" ,size=8)    
            
-            self.fig.axes[6].set_title("Longitudinal COM velocity Variation" ,size=8)
-            self.fig.axes[7].set_title("Lateral COM velocity Variation" ,size=8) 
-            self.fig.axes[8].set_title("Vertical COM velocity Variation" ,size=8)    
-            self.fig.axes[9].set_title("Longitudinal COM position Variation" ,size=8)
-            self.fig.axes[10].set_title("Lateral COM position Variation" ,size=8) 
-            self.fig.axes[11].set_title("Vertical COM position Variation" ,size=8)    
-
+            self.fig.axes[6].set_title("Longitudinal COM velocity " ,size=8)
+            self.fig.axes[7].set_title("Lateral COM velocity " ,size=8) 
+            self.fig.axes[8].set_title("Vertical COM velocity " ,size=8)    
+            self.fig.axes[9].set_title("Longitudinal COM position " ,size=8)
+            self.fig.axes[10].set_title("Lateral COM position " ,size=8) 
+            self.fig.axes[11].set_title("Vertical COM position " ,size=8)    
 
 
             # add gait phases.
@@ -115,16 +123,18 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
             double2L = self.m_analysis.kineticStats.pst['doubleStance2', "Left"]["mean"]
             stanceR = self.m_analysis.kineticStats.pst['stancePhase', "Right"]["mean"]
             double1R = self.m_analysis.kineticStats.pst['doubleStance1', "Right"]["mean"]
-            double2R = self.m_analysis.kineticStats.pst['doubleStance2', "Right"]["mean"]
-
-
-            self.fig.axes[2].axhline(9.81,color="black",ls='dashed')
-            self.fig.axes[5].axhline(0,color="black",ls='dashed')
-            for ax in self.fig.axes[6:12]:
+            double2R = self.m_analysis.kineticStats.pst['doubleStance2', "Right"]["mean"]            
+            
+            for ax in self.fig.axes[3:12]:
                 ax.tick_params(axis='x', which='major', labelsize=0)
-                ax.tick_params(axis='y', which='major', labelsize=0)
+                
+                ylabelsize = 0 if self.__comVariation else 6 
+                ax.tick_params(axis='y', which='major', labelsize=ylabelsize)
 
-                ax.set_ylabel("",size=6)
+                if self.__comVariation:
+                    ax.set_ylabel("variation",size=6)
+                else:
+                    ax.set_ylabel("",size=6)
 
                 ax.axhline(0,color="black",ls='dashed')
         
@@ -143,6 +153,16 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
             #ax0.set_ylim([-2.0 *1000.0, 3.0*1000.0])
             pass
        
+        if self.__displayCom:
+            for ax in self.fig.axes[9:12]:    
+                ax.set_xlabel("Cycle %",size=8)
+                ax.set_xlabel("Cycle %",size=8)
+                ax.set_xlabel("Cycle %",size=8)
+        else:
+            for ax in self.fig.axes[0:3]:    
+                ax.set_xlabel("Cycle %",size=8)
+                ax.set_xlabel("Cycle %",size=8)
+                ax.set_xlabel("Cycle %",size=8)
 
 
     def setNormativeDataset(self,iNormativeDataSet):

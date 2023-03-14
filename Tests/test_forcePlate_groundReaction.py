@@ -433,7 +433,7 @@ class Test_groundReactionForcePlateIntegration():
 
         kv = groundReactionPlotViewers.NormalizedGroundReactionForcePlotViewer(analysisInstance,pointLabelSuffix=None)
         kv.setAutomaticYlimits(True)
-        kv.setDisplayComKinematics(True)
+        kv.setDisplayComKinematics(True,variation=True)
         kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
 
         # filter
