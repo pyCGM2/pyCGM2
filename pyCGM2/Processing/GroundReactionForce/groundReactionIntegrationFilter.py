@@ -22,18 +22,19 @@ class GroundReactionIntegrationFilter(object):
 
     """
 
-    def __init__(self, analysisInstance, procedure):
+    def __init__(self, analysisInstance, procedure,bodymass):
 
         self.m_analysis = analysisInstance
         self.m_procedure = procedure
+        self.m_bodymass = bodymass
 
 
 
     def run(self):
         """Run the filter
         """
-        self.m_procedure.compute(self.m_analysis)
-        return self.m_procedure.centerOfmass
+        self.m_procedure.compute(self.m_analysis,self.m_bodymass)
+        
 
        
 
