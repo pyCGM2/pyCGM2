@@ -535,9 +535,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                  rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
         # standardize grf
-        cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGait,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
+        cgrff = modelFilters.GroundReactionForceAdapterFilter(finalAcqGait,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
         cgrff.compute(pointLabelSuffix=pointSuffix)
-
 
         #---- Joint kinetics----
         idp = modelFilters.CGMLowerlimbInverseDynamicProcedure()
