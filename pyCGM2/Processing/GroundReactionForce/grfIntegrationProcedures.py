@@ -45,15 +45,26 @@ class gaitGrfIntegrationProcedure(GrfIntegrationProcedure):
             stanceDurationL = analysisInstance.kineticStats.pst['stanceDuration', "Left"]["mean"]
             stanceDurationR = analysisInstance.kineticStats.pst['stanceDuration', "Right"]["mean"]
             
+            double1L = analysisInstance.kineticStats.pst['doubleStance1', "Left"]["mean"]
+            double2L = analysisInstance.kineticStats.pst['doubleStance2', "Left"]["mean"]
+            double1R = analysisInstance.kineticStats.pst['doubleStance1', "Right"]["mean"]
+            double2R = analysisInstance.kineticStats.pst['doubleStance2', "Right"]["mean"]  
+
 
             analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"] = {"Force": np.zeros((101,3)),"Acceleration": np.zeros((101,3)), "Velocity": np.zeros((101,3)),"Position": np.zeros((101,3))}
             analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"] = {"Force": np.zeros((101,3)),"Acceleration": np.zeros((101,3)), "Velocity": np.zeros((101,3)),"Position": np.zeros((101,3))}
 
-
+            tot = np.zeros((101,3))
+            for i in range(0,101):
+                if i<51:      
+                    tot[i,:] =  values_L[i,:] + values_R[i+50,:]
+                else:  
+                    tot[i,:] =  values_L[i,:] + values_R[i-50,:]        
 
             for i in range(0,101):
-                analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"][i,:] =  values_L[i,:] + values_R[i+51,:] if i<50 else values_L[i,:]        
-                analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Force"][i,:] =  values_R[i,:]+values_L[i+51,:] if i<50 else values_R[i,:] 
+                analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"][i,:] =  values_L[i,:] + values_R[i+50,:] if i<50 else values_L[i,:] + values_R[i-50,:]        
+                analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Force"][i,:] =  values_R[i,:]+values_L[i+50,:] if i<50 else  values_R[i,:]+values_L[i-50,:]  
+
 
             analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Acceleration"] =  (analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"])/bodymass
             analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Acceleration"][:,2] =  (analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"][:,2]-bodymass*9.81)/bodymass
@@ -82,13 +93,13 @@ class gaitGrfIntegrationProcedure(GrfIntegrationProcedure):
 
 
             for i in range(0,101):
-                if i > round(stanceL):
+                if i > round(stanceL-double2L-1):
                     for key in analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"].keys():
                         analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"][key][i,:]=np.array([np.nan,np.nan,np.nan] )
 
             
             for i in range(0,101):
-                if i > round(stanceR):
+                if i > round(stanceR-double2R-1):
                     for key in analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"].keys():
                         analysisInstance.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"][key][i,:]=np.array([np.nan,np.nan,np.nan] )
         else:

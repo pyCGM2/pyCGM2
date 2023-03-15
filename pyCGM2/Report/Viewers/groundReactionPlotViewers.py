@@ -280,12 +280,19 @@ class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.AbstractPlotViewer):
             ax.axvline(double1R,ymin=0.9, ymax=1.0,color=color,ls='dotted')
             ax.axvline(stanceR-double2R,ymin=0.9, ymax=1.0,color=color,ls='dotted')
 
-            if i==2:
-                if self.m_bodymass !=0:  ax.axhline(self.m_bodymass*9.81,color="black",ls='dashed')  
-            else:
-                ax.axhline(0,color="black",ls='dashed')  
+            ax.axhline( 0,color="black")
+  
 
             i+=1
+
+        self.fig.axes[2].axhline( self.m_bodymass*9.81,
+                                 color="black", ls='dashed')
+        
+        # self.fig.axes[2].axhline( np.nanmean(self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"][:,2]),
+        #                          color="red", ls='dashed')
+        
+        # self.fig.axes[2].axhline( np.nanmean(self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Right"]["Force"][:,2]),
+        #                          color="blue", ls='dashed')
 
 
         # limits
