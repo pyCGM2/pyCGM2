@@ -511,6 +511,10 @@ class Test_groundReactionForcePlateIntegration():
         hlplot.plot_GaitGrfIntegration(data_path, analysisInstance, None,required_mp["Bodymass"],show=False)
 
 
+        hlplot.plot_DescriptiveGRF(data_path, analysisInstance, None,
+                                   type="Gait",
+                                   pointLabelSuffix=None)
+
 
 
         # pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
