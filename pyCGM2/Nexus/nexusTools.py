@@ -414,16 +414,27 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
 
         NEXUS.SetModelOutput( vskName, output_label, data, exists )
 
-def appendBtkScalarFromAcq(NEXUS,vskName,groupName,label,nexusType,acq):
+def appendBtkScalarFromAcq(NEXUS,vskName,groupName,label,nexusTypes,acq):
+
+    if isinstance(nexusTypes, str):
+        nexusTypes  = [nexusTypes,"None","None"]
+    elif isinstance(nexusTypes, list):
+        if  len(nexusTypes) != 3:
+            raise Exception("[pyCGM2] - nexusType is a string or a list of 3 variables")
+         
+
 
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
         NEXUS.GetModelOutput(vskName, label)
         LOGGER.logger.debug( "parameter (%s) already exist" %(label))
     else:
-        NEXUS.CreateModelOutput( vskName, label, groupName, ["X","Y","Z"],  [nexusType,"None","None"])
+        NEXUS.CreateModelOutput( vskName, label, groupName, ["X","Y","Z"],  nexusTypes)
 
-    values = acq.GetPoint(label+"["+groupName+"]").GetValues()
+    try:
+        values = acq.GetPoint(label+"["+groupName+"]").GetValues()
+    except RuntimeError:
+        values = acq.GetPoint(label).GetValues()
 
     #ff,lf = NEXUS.GetTrialRange()
     ff = acq.GetFirstFrame()
