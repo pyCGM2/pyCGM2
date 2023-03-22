@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Model
-#APIDOC["Draft"]=False
-#--end--
 """
 This module contains filters and associated procedures which can be applied on a model
 
@@ -10,6 +7,7 @@ This module contains filters and associated procedures which can be applied on a
 
 import pyCGM2
 import numpy as np
+import matplotlib.pyplot as plt
 import copy
 
 LOGGER = pyCGM2.LOGGER
@@ -28,8 +26,13 @@ from pyCGM2.Model import motion
 from pyCGM2 import enums
 from  pyCGM2.Math import euler
 from  pyCGM2.Math import numeric
+from pyCGM2.Math import derivation
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Utils import timer
+
+from pyCGM2.ForcePlates import forceplates
+
+
 
 #-------- MODEL PROCEDURE  ----------
 
@@ -1248,6 +1251,34 @@ class ForcePlateAssemblyFilter(object):
         btkTools.smartAppendPoint(self.m_aqui,momentLabel,
                          right_momentValues / bodymass,
                          PointType="Moment", desc="")
+        
+        
+class GroundReactionIntegrationFilter(object):
+    """  
+
+    Args:
+       btkAcq (btkAcquisition): an acquisition instance of a dynamic trial
+       iMod (pyCGM2.Model.CGM2.model.Model): a model instance
+       mappedForcePlateLetters (str): string indicating body side of the segment in contact with the force plate
+    """
+
+    def __init__(self, procedure, btkAcq, mappedForcePlateLetters,bodymass,globalFrameOrientation = "XYZ", forwardProgression = True):
+
+        self.m_aqui = btkAcq
+        self.m_mappedForcePlate = mappedForcePlateLetters
+        self.m_bodymass = bodymass
+        self.m_globalFrameOrientation = globalFrameOrientation
+        self.m_forwardProgression = forwardProgression
+        self.m_procedure = procedure
+
+    def compute(self):
+
+        self.m_procedure.compute(self.m_aqui,
+                                 self.m_mappedForcePlate,
+                                 self.m_bodymass,
+                                 self.m_globalFrameOrientation,self.m_forwardProgression)
+
+
 
 class GroundReactionForceAdapterFilter(object):
     """filter to standardized the ground reaction force.
@@ -1364,6 +1395,8 @@ class GroundReactionForceAdapterFilter(object):
             btkTools.smartAppendPoint(self.m_aqui,label,
                             valuesR,
                             PointType="Force", desc="[0]forward(+)backward(-) [1]lateral(+)medial(-) [2] upward(+)downward(-)")
+            
+
         
 # ----- Inverse dynamics -----
 
