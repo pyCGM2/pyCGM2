@@ -1244,7 +1244,11 @@ def cleanAcq(acq):
     nframes = acq.GetPointFrameNumber()
 
     for it in btk.Iterate(acq.GetPoints()):
-        if it.GetType() in [btk.btkPoint.Marker, btk.btkPoint.Scalar, btk.btkPoint.Angle, btk.btkPoint.Force, btk.btkPoint.Moment, btk.btkPoint.Power]:
+        if it.GetType() in [btk.btkPoint.Marker,  
+                            btk.btkPoint.Angle, 
+                            btk.btkPoint.Force, 
+                            btk.btkPoint.Moment, 
+                            btk.btkPoint.Power]:
             values = it.GetValues()
 
             if np.all(values == np.zeros(3)) or np.all(values == np.array([180, 0, 180])):
@@ -1501,6 +1505,18 @@ def getLabelsFromScalar(acq, description=None):
                 out.append(it.GetLabel())
 
     return out
+
+def getScalar(acq,label):
+
+    out = None
+
+    for it in btk.Iterate(acq.GetPoints()):
+        if it.GetType() == btk.btkPoint.Scalar and it.GetLabel() == label:
+            out = it
+            break
+    
+    return out
+
 
 
 def btkPointToKtkTimeseries(acq, type=btk.btkPoint.Marker):
