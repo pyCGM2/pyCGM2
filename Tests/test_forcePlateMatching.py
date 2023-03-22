@@ -177,3 +177,21 @@ class Test_manualAssigment:
 
         assignedMappedForcePlate4 = forceplates.matchingFootSideOnForceplate(acqGait,mfpa="AXAXXX")
         assert assignedMappedForcePlate4 == "RXR"
+
+
+class Test_consecutiveGaitContact():
+    def test_threePF(self):
+
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateAssignment\\"
+
+        # --- Motion 1
+        gaitFilename="walking_Y_3pf.c3d"
+        acqGait = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+        #forceplates.appendForcePlateCornerAsMarker(acqGait)
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait)
+
+
+        if mappedForcePlate!="RLR":
+            raise Exception ("uncorrected force plate matching")
+        
+        forceplates.detectGaitConsecutiveForcePlates(acqGait,mappedForcePlate)

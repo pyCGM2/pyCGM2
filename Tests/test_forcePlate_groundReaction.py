@@ -11,6 +11,7 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Lib.CGM import  cgm1
 from pyCGM2.Model import modelFilters
+from pyCGM2.Model.Procedures import forcePlateIntegrationProcedures
 from pyCGM2.Nexus import vskTools
 from pyCGM2.Utils import testingUtils
 from pyCGM2 import enums
@@ -27,7 +28,6 @@ from pyCGM2.Report.Viewers import groundReactionPlotViewers
 from pyCGM2.Report.Viewers import  comparisonPlotViewers
 from pyCGM2.Report import normativeDatasets
 from pyCGM2.Utils import files
-from pyCGM2.Processing.GroundReactionForce import  grfIntegrationProcedures, groundReactionIntegrationFilter
 
 def getModel(data_path,progressionAxis):
     
@@ -84,9 +84,9 @@ def getModel(data_path,progressionAxis):
     return model
 
 
-class Test_groundReactionForcePlate():
+class Test_GroundReactionForcePlate():
 
-    def test_GroundReactionCorrection(self):
+    def test_GroundReaction(self):
 
         def plot(acq):
             plt.figure()
@@ -212,7 +212,7 @@ class Test_groundReactionForcePlate():
 
     
 
-    def test_GroundReactionCorrection_Xaxis(self):
+    def test_AdapaterGRF_Xaxis(self):
 
         def plot(acqForward,acqBackward):
             # ----- plot
@@ -278,7 +278,7 @@ class Test_groundReactionForcePlate():
         plt.show()
 
         
-    def test_GroundReactionCorrection_Yaxis(self):
+    def test_AdapaterGRF_Yaxis(self):
 
         def plot(acqForward,acqBackward):
             
@@ -338,8 +338,6 @@ class Test_groundReactionForcePlate():
 
         plot(acqGaitYf,acqGaitYb)
         plt.show()
-
-class Test_groundReactionForcePlatePlot():
 
     def test_plots(self):
         data_path =  pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\LowerLimb-medMed_Yprogression\\"
@@ -420,26 +418,9 @@ class Test_groundReactionForcePlatePlot():
 
     
 
-class Test_groundReactionForcePlateIntegration():
+class Test_GRF_Integration():
 
-    def test_integration(self): 
-        data_path =  pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\LowerLimb-medMed_Yprogression\\"
-
-        model = getModel(data_path,"Y")
-
-        analysisInstance = analysis.makeAnalysis(data_path,
-                        ["gait1.c3d","gait2.c3d"],
-                        type="Gait",
-                        emgChannels = None,
-                        pointLabelSuffix=None,
-                        subjectInfo=None, experimentalInfo=None,modelInfo=None,
-                        )
-
-        proc =  grfIntegrationProcedures.gaitGrfIntegrationProcedure()
-        filter = groundReactionIntegrationFilter.GroundReactionIntegrationFilter(analysisInstance,proc,bodymass=model.mp["Bodymass"])
-        filter.run()
-
-    def test_NormalGait_integration_plots(self): 
+    def test_NormalGaitIntegration(self): 
         data_path =  pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\fullBody-native-noOptions\\"   
 
         staticFilename = "static.c3d"
@@ -465,57 +446,89 @@ class Test_groundReactionForcePlateIntegration():
             pointSuffix,
             displayCoordinateSystem=True)
 
-        gaitFilename="gait1.c3d"
+        gaitFilename="gait2.c3d"
         acqGait1 = btkTools.smartReader(data_path +  gaitFilename)
-        mfpa = "RLXX"
+        # mfpa = "RLXX"
+        mfpa = "LRLX"
      
         mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGait1,mfpa=mfpa)
         forceplates.addForcePlateGeneralEvents(acqGait1,mappedForcePlate)
         LOGGER.logger.warning("Manual Force plate assignment : %s" %mappedForcePlate)
 
-
+        progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait1)
         # assembly foot and force plate
         modelFilters.ForcePlateAssemblyFilter(model,acqGait1,mappedForcePlate,
                                  leftSegmentLabel="Left Foot",
                                  rightSegmentLabel="Right Foot").compute(pointLabelSuffix="check")
 
-        progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait1)
-
+        # standardize GRF for clinical interpretation 
         cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGait1,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
         cgrff.compute()
 
-        btkTools.smartWriter(acqGait1,data_path+"gait1_stanGRF.c3d")
+        # integrate force reaction
+        proc = forcePlateIntegrationProcedures.GaitForcePlateIntegrationProcedure()
+        modelFilters.GroundReactionIntegrationFilter(proc, acqGait1,mappedForcePlate,model.mp["Bodymass"],
+                                                     globalFrameOrientation=globalFrame, forwardProgression=forwardProgression).compute()
+
+        btkTools.smartWriter(acqGait1,data_path+"gait2_stanGRF.c3d")
+
+        acq =  btkTools.smartReader(data_path+"gait2_stanGRF.c3d")
+       
+
+        from pyCGM2.Model.CGM2 import cgm
+
+        cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT["Left"] = cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT["Left"] + ["LTotalGroundReactionForce","LCOMTrajectory_FP","LCOMVelocity_FP", "LCOMAcceleration_FP"]
+        cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT["Right"] = cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT["Right"] + ["RTotalGroundReactionForce","RCOMTrajectory_FP","RCOMVelocity_FP", "RCOMAcceleration_FP"]
 
 
         analysisInstance = analysis.makeAnalysis(data_path,
-                        ["gait1_stanGRF.c3d"],
+                        ["gait2_stanGRF.c3d"],
                         type="Gait",
+                        kineticLabelsDict =  cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
                         emgChannels = None,
                         pointLabelSuffix=None,
                         subjectInfo=None, experimentalInfo=None,modelInfo=required_mp,
                         )
 
-        proc =  grfIntegrationProcedures.gaitGrfIntegrationProcedure()
-        filter = groundReactionIntegrationFilter.GroundReactionIntegrationFilter(analysisInstance,proc,required_mp["Bodymass"])
-        filter.run()
-
         # # procedure - filter
         kv = groundReactionPlotViewers.NormalizedGaitGrfIntegrationPlotViewer(analysisInstance,bodymass = required_mp["Bodymass"],pointLabelSuffix=None)
         kv.setAutomaticYlimits(False)
-        # filter
+        kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
+        # # filter
         pf = plotFilters.PlottingFilter()
         pf.setViewer(kv)
         fig = pf.plot()
-        #pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
 
-        hlplot.plot_GaitGrfIntegration(data_path, analysisInstance, None,required_mp["Bodymass"],show=False)
+        hlplot.plot_DescriptiveGrfIntegration(data_path, analysisInstance, None,required_mp["Bodymass"],show=False)
+
+        # #pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
+
+        #hlplot.plot_GaitMeanGrfIntegration(data_path, analysisInstance, None,required_mp["Bodymass"],show=False)
 
 
-        hlplot.plot_DescriptiveGRF(data_path, analysisInstance, None,
-                                   type="Gait",
-                                   pointLabelSuffix=None)
+        # hlplot.plot_DescriptiveGRF(data_path, analysisInstance, None,
+        #                            type="Gait",
+        #                            pointLabelSuffix=None)
 
 
 
         # pf.setHorizontalLines({"Vertical Force":[[9.81,"black"]]})
         plt.show()
+
+
+    # def test_integration(self): 
+    #     data_path =  pyCGM2.TEST_DATA_PATH + "GaitModels\CGM1\\LowerLimb-medMed_Yprogression\\"
+
+    #     model = getModel(data_path,"Y")
+
+    #     analysisInstance = analysis.makeAnalysis(data_path,
+    #                     ["gait1.c3d","gait2.c3d"],
+    #                     type="Gait",
+    #                     emgChannels = None,
+    #                     pointLabelSuffix=None,
+    #                     subjectInfo=None, experimentalInfo=None,modelInfo=None,
+    #                     )
+
+    #     proc =  grfIntegrationProcedures.gaitGrfIntegrationProcedure()
+    #     filter = groundReactionIntegrationFilter.GroundReactionIntegrationFilter(analysisInstance,proc,bodymass=model.mp["Bodymass"])
+    #     filter.run()

@@ -1416,17 +1416,23 @@ def plot_DescriptiveGRF(DATA_PATH,analysis,normativeDataset,
         return fig
     
 
-def plot_GaitGrfIntegration(DATA_PATH,analysis,normativeDataset,
-        bodymass,
+
+
+
+
+
+ # # procedure - filter
+        
+
+def plot_DescriptiveGrfIntegration(DATA_PATH,analysis,normativeDataset,bodymass,
         pointLabelSuffix=None,type="Gait",
         OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
         autoYlim=False):
-    """display average and standard deviation of time-normalized ground reaction force.
+    """display average and standard deviation of time-normalized kinematic output.
 
     Args:
         DATA_PATH (str): path to your data
         analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
-        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
         normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
         pointLabelSuffix (str)[Optional,None]:suffix previously added to your model outputs.
         type (str): [Optional, "Gait"]. event type. By default cycle is defined from foot strike.  `Gait` searched for the foot off events.
@@ -1438,6 +1444,7 @@ def plot_GaitGrfIntegration(DATA_PATH,analysis,normativeDataset,
         exportPng (bool)[Optional,False]: export as png.
         autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
 
+
     Examples:
 
     .. code-block:: python
@@ -1448,27 +1455,36 @@ def plot_GaitGrfIntegration(DATA_PATH,analysis,normativeDataset,
     if OUT_PATH is None:
         OUT_PATH = DATA_PATH
 
-    outputName = "pyCGM2-analysis ground reaction force integration"
+    if outputName is None:
+        outputName = "pyCGM2-analysis"
 
     if exportPdf or exportPng:
-        filenameOut =  outputName+"-descriptive GRF "
+        filenameOut =  outputName+"-descriptive Force Plate Integration "
 
 
     # filter 1 - descriptive kinematic panel
     #-------------------------------------------
     # viewer
 
-    kv = groundReactionPlotViewers.NormalizedGaitGrfIntegrationPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodymass=bodymass)
+
+    kv = groundReactionPlotViewers.NormalizedGaitGrfIntegrationPlotViewer(analysis,bodymass = bodymass,pointLabelSuffix=None)
+                                     
     kv.setAutomaticYlimits(autoYlim)
+
+    if type == "Gait":
+        kv.setConcretePlotFunction(plot.gaitDescriptivePlot)
+    else:
+        kv.setConcretePlotFunction(plot.descriptivePlot)
 
 
     if normativeDataset is not None:
         kv.setNormativeDataset(normativeDataset)
 
+
     # filter
     pf = plotFilters.PlottingFilter()
     pf.setViewer(kv)
-    if title is not None: pf.setTitle(title+"-descriptive Ground reaction force Integration")
+    if title is not None: pf.setTitle(title+"-descriptive FP Integration")
     if exportPdf: pf.setExport(OUT_PATH,filenameOut,"pdf")
     fig = pf.plot()
     if show: plt.show()
@@ -1478,3 +1494,68 @@ def plot_GaitGrfIntegration(DATA_PATH,analysis,normativeDataset,
         return fig,filenameOut+".png"
     else:
         return fig
+
+
+
+# def plot_GaitMeanGrfIntegration(DATA_PATH,analysis,normativeDataset,
+#         bodymass,
+#         pointLabelSuffix=None,type="Gait",
+#         OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
+#         autoYlim=False):
+#     """display average and standard deviation of time-normalized ground reaction force.
+
+#     Args:
+#         DATA_PATH (str): path to your data
+#         analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+#         bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+#         normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+#         pointLabelSuffix (str)[Optional,None]:suffix previously added to your model outputs.
+#         type (str): [Optional, "Gait"]. event type. By default cycle is defined from foot strike.  `Gait` searched for the foot off events.
+#         OUT_PATH (str)[Optional,None]: path to your ouput folder
+#         exportPdf (bool)[Optional,False]: export as pdf
+#         outputName (str)[Optional,None]: name of the output filename.
+#         show (bool)[Optional,True]: show matplotlib figure.
+#         title (str)[Optional,None]: modify the plot panel title.
+#         exportPng (bool)[Optional,False]: export as png.
+#         autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
+
+#     Examples:
+
+#     .. code-block:: python
+
+#         plot_DescriptiveKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+
+#     """
+#     if OUT_PATH is None:
+#         OUT_PATH = DATA_PATH
+
+#     outputName = "pyCGM2-analysis ground reaction force integration"
+
+#     if exportPdf or exportPng:
+#         filenameOut =  outputName+"-descriptive GRF "
+
+
+#     # filter 1 - descriptive kinematic panel
+#     #-------------------------------------------
+#     # viewer
+
+#     kv = groundReactionPlotViewers.NormalizedGaitMeanGrfIntegrationPlotViewer(analysis,pointLabelSuffix=pointLabelSuffix,bodymass=bodymass)
+#     kv.setAutomaticYlimits(autoYlim)
+
+
+#     if normativeDataset is not None:
+#         kv.setNormativeDataset(normativeDataset)
+
+#     # filter
+#     pf = plotFilters.PlottingFilter()
+#     pf.setViewer(kv)
+#     if title is not None: pf.setTitle(title+"-descriptive Ground reaction force Integration")
+#     if exportPdf: pf.setExport(OUT_PATH,filenameOut,"pdf")
+#     fig = pf.plot()
+#     if show: plt.show()
+
+#     if exportPng:
+#         fig.savefig(OUT_PATH+filenameOut+".png")
+#         return fig,filenameOut+".png"
+#     else:
+#         return fig
