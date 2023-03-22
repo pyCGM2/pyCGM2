@@ -12,8 +12,6 @@ from pyCGM2.Model import bodySegmentParameters
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
-from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
-from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Anomaly import anomalyFilters
 from pyCGM2.Anomaly import anomalyDetectionProcedures
@@ -421,7 +419,9 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
                                      rightSegmentLabel="Right Foot").compute(pointLabelSuffix=pointSuffix)
 
             # standardize GRF
-            cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGait,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
+            cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGait,
+                                                                  globalFrameOrientation=globalFrame, 
+                                                                  forwardProgression=forwardProgression)
             cgrff.compute(pointLabelSuffix=pointSuffix)
 
             #---- Joint kinetics----
