@@ -14,7 +14,7 @@ import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
-from scipy.integrate import cumtrapz
+import scipy as sp
 
 import re
 
@@ -67,8 +67,10 @@ def ForcePlateIntegration(ReactionForce, mass, frameInit=0,frameEnd=None,
     acceleration[:,2] = (ReactionForce_cut[:,2] - mass*g)/mass
 
     for j in range(0,3):
-        velocity[:,j] = cumtrapz(acceleration[:,j], dx=1/analogFrequency, initial=v0[j])
-        position[:,j] = cumtrapz(velocity[:,j], dx=1/analogFrequency, initial=v0[j])
+        velocity[:,j] = sp.integrate.cumulative_trapezoid(acceleration[:,j], dx=1/analogFrequency, initial=0)+v0[j]
+        position[:,j] = sp.integrate.cumulative_trapezoid(velocity[:,j], dx=1/analogFrequency, initial=0)+p0[j]
+
+
 
     index = 0
     for i in range(frameInit,frameEnd):
@@ -533,3 +535,90 @@ def combineForcePlate(acq,mappedForcePlate):
         right_wrench = None
 
     return left_wrench, right_wrench
+
+
+def detectGaitConsecutiveForcePlates(acq,mappedForcePlate, threshold = 25):
+    """detect valid and two consecutive foot contacts on force plate. ie the leading limb and the trailing limb
+
+    Args:
+        acq ((Btk.Acquisition): acquisition
+        mappedForcePlate (str): force plate foot assigment
+        threshold (int, optional): force threshold for force plate detection. Defaults to 25 N.
+
+    Returns:
+        dict or None: dictionnary with two keys ["Left","Right"], each composed with a list indidanting the FP index of the leading limb and the FP of the trailing limb
+    """    
+    pfe = btk.btkForcePlatformsExtractor()
+    grwf = btk.btkGroundReactionWrenchFilter()
+    pfe.SetInput(acq)
+    pfc = pfe.GetOutput()
+    grwf.SetInput(pfc)
+    grwc = grwf.GetOutput()
+    grwc.Update()
+
+    appf = acq.GetNumberAnalogSamplePerFrame()
+    freq = acq.GetPointFrequency() 
+    pfn = acq.GetPointFrameNumber()
+    ff = acq.GetFirstFrame()
+    afn = acq.GetAnalogFrameNumber()
+
+    fpwf = btk.btkForcePlatformWrenchFilter() # the wrench of the center of the force platform data, expressed in the global frame
+    fpwf.SetInput(pfe.GetOutput())
+    fpwc = fpwf.GetOutput()
+    fpwc.Update()
+
+    consecutive ={"Left":list(),
+                  "Right":list()}
+
+
+    indexes0 = list(range(0,len(mappedForcePlate),1))
+
+    index = 0
+    for letter in mappedForcePlate:
+        indexes =  indexes0.copy()
+        indexes.pop(index)
+        if letter == "L":
+            contactFrame = np.where(fpwc.GetItem(int(index)).GetForce().GetValues()[:,2] >threshold)[0][0]
+            forces=np.zeros(len(mappedForcePlate))
+            for otherFPindex in indexes:
+                force = fpwc.GetItem(int(otherFPindex)).GetForce().GetValues()[contactFrame,2]
+                forces[otherFPindex] = force
+
+            if sum(forces>threshold) >1 :
+                raise Exception ("[pyCGM2] - more than 2 Force plates are detected ( check your force plate assignement)  ")
+            elif sum(forces>threshold) == 0:
+                LOGGER.logger.info("no simultaneous contact")
+            else:
+                otherFPindex = np.where(forces>threshold)[0][0]
+                if mappedForcePlate[otherFPindex] == "R":
+                    LOGGER.logger.info(f" FP#{index}:Left- opposite contact ( right) on force plate {otherFPindex}")
+                    leading = index
+                    trailing = otherFPindex
+                    consecutive["Left"].append([leading, trailing])
+ 
+
+        if letter == "R":
+            contactFrame = np.where(fpwc.GetItem(int(index)).GetForce().GetValues()[:,2] >threshold)[0][0]
+                        
+            forces=np.zeros(len(mappedForcePlate))
+            for otherFPindex in indexes:
+                force = fpwc.GetItem(int(otherFPindex)).GetForce().GetValues()[contactFrame,2]
+                forces[otherFPindex] = force
+
+            if sum(forces>threshold) >1 :
+                raise Exception ("[pyCGM2] - more than 2 Force plates are detected ( check your force plate assignement)  ")
+            elif sum(forces>threshold) == 0:
+                LOGGER.logger.info("no simultaneous contact")
+            else:
+                otherFPindex = np.where(forces>threshold)[0][0]
+                LOGGER.logger.info(f" FP#{index}:Right- opposite contact ( Left) on force plate {otherFPindex}")
+                if mappedForcePlate[otherFPindex] == "L":
+                    leading = index
+                    trailing = otherFPindex
+                    consecutive["Right"].append([leading, trailing])
+        index+=1
+    if consecutive == {"Left":[], "Right":[]}:
+        return None
+    else:
+        return consecutive
+
