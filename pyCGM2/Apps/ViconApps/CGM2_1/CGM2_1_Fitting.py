@@ -18,19 +18,19 @@ from pyCGM2.Lib.CGM import  cgm2_1
 from pyCGM2.Utils import files
 from pyCGM2.Tools import btkTools
 
-def main():
+def main(args=None):
+    if args is None:
+        parser = argparse.ArgumentParser(description='CGM2-1 Fitting')
+        parser.add_argument('--proj', type=str, help='Referential to project joint moment. Choice : Distal, Proximal, Global')
+        parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
+        parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+        parser.add_argument('--check', action='store_true', help='force model output suffix')
+        parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
+        parser.add_argument('-fi','--frameInit',type=int,  help='first frame to process')
+        parser.add_argument('-fe','--frameEnd',type=int,  help='last frame to process')
+        parser.add_argument('--offline', nargs= 3, help=' subject name - dynamic c3d file - mfpa', required=False)
 
-    parser = argparse.ArgumentParser(description='CGM2-1 Fitting')
-    parser.add_argument('--proj', type=str, help='Referential to project joint moment. Choice : Distal, Proximal, Global')
-    parser.add_argument('-md','--markerDiameter', type=float, help='marker diameter')
-    parser.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
-    parser.add_argument('--check', action='store_true', help='force model output suffix')
-    parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
-    parser.add_argument('-fi','--frameInit',type=int,  help='first frame to process')
-    parser.add_argument('-fe','--frameEnd',type=int,  help='last frame to process')
-    parser.add_argument('--offline', nargs= 3, help=' subject name - dynamic c3d file - mfpa', required=False)
-
-    args = parser.parse_args()
+        args = parser.parse_args()
 
     NEXUS_PYTHON_CONNECTED = False
     OFFLINE_MODE = False if args.offline is None else True
@@ -160,8 +160,8 @@ def main():
 
 
     else:
-        return parser
+        return 0
 
 if __name__ == "__main__":
 
-    main()
+    main(args=None)

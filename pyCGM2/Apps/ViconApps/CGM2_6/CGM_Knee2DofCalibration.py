@@ -20,15 +20,14 @@ from pyCGM2.Model import  modelFilters
 
 from pyCGM2.Lib.CGM import  kneeCalibration
 
-def main():
+def main(args=None):
+    if args is None:
 
-
-    parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
-    parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
-    parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
-    parser.add_argument('-e','--endFrame', type=int, help="end frame")
-
-
+        parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
+        parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
+        parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
+        parser.add_argument('-e','--endFrame', type=int, help="end frame")
+        args = parser.parse_args()
 
     try:
         NEXUS = ViconNexus.ViconNexus()
@@ -39,7 +38,7 @@ def main():
 
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
-        args = parser.parse_args()
+        
 
         DATA_PATH, reconstructedFilenameLabelledNoExt = NEXUS.GetTrialName()
 
@@ -148,8 +147,8 @@ def main():
             LOGGER.logger.warning("offset %s" %(str(model.mp_computed["RightKneeFuncCalibrationOffset"] )))
 
     else:
-        return parser
+        return 0
 
 if __name__ == "__main__":
 
-    main()
+    main(args=None)

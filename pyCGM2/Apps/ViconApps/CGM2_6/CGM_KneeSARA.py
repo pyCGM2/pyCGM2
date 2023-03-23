@@ -23,12 +23,13 @@ from pyCGM2.Lib.CGM import  kneeCalibration
 
 
 
-def main():
-
-    parser = argparse.ArgumentParser(description='SARA Functional Knee Calibration')
-    parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
-    parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
-    parser.add_argument('-e','--endFrame', type=int, help="end frame")
+def main(args=None):
+    if args is None:
+        parser = argparse.ArgumentParser(description='SARA Functional Knee Calibration')
+        parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
+        parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
+        parser.add_argument('-e','--endFrame', type=int, help="end frame")
+        args = parser.parse_args()
 
 
     try:
@@ -146,8 +147,8 @@ def main():
 
 
     else:
-        return parser
+        return 0
 
 if __name__ == "__main__":
 
-    main()
+    main(args=None)

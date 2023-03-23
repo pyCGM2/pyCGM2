@@ -12,30 +12,31 @@ warnings.filterwarnings("ignore")
 
 
 
-def main():
+def main(args = None):
 
-    parser = argparse.ArgumentParser(description='CGM1.1 Calibration')
-    parser.add_argument('-l', '--leftFlatFoot', type=int,
-                        help='left flat foot option')
-    parser.add_argument('-r', '--rightFlatFoot', type=int,
-                        help='right flat foot option')
-    parser.add_argument('-hf', '--headFlat', type=int,
-                        help='head flat option')
-    parser.add_argument('-md', '--markerDiameter',
-                        type=float, help='marker diameter')
-    parser.add_argument('-ps', '--pointSuffix', type=str,
-                        help='suffix of model outputs')
-    parser.add_argument('--check', action='store_true',
-                        help='force ggm1.1 as model output suffix')
-    parser.add_argument('--resetMP', action='store_true',
-                        help='reset optional anthropometric parameters')
-    parser.add_argument('--forceMP', action='store_true',
-                        help='force the use of MP offsets to compute knee and ankle joint centres')
-    parser.add_argument('-ae', '--anomalyException',
-                        action='store_true', help='raise an exception if an anomaly is detected')
-    parser.add_argument('--offline', nargs=2, help=' subject name and static c3d file', required=False)
+    if args is None:
+        parser = argparse.ArgumentParser(description='CGM1.1 Calibration')
+        parser.add_argument('-l', '--leftFlatFoot', type=int,
+                            help='left flat foot option')
+        parser.add_argument('-r', '--rightFlatFoot', type=int,
+                            help='right flat foot option')
+        parser.add_argument('-hf', '--headFlat', type=int,
+                            help='head flat option')
+        parser.add_argument('-md', '--markerDiameter',
+                            type=float, help='marker diameter')
+        parser.add_argument('-ps', '--pointSuffix', type=str,
+                            help='suffix of model outputs')
+        parser.add_argument('--check', action='store_true',
+                            help='force ggm1.1 as model output suffix')
+        parser.add_argument('--resetMP', action='store_true',
+                            help='reset optional anthropometric parameters')
+        parser.add_argument('--forceMP', action='store_true',
+                            help='force the use of MP offsets to compute knee and ankle joint centres')
+        parser.add_argument('-ae', '--anomalyException',
+                            action='store_true', help='raise an exception if an anomaly is detected')
+        parser.add_argument('--offline', nargs=2, help=' subject name and static c3d file', required=False)
 
-    args = parser.parse_args()
+        args = parser.parse_args()
 
     NEXUS_PYTHON_CONNECTED = False
     OFFLINE_MODE = False if args.offline is None else True
@@ -137,9 +138,9 @@ def main():
         # ========END of the nexus OPERATION if run from Nexus  =========
 
     else:
-        return parser
+        return 0
 
 
 if __name__ == "__main__":
 
-    main()
+    main(args=None)
