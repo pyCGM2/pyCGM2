@@ -1,0 +1,15 @@
+scipy
+matplotlib
+pandas
+enum34
+configparser
+pytest
+pytest-mpl
+scikit-learn
+beautifulsoup4 
+pyyaml
+yamlordereddictloader
+xlrd
+openpyxl
+xlwt
+lxml
