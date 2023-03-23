@@ -215,6 +215,8 @@ setup(name = 'pyCGM2',
                 # NEXUS
                 'Nexus_pyCGM2_CGM2  =  pyCGM2.Apps.ViconApps.CGM.Nexus_Commands:main',
                 'Nexus_pyCGM2_Plots =  pyCGM2.Apps.ViconApps.Plot.Nexus_Commands:main',
+                'Nexus_pyCGM2_Events     =  pyCGM2.Apps.ViconApps.Events.Nexus_Commands:main',
+                'Nexus_pyCGM2_GapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.Nexus_Commands:main',
 
                 # deprecated
                 'Nexus_CGM1_Calibration  =  pyCGM2.Apps.ViconApps.CGM1.CGM1_Calibration:main',
@@ -233,7 +235,6 @@ setup(name = 'pyCGM2',
                 'Nexus_CGM25_Fitting     =  pyCGM2.Apps.ViconApps.CGM2_5.CGM2_5_Fitting:main',
                 'Nexus_CGM26_2DOF =  pyCGM2.Apps.ViconApps.CGM2_6.CGM_Knee2DofCalibration:main',
                 'Nexus_CGM26_SARA     =  pyCGM2.Apps.ViconApps.CGM2_6.CGM_KneeSARA:main',
-
                 
                 # deprecated ------- 
                 'Nexus_plot_MAP                      =  pyCGM2.Apps.ViconApps.Plot.deprecated.plotMAP:main',
@@ -247,8 +248,7 @@ setup(name = 'pyCGM2',
                 'Nexus_plot_normalizedEmg = pyCGM2.Apps.ViconApps.Plot.deprecated.plotNormalizedEmg:main',
                 'Nexus_plot_temporalEmg   = pyCGM2.Apps.ViconApps.Plot.deprecated.plotTemporalEmg:main',
                 'Nexus_plot_comparison_normalizedEmg = pyCGM2.Apps.ViconApps.Plot.deprecated.plotCompareNormalizedEmg:main',
-                #-------
-
+                #deprecated -------
                 'Nexus_zeniDetector     =  pyCGM2.Apps.ViconApps.Events.zeniDetector:main',
                 'Nexus_KalmanGapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling:main',
 

@@ -13,8 +13,9 @@ import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Zeni kinematic-based gait event Detector')
+def main(args=None):
+    if args  is None:
+        parser = argparse.ArgumentParser(description='Kalman Gap filling')
 
 
     try:
@@ -51,11 +52,9 @@ def main():
 
         for marker in filledMarkers:
             nexusTools.setTrajectoryFromAcq(NEXUS, subject, marker, filledAcq)
-
     else:
-        return parser
-
+        return 0
 
 if __name__ == "__main__":
 
-    main()
+    main(args=None)

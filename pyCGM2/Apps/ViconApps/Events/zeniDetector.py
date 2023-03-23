@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Executable Apps/Vicon/Events
-#APIDOC["Import"]=False
-#APIDOC["Draft"]=False
-#--end--
 from pyCGM2.Nexus import nexusFilters
 from pyCGM2.Nexus import nexusTools
 from pyCGM2.Lib import eventDetector
@@ -12,13 +8,16 @@ import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
 
-def main():
+def main(args=None):
 
-    parser = argparse.ArgumentParser(description='Zeni kinematic-based gait event Detector')
-    parser.add_argument('-fso', '--footStrikeOffset', type=int,
-                        help='systenatic foot strike offset on both side')
-    parser.add_argument('-foo', '--footOffOffset', type=int,
-                        help='systenatic foot off offset on both side')
+    if args  is None:
+        parser = argparse.ArgumentParser(description='Zeni kinematic-based gait event Detector')
+        parser.add_argument('-fso', '--footStrikeOffset', type=int,
+                            help='systenatic foot strike offset on both side')
+        parser.add_argument('-foo', '--footOffOffset', type=int,
+                            help='systenatic foot off offset on both side')
+        args = parser.parse_args()
+
     try:
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
@@ -28,7 +27,7 @@ def main():
 
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
-        args = parser.parse_args()
+        
 
         # ----------------------INPUTS-------------------------------------------
         # --- acquisition file and path----
@@ -69,9 +68,8 @@ def main():
         # ========END of the nexus OPERATION if run from Nexus  =========
 
     else:
-        return parser
+        return 0
 
 
 if __name__ == "__main__":
-
-    main()
+    main(args=None)
