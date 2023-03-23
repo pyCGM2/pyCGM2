@@ -213,8 +213,8 @@ setup(name = 'pyCGM2',
     entry_points={
           'console_scripts': [
                 # NEXUS
-                'Nexus_pyCGM2_CGM2  =  pyCGM2.Apps.ViconApps.CGM.CommandLine:main',
-                'Nexus_pyCGM2_Plots =  pyCGM2.Apps.ViconApps.Plot.CommandLine:main',
+                'Nexus_pyCGM2_CGM2  =  pyCGM2.Apps.ViconApps.CGM.Nexus_Commands:main',
+                'Nexus_pyCGM2_Plots =  pyCGM2.Apps.ViconApps.Plot.Nexus_Commands:main',
 
                 # deprecated
                 'Nexus_CGM1_Calibration  =  pyCGM2.Apps.ViconApps.CGM1.CGM1_Calibration:main',
