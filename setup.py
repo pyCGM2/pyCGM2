@@ -252,13 +252,6 @@ setup(name = 'pyCGM2',
                 'Nexus_zeniDetector     =  pyCGM2.Apps.ViconApps.Events.zeniDetector:main',
                 'Nexus_KalmanGapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling:main',
 
-                'Nexus_check_inputArgs  =  pyCGM2.Apps.ViconApps.Miscellaneous.check_inputArgs:main',
-
-                'pyCGM2-copyPasteCgmSettings  =  pyCGM2.Apps.Commands.commands:copyPasteCgmSettings',
-                'pyCGM2-copyPasteEmgSettings  =  pyCGM2.Apps.Commands.commands:copyPasteEmgSettings',
-                'pyCGM2-displayAllScripts  =  pyCGM2.Apps.Commands.commands:displayAllScripts',
-
-
                 # QTM
                 'QTM_CGM1_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow:command',
                 'QTM_CGM11_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM11_workflow:command',
