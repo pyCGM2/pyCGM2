@@ -1,6 +1,7 @@
 ## coding: utf-8
 
 import argparse
+from pyCGM2.Apps.ViconApps.Plot import spatioTemporalParameters
 from pyCGM2.Apps.ViconApps.Plot import kinematics
 from pyCGM2.Apps.ViconApps.Plot import scores
 from pyCGM2.Apps.ViconApps.Plot import kinetics
@@ -39,6 +40,12 @@ def main():
     # ....
     # # ------ END template ------------
     
+
+    # ------ STP ------------
+    # 
+    parser_stp = sub_parsers.add_parser('STP', help='SpatiotemporalParameters plots')
+    parser_stp.add_argument('-ps','--pointSuffix', type=str, help='suffix added to model outputs')
+
 
     # ------ KINEMATICS ------------
     # 
@@ -143,7 +150,9 @@ def main():
     # print("\nLes arguments enregistrés sont les suivants : ")
     print(args)
 
-    if args.Type == "Kinematics":
+    if args.Type == "STP":
+        spatioTemporalParameters.horizontalHistogram(args)
+    elif args.Type == "Kinematics":
         if args.Command == "temporal":
             kinematics.temporal(args)
         elif args.Command == "normalized":
@@ -154,8 +163,6 @@ def main():
             scores.map(args)
         else:
             raise Exception ("[pyCGM2] - Kinematics command not known")
-
-
     elif args.Type == "Kinetics":
         if args.Command == "temporal":
             kinetics.temporal(args)
@@ -165,7 +172,6 @@ def main():
             kinetics.normalizedComparison(args)
         else:
             raise Exception ("[pyCGM2] - Kinetics command not known")
-
     elif args.Type == "EMG":
         if args.Command == "temporal":
             emg.temporal(args)
