@@ -113,7 +113,7 @@ def main(args = None):
             acq=btkTools.smartReader(DATA_PATH+calibrateFilenameLabelled)
 
         # --------------------------MODELLING PROCESSING -----------------------
-        model, acqStatic, detectAnomaly = cgm1_1.calibrate(DATA_PATH, calibrateFilenameLabelledNoExt, translators,
+        model, acqStatic, detectAnomaly = cgm1_1.calibrate(DATA_PATH, calibrateFilenameLabelled, translators,
                                                            required_mp, optional_mp,
                                                            leftFlatFoot, rightFlatFoot, headFlat, markerDiameter,
                                                            pointSuffix, forceBtkAcq=acq, anomalyException=args.anomalyException,forceMP=args.forceMP)
