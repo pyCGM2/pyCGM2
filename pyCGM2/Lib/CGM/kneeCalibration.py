@@ -131,7 +131,9 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
     elif model.version == "CGM2.5":
         trackingMarkers = cgm2.CGM2_5.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_5.THORAX_TRACKING_MARKERS+ cgm2.CGM2_5.UPPERLIMB_TRACKING_MARKERS
     
-    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
+    btkTools.createPhantoms(acqStatic, trackingMarkers)
+    btkTools.createPhantoms(acqFunc, trackingMarkers)
+    
 
     # initial calibration ( i.e calibration from Calibration operation)
     leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
@@ -295,7 +297,10 @@ def sara(model,
         trackingMarkers = cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_4.THORAX_TRACKING_MARKERS+ cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS
     elif model.version == "CGM2.5":
         trackingMarkers = cgm2.CGM2_5.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_5.THORAX_TRACKING_MARKERS+ cgm2.CGM2_5.UPPERLIMB_TRACKING_MARKERS
-    actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
+    
+    btkTools.createPhantoms(acqStatic, trackingMarkers)
+    btkTools.createPhantoms(acqFunc, trackingMarkers)
+    
 
     # initial calibration ( i.e calibration from Calibration operation)
     leftFlatFoot = model.m_properties["CalibrationParameters"]["leftFlatFoot"]
@@ -337,7 +342,6 @@ def sara(model,
         modMotion.segmentalCompute([proximalSegmentLabel,distalSegmentLabel])
 
         # decorator
-
         modelDecorator.KneeCalibrationDecorator(model).sara(side,
                                                             indexFirstFrame = iff,
                                                             indexLastFrame = ilf )
