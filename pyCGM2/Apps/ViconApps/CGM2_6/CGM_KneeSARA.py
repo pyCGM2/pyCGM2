@@ -41,7 +41,7 @@ def main(args=None):
 
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
-        args = parser.parse_args()
+        
 
 
         # --------------------------PATH + FILE ------------------------------------
