@@ -13,13 +13,15 @@ from pyCGM2.Nexus import nexusUtils
 from pyCGM2.Nexus import nexusTools
 
 try:
-    from pyCGM2 import btk
+    import btk
 except:
-    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     try:
-        import btk
+        from pyCGM2 import btk
     except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system. install it for working with the API")
+        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+
+
+
 
 from pyCGM2.Tools import btkTools
 

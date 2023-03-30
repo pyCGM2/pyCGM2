@@ -7,13 +7,12 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy
 
 try:
-    from pyCGM2 import btk
+    import btk
 except:
-    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     try:
-        import btk
+        from pyCGM2 import btk
     except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system. install it for working with the API")
+        LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
 from pyCGM2 import enums
 from pyCGM2.Model import model, modelDecorator, frame, motion
@@ -2511,7 +2510,7 @@ class CGM1(CGM):
             if validFrames[i]:
                 LKJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
 
-        if  "useLeftKJCmarker" in options.keys() and options["useLeftKJCmarker"] is not "LKJC":
+        if  "useLeftKJCmarker" in options.keys() and options["useLeftKJCmarker"] != "LKJC":
             LOGGER.logger.info("[pyCGM2] - LKJC marker forced to use %s"%(options["useLeftKJCmarker"]))
             LKJCvalues = aqui.GetPoint(options["useLeftKJCmarker"]).GetValues()
             desc = aqui.GetPoint(options["useLeftKJCmarker"]).GetDescription()
@@ -2615,7 +2614,7 @@ class CGM1(CGM):
                 RKJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
 
 
-        if  "useRightKJCmarker" in options.keys() and options["useRightKJCmarker"] is not "RKJC":
+        if  "useRightKJCmarker" in options.keys() and options["useRightKJCmarker"] != "RKJC":
             LOGGER.logger.info("[pyCGM2] - RKJC marker forced to use %s"%(options["useRightKJCmarker"]))
             RKJCvalues = aqui.GetPoint(options["useRightKJCmarker"]).GetValues()
             desc = aqui.GetPoint(options["useRightKJCmarker"]).GetDescription()
@@ -2734,7 +2733,7 @@ class CGM1(CGM):
                 LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,self.mp_computed["LeftAnkleAbAddOffset"])
 
 
-        if  "useLeftAJCmarker" in options.keys() and options["useLeftAJCmarker"] is not "LAJC":
+        if  "useLeftAJCmarker" in options.keys() and options["useLeftAJCmarker"] != "LAJC":
             LOGGER.logger.info("[pyCGM2] - LAJC marker forced to use %s"%(options["useLeftAJCmarker"]))
             LAJCvalues = aqui.GetPoint(options["useLeftAJCmarker"]).GetValues()
             desc = aqui.GetPoint(options["useLeftAJCmarker"]).GetDescription()
@@ -2900,7 +2899,7 @@ class CGM1(CGM):
 
         # --- LAJC
 
-        if  "useRightAJCmarker" in options.keys() and options["useRightAJCmarker"] is not "RAJC":
+        if  "useRightAJCmarker" in options.keys() and options["useRightAJCmarker"] != "RAJC":
             LOGGER.logger.info("[pyCGM2] - RAJC marker forced to use %s"%(options["useRightAJCmarker"]))
             RAJCvalues = aqui.GetPoint(options["useRightAJCmarker"]).GetValues()
             desc = aqui.GetPoint(options["useRightAJCmarker"]).GetDescription()

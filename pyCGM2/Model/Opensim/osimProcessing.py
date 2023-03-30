@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Model/Opensim
-#APIDOC["Draft"]=False
-#--end--
+import sys
 
 """
 This module contains  convenient functions and classes for working with opensim.
@@ -11,13 +9,12 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 
 try:
-    from pyCGM2 import btk
+    import btk
 except:
-    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     try:
-        import btk
+        from pyCGM2 import btk
     except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system. install it for working with the API")
+        LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
 try:
     from pyCGM2 import opensim4 as opensim
