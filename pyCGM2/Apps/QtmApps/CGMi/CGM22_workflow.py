@@ -8,6 +8,7 @@ import shutil
 import pyCGM2
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Lib.CGM import  cgm2_2
+from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_2 as cgm2_2exp
 from pyCGM2.Utils import files
 from pyCGM2.Utils import utils
 from pyCGM2.QTM import qtmTools
@@ -31,16 +32,17 @@ def command():
     parser = argparse.ArgumentParser(description='CGM22 workflow')
     parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
     parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
+    parser.add_argument('-msm','--musculoSkeletalModel', action='store_true', help='musculoskeletal model')
 
     try:
         args = parser.parse_args()
         sessionFilename = args.sessionFile
-        main(sessionFilename, anomalyException=args.anomalyException)
+        main(sessionFilename, anomalyException=args.anomalyException,musculoSkeletalModel=args.musculoSkeletalModel)
     except:
         return parser
 
 
-def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyException=False):
+def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyException=False,musculoSkeletalModel=False):
 
     detectAnomaly = False
     LOGGER.set_file_handler("pyCGM2-QTM-Workflow.log")
@@ -126,15 +128,27 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
 
     # Calibration operation
     # --------------------
-    model,acqStatic,detectAnomaly = cgm2_2.calibrate(DATA_PATH,
-        calibrateFilenameLabelled,
-        translators,settings,
-        required_mp,optional_mp,
-        False,
-        leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
-        hjcMethod,
-        pointSuffix,
-        anomalyException=anomalyException)
+    if musculoSkeletalModel:
+        model,acqStatic,detectAnomaly = cgm2_2exp.calibrate(DATA_PATH,
+            calibrateFilenameLabelled,
+            translators,settings,
+            required_mp,optional_mp,
+            False,
+            leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
+            hjcMethod,
+            pointSuffix,
+            anomalyException=anomalyException)
+
+    else:
+        model,acqStatic,detectAnomaly = cgm2_2.calibrate(DATA_PATH,
+            calibrateFilenameLabelled,
+            translators,settings,
+            required_mp,optional_mp,
+            False,
+            leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
+            hjcMethod,
+            pointSuffix,
+            anomalyException=anomalyException)
 
 
     LOGGER.logger.info("----- CALIBRATION-  static file [%s]-----> DONE"%(calibrateFilenameLabelled))
@@ -197,22 +211,36 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
         # fitting operation
         # -----------------------
         ik_flag = True
-
-
         LOGGER.logger.info("[pyCGM2] --- Fitting operation ---")
-        acqGait,detectAnomaly = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-            translators,settings,
-            ik_flag,
-            markerDiameter,
-            pointSuffix,
-            mfpa,momentProjection,
-            fc_lowPass_marker=fc_marker,
-            order_lowPass_marker=order_marker,
-            fc_lowPass_forcePlate = fc_fp,
-            order_lowPass_forcePlate = order_fp,
-            anomalyException=anomalyException,
-            ikAccuracy =ikAccuracy,
-            frameInit= vff, frameEnd= vlf )
+        if musculoSkeletalModel:
+            acqGait,detectAnomaly = cgm2_2exp.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                        translators,settings,
+                        ik_flag,
+                        markerDiameter,
+                        pointSuffix,
+                        mfpa,momentProjection,
+                        fc_lowPass_marker=fc_marker,
+                        order_lowPass_marker=order_marker,
+                        fc_lowPass_forcePlate = fc_fp,
+                        order_lowPass_forcePlate = order_fp,
+                        anomalyException=anomalyException,
+                        ikAccuracy =ikAccuracy,
+                        frameInit= vff, frameEnd= vlf )         
+        else:
+
+            acqGait,detectAnomaly = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                translators,settings,
+                ik_flag,
+                markerDiameter,
+                pointSuffix,
+                mfpa,momentProjection,
+                fc_lowPass_marker=fc_marker,
+                order_lowPass_marker=order_marker,
+                fc_lowPass_forcePlate = fc_fp,
+                order_lowPass_forcePlate = order_fp,
+                anomalyException=anomalyException,
+                ikAccuracy =ikAccuracy,
+                frameInit= vff, frameEnd= vlf )
 
         outFilename = reconstructFilenameLabelled
         btkTools.smartWriter(acqGait, str(DATA_PATH + outFilename))
