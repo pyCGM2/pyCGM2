@@ -17,10 +17,12 @@ except:
     import btk
 
 try:
-    from pyCGM2 import opensim4 as opensim
-except:
-    LOGGER.logger.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
     import opensim
+except:
+    try:
+        from pyCGM2 import opensim4 as opensim
+    except:
+        LOGGER.logger.error("[pyCGM2] opensim not found on your system")
 
 
 class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):

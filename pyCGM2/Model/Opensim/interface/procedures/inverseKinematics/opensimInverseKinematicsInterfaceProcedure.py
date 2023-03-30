@@ -6,19 +6,24 @@ from bs4 import BeautifulSoup
 
 # pyCGM2
 try:
-    from pyCGM2 import btk
-except:
-    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
+except:
+    try:
+        from pyCGM2 import btk
+    except:
+        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+
 from pyCGM2.Tools import  btkTools,opensimTools
 from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 from pyCGM2.Utils import files
 try:
-    from pyCGM2 import opensim4 as opensim
-except:
-    LOGGER.logger.info("[pyCGM2] : pyCGM2-embedded opensim4 not imported")
     import opensim
+except:
+    try:
+        from pyCGM2 import opensim4 as opensim
+    except:
+        LOGGER.logger.error("[pyCGM2] opensim not found on your system")
 from pyCGM2.Model.Opensim import opensimIO
 
 
