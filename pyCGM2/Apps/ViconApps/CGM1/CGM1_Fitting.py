@@ -154,6 +154,9 @@ def main(args = None):
                 NEXUS, model, acqGait, subject, pointSuffix).run()
             nexusTools.createGeneralEvents(
                 NEXUS, subject, acqGait, ["Left-FP", "Right-FP"])
+            
+            for label in ["LTHIplanarAngle", "RTHIplanarAngle","LTIBplanarAngle", "RTIBplanarAngle"]:
+                nexusTools.appendBtkScalarFromAcq(NEXUS,subject,"Quality",label,"Angle",acqGait) 
         else:
             btkTools.smartWriter(acqGait, DATA_PATH+reconstructFilenameLabelled[:-4]+"-offlineProcessed.c3d")
 
