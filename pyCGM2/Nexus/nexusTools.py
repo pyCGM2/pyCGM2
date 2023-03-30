@@ -421,30 +421,35 @@ def appendBtkScalarFromAcq(NEXUS,vskName,groupName,label,nexusTypes,acq):
         if  len(nexusTypes) != 3:
             raise Exception("[pyCGM2] - nexusType is a string or a list of 3 variables")
          
-
-
-    lst = NEXUS.GetModelOutputNames(vskName)
-    if label in lst:
-        NEXUS.GetModelOutput(vskName, label)
-        LOGGER.logger.debug( "parameter (%s) already exist" %(label))
-    else:
-        NEXUS.CreateModelOutput( vskName, label, groupName, ["X","Y","Z"],  nexusTypes)
-
+    exist= True
     try:
         values = acq.GetPoint(label+"["+groupName+"]").GetValues()
     except RuntimeError:
-        values = acq.GetPoint(label).GetValues()
+        try:
+            values = acq.GetPoint(label).GetValues()
+        except RuntimeError:
+            exist = False
+            LOGGER.logger.error(f"[pyCGM2] push to nexus failed  - the scalar [{label}]is not found. ")
+    
+    if exist:
 
-    #ff,lf = NEXUS.GetTrialRange()
-    ff = acq.GetFirstFrame()
-    lf = acq.GetLastFrame()
+        lst = NEXUS.GetModelOutputNames(vskName)
+        if label in lst:
+            NEXUS.GetModelOutput(vskName, label)
+            LOGGER.logger.debug( "parameter (%s) already exist" %(label))
+        else:
+            NEXUS.CreateModelOutput( vskName, label, groupName, ["X","Y","Z"],  nexusTypes)
 
-    pfn = acq.GetPointFrameNumber()
-    trialRange_init = NEXUS.GetTrialRange()[0]
-    framecount = NEXUS.GetFrameCount()
-    data,exists = _setPointData(trialRange_init,framecount,ff,values)
+        #ff,lf = NEXUS.GetTrialRange()
+        ff = acq.GetFirstFrame()
+        lf = acq.GetLastFrame()
 
-    NEXUS.SetModelOutput( vskName, label, data, exists )
+        pfn = acq.GetPointFrameNumber()
+        trialRange_init = NEXUS.GetTrialRange()[0]
+        framecount = NEXUS.GetFrameCount()
+        data,exists = _setPointData(trialRange_init,framecount,ff,values)
+
+        NEXUS.SetModelOutput( vskName, label, data, exists )
 
 def createGeneralEvents(NEXUS,subject,acq,labels):
     """append general events from an btk.acquisition
