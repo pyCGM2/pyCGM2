@@ -261,6 +261,7 @@ class NexusConstructAcquisitionFilter(object):
             start = self.m_firstFrame - 1  # self.m_trialFirstFrame
             end = self.m_lastFrame - 1  # self.m_trialFirstFrame
 
+            deviceName = nexusAnalogDevice.getDeviceName() 
             channels = nexusAnalogDevice.getChannels()
             for channel in channels:
                 analog = btk.btkAnalog()
@@ -270,6 +271,11 @@ class NexusConstructAcquisitionFilter(object):
                 analog.SetValues(channel.getValues()[
                                  start*self.m_numberAnalogSamplePerFrame:(end+1)*self.m_numberAnalogSamplePerFrame])
                 analog.SetDescription(channel.getDescription())
+                #if deviceName == "":
+                analog.SetDescription(channel.getDescription()) 
+                # else:
+                #    analog.SetDescription("("+deviceName+ ") "+channel.getDescription()) 
+
 
                 self.m_acq.AppendAnalog(analog)
 
