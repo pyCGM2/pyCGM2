@@ -201,6 +201,25 @@ else :
         #     np.testing.assert_array_almost_equal(acq.GetPoint("LTHI").GetValues(),acq0.GetPoint("LTHI").GetValues(),decimal=2)
         #     #np.testing.assert_array_almost_equal(acq.GetAnalog("Force.Fx1").GetValues(),acq0.GetAnalog("Force.Fx1").GetValues(),decimal=2)
 
+        def test_blueTrident(self):
+            NEXUS = ViconNexus.ViconNexus()
+
+            DATA_PATH =  pyCGM2.TEST_DATA_PATH+"LowLevel\\IMU\\BlueTrident-markers\\"
+            filenameNoExt = "pycgm2-data01"
+
+            DATA_PATH =  pyCGM2.TEST_DATA_PATH+"LowLevel\\IMU\\BlueTrident-markers\\"
+            filenameNoExt = "pycgm2-data01"
+
+            NEXUS.OpenTrial( str(DATA_PATH+filenameNoExt), 30 )
+            
+            subject = nexusTools.getActiveSubject(NEXUS)
+
+            # btkAcq builder
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            acq = nacf.build()
+
+            acq0 = btkTools.smartWriter(acq,"verif.c3d")
+
     class TestsX2d:
 
         def test_noCroppedC3d(self):
@@ -391,3 +410,5 @@ else :
             np.testing.assert_array_almost_equal(acq.GetAnalog("Force.Fz1").GetValues(),acq0.GetAnalog("Force.Fz1").GetValues(),decimal=2)
             np.testing.assert_array_almost_equal(acq.GetAnalog("Force.Fz2").GetValues(),acq0.GetAnalog("Force.Fz2").GetValues(),decimal=2)
             np.testing.assert_array_almost_equal(acq.GetAnalog("Force.Fz3").GetValues(),acq0.GetAnalog("Force.Fz3").GetValues(),decimal=2)
+
+        
