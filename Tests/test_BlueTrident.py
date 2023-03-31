@@ -1,10 +1,12 @@
 # coding: utf-8
 #pytest -s --disable-pytest-warnings  test_BlueTrident.py::Test_BlueTrident::test_reader_csv
+#pytest -s --disable-pytest-warnings  test_BlueTrident.py::Test_BlueTridentOrientation::test_globalAngles
 #pytest -s --disable-pytest-warnings  test_BlueTrident.py::Test_Garches::test_reader
 # from __future__ import unicode_literals
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -33,6 +35,8 @@ class Test_BlueTrident:
         imu3 = BlueTrident.getBlueTrident(acq,"3")
         imu3.downsample()
         imu3.constructDataFrame()
+
+
 
 
     def test_reader_csv(self):
@@ -69,6 +73,23 @@ class Test_BlueTrident:
         imu3.downsample()
         imu3.constructTimeseries()
 
+
+class Test_BlueTridentOrientation:
+
+    def test_globalAngles(self):
+
+        fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\BlueTrident-markers\\pycgm2-data01.c3d"
+        acq = btkTools.smartReader(fullfilename)
+
+        # ---- pycgm2
+        imu1 = BlueTrident.getBlueTrident(acq,"8") # get directly the viconID
+        imu1.constructDataFrame()
+        imu1.computeOrientations()
+
+        plt.figure()
+        plt.plot(imu1.m_data["Orientations"]["ViconGlobalAngles"]["eulerXYZ"][:,0])
+        plt.show()
+        
 
 
 

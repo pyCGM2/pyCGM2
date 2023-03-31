@@ -12,10 +12,48 @@ A `Frame` can collect `Node` instances.
 A `Node` represents a 3d point expressed in a local coordinate system
 
 """
-
+import sys
+import math
 import numpy as np
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
+
+
+def getRotationMatrixFromAngleAxis(anglesAxis):
+    """Convert angleaxis  to a 3x3 rotation matrix 
+
+    Args:
+        anglesAxis (np.array(3)): global axis at a specific frame
+
+    Returns:
+        np.array(3,3): rotation matrix
+    """    
+
+    rot = [[0] * 3 for x in range(3)]
+    fi = math.sqrt(sum(map(lambda n: n ** 2, anglesAxis)))
+    if fi < sys.float_info.epsilon * 100:
+        for i in range(3):
+            rot[i][i] = 1
+        return rot
+
+    x = anglesAxis[0] / fi
+    y = anglesAxis[1] / fi
+    z = anglesAxis[2] / fi
+
+    rot[0][0] = math.cos(fi) + x ** 2 * (1 - math.cos(fi))
+    rot[0][1] = x * y * (1 - math.cos(fi)) - z * math.sin(fi)
+    rot[0][2] = x * z * (1 - math.cos(fi)) + y * math.sin(fi)
+
+    rot[1][0] = y * x * (1 - math.cos(fi)) + z * math.sin(fi)
+    rot[1][1] = math.cos(fi) + y ** 2 * (1 - math.cos(fi))
+    rot[1][2] = y * z * (1 - math.cos(fi)) - x * math.sin(fi)
+
+    rot[2][0] = z * x * (1 - math.cos(fi)) - y * math.sin(fi)
+    rot[2][1] = z * y * (1 - math.cos(fi)) + x * math.sin(fi)
+    rot[2][2] = math.cos(fi) + z ** 2 * (1 - math.cos(fi))
+
+    return np.array(rot)
+
 
 
 def getQuaternionFromMatrix(RotMat):

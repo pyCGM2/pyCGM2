@@ -20,10 +20,11 @@ class Imu(object):
         self.m_acceleration = dict()
         self.m_gyro = dict()
         self.m_mag = dict()
-        self.m_globalAngles = dict()
-        self.m_highG = dict()
 
         self.m_properties = dict()
+
+        self.m_data = dict()
+        self.m_data["Orientations"] = dict()
 
     def setAcceleration(self,axis,values):
         self.m_acceleration[axis] = values
@@ -33,6 +34,8 @@ class Imu(object):
 
     def setMagnetometer(self,axis,values):
         self.m_mag[axis] = values
+
+
 
     def downsample(self,freq=400):
 
@@ -50,9 +53,38 @@ class Imu(object):
             newTime = np.arange(0, values.shape[0]/self.m_freq, 1/freq)
             self.m_gyro[axis] = f(newTime)
 
+        for axis in self.m_mag:
+            values = self.m_mag[axis]
+            time = np.arange(0, values.shape[0]/self.m_freq, 1/self.m_freq)
+            f = interp1d(time, values, fill_value="extrapolate")
+            newTime = np.arange(0, values.shape[0]/self.m_freq, 1/freq)
+            self.m_mag[axis] = f(newTime)
+        
+
         self.m_freq = freq
         frames = np.arange(0, self.m_acceleration["X"].shape[0])
         self.m_time = frames*1/self.m_freq
+
+    def getAcceleration(self):
+        x = self.m_acceleration["X"]
+        y = self.m_acceleration["Y"]
+        z = self.m_acceleration["Z"]
+
+        return  np.array([x,y,z]).T
+    
+    def getAngularVelocity(self):
+        x = self.m_gyro["X"]
+        y = self.m_gyro["Y"]
+        z = self.m_gyro["Z"]
+
+        return  np.array([x,y,z]).T
+
+    def getMagnetometer(self):
+        x = self.m_mag["X"]
+        y = self.m_mag["Y"]
+        z = self.m_mag["Z"]
+
+        return  np.array([x,y,z]).T    
 
 
     def constructDataFrame(self):
@@ -65,7 +97,10 @@ class Imu(object):
                 "Accel.Z": self.m_acceleration["Z"],
                 "Gyro.X": self.m_gyro["X"],
                 "Gyro.Y": self.m_gyro["Y"],
-                "Gyro.Z": self.m_gyro["Z"]}
+                "Gyro.Z": self.m_gyro["Z"],
+                "Mag.X": self.m_mag["X"],
+                "Mag.Y": self.m_mag["Y"],
+                "Mag.Z": self.m_mag["Z"]}
 
         self.dataframe = pd.DataFrame(data)
 
@@ -80,10 +115,14 @@ class Imu(object):
         self.m_timeseries.data["Accel.X"] = self.m_acceleration["X"]
         self.m_timeseries.data["Accel.Y"] = self.m_acceleration["Y"]
         self.m_timeseries.data["Accel.Z"] = self.m_acceleration["Z"]
+
         self.m_timeseries.data["Gyro.X"] = self.m_gyro["X"]
         self.m_timeseries.data["Gyro.Y"] = self.m_gyro["Y"]
         self.m_timeseries.data["Gyro.Z"] = self.m_gyro["Z"]
 
+        self.m_timeseries.data["Mag.X"] = self.m_mag["X"]
+        self.m_timeseries.data["Mag.Y"] = self.m_mag["Y"]
+        self.m_timeseries.data["Mag.Z"] = self.m_mag["Z"]
 
     def getAccelerationPeaks(self, threshold=12, distance=50, plot= True):
 
