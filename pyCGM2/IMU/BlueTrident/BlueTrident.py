@@ -198,7 +198,7 @@ class BlueTrident(imu.Imu):
                 # eulerYXZ_angles[i,:] = np.array(EulerFromMatrix(rot, 'yxz'))
                 # eulerZXY_angles[i,:] = np.array(EulerFromMatrix(rot, 'zxy'))
 
-            self.m_data["Orientations"]["ViconGlobalAngles"]["RotationMatrix"] = rot
+            self.m_data["Orientations"]["ViconGlobalAngles"]["RotationMatrix"] = rotations
             self.m_data["Orientations"]["ViconGlobalAngles"]["Quaternion"] = quaternions
             self.m_data["Orientations"]["ViconGlobalAngles"]["eulerXYZ"] = np.rad2deg(eulerXYZ_angles)
             self.m_data["Orientations"]["ViconGlobalAngles"]["eulerZYX"] = np.rad2deg(eulerZYX_angles)
