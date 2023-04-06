@@ -16,6 +16,9 @@ from pyCGM2.IMU.BlueTrident import BlueTrident
 from pyCGM2.IMU import imu
 from pyCGM2.Utils import files
 
+from pyCGM2.IMU import imuFilters
+from pyCGM2.IMU.Procedures import relativeImuAngleProcedures
+
 class Test_BlueTrident:
 
     def test_reader(self):
@@ -89,7 +92,53 @@ class Test_BlueTridentOrientation:
         plt.figure()
         plt.plot(imu1.m_data["Orientations"]["ViconGlobalAngles"]["eulerXYZ"][:,0])
         plt.show()
-        
+
+    def test_relativeAngles(self):
+
+        # fullfilename = pyCGM2.TEST_DATA_PATH + "IMU\\practice\\upperLimb\\upperLimb01.c3d"
+        fullfilename = pyCGM2.TEST_DATA_PATH + "IMU\\angleMeasurement\\goniometer\\right36 -0to120 trial 01.c3d"
+
+
+        acq = btkTools.smartReader(fullfilename)
+
+        # ---- pycgm2
+        imu1 = BlueTrident.getBlueTrident(acq,"1") # get directly the viconID
+        imu1.constructDataFrame()
+        imu1.computeOrientations()
+
+
+        # ---- pycgm2
+        imu2 = BlueTrident.getBlueTrident(acq,"2") # get directly the viconID
+        imu2.constructDataFrame()
+        imu2.computeOrientations()
+
+
+        # return the angle rotation from the global axis
+        proc = relativeImuAngleProcedures.BlueTridentsRelativeAnglesProcedure(representation = "GlobalAngle")
+        filt =  imuFilters.RelativeIMUAnglesFilter(imu1,imu2, proc)
+        jointFinalValues = filt.compute()
+
+        plt.figure()
+        plt.plot(jointFinalValues[:,0],"-r")
+        plt.plot(jointFinalValues[:,1],"-g")
+        plt.plot(jointFinalValues[:,2],"-b")
+
+        # return the angle from euler sequence
+        proc = relativeImuAngleProcedures.BlueTridentsRelativeAnglesProcedure(representation = "Euler", eulerSequence="ZYX")
+        filt =  imuFilters.RelativeIMUAnglesFilter(imu1,imu2, proc)
+        jointFinalValues = filt.compute()
+
+        plt.figure()
+        plt.plot(jointFinalValues[:,0],"-r")
+        plt.plot(jointFinalValues[:,1],"-g")
+        plt.plot(jointFinalValues[:,2],"-b")
+
+
+        plt.show()
+         
+
+
+
 
 
 

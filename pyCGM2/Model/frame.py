@@ -99,7 +99,7 @@ def getQuaternionFromMatrix(RotMat):
     return Quaternion
 
 
-def angleAxisFromQuaternion(Quaternion):
+def angleAxisFromQuaternion(Quaternion, toRad=False):
     """
     Calculates the AngleAxis representation from a quaternion
 
@@ -120,7 +120,10 @@ def angleAxisFromQuaternion(Quaternion):
         angle = 2*np.arctan2(lenQ, real)
         AngleAxis = angle/lenQ * imag
 
-    return np.rad2deg(AngleAxis)
+    if not toRad:
+        return np.rad2deg(AngleAxis)
+    else:
+        return AngleAxis
 
 
 def setFrameData(a1, a2, sequence):
