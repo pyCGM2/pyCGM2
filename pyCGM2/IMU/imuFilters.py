@@ -1,6 +1,18 @@
 # -*- coding: utf-8 -*-
 
 
+# class ImuOrinetationFilter(object):
+    
+
+#     def __init__(self,imuInstance,procedure):
+#         self.m_imu=imuInstance
+
+#     def compute(self):
+#         out = self.m_procedure.run(self.m_imu1)
+#         return out
+
+
+
 class RelativeIMUAnglesFilter(object):
     
 

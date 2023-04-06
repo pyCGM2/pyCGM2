@@ -35,180 +35,155 @@ class BlueTrident(imu.Imu):
        freq(integer):  frequency
     """
 
-    def __init__(self,freq):
-        super(BlueTrident, self).__init__(freq)
+    def __init__(self,freq,accel,angularVelocity,mag,globalAngle,highG):
+        super(BlueTrident, self).__init__(freq,accel,angularVelocity,mag)
 
-        self.m_globalAngles = dict()
-        self.m_highG = dict()
+        if globalAngle is None:
+            self.m_globalAngle = np.zeros((accel.shape[0],3))
+        else:
+            self.m_globalAngle = globalAngle
+        
+        if highG is None:
+            self.m_highG = np.zeros((accel.shape[0],3))
+        else:
+            self.m_highG = highG
 
-    def setGlobalAngles(self,axis,values):
-        self.m_globalAngles[axis] = values
-    
-    def setHighAcceleration(self,axis,values):
-        self.m_highG[axis] = values
+        self._highG = self.m_highG
+        self._globalAngle = self.m_globalAngle
+        
 
+        self.m_orientations= {"Method":"From Vicon Global angle ",
+                              "RotationMatrix":None,
+                              "Quaternions": None}
 
+   
     def downsample(self,freq=400):
 
-        for axis in self.m_acceleration:
-            values = self.m_acceleration[axis]
-            time = np.arange(0, values.shape[0]/self.m_freq, 1/self.m_freq)
-            f = interp1d(time, values, fill_value="extrapolate")
-            newTime = np.arange(0, values.shape[0]/self.m_freq, 1/freq)
-            self.m_acceleration[axis] = f(newTime)
+        time = np.arange(0, self.m_accel.shape[0]/self.m_freq, 1/self.m_freq)
+        newTime = np.arange(0, self.m_accel.shape[0]/self.m_freq, 1/freq)
 
-        for axis in self.m_gyro:
-            values = self.m_gyro[axis]
-            time = np.arange(0, values.shape[0]/self.m_freq, 1/self.m_freq)
+        accel = np.zeros((newTime.shape[0],3))
+        for i in range(0,3):
+            values = self.m_accel[:,i]
             f = interp1d(time, values, fill_value="extrapolate")
-            newTime = np.arange(0, values.shape[0]/self.m_freq, 1/freq)
-            self.m_gyro[axis] = f(newTime)
+            accel[:,i] = f(newTime)
+        self.m_accel = accel
 
-        for axis in self.m_mag:
-            values = self.m_mag[axis]
-            time = np.arange(0, values.shape[0]/self.m_freq, 1/self.m_freq)
+        angularVelocity = np.zeros((newTime.shape[0],3))
+        for i in range(0,3):
+            values = self.m_angularVelocity[:,i]
             f = interp1d(time, values, fill_value="extrapolate")
-            newTime = np.arange(0, values.shape[0]/self.m_freq, 1/freq)
-            self.m_mag[axis] = f(newTime)
+            angularVelocity[:,i] = f(newTime)
+        self.m_angularVelocity =  angularVelocity
+
+
+        mag = np.zeros((newTime.shape[0],3))
+        for i in range(0,3):
+            values = self.m_mag[:,i]
+            f = interp1d(time, values, fill_value="extrapolate")
+            mag[:,i] = f(newTime)
+        self.m_mag =  mag
         
-        for axis in self.m_globalAngles:
-            values = self.m_globalAngles[axis]
-            time = np.arange(0, values.shape[0]/self.m_freq, 1/self.m_freq)
+        globalAngle = np.zeros((newTime.shape[0],3))
+        for i in range(0,3):
+            values = self.m_globalAngle[:,i]
             f = interp1d(time, values, fill_value="extrapolate")
-            newTime = np.arange(0, values.shape[0]/self.m_freq, 1/freq)
-            self.m_globalAngles[axis] = f(newTime)
+            globalAngle[:,i] = f(newTime)
+        self.m_globalAngle =  globalAngle
         
-        for axis in self.m_highG:
-            values = self.m_highG[axis]
-            time = np.arange(0, values.shape[0]/self.m_freq, 1/self.m_freq)
+        highG = np.zeros((newTime.shape[0],3))
+        for i in range(0,3):
+            values = self.m_highG[:,i]
             f = interp1d(time, values, fill_value="extrapolate")
-            newTime = np.arange(0, values.shape[0]/self.m_freq, 1/freq)
-            self.m_highG[axis] = f(newTime)
-
+            highG[:,i] = f(newTime)
+        self.m_highG =  highG
+        
         self.m_freq = freq
-        frames = np.arange(0, self.m_acceleration["X"].shape[0])
+        frames = np.arange(0, self.m_accel.shape[0])
         self.m_time = frames*1/self.m_freq
+        
 
-
-    def getGlobalAngles(self):
-        x = self.m_globalAngles["X"]
-        y = self.m_globalAngles["Y"]
-        z = self.m_globalAngles["Z"]
-
-        return  np.array([x,y,z]).T    
+    def getGlobalAngle(self):
+        return  self.m_globalAngle    
 
     def getHighAcceleration(self):
-        x = self.m_highG["X"]
-        y = self.m_highG["Y"]
-        z = self.m_highG["Z"]
-
-        return  np.array([x,y,z]).T
+        return  self.m_highG
 
 
     def constructDataFrame(self):
 
-        frames = np.arange(0, self.m_acceleration["X"].shape[0])
+        super(BlueTrident, self).constructDataFrame()
+        self.dataframe["GlobalAngle.X"]: self.m_globalAngles[:,0]
+        self.dataframe["GlobalAngle.Y"]: self.m_globalAngles[:,1]
+        self.dataframe["GlobalAngle.Z"]: self.m_globalAngles[:,2]
+        self.dataframe["HighG.X"]: self.m_highG[:,0]
+        self.dataframe["HighG.Y"]: self.m_highG[:,1]
+        self.dataframe["HighG.Z"]: self.m_highG[:,2]
 
-        data = { "Time": frames*1/self.m_freq,
-                "Accel.X": self.m_acceleration["X"],
-                "Accel.Y": self.m_acceleration["Y"],
-                "Accel.Z": self.m_acceleration["Z"],
-                "Gyro.X": self.m_gyro["X"],
-                "Gyro.Y": self.m_gyro["Y"],
-                "Gyro.Z": self.m_gyro["Z"],
-                "Mag.X": self.m_mag["X"],
-                "Mag.Y": self.m_mag["Y"],
-                "Mag.Z": self.m_mag["Z"],
-                "GlobalAngle.X": self.m_globalAngles["X"],
-                "GlobalAngle.Y": self.m_globalAngles["Y"],
-                "GlobalAngle.Z": self.m_globalAngles["Z"],
-                "HighG.X": self.m_highG["X"],
-                "HighG.Y": self.m_highG["Y"],
-                "HighG.Z": self.m_highG["Z"]}
-
-        self.dataframe = pd.DataFrame(data)
 
 
     def constructTimeseries(self):
         """construct a kinetictoolkit timeseries
         """
-        frames = np.arange(0, self.m_acceleration["X"].shape[0])
+        super(BlueTrident, self).constructDataFrame()
 
-        self.m_timeseries = timeseries.TimeSeries()
-        self.m_timeseries.time = frames*1/self.m_freq
-        self.m_timeseries.data["Accel.X"] = self.m_acceleration["X"]
-        self.m_timeseries.data["Accel.Y"] = self.m_acceleration["Y"]
-        self.m_timeseries.data["Accel.Z"] = self.m_acceleration["Z"]
+        self.m_timeseries.data["GlobalAngle.X"] = self.m_globalAngles[:,0]
+        self.m_timeseries.data["GlobalAngle.Y"] = self.m_globalAngles[:,1]
+        self.m_timeseries.data["GlobalAngle.Z"] = self.m_globalAngles[:,2]
 
-        self.m_timeseries.data["Gyro.X"] = self.m_gyro["X"]
-        self.m_timeseries.data["Gyro.Y"] = self.m_gyro["Y"]
-        self.m_timeseries.data["Gyro.Z"] = self.m_gyro["Z"]
+        self.m_timeseries.data["HighG.X"] = self.m_highG[:,0]
+        self.m_timeseries.data["HighG.Y"] = self.m_highG[:,1]
+        self.m_timeseries.data["HighG.Z"] = self.m_highG[:,2]
 
-        self.m_timeseries.data["Mag.X"] = self.m_mag["X"]
-        self.m_timeseries.data["Mag.Y"] = self.m_mag["Y"]
-        self.m_timeseries.data["Mag.Z"] = self.m_mag["Z"]
-
-        self.m_timeseries.data["GlobalAngle.X"] = self.m_globalAngles["X"]
-        self.m_timeseries.data["GlobalAngle.Y"] = self.m_globalAngles["Y"]
-        self.m_timeseries.data["GlobalAngle.Z"] = self.m_globalAngles["Z"]
-
-        self.m_timeseries.data["HighG.X"] = self.m_highG["X"]
-        self.m_timeseries.data["HighG.Y"] = self.m_highG["Y"]
-        self.m_timeseries.data["HighG.Z"] = self.m_highG["Z"]
-
-    def computeOrientations(self, method = "ViconAngleAxis"):
-
-        if method == "ViconAngleAxis":
-        
-            self.m_data["Orientations"]["ViconGlobalAngles"] =  dict()
-            
+    def computeOrientations(self):
+ 
             rotations=[]
-            
-            nAnalogFrames = self.m_globalAngles["X"].shape[0]
+            nAnalogFrames = self.m_globalAngle.shape[0]
 
             quaternions = np.zeros((nAnalogFrames,4))
             
-            eulerXYZ_angles = np.zeros((nAnalogFrames,3))
-            eulerZYX_angles = np.zeros((nAnalogFrames,3))
-            eulerXZY_angles = np.zeros((nAnalogFrames,3))
-            eulerYZX_angles = np.zeros((nAnalogFrames,3))
-            eulerYXZ_angles = np.zeros((nAnalogFrames,3))
-            eulerZXY_angles = np.zeros((nAnalogFrames,3))
+            # eulerXYZ_angles = np.zeros((nAnalogFrames,3))
+            # eulerZYX_angles = np.zeros((nAnalogFrames,3))
+            # eulerXZY_angles = np.zeros((nAnalogFrames,3))
+            # eulerYZX_angles = np.zeros((nAnalogFrames,3))
+            # eulerYXZ_angles = np.zeros((nAnalogFrames,3))
+            # eulerZXY_angles = np.zeros((nAnalogFrames,3))
 
-            globalAngles = self.getGlobalAngles()
+            globalAngles = self.getGlobalAngle()
             for i in range(0,nAnalogFrames): 
                 rot = frame.getRotationMatrixFromAngleAxis(globalAngles[i,:])
                 rotations.append(np.array(rot))
 
                 quaternions[i,:] = frame.getQuaternionFromMatrix(rot)
-                eulerXYZ_angles[i,:] = euler.euler_xyz(rot,similarOrder=False)
-                eulerZYX_angles[i,:] = euler.euler_zyx(rot,similarOrder=False)
-                eulerXZY_angles[i,:] = euler.euler_xzy(rot,similarOrder=False)
-                eulerYZX_angles[i,:] = euler.euler_yzx(rot,similarOrder=False)
-                eulerYXZ_angles[i,:] = euler.euler_yxz(rot,similarOrder=False)
-                eulerZXY_angles[i,:] = euler.euler_zxy(rot,similarOrder=False)
+                # eulerXYZ_angles[i,:] = euler.euler_xyz(rot,similarOrder=False)
+                # eulerZYX_angles[i,:] = euler.euler_zyx(rot,similarOrder=False)
+                # eulerXZY_angles[i,:] = euler.euler_xzy(rot,similarOrder=False)
+                # eulerYZX_angles[i,:] = euler.euler_yzx(rot,similarOrder=False)
+                # eulerYXZ_angles[i,:] = euler.euler_yxz(rot,similarOrder=False)
+                # eulerZXY_angles[i,:] = euler.euler_zxy(rot,similarOrder=False)
 
-                # rot = RotationMatrixFromAngleAxis( (self.m_globalAngles["X"][i],self.m_globalAngles["Y"][i], self.m_globalAngles["Z"][i])  )
-                # rotations.append(np.array(rot))
-                # quaternions[i,:] = np.array(QuaternionFromMatrix(rot))
-                # eulerXYZ_angles[i,:] = np.array( EulerFromMatrix(rot, 'xyz'))
-                # eulerZYX_angles[i,:] = np.array(EulerFromMatrix(rot, 'zyx'))
-                # eulerXZY_angles[i,:] = np.array(EulerFromMatrix(rot, 'xzy'))
-                # eulerYZX_angles[i,:] = np.array(EulerFromMatrix(rot, 'yzx'))
-                # eulerYXZ_angles[i,:] = np.array(EulerFromMatrix(rot, 'yxz'))
-                # eulerZXY_angles[i,:] = np.array(EulerFromMatrix(rot, 'zxy'))
+            self.m_orientations["RotationMatrix"] = rotations
+            self.m_orientations["Quaternion"] = quaternions
 
-            self.m_data["Orientations"]["ViconGlobalAngles"]["RotationMatrix"] = rotations
-            self.m_data["Orientations"]["ViconGlobalAngles"]["Quaternion"] = quaternions
-            self.m_data["Orientations"]["ViconGlobalAngles"]["eulerXYZ"] = np.rad2deg(eulerXYZ_angles)
-            self.m_data["Orientations"]["ViconGlobalAngles"]["eulerZYX"] = np.rad2deg(eulerZYX_angles)
-            self.m_data["Orientations"]["ViconGlobalAngles"]["eulerXZY"] = np.rad2deg(eulerXZY_angles)
-            self.m_data["Orientations"]["ViconGlobalAngles"]["eulerYZX"] = np.rad2deg(eulerYZX_angles)
-            self.m_data["Orientations"]["ViconGlobalAngles"]["eulerYXZ"] = np.rad2deg(eulerYXZ_angles)
-            self.m_data["Orientations"]["ViconGlobalAngles"]["eulerZXY"] = np.rad2deg(eulerZXY_angles)
+
+            # self.m_data["Orientations"]["ViconGlobalAngles"]["RotationMatrix"] = rotations
+            # self.m_data["Orientations"]["ViconGlobalAngles"]["Quaternion"] = quaternions
+            # self.m_data["Orientations"]["ViconGlobalAngles"]["eulerXYZ"] = np.rad2deg(eulerXYZ_angles)
+            # self.m_data["Orientations"]["ViconGlobalAngles"]["eulerZYX"] = np.rad2deg(eulerZYX_angles)
+            # self.m_data["Orientations"]["ViconGlobalAngles"]["eulerXZY"] = np.rad2deg(eulerXZY_angles)
+            # self.m_data["Orientations"]["ViconGlobalAngles"]["eulerYZX"] = np.rad2deg(eulerYZX_angles)
+            # self.m_data["Orientations"]["ViconGlobalAngles"]["eulerYXZ"] = np.rad2deg(eulerYXZ_angles)
+            # self.m_data["Orientations"]["ViconGlobalAngles"]["eulerZXY"] = np.rad2deg(eulerZXY_angles)
 
  
- 
+    
+    # def align(self, rotationmatrix):
+
+    #     rotations=[]
+    #     for i in range(0, len(self.m_orientations["RotationMatrix"] )
+    #         rot = 
+                       
+
         
 
     
@@ -248,15 +223,18 @@ def readmultipleBlueTridentCsv(fullfilenames,freq):
 
     imuInstances = list()
     for data in datasets_equal:
-        imuInstance = BlueTrident(freq)
 
-        imuInstance.setAcceleration("X",data["ax_m/s/s"].to_numpy())
-        imuInstance.setAcceleration("Y",data["ay_m/s/s"].to_numpy())
-        imuInstance.setAcceleration("Z",data["az_m/s/s"].to_numpy())
+        acceleration = np.array([data["ax_m/s/s"].to_numpy(), 
+                                 data["ay_m/s/s"].to_numpy(), 
+                                 data["az_m/s/s"].to_numpy()]).T
+        
+        angularVelocity = np.array([data["gx_deg/s"].to_numpy(), 
+                            data["gy_deg/s"].to_numpy(), 
+                            data["gz_deg/s"].to_numpy()]).T
 
-        imuInstance.setGyro("X",data["gx_deg/s"].to_numpy())
-        imuInstance.setGyro("Y",data["gy_deg/s"].to_numpy())
-        imuInstance.setGyro("Z",data["gz_deg/s"].to_numpy())
+        imuInstance = BlueTrident(freq,
+                              acceleration,
+                              angularVelocity,None,None,None)
 
         imuInstances.append(imuInstance)
 
@@ -267,16 +245,18 @@ def readmultipleBlueTridentCsv(fullfilenames,freq):
 
 def readBlueTridentCsv(fullfilename,freq):
     data = pd.read_csv(fullfilename)
+    
+    acceleration = np.array([data["ax_m/s/s"].to_numpy(), 
+                             data["ay_m/s/s"].to_numpy(), 
+                             data["az_m/s/s"].to_numpy()]).T
 
-    imuInstance = BlueTrident(freq)
+    angularVelocity = np.array([data["gx_deg/s"].to_numpy(), 
+                             data["gy_deg/s"].to_numpy(), 
+                             data["gz_deg/s"].to_numpy()]).T
 
-    imuInstance.setAcceleration("X",data["ax_m/s/s"].to_numpy())
-    imuInstance.setAcceleration("Y",data["ay_m/s/s"].to_numpy())
-    imuInstance.setAcceleration("Z",data["az_m/s/s"].to_numpy())
-
-    imuInstance.setGyro("X",data["gx_deg/s"].to_numpy())
-    imuInstance.setGyro("Y",data["gy_deg/s"].to_numpy())
-    imuInstance.setGyro("Z",data["gz_deg/s"].to_numpy())
+    imuInstance = BlueTrident(freq,
+                              acceleration,
+                              angularVelocity,None,None,None)
 
     return imuInstance
 
@@ -317,7 +297,7 @@ def correctBlueTridentIds(acq):
 
 def getBlueTrident(acq, id):
 
-    imuInstance = BlueTrident(acq.GetAnalogFrequency())
+    
 
     channels = []
     for it in btk.Iterate(acq.GetAnalogs()):
@@ -331,55 +311,62 @@ def getBlueTrident(acq, id):
             if deviceId == id:
                 channels.append(it)
 
+    acceleration = np.zeros((nAnalogframes,3))
     for it in ["accel.x","accel.y","accel.z"]:
         for channel in channels:
             if it in channel.GetLabel():
                 if ".x" in it:
-                     imuInstance.setAcceleration("X",channel.GetValues().reshape(nAnalogframes))
+                     acceleration[:,0] = channel.GetValues().reshape(nAnalogframes)
                 if ".y" in it:
-                    imuInstance.setAcceleration("Y",channel.GetValues().reshape(nAnalogframes))
+                    acceleration[:,1] = channel.GetValues().reshape(nAnalogframes)
                 if ".z" in it:
-                   imuInstance.setAcceleration("Z",channel.GetValues().reshape(nAnalogframes))
+                   acceleration[:,2] = channel.GetValues().reshape(nAnalogframes)
 
+    omega = np.zeros((nAnalogframes,3))
     for it in ["gyro.x","gyro.y","gyro.z"]:
         for channel in channels:
             if it in channel.GetLabel():
                 if ".x" in it:
-                     imuInstance.setGyro("X",channel.GetValues().reshape(nAnalogframes))
+                    omega[:,0] = channel.GetValues().reshape(nAnalogframes)
                 if ".y" in it:
-                    imuInstance.setGyro("Y",channel.GetValues().reshape(nAnalogframes))
+                    omega[:,1] = channel.GetValues().reshape(nAnalogframes)
                 if ".z" in it:
-                   imuInstance.setGyro("Z",channel.GetValues().reshape(nAnalogframes))
-
+                   omega[:,2] = channel.GetValues().reshape(nAnalogframes)
+ 
+    mag = np.zeros((nAnalogframes,3))
     for it in ["mag.x","mag.y","mag.z"]:
         for channel in channels:
             if it in channel.GetLabel():
                 if ".x" in it:
-                     imuInstance.setMagnetometer("X",channel.GetValues().reshape(nAnalogframes))
+                     mag[:,0] = channel.GetValues().reshape(nAnalogframes)
                 if ".y" in it:
-                    imuInstance.setMagnetometer("Y",channel.GetValues().reshape(nAnalogframes))
+                    mag[:,1] = channel.GetValues().reshape(nAnalogframes)
                 if ".z" in it:
-                   imuInstance.setMagnetometer("Z",channel.GetValues().reshape(nAnalogframes))
+                   mag[:,2] = channel.GetValues().reshape(nAnalogframes)
 
 
+    globalAngle = np.zeros((nAnalogframes,3))
     for it in ["Global Angle.x","Global Angle.y","Global Angle.z"]:
         for channel in channels:
             if it in channel.GetLabel():
                 if ".x" in it:
-                     imuInstance.setGlobalAngles("X",channel.GetValues().reshape(nAnalogframes))
+                    globalAngle[:,0] = channel.GetValues().reshape(nAnalogframes)
                 if ".y" in it:
-                    imuInstance.setGlobalAngles("Y",channel.GetValues().reshape(nAnalogframes))
+                    globalAngle[:,1] = channel.GetValues().reshape(nAnalogframes)
                 if ".z" in it:
-                   imuInstance.setGlobalAngles("Z",channel.GetValues().reshape(nAnalogframes))
-    
+                   globalAngle[:,2] = channel.GetValues().reshape(nAnalogframes)
+
+    highAccel = np.zeros((nAnalogframes,3))
     for it in ["HighG.x","HighG.y","HighG.z"]:
         for channel in channels:
             if it in channel.GetLabel():
                 if ".x" in it:
-                     imuInstance.setHighAcceleration("X",channel.GetValues().reshape(nAnalogframes))
+                    highAccel[:,0] = channel.GetValues().reshape(nAnalogframes)
                 if ".y" in it:
-                    imuInstance.setHighAcceleration("Y",channel.GetValues().reshape(nAnalogframes))
+                    highAccel[:,1] = channel.GetValues().reshape(nAnalogframes)
                 if ".z" in it:
-                   imuInstance.setHighAcceleration("Z",channel.GetValues().reshape(nAnalogframes))
-
-    return imuInstance
+                   highAccel[:,2] = channel.GetValues().reshape(nAnalogframes)
+    
+    imuInstance = BlueTrident(acq.GetAnalogFrequency(),
+                              acceleration,omega,mag,globalAngle,highAccel)
+    return imuInstance 

@@ -14,93 +14,88 @@ class Imu(object):
        freq(integer):  frequency
     """
 
-    def __init__(self,freq):
+    def __init__(self,freq,accel,angularVelocity,mag):
+
         self.m_freq =  freq
 
-        self.m_acceleration = dict()
-        self.m_gyro = dict()
-        self.m_mag = dict()
+        self.m_accel =  accel
+        if angularVelocity is None:
+            self.m_angularVelocity = np.zeros((accel.shape[0],3))
+        else:
+            self.m_angularVelocity = angularVelocity
+        
+        if mag is None:
+            self.m_mag = np.zeros((accel.shape[0],3))
+        else:
+            self.m_mag = mag
+
+        self._accel = self.m_accel
+        self._angularVelocity = self.m_angularVelocity
+        self._mag = self.m_mag
 
         self.m_properties = dict()
 
-        self.m_data = dict()
-        self.m_data["Orientations"] = dict()
+        self.m_orientations= {"Method":None,
+                              "RotationMatrix":None,
+                              "Quaternions": None}
 
-    def setAcceleration(self,axis,values):
-        self.m_acceleration[axis] = values
-
-    def setGyro(self,axis,values):
-        self.m_gyro[axis] = values
-
-    def setMagnetometer(self,axis,values):
-        self.m_mag[axis] = values
-
-
+        self.m_state = "unaligned"
 
     def downsample(self,freq=400):
 
-        for axis in self.m_acceleration:
-            values = self.m_acceleration[axis]
-            time = np.arange(0, values.shape[0]/self.m_freq, 1/self.m_freq)
-            f = interp1d(time, values, fill_value="extrapolate")
-            newTime = np.arange(0, values.shape[0]/self.m_freq, 1/freq)
-            self.m_acceleration[axis] = f(newTime)
+        time = np.arange(0, self.m_accel.shape[0]/self.m_freq, 1/self.m_freq)
+        newTime = np.arange(0, self.m_accel.shape[0]/self.m_freq, 1/freq)
 
-        for axis in self.m_gyro:
-            values = self.m_gyro[axis]
-            time = np.arange(0, values.shape[0]/self.m_freq, 1/self.m_freq)
+        accel = np.zeros((newTime.shape[0],3))
+        for i in range(0,3):
+            values = self.m_accel[:,i]
             f = interp1d(time, values, fill_value="extrapolate")
-            newTime = np.arange(0, values.shape[0]/self.m_freq, 1/freq)
-            self.m_gyro[axis] = f(newTime)
+            accel[:,i] = f(newTime)
+        self.m_accel = accel
 
-        for axis in self.m_mag:
-            values = self.m_mag[axis]
-            time = np.arange(0, values.shape[0]/self.m_freq, 1/self.m_freq)
+        angularVelocity = np.zeros((newTime.shape[0],3))
+        for i in range(0,3):
+            values = self.m_angularVelocity[:,i]
             f = interp1d(time, values, fill_value="extrapolate")
-            newTime = np.arange(0, values.shape[0]/self.m_freq, 1/freq)
-            self.m_mag[axis] = f(newTime)
+            angularVelocity[:,i] = f(newTime)
+        self.m_angularVelocity =  angularVelocity
+
+
+        mag = np.zeros((newTime.shape[0],3))
+        for i in range(0,3):
+            values = self.m_mag[:,i]
+            f = interp1d(time, values, fill_value="extrapolate")
+            mag[:,i] = f(newTime)
+        self.m_mag =  mag
         
-
         self.m_freq = freq
-        frames = np.arange(0, self.m_acceleration["X"].shape[0])
+        frames = np.arange(0, self.m_accel.shape[0])
         self.m_time = frames*1/self.m_freq
 
     def getAcceleration(self):
-        x = self.m_acceleration["X"]
-        y = self.m_acceleration["Y"]
-        z = self.m_acceleration["Z"]
-
-        return  np.array([x,y,z]).T
+        return self.m_accel
     
     def getAngularVelocity(self):
-        x = self.m_gyro["X"]
-        y = self.m_gyro["Y"]
-        z = self.m_gyro["Z"]
-
-        return  np.array([x,y,z]).T
-
+        return self.m_angularVelocity
+    
     def getMagnetometer(self):
-        x = self.m_mag["X"]
-        y = self.m_mag["Y"]
-        z = self.m_mag["Z"]
-
-        return  np.array([x,y,z]).T    
+        return self.m_mag
 
 
     def constructDataFrame(self):
 
-        frames = np.arange(0, self.m_acceleration["X"].shape[0])
+        frames = np.arange(0, self.m_accel.shape[0])
 
         data = { "Time": frames*1/self.m_freq,
-                "Accel.X": self.m_acceleration["X"],
-                "Accel.Y": self.m_acceleration["Y"],
-                "Accel.Z": self.m_acceleration["Z"],
-                "Gyro.X": self.m_gyro["X"],
-                "Gyro.Y": self.m_gyro["Y"],
-                "Gyro.Z": self.m_gyro["Z"],
-                "Mag.X": self.m_mag["X"],
-                "Mag.Y": self.m_mag["Y"],
-                "Mag.Z": self.m_mag["Z"]}
+                "Accel.X": self.m_accel[:,0],
+                "Accel.Y": self.m_accel[:,1],
+                "Accel.Z": self.m_accel[:,2],
+                "Gyro.X": self.m_angularVelocity[:,0],
+                "Gyro.Y": self.m_angularVelocity[:,1],
+                "Gyro.Z": self.m_angularVelocity[:,2],
+                "Mag.X": self.m_mag[:,0],
+                "Mag.Y": self.m_mag[:,1],
+                "Mag.Z": self.m_mag[:,2]}
 
         self.dataframe = pd.DataFrame(data)
 
@@ -108,21 +103,21 @@ class Imu(object):
     def constructTimeseries(self):
         """construct a kinetictoolkit timeseries
         """
-        frames = np.arange(0, self.m_acceleration["X"].shape[0])
+        frames = np.arange(0, self.m_accel.shape[0])
 
         self.m_timeseries = timeseries.TimeSeries()
         self.m_timeseries.time = frames*1/self.m_freq
-        self.m_timeseries.data["Accel.X"] = self.m_acceleration["X"]
-        self.m_timeseries.data["Accel.Y"] = self.m_acceleration["Y"]
-        self.m_timeseries.data["Accel.Z"] = self.m_acceleration["Z"]
+        self.m_timeseries.data["Accel.X"] = self.m_accel[:,0]
+        self.m_timeseries.data["Accel.Y"] = self.m_accel[:,1]
+        self.m_timeseries.data["Accel.Z"] = self.m_accel[:,2]
 
-        self.m_timeseries.data["Gyro.X"] = self.m_gyro["X"]
-        self.m_timeseries.data["Gyro.Y"] = self.m_gyro["Y"]
-        self.m_timeseries.data["Gyro.Z"] = self.m_gyro["Z"]
+        self.m_timeseries.data["Gyro.X"] = self.m_angularVelocity[:,0]
+        self.m_timeseries.data["Gyro.Y"] = self.m_angularVelocity[:,1]
+        self.m_timeseries.data["Gyro.Z"] = self.m_angularVelocity[:,2]
 
-        self.m_timeseries.data["Mag.X"] = self.m_mag["X"]
-        self.m_timeseries.data["Mag.Y"] = self.m_mag["Y"]
-        self.m_timeseries.data["Mag.Z"] = self.m_mag["Z"]
+        self.m_timeseries.data["Mag.X"] = self.m_mag[:,0]
+        self.m_timeseries.data["Mag.Y"] = self.m_mag[:,1]
+        self.m_timeseries.data["Mag.Z"] = self.m_mag[:,2]
 
     def getAccelerationPeaks(self, threshold=12, distance=50, plot= True):
 

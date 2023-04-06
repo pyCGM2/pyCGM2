@@ -21,8 +21,8 @@ class BlueTridentsRelativeAnglesProcedure(AbstractRelativeImuAnglesProcedure):
 
     def run(self, imuInstance1, imuInstance2):
 
-        rotations1 = imuInstance1.m_data["Orientations"]["ViconGlobalAngles"]["RotationMatrix"]
-        rotations2 = imuInstance2.m_data["Orientations"]["ViconGlobalAngles"]["RotationMatrix"]
+        rotations1 = imuInstance1.m_orientations["RotationMatrix"]
+        rotations2 = imuInstance2.m_orientations["RotationMatrix"]
  
         analogFrames = len(rotations1)
 
