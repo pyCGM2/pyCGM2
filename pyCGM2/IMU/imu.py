@@ -41,6 +41,11 @@ class Imu(object):
 
         self.m_state = "unaligned"
 
+    def reInit(self):
+        self.m_accel = self._accel
+        self.m_angularVelocity = self._angularVelocity
+        self.m_mag = self._mag
+
     def downsample(self,freq=400):
 
         time = np.arange(0, self.m_accel.shape[0]/self.m_freq, 1/self.m_freq)

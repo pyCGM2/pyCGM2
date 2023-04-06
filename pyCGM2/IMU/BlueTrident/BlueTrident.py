@@ -56,6 +56,12 @@ class BlueTrident(imu.Imu):
                               "RotationMatrix":None,
                               "Quaternions": None}
 
+
+    def reInit(self):
+        super(BlueTrident, self).reInit()
+        self.m_highG = self._highG
+        self.m_globalAngle = self._globalAngle
+        
    
     def downsample(self,freq=400):
 
