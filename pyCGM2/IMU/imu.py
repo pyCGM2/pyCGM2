@@ -1,4 +1,4 @@
-from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
+from scipy.interpolate import interp1d
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd

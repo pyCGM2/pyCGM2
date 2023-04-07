@@ -1,30 +1,15 @@
 # coding: utf-8
-import re
 import numpy as np
 import pandas as pd
 
-from pyCGM2.IMU import imu
-
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
-
-#from pyCGM2.Math.viconGeometry import RotationMatrixFromAngleAxis, QuaternionFromMatrix, EulerFromMatrix
-from viconnexusapi.ViconUtils import RotationMatrixFromAngleAxis, QuaternionFromMatrix, EulerFromMatrix
-
+from pyCGM2.IMU import imu
 from pyCGM2.Model import frame
 from pyCGM2.Math import euler
 
 
-from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
-from pyCGM2.External.ktk.kineticstoolkit import timeseries
-
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+from scipy.interpolate import interp1d
 
 
 class BlueTrident(imu.Imu):
