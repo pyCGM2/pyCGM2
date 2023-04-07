@@ -29,6 +29,7 @@ class Imu(object):
         else:
             self.m_mag = mag
 
+        self._freq =  freq
         self._accel = self.m_accel
         self._angularVelocity = self.m_angularVelocity
         self._mag = self.m_mag
@@ -39,9 +40,10 @@ class Imu(object):
                               "RotationMatrix":None,
                               "Quaternions": None}
 
-        self.m_state = "unaligned"
+        self._state = "unaligned"
 
     def reInit(self):
+        self.m_freq =  self._freq
         self.m_accel = self._accel
         self.m_angularVelocity = self._angularVelocity
         self.m_mag = self._mag

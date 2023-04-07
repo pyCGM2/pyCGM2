@@ -183,11 +183,37 @@ class BlueTrident(imu.Imu):
 
  
     
-    # def align(self, rotationmatrix):
+    def align(self, blueTridentInstance):
 
-    #     rotations=[]
-    #     for i in range(0, len(self.m_orientations["RotationMatrix"] )
-    #         rot = 
+        nframes = len(self.m_orientations["RotationMatrix"])
+        r10 = blueTridentInstance.m_orientations["RotationMatrix"][0]
+
+        quaternions = np.zeros((nframes,4))
+
+        rotations=[]
+        for i in range(0,nframes):
+            r20 = self.m_orientations["RotationMatrix"][i]
+            r12 = np.dot(r20.T, r10)
+            r2f0 = np.dot(r20,r12)
+            rotations.append(r2f0)
+            quaternions[i,:] = frame.getQuaternionFromMatrix(r2f0)
+
+        self.m_orientations["RotationMatrix"] = rotations
+        self.m_orientations["Quaternion"] = quaternions
+
+        for i in range(0,nframes):
+            rot = self.m_orientations["RotationMatrix"][i]
+            quat = self.m_orientations["Quaternion"][i,:]
+            self.m_accel[i,:] = np.dot(rot,self.m_accel[i,:])
+            self.m_angularVelocity[i,:] = np.dot(rot,self.m_angularVelocity[i,:])
+            self.m_mag[i,:] = np.dot(rot,self.m_mag[i,:])
+            self.m_highG[i,:] = np.dot(rot,self.m_highG[i,:])
+            self.m_globalAngle[i,:] = frame.angleAxisFromQuaternion(quat, toRad=False)
+
+        self._state = "aligned"
+        
+
+
                        
 
         

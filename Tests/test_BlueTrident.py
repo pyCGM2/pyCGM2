@@ -93,6 +93,51 @@ class Test_BlueTridentOrientation:
         plt.plot(imu1.m_data["Orientations"]["ViconGlobalAngles"]["eulerXYZ"][:,0])
         plt.show()
 
+    def test_alignement(self):
+
+        # fullfilename = pyCGM2.TEST_DATA_PATH + "IMU\\practice\\upperLimb\\upperLimb01.c3d"
+        fullfilename = pyCGM2.TEST_DATA_PATH + "IMU\\angleMeasurement\\goniometer\\right36 -0to120 trial 01.c3d"
+
+
+        acq = btkTools.smartReader(fullfilename)
+
+        # ---- pycgm2
+        imu1 = BlueTrident.getBlueTrident(acq,"1") # get directly the viconID
+        imu1.constructDataFrame()
+        imu1.computeOrientations()
+
+
+        # ---- pycgm2
+        imu2 = BlueTrident.getBlueTrident(acq,"2") # get directly the viconID
+        imu2.constructDataFrame()
+        imu2.computeOrientations()
+
+
+        proc = relativeImuAngleProcedures.BlueTridentsRelativeAnglesProcedure(representation = "Euler", eulerSequence="ZYX")
+        filt =  imuFilters.RelativeIMUAnglesFilter(imu1,imu2, proc)
+        jointFinalValues = filt.compute()
+
+        plt.figure()
+        plt.plot(jointFinalValues[:,0],"-r")
+        plt.plot(jointFinalValues[:,1],"-g")
+        plt.plot(jointFinalValues[:,2],"-b")
+
+
+        imu2.align(imu1)
+
+        proc = relativeImuAngleProcedures.BlueTridentsRelativeAnglesProcedure(representation = "Euler", eulerSequence="ZYX")
+        filt =  imuFilters.RelativeIMUAnglesFilter(imu1,imu2, proc)
+        jointFinalValues = filt.compute()
+
+        plt.figure()
+        plt.plot(jointFinalValues[:,0],"-r")
+        plt.plot(jointFinalValues[:,1],"-g")
+        plt.plot(jointFinalValues[:,2],"-b")
+
+
+        plt.show()
+         
+
     def test_relativeAngles(self):
 
         # fullfilename = pyCGM2.TEST_DATA_PATH + "IMU\\practice\\upperLimb\\upperLimb01.c3d"
