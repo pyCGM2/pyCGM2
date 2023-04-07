@@ -13,6 +13,7 @@ LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Tools import btkTools
 from pyCGM2.IMU.BlueTrident import BlueTrident
+from pyCGM2.IMU.BlueTrident import BlueTridentReader
 from pyCGM2.IMU import imu
 from pyCGM2.Utils import files
 
@@ -25,17 +26,15 @@ class Test_BlueTrident:
         fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\BlueTrident\\trial 1.c3d"
         acq = btkTools.smartReader(fullfilename)
 
-        acq = BlueTrident.correctBlueTridentIds(acq)
-
-        imu1 = BlueTrident.getBlueTrident(acq,"1")
+        imu1 = BlueTridentReader.btkGetBlueTrident(acq,"1")
         imu1.downsample()
         imu1.constructDataFrame()
 
-        imu2 = BlueTrident.getBlueTrident(acq,"2")
+        imu2 = BlueTridentReader.btkGetBlueTrident(acq,"2")
         imu2.downsample()
         imu2.constructDataFrame()
 
-        imu3 = BlueTrident.getBlueTrident(acq,"3")
+        imu3 = BlueTridentReader.btkGetBlueTrident(acq,"3")
         imu3.downsample()
         imu3.constructDataFrame()
 
@@ -45,7 +44,7 @@ class Test_BlueTrident:
     def test_reader_csv(self):
         fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\\BlueTridentCaptureU\\example_TS-01436.csv"
 
-        imu1 = BlueTrident.readBlueTridentCsv(fullfilename,1125)
+        imu1 = BlueTridentReader.readBlueTridentCsv(fullfilename,1125)
         imu1.downsample()
         imu1.constructDataFrame()
 
@@ -57,40 +56,40 @@ class Test_BlueTrident:
 
 
         fullfilenames = [fullfilename,fullfilename1, fullfilename2]
-        imus = BlueTrident.readmultipleBlueTridentCsv(fullfilenames,1125)
+        imus = BlueTridentReader.readmultipleBlueTridentCsv(fullfilenames,1125)
 
     def test_reader_ktk(self):
         fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\BlueTrident\\trial 1.c3d"
         acq = btkTools.smartReader(fullfilename)
-        acq = BlueTrident.correctBlueTridentIds(acq)
 
-        imu1 = BlueTrident.getBlueTrident(acq,"1")
+        imu1 = BlueTridentReader.btkGetBlueTrident(acq,"1")
         imu1.downsample()
         imu1.constructTimeseries()
 
-        imu2 = BlueTrident.getBlueTrident(acq,"2")
+        imu2 = BlueTridentReader.btkGetBlueTrident(acq,"2")
         imu2.downsample()
         imu2.constructTimeseries()
 
-        imu3 = BlueTrident.getBlueTrident(acq,"3")
+        imu3 = BlueTridentReader.btkGetBlueTrident(acq,"3")
         imu3.downsample()
         imu3.constructTimeseries()
 
 
 class Test_BlueTridentOrientation:
 
-    def test_globalAngles(self):
+    def test_absoluteAngles(self):
 
         fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\BlueTrident-markers\\pycgm2-data01.c3d"
         acq = btkTools.smartReader(fullfilename)
 
         # ---- pycgm2
-        imu1 = BlueTrident.getBlueTrident(acq,"8") # get directly the viconID
+        imu1 = BlueTridentReader.btkGetBlueTrident(acq,"8") # get directly the viconID
         imu1.constructDataFrame()
         imu1.computeOrientations()
+        imu1.computeAbsoluteAngles()
 
         plt.figure()
-        plt.plot(imu1.m_data["Orientations"]["ViconGlobalAngles"]["eulerXYZ"][:,0])
+        plt.plot(imu1.m_absoluteAngles["eulerXYZ"][:,0])
         plt.show()
 
     def test_alignement(self):
@@ -102,13 +101,13 @@ class Test_BlueTridentOrientation:
         acq = btkTools.smartReader(fullfilename)
 
         # ---- pycgm2
-        imu1 = BlueTrident.getBlueTrident(acq,"1") # get directly the viconID
+        imu1 = BlueTridentReader.btkGetBlueTrident(acq,"1") # get directly the viconID
         imu1.constructDataFrame()
         imu1.computeOrientations()
 
 
         # ---- pycgm2
-        imu2 = BlueTrident.getBlueTrident(acq,"2") # get directly the viconID
+        imu2 = BlueTridentReader.btkGetBlueTrident(acq,"2") # get directly the viconID
         imu2.constructDataFrame()
         imu2.computeOrientations()
 
@@ -147,13 +146,13 @@ class Test_BlueTridentOrientation:
         acq = btkTools.smartReader(fullfilename)
 
         # ---- pycgm2
-        imu1 = BlueTrident.getBlueTrident(acq,"1") # get directly the viconID
+        imu1 = BlueTridentReader.btkGetBlueTrident(acq,"1") # get directly the viconID
         imu1.constructDataFrame()
         imu1.computeOrientations()
 
 
         # ---- pycgm2
-        imu2 = BlueTrident.getBlueTrident(acq,"2") # get directly the viconID
+        imu2 = BlueTridentReader.btkGetBlueTrident(acq,"2") # get directly the viconID
         imu2.constructDataFrame()
         imu2.computeOrientations()
 
@@ -183,23 +182,15 @@ class Test_BlueTridentOrientation:
          
 
 
-
-
-
-
 class Test_Garches:
 
     def test_reader(self):
 
         data1 = files.openFile( pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\GarcheIMU\\","E1_Roue Droite_raw.json")
-        imu1 = imu.Imu(128)
-        imu1.setAcceleration("X", np.array(data1["acc_x"]))
-        imu1.setAcceleration("Y", np.array(data1["acc_y"]))
-        imu1.setAcceleration("Z", np.array(data1["acc_z"]))
+        
+        accel = np.array( [data1["acc_x"], data1["acc_y"], data1["acc_z"]]).T
+        angularVelocity = np.array( [data1["gyro_x"], data1["gyro_y"], data1["gyro_z"]]).T
 
-        imu1.setGyro("X", np.array(data1["gyro_x"]))
-        imu1.setGyro("Y", np.array(data1["gyro_y"]))
-        imu1.setGyro("Z", np.array(data1["gyro_z"]))
-
+        imu1 = imu.Imu(128, accel,angularVelocity, mag=None)
         imu1.constructDataFrame()
 

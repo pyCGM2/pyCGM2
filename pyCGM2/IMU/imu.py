@@ -23,12 +23,12 @@ class Imu(object):
             self.m_angularVelocity = np.zeros((accel.shape[0],3))
         else:
             self.m_angularVelocity = angularVelocity
-        
         if mag is None:
             self.m_mag = np.zeros((accel.shape[0],3))
         else:
             self.m_mag = mag
 
+        # 
         self._freq =  freq
         self._accel = self.m_accel
         self._angularVelocity = self.m_angularVelocity
@@ -39,6 +39,8 @@ class Imu(object):
         self.m_orientations= {"Method":None,
                               "RotationMatrix":None,
                               "Quaternions": None}
+
+        self.m_absoluteAngles = dict()
 
         self._state = "unaligned"
 
