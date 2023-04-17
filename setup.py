@@ -213,7 +213,7 @@ setup(name = 'pyCGM2',
     entry_points={
           'console_scripts': [
                 #RULE THEM ALL COMMANDS
-                'pyCGM2  =  pyCGM2.Apps.Commands.rullThemAllCommands:main'
+                'pyCGM2  =  pyCGM2.Apps.Commands.rullThemAllCommands:main',
 
                 # deprecated------------------------------------------ 
                 'Nexus_CGM1_Calibration  =  pyCGM2.Apps.ViconApps.CGM1.CGM1_Calibration:main',
