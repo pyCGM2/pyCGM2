@@ -9,12 +9,13 @@ from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
-# pyCGM2
 try:
-    from pyCGM2 import btk
-except:
-    LOGGER.logger.info("[pyCGM2] pyCGM2-embedded btk not imported")
     import btk
+except:
+    try:
+        from pyCGM2 import btk
+    except:
+        LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
 try:
     import opensim
