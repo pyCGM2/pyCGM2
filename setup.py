@@ -212,20 +212,10 @@ setup(name = 'pyCGM2',
     #scripts=gen_data_files_forScripts("Apps/ViconApps")
     entry_points={
           'console_scripts': [
-                'pyCGM2-prepare  =  pyCGM2.Apps.ViconApps.CGM.commands:main'
-
-                # NEXUS
-                'pyCGM2-Nexus-devices  =  pyCGM2.Apps.ViconApps.commands.getDevicesDetails:main',
-                'pyCGM2-Nexus-model  =  pyCGM2.Apps.ViconApps.CGM.Nexus_Commands:main',
-                'pyCGM2-Nexus-plot =  pyCGM2.Apps.ViconApps.Plot.Nexus_Commands:main',
-                'pyCGM2-Nexus-event     =  pyCGM2.Apps.ViconApps.Events.Nexus_Commands:main',
-                'pyCGM2-Nexus-gapfill =  pyCGM2.Apps.ViconApps.MoGapFill.Nexus_Commands:main',
-
-                # QTM
-                'pyCGM2_QTM-model  =  pyCGM2.Apps.QtmApps.CGMi.QTM_Commands:main',
+                #RULE THEM ALL COMMANDS
+                'pyCGM2  =  pyCGM2.Apps.Commands.rullThemAllCommands:main'
 
                 # deprecated------------------------------------------ 
-                # deprecated
                 'Nexus_CGM1_Calibration  =  pyCGM2.Apps.ViconApps.CGM1.CGM1_Calibration:main',
                 'Nexus_CGM1_Fitting      =  pyCGM2.Apps.ViconApps.CGM1.CGM1_Fitting:main',
                 'Nexus_CGM11_Calibration =  pyCGM2.Apps.ViconApps.CGM1_1.CGM1_1_Calibration:main',
@@ -260,14 +250,14 @@ setup(name = 'pyCGM2',
                 'Nexus_KalmanGapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling:main',
 
                 # QTM
-                'QTM_CGM1_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow:command',
-                'QTM_CGM11_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM11_workflow:command',
-                'QTM_CGM21_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM21_workflow:command',
-                'QTM_CGM22_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM22_workflow:command',
-                'QTM_CGM23_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM23_workflow:command',
-                'QTM_CGM24_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM24_workflow:command',
-                'QTM_CGM25_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM25_workflow:command',
-                'QTM_CGM26_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM26_workflow:command',
+                'QTM_CGM1_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow:main',
+                'QTM_CGM11_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM11_workflow:main',
+                'QTM_CGM21_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM21_workflow:main',
+                'QTM_CGM22_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM22_workflow:main',
+                'QTM_CGM23_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM23_workflow:main',
+                'QTM_CGM24_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM24_workflow:main',
+                'QTM_CGM25_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM25_workflow:main',
+                'QTM_CGM26_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM26_workflow:main',
 
           ]
       },

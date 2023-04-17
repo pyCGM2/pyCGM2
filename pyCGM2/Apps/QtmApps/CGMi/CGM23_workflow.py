@@ -27,22 +27,24 @@ from pyCGM2.Anomaly import anomalyDetectionProcedures
 
 MODEL="CGM2.3"
 
-def command():
 
-    parser = argparse.ArgumentParser(description='CGM23 workflow')
-    parser.add_argument('--sessionFile', type=str, help='setting xml file from qtm', default="session.xml")
-    parser.add_argument('-ae','--anomalyException', action='store_true', help='raise an exception if an anomaly is detected')
-    parser.add_argument('-msm','--musculoSkeletalModel', action='store_true', help='musculoskeletal model')
+def main(args=None):
 
-    try:
+    if args is None:
+        parser = argparse.ArgumentParser(description='CGM1 QTM workflow')
+        parser.add_argument('--sessionFile', type=str,
+                        help='setting xml file from qtm', default="session.xml")
+        parser.add_argument('-ae', '--anomalyException',
+                        action='store_true', help='raise an exception if an anomaly is detected')
+        parser.add_argument('-msm','--musculoSkeletalModel', action='store_true', help='musculoskeletal model')
+        
         args = parser.parse_args()
-        sessionFilename = args.sessionFile
-        main(sessionFilename, anomalyException=args.anomalyException, musculoSkeletalModel=args.musculoSkeletalModel)
-    except:
-        return parser
-
-
-def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyException=False,musculoSkeletalModel=False):
+    
+    sessionFilename = args.args.sessionFile
+    anomalyException = args.anomalyException
+    musculoSkeletalModel = args.musculoSkeletalModel
+    createPDFReport=True
+    checkEventsInMokka=True
 
     detectAnomaly = False
     LOGGER.set_file_handler("pyCGM2-QTM-Workflow.log")
@@ -288,3 +290,7 @@ def main(sessionFilename,createPDFReport=True,checkEventsInMokka=True,anomalyExc
         LOGGER.logger.error("Anomalies has been detected - Find Error messages, then check warning message in the log file")
     else:
         LOGGER.logger.info("workflow return with no detected anomalies")
+
+
+if __name__ == '__main__':
+    main(args=None) 

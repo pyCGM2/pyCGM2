@@ -20,14 +20,20 @@ NEXUS = ViconNexus.ViconNexus()
 NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
 
-def main():
-    parser = argparse.ArgumentParser(prog='pyCGM2-Nexus-Device')
-        
-    args = parser.parse_args()
-    print(args)
+def main(args=None):
+    if args is None:
+        parser = argparse.ArgumentParser(prog='pyCGM2-Nexus-Device')
+        args = parser.parse_args()
+    
+    NEXUS_PYTHON_CONNECTED = False
+    try:
+        from viconnexusapi import ViconNexus 
 
-
-    NEXUS = ViconNexus.ViconNexus()
+        NEXUS = ViconNexus.ViconNexus()
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+    
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
@@ -46,8 +52,10 @@ def main():
                 data.append([filename,deviceID, details[0], details[1]])
             df = pd.DataFrame(data, columns=[" filename",'Vicon DeviceID', 'Name', 'Type'])
 
+            print("-------------------------Device details-------------------------")
             print(df)
+            print("----------------------------------------------------------------")
 
 
 if __name__ == '__main__':
-    main() 
+    main(args=None) 

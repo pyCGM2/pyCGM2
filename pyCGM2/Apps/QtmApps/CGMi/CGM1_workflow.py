@@ -24,24 +24,21 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 MODEL = "CGM1"
 
 
-def command():
+def main(args=None):
 
-    parser = argparse.ArgumentParser(description='CGM1 workflow')
-    parser.add_argument('--sessionFile', type=str,
+    if args is None:
+        parser = argparse.ArgumentParser(description='CGM1 QTM workflow')
+        parser.add_argument('--sessionFile', type=str,
                         help='setting xml file from qtm', default="session.xml")
-    parser.add_argument('-ae', '--anomalyException',
+        parser.add_argument('-ae', '--anomalyException',
                         action='store_true', help='raise an exception if an anomaly is detected')
-
-    try:
+        
         args = parser.parse_args()
-        sessionFilename = args.sessionFile
-        main(sessionFilename, anomalyException=args.anomalyException)
-    except:
-        return parser
-
-
-
-def main(sessionFilename, createPDFReport=True, checkEventsInMokka=True, anomalyException=False):
+    
+    sessionFilename = args.args.sessionFile
+    anomalyException = args.anomalyException
+    createPDFReport=True
+    checkEventsInMokka=True
 
     detectAnomaly = False
 
@@ -249,3 +246,7 @@ def main(sessionFilename, createPDFReport=True, checkEventsInMokka=True, anomaly
             "Anomalies has been detected - Find Error messages, then check warning message in the log file")
     else:
         LOGGER.logger.info("workflow return with no detected anomalies")
+
+
+if __name__ == '__main__':
+    main(args=None) 
