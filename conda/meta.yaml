@@ -1,0 +1,69 @@
+package:
+  name: "pycgm2"
+  version: "4.3.0"
+
+about:
+
+  summary: "the python Conventional Gait Model Library"
+  home: https://github.com/pyCGM2/pyCGM2
+  maintainer: Fabien LEBOEUF <fabien.leboeuf@chu-nantes.com>
+  licence: CC-BY-SA-4.0
+
+
+requirements:
+  
+  build:
+    - python={{ python_version }} 
+    - setuptools
+    - pip
+    - numpy
+    
+
+  run:
+    - python={{ python_version }}
+    - pip
+    - btk
+    - {% if python_version == '3.7' %}
+      opensim=4.4=py37np120
+      {% elif python_version == '3.8' %}
+      opensim=4.4=py38np120
+      {% elif python_version == '3.9' %}
+      opensim=4.4=py39np120
+      {% endif %}
+    - scipy
+    - matplotlib
+    - pandas
+    - enum34
+    - configparser
+    - pytest
+    - pytest-mpl
+    - scikit-learn
+    - beautifulsoup4 
+    - pyyaml
+    - yamlordereddictloader
+    - xlrd
+    - openpyxl
+    - xlwt
+    - lxml
+
+channels:
+  - conda-forge
+  - opensim-org
+
+
+
+source:
+  path: ..
+
+build:
+  script: pip install .
+  string: py{{ python_version | replace(".", "") }}
+
+test:
+  imports:
+    - name: pyCGM2
+      optional: false
+
+
+target_platform:
+  - win-64
