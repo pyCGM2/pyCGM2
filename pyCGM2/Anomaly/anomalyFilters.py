@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Anomaly
-#APIDOC["Draft"]=False
-#--end--
+
 
 """ This module contains pyCGM2 anomaly filters to deal with either an anomaly
 detector procedure or an anomaly correction procedure
