@@ -36,10 +36,6 @@ class BlueTridentsRelativeAnglesProcedure(AbstractRelativeImuAnglesProcedure):
             if self.m_representation == "Euler":
                 if self.m_eulerSequence == "ZYX":
                     Euler1,Euler2,Euler3 = euler.euler_zyx(Rrelative,similarOrder=False)    
-
-                    jointValues[i,0] = Euler1
-                    jointValues[i,1] = Euler2
-                    jointValues[i,2] = Euler3
                 elif self.m_eulerSequence == "XZY":
                     Euler1,Euler2,Euler3 = euler.euler_xzy(Rrelative,similarOrder=False)
                 elif self.m_eulerSequence == "YXZ":
@@ -48,10 +44,14 @@ class BlueTridentsRelativeAnglesProcedure(AbstractRelativeImuAnglesProcedure):
                     Euler1,Euler2,Euler3 = euler.euler_yzx(Rrelative,similarOrder=False)
                 elif self.m_eulerSequence == "ZXY":
                     Euler1,Euler2,Euler3 = euler.euler_zxy(Rrelative,similarOrder=False)
-                elif self.m_eulerSequence  == "ZYX":
-                    Euler1,Euler2,Euler3 = euler.euler_zyx(Rrelative,similarOrder=False)
+                elif self.m_eulerSequence  == "XYZ":
+                    Euler1,Euler2,Euler3 = euler.euler_xyz(Rrelative,similarOrder=False)
                 else:
                     raise Exception("[pyCGM2] joint sequence unknown ")
+                
+                jointValues[i,0] = Euler1
+                jointValues[i,1] = Euler2
+                jointValues[i,2] = Euler3
 
 
             if  self.m_representation == "GlobalAngle":   
