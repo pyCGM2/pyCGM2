@@ -31,6 +31,10 @@ class EmgManager(object):
             else:
                 emgSettings = files.openFile(
                     pyCGM2.PYCGM2_SETTINGS_FOLDER, "emg.settings")
+        else:
+            if DATA_PATH is not None:
+                LOGGER.logger.info( f"[pyCGM2]: emg settings loaded from => {emgSettings} ")
+                emgSettings = files.openFile(DATA_PATH, emgSettings) 
 
         self.m_emgSettings = emgSettings
 
