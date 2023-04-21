@@ -13,7 +13,7 @@ developMode = False
 if len(sys.argv) >= 2:
     if sys.argv[1] == "develop": developMode = True
 if developMode:
-    logging.warning("You have sleected a developer model ( local install)")
+    logging.warning("You have selected a developer model ( local install)")
 
 if sys.maxsize < 2**32:
     raise Exception ("32-bit python version detected. PyCGM2-python3 requires a 64 bits python version")
