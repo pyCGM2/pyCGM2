@@ -25,8 +25,11 @@ def main(args=None):
 
         parser = argparse.ArgumentParser(description='2Dof Knee Calibration')
         parser.add_argument('-s','--side', type=str, help="Side : Left or Right")
-        parser.add_argument('-b','--beginFrame', type=int, help="begin frame")
-        parser.add_argument('-e','--endFrame', type=int, help="end frame")
+        parser.add_argument('-fi', '--frameInit', type=int,
+                            help='first frame to process')
+        parser.add_argument('-fe', '--frameEnd', type=int,
+                            help='last frame to process')
+
         args = parser.parse_args()
 
     try:
@@ -105,7 +108,7 @@ def main(args=None):
         # --------------------------MODEL PROCESSING----------------------------
         model,acqFunc,side = kneeCalibration.calibration2Dof(model,
             DATA_PATH,reconstructFilenameLabelled,translators,
-            args.side,args.beginFrame,args.endFrame,None,forceBtkAcq=acq)
+            args.side,args.frameInit,args.frameEnd,None,forceBtkAcq=acq)
 
         # ----------------------SAVE-------------------------------------------
         files.saveModel(model,DATA_PATH,subject)
