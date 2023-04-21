@@ -408,7 +408,7 @@ class MainParser:
                 elif args.NEXUS == "CGM2.6":
                     if args.CGM26 == "SARA":
                         CGM_KneeSARA.main(args)
-                    if args.CGM21 == "2DOF":
+                    if args.CGM26 == "2DOF":
                         CGM_Knee2DofCalibration.main(args)
 
                 # -- Events---
