@@ -61,7 +61,7 @@ class NEXUS_PlotsParser(object):
         parser_kinematicsNormalized = kinematics_sub_parsers.add_parser('Normalized', help='time-normalized')
         parser_kinematicsNormalized.add_argument('-nd','--normativeData', type=str, help='normative Data set (Schwartz2008 or Pinzone2014)', default="Schwartz2008")
         parser_kinematicsNormalized.add_argument('-ndm','--normativeDataModality', type=str,
-                            help="if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
+                            help="if Schwartz2008 [VerySlow,Slow,Free,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
                             default="Free")
         parser_kinematicsNormalized.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
         parser_kinematicsNormalized.add_argument('-c','--consistency', action='store_true', help='consistency plots')
@@ -74,11 +74,11 @@ class NEXUS_PlotsParser(object):
         parser_kinematicsComparison.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
         parser_kinematicsComparison.add_argument('-c','--consistency', action='store_true', help='consistency plots')
 
-        #map
-        parser_kinematicsMAP = kinematics_sub_parsers.add_parser('Map', help='Mouvement analysis profile')
+        #MAP
+        parser_kinematicsMAP = kinematics_sub_parsers.add_parser('MAP', help='Mouvement analysis profile')
         parser_kinematicsMAP.add_argument('-nd','--normativeData', type=str, help='normative Data set (Schwartz2008 or Pinzone2014)', default="Schwartz2008")
         parser_kinematicsMAP.add_argument('-ndm','--normativeDataModality', type=str,
-                            help="if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
+                            help="if Schwartz2008 [VerySlow,Slow,Free,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
                             default="Free")
         parser_kinematicsMAP.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
 
@@ -204,7 +204,7 @@ class NEXUS_CGMparser(object):
                             help='last frame to process')
         fittingParser.add_argument('--offline', nargs= 3, help=' subject name - dynamic c3d file - mfpa', required=False)
 
-        if self.cgmVersion == ["CGM1.0"]:
+        if self.cgmVersion in ["CGM1.0"]:
             fittingParser.add_argument(
                 '--proj', type=str, help='Referential to project joint moment. Choice : Distal, Proximal or Global')
 
@@ -219,6 +219,7 @@ class NEXUS_CGMparser(object):
             fittingParser.add_argument('-a','--accuracy', type=float, help='Inverse Kinematics accuracy')
             fittingParser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
 
+        return fittingParser
 
     def setCalibrationParser(self,cgm_subparsers):
 
@@ -271,8 +272,8 @@ class MainParser:
         nexus_subparser = nexusparser.add_subparsers(help='', dest='GLOBAL')
 
         # folder init
-        parser_init = nexus_subparser.add_parser("Init", help= "folder initialisation commands")
-        parser_init.add_argument('-m', '--model', type=str, required=True,  help='CGM version')
+        parser_init = nexus_subparser.add_parser("InitSettings", help= "folder initialisation commands")
+        parser_init.add_argument('-m', '--model', type=str,  help='CGM version')
 
     def Nexus(self):
 
@@ -292,13 +293,19 @@ class MainParser:
         cgm26_subparsers = cgm26_parser.add_subparsers(help='', dest="CGM26")
         parser_CGM26_calibration2dof = cgm26_subparsers.add_parser('2DOF', help='2DOF knee functional calibration')
         parser_CGM26_calibration2dof.add_argument('-s','--side', type=str, help="Side : Left or Right")
-        parser_CGM26_calibration2dof.add_argument('-b','--beginFrame', type=int, help="begin frame")
-        parser_CGM26_calibration2dof.add_argument('-e','--endFrame', type=int, help="end frame")
+        parser_CGM26_calibration2dof.add_argument('-fi', '--frameInit', type=int,
+                            help='first frame to process')
+        parser_CGM26_calibration2dof.add_argument('-fe', '--frameEnd', type=int,
+                            help='last frame to process')
+
 
         parser_CGM26_sara = cgm26_subparsers.add_parser('SARA', help='SARA knee functional calibration')
         parser_CGM26_sara.add_argument('-s','--side', type=str, help="Side : Left or Right")
-        parser_CGM26_sara.add_argument('-b','--beginFrame', type=int, help="begin frame")
-        parser_CGM26_sara.add_argument('-e','--endFrame', type=int, help="end frame")
+        parser_CGM26_sara.add_argument('-fi', '--frameInit', type=int,
+                            help='first frame to process')
+        parser_CGM26_sara.add_argument('-fe', '--frameEnd', type=int,
+                            help='last frame to process')
+
 
 
         # events--------------
@@ -350,7 +357,7 @@ class MainParser:
 
         if not debug:
             if "GLOBAL" in args:
-                if args.GLOBAL == "Init":
+                if args.GLOBAL == "InitSettings":
                     initCommand.main(args)
 
             elif "NEXUS" in args:
