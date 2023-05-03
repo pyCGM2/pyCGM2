@@ -120,7 +120,6 @@ def main(args=None):
 
     # Calibration operation
     # --------------------
-
     model,acqStatic,detectAnomaly = cgm2_1.calibrate(DATA_PATH,
         calibrateFilenameLabelled,
         translators,
@@ -130,6 +129,7 @@ def main(args=None):
         pointSuffix,
         anomalyException=anomalyException)
 
+    #btkTools.smartWriter(acqStatic, str(DATA_PATH + "calibrated.c3d"))
 
     LOGGER.logger.info("----- CALIBRATION-  static file [%s]-----> DONE"%(calibrateFilenameLabelled))
 
