@@ -35,7 +35,7 @@ def main(args=None):
         
         args = parser.parse_args()
     
-    sessionFilename = args.args.sessionFile
+    sessionFilename = args.sessionFile
     anomalyException = args.anomalyException
     createPDFReport=True
     checkEventsInMokka=True
@@ -234,7 +234,7 @@ def main(args=None):
                         modelledTrials.append(filename)
             try:
                 report.pdfGaitReport(
-                    DATA_PATH, model, modelledTrials, nds, pointSuffix, title=type)
+                    DATA_PATH, modelledTrials, nds, pointSuffix, title=type)
                 LOGGER.logger.error("Generation of Gait report complete")
             except:
                 LOGGER.logger.error("Generation of Gait report failed")

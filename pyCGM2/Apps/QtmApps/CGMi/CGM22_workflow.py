@@ -40,7 +40,7 @@ def main(args=None):
         
         args = parser.parse_args()
     
-    sessionFilename = args.args.sessionFile
+    sessionFilename = args.sessionFile
     anomalyException = args.anomalyException
     musculoSkeletalModel = args.musculoSkeletalModel
     createPDFReport=True
@@ -273,7 +273,9 @@ def main(args=None):
                     else:
                         modelledTrials.append(filename)
             try:
-                report.pdfGaitReport(DATA_PATH,model,modelledTrials, nds,pointSuffix, title = type)
+                report.pdfGaitReport(DATA_PATH,modelledTrials, nds,pointSuffix, title = type,
+                    musculoSkeletalModel=musculoSkeletalModel,
+                    modelVersion = "CGM2.2")
                 LOGGER.logger.error("Generation of Gait report complete")
             except:
                 LOGGER.logger.error("Generation of Gait report failed")

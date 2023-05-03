@@ -21,12 +21,13 @@ def pdfGaitReport(DATA_PATH,modelledTrials, normativeDataset,pointSuffix, title 
         pointSuffix (str): suffix added to model outputs
         title (str,Optional[gait report]): title
     """
-
     muscleDict=None
     if "musculoSkeletalModel" in kwargs and kwargs["musculoSkeletalModel"]:
         if "modelVersion" in kwargs and kwargs["modelVersion"] == "CGM2.3":
             osimInterface = opensimInterface.osimCgmInterface("CGM2.3")
-            muscleDict = osimInterface.getMuscles_bySide(addToName="[MuscleLength]")
+        if "modelVersion" in kwargs and kwargs["modelVersion"] == "CGM2.2":
+            osimInterface = opensimInterface.osimCgmInterface("CGM2.2")
+        muscleDict = osimInterface.getMuscles_bySide(addToName="[MuscleLength]")
 
 
 
