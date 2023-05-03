@@ -284,6 +284,7 @@ class MainParser:
         # Nexus CGM        
         NEXUS_CGMparser(nexus_subparser,"CGM1.0").constructParsers()
         NEXUS_CGMparser(nexus_subparser,"CGM1.1").constructParsers()
+        NEXUS_CGMparser(nexus_subparser,"CGM2.1").constructParsers()
         NEXUS_CGMparser(nexus_subparser,"CGM2.2").constructParsers()
         NEXUS_CGMparser(nexus_subparser,"CGM2.3").constructParsers()
         NEXUS_CGMparser(nexus_subparser,"CGM2.4").constructParsers()

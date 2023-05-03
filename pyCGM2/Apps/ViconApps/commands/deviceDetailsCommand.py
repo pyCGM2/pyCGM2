@@ -6,18 +6,10 @@ import pandas as pd
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 from pyCGM2.Utils import files
-# vicon nexus
-from viconnexusapi import ViconNexus
+
 
 # pyCGM2 libraries
-from pyCGM2.Nexus import nexusFilters
-from pyCGM2.Nexus import nexusUtils
-from pyCGM2.Nexus import nexusTools
-
 from pyCGM2.Tools import btkTools
-
-NEXUS = ViconNexus.ViconNexus()
-NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
 
 
 def main(args=None):
@@ -27,7 +19,11 @@ def main(args=None):
     
     NEXUS_PYTHON_CONNECTED = False
     try:
-        from viconnexusapi import ViconNexus 
+        from viconnexusapi import ViconNexus
+
+        from pyCGM2.Nexus import nexusFilters
+        from pyCGM2.Nexus import nexusUtils
+        from pyCGM2.Nexus import nexusTools 
 
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
