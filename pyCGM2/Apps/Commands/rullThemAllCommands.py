@@ -3,7 +3,7 @@
 import argparse
 
 
-from pyCGM2.Apps.Commands import initCommand
+from pyCGM2.Apps.Commands import initSettingsCmd
 
 from pyCGM2.Apps.ViconApps.CGM1 import CGM1_Calibration, CGM1_Fitting
 from pyCGM2.Apps.ViconApps.CGM1_1 import CGM1_1_Calibration, CGM1_1_Fitting
@@ -272,8 +272,11 @@ class MainParser:
         nexus_subparser = nexusparser.add_subparsers(help='', dest='GLOBAL')
 
         # folder init
-        parser_init = nexus_subparser.add_parser("InitSettings", help= "folder initialisation commands")
-        parser_init.add_argument('-m', '--model', type=str,  help='CGM version')
+        parser_init = nexus_subparser.add_parser("LocalSettings", help= "folder initialisation commands")
+        parser_init.add_argument('-m', '--model', type=str,  help='copy CGM settings')
+        parser_init.add_argument('-e', '--emg', action='store_true',  help='copy emg settings')
+
+
 
     def Nexus(self):
 
@@ -358,8 +361,8 @@ class MainParser:
 
         if not debug:
             if "GLOBAL" in args:
-                if args.GLOBAL == "InitSettings":
-                    initCommand.main(args)
+                if args.GLOBAL == "LocalSettings":
+                    initSettingsCmd.main(args)
 
             elif "NEXUS" in args:
                 if args.NEXUS == "CGM1.0":

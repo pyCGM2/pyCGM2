@@ -12,13 +12,14 @@ def main(args=None):
     if args is None:
         parser = argparse.ArgumentParser(description='pyCGM2 data folder initialisation')
         parser.add_argument('-m', '--model', type=str,  help='CGM version')
+        parser.add_argument('-e', '--emg', action='store_true',  help='copy emg settings')
 
         args = parser.parse_args()
 
-
-    files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"emg.settings",
-                        os.getcwd()+"\\"+"emg.settings")
-    LOGGER.logger.info("[pyCGM2] file [emg.settings] copied in your data folder")
+    if args.emg:
+        files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"emg.settings",
+                            os.getcwd()+"\\"+"emg.settings")
+        LOGGER.logger.info("[pyCGM2] file [emg.settings] copied in your data folder")
 
     if args.model is not None:
         if args.model == "CGM1" or args.model == "CGM1.0":
