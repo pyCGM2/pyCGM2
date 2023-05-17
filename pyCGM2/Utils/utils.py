@@ -1,10 +1,30 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Utils
-#APIDOC["Draft"]=False
-#--end--
 
 import pyCGM2
 import pyCGM2; LOGGER = pyCGM2.LOGGER
+
+class FrameConverter():
+    def __init__(self,firstFrame,lastFrame, nppf):
+        self.firstFrame = firstFrame
+        self.lastFrame = lastFrame
+        self.nppf = nppf
+
+    def toAnalog(self,pointFrame,reframeToOne=False):
+        if not reframeToOne:
+           val = (pointFrame-self.firstFrame)*self.nppf + self.firstFrame
+        else: 
+           val = (pointFrame-self.firstFrame)*self.nppf
+        
+        return int(val)
+
+    def toPoint(self,analogFrame,reframeToOne=False):
+        if not reframeToOne:
+            val =  (analogFrame-self.firstFrame)/self.nppf + self.firstFrame
+        else:
+            val = (analogFrame-self.firstFrame)/self.nppf 
+        
+        return int(val)
+
 
 def toBool(text):
     """convert text to bool
