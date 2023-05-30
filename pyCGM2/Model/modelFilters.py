@@ -1766,6 +1766,14 @@ class CentreOfMassFilter(object):
 
         self.model.setCentreOfMass(com)
 
+        for itSegment in self.model.m_segmentCollection:
+            if itSegment.m_bsp["mass"] != 0 and not itSegment.m_isCloneOf:
+                print(itSegment.name)
+                comTraj = self.model.getSegment(itSegment.name).getComTrajectory()
+                outLabel = "Com_"+itSegment.name
+                btkTools.smartAppendPoint(self.aqui,outLabel,comTraj)
+
+
         outLabel  = "CentreOfMass_" + pointLabelSuffix if pointLabelSuffix is not None else "CentreOfMass"
         btkTools.smartAppendPoint(self.aqui,outLabel,self.model.getCentreOfMass())
 

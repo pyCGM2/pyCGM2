@@ -506,7 +506,7 @@ class CGM1(CGM):
         dictRefAnatomical["Left Hand"]={'sequence':"ZYX", 'labels':   ["LHO","LWJC","LMWP","LWJC"]}
         dictRefAnatomical["Right UpperArm"]={'sequence':"ZYiX", 'labels':   ["REJC","RSJC","RWJC","RSJC"]}
         dictRefAnatomical["Right ForeArm"]={'sequence':"ZXiY", 'labels':   ["RWJC","REJC",None,"REJC"]} # used y axis of upper
-        dictRefAnatomical["Right Hand"]={'sequence':"ZYX", 'labels':   ["RHO","RWJC","RMWP","LWJC"]}
+        dictRefAnatomical["Right Hand"]={'sequence':"ZYX", 'labels':   ["RHO","RWJC","RMWP","RWJC"]}
 
     def _lowerLimbCoordinateSystemDefinitions(self):
         self.setCoordinateSystemDefinition( "Pelvis", "PELVIS", "Anatomic")
@@ -5488,6 +5488,13 @@ class CGM1(CGM):
         for it in btk.Iterate(acq.GetPoints()):
             if it.GetLabel()[-2:] == "_m":
                 nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,it.GetLabel(),acq)
+
+
+        # export Coms
+        for it in btk.Iterate(acq.GetPoints()):
+             if "Com_" in it.GetLabel():
+                nexusTools.appendModelledMarkerFromAcq(NEXUS,vskName,it.GetLabel(),acq)
+        
 
 
         # export JC
