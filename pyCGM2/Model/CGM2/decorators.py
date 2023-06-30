@@ -156,7 +156,7 @@ def applyKJC_AJCDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1o
                 modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
 
         if dcm["Right Knee"] == enums.JointCalibrationMethod.Basic:
-            if  dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
+            if  dcm["Right Ankle"] == enums.JointCalibrationMethod.Medial:
                 LOGGER.logger.info("[pyCGM2] scenario right : lateral thigh marker - Medial ankle")
                 modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
             if  dcm["Right Ankle"] == enums.JointCalibrationMethod.Basic:
