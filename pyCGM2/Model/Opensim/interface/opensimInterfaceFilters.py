@@ -279,7 +279,12 @@ class opensimInterfaceAnalysesFilter(object):
                         f = interp1d(time, serie, fill_value="extrapolate")
                         newTime = np.arange(0, len(serie)*(1/100), 1/freq)
                         values_interp = f(newTime)
-                        values[:, 0] = values_interp
+                        
+                        if values_interp.shape[0]>values.shape[0]:
+                            values[:, 0] = values_interp[0:values.shape[0]]
+                        else:
+                            values[:, 0] = values_interp
+                            
                     else:
                         values[:, 0] = serie
 
