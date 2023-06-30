@@ -30,6 +30,12 @@ requirements:
       {% elif python_version == '3.9' %}
       opensim=4.4=py39np120
       {% endif %}
+      {% elif python_version == '3.10' %}
+      opensim=4.4=py310np121
+      {% endif %}
+      {% elif python_version == '3.11' %}
+      opensim=4.4=py311np123
+      {% endif %}
     - scipy
     - matplotlib
     - pandas
