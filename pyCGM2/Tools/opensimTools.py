@@ -241,7 +241,15 @@ def export_CgmToMot(acq,datapath,filename,osimModelInterface):
         
         try:
             values =  orientation*acq.GetPoint(name).GetValues()[:,axis]
-            dataFrame[it] = values
+            
+
+            if dataFrame.shape[0] == values.shape[0]+1:
+                dataFrame[it] = np.append(values,values[-1])
+            elif values.shape[0] == dataFrame.shape[0]+1:
+                 dataFrame[it] = np.append(values,values[:-1])
+            else:
+                dataFrame[it] = values
+
         except RuntimeError:
             pass
         
