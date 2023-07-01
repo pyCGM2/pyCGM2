@@ -1583,3 +1583,51 @@ def calculateAngleFrom3points( acq,pt1,pt2,pt3):
             out[i,0] = theta
 
     return out
+
+def markersToArray(acq,markers=None):
+    """
+    data_gaps : (N, M) array_like
+            Array of marker position data with N time steps across M channels.
+            The data need to be organized as follows:
+
+            x1(t1) y1(t1) z1(t1) x2(t1) y2(t1) z2(t1) ...    xm(t1) ym(t1) zm(t1)
+            x1(t2) y1(t2) z1(t2) x2(t2) y2(t2) z2(t2) ...    xm(t2) ym(t2) zm(t2)
+            ...    ...    ...    ...    ...    ...    ...    ...    ...    ...
+            x1(tn) y1(tn) z1(tn) x2(tn) y2(tn) z2(tn) ...    xm(tn) ym(tn) zm(tn)
+
+            Thus, the first three columns correspond to the x-, y-, and-z coordinate of the 1st marker.
+            The rows correspond to the consecutive time steps (i.e., frames).
+
+    Args:
+        acq (btk.btkAcquisition): acquisition
+        markers (list, optional): list of marker labels. Defaults to None.
+
+    Returns:
+        np.array: array of marker trajectories
+    """
+
+    markerNames  = GetMarkerNames(acq)
+    ff = acq.GetFirstFrame()
+    lf = acq.GetLastFrame()
+    pfn = acq.GetPointFrameNumber()
+
+    if markers is not None:
+        btkmarkers = markers
+    else:
+        btkmarkers =[]
+        for ml in markerNames:
+            if isPointExist(acq,ml) :
+                btkmarkers.append(ml)
+    # --------
+    array = np.zeros((pfn,len(btkmarkers)*3))
+    for i in range(0,len(btkmarkers)):
+        values = acq.GetPoint(btkmarkers[i]).GetValues()
+        residualValues = acq.GetPoint(btkmarkers[i]).GetResiduals()
+        array[:,3*i-3] = values[:,0]
+        array[:,3*i-2] = values[:,1]
+        array[:,3*i-1] = values[:,2]
+        E = residualValues[:,0]
+        array[np.asarray(E)==-1,3*i-3] = np.nan
+        array[np.asarray(E)==-1,3*i-2] = np.nan
+        array[np.asarray(E)==-1,3*i-1] = np.nan
+    return array
