@@ -1586,17 +1586,13 @@ def calculateAngleFrom3points( acq,pt1,pt2,pt3):
 
 def markersToArray(acq,markers=None):
     """
-    data_gaps : (N, M) array_like
-            Array of marker position data with N time steps across M channels.
-            The data need to be organized as follows:
+    Array of marker position data with N time steps across M markers.
+    The data need to be organized as follows:
 
-            x1(t1) y1(t1) z1(t1) x2(t1) y2(t1) z2(t1) ...    xm(t1) ym(t1) zm(t1)
-            x1(t2) y1(t2) z1(t2) x2(t2) y2(t2) z2(t2) ...    xm(t2) ym(t2) zm(t2)
-            ...    ...    ...    ...    ...    ...    ...    ...    ...    ...
-            x1(tn) y1(tn) z1(tn) x2(tn) y2(tn) z2(tn) ...    xm(tn) ym(tn) zm(tn)
-
-            Thus, the first three columns correspond to the x-, y-, and-z coordinate of the 1st marker.
-            The rows correspond to the consecutive time steps (i.e., frames).
+    x1(t1) y1(t1) z1(t1) x2(t1) y2(t1) z2(t1) ...    xm(t1) ym(t1) zm(t1)
+    x1(t2) y1(t2) z1(t2) x2(t2) y2(t2) z2(t2) ...    xm(t2) ym(t2) zm(t2)
+    ...    ...    ...    ...    ...    ...    ...    ...    ...    ...
+    x1(tn) y1(tn) z1(tn) x2(tn) y2(tn) z2(tn) ...    xm(tn) ym(tn) zm(tn)
 
     Args:
         acq (btk.btkAcquisition): acquisition
