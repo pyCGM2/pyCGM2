@@ -43,7 +43,7 @@ def main(args=None):
 
         #acq = btkTools.smartReader(str(DATA_PATH+filenameLabelledNoExt+".c3d"))
 
-        gfp = gapFillingProcedures.LowDimensionalKalmanFilterProcedure()
+        gfp = gapFillingProcedures.Burke2016KalmanGapFillingProcedure()
         gff = gapFilters.GapFillingFilter(gfp, acq)
         gff.fill()
 
