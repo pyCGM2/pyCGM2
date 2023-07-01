@@ -37,9 +37,9 @@ class GapFillingFilter(object):
         fill gap according the specified procedure
         """
         if markers is None:
-            filledAcq,filledMarkers = self.m_procedure._fill(self.m_aqui)
+            filledAcq,filledMarkers = self.m_procedure.fill(self.m_aqui)
         else:
-            filledAcq,filledMarkers = self.m_procedure._fill(self.m_aqui,markers=markers)
+            filledAcq,filledMarkers = self.m_procedure.fill(self.m_aqui,markers=markers)
 
 
         self.filledMarkers  = filledMarkers
