@@ -155,9 +155,16 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
 
     """
 
-    def __init__(self):
+    def __init__(self,**kwargs):
         super(Gloersen2016GapFillingProcedure, self).__init__()
         self.description = "Gløersen Ø, Federolf P. (2016)"
+
+        # Parse optional arguments, or get defaults
+        self.m_method = kwargs.get("method", "R2")
+        self.m_weight_scale = kwargs.get("weight_scale", 200)
+        self.m_mm_weight = kwargs.get("mm_weight", 0.02)
+        self.m_distal_threshold = kwargs.get("distal_threshold", 0.5)
+        self.m_min_cum_sv = kwargs.get("min_cum_sv", 0.99)
 
 
 
@@ -304,7 +311,7 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
         return reconstructed_data
 
 
-    def fill(self,acq, **kwargs):
+    def fill(self,acq,**kwargs):
         """Fills gaps in the marker postion data exploiting intercorrelations between marker coordinates.
 
         See:
@@ -370,12 +377,6 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
         data_gaps = rawDatabtk
 
 
-        # Parse optional arguments, or get defaults
-        method = kwargs.get("method", "R2")
-        weight_scale = kwargs.get("weight_scale", 200)
-        mm_weight = kwargs.get("mm_weight", 0.02)
-        distal_threshold = kwargs.get("distal_threshold", 0.5)
-        min_cum_sv = kwargs.get("min_cum_sv", 0.99)
 
         # Get number of time steps, number of channels, and corresponding number of markers
         n_time_steps, n_channels = data_gaps.shape
@@ -392,7 +393,7 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
             warnings.warn("Submitted data appear to have no gaps. Make sure that gaps are represented by NaNs.")
             return data_gaps
         elif len(ix_time_steps_with_gaps) == n_time_steps:
-            if method == "R1":
+            if self.m_method == "R1":
                 warnings.warn("For each time step there is at least one marker with missing data. Cannot perform reconstruction according to strategy R1.")
                 return None
         
@@ -409,12 +410,15 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
         B[:,2::3] = B[:,2::3] - np.tile(mean_trajectory_z.reshape(-1,1), (1, n_markers))
 
         # Reconstruct missing marker data
-        if method == "R1":
-            reconstructed_data = self._reconstruct(B, weight_scale=weight_scale, mm_weight=mm_weight, min_cum_sv=min_cum_sv)
+        if self.m_method == "R1":
+            reconstructed_data = self._reconstruct(B, 
+                                                   weight_scale=self.m_weight_scale,
+                                                   mm_weight=self.m_mm_weight, 
+                                                   min_cum_sv=self.m_min_cum_sv)
 
             # Replace the missing data with reconstructed data
             filled_data = np.where(np.isnan(data_gaps), reconstructed_data, B)
-        elif method == "R2":
+        elif self.m_method == "R2":
             # Allocate space for reconstructed data matrix
             reconstructed_data = B.copy()
 
@@ -422,7 +426,7 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
             ix_markers_with_gaps = ix_channels_with_gaps[2::3] // 3
             for ix in ix_markers_with_gaps:
                 eucl_distance_2_markers = self._distance2marker(B, np.arange(ix*3,(ix+1)*3))
-                thresh = distal_threshold * np.mean(eucl_distance_2_markers)
+                thresh = self.m_distal_threshold * np.mean(eucl_distance_2_markers)
                 ix_channels_2_zero = np.argwhere(np.logical_and(np.reshape(np.tile(eucl_distance_2_markers, (3,1)), (1,n_channels), order="F").reshape(-1,) > thresh, \
                     np.any(np.isnan(B), axis=0)))[:,0]
                 

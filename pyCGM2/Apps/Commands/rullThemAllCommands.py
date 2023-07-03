@@ -17,6 +17,7 @@ from pyCGM2.Apps.ViconApps.commands import deviceDetailsCommand
 
 from pyCGM2.Apps.ViconApps.Events import zeniDetector
 from pyCGM2.Apps.ViconApps.MoGapFill import KalmanGapFilling
+from pyCGM2.Apps.ViconApps.MoGapFill import GloersenGapFilling
 
 from pyCGM2.Apps.ViconApps.Plot import spatioTemporalParameters
 from pyCGM2.Apps.ViconApps.Plot import kinematics
@@ -326,6 +327,7 @@ class MainParser:
         gap_parser = nexus_subparser.add_parser("Gaps", help= "Gap filling commands")
         gap_subparsers = gap_parser.add_subparsers(help='', dest="Gaps")
         parser_kalman = gap_subparsers.add_parser('Kalman', help='kalman gap filling')
+        parser_gloersen = gap_subparsers.add_parser('Gloersen', help='Gloersen gap filling')
         
 
         # plot--------------
@@ -424,6 +426,8 @@ class MainParser:
                 elif args.NEXUS == "Gaps":
                     if args.Gaps == "Kalman":
                         KalmanGapFilling.main(args)
+                    if args.Gaps == "Gloersen":
+                        GloersenGapFilling.main(args)
                 
                 #--Plots---
 
