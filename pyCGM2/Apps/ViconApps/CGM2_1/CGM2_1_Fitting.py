@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Executable Apps/Vicon/CGM2.1
-#APIDOC["Import"]=False
-#APIDOC["Draft"]=False
-#--end--
+
+import time
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -19,6 +17,7 @@ from pyCGM2.Utils import files
 from pyCGM2.Tools import btkTools
 
 def main(args=None):
+    start = time.time()
     if args is None:
         parser = argparse.ArgumentParser(description='CGM2-1 Fitting')
         parser.add_argument('--proj', type=str, help='Referential to project joint moment. Choice : Distal, Proximal, Global')
@@ -156,6 +155,9 @@ def main(args=None):
             # ========END of the nexus OPERATION if run from Nexus  =========
         else:
             btkTools.smartWriter(acqGait, DATA_PATH+reconstructFilenameLabelled[:-4]+"-offlineProcessed.c3d")
+
+        end = time.time()
+        LOGGER.logger.info( f"Runtime of the program is {end - start}")
 
         
 
