@@ -1,13 +1,13 @@
-# create a dev conda environment with: `make create_env` or `conda env create -f environment_py39.yml`
-name: pycgm39
+# create a dev conda environment with: `make create_env` or `conda env create -f ./virtualEnvs/environment_py39.yml`
+name: pycgm311
 channels:
 - conda-forge
 - opensim-org
 - default
 
 dependencies:
-- python==3.9
-- opensim=4.4=py39np120
+- python==3.11
+- opensim=4.4=py311np123
 - btk
 - scipy
 - matplotlib

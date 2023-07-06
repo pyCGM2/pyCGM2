@@ -1,4 +1,4 @@
-# create a dev conda environment with: `make create_env` or `conda env create -f environment_py39.yml`
+# create a dev conda environment with: `make create_env` or `conda env create -f ./virtualEnvs/environment_py39.yml`
 name: pycgm310
 channels:
 - conda-forge
