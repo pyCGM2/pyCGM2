@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Gap
-#APIDOC["Draft"]=False
-#--end--
 """
-The module contains filter and procedure for filling gap
+The module contains  procedures for filling gap
 
 check out the script : *\Tests\test_gap.py* for examples
 """
@@ -456,7 +453,7 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
                 ix_fill_frames = np.arange(len(ix_frames_no_gaps), len(ix_complete_and_gapped_frames))
 
                 # Store temporarily reconstruct data
-                temp_reconstructed_data = self._reconstruct(data_gaps_removed_cols[ix_complete_and_gapped_frames,:], weight_scale=weight_scale, mm_weight=mm_weight, min_cum_sv=min_cum_sv)
+                temp_reconstructed_data = self._reconstruct(data_gaps_removed_cols[ix_complete_and_gapped_frames,:], weight_scale=self.m_weight_scale, mm_weight=self.m_mm_weight, min_cum_sv=self.m_min_cum_sv)
 
                 # Replace gapped data with reconstructed data
                 reconstructed_data[ix_frames_2_reconstruct, 3*ix:3*ix+3] = temp_reconstructed_data[ix_fill_frames, 3*ix:3*ix+3]

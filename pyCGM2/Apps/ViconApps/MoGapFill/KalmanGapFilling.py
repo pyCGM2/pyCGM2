@@ -16,6 +16,7 @@ LOGGER = pyCGM2.LOGGER
 def main(args=None):
     if args  is None:
         parser = argparse.ArgumentParser(description='Kalman Gap filling')
+        parser.add_argument('--markers', nargs='*', help='list of markers',required=False)
 
 
     try:
@@ -45,7 +46,9 @@ def main(args=None):
 
         gfp = gapFillingProcedures.Burke2016KalmanGapFillingProcedure()
         gff = gapFilters.GapFillingFilter(gfp, acq)
-        gff.fill()
+        markers = args.markers if args.markers else None
+        gff.fill(markers= markers)
+        
 
         filledAcq = gff.getFilledAcq()
         filledMarkers = gff.getFilledMarkers()

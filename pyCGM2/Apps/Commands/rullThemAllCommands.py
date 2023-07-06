@@ -327,7 +327,10 @@ class MainParser:
         gap_parser = nexus_subparser.add_parser("Gaps", help= "Gap filling commands")
         gap_subparsers = gap_parser.add_subparsers(help='', dest="Gaps")
         parser_kalman = gap_subparsers.add_parser('Kalman', help='kalman gap filling')
+        parser_kalman.add_argument('--markers', nargs='*', help='list of markers',required=False)
+        
         parser_gloersen = gap_subparsers.add_parser('Gloersen', help='Gloersen gap filling')
+        parser_gloersen.add_argument('--markers', nargs='*', help='list of markers',required=False)
         
 
         # plot--------------
