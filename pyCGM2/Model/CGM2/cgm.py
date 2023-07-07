@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Model/CGM2
-#APIDOC["Draft"]=False
-#--end--
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy
-
+import multiprocessing
+import concurrent.futures
 try:
     import btk
 except:
@@ -19,6 +17,8 @@ from pyCGM2.Model import model, modelDecorator, frame, motion
 from pyCGM2.Math import euler
 from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusTools
+
+from pyCGM2.decorators.tracker import time_tracker
 
 
 class CGM(model.Model):
@@ -2172,22 +2172,20 @@ class CGM1(CGM):
             * pigStatic (bool) : compute foot cordinate system according the Vicon Plugin-gait
             * forceFoot6DoF (bool): apply 6DOF pose optimisation on the foot
         """
+        import time
+        start = time.time()
 
-        LOGGER.logger.debug("=====================================================")
-        LOGGER.logger.debug("===================  CGM MOTION   ===================")
-        LOGGER.logger.debug("=====================================================")
-
-        pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
-        forceFoot6DoF= True if "forceFoot6DoF" in options.keys() and options["forceFoot6DoF"] else False
-
-
-        if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
-
-            #if not pigStaticProcessing:
-            LOGGER.logger.debug(" - Pelvis - motion -")
-            LOGGER.logger.debug(" -------------------")
+        def process_pelvis(aqui, dictRef, dictAnat, options):
             self._pelvis_motion(aqui, dictRef, dictAnat)
-
+        
+        def process_thorax(aqui, dictRef, dictAnat, options):
+            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+        
+        def process_head(aqui, dictRef, dictAnat, options):
+            self._head_motion(aqui, dictRef,dictAnat,options=options)     
+        
+        def process_left_side(pigStaticProcessing,aqui, dictRef, dictAnat, options):
+            #----------- LEFT LOWER -------------
             LOGGER.logger.debug(" - Left Thigh - motion -")
             LOGGER.logger.debug(" -----------------------")
             self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
@@ -2199,15 +2197,6 @@ class CGM1(CGM):
                 self._rotate_anatomical_motion("Left Thigh",offset,
                                         aqui,options=options)
 
-            LOGGER.logger.debug(" - Right Thigh - motion -")
-            LOGGER.logger.debug(" ------------------------")
-            self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
-
-
-            if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
-                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
-                self._rotate_anatomical_motion("Right Thigh",offset,
-                                        aqui,options=options)
 
 
             LOGGER.logger.debug(" - Left Shank - motion -")
@@ -2219,13 +2208,6 @@ class CGM1(CGM):
             LOGGER.logger.debug(" --------------------------------")
             self._left_shankProximal_motion(aqui,dictAnat,options=options)
 
-            LOGGER.logger.debug(" - Right Shank - motion -")
-            LOGGER.logger.debug(" ------------------------")
-            self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
-
-            LOGGER.logger.debug(" - Right Shank-proximal - motion -")
-            LOGGER.logger.debug(" ---------------------------------")
-            self._right_shankProximal_motion(aqui,dictAnat,options=options)
 
             LOGGER.logger.debug(" - Left foot - motion -")
             LOGGER.logger.debug(" ----------------------")
@@ -2234,6 +2216,37 @@ class CGM1(CGM):
                 self._left_foot_motion_static(aqui, dictAnat,options=options)
             else:
                 self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
+
+        def process_left_upperSide(aqui, dictRef, dictAnat, options):
+            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Left", aqui)
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+
+        def process_right_side(pigStaticProcessing,aqui, dictRef, dictAnat, options):
+            #----------- Right LOWER -------------
+            LOGGER.logger.debug(" - Right Thigh - motion -")
+            LOGGER.logger.debug(" ------------------------")
+            self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
+
+
+            if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+                self._rotate_anatomical_motion("Right Thigh",offset,
+                                        aqui,options=options)
+
+
+            LOGGER.logger.debug(" - Right Shank - motion -")
+            LOGGER.logger.debug(" ------------------------")
+            self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
+
+            LOGGER.logger.debug(" - Right Shank-proximal - motion -")
+            LOGGER.logger.debug(" ---------------------------------")
+            self._right_shankProximal_motion(aqui,dictAnat,options=options)
+
 
             LOGGER.logger.debug(" - Right foot - motion -")
             LOGGER.logger.debug(" ----------------------")
@@ -2244,18 +2257,7 @@ class CGM1(CGM):
             else:
                 self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
 
-
-            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
-            self._head_motion(aqui, dictRef,dictAnat,options=options)
-
-            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
-            self._constructArmVirtualMarkers("Left", aqui)
-            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
-
+        def process_right_upperSide(aqui, dictRef, dictAnat, options):
             self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
             self._constructArmVirtualMarkers("Right", aqui)
             self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
@@ -2265,6 +2267,167 @@ class CGM1(CGM):
             self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
 
 
+        LOGGER.logger.debug("=====================================================")
+        LOGGER.logger.debug("===================  CGM MOTION   ===================")
+        LOGGER.logger.debug("=====================================================")
+
+        pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
+        forceFoot6DoF= True if "forceFoot6DoF" in options.keys() and options["forceFoot6DoF"] else False
+
+
+        if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
+            self._pelvis_motion(aqui, dictRef, dictAnat)
+
+            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+            self._head_motion(aqui, dictRef,dictAnat,options=options)
+            
+            # with concurrent.futures.ThreadPoolExecutor() as executor:
+            #     # # Exécuter self._pelvis_motion, self._thorax_motion et self._head_motion en parallèle
+            #     # pelvis_motion_future = executor.submit(self._pelvis_motion, aqui, dictRef, dictAnat)
+            #     # thorax_motion_future = executor.submit(self._thorax_motion, aqui, dictRef, dictAnat, options=options)
+            #     # head_motion_future = executor.submit(self._head_motion, aqui, dictRef, dictAnat, options=options)
+
+            #     # # Attendre la fin de self._pelvis_motion, self._thorax_motion et self._head_motion
+            #     # pelvis_motion_future.result()
+            #     # thorax_motion_future.result()
+            #     # head_motion_future.result()
+
+            #     # Exécuter process_left_side, process_right_side, process_left_upperSide et process_right_upperSide en parallèle
+            #     left_side_future = executor.submit(process_left_side, pigStaticProcessing, aqui, dictRef, dictAnat, options=options)
+            #     right_side_future = executor.submit(process_right_side, pigStaticProcessing, aqui, dictRef, dictAnat, options=options)
+            #     left_upper_side_future = executor.submit(process_left_upperSide, aqui, dictRef, dictAnat, options=options)
+            #     right_upper_side_future = executor.submit(process_right_upperSide, aqui, dictRef, dictAnat, options=options)
+
+
+
+            #     # Attendre la fin de process_left_side, process_right_side, process_left_upperSide et process_right_upperSide
+            #     left_side_future.result()
+            #     right_side_future.result()
+            #     left_upper_side_future.result()
+            #     right_upper_side_future.result()
+
+            # pool = multiprocessing.Pool()
+            # # Étape 1: Exécuter self._pelvis_motion, self._thorax_motion et self._head_motion en parallèle
+            # pelvis_motion_result = pool.apply_async(self._pelvis_motion, args=(aqui, dictRef, dictAnat))
+            # thorax_motion_result = pool.apply_async(self._thorax_motion, args=(aqui, dictRef, dictAnat), kwds={"options": options})
+            # head_motion_result = pool.apply_async(self._head_motion, args=(aqui, dictRef, dictAnat), kwds={"options": options})
+
+            # # Attendre la fin de self._pelvis_motion, self._thorax_motion et self._head_motion
+            # pelvis_motion_result.get()
+            # thorax_motion_result.get()
+            # head_motion_result.get()
+
+            # # Étape 2: Exécuter process_left_side, process_right_side, process_left_upperSide et process_right_upperSide en parallèle
+            # left_side_result = pool.apply_async(process_left_side, args=(pigStaticProcessing, aqui, dictRef, dictAnat, options))
+            # right_side_result = pool.apply_async(process_right_side, args=(pigStaticProcessing, aqui, dictRef, dictAnat, options))
+            # left_upper_side_result = pool.apply_async(process_left_upperSide, args=(aqui, dictRef, dictAnat, options))
+            # right_upper_side_result = pool.apply_async(process_right_upperSide, args=(aqui, dictRef, dictAnat, options))
+
+            # # Attendre la fin de process_left_side, process_right_side, process_left_upperSide et process_right_upperSide
+            # left_side_result.get()
+            # right_side_result.get()
+            # left_upper_side_result.get()
+            # right_upper_side_result.get()
+
+            # pool.close()
+            # pool.join()
+
+            # #--- CENTRAL ----            
+            # self._pelvis_motion(aqui, dictRef, dictAnat)
+
+            # self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+            # self._head_motion(aqui, dictRef,dictAnat,options=options)
+            #----------- LEFT LOWER -------------
+            LOGGER.logger.debug(" - Left Thigh - motion -")
+            LOGGER.logger.debug(" -----------------------")
+            self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
+
+
+            # if rotation offset from knee functional calibration methods
+            if self.mp_computed["LeftKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+                self._rotate_anatomical_motion("Left Thigh",offset,
+                                        aqui,options=options)
+
+
+
+            LOGGER.logger.debug(" - Left Shank - motion -")
+            LOGGER.logger.debug(" -----------------------")
+            self._left_shank_motion(aqui, dictRef, dictAnat,options=options)
+
+
+            LOGGER.logger.debug(" - Left Shank-proximal - motion -")
+            LOGGER.logger.debug(" --------------------------------")
+            self._left_shankProximal_motion(aqui,dictAnat,options=options)
+
+
+            LOGGER.logger.debug(" - Left foot - motion -")
+            LOGGER.logger.debug(" ----------------------")
+
+            if pigStaticProcessing:
+                self._left_foot_motion_static(aqui, dictAnat,options=options)
+            else:
+                self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
+
+
+
+            #----------- Right LOWER -------------
+                        
+            LOGGER.logger.debug(" - Right Thigh - motion -")
+            LOGGER.logger.debug(" ------------------------")
+            self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
+
+
+            if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+                self._rotate_anatomical_motion("Right Thigh",offset,
+                                        aqui,options=options)
+
+
+            LOGGER.logger.debug(" - Right Shank - motion -")
+            LOGGER.logger.debug(" ------------------------")
+            self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
+
+            LOGGER.logger.debug(" - Right Shank-proximal - motion -")
+            LOGGER.logger.debug(" ---------------------------------")
+            self._right_shankProximal_motion(aqui,dictAnat,options=options)
+
+
+            LOGGER.logger.debug(" - Right foot - motion -")
+            LOGGER.logger.debug(" ----------------------")
+
+
+            if pigStaticProcessing:
+                self._right_foot_motion_static(aqui, dictAnat,options=options)
+            else:
+                self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
+
+            #----------- Left UPPER -------------
+            
+            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Left", aqui)
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+
+            #----------- Right UPPER -------------
+            
+            self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Right", aqui)
+            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
+
+            
+
+            end = time.time()
+            LOGGER.logger.info( f"Runtime of the motion normal is {end - start}")
+
+            
         if motionMethod == enums.motionMethod.Sodervisk:
 
             # ---remove all  direction marker from tracking markers.
@@ -2340,6 +2503,8 @@ class CGM1(CGM):
             self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
             self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
 
+    
+    @time_tracker()
     def _pelvis_motion(self,aqui, dictRef,dictAnat):
 
         seg=self.getSegment("Pelvis")
@@ -2451,7 +2616,10 @@ class CGM1(CGM):
 
         self._TopLumbar5 = TopLumbar5
 
+    @time_tracker()
     def _left_thigh_motion(self,aqui, dictRef,dictAnat,options=None):
+
+        frame_number = aqui.GetPointFrameNumber()
 
         if "markerDiameter" in options.keys():
             LOGGER.logger.debug(" option (markerDiameter) found ")
@@ -2477,38 +2645,81 @@ class CGM1(CGM):
         # NA
 
         # computation
-                # --- LKJC
-        LKJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
+                # Vectorization
+        pt1_values = aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][0])).GetValues()
+        pt2_values = aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][1])).GetValues()
+        pt3_values = aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][2])).GetValues()
+        ptOrigin_values = aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][3])).GetValues()
 
-            pt1=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][3])).GetValues()[i,:]
+        a1_values = (pt2_values - pt1_values)
+        a1_values = np.nan_to_num(a1_values / np.linalg.norm(a1_values, axis=1)[:, None])
 
+        v_values = (pt3_values - pt1_values)
+        v_values = np.nan_to_num(v_values / np.linalg.norm(v_values, axis=1)[:, None])
 
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+        a2_values = np.cross(a1_values, v_values)
+        a2_values = np.nan_to_num(a2_values / np.linalg.norm(a2_values, axis=1)[:, None])
 
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Thigh"]["TF"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
+        # Avoid deep copying
+        csFrame = frame.Frame()
+        for i in range(frame_number):
+            x, y, z, R = frame.setFrameData(a1_values[i], a2_values[i], dictRef["Left Thigh"]["TF"]['sequence'])
+            csFrame.m_axisX = x
+            csFrame.m_axisY = y
+            csFrame.m_axisZ = z
             csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
+            csFrame.setTranslation(ptOrigin_values[i])
+            seg.getReferential("TF").addMotionFrame(csFrame)
+        
+        # --- LKJC
+        # Pre-compute constant values
+        knee_width = (self.mp["LeftKneeWidth"] + markerDiameter) / 2.0
+        beta = -self.mp_computed["LeftThighRotationOffset"]
 
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+        # Preallocate memory
+        LKJCvalues = np.zeros((frame_number, 3))
 
+        # Vectorization
+        pt1_values = aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][0])).GetValues()
+        pt2_values = aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][1])).GetValues()
+        pt3_values = aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][2])).GetValues()
+
+        for i in range(frame_number):
             if validFrames[i]:
-                LKJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
+                LKJCvalues[i, :] = modelDecorator.VCMJointCentre(knee_width, pt1_values[i], pt2_values[i], pt3_values[i], beta=beta)
+
+
+        # LKJCvalues=np.zeros((frame_number,3))
+        # csFrame=frame.Frame()
+        # for i in range(0,frame_number):
+
+        #     pt1=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][0])).GetValues()[i,:]
+        #     pt2=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][1])).GetValues()[i,:]
+        #     pt3=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][2])).GetValues()[i,:]
+        #     ptOrigin=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][3])).GetValues()[i,:]
+
+
+        #     a1=(pt2-pt1)
+        #     a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+
+        #     v=(pt3-pt1)
+        #     v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+
+        #     a2=np.cross(a1,v)
+        #     a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+
+        #     x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Thigh"]["TF"]['sequence'])
+
+        #     csFrame.m_axisX=x
+        #     csFrame.m_axisY=y
+        #     csFrame.m_axisZ=z
+        #     csFrame.setRotation(R)
+        #     csFrame.setTranslation(ptOrigin)
+
+        #     seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+
+        #     if validFrames[i]:
+        #         LKJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
 
         if  "useLeftKJCmarker" in options.keys() and options["useLeftKJCmarker"] != "LKJC":
             LOGGER.logger.info("[pyCGM2] - LKJC marker forced to use %s"%(options["useLeftKJCmarker"]))
@@ -2526,35 +2737,37 @@ class CGM1(CGM):
         # additional markers
         # NA
         # computation
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
+        # Preallocate memory
+        csFrame = frame.Frame()
 
-            pt1=aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][3])).GetValues()[i,:]
+        # Vectorization
+        pt1_values = aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][0])).GetValues()
+        pt2_values = aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][1])).GetValues()
+        pt3_values = aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][2])).GetValues()
+        ptOrigin_values = aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][3])).GetValues()
 
+        a1_values = (pt2_values - pt1_values)
+        a1_values = np.nan_to_num(a1_values / np.linalg.norm(a1_values, axis=1)[:, None])
 
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+        v_values = (pt3_values - pt1_values)
+        v_values = np.nan_to_num(v_values / np.linalg.norm(v_values, axis=1)[:, None])
 
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+        a2_values = np.cross(a1_values, v_values)
+        a2_values = np.nan_to_num(a2_values / np.linalg.norm(a2_values, axis=1)[:, None])
 
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Left Thigh"]['sequence'])
-
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
+        # Avoid deep copying
+        for i in range(frame_number):
+            x, y, z, R = frame.setFrameData(a1_values[i], a2_values[i], dictAnat["Left Thigh"]['sequence'])
+            csFrame.m_axisX = x
+            csFrame.m_axisY = y
+            csFrame.m_axisZ = z
             csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
+            csFrame.setTranslation(ptOrigin_values[i])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
 
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
+    
+    
+    @time_tracker()
     def _right_thigh_motion(self,aqui, dictRef,dictAnat,options=None):
 
         if "markerDiameter" in options.keys():
@@ -2665,7 +2878,8 @@ class CGM1(CGM):
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
-
+    
+    @time_tracker()
     def _left_shank_motion(self,aqui, dictRef,dictAnat,options=None):
 
         if "markerDiameter" in options.keys():
@@ -2784,7 +2998,9 @@ class CGM1(CGM):
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
+    @time_tracker()
     def _left_shankProximal_motion(self,aqui,dictAnat,options=None):
+    
 
         seg=self.getSegment("Left Shank")
         segProx=self.getSegment("Left Shank Proximal")
@@ -2832,7 +3048,7 @@ class CGM1(CGM):
             segProx.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
-
+    
     def _right_shank_motion(self,aqui, dictRef,dictAnat,options=None):
 
 
@@ -2948,7 +3164,7 @@ class CGM1(CGM):
             csFrame.setTranslation(ptOrigin)
 
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
+    
     def _right_shankProximal_motion(self,aqui,dictAnat,options=None):
 
         seg=self.getSegment("Right Shank")
@@ -2992,7 +3208,7 @@ class CGM1(CGM):
 
 
 
-
+    
     def _left_foot_motion(self,aqui, dictRef,dictAnat,options=None):
 
         seg=self.getSegment("Left Foot")
@@ -3065,7 +3281,7 @@ class CGM1(CGM):
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
 
-
+    
     def _right_foot_motion(self,aqui, dictRef,dictAnat,options=None):
 
         seg=self.getSegment("Right Foot")
@@ -4782,6 +4998,7 @@ class CGM1(CGM):
         #self._TopLumbar5
         csFrame=frame.Frame()
         for i in range(0,aqui.GetPointFrameNumber()):
+            
 
             pt1=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][0])).GetValues()[i,:] #midTop
             pt2=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][1])).GetValues()[i,:] #midBottom
@@ -4810,7 +5027,7 @@ class CGM1(CGM):
             seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
 
             if hasattr(self,"_TopLumbar5"):
-                T5inThorax[i,:] = np.dot(R.T,self._TopLumbar5[i,:]-ptOrigin)
+                    T5inThorax[i,:] = np.dot(R.T,self._TopLumbar5[i,:]-ptOrigin)
 
 
             offset =( ptOrigin + np.dot(R,np.array([-markerDiameter/2.0,0,0])) - ptOrigin)*1.05
