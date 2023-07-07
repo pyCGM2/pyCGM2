@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Model/CGM2
-#APIDOC["Draft"]=False
-#--end--
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy
