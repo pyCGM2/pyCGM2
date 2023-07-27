@@ -151,7 +151,9 @@ class KalmanInverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
 
-        if self.m_modelVersion == "CGM23": 
+        if self.m_modelVersion == "CGM22": 
+            ikToolFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM22\\setup\\CGM22-kalmanIkSetUp_template.xml"
+        elif self.m_modelVersion == "CGM23": 
             ikToolFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23-kalmanIkSetUp_template.xml"
 
 
@@ -185,8 +187,15 @@ class KalmanInverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
             for item in markertasks:
                 self.m_weights[item["name"]] = float(item.find("weight").string)
 
-        cmd = pyCGM2.OPENSIM_KSLIB_PATH+ "ks.exe -S \""+ self.m_DATA_PATH+"CGM23-kalmanIk-setup.xml\""
+        if self.m_modelVersion == "CGM22":
+            cmd = pyCGM2.OPENSIM_KSLIB_PATH+ "ks.exe -S \""+ self.m_DATA_PATH+"CGM22-kalmanIk-setup.xml\""
+
+        if self.m_modelVersion == "CGM23":        
+                cmd = pyCGM2.OPENSIM_KSLIB_PATH+ "ks.exe -S \""+ self.m_DATA_PATH+"CGM23-kalmanIk-setup.xml\""
+        
         os.system(cmd)
+        
+        
         # ikTool.setModel(self.m_osimModel)
         
 
