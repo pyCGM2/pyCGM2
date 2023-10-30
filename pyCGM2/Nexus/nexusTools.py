@@ -391,7 +391,7 @@ def appendBones(NEXUS,vskName,acq,label,segment,OriginValues=None,manualScale=No
             else:
                 T = OriginValues[j,:]
 
-            R= segment.anatomicalFrame.motion[j].getAngleAxis()
+            R= np.rad2deg(segment.anatomicalFrame.motion[j].getAngleAxis())
 
             if manualScale is None:
                 S = segment.m_bsp["length"]
