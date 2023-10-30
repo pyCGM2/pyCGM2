@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Model
-#APIDOC["Draft"]=False
-#--end--
 """ this module gathers two classes (`Node` and `Frame`),
 important for the construction of a model
 
@@ -18,8 +15,10 @@ import numpy as np
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+# convenient pose functions
 
-def getRotationMatrixFromAngleAxis(anglesAxis):
+def angleAxis_TO_rotationMatrix(anglesAxis):
+
     """Convert angleaxis  to a 3x3 rotation matrix 
 
     Args:
@@ -34,7 +33,7 @@ def getRotationMatrixFromAngleAxis(anglesAxis):
     if fi < sys.float_info.epsilon * 100:
         for i in range(3):
             rot[i][i] = 1
-        return rot
+        return np.array(rot)
 
     x = anglesAxis[0] / fi
     y = anglesAxis[1] / fi
@@ -52,11 +51,13 @@ def getRotationMatrixFromAngleAxis(anglesAxis):
     rot[2][1] = z * y * (1 - math.cos(fi)) + x * math.sin(fi)
     rot[2][2] = math.cos(fi) + z ** 2 * (1 - math.cos(fi))
 
+
     return np.array(rot)
 
 
 
-def getQuaternionFromMatrix(RotMat):
+def rotationMatrix_TO_quaternion(RotMat):
+    
     """
     Calculates the quaternion representation from a rotation matrix.
 
@@ -67,15 +68,15 @@ def getQuaternionFromMatrix(RotMat):
 
     """
 
-    Quaternion = np.zeros((4))
+    quaternion = np.zeros((4))
     Trace = np.trace(RotMat)
     if Trace > 0:
         Root = np.sqrt(Trace + 1)
-        Quaternion[3] = 0.5 * Root
+        quaternion[3] = 0.5 * Root
         Root = 0.5 / Root
-        Quaternion[0] = (RotMat[2, 1] - RotMat[1, 2]) * Root
-        Quaternion[1] = (RotMat[0, 2] - RotMat[2, 0]) * Root
-        Quaternion[2] = (RotMat[1, 0] - RotMat[0, 1]) * Root
+        quaternion[0] = (RotMat[2, 1] - RotMat[1, 2]) * Root
+        quaternion[1] = (RotMat[0, 2] - RotMat[2, 0]) * Root
+        quaternion[2] = (RotMat[1, 0] - RotMat[0, 1]) * Root
     else:
         Next = np.array([1, 2, 0])
         i = 0
@@ -88,30 +89,34 @@ def getQuaternionFromMatrix(RotMat):
         k = Next[j]
 
         Root = np.sqrt(RotMat[i, i] - RotMat[j, j] - RotMat[k, k] + 1)
-        Quaternion[i] = 0.5 * Root
+        quaternion[i] = 0.5 * Root
         Root = 0.5 / Root
-        Quaternion[3] = (RotMat[k, j] - RotMat[j, k]) * Root
-        Quaternion[j] = (RotMat[j, i] + RotMat[i, j]) * Root
-        Quaternion[k] = (RotMat[k, i] + RotMat[i, k]) * Root
+        quaternion[3] = (RotMat[k, j] - RotMat[j, k]) * Root
+        quaternion[j] = (RotMat[j, i] + RotMat[i, j]) * Root
+        quaternion[k] = (RotMat[k, i] + RotMat[i, k]) * Root
 
-    Quaternion = Quaternion / np.linalg.norm(Quaternion)
+    quaternion = quaternion / np.linalg.norm(quaternion)
 
-    return Quaternion
+    return quaternion
 
 
-def angleAxisFromQuaternion(Quaternion, toRad=False):
+def quaternion_TO_angleAxis(quaternion):
+
     """
     Calculates the AngleAxis representation from a quaternion
 
 
    Args:
-       Quaternion(array(4)): a quaternion
+       quaternion(array(4)): a quaternion
+
 
 
     """
+    if quaternion.ndim != 1: 
+        raise Exception("[pyCGM2] - wrong input array dimensions, only 1d")
 
-    imag = Quaternion[:-1]
-    real = Quaternion[3]
+    imag = quaternion[:-1]
+    real = quaternion[3]
 
     lenQ = np.linalg.norm(imag)
     if lenQ < 100*np.spacing(np.single(1)):
@@ -120,10 +125,48 @@ def angleAxisFromQuaternion(Quaternion, toRad=False):
         angle = 2*np.arctan2(lenQ, real)
         AngleAxis = angle/lenQ * imag
 
-    if not toRad:
-        return np.rad2deg(AngleAxis)
-    else:
-        return AngleAxis
+    return AngleAxis
+
+
+    # """Calculates the AngleAxis representation of the rotation described by a
+    # quaternion (x,y,z,w)"""
+    # if any(map(lambda x: math.isnan(x), quaternion)):
+    #     return [float('nan')] * 3
+
+    # imag = quaternion[0:3]
+    # real = quaternion[3]
+
+    # length = math.sqrt(sum(map(lambda x: x ** 2, imag)))
+    # if length < sys.float_info.epsilon * 100:
+    #     AngleAxis = imag
+    # else:
+    #     angle = 2 * math.atan2(length, real)
+    #     AngleAxis = list(map(lambda x: angle / length * x, imag))
+
+    # return AngleAxis
+
+def rotationMatrix_TO_angleAxis(RotMat):
+
+
+    quaternion = rotationMatrix_TO_quaternion(RotMat)
+    AngleAxis = quaternion_TO_angleAxis(quaternion)
+    return AngleAxis
+
+
+def angleAxis_TO_quaternion(anglesAxis):
+
+    RotMat = angleAxis_TO_rotationMatrix(anglesAxis)
+    quaternion = rotationMatrix_TO_quaternion(RotMat)
+
+    return quaternion
+
+
+def quaternion_TO_rotationMatrix(quaternion):
+    
+    angleAxis = quaternion_TO_angleAxis(quaternion)
+    rotMat = angleAxis_TO_rotationMatrix(angleAxis)
+
+    return rotMat
 
 
 def setFrameData(a1, a2, sequence):
@@ -290,8 +333,41 @@ class Frame(object):
 
         self._translation = np.zeros((1, 3))
         self._matrixRot = np.zeros((3, 3))
+        self._anglesAxis = None
+        self._quaternion = None
 
         self._nodes = []
+
+    def constructFromAnglesAxis(self,angleAxisValues ):
+        
+        self._anglesAxis = angleAxisValues
+        self._matrixRot = angleAxis_TO_rotationMatrix(angleAxisValues)
+
+        self.m_axisX = self._matrixRot[:, 0]
+        self.m_axisY = self._matrixRot[:, 1]
+        self.m_axisZ = self._matrixRot[:, 2]
+
+
+    def constructFromQuaternion(self,quaternionValues):
+
+        self._quaternion = quaternionValues
+        self._matrixRot = quaternion_TO_rotationMatrix(quaternionValues) 
+
+        
+        self.m_axisX = self._matrixRot[:, 0]
+        self.m_axisY = self._matrixRot[:, 1]
+        self.m_axisZ = self._matrixRot[:, 2]
+        
+        
+    def setAxes(self,x,y,z):
+
+        self.m_axisX = x
+        self.m_axisY = y
+        self.m_axisZ = z
+
+        self._matrixRot[:, 0] = x
+        self._matrixRot[:, 1] = y
+        self._matrixRot[:, 2] = z
 
     def getRotation(self):
         """
@@ -307,11 +383,22 @@ class Frame(object):
         """
         Get the angle axis
         """
+        if self._anglesAxis is not None:
+            return self._anglesAxis
+        else: 
+            axisAngle = rotationMatrix_TO_angleAxis(self._matrixRot)
 
-        quaternion = getQuaternionFromMatrix(self._matrixRot)
-        axisAngle = angleAxisFromQuaternion(quaternion)
+            return axisAngle
 
-        return axisAngle
+    def getQuaternion(self):
+        """
+        Get the quaternion
+        """
+        if self._quaternion is not None:
+            return self._quaternion
+        else: 
+            quaternion = rotationMatrix_TO_quaternion(self._matrixRot)
+            return quaternion
 
     def getTranslation(self):
         """
@@ -328,6 +415,13 @@ class Frame(object):
         """
 
         self._matrixRot = R
+
+        self.m_axisX = R[:, 0]
+        self.m_axisY = R[:, 1]
+        self.m_axisZ = R[:, 2]
+
+        self._quaternion = rotationMatrix_TO_quaternion(self._matrixRot)
+        self._anglesAxis = rotationMatrix_TO_angleAxis(self._matrixRot)
 
     def setTranslation(self, t):
         """
@@ -351,6 +445,9 @@ class Frame(object):
 
         self._matrixRot = R
 
+        self._quaternion = rotationMatrix_TO_quaternion(self._matrixRot)
+        self._anglesAxis = rotationMatrix_TO_angleAxis(self._matrixRot)
+
     def update(self, R, t):
         """
         Update both the rotation matrix and the translation vector
@@ -365,6 +462,9 @@ class Frame(object):
         self.m_axisZ = R[:, 2]
         self._translation = t
         self._matrixRot = R
+
+        self._quaternion = rotationMatrix_TO_quaternion(self._matrixRot)
+        self._anglesAxis = rotationMatrix_TO_angleAxis(self._matrixRot)
 
     def addNode(self, nodeLabel, position, positionType="Global", desc=""):
         """
