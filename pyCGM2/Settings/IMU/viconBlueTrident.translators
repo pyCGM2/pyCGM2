@@ -1,0 +1,17 @@
+Translators:
+    Accel.X: ax_m/s/s
+    Accel.Y: ay_m/s/s
+    Accel.Z: az_m/s/s
+    AngularVelocity.X: gx_deg/s
+    AngularVelocity.Y: gy_deg/s
+    AngularVelocity.Z: gz_deg/s
+    Magneto.X: mx_microT
+    Magneto.Y: my_microT
+    Magneto.Z: mz_microT
+    Quaternion.X: qx
+    Quaternion.Y: qy
+    Quaternion.Z: qz
+    Quaternion.R: qr
+    GlobalAngle.X: x_deg
+    GlobalAngle.Y: y_deg
+    GlobalAngle.Z: z_deg

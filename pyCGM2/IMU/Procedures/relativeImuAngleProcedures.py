@@ -1,36 +1,34 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from  pyCGM2.Math import euler
-from pyCGM2.Model import frame
+
 
 class AbstractRelativeImuAnglesProcedure(object):
     def __init__(self):
         self.m_fixEuler =  True
         pass
 
-class BlueTridentsRelativeAnglesProcedure(AbstractRelativeImuAnglesProcedure):
+class RelativeAnglesProcedure(AbstractRelativeImuAnglesProcedure):
     def __init__(self,representation="Euler", eulerSequence="XYZ"):
-        super(BlueTridentsRelativeAnglesProcedure, self).__init__()
+        super(RelativeAnglesProcedure, self).__init__()
 
         self.m_representation = representation
         self.m_eulerSequence = eulerSequence
 
 
-
-
-
     def run(self, imuInstance1, imuInstance2):
 
-        rotations1 = imuInstance1.m_orientations["RotationMatrix"]
-        rotations2 = imuInstance2.m_orientations["RotationMatrix"]
- 
-        analogFrames = len(rotations1)
+        motion1 = imuInstance1.getMotion()
+        motion2 = imuInstance2.getMotion()
 
 
-        jointValues = np.zeros((analogFrames,3))
-        for i in range (0, analogFrames):
-            Rprox = rotations1[i]
-            Rdist = rotations2[i]
+        nFrames = min([len(motion1), len(motion2)])
+
+        jointValues = np.zeros((nFrames,3))
+        for i in range (0, nFrames):
+
+            Rprox = motion1[i].getRotation()
+            Rdist = motion2[i].getRotation()
             Rrelative= np.dot(Rprox.T, Rdist)
 
             if self.m_representation == "Euler":
@@ -52,24 +50,15 @@ class BlueTridentsRelativeAnglesProcedure(AbstractRelativeImuAnglesProcedure):
                 jointValues[i,0] = Euler1
                 jointValues[i,1] = Euler2
                 jointValues[i,2] = Euler3
+           
 
+        jointFinalValues = jointValues 
 
-            if  self.m_representation == "GlobalAngle":   
-
-                quaternion = frame.getQuaternionFromMatrix(Rrelative)
-                angleAxis = frame.angleAxisFromQuaternion(quaternion,toRad=True)
-                
-                jointValues[i,0] = np.linalg.norm(angleAxis)   
-
-        jointFinalValues = np.rad2deg(jointValues)
-
-        if self.m_representation == "Euler":
-             if self.m_fixEuler:
-                dest = np.deg2rad(np.array([0,0,0]))
-                for i in range (0, analogFrames):
-                    jointFinalValues[i,:] = euler.wrapEulerTo(np.deg2rad(jointFinalValues[i,:]), dest)
-                    dest = jointFinalValues[i,:]
-                jointFinalValues = np.rad2deg(jointValues)
+        if self.m_fixEuler:
+            dest = np.array([0,0,0])
+            for i in range (0, nFrames):
+                jointFinalValues[i,:] = euler.wrapEulerTo(jointFinalValues[i,:], dest)
+                dest = jointFinalValues[i,:]
 
         return jointFinalValues
 
