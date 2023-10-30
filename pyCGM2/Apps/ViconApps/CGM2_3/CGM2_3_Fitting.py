@@ -12,10 +12,6 @@ warnings.filterwarnings("ignore")
 # pyCGM2 settings
 import pyCGM2
 
-
-# vicon nexus
-from viconnexusapi import ViconNexus
-
 # pyCGM2 libraries
 from pyCGM2.Utils import files
 from pyCGM2.Tools import btkTools

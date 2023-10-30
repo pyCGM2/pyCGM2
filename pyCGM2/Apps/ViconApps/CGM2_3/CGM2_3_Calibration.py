@@ -13,11 +13,6 @@ warnings.filterwarnings("ignore")
 import pyCGM2
 
 
-
-# vicon nexus
-from viconnexusapi import ViconNexus
-
-
 # pyCGM2 libraries
 from pyCGM2.Apps.ViconApps import CgmArgsManager
 from pyCGM2.Lib.CGM import  cgm2_3
