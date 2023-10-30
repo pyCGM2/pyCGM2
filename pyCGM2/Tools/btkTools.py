@@ -1231,6 +1231,41 @@ def smartGetEvents(acq, label, context):
 
     return out
 
+def isEventExist(acq, label, context):
+    """
+    check if an event exist
+
+    Args
+        acq (btkAcquisition): a btk acquisition instance
+        label (str): event label
+        context (str): event context
+
+
+    """
+    evs = acq.GetEvents()
+    out = False
+    for it in btk.Iterate(evs):
+        if it.GetContext() == context and it.GetLabel() == label:
+            out=True
+    return out
+
+def renameEvent(acq, label, context, newlabel, newcontext):
+    """
+    rename an event exist
+
+    Args
+        acq (btkAcquisition): a btk acquisition instance
+        label (str): event label
+        context (str): event context
+
+
+    """
+    evs = acq.GetEvents()
+    for it in btk.Iterate(evs):
+        if it.GetContext() == context and it.GetLabel() == label:
+            it.SetLabel(newlabel)
+            it.SetContext(newcontext)
+    
 
 def cleanAcq(acq):
     """
