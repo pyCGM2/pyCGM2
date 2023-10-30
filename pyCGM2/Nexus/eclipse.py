@@ -375,10 +375,13 @@ class TrialEnfReader(EnfReader):
 
         mfpa = ""
         for i in range(1,nfp+1):
-            if self.m_trialInfos["FP"+str(i)]=="Left": mfpa = mfpa +"L"
-            if self.m_trialInfos["FP"+str(i)]=="Right": mfpa = mfpa +"R"
-            if self.m_trialInfos["FP"+str(i)]=="Invalid": mfpa = mfpa +"X"
-            if self.m_trialInfos["FP"+str(i)]=="Auto": mfpa = mfpa +"A"
+            if "FP"+str(i) in self.m_trialInfos:
+                if self.m_trialInfos["FP"+str(i)]=="Left": mfpa = mfpa +"L"
+                if self.m_trialInfos["FP"+str(i)]=="Right": mfpa = mfpa +"R"
+                if self.m_trialInfos["FP"+str(i)]=="Invalid": mfpa = mfpa +"X"
+                if self.m_trialInfos["FP"+str(i)]=="Auto": mfpa = mfpa +"A"
+            else: 
+                mfpa = mfpa +"X"
 
         return mfpa
 
