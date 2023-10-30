@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Enums
-#APIDOC["Draft"]=False
-#--end--
+
 from enum import Enum
 
 
