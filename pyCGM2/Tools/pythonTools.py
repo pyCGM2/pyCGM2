@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Report
-#APIDOC["Draft"]=False
-#--end--
 
 class ordict(dict):
     """ordered dictionary"""
