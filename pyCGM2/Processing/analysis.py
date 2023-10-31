@@ -272,45 +272,45 @@ class AnalysisBuilder(AbstractBuilder):
         LOGGER.logger.info("--kinetic computation--")
         if self.m_cycles.kineticCycles is not None:
 
-           found_context = list()
-           for cycle in self.m_cycles.kineticCycles:
-               found_context.append(cycle.context)
+            found_context = list()
+            for cycle in self.m_cycles.kineticCycles:
+                found_context.append(cycle.context)
 
-           if "Left" in self.m_kineticLabelsDict.keys():
-               if "Left" in found_context:
-                   for label in self.m_kineticLabelsDict["Left"]:
-                       labelPlus = label + "_" + \
+            if "Left" in self.m_kineticLabelsDict.keys():
+                if "Left" in found_context:
+                    for label in self.m_kineticLabelsDict["Left"]:
+                        labelPlus = label + "_" + \
                            self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
-                       out[labelPlus, "Left"] = CGM2cycle.point_descriptiveStats(
+                        out[labelPlus, "Left"] = CGM2cycle.point_descriptiveStats(
                            self.m_cycles.kineticCycles, labelPlus, "Left")
 
-                   if self.m_kinematicLabelsDict is not None:
+                    if self.m_kinematicLabelsDict is not None:
                        for label in self.m_kinematicLabelsDict["Left"]:
                            labelPlus = label + "_" + \
                                self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
                            outOptional[labelPlus, "Left"] = CGM2cycle.point_descriptiveStats(
                                self.m_cycles.kineticCycles, labelPlus, "Left")
-                   LOGGER.logger.info("left kinetic computation---> done")
-               else:
-                   LOGGER.logger.warning("No left Kinetic computation")
+                    LOGGER.logger.info("left kinetic computation---> done")
+                else:
+                    LOGGER.logger.warning("No left Kinetic computation")
 
-           if "Right" in self.m_kineticLabelsDict.keys():
-               if "Right" in found_context:
-                   for label in self.m_kineticLabelsDict["Right"]:
-                       labelPlus = label + "_" + \
+            if "Right" in self.m_kineticLabelsDict.keys():
+                if "Right" in found_context:
+                    for label in self.m_kineticLabelsDict["Right"]:
+                        labelPlus = label + "_" + \
                            self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
-                       out[labelPlus, "Right"] = CGM2cycle.point_descriptiveStats(
+                        out[labelPlus, "Right"] = CGM2cycle.point_descriptiveStats(
                            self.m_cycles.kineticCycles, labelPlus, "Right")
 
-                   if self.m_kinematicLabelsDict is not None:
-                       for label in self.m_kinematicLabelsDict["Right"]:
-                           labelPlus = label + "_" + \
+                    if self.m_kinematicLabelsDict is not None:
+                        for label in self.m_kinematicLabelsDict["Right"]:
+                            labelPlus = label + "_" + \
                                self.m_pointlabelSuffix if self.m_pointlabelSuffix is not None else label
-                           outOptional[labelPlus, "Right"] = CGM2cycle.point_descriptiveStats(
+                            outOptional[labelPlus, "Right"] = CGM2cycle.point_descriptiveStats(
                                self.m_cycles.kineticCycles, labelPlus, "Right")
 
-                   LOGGER.logger.info("right kinetic computation---> done")
-               else:
+                    LOGGER.logger.info("right kinetic computation---> done")
+                else:
                    LOGGER.logger.warning("No right Kinetic computation")
 
         else:
