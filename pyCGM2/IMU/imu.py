@@ -2,10 +2,8 @@ from scipy.interpolate import interp1d
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from scipy.signal import find_peaks
-from scipy.linalg import norm
 
-from pyCGM2.External.ktk.kineticstoolkit import timeseries
+#from pyCGM2.External.ktk.kineticstoolkit import timeseries
 
 class Imu(object):
     """
@@ -31,16 +29,16 @@ class Imu(object):
         else:
             self.m_magnetometer = mag
 
-        # 
+        
         self._freq =  freq
         self._accel = self.m_acceleration
         self._angularVelocity = self.m_angularVelocity
         self._mag = self.m_magnetometer
 
         self.m_properties = dict()
+        self.m_motion= list()
 
-        self.m_motion= []
-
+        self.m_data =  pd.DataFrame()
 
     def reInit(self):
         self.m_freq =  self._freq
@@ -85,20 +83,47 @@ class Imu(object):
         frames = np.arange(0, self.m_acceleration.shape[0])
         self.m_time = frames*1/self.m_freq
 
-    def getAcceleration(self):
-        return self.m_acceleration
+    def getAcceleration(self,axis=None):
+        if axis is None: return self.m_acceleration
+        elif axis=="X": return self.m_acceleration[:,0]
+        elif axis=="Y": return self.m_acceleration[:,1]
+        elif axis=="Z": return self.m_acceleration[:,2]
+        else: 
+            raise("[pyCGM2] - axis not known, choice: X,Y or Z")
+        
     
-    def getAngularVelocity(self):
-        return self.m_angularVelocity
+    def getAngularVelocity(self,axis=None):
+        if axis is None: return self.m_angularVelocity
+        elif axis=="X": return self.m_angularVelocity[:,0]
+        elif axis=="Y": return self.m_angularVelocity[:,1]
+        elif axis=="Z": return self.m_angularVelocity[:,2]
+        else: 
+            raise("[pyCGM2] - axis not known, choice: X,Y or Z")
     
-    def getMagnetometer(self):
-        return self.m_magnetometer
-    
-    def getMotion(self):
-        return self.m_motion 
+    def getMagnetometer(self,axis=None):
+        if axis is None: return self.m_magnetometer
+        elif axis=="X": return self.m_magnetometer[:,0]
+        elif axis=="Y": return self.m_magnetometer[:,1]
+        elif axis=="Z": return self.m_magnetometer[:,2]
+        else: 
+            raise("[pyCGM2] - axis not known, choice: X,Y or Z")
 
-    def getAngleAxis(self):
-        return np.array([self.m_motion[i].getAngleAxis() for i in range(len(self.m_motion))])
+    
+    def getMotion(self,index=None):
+        if index is None: 
+            return self.m_motion
+        else:
+            return self.m_motion[index]
+
+    def getAngleAxis(self,axis=None):
+        values =  np.array([self.m_motion[i].getAngleAxis() for i in range(len(self.m_motion))])
+
+        if axis is None: return values
+        elif axis=="X": return values[:,0]
+        elif axis=="Y": return values[:,1]
+        elif axis=="Z": return values[:,2]
+        else: 
+            raise("[pyCGM2] - axis not known, choice: X,Y or Z")
 
     def getQuaternions(self):
         return np.array([self.m_motion[i].getQuaternion() for i in range(len(self.m_motion))])
