@@ -10,40 +10,83 @@ from pyCGM2.IMU.Procedures import imuMotionProcedure
 from pyCGM2.Tools import btkTools
 
 
+def synchroniseNotAlignedCsv(fullfilenames,timeColumn = "time_s"):
+
+    def find_nearest(array, value):
+        array = np.asarray(array)
+        idx = (np.abs(array - value)).argmin()
+        return idx,array[idx]
+
+    datasets= list()
+    for fullfilename in fullfilenames:
+        datasets.append( pd.read_csv(fullfilename))
+
+    times0 = list()
+    for dataset in datasets:
+        times0.append(dataset[timeColumn].values[0])
+    time_0 =  max(times0)
+
+    datasets_0 = list()
+    numberOfFrames = list()
+    for dataset in datasets:
+        idx0,value0 = find_nearest(dataset[timeColumn].values,time_0)
+        numberOfFrames.append(dataset.iloc[idx0:].shape[0])
+        datasets_0.append(dataset.iloc[idx0:])
+    nFrames =  min(numberOfFrames)
+
+    datasets_equal = list()
+    for dataset in datasets_0:
+        datasets_equal.append(dataset[0:nFrames])
+
+    return datasets_equal
 
 class ImuReaderProcedures(object):
     def __init__(self):
         pass
 
 class CsvProcedure(ImuReaderProcedures):
-    def __init__(self,fullfilename,translators):
+    def __init__(self,fullfilename,translators,freq = "Auto" , timeColumn = "time_s"):
         super(CsvProcedure, self).__init__()
         
         self.m_data = pd.read_csv(fullfilename)
         self.m_translators = translators
 
+        self.m_freq = freq
+        self.m_timeColumn = timeColumn
 
 
     def read(self):
     
-        freq = int(1/(self.m_data["time_s"][1] - 
-                      self.m_data["time_s"][0]))
+        if self.m_freq == "Auto":
+            self.m_freq = int(1/(self.m_data[self.m_timeColumn].to_numpy()[1] - 
+                        self.m_data[self.m_timeColumn].to_numpy()[0]))
+         
+        acceleration = None
+        try:
+            acceleration = np.array([self.m_data[self.m_translators["Accel.X"]].to_numpy(), 
+                                    self.m_data[self.m_translators["Accel.Y"]].to_numpy(), 
+                                    self.m_data[self.m_translators["Accel.Z"]].to_numpy()]).T
+        except:
+            LOGGER.logger.warning("[pyCGM2] - no accelerometer detected in your data ")
 
-        acceleration = np.array([self.m_data[self.m_translators["Accel.X"]].to_numpy(), 
-                                self.m_data[self.m_translators["Accel.Y"]].to_numpy(), 
-                                self.m_data[self.m_translators["Accel.Z"]].to_numpy()]).T
 
-        angularVelocity = np.array([self.m_data[self.m_translators["AngularVelocity.X"]].to_numpy(), 
+        angularVelocity = None
+        try:
+            angularVelocity = np.array([self.m_data[self.m_translators["AngularVelocity.X"]].to_numpy(), 
                                 self.m_data[self.m_translators["AngularVelocity.Y"]].to_numpy(), 
                                 self.m_data[self.m_translators["AngularVelocity.Z"]].to_numpy()]).T
+        except:
+            LOGGER.logger.warning("[pyCGM2] - no goniometer detected in your data ")
 
+        magnetometer = None
+        try:
+            magnetometer = np.array([self.m_data[self.m_translators["Magneto.X"]].to_numpy(), 
+                                    self.m_data[self.m_translators["Magneto.Y"]].to_numpy(), 
+                                    self.m_data[self.m_translators["Magneto.Z"]].to_numpy()]).T
+        except:
+            LOGGER.logger.warning("[pyCGM2] - no magnetometer detected in your data ")
 
-        magnetometer = np.array([self.m_data[self.m_translators["Magneto.X"]].to_numpy(), 
-                                self.m_data[self.m_translators["Magneto.Y"]].to_numpy(), 
-                                self.m_data[self.m_translators["Magneto.Z"]].to_numpy()]).T
-
-
-        imuInstance =  imu.Imu(freq,acceleration,angularVelocity,angularVelocity)
+        imuInstance =  imu.Imu(self.m_freq,acceleration,angularVelocity,angularVelocity)
 
         
         requiredCols = [self.m_translators["Quaternion.X"],self.m_translators["Quaternion.Y"], self.m_translators["Quaternion.Z"], self.m_translators["Quaternion.R"]]
@@ -62,7 +105,68 @@ class CsvProcedure(ImuReaderProcedures):
     
         return imuInstance
         
+class DataframeProcedure(ImuReaderProcedures):
+    def __init__(self,dataframe,translators,freq = "Auto" , timeColumn = "time_s"):
+        super(DataframeProcedure, self).__init__()
+        
+        self.m_data = dataframe
+        self.m_translators = translators
 
+        self.m_freq = freq
+        self.m_timeColumn = timeColumn
+
+
+    def read(self):
+    
+        if self.m_freq == "Auto":
+            self.m_freq = int(1/(self.m_data[self.m_timeColumn].to_numpy()[1] - 
+                        self.m_data[self.m_timeColumn].to_numpy()[0]))
+
+        acceleration = None
+        try:
+            acceleration = np.array([self.m_data[self.m_translators["Accel.X"]].to_numpy(), 
+                                    self.m_data[self.m_translators["Accel.Y"]].to_numpy(), 
+                                    self.m_data[self.m_translators["Accel.Z"]].to_numpy()]).T
+        except:
+            LOGGER.logger.warning("[pyCGM2] - no accelerometer detected in your data ")
+
+
+        angularVelocity = None
+        try:
+            angularVelocity = np.array([self.m_data[self.m_translators["AngularVelocity.X"]].to_numpy(), 
+                                self.m_data[self.m_translators["AngularVelocity.Y"]].to_numpy(), 
+                                self.m_data[self.m_translators["AngularVelocity.Z"]].to_numpy()]).T
+        except:
+            LOGGER.logger.warning("[pyCGM2] - no goniometer detected in your data ")
+
+        magnetometer = None
+        try:
+            magnetometer = np.array([self.m_data[self.m_translators["Magneto.X"]].to_numpy(), 
+                                    self.m_data[self.m_translators["Magneto.Y"]].to_numpy(), 
+                                    self.m_data[self.m_translators["Magneto.Z"]].to_numpy()]).T
+        except:
+            LOGGER.logger.warning("[pyCGM2] - no magnetometer detected in your data ")
+
+
+
+        imuInstance =  imu.Imu(self.m_freq,acceleration,angularVelocity,angularVelocity)
+
+        
+        requiredCols = [self.m_translators["Quaternion.X"],self.m_translators["Quaternion.Y"], self.m_translators["Quaternion.Z"], self.m_translators["Quaternion.R"]]
+        if all(column in self.m_data.columns for column in requiredCols):
+            LOGGER.logger.info("[pyCGM2] - your csv contains quaternions- - the reader compute the imu Motion")
+
+            quaternions =  np.array([self.m_data[self.m_translators["Quaternion.X"]].to_numpy(),
+                                    self.m_data[self.m_translators["Quaternion.Y"]].to_numpy(),
+                                    self.m_data[self.m_translators["Quaternion.Z"]].to_numpy(), 
+                                    self.m_data[self.m_translators["Quaternion.R"]].to_numpy()]).T
+
+            motProc = imuMotionProcedure.QuaternionMotionProcedure(quaternions)
+
+            motFilter = imuFilters.ImuMotionFilter(imuInstance,motProc)
+            motFilter.run()
+    
+        return imuInstance
 
 class C3dBlueTridentProcedure(ImuReaderProcedures):
     def __init__(self,fullfilename,viconDeviceId):
@@ -159,3 +263,30 @@ class C3dBlueTridentProcedure(ImuReaderProcedures):
             
         
 
+# def readmultipleBlueTridentCsv(fullfilenames,freq):
+
+#     def find_nearest(array, value):
+#         array = np.asarray(array)
+#         idx = (np.abs(array - value)).argmin()
+#         return idx,array[idx]
+
+#     datasets= list()
+#     for fullfilename in fullfilenames:
+#         datasets.append( pd.read_csv(fullfilename))
+
+#     times0 = list()
+#     for dataset in datasets:
+#         times0.append(dataset["time_s"].values[0])
+#     time_0 =  max(times0)
+
+#     datasets_0 = list()
+#     numberOfFrames = list()
+#     for dataset in datasets:
+#         idx0,value0 = find_nearest(dataset["time_s"].values,time_0)
+#         numberOfFrames.append(dataset.iloc[idx0:].shape[0])
+#         datasets_0.append(dataset.iloc[idx0:])
+#     nFrames =  min(numberOfFrames)
+
+#     datasets_equal = list()
+#     for dataset in datasets_0:
+#         datasets_equal.append(dataset[0:nFrames])
