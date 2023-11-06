@@ -15,6 +15,49 @@ import numpy as np
 import pandas as pd
 pd.set_option("display.precision", 8)
 
+class ImuStorageFile(object):
+    def __init__(self,DATA_PATH, filename, freq=100):
+
+        self.m_DATA_PATH = DATA_PATH
+        self.m_filename = filename
+
+        # Define the outputs
+        self.m_header = pd.DataFrame([f'DataRate={freq}', 
+                                    f'DataType=Quaternion',
+                                    f'version=3', 
+                                    f'OpenSimVersion=4.4', 
+                                    f'endheader'])
+
+        self.m_data = dict()
+
+
+    def setData(self, imuName, quaternionArray):
+        self.m_data[imuName] = quaternionArray
+
+         
+
+    def construct(self,static=False):
+        column_header = pd.DataFrame([f'time'] + [f"{name}_imu" for name in self.m_data]).T
+        
+        time = [0]
+        if static:
+            data_output = pd.DataFrame([f"{time[0]}"] + \
+                                    [ f'{self.m_data[name][0,0]},  {self.m_data[name][0,1]}, {self.m_data[name][0,2]},  {self.m_data[name][0,3]}'
+                                    for name in self.m_data]).T
+        else: 
+            time = np.array([np.divide([range(self.m_data[name].shape[0]) for name in self.m_data], 100)[0]]).T
+
+            data = np.array([[f'{self.m_data[name][frame,3]}, {self.m_data[name][frame,0]}, '
+                            f'{self.m_data[name][frame,1]}, {self.m_data[name][frame,2]}'
+                            for frame in range(self.m_data[name].shape[0])] for name in self.m_data]).T
+
+            data_output = pd.DataFrame(np.append(time, data, axis=1))
+
+        with open(self.m_DATA_PATH+self.m_filename, 'w') as fp:
+                fp.write(self.m_header.to_csv(index=False, header=False, line_terminator='\n'))
+                fp.write(column_header.to_csv(index=False, sep='\t', header=False, line_terminator='\n'))
+                fp.write(data_output.to_csv(index=False, sep='\t', header=False, line_terminator='\n'))
+
 
 class OpensimDataFrame(object):
     def __init__(self, DATA_PATH, filename, freq=100):

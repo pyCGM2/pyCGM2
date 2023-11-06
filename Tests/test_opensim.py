@@ -12,6 +12,9 @@ from pyCGM2.Lib import opensimtk
 from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
 from pyCGM2.Model.Opensim.interface import opensimInterface
 
+from pyCGM2.IMU import imuFilters
+from pyCGM2.IMU.Procedures import imuReaderProcedures
+
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
@@ -93,6 +96,26 @@ class Test_IO:
         opensimTools.export_CgmToMot(
             acqGait,data_path, "motGenerated.mot",osimInterface)
 
+    def test_writer_imuStoFile(self):
+
+        data_path = pyCGM2.TEST_DATA_PATH + "Opensense\\nexus\\"
+
+        staticFilename = "Calibration.c3d"
+
+        irp = imuReaderProcedures.C3dBlueTridentProcedure(data_path+staticFilename,"1")
+        irf = imuFilters.ImuReaderFilter(irp)
+        imu1 = irf.run() 
+
+        irp = imuReaderProcedures.C3dBlueTridentProcedure(data_path+staticFilename,"2")
+        irf = imuFilters.ImuReaderFilter(irp)
+        imu2 = irf.run() 
+
+        imuStorage = opensimIO.ImuStorageFile(data_path, "imuStorage.mot")
+
+        imuStorage.setData("Pelvis",imu1.getQuaternions())
+        imuStorage.setData("Thigh",imu2.getQuaternions())
+        imuStorage.construct(static=False)
+        import ipdb; ipdb.set_trace()
 
 class Test_preparation:
 
