@@ -92,6 +92,11 @@ class Test_ImuReaders:
         irf = imuFilters.ImuReaderFilter(irp)
         imu1 = irf.run()
         
+        irp2 = imuReaderProcedures.CsvProcedure(fullfilename, imuTranslators["Translators"] )
+        irp2.downsample(100)
+        irf = imuFilters.ImuReaderFilter(irp2)
+        imu2 = irf.run()
+
 
     def test_blueTridentc3d(self):
         fullfilename = pyCGM2.TEST_DATA_PATH + "IMU\\angleMeasurement\\goniometer\\right36 -0to120 trial 01.c3d"
@@ -99,6 +104,12 @@ class Test_ImuReaders:
         # imuTranslators  = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER +"IMU\\","viconBlueTrident.translators")
        
         irp = imuReaderProcedures.C3dBlueTridentProcedure(fullfilename,"1")
+        irf = imuFilters.ImuReaderFilter(irp)
+        imu1 = irf.run()
+
+
+        irp = imuReaderProcedures.C3dBlueTridentProcedure(fullfilename,"1")
+        irp.downsample(100)
         irf = imuFilters.ImuReaderFilter(irp)
         imu1 = irf.run()
 
@@ -115,7 +126,12 @@ class Test_ImuReaders:
         irp = imuReaderProcedures.DataframeProcedure(dataframes[0], imuTranslators["Translators"] )
         irf = imuFilters.ImuReaderFilter(irp)
         imu1 = irf.run()
-        import ipdb; ipdb.set_trace()
+
+
+        irp2 = imuReaderProcedures.DataframeProcedure(dataframes[0], imuTranslators["Translators"] )
+        irp2.downsample(100)
+        irf = imuFilters.ImuReaderFilter(irp2)
+        imu2 = irf.run()
         
 
 

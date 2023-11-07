@@ -8,6 +8,7 @@ from pyCGM2.IMU import imu
 from pyCGM2.IMU import imuFilters
 from pyCGM2.IMU.Procedures import imuMotionProcedure
 from pyCGM2.Tools import btkTools
+from pyCGM2.Signal import signal_processing
 
 
 def synchroniseNotAlignedCsv(fullfilenames,timeColumn = "time_s"):
@@ -42,7 +43,10 @@ def synchroniseNotAlignedCsv(fullfilenames,timeColumn = "time_s"):
 
 class ImuReaderProcedures(object):
     def __init__(self):
-        pass
+        self.m_downsampleFreq = None
+
+    def downsample(self,freq):
+        self.m_downsampleFreq = freq
 
 class CsvProcedure(ImuReaderProcedures):
     def __init__(self,fullfilename,translators,freq = "Auto" , timeColumn = "time_s"):
@@ -52,6 +56,7 @@ class CsvProcedure(ImuReaderProcedures):
         self.m_translators = translators
 
         self.m_freq = freq
+        self.__freq = self.m_freq
         self.m_timeColumn = timeColumn
 
 
@@ -60,8 +65,10 @@ class CsvProcedure(ImuReaderProcedures):
         if self.m_freq == "Auto":
             self.m_freq = int(1/(self.m_data[self.m_timeColumn].to_numpy()[1] - 
                         self.m_data[self.m_timeColumn].to_numpy()[0]))
+            self.__freq = self.m_freq
+
          
-        acceleration = None
+        acceleration = np.zeros((self.m_data.shape[0],3))
         try:
             acceleration = np.array([self.m_data[self.m_translators["Accel.X"]].to_numpy(), 
                                     self.m_data[self.m_translators["Accel.Y"]].to_numpy(), 
@@ -70,7 +77,7 @@ class CsvProcedure(ImuReaderProcedures):
             LOGGER.logger.warning("[pyCGM2] - no accelerometer detected in your data ")
 
 
-        angularVelocity = None
+        angularVelocity = np.zeros((self.m_data.shape[0],3))
         try:
             angularVelocity = np.array([self.m_data[self.m_translators["AngularVelocity.X"]].to_numpy(), 
                                 self.m_data[self.m_translators["AngularVelocity.Y"]].to_numpy(), 
@@ -78,7 +85,7 @@ class CsvProcedure(ImuReaderProcedures):
         except:
             LOGGER.logger.warning("[pyCGM2] - no goniometer detected in your data ")
 
-        magnetometer = None
+        magnetometer = np.zeros((self.m_data.shape[0],3))
         try:
             magnetometer = np.array([self.m_data[self.m_translators["Magneto.X"]].to_numpy(), 
                                     self.m_data[self.m_translators["Magneto.Y"]].to_numpy(), 
@@ -86,7 +93,13 @@ class CsvProcedure(ImuReaderProcedures):
         except:
             LOGGER.logger.warning("[pyCGM2] - no magnetometer detected in your data ")
 
-        imuInstance =  imu.Imu(self.m_freq,acceleration,angularVelocity,angularVelocity)
+        if self.m_downsampleFreq is not None:
+            acceleration = signal_processing.downsample(acceleration,self.m_freq,self.m_downsampleFreq)
+            angularVelocity = signal_processing.downsample(angularVelocity,self.m_freq,self.m_downsampleFreq)
+            magnetometer = signal_processing.downsample(magnetometer,self.m_freq,self.m_downsampleFreq)
+            self.m_freq = self.m_downsampleFreq    
+
+        imuInstance =  imu.Imu(self.m_freq,acceleration,angularVelocity,magnetometer)
 
         
         requiredCols = [self.m_translators["Quaternion.X"],self.m_translators["Quaternion.Y"], self.m_translators["Quaternion.Z"], self.m_translators["Quaternion.R"]]
@@ -97,6 +110,9 @@ class CsvProcedure(ImuReaderProcedures):
                                     self.m_data[self.m_translators["Quaternion.Y"]].to_numpy(),
                                     self.m_data[self.m_translators["Quaternion.Z"]].to_numpy(), 
                                     self.m_data[self.m_translators["Quaternion.R"]].to_numpy()]).T
+            
+            if self.m_downsampleFreq is not None:
+                quaternions = signal_processing.downsample(quaternions,self.__freq,self.m_downsampleFreq)
 
             motProc = imuMotionProcedure.QuaternionMotionProcedure(quaternions)
 
@@ -113,6 +129,7 @@ class DataframeProcedure(ImuReaderProcedures):
         self.m_translators = translators
 
         self.m_freq = freq
+        self.__freq = self.m_freq
         self.m_timeColumn = timeColumn
 
 
@@ -121,8 +138,11 @@ class DataframeProcedure(ImuReaderProcedures):
         if self.m_freq == "Auto":
             self.m_freq = int(1/(self.m_data[self.m_timeColumn].to_numpy()[1] - 
                         self.m_data[self.m_timeColumn].to_numpy()[0]))
+            self.__freq = self.m_freq
 
-        acceleration = None
+            print(self.__freq)
+
+        acceleration = np.zeros((self.m_data.shape[0],3))
         try:
             acceleration = np.array([self.m_data[self.m_translators["Accel.X"]].to_numpy(), 
                                     self.m_data[self.m_translators["Accel.Y"]].to_numpy(), 
@@ -131,7 +151,7 @@ class DataframeProcedure(ImuReaderProcedures):
             LOGGER.logger.warning("[pyCGM2] - no accelerometer detected in your data ")
 
 
-        angularVelocity = None
+        angularVelocity = np.zeros((self.m_data.shape[0],3))
         try:
             angularVelocity = np.array([self.m_data[self.m_translators["AngularVelocity.X"]].to_numpy(), 
                                 self.m_data[self.m_translators["AngularVelocity.Y"]].to_numpy(), 
@@ -139,7 +159,7 @@ class DataframeProcedure(ImuReaderProcedures):
         except:
             LOGGER.logger.warning("[pyCGM2] - no goniometer detected in your data ")
 
-        magnetometer = None
+        magnetometer = np.zeros((self.m_data.shape[0],3))
         try:
             magnetometer = np.array([self.m_data[self.m_translators["Magneto.X"]].to_numpy(), 
                                     self.m_data[self.m_translators["Magneto.Y"]].to_numpy(), 
@@ -147,9 +167,15 @@ class DataframeProcedure(ImuReaderProcedures):
         except:
             LOGGER.logger.warning("[pyCGM2] - no magnetometer detected in your data ")
 
+        
+        if self.m_downsampleFreq is not None:
+            acceleration = signal_processing.downsample(acceleration,self.m_freq,self.m_downsampleFreq)
+            angularVelocity = signal_processing.downsample(angularVelocity,self.m_freq,self.m_downsampleFreq)
+            magnetometer = signal_processing.downsample(magnetometer,self.m_freq,self.m_downsampleFreq)
+            self.m_freq = self.m_downsampleFreq 
 
 
-        imuInstance =  imu.Imu(self.m_freq,acceleration,angularVelocity,angularVelocity)
+        imuInstance =  imu.Imu(self.m_freq,acceleration,angularVelocity,magnetometer)
 
         
         requiredCols = [self.m_translators["Quaternion.X"],self.m_translators["Quaternion.Y"], self.m_translators["Quaternion.Z"], self.m_translators["Quaternion.R"]]
@@ -160,6 +186,10 @@ class DataframeProcedure(ImuReaderProcedures):
                                     self.m_data[self.m_translators["Quaternion.Y"]].to_numpy(),
                                     self.m_data[self.m_translators["Quaternion.Z"]].to_numpy(), 
                                     self.m_data[self.m_translators["Quaternion.R"]].to_numpy()]).T
+
+            if self.m_downsampleFreq is not None:
+                quaternions = signal_processing.downsample(quaternions,self.__freq,self.m_downsampleFreq)
+                
 
             motProc = imuMotionProcedure.QuaternionMotionProcedure(quaternions)
 
@@ -173,7 +203,6 @@ class C3dBlueTridentProcedure(ImuReaderProcedures):
         super(C3dBlueTridentProcedure, self).__init__()
         
         self.m_acq = btkTools.smartReader(fullfilename)
-
         self.m_id = viconDeviceId
 
 
@@ -249,6 +278,15 @@ class C3dBlueTridentProcedure(ImuReaderProcedures):
                     if ".z" in it:
                         highAccel[:,2] = channel.GetValues().reshape(nAnalogframes)
         
+        if self.m_downsampleFreq is not None:
+            acceleration = signal_processing.downsample(acceleration,freq,self.m_downsampleFreq)
+            highAccel = signal_processing.downsample(highAccel,freq,self.m_downsampleFreq)
+            angularVelocity = signal_processing.downsample(angularVelocity,freq,self.m_downsampleFreq)
+            magnetometer = signal_processing.downsample(magnetometer,freq,self.m_downsampleFreq)
+            globalAngle = signal_processing.downsample(globalAngle,freq,self.m_downsampleFreq)
+
+            freq = self.m_downsampleFreq
+            
         imuInstance =  imu.Imu(freq,acceleration,angularVelocity,magnetometer)
 
         if np.all(globalAngle!=0):
