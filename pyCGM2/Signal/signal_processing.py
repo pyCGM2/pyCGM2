@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Signal
-#APIDOC["Draft"]=False
-#--end--
-
 """
 The module only contains functions for filtering data
 """
 from scipy import signal
 from scipy import integrate
 import numpy as np
+from scipy.interpolate import interp1d
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 try:
@@ -203,3 +199,19 @@ def arrayLowPassFiltering(valuesArray, freq, order=2, fc=6):
         out[:, i] = signal.filtfilt(b, a, valuesArray[:, i])
 
     return out
+
+
+
+
+def downsample(array, initFreq, targetedFreq):
+    if targetedFreq >= initFreq:
+        raise ValueError("La fréquence cible doit être inférieure à la fréquence initiale pour le sous-échantillonnage.")
+        
+    time = np.linspace(0, (array.shape[0] - 1) / initFreq, array.shape[0])
+    newTime = np.linspace(0, time[-1], int(array.shape[0] * targetedFreq / initFreq))
+
+    f = interp1d(time, array, axis=0, fill_value="extrapolate")
+    newarray = f(newTime)
+    
+    return newarray
+
