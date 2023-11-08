@@ -22,6 +22,14 @@ class osimInterface(object):
             muscles.append(it.attrs["name"])
         return muscles
 
+    def getBodies(self):
+        items = self.xml.getSoup().find("BodySet").find("objects").find_all("Body")
+        bodies =[]
+        for it in items:
+            bodies.append(it.attrs["name"])
+        return bodies
+
+
     def getMuscles_bySide(self,addToName=""):
         muscles = self.getMuscles()
         muscleBySide={"Left":[],"Right":[]}
@@ -37,6 +45,7 @@ class osimInterface(object):
         for it in items:
             jointNames.append(it.attrs["name"])
         return jointNames
+
 
 
 class osimCgmInterface(osimInterface):
