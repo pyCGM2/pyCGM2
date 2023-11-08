@@ -101,7 +101,7 @@ class Test_Opensense:
         proc.placeImu("calcn_l",imu6)
         proc.placeImu("calcn_r",imu7)
         proc.placeImu("torso",imu8)
-        proc.prepareOrientationFile(freq,order=[3,0,1,2])
+        proc.prepareOrientationFile(staticFilename[:-4],freq,order=[3,0,1,2])
         proc.setBaseImu("pelvis","-z")
         proc.setSensorToOpensimRotation(sensorToOpensim)
         proc.prepareXml()
@@ -178,7 +178,7 @@ class Test_Opensense:
                          "calcn_l":imu6,
                          "calcn_r":imu7,
                           "torso":imu8 })
-        procIk.prepareOrientationFile(freq,order=[3,0,1,2])
+        procIk.prepareOrientationFile(dynamicFile[:-4],freq,order=[3,0,1,2])
         procIk.setSensorToOpensimRotation(sensorToOpensim)
         procIk.prepareXml()
 

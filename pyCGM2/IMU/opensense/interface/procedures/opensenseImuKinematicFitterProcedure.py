@@ -52,18 +52,18 @@ class ImuInverseKinematicXMLProcedure(object):
 
         self.m_imuMapper.update({osimBody : imuInstance})
 
-    def prepareOrientationFile(self,freq,order=[0,1,2,3]):
+    def prepareOrientationFile(self,motionFilenameNoExt,freq,order=[0,1,2,3]):
         
-        self.m_dynamicFile = "walking_orientations.sto"
+        self.m_dynamicFile = motionFilenameNoExt+".sto"
 
-        imuStorage = opensimIO.ImuStorageFile(self.m_DATA_PATH, "walking_orientations.sto",freq)
+        imuStorage = opensimIO.ImuStorageFile(self.m_DATA_PATH, self.m_dynamicFile,freq)
         for key in self.m_imuMapper:
             imuStorage.setData(key,self.m_imuMapper[key].getQuaternions()[:, order])
         imuStorage.construct(static=False)
 
-        self.m_sensorOrientationFile = "walking_orientations.sto"
+        self.m_sensorOrientationFile = self.m_dynamicFile
 
-        opensimDf = opensimIO.OpensimDataFrame(self.m_DATA_PATH,"walking_orientations.sto")
+        opensimDf = opensimIO.OpensimDataFrame(self.m_DATA_PATH,self.m_dynamicFile)
         self.m_beginTime = opensimDf.m_dataframe["time"].iloc[0]
         self.m_endTime = opensimDf.m_dataframe["time"].iloc[-1]
 
@@ -80,9 +80,8 @@ class ImuInverseKinematicXMLProcedure(object):
         self.m_sensor_to_opensim_rotations = eulerAngles
 
     def prepareXml(self):
-        
         self.xml.set_one("model_file", self.m_osimName)
-        self.xml.set_one("output_motion_file", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+".mot")
+        self.xml.set_one("output_motion_file", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile[:-4]+".mot")
         # for marker in self.m_weights.keys():
         #     self.xml.set_inList_fromAttr("IKMarkerTask","weight","name",marker,str(self.m_weights[marker]))
         # self.xml.set_one("accuracy",str(self.m_accuracy))

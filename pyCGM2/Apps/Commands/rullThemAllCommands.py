@@ -204,6 +204,10 @@ class NEXUS_CGMparser(object):
         fittingParser.add_argument('-fe', '--frameEnd', type=int,
                             help='last frame to process')
         fittingParser.add_argument('--offline', nargs= 3, help=' subject name - dynamic c3d file - mfpa', required=False)
+        fittingParser.add_argument('-c3d', '--c3d', type=str,
+                            help='load the c3d file. This operation avoid to load data from the Nexus API. \
+                            (be sure you save the c3d beforehand  )')
+
 
         if self.cgmVersion in ["CGM1.0"]:
             fittingParser.add_argument(

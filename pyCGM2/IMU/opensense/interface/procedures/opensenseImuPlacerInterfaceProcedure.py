@@ -53,14 +53,16 @@ class ImuPlacerXMLProcedure(object):
         self.m_imuMapper.update({osimBody : imuInstance})
 
 
-    def prepareOrientationFile(self,freq,order=[0,1,2,3]):
+    def prepareOrientationFile(self,staticFilenameNoExt,freq,order=[0,1,2,3]):
 
-        imuStorage = opensimIO.ImuStorageFile(self.m_DATA_PATH, "placement_orientations.sto",freq)
+        self.m_staticFile = staticFilenameNoExt+".sto"
+
+        imuStorage = opensimIO.ImuStorageFile(self.m_DATA_PATH, self.m_staticFile,freq)
         for key in self.m_imuMapper:
             imuStorage.setData(key,self.m_imuMapper[key].getQuaternions()[:, order])
         imuStorage.construct(static=True)
 
-        self.m_sensorOrientationFile = "placement_orientations.sto"
+        self.m_sensorOrientationFile = self.m_staticFile
 
     def setBaseImu(self, segmentName, heading):
          self.m_base_imu_label=segmentName+"_imu"
@@ -88,6 +90,8 @@ class ImuPlacerXMLProcedure(object):
 
         imu_placer = opensim.IMUPlacer(self.m_imuPlacerTool)
         imu_placer.run()
+
+        self.finalize()
 
     def finalize(self):
         pass
