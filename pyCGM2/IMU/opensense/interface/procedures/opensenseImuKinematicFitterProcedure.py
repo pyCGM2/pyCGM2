@@ -15,7 +15,7 @@ import opensim
 
 
 class ImuInverseKinematicXMLProcedure(object):
-    def __init__(self, DATA_PATH,scaledOsimName, resultsDirectory):
+    def __init__(self, DATA_PATH,calibratedOsimName, resultsDirectory):
         super(ImuInverseKinematicXMLProcedure,self).__init__()
 
         self.m_DATA_PATH = DATA_PATH
@@ -24,48 +24,41 @@ class ImuInverseKinematicXMLProcedure(object):
 
         files.createDir(self.m_DATA_PATH+self.m_resultsDir) # required to save the mot file. (opensim issue ?) 
 
-        self.m_osimName = DATA_PATH + scaledOsimName
+        self.m_osimName = DATA_PATH + calibratedOsimName
+        self.m_osimInterface = opensimInterface.osimInterface(self.m_DATA_PATH, calibratedOsimName)
 
         self.m_accuracy = 1e-8
+        self.m_imuMapper = dict()
+
+        self.m_sensor_to_opensim_rotations = None
 
     def setSetupFile(self,imuInverseKinematicToolFile):
 
         self.m_imuInverseKinematicTool = self.m_DATA_PATH + "__imuInverseKinematics_Setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(imuInverseKinematicToolFile,self.m_imuInverseKinematicTool)
+
+    def setImuMapper(self,imuMapperDict):
+        for key in imuMapperDict:
+            if key not in self.m_osimInterface.getBodies():
+                LOGGER.logger.error(f"[pyCGM2] the key {key} of your mapper is not a body of the osim file")
+                raise Exception (f"[pyCGM2] the key {key} of your mapper is not a body of the osim file") 
+                
+        self.m_imuMapper.update(imuMapperDict)
+
+    def placeImu(self,osimBody,imuInstance):
+        if osimBody not in self.m_osimInterface.getBodies():
+            LOGGER.logger.error(f"[pyCGM2] the key {osimBody} of your mapper is not a body of the osim file")
+            raise Exception (f"[pyCGM2] the key {osimBody} of your mapper is not a body of the osim file") 
+
+        self.m_imuMapper.update({osimBody : imuInstance})
+
+    def prepareOrientationFile(self,freq,order=[0,1,2,3]):
         
-
-    # def prepareDynamicTrial(self, acq, dynamicFile):
-
-    #     self.m_dynamicFile = dynamicFile
-    #     self.m_acq0 = acq
-    #     self.m_acqMotion_forIK = btk.btkAcquisition.Clone(acq)
-
-    #     self.m_ff = self.m_acqMotion_forIK.GetFirstFrame()
-    #     self.m_freq = self.m_acqMotion_forIK.GetPointFrequency()
-
-    #     opensimTools.transformMarker_ToOsimReferencial(self.m_acqMotion_forIK,self.m_progressionAxis,self.m_forwardProgression)
-
-    #     self.m_markerFile = btkTools.smartWriter(self.m_acqMotion_forIK,self.m_DATA_PATH +  dynamicFile, extension="trc")
-
-    #     self.m_beginTime = 0
-    #     self.m_endTime = (self.m_acqMotion_forIK.GetLastFrame() - self.m_ff)/self.m_freq
-    #     self.m_frameRange = [int((self.m_beginTime*self.m_freq)+self.m_ff),int((self.m_endTime*self.m_freq)+self.m_ff)] 
-
-
-
-    # def setTimeRange(self,beginFrame=None,lastFrame=None):
-    #     self.m_beginTime = 0.0 if beginFrame is None else (beginFrame-self.m_ff)/self.m_freq
-    #     self.m_endTime = (self.m_acqMotion_forIK.GetLastFrame() - self.m_ff)/self.m_freq  if lastFrame is  None else (lastFrame-self.m_ff)/self.m_freq
-    #     self.m_frameRange = [int((self.m_beginTime*self.m_freq)+self.m_ff),int((self.m_endTime*self.m_freq)+self.m_ff)]
-
-
-    def prepareOrientationFile(self,imuMapper):
-        self.m_imuMapper = imuMapper
         self.m_dynamicFile = "walking_orientations.sto"
 
-        imuStorage = opensimIO.ImuStorageFile(self.m_DATA_PATH, "walking_orientations.sto")
+        imuStorage = opensimIO.ImuStorageFile(self.m_DATA_PATH, "walking_orientations.sto",freq)
         for key in self.m_imuMapper:
-            imuStorage.setData(key,self.m_imuMapper[key].getQuaternions())
+            imuStorage.setData(key,self.m_imuMapper[key].getQuaternions()[:, order])
         imuStorage.construct(static=False)
 
         self.m_sensorOrientationFile = "walking_orientations.sto"
@@ -81,6 +74,10 @@ class ImuInverseKinematicXMLProcedure(object):
         if lastTime is not None and lastTime <-self.m_endTime: 
             self.m_endTime = lastTime
 
+    def setSensorToOpensimRotation(self,eulerAngles):
+        if len(eulerAngles) !=3:
+            raise ("[pyCGM2] - eulerAngles must be a list of 3 values in radian")
+        self.m_sensor_to_opensim_rotations = eulerAngles
 
     def prepareXml(self):
         
@@ -91,6 +88,10 @@ class ImuInverseKinematicXMLProcedure(object):
         # self.xml.set_one("accuracy",str(self.m_accuracy))
         self.xml.set_one("time_range",str(self.m_beginTime) + " " + str(self.m_endTime))
         self.xml.set_one("results_directory",  self.m_resultsDir)
+
+        if self.m_sensor_to_opensim_rotations is not None:
+            self.xml.set_one("sensor_to_opensim_rotations", ' '.join(str(e) for e in self.m_sensor_to_opensim_rotations)) 
+
 
 
     def run(self):

@@ -16,10 +16,11 @@ import pandas as pd
 pd.set_option("display.precision", 8)
 
 class ImuStorageFile(object):
-    def __init__(self,DATA_PATH, filename, freq=100):
+    def __init__(self,DATA_PATH, filename, freq):
 
         self.m_DATA_PATH = DATA_PATH
         self.m_filename = filename
+        self.m_freq = freq
 
         # Define the outputs
         self.m_header = pd.DataFrame([f'DataRate={freq}', 
@@ -45,10 +46,10 @@ class ImuStorageFile(object):
                                     [ f'{self.m_data[name][0,0]},  {self.m_data[name][0,1]}, {self.m_data[name][0,2]},  {self.m_data[name][0,3]}'
                                     for name in self.m_data]).T
         else: 
-            time = np.array([np.divide([range(self.m_data[name].shape[0]) for name in self.m_data], 100)[0]]).T
+            time = np.array([np.divide([range(self.m_data[name].shape[0]) for name in self.m_data], self.m_freq)[0]]).T
 
-            data = np.array([[f'{self.m_data[name][frame,3]}, {self.m_data[name][frame,0]}, '
-                            f'{self.m_data[name][frame,1]}, {self.m_data[name][frame,2]}'
+            data = np.array([[f'{self.m_data[name][frame,0]}, {self.m_data[name][frame,1]}, '
+                            f'{self.m_data[name][frame,2]}, {self.m_data[name][frame,3]}'
                             for frame in range(self.m_data[name].shape[0])] for name in self.m_data]).T
 
             data_output = pd.DataFrame(np.append(time, data, axis=1))
