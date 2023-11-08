@@ -204,4 +204,29 @@ class Test_Vicon:
         plt.show()
 
 
+    def test_Vicon_downsample(self):
+
+        data_path = pyCGM2.TEST_DATA_PATH + "Opensense\\nexus\\"    
+
+        imu_data = files.openPickleFile(data_path+"OpenSenseOutputs_fromVicon\\","imu_data")# np.load(data_path+"OpenSenseOutputs_fromVicon\\imu_data.npy",allow_pickle=True)
+        imu_data_ds = files.openPickleFile(data_path+"OpenSenseOutputs_fromVicon\\","imu_data_ds")#np.load(data_path+"OpenSenseOutputs_fromVicon\\imu_data_ds.npy",allow_pickle=True)
+
+        dynamicFile = "Walk.c3d"
+
+        irp = imuReaderProcedures.C3dBlueTridentProcedure(data_path+dynamicFile,"1")
+        irp.downsample(50.0)
+        irf = imuFilters.ImuReaderFilter(irp)
+        imu1 = irf.run()
+
+        fig, (ax1, ax2,ax3) = plt.subplots(3, 1)
+        ax1.plot(np.rad2deg(imu1.getAngleAxis()[:,0]))
+        ax1.plot(imu_data_ds["pelvis_imu"]["Global Angle"]["x"],"-or")
+        
+        ax2.plot(np.rad2deg(imu1.getAngleAxis()[:,1]))
+        ax2.plot(imu_data_ds["pelvis_imu"]["Global Angle"]["y"],"-or")
+
+        ax3.plot(np.rad2deg(imu1.getAngleAxis()[:,2]))
+        ax3.plot(imu_data_ds["pelvis_imu"]["Global Angle"]["z"],"-or")
+        plt.show()
+
 
