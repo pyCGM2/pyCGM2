@@ -15,9 +15,11 @@ class opensenseInterfaceImuPlacerFilter(object):
     def __init__(self, procedure):
         self.m_procedure = procedure
 
-
     def run(self):
         self.m_procedure.run()
+
+    def getCalibratedOsimName(self):
+        return self.m_procedure.m_osim_calibrated
 
 
 class opensenseInterfaceImuInverseKinematicFilter(object):

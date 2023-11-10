@@ -37,7 +37,7 @@ class ImuInverseKinematicXMLProcedure(object):
         self.m_imuInverseKinematicTool = self.m_DATA_PATH + "__imuInverseKinematics_Setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(imuInverseKinematicToolFile,self.m_imuInverseKinematicTool)
 
-    def setImuMapper(self,imuMapperDict):
+    def prepareImuMapper(self,imuMapperDict):
         for key in imuMapperDict:
             if key not in self.m_osimInterface.getBodies():
                 LOGGER.logger.error(f"[pyCGM2] the key {key} of your mapper is not a body of the osim file")
@@ -45,7 +45,7 @@ class ImuInverseKinematicXMLProcedure(object):
                 
         self.m_imuMapper.update(imuMapperDict)
 
-    def placeImu(self,osimBody,imuInstance):
+    def prepareImu(self,osimBody,imuInstance):
         if osimBody not in self.m_osimInterface.getBodies():
             LOGGER.logger.error(f"[pyCGM2] the key {osimBody} of your mapper is not a body of the osim file")
             raise Exception (f"[pyCGM2] the key {osimBody} of your mapper is not a body of the osim file") 
@@ -74,7 +74,7 @@ class ImuInverseKinematicXMLProcedure(object):
         if lastTime is not None and lastTime <-self.m_endTime: 
             self.m_endTime = lastTime
 
-    def setSensorToOpensimRotation(self,eulerAngles):
+    def prepareSensorToOpensimRotation(self,eulerAngles):
         if len(eulerAngles) !=3:
             raise ("[pyCGM2] - eulerAngles must be a list of 3 values in radian")
         self.m_sensor_to_opensim_rotations = eulerAngles

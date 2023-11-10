@@ -55,13 +55,13 @@ class ImuStorageFile(object):
             data_output = pd.DataFrame(np.append(time, data, axis=1))
 
         with open(self.m_DATA_PATH+self.m_filename, 'w') as fp:
-                fp.write(self.m_header.to_csv(index=False, header=False, line_terminator='\n'))
-                fp.write(column_header.to_csv(index=False, sep='\t', header=False, line_terminator='\n'))
-                fp.write(data_output.to_csv(index=False, sep='\t', header=False, line_terminator='\n'))
+                fp.write(self.m_header.to_csv(index=False, header=False, lineterminator='\n'))
+                fp.write(column_header.to_csv(index=False, sep='\t', header=False, lineterminator='\n'))
+                fp.write(data_output.to_csv(index=False, sep='\t', header=False, lineterminator='\n'))
 
 
 class OpensimDataFrame(object):
-    def __init__(self, DATA_PATH, filename, freq=100):
+    def __init__(self, DATA_PATH, filename):
 
         self.m_DATA_PATH = DATA_PATH
         self.m_filename = filename
@@ -93,8 +93,14 @@ class OpensimDataFrame(object):
             for i in range(0, n):
                 values[i] = array_x.getitem(i)
             data[label] = values
-                    
+
         self.m_dataframe = pd.DataFrame(data)
+
+        index_xTime = storageObject.getStateIndex("time")
+        array_xTime = opensim.ArrayDouble()
+        storageObject.getTimeColumn(array_xTime)
+        freq = 1/(array_xTime.getitem(1)-array_xTime.getitem(0))
+
         timevalues = np.arange(
             0, self.m_dataframe.shape[0], 1)/freq
         

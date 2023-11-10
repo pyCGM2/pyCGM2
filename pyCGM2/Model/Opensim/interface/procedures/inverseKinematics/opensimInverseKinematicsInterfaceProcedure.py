@@ -32,25 +32,21 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
 
         super(InverseKinematicXmlProcedure,self).__init__()
         self.m_DATA_PATH = DATA_PATH
-        self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory
 
+        self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory+"//"
+        self.m_RES_PATH = self.m_DATA_PATH+self.m_resultsDir
         files.createDir(self.m_DATA_PATH+self.m_resultsDir) # required to save the mot file. (opensim issue ?) 
 
         self.m_osimName = DATA_PATH + scaledOsimName
-
         self.m_accuracy = 1e-8
+        self.m_acq = None
 
     def setSetupFile(self, ikToolFile):
         self.m_ikTool = self.m_DATA_PATH + "__IKTool-setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(ikToolFile,self.m_ikTool)
     
-    def setProgression(self,progressionAxis,forwardProgression):
-        self.m_progressionAxis = progressionAxis
-        self.m_forwardProgression = forwardProgression
-        self.m_R_LAB_OSIM = opensimTools.rotationMatrix_labToOsim(progressionAxis,forwardProgression)
+    def prepareTrial_fromBtkAcq(self, acq, dynamicFile,progressionAxis,forwardProgression):
 
-
-    def prepareDynamicTrial(self, acq, dynamicFile):
 
         self.m_dynamicFile = dynamicFile
         self.m_acq0 = acq
@@ -58,6 +54,11 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
 
         self.m_ff = self.m_acqMotion_forIK.GetFirstFrame()
         self.m_freq = self.m_acqMotion_forIK.GetPointFrequency()
+
+        self.m_progressionAxis = progressionAxis
+        self.m_forwardProgression = forwardProgression
+        self.m_R_LAB_OSIM = opensimTools.rotationMatrix_labToOsim(progressionAxis,forwardProgression)
+
 
         opensimTools.transformMarker_ToOsimReferencial(self.m_acqMotion_forIK,self.m_progressionAxis,self.m_forwardProgression)
 
@@ -67,22 +68,27 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         self.m_endTime = (self.m_acqMotion_forIK.GetLastFrame() - self.m_ff)/self.m_freq
         self.m_frameRange = [int((self.m_beginTime*self.m_freq)+self.m_ff),int((self.m_endTime*self.m_freq)+self.m_ff)] 
 
-    def setWeights(self,weights_dict):
+    def prepareWeights(self,weights_dict):
         self.m_weights = weights_dict
 
     def setAccuracy(self,value):
         self.m_accuracy = value
 
-    def setTimeRange(self,beginFrame=None,lastFrame=None):
-        self.m_beginTime = 0.0 if beginFrame is None else (beginFrame-self.m_ff)/self.m_freq
-        self.m_endTime = (self.m_acqMotion_forIK.GetLastFrame() - self.m_ff)/self.m_freq  if lastFrame is  None else (lastFrame-self.m_ff)/self.m_freq
-        self.m_frameRange = [int((self.m_beginTime*self.m_freq)+self.m_ff),int((self.m_endTime*self.m_freq)+self.m_ff)]
+    def setFrameRange(self,begin,end):
+        if self.m_acq is None:
+            raise Exception(f"[pyCGM2] - no acquisition detected - trial preparation from a btk::Acquisition not done")
+        self.m_beginTime = 0.0 if begin is None else (begin-self.m_ff)/self.m_freq
+        self.m_endTime = (self.m_acq.GetLastFrame() - self.m_ff)/self.m_freq  if end is  None else (end-self.m_ff)/self.m_freq
+
+    def setTimeRange(self,begin,end):
+        self.m_beginTime = begin
+        self.m_endTime = end
 
     def prepareXml(self):
 
         self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("marker_file", files.getFilename(self.m_markerFile))
-        self.xml.set_one("output_motion_file", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+".mot")
+        self.xml.set_one("output_motion_file", self.m_RES_PATH+ self.m_dynamicFile+".mot")
         for marker in self.m_weights.keys():
             self.xml.set_inList_fromAttr("IKMarkerTask","weight","name",marker,str(self.m_weights[marker]))
         self.xml.set_one("accuracy",str(self.m_accuracy))
@@ -160,7 +166,7 @@ class KalmanInverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
         self.m_ikTool = self.m_DATA_PATH + self.m_modelVersion + "-kalmanIk-setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(ikToolFile,self.m_ikTool)
        
-    def setWeights(self,weights_dict):
+    def prepareWeights(self,weights_dict):
         for key in weights_dict:
             weights_dict[key]=weights_dict[key]/50
 

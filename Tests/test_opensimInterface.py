@@ -168,10 +168,9 @@ class Test_GenericXmlprocedures:
         osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\pycgm2-gait2354_simbody.osim"
         scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23_scaleSetup_template.xml"
 
-        proc = opensimScalingInterfaceProcedure.ScalingXmlProcedure(data_path)
+        proc = opensimScalingInterfaceProcedure.ScalingXmlProcedure(data_path,model.mp["Bodymass"],model.mp["Height"])
         proc.setSetupFiles(osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
-        proc.setStaticTrial( acqStatic, staticFilename[:-4])
-        proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
+        proc.prepareStaticTrial_fromBtkAcq( acqStatic, staticFilename[:-4])
         proc.prepareXml()
         
         oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
@@ -188,14 +187,13 @@ class Test_GenericXmlprocedures:
         progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
         procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlProcedure(data_path,scaledOsimName,"musculoskeletal_modelling")
-        procIK.setProgression(progressionAxis,forwardProgression)
         procIK.setSetupFile(ikTemplateFullFile)
-        procIK.prepareDynamicTrial(acqGait,gaitFilename[:-4])
+        procIK.prepareTrial_fromBtkAcq(acqGait,gaitFilename[:-4],progressionAxis,forwardProgression)
         procIK.setAccuracy(1e-8)
-        procIK.setWeights(ikWeights)
-        procIK.setTimeRange()
+        procIK.prepareWeights(ikWeights)
         procIK.prepareXml()
-        
+
+      
 
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
         oiikf.run()
@@ -203,6 +201,8 @@ class Test_GenericXmlprocedures:
         oiikf.pushMotToAcq(osimConverterSettings)
         acqIK =oiikf.getAcq()
 
+        
+        
         
 
 
@@ -266,10 +266,8 @@ class Test_GenericXmlprocedures:
 
 
         procID = opensimInverseDynamicsInterfaceProcedure.InverseDynamicsXmlProcedure(data_path,scaledOsimName,"musculoskeletal_modelling")
-        procID.setProgression(progressionAxis,forwardProgression)
-        procID.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
+        procID.prepareTrial_fromBtkAcq(acqIK,gaitFilename[:-4],None,progressionAxis,forwardProgression)
         procID.setSetupFiles(idTemplateFullFile,externalLoadTemplateFullFile)
-        procID.setTimeRange()
         procID.prepareXml()
     
         oiidf = opensimInterfaceFilters.opensimInterfaceInverseDynamicsFilter(procID)
@@ -307,10 +305,8 @@ class Test_GenericXmlprocedures:
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\walk_grf.xml"
  
         procSO = opensimStaticOptimizationInterfaceProcedure.StaticOptimisationXmlProcedure(data_path,scaledOsimName,"musculoskeletal_modelling")
-        procSO.setProgression(progressionAxis,forwardProgression)
-        procSO.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
+        procSO.prepareTrial_fromBtkAcq(acqIK,gaitFilename[:-4],None,progressionAxis,forwardProgression)
         procSO.setSetupFiles(soTemplateFullFile,externalLoadTemplateFullFile)
-        procSO.setTimeRange()
         procSO.prepareXml()
 
         oiamf = opensimInterfaceFilters.opensimInterfaceStaticOptimizationFilter(procSO)
@@ -323,9 +319,7 @@ class Test_GenericXmlprocedures:
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\walk_grf.xml"
         procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlProcedure(data_path,scaledOsimName,"musculoskeletal_modelling")
         procAna.setSetupFiles(anaTemplateFullFile,externalLoadTemplateFullFile)
-        procAna.setProgression(progressionAxis,forwardProgression)
-        procAna.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
-        procAna.setTimeRange()
+        procAna.prepareTrial_fromBtkAcq(acqIK,gaitFilename[:-4],None,progressionAxis,forwardProgression)
         procAna.prepareXml()
 
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
@@ -431,10 +425,9 @@ class Test_GenericXmlprocedures:
         osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\pycgm2-gait2354_simbody.osim"
         scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23_scaleSetup_template.xml"
 
-        proc = opensimScalingInterfaceProcedure.ScalingXmlProcedure(data_path)
+        proc = opensimScalingInterfaceProcedure.ScalingXmlProcedure(data_path,model.mp["Bodymass"],model.mp["Height"])
         proc.setSetupFiles(osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
-        proc.setStaticTrial( acqStatic, staticFilename[:-4])
-        proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
+        proc.prepareStaticTrial_fromBtkAcq( acqStatic, staticFilename[:-4])
         proc.prepareXml()
         
         oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
@@ -451,12 +444,10 @@ class Test_GenericXmlprocedures:
         progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
         procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlProcedure(data_path,scaledOsimName,"musculoskeletal_modelling")
-        procIK.setProgression(progressionAxis,forwardProgression)
         procIK.setSetupFile(ikTemplateFullFile)
-        procIK.prepareDynamicTrial(acqGait,gaitFilename[:-4])
+        procIK.prepareTrial_fromBtkAcq(acqGait,gaitFilename[:-4],progressionAxis,forwardProgression)
         procIK.setAccuracy(1e-8)
-        procIK.setWeights(ikWeights)
-        procIK.setTimeRange()
+        procIK.prepareWeights(ikWeights)
         procIK.prepareXml()
         
 
@@ -489,11 +480,11 @@ class Test_GenericXmlprocedures:
 
         anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23-muscleAnalysisSetup_template.xml"
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\walk_grf.xml"
+        
         procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlProcedure(data_path,scaledOsimName,"musculoskeletal_modelling")
         procAna.setSetupFiles(anaTemplateFullFile,externalLoadTemplateFullFile)
-        procAna.setProgression(progressionAxis,forwardProgression)
-        procAna.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
-        procAna.setTimeRange()
+        procAna.prepareTrial_fromBtkAcq(acqIK,gaitFilename[:-4],None,progressionAxis,forwardProgression)
+        #procAna.setTimeRange()
         procAna.prepareXml()
 
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
@@ -599,10 +590,9 @@ class Test_GenericXmlprocedures:
         osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\pycgm2-gait2354_simbody.osim"
         scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23_scaleSetup_template.xml"
 
-        proc = opensimScalingInterfaceProcedure.ScalingXmlProcedure(data_path)
+        proc = opensimScalingInterfaceProcedure.ScalingXmlProcedure(data_path,model.mp["Bodymass"],model.mp["Height"])
         proc.setSetupFiles(osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
-        proc.setStaticTrial( acqStatic, staticFilename[:-4])
-        proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
+        proc.prepareStaticTrial_fromBtkAcq( acqStatic, staticFilename[:-4])
         proc.prepareXml()
         
         oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
@@ -619,12 +609,10 @@ class Test_GenericXmlprocedures:
         progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
         procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlProcedure(data_path,scaledOsimName,"musculoskeletal_modelling")
-        procIK.setProgression(progressionAxis,forwardProgression)
         procIK.setSetupFile(ikTemplateFullFile)
-        procIK.prepareDynamicTrial(acqGait,gaitFilename[:-4])
+        procIK.prepareTrial_fromBtkAcq(acqGait,gaitFilename[:-4],progressionAxis,forwardProgression)
         procIK.setAccuracy(1e-8)
-        procIK.setWeights(ikWeights)
-        procIK.setTimeRange()
+        procIK.prepareWeights(ikWeights)
         procIK.prepareXml()
         
 
@@ -662,9 +650,7 @@ class Test_GenericXmlprocedures:
         externalLoadTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\walk_grf.xml"
         procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlProcedure(data_path,scaledOsimName,"musculoskeletal_modelling")
         procAna.setSetupFiles(anaTemplateFullFile,None)
-        procAna.setProgression(progressionAxis,forwardProgression)
-        procAna.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
-        procAna.setTimeRange()
+        procAna.prepareTrial_fromBtkAcq(acqIK,gaitFilename[:-4],None,progressionAxis,forwardProgression)
         procAna.prepareXml()
 
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
@@ -767,9 +753,8 @@ class Test_CGM_XmlProcedures:
         osimConverterSettings = files.openFile(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH,"interface\\CGM23\\OsimToCGM.settings")
 
         # scaling
-        proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(data_path,"CGM2.3")
-        proc.setStaticTrial( acqStatic, staticFilename[:-4])
-        proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
+        proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(data_path,"CGM2.3",model.mp["Bodymass"],model.mp["Height"])
+        proc.prepareStaticTrial_fromBtkAcq( acqStatic, staticFilename[:-4])
         proc.prepareXml()
         
         oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
@@ -784,11 +769,9 @@ class Test_CGM_XmlProcedures:
         progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
         procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure(data_path,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
-        procIK.setProgression(progressionAxis,forwardProgression)
-        procIK.prepareDynamicTrial(acqGait,gaitFilename[:-4])
+        procIK.prepareTrial_fromBtkAcq(acqGait,gaitFilename[:-4],progressionAxis,forwardProgression)
+        procIK.prepareWeights(ikWeights)
         procIK.setAccuracy(1e-8)
-        procIK.setWeights(ikWeights)
-        procIK.setTimeRange()
         procIK.prepareXml()
         
 
@@ -819,9 +802,7 @@ class Test_CGM_XmlProcedures:
 
         # --- Analyses ------
         procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmProcedure(data_path,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
-        procAna.setProgression(progressionAxis,forwardProgression)
-        procAna.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
-        procAna.setTimeRange()
+        procAna.prepareTrial_fromBtkAcq(acqIK,gaitFilename[:-4],None,progressionAxis,forwardProgression)
         procAna.prepareXml()
 
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
@@ -921,9 +902,8 @@ class Test_CGM_XmlProcedures:
             osimConverterSettings = files.openFile(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH,"interface\\CGM22\\OsimToCGM.settings")
 
             # scaling
-            proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(data_path,"CGM2.2")
-            proc.setStaticTrial( acqStatic, staticFilename[:-4])
-            proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
+            proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(data_path,"CGM2.2",model.mp["Bodymass"],model.mp["Height"])
+            proc.prepareStaticTrial_fromBtkAcq( acqStatic, staticFilename[:-4])
             proc.prepareXml()
             
             oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
@@ -938,11 +918,9 @@ class Test_CGM_XmlProcedures:
             progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
             procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure(data_path,scaledOsimName,"musculoskeletal_modelling","CGM2.2")
-            procIK.setProgression(progressionAxis,forwardProgression)
-            procIK.prepareDynamicTrial(acqGait,gaitFilename[:-4])
+            procIK.prepareTrial_fromBtkAcq(acqGait,gaitFilename[:-4],progressionAxis,forwardProgression)
             procIK.setAccuracy(1e-8)
-            procIK.setWeights(ikWeights)
-            procIK.setTimeRange()
+            procIK.prepareWeights(ikWeights)
             procIK.prepareXml()
             
 
@@ -973,9 +951,7 @@ class Test_CGM_XmlProcedures:
 
             # --- Analyses ------
             procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmProcedure(data_path,scaledOsimName,"musculoskeletal_modelling","CGM2.2")
-            procAna.setProgression(progressionAxis,forwardProgression)
-            procAna.prepareDynamicTrial(acqIK,gaitFilename[:-4],None)
-            procAna.setTimeRange()
+            procAna.prepareTrial_fromBtkAcq(acqIK,gaitFilename[:-4],None,progressionAxis,forwardProgression)
             procAna.prepareXml()
 
             oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
@@ -1073,9 +1049,8 @@ class Test_CGM_XmlProcedures:
             osimConverterSettings = files.openFile(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH,"interface\\CGM23\\OsimToCGM.settings")
 
             # scaling
-            proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(data_path,"CGM2.3")
-            proc.setStaticTrial( acqStatic, staticFilename[:-4])
-            proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
+            proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(data_path,"CGM2.3",model.mp["Bodymass"],model.mp["Height"])
+            proc.prepareStaticTrial_fromBtkAcq( acqStatic, staticFilename[:-4])
             proc.prepareXml()
             
             oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
@@ -1090,11 +1065,9 @@ class Test_CGM_XmlProcedures:
             progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGait)
 
             procIK = opensimInverseKinematicsInterfaceProcedure.KalmanInverseKinematicXmlCgmProcedure(data_path,scaledOsimName,"musculoskeletal_modelling2","CGM2.3")
-            procIK.setProgression(progressionAxis,forwardProgression)
-            procIK.prepareDynamicTrial(acqGait,gaitFilename[:-4])
+            procIK.prepareTrial_fromBtkAcq(acqGait,gaitFilename[:-4],progressionAxis,forwardProgression)
             procIK.setAccuracy(1e-8)
-            procIK.setWeights(ikWeights)
-            procIK.setTimeRange()
+            procIK.prepareWeights(ikWeights)
             procIK.prepareXml()
             
             
@@ -1276,10 +1249,9 @@ class Test_Generic_DrivenPose:
         osimTemplateFullFile =pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\pycgm2-gait2354_simbody.osim"
         scaleToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23_scaleSetup_template.xml"
 
-        proc = opensimScalingInterfaceProcedure.ScalingXmlProcedure(DATA_PATH,"CGM2.3")
+        proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(DATA_PATH,"CGM2.3",model.mp["Bodymass"],model.mp["Height"])
         proc.setSetupFiles(osimTemplateFullFile,markersetTemplateFullFile,scaleToolFullFile)
-        proc.setStaticTrial( acqStatic, staticFilename[:-4])
-        proc.setAnthropometry(model.mp["Bodymass"],model.mp["Height"])
+        proc.prepareStaticTrial_fromBtkAcq( acqStatic, staticFilename[:-4])
         proc.prepareXml()
         
         oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)

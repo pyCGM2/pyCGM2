@@ -27,7 +27,7 @@ except:
 
 
 class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
-    def __init__(self, DATA_PATH):
+    def __init__(self, DATA_PATH,mass, height):
     
          
         super(ScalingXmlProcedure,self).__init__()
@@ -35,8 +35,11 @@ class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         self.m_DATA_PATH = DATA_PATH
         self.m_staticFile = None
 
+        self.m_mass=mass
+        self.m_height=height
+
     
-    def setStaticTrial(self, acq, staticFileNoExt):
+    def prepareStaticTrial_fromBtkAcq(self, acq, staticFileNoExt):
         self.m_staticFile = staticFileNoExt
         self._staticTrc = btkTools.smartWriter( acq, self.m_DATA_PATH + staticFileNoExt, extension="trc")
 
@@ -56,9 +59,7 @@ class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         self.m_scaleTool = self.m_DATA_PATH + "ScaleToolSetup.xml"
         self.xml = opensimInterface.opensimXmlInterface(scaleToolFile, self.m_scaleTool)
 
-    def setAnthropometry(self, mass, height):
-        self.m_mass=mass
-        self.m_height=height
+
 
     def prepareXml(self):
 
@@ -94,10 +95,10 @@ class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
 
 
 class ScalingXmlCgmProcedure(ScalingXmlProcedure):
-    def __init__(self, DATA_PATH,modelVersion):
+    def __init__(self, DATA_PATH,modelVersion,mass, height):
     
          
-        super(ScalingXmlCgmProcedure,self).__init__(DATA_PATH)
+        super(ScalingXmlCgmProcedure,self).__init__(DATA_PATH,mass, height)
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
 

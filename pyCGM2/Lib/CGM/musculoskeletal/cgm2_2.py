@@ -206,9 +206,8 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
     model.setStaticIkTargets(ikTargets)
 
     # scaling
-    proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(DATA_PATH,"CGM2.2")
-    proc.setStaticTrial( acqStatic, calibrateFilenameLabelled[:-4])
-    proc.setAnthropometry(required_mp["Bodymass"],required_mp["Height"])
+    proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(DATA_PATH,"CGM2.2",required_mp["Bodymass"],required_mp["Height"])
+    proc.prepareStaticTrial_fromBtkAcq( acqStatic, calibrateFilenameLabelled[:-4])
     proc.prepareXml()    
     
     oisf = opensimInterfaceFilters.opensimInterfaceScalingFilter(proc)
@@ -235,11 +234,9 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         if ik_flag:
 
             procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
-            procIK.setProgression(progressionAxis,forwardProgression)
-            procIK.prepareDynamicTrial(acqStatic,calibrateFilenameLabelled[:-4])
+            procIK.prepareTrial_fromBtkAcq(acqStatic,calibrateFilenameLabelled[:-4],progressionAxis,forwardProgression)
             procIK.setAccuracy(1e-5)
-            procIK.setWeights(weights)
-            procIK.setTimeRange()
+            procIK.prepareWeights(weights)
             procIK.prepareXml()
 
             oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
@@ -442,19 +439,15 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
         if "kalmanIK" in kwargs and kwargs["kalmanIK"]: 
             procIK = opensimInverseKinematicsInterfaceProcedure.KalmanInverseKinematicXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.2")
-            procIK.setProgression(progressionAxis,forwardProgression)
-            procIK.prepareDynamicTrial(acqGait,reconstructFilenameLabelled[:-4])
+            procIK.prepareTrial_fromBtkAcq(acqGait,reconstructFilenameLabelled[:-4],progressionAxis,forwardProgression)
             procIK.setAccuracy(accuracy)
-            procIK.setWeights(weights)
-            procIK.setTimeRange()
+            procIK.prepareWeights(weights)
             procIK.prepareXml()
         else:
             procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.2")
-            procIK.setProgression(progressionAxis,forwardProgression)
-            procIK.prepareDynamicTrial(acqGait,reconstructFilenameLabelled[:-4])
+            procIK.prepareTrial_fromBtkAcq(acqGait,reconstructFilenameLabelled[:-4],progressionAxis,forwardProgression)
             procIK.setAccuracy(accuracy)
-            procIK.setWeights(weights)
-            procIK.setTimeRange()
+            procIK.prepareWeights(weights)
             procIK.prepareXml()
 
         oiikf = opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter(procIK)
@@ -550,9 +543,8 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         motDataframe.save()
 
         procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.2")
-        procAna.setProgression(progressionAxis,forwardProgression)
-        procAna.prepareDynamicTrial(finalAcqGait,reconstructFilenameLabelled[:-4],mappedForcePlate)
-        procAna.setTimeRange()
+        procAna.prepareTrial_fromAcqTrial(finalAcqGait,reconstructFilenameLabelled[:-4],mappedForcePlate,progressionAxis,forwardProgression)
+        #procAna.setTimeRange()
         procAna.prepareXml()
 
         oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)

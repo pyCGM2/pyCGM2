@@ -24,6 +24,9 @@ class ImuPlacerXMLProcedure(object):
         self.m_DATA_PATH = DATA_PATH
 
         self.m_osim = files.getFilename(genericOsimFile)
+        self.m_osim_calibrated = self.m_osim[:-5]+"-ImuCalibrated"+".osim"
+      
+
         files.copyPaste(genericOsimFile, self.m_DATA_PATH + self.m_osim)
 
         self.m_sensor_to_opensim_rotations = None
@@ -37,7 +40,7 @@ class ImuPlacerXMLProcedure(object):
         self.xml = opensimInterface.opensimXmlInterface(imuPlacerToolFile,self.m_imuPlacerTool)
 
 
-    def setImuMapper(self,imuMapperDict):
+    def prepareImuMapper(self,imuMapperDict):
         for key in imuMapperDict:
             if key not in self.m_osimInterface.getBodies():
                 LOGGER.logger.error(f"[pyCGM2] the key {key} of your mapper is not a body of the osim file")
@@ -45,7 +48,7 @@ class ImuPlacerXMLProcedure(object):
                 
         self.m_imuMapper.update(imuMapperDict)
 
-    def placeImu(self,osimBody,imuInstance):
+    def prepareImu(self,osimBody,imuInstance):
         if osimBody not in self.m_osimInterface.getBodies():
             LOGGER.logger.error(f"[pyCGM2] the key {osimBody} of your mapper is not a body of the osim file")
             raise Exception (f"[pyCGM2] the key {osimBody} of your mapper is not a body of the osim file") 
@@ -64,11 +67,11 @@ class ImuPlacerXMLProcedure(object):
 
         self.m_sensorOrientationFile = self.m_staticFile
 
-    def setBaseImu(self, segmentName, heading):
+    def prepareBaseImu(self, segmentName, heading):
          self.m_base_imu_label=segmentName+"_imu"
          self.m_base_heading_axis=heading
 
-    def setSensorToOpensimRotation(self,eulerAngles):
+    def prepareSensorToOpensimRotation(self,eulerAngles):
         if len(eulerAngles) !=3:
             raise ("[pyCGM2] - eulerAngles must be a list of 3 values in radian")
         self.m_sensor_to_opensim_rotations = eulerAngles
@@ -79,6 +82,8 @@ class ImuPlacerXMLProcedure(object):
         self.xml.set_one("base_imu_label", self.m_base_imu_label)
         self.xml.set_one("base_heading_axis", self.m_base_heading_axis)
         self.xml.set_one("orientation_file_for_calibration", self.m_sensorOrientationFile)
+
+        self.xml.set_one("output_model_file",  self.m_osim_calibrated)
 
         if self.m_sensor_to_opensim_rotations is not None:
             self.xml.set_one("sensor_to_opensim_rotations", ' '.join(str(e) for e in self.m_sensor_to_opensim_rotations)) 

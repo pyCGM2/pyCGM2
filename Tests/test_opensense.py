@@ -1,10 +1,11 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 #pytest -s --disable-pytest-warnings  test_opensense.py::Test_Opensense::test_opensenseProcessing_blueTrident_pyCGM2gait2392model
 #pytest -s --disable-pytest-warnings  test_BlueTrident.py::Test_BlueTridentOrientation::test_relativeAngles
 #pytest -s --disable-pytest-warnings  test_BlueTrident.py::Test_Garches::test_reader
 #pytest -s --disable-pytest-warnings  test_BlueTrident.py::Test_captureU::test_captureUscript
 # from __future__ import unicode_literals
 
+import pytest
 import os
 import pandas as pd
 import numpy as np
@@ -12,8 +13,6 @@ import matplotlib.pyplot as plt
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
-
-
 
 from pyCGM2.Tools import btkTools
 from pyCGM2.IMU import imu
@@ -32,9 +31,14 @@ from pyCGM2.IMU.opensense.interface.procedures import opensenseImuPlacerInterfac
 from pyCGM2.IMU.opensense.interface.procedures import opensenseImuKinematicFitterProcedure
 from pyCGM2.Model.Opensim import opensimIO
 
-class Test_Opensense:
+from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
+from pyCGM2.Model.Opensim.interface.procedures.analysisReport import opensimAnalysesInterfaceProcedure
 
-    def test_opensenseProcessing_blueTrident_Rajagopal2015(self):
+
+
+class Test_OpensenseC3d:
+
+    def test_blueTrident_placer_IK_Rajagopal2015(self):
 
         data_path = pyCGM2.TEST_DATA_PATH + "Opensense\\nexus\\"
         os.chdir(data_path)
@@ -79,13 +83,13 @@ class Test_Opensense:
         
         freq= imu1.m_freq
         
+        osimTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\nativeOpensim\\osim\\Rajagopal2015_opensense.osim"
+        imuPlacerToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\opensense\\imuPlacer_Setup.xml"
 
-        osimTemplateFullFile = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\Settings\\opensense\\Rajagopal2015_opensense.osim"
-        imuPlacerToolFullFile = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\Settings\\opensense\\imuPlacer_Setup.xml"
         
         proc = opensenseImuPlacerInterfaceProcedure.ImuPlacerXMLProcedure(data_path,osimTemplateFullFile)
         proc.setSetupFile(imuPlacerToolFullFile)
-        #proc.setImuMapper( {"pelvis2":imu1,
+        #proc.prepareImuMapper( {"pelvis2":imu1,
         #                  "femur_l":imu2,
         #                  "femur_r":imu3,
         #                  "tibia_l":imu4,
@@ -93,17 +97,17 @@ class Test_Opensense:
         #                  "calcn_l":imu6,
         #                  "calcn_r":imu7,
         #                  "torso":imu8})
-        proc.placeImu("pelvis",imu1)
-        proc.placeImu("femur_l",imu2)
-        proc.placeImu("femur_r",imu3)
-        proc.placeImu("tibia_l",imu4)
-        proc.placeImu("tibia_r",imu5)
-        proc.placeImu("calcn_l",imu6)
-        proc.placeImu("calcn_r",imu7)
-        proc.placeImu("torso",imu8)
+        proc.prepareImu("pelvis",imu1)
+        proc.prepareImu("femur_l",imu2)
+        proc.prepareImu("femur_r",imu3)
+        proc.prepareImu("tibia_l",imu4)
+        proc.prepareImu("tibia_r",imu5)
+        proc.prepareImu("calcn_l",imu6)
+        proc.prepareImu("calcn_r",imu7)
+        proc.prepareImu("torso",imu8)
         proc.prepareOrientationFile(staticFilename[:-4],freq,order=[3,0,1,2])
-        proc.setBaseImu("pelvis","-z")
-        proc.setSensorToOpensimRotation(sensorToOpensim)
+        proc.prepareBaseImu("pelvis","-z")
+        proc.prepareSensorToOpensimRotation(sensorToOpensim)
         proc.prepareXml()
 
         filter = opensenseFilters.opensenseInterfaceImuPlacerFilter(proc)
@@ -161,16 +165,15 @@ class Test_Opensense:
         imu8 = irf.run() 
 
 
+        imuInverseKinematicToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\opensense\\imuInverseKinematics_Setup.xml"
 
-        imuInverseKinematicToolFullFile = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\Settings\\opensense\\imuInverseKinematics_Setup.xml"
-
-        calibratedModel = "Rajagopal_2015_calibrated.osim"
+        calibratedModel = filter.getCalibratedOsimName()
 
         freq = imu1.m_freq
 
         procIk = opensenseImuKinematicFitterProcedure.ImuInverseKinematicXMLProcedure(data_path,calibratedModel,"resutsTest")
         procIk.setSetupFile(imuInverseKinematicToolFullFile)
-        procIk.setImuMapper( {"pelvis":imu1,
+        procIk.prepareImuMapper( {"pelvis":imu1,
                          "femur_l":imu2,
                          "femur_r":imu3,
                          "tibia_l":imu4,
@@ -179,13 +182,13 @@ class Test_Opensense:
                          "calcn_r":imu7,
                           "torso":imu8 })
         procIk.prepareOrientationFile(dynamicFile[:-4],freq,order=[3,0,1,2])
-        procIk.setSensorToOpensimRotation(sensorToOpensim)
+        procIk.prepareSensorToOpensimRotation(sensorToOpensim)
         procIk.prepareXml()
 
         filter = opensenseFilters.opensenseInterfaceImuInverseKinematicFilter(procIk)
         filter.run()
 
-    def test_opensenseProcessing_blueTrident_pyCGM2gait2392model(self):
+    def test_blueTrident_placer_IK_CGM23(self):
 
         data_path = pyCGM2.TEST_DATA_PATH + "Opensense\\nexus\\"
         os.chdir(data_path)
@@ -231,12 +234,13 @@ class Test_Opensense:
         freq= imu1.m_freq
         
 
-        osimTemplateFullFile = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\Settings\\opensim\\interface\\CGM23\\pycgm2-gait2392_simbody.osim"
-        imuPlacerToolFullFile = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\Settings\\opensense\\imuPlacer_Setup.xml"
+        osimTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\pycgm2-gait2392_simbody.osim"
+         
+        imuPlacerToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\opensense\\imuPlacer_Setup.xml"
         
         proc = opensenseImuPlacerInterfaceProcedure.ImuPlacerXMLProcedure(data_path,osimTemplateFullFile)
         proc.setSetupFile(imuPlacerToolFullFile)
-        #proc.setImuMapper( {"pelvis2":imu1,
+        #proc.prepareImuMapper( {"pelvis2":imu1,
         #                  "femur_l":imu2,
         #                  "femur_r":imu3,
         #                  "tibia_l":imu4,
@@ -244,24 +248,23 @@ class Test_Opensense:
         #                  "calcn_l":imu6,
         #                  "calcn_r":imu7,
         #                  "torso":imu8})
-        proc.placeImu("pelvis",imu1)
-        proc.placeImu("femur_l",imu2)
-        proc.placeImu("femur_r",imu3)
-        proc.placeImu("tibia_l",imu4)
-        proc.placeImu("tibia_r",imu5)
-        proc.placeImu("calcn_l",imu6)
-        proc.placeImu("calcn_r",imu7)
-        proc.placeImu("torso",imu8)
+        proc.prepareImu("pelvis",imu1)
+        proc.prepareImu("femur_l",imu2)
+        proc.prepareImu("femur_r",imu3)
+        proc.prepareImu("tibia_l",imu4)
+        proc.prepareImu("tibia_r",imu5)
+        proc.prepareImu("calcn_l",imu6)
+        proc.prepareImu("calcn_r",imu7)
+        proc.prepareImu("torso",imu8)
         proc.prepareOrientationFile(staticFilename[:-4],freq,order=[3,0,1,2])
-        proc.setBaseImu("pelvis","-z")
-        proc.setSensorToOpensimRotation(sensorToOpensim)
+        proc.prepareBaseImu("pelvis","-z")
+        proc.prepareSensorToOpensimRotation(sensorToOpensim)
         proc.prepareXml()
 
         filter = opensenseFilters.opensenseInterfaceImuPlacerFilter(proc)
         filter.run()
 
 
-        
         #----- motion trial------------
 
         dynamicFile = "Walk.c3d"
@@ -311,17 +314,15 @@ class Test_Opensense:
         irf = imuFilters.ImuReaderFilter(irp)
         imu8 = irf.run() 
 
+        imuInverseKinematicToolFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\opensense\\imuInverseKinematics_Setup.xml"
 
-
-        imuInverseKinematicToolFullFile = "C:\\Users\\fleboeuf\\Documents\\Programmation\\pyCGM2\\pyCGM2\\pyCGM2\\Settings\\opensense\\imuInverseKinematics_Setup.xml"
-
-        calibratedModel = "Rajagopal_2015_calibrated.osim"
+        calibratedModel = filter.getCalibratedOsimName()
 
         freq = imu1.m_freq
 
         procIk = opensenseImuKinematicFitterProcedure.ImuInverseKinematicXMLProcedure(data_path,calibratedModel,"resutsTest")
         procIk.setSetupFile(imuInverseKinematicToolFullFile)
-        procIk.setImuMapper( {"pelvis":imu1,
+        procIk.prepareImuMapper( {"pelvis":imu1,
                          "femur_l":imu2,
                          "femur_r":imu3,
                          "tibia_l":imu4,
@@ -330,8 +331,18 @@ class Test_Opensense:
                          "calcn_r":imu7,
                           "torso":imu8 })
         procIk.prepareOrientationFile(dynamicFile[:-4],freq,order=[3,0,1,2])
-        procIk.setSensorToOpensimRotation(sensorToOpensim)
+        procIk.prepareSensorToOpensimRotation(sensorToOpensim)
         procIk.prepareXml()
 
         filter = opensenseFilters.opensenseInterfaceImuInverseKinematicFilter(procIk)
         filter.run()
+
+        # # --- Analyses ------
+        anaTemplateFullFile = pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\CGM23\\setup\\CGM23-muscleAnalysisSetup_template.xml"
+        procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlProcedure(data_path,calibratedModel,"resutsTest")
+        procAna.setSetupFiles(anaTemplateFullFile,None)
+        procAna.prepareTrial_fromMotFiles("Walk.mot",None)
+        procAna.prepareXml()
+
+        oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAna)
+        oiamf.run()

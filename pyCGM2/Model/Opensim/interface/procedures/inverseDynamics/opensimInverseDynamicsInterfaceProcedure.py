@@ -38,26 +38,28 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
 
         self.m_DATA_PATH = DATA_PATH
         self.m_osimName = DATA_PATH + scaledOsimName
-        self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory
+        self.m_resultsDir = "" if resultsDirectory is None else resultsDirectory+"//"
+        self.m_RES_PATH = self.m_DATA_PATH+self.m_resultsDir
 
         files.createDir(self.m_DATA_PATH+self.m_resultsDir)
 
         self.m_modelVersion=""
+
+        self.m_acq=None
 
     def setSetupFiles(self,idToolTemplateFile,externalLoadTemplateFile):
         self.m_idTool = self.m_DATA_PATH +  "-idTool-setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(idToolTemplateFile,self.m_idTool)
         self.m_externalLoad = self.m_DATA_PATH  + "-externalLoad.xml"
         self.xml_load = opensimInterface.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
+        
 
-    def setProgression(self,progressionAxis,forwardProgression):
-        self.m_progressionAxis = progressionAxis
-        self.m_forwardProgression = forwardProgression
-
-    def prepareDynamicTrial(self, acq, dynamicFile, mfpa):
+    def prepareTrial_fromBtkAcq(self, acq, dynamicFile, mfpa,progressionAxis,forwardProgression):
         self.m_dynamicFile =dynamicFile
         self.m_acq = acq
         self.m_mfpa = mfpa
+        self.m_progressionAxis = progressionAxis
+        self.m_forwardProgression = forwardProgression
 
         self.m_ff = self.m_acq.GetFirstFrame()
         self.m_freq = self.m_acq.GetPointFrequency()
@@ -71,16 +73,21 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
             self.m_progressionAxis,self.m_forwardProgression,mfpa = self.m_mfpa)
 
 
-    def setTimeRange(self,beginFrame=None,lastFrame=None):
-        self.m_beginTime = 0.0 if beginFrame is None else (beginFrame-self.m_ff)/self.m_freq
-        self.m_endTime = (self.m_acq.GetLastFrame() - self.m_ff)/self.m_freq  if lastFrame is  None else (lastFrame-self.m_ff)/self.m_freq
-        self.m_frameRange = [int((self.m_beginTime*self.m_freq)+self.m_ff),int((self.m_endTime*self.m_freq)+self.m_ff)]
+    def setFrameRange(self,begin,end):
+        if self.m_acq is None:
+            raise Exception(f"[pyCGM2] - no acquisition detected - trial preparation from a btk::Acquisition not done")
+        self.m_beginTime = 0.0 if begin is None else (begin-self.m_ff)/self.m_freq
+        self.m_endTime = (self.m_acq.GetLastFrame() - self.m_ff)/self.m_freq  if end is  None else (end-self.m_ff)/self.m_freq
+
+    def setTimeRange(self,begin,end):
+        self.m_beginTime = begin
+        self.m_endTime = end
 
 
     def prepareXml(self):
         self.xml.getSoup().find("InverseDynamicsTool").attrs["name"] = "InverseDynamics"
         self.xml.set_one("model_file", self.m_osimName)
-        self.xml.set_one("coordinates_file", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+".mot")
+        self.xml.set_one("coordinates_file", self.m_RES_PATH+ self.m_dynamicFile+".mot")
         self.xml.set_one("output_gen_force_file", self.m_dynamicFile+"-inverse_dynamics.sto")
         self.xml.set_one("lowpass_cutoff_frequency_for_coordinates","6")
 
@@ -90,8 +97,7 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
 
         self.xml.set_one("results_directory",  self.m_resultsDir)
 
-
-        self.xml_load.set_one("datafile", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+"_grf.mot")
+        self.xml_load.set_one("datafile", self.m_RES_PATH+ self.m_dynamicFile+"_grf.mot")
         
 
     def run(self):
@@ -137,7 +143,7 @@ class InverseDynamicsXmlCgmProcedure(InverseDynamicsXmlProcedure):
     def prepareXml(self):
         self.xml.getSoup().find("InverseDynamicsTool").attrs["name"] = self.m_modelVersion+"-InverseDynamics"
         self.xml.set_one("model_file", self.m_osimName)
-        self.xml.set_one("coordinates_file", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+".mot")
+        self.xml.set_one("coordinates_file", self.m_RES_PATH+ self.m_dynamicFile+".mot")
         self.xml.set_one("output_gen_force_file", self.m_dynamicFile+"-"+self.m_modelVersion+"-inverse_dynamics.sto")
         self.xml.set_one("lowpass_cutoff_frequency_for_coordinates","6")
 
@@ -148,7 +154,7 @@ class InverseDynamicsXmlCgmProcedure(InverseDynamicsXmlProcedure):
         self.xml.set_one("results_directory",  self.m_resultsDir)
 
 
-        self.xml_load.set_one("datafile", self.m_DATA_PATH+self.m_resultsDir + "\\"+ self.m_dynamicFile+"_grf.mot")
+        self.xml_load.set_one("datafile", self.m_RES_PATH+ self.m_dynamicFile+"_grf.mot")
         
 
     def run(self):
