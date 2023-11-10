@@ -563,7 +563,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         motDataframe.save()
 
         procAna = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
-        procAna.prepareTrial_fromAcqTrial(finalAcqGait,reconstructFilenameLabelled[:-4],mappedForcePlate,
+        procAna.prepareTrial_fromBtkAcq(finalAcqGait,reconstructFilenameLabelled[:-4],mappedForcePlate,
                                           progressionAxis,forwardProgression)
         #procAna.setTimeRange()
         procAna.prepareXml()
