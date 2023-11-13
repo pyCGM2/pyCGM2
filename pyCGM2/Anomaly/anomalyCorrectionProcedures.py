@@ -1,7 +1,8 @@
-# -*- coding: utf-8 -*-
+from typing import Union
 from scipy.cluster.hierarchy import dendrogram
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
+import btk
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -37,7 +38,7 @@ class MarkerAnomalyCorrectionProcedure(AnomalyCorrectionProcedure):
     """procedure to correct marker anomaly
 
     Args:
-        markers (list): marker labels
+        markers (Union[list,str]): marker labels
         anomalyIndexes (list): indexes of the detected anomalies
         plot (bool): enable plot
 
@@ -47,7 +48,7 @@ class MarkerAnomalyCorrectionProcedure(AnomalyCorrectionProcedure):
 
     """
 
-    def __init__(self, markers, anomalyIndexes, plot=False, **kwargs):
+    def __init__(self, markers:Union[list,str], anomalyIndexes:list, plot:bool=False, **kwargs):
         super(MarkerAnomalyCorrectionProcedure,self).__init__()
 
         if type(markers) == str:
@@ -60,7 +61,7 @@ class MarkerAnomalyCorrectionProcedure(AnomalyCorrectionProcedure):
         self._distance_threshold = 10 if "distance_threshold" not in kwargs else kwargs[
             "distance_threshold"]
 
-    def run(self, acq, filename):
+    def run(self, acq:btk.btkAcquisition, filename:str):
         """ run the procedure
 
         Args:

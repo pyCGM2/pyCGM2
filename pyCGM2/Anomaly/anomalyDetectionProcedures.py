@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Anomaly
-#APIDOC["Draft"]=False
-#--end--
-
 """ This module gathers anomaly detectors on markers, events, force plate signals and anthropometric data
 
 check out the script : `\\Tests\\test_anomalies.py` for example
@@ -33,7 +28,7 @@ class AnomalyDetectionProcedure(object):
         self.anomaly = {"Output": None,
                         "ErrorState": False}
 
-    def run(self, acq, filename, options):
+    def run(self, acq:btk.btkAcquisition, filename:str, options:dict):
         pass
 
     def getAnomaly(self):
@@ -44,7 +39,7 @@ class MarkerAnomalyDetectionRollingProcedure(AnomalyDetectionProcedure):
     """marker anomaly detection from rolling statistics
 
     Args:
-        markers (list): marker labels;
+        markers (list): marker labels
         plot (bool): enable plot
 
     Kwargs:
@@ -54,7 +49,7 @@ class MarkerAnomalyDetectionRollingProcedure(AnomalyDetectionProcedure):
         method (str) : mean or median
     """
 
-    def __init__(self, markers, plot=False, **kwargs):
+    def __init__(self, markers:list, plot:bool=False, **kwargs):
 
         super(MarkerAnomalyDetectionRollingProcedure, self).__init__()
 
@@ -69,11 +64,11 @@ class MarkerAnomalyDetectionRollingProcedure(AnomalyDetectionProcedure):
         self._treshold = 3 if "treshold" not in kwargs else kwargs["treshold"]
         self._method = "median" if "method" not in kwargs else kwargs["method"]
 
-    def run(self, acq, filename, options):
+    def run(self, acq:btk.btkAcquisition, filename:str, options:dict):
         """ run the procedure
 
         Args:
-            acq (btk.Acquisition): a btk acquisition instantce
+            acq (btk.btkAcquisition): a btk acquisition instantce
             filename (str): filename
             options (dict) : passed options from the filter
 
@@ -170,13 +165,13 @@ class GaitEventAnomalyProcedure(AnomalyDetectionProcedure):
 
         super(GaitEventAnomalyProcedure, self).__init__()
 
-    def run(self, acq, filename, options):
+    def run(self, acq:btk.btkAcquisition, filename:str, options:dict):
         """ run the procedure
 
         Args:
-            acq (btk.Acquisition): a btk acquisition instantce
+            acq (btk.btkAcquisition): a btk acquisition instantce
             filename (str): filename
-            options (dict) : passed options ( Not used so far)
+            options (dict) : passed options from the filter
 
         """
 
@@ -256,17 +251,16 @@ class ForcePlateAnomalyProcedure(AnomalyDetectionProcedure):
 
         super(ForcePlateAnomalyProcedure, self).__init__()
 
-    def run(self, acq, filename, options):
+    def run(self, acq:btk.btkAcquisition, filename:str, options:dict):
         """ run the procedure
 
         Args:
-            acq (btk.Acquisition): a btk acquisition instantce
+            acq (btk.btkAcquisition): a btk acquisition instantce
             filename (str): filename
-            options (dict) : passed options
+            options (dict) : passed options from the filter
 
-        Note
-            ``frameRange`` ([int, int]) is one key of the ``options`` argument
-
+        option keys:
+          * frameRange (List[int, int]) 
         """
 
         ff = acq.GetFirstFrame()
@@ -320,15 +314,13 @@ class AnthropoDataAnomalyProcedure(AnomalyDetectionProcedure):
 
         self.mp = mp
 
-    def run(self, acq, filename, options):
+    def run(self, acq:btk.btkAcquisition, filename:str, options:dict):
         """ run the procedure
 
         Args:
-            acq (btk.Acquisition): a btk acquisition instantce
+            acq (btk.btkAcquisition): a btk acquisition instantce
             filename (str): filename
-            options (dict) : passed options ( Not used so far)
-
-
+            options (dict) : passed options from the filter ( not used so far)
         """
 
         errorState = False
@@ -385,152 +377,3 @@ class AnthropoDataAnomalyProcedure(AnomalyDetectionProcedure):
 
         # self.anomaly["Output"] =
         self.anomaly["ErrorState"] = errorState
-
-
-# class MarkerPositionQualityProcedure(object):
-#     """
-#     TODO :
-#     - check medial markers if exist
-#     """
-#
-#
-#     def __init__(self,acq,markers = None, title = None):
-#         self.acq = acq
-#         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
-#         self.exceptionMode = False
-#         self.state = True
-#
-#         self.title = "Marker position" if title is None else title
-#
-#     def check(self):
-#
-#         frameNumber = self.acq.GetPointFrameNumber()
-#
-#
-#         LASI_values = self.acq.GetPoint("LASI").GetValues()
-#         RASI_values = self.acq.GetPoint("RASI").GetValues()
-#         LPSI_values = self.acq.GetPoint("LPSI").GetValues()
-#         RPSI_values = self.acq.GetPoint("RPSI").GetValues()
-#         sacrum_values=(self.acq.GetPoint("LPSI").GetValues() + self.acq.GetPoint("RPSI").GetValues()) / 2.0
-#         midAsis_values=(self.acq.GetPoint("LASI").GetValues() + self.acq.GetPoint("RASI").GetValues()) / 2.0
-#
-#
-#         projectedLASI = np.array([LASI_values[:,0],LASI_values[:,1],np.zeros((frameNumber))]).T
-#         projectedRASI = np.array([RASI_values[:,0],RASI_values[:,1],np.zeros((frameNumber))]).T
-#         projectedLPSI = np.array([LPSI_values[:,0],LPSI_values[:,1],np.zeros((frameNumber))]).T
-#         projectedRPSI = np.array([RPSI_values[:,0],RPSI_values[:,1],np.zeros((frameNumber))]).T
-#
-#
-#         for i  in range(0,frameNumber):
-#             verts = [
-#                 projectedLASI[i,0:2], # left, bottom
-#                 projectedRASI[i,0:2], # left, top
-#                 projectedRPSI[i,0:2], # right, top
-#                 projectedLPSI[i,0:2], # right, bottom
-#                 projectedLASI[i,0:2], # right, top
-#                 ]
-#
-#             codes = [Path.MOVETO,
-#                      Path.LINETO,
-#                      Path.LINETO,
-#                      Path.LINETO,
-#                      Path.CLOSEPOLY,
-#                      ]
-#
-#             path = Path(verts, codes)
-#
-#             intersection = geometry.LineLineIntersect(projectedLASI[i,:],projectedLPSI[i,:],projectedRASI[i,:],projectedRPSI[i,:])
-#
-#
-#             if path.contains_point(intersection[0]):
-#                 LOGGER.logger.error("[pyCGM2-Anomaly] wrong Labelling of pelvic markers at frame [%i]"%(i))
-#                 if self.exceptionMode:
-#                     raise Exception("[pyCGM2-Anomaly] wrong Labelling of pelvic markers at frame [%i]"%(i))
-#
-#                 self.state = False
-#             else:
-#                 # check marker side
-#                 pt1=RASI_values[i,:]
-#                 pt2=LASI_values[i,:]
-#                 pt3=sacrum_values[i,:]
-#                 ptOrigin=midAsis_values[i,:]
-#
-#                 a1=(pt2-pt1)
-#                 a1=np.divide(a1,np.linalg.norm(a1))
-#                 v=(pt3-pt1)
-#                 v=np.divide(v,np.linalg.norm(v))
-#                 a2=np.cross(a1,v)
-#                 a2=np.divide(a2,np.linalg.norm(a2))
-#
-#                 x,y,z,R=frame.setFrameData(a1,a2,"YZX")
-#
-#                 csFrame_L=frame.Frame()
-#                 csFrame_L.setRotation(R)
-#                 csFrame_L.setTranslation(RASI_values[i,:])
-#
-#                 csFrame_R=frame.Frame()
-#                 csFrame_R.setRotation(R)
-#                 csFrame_R.setTranslation(LASI_values[i,:])
-#
-#
-#                 for marker in self.markers:
-#                     residual = self.acq.GetPoint(marker).GetResidual(i)
-#
-#                     if marker[0] == "L":
-#                         local = np.dot(csFrame_L.getRotation().T,self.acq.GetPoint(marker).GetValues()[i,:]-csFrame_L.getTranslation())
-#                     if marker[0] == "R":
-#                         local = np.dot(csFrame_R.getRotation().T,self.acq.GetPoint(marker).GetValues()[i,:]-csFrame_R.getTranslation())
-#                     if residual >0.0:
-#                         if marker[0] == "L" and local[1]<0:
-#                             LOGGER.logger.error("[pyCGM2-Anomaly] check location of the marker [%s] at frame [%i]"%(marker,i))
-#                             self.state = False
-#                             if self.exceptionMode:
-#                                 raise Exception("[pyCGM2-Anomaly] check location of the marker [%s] at frame [%i]"%(marker,i))
-#
-#                         if marker[0] == "R" and local[1]>0:
-#                             LOGGER.logger.error("[pyCGM2-Anomaly] check location of the marker [%s] at frame [%i]"%(marker,i))
-#                             self.state = False
-#                             if self.exceptionMode:
-#                                 raise Exception("[pyCGM2-Anomaly] check location of the marker [%s] at frame [%i]"%(marker,i))
-#                                 self.state = False
-#
-# class AnthropometricDataQualityProcedure(object):
-#     def __init__(self,mp,title=None):
-#         self.mp = mp
-#         self.state = True
-#         self.exceptionMode = False
-#
-#         self.title = "CGM anthropometric parameters" if title is None else title
-#
-#     def check(self):
-#         """
-#         TODO :
-#         - use relation between variable ( width/height)
-#         - use marker measurement
-#         """
-#
-#         if self.mp["RightLegLength"] < 500: LOGGER.logger.warning("[pyCGM2-Anomaly] Right Leg Lenth < 500 mm");self.state = False
-#         if self.mp["LeftLegLength"] < 500: LOGGER.logger.warning("[pyCGM2-Anomaly] Left Leg Lenth < 500 mm");self.state = False
-#         if self.mp["RightKneeWidth"] < self.mp["RightAnkleWidth"]: LOGGER.logger.error("[pyCGM2-Anomaly] Right ankle width > knee width ");self.state = False
-#         if self.mp["LeftKneeWidth"] < self.mp["LeftAnkleWidth"]: LOGGER.logger.error("[pyCGM2-Anomaly] Right ankle width > knee width ");self.state = False
-#         if self.mp["RightKneeWidth"] > self.mp["RightLegLength"]: LOGGER.logger.error("[pyCGM2-Anomaly]  Right knee width > leg length ");self.state = False
-#         if self.mp["LeftKneeWidth"] > self.mp["LeftLegLength"]: LOGGER.logger.error(" [pyCGM2-Anomaly] Left knee width > leg length ");self.state = False
-#
-#
-#         if not utils.isInRange(self.mp["RightKneeWidth"],
-#             self.mp["LeftKneeWidth"]-0.3*self.mp["LeftKneeWidth"],
-#             self.mp["LeftKneeWidth"]+0.3*self.mp["LeftKneeWidth"]):
-#             LOGGER.logger.warning("[pyCGM2-Anomaly] Knee widths differed by more than 30%")
-#             self.state = False
-#
-#         if not utils.isInRange(self.mp["RightAnkleWidth"],
-#             self.mp["LeftAnkleWidth"]-0.3*self.mp["LeftAnkleWidth"],
-#             self.mp["LeftAnkleWidth"]+0.3*self.mp["LeftAnkleWidth"]):
-#             LOGGER.logger.warning("[pyCGM2-Anomaly] Ankle widths differed by more than 30%")
-#             self.state = False
-#
-#         if not utils.isInRange(self.mp["RightLegLength"],
-#             self.mp["LeftLegLength"]-0.3*self.mp["LeftLegLength"],
-#             self.mp["LeftLegLength"]+0.3*self.mp["LeftLegLength"]):
-#             LOGGER.logger.warning("[pyCGM2-Anomaly] Leg lengths differed by more than 30%")
-#             self.state = False
