@@ -1,14 +1,23 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from  pyCGM2.Math import euler
+from pyCGM2.IMU import imu
 
 
-class AbstractRelativeImuAnglesProcedure(object):
+class RelativeImuAnglesProcedure(object):
     def __init__(self):
         self.m_fixEuler =  True
         pass
 
-class RelativeAnglesProcedure(AbstractRelativeImuAnglesProcedure):
+class RelativeAnglesProcedure(RelativeImuAnglesProcedure):
+
+    """procedure to compute angle between 2 Imu
+
+    Args:
+        representation (str, optional): angle representation. Defaults to "Euler".
+        eulerSequence (str, optional): Euler sequence. Defaults to "XYZ".
+    """ 
+
     def __init__(self,representation="Euler", eulerSequence="XYZ"):
         super(RelativeAnglesProcedure, self).__init__()
 
@@ -16,7 +25,18 @@ class RelativeAnglesProcedure(AbstractRelativeImuAnglesProcedure):
         self.m_eulerSequence = eulerSequence
 
 
-    def run(self, imuInstance1, imuInstance2):
+    def compute(self, imuInstance1:imu.Imu, imuInstance2:imu.Imu)->np.ndarray:
+        """compute the procedure
+
+        Args:
+            imuInstance1 (imu.Imu): an imu instance
+            imuInstance2 (imu.Imu): an imu instance
+
+
+
+        Returns:
+            np.ndarray: angles
+        """
 
         motion1 = imuInstance1.getMotion()
         motion2 = imuInstance2.getMotion()

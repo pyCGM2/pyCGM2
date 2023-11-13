@@ -14,16 +14,8 @@ import matplotlib.pyplot as plt
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
-from pyCGM2.Tools import btkTools
-from pyCGM2.IMU import imu
-from pyCGM2.Utils import files
-
 from pyCGM2.IMU import imuFilters
 from pyCGM2.IMU.Procedures import imuReaderProcedures
-from pyCGM2.IMU.Procedures import relativeImuAngleProcedures
-from pyCGM2.IMU.Procedures import imuMotionProcedure
-
-from pyCGM2.Math import pose
 
 
 from pyCGM2.IMU.opensense.interface import opensenseFilters
@@ -35,13 +27,15 @@ from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
 from pyCGM2.Model.Opensim.interface.procedures.analysisReport import opensimAnalysesInterfaceProcedure
 
 
-
 class Test_OpensenseC3d:
 
     def test_blueTrident_placer_IK_Rajagopal2015(self):
 
         data_path = pyCGM2.TEST_DATA_PATH + "Opensense\\nexus\\"
         os.chdir(data_path)
+
+        
+
 
         staticFilename = "Calibration.c3d"
 

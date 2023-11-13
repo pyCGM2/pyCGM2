@@ -25,7 +25,7 @@ from pyCGM2.IMU.Procedures import imuMotionProcedure
 
 from pyCGM2.Math import pose
 
-import ViconUtils
+from viconnexusapi import ViconUtils
 
 def Vicon_practice_GlobalAngle(file_name):
     raw_data = pd.read_csv(file_name)

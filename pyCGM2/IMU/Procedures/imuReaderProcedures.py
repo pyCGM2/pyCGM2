@@ -11,7 +11,13 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Signal import signal_processing
 
 
-def synchroniseNotAlignedCsv(fullfilenames,timeColumn = "time_s"):
+def synchroniseNotAlignedCsv(fullfilenames:list,timeColumn = "time_s"):
+    """synchronise different csv files
+
+    Args:
+        fullfilenames (list): list of path+filenames
+        timeColumn (str, optional): name of the time column. Defaults to "time_s".
+    """
 
     def find_nearest(array, value):
         array = np.asarray(array)
@@ -41,15 +47,29 @@ def synchroniseNotAlignedCsv(fullfilenames,timeColumn = "time_s"):
 
     return datasets_equal
 
-class ImuReaderProcedures(object):
+class ImuReaderProcedure(object):
     def __init__(self):
         self.m_downsampleFreq = None
 
-    def downsample(self,freq):
+    def downsample(self,freq:int):
+        """downsample
+
+        Args:
+            freq (int): _description_
+        """
         self.m_downsampleFreq = freq
 
-class CsvProcedure(ImuReaderProcedures):
-    def __init__(self,fullfilename,translators,freq = "Auto" , timeColumn = "time_s"):
+class CsvProcedure(ImuReaderProcedure):
+    """procedure to read data from csv file
+
+        Args:
+            fullfilename (str): path+filename
+            translators (dict): imu translator
+            freq (str, optional): frequency. Defaults to "Auto".
+            timeColumn (str, optional): name of the time column in the csv. Defaults to "time_s".
+    """
+    def __init__(self,fullfilename:str,translators:dict,freq = "Auto" , timeColumn = "time_s"):
+        
         super(CsvProcedure, self).__init__()
         
         self.m_data = pd.read_csv(fullfilename)
@@ -60,8 +80,13 @@ class CsvProcedure(ImuReaderProcedures):
         self.m_timeColumn = timeColumn
 
 
-    def read(self):
-    
+    def read(self)->imu.Imu:
+        """ read data
+        
+        Returns:
+            imu.Imu: imu instance
+        """
+        
         if self.m_freq == "Auto":
             self.m_freq = int(1/(self.m_data[self.m_timeColumn].to_numpy()[1] - 
                         self.m_data[self.m_timeColumn].to_numpy()[0]))
@@ -121,8 +146,16 @@ class CsvProcedure(ImuReaderProcedures):
     
         return imuInstance
         
-class DataframeProcedure(ImuReaderProcedures):
-    def __init__(self,dataframe,translators,freq = "Auto" , timeColumn = "time_s"):
+class DataframeProcedure(ImuReaderProcedure):
+    """procedure to read data from pandas dataframe
+
+        Args:
+            dataframe (pd.DataFrame): dataframe
+            translators (dict): imu translator
+            freq (str, optional): frequency. Defaults to "Auto".
+            timeColumn (str, optional): name of the time column in the csv. Defaults to "time_s".
+    """
+    def __init__(self,dataframe:pd.DataFrame,translators:dict,freq = "Auto" , timeColumn = "time_s"):
         super(DataframeProcedure, self).__init__()
         
         self.m_data = dataframe
@@ -133,7 +166,12 @@ class DataframeProcedure(ImuReaderProcedures):
         self.m_timeColumn = timeColumn
 
 
-    def read(self):
+    def read(self)->imu.Imu:
+        """ read data
+
+        Returns:
+            imu.Imu: imu instance
+        """
     
         if self.m_freq == "Auto":
             self.m_freq = int(1/(self.m_data[self.m_timeColumn].to_numpy()[1] - 
@@ -198,15 +236,26 @@ class DataframeProcedure(ImuReaderProcedures):
     
         return imuInstance
 
-class C3dBlueTridentProcedure(ImuReaderProcedures):
-    def __init__(self,fullfilename,viconDeviceId):
+class C3dBlueTridentProcedure(ImuReaderProcedure):
+    """procedure to read blue trident data from a c3d
+
+    Args:
+        fullfilename (str): path+filename
+        viconDeviceId (int): id of the imu in the vicon device list
+    """
+    def __init__(self,fullfilename:str,viconDeviceId:int):
         super(C3dBlueTridentProcedure, self).__init__()
         
         self.m_acq = btkTools.smartReader(fullfilename)
         self.m_id = viconDeviceId
 
 
-    def read(self):
+    def read(self)->imu.Imu:
+        """ read data
+
+        Returns:
+            imu.Imu: imu instance
+        """
 
         freq = self.m_acq.GetAnalogFrequency()
     

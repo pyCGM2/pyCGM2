@@ -1,20 +1,22 @@
+from typing import Optional
 from scipy.interpolate import interp1d
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-#from pyCGM2.External.ktk.kineticstoolkit import timeseries
 
 class Imu(object):
-    """
-    the Inertial meaure unit Class
+    """the IMU class
 
     Args:
-       freq(integer):  frequency
+        freq (int): frequency
+        accel (Optional[np.ndarray]): acceleration
+        angularVelocity (Optional[np.ndarray]): anular velocity
+        mag (Optional[np.ndarray]): magnetometer
     """
 
  
-    def __init__(self,freq,accel,angularVelocity,mag):
+    def __init__(self,freq:int,accel:Optional[np.ndarray],angularVelocity:Optional[np.ndarray],mag:Optional[np.ndarray]):
 
         self.m_freq =  freq
 
@@ -41,18 +43,32 @@ class Imu(object):
         self.m_data =  pd.DataFrame()
 
     def reInit(self):
+        """ restore initial values"""
         self.m_freq =  self._freq
         self.m_acceleration = self._accel
         self.m_angularVelocity = self._angularVelocity
         self.m_magnetometer = self._mag
 
-    def update(self,newAccelValues,newOmegaValues,newMagValues):
+    def update(self,newAccelValues:np.ndarray,newOmegaValues:np.ndarray,newMagValues:np.ndarray):
+        """udpate imu with new data
+
+        Args:
+            newAccelValues (np.ndarray): acceleration
+            newOmegaValues (np.ndarray): angular velocity
+            newMagValues (np.ndarray): magnetometer
+        """
+        
         self.m_acceleration = newAccelValues
         self.m_angularVelocity =newOmegaValues
         self.m_magnetometer = newMagValues
 
 
-    def downsample(self,freq=400):
+    def downsample(self,freq:int=400):
+        """downsample data
+
+        Args:
+            freq (int, optional): frequency. Defaults to 400.
+        """        
 
         time = np.arange(0, self.m_acceleration.shape[0]/self.m_freq, 1/self.m_freq)
         newTime = np.arange(0, self.m_acceleration.shape[0]/self.m_freq, 1/freq)
@@ -84,6 +100,7 @@ class Imu(object):
         self.m_time = frames*1/self.m_freq
 
     def getAcceleration(self,axis=None):
+        """ return acceleration"""
         if axis is None: return self.m_acceleration
         elif axis=="X": return self.m_acceleration[:,0]
         elif axis=="Y": return self.m_acceleration[:,1]
@@ -93,6 +110,7 @@ class Imu(object):
         
     
     def getAngularVelocity(self,axis=None):
+        """ return angular velocity"""
         if axis is None: return self.m_angularVelocity
         elif axis=="X": return self.m_angularVelocity[:,0]
         elif axis=="Y": return self.m_angularVelocity[:,1]
@@ -101,6 +119,7 @@ class Imu(object):
             raise("[pyCGM2] - axis not known, choice: X,Y or Z")
     
     def getMagnetometer(self,axis=None):
+        """ return magnetometer"""
         if axis is None: return self.m_magnetometer
         elif axis=="X": return self.m_magnetometer[:,0]
         elif axis=="Y": return self.m_magnetometer[:,1]
@@ -109,13 +128,20 @@ class Imu(object):
             raise("[pyCGM2] - axis not known, choice: X,Y or Z")
 
     
-    def getMotion(self,index=None):
+    def getMotion(self,index:Optional[int]=None):
+        """return motion. if index given, the method returns the motion at the specific index
+
+        Args:
+            index (Optional[int], optional): index. Defaults to None.
+        """
+
         if index is None: 
             return self.m_motion
         else:
             return self.m_motion[index]
 
     def getAngleAxis(self,axis=None):
+        """ return angle axis ( eq. global angle)"""
         values =  np.array([self.m_motion[i].getAngleAxis() for i in range(len(self.m_motion))])
 
         if axis is None: return values
@@ -126,6 +152,7 @@ class Imu(object):
             raise("[pyCGM2] - axis not known, choice: X,Y or Z")
 
     def getQuaternions(self):
+        """ return quaternions"""
         return np.array([self.m_motion[i].getQuaternion() for i in range(len(self.m_motion))])
 
 
