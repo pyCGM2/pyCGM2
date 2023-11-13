@@ -1,24 +1,21 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Math
-#APIDOC["Draft"]=False
-#--end--
 """
-Module with mathematic operations
+Module with mathematic functions
 """
 import numpy as np
 from scipy import interpolate
+from pyCGM2.Model.frame import Frame
 
-def splineFittingDerivation(values,sampleFrequency,order=1):
+def splineFittingDerivation(values:np.ndarray,sampleFrequency:int,order:int=1)->np.ndarray:
     """
     Spline fitting derivation
 
     Args
-        values (array[m,n]): array of values
-        sampleFrequency (double): sample frequency
-        order (int,Optional[1]): order of derivation
+        values (np.ndarray): array of values
+        sampleFrequency (int): sample frequency
+       order (int,Optional): order of derivation. Default to 1
 
-    Return
-        array(m,n) - derivative values
+    Returns:
+        np.ndarray: derivative values
 
     """
     N = values.shape[0]
@@ -42,18 +39,18 @@ def splineFittingDerivation(values,sampleFrequency,order=1):
 
 
 
-def splineDerivation(values,sampleFrequency,order=1):
+def splineDerivation(values:np.ndarray,sampleFrequency:int,order:int=1):
 
     """
     Spline derivation
 
     Args
-        values (array[m,n]): array of values
-        sampleFrequency (double): sample frequency
-        order (int,Optional[1]): order of derivation
+        values (np.ndarray): array of values
+        sampleFrequency (int): sample frequency
+        order (int,Optional): order of derivation. Default to 1
 
-    Return
-        array(m,n) - derivative values
+    Returns:
+        np.ndarray: derivative values
 
     """
 
@@ -75,16 +72,16 @@ def splineDerivation(values,sampleFrequency,order=1):
         return out/ (np.power(1/sampleFrequency,2))
 
 
-def firstOrderFiniteDifference(values,sampleFrequency):
+def firstOrderFiniteDifference(values:np.ndarray,sampleFrequency:int)->np.ndarray:
     """
     First-order differentiation of an array
 
     Args
-        values (array[m,n]): array of values
-        sampleFrequency (double): sample frequency
+        values (np.ndarray): array of values
+        sampleFrequency (int): sample frequency
 
-    Return
-        array(m,n) - derivative values
+    Returns:
+        np.ndarray: derivative values
 
     """
 
@@ -110,18 +107,20 @@ def firstOrderFiniteDifference(values,sampleFrequency):
 
 
 
-def secondOrderFiniteDifference(values,sampleFrequency):
+
+def secondOrderFiniteDifference(values:np.ndarray,sampleFrequency:int)->np.ndarray:
     """
-    Second-order differentiation of an array
+    second-order differentiation of an array
 
     Args
-        values (array[m,n]): array of values
-        sampleFrequency (double): sample frequency
+        values (np.ndarray): array of values
+        sampleFrequency (int): sample frequency
 
-    Return
-        array(m,n) - derivative values
+    Returns:
+        np.ndarray: derivative values
 
-    """
+    """    
+
 
 
     n,m = values.shape
@@ -145,7 +144,16 @@ def secondOrderFiniteDifference(values,sampleFrequency):
     return out
 
 
-def matrixFirstDerivation(motionList, sampleFrequency):
+def matrixFirstDerivation(motionList:list[Frame], sampleFrequency:int)->list[np.ndarray]:
+    """first derivation of the rotation matrix, set in a list of frames
+
+    Args:
+        motionList (list[Frame]): list of Frame instance
+        sampleFrequency (int): frequency
+
+    Returns:
+        list[np.ndarray]: 1st derivative matrix
+    """
     # TODO: rename the function and remove the depedancy to motionList
 
     nf = len(motionList)
@@ -165,7 +173,16 @@ def matrixFirstDerivation(motionList, sampleFrequency):
 
 
 
-def matrixSecondDerivation(motionList,sampleFrequency):
+def matrixSecondDerivation(motionList,sampleFrequency)->list[np.ndarray]:
+    """second derivation of the rotation matrix, set in a list of frames
+
+    Args:
+        motionList (list[Frame]): list of Frame instance
+        sampleFrequency (int): frequency
+
+    Returns:
+        list[np.ndarray]: 2nd derivative matrix
+    """
     # TODO: rename the function and remove the depedancy to motionLis
 
     nf = len(motionList)

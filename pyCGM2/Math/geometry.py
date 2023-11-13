@@ -1,42 +1,49 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Math
-#APIDOC["Draft"]=False
-#--end--
-
 import numpy as np
+from typing import Optional
 
-def computeAngle(u1,v1):
-        if len(u1)==3:
-        #     %3D, can use cross to resolve sign
-            uMod = np.linalg.norm(u1)
-            vMod = np.linalg.norm(v1)
-            uvPr = np.sum(u1*v1)
-            costheta = min(uvPr/uMod/vMod,1);
+def computeAngle(u1:np.ndarray,v1:np.ndarray)->float:
+    """_summary_
 
-            theta = np.arccos(costheta)
-        #
-        #     %resolve sign
-            cp=(np.cross(u1,v1))
-            idxM = np.argmax(abs(cp)) #idxM=find(abs(cp)==max(abs(cp)));
+    Args:
+        u1 (np.ndarray): vector 1
+        v1 (np.ndarray): vector 2
 
-            s= cp[idxM]
-            if s < 0:
-                theta = -theta;
-        elif len(u1)==2:
-            theta = (np.arctan2(v1[1],v1[0])-np.arctan2(u1[1],u1[0]))
+    Returns:
+        float: angle value
+    """
+    if len(u1)==3:
+    #     %3D, can use cross to resolve sign
+        uMod = np.linalg.norm(u1)
+        vMod = np.linalg.norm(v1)
+        uvPr = np.sum(u1*v1)
+        costheta = min(uvPr/uMod/vMod,1)
 
-        return theta
+        theta = np.arccos(costheta)
+    #
+    #     %resolve sign
+        cp=(np.cross(u1,v1))
+        idxM = np.argmax(abs(cp)) #idxM=find(abs(cp)==max(abs(cp)));
 
-def angleFrom2Vectors(v1, v2, vn=None):
+        s= cp[idxM]
+        if s < 0:
+            theta = -theta;
+    elif len(u1)==2:
+        theta = (np.arctan2(v1[1],v1[0])-np.arctan2(u1[1],u1[0]))
+
+    return theta
+
+def angleFrom2Vectors(v1:np.ndarray, v2:np.ndarray, vn:Optional[np.ndarray]=None)->float:
     """
     Return a signed angle between 2 vectors.
     The common orthogonal vector is used for defining the sign of the angle
 
     Args:
-        v1 (array[3,]): first vector
-        v2 (array[3,]): second vector
-        vn (array[3,]): common orthogonal vector.
+        v1 (np.ndarray): first vector
+        v2 (np.ndarray): second vector
+        vn (Optional[np.ndarray], optional): common orthogonal vector. Defaults to None.
 
+    Returns:
+        float: angle value
     """
 
     cross = np.cross(v1, v2)
@@ -49,11 +56,19 @@ def angleFrom2Vectors(v1, v2, vn=None):
     return angle
 
 
-def oppositeVector(v1):
+def oppositeVector(v1:np.ndarray)->np.ndarray:
+    """opposite vector
+
+    Args:
+        v1 (np.ndarray): vector
+
+    Returns:
+        np.ndarray: opposite vector
+    """
     return (-1*np.ones(3))*v1
 
 
-def LineLineIntersect(p1, p2, p3, p4):
+def LineLineIntersect(p1:np.ndarray, p2:np.ndarray, p3:np.ndarray, p4:np.ndarray):
     """
     Calculates the line segment pa_pb that is the shortest route
     between two lines p1_p2 and p3_p4. Calculates also the values of
@@ -63,10 +78,10 @@ def LineLineIntersect(p1, p2, p3, p4):
       - pb = p3 + mub (p4 - p3)
 
     Args:
-        p1 (np.array(3)) : 3d coordinates
-        p2 (np.array(3)) : 3d coordinates
-        p3 (np.array(3)) : 3d coordinates
-        p4 (np.array(3)) : 3d coordinates
+        p1 (np.ndarray) : 3d coordinates (dimension 3)
+        p2 (np.ndarray) : 3d coordinates
+        p3 (np.ndarray) : 3d coordinates
+        p4 (np.ndarray) : 3d coordinates
 
     note::
 

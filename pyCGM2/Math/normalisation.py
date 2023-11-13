@@ -1,18 +1,20 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Math
-#APIDOC["Draft"]=False
-#--end--
 import numpy as np
 
 
-def timeSequenceNormalisation(Nrow, data):
+def timeSequenceNormalisation(Nrow:int, data:np.ndarray)->np.ndarray:
     """
     Normalisation of an array
 
     Args:
-        Nrow (double): number of interval
-        data (array(m,n)): number of interval
+        Nrow (int): number of interval
+        data (np.ndarray): number of interval
 
+    Returns:
+        np.ndarray : array with 100 rows
+
+    
+
+        
     """
     if len(data.shape) == 1:
         flatArray = True
