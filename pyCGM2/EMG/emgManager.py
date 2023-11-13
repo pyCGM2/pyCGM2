@@ -1,3 +1,4 @@
+
 from pyCGM2.Utils import files
 import os
 
@@ -11,17 +12,15 @@ class EmgManager(object):
 
     Args:
         DATA_PATH (str): data folder path
-        emgSettings (str,optional): filename with emg settings
-
+        emgSettings (str): filename with emg settings 
     """
 
     def __init__(self, DATA_PATH:str, emgSettings:str=None):
 
-
         if emgSettings is None:
             if os.path.isfile(DATA_PATH + "emg.settings"):
                 emgSettings = files.openFile(DATA_PATH, "emg.settings")
-                LOGGER.logger.warning(
+                LOGGER.logger.info(
                     "[pyCGM2]: emg.settings detected in the data folder")
             else:
                 emgSettings = files.openFile(
@@ -29,13 +28,18 @@ class EmgManager(object):
         else:
             if DATA_PATH is not None:
                 LOGGER.logger.info( f"[pyCGM2]: emg settings loaded from => {emgSettings} ")
-                emgSettings = files.openFile(DATA_PATH, emgSettings) 
+                emgSettings = files.openFile(DATA_PATH, emgSettings)
+            else: 
+                emgSettings = files.openFile(None, emgSettings)
 
         self.m_emgSettings = emgSettings
+
 
         self.m_emgChannelSection = emgSettings["CHANNELS"]
         self.m_emgProcessingSection = emgSettings["Processing"]
 
+   
+    
     def getChannelSection(self):
         """ return the channel section of the emg settings """
         return self.m_emgChannelSection

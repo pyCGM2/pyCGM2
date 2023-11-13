@@ -51,6 +51,10 @@ def openFile(path,filename):
 
 
     """
+    if path is None:
+        path =  getDirname(filename)
+        filename =  getFilename(filename)
+
     if os.path.isfile( (path + filename)):
         content = open((path+filename)).read()
 
@@ -685,6 +689,8 @@ def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
 def getFilename(fullname):
     return fullname[len(os.path.dirname(fullname))+1:]
 
+def getDirname(fullname):
+    return fullname[0:len(os.path.dirname(fullname))+1]
 
 def renameFile( fileToRename,renamedFile ):
     try:       

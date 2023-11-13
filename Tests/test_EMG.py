@@ -5,12 +5,27 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+import pyCGM2
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import emg
 from pyCGM2.EMG import coactivationProcedures
 from pyCGM2.EMG import emgFilters
+from pyCGM2.EMG import emgManager
+
+
+
 
 class Test_EMG:
+
+    def test_emgManager(self):
+        DATA_PATH = pyCGM2.TEST_DATA_PATH+"LowLevel\\emg\\"
+
+        manager0 = emgManager.EmgManager(DATA_PATH,None)
+        manager1 = emgManager.EmgManager(DATA_PATH,"emg.settings")
+        manager2 = emgManager.EmgManager(DATA_PATH,"emg_altered.settings")
+        manager2 = emgManager.EmgManager(None,DATA_PATH+"emg_altered.settings")
+
+    
     def test_MVC(self):
 
         DATA_PATH = "C:\\Users\\fleboeuf\\Documents\\DATA\\pyCGM2-Data-Tests\\EMG\\Normalisation\\Mvc\\"
