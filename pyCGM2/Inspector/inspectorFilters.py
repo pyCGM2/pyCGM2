@@ -1,21 +1,19 @@
-# -*- coding: utf-8 -*-
-#APIDOC: /Low level/Inspector
 """
-Module contain the filter for running inspector procedure.
+the inspector filter calls procedure for inspecting acquisition 
 """
-import pyCGM2; LOGGER = pyCGM2.LOGGER
 
+import pyCGM2; LOGGER = pyCGM2.LOGGER
+from pyCGM2.Inspector.inspectorProcedures import InspectorProcedure
+import btk
 class InspectorFilter(object):
-    """
-    pyCGM2 filter
-    """
-    def __init__(self,acq,filename,procedure,**kwargs):
+
+    def __init__(self,acq:btk.btkAcquisition,filename:str,procedure:InspectorProcedure,**kwargs):
         """Constructor
 
         Args:
             acq (btk.Acquisition): a btk acquisition
             filename (str): c3d filename
-            procedure (pyCGM2.Inspector.InspectorProcedure): an inspector procedure instance
+            procedure (InspectorProcedure): an inspector procedure instance
 
 
         Low-level Keyword Args:

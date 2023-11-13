@@ -1,54 +1,43 @@
-#APIDOC: /Low level/Inspector
-"""
-Module contains inspector procedure.
-
-An inspector just inspect the content of an acquisition. It doesn't alter it.
 
 """
+An inspector procedure just inspect the content of an acquisition. It doesn't alter it.
 
+"""
+from typing import Optional
+import btk
 from pyCGM2.Tools import btkTools
-from pyCGM2.Signal import anomaly
-from pyCGM2.Math import derivation
-from pyCGM2.Signal import signal_processing
-from pyCGM2.Utils import utils
-
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
-
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
-
-
-class AbstractInspectorProcedure(object):
+class InspectorProcedure(object):
     def __init__(self):
         pass
 
-    def run(self,acq,filename,options):
-        pass
 
-class MarkerPresenceDetectionProcedure(AbstractInspectorProcedure):
+class MarkerPresenceDetectionProcedure(InspectorProcedure):
     """Procedure to check marker presence in the acquisition.
 
     Args:
-        markers (list,Optional[None]):marker labels
+        markers (Optional[list], optional): marker names. Defaults to None.
 
     """
-    def __init__(self,markers=None):
+    def __init__(self,markers:Optional[list]=None):
         super(MarkerPresenceDetectionProcedure, self).__init__()
 
         self.markers = markers
 
-    def run(self,acq,filename,options):
+    def run(self,acq:btk.btkAcquisition,filename:str,options:dict)-> dict:
+        """run the procedure
+
+        Args:
+            acq (btk.btkAcquisition): an btk acquisition instance
+            filename (str): c3d filename
+            options (dict): options
+
+        Returns:
+            dict: present and missing markers
+        """
 
         markersIn = list()
         markersOut = list()
