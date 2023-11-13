@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/qtm
-#APIDOC["Draft"]=False
-#--end--
-
 """
 Module contains convenient functions dealing with the session.xml file generated from QTM.
 
@@ -13,22 +8,24 @@ from datetime import datetime
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+import bs4
 
-def getFilename(measurement):
+
+def getFilename(measurement:bs4.BeautifulSoup):
     """return the filename of the measurement section
 
     Args:
-        measurement (bs4.soup): a `measurement` section of the session.xml file.
+        measurement (bs4.BeautifulSoup): a `measurement` section of the session.xml file.
 
     """
     return measurement.attrs["Filename"].replace("qtm", "c3d")
 
 
-def getForcePlateAssigment(measurement):
+def getForcePlateAssigment(measurement:bs4.BeautifulSoup):
     """return the force plate assigment from the measurement section
 
     Args:
-        measurement (bs4.soup): a `measurement` section of the session.xml file.
+        measurement (bs4.BeautifulSoup): a `measurement` section of the session.xml file.
 
     """
     mea = measurement
@@ -40,22 +37,22 @@ def getForcePlateAssigment(measurement):
     return mfpa
 
 
-def isType(measurement, type):
+def isType(measurement:bs4.BeautifulSoup, type:str):
     """check type of  measurement section
 
     Args:
-        measurement (bs4.soup): a `measurement` section of the session.xml file.
+        measurement (bs4.BeautifulSoup): a `measurement` section of the session.xml file.
         type (str): type
 
     """
     return measurement.attrs["Type"] == type
 
 
-def findStatic(soup):
-    """return the static file from the bs4.soup instance representing the content of the session.xml
+def findStatic(soup:bs4.BeautifulSoup):
+    """return the static file from the bs4.BeautifulSoup instance representing the content of the session.xml
 
     Args:
-        soup (bs4.soup): content of the session.xml
+        soup (bs4.BeautifulSoup): content of the session.xml
 
     """
     qtmMeasurements = soup.find_all("Measurement")
@@ -69,11 +66,11 @@ def findStatic(soup):
     return static[0]
 
 
-def findDynamic(soup):
-    """return the dynamic files from the bs4.soup instance representing the content of the session.xml
+def findDynamic(soup:bs4.BeautifulSoup):
+    """return the dynamic files from the bs4.BeautifulSoup instance representing the content of the session.xml
 
     Args:
-        soup (bs4.soup): content of the session.xml
+        soup (bs4.BeautifulSoup): content of the session.xml
 
     """
     qtmMeasurements = soup.find_all("Measurement")
@@ -86,11 +83,11 @@ def findDynamic(soup):
     return measurements
 
 
-def findKneeCalibration(soup, side):
-    """return the knee functional calibration file from the bs4.soup instance representing the content of the session.xml
+def findKneeCalibration(soup:bs4.BeautifulSoup, side:str):
+    """return the knee functional calibration file from the bs4.BeautifulSoup instance representing the content of the session.xml
 
     Args:
-        soup (bs4.soup): content of the session.xml
+        soup (bs4.BeautifulSoup): content of the session.xml
         side (str): lower limb side
 
     """
@@ -106,22 +103,22 @@ def findKneeCalibration(soup, side):
     return kneeCalib[0] if kneeCalib != [] else None
 
 
-def getKneeFunctionCalibMethod(measurement):
+def getKneeFunctionCalibMethod(measurement:bs4.BeautifulSoup):
     """return the method used for the knee calibration
 
     Args:
-        measurement (bs4.soup): a `measurement` section of the session.xml file.
+        measurement (bs4.BeautifulSoup): a `measurement` section of the session.xml file.
 
     """
     mea = measurement
     return mea.find("Knee_functional_calibration_method").text
 
 
-def detectMeasurementType(soup):
+def detectMeasurementType(soup:bs4.BeautifulSoup):
     """return the type of each measurement section
 
     Args:
-        soup (bs4.soup): content of the session.xml
+        soup (bs4.BeautifulSoup): content of the session.xml
 
     """
 
@@ -139,11 +136,11 @@ def detectMeasurementType(soup):
     return types
 
 
-def SubjectMp(soup):
+def SubjectMp(soup:bs4.BeautifulSoupsurement):
     """return the antropometric parameters
 
     Args:
-        soup (bs4.soup): content of the session.xml
+        soup (bs4.BeautifulSoup): content of the session.xml
 
     """
 
