@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Events
-#APIDOC["Draft"]=False
-#--end--
 """
 The module contains filter for detecting foot contact events.
 
 check out the script : *\Tests\test_events.py* for examples
 """
 import pyCGM2; LOGGER = pyCGM2.LOGGER
-
+from pyCGM2.Events.eventProcedures import EventProcedure
 try:
     import btk
 except:
@@ -22,21 +18,21 @@ class EventFilter(object):
     """
     Event filter to handle an event procedure
     """
-    def __init__(self,procedure,acq):
+    def __init__(self,procedure:EventProcedure,acq:btk.btkAcquisition):
         """Constructor
 
         Args:
-            procedure (pyCGM2.Events.eventProcedures.EventProcedure):an event procedure instance
-            acq (Btk.Acquisition): a btk acquisition
+            procedure (EventProcedure):an event procedure instance
+            acq (btk.btkAcquisition): a btk acquisition instance
 
         """
-
 
         self.m_aqui = acq
         self.m_procedure = procedure
         self.m_state = None
 
     def getState(self):
+        """ return the state of the filter"""
         return self.m_state
 
     def detect(self):

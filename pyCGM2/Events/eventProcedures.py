@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Events
-#APIDOC["Draft"]=False
-#--end--
 """
 The module contains procedures for detecting foot contact event.
 
 check out the script : *\Tests\test_events.py* for examples
 """
+
+from typing import Tuple,Optional,Union
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:
@@ -43,7 +41,7 @@ class ZeniProcedure(EventProcedure):
         self.footStrikeOffset = 0
         self.footOffOffset = 0
 
-    def setFootStrikeOffset(self,value):
+    def setFootStrikeOffset(self,value:int):
         """set a systematic offset to each foot strike event
 
         Args:
@@ -52,7 +50,7 @@ class ZeniProcedure(EventProcedure):
 
         self.footStrikeOffset = value
 
-    def setFootOffOffset(self,value):
+    def setFootOffOffset(self,value:int):
         """set a systematic offset to each foot off event
 
         Args:
@@ -60,15 +58,15 @@ class ZeniProcedure(EventProcedure):
         """
         self.footOffOffset = value
 
-    def detect(self,acq):
+    def detect(self,acq:btk.btkAcquisition)-> Union[Tuple[int, int, int, int], int] :
         """detect events
 
         Args:
-            acq (Btk.Acquisition): a btk acquisition instance
+            acq (btk.btkAcquisition): a btk acquisition instance
 
         Return:
-            int,int,int,int: frames indicating the left foot strike, the left foot off,
-            the right foot strike and the right foot off respectively
+            Union[Tuple[int, int, int, int], int] : frames indicating the left foot strike, the left foot off,
+            the right foot strike and the right foot off respectively. return 0 if it fails
 
         """
 
