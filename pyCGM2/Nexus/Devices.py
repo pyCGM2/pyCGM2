@@ -1,38 +1,30 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Nexus
-#APIDOC["Draft"]=False
-#--end--
-
 """
-The module is a viconnexus interface. it contains Object (ie Device) which can be contructed from vicon nexus api
+The module is a viconnexus interface. 
+It contains Objects (ie Device) contructed from vicon nexus api
 """
 
-from viconnexusapi import ViconNexus
 import numpy as np
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:
-    import ViconNexus
-except:
     from viconnexusapi import ViconNexus
+except ImportError as e:
+    LOGGER.logger.error(f"viconnexusapi not installed: {e}")
 
-try:
-    NEXUS = ViconNexus.ViconNexus()
-except:
-    LOGGER.logger.error("Nexus is not running")
 
 class Channel(object):
-    """Channel
+    """a pyCGM2-Nexus Channel
 
     Args:
         label (str): channel label
-        values (array): values
+        values (np.ndarray): values
         unit (str): init
         description (str): short description of the channel
     """
 
-    def __init__(self, label,values,unit,description):
+    def __init__(self, label:str,values:np.ndarray,unit:str,description:str):
+        
         self.m_label = label
         self.m_values = values
         self.m_description = description
@@ -54,23 +46,25 @@ class Channel(object):
 
 
 class Device(object):
-    """Device
+    """a pyCGM2-Nexus device
 
     Args:
-        id (str): device ID
+        NEXUS (ViconNexus.ViconNexus): vicon nexus handle
+        id (str): a device ID
 
     """
 
-    def __init__(self, id):
+    def __init__(self,NEXUS:ViconNexus.ViconNexus, id:str):
+        self.NEXUS = NEXUS
         self.m_id = id
 
-        self.m_name = NEXUS.GetDeviceDetails(self.m_id)[0]
-        self.m_type = NEXUS.GetDeviceDetails(self.m_id)[1]
-        self.m_frequency = NEXUS.GetDeviceDetails(self.m_id)[2]
-        self.m_outputIds = NEXUS.GetDeviceDetails(self.m_id)[3]
+        self.m_name = self.NEXUS.GetDeviceDetails(self.m_id)[0]
+        self.m_type = self.NEXUS.GetDeviceDetails(self.m_id)[1]
+        self.m_frequency = self.NEXUS.GetDeviceDetails(self.m_id)[2]
+        self.m_outputIds = self.NEXUS.GetDeviceDetails(self.m_id)[3]
 
-        self.m_forcePlateInfo = NEXUS.GetDeviceDetails(self.m_id)[4]
-        self.m_eyeTrackerInfo = NEXUS.GetDeviceDetails(self.m_id)[5]
+        self.m_forcePlateInfo = self.NEXUS.GetDeviceDetails(self.m_id)[4]
+        self.m_eyeTrackerInfo = self.NEXUS.GetDeviceDetails(self.m_id)[5]
 
 
     def getDeviceName(self):
@@ -85,21 +79,22 @@ class Device(object):
         """return the list of ouputs"""
         out = list()
         for i in self.m_outputIds:
-            out.append(NEXUS.GetDeviceOutputDetails(self.m_id,i)[0])
+            out.append(self.NEXUS.GetDeviceOutputDetails(self.m_id,i)[0])
         return out
 
 
 
 class AnalogDevice(Device):
-    """Analog Device
+    """a pyCGM2-Nexus Analog Device
 
     Args:
+        NEXUS (ViconNexus.ViconNexus): vicon nexus handle
         id (str): device ID
 
     """
 
-    def __init__(self, id):
-        super(AnalogDevice, self).__init__(id)
+    def __init__(self,NEXUS:ViconNexus.ViconNexus, id:str):
+        super(AnalogDevice, self).__init__(NEXUS,id)
         self.m_channels = list()
         #self.m_id = id
 
@@ -107,7 +102,7 @@ class AnalogDevice(Device):
         """ return device unit"""
         unit = list()
         for outputId in self.m_outputIds:
-            unit.append(str(NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[2]))
+            unit.append(str(self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[2]))
         return  unit
 
 
@@ -115,13 +110,13 @@ class AnalogDevice(Device):
         """ return channel names"""
 
         for outputId in self.m_outputIds:
-            outputName = NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
-            outputType = NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[1]
-            unit = str(NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[2])
+            outputName = self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
+            outputType = self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[1]
+            unit = str(self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[2])
             i=0
-            for channelId in NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[5]:
-                label = str(outputName) +"."+ str(NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4][i])
-                values = np.asarray(NEXUS.GetDeviceChannel(self.m_id,outputId,channelId)[0])
+            for channelId in self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[5]:
+                label = str(outputName) +"."+ str(self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4][i])
+                values = np.asarray(self.NEXUS.GetDeviceChannel(self.m_id,outputId,channelId)[0])
                 description =  "Analog::"+str(outputType)+" ["+str(self.m_id) + "," + str(channelId)+"]"
                 self.m_channels.append(Channel(label,values,unit,description))
                 i+=1
@@ -131,15 +126,16 @@ class AnalogDevice(Device):
 
 
 class ForcePlate(Device):
-    """force plate device
+    """a pyCGM2-Nexus force plate device
 
     Args:
+        NEXUS (ViconNexus.ViconNexus): vicon nexus handle
         id (str): device ID
 
     """
 
-    def __init__(self, id):
-        super(ForcePlate, self).__init__(id)
+    def __init__(self,NEXUS:ViconNexus.ViconNexus, id:str):
+        super(ForcePlate, self).__init__(NEXUS,id)
 
 
     def getDescription(self):
@@ -183,22 +179,22 @@ class ForcePlate(Device):
         """ return force unit """
 
         for outputId in self.m_outputIds:
-            if NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Fx","Fy","Fz"]:
-                outputName =  NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
+            if self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Fx","Fy","Fz"]:
+                outputName =  self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
 
-        deviceOutputID = NEXUS.GetDeviceOutputIDFromName(self.m_id,outputName)
-        return str(NEXUS.GetDeviceOutputDetails(self.m_id,deviceOutputID)[2])
+        deviceOutputID = self.NEXUS.GetDeviceOutputIDFromName(self.m_id,outputName)
+        return str(self.NEXUS.GetDeviceOutputDetails(self.m_id,deviceOutputID)[2])
 
     def getMomentUnit(self):
         """ return moment unit """
 
         for outputId in self.m_outputIds:
-            if NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Mx","My","Fz"]:
-                outputName =  NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
+            if self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Mx","My","Fz"]:
+                outputName =  self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
 
 
-        deviceOutputID = NEXUS.GetDeviceOutputIDFromName(self.m_id,outputName)
-        return str(NEXUS.GetDeviceOutputDetails(self.m_id,deviceOutputID)[2])
+        deviceOutputID = self.NEXUS.GetDeviceOutputIDFromName(self.m_id,outputName)
+        return str(self.NEXUS.GetDeviceOutputDetails(self.m_id,deviceOutputID)[2])
 
 
 
@@ -206,18 +202,18 @@ class ForcePlate(Device):
         """ return force in the global coordinate system """
 
         for outputId in self.m_outputIds:
-            if NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Fx","Fy","Fz"]:
-                outputName =  NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
+            if self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Fx","Fy","Fz"]:
+                outputName =  self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
 
-        deviceOutputID = NEXUS.GetDeviceOutputIDFromName(self.m_id,outputName)
+        deviceOutputID = self.NEXUS.GetDeviceOutputIDFromName(self.m_id,outputName)
 
-        channelID_x = NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Fx')
-        channelID_y = NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Fy')
-        channelID_z = NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Fz')
+        channelID_x = self.NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Fx')
+        channelID_y = self.NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Fy')
+        channelID_z = self.NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Fz')
 
-        x = np.asarray(NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_x )[0])
-        y = np.asarray(NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_y )[0])
-        z = np.asarray(NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_z )[0])
+        x = np.asarray(self.NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_x )[0])
+        y = np.asarray(self.NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_y )[0])
+        z = np.asarray(self.NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_z )[0])
 
         return np.array([x,y,z]).T
 
@@ -226,18 +222,18 @@ class ForcePlate(Device):
         """ return moment in the global coordinate system """
 
         for outputId in self.m_outputIds:
-            if NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Mx","My","Mz"]:
-                outputName =  NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
+            if self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Mx","My","Mz"]:
+                outputName =  self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
 
-        deviceOutputID = NEXUS.GetDeviceOutputIDFromName(self.m_id,outputName)
+        deviceOutputID = self.NEXUS.GetDeviceOutputIDFromName(self.m_id,outputName)
 
-        channelID_x = NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Mx')
-        channelID_y = NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'My')
-        channelID_z = NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Mz')
+        channelID_x = self.NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Mx')
+        channelID_y = self.NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'My')
+        channelID_z = self.NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Mz')
 
-        x = np.asarray(NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_x )[0])
-        y = np.asarray(NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_y )[0])
-        z = np.asarray(NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_z )[0])
+        x = np.asarray(self.NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_x )[0])
+        y = np.asarray(self.NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_y )[0])
+        z = np.asarray(self.NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_z )[0])
 
         return np.array([x,y,z]).T
 
@@ -246,18 +242,18 @@ class ForcePlate(Device):
         """ return COP in the global coordinate system """
 
         for outputId in self.m_outputIds:
-            if NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Cx","Cy","Cz"]:
-                outputName =  NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
+            if self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Cx","Cy","Cz"]:
+                outputName =  self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
 
-        deviceOutputID = NEXUS.GetDeviceOutputIDFromName(self.m_id,outputName)
+        deviceOutputID = self.NEXUS.GetDeviceOutputIDFromName(self.m_id,outputName)
 
-        channelID_x = NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Cx')
-        channelID_y = NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Cy')
-        channelID_z = NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Cz')
+        channelID_x = self.NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Cx')
+        channelID_y = self.NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Cy')
+        channelID_z = self.NEXUS.GetDeviceChannelIDFromName(self.m_id, deviceOutputID, 'Cz')
 
-        x = np.asarray(NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_x )[0])
-        y = np.asarray(NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_y )[0])
-        z = np.asarray(NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_z )[0])
+        x = np.asarray(self.NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_x )[0])
+        y = np.asarray(self.NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_y )[0])
+        z = np.asarray(self.NEXUS.GetDeviceChannelGlobal( self.m_id, deviceOutputID, channelID_z )[0])
 
         return np.array([x,y,z]).T
 

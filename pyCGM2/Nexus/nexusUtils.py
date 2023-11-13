@@ -1,16 +1,18 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Nexus
-#APIDOC["Draft"]=False
-#--end--
+import pyCGM2; LOGGER = pyCGM2.LOGGER
+try:
+    from viconnexusapi import ViconNexus
+except:
+    LOGGER.logger.error("viconnexusapi not install")
 
+from pyCGM2.Model import model
 
-def getNexusSubjectMp(NEXUS,subject, resetFlag=False):
+def getNexusSubjectMp(NEXUS:ViconNexus.ViconNexus,subject:str, resetFlag:bool=False):
     """ return required and optional anthropometric parameters
 
     Args:
-        NEXUS (): viconnexusapi handle.
+        NEXUS (ViconNexus.ViconNexus): viconnexusapi handle.
         subject (str): subject ( eq. vsk) name.
-        resetFlag (bool,Optional[False]):  reset optional mp.
+        resetFlag (bool,optional):  reset optional mp.
 
     """
 
@@ -65,12 +67,12 @@ def getNexusSubjectMp(NEXUS,subject, resetFlag=False):
         })
     return required_mp,optional_mp
 
-def updateNexusSubjectMp(NEXUS,model,subjectName):
-    """ update anthropometric from  a pyCGM2.Model instance
+def updateNexusSubjectMp(NEXUS:ViconNexus.ViconNexus,model:model.Model,subjectName:str):
+    """ update anthropometric from a pyCGM2 model instance
 
     Args:
-        NEXUS (): vicon nexus api handle.
-        model (pyCGM2.Model.model.Model): a model instance.
+        NEXUS (ViconNexus.ViconNexus): vicon nexus api handle.
+        model (model.Model): a pyCGM2 model instance.
         subjectName (str):  subject (ie vsk) name
 
     """

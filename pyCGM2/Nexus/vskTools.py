@@ -1,13 +1,8 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Eclipse
-#APIDOC["Draft"]=False
-#--end--
 """
 Module containing classed and convenient function for dealing with a Vicon Skeleton File ( vsk)
 
 """
-from __future__ import unicode_literals
-
+from typing import Tuple
 from bs4 import BeautifulSoup
 import string
 import pyCGM2; LOGGER = pyCGM2.LOGGER
@@ -15,7 +10,7 @@ import pyCGM2
 from pyCGM2.Utils import files
 
 
-def getVskFiles(path):
+def getVskFiles(path:str):
     """return vsk files detected in a folder
 
     Args:
@@ -31,7 +26,12 @@ def getVskFiles(path):
     return vskFile[0]
 
 
-def checkSetReadOnly(vskfilename):
+def checkSetReadOnly(vskfilename:str):
+    """check of vsk is in read-only mode
+
+    Args:
+        vskfilename (str): subject name
+    """
     file0 = open(vskfilename,'r')
     content = file0.read()
 
@@ -54,7 +54,7 @@ class Vsk(object):
         file (str): name of the vsk file
     """
 
-    def __init__(self,file):
+    def __init__(self,file:str):
 
 
         self.m_file=file
@@ -67,7 +67,7 @@ class Vsk(object):
 
 
 
-    def getStaticParameterValue(self, label):
+    def getStaticParameterValue(self, label:str):
         """return value of a given parameter
 
         Args:
@@ -85,17 +85,16 @@ class Vsk(object):
                 return val
 
 
-def getFromVskSubjectMp(vskInstance, resetFlag=False):
+def getFromVskSubjectMp(vskInstance:Vsk, resetFlag:bool=False)->Tuple[dict,dict]:
     """return CGM anthropometric data ( mp data) of a pyCGM2.Eclipse.Vsk instance
 
     Args:
-        vskInstance (pyCGM2.Eclipse.Vsk): vsk instance
-        resetFlag (bool,Optional[False]): zero optional parameters
+        vskInstance (Vsk): a vsk instance
+        resetFlag (bool,optional): zero optional parameters. Default set to False
 
-    Returns
-        [dict,dict] : list of 2 dictionnaries containing  *required* and *optional* anthropometric data of the CGM
-
-
+    Returns:
+       Tuple[dict,dict]: required and optional mass parameters
+    
     """
 
     required_mp={

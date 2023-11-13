@@ -1,18 +1,13 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Nexus
-#APIDOC["Draft"]=False
-#--end--
-
 """
-This module contains conveninet classes interacting with the nexus API
+This module contains convenient classes interacting with the nexus API
 """
 
-from pyCGM2.Utils import utils
-from pyCGM2.Nexus import nexusTools
+from typing import Optional
+
 from pyCGM2.Nexus import Devices
 from pyCGM2.Tools import btkTools
-import pyCGM2
-from viconnexusapi import ViconNexus
+from pyCGM2.Model import model
+
 import numpy as np
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -26,33 +21,30 @@ except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
 
-# vicon nexus
 try:
-    import ViconNexus
-except:
     from viconnexusapi import ViconNexus
+except ImportError as e:
+    LOGGER.logger.error(f"viconnexusapi not installed: {e}")
 
 
-try:
-    NEXUS = ViconNexus.ViconNexus()
-except:
-    LOGGER.logger.error("Nexus is not running")
 
 
 class NexusModelFilter(object):
     """Nexus Model Filter is an interface running the method `viconExport` of a pyCGM2 Model instance.
 
     Args:
-        NEXUS (): vicon nexus handle
-        iModel (pyCGM2.Model.model): model instance
-        iAcq (btk.acquisition): a btk acquisition
+        NEXUS (ViconNexus.ViconNexus): vicon nexus handle
+        iModel (model.Model): a model instance
+        iAcq (btk.btkAcquisition): a btk acquisition
         vskName (str): name of the vsk
         pointSuffix (str): suffix added to the model ouput name
-        staticProcessing (bool,Optional[False]): enable static mode.
-
+        staticProcessing (bool,Optional): enable static mode.
     """
 
-    def __init__(self, NEXUS, iModel, iAcq, vskName, pointSuffix, staticProcessing=False):
+    def __init__(self, NEXUS:ViconNexus.ViconNexus, 
+                 iModel:model.Model, 
+                 iAcq:btk.btkAcquisition, 
+                 vskName:str, pointSuffix:str, staticProcessing=False):
 
         self.m_model = iModel
         self.m_acq = iAcq
@@ -79,16 +71,18 @@ class NexusConstructAcquisitionFilter(object):
 
     """
 
-    def __init__(self, dataPath, filenameNoExt, subject):
+    def __init__(self, NEXUS:ViconNexus.ViconNexus,
+                 dataPath:str, filenameNoExt:str, subject:str):
 
+        self.NEXUS = NEXUS
         self.m_dataPath = dataPath
         self.m_filenameNoExt = filenameNoExt
         self.m_subject = subject
 
-        self.m_framerate = NEXUS.GetFrameRate()
+        self.m_framerate = self.NEXUS.GetFrameRate()
         #self.m_frames = NEXUS.GetTrialRange()[1]
-        self.m_rangeROI = NEXUS.GetTrialRegionOfInterest()
-        self.m_trialRange = NEXUS.GetTrialRange()
+        self.m_rangeROI = self.NEXUS.GetTrialRegionOfInterest()
+        self.m_trialRange = self.NEXUS.GetTrialRange()
         # might be different from 1 if corpped and no x2d
         self.m_trialFirstFrame = self.m_trialRange[0]
 
@@ -96,8 +90,8 @@ class NexusConstructAcquisitionFilter(object):
         self.m_lastFrame = self.m_rangeROI[1]
         self.m_frames = self.m_lastFrame-(self.m_firstFrame-1)
 
-        deviceIDs = NEXUS.GetDeviceIDs()
-        self.m_analogFrameRate = NEXUS.GetDeviceDetails(
+        deviceIDs = self.NEXUS.GetDeviceIDs()
+        self.m_analogFrameRate = self.NEXUS.GetDeviceDetails(
             deviceIDs[0])[2] if (len(deviceIDs) > 0) else self.m_framerate
 
         self.m_numberAnalogSamplePerFrame = int(
@@ -109,12 +103,12 @@ class NexusConstructAcquisitionFilter(object):
 
         if(len(deviceIDs) > 0):
             for deviceID in deviceIDs:
-                if NEXUS.GetDeviceDetails(deviceID)[1] == "ForcePlate":
+                if self.NEXUS.GetDeviceDetails(deviceID)[1] == "ForcePlate":
                     self.m_nexusForcePlates.append(
-                        Devices.ForcePlate(deviceID))
+                        Devices.ForcePlate(self.NEXUS,deviceID))
                 else:
                     self.m_nexusAnalogDevices.append(
-                        Devices.AnalogDevice(deviceID))
+                        Devices.AnalogDevice(self.NEXUS,deviceID))
 
         self.m_acq = btk.btkAcquisition()
         self.m_acq.Init(0, int(self.m_frames), 0,
@@ -127,8 +121,8 @@ class NexusConstructAcquisitionFilter(object):
 
         eventType = "Foot Strike"
         eventContext = "Left"
-        if NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
-            for frame in NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
                 if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType, time, int(
@@ -138,8 +132,8 @@ class NexusConstructAcquisitionFilter(object):
 
         eventType = "Foot Off"
         eventContext = "Left"
-        if NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
-            for frame in NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
                 if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType, time, int(
@@ -149,8 +143,8 @@ class NexusConstructAcquisitionFilter(object):
 
         eventType = "Foot Strike"
         eventContext = "Right"
-        if NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
-            for frame in NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
                 if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType, time, int(
@@ -160,8 +154,8 @@ class NexusConstructAcquisitionFilter(object):
 
         eventType = "Foot Off"
         eventContext = "Right"
-        if NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
-            for frame in NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
                 if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType, time, int(
@@ -171,8 +165,8 @@ class NexusConstructAcquisitionFilter(object):
 
         eventType = "Event"
         eventContext = "General"
-        if NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
-            for frame in NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
                 if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType, time, int(
@@ -182,8 +176,8 @@ class NexusConstructAcquisitionFilter(object):
 
         eventType = "Left-FP"
         eventContext = "General"
-        if NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
-            for frame in NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
                 if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType, time, int(
@@ -193,8 +187,8 @@ class NexusConstructAcquisitionFilter(object):
 
         eventType = "Right-FP"
         eventContext = "General"
-        if NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
-            for frame in NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
                 if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType, time, int(
@@ -204,8 +198,8 @@ class NexusConstructAcquisitionFilter(object):
 
         eventType = "Start"
         eventContext = "Left"
-        if NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
-            for frame in NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
                 if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType, time, int(
@@ -215,8 +209,8 @@ class NexusConstructAcquisitionFilter(object):
 
         eventType = "End"
         eventContext = "Left"
-        if NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
-            for frame in NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
                 if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
                     time = (frame-1)/self.m_framerate
                     ev = btk.btkEvent(eventType, time, int(
@@ -227,15 +221,15 @@ class NexusConstructAcquisitionFilter(object):
     def appendMarkers(self):
         """ append markers"""
 
-        markersLoaded = NEXUS.GetMarkerNames(self.m_subject)
+        markersLoaded = self.NEXUS.GetMarkerNames(self.m_subject)
         markers = []
         for i in range(0, len(markersLoaded)):
-            data = NEXUS.GetTrajectory(self.m_subject, markersLoaded[i])
+            data = self.NEXUS.GetTrajectory(self.m_subject, markersLoaded[i])
             if data != ([], [], [], []):
                 markers.append(markersLoaded[i])
 
         for marker in markers:
-            rawDataX, rawDataY, rawDataZ, E = NEXUS.GetTrajectory(
+            rawDataX, rawDataY, rawDataZ, E = self.NEXUS.GetTrajectory(
                 self.m_subject, marker)
 
             E = np.asarray(E).astype("float")-1
@@ -254,7 +248,7 @@ class NexusConstructAcquisitionFilter(object):
     def appendAnalogs(self):
         """ append analogs"""
 
-        ftr = NEXUS.GetTrialRange()[0]
+        ftr = self.NEXUS.GetTrialRange()[0]
 
         for nexusAnalogDevice in self.m_nexusAnalogDevices:
 
@@ -286,7 +280,7 @@ class NexusConstructAcquisitionFilter(object):
 
         fp_count = 0
         for nexusForcePlate in self.m_nexusForcePlates:
-            # row number =  NEXUS.getTrialRange[1] not FrameCount
+            # row number =  self.NEXUS.getTrialRange[1] not FrameCount
             forceLocal = nexusForcePlate.getLocalReactionForce()
             momentLocal = nexusForcePlate.getLocalReactionMoment()
 
@@ -358,12 +352,12 @@ class NexusConstructAcquisitionFilter(object):
     def appendModelOutputs(self):
         """ append model outputs"""
 
-        modelOutputNames = NEXUS.GetModelOutputNames(self.m_subject)
+        modelOutputNames = self.NEXUS.GetModelOutputNames(self.m_subject)
 
         if modelOutputNames != []:
             for modelOutputName in modelOutputNames:
-                data, E = NEXUS.GetModelOutput(self.m_subject, modelOutputName)
-                type = NEXUS.GetModelOutputDetails(
+                data, E = self.NEXUS.GetModelOutput(self.m_subject, modelOutputName)
+                type = self.NEXUS.GetModelOutputDetails(
                     self.m_subject, modelOutputName)[0]
 
                 if type in ["Angles", "Forces", "Moments", "Powers", "Modeled Markers"]:
@@ -420,11 +414,11 @@ class NexusConstructAcquisitionFilter(object):
 
         return self.m_acq
 
-    def exportC3d(self, filenameNoExt=None):
+    def exportC3d(self, filenameNoExt:Optional[str]=None):
         """export built acquisition to c3d
 
         Args:
-            filenameNoExt (str,Optional[None]): specific filename without its extension.
+            filenameNoExt (Optional[str], optional): specific filename without its extension.
 
         """
 

@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Eclipse
-#APIDOC["Draft"]=False
-#--end--
-
 """ This module contains convenient classes and functions for dealing with the enf files associated with vicon Eclipse
 
 check out the script : *\Tests\test_eclipse.py* for examples
@@ -19,7 +14,8 @@ import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
 
-def generateEmptyENF(path):
+
+def generateEmptyENF(path:str):
     """ generate empty enf files of a folder containing c3d files only
 
     Args:
@@ -53,13 +49,13 @@ def getCurrentMarkedEnfs():
     return out if out != [] else None
 
 
-def getCurrentMarkedNodes(fileType="c3d"):
+def getCurrentMarkedNodes(fileType:str="c3d"):
     """Get current marked node from the eclipse interface.
 
     the argument `fileType` is set by default to c3d to return marked c3d files
 
     Args:
-        fileType (str,Optional[c3d]): file extension
+        fileType (str,Optional): file extension. default is "c3d"
 
     """
     currentMarkedNodesFile = os.getenv(
@@ -90,16 +86,12 @@ def getCurrentMarkedNodes(fileType="c3d"):
         return path, outFiles
 
 
-def getEnfFiles(path, type):
+def getEnfFiles(path:str, type:enums.EclipseType):
     """return the list of enf files found in a folder
 
     Args:
-        path (str): Description of parameter `path`.
-        type (pyCGM2.enums.EclipseType): type of enf file (Session,Patient or Trial)
-
-    Returns:
-        list: enf files
-
+        path (str): path.
+        type (enums.EclipseType): type of enf file (Session,Patient or Trial)
 
     """
     path = path[:-1] if path[-1:] == "\\" else path
@@ -126,7 +118,7 @@ def getEnfFiles(path, type):
             "eclipse file type not recognize. Shoud be an item of enums.eClipseType")
 
 
-def cleanEnf(path, enf):
+def cleanEnf(path:str, enf:str):
     src = open((path+enf), "r")
     filteredContent = ""
     for line in src:
@@ -141,14 +133,14 @@ def cleanEnf(path, enf):
 
 
 class EnfReader(object):
-    """ class for handling a generic enf file
+    """ class fror handling a generic enf file
 
     Args:
         path (str): folder path
         enfFile (str): enf filename
     """
 
-    def __init__(self, path, enfFile):
+    def __init__(self, path:str, enfFile:str):
 
         config = configparser.ConfigParser()
         config.optionxform = str  # keep letter case
@@ -167,7 +159,7 @@ class EnfReader(object):
         self.m_file = enfFile
         self.m_config = config
 
-    def getSection(self, section):
+    def getSection(self, section:str):
         """ return content of a section
 
         Args:
@@ -197,14 +189,14 @@ class EnfReader(object):
 
 
 class PatientEnfReader(EnfReader):
-    """ Class for handling the Patient.enf file created by Vicon Nexus
+    """ Class for handling a Patient.enf file created by Vicon Nexus
 
     Args:
         path (str): folder path
         enfFile (str): enf filename
     """
 
-    def __init__(self, path, enfFile):
+    def __init__(self, path:str, enfFile:str):
         super(PatientEnfReader, self).__init__(path, enfFile)
         self.m_patientInfos = super(
             PatientEnfReader, self).getSection("SUBJECT_INFO")
@@ -219,7 +211,7 @@ class PatientEnfReader(EnfReader):
             else:
                 pass
 
-    def get(self, label):
+    def get(self, label:str):
         """get value of a given parameter ( ie column name)
 
         Args:
@@ -233,7 +225,7 @@ class PatientEnfReader(EnfReader):
         """ get the patient section"""
         return self.m_patientInfos
 
-    def set(self, label, value):
+    def set(self, label:str, value:str):
         """set value of a given parameter ( ie column name)
 
         Args:
@@ -257,7 +249,7 @@ class SessionEnfReader(EnfReader):
         enfFile (str): enf filename
     """
 
-    def __init__(self, path, enfFile):
+    def __init__(self, path:str, enfFile:str):
 
         super(SessionEnfReader, self).__init__(path, enfFile)
         self.m_sessionInfos = super(
@@ -273,7 +265,7 @@ class SessionEnfReader(EnfReader):
             else:
                 pass
 
-    def get(self, label):
+    def get(self, label:str):
         """get value of a given parameter ( ie column name)
 
         Args:
@@ -286,7 +278,7 @@ class SessionEnfReader(EnfReader):
         """ return the session section as a dict"""
         return self.m_sessionInfos
 
-    def set(self, label, value):
+    def set(self, label:str, value:str):
         """set value of a given parameter ( ie column name)
 
         Args:
@@ -310,7 +302,7 @@ class TrialEnfReader(EnfReader):
         enfFile (str): enf filename
     """
 
-    def __init__(self, path, enfFile):
+    def __init__(self, path:str, enfFile:str):
 
         super(TrialEnfReader, self).__init__(path, enfFile)
         self.m_trialInfos = super(
@@ -326,7 +318,7 @@ class TrialEnfReader(EnfReader):
             else:
                 pass
 
-    def set(self, label, value):
+    def set(self, label:str, value:str):
         """set value of a given parameter ( ie column name)
 
         Args:
@@ -345,7 +337,7 @@ class TrialEnfReader(EnfReader):
         """ return the trial section as a dict"""
         return self.m_trialInfos
 
-    def get(self, label):
+    def get(self, label:str):
         """get value of a given parameter ( ie column name)
 
         Args:
@@ -385,7 +377,15 @@ class TrialEnfReader(EnfReader):
 
         return mfpa
 
-    def setForcePlates(self,mappedForcePlateCharacters):
+    def setForcePlates(self,mappedForcePlateCharacters:str):
+        """assign force plate
+
+        Args:
+            mappedForcePlateCharacters (str): letters that indicates the side assigned to each force plate
+
+        Raises:
+            Exception: _description_
+        """
 
         index = 1
         for character in  mappedForcePlateCharacters:
