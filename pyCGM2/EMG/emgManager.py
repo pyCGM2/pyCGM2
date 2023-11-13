@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/EMG
-#APIDOC["Draft"]=False
-#--end--
-
 from pyCGM2.Utils import files
 import os
 
@@ -16,11 +11,11 @@ class EmgManager(object):
 
     Args:
         DATA_PATH (str): data folder path
-        emgSettings (str,Optional[None]): content of the emg.settings file
+        emgSettings (str,optional): filename with emg settings
 
     """
 
-    def __init__(self, DATA_PATH, emgSettings=None):
+    def __init__(self, DATA_PATH:str, emgSettings:str=None):
 
 
         if emgSettings is None:

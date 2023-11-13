@@ -1,19 +1,14 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/EMG
-#APIDOC["Draft"]=False
-#--end--
-
-
 """
 The module contains convenient function for getting the normal emg activity of the muscles listed in the file
 (``pyCGM2/Data/normativeData/emg/normalActivation.json``).
 
 """
+from typing import Tuple
 import pyCGM2
 from pyCGM2.Utils import files
 
 
-def getNormalBurstActivity(muscle, fo):
+def getNormalBurstActivity(muscle:str, fo:int):
     """get onsets and offsets of a specific muscle.
 
     Args:
@@ -63,7 +58,13 @@ def getNormalBurstActivity(muscle, fo):
     return list_beginBurst, list_burstDuration
 
 
-def getNormalBurstActivity_fromCycles(muscle, ff, begin, fo, end, apf):
+def getNormalBurstActivity_fromCycles(muscle:str, 
+                                      ff:int, 
+                                      begin:int, 
+                                      fo:int, 
+                                      end:int, 
+                                      apf:int)-> Tuple[list, list]:
+    
     """get onsets and offsets of a specific muscle from .
 
     Args:
@@ -74,6 +75,8 @@ def getNormalBurstActivity_fromCycles(muscle, ff, begin, fo, end, apf):
         end (int): final frame of the cycle
         apf (int): nNumber of analog sample per frame
 
+     Returns:
+        Tuple[list, list]: starts and durations
 
     """
 

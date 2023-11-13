@@ -1,11 +1,6 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/EMG
-#APIDOC["Draft"]=False
-#--end--
 
 """
-Module containes Filter and Procedure for extracting discrete value ( e.g : amplitude) from each emg signal
-
+Module contains procedure for extracting discrete value ( e.g : amplitude) from each emg signal
 """
 
 
@@ -14,9 +9,14 @@ import pandas as pd
 
 from collections import OrderedDict
 from pyCGM2.Processing import exporter
+from pyCGM2.Processing.analysis import Analysis
 
 
-class AmplitudesProcedure(object):
+class DiscreteEmgProcedure(object):
+    def __init__(self):
+        pass
+
+class AmplitudesProcedure(DiscreteEmgProcedure):
     """
     This procedure computes EMG amplitude for each gait phases
     """
@@ -24,20 +24,21 @@ class AmplitudesProcedure(object):
     NAME = "EMG Amplitude from Integration for each gait phase"
 
     def __init__(self):
-        pass
+        super(AmplitudesProcedure, self).__init__()
 
-    def detect(self, analysisInstance, emgLabels, emgMuscles, emgContexts):
-        """ Compute amplitudes
-
+    def detect(self, analysisInstance:Analysis, emgLabels:list[str], emgMuscles:list[str], emgContexts:list[str])->pd.DataFrame:
+        """compute amplitudes
 
         Args:
-            analysis(pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
-            emgLabels(list): emg labels
-            emgMuscles(list): muscle matching emg labels
-            emgContexts(list):  side of each eamg labels
+            analysisInstance (Analysis): _description_
+            emgLabels (list[str]): emg channels
+            emgMuscles (list[str]): muscle names
+            emgContexts (list[str]): event context
 
-        """
-        ## TODO: rename the method
+        Returns:
+            pd.DataFrame: dataframe
+        """        
+
 
         dataframes = list()
 
@@ -51,9 +52,22 @@ class AmplitudesProcedure(object):
         return pd.concat(dataframes)
 
 
+    def __construcPandasSerie(self,emgLabel:str,muscle:str,context:str, cycleIndex:int,phase:str,
+                              value:float,procedure:str)->pd.Series:
+        """construct a pandas series
 
-    def __construcPandasSerie(self,emgLabel,muscle,context, cycleIndex,phase,
-                              value,procedure):
+        Args:
+            emgLabel (str): emg channel
+            muscle (str): muscle name
+            context (str): event context_
+            cycleIndex (int): cycle index
+            phase (str): movement phase ( e.g doubleStance)
+            value (float): value
+            procedure (str): name of the amplitude procedure
+
+        Returns:
+            pd.Series: _description_
+        """
         iDict = OrderedDict([('ChannelLabel', emgLabel),
                      ('Label', muscle),
                      ('EventContext', context),
@@ -63,8 +77,18 @@ class AmplitudesProcedure(object):
                      ('Value', value)])
         return pd.Series(iDict)
 
-    def __getAmplitudebyPhase(self,analysisInstance,emglabel,muscle,context):
+    def __getAmplitudebyPhase(self,analysisInstance:Analysis,emglabel:str,muscle:str,context:str)->pd.DataFrame:
+        """compute amplitude value for each phase
 
+        Args:
+            analysisInstance (Analysis): analysis instance
+            emglabel (str): emg channel
+            muscle (str): muscle name
+            context (str): event context
+
+        Returns:
+            pd.DataFrame: populated dataframe 
+        """
         procedure = "Amplitude"
         muscle = context[0]+muscle
 

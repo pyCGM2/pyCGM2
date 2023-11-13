@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/EMG
-#APIDOC["Draft"]=False
-#--end--
-
-""" This module contains co-activation procedures
+""" This module contains procedures to compute co-activation indexes
 
 check out the script : *\Tests\test_EMG.py* for examples
 
@@ -11,8 +6,11 @@ check out the script : *\Tests\test_EMG.py* for examples
 """
 import numpy as np
 
+class CoActivationProcedure(object):
+    def __init__(self):
+        pass
 
-class UnithanCoActivationProcedure(object):
+class UnithanCoActivationProcedure(CoActivationProcedure):
     """
     Coactivation procedure according Unithan et al, 1996
 
@@ -21,9 +19,10 @@ class UnithanCoActivationProcedure(object):
     """
 
     def __init__(self):
-        pass
+        super(UnithanCoActivationProcedure, self).__init__()
 
-    def run(self, emg1, emg2):
+
+    def run(self, emg1:str, emg2:str)-> list:
         """run the procedure.
 
         Args:
@@ -47,7 +46,7 @@ class UnithanCoActivationProcedure(object):
         return out
 
 
-class FalconerCoActivationProcedure(object):
+class FalconerCoActivationProcedure(CoActivationProcedure):
     """
     Coactivation index according falconer and Winter
 
@@ -56,9 +55,10 @@ class FalconerCoActivationProcedure(object):
     """
 
     def __init__(self):
-        pass
+        super(FalconerCoActivationProcedure, self).__init__()
 
-    def run(self, emg1, emg2):
+
+    def run(self, emg1:str, emg2:str)-> list:
         """run the procedure.
 
         Args:

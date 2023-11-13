@@ -1,37 +1,39 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/EMG
-#APIDOC["Draft"]=False
-#--end--
-
-""" This module contains emg filters handling emg procedures
+""" This module contains emg filters
 
 check out the script : *\Tests\test_EMG.py* for examples
 
 """
 
-
+import btk
+import pandas as pd
 import pyCGM2; LOGGER = pyCGM2.LOGGER
+from pyCGM2 import enums
+from pyCGM2.EMG.coactivationProcedures import CoActivationProcedure
+from pyCGM2.EMG.discreteEmgProcedures import DiscreteEmgProcedure
+
+
 import numpy as np
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Tools import btkTools
 from pyCGM2 import enums
 from pyCGM2.Processing import exporter
+from pyCGM2.Processing.analysis import Analysis
 
 class BasicEmgProcessingFilter(object):
     """
     Filter for filtering emg signals with a high pass filter
 
     Args:
-        acq (Btk.Acquisition): btk acquisition instance
+        acq (btk.btkAcquisition): an acquisition instance
         labels (list): emg labels.
     """
 
-    def __init__(self,acq, labels):
+    def __init__(self,acq:btk.btkAcquisition, labels:list):
 
         self.m_acq = acq
         self.m_labels = labels
 
-    def setHighPassFrequencies(self,low,up):
+    def setHighPassFrequencies(self,low:float,up:float):
         """Set the frequency boudaries of your emg Butterworth high-pass filter.
 
         Args:
@@ -67,16 +69,16 @@ class EmgEnvelopProcessingFilter(object):
     """
     Filter for processing emg envelop from low-pass filter
     Args:
-        acq (Btk.Acquisition): btk acquisition instance
+        acq (btk.btkAcquisition): btk acquisition instance
         labels (list): emg labels.
     """
 
-    def __init__(self,acq, labels):
+    def __init__(self,acq:btk.btkAcquisition, labels:list):
 
         self.m_acq = acq
         self.m_labels = [ label+"_Rectify" for label in labels]
 
-    def setCutoffFrequency(self,fc):
+    def setCutoffFrequency(self,fc:float):
         """Set the cut-off frequency.
 
         Args:
@@ -94,27 +96,17 @@ class EmgEnvelopProcessingFilter(object):
             btkTools.smartAppendAnalog(self.m_acq,label+"_Env",valuesFilt, desc= "fc("+str(self.m_fc)+")")
 
 
-        # for analog in btk.Iterate(self.m_acq.GetAnalogs()):
-        #
-        #     for label in self.m_labels:
-        #         if analog.GetLabel()==label :
-        #
-        #             values =  analog.GetValues()
-        #             valuesFilt = signal_processing.enveloppe(values, self.m_fc,fa)
-        #
-        #             btkTools.smartAppendAnalog(self.m_acq,label+"_Env",valuesFilt, desc= "fc("+str(self.m_fc)+")")
-
 class EmgNormalisationProcessingFilter(object):
     """
     Filter for normalizing emg signals in amplitude
 
     Args:
-        analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
+        analysis (Analysis): A pycgm2 analysis instance
         label (str): emg label.
         context (str): Event context.
     """
 
-    def __init__(self,analysis, label,context):
+    def __init__(self,analysis:Analysis, label:str,context:str):
 
 
         self.m_analysis = analysis
@@ -127,7 +119,7 @@ class EmgNormalisationProcessingFilter(object):
         self.__c3dProcess = False
 
 
-    def setC3ds(self,datPath,c3ds,fileSuffix=None):
+    def setC3ds(self,datPath:str,c3ds:list,fileSuffix:str=None):
         """Set a list of c3d.
 
         Args:
@@ -142,20 +134,20 @@ class EmgNormalisationProcessingFilter(object):
         self.m_fileSuffix=fileSuffix
 
 
-    def setThresholdFromOtherAnalysis(self,analysis):
+    def setThresholdFromOtherAnalysis(self,analysis:Analysis):
         """Set an other pyCGM2 analysis instance as normalisation denominator
 
         Args:
-            analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
+            analysis (Analysis): A pycgm2 analysis instance
 
         """
         self.m_thresholdFromAnalysis = analysis
 
-    def setMaxMethod(self,EnumEmgNorm, Value=None):
+    def setMaxMethod(self,EnumEmgNorm:enums.EmgAmplitudeNormalization, Value:float=None):
         """set a normalisation method
 
         Args:
-            EnumEmgNorm (pyCGM2.Enums): method
+            EnumEmgNorm (enums.EmgAmplitudeNormalization): method
             Value (float,Optional): force the denominator value
 
         """
@@ -234,11 +226,11 @@ class EmgCoActivationFilter(object):
     Filter for computing coactivation index
 
     Args:
-        analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
+        analysis (Analysis): A pycgm2 analysis instance
         context (str): event context
     """
 
-    def __init__(self,analysis,context):
+    def __init__(self,analysis:Analysis,context:str):
 
 
         self.m_analysis = analysis
@@ -246,7 +238,7 @@ class EmgCoActivationFilter(object):
         self.m_labelEMG1 = None
         self.m_labelEMG2 = None
 
-    def setEMG1(self,label):
+    def setEMG1(self,label:str):
         """set the label of the first emg signal
 
         Args:
@@ -255,7 +247,7 @@ class EmgCoActivationFilter(object):
         self.m_labelEMG1 = label
 
 
-    def setEMG2(self,label):
+    def setEMG2(self,label:str):
         """set the label of the second emg signal
 
         Args:
@@ -265,11 +257,11 @@ class EmgCoActivationFilter(object):
         self.m_labelEMG2 = label
 
 
-    def setCoactivationMethod(self, concreteCA):
+    def setCoactivationMethod(self, concreteCA:CoActivationProcedure):
         """set the coactivation procedure
 
         Args:
-            concreteCA (pyCGM2.EMG.Coactivation): Coactivation procedure instance
+            concreteCA CoActivationProcedure): a Coactivation procedure instance
 
         """
 
@@ -299,17 +291,18 @@ class DiscreteEMGFilter(object):
     the goal of this filter is to return a Pandas dataframe.
 
     Args:
-        discreteEMGProcedure (pyCGM2.EMG.discreteEmgProcedures.procedure): a discrete emg procedure instance.
-        analysis (pyCGM2.Processing.analysis.Analysis): A pycgm2 analysis instance
+        discreteEMGProcedure (DiscreteEmgProcedure): a discrete emg procedure instance.
+        analysis (Analysis): A pycgm2 analysis instance
         emgLabels (list): emg labels
         emgMuscles (list): muscle matching emg labels
         emgContexts (list):  side of each emg labels
-        subjInfo (dict,Optional[None]): dictionary decribing the subject. Items will be added to the generated pandas dataframe
-        condExpInfo (dict,Optional[None]): dictionary decribing the experiment conditions. Items will be added to the generated pandas dataframe
+        subjInfo (dict,optional): dictionary decribing the subject. Items will be added to the generated pandas dataframe
+        condExpInfo (dict,optional): dictionary decribing the experiment conditions. Items will be added to the generated pandas dataframe
 
     """
 
-    def __init__(self, discreteEMGProcedure, analysis, emgLabels, emgMuscles, emgContexts, subjInfo=None, condExpInfo=None):
+    def __init__(self, discreteEMGProcedure:DiscreteEmgProcedure, analysis:Analysis, 
+                 emgLabels:list, emgMuscles:list, emgContexts:list, subjInfo:dict=None, condExpInfo:dict=None):
 
         self.m_procedure = discreteEMGProcedure
         self.m_analysis = analysis
@@ -322,7 +315,7 @@ class DiscreteEMGFilter(object):
         self.m_emgLabels = emgLabels
         self.m_emgContexts = emgContexts
 
-    def setSubjInfo(self, subjInfo):
+    def setSubjInfo(self, subjInfo:dict):
         """ set subject info
 
         Args:
@@ -332,7 +325,7 @@ class DiscreteEMGFilter(object):
 
         self.m_subjInfo = subjInfo
 
-    def setCondExpInf(self, condExpInfo):
+    def setCondExpInf(self, condExpInfo:dict):
         """ set experiment condition info
 
         Args:
@@ -341,7 +334,7 @@ class DiscreteEMGFilter(object):
         """
         self.m_condExpInfo = condExpInfo
 
-    def getOutput(self):
+    def getOutput(self)->pd.DataFrame:
         """run the procedure and get outputs
 
         Returns:
