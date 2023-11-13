@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/ForcePlates
-#APIDOC["Draft"]=False
-#--end--
 """
 The module contains convenient functions for working with force plate.
 
 check out the script : *\Tests\test_forcePlateMatching.py* for examples
 """
 
-
-
+from typing import Tuple
+from typing import Optional
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
@@ -17,8 +13,6 @@ from matplotlib.path import Path
 import scipy as sp
 
 import re
-
-
 
 try:
     import btk
@@ -30,8 +24,9 @@ except:
 from pyCGM2.Tools import  btkTools
 
 
-def ForcePlateIntegration(ReactionForce, mass, frameInit=0,frameEnd=None,
-                            v0 =[0,0,0], p0= [0,0,0], analogFrequency=1000):
+def ForcePlateIntegration(ReactionForce:np.ndarray, mass:float, frameInit:int=0,frameEnd:int=None,
+                            v0:list =[0,0,0], p0:list= [0,0,0], 
+                            analogFrequency:int=1000)-> Tuple[np.ndarray, np.ndarray,np.ndarray]:
     """integration of the reaction force
 
     Args:
@@ -43,6 +38,9 @@ def ForcePlateIntegration(ReactionForce, mass, frameInit=0,frameEnd=None,
         p0 (list,Optional[0,0,0]): initial position.
         analogFrequency (double,optional[1000]): analog frequency.
 
+     Returns:
+        Tuple[np.ndarray, np.ndarray,np.ndarray]: position, velocity, acceleration
+        
     """
 
     g=9.81
@@ -80,11 +78,11 @@ def ForcePlateIntegration(ReactionForce, mass, frameInit=0,frameEnd=None,
     return position0, velocity0, acceleration0
 
 
-def appendForcePlateCornerAsMarker (btkAcq):
+def appendForcePlateCornerAsMarker (btkAcq:btk.btkAcquisition):
     """update a btk acquisition with force plate corners as marker
 
     Args:
-        btkAcq (Btk.Acquisition): a btk acquisition instance
+        btkAcq (btk.btkAcquisition): a btk acquisition instance
 
     """
 
@@ -120,8 +118,11 @@ def appendForcePlateCornerAsMarker (btkAcq):
 
 
 
-def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, left_markerLabelToe ="LTOE", left_markerLabelHeel ="LHEE",
-                 right_markerLabelToe ="RTOE", right_markerLabelHeel ="RHEE",  display = False, mfpa=None):
+def matchingFootSideOnForceplate (btkAcq:btk.btkAcquisition, 
+                                  enableRefine:bool=True, forceThreshold:int=50, 
+                                  left_markerLabelToe:str ="LTOE", left_markerLabelHeel:str ="LHEE",
+                                  right_markerLabelToe:str ="RTOE", right_markerLabelHeel:str ="RHEE",  
+                                  display:bool = False, mfpa:str=None):
     """Convenient function detecting foot in contact with a force plate
 
     This function firsly assign foot side to FP from minimal distance with the application point of reaction force.
@@ -315,14 +316,14 @@ def matchingFootSideOnForceplate (btkAcq, enableRefine=True, forceThreshold=50, 
 
 
 
-def addForcePlateGeneralEvents (btkAcq,mappedForcePlate):
+def addForcePlateGeneralEvents (btkAcq:btk.btkAcquisition,mappedForcePlate:str):
     """add maximum force plate as general event
 
     Args:
-        btkAcq (btk.acquisition): btk acquisition instance
-        mappedForcePlate (str): letters indicated foot assigned to a force plate (eg LRX)
+        btkAcq (btk.btkAcquisition): btk acquisition instance
+        mappedForcePlate (str): letters that indicate foot assigned to a force plate (eg LRX)
     """
-    ## TODO: rename this function
+
 
 
     ff=btkAcq.GetFirstFrame()
@@ -365,11 +366,11 @@ def addForcePlateGeneralEvents (btkAcq,mappedForcePlate):
 
         indexFP+=1
 
-def correctForcePlateType5(btkAcq):
+def correctForcePlateType5(btkAcq:btk.btkAcquisition):
     """Correct acquisition with force plate of type 5
 
     Args:
-        btkAcq (btk.acquisition): btk acquisition instance
+        btkAcq (btk.btkAcquisition): btk acquisition instance
 
     """
 
@@ -458,7 +459,16 @@ def correctForcePlateType5(btkAcq):
     return btkAcq
 
 
-def combineForcePlate(acq,mappedForcePlate):
+def combineForcePlate(acq:btk.btkAcquisition,mappedForcePlate:str)-> Tuple[btk.btkWrench, btk.btkWrench]:
+    """combine signals from force plates
+
+    Args:
+        acq (btk.btkAcquisition): a btk acquisition instance
+        mappedForcePlate (str): letters that indicate foot assigned to a force plate (eg LRX)
+
+    Returns:
+       Tuple[btk.btkWrench, btk.btkWrench]: left and right wrenchs
+    """
 
     analogFrames = acq.GetAnalogFrameNumber()
 
@@ -535,16 +545,18 @@ def combineForcePlate(acq,mappedForcePlate):
     return left_wrench, right_wrench
 
 
-def detectGaitConsecutiveForcePlates(acq,mappedForcePlate, threshold = 25):
+def detectGaitConsecutiveForcePlates(acq:btk.btkAcquisition,
+                                     mappedForcePlate:str, 
+                                     threshold:int = 25)-> Optional[dict]:
     """detect valid and two consecutive foot contacts on force plate. ie the leading limb and the trailing limb
 
     Args:
-        acq ((Btk.Acquisition): acquisition
-        mappedForcePlate (str): force plate foot assigment
+        acq (btk.btkAcquisitionAcquisition): acquisition
+        mappedForcePlate (str):letters that indicate foot assigned to a force plate (eg LRX)
         threshold (int, optional): force threshold for force plate detection. Defaults to 25 N.
 
     Returns:
-        dict or None: dictionnary with two keys ["Left","Right"], each composed with a list indidanting the FP index of the leading limb and the FP of the trailing limb
+        Optional[dict] dictionnary with two keys ["Left","Right"], each composed with a list indidanting the FP index of the leading limb and the FP of the trailing limb
     """    
     pfe = btk.btkForcePlatformsExtractor()
     grwf = btk.btkGroundReactionWrenchFilter()
