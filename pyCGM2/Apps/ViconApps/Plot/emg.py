@@ -53,7 +53,7 @@ def temporal(args):
 
 
         # btk Acquisition
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,inputFileNoExt,subject)
         acq = nacf.build()
 
         emgChannels = emgManager.getChannels()
@@ -123,7 +123,7 @@ def normalized(args):
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,inputFileNoExt,subject)
         acq = nacf.build()
 
 

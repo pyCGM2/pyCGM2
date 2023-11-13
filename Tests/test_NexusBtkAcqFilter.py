@@ -35,7 +35,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ filenameNoExt+".c3d"))
@@ -54,7 +54,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
                     # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ filenameNoExt+".c3d"))
@@ -74,7 +74,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ filenameNoExt+".c3d"))
@@ -93,7 +93,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
 
@@ -131,7 +131,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             #btkTools.smartWriter(acq,"NEWC3D.c3d")
@@ -173,7 +173,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ filenameNoExt+".c3d"))
@@ -193,7 +193,7 @@ else :
         #     subject = nexusTools.getActiveSubject(NEXUS)
         #
         #     # btkAcq builder
-        #     nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+        #     nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
         #     acq = nacf.build()
         #
         #     acq0 = btkTools.smartReader(str(DATA_PATH+ "Capture 01-cropped.c3d"))
@@ -215,7 +215,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartWriter(acq,"verif.c3d")
@@ -233,7 +233,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ filenameNoExt+".c3d"))
@@ -254,7 +254,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
 
@@ -278,7 +278,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ "forCheckingInteractiveCropped\\gait_Cropped - 300-400.c3d"))
@@ -300,7 +300,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ "forCheckingInteractiveCropped\\gait_cropped - 300-400.c3d"))
@@ -326,7 +326,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ filenameNoExt+".c3d"))
@@ -350,7 +350,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ filenameNoExt+".c3d"))
@@ -375,7 +375,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ "forCheckingInteractiveCropped\\gait_Cropped - 300-400.c3d"))
@@ -401,7 +401,7 @@ else :
             subject = nexusTools.getActiveSubject(NEXUS)
 
             # btkAcq builder
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filenameNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filenameNoExt,subject)
             acq = nacf.build()
 
             acq0 = btkTools.smartReader(str(DATA_PATH+ "forCheckingInteractiveCropped\\gait_cropped - 300-400.c3d"))

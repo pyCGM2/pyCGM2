@@ -186,7 +186,7 @@ def main():
 
 
         # --------------------------PULL ------------------------------------
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,filename,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,filename,subject)
         acq = nacf.build()
         btkTools.smartWriter(acq, "verif.c3d")
 

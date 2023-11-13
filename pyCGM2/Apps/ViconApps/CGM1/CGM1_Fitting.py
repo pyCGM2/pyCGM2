@@ -130,7 +130,7 @@ def main(args = None):
 
         # btkAcq builder
         if NEXUS_PYTHON_CONNECTED:
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,reconstructFilenameLabelledNoExt,subject)
             acq = nacf.build()
         else: 
             acq=btkTools.smartReader(DATA_PATH+reconstructFilenameLabelled)

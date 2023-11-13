@@ -70,7 +70,7 @@ def horizontalHistogram(args):
 
     if not ECLIPSE_MODE:
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,modelledFilenameNoExt,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,modelledFilenameNoExt,subject)
         acq = nacf.build()
 
 

@@ -102,7 +102,7 @@ def main(args=None):
            translators = settings["Translators"]
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructedFilenameLabelledNoExt,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,reconstructedFilenameLabelledNoExt,subject)
         acq = nacf.build()
 
         # --------------------------MODEL PROCESSING----------------------------

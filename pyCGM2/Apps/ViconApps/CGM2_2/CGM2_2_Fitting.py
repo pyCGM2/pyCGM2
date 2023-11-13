@@ -135,7 +135,7 @@ def main(args=None):
             mfpa =  args.offline[2]
 
         if NEXUS_PYTHON_CONNECTED:
-            nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
+            nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,reconstructFilenameLabelledNoExt,subject)
             acq = nacf.build()
         else: 
             acq=btkTools.smartReader(DATA_PATH+reconstructFilenameLabelled)

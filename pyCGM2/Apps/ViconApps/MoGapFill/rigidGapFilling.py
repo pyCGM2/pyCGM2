@@ -44,7 +44,7 @@ def main():
         subject = nexusTools.getActiveSubject(NEXUS)
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,reconstructFilenameLabelledNoExt,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,reconstructFilenameLabelledNoExt,subject)
         acqGait = nacf.build()
 
         ff = acqGait.GetFirstFrame()-1
