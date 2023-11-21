@@ -4,7 +4,7 @@ import os
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
-
+from typing import Optional, Union, Dict
 
 class EmgManager(object):
     """
@@ -15,7 +15,7 @@ class EmgManager(object):
         emgSettings (str): filename with emg settings 
     """
 
-    def __init__(self, DATA_PATH:str, emgSettings:str=None):
+    def __init__(self, DATA_PATH:str, emgSettings: Optional[Union[str, Dict]]=None):
 
         if emgSettings is None:
             if os.path.isfile(DATA_PATH + "emg.settings"):
@@ -26,15 +26,16 @@ class EmgManager(object):
                 emgSettings = files.openFile(
                     pyCGM2.PYCGM2_SETTINGS_FOLDER, "emg.settings")
         else:
-            if DATA_PATH is not None:
-                LOGGER.logger.info( f"[pyCGM2]: emg settings loaded from => {emgSettings} ")
-                emgSettings = files.openFile(DATA_PATH, emgSettings)
-            else: 
-                emgSettings = files.openFile(None, emgSettings)
+            if isinstance(emgSettings,str):
+                if DATA_PATH is not None:
+                    LOGGER.logger.info( f"[pyCGM2]: emg settings loaded from => {emgSettings} ")
+                    emgSettings = files.openFile(DATA_PATH, emgSettings)
+                else: 
+                    emgSettings = files.openFile(None, emgSettings)
+            else:
+                pass
 
         self.m_emgSettings = emgSettings
-
-
         self.m_emgChannelSection = emgSettings["CHANNELS"]
         self.m_emgProcessingSection = emgSettings["Processing"]
 

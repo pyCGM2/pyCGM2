@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Utils
-#APIDOC["Draft"]=False
-#--end--
 import pickle
 import json
 import os
