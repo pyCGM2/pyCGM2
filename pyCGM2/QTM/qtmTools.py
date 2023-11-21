@@ -136,7 +136,7 @@ def detectMeasurementType(soup:bs4.BeautifulSoup):
     return types
 
 
-def SubjectMp(soup:bs4.BeautifulSoupsurement):
+def SubjectMp(soup:bs4.BeautifulSoup):
     """return the antropometric parameters
 
     Args:
