@@ -205,7 +205,7 @@ def arrayLowPassFiltering(valuesArray, freq, order=2, fc=6):
 
 def downsample(array, initFreq, targetedFreq):
     if targetedFreq >= initFreq:
-        raise ValueError("La fréquence cible doit être inférieure à la fréquence initiale pour le sous-échantillonnage.")
+        raise ValueError("targeted frequency cannot be over the initial frequency")
         
     time = np.linspace(0, (array.shape[0] - 1) / initFreq, array.shape[0])
     newTime = np.linspace(0, time[-1], int(array.shape[0] * targetedFreq / initFreq))
