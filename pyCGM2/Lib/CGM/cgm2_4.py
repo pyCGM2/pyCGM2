@@ -17,21 +17,21 @@ from pyCGM2.Model.CGM2 import cgm2
 from pyCGM2.Model.CGM2 import decorators
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Model.Opensim import opensimFilters
-from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
-from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 from pyCGM2.Signal import signal_processing
 from pyCGM2.Anomaly import anomalyFilters
 from pyCGM2.Anomaly import anomalyDetectionProcedures
 from pyCGM2.Inspector import inspectorFilters
 from pyCGM2.Inspector import inspectorProcedures
 from pyCGM2.Lib.Processing import progression
+from pyCGM2.Model.model import Model
 
 
-def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
-              required_mp,optional_mp,
-              ik_flag,leftFlatFoot,rightFlatFoot,headFlat,
-              markerDiameter,hjcMethod,
-              pointSuffix,*argv, **kwargs):
+def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,
+              translators:dict,weights:dict,
+              required_mp:dict,optional_mp:dict,
+              ik_flag:bool,leftFlatFoot:bool,rightFlatFoot:bool,headFlat:bool,
+              markerDiameter:float,hjcMethod:dict,
+              pointSuffix:str,*argv, **kwargs):
     """
     CGM24 calibration.
 
@@ -51,14 +51,14 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
 
     Keyword Arguments:
         anomalyException (bool): raise exception if anomaly detected
-        forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
+        forceBtkAcq (btk.btkAcquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         displayCoordinateSystem (bool): return virtual markers for visualisation of the anatomical refentials
         noKinematicsCalculation (bool) : disable computation of joint kinematics
         forceMP (bool) : force the use of mp offset to compute the knee and ankle joint centres
 
     Returns:
         model (pyCGM2.Model): the calibrated Model
-        acqStatic (Btk.Acquisition): static btkAcquisition instance with model ouputs
+        acqStatic (btk.btkAcquisition): static btkAcquisition instance with model ouputs
         detectAnomaly  (bool): presence of anomaly
 
     """
@@ -329,17 +329,19 @@ def calibrate(DATA_PATH,calibrateFilenameLabelled,translators,weights,
         return model, finalAcqStatic,detectAnomaly
 
 
-def fitting(model,DATA_PATH, reconstructFilenameLabelled,
-    translators,weights,
-    ik_flag,markerDiameter,
-    pointSuffix,
-    mfpa,
-    momentProjection,*argv, **kwargs):
+def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
+    translators:dict,weights:dict,
+    ik_flag:bool,
+    markerDiameter:float,
+    pointSuffix:str,
+    mfpa:str,
+    momentProjection:str,*argv, **kwargs):
 
     """
     CGM24 Fitting.
 
     Args:
+        model (Model): a calibrated model
         DATA_PATH (str): folder path.
         reconstructFilenameLabelled (str): filename of your gait trial.
         translators (dict): marker translators.
@@ -352,7 +354,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
 
     Keyword Arguments:
         anomalyException (bool): raise exception if anomaly detected
-        forceBtkAcq (btk.Acquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
+        forceBtkAcq (btk.btkAcquisition): use a btkAcquisition instance instead of building the btkAcquisition from the static filename
         frameInit (int):  frame index.
         frameEnd (int):  frame index
         fc_lowPass_marker (float): low-pass fiter cutoff frequency applied on marker trajectories
@@ -363,7 +365,7 @@ def fitting(model,DATA_PATH, reconstructFilenameLabelled,
         noKinematicsCalculation (bool) : disable computation of joint kinematics
 
     Returns:
-        acqGait (Btk.Acquisition): static btkAcquisition instance with model ouputs
+        acqGait (btk.btkAcquisition): static btkAcquisition instance with model ouputs
         detectAnomaly  (bool): presence of anomaly
 
     """
