@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Report
-#APIDOC["Draft"]=False
-#--end--
-
 """
 Module deals with normative datasets.
 
@@ -34,7 +29,7 @@ class NormativeData(object):
 
     """
 
-    def __init__(self,filenameNoExt,modality):
+    def __init__(self,filenameNoExt:str,modality:str):
 
 
         fullJsonDict = files.openFile(pyCGM2.NORMATIVE_DATABASE_PATH,filenameNoExt+".json")
@@ -85,8 +80,6 @@ class NormalSTP(object):
         self._construct()
 
     def _construct(self):
-
-
 
         values =pd.read_excel(self.m_filename,sheet_name = "Nantes")
 
