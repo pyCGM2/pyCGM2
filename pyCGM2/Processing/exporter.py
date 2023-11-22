@@ -24,14 +24,7 @@ from pyCGM2.Utils import files
 # ----- PANDAS ---------
 # TODO : optimize implementation
 
-FRAMES_HEADER=list()
-for i in range(0,101):
-    if i>=1 and i<10:
-        FRAMES_HEADER.append ( "Frame00"+str(i))
-    elif i>9 and i<100:
-        FRAMES_HEADER.append ( "Frame0"+str(i))
-    else:
-        FRAMES_HEADER.append ( "Frame"+str(i))
+FRAMES_HEADER = ["Frame0"]+['Frame' + '{:03}'.format(i) for i in range(1,101)]
 
 def isColumnNameExist( dataframe, name):
     if name in dataframe.columns.values:
