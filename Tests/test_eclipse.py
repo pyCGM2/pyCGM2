@@ -8,6 +8,23 @@ from pyCGM2.Nexus import eclipse
 
 from pyCGM2.Tools import  btkTools
 from pyCGM2.ForcePlates import forceplates
+from pyCGM2.Nexus import vskTools
+
+class Test_VSK:
+
+    def test_reader(self):
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "GaitModels\\CGM1\\fullBody-native-noOptions-customMP\\"
+        staticFilename = "static.c3d"
+
+        markerDiameter=14
+        leftFlatFoot = False
+        rightFlatFoot = False
+        headStraight = False
+        pointSuffix = "test"
+
+        vsk = vskTools.Vsk(DATA_PATH + "New Subject.vsk")
+        required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
+
 
 
 class Test_eclipse:
