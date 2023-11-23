@@ -3,7 +3,7 @@
 import pyCGM2
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-c
+from typing import List, Tuple, Dict, Optional
 
 class FrameConverter():
     def __init__(self,firstFrame:int,lastFrame:int, nppf:int):
