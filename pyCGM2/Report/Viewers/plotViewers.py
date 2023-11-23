@@ -20,9 +20,14 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
+from pyCGM2.Report.normativeDatasets import NormativeData
+from pyCGM2.Processing.analysis import Analysis
+from typing import Optional, Callable
 
-class AbstractPlotViewer(object):
-    def __init__(self,input,AutomaticYlimits=True):
+
+class PlotViewer(object):
+    """ abstract class """
+    def __init__(self,input,AutomaticYlimits:bool=True):
         self.m_input =input
         self.m_automaticYlim_flag = AutomaticYlimits
 
@@ -38,10 +43,10 @@ class AbstractPlotViewer(object):
     def plotPanel(self):
         pass
 
-    def setAutomaticYlimits(self,bool):
+    def setAutomaticYlimits(self,bool:bool):
         self.m_automaticYlim_flag = bool
 
-class SpatioTemporalPlotViewer(AbstractPlotViewer):
+class SpatioTemporalPlotViewer(PlotViewer):
     """ Plot viewer to display spatio-temporal parameters as histogram
 
     Args:
@@ -49,7 +54,7 @@ class SpatioTemporalPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis):
+    def __init__(self,iAnalysis:Analysis):
 
         super(SpatioTemporalPlotViewer, self).__init__(iAnalysis)
 
@@ -59,7 +64,7 @@ class SpatioTemporalPlotViewer(AbstractPlotViewer):
         else:
             LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
         """Set the normative dataset
 
 
@@ -147,7 +152,7 @@ class SpatioTemporalPlotViewer(AbstractPlotViewer):
 
         return self.fig
 
-class GpsMapPlotViewer(AbstractPlotViewer):
+class GpsMapPlotViewer(PlotViewer):
     """ Plot viewer to display GPS and MAP panel
 
     Args:
@@ -155,7 +160,7 @@ class GpsMapPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None):
+    def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None):
 
 
 
@@ -241,7 +246,7 @@ class GpsMapPlotViewer(AbstractPlotViewer):
 
         return self.fig
 
-class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
+class NormalizedKinematicsPlotViewer(PlotViewer):
     """ Plot time-Normalized Kinematics
 
     Args:
@@ -251,7 +256,7 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
+    def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None,bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
 
         super(NormalizedKinematicsPlotViewer, self).__init__(iAnalysis)
 
@@ -269,11 +274,11 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
         self.m_concretePlotFunction = None
 
 
-    def setConcretePlotFunction(self, concreteplotFunction):
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
         """set a plot function ( see `plot`)
 
         Args:
-            concreteplotFunction (function): plot function
+            concreteplotFunction (Callable): a plot function of a plot function of pyCGM2.Report.plot
 
         """
         self.m_concretePlotFunction = concreteplotFunction
@@ -432,7 +437,7 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
                 ax13.set_ylim([-30,30])
                 ax14.set_ylim([-30,30])
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
         """ Set the normative dataset
 
         Args:
@@ -878,7 +883,7 @@ class NormalizedKinematicsPlotViewer(AbstractPlotViewer):
 
         return self.fig
 
-class TemporalKinematicsPlotViewer(AbstractPlotViewer):
+class TemporalKinematicsPlotViewer(PlotViewer):
     """ Plot temporal Kinematics
 
     Args:
@@ -888,7 +893,7 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAcq,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
+    def __init__(self,iAcq:btk.btkAcquisition,pointLabelSuffix:Optional[str]=None,bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
 
         super(TemporalKinematicsPlotViewer, self).__init__(iAcq)
 
@@ -1231,7 +1236,7 @@ class TemporalKinematicsPlotViewer(AbstractPlotViewer):
         return self.fig
 
 
-class NormalizedKineticsPlotViewer(AbstractPlotViewer):
+class NormalizedKineticsPlotViewer(PlotViewer):
     """ Plot time-Normalized kinetics
 
     Args:
@@ -1241,7 +1246,7 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
+    def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None,bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
 
         super(NormalizedKineticsPlotViewer, self).__init__(iAnalysis)
 
@@ -1257,11 +1262,11 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
         self.m_flagConsistencyOnly = False
         self.m_concretePlotFunction = None
 
-    def setConcretePlotFunction(self, concreteplotFunction):
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
         """set a plot function ( see `plot`)
 
         Args:
-            concreteplotFunction (function): plot function
+            concreteplotFunction (Callable): a plot function of a plot function of pyCGM2.Report.plot
 
         """
         self.m_concretePlotFunction = concreteplotFunction
@@ -1347,7 +1352,7 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
             raise Exception("Plot panel not implemented yet")
 
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
         """ Set the normative dataset
 
         Args:
@@ -1489,7 +1494,7 @@ class NormalizedKineticsPlotViewer(AbstractPlotViewer):
 
 
 
-class TemporalKineticsPlotViewer(AbstractPlotViewer):
+class TemporalKineticsPlotViewer(PlotViewer):
     """ Plot temporal Kinetics
 
     Args:
@@ -1499,7 +1504,7 @@ class TemporalKineticsPlotViewer(AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAcq,pointLabelSuffix=None,bodyPart=enums.BodyPartPlot.LowerLimb):
+    def __init__(self,iAcq:btk.btkAcquisition,pointLabelSuffix:Optional[str]=None,bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
 
         super(TemporalKineticsPlotViewer, self).__init__(iAcq)
 

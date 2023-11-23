@@ -8,15 +8,19 @@ import scipy  as sp
 import pyCGM2
 from pyCGM2.Report.Viewers import plotViewers
 
+from pyCGM2.Report.normativeDatasets import NormativeData
+from pyCGM2.Processing.analysis import Analysis
 
-class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
+from typing import Optional, Callable
+
+class NormalizedGroundReactionForcePlotViewer(plotViewers.PlotViewer):
     """ Plot time-Normalized Ground reaction forces 
 
     Args:
         iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None):
+    def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None):
 
         super(NormalizedGroundReactionForcePlotViewer, self).__init__(iAnalysis)
 
@@ -32,11 +36,11 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
         self.m_concretePlotFunction = None
         
         
-    def setConcretePlotFunction(self, concreteplotFunction):
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
         """set a plot function ( see `plot`)
 
         Args:
-            concreteplotFunction (function): plot function
+            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
 
         """
         self.m_concretePlotFunction = concreteplotFunction
@@ -89,7 +93,7 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
             ax.set_xlabel("Cycle %",size=8)
 
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
         """ Set the normative dataset
 
         Args:
@@ -190,14 +194,14 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.AbstractPlotViewer):
 
 
 
-class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.AbstractPlotViewer):
+class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.PlotViewer):
     """ Plot the time-normalized Com Kinematics from integration of the consecutive ground reaction force  
 
     Args:
         iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None,bodymass = 0):
+    def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None,bodymass:float = 0):
                
 
         super(NormalizedGaitGrfIntegrationPlotViewer, self).__init__(iAnalysis)
@@ -215,11 +219,11 @@ class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.AbstractPlotViewer):
         self.m_concretePlotFunction = None
 
 
-    def setConcretePlotFunction(self, concreteplotFunction):
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
         """set a plot function ( see `plot`)
 
         Args:
-            concreteplotFunction (function): plot function
+            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
 
         """
         self.m_concretePlotFunction = concreteplotFunction
@@ -331,7 +335,7 @@ class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.AbstractPlotViewer):
             ax.set_xlabel("cycle %",size=8)
 
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
         """ Set the normative dataset
 
         Args:
@@ -535,14 +539,14 @@ class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.AbstractPlotViewer):
 
         # return self.fig
 
-class NormalizedGaitMeanGrfIntegrationPlotViewer(plotViewers.AbstractPlotViewer):
+class NormalizedGaitMeanGrfIntegrationPlotViewer(plotViewers.PlotViewer):
     """ Plot the time-normalized Com Kinematics from integration of the mean ground reaction force 
 
     Args:
         iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None,bodymass = 0):
+    def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None,bodymass:float = 0):
                
 
         super(NormalizedGaitMeanGrfIntegrationPlotViewer, self).__init__(iAnalysis)
@@ -691,7 +695,7 @@ class NormalizedGaitMeanGrfIntegrationPlotViewer(plotViewers.AbstractPlotViewer)
             ax.set_xlabel("stance %",size=8)
 
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
         """ Set the normative dataset
 
         Args:

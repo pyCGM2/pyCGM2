@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Report
-#APIDOC["Draft"]=False
-#--end--
 
 """
-Module contains `plotViewers` for displaying emg data
+Module contains `plotViewers` to display emg data
 """
 
 import numpy as np
@@ -17,7 +13,9 @@ import pyCGM2
 from pyCGM2.Report import plot
 from pyCGM2.Report import plotUtils
 from pyCGM2.Report.Viewers import plotViewers
-
+from pyCGM2.EMG.emgManager import EmgManager
+from pyCGM2.Report.normativeDatasets import NormativeData
+from pyCGM2.Processing.analysis import Analysis
 try:
     import btk
 except:
@@ -26,8 +24,9 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
+from typing import Optional, Callable
 
-class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
+class TemporalEmgPlotViewer(plotViewers.PlotViewer):
     """plot temporal emg plot
 
     Args:
@@ -37,7 +36,7 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAcq,pointLabelSuffix=None):
+    def __init__(self,iAcq:btk.btkAcquisition,pointLabelSuffix:Optional[str]=None):
 
 
         super(TemporalEmgPlotViewer, self).__init__(iAcq)
@@ -56,7 +55,7 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         self.m_ignoreNormalActivity = False
         self.m_selectChannels = None
 
-    def setEmgManager(self,emgManager):
+    def setEmgManager(self,emgManager:EmgManager):
         """set the `emgManager` instance
 
         Args:
@@ -68,7 +67,7 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         if self.m_selectChannels is None:
             self.m_selectChannels = self.m_emgmanager.getChannels()
 
-    def selectEmgChannels(self,channelNames):
+    def selectEmgChannels(self,channelNames:list[str]):
         """set the emg channels
 
         Args:
@@ -77,7 +76,7 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         """
         self.m_selectChannels = channelNames
 
-    def setEmgRectify(self, flag):
+    def setEmgRectify(self, flag:bool):
         """Enable/disable rectify mode
 
         Args:
@@ -124,11 +123,12 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
             ax.set_ylabel("Emg Unit",size=8)
 
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
+        LOGGER.logger.warning("[pyCGM2] - pycgm2 not include and display normal emg data")
         pass
 
 
-    def ignoreNormalActivty(self, bool):
+    def ignoreNormalActivty(self, bool:bool):
         """Enable/disable normal actividy display
 
         Args:
@@ -167,7 +167,7 @@ class TemporalEmgPlotViewer(plotViewers.AbstractPlotViewer):
         return self.fig
 
 
-class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
+class CoactivationEmgPlotViewer(plotViewers.PlotViewer):
     """plot coactivation plot
 
     Args:
@@ -177,7 +177,7 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None):
+    def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None):
 
         super(CoactivationEmgPlotViewer, self).__init__(iAnalysis)
 
@@ -189,7 +189,7 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
         self.m_pointLabelSuffix = pointLabelSuffix
 
-    def setEmgs(self,label1,label2):
+    def setEmgs(self,label1:str,label2:str):
         """set the 2 emg labels to plot
 
         Args:
@@ -200,7 +200,7 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
         self.m_emg1 = label1+"_Rectify_Env_Norm"
         self.m_emg2 = label2+"_Rectify_Env_Norm"
 
-    def setMuscles(self,label1,label2):
+    def setMuscles(self,label1:str,label2:str):
         """set the 2 measured muscle names
 
         Args:
@@ -211,7 +211,7 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
         self.m_muscleLabel1 = label1
         self.m_muscleLabel2 = label2
 
-    def setContext(self,context):
+    def setContext(self,context:str):
         """set event context
 
         Args:
@@ -237,14 +237,15 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
             ax.set_ylabel("Emg Unit",size=8)
 
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
+        LOGGER.logger.warning("[pyCGM2] - pycgm2 not include and display normal emg data")
         pass
 
-    def setConcretePlotFunction(self, concreteplotFunction):
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
         """set a concrete plot function
 
         Args:
-            concreteplotFunction (pyCGM2.Report.plot): plot function
+            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
 
         """
         self.m_concretePlotFunction = concreteplotFunction
@@ -277,7 +278,7 @@ class CoactivationEmgPlotViewer(plotViewers.AbstractPlotViewer):
 
         return self.fig
 
-class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
+class EnvEmgGaitPlotPanelViewer(plotViewers.PlotViewer):
     """plot emg envelops
 
     Args:
@@ -287,7 +288,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None):
+    def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None):
 
         super(EnvEmgGaitPlotPanelViewer, self).__init__(iAnalysis)
 
@@ -305,7 +306,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.m_normalizedEmgFlag = False
         self.m_selectChannels = None
 
-    def selectEmgChannels(self,channelNames):
+    def selectEmgChannels(self,channelNames:list[str]):
         """set the emg channels
 
         Args:
@@ -314,7 +315,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
         """
         self.m_selectChannels = channelNames
 
-    def setEmgManager(self,emgManager):
+    def setEmgManager(self,emgManager:EmgManager):
         """set the `emgManager` instance
 
         Args:
@@ -326,7 +327,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
             self.m_selectChannels = self.m_emgmanager.getChannels()
 
 
-    def setNormalizedEmgFlag(self,flag):
+    def setNormalizedEmgFlag(self,flag:bool):
         """Enable/Disable amplitude-normalized emg
 
         Args:
@@ -378,14 +379,15 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
 
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
+        LOGGER.logger.warning("[pyCGM2] - pycgm2 not include and display normal emg data")
         pass
 
-    def setConcretePlotFunction(self, concreteplotFunction):
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
         """set a concrete plot function
 
         Args:
-            concreteplotFunction (pyCGM2.Report.plot): plot function
+            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
 
         """
         self.m_concretePlotFunction = concreteplotFunction
@@ -420,7 +422,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
 
 
-class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
+class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.PlotViewer):
     """plot emg envelops from multiple `analysis` instances
 
     Args:
@@ -431,7 +433,7 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalyses,legends,pointLabelSuffix=None):
+    def __init__(self,iAnalyses:list[Analysis],legends:list[str],pointLabelSuffix:Optional[str]=None):
 
 
         super(MultipleAnalysis_EnvEmgPlotPanelViewer, self).__init__(iAnalyses)
@@ -459,7 +461,7 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.m_legends = legends
         self.m_selectChannels = None
 
-    def selectEmgChannels(self,channelNames):
+    def selectEmgChannels(self,channelNames:list[str]):
         """set the emg channels
 
         Args:
@@ -468,7 +470,7 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         """
         self.m_selectChannels = channelNames
 
-    def setEmgManager(self,emgManager):
+    def setEmgManager(self,emgManager:EmgManager):
         """set the `emgManager` instance
 
         Args:
@@ -479,7 +481,7 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         if self.m_selectChannels is None:
             self.m_selectChannels = self.m_emgmanager.getChannels()
 
-    def setNormalizedEmgFlag(self,flag):
+    def setNormalizedEmgFlag(self,flag:bool):
         """Enable/Disable amplitude-normalized emg
 
         Args:
@@ -534,14 +536,15 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.fig.axes[axisIndex].legend(fontsize=6)
 
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
+        LOGGER.logger.warning("[pyCGM2] - pycgm2 not include and display normal emg data")
         pass
 
-    def setConcretePlotFunction(self, concreteplotFunction):
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
         """set a concrete plot function
 
         Args:
-            concreteplotFunction (pyCGM2.Report.plot): plot function
+            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
 
         """
         self.m_concretePlotFunction = concreteplotFunction

@@ -4,9 +4,14 @@ import copy
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Report.Viewers import plotViewers
-from pyCGM2.Report import plotUtils
 
-class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
+
+from pyCGM2.Report.normativeDatasets import NormativeData
+from pyCGM2.Processing.analysis import Analysis
+
+from typing import Optional, Callable
+
+class MuscleNormalizedPlotPanelViewer(plotViewers.PlotViewer):
     """plot emg envelops
 
     Args:
@@ -16,7 +21,7 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalysis,pointLabelSuffix=None):
+    def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None):
 
         super(MuscleNormalizedPlotPanelViewer, self).__init__(iAnalysis)
 
@@ -33,7 +38,7 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
         self.m_normativeData=None
 
 
-    def setNormalizationSuffix(self,suffix):
+    def setNormalizationSuffix(self,suffix:str):
         self.m_normalisationSuffix = "_"+suffix
 
     def __setLayer(self):
@@ -116,7 +121,7 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
             LOGGER.logger.error("[pyCGM2] -  muscle panel other than muscle length not implemented yet")
                 
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
         """ Set the normative dataset
 
         Args:
@@ -125,19 +130,19 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.AbstractPlotViewer):
         """
         self.m_normativeData = iNormativeDataSet.data
 
-    def setConcretePlotFunction(self, concreteplotFunction):
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
         """set a concrete plot function
 
         Args:
-            concreteplotFunction (pyCGM2.Report.plot): plot function
+            concreteplotFunction (Callable): a plot function of pyCGM2.Report.plot
 
         """
         self.m_concretePlotFunction = concreteplotFunction
 
-    def setMuscles(self,iMuscles):
+    def setMuscles(self,iMuscles:list):
         self.m_muscles= iMuscles
 
-    def setMuscleOutputType(self,type):
+    def setMuscleOutputType(self,type:str):
         self.m_muscleOutputType= type
 
 
