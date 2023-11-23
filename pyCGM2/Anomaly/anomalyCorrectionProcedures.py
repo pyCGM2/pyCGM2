@@ -38,7 +38,7 @@ class MarkerAnomalyCorrectionProcedure(AnomalyCorrectionProcedure):
     """procedure to correct marker anomaly
 
     Args:
-        markers (Union[list,str]): marker labels
+        markers (Union[List,str]): marker labels
         anomalyIndexes (list): indexes of the detected anomalies
         plot (bool): enable plot
 

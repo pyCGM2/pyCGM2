@@ -78,7 +78,7 @@ def getNormalBurstActivity_fromCycles(muscle:str,
         apf (int): nNumber of analog sample per frame
 
      Returns:
-        Tuple[list, list]: starts and durations
+        Tuple[List, List]: starts and durations
 
     """
 
