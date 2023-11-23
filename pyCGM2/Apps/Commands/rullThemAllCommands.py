@@ -271,13 +271,13 @@ class MainParser:
         self.Nexus()
         self.QTM()
 
-    def Global(self):
+    def Settings(self):
 
-        nexusparser = self.subparsers.add_parser('GLOBAL', help='pyCGM2 global commands')
-        nexus_subparser = nexusparser.add_subparsers(help='', dest='GLOBAL')
+        nexusparser = self.subparsers.add_parser('SETTINGS', help='pyCGM2 settings')
+        nexus_subparser = nexusparser.add_subparsers(help='', dest='SETTINGS')
 
         # folder init
-        parser_init = nexus_subparser.add_parser("LocalSettings", help= "folder initialisation commands")
+        parser_init = nexus_subparser.add_parser("Edit", help= "folder initialisation commands")
         parser_init.add_argument('-m', '--model', type=str,  help='copy CGM settings')
         parser_init.add_argument('-e', '--emg', action='store_true',  help='copy emg settings')
 
@@ -369,8 +369,8 @@ class MainParser:
         print(args)
 
         if not debug:
-            if "GLOBAL" in args:
-                if args.GLOBAL == "LocalSettings":
+            if "SETTINGS" in args:
+                if args.SETTINGS == "Edit":
                     initSettingsCmd.main(args)
 
             elif "NEXUS" in args:
