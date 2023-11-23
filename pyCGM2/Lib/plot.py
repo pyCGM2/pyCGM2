@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Functions
-#APIDOC["Draft"]=False
-#--end--
 """
 This module gathers convenient functions for plotting Kinematics, Kinetics and EMG.
 All functions return a matplotlib figure instance
@@ -27,10 +23,15 @@ from pyCGM2.Report.Viewers import musclePlotViewers
 from pyCGM2.Utils import files
 from pyCGM2.Processing.Classification import classificationFilters, classificationProcedures
 from pyCGM2.Report.Viewers import groundReactionPlotViewers
+from pyCGM2.Processing.analysis import Analysis
+from pyCGM2.Report.normativeDatasets import NormativeData
 
-def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix=None,
-                          exportPdf=False,OUT_PATH = None, outputName=None,show=True,title=None,exportPng=False,
-                          autoYlim=False,
+from typing import Optional, Tuple
+
+
+def plotTemporalKinematic(DATA_PATH:str, modelledFilename:str,bodyPart:str, pointLabelSuffix:Optional[str]=None,
+                          exportPdf:bool=False,OUT_PATH:Optional[str] = None, outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False,
+                          autoYlim:bool=False,
                           **kwargs):
     """plotTemporalKinematic : display temporal trace of the CGM kinematic outputs
 
@@ -100,9 +101,10 @@ def plotTemporalKinematic(DATA_PATH, modelledFilename,bodyPart, pointLabelSuffix
     else:
         return fig
 
-def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,
-                        pointLabelSuffix=None,exportPdf=False,OUT_PATH= None, outputName=None,show=True,title=None,
-                        exportPng=False,autoYlim=False,**kwargs):
+def plotTemporalKinetic(DATA_PATH:str, modelledFilenames:str,bodyPart:str,
+                        pointLabelSuffix:Optional[str]=None,exportPdf:bool=False,
+                        OUT_PATH:Optional[str]= None, outputName:Optional[str]=None,show:bool=True,title:str=None,
+                        exportPng:bool=False,autoYlim:bool=False,**kwargs):
 
     """plotTemporalKinetic : display temporal trace of the CGM kinetic outputs
 
@@ -174,9 +176,9 @@ def plotTemporalKinetic(DATA_PATH, modelledFilenames,bodyPart,
         return fig
 
 
-def plotTemporalEMG(DATA_PATH, processedEmgfile,
-                    rectify = True, exportPdf=False,outputName=None,show=True,title=None,
-                    ignoreNormalActivity= False,exportPng=False,OUT_PATH=None,autoYlim=False,
+def plotTemporalEMG(DATA_PATH:str, processedEmgfile:str,
+                    rectify:bool = True, exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,
+                    ignoreNormalActivity:bool= False,exportPng:bool=False,OUT_PATH:Optional[str]=None,autoYlim:bool=False,
                     **kwargs):
     """Display temporal traces of EMG signals
 
@@ -286,10 +288,10 @@ def plotTemporalEMG(DATA_PATH, processedEmgfile,
     else:
         return figs
 
-def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
-                                normalized=False, type="Gait",exportPdf=False,
-                                OUT_PATH= None,outputName=None,
-                                show=True,title=None,exportPng=False,autoYlim=False,**kwargs):
+def plotDescriptiveEnvelopEMGpanel(DATA_PATH:str,analysis:Analysis,
+                                normalized:bool=False, type:str="Gait",exportPdf:bool=False,
+                                OUT_PATH:Optional[str]= None,outputName=None,
+                                show:bool=True,title=None,exportPng=False,autoYlim:bool=False,**kwargs):
     """ display average and standard deviation of time-normalized EMG envelops.
 
     Args:
@@ -361,8 +363,8 @@ def plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysis,
     else:
         return fig
 
-def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Gait",exportPdf=False,
-    OUT_PATH=None, outputName=None,show=True,title=None,exportPng=False,autoYlim=False,**kwargs):
+def plotConsistencyEnvelopEMGpanel(DATA_PATH:str,analysis:Analysis, normalized:bool=False,type:str="Gait",exportPdf:bool=False,
+    OUT_PATH=None, outputName=None,show:bool=True,title=None,exportPng=False,autoYlim:bool=False,**kwargs):
 
     """ display all-cycles of time-normalized EMG envelops.
 
@@ -436,9 +438,9 @@ def plotConsistencyEnvelopEMGpanel(DATA_PATH,analysis, normalized=False,type="Ga
         return fig
 
 
-def plot_spatioTemporal(DATA_PATH,analysis,
-        exportPdf=False,
-        OUT_PATH=None,outputName=None,show=True,title=None,exportPng=False,autoYlim=False):
+def plot_spatioTemporal(DATA_PATH:str,analysis:Analysis,
+        exportPdf:bool=False,
+        OUT_PATH:Optional[str]=None,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False,autoYlim:bool=False):
     """display spatio-temporal parameters as horizontal histogram.
 
     Args:
@@ -488,10 +490,10 @@ def plot_spatioTemporal(DATA_PATH,analysis,
     else:
         return fig
 
-def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
-        pointLabelSuffix=None,type="Gait",
-        OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
-        autoYlim=False):
+def plot_DescriptiveKinematic(DATA_PATH:str,analysis:Analysis,bodyPart:str,normativeDataset:NormativeData,
+        pointLabelSuffix:Optional[str]=None,type:str="Gait",
+        OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False,
+        autoYlim:bool=False):
     """display average and standard deviation of time-normalized kinematic output.
 
     Args:
@@ -571,10 +573,10 @@ def plot_DescriptiveKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
         return fig
 
 
-def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
-                              pointLabelSuffix=None,type="Gait",
-                              OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
-                              autoYlim=False):
+def plot_ConsistencyKinematic(DATA_PATH:str,analysis:Analysis,bodyPart:str,normativeDataset:NormativeData,
+                              pointLabelSuffix:Optional[str]=None,type:str="Gait",
+                              OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False,
+                              autoYlim:bool=False):
 
     """display all cycles of time-normalized kinematic output.
 
@@ -647,9 +649,9 @@ def plot_ConsistencyKinematic(DATA_PATH,analysis,bodyPart,normativeDataset,
     else:
         return fig
 
-def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,
-        pointLabelSuffix=None,type="Gait",OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,
-        exportPng=False,autoYlim=False):
+def plot_DescriptiveKinetic(DATA_PATH:str,analysis:Analysis,bodyPart:str,normativeDataset:NormativeData,
+        pointLabelSuffix:Optional[str]=None,type:str="Gait",OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,
+        exportPng:bool=False,autoYlim:bool=False):
     """display average and standard deviation of time-normalized kinetic outputs.
 
     Args:
@@ -723,9 +725,9 @@ def plot_DescriptiveKinetic(DATA_PATH,analysis,bodyPart,normativeDataset,
     else:
         return fig
 
-def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,
-                            pointLabelSuffix=None,type="Gait",OUT_PATH=None,exportPdf=False,outputName=None,show=True,
-                            title=None,exportPng=False,autoYlim=False):
+def plot_ConsistencyKinetic(DATA_PATH:str,analysis:Analysis,bodyPart:str, normativeDataset:NormativeData,
+                            pointLabelSuffix:Optional[str]=None,type:str="Gait",OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,
+                            title:Optional[str]=None,exportPng:bool=False,autoYlim:bool=False):
     """display all cycles of time-normalized kinetic outputs.
 
     Args:
@@ -796,9 +798,9 @@ def plot_ConsistencyKinetic(DATA_PATH,analysis,bodyPart, normativeDataset,
     else:
         return fig
 
-def plot_MAP(DATA_PATH,analysis,normativeDataset,
-            exportPdf=False,outputName=None,pointLabelSuffix=None,show=True,title=None,exportPng=False,OUT_PATH=None,
-            autoYlim=False):
+def plot_MAP(DATA_PATH:str,analysis:Analysis,normativeDataset:NormativeData,
+            exportPdf:bool=False,outputName:Optional[str]=None,pointLabelSuffix:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False,OUT_PATH:Optional[str]=None,
+            autoYlim:bool=False):
     """display histogram of the Movement Analysis Profile.
 
     Args:
@@ -854,9 +856,9 @@ def plot_MAP(DATA_PATH,analysis,normativeDataset,
     else:
         return fig
 
-def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
-                    plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None,
-                    OUT_PATH = None,outputName=None,exportPng=False,exportPdf=False,autoYlim=False):
+def compareKinematic(DATA_PATH:str,analyses:list[Analysis],legends:list,context:list,bodyPart:list,normativeDataset:NormativeData,
+                    plotType="Descriptive",type:str="Gait",pointSuffixes=None,show:bool=True,title:Optional[str]=None,
+                    OUT_PATH = None,outputName:Optional[str]=None,exportPng:bool=False,exportPdf:bool=False,autoYlim:bool=False):
     """plot kinematics from different analysis instances.
 
     Args:
@@ -938,9 +940,9 @@ def compareKinematic(DATA_PATH,analyses,legends,context,bodyPart,normativeDatase
     else:
         return fig
 
-def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
-    plotType="Descriptive",type="Gait",pointSuffixes=None,show=True,title=None,
-    OUT_PATH=None,outputName=None,exportPng=False,exportPdf=False,autoYlim=False):
+def compareKinetic(DATA_PATH:str,analyses:list[Analysis],legends:list[str],context:list[str],bodyPart:str,normativeDataset:NormativeData,
+    plotType="Descriptive",type:str="Gait",pointSuffixes=None,show:bool=True,title:Optional[str]=None,
+    OUT_PATH:Optional[str]=None,outputName:Optional[str]=None,exportPng:bool=False,exportPdf:bool=False,autoYlim:bool=False):
 
     """plot kinetics from different analysis instances.
 
@@ -1025,10 +1027,10 @@ def compareKinetic(DATA_PATH,analyses,legends,context,bodyPart,normativeDataset,
     else:
         return fig
 
-def compareEmgEnvelops(DATA_PATH,analyses,legends,
-        normalized=False,plotType="Descriptive",show=True,title=None,
-        type="Gait",
-        OUT_PATH=None,outputName=None,exportPng=False,exportPdf=False,autoYlim=False,**kwargs):
+def compareEmgEnvelops(DATA_PATH:str,analyses:list[Analysis],legends:list[str],
+        normalized:bool=False,plotType="Descriptive",show:bool=True,title:Optional[str]=None,
+        type:str="Gait",
+        OUT_PATH:Optional[str]=None,outputName:Optional[str]=None,exportPng:bool=False,exportPdf:bool=False,autoYlim:bool=False,**kwargs):
     """plot EMG envelops from different analysis instances.
 
     Args:
@@ -1121,10 +1123,10 @@ def compareEmgEnvelops(DATA_PATH,analyses,legends,
     else:
         return fig
 
-def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts,
-    normalized=False,plotType="Descriptive",type="Gait",show=True,
-    title=None,
-    OUT_PATH =None, outputName=None,exportPng=False,exportPdf=False,autoYlim=False):
+def compareSelectedEmgEvelops(DATA_PATH:str,analyses:list[Analysis],legends:list[str], emgChannels:list[str],contexts:list[str],
+    normalized:bool=False,plotType:str="Descriptive",type:str="Gait",show:bool=True,
+    title:Optional[str]=None,
+    OUT_PATH =None, outputName:Optional[str]=None,exportPng:bool=False,exportPdf:bool=False,autoYlim:bool=False):
     """compare selected EMG envelops from different analysis instances constructed from the same session.
 
     Args:
@@ -1229,11 +1231,11 @@ def compareSelectedEmgEvelops(DATA_PATH,analyses,legends, emgChannels,contexts,
         return fig
 
 
-def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
-        pointLabelSuffix=None,type="Gait",
+def plot_DescriptiveMuscleLength(DATA_PATH:str,analysis:Analysis,normativeDataset:NormativeData,
+        pointLabelSuffix:Optional[str]=None,type:str="Gait",
         normalizedSuffix=None,
-        OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
-        autoYlim=False,
+        OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False,
+        autoYlim:bool=False,
         analyticalData=None,muscles=None):
     """display average and standard deviation of time-normalized muscle length output.
 
@@ -1324,8 +1326,8 @@ def plot_DescriptiveMuscleLength(DATA_PATH,analysis,normativeDataset,
     return figs,outfilenames
 
 
-def plotPFKE(DATA_PATH,analysisInstance,normativeDataset,
-    OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False):
+def plotPFKE(DATA_PATH:str,analysisInstance:Analysis,normativeDataset:NormativeData,
+    OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False):
 
     if OUT_PATH is None:
         OUT_PATH = DATA_PATH
@@ -1349,10 +1351,10 @@ def plotPFKE(DATA_PATH,analysisInstance,normativeDataset,
     else:
         return classFig 
 
-def plot_DescriptiveGRF(DATA_PATH,analysis,normativeDataset,
-        pointLabelSuffix=None,type="Gait",
-        OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
-        autoYlim=False):
+def plot_DescriptiveGRF(DATA_PATH:str,analysis:Analysis,normativeDataset:NormativeData,
+        pointLabelSuffix:Optional[str]=None,type:str="Gait",
+        OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False,
+        autoYlim:bool=False):
     """display average and standard deviation of time-normalized ground reaction force.
 
     Args:
@@ -1424,10 +1426,10 @@ def plot_DescriptiveGRF(DATA_PATH,analysis,normativeDataset,
  # # procedure - filter
         
 
-def plot_DescriptiveGrfIntegration(DATA_PATH,analysis,normativeDataset,bodymass,
-        pointLabelSuffix=None,type="Gait",
-        OUT_PATH=None,exportPdf=False,outputName=None,show=True,title=None,exportPng=False,
-        autoYlim=False):
+def plot_DescriptiveGrfIntegration(DATA_PATH:str,analysis,normativeDataset,bodymass,
+        pointLabelSuffix:Optional[str]=None,type:str="Gait",
+        OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False,
+        autoYlim:bool=False):
     """display average and standard deviation of time-normalized kinematic output.
 
     Args:

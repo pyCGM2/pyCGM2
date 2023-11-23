@@ -1,13 +1,13 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Functions
-#APIDOC["Draft"]=False
-#--end--
 from pyCGM2.Events import eventFilters
 from pyCGM2.Events import eventProcedures
 from pyCGM2.Signal import signal_processing
+import btk
 
 
-def zeni(acqGait, footStrikeOffset=0, footOffOffset=0, **kwargs):
+def zeni(acqGait:btk.btkAcquisition, 
+         footStrikeOffset:int=0, 
+         footOffOffset:int=0,
+         **kwargs):
     """kinematic-based event detector according Zeni et al(2008).
 
     This method need the presence of the markers "LPSI","RPSI","LHEE","LTOE","RHEE","RTOE"
@@ -17,7 +17,7 @@ def zeni(acqGait, footStrikeOffset=0, footOffOffset=0, **kwargs):
     Zeni, J. A.; Richards, J. G.; Higginson, J. S. (2008) Two simple methods for determining gait events during treadmill and overground walking using kinematic data. In : Gait & posture, vol. 27, n° 4, p. 710–714. DOI: 10.1016/j.gaitpost.2007.07.007.
 
     Args:
-        acqGait (btk.Acquisition): an acquisition instance.
+        acqGait (btk.btkAcquisition): an acquisition instance.
         footStrikeOffset (int): systematic offset to add to all `footStrikeOffset` events. Default is 0.
         footOffOffset (int): systematic offset to add to all `footOffOffset` events. Default is 0.
 
@@ -26,7 +26,7 @@ def zeni(acqGait, footStrikeOffset=0, footOffOffset=0, **kwargs):
         order_lowPass_marker (int): order of the lowpass filter applied on markers
 
     Returns:
-        acqGait ( btk.Acquisition): updated acquisition with detected events.
+        acqGait ( btk.btkAcquisition): updated acquisition with detected events.
         state (bool): state of the detector
 
 

@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Functions
-#APIDOC["Draft"]=False
-#--end--
-
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -10,8 +5,10 @@ from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2 import enums
 from pyCGM2.Model.Opensim.interface import opensimInterface
+from pyCGM2.Report.normativeDatasets import NormativeData
 
-def pdfGaitReport(DATA_PATH,modelledTrials, normativeDataset,pointSuffix, title = "gait report", **kwargs):
+def pdfGaitReport(DATA_PATH:str,modelledTrials:list[str], 
+                  normativeDataset:NormativeData,pointSuffix:str, title:str = "gait report", **kwargs):
     """generate pdf with Kinematic-Kinetic-MAP gait plots .
 
     Args:

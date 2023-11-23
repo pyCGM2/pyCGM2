@@ -6,6 +6,7 @@ from pyCGM2.Tools import opensimTools
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+from typing import List, Optional, Tuple
 
 try:
     import btk
@@ -17,7 +18,7 @@ except:
 
 
 
-def prepareC3dFiles(DATA_PATH, staticFilename=None, dynamicData=None):
+def prepareC3dFiles(DATA_PATH:str, staticFilename=None, dynamicData:List[Tuple[str, Optional[str]]]=None):
     """ prepare c3d data to opensim processingf.
 
 
@@ -26,7 +27,7 @@ def prepareC3dFiles(DATA_PATH, staticFilename=None, dynamicData=None):
 
     Keyword Arguments:
         staticFilename (str) : static trial filename
-        dynamicData (list): list of 2-elements lists composed of the dynamic filename and its assigned force plates
+        dynamicData (List[Tuple[str, Optional[str]]]): list of 2-elements lists composed of the dynamic filename and its assigned force plates
 
     Example:
 

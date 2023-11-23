@@ -3,14 +3,15 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
+import btk
 
 
-def detectProgressionFrame(acq, staticFlag=False):
+def detectProgressionFrame(acq:btk.btkAcquisition, staticFlag:bool=False):
     """
     High-level function to detect  the progression axis 
 
     Args:
-        acq (btk.acquisition): static or motion acquisition
+        acq (btk.btkAcquisition): static or motion acquisition
 
     Keyword Arguments:
         staticFlag (bool): enable if you deal with a static file

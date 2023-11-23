@@ -5,25 +5,28 @@ from pyCGM2.Processing.JointPatterns import jointPatternFilters
 from pyCGM2.Processing.JointPatterns import jointPatternProcedures
 from pyCGM2.Processing import exporter
 from pyCGM2.Model.CGM2 import cgm
-# from pyCGM2.Processing import c3dManager
 from pyCGM2.Processing.C3dManager import c3dManagerProcedures
 from pyCGM2.Processing.C3dManager import c3dManagerFilters
 from pyCGM2.Processing import cycle
 from pyCGM2.Processing import analysis
+from pyCGM2.Processing.analysis import Analysis
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+from typing import Optional
 
-def makeAnalysis(DATA_PATH,
-                 filenames,
-                 type="Gait",
-                 kinematicLabelsDict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
-                 kineticLabelsDict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
-                 emgChannels=pyCGM2.EMG_CHANNELS,
-                 geometryMuscleLabelsDict=None,
-                 dynamicMuscleLabelsDict=None,
-                 pointLabelSuffix=None,
-                 subjectInfo=None, experimentalInfo=None, modelInfo=None,
+def makeAnalysis(DATA_PATH:str,
+                 filenames:list,
+                 type:str="Gait",
+                 kinematicLabelsDict:dict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
+                 kineticLabelsDict:dict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
+                 emgChannels:list=pyCGM2.EMG_CHANNELS,
+                 geometryMuscleLabelsDict:Optional[dict]=None,
+                 dynamicMuscleLabelsDict:Optional[dict]=None,
+                 pointLabelSuffix:Optional[str]=None,
+                 subjectInfo:Optional[dict]=None, 
+                 experimentalInfo:Optional[dict]=None, 
+                 modelInfo:Optional[dict]=None,
                  **kwargs):
     """
     This function normalises data in time and returns an **Analysis Instance** ie a nested dictionary  containing
@@ -193,15 +196,15 @@ def makeAnalysis(DATA_PATH,
     return analysisFilter.analysis
 
 
-def exportAnalysis(analysisInstance, DATA_PATH, name,
-                   mode="Advanced"):
+def exportAnalysis(analysisInstance:Analysis, DATA_PATH:str, name:str,
+                   mode:str="Advanced"):
     """export an Analysis instance as excel spreadsheet.
 
     Args:
-        analysisInstance (pyCGM2.Processing.analysis.Analysis): Analysis instance.
-        DATA_PATH (str):folder path
+        analysisInstance (Analysis): Analysis instance.
+        DATA_PATH (str): folder path
         name (str): name of your excel file.
-        mode (str)[Advanced]: spreadsheet mode . ("Advanced or Basic")
+        mode (str): spreadsheet mode . ("Advanced or Basic")
 
     Example:
 
@@ -217,7 +220,13 @@ def exportAnalysis(analysisInstance, DATA_PATH, name,
     exportFilter.export(name, path=DATA_PATH, excelFormat="xls", mode=mode)
 
 
-def automaticCPdeviations(DATA_PATH, analysis, reference="Nieuwenhuys2017", pointLabelSuffix=None, filterTrue=False, export=True, outputname="Nieuwenhuys2017", language="-fr"):
+def automaticCPdeviations(DATA_PATH:str, 
+                          analysis:Analysis, 
+                          reference:str="Nieuwenhuys2017", 
+                          pointLabelSuffix:Optional[str]=None, 
+                          filterTrue:bool=False, export:bool=True, 
+                          outputname:str="Nieuwenhuys2017", 
+                          language:str="-fr"):
 
     RULES_PATH = pyCGM2.PYCGM2_SETTINGS_FOLDER + "jointPatterns\\"
     rulesXls = RULES_PATH+reference+language+".xlsx"

@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Functions
-#APIDOC["Draft"]=False
-#--end--
 import pandas as pd
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
@@ -9,8 +5,11 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.EMG import emgFilters
 from pyCGM2.EMG import emgManager
 from pyCGM2 import enums
+from pyCGM2.Processing.analysis import Analysis
 
-def loadEmg(DATA_PATH):
+from typing import Optional
+
+def loadEmg(DATA_PATH:str):
     """
     Load and manage emg settings
 
@@ -24,13 +23,18 @@ def loadEmg(DATA_PATH):
     return emgManager.EmgManager(DATA_PATH)
 
 
-def processEMG(DATA_PATH, gaitTrials, emgChannels,
-                highPassFrequencies=[20,200],envelopFrequency=6.0, fileSuffix=None,outDataPath=None):
+def processEMG(DATA_PATH:str, 
+               gaitTrials:list, 
+               emgChannels:list,
+               highPassFrequencies:list=[20,200],
+               envelopFrequency:float=6.0, 
+               fileSuffix:Optional[str]=None,
+               outDataPath:Optional[str]=None):
     """ basic filtering of EMG from c3d files .
 
     Args:
         DATA_PATH (str): folder path.
-        gaitTrials (str): list of c3d files.
+        gaitTrials (list): list of c3d files.
         emgChannels (list): list or emg channel
         highPassFrequencies (list)[20,200]: boundaries of the bandpass filter
         envelopFrequency (float)[6.0]: cut-off frequency of low pass emg
@@ -74,7 +78,11 @@ def processEMG(DATA_PATH, gaitTrials, emgChannels,
             btkTools.smartWriter(acq,outDataPath+outFilename)
 
 
-def normalizedEMG(DATA_PATH,analysis, method="MeanMax", fromOtherAnalysis=None, mvcSettings=None,**kwargs):
+def normalizedEMG(DATA_PATH:str,
+                  analysis:Analysis, 
+                  method:str="MeanMax", fromOtherAnalysis:Optional[Analysis]=None, 
+                  mvcSettings:Optional[dict]=None,
+                  **kwargs):
     """
     Emg normalisation in amplitude.
 
