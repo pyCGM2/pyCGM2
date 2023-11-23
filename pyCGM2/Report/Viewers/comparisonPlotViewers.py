@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Report
-#APIDOC["Draft"]=False
-#--end--
-
 """
 Module contains `plotViewers` for comparing data from different `analysis` instances
 
@@ -17,11 +12,14 @@ import pyCGM2
 from pyCGM2 import enums
 from pyCGM2.Report.Viewers import plotViewers
 
+from pyCGM2.Processing.analysis import Analysis
 
 
+from pyCGM2.Report.normativeDatasets import NormativeData
+from typing import Optional, Callable
 
 
-class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
+class KinematicsPlotComparisonViewer(plotViewers.PlotViewer):
     """ Compare kinematics
 
     Args:
@@ -35,7 +33,8 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
     """
 
 
-    def __init__(self,iAnalyses,context,legends,pointLabelSuffix_lst=None,bodyPart=enums.BodyPartPlot.LowerLimb):
+    def __init__(self,iAnalyses:list[Analysis],context:list[str],legends:list[str],pointLabelSuffix_lst:Optional[list[str]]=None,
+                 bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
 
         super(KinematicsPlotComparisonViewer, self).__init__(iAnalyses)
 
@@ -62,11 +61,11 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
 
         self.m_concretePlotFunction = None
 
-    def setConcretePlotFunction(self, concreteplotFunction):
-        """set a plot function ( see `plot`)
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
+        """set a plot function 
 
         Args:
-            concreteplotFunction (function): plot function
+            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
 
         """
         self.m_concretePlotFunction = concreteplotFunction
@@ -186,11 +185,11 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         #self.fig.axes[axisIndex].legend(fontsize=6, bbox_to_anchor=(0,1.2,1,0.2), loc="lower left",
         #    mode="None", borderaxespad=0, ncol=len(self.m_analysis))
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
         """Set a normative dataset
 
         Args:
-            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance
+            iNormativeDataSet (NormativeData): normative data instance
 
         """
 
@@ -258,6 +257,61 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                             "LForeFootAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None)
                     self.m_concretePlotFunction(self.fig.axes[14],analysis.kinematicStats,
                             "LForeFootAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None)
+                
+                elif self.m_bodyPart == enums.BodyPartPlot.Trunk:
+                    self.m_concretePlotFunction(self.fig.axes[0],analysis.kinematicStats,
+                            "LPelvisAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[1],analysis.kinematicStats,
+                            "LPelvisAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[2],analysis.kinematicStats,
+                            "LPelvisAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+                    self.m_concretePlotFunction(self.fig.axes[3],analysis.kinematicStats,
+                            "LSpineAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[4],analysis.kinematicStats,
+                            "LSpineAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[5],analysis.kinematicStats,
+                            "LSpineAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+                    self.m_concretePlotFunction(self.fig.axes[6],analysis.kinematicStats,
+                            "LThoraxAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[7],analysis.kinematicStats,
+                            "LThoraxAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[8],analysis.kinematicStats,
+                            "LThoraxAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+
+                    self.m_concretePlotFunction(self.fig.axes[9],analysis.kinematicStats,
+                            "LNeckAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[10],analysis.kinematicStats,
+                            "LNeckAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[11],analysis.kinematicStats,
+                            "LNeckAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+
+                    self.m_concretePlotFunction(self.fig.axes[12],analysis.kinematicStats,
+                            "LHeadAngles"+suffixPlus,"Left",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[13],analysis.kinematicStats,
+                            "LHeadAngles"+suffixPlus,"Left",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[14],analysis.kinematicStats,
+                            "LHeadAngles"+suffixPlus,"Left",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+
 
                 elif self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
                     self.m_concretePlotFunction(self.fig.axes[0],analysis.kinematicStats,
@@ -351,6 +405,59 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
                             "RForeFootAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None)
                     self.m_concretePlotFunction(self.fig.axes[14],analysis.kinematicStats,
                             "RForeFootAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None)
+
+                elif self.m_bodyPart == enums.BodyPartPlot.Trunk:
+                    self.m_concretePlotFunction(self.fig.axes[0],analysis.kinematicStats,
+                            "RPelvisAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[1],analysis.kinematicStats,
+                            "RPelvisAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[2],analysis.kinematicStats,
+                            "RPelvisAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+                    self.m_concretePlotFunction(self.fig.axes[3],analysis.kinematicStats,
+                            "RSpineAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[4],analysis.kinematicStats,
+                            "RSpineAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[5],analysis.kinematicStats,
+                            "RSpineAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+                    self.m_concretePlotFunction(self.fig.axes[6],analysis.kinematicStats,
+                            "RThoraxAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[7],analysis.kinematicStats,
+                            "RThoraxAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[8],analysis.kinematicStats,
+                            "RThoraxAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+
+                    self.m_concretePlotFunction(self.fig.axes[9],analysis.kinematicStats,
+                            "RNeckAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[10],analysis.kinematicStats,
+                            "RNeckAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[11],analysis.kinematicStats,
+                            "RNeckAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+
+
+                    self.m_concretePlotFunction(self.fig.axes[12],analysis.kinematicStats,
+                            "RHeadAngles"+suffixPlus,"Right",0, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[13],analysis.kinematicStats,
+                            "RHeadAngles"+suffixPlus,"Right",1, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
+                    self.m_concretePlotFunction(self.fig.axes[14],analysis.kinematicStats,
+                            "RHeadAngles"+suffixPlus,"Right",2, color=colormap_i[i], customLimits=None,
+                    legendLabel=legend)
 
                 elif self.m_bodyPart == enums.BodyPartPlot.UpperLimb:
                     self.m_concretePlotFunction(self.fig.axes[0],analysis.kinematicStats,
@@ -448,7 +555,7 @@ class KinematicsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
 
         return self.fig
 
-class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
+class KineticsPlotComparisonViewer(plotViewers.PlotViewer):
     """ Compare kinetics
 
     Args:
@@ -461,7 +568,8 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
 
     """
 
-    def __init__(self,iAnalyses,context,legends,pointLabelSuffix_lst=None,bodyPart= enums.BodyPartPlot.LowerLimb):
+    def __init__(self,iAnalyses:list[Analysis],context:list[str],legends:list[str],pointLabelSuffix_lst:Optional[list[str]]=None,
+                 bodyPart:enums.BodyPartPlot= enums.BodyPartPlot.LowerLimb):
 
 
         super(KineticsPlotComparisonViewer, self).__init__(iAnalyses)
@@ -488,11 +596,11 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
 
         self.m_concretePlotFunction = None
 
-    def setConcretePlotFunction(self, concreteplotFunction):
-        """set a plot function ( see `plot`)
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
+        """set a plot function 
 
         Args:
-            concreteplotFunction (function): plot function
+            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
 
         """
         self.m_concretePlotFunction = concreteplotFunction
@@ -579,7 +687,7 @@ class KineticsPlotComparisonViewer(plotViewers.AbstractPlotViewer):
         #self.fig.axes[axisIndex].legend(fontsize=6, bbox_to_anchor=(0,1.2,1,0.2), loc="lower left",
         #    mode="None", borderaxespad=0, ncol=len(self.m_analysis))
 
-    def setNormativeDataset(self,iNormativeDataSet):
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
         """Set a normative dataset
 
         Args:
