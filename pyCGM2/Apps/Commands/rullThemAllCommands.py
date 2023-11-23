@@ -267,7 +267,7 @@ class MainParser:
         self.parser = argparse.ArgumentParser()
         self.subparsers = self.parser.add_subparsers(help='sub-command help', dest='subparser')
 
-        self.Global()
+        self.Settings()
         self.Nexus()
         self.QTM()
 
