@@ -824,7 +824,7 @@ def constructPhantom(acq:btk.btkAcquisition, label:str, desc:str=""):
                      residuals=np.ones((nFrames, 1))*-1.0)
 
 
-def createPhantoms(acq:btk.btkAcquisition, markerLabels:List(str)):
+def createPhantoms(acq:btk.btkAcquisition, markerLabels:List[str]):
     """
     construct phantoms
 
