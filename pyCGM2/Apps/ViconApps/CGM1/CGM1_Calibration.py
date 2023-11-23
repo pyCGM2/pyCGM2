@@ -124,7 +124,6 @@ def main(args=None):
                                                          pointSuffix, forceBtkAcq=acq, anomalyException=args.anomalyException,forceMP=args.forceMP)
 
         # ----------------------SAVE-------------------------------------------
-        print(model.mp_computed)
         #pyCGM2.model
         files.saveModel(model, DATA_PATH, subject)
 
