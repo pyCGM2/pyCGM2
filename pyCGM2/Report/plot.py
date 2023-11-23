@@ -31,8 +31,8 @@ def temporalPlot(figAxis:plt.Axes,acq:btk.btkAcquisition,
                 pointLabel:str,axis:int,
                 pointLabelSuffix:Optional[str]=None,color:Optional[str]=None,linewidth:Optional[str]=None,
                 title:Optional[str]=None, xlabel:Optional[str]=None, ylabel:Optional[str]=None,
-                ylim:Optional[list]=None,legendLabel:Optional[str]=None,
-                customLimits:Optional[list]=None):
+                ylim:Optional[List]=None,legendLabel:Optional[str]=None,
+                customLimits:Optional[List]=None):
     """Plot temporal traces from an acquisition
 
     Args:
@@ -89,8 +89,8 @@ def descriptivePlot(figAxis:plt.Axes,
                     pointLabel:str,contextPointLabel:str,axis:int,
                     color:Optional[str]=None,
                     title:Optional[str]=None, xlabel:Optional[str]=None, 
-                    ylabel:Optional[str]=None,ylim:Optional[list]=None,legendLabel:Optional[str]=None,
-                    customLimits:Optional[list]=None,
+                    ylabel:Optional[str]=None,ylim:Optional[List]=None,legendLabel:Optional[str]=None,
+                    customLimits:Optional[List]=None,
                     nan_to_num:bool=True):
 
     '''Plot descriptive (average and sd corridor) time-normalized traces from an attribute of an `analysis` instance
@@ -152,8 +152,8 @@ def consistencyPlot(figAxis:plt.Axes,
                     pointLabel:str,contextPointLabel:str,axis:int,
                     color:Optional[str]=None,
                     title:Optional[str]=None, xlabel:Optional[str]=None, 
-                    ylabel:Optional[str]=None,ylim:Optional[list]=None,legendLabel:Optional[str]=None,
-                    customLimits:Optional[list]=None,
+                    ylabel:Optional[str]=None,ylim:Optional[List]=None,legendLabel:Optional[str]=None,
+                    customLimits:Optional[List]=None,
                     nan_to_num:bool=True):
 
     '''Plot all time-normalized traces from an `analysis` instance
@@ -213,8 +213,8 @@ def meanPlot(figAxis:plt.Axes,
                     pointLabel:str,contextPointLabel:str,axis:int,
                     color:Optional[str]=None,
                     title:Optional[str]=None, xlabel:Optional[str]=None, 
-                    ylabel:Optional[str]=None,ylim:Optional[list]=None,legendLabel:Optional[str]=None,
-                    customLimits:Optional[list]=None,
+                    ylabel:Optional[str]=None,ylim:Optional[List]=None,legendLabel:Optional[str]=None,
+                    customLimits:Optional[List]=None,
                     nan_to_num:bool=True):
 
     '''Plot the  average time-normalized traces from an attribute of an `analysis` instance
@@ -273,8 +273,8 @@ def gaitDescriptivePlot(figAxis:plt.Axes,
                     pointLabel:str,contextPointLabel:str,axis:int,
                     color:Optional[str]=None,
                     title:Optional[str]=None, xlabel:Optional[str]=None, 
-                    ylabel:Optional[str]=None,ylim:Optional[list]=None,legendLabel:Optional[str]=None,
-                    customLimits:Optional[list]=None):
+                    ylabel:Optional[str]=None,ylim:Optional[List]=None,legendLabel:Optional[str]=None,
+                    customLimits:Optional[List]=None):
 
     '''Plot descriptive (average and sd corridor) gait traces from an attribute of an `analysis` instance
 
@@ -337,8 +337,8 @@ def gaitConsistencyPlot(figAxis:plt.Axes,
                     pointLabel:str,contextPointLabel:str,axis:int,
                     color:Optional[str]=None,
                     title:Optional[str]=None, xlabel:Optional[str]=None, 
-                    ylabel:Optional[str]=None,ylim:Optional[list]=None,legendLabel:Optional[str]=None,
-                    customLimits:Optional[list]=None):
+                    ylabel:Optional[str]=None,ylim:Optional[List]=None,legendLabel:Optional[str]=None,
+                    customLimits:Optional[List]=None):
 
     '''Plot all gait traces from an attribute of an `analysis` instance
 
@@ -404,8 +404,8 @@ def gaitMeanPlot(figAxis:plt.Axes,
                     pointLabel:str,contextPointLabel:str,axis:int,
                     color:Optional[str]=None,
                     title:Optional[str]=None, xlabel:Optional[str]=None, 
-                    ylabel:Optional[str]=None,ylim:Optional[list]=None,legendLabel:Optional[str]=None,
-                    customLimits:Optional[list]=None):
+                    ylabel:Optional[str]=None,ylim:Optional[List]=None,legendLabel:Optional[str]=None,
+                    customLimits:Optional[List]=None):
 
     '''Plot average traces from an attribute of an `analysis` instance
 
@@ -464,7 +464,7 @@ def stpHorizontalHistogram(figAxis:plt.Axes,analysisStructureItem:AnalysisStruct
                         overall:bool= False,
                         title:Optional[str]=None, 
                         xlabel:Optional[str]=None,
-                        xlim:Optional[list]=None):
+                        xlim:Optional[List]=None):
     '''Plot spatio-temporal parameters as histogram from an attribute of an `analysis` instance
 
     Args:

@@ -548,7 +548,7 @@ def combineForcePlate(acq:btk.btkAcquisition,mappedForcePlate:str)-> Tuple[btk.b
 
 def detectGaitConsecutiveForcePlates(acq:btk.btkAcquisition,
                                      mappedForcePlate:str, 
-                                     threshold:int = 25)-> Optional[dict]:
+                                     threshold:int = 25)-> Optional[Dict]:
     """detect valid and two consecutive foot contacts on force plate. ie the leading limb and the trailing limb
 
     Args:
@@ -557,7 +557,7 @@ def detectGaitConsecutiveForcePlates(acq:btk.btkAcquisition,
         threshold (int, optional): force threshold for force plate detection. Defaults to 25 N.
 
     Returns:
-        Optional[dict] dictionnary with two keys ["Left","Right"], each composed with a list indidanting the FP index of the leading limb and the FP of the trailing limb
+        Optional[Dict] dictionnary with two keys ["Left","Right"], each composed with a list indidanting the FP index of the leading limb and the FP of the trailing limb
     """    
     pfe = btk.btkForcePlatformsExtractor()
     grwf = btk.btkGroundReactionWrenchFilter()

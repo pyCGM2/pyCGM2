@@ -21,12 +21,12 @@ def makeAnalysis(DATA_PATH:str,
                  kinematicLabelsDict:Dict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
                  kineticLabelsDict:Dict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
                  emgChannels:List=pyCGM2.EMG_CHANNELS,
-                 geometryMuscleLabelsDict:Optional[dict]=None,
-                 dynamicMuscleLabelsDict:Optional[dict]=None,
+                 geometryMuscleLabelsDict:Optional[Dict]=None,
+                 dynamicMuscleLabelsDict:Optional[Dict]=None,
                  pointLabelSuffix:Optional[str]=None,
-                 subjectInfo:Optional[dict]=None, 
-                 experimentalInfo:Optional[dict]=None, 
-                 modelInfo:Optional[dict]=None,
+                 subjectInfo:Optional[Dict]=None, 
+                 experimentalInfo:Optional[Dict]=None, 
+                 modelInfo:Optional[Dict]=None,
                  **kwargs):
     """
     This function normalises data in time and returns an **Analysis Instance** ie a nested dictionary  containing
