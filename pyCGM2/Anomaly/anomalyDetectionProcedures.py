@@ -12,6 +12,7 @@ import numpy as np
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+from typing import List, Tuple, Dict, Optional, Union
 
 try:
     import btk
@@ -28,7 +29,7 @@ class AnomalyDetectionProcedure(object):
         self.anomaly = {"Output": None,
                         "ErrorState": False}
 
-    def run(self, acq:btk.btkAcquisition, filename:str, options:dict):
+    def run(self, acq:btk.btkAcquisition, filename:str, options:Dict):
         pass
 
     def getAnomaly(self):
@@ -49,7 +50,7 @@ class MarkerAnomalyDetectionRollingProcedure(AnomalyDetectionProcedure):
         method (str) : mean or median
     """
 
-    def __init__(self, markers:list, plot:bool=False, **kwargs):
+    def __init__(self, markers:List, plot:bool=False, **kwargs):
 
         super(MarkerAnomalyDetectionRollingProcedure, self).__init__()
 
@@ -64,7 +65,7 @@ class MarkerAnomalyDetectionRollingProcedure(AnomalyDetectionProcedure):
         self._treshold = 3 if "treshold" not in kwargs else kwargs["treshold"]
         self._method = "median" if "method" not in kwargs else kwargs["method"]
 
-    def run(self, acq:btk.btkAcquisition, filename:str, options:dict):
+    def run(self, acq:btk.btkAcquisition, filename:str, options:Dict):
         """ run the procedure
 
         Args:
@@ -165,7 +166,7 @@ class GaitEventAnomalyProcedure(AnomalyDetectionProcedure):
 
         super(GaitEventAnomalyProcedure, self).__init__()
 
-    def run(self, acq:btk.btkAcquisition, filename:str, options:dict):
+    def run(self, acq:btk.btkAcquisition, filename:str, options:Dict):
         """ run the procedure
 
         Args:
@@ -251,7 +252,7 @@ class ForcePlateAnomalyProcedure(AnomalyDetectionProcedure):
 
         super(ForcePlateAnomalyProcedure, self).__init__()
 
-    def run(self, acq:btk.btkAcquisition, filename:str, options:dict):
+    def run(self, acq:btk.btkAcquisition, filename:str, options:Dict):
         """ run the procedure
 
         Args:
@@ -314,7 +315,7 @@ class AnthropoDataAnomalyProcedure(AnomalyDetectionProcedure):
 
         self.mp = mp
 
-    def run(self, acq:btk.btkAcquisition, filename:str, options:dict):
+    def run(self, acq:btk.btkAcquisition, filename:str, options:Dict):
         """ run the procedure
 
         Args:

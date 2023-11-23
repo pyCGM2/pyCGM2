@@ -247,7 +247,7 @@ def saveAnalysis(analysisInstance:Analysis,path:str,FilenameNoExt:str):
     # modelFile.close()
 
 
-def saveJson(path:str, filename:str, content:dict,ensure_ascii:bool=False):
+def saveJson(path:str, filename:str, content:Dict,ensure_ascii:bool=False):
     """save as json file
 
     Args:
@@ -265,7 +265,7 @@ def saveJson(path:str, filename:str, content:dict,ensure_ascii:bool=False):
         with open((path+filename), 'w') as outfile:
             json.dump(content, outfile,indent=4,ensure_ascii=ensure_ascii)
 
-def saveYaml(path:str, filename:str, content:dict):
+def saveYaml(path:str, filename:str, content:Dict):
     """save as yaml file
 
     Args:
@@ -343,7 +343,7 @@ def getMpFileContent(DATA_PATH:str,file:str,subject:str):
 
     return content,out
 
-def getMp(mpInfo:dict,resetFlag:bool=True):
+def getMp(mpInfo:Dict,resetFlag:bool=True):
     """return required and optional anthropometric parameters
 
     Args:
@@ -422,7 +422,7 @@ def loadMp(path:str,filename:str):
 
 
 
-def saveMp(mpInfo:dict,model:Model,DATA_PATH:str,mpFilename:str):
+def saveMp(mpInfo:Dict,model:Model,DATA_PATH:str,mpFilename:str):
     """Save anthropometric parameters as json
 
     Args:

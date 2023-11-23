@@ -12,7 +12,7 @@ import pyCGM2
 from pyCGM2.Report import plot
 from pyCGM2.Report.Viewers.plotViewers import PlotViewer
 
-
+from typing import List, Tuple, Dict, Optional, Union, Callable
 
 # ------ FILTER -----------
 class PlottingFilter(object):
@@ -84,7 +84,7 @@ class PlottingFilter(object):
 
         self.__concretePlotViewer.fig.axes[axisIndex].set_ylim([min,max])
 
-    def setHorizontalLines(self, idict:dict):
+    def setHorizontalLines(self, idict:Dict):
         """set horizontal lines from a dict whom key is the axis title 
 
         Args:
@@ -117,7 +117,7 @@ class PlottingFilter(object):
         """
         self.m_title=title
 
-    def displaySignificantDiffererence(self,axisIndex:int,clusters:list):
+    def displaySignificantDiffererence(self,axisIndex:int,clusters:List):
         """display sgnificant frames
 
         Args:

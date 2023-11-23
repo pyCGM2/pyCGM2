@@ -14,6 +14,7 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
+from typing import List, Tuple, Dict, Optional, Union, Callable
 
 # ---- EMG -----
 
@@ -75,7 +76,7 @@ def enveloppe(array:np.ndarray, fc:float, fa:float):
 
 
 # ---- btkAcq -----
-def markerFiltering(btkAcq:btk.btkAcquisition, markers:list[str], order:int=2, fc:float=6, zerosFiltering:bool=True):
+def markerFiltering(btkAcq:btk.btkAcquisition, markers:List[str], order:int=2, fc:float=6, zerosFiltering:bool=True):
     """
     Low-pass filtering of all points in an acquisition
 

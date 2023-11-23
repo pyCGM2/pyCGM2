@@ -11,7 +11,7 @@ from pyCGM2.Report.Viewers import plotViewers
 from pyCGM2.Report.normativeDatasets import NormativeData
 from pyCGM2.Processing.analysis import Analysis
 
-from typing import Optional, Callable
+from typing import List, Tuple, Dict, Optional, Union, Callable
 
 class NormalizedGroundReactionForcePlotViewer(plotViewers.PlotViewer):
     """ Plot time-Normalized Ground reaction forces 

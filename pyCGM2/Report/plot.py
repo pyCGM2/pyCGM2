@@ -1,7 +1,7 @@
 """
 Module contains low-level plot functions
 """
-from typing import Optional,Union,List
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -23,6 +23,8 @@ except:
 
 from pyCGM2.EMG import normalActivation
 from pyCGM2.Processing.analysis import AnalysisStructure
+
+from typing import List, Tuple, Dict, Optional, Union, Callable
 
 # ---- convenient plot functions
 def temporalPlot(figAxis:plt.Axes,acq:btk.btkAcquisition,
@@ -556,7 +558,7 @@ def addTemporalNormalActivationLayer(figAxis:plt.Axes,acq:btk.btkAcquisition,
 
 
 
-def addRectanglePatches(figAxis:plt.Axes,clusters:list,heightProportion:float = 0.05):
+def addRectanglePatches(figAxis:plt.Axes,clusters:List,heightProportion:float = 0.05):
     """displat a rectangle
 
     Args:

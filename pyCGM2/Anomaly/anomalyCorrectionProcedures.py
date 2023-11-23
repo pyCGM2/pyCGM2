@@ -1,4 +1,3 @@
-from typing import Union
 from scipy.cluster.hierarchy import dendrogram
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
@@ -7,6 +6,7 @@ import btk
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+from typing import List, Tuple, Dict, Optional, Union
 
 def plot_dendrogram(model, **kwargs):
     # Create linkage matrix and then plot the dendrogram
@@ -48,7 +48,7 @@ class MarkerAnomalyCorrectionProcedure(AnomalyCorrectionProcedure):
 
     """
 
-    def __init__(self, markers:Union[list,str], anomalyIndexes:list, plot:bool=False, **kwargs):
+    def __init__(self, markers:Union[List,str], anomalyIndexes:List, plot:bool=False, **kwargs):
         super(MarkerAnomalyCorrectionProcedure,self).__init__()
 
         if type(markers) == str:

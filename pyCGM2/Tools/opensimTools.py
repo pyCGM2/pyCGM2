@@ -25,7 +25,7 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] opensim not found on your system")
 
-from typing import List, Tuple, Dict, Optional
+from typing import List, Tuple, Dict, Optional, Union, Callable
 
 # def createGroundReactionForceMOT_file(DATA_PATH, c3dFile):
 
@@ -106,7 +106,7 @@ def sto2pointValues(storageObject:opensim.Storage, label:str, R_LAB_OSIM:np.ndar
     return pointValues
 
 
-def mot2pointValues(motFilename:str, labels:list[str], orientation:list[int]=[1, 1, 1]):
+def mot2pointValues(motFilename:str, labels:List[str], orientation:List[int]=[1, 1, 1]):
     storageObject = opensim.Storage(motFilename)
 
     index_x = storageObject.getStateIndex(labels[0])

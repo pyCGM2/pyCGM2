@@ -7,7 +7,7 @@ import btk
 from pyCGM2.Tools import btkTools
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-from typing import List, Tuple, Dict, Optional,Union
+from typing import List, Tuple, Dict, Optional, Union
 
 
 class InspectorProcedure(object):
@@ -27,7 +27,7 @@ class MarkerPresenceDetectionProcedure(InspectorProcedure):
 
         self.markers = markers
 
-    def run(self,acq:btk.btkAcquisition,filename:str,options:dict)-> dict:
+    def run(self,acq:btk.btkAcquisition,filename:str,options:Dict)-> dict:
         """run the procedure
 
         Args:

@@ -16,7 +16,8 @@ from pyCGM2.Processing.analysis import Analysis
 
 
 from pyCGM2.Report.normativeDatasets import NormativeData
-from typing import Optional, Callable
+from typing import List, Tuple, Dict, Optional, Union, Callable
+
 
 
 class KinematicsPlotComparisonViewer(plotViewers.PlotViewer):
@@ -33,7 +34,7 @@ class KinematicsPlotComparisonViewer(plotViewers.PlotViewer):
     """
 
 
-    def __init__(self,iAnalyses:list[Analysis],context:list[str],legends:list[str],pointLabelSuffix_lst:Optional[list[str]]=None,
+    def __init__(self,iAnalyses:List[Analysis],context:List[str],legends:List[str],pointLabelSuffix_lst:Optional[List[str]]=None,
                  bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
 
         super(KinematicsPlotComparisonViewer, self).__init__(iAnalyses)
@@ -568,7 +569,7 @@ class KineticsPlotComparisonViewer(plotViewers.PlotViewer):
 
     """
 
-    def __init__(self,iAnalyses:list[Analysis],context:list[str],legends:list[str],pointLabelSuffix_lst:Optional[list[str]]=None,
+    def __init__(self,iAnalyses:List[Analysis],context:List[str],legends:List[str],pointLabelSuffix_lst:Optional[List[str]]=None,
                  bodyPart:enums.BodyPartPlot= enums.BodyPartPlot.LowerLimb):
 
 

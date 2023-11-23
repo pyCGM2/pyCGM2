@@ -9,7 +9,7 @@ from pyCGM2.Report.Viewers import plotViewers
 from pyCGM2.Report.normativeDatasets import NormativeData
 from pyCGM2.Processing.analysis import Analysis
 
-from typing import Optional, Callable
+from typing import List, Tuple, Dict, Optional, Union, Callable
 
 class MuscleNormalizedPlotPanelViewer(plotViewers.PlotViewer):
     """plot emg envelops
@@ -139,7 +139,7 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.PlotViewer):
         """
         self.m_concretePlotFunction = concreteplotFunction
 
-    def setMuscles(self,iMuscles:list):
+    def setMuscles(self,iMuscles:List):
         self.m_muscles= iMuscles
 
     def setMuscleOutputType(self,type:str):

@@ -9,6 +9,7 @@ LOGGER = pyCGM2.LOGGER
 from pyCGM2.Anomaly.anomalyDetectionProcedures import AnomalyDetectionProcedure
 from pyCGM2.Anomaly.anomalyCorrectionProcedures import AnomalyCorrectionProcedure
 
+from typing import List, Tuple, Dict, Optional, Union
 class AnomalyDetectionFilter(object):
     """ Anomaly detector filter
 

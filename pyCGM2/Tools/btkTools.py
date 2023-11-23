@@ -22,10 +22,10 @@ except:
 
 from pyCGM2.External.ktk.kineticstoolkit import timeseries
 
-from typing import Optional,Tuple
+from typing import List, Tuple, Dict, Optional, Union, Callable
 
 # --- acquisition -----
-def smartReader(filename:str, translators:Optional[dict]=None):
+def smartReader(filename:str, translators:Optional[Dict]=None):
     """
     Convenient function to read a c3d with Btk
 
@@ -146,7 +146,7 @@ def GetAnalogNames(acq:btk.btkAcquisition):
     return analogNames
 
 
-def isGap(acq:btk.btkAcquisition, markerLabel:list[str]):
+def isGap(acq:btk.btkAcquisition, markerLabel:List[str]):
     """
     check gap
 
@@ -214,7 +214,7 @@ def isPointExist(acq:btk.btkAcquisition, label:str, ignorePhantom:bool=True):
                     return True
 
 
-def isPointsExist(acq:btk.btkAcquisition, labels:list[str], ignorePhantom:bool=True):
+def isPointsExist(acq:btk.btkAcquisition, labels:List[str], ignorePhantom:bool=True):
     """
     check if  a list of points exist
 
@@ -293,7 +293,7 @@ def smartAppendPoint(acq:btk.btkAcquisition, label:str, values:np.ndarray, Point
         acq.AppendPoint(new_btkPoint)
 
 
-def clearPoints(acq:btk.btkAcquisition, pointlabelList:list[str]):
+def clearPoints(acq:btk.btkAcquisition, pointlabelList:List[str]):
     """
     Remove points
 
@@ -316,7 +316,7 @@ def clearPoints(acq:btk.btkAcquisition, pointlabelList:list[str]):
     return acq
 
 
-def keepAndDeleteOtherPoints(acq:btk.btkAcquisition, pointToKeep:list[str]):
+def keepAndDeleteOtherPoints(acq:btk.btkAcquisition, pointToKeep:List[str]):
     """
     Remove points except ones
 
@@ -343,7 +343,7 @@ def isPhantom(acq:btk.btkAcquisition, label:str):
     return False if all(residuals == -1) else True
 
 
-def getValidFrames(acq:btk.btkAcquisition, markerLabels:list[str], frameBounds:Optional[Tuple[int,int]]=None):
+def getValidFrames(acq:btk.btkAcquisition, markerLabels:List[str], frameBounds:Optional[Tuple[int,int]]=None):
     """
     get valid frames of markers
 
@@ -373,7 +373,7 @@ def getValidFrames(acq:btk.btkAcquisition, markerLabels:list[str], frameBounds:O
     return flag
 
 
-def getFrameBoundaries(acq:btk.btkAcquisition, markerLabels:list[str]):
+def getFrameBoundaries(acq:btk.btkAcquisition, markerLabels:List[str]):
     """
     get frame boundaries from a list of markers
 
@@ -393,7 +393,7 @@ def getFrameBoundaries(acq:btk.btkAcquisition, markerLabels:list[str]):
     return firstValidFrame, lastValidFrame
 
 
-def checkGap(acq:btk.btkAcquisition, markerList:list[str], frameBounds:Optional[Tuple[int,int]]=None):
+def checkGap(acq:btk.btkAcquisition, markerList:List[str], frameBounds:Optional[Tuple[int,int]]=None):
     """
     check if there are any gaps from a list of markers
 
@@ -422,7 +422,7 @@ def checkGap(acq:btk.btkAcquisition, markerList:list[str], frameBounds:Optional[
     return flag
 
 
-def applyOnValidFrames(acq:btk.btkAcquisition, validFrames:list[int]):
+def applyOnValidFrames(acq:btk.btkAcquisition, validFrames:List[int]):
     """
     set zeros to all points if the frame is  not valid
 
@@ -443,7 +443,7 @@ def applyOnValidFrames(acq:btk.btkAcquisition, validFrames:list[int]):
                     it.SetValue(i, 2, 0)
 
 
-def findValidFrames(acq:btk.btkAcquisition, markerLabels:list[str]):
+def findValidFrames(acq:btk.btkAcquisition, markerLabels:List[str]):
     """
     find valid frames to process from markers
 
@@ -473,7 +473,7 @@ def findValidFrames(acq:btk.btkAcquisition, markerLabels:list[str]):
     return flag, firstValidFrame, lastValidFrame
 
 
-def applyValidFramesOnOutput(acq:btk.btkAcquisition, validFrames:list[int]):
+def applyValidFramesOnOutput(acq:btk.btkAcquisition, validFrames:List[int]):
     """
     set model outputs to zero if not a valid frame
 
@@ -507,7 +507,7 @@ def checkMultipleSubject(acq:btk.btkAcquisition):
 
 # --- Model -----
 
-def applyTranslators(acq:btk.btkAcquisition, translators:dict):
+def applyTranslators(acq:btk.btkAcquisition, translators:Dict):
     """
     Rename marker from translators
 
@@ -584,7 +584,7 @@ def applyTranslators(acq:btk.btkAcquisition, translators:dict):
     return acqClone
 
 
-def checkMarkers(acq:btk.btkAcquisition, markerList:list[str]):
+def checkMarkers(acq:btk.btkAcquisition, markerList:List[str]):
     """
     check marker presence. Raise an exception if fails
 
@@ -597,7 +597,7 @@ def checkMarkers(acq:btk.btkAcquisition, markerList:list[str]):
             raise Exception("[pyCGM2] markers %s not found" % m)
 
 
-def clearEvents(acq:btk.btkAcquisition, labels:list[str]):
+def clearEvents(acq:btk.btkAcquisition, labels:List[str]):
     """
     remove events from their label
 
@@ -703,7 +703,7 @@ def hasChild(md:btk.btkMetaData, mdLabel:str):
     return outMd
 
 
-def getVisibleMarkersAtFrame(acq:btk.btkAcquisition, markers:list[str], index:int):
+def getVisibleMarkersAtFrame(acq:btk.btkAcquisition, markers:List[str], index:int):
     """
     return markers visible at a specific frame
 
@@ -778,7 +778,7 @@ def markerUnitConverter(acq:btk.btkAcquisition, unitOffset:float):
             it.SetValues(values*unitOffset)
 
 
-def constructMarker(acq:btk.btkAcquisition, label:str, markers:list[str], numpyMethod:callable=np.mean, desc:str=""):
+def constructMarker(acq:btk.btkAcquisition, label:str, markers:List[str], numpyMethod:callable=np.mean, desc:str=""):
     """
     construct a marker from others
 
@@ -824,7 +824,7 @@ def constructPhantom(acq:btk.btkAcquisition, label:str, desc:str=""):
                      residuals=np.ones((nFrames, 1))*-1.0)
 
 
-def createPhantoms(acq:btk.btkAcquisition, markerLabels:list(str)):
+def createPhantoms(acq:btk.btkAcquisition, markerLabels:List(str)):
     """
     construct phantoms
 
@@ -1066,7 +1066,7 @@ def sortedEvents(acq:btk.btkAcquisition):
     acq.SetEvents(newEvents)
 
 
-def buildTrials(dataPath:str, filenames:list[str]):
+def buildTrials(dataPath:str, filenames:List[str]):
     """
     build acquisitions
 
@@ -1119,7 +1119,7 @@ def isKineticFlag(acq:btk.btkAcquisition):
         return True, kineticEvent_frames, kineticEvent_frames_left, kineticEvent_frames_right
 
 
-def automaticKineticDetection(dataPath:str, filenames:list[str], acqs:Optional[list[btk.btkAcquisition]]=None):
+def automaticKineticDetection(dataPath:str, filenames:List[str], acqs:Optional[List[btk.btkAcquisition]]=None):
     """
     check presence of force plate events (ie Left-FP", "Right-FP") in a list of files
 
@@ -1182,7 +1182,7 @@ def getForcePlateWrench(acq:btk.btkAcquisition, fpIndex:int=None):
         return grwc
 
 
-def applyRotation(acq:btk.btkAcquisition, markers:list[str], globalFrameOrientation:str, forwardProgression:bool):
+def applyRotation(acq:btk.btkAcquisition, markers:List[str], globalFrameOrientation:str, forwardProgression:bool):
     """
     apply a rotation to markers
 
@@ -1621,7 +1621,7 @@ def calculateAngleFrom3points( acq:btk.btkAcquisition,pt1:str,pt2:str,pt3:str):
 
     return out
 
-def markersToArray(acq:btk.btkAcquisition,markers:Optional[list[str]]=None):
+def markersToArray(acq:btk.btkAcquisition,markers:Optional[List[str]]=None):
     """
     Array of marker position data with N time steps across M markers.
     The data need to be organized as follows:

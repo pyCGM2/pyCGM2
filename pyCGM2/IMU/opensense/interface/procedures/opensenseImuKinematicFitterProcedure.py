@@ -9,6 +9,7 @@ from pyCGM2.Model.Opensim import opensimIO
 
 import opensim
 
+from typing import List, Tuple, Dict, Optional, Union
 
 class ImuInverseKinematicXMLProcedure(object):
     def __init__(self, DATA_PATH:str,calibratedOsimName:str, resultsDirectory:str):
@@ -109,7 +110,7 @@ class ImuInverseKinematicXMLProcedure(object):
         if lastTime is not None and lastTime <-self.m_endTime: 
             self.m_endTime = lastTime
 
-    def prepareSensorToOpensimRotation(self,eulerAngles:list):
+    def prepareSensorToOpensimRotation(self,eulerAngles:List):
         """ euler angle to pass to opensim global coordinate system
 
         Args:

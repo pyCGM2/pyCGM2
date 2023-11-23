@@ -24,7 +24,7 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
-from typing import Optional, Callable
+from typing import List, Tuple, Dict, Optional, Union, Callable
 
 class TemporalEmgPlotViewer(plotViewers.PlotViewer):
     """plot temporal emg plot
@@ -67,7 +67,7 @@ class TemporalEmgPlotViewer(plotViewers.PlotViewer):
         if self.m_selectChannels is None:
             self.m_selectChannels = self.m_emgmanager.getChannels()
 
-    def selectEmgChannels(self,channelNames:list[str]):
+    def selectEmgChannels(self,channelNames:List[str]):
         """set the emg channels
 
         Args:
@@ -306,7 +306,7 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.PlotViewer):
         self.m_normalizedEmgFlag = False
         self.m_selectChannels = None
 
-    def selectEmgChannels(self,channelNames:list[str]):
+    def selectEmgChannels(self,channelNames:List[str]):
         """set the emg channels
 
         Args:
@@ -433,7 +433,7 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.PlotViewer):
 
     """
 
-    def __init__(self,iAnalyses:list[Analysis],legends:list[str],pointLabelSuffix:Optional[str]=None):
+    def __init__(self,iAnalyses:List[Analysis],legends:List[str],pointLabelSuffix:Optional[str]=None):
 
 
         super(MultipleAnalysis_EnvEmgPlotPanelViewer, self).__init__(iAnalyses)
@@ -461,7 +461,7 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.PlotViewer):
         self.m_legends = legends
         self.m_selectChannels = None
 
-    def selectEmgChannels(self,channelNames:list[str]):
+    def selectEmgChannels(self,channelNames:List[str]):
         """set the emg channels
 
         Args:
