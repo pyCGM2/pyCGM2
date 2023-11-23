@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Tuple, Dict, Optional,Union
 
 from pyCGM2.Utils import files
 from pyCGM2.IMU import imu
@@ -32,7 +32,7 @@ class ImuInverseKinematicXMLProcedure(object):
         self.m_osimInterface = opensimInterface.osimInterface(self.m_DATA_PATH, calibratedOsimName)
 
         self.m_accuracy = 1e-8
-        self.m_imuMapper = dict()
+        self.m_imuMapper = {}
 
         self.m_sensor_to_opensim_rotations = None
 
@@ -46,7 +46,7 @@ class ImuInverseKinematicXMLProcedure(object):
         self.m_imuInverseKinematicTool = self.m_DATA_PATH + "__imuInverseKinematics_Setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(imuInverseKinematicToolFile,self.m_imuInverseKinematicTool)
 
-    def prepareImuMapper(self,imuMapperDict:dict):
+    def prepareImuMapper(self,imuMapperDict:Dict):
         """prepare the imuMapper 
 
         Args:
@@ -75,7 +75,7 @@ class ImuInverseKinematicXMLProcedure(object):
 
         self.m_imuMapper.update({osimBody : imuInstance})
 
-    def prepareOrientationFile(self,motionFilenameNoExt:str,freq:int,order=[0,1,2,3]):
+    def prepareOrientationFile(self,motionFilenameNoExt:str,freq:int,order:List=[0,1,2,3]):
         """prepare the orientation file ( mot file) from Imus
 
         Args:

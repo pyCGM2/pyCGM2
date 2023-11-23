@@ -2,7 +2,6 @@
 This module contains convenient classes interacting with the nexus API
 """
 
-from typing import Optional
 
 from pyCGM2.Nexus import Devices
 from pyCGM2.Tools import btkTools
@@ -27,7 +26,7 @@ except ImportError as e:
     LOGGER.logger.error(f"viconnexusapi not installed: {e}")
 
 
-
+from typing import List, Tuple, Dict, Optional,Union
 
 class NexusModelFilter(object):
     """Nexus Model Filter is an interface running the method `viconExport` of a pyCGM2 Model instance.
@@ -44,7 +43,7 @@ class NexusModelFilter(object):
     def __init__(self, NEXUS:ViconNexus.ViconNexus, 
                  iModel:model.Model, 
                  iAcq:btk.btkAcquisition, 
-                 vskName:str, pointSuffix:str, staticProcessing=False):
+                 vskName:str, pointSuffix:str, staticProcessing:bool=False):
 
         self.m_model = iModel
         self.m_acq = iAcq
@@ -98,8 +97,8 @@ class NexusConstructAcquisitionFilter(object):
             self.m_analogFrameRate/self.m_framerate)
         self.m_analogFrameNumber = self.m_frames * self.m_numberAnalogSamplePerFrame
 
-        self.m_nexusForcePlates = list()
-        self.m_nexusAnalogDevices = list()
+        self.m_nexusForcePlates = []
+        self.m_nexusAnalogDevices = []
 
         if(len(deviceIDs) > 0):
             for deviceID in deviceIDs:

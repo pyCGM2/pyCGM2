@@ -46,7 +46,7 @@ class ClinicalDescriptor(object):
     def __init__(self,dataType,jointOrSegmentLabel, indexes,coefficients, offsets,**options):
         self.type = dataType
         self.label = jointOrSegmentLabel
-        self.infos = dict()
+        self.infos = {}
         self.infos["SaggitalIndex"] = indexes[0]
         self.infos["CoronalIndex"] = indexes[1]
         self.infos["TransversalIndex"] = indexes[2]
@@ -73,13 +73,13 @@ class Model(object):
 
         self.m_segmentCollection=[]
         self.m_jointCollection=[]
-        self.mp=dict()
-        self.mp_computed=dict()
-        self.m_chains=dict()
+        self.mp={}
+        self.mp_computed={}
+        self.m_chains={}
         self.m_staticFilename=None
 
-        self.m_properties=dict()
-        self.m_properties["CalibrationParameters"]=dict()
+        self.m_properties={}
+        self.m_properties["CalibrationParameters"]={}
         self.m_clinicalDescriptors= []
         self.m_csDefinitions = []
         self.m_bodypart=None
@@ -661,7 +661,7 @@ class Referential(object):
         self.static=frame.Frame()
         self.motion=[]
         self.relativeMatrixAnatomic = np.zeros((3,3))
-        self.additionalInfos = dict()
+        self.additionalInfos = {}
 
     def setStaticFrame(self,Frame):
         """
@@ -797,18 +797,18 @@ class Segment(object):
         self.referentials=[]
         self.anatomicalFrame =AnatomicalReferential()
 
-        self.m_bsp = dict()
+        self.m_bsp = {}
         self.m_bsp["mass"] = 0
         self.m_bsp["length"] = 0
         self.m_bsp["rog"] = 0
         self.m_bsp["com"] = np.zeros((3))
         self.m_bsp["inertia"] = np.zeros((3,3))
 
-        self.m_externalDeviceWrenchs = list()
+        self.m_externalDeviceWrenchs = []
         self.m_externalDeviceBtkWrench = None
         self.m_proximalWrench = None
 
-        self.m_proximalMomentContribution = dict()
+        self.m_proximalMomentContribution = {}
         self.m_proximalMomentContribution["internal"] = None
         self.m_proximalMomentContribution["external"] = None
         self.m_proximalMomentContribution["inertia"] = None
@@ -819,7 +819,7 @@ class Segment(object):
         self.m_proximalMomentContribution["distalSegmentForces"] = None
         self.m_proximalMomentContribution["distalSegmentMoments"] = None
 
-        self.m_info = dict()
+        self.m_info = {}
         self.m_isCloneOf = False
 
         self.m_existFrames = None
@@ -885,7 +885,7 @@ class Segment(object):
 
 
     def resetMarkerLabels(self):
-        self.m_markerLabels = list()
+        self.m_markerLabels = []
         self.m_markerLabels = self.m_tracking_markers + self.m_calibration_markers
 
 
@@ -910,7 +910,7 @@ class Segment(object):
         """
         Zeroing external device wrench
         """
-        self.m_externalDeviceWrenchs = list()
+        self.m_externalDeviceWrenchs = []
         self.m_externalDeviceBtkWrench = None
 
     def zeroingProximalWrench(self):

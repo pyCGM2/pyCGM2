@@ -6,7 +6,7 @@ from pyCGM2.Tools import opensimTools
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
-from typing import List, Optional, Tuple
+from typing import List, Tuple, Dict, Optional,Union
 
 try:
     import btk

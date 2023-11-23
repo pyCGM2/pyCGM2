@@ -6,6 +6,8 @@ except:
 
 from pyCGM2.Model import model
 
+from typing import List, Tuple, Dict, Optional,Union
+
 def getNexusSubjectMp(NEXUS:ViconNexus.ViconNexus,subject:str, resetFlag:bool=False):
     """ return required and optional anthropometric parameters
 

@@ -5,8 +5,11 @@ check out the script : *\Tests\test_gap.py* for examples
 """
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
+from pyCGM2.Gap.gapFillingProcedures import GapFillingProcedure
 import numpy as np
 
+import btk
+from typing import List, Tuple, Dict, Optional,Union
 
 #  --- FILTER -----
 class GapFillingFilter(object):
@@ -17,7 +20,7 @@ class GapFillingFilter(object):
         procedure (pyCGM2.Gap.gapFillingProcedures.GapProcedure): a gap filling procedure instance
         acq (Btk.Acquisition): a btk acquisition instance
     """
-    def __init__(self,procedure,acq):
+    def __init__(self,procedure:GapFillingProcedure,acq:btk.btkAcquisition):
 
         self.m_aqui = acq
         self.m_procedure = procedure
@@ -32,7 +35,7 @@ class GapFillingFilter(object):
         return self.filledMarkers
 
 
-    def fill(self,markers=None):
+    def fill(self,markers:Optional[List[str]]=None):
         """
         fill gap according the specified procedure
         """

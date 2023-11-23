@@ -4,7 +4,7 @@ The module contains procedures for detecting foot contact event.
 check out the script : *\Tests\test_events.py* for examples
 """
 
-from typing import Tuple,Optional,Union
+from typing import List, Tuple, Dict, Optional,Union
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 try:

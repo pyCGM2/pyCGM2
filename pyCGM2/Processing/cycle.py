@@ -44,7 +44,7 @@ def spatioTemporelParameter_descriptiveStats(cycles,label,context):
         context (str): event context ( Left, Right)
     """
 
-    outDict=dict()
+    outDict={}
 
     n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context])
     val = np.zeros((n))
@@ -69,7 +69,7 @@ def point_descriptiveStats(cycles,label,context):
 
     """
 
-    outDict=dict()
+    outDict={}
 
     n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle
 
@@ -77,7 +77,7 @@ def point_descriptiveStats(cycles,label,context):
     y=np.empty((101,n))
     z=np.empty((101,n))
 
-    listOfPointValues=list()
+    listOfPointValues=[]
 
     i=0
     for cycle in cycles:
@@ -132,11 +132,11 @@ def analog_descriptiveStats(cycles,label,context):
         context (str): event context ( Left, Right)
     """
 
-    outDict=dict()
+    outDict={}
 
     n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle
 
-    listOfPointValues=list()
+    listOfPointValues=[]
     x=np.empty((101,n))
 
     i=0
@@ -175,10 +175,10 @@ def construcGaitCycle(acq):
 
     """
 
-    gaitCycles=list()
+    gaitCycles=[]
 
     context = "Left"
-    left_fs_frames=list()
+    left_fs_frames=[]
     for ev in btk.Iterate(acq.GetEvents()):
         if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
             left_fs_frames.append(ev.GetFrame())
@@ -188,7 +188,7 @@ def construcGaitCycle(acq):
                                        context))
 
     context = "Right"
-    right_fs_frames=list()
+    right_fs_frames=[]
     for ev in btk.Iterate(acq.GetEvents()):
         if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
             right_fs_frames.append(ev.GetFrame())
@@ -230,7 +230,7 @@ class Cycle(object):
 
         self.discreteDataList=[]
 
-        self.stps =dict()
+        self.stps ={}
 
         LOGGER.logger.debug("cycle makes from Frame %d   to  %d   (%s) " % (self.begin, self.end, self.context))
 
@@ -316,7 +316,7 @@ class Cycle(object):
             context (str): event context (All, Left or Right)
 
         """
-        events = list()
+        events = []
         evsn = self.acq.GetEvents()
         for ev in btk.Iterate(evsn):
             if context==("Left" or "Right") :
@@ -602,14 +602,14 @@ class CyclesBuilder(object):
         """
 
         if self.spatioTemporalAcqs is not None:
-            spatioTemporalCycles=list()
+            spatioTemporalCycles=[]
             for acq in  self.spatioTemporalAcqs:
 
                 startFrame = acq.GetFirstFrame()
                 endFrame = acq.GetLastFrame()
 
                 context = "Left"
-                left_fs_frames=list()
+                left_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         left_fs_frames.append(ev.GetFrame())
@@ -618,7 +618,7 @@ class CyclesBuilder(object):
                 #     left_fs_frames.append(ev.time())
 
                 context = "Right"
-                right_fs_frames=list()
+                right_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         right_fs_frames.append(ev.GetFrame())
@@ -655,21 +655,21 @@ class CyclesBuilder(object):
         """get the list of Cycle used for  kinematic computation
         """
         if self.kinematicAcqs is not None:
-            kinematicCycles=list()
+            kinematicCycles=[]
             for acq in  self.kinematicAcqs:
 
                 startFrame = acq.GetFirstFrame()
                 endFrame = acq.GetLastFrame()
 
                 context = "Left"
-                left_fs_frames=list()
+                left_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         left_fs_frames.append(ev.GetFrame())
 
 
                 context = "Right"
-                right_fs_frames=list()
+                right_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         right_fs_frames.append(ev.GetFrame())
@@ -708,7 +708,7 @@ class CyclesBuilder(object):
 
             detectionTimeOffset = 0.02
 
-            kineticCycles=list()
+            kineticCycles=[]
             for acq in  self.kineticAcqs:
 
                 flag_kinetics,frames,frames_left,frames_right = btkTools.isKineticFlag(acq)
@@ -719,13 +719,13 @@ class CyclesBuilder(object):
                 if flag_kinetics:
 
                     context = "Left"
-                    left_fs_frames=list()
+                    left_fs_frames=[]
                     for ev in btk.Iterate(acq.GetEvents()):
                         if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                             left_fs_frames.append(ev.GetFrame())
 
                     context = "Right"
-                    right_fs_frames=list()
+                    right_fs_frames=[]
                     for ev in btk.Iterate(acq.GetEvents()):
                         if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                             right_fs_frames.append(ev.GetFrame())
@@ -783,20 +783,20 @@ class CyclesBuilder(object):
         """get the list of Cycle used for emg computation
         """
         if self.emgAcqs is not None:
-            emgCycles=list()
+            emgCycles=[]
             for acq in  self.emgAcqs:
 
                 startFrame = acq.GetFirstFrame()
                 endFrame = acq.GetLastFrame()
 
                 context = "Left"
-                left_fs_frames=list()
+                left_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         left_fs_frames.append(ev.GetFrame())
 
                 context = "Right"
-                right_fs_frames=list()
+                right_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         right_fs_frames.append(ev.GetFrame())
@@ -832,21 +832,21 @@ class CyclesBuilder(object):
     
     def getMuscleGeometry(self):
         if self.muscleGeometryAcqs is not None:
-            muscleGeometryCycles=list()
+            muscleGeometryCycles=[]
             for acq in  self.muscleGeometryAcqs:
 
                 startFrame = acq.GetFirstFrame()
                 endFrame = acq.GetLastFrame()
 
                 context = "Left"
-                left_fs_frames=list()
+                left_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         left_fs_frames.append(ev.GetFrame())
 
 
                 context = "Right"
-                right_fs_frames=list()
+                right_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         right_fs_frames.append(ev.GetFrame())
@@ -885,7 +885,7 @@ class CyclesBuilder(object):
 
             detectionTimeOffset = 0.02
 
-            muscleDynamicCycles=list()
+            muscleDynamicCycles=[]
             for acq in  self.muscleDynamicAcqs:
 
                 flag_kinetics,frames,frames_left,frames_right = btkTools.isKineticFlag(acq)
@@ -896,13 +896,13 @@ class CyclesBuilder(object):
                 if flag_kinetics:
 
                     context = "Left"
-                    left_fs_frames=list()
+                    left_fs_frames=[]
                     for ev in btk.Iterate(acq.GetEvents()):
                         if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                             left_fs_frames.append(ev.GetFrame())
 
                     context = "Right"
-                    right_fs_frames=list()
+                    right_fs_frames=[]
                     for ev in btk.Iterate(acq.GetEvents()):
                         if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                             right_fs_frames.append(ev.GetFrame())
@@ -983,11 +983,11 @@ class GaitCyclesBuilder(CyclesBuilder):
         """
 
         if self.spatioTemporalAcqs is not None:
-            spatioTemporalCycles=list()
+            spatioTemporalCycles=[]
             for acq in  self.spatioTemporalAcqs:
 
                 context = "Left"
-                left_fs_frames=list()
+                left_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         left_fs_frames.append(ev.GetFrame())
@@ -998,7 +998,7 @@ class GaitCyclesBuilder(CyclesBuilder):
                                                    context))
 
                 context = "Right"
-                right_fs_frames=list()
+                right_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         right_fs_frames.append(ev.GetFrame())
@@ -1017,11 +1017,11 @@ class GaitCyclesBuilder(CyclesBuilder):
         """
 
         if self.kinematicAcqs is not None:
-            kinematicCycles=list()
+            kinematicCycles=[]
             for acq in  self.kinematicAcqs:
 
                 context = "Left"
-                left_fs_frames=list()
+                left_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         left_fs_frames.append(ev.GetFrame())
@@ -1031,7 +1031,7 @@ class GaitCyclesBuilder(CyclesBuilder):
                                                    context))
 
                 context = "Right"
-                right_fs_frames=list()
+                right_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         right_fs_frames.append(ev.GetFrame())
@@ -1054,7 +1054,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
             detectionTimeOffset = 0.02
 
-            kineticCycles=list()
+            kineticCycles=[]
             for acq in  self.kineticAcqs:
 
                 flag_kinetics,frames,frames_left,frames_right = btkTools.isKineticFlag(acq)
@@ -1062,7 +1062,7 @@ class GaitCyclesBuilder(CyclesBuilder):
                 if flag_kinetics:
                     context = "Left"
                     count_L=0
-                    left_fs_frames=list()
+                    left_fs_frames=[]
                     for ev in btk.Iterate(acq.GetEvents()):
                         if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                             left_fs_frames.append(ev.GetFrame())
@@ -1086,7 +1086,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
                     context = "Right"
                     count_R=0
-                    right_fs_frames=list()
+                    right_fs_frames=[]
                     for ev in btk.Iterate(acq.GetEvents()):
                         if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                             right_fs_frames.append(ev.GetFrame())
@@ -1112,11 +1112,11 @@ class GaitCyclesBuilder(CyclesBuilder):
         """
 
         if self.emgAcqs is not None:
-            emgCycles=list()
+            emgCycles=[]
             for acq in  self.emgAcqs:
 
                 context = "Left"
-                left_fs_frames=list()
+                left_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         left_fs_frames.append(ev.GetFrame())
@@ -1126,7 +1126,7 @@ class GaitCyclesBuilder(CyclesBuilder):
                                                    context))
 
                 context = "Right"
-                right_fs_frames=list()
+                right_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         right_fs_frames.append(ev.GetFrame())
@@ -1144,11 +1144,11 @@ class GaitCyclesBuilder(CyclesBuilder):
         """get the list of Cycle used for the computation of the muscle Geometry
         """
         if self.muscleGeometryAcqs is not None:
-            muscleGeometryCycles=list()
+            muscleGeometryCycles=[]
             for acq in  self.muscleGeometryAcqs:
 
                 context = "Left"
-                left_fs_frames=list()
+                left_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         left_fs_frames.append(ev.GetFrame())
@@ -1158,7 +1158,7 @@ class GaitCyclesBuilder(CyclesBuilder):
                                                    context))
 
                 context = "Right"
-                right_fs_frames=list()
+                right_fs_frames=[]
                 for ev in btk.Iterate(acq.GetEvents()):
                     if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                         right_fs_frames.append(ev.GetFrame())
@@ -1182,7 +1182,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
             detectionTimeOffset = 0.02
 
-            muscleDynamicCycles=list()
+            muscleDynamicCycles=[]
             for acq in  self.muscleDynamicAcqs:
 
                 flag_kinetics,frames,frames_left,frames_right = btkTools.isKineticFlag(acq)
@@ -1190,7 +1190,7 @@ class GaitCyclesBuilder(CyclesBuilder):
                 if flag_kinetics:
                     context = "Left"
                     count_L=0
-                    left_fs_frames=list()
+                    left_fs_frames=[]
                     for ev in btk.Iterate(acq.GetEvents()):
                         if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                             left_fs_frames.append(ev.GetFrame())
@@ -1214,7 +1214,7 @@ class GaitCyclesBuilder(CyclesBuilder):
 
                     context = "Right"
                     count_R=0
-                    right_fs_frames=list()
+                    right_fs_frames=[]
                     for ev in btk.Iterate(acq.GetEvents()):
                         if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
                             right_fs_frames.append(ev.GetFrame())

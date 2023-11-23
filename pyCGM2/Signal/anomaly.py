@@ -28,7 +28,7 @@ def anomaly_rolling(values:np.ndarray, aprioriError:int=0, window:int=10, thresh
     df = pd.DataFrame({'Values': values})
 
     df["Values0"] = df["Values"]
-    indices0 = list()
+    indices0 = []
 
     outlier0_idx = pd.Series([False] * df.Values.shape[0])
     if len(df[df.Values == 0]) != 0:

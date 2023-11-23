@@ -172,7 +172,7 @@ def findMarkerGap(acq:btk.btkAcquisition):
         acq (btk.acquisition): a btk acquisition instance
 
     """
-    gaps = list()
+    gaps = []
     markerNames = GetMarkerNames(acq)
     for marker in markerNames:
         if isGap(acq, marker):
@@ -354,7 +354,7 @@ def getValidFrames(acq:btk.btkAcquisition, markerLabels:list[str], frameBounds:O
     """
     ff = acq.GetFirstFrame()
 
-    flag = list()
+    flag = []
     for i in range(0, acq.GetPointFrameNumber()):
         flag_index = True
         for marker in markerLabels:
@@ -453,9 +453,9 @@ def findValidFrames(acq:btk.btkAcquisition, markerLabels:list[str]):
 
     """
 
-    flag = list()
+    flag = []
     for i in range(0, acq.GetPointFrameNumber()):
-        pointFlag = list()
+        pointFlag = []
         for marker in markerLabels:
             if acq.GetPoint(marker).GetResidual(i) >= 0:
                 pointFlag.append(1)
@@ -518,7 +518,7 @@ def applyTranslators(acq:btk.btkAcquisition, translators:dict):
     acqClone = btk.btkAcquisition.Clone(acq)
 
     if translators is not None:
-        modifiedMarkerList = list()
+        modifiedMarkerList = []
 
         # gather all labels
         for it in translators.items():
@@ -832,8 +832,8 @@ def createPhantoms(acq:btk.btkAcquisition, markerLabels:list(str)):
         acq (btkAcquisition): a btk acquisition instance
         markerLabels (list): phantom marker labels
     """
-    phantom_markers = list()
-    actual_markers = list()
+    phantom_markers = []
+    actual_markers = []
     for label in markerLabels:
         if not isPointExist(acq, label):
             constructPhantom(acq, label, desc="phantom")
@@ -890,7 +890,7 @@ def getStartEndEvents(acq:btk.btkAcquisition, context:str, startLabel:str="Start
 
 
 def _getSectionFromMd(md:btk.btkMetaData):
-    md_sections = list()
+    md_sections = []
     for i in range(0, md.GetChildNumber()):
         md_sections.append(md.GetChild(i).GetLabel())
     return md_sections
@@ -1226,7 +1226,7 @@ def smartGetEvents(acq:btk.btkAcquisition, label:str, context:str):
     """
     evs = acq.GetEvents()
 
-    out = list()
+    out = []
     for it in btk.Iterate(evs):
         if it.GetContext() == context and it.GetLabel() == label:
             out.append(it.GetFrame())
@@ -1484,7 +1484,7 @@ def getAllParamAnalysis(acq:btk.btkAcquisition):
 
     itemNumber = len(names)
 
-    items = list()
+    items = []
     for i in range(0, itemNumber):
         item = {"name": names[i], "context": contexts[i], "subject": subjects[i],
                 "description": descriptions[i], "unit": units[i], "value": values[i]}
@@ -1528,7 +1528,7 @@ def getParamAnalysis(btkAcq:btk.btkAcquisition, name:str, context:str, subject:s
         name, context, subject))
 
 def getLabelsFromScalar(acq:btk.btkAcquisition, description:Optional[str]=None):
-    out = list()
+    out = []
 
     if description is not None:
         for it in btk.Iterate(acq.GetPoints()):

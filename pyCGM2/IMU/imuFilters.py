@@ -3,6 +3,9 @@ from pyCGM2.IMU.Procedures.imuMotionProcedure import ImuMotionProcedure
 from pyCGM2.IMU.Procedures.relativeImuAngleProcedures import RelativeImuAnglesProcedure
 from pyCGM2.IMU.Procedures.imuReaderProcedures import ImuReaderProcedure
 from pyCGM2.IMU import imu
+
+from typing import List, Tuple, Dict, Optional,Union
+
 class ImuReaderFilter(object):
     """read imu data 
 

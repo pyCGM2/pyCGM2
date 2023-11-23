@@ -1285,7 +1285,7 @@ class CGM2_4(CGM2_3):
         # ---remove all  direction marker from tracking markers.
         if self.staExpert:
             for seg in self.m_segmentCollection:
-                selectedTrackingMarkers=list()
+                selectedTrackingMarkers=[]
                 for marker in seg.m_tracking_markers:
                     if marker in self.__class__.TRACKING_MARKERS : # get class variable MARKER even from child
                         selectedTrackingMarkers.append(marker)
@@ -1416,7 +1416,7 @@ class CGM2_4(CGM2_3):
             # # ---remove all  direction marker from tracking markers.
             # if self.staExpert:
             #     for seg in self.m_segmentCollection:
-            #         selectedTrackingMarkers=list()
+            #         selectedTrackingMarkers=[]
             #         for marker in seg.m_tracking_markers:
             #             if marker in self.__class__.TRACKING_MARKERS : # get class variable MARKER even from child
             #                 selectedTrackingMarkers.append(marker)

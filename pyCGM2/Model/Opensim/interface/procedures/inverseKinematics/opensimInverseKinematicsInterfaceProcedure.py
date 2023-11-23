@@ -111,7 +111,7 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
 
         if not hasattr(self, "m_weights"):
             markertasks = self.xml.m_soup.find_all("IKMarkerTask")
-            self.m_weights = dict()
+            self.m_weights = {}
             for item in markertasks:
                 self.m_weights[item["name"]] = float(item.find("weight").string)
 
@@ -189,7 +189,7 @@ class KalmanInverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
 
         if not hasattr(self, "m_weights"):
             markertasks = self.xml.m_soup.find_all("IKMarkerTask")
-            self.m_weights = dict()
+            self.m_weights = {}
             for item in markertasks:
                 self.m_weights[item["name"]] = float(item.find("weight").string)
 

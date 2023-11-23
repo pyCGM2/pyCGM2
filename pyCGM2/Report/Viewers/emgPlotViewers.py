@@ -41,7 +41,7 @@ class TemporalEmgPlotViewer(plotViewers.PlotViewer):
 
         super(TemporalEmgPlotViewer, self).__init__(iAcq)
 
-        self.emgs = list()
+        self.emgs = []
         self.rectify = False
 
         self.m_acq = self.m_input
@@ -292,8 +292,8 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.PlotViewer):
 
         super(EnvEmgGaitPlotPanelViewer, self).__init__(iAnalysis)
 
-        self.emgs = list()
-        self.m_normalActivEmgs = list()
+        self.emgs = []
+        self.m_normalActivEmgs = []
 
         self.m_analysis = self.m_input
         if isinstance(self.m_analysis,pyCGM2.Processing.analysis.Analysis):
@@ -452,8 +452,8 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.PlotViewer):
         self.m_analysis = self.m_input
 
 
-        self.emgs = list()
-        self.m_normalActivEmgs = list()
+        self.emgs = []
+        self.m_normalActivEmgs = []
 
 
         self.m_pointLabelSuffix = pointLabelSuffix

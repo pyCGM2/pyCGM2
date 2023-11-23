@@ -76,7 +76,7 @@ class MarkerAnomalyDetectionRollingProcedure(AnomalyDetectionProcedure):
 
         errorState = False
 
-        out = dict()
+        out = {}
 
         ff = acq.GetFirstFrame()
         lf = acq.GetLastFrame()
@@ -180,8 +180,8 @@ class GaitEventAnomalyProcedure(AnomalyDetectionProcedure):
         events = acq.GetEvents()
         if events.GetItemNumber() != 0:
 
-            events_L = list()
-            events_R = list()
+            events_L = []
+            events_R = []
             for ev in btk.Iterate(events):
 
                 if ev.GetContext() == "Left":

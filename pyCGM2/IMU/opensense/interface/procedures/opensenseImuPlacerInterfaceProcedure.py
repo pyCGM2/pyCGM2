@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Tuple, Dict, Optional,Union
 
 from pyCGM2.IMU import imu
 from pyCGM2.Utils import files
@@ -32,7 +32,7 @@ class ImuPlacerXMLProcedure(object):
         files.copyPaste(genericOsimFile, self.m_DATA_PATH + self.m_osim)
 
         self.m_sensor_to_opensim_rotations = None
-        self.m_imuMapper = dict()
+        self.m_imuMapper = {}
 
         self.m_osimInterface = opensimInterface.osimInterface(self.m_DATA_PATH, self.m_osim)
 
@@ -47,7 +47,7 @@ class ImuPlacerXMLProcedure(object):
         self.xml = opensimInterface.opensimXmlInterface(imuPlacerToolFile,self.m_imuPlacerTool)
 
 
-    def prepareImuMapper(self,imuMapperDict:dict):
+    def prepareImuMapper(self,imuMapperDict:Dict):
         """prepare the imuMapper 
 
         Args:
@@ -76,7 +76,7 @@ class ImuPlacerXMLProcedure(object):
         self.m_imuMapper.update({osimBody : imuInstance})
 
 
-    def prepareOrientationFile(self,staticFilenameNoExt:str,freq:int,order=[0,1,2,3]):
+    def prepareOrientationFile(self,staticFilenameNoExt:str,freq:int,order:List=[0,1,2,3]):
         """prepare the orientation file ( mot file) from Imus
 
         Args:
@@ -100,7 +100,7 @@ class ImuPlacerXMLProcedure(object):
          self.m_base_imu_label=segmentName+"_imu"
          self.m_base_heading_axis=heading
 
-    def prepareSensorToOpensimRotation(self,eulerAngles:list):
+    def prepareSensorToOpensimRotation(self,eulerAngles:List):
         """ euler angle to pass to opensim global coordinate system
 
         Args:

@@ -5,6 +5,7 @@ Obsolete module : work with anomaly and inspector modules instead
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
+
 class QualityFilter(object):
     def __init__(self,procedure,verbose=True):
         self.m_procedure = procedure

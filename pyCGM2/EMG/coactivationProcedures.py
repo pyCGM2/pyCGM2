@@ -5,6 +5,7 @@ check out the script : *\Tests\test_EMG.py* for examples
 
 """
 import numpy as np
+from typing import List, Tuple, Dict, Optional
 
 class CoActivationProcedure(object):
     def __init__(self):
@@ -22,7 +23,7 @@ class UnithanCoActivationProcedure(CoActivationProcedure):
         super(UnithanCoActivationProcedure, self).__init__()
 
 
-    def run(self, emg1:str, emg2:str)-> list:
+    def run(self, emg1:str, emg2:str):
         """run the procedure.
 
         Args:
@@ -35,7 +36,7 @@ class UnithanCoActivationProcedure(CoActivationProcedure):
 
         """
 
-        out = list()
+        out = []
         for c1, c2 in zip(emg1, emg2):  # iterate along column
             commonEmg = np.zeros(((101, 1)))
             for i in range(0, 101):
@@ -58,7 +59,7 @@ class FalconerCoActivationProcedure(CoActivationProcedure):
         super(FalconerCoActivationProcedure, self).__init__()
 
 
-    def run(self, emg1:str, emg2:str)-> list:
+    def run(self, emg1:str, emg2:str):
         """run the procedure.
 
         Args:
@@ -71,7 +72,7 @@ class FalconerCoActivationProcedure(CoActivationProcedure):
 
         """
 
-        out = list()
+        out = []
         for c1, c2 in zip(emg1, emg2):  # iterate along column
 
             commonEmg = np.zeros(((101, 1)))

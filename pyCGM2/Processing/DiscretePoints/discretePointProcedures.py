@@ -54,7 +54,7 @@ class BenedettiProcedure(DiscretePointProcedure):
 
         # self.__detectTest(analysisInstance,"RHipMoment","Right") # TEST
 
-        dataframes = list()
+        dataframes = []
         # Left
         dataframes.append( self.__getPelvis_kinematics(analysisInstance,"LPelvisAngles","Left"))
         dataframes.append( self.__getHip_kinematics(analysisInstance,"LHipAngles","Left"))
@@ -147,7 +147,7 @@ class BenedettiProcedure(DiscretePointProcedure):
         loadingResponseValues = analysisInstance.kinematicStats.pst['doubleStance1', context]['values']
         stanceValues =         analysisInstance.kinematicStats.pst['stancePhase', context]['values']
 
-        series = list()
+        series = []
 
         #---min rotation sagital plane
         label = ["HR1","THR1"]
@@ -246,7 +246,7 @@ class BenedettiProcedure(DiscretePointProcedure):
         loadingResponseValues = analysisInstance.kinematicStats.pst['doubleStance1', context]['values']
         stanceValues =         analysisInstance.kinematicStats.pst['stancePhase', context]['values']
 
-        series = list()
+        series = []
 
         #---flexion at heel strike
         label = "H1"
@@ -488,7 +488,7 @@ class BenedettiProcedure(DiscretePointProcedure):
         loadingResponseValues = analysisInstance.kinematicStats.pst['doubleStance1', context]['values']
         stanceValues =         analysisInstance.kinematicStats.pst['stancePhase', context]['values']
 
-        series = list()
+        series = []
 
 
         #---flexion at heel strike
@@ -727,7 +727,7 @@ class BenedettiProcedure(DiscretePointProcedure):
         loadingResponseValues = analysisInstance.kinematicStats.pst['doubleStance1', context]['values']
         stanceValues =         analysisInstance.kinematicStats.pst['stancePhase', context]['values']
 
-        series = list()
+        series = []
 
 
         #---flexion at heel strike
@@ -938,7 +938,7 @@ class BenedettiProcedure(DiscretePointProcedure):
         loadingResponseValues = analysisInstance.kineticStats.pst['doubleStance1', context]['values']
         stanceValues =         analysisInstance.kineticStats.pst['stancePhase', context]['values']
 
-        series = list()
+        series = []
 
 
         #---1-max and 2-min extensor moments
@@ -1100,7 +1100,7 @@ class BenedettiProcedure(DiscretePointProcedure):
         loadingResponseValues = analysisInstance.kineticStats.pst['doubleStance1', context]['values']
         stanceValues =         analysisInstance.kineticStats.pst['stancePhase', context]['values']
 
-        series = list()
+        series = []
 
         #---1 fist flexor extensor, 2- max extensor, 3-second max flexor moment !!!
         # rule :
@@ -1328,7 +1328,7 @@ class BenedettiProcedure(DiscretePointProcedure):
         loadingResponseValues = analysisInstance.kineticStats.pst['doubleStance1', context]['values']
         stanceValues =         analysisInstance.kineticStats.pst['stancePhase', context]['values']
 
-        series = list()
+        series = []
 
         #---1 max flex , 2 max ext moment
 
@@ -1445,7 +1445,7 @@ class MaxMinProcedure(DiscretePointProcedure):
 
         """
 
-        dataframes = list()
+        dataframes = []
         # Left
         dataframes.append( self.__getExtrema(analysisInstance,"LPelvisAngles","Left"))
 
@@ -1521,7 +1521,7 @@ class MaxMinProcedure(DiscretePointProcedure):
 
         stanceValues =         analysisInstance.kinematicStats.pst['stancePhase', context]['values']
 
-        series = list()
+        series = []
 
         #---min stance
         label = ["minST","TminST"]
@@ -1641,7 +1641,7 @@ class GoldbergProcedure(DiscretePointProcedure):
 
         """
 
-        dataframes = list()
+        dataframes = []
 
         dataframes.append( self.__getKnee_kinematics(analysisInstance,"LKneeAngles"+self.pointSuffix,"Left"))
         dataframes.append( self.__getKnee_kinematics(analysisInstance,"RKneeAngles"+self.pointSuffix,"Right"))
@@ -1679,7 +1679,7 @@ class GoldbergProcedure(DiscretePointProcedure):
         normalizedCycleValues = analysisInstance.kinematicStats.data [pointLabel,context]
         stanceValues =         analysisInstance.kinematicStats.pst['stancePhase', context]['values']
 
-        series = list()
+        series = []
 
         #---maximal knee flexion
         label = "G1"
@@ -1783,7 +1783,7 @@ class GoldbergProcedure(DiscretePointProcedure):
         doubleStanceFrame = stanceFrame-secondDoubleStanceFrameRange
 
 
-        series = list()
+        series = []
 
         #---average moment in double stance
         label = "G6"
@@ -1972,7 +1972,7 @@ class GoldbergProcedure(DiscretePointProcedure):
 #     def _extract(self,analysisInstance):
 #         rules = self.m_rules
 #
-#         series = list()
+#         series = []
 #
 #         kinematicData = analysisInstance.kinematicStats
 #
@@ -2015,7 +2015,7 @@ class GoldbergProcedure(DiscretePointProcedure):
 #     def _extractWithRules(self,analysisInstance):
 #         rules = self.m_rules
 #
-#         series = list()
+#         series = []
 #
 #         kinematicData = analysisInstance.kinematicStats
 #

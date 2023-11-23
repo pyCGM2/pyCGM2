@@ -100,7 +100,7 @@ def markerFiltering(btkAcq:btk.btkAcquisition, markers:list[str], order:int=2, f
         splitIndexes = [
             x[x != -1] for x in np.split(indexes, np.where(indexes == -1)[0]) if len(x[x != -1])]
 
-        filtValues_section = list()
+        filtValues_section = []
         for data in splitdata:
             # default as defined in https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.filtfilt.html
             padlen = 3 * max(len(a), len(b))

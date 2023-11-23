@@ -142,7 +142,7 @@ def main(args=None):
     LOGGER.logger.info(
         "--------------------------MODEL FITTING ----------------------------------")
     dynamicMeasurements = qtmTools.findDynamic(sessionXML)
-    modelledC3ds = list()
+    modelledC3ds = []
 
     for dynamicMeasurement in dynamicMeasurements:
         reconstructFilenameLabelled = qtmTools.getFilename(dynamicMeasurement)
@@ -215,7 +215,7 @@ def main(args=None):
         nds = normativeDatasets.NormativeData("Schwartz2008", "Free")
         types = qtmTools.detectMeasurementType(sessionXML)
         for type in types:
-            modelledTrials = list()
+            modelledTrials = []
             for dynamicMeasurement in dynamicMeasurements:
                 if qtmTools.isType(dynamicMeasurement, type):
                     filename = qtmTools.getFilename(dynamicMeasurement)

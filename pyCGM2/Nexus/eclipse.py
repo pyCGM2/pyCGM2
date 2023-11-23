@@ -13,6 +13,7 @@ import configparser
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+from typing import List, Tuple, Dict, Optional,Union
 
 
 def generateEmptyENF(path:str):
@@ -40,7 +41,7 @@ def getCurrentMarkedEnfs():
     infile = open(currentMarkedNodesFile, "r")
     soup = BeautifulSoup(infile.read(), 'xml')
 
-    out = list()
+    out = []
     nodes = soup.find_all("MarkedNode")
     for node in nodes:
         fullFilename = node.get("MarkedNodePath")
@@ -64,8 +65,8 @@ def getCurrentMarkedNodes(fileType:str="c3d"):
     infile = open(currentMarkedNodesFile, "r")
     soup = BeautifulSoup(infile.read(), 'xml')
 
-    path = list()
-    outFiles = list()
+    path = []
+    outFiles = []
     nodes = soup.find_all("MarkedNode")
 
     for node in nodes:

@@ -9,8 +9,10 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 import warnings
 
-
 from pyCGM2.Tools import  btkTools
+import btk
+
+from typing import List, Tuple, Dict, Optional,Union
 
 # --- abstract procedure
 class GapFillingProcedure(object):
@@ -85,7 +87,7 @@ class Burke2016KalmanGapFillingProcedure(GapFillingProcedure):
         return y
 
 
-    def fill(self,acq,**kwargs):
+    def fill(self,acq:btk.btkAcquisition,**kwargs):
         """fill gap
 
         Args:
@@ -125,7 +127,7 @@ class Burke2016KalmanGapFillingProcedure(GapFillingProcedure):
         LOGGER.logger.debug("writing trajectories")
 
         # Create new smoothed trjectories
-        filledMarkers  = list()
+        filledMarkers  = []
         for i in range(0,len(btkmarkers)):
             targetMarker = btkmarkers[i]
             if btkTools.isGap(acq,targetMarker):
@@ -308,7 +310,7 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
         return reconstructed_data
 
 
-    def fill(self,acq,**kwargs):
+    def fill(self,acq:btk.btkAcquisition,**kwargs):
         """Fills gaps in the marker postion data exploiting intercorrelations between marker coordinates.
 
         See:
@@ -471,7 +473,7 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
         
         
         # Create new smoothed trjectories
-        filledMarkers  = list()
+        filledMarkers  = []
         for i in range(0,len(btkmarkers)):
             targetMarker = btkmarkers[i]
             if btkTools.isGap(acq,targetMarker):

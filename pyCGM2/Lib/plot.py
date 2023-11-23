@@ -26,7 +26,7 @@ from pyCGM2.Report.Viewers import groundReactionPlotViewers
 from pyCGM2.Processing.analysis import Analysis
 from pyCGM2.Report.normativeDatasets import NormativeData
 
-from typing import Optional, Tuple
+from typing import List, Tuple, Dict, Optional,Union
 
 
 def plotTemporalKinematic(DATA_PATH:str, modelledFilename:str,bodyPart:str, pointLabelSuffix:Optional[str]=None,
@@ -232,8 +232,8 @@ def plotTemporalEMG(DATA_PATH:str, processedEmgfile:str,
 
     pageNumber = len(emgChannels_list)
 
-    figs=list()
-    outfilenames=list()
+    figs=[]
+    outfilenames=[]
 
     exportFlag = True if exportPdf or exportPng else False
 
@@ -856,7 +856,7 @@ def plot_MAP(DATA_PATH:str,analysis:Analysis,normativeDataset:NormativeData,
     else:
         return fig
 
-def compareKinematic(DATA_PATH:str,analyses:list[Analysis],legends:list,context:list,bodyPart:list,normativeDataset:NormativeData,
+def compareKinematic(DATA_PATH:str,analyses:List[Analysis],legends:List,context:List,bodyPart:List,normativeDataset:NormativeData,
                     plotType="Descriptive",type:str="Gait",pointSuffixes=None,show:bool=True,title:Optional[str]=None,
                     OUT_PATH = None,outputName:Optional[str]=None,exportPng:bool=False,exportPdf:bool=False,autoYlim:bool=False):
     """plot kinematics from different analysis instances.
@@ -940,7 +940,7 @@ def compareKinematic(DATA_PATH:str,analyses:list[Analysis],legends:list,context:
     else:
         return fig
 
-def compareKinetic(DATA_PATH:str,analyses:list[Analysis],legends:list[str],context:list[str],bodyPart:str,normativeDataset:NormativeData,
+def compareKinetic(DATA_PATH:str,analyses:List[Analysis],legends:List[str],context:List[str],bodyPart:str,normativeDataset:NormativeData,
     plotType="Descriptive",type:str="Gait",pointSuffixes=None,show:bool=True,title:Optional[str]=None,
     OUT_PATH:Optional[str]=None,outputName:Optional[str]=None,exportPng:bool=False,exportPdf:bool=False,autoYlim:bool=False):
 
@@ -1027,7 +1027,7 @@ def compareKinetic(DATA_PATH:str,analyses:list[Analysis],legends:list[str],conte
     else:
         return fig
 
-def compareEmgEnvelops(DATA_PATH:str,analyses:list[Analysis],legends:list[str],
+def compareEmgEnvelops(DATA_PATH:str,analyses:List[Analysis],legends:List[str],
         normalized:bool=False,plotType="Descriptive",show:bool=True,title:Optional[str]=None,
         type:str="Gait",
         OUT_PATH:Optional[str]=None,outputName:Optional[str]=None,exportPng:bool=False,exportPdf:bool=False,autoYlim:bool=False,**kwargs):
@@ -1123,7 +1123,7 @@ def compareEmgEnvelops(DATA_PATH:str,analyses:list[Analysis],legends:list[str],
     else:
         return fig
 
-def compareSelectedEmgEvelops(DATA_PATH:str,analyses:list[Analysis],legends:list[str], emgChannels:list[str],contexts:list[str],
+def compareSelectedEmgEvelops(DATA_PATH:str,analyses:List[Analysis],legends:List[str], emgChannels:List[str],contexts:List[str],
     normalized:bool=False,plotType:str="Descriptive",type:str="Gait",show:bool=True,
     title:Optional[str]=None,
     OUT_PATH =None, outputName:Optional[str]=None,exportPng:bool=False,exportPdf:bool=False,autoYlim:bool=False):
@@ -1266,7 +1266,7 @@ def plot_DescriptiveMuscleLength(DATA_PATH:str,analysis:Analysis,normativeDatase
 
     # detect muscle name in the analysis
     if muscles is None:
-        detectedMuscles=list() 
+        detectedMuscles=[] 
         for name,side in  analysis.muscleGeometryStats.data:
             muscle = name[:name.find("[")-2]
             if muscle not in detectedMuscles: 
@@ -1279,8 +1279,8 @@ def plot_DescriptiveMuscleLength(DATA_PATH:str,analysis:Analysis,normativeDatase
    
     pageNumber = len(opensimMuscles_grouped)
 
-    figs=list()
-    outfilenames=list()
+    figs=[]
+    outfilenames=[]
 
     exportFlag = True if exportPdf or exportPng else False
 

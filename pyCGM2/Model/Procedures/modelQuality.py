@@ -80,7 +80,7 @@ class GeneralScoreResidualProcedure(QualityProcedure):
     def __init__(self,model):
         super(GeneralScoreResidualProcedure, self).__init__()
 
-        self.m_scoreDefinition = dict()
+        self.m_scoreDefinition = {}
         self.model = model
 
     def setDefinition(self, nodeLabel, proxSegLabel, distSegLabel):
@@ -109,7 +109,7 @@ class ModelScoreResidualProcedure(QualityProcedure):
         super(ModelScoreResidualProcedure, self).__init__()
 
         self.model = model
-        self.m_scoreDefinition = dict()
+        self.m_scoreDefinition = {}
 
         for it in self.model.m_jointCollection:
             self.m_scoreDefinition[it.m_nodeLabel] = {"proximal": it.m_proximalLabel , "distal": it.m_distalLabel }

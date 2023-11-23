@@ -55,7 +55,7 @@ OPENSIM_KSLIB_PATH = MAIN_PYCGM2_PATH +"pyCGM2\\opensim4\\KSlibaries\\lib\\bin\\
 #  [Optional] setting folder
 PYCGM2_SETTINGS_FOLDER = MAIN_PYCGM2_PATH+"pyCGM2\Settings\\"
 
-EMG_CHANNELS = list()
+EMG_CHANNELS = []
 try:
     for key in yaml.load(open((PYCGM2_SETTINGS_FOLDER+"emg.settings")).read(),Loader=yamlordereddictloader.Loader)["CHANNELS"].keys():
         EMG_CHANNELS.append(key)

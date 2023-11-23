@@ -52,7 +52,7 @@ class EmgManager(object):
     def getChannels(self):
         """ return the channel labels  """
 
-        out = list()
+        out = []
         for channel in self.m_emgChannelSection.keys():
             if self.m_emgChannelSection[channel]["Muscle"] is not None and self.m_emgChannelSection[channel]["Muscle"] != "None":
                 out.append(channel)
@@ -61,7 +61,7 @@ class EmgManager(object):
 
     def getMuscles(self):
         """ return the muscles """
-        out = list()
+        out = []
         for channel in self.m_emgChannelSection.keys():
             if self.m_emgChannelSection[channel]["Muscle"] is not None and self.m_emgChannelSection[channel]["Muscle"] != "None":
                 out.append(self.m_emgChannelSection[channel]["Muscle"])
@@ -70,7 +70,7 @@ class EmgManager(object):
 
     def getSides(self):
         """ return side of each emg"""
-        out = list()
+        out = []
         for channel in self.m_emgChannelSection.keys():
             if self.m_emgChannelSection[channel]["Muscle"] is not None and self.m_emgChannelSection[channel]["Muscle"] != "None":
                 out.append(self.m_emgChannelSection[channel]["Context"])
@@ -79,7 +79,7 @@ class EmgManager(object):
     def getNormalActivity(self):
         """ return the normal activity muscle reference
         """
-        out = list()
+        out = []
         for channel in self.m_emgChannelSection.keys():
             if self.m_emgChannelSection[channel]["Muscle"] is not None and self.m_emgChannelSection[channel]["Muscle"] != "None":
                 out.append(self.m_emgChannelSection[channel]["NormalActivity"])

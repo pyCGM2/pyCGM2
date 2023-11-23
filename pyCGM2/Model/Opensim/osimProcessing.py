@@ -195,7 +195,7 @@ class opensimModel(object):
 
         self.m_model = opensim.Model(osimFile)
         self.m_cgmModel = cgmModel
-        self.m_markers= list()
+        self.m_markers= []
 
 
         self.m_model.initSystem()
@@ -282,7 +282,7 @@ class opensimKinematicFitting(object):
         self.m_model = osimModel
 
         ikTool =  opensim.InverseKinematicsTool(ikToolFiles)
-        self.m_ikMarkers = list()
+        self.m_ikMarkers = []
 
         self.m_ikTool = ikTool
 

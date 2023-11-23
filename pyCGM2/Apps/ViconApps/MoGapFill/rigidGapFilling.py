@@ -52,7 +52,7 @@ def main():
 
         # static calibration
         if args.static is None:
-            staticFilenames = list()
+            staticFilenames = []
             for filename in  os.listdir(DATA_PATH):
                 if " Cal " in filename and filename.endswith(".c3d"):
                     staticFilenames.append(filename)

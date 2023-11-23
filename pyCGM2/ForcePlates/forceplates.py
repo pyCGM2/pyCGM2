@@ -23,9 +23,10 @@ except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system")
 from pyCGM2.Tools import  btkTools
 
+from typing import List, Tuple, Dict, Optional,Union
 
 def ForcePlateIntegration(ReactionForce:np.ndarray, mass:float, frameInit:int=0,frameEnd:int=None,
-                            v0:list =[0,0,0], p0:list= [0,0,0], 
+                            v0:List =[0,0,0], p0:List= [0,0,0], 
                             analogFrequency:int=1000)-> Tuple[np.ndarray, np.ndarray,np.ndarray]:
     """integration of the reaction force
 
@@ -263,7 +264,7 @@ def matchingFootSideOnForceplate (btkAcq:btk.btkAcquisition,
 
 
                 # check if contain both toe and hee marker
-                containFlags= list()
+                containFlags= []
                 for i in range (0, Rz.shape[0]):
                     if boolLst[i]:
                         if path.contains_point(hee[i,0:2]) and path.contains_point(toe[i,0:2]):
@@ -385,7 +386,7 @@ def correctForcePlateType5(btkAcq:btk.btkAcquisition):
     md_force_platform.RemoveChild("CAL_MATRIX")
     md_force_platform.RemoveChild("MATRIX_STORE")
 
-    md_channels=list()
+    md_channels=[]
     for i in btkTools.smartGetMetadata(btkAcq,'FORCE_PLATFORM',"CHANNEL"):
         md_channels.append(i)
 
@@ -394,7 +395,7 @@ def correctForcePlateType5(btkAcq:btk.btkAcquisition):
     forcePlateNumber = len(pfds)
 
 
-    channel_number_byFp = list()
+    channel_number_byFp = []
     for i in range(0,len(pfds)):
         if pfds[i].GetType() in [1,2,4]:
             channel_number_byFp.append(6)
@@ -402,7 +403,7 @@ def correctForcePlateType5(btkAcq:btk.btkAcquisition):
             channel_number_byFp.append(8)
 
     init=0
-    channel_indexes_ofAnalog=list()
+    channel_indexes_ofAnalog=[]
     for i in channel_number_byFp:
         channel_indexes_ofAnalog.append(md_channels[init:init+i])
         init=i
@@ -472,8 +473,8 @@ def combineForcePlate(acq:btk.btkAcquisition,mappedForcePlate:str)-> Tuple[btk.b
 
     analogFrames = acq.GetAnalogFrameNumber()
 
-    matchFp ={"Left":{"Force":list(),"Moment":list(),"Position":list()},
-          "Right":{"Force":list(),"Moment":list(),"Position":list()}
+    matchFp ={"Left":{"Force":[],"Moment":[],"Position":[]},
+          "Right":{"Force":[],"Moment":[],"Position":[]}
      }
 
     for i in range(0,len(mappedForcePlate)):
@@ -577,8 +578,8 @@ def detectGaitConsecutiveForcePlates(acq:btk.btkAcquisition,
     fpwc = fpwf.GetOutput()
     fpwc.Update()
 
-    consecutive ={"Left":list(),
-                  "Right":list()}
+    consecutive ={"Left":[],
+                  "Right":[]}
 
 
     indexes0 = list(range(0,len(mappedForcePlate),1))

@@ -2,13 +2,14 @@
 Module containing classed and convenient function for dealing with a Vicon Skeleton File ( vsk)
 
 """
-from typing import Tuple
+
 from bs4 import BeautifulSoup
 import string
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
 from pyCGM2.Utils import files
 
+from typing import List, Tuple, Dict, Optional,Union
 
 def getVskFiles(path:str):
     """return vsk files detected in a folder
@@ -85,7 +86,7 @@ class Vsk(object):
                 return val
 
 
-def getFromVskSubjectMp(vskInstance:Vsk, resetFlag:bool=False)->Tuple[dict,dict]:
+def getFromVskSubjectMp(vskInstance:Vsk, resetFlag:bool=False)->Tuple[Dict,Dict]:
     """return CGM anthropometric data ( mp data) of a pyCGM2.Eclipse.Vsk instance
 
     Args:

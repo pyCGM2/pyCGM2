@@ -7,7 +7,9 @@ from pyCGM2 import enums
 from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Report.normativeDatasets import NormativeData
 
-def pdfGaitReport(DATA_PATH:str,modelledTrials:list[str], 
+from typing import List, Tuple, Dict, Optional,Union
+
+def pdfGaitReport(DATA_PATH:str,modelledTrials:List[str], 
                   normativeDataset:NormativeData,pointSuffix:str, title:str = "gait report", **kwargs):
     """generate pdf with Kinematic-Kinetic-MAP gait plots .
 

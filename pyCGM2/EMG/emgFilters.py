@@ -19,6 +19,7 @@ from pyCGM2 import enums
 from pyCGM2.Processing import exporter
 from pyCGM2.Processing.analysis import Analysis
 
+from typing import List, Tuple, Dict, Optional
 class BasicEmgProcessingFilter(object):
     """
     Filter for filtering emg signals with a high pass filter
@@ -28,7 +29,7 @@ class BasicEmgProcessingFilter(object):
         labels (list): emg labels.
     """
 
-    def __init__(self,acq:btk.btkAcquisition, labels:list):
+    def __init__(self,acq:btk.btkAcquisition, labels:List):
 
         self.m_acq = acq
         self.m_labels = labels
@@ -73,7 +74,7 @@ class EmgEnvelopProcessingFilter(object):
         labels (list): emg labels.
     """
 
-    def __init__(self,acq:btk.btkAcquisition, labels:list):
+    def __init__(self,acq:btk.btkAcquisition, labels:List):
 
         self.m_acq = acq
         self.m_labels = [ label+"_Rectify" for label in labels]
@@ -112,14 +113,14 @@ class EmgNormalisationProcessingFilter(object):
         self.m_analysis = analysis
         self.m_label = label+"_Rectify_Env"
         self.m_context= context
-        self.m_threshold = dict()
+        self.m_threshold = {}
 
         self.m_thresholdFromAnalysis = None
 
         self.__c3dProcess = False
 
 
-    def setC3ds(self,datPath:str,c3ds:list,fileSuffix:str=None):
+    def setC3ds(self,datPath:str,c3ds:List,fileSuffix:str=None):
         """Set a list of c3d.
 
         Args:
@@ -197,7 +198,7 @@ class EmgNormalisationProcessingFilter(object):
         for contextIt in ["Left","Right"]:
             if (self.m_label,contextIt) in self.m_analysis.emgStats.data:
                 values = self.m_analysis.emgStats.data[self.m_label,contextIt]["values"]
-                valuesNorm = list()
+                valuesNorm = []
 
                 for val in values:
                     valuesNorm.append( val / self.m_threshold)
@@ -302,7 +303,7 @@ class DiscreteEMGFilter(object):
     """
 
     def __init__(self, discreteEMGProcedure:DiscreteEmgProcedure, analysis:Analysis, 
-                 emgLabels:list, emgMuscles:list, emgContexts:list, subjInfo:dict=None, condExpInfo:dict=None):
+                 emgLabels:List, emgMuscles:List, emgContexts:List, subjInfo:Dict=None, condExpInfo:Dict=None):
 
         self.m_procedure = discreteEMGProcedure
         self.m_analysis = analysis
@@ -315,7 +316,7 @@ class DiscreteEMGFilter(object):
         self.m_emgLabels = emgLabels
         self.m_emgContexts = emgContexts
 
-    def setSubjInfo(self, subjInfo:dict):
+    def setSubjInfo(self, subjInfo:Dict):
         """ set subject info
 
         Args:
@@ -325,7 +326,7 @@ class DiscreteEMGFilter(object):
 
         self.m_subjInfo = subjInfo
 
-    def setCondExpInf(self, condExpInfo:dict):
+    def setCondExpInf(self, condExpInfo:Dict):
         """ set experiment condition info
 
         Args:

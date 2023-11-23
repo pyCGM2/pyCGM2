@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Optional,Union
+from typing import List, Tuple, Dict, Optional,Union
 
 def rms(x:np.ndarray, axis:Optional[int]=None)->np.ndarray:
     """

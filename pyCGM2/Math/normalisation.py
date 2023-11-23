@@ -1,5 +1,5 @@
 import numpy as np
-
+from typing import List, Tuple, Dict, Optional,Union
 
 def timeSequenceNormalisation(Nrow:int, data:np.ndarray)->np.ndarray:
     """

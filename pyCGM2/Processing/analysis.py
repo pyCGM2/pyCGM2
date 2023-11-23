@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
-
 """
 The main goal of this module is to construct an `Analysis` instance. It's a matlab-like structure with
 spatio temporal (stp), kinematics, kinetics and emg parameters as attributes.
@@ -17,11 +12,12 @@ import pyCGM2.Processing.cycle as CGM2cycle
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+from typing import List, Tuple, Dict, Optional,Union
 
 class AnalysisStructure:
-    data = dict()
-    pst = dict()
-    optionalData = dict()
+    data = {}
+    pst = {}
+    optionalData = {}
 
 
 # ---- PATTERN BUILDER ------
@@ -57,7 +53,7 @@ class Analysis():
 
     def __init__(self):
 
-        self.stpStats = dict()
+        self.stpStats = {}
         self.kinematicStats = AnalysisStructure()
         self.kineticStats = AnalysisStructure()
         self.emgStats = AnalysisStructure()
@@ -66,7 +62,7 @@ class Analysis():
 
         self.gps = None
         self.gvs = None
-        self.coactivations = dict()
+        self.coactivations = {}
         self.subjectInfo = None
         self.experimentalInfo = None
         self.modelInfo = None
@@ -76,32 +72,32 @@ class Analysis():
         self.kineticInfo = None
         self.stpInfo = None
         self.scoreInfo = None
-        self.muscleGeometryInfo = dict()
-        self.muscleDynamicsInfo = dict()
+        self.muscleGeometryInfo = {}
+        self.muscleDynamicsInfo = {}
 
     def setStp(self, inDict):
         self.stpStats = inDict
 
-    def setKinematic(self, data, pst=dict()):
+    def setKinematic(self, data, pst={}):
         self.kinematicStats.data = data
         self.kinematicStats.pst = pst
 
-    def setKinetic(self, data, pst=dict(), optionalData=dict()):
+    def setKinetic(self, data, pst={}, optionalData={}):
         self.kineticStats.data = data
         self.kineticStats.pst = pst
         self.kineticStats.optionalData = optionalData
 
-    def setEmg(self, data, pst=dict()):
+    def setEmg(self, data, pst={}):
         self.emgStats.data = data
         self.emgStats.pst = pst
 
-    def setMuscleGeometry(self, data, pst=dict()):
+    def setMuscleGeometry(self, data, pst={}):
         self.muscleGeometryStats.data = data
         self.muscleGeometryStats.pst = pst
 
 
     def setGps(self, GpsStatsOverall, GpsStatsContext):
-        self.gps = dict()
+        self.gps = {}
         self.gps["Overall"] = GpsStatsOverall
         self.gps["Context"] = GpsStatsContext
 
@@ -272,7 +268,7 @@ class AnalysisBuilder(AbstractBuilder):
         LOGGER.logger.info("--kinetic computation--")
         if self.m_cycles.kineticCycles is not None:
 
-            found_context = list()
+            found_context = []
             for cycle in self.m_cycles.kineticCycles:
                 found_context.append(cycle.context)
 
@@ -384,7 +380,7 @@ class AnalysisBuilder(AbstractBuilder):
         LOGGER.logger.info("--kinetic computation--")
         if self.m_cycles.muscleDynamicCycles is not None:
 
-           found_context = list()
+           found_context = []
            for cycle in self.m_cycles.muscleDynamicCycles:
                found_context.append(cycle.context)
 
@@ -564,7 +560,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         LOGGER.logger.info("--kinetic computation--")
         if self.m_cycles.kineticCycles is not None:
 
-           found_context = list()
+           found_context = []
            for cycle in self.m_cycles.kineticCycles:
                found_context.append(cycle.context)
 
@@ -702,7 +698,7 @@ class GaitAnalysisBuilder(AbstractBuilder):
         LOGGER.logger.info("--kinetic computation--")
         if self.m_cycles.muscleDynamicCycles is not None:
 
-           found_context = list()
+           found_context = []
            for cycle in self.m_cycles.muscleDynamicCycles:
                found_context.append(cycle.context)
 

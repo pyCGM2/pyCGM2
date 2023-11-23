@@ -16,7 +16,7 @@ def getPhases(dataStats,context="Both"):
 
     """
     #phases
-    phases = dict()
+    phases = {}
 
     # Left
     if context == "Both" or context=="Left":

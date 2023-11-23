@@ -61,16 +61,16 @@ class Bsp(object):
     # TODO: Improve implementation in order to consider different body sement parameter table.
 
 
-    TABLE = dict()
-    TABLE["Foot"] = dict()
-    TABLE["Shank"] = dict()
-    TABLE["Thigh"] = dict()
-    TABLE["Thorax"] = dict()
-    TABLE["UpperArm"] = dict()
-    TABLE["ForeArm"] = dict()
-    TABLE["Hand"] = dict()
-    TABLE["Head"] = dict()
-    TABLE["Pelvis"] = dict()
+    TABLE = {}
+    TABLE["Foot"] = {}
+    TABLE["Shank"] = {}
+    TABLE["Thigh"] = {}
+    TABLE["Thorax"] = {}
+    TABLE["UpperArm"] = {}
+    TABLE["ForeArm"] = {}
+    TABLE["Hand"] = {}
+    TABLE["Head"] = {}
+    TABLE["Pelvis"] = {}
 
     TABLE["Pelvis"]["mass"] = 14.2
     TABLE["Pelvis"]["com"] = np.array([ 0.0 ,0.0 , 50.0]) # sagittal - transversal - longitudinal

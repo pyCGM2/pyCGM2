@@ -34,7 +34,7 @@ class CGM1_GPS(ScoreProcedure):
 
         pointSuffix = ("_"+pointSuffix)  if (pointSuffix is not None) else ""
 
-        matchingNormativeDataLabel = dict()
+        matchingNormativeDataLabel = {}
 
         matchingNormativeDataLabel["LPelvisAngles"+pointSuffix,"Left"] =  "PelvisAngles"
 #        matchingNormativeDataLabel["RPelvisAngles"+pointSuffix,"Right"]=  "Pelvis.Angles"   # dont use. see richard`s articles
@@ -55,7 +55,7 @@ class CGM1_GPS(ScoreProcedure):
 
     def _compute(self,analysis,normativeData):
 
-        gvs = dict()
+        gvs = {}
 
         nLeftCycles,nRightCycles = analysis.getKinematicCycleNumbers()
 
@@ -130,9 +130,9 @@ class CGM1_GPS(ScoreProcedure):
 
 
         # output dictionary
-        outDict_gvs = dict()
-        outDict_gps_context = dict()
-        outDict_gps = dict()
+        outDict_gvs = {}
+        outDict_gps_context = {}
+        outDict_gps = {}
 
         for label,context in self.matchingNormativeDataLabel.keys():
             outDict_gvs[label,context]={'mean':np.mean(gvs[label, context],axis=0),

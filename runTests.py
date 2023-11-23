@@ -12,7 +12,7 @@ import pyCGM2
 import os
 
 def getTestFiles(path):
-    pyfiles = list()
+    pyfiles = []
     for dirpath, dirs, files in os.walk(path):
       for filename in files:
         # fname = os.path.join(dirpath,filename)

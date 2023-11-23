@@ -3,6 +3,7 @@ from pyCGM2.Events import eventProcedures
 from pyCGM2.Signal import signal_processing
 import btk
 
+from typing import List, Tuple, Dict, Optional,Union
 
 def zeni(acqGait:btk.btkAcquisition, 
          footStrikeOffset:int=0, 

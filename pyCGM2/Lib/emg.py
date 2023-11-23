@@ -7,7 +7,7 @@ from pyCGM2.EMG import emgManager
 from pyCGM2 import enums
 from pyCGM2.Processing.analysis import Analysis
 
-from typing import Optional
+from typing import List, Tuple, Dict, Optional,Union
 
 def loadEmg(DATA_PATH:str):
     """
@@ -24,9 +24,9 @@ def loadEmg(DATA_PATH:str):
 
 
 def processEMG(DATA_PATH:str, 
-               gaitTrials:list, 
-               emgChannels:list,
-               highPassFrequencies:list=[20,200],
+               gaitTrials:List, 
+               emgChannels:List,
+               highPassFrequencies:List=[20,200],
                envelopFrequency:float=6.0, 
                fileSuffix:Optional[str]=None,
                outDataPath:Optional[str]=None):
@@ -81,7 +81,7 @@ def processEMG(DATA_PATH:str,
 def normalizedEMG(DATA_PATH:str,
                   analysis:Analysis, 
                   method:str="MeanMax", fromOtherAnalysis:Optional[Analysis]=None, 
-                  mvcSettings:Optional[dict]=None,
+                  mvcSettings:Optional[Dict]=None,
                   **kwargs):
     """
     Emg normalisation in amplitude.
@@ -122,7 +122,7 @@ def normalizedEMG(DATA_PATH:str,
     emgChannels = emg.getChannels()
     contexts = emg.getSides()
 
-    rows = list()
+    rows = []
     i=0
     for label in emgChannels:
         envnf = emgFilters.EmgNormalisationProcessingFilter(analysis,label,contexts[i])

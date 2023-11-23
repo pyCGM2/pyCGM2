@@ -17,9 +17,11 @@ from pyCGM2.Utils import utils
 from pyCGM2.Model.CGM2 import cgm
 from pyCGM2.Model.CGM2 import cgm2
 
+from pyCGM2.Model.model import Model
+from typing import List, Tuple, Dict, Optional,Union
+import btk
 
-
-def detectSide(acq,left_markerLabel,right_markerLabel):
+def detectSide(acq:btk.btkAcquisition,left_markerLabel:str,right_markerLabel:str):
 
     flag,vff,vlf = btkTools.findValidFrames(acq,[left_markerLabel,right_markerLabel])
 
@@ -30,8 +32,8 @@ def detectSide(acq,left_markerLabel,right_markerLabel):
 
     return side
 
-def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
-    side, beginFrame, endFrame, jointRange,
+def calibration2Dof(model:Model, DATA_PATH:str, reconstructFilenameLabelled:str, translators:Dict,
+    side:str, beginFrame:int, endFrame:int, jointRange:List[int],
     *argv, **kwargs):
 
     """
@@ -201,9 +203,9 @@ def calibration2Dof(model, DATA_PATH, reconstructFilenameLabelled, translators,
     return model,acqFunc,side
 
 
-def sara(model,
-    DATA_PATH,reconstructFilenameLabelled,translators,
-    side,beginFrame,endFrame,
+def sara(model:Model,
+    DATA_PATH:str,reconstructFilenameLabelled:str,translators:Dict,
+    side:str,beginFrame:int,endFrame:int,
     *argv, **kwargs):
 
     """

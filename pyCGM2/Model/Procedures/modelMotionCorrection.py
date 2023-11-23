@@ -31,7 +31,7 @@ class Naim2019ThighMisaligmentCorrectionProcedure(AbstractModelCorrectionProcedu
         self.m_side = side
 
         self.m_threshold = threshold
-        # self.m_virtual=dict()
+        # self.m_virtual={}
 
         LOGGER.logger.info("[pyCGM2] threshold of the Naim's correction method : %s"%(threshold))
 
@@ -74,7 +74,7 @@ class Naim2019ThighMisaligmentCorrectionProcedure(AbstractModelCorrectionProcedu
 
 
             # extract v> threshold
-            v_sup = list()
+            v_sup = []
             for i in range(0,va.shape[0]):
                 if angle[i]>self.m_threshold:
                     v_sup.append(v[i,:])

@@ -44,8 +44,8 @@ class GeneralOpensimCalibrationProcedure(object):
     """
     def __init__(self):
 
-        self.markers=dict()
-        self.geometry=dict()
+        self.markers={}
+        self.geometry={}
 
     def setMarkers(self, segmentLabel, trackingMarkers):
         """
@@ -79,7 +79,7 @@ class GeneralOpensimFittingProcedure(object):
     """
     def __init__(self):
 
-        self.ikTags=dict()
+        self.ikTags={}
 
     def setIkTags(self,markerLabel,weight):
         # TODO : remove this method ( check if used before)
@@ -109,8 +109,8 @@ class CgmOpensimCalibrationProcedures(object):
 
         """
         self.model=model
-        self.markers=dict()
-        self.geometry=dict()
+        self.markers={}
+        self.geometry={}
 
         self.__setMarkers()
         self.__setGeometry()
@@ -133,7 +133,7 @@ class CgmOpensimFittingProcedure(object):
 
         """
         self.model=model
-        self.ikTags=dict()#
+        self.ikTags={}#
 
         self.__setIkTags()
 

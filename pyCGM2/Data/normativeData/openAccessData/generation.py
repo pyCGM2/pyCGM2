@@ -15,7 +15,7 @@ def exportJson_Schwartz2008(path,name="Schwartz2008.json"):
 
     def constructJson(dataset, dataset_label, modalityLabel,data):
 
-        dataset[dataset_label].update({modalityLabel:dict()})
+        dataset[dataset_label].update({modalityLabel:{}})
 
         for label in data.keys():
 
@@ -25,17 +25,17 @@ def exportJson_Schwartz2008(path,name="Schwartz2008.json"):
             label = label.replace(".","")
             dataset[dataset_label][modalityLabel].update({label: {'X':None,'Y':None,'Z':None }})
 
-            outX = list()
+            outX = []
             for i in range(0,mean.shape[0]):
                 values = [i*2, mean[i,0]-sd[i,0],mean[i,0]+sd[i,0]]
                 outX.append(values)
 
-            outY = list()
+            outY = []
             for i in range(0,mean.shape[0]):
                 values = [i*2, mean[i,1]-sd[i,1],mean[i,1]+sd[i,1]]
                 outY.append(values)
 
-            outZ = list()
+            outZ = []
             for i in range(0,mean.shape[0]):
                 values = [i*2, mean[i,2]-sd[i,2],mean[i,2]+sd[i,2]]
                 outZ.append(values)
@@ -44,7 +44,7 @@ def exportJson_Schwartz2008(path,name="Schwartz2008.json"):
             dataset[dataset_label][modalityLabel][label]["Y"] = outY
             dataset[dataset_label][modalityLabel][label]["Z"] = outZ
 
-    dataset = {"Schwartz2008": dict()}
+    dataset = {"Schwartz2008": {}}
 
     nds = Schwartz2008("VerySlow")
     nds.constructNormativeData()
@@ -98,7 +98,7 @@ class Pinzone2014(object):
 
         self.m_filename = pyCGM2.NORMATIVE_DATABASE_PATH+"Pinzone 2014\\Formatted- Pinzone2014.xlsx"
         self.m_centre = centre
-        self.data = dict()
+        self.data = {}
 
     def __setDict(self,dataframe,JointLabel,axisLabel, dataType):
         """ populate an item of the member dictionary (data)
@@ -116,7 +116,7 @@ class Pinzone2014(object):
             raise Exception("[pyCGM2] - dont find Pinzone Normative data centre")
 
         if dataType == "Angles":
-            self.data[JointLabel]= dict()
+            self.data[JointLabel]= {}
 
             data_X=dataframe[(dataframe.Angle == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
             data_Y=dataframe[(dataframe.Angle == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
@@ -129,7 +129,7 @@ class Pinzone2014(object):
             self.data[JointLabel]["sd"] = np.array([data_X,data_Y,data_Z]).T
 
         if dataType == "Moments":
-            self.data[JointLabel]= dict()
+            self.data[JointLabel]= {}
 
             data_X=dataframe[(dataframe.Moment == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
             data_Y=dataframe[(dataframe.Moment == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
@@ -142,7 +142,7 @@ class Pinzone2014(object):
             self.data[JointLabel]["sd"] = np.array([data_X,data_Y,data_Z]).T*1000.0
 
         if dataType == "Powers":
-            self.data[JointLabel]= dict()
+            self.data[JointLabel]= {}
 
             data_X=dataframe[(dataframe.Power == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
             data_Y=dataframe[(dataframe.Power == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
@@ -206,7 +206,7 @@ class Schwartz2008(object):
         self.m_filename = pyCGM2.NORMATIVE_DATABASE_PATH+"Schwartz 2008\\Formatted- Schwartz2008.xlsx"
 
         self.m_speedModality = speed
-        self.data = dict()
+        self.data = {}
 
     def __setDict(self,dataframe,JointLabel,axisLabel, dataType):
         """
@@ -234,7 +234,7 @@ class Schwartz2008(object):
 
 
         if dataType == "Angles":
-            self.data[JointLabel]= dict()
+            self.data[JointLabel]= {}
             data_X=dataframe[(dataframe.Angle == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
             data_Y=dataframe[(dataframe.Angle == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
             data_Z=dataframe[(dataframe.Angle == axisLabel[2])][meanLabel].values if axisLabel[2] is not None else np.zeros((51))
@@ -246,7 +246,7 @@ class Schwartz2008(object):
             self.data[JointLabel]["sd"] = np.array([data_X,data_Y,data_Z]).T
 
         if dataType == "Moments":
-            self.data[JointLabel]= dict()
+            self.data[JointLabel]= {}
 
             data_X=dataframe[(dataframe.Moment == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
             data_Y=dataframe[(dataframe.Moment == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))
@@ -259,7 +259,7 @@ class Schwartz2008(object):
             self.data[JointLabel]["sd"] = np.array([data_X,data_Y,data_Z]).T*1000.0
 
         if dataType == "Powers":
-            self.data[JointLabel]= dict()
+            self.data[JointLabel]= {}
 
             data_X=dataframe[(dataframe.Power == axisLabel[0])][meanLabel].values if axisLabel[0] is not None else np.zeros((51))
             data_Y=dataframe[(dataframe.Power == axisLabel[1])][meanLabel].values if axisLabel[1] is not None else np.zeros((51))

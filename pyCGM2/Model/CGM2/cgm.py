@@ -103,7 +103,7 @@ class CGM(model.Model):
         if btkTools.isPointsExist(acqStatic,["RANK","RMED"]):
             RAnkle = enums.JointCalibrationMethod.Medial
 
-        dectectedCalibrationMethods=dict()
+        dectectedCalibrationMethods={}
         dectectedCalibrationMethods["Left Knee"] = LKnee
         dectectedCalibrationMethods["Right Knee"] = RKnee
         dectectedCalibrationMethods["Left Ankle"] = LAnkle
@@ -2112,7 +2112,7 @@ class CGM1(CGM):
         # ---remove all  direction marker from tracking markers.
         if self.staExpert:
             for seg in self.m_segmentCollection:
-                selectedTrackingMarkers=list()
+                selectedTrackingMarkers=[]
                 for marker in seg.m_tracking_markers:
                     if marker in self.__class__.TRACKING_MARKERS : # get class variable MARKER even from child
                         selectedTrackingMarkers.append(marker)
@@ -2267,7 +2267,7 @@ class CGM1(CGM):
             # ---remove all  direction marker from tracking markers.
             if self.staExpert:
                 for seg in self.m_segmentCollection:
-                    selectedTrackingMarkers=list()
+                    selectedTrackingMarkers=[]
                     for marker in seg.m_tracking_markers:
                         if marker in self.__class__.TRACKING_MARKERS :
                             selectedTrackingMarkers.append(marker)

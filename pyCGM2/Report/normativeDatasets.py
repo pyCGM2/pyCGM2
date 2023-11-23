@@ -36,14 +36,14 @@ class NormativeData(object):
         keys = list(fullJsonDict.keys())
         self._jsonDict = fullJsonDict[keys[0]][modality]
 
-        self.data = dict()
+        self.data = {}
         self._construct()
 
     def _construct(self):
 
         for key in self._jsonDict:
 
-            self.data[key] = dict()
+            self.data[key] = {}
             self.data[key].update({"mean":None, "sd":None})
 
         for key in self._jsonDict:
@@ -76,7 +76,7 @@ class NormalSTP(object):
     def __init__(self):
 
         self.m_filename = pyCGM2.NORMATIVE_DATABASE_PATH+"stp\\normal_stp.xlsx"
-        self.data = dict()
+        self.data = {}
         self._construct()
 
     def _construct(self):

@@ -13,6 +13,7 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
+from typing import List, Tuple, Dict, Optional,Union
 
 class EventFilter(object):
     """

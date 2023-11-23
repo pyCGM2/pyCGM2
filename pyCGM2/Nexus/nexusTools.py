@@ -1,7 +1,7 @@
 """
 Convenient functions for working with nexus API
 """
-from typing import Optional,Union
+
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Tools import btkTools
@@ -19,6 +19,7 @@ try:
 except ImportError as e:
     LOGGER.logger.error(f"viconnexusapi not installed: {e}")
 
+from typing import List, Tuple, Dict, Optional,Union
 
 def _setPointData(ftr, framecount, ff, values):
 
@@ -66,7 +67,7 @@ def checkActivatedSubject(NEXUS, subjectNames):
     LOGGER.logger.warning(
         "This method is deprecated. prefer getActiveSubject now")
 
-    subjectMarkerWithTraj = dict()
+    subjectMarkerWithTraj = {}
     for subject in subjectNames:
         markers = NEXUS.GetMarkerNames(subject)
         marker = None
@@ -78,7 +79,7 @@ def checkActivatedSubject(NEXUS, subjectNames):
                 subjectMarkerWithTraj[subject] = marker
                 break
 
-    flags = list()
+    flags = []
     for value in subjectMarkerWithTraj.itervalues():
         if value is not None:
             flags.append(True)
@@ -478,7 +479,7 @@ def appendBtkScalarFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,
 
         NEXUS.SetModelOutput( vskName, label, data, exists )
 
-def createGeneralEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,labels:list):
+def createGeneralEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,labels:List):
     """append general events from an btk.acquisition
 
     Args:
@@ -495,7 +496,7 @@ def createGeneralEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcqui
         if ev.GetLabel() in labels:
             NEXUS.CreateAnEvent( subject, "General", ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
-def createEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,labels:list):
+def createEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,labels:List):
     """append events from an btk.acquisition
 
     Args:
@@ -519,7 +520,7 @@ def getForcePlateAssignment(NEXUS:ViconNexus.ViconNexus):
         NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
 
     """
-    out = dict()
+    out = {}
     for id in NEXUS.GetDeviceIDs():
         name, type, rate, output_ids, forceplate, eyetracker = NEXUS.GetDeviceDetails(id)
         if type == 'ForcePlate':

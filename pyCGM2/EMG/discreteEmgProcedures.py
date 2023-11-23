@@ -11,6 +11,7 @@ from collections import OrderedDict
 from pyCGM2.Processing import exporter
 from pyCGM2.Processing.analysis import Analysis
 
+from typing import List, Tuple, Dict, Optional
 
 class DiscreteEmgProcedure(object):
     def __init__(self):
@@ -26,21 +27,21 @@ class AmplitudesProcedure(DiscreteEmgProcedure):
     def __init__(self):
         super(AmplitudesProcedure, self).__init__()
 
-    def detect(self, analysisInstance:Analysis, emgLabels:list[str], emgMuscles:list[str], emgContexts:list[str])->pd.DataFrame:
+    def detect(self, analysisInstance:Analysis, emgLabels:List[str], emgMuscles:List[str], emgContexts:List[str])->pd.DataFrame:
         """compute amplitudes
 
         Args:
             analysisInstance (Analysis): _description_
-            emgLabels (list[str]): emg channels
-            emgMuscles (list[str]): muscle names
-            emgContexts (list[str]): event context
+            emgLabels (List[str]): emg channels
+            emgMuscles (List[str]): muscle names
+            emgContexts (List[str]): event context
 
         Returns:
             pd.DataFrame: dataframe
         """        
 
 
-        dataframes = list()
+        dataframes = []
 
         index = 0
         for emgLabel in emgLabels:
@@ -99,7 +100,7 @@ class AmplitudesProcedure(DiscreteEmgProcedure):
 
         normalizedCycleValues = analysisInstance.emgStats.data [emglabel,context]
 
-        series = list()
+        series = []
 
         for i in range(0,len(normalizedCycleValues["values"])):
 

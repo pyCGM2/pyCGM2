@@ -4,7 +4,7 @@ from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progress
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 import btk
-
+from typing import List, Tuple, Dict, Optional,Union
 
 def detectProgressionFrame(acq:btk.btkAcquisition, staticFlag:bool=False):
     """

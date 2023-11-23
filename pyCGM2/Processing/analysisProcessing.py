@@ -23,7 +23,7 @@ class NormativeDataGeneratorFilter(object):
         self.m_metadata =metadata
 
         self.__normativeData = None
-        self.__normalCorridor =  dict()
+        self.__normalCorridor =  {}
         self.__allCycles = None
 
     def getNormativeData(self):
@@ -38,31 +38,31 @@ class NormativeDataGeneratorFilter(object):
 
     def generate(self):
 
-        cyclesBySide=dict()
+        cyclesBySide={}
         # cycles : ncycle of array(101,3)
         for label in self.m_kinematicLabelsDict["Left"]:
-            cyclesBySide[label]=list()
+            cyclesBySide[label]=[]
             for analysisIt in self.m_analyses:
                 cyclesBySide[label] = cyclesBySide[label]+ analysisIt.kinematicStats.data[label,"Left"]["values"]
 
         for label in self.m_kinematicLabelsDict["Right"]:
-            cyclesBySide[label]=list()
+            cyclesBySide[label]=[]
             for analysisIt in self.m_analyses:
                 cyclesBySide[label] = cyclesBySide[label]+ analysisIt.kinematicStats.data[label,"Right"]["values"]
 
         # cycles : ncycle of array(101,3)
         for label in self.m_kineticLabelsDict["Left"]:
-            cyclesBySide[label]=list()
+            cyclesBySide[label]=[]
             for analysisIt in self.m_analyses:
                 cyclesBySide[label] = cyclesBySide[label]+ analysisIt.kineticStats.data[label,"Left"]["values"]
 
         for label in self.m_kineticLabelsDict["Right"]:
-            cyclesBySide[label]=list()
+            cyclesBySide[label]=[]
             for analysisIt in self.m_analyses:
                 cyclesBySide[label] = cyclesBySide[label]+ analysisIt.kineticStats.data[label,"Right"]["values"]
 
         # gather both sides
-        cycles = dict()
+        cycles = {}
         for key in cyclesBySide.keys():
             new_key = key[1:]
             if new_key in cycles.keys():
@@ -72,18 +72,18 @@ class NormativeDataGeneratorFilter(object):
 
         self.__allCycles = cycles
 
-        out=dict()
+        out={}
 
         for key in cycles.keys():
-            out[key] = dict()
-            out[key]["X"] = list()
-            out[key]["Y"] = list()
-            out[key]["Z"] = list()
+            out[key] = {}
+            out[key]["X"] = []
+            out[key]["Y"] = []
+            out[key]["Z"] = []
 
-            self.__normalCorridor[key] = dict()
-            self.__normalCorridor[key]["X"] = list()
-            self.__normalCorridor[key]["Y"] = list()
-            self.__normalCorridor[key]["Z"] = list()
+            self.__normalCorridor[key] = {}
+            self.__normalCorridor[key]["X"] = []
+            self.__normalCorridor[key]["Y"] = []
+            self.__normalCorridor[key]["Z"] = []
 
             X =np.zeros((101,len(cycles[key])))
             Y =np.zeros((101,len(cycles[key])))

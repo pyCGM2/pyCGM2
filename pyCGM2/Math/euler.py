@@ -5,6 +5,7 @@ Module contains functions for working with euler angles
 import numpy as np
 import copy
 
+from typing import List, Tuple, Dict, Optional,Union
 
 def wrapEulerTo(inputAngles:np.ndarray, Dest:np.ndarray):
     """correct euler angle

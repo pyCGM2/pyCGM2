@@ -38,8 +38,8 @@ class GaitEventQualityProcedure(object):
 
         if events != []:
 
-            events_L = list()
-            events_R = list()
+            events_L = []
+            events_R = []
             for ev in btk.Iterate(events):
                 if ev.GetContext() == "Left":
                     events_L.append(ev)
@@ -189,7 +189,7 @@ class GapQualityProcedure(object):
         frameNumber = self.acq.GetPointFrameNumber()
 
         for marker in self.markers:
-            gapCount = list()
+            gapCount = []
             previousValue = 0
             count =0
             try:

@@ -484,7 +484,7 @@ def getFiles(path:str, extension:str, ignore:Optional[bool]=None,raiseFlag:bool=
     """
 
     try:
-        out=list()
+        out=[]
         for file in os.listdir(path):
             if ignore is None:
                 if file.endswith(extension):
@@ -508,7 +508,7 @@ def getC3dFiles(path:str, text:str="", ignore:Optional[bool]=None ):
         text (str,Optional[""]): included text in the filename
     """
 
-    out=list()
+    out=[]
     for file in os.listdir(path):
        if ignore is None:
            if file.endswith(".c3d"):

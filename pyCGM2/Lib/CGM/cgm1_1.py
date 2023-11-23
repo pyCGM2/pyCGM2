@@ -23,8 +23,9 @@ from pyCGM2.Lib.Processing import progression
 
 from pyCGM2.Model.model import Model
 
+from typing import List, Tuple, Dict, Optional,Union
 def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:str,
-              required_mp:dict,optional_mp:dict,
+              required_mp:Dict,optional_mp:Dict,
               leftFlatFoot:bool,rightFlatFoot:bool,headFlat:bool,markerDiameter:float,
               pointSuffix:str,*argv, **kwargs):
 
@@ -220,7 +221,7 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:str,
 
 
 def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
-    translators:dict,
+    translators:Dict,
     markerDiameter:float,
     pointSuffix:str,
     mfpa:str,

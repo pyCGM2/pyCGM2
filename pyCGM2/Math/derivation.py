@@ -5,6 +5,8 @@ import numpy as np
 from scipy import interpolate
 from pyCGM2.Model.frame import Frame
 
+from typing import List, Tuple, Dict, Optional,Union
+
 def splineFittingDerivation(values:np.ndarray,sampleFrequency:int,order:int=1)->np.ndarray:
     """
     Spline fitting derivation
@@ -144,7 +146,7 @@ def secondOrderFiniteDifference(values:np.ndarray,sampleFrequency:int)->np.ndarr
     return out
 
 
-def matrixFirstDerivation(motionList:list[Frame], sampleFrequency:int)->list[np.ndarray]:
+def matrixFirstDerivation(motionList:List[Frame], sampleFrequency:int)->List[np.ndarray]:
     """first derivation of the rotation matrix, set in a list of frames
 
     Args:
@@ -173,7 +175,7 @@ def matrixFirstDerivation(motionList:list[Frame], sampleFrequency:int)->list[np.
 
 
 
-def matrixSecondDerivation(motionList:list[Frame],sampleFrequency:int)->list[np.ndarray]:
+def matrixSecondDerivation(motionList:List[Frame],sampleFrequency:int)->List[np.ndarray]:
     """second derivation of the rotation matrix, set in a list of frames
 
     Args:

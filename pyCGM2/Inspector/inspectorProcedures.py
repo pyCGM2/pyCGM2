@@ -3,11 +3,11 @@
 An inspector procedure just inspect the content of an acquisition. It doesn't alter it.
 
 """
-from typing import Optional
 import btk
 from pyCGM2.Tools import btkTools
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
+from typing import List, Tuple, Dict, Optional,Union
 
 
 class InspectorProcedure(object):
@@ -22,7 +22,7 @@ class MarkerPresenceDetectionProcedure(InspectorProcedure):
         markers (Optional[list], optional): marker names. Defaults to None.
 
     """
-    def __init__(self,markers:Optional[list]=None):
+    def __init__(self,markers:Optional[List]=None):
         super(MarkerPresenceDetectionProcedure, self).__init__()
 
         self.markers = markers
@@ -39,8 +39,8 @@ class MarkerPresenceDetectionProcedure(InspectorProcedure):
             dict: present and missing markers
         """
 
-        markersIn = list()
-        markersOut = list()
+        markersIn = []
+        markersOut = []
 
         for marker in self.markers:
             try:

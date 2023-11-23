@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pyCGM2
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
@@ -65,7 +63,7 @@ def checkSimilarElement(listData:List):
         return False
 
 def getSimilarElement(listData:List):
-    out = list()
+    out = []
     for it in set(listData):
         out = it
     return out

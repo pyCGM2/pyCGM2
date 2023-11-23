@@ -10,8 +10,9 @@ from pyCGM2.IMU.Procedures import imuMotionProcedure
 from pyCGM2.Tools import btkTools
 from pyCGM2.Signal import signal_processing
 
+from typing import List, Tuple, Dict, Optional,Union
 
-def synchroniseNotAlignedCsv(fullfilenames:list,timeColumn = "time_s"):
+def synchroniseNotAlignedCsv(fullfilenames:List,timeColumn = "time_s"):
     """synchronise different csv files
 
     Args:
@@ -24,24 +25,24 @@ def synchroniseNotAlignedCsv(fullfilenames:list,timeColumn = "time_s"):
         idx = (np.abs(array - value)).argmin()
         return idx,array[idx]
 
-    datasets= list()
+    datasets= []
     for fullfilename in fullfilenames:
         datasets.append( pd.read_csv(fullfilename))
 
-    times0 = list()
+    times0 = []
     for dataset in datasets:
         times0.append(dataset[timeColumn].values[0])
     time_0 =  max(times0)
 
-    datasets_0 = list()
-    numberOfFrames = list()
+    datasets_0 = []
+    numberOfFrames = []
     for dataset in datasets:
         idx0,value0 = find_nearest(dataset[timeColumn].values,time_0)
         numberOfFrames.append(dataset.iloc[idx0:].shape[0])
         datasets_0.append(dataset.iloc[idx0:])
     nFrames =  min(numberOfFrames)
 
-    datasets_equal = list()
+    datasets_equal = []
     for dataset in datasets_0:
         datasets_equal.append(dataset[0:nFrames])
 
@@ -68,7 +69,7 @@ class CsvProcedure(ImuReaderProcedure):
             freq (str, optional): frequency. Defaults to "Auto".
             timeColumn (str, optional): name of the time column in the csv. Defaults to "time_s".
     """
-    def __init__(self,fullfilename:str,translators:dict,freq = "Auto" , timeColumn = "time_s"):
+    def __init__(self,fullfilename:str,translators:Dict,freq = "Auto" , timeColumn = "time_s"):
         
         super(CsvProcedure, self).__init__()
         
@@ -155,7 +156,7 @@ class DataframeProcedure(ImuReaderProcedure):
             freq (str, optional): frequency. Defaults to "Auto".
             timeColumn (str, optional): name of the time column in the csv. Defaults to "time_s".
     """
-    def __init__(self,dataframe:pd.DataFrame,translators:dict,freq = "Auto" , timeColumn = "time_s"):
+    def __init__(self,dataframe:pd.DataFrame,translators:Dict,freq = "Auto" , timeColumn = "time_s"):
         super(DataframeProcedure, self).__init__()
         
         self.m_data = dataframe
@@ -357,23 +358,23 @@ class C3dBlueTridentProcedure(ImuReaderProcedure):
 #         idx = (np.abs(array - value)).argmin()
 #         return idx,array[idx]
 
-#     datasets= list()
+#     datasets= []
 #     for fullfilename in fullfilenames:
 #         datasets.append( pd.read_csv(fullfilename))
 
-#     times0 = list()
+#     times0 = []
 #     for dataset in datasets:
 #         times0.append(dataset["time_s"].values[0])
 #     time_0 =  max(times0)
 
-#     datasets_0 = list()
-#     numberOfFrames = list()
+#     datasets_0 = []
+#     numberOfFrames = []
 #     for dataset in datasets:
 #         idx0,value0 = find_nearest(dataset["time_s"].values,time_0)
 #         numberOfFrames.append(dataset.iloc[idx0:].shape[0])
 #         datasets_0.append(dataset.iloc[idx0:])
 #     nFrames =  min(numberOfFrames)
 
-#     datasets_equal = list()
+#     datasets_equal = []
 #     for dataset in datasets_0:
 #         datasets_equal.append(dataset[0:nFrames])

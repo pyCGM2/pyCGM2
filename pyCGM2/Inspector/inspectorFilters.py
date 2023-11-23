@@ -5,6 +5,8 @@ the inspector filter calls procedure for inspecting acquisition
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Inspector.inspectorProcedures import InspectorProcedure
 import btk
+
+from typing import List, Tuple, Dict, Optional,Union
 class InspectorFilter(object):
 
     def __init__(self,acq:btk.btkAcquisition,filename:str,procedure:InspectorProcedure,**kwargs):

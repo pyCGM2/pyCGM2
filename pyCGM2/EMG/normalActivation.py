@@ -7,6 +7,8 @@ from typing import Tuple
 import pyCGM2
 from pyCGM2.Utils import files
 
+from typing import List, Tuple, Dict, Optional
+
 
 def getNormalBurstActivity(muscle:str, fo:int):
     """get onsets and offsets of a specific muscle.
@@ -63,7 +65,7 @@ def getNormalBurstActivity_fromCycles(muscle:str,
                                       begin:int, 
                                       fo:int, 
                                       end:int, 
-                                      apf:int)-> Tuple[list, list]:
+                                      apf:int)-> Tuple[List, List]:
     
     """get onsets and offsets of a specific muscle from .
 

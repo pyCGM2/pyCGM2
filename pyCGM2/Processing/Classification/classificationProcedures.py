@@ -110,9 +110,9 @@ class PFKEprocedure(ClassificationProcedure):
             pointSuffix = "_"+pointSuffix
 
 
-        self.m_sagPattern = dict()
-        self.m_sagPattern["Left"] = dict()
-        self.m_sagPattern["Right"] = dict()
+        self.m_sagPattern = {}
+        self.m_sagPattern["Left"] = {}
+        self.m_sagPattern["Right"] = {}
 
 
         normalKnee = self.m_normativeData.data["KneeAngles"]
@@ -137,8 +137,8 @@ class PFKEprocedure(ClassificationProcedure):
             LAnkle = analysis.kinematicStats.data["LAnkleAngles"+pointSuffix, "Left"]
 
             if self.m_dataType == "cycle":
-                LKnee_score = list()
-                LAnkle_score = list()
+                LKnee_score = []
+                LAnkle_score = []
                 for i in range(0,len(LKnee["values"])):
                     LKnee_score.append( np.mean((LKnee["values"][i][lower:upper:step, 0]
                                         - normalKnee["mean"][lower_normal:upper_normal, 0]) / normalKnee["sd"][lower_normal:upper_normal, 0]))
@@ -168,8 +168,8 @@ class PFKEprocedure(ClassificationProcedure):
 
             if self.m_dataType == "cycle":
 
-                RKnee_score = list()
-                RAnkle_score = list()
+                RKnee_score = []
+                RAnkle_score = []
                 for i in range(0,len(RKnee["values"])):
                     RKnee_score.append( np.mean((RKnee["values"][i][lower:upper:step, 0]
                                         - normalKnee["mean"][lower_normal:upper_normal, 0]) / normalKnee["sd"][lower_normal:upper_normal, 0]))

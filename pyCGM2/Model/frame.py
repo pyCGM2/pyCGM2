@@ -554,7 +554,7 @@ class Frame(object):
         """
         Display all node labels
         """
-        labels = list()
+        labels = []
         for nodeIt in self._nodes:
             labels.append(nodeIt.m_name[:-5])
 

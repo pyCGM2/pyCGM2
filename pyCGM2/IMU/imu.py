@@ -1,9 +1,9 @@
-from typing import Optional
 from scipy.interpolate import interp1d
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from typing import List, Tuple, Dict, Optional,Union
 
 class Imu(object):
     """the IMU class
@@ -37,8 +37,8 @@ class Imu(object):
         self._angularVelocity = self.m_angularVelocity
         self._mag = self.m_magnetometer
 
-        self.m_properties = dict()
-        self.m_motion= list()
+        self.m_properties = {}
+        self.m_motion= []
 
         self.m_data =  pd.DataFrame()
 

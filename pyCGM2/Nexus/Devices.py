@@ -12,6 +12,7 @@ try:
 except ImportError as e:
     LOGGER.logger.error(f"viconnexusapi not installed: {e}")
 
+from typing import List, Tuple, Dict, Optional,Union
 
 class Channel(object):
     """a pyCGM2-Nexus Channel
@@ -77,7 +78,7 @@ class Device(object):
 
     def getOutputNames(self):
         """return the list of ouputs"""
-        out = list()
+        out = []
         for i in self.m_outputIds:
             out.append(self.NEXUS.GetDeviceOutputDetails(self.m_id,i)[0])
         return out
@@ -95,12 +96,12 @@ class AnalogDevice(Device):
 
     def __init__(self,NEXUS:ViconNexus.ViconNexus, id:str):
         super(AnalogDevice, self).__init__(NEXUS,id)
-        self.m_channels = list()
+        self.m_channels = []
         #self.m_id = id
 
     def getUnit(self):
         """ return device unit"""
-        unit = list()
+        unit = []
         for outputId in self.m_outputIds:
             unit.append(str(self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[2]))
         return  unit

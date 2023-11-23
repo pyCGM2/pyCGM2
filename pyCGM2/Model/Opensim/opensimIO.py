@@ -29,7 +29,7 @@ class ImuStorageFile(object):
                                     f'OpenSimVersion=4.4', 
                                     f'endheader'])
 
-        self.m_data = dict()
+        self.m_data = {}
 
 
     def setData(self, imuName, quaternionArray):
@@ -71,7 +71,7 @@ class OpensimDataFrame(object):
 
         osimlabels = storageObject.getColumnLabels()
 
-        data = dict()
+        data = {}
 
         self.m_header = ""
         with open(DATA_PATH+filename) as f:

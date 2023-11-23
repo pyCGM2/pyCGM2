@@ -56,7 +56,7 @@ def findStatic(soup:bs4.BeautifulSoup):
 
     """
     qtmMeasurements = soup.find_all("Measurement")
-    static = list()
+    static = []
     for measurement in qtmMeasurements:
         if "Static" in measurement.attrs["Type"] and toBool(measurement.Used.text):
             static.append(measurement)
@@ -75,7 +75,7 @@ def findDynamic(soup:bs4.BeautifulSoup):
     """
     qtmMeasurements = soup.find_all("Measurement")
 
-    measurements = list()
+    measurements = []
     for measurement in qtmMeasurements:
         if "Gait" in measurement.attrs["Type"] and toBool(measurement.Used.text):
             measurements.append(measurement)
@@ -92,7 +92,7 @@ def findKneeCalibration(soup:bs4.BeautifulSoup, side:str):
 
     """
     qtmMeasurements = soup.find_all("Measurement")
-    kneeCalib = list()
+    kneeCalib = []
 
     for measurement in qtmMeasurements:
         if side + " Knee Calibration" in measurement.attrs["Type"] and toBool(measurement.Used.text):
@@ -124,7 +124,7 @@ def detectMeasurementType(soup:bs4.BeautifulSoup):
 
     measurements = soup.find_all("Measurement")
 
-    types = list()
+    types = []
     for measurement in measurements:
         staticFlag = "Static" not in measurement.attrs["Type"]
         leftKneeFlag = "Left Knee Calibration - CGM2" not in measurement.attrs["Type"]

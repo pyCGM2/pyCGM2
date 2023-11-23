@@ -41,8 +41,8 @@ class GeneralCalibrationProcedure(object):
     """
 
     def __init__(self):
-       self.definition=dict()
-       self.anatomicalDefinition=dict()
+       self.definition={}
+       self.anatomicalDefinition={}
 
     def setDefinition(self, segmentName,referentialLabel,
                       sequence=str(),
@@ -68,7 +68,7 @@ class GeneralCalibrationProcedure(object):
         if segmentName in self.definition:
             self.definition[segmentName][referentialLabel]={'sequence':sequence, 'labels':[pointLabel1,pointLabel2,pointLabel3,pointLabelOrigin]}
         else:
-            self.definition[segmentName]=dict()
+            self.definition[segmentName]={}
             self.definition[segmentName][referentialLabel]={'sequence':sequence, 'labels':[pointLabel1,pointLabel2,pointLabel3,pointLabelOrigin]}
 
     def setAnatomicalDefinition(self, segmentName,
@@ -95,7 +95,7 @@ class GeneralCalibrationProcedure(object):
         if segmentName in self.anatomicalDefinition:
             self.anatomicalDefinition[segmentName]={'sequence':sequence, 'labels':[nodeLabel1,nodeLabel2,nodeLabel3,nodeLabelOrigin]}
         else:
-            self.anatomicalDefinition[segmentName]=dict()
+            self.anatomicalDefinition[segmentName]={}
             self.anatomicalDefinition[segmentName]={'sequence':sequence, 'labels':[nodeLabel1,nodeLabel2,nodeLabel3,nodeLabelOrigin]}
 
 
@@ -114,7 +114,7 @@ class StaticCalibrationProcedure(object):
     def __init__(self,model):
 
         self.model=model
-        self.definition=dict()
+        self.definition={}
 
         self.__setDefinition()
 
@@ -928,7 +928,7 @@ class ModelAbsoluteAnglesFilter(object):
 
     """
 
-    def __init__(self, iMod, acq, segmentLabels=list(),angleLabels=list(), eulerSequences=list(), globalFrameOrientation = "XYZ", forwardProgression = True):
+    def __init__(self, iMod, acq, segmentLabels=[],angleLabels=[], eulerSequences=[], globalFrameOrientation = "XYZ", forwardProgression = True):
 
         self.m_aqui = acq
         self.m_model = iMod
@@ -1690,7 +1690,7 @@ class JointPowerFilter(object):
 
 class GeneralCoordinateSystemProcedure(object):
     def __init__(self):
-        self.definitions=list()
+        self.definitions=[]
 
     def setDefinition(self, segmentLabel, coordinateSystemLabel, referentialType):
         dic = {"segmentLabel": segmentLabel,"coordinateSystemLabel": coordinateSystemLabel,"referentialType": referentialType}

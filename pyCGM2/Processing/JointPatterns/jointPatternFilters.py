@@ -20,8 +20,8 @@ class JointPatternFilter(object):
 
     @classmethod
     def interpretCriteria(cls,criteria):
-        primaries=list()
-        secondaries=list()
+        primaries=[]
+        secondaries=[]
 
         criterias = criteria.split("+")
         for it in criterias:
@@ -32,7 +32,7 @@ class JointPatternFilter(object):
             else:
                 bracket =  re.findall( "\((.*?)\)" ,it )[0]
                 score = re.findall(",(\d{0,100})", bracket)[0]
-                dict2 = {"score":int(score), "case" : list()}
+                dict2 = {"score":int(score), "case" : []}
                 casesStr = re.findall("(.*?),",bracket)[0]
                 cases = casesStr.split("|")
                 for case in cases:

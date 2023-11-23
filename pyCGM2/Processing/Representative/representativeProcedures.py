@@ -27,7 +27,7 @@ class Sangeux2015Procedure(RepresentativeProcedure):
     def __init__(self):
         super(Sangeux2015Procedure, self).__init__()
 
-        self.m_data = dict()
+        self.m_data = {}
         self.m_data["Left"] = []
         self.m_data["Right"] = []
 
@@ -74,7 +74,7 @@ class Sangeux2015Procedure(RepresentativeProcedure):
 
     def _run(self, analysis):
 
-        out=dict()
+        out={}
         for eventContext in self.m_data:
 
             fmds=[]

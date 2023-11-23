@@ -32,7 +32,7 @@ HJC = settings["Calibration"]["HJC"]
 pointSuffix = settings["Global"]["Point suffix"]
 
 # definitions des mp a partir des metadata
-required_mp = dict()
+required_mp = {}
 required_mp["Bodymass"] = 75.0
 required_mp["Height"]= 1750
 required_mp["LeftLegLength"] = 800
@@ -52,7 +52,7 @@ required_mp["RightElbowWidth"] = 0
 required_mp["RightWristWidth"] = 0
 required_mp["RightHandThickness"]= 0
 
-optional_mp = dict()
+optional_mp = {}
 optional_mp["InterAsisDistance"]= 0
 optional_mp["LeftAsisTrocanterDistance"]= 0
 optional_mp["LeftTibialTorsion"]= 0

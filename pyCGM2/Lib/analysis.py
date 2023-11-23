@@ -13,14 +13,14 @@ from pyCGM2.Processing.analysis import Analysis
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
-from typing import Optional
+from typing import List, Tuple, Dict, Optional,Union
 
 def makeAnalysis(DATA_PATH:str,
-                 filenames:list,
+                 filenames:List,
                  type:str="Gait",
-                 kinematicLabelsDict:dict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
-                 kineticLabelsDict:dict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
-                 emgChannels:list=pyCGM2.EMG_CHANNELS,
+                 kinematicLabelsDict:Dict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
+                 kineticLabelsDict:Dict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
+                 emgChannels:List=pyCGM2.EMG_CHANNELS,
                  geometryMuscleLabelsDict:Optional[dict]=None,
                  dynamicMuscleLabelsDict:Optional[dict]=None,
                  pointLabelSuffix:Optional[str]=None,

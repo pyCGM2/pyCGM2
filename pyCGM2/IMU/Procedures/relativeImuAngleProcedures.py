@@ -2,7 +2,7 @@
 import numpy as np
 from  pyCGM2.Math import euler
 from pyCGM2.IMU import imu
-
+from typing import List, Tuple, Dict, Optional,Union
 
 class RelativeImuAnglesProcedure(object):
     def __init__(self):
