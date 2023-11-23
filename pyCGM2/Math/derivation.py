@@ -173,7 +173,7 @@ def matrixFirstDerivation(motionList:list[Frame], sampleFrequency:int)->list[np.
 
 
 
-def matrixSecondDerivation(motionList,sampleFrequency)->list[np.ndarray]:
+def matrixSecondDerivation(motionList:list[Frame],sampleFrequency:int)->list[np.ndarray]:
     """second derivation of the rotation matrix, set in a list of frames
 
     Args:

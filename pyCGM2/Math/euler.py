@@ -57,7 +57,7 @@ def _safeArcsin(Value):
     return np.arcsin(Value)
 
 
-def euler_xyz(Matrix:np.ndarray, similarOrder=True):
+def euler_xyz(Matrix:np.ndarray, similarOrder:bool=True):
     """
     Decomposition of a rotation matrix according the sequence XYZ.
 
@@ -88,7 +88,7 @@ def euler_xyz(Matrix:np.ndarray, similarOrder=True):
         return Euler1, Euler2, Euler3
 
 
-def euler_xzy(Matrix:np.ndarray, similarOrder=True):
+def euler_xzy(Matrix:np.ndarray, similarOrder:bool=True):
     """
     Decomposition of a rotation matrix according the sequence XZY.
 
@@ -118,7 +118,7 @@ def euler_xzy(Matrix:np.ndarray, similarOrder=True):
         return Euler1, Euler2, Euler3
 
 
-def euler_yxz(Matrix:np.ndarray, similarOrder=True):
+def euler_yxz(Matrix:np.ndarray, similarOrder:bool=True):
     """
     Decomposition of a rotation matrix according the sequence YXZ.
 
@@ -148,7 +148,7 @@ def euler_yxz(Matrix:np.ndarray, similarOrder=True):
         return Euler1, Euler2, Euler3
 
 
-def euler_yzx(Matrix:np.ndarray, similarOrder=True):
+def euler_yzx(Matrix:np.ndarray, similarOrder:bool=True):
     """
     Decomposition of a rotation matrix according the sequence YZX.
 
@@ -178,7 +178,7 @@ def euler_yzx(Matrix:np.ndarray, similarOrder=True):
         return Euler1, Euler2, Euler3
 
 
-def euler_zxy(Matrix:np.ndarray, similarOrder=True):
+def euler_zxy(Matrix:np.ndarray, similarOrder:bool=True):
     """
     Decomposition of a rotation matrix according the sequence ZXY.
 
@@ -208,7 +208,7 @@ def euler_zxy(Matrix:np.ndarray, similarOrder=True):
         return Euler1, Euler2, Euler3
 
 
-def euler_zyx(Matrix, similarOrder=True):
+def euler_zyx(Matrix, similarOrder:bool=True):
     """
     Decomposition of a rotation matrix according the sequence ZYX.
 

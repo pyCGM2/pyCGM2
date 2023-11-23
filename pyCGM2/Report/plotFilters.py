@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Report
-#APIDOC["Draft"]=False
-#--end--
-
 """
 This Module contains the pyCGM2 plot filter `PlottingFilter`.
 
@@ -15,7 +10,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 import pyCGM2
 from pyCGM2.Report import plot
-
+from pyCGM2.Report.Viewers.plotViewers import PlotViewer
 
 
 
@@ -33,7 +28,7 @@ class PlottingFilter(object):
         self.m_title = None
 
 
-    def setExport(self,path,filename,format):
+    def setExport(self,path:str,filename:str,format:str):
         '''Set filename of the export file
 
         Args:
@@ -47,11 +42,11 @@ class PlottingFilter(object):
 
 
 
-    def setViewer(self,concretePlotViewer):
+    def setViewer(self,concretePlotViewer:PlotViewer):
         """set the plot viewer
 
         Args:
-            concretePlotViewer (pyCGM2.report.(Viewers)): a plot viewer
+            concretePlotViewer (PlotViewer): a plot viewer
 
         """
 
@@ -77,19 +72,24 @@ class PlottingFilter(object):
 
         return self.fig
 
-    def setYlimits(self, axisIndex, min, max):
+    def setYlimits(self, axisIndex:int, min:float, max:float):
         """set the y-axis boundaries
 
         Args:
             axisIndex (int): index of the `matplotlib.figure.axis` instance
-            min (double): minimum value
-            max (double): maximum value
+            min (float): minimum value
+            max (float): maximum value
 
         """
 
         self.__concretePlotViewer.fig.axes[axisIndex].set_ylim([min,max])
 
-    def setHorizontalLines(self, idict):
+    def setHorizontalLines(self, idict:dict):
+        """set horizontal lines from a dict whom key is the axis title 
+
+        Args:
+            idict (dict): dictionnary with axis label as key
+        """
         
         for key in idict:
             for axisIt in self.__concretePlotViewer.fig.axes:
@@ -108,7 +108,7 @@ class PlottingFilter(object):
         """
         self.__concretePlotViewer.setAutomaticYlimits(True)
 
-    def setTitle(self,title):
+    def setTitle(self,title:str):
         """Set the plot panel title
 
         Args:
@@ -117,6 +117,12 @@ class PlottingFilter(object):
         """
         self.m_title=title
 
-    def displaySignificantDiffererence(self,axisIndex,clusters):
+    def displaySignificantDiffererence(self,axisIndex:int,clusters:list):
+        """display sgnificant frames
+
+        Args:
+            axisIndex (int): index of the plt.Axes
+            clusters (list): cluster of significant frames 
+        """
 
         plot.addRectanglePatches(self.__concretePlotViewer.fig.axes[axisIndex],clusters)
