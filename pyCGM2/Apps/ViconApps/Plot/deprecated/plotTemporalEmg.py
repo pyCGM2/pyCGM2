@@ -65,7 +65,7 @@ def main():
 
 
         # btk Acquisition
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(DATA_PATH,inputFileNoExt,subject)
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,inputFileNoExt,subject)
         acq = nacf.build()
 
         emgChannels = emgManager.getChannels()
