@@ -3,13 +3,15 @@
 import pyCGM2
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
+from typing import List, Tuple, Dict, Optional
+
 class FrameConverter():
-    def __init__(self,firstFrame,lastFrame, nppf):
+    def __init__(self,firstFrame:int,lastFrame:int, nppf:int):
         self.firstFrame = firstFrame
         self.lastFrame = lastFrame
         self.nppf = nppf
 
-    def toAnalog(self,pointFrame,reframeToOne=False):
+    def toAnalog(self,pointFrame:int,reframeToOne:bool=False):
         if not reframeToOne:
            val = (pointFrame-self.firstFrame)*self.nppf + self.firstFrame
         else: 
@@ -17,7 +19,7 @@ class FrameConverter():
         
         return int(val)
 
-    def toPoint(self,analogFrame,reframeToOne=False):
+    def toPoint(self,analogFrame:int,reframeToOne:bool=False):
         if not reframeToOne:
             val =  (analogFrame-self.firstFrame)/self.nppf + self.firstFrame
         else:
@@ -26,7 +28,7 @@ class FrameConverter():
         return int(val)
 
 
-def toBool(text):
+def toBool(text:str):
     """convert text to bool
 
     Args:
@@ -35,7 +37,7 @@ def toBool(text):
     """
     return True if text == "True" else False
 
-def isInRange(val, min, max):
+def isInRange(val:float, min:float, max:float):
     """check if value is in range
 
     Args:
@@ -53,7 +55,7 @@ def isInRange(val, min, max):
 def str(unicodeVariable):
     return unicodeVariable.encode(pyCGM2.ENCODER)
 
-def checkSimilarElement(listData):
+def checkSimilarElement(listData:List):
     if(len(set(listData))==1):
         for it in set(listData):
             return it
@@ -62,14 +64,14 @@ def checkSimilarElement(listData):
         LOGGER.logger.error("[pyCGM2] items are different in the inputed list" )
         return False
 
-def getSimilarElement(listData):
+def getSimilarElement(listData:List):
     out = list()
     for it in set(listData):
         out = it
     return out
 
 
-def homogeneizeArguments(argv,kwargs):
+def homogeneizeArguments(argv:Dict,kwargs:Dict):
     for arg in argv:
         if isinstance(arg,dict):
             for argvKey in arg.keys():

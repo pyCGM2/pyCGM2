@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Signal
-#APIDOC["Draft"]=False
-#--end--
+
 """
 The module only contains the function "detect_peaks" implemenented by Marcos Duarte, available in [BMC](https://github.com/demotu/BMC)
 
@@ -10,14 +7,12 @@ see BMC documentation for details
 """
 
 import numpy as np
+import matplotlib.pyplot as plt
 
-__author__ = "Marcos Duarte, https://github.com/demotu/BMC"
-__version__ = "1.0.4"
-__license__ = "MIT"
+from typing import Optional, Tuple
 
-
-def detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
-                 kpsh=False, valley=False, show=False, ax=None):
+def detect_peaks(x:np.ndarray, mph:Optional[float]=None, mpd:int=1, threshold:int=0, edge:str='rising',
+                 kpsh:bool=False, valley:bool=False, show:bool=False, ax:Optional[plt.Axes]=None):
     """Detect peaks in data based on their amplitude and other features.
     """
 

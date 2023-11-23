@@ -1,8 +1,7 @@
 """
-The module only contains functions for filtering data
+The module only contains functions for processing  data
 """
 from scipy import signal
-from scipy import integrate
 import numpy as np
 from scipy.interpolate import interp1d
 import pyCGM2
@@ -18,7 +17,7 @@ except:
 
 # ---- EMG -----
 
-def remove50hz(array, fa):
+def remove50hz(array:np.ndarray, fa:float):
     """
     Remove the 50Hz signal
 
@@ -33,7 +32,7 @@ def remove50hz(array, fa):
     return value
 
 
-def highPass(array, lowerFreq, upperFreq, fa):
+def highPass(array:np.ndarray, lowerFreq:float, upperFreq:float, fa:float):
     """butterworth bandpass filter.
 
     Args:
@@ -50,7 +49,7 @@ def highPass(array, lowerFreq, upperFreq, fa):
     return value
 
 
-def rectify(array):
+def rectify(array:np.ndarray):
     """
     rectify a signal ( i.e get absolute values)
 
@@ -61,7 +60,7 @@ def rectify(array):
     return np.abs(array)
 
 
-def enveloppe(array, fc, fa):
+def enveloppe(array:np.ndarray, fc:float, fa:float):
     """
     Get signal enveloppe from a low pass filter
 
@@ -76,7 +75,7 @@ def enveloppe(array, fc, fa):
 
 
 # ---- btkAcq -----
-def markerFiltering(btkAcq, markers, order=2, fc=6, zerosFiltering=True):
+def markerFiltering(btkAcq:btk.btkAcquisition, markers:list[str], order:int=2, fc:float=6, zerosFiltering:bool=True):
     """
     Low-pass filtering of all points in an acquisition
 
@@ -143,7 +142,7 @@ def markerFiltering(btkAcq, markers, order=2, fc=6, zerosFiltering=True):
             # pointIt.SetValues(np.array( [x,y,z] ).transpose())
 
 
-def forcePlateFiltering(btkAcq, order=4, fc=5):
+def forcePlateFiltering(btkAcq:btk.btkAcquisition, order:int=4, fc:float=5):
     """
     Low-pass filtering of Force plate outputs
 
@@ -181,7 +180,7 @@ def forcePlateFiltering(btkAcq, order=4, fc=5):
 # ----- methods ---------
 
 
-def arrayLowPassFiltering(valuesArray, freq, order=2, fc=6):
+def arrayLowPassFiltering(valuesArray:np.ndarray, freq:float, order:int=2, fc:float=6):
     """
     Low-pass filtering of a numpy.array
 
@@ -203,7 +202,7 @@ def arrayLowPassFiltering(valuesArray, freq, order=2, fc=6):
 
 
 
-def downsample(array, initFreq, targetedFreq):
+def downsample(array:np.ndarray, initFreq:float, targetedFreq:float):
     if targetedFreq >= initFreq:
         raise ValueError("targeted frequency cannot be over the initial frequency")
         

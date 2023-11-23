@@ -1,19 +1,16 @@
-# -*- coding: utf-8 -*-
-#APIDOC: /Low level/Signal
-
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+from typing import Optional
 
 figsize = (7, 2.75)
 kw = dict(marker='o', linestyle='none', color='r', alpha=0.3)
 
 
-def anomaly_rolling(values, aprioriError=0, window=10, threshold=3, method="median", plot=False, label="Unknow", referenceValues=None):
+def anomaly_rolling(values:np.ndarray, aprioriError:int=0, window:int=10, threshold:int=3, method:str="median", plot:bool=False, label:str="Unknow", referenceValues:Optional[float]=None):
     """anomaly detection from rolling windows
 
     Args:

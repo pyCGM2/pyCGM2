@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Signal
-#APIDOC["Draft"]=False
-#--end--
 """
 The module only contains the function "detect_changes" implemenented by Marcos Duarte, available in [BMC](https://github.com/demotu/BMC)
 
@@ -9,15 +5,12 @@ see BMC documentation for details
 
 """
 
-
 import numpy as np
-
-__author__ = 'Marcos Duarte, https://github.com/demotu/BMC'
-__version__ = "1.0.4"
-__license__ = "MIT"
+import matplotlib.pyplot as plt
+from typing import Optional
 
 
-def detect_cusum(x, threshold=1, drift=0, ending=False, show=True, ax=None):
+def detect_cusum(x:np.ndarray, threshold:int=1, drift:int=0, ending:bool=False, show:bool=True, ax:Optional[plt.Axes]=None):
     """Cumulative sum algorithm (CUSUM) to detect abrupt changes in data
     """
 

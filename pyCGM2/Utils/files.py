@@ -11,9 +11,12 @@ from datetime import datetime
 import pandas as pd
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
+from pyCGM2.Model.model import Model
+from pyCGM2.Processing.analysis import Analysis
+from typing import List, Tuple, Dict, Optional
 
 
-def loadSettings(DATA_PATH,settingFile,subfolder=""):
+def loadSettings(DATA_PATH:str,settingFile:str,subfolder:str=""):
     if os.path.isfile(DATA_PATH + settingFile):
         settings = openFile(DATA_PATH, settingFile)
         LOGGER.logger.warning(
@@ -23,7 +26,7 @@ def loadSettings(DATA_PATH,settingFile,subfolder=""):
 
     return settings
 
-def loadModelSettings(DATA_PATH,expertsettings_filename):
+def loadModelSettings(DATA_PATH:str,expertsettings_filename:str):
     """Load a pyCGM2 model settings.
 
     Args:
@@ -38,7 +41,7 @@ def loadModelSettings(DATA_PATH,expertsettings_filename):
 
     return settings
 
-def openFile(path,filename):
+def openFile(path:str,filename:str):
     """open a json/yaml file.
 
     Args:
@@ -72,7 +75,7 @@ def openFile(path,filename):
         return False
 
 
-def openJson(path,filename):
+def openJson(path:str,filename:str):
 
     if path is not None: path = path
     filename = filename
@@ -86,7 +89,7 @@ def openJson(path,filename):
     except :
         raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
 
-def openYaml(path,filename):
+def openYaml(path:str,filename:str):
     if path is not None: path = path
     filename = filename
     try:
@@ -98,7 +101,7 @@ def openYaml(path,filename):
     except :
         raise Exception ("[pyCGM2] : yaml syntax of file (%s) is incorrect. check it" %(filename))
 
-def openPickleFile(path,filename):
+def openPickleFile(path:str,filename:str):
     """open a serialized file.
 
     Args:
@@ -112,7 +115,7 @@ def openPickleFile(path,filename):
 
     return content
 
-def savePickleFile(instance,path,filename):
+def savePickleFile(instance:object,path:str,filename:str):
     """serialized a pyCGM2 instance , then save it.
 
     Args:
@@ -129,7 +132,7 @@ def savePickleFile(instance,path,filename):
         pickle.dump(instance, FILE)
 
 
-def readContent(stringContent):
+def readContent(stringContent:str):
     """read a json/yaml content
 
     Args:
@@ -154,7 +157,7 @@ def readContent(stringContent):
 
 
 
-def loadModel(path,FilenameNoExt):
+def loadModel(path:str,FilenameNoExt:str):
     """load a pyCGM2 model instance
 
     Args:
@@ -175,7 +178,7 @@ def loadModel(path,FilenameNoExt):
 
         return model
 
-def saveModel(model,path,FilenameNoExt):
+def saveModel(model:Model,path:str,FilenameNoExt:str):
     """save a pyCGM2 model instance
 
     Args:
@@ -199,7 +202,7 @@ def saveModel(model,path,FilenameNoExt):
     # modelFile.close()
 
 
-def loadAnalysis(path,FilenameNoExt):
+def loadAnalysis(path:str,FilenameNoExt:str):
     """load an `analysis` instance
 
     Args:
@@ -221,7 +224,7 @@ def loadAnalysis(path,FilenameNoExt):
 
         return analysis
 
-def saveAnalysis(analysisInstance,path,FilenameNoExt):
+def saveAnalysis(analysisInstance:Analysis,path:str,FilenameNoExt:str):
     """save a pyCGM2 analysis instance
 
     Args:
@@ -244,7 +247,7 @@ def saveAnalysis(analysisInstance,path,FilenameNoExt):
     # modelFile.close()
 
 
-def saveJson(path, filename, content,ensure_ascii=False):
+def saveJson(path:str, filename:str, content:dict,ensure_ascii:bool=False):
     """save as json file
 
     Args:
@@ -262,7 +265,7 @@ def saveJson(path, filename, content,ensure_ascii=False):
         with open((path+filename), 'w') as outfile:
             json.dump(content, outfile,indent=4,ensure_ascii=ensure_ascii)
 
-def saveYaml(path, filename, content):
+def saveYaml(path:str, filename:str, content:dict):
     """save as yaml file
 
     Args:
@@ -285,7 +288,7 @@ def saveYaml(path, filename, content):
             yaml.dump(content, outfile,indent=4)
 
 
-def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
+def getTranslators(DATA_PATH:str, translatorType:str = "CGM1.translators"):
     """get CGM marker translators
 
     Args:
@@ -303,7 +306,7 @@ def getTranslators(DATA_PATH, translatorType = "CGM1.translators"):
     else:
        return False
 
-def getIKweightSet(DATA_PATH, ikwf):
+def getIKweightSet(DATA_PATH:str, ikwf:str):
     """get marker weights for kinematic fitting
 
     Args:
@@ -318,7 +321,7 @@ def getIKweightSet(DATA_PATH, ikwf):
     else:
        return False
 
-def getMpFileContent(DATA_PATH,file,subject):
+def getMpFileContent(DATA_PATH:str,file:str,subject:str):
     """get anthropometric data
 
     Args:
@@ -340,7 +343,7 @@ def getMpFileContent(DATA_PATH,file,subject):
 
     return content,out
 
-def getMp(mpInfo,resetFlag=True):
+def getMp(mpInfo:dict,resetFlag:bool=True):
     """return required and optional anthropometric parameters
 
     Args:
@@ -399,7 +402,7 @@ def getMp(mpInfo,resetFlag=True):
     return required_mp,optional_mp
 
 
-def loadMp(path,filename):
+def loadMp(path:str,filename:str):
     """load a mp file.
 
     Args:
@@ -419,7 +422,7 @@ def loadMp(path,filename):
 
 
 
-def saveMp(mpInfo,model,DATA_PATH,mpFilename):
+def saveMp(mpInfo:dict,model:Model,DATA_PATH:str,mpFilename:str):
     """Save anthropometric parameters as json
 
     Args:
@@ -469,7 +472,7 @@ def saveMp(mpInfo,model,DATA_PATH,mpFilename):
 
 
 
-def getFiles(path, extension, ignore=None,raiseFlag=False):
+def getFiles(path:str, extension:str, ignore:Optional[bool]=None,raiseFlag:bool=False):
     """get all files in a folder
 
     Args:
@@ -497,7 +500,7 @@ def getFiles(path, extension, ignore=None,raiseFlag=False):
     return out
 
 
-def getC3dFiles(path, text="", ignore=None ):
+def getC3dFiles(path:str, text:str="", ignore:Optional[bool]=None ):
     """get all c3d files in a folder
 
     Args:
@@ -516,7 +519,7 @@ def getC3dFiles(path, text="", ignore=None ):
 
     return out
 
-def copySessionFolder(folderPath, folder2copy, newFolder, selectedFiles=None):
+def copySessionFolder(folderPath:str, folder2copy:str, newFolder:str, selectedFiles:Optional[List]=None):
     """copy a vicon-session folder
 
     Args:
@@ -553,7 +556,7 @@ def copySessionFolder(folderPath, folder2copy, newFolder, selectedFiles=None):
 
                     shutil.copyfile(src, dst)
 
-def createDir(fullPathName):
+def createDir(fullPathName:str):
     """Create a folder
 
     Args:
@@ -568,7 +571,7 @@ def createDir(fullPathName):
         LOGGER.logger.info("directory already exists")
     return pathOut+"\\"
 
-def getDirs(folderPath):
+def getDirs(folderPath:str):
     """get all folders
 
     Args:
@@ -593,7 +596,7 @@ def is_json(s):
 def is_yaml(s):
     return try_as(yaml.safe_load, s, yaml.scanner.ScannerError)
 
-def copyPaste(src, dst):
+def copyPaste(src:str, dst:str):
     """file copy/paste
 
     Args:
@@ -608,7 +611,7 @@ def copyPaste(src, dst):
 
     
 
-def copyPasteDirectory(src, dst):
+def copyPasteDirectory(src:str, dst:str):
     """folder copy/paste
 
     Args:
@@ -623,7 +626,7 @@ def copyPasteDirectory(src, dst):
         shutil.copytree(src, dst)
 
 
-def deleteDirectory(dir):
+def deleteDirectory(dir:str):
     """Delete a folder
 
     Args:
@@ -633,7 +636,7 @@ def deleteDirectory(dir):
     shutil.rmtree(dir)
 
 
-def readXml(DATA_PATH,filename):
+def readXml(DATA_PATH:str,filename:str):
     """Read a xml file
 
     Args:
@@ -649,7 +652,7 @@ def readXml(DATA_PATH,filename):
     return soup
 
 
-def getFileCreationDate(file):
+def getFileCreationDate(file:str):
     """ return file creation date
 
     Args:
@@ -665,7 +668,7 @@ def getFileCreationDate(file):
     return datetime.fromtimestamp(stamp)
 
 
-def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
+def concatenateExcelFiles(DATA_PATH_OUT:str,outputFilename:str,sheetNames:List[str],xlsFiles:List[str]):
 
     xlsxWriter = pd.ExcelWriter((DATA_PATH_OUT+outputFilename+".xlsx"))
     for sheet in sheetNames:
@@ -682,13 +685,13 @@ def concatenateExcelFiles(DATA_PATH_OUT,outputFilename,sheetNames,xlsFiles):
     xlsxWriter.save()
 
 
-def getFilename(fullname):
+def getFilename(fullname:str):
     return fullname[len(os.path.dirname(fullname))+1:]
 
-def getDirname(fullname):
+def getDirname(fullname:str):
     return fullname[0:len(os.path.dirname(fullname))+1]
 
-def renameFile( fileToRename,renamedFile ):
+def renameFile( fileToRename:str,renamedFile:str ):
     try:       
         os.rename(fileToRename,renamedFile)                    
     except FileExistsError:

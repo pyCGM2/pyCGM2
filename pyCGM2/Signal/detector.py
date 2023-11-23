@@ -1,7 +1,12 @@
+
+
 import numpy as np
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
+import matplotlib.pyplot as plt
+
+from typing import Optional
 
 
 def detectStart_fromThreshold(values,reference, type = "lower",epsilon=0.05,firstFrame=0,nppf=1):
@@ -19,11 +24,11 @@ def detectStart_fromThreshold(values,reference, type = "lower",epsilon=0.05,firs
     return int(i0)
 
 
-
-
 # ----------------detecta package------------------------------------------
-def detect_cusum(x, threshold=1, drift=0, ending=False, show=True, ax=None):
-    """Cumulative sum algorithm (CUSUM) to detect abrupt changes in data.
+def detect_cusum(x:np.ndarray, threshold:int=1, drift:int=0, ending:bool=False, show:bool=True, ax:Optional[plt.Axes]=None):
+
+
+    """Cumulative sum algorithm (CUSUM) to detect abrupt changes in data. ([BMC](https://github.com/demotu/BMC))
 
     Parameters
     ----------

@@ -4,6 +4,7 @@ LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Utils import files
+from pyCGM2.Model.Opensim.interface.opensimInterface import osimInterface
 import numpy as np
 import pandas as pd
 
@@ -24,6 +25,7 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] opensim not found on your system")
 
+from typing import List, Tuple, Dict, Optional
 
 # def createGroundReactionForceMOT_file(DATA_PATH, c3dFile):
 
@@ -43,7 +45,7 @@ except:
 
 
 
-def rotationMatrix_labToOsim(axis,forwardProgression):
+def rotationMatrix_labToOsim(axis:str,forwardProgression:bool):
     if axis == "X":
         if forwardProgression:
             R_LAB_OSIM = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
@@ -62,7 +64,7 @@ def rotationMatrix_labToOsim(axis,forwardProgression):
     return R_LAB_OSIM
 
 
-def transformMarker_ToOsimReferencial(acq, axis, forwardProgression):
+def transformMarker_ToOsimReferencial(acq:btk.btkAcquisition, axis:str, forwardProgression:bool):
 
     R_LAB_OSIM = rotationMatrix_labToOsim(axis,forwardProgression)
 
@@ -75,7 +77,7 @@ def transformMarker_ToOsimReferencial(acq, axis, forwardProgression):
             it.SetValues(values)
 
 
-def sto2pointValues(storageObject, label, R_LAB_OSIM):
+def sto2pointValues(storageObject:opensim.Storage, label:str, R_LAB_OSIM:np.ndarray):
 
     # storageObject = opensim.Storage(stoFilename)
     index_x = storageObject.getStateIndex(label+"_tx")
@@ -104,7 +106,7 @@ def sto2pointValues(storageObject, label, R_LAB_OSIM):
     return pointValues
 
 
-def mot2pointValues(motFilename, labels, orientation=[1, 1, 1]):
+def mot2pointValues(motFilename:str, labels:list[str], orientation:list[int]=[1, 1, 1]):
     storageObject = opensim.Storage(motFilename)
 
     index_x = storageObject.getStateIndex(labels[0])
@@ -129,7 +131,7 @@ def mot2pointValues(motFilename, labels, orientation=[1, 1, 1]):
 
     return pointValues
 
-def smartGetValues(DATA_PATH,filename,label):
+def smartGetValues(DATA_PATH:str,filename:str,label:str):
     storageObject = opensim.Storage(DATA_PATH+filename)
     labels = storageObject.getColumnLabels()
     for index in range(1,labels.getSize()): #1 because 0 is time
@@ -143,7 +145,7 @@ def smartGetValues(DATA_PATH,filename,label):
                 values[i] = array_x.getitem(i)
     return values
 
-def footReactionMotFile(acq,filename,progressionAxis,forwardProgression,mfpa=None):
+def footReactionMotFile(acq:btk.btkAcquisition,filename:str,progressionAxis:str,forwardProgression:bool,mfpa:Optional[str]=None):
 
     
     mappedForcePlate = forceplates.matchingFootSideOnForceplate(acq,mfpa=mfpa)
@@ -209,7 +211,7 @@ def footReactionMotFile(acq,filename,progressionAxis,forwardProgression,mfpa=Non
 
 
 
-def export_CgmToMot(acq,datapath,filename,osimModelInterface):
+def export_CgmToMot(acq:btk.btkAcquisition,datapath:str,filename:str,osimModelInterface:osimInterface):
     """Export the CGM kinematics outputs in a mot opensim-format
 
     Args:

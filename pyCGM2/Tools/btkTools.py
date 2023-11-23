@@ -22,8 +22,10 @@ except:
 
 from pyCGM2.External.ktk.kineticstoolkit import timeseries
 
+from typing import Optional,Tuple
+
 # --- acquisition -----
-def smartReader(filename, translators=None):
+def smartReader(filename:str, translators:Optional[dict]=None):
     """
     Convenient function to read a c3d with Btk
 
@@ -91,7 +93,7 @@ def smartReader(filename, translators=None):
     return acq
 
 
-def smartWriter(acq, filename, extension=None):
+def smartWriter(acq:btk.btkAcquisition, filename:str, extension:Optional[str]=None):
     """
     Convenient function to write a c3d with Btk
 
@@ -113,7 +115,7 @@ def smartWriter(acq, filename, extension=None):
 
 
 
-def GetMarkerNames(acq):
+def GetMarkerNames(acq:btk.btkAcquisition):
     """
     return marker labels
 
@@ -129,7 +131,7 @@ def GetMarkerNames(acq):
     return markerNames
 
 
-def GetAnalogNames(acq):
+def GetAnalogNames(acq:btk.btkAcquisition):
     """
     return analog labels
 
@@ -144,7 +146,7 @@ def GetAnalogNames(acq):
     return analogNames
 
 
-def isGap(acq, markerLabel):
+def isGap(acq:btk.btkAcquisition, markerLabel:list[str]):
     """
     check gap
 
@@ -162,7 +164,7 @@ def isGap(acq, markerLabel):
         return False
 
 
-def findMarkerGap(acq):
+def findMarkerGap(acq:btk.btkAcquisition):
     """
     return markers with detected gap
 
@@ -179,7 +181,7 @@ def findMarkerGap(acq):
     return gaps
 
 
-def isPointExist(acq, label, ignorePhantom=True):
+def isPointExist(acq:btk.btkAcquisition, label:str, ignorePhantom:bool=True):
     """
     check if a point exist
 
@@ -212,7 +214,7 @@ def isPointExist(acq, label, ignorePhantom=True):
                     return True
 
 
-def isPointsExist(acq, labels, ignorePhantom=True):
+def isPointsExist(acq:btk.btkAcquisition, labels:list[str], ignorePhantom:bool=True):
     """
     check if  a list of points exist
 
@@ -229,7 +231,7 @@ def isPointsExist(acq, labels, ignorePhantom=True):
     return True
 
 
-def smartAppendPoint(acq, label, values, PointType="Marker", desc="", residuals=None):
+def smartAppendPoint(acq:btk.btkAcquisition, label:str, values:np.ndarray, PointType:str="Marker", desc:str="", residuals:Optional[np.ndarray]=None):
     """
     Append or Update a point
 
@@ -291,7 +293,7 @@ def smartAppendPoint(acq, label, values, PointType="Marker", desc="", residuals=
         acq.AppendPoint(new_btkPoint)
 
 
-def clearPoints(acq, pointlabelList):
+def clearPoints(acq:btk.btkAcquisition, pointlabelList:list[str]):
     """
     Remove points
 
@@ -314,7 +316,7 @@ def clearPoints(acq, pointlabelList):
     return acq
 
 
-def keepAndDeleteOtherPoints(acq, pointToKeep):
+def keepAndDeleteOtherPoints(acq:btk.btkAcquisition, pointToKeep:list[str]):
     """
     Remove points except ones
 
@@ -329,7 +331,7 @@ def keepAndDeleteOtherPoints(acq, pointToKeep):
             acq.RemovePoint(it.GetLabel())
 
 
-def isPhantom(acq, label):
+def isPhantom(acq:btk.btkAcquisition, label:str):
     """
         check if a point is a phantom ( ie zero point)
 
@@ -341,7 +343,7 @@ def isPhantom(acq, label):
     return False if all(residuals == -1) else True
 
 
-def getValidFrames(acq, markerLabels, frameBounds=None):
+def getValidFrames(acq:btk.btkAcquisition, markerLabels:list[str], frameBounds:Optional[Tuple[int,int]]=None):
     """
     get valid frames of markers
 
@@ -371,7 +373,7 @@ def getValidFrames(acq, markerLabels, frameBounds=None):
     return flag
 
 
-def getFrameBoundaries(acq, markerLabels):
+def getFrameBoundaries(acq:btk.btkAcquisition, markerLabels:list[str]):
     """
     get frame boundaries from a list of markers
 
@@ -391,7 +393,7 @@ def getFrameBoundaries(acq, markerLabels):
     return firstValidFrame, lastValidFrame
 
 
-def checkGap(acq, markerList, frameBounds=None):
+def checkGap(acq:btk.btkAcquisition, markerList:list[str], frameBounds:Optional[Tuple[int,int]]=None):
     """
     check if there are any gaps from a list of markers
 
@@ -420,7 +422,7 @@ def checkGap(acq, markerList, frameBounds=None):
     return flag
 
 
-def applyOnValidFrames(acq, validFrames):
+def applyOnValidFrames(acq:btk.btkAcquisition, validFrames:list[int]):
     """
     set zeros to all points if the frame is  not valid
 
@@ -441,7 +443,7 @@ def applyOnValidFrames(acq, validFrames):
                     it.SetValue(i, 2, 0)
 
 
-def findValidFrames(acq, markerLabels):
+def findValidFrames(acq:btk.btkAcquisition, markerLabels:list[str]):
     """
     find valid frames to process from markers
 
@@ -471,7 +473,7 @@ def findValidFrames(acq, markerLabels):
     return flag, firstValidFrame, lastValidFrame
 
 
-def applyValidFramesOnOutput(acq, validFrames):
+def applyValidFramesOnOutput(acq:btk.btkAcquisition, validFrames:list[int]):
     """
     set model outputs to zero if not a valid frame
 
@@ -491,7 +493,7 @@ def applyValidFramesOnOutput(acq, validFrames):
             it.SetValues(values)
 
 
-def checkMultipleSubject(acq):
+def checkMultipleSubject(acq:btk.btkAcquisition):
     """
     check if multiple subject detected in the acquisition
 
@@ -505,7 +507,7 @@ def checkMultipleSubject(acq):
 
 # --- Model -----
 
-def applyTranslators(acq, translators):
+def applyTranslators(acq:btk.btkAcquisition, translators:dict):
     """
     Rename marker from translators
 
@@ -582,7 +584,7 @@ def applyTranslators(acq, translators):
     return acqClone
 
 
-def checkMarkers(acq, markerList):
+def checkMarkers(acq:btk.btkAcquisition, markerList:list[str]):
     """
     check marker presence. Raise an exception if fails
 
@@ -595,7 +597,7 @@ def checkMarkers(acq, markerList):
             raise Exception("[pyCGM2] markers %s not found" % m)
 
 
-def clearEvents(acq, labels):
+def clearEvents(acq:btk.btkAcquisition, labels:list[str]):
     """
     remove events from their label
 
@@ -614,7 +616,7 @@ def clearEvents(acq, labels):
     acq.SetEvents(newEvents)
 
 
-def deleteContextEvents(acq, context):
+def deleteContextEvents(acq:btk.btkAcquisition, context:str):
     """
     remove events with the same context ( eg Left,Right, or General )
 
@@ -632,7 +634,7 @@ def deleteContextEvents(acq, context):
     acq.SetEvents(newEvents)
 
 
-def modifyEventSubject(acq, newSubjectlabel):
+def modifyEventSubject(acq:btk.btkAcquisition, newSubjectlabel:str):
     """
     update the subject name of all events
 
@@ -649,7 +651,7 @@ def modifyEventSubject(acq, newSubjectlabel):
     return acq
 
 
-def modifySubject(acq, newSubjectlabel):
+def modifySubject(acq:btk.btkAcquisition, newSubjectlabel:str):
     """
     update the subject name inside c3d metadata
 
@@ -661,7 +663,7 @@ def modifySubject(acq, newSubjectlabel):
         "NAMES").value().GetInfo().SetValue(0, (newSubjectlabel))
 
 
-def getNumberOfModelOutputs(acq):
+def getNumberOfModelOutputs(acq:btk.btkAcquisition):
     """
     return the size of model outputs
 
@@ -691,7 +693,7 @@ def getNumberOfModelOutputs(acq):
 # --- metadata -----
 
 
-def hasChild(md, mdLabel):
+def hasChild(md:btk.btkMetaData, mdLabel:str):
 
     outMd = None
     for itMd in btk.Iterate(md):
@@ -701,7 +703,7 @@ def hasChild(md, mdLabel):
     return outMd
 
 
-def getVisibleMarkersAtFrame(acq, markers, index):
+def getVisibleMarkersAtFrame(acq:btk.btkAcquisition, markers:list[str], index:int):
     """
     return markers visible at a specific frame
 
@@ -715,7 +717,7 @@ def getVisibleMarkersAtFrame(acq, markers, index):
     return visibleMarkers
 
 
-def isAnalogExist(acq, label):
+def isAnalogExist(acq:btk.btkAcquisition, label:str):
     """
     Check if a point label exists inside an acquisition
 
@@ -739,7 +741,7 @@ def isAnalogExist(acq, label):
         return False
 
 
-def smartAppendAnalog(acq, label, values, desc=""):
+def smartAppendAnalog(acq:btk.btkAcquisition, label:str, values:np.ndarray, desc:str=""):
     """
     append an analog output
 
@@ -762,7 +764,7 @@ def smartAppendAnalog(acq, label, values, desc=""):
         acq.AppendAnalog(newAnalog)
 
 
-def markerUnitConverter(acq, unitOffset):
+def markerUnitConverter(acq:btk.btkAcquisition, unitOffset:float):
     """
     apply an offset to convert marker in an other unit
 
@@ -776,7 +778,7 @@ def markerUnitConverter(acq, unitOffset):
             it.SetValues(values*unitOffset)
 
 
-def constructMarker(acq, label, markers, numpyMethod=np.mean, desc=""):
+def constructMarker(acq:btk.btkAcquisition, label:str, markers:list[str], numpyMethod:callable=np.mean, desc:str=""):
     """
     construct a marker from others
 
@@ -784,7 +786,7 @@ def constructMarker(acq, label, markers, numpyMethod=np.mean, desc=""):
         acq (btkAcquisition): a btk acquisition inctance
         label (str): marker label of the constructed marker
         markers ([str...]):  markers labels
-        numpyMethod (np.function, Optional): [default:np.mean]: numpy function used for handle markers
+        numpyMethod (callable): [default:np.mean]: numpy function used for handle markers
         desc (str,optional) - description
     """
     nFrames = acq.GetPointFrameNumber()
@@ -807,7 +809,7 @@ def constructMarker(acq, label, markers, numpyMethod=np.mean, desc=""):
     smartAppendPoint(acq, label, values, desc=desc)
 
 
-def constructPhantom(acq, label, desc=""):
+def constructPhantom(acq:btk.btkAcquisition, label:str, desc:str=""):
     """
     construct a phantom
 
@@ -822,7 +824,7 @@ def constructPhantom(acq, label, desc=""):
                      residuals=np.ones((nFrames, 1))*-1.0)
 
 
-def createPhantoms(acq, markerLabels):
+def createPhantoms(acq:btk.btkAcquisition, markerLabels:list(str)):
     """
     construct phantoms
 
@@ -841,7 +843,7 @@ def createPhantoms(acq, markerLabels):
     return actual_markers, phantom_markers
 
 
-def getNumberOfForcePlate(acq):
+def getNumberOfForcePlate(acq:btk.btkAcquisition):
     """
     return number of force plate
 
@@ -856,7 +858,7 @@ def getNumberOfForcePlate(acq):
     return pfc.GetItemNumber()
 
 
-def getStartEndEvents(acq, context, startLabel="Start", endLabel="End"):
+def getStartEndEvents(acq:btk.btkAcquisition, context:str, startLabel:str="Start", endLabel:str="End"):
     """
     return frames of the start and end events.
 
@@ -887,14 +889,14 @@ def getStartEndEvents(acq, context, startLabel="Start", endLabel="End"):
         return start[0], end[0]
 
 
-def _getSectionFromMd(md):
+def _getSectionFromMd(md:btk.btkMetaData):
     md_sections = list()
     for i in range(0, md.GetChildNumber()):
         md_sections.append(md.GetChild(i).GetLabel())
     return md_sections
 
 
-def changeSubjectName(acq, subjectName):
+def changeSubjectName(acq:btk.btkAcquisition, subjectName:str):
     """
     change subject name in all section of the acquisition
 
@@ -936,7 +938,7 @@ def changeSubjectName(acq, subjectName):
     return acq
 
 
-def smartGetMetadata(acq, firstLevel, secondLevel, returnType="String"):
+def smartGetMetadata(acq:btk.btkAcquisition, firstLevel:str, secondLevel:str, returnType:str="String"):
     """
     return metadata
 
@@ -970,7 +972,7 @@ def smartGetMetadata(acq, firstLevel, secondLevel, returnType="String"):
                 return info.ToDouble()
 
 
-def smartSetMetadata(acq, firstLevel, secondLevel, index, value):
+def smartSetMetadata(acq:btk.btkAcquisition, firstLevel:str, secondLevel:str, index:int, value:str):
     """
     set a metadata
 
@@ -989,7 +991,7 @@ def smartSetMetadata(acq, firstLevel, secondLevel, index, value):
             return firstMd.FindChild(secondLevel).value().GetInfo().SetValue(index, value)
 
 
-def checkMetadata(acq, firstLevel, secondLevel):
+def checkMetadata(acq:btk.btkAcquisition, firstLevel:str, secondLevel:str):
     """
     check presence of a metadata
 
@@ -1012,7 +1014,7 @@ def checkMetadata(acq, firstLevel, secondLevel):
     return flag
 
 
-def checkForcePlateExist(acq):
+def checkForcePlateExist(acq:btk.btkAcquisition):
     """
     check force plate presence
 
@@ -1029,7 +1031,7 @@ def checkForcePlateExist(acq):
         return False
 
 
-def sortedEvents(acq):
+def sortedEvents(acq:btk.btkAcquisition):
     """
     sort events
 
@@ -1064,7 +1066,7 @@ def sortedEvents(acq):
     acq.SetEvents(newEvents)
 
 
-def buildTrials(dataPath, filenames):
+def buildTrials(dataPath:str, filenames:list[str]):
     """
     build acquisitions
 
@@ -1088,7 +1090,7 @@ def buildTrials(dataPath, filenames):
     return acqs, acqFilenames
 
 
-def isKineticFlag(acq):
+def isKineticFlag(acq:btk.btkAcquisition):
     """
     check presence of force plate events (ie Left-FP", "Right-FP")
 
@@ -1117,7 +1119,7 @@ def isKineticFlag(acq):
         return True, kineticEvent_frames, kineticEvent_frames_left, kineticEvent_frames_right
 
 
-def automaticKineticDetection(dataPath, filenames, acqs=None):
+def automaticKineticDetection(dataPath:str, filenames:list[str], acqs:Optional[list[btk.btkAcquisition]]=None):
     """
     check presence of force plate events (ie Left-FP", "Right-FP") in a list of files
 
@@ -1157,7 +1159,7 @@ def automaticKineticDetection(dataPath, filenames, acqs=None):
     return kineticAcqs, kineticFilenames, flag_kinetics
 
 
-def getForcePlateWrench(acq, fpIndex=None):
+def getForcePlateWrench(acq:btk.btkAcquisition, fpIndex:int=None):
     """
     get force plate wrench
 
@@ -1180,7 +1182,7 @@ def getForcePlateWrench(acq, fpIndex=None):
         return grwc
 
 
-def applyRotation(acq, markers, globalFrameOrientation, forwardProgression):
+def applyRotation(acq:btk.btkAcquisition, markers:list[str], globalFrameOrientation:str, forwardProgression:bool):
     """
     apply a rotation to markers
 
@@ -1211,7 +1213,7 @@ def applyRotation(acq, markers, globalFrameOrientation, forwardProgression):
         acq.GetPoint(marker).SetValues(valuesRot)
 
 
-def smartGetEvents(acq, label, context):
+def smartGetEvents(acq:btk.btkAcquisition, label:str, context:str):
     """
     return an event
 
@@ -1231,7 +1233,7 @@ def smartGetEvents(acq, label, context):
 
     return out
 
-def isEventExist(acq, label, context):
+def isEventExist(acq:btk.btkAcquisition, label:str, context:str):
     """
     check if an event exist
 
@@ -1249,7 +1251,7 @@ def isEventExist(acq, label, context):
             out=True
     return out
 
-def renameEvent(acq, label, context, newlabel, newcontext):
+def renameEvent(acq:btk.btkAcquisition, label:str, context:str, newlabel:str, newcontext:str):
     """
     rename an event exist
 
@@ -1267,7 +1269,7 @@ def renameEvent(acq, label, context, newlabel, newcontext):
             it.SetContext(newcontext)
     
 
-def cleanAcq(acq):
+def cleanAcq(acq:btk.btkAcquisition):
     """
     clean an aquisition ( remove zero points)
 
@@ -1291,7 +1293,7 @@ def cleanAcq(acq):
                 acq.RemovePoint(it.GetLabel())
 
 
-def smartCreateEvent(acq, label, context, frame, type="Automatic", subject="", desc=""):
+def smartCreateEvent(acq:btk.btkAcquisition, label:str, context:str, frame:int, type:str="Automatic", subject:str="", desc:str=""):
     """
     set an event
 
@@ -1322,7 +1324,7 @@ def smartCreateEvent(acq, label, context, frame, type="Automatic", subject="", d
     acq.AppendEvent(ev)
 
 
-def smartAppendParamAnalysis(acq, name, eventcontext, value, description="", subject="", unit=""):
+def smartAppendParamAnalysis(acq:btk.btkAcquisition, name:str, eventcontext:str, value:float, description:str="", subject:str="", unit:str=""):
     """
     set an analysis parameter
 
@@ -1457,7 +1459,7 @@ def smartAppendParamAnalysis(acq, name, eventcontext, value, description="", sub
         smartSetMetadata(acq, "ANALYSIS", "USED", 0, used[0]+1)
 
 
-def getAllParamAnalysis(acq):
+def getAllParamAnalysis(acq:btk.btkAcquisition):
     """
     get all analysis parameters
 
@@ -1491,7 +1493,7 @@ def getAllParamAnalysis(acq):
     return items
 
 
-def getParamAnalysis(btkAcq, name, context, subject):
+def getParamAnalysis(btkAcq:btk.btkAcquisition, name:str, context:str, subject:str):
     """
     get an analysis parameter
 
@@ -1525,7 +1527,7 @@ def getParamAnalysis(btkAcq, name, context, subject):
     LOGGER.logger.error("no analysis parameter found with specification [%s,%s,%s]" % (
         name, context, subject))
 
-def getLabelsFromScalar(acq, description=None):
+def getLabelsFromScalar(acq:btk.btkAcquisition, description:Optional[str]=None):
     out = list()
 
     if description is not None:
@@ -1540,7 +1542,7 @@ def getLabelsFromScalar(acq, description=None):
 
     return out
 
-def getScalar(acq,label):
+def getScalar(acq:btk.btkAcquisition,label:str):
 
     out = None
 
@@ -1553,7 +1555,7 @@ def getScalar(acq,label):
 
 
 
-def btkPointToKtkTimeseries(acq, type=btk.btkPoint.Marker):
+def btkPointToKtkTimeseries(acq:btk.btkAcquisition, type:btk.btkPoint=btk.btkPoint.Marker):
     """convert the all btkPoint of a btkAcquisition in a Ktk timeseries 
 
     Args:
@@ -1577,7 +1579,7 @@ def btkPointToKtkTimeseries(acq, type=btk.btkPoint.Marker):
     return ts
 
 
-def btkAnalogToKtkTimeseries(acq):
+def btkAnalogToKtkTimeseries(acq:btk.btkAcquisition):
     """convert the all btkAnalog of a btkAcquisition in a Ktk timeseries 
 
     Args:
@@ -1597,7 +1599,7 @@ def btkAnalogToKtkTimeseries(acq):
     return ts
 
 
-def calculateAngleFrom3points( acq,pt1,pt2,pt3):
+def calculateAngleFrom3points( acq:btk.btkAcquisition,pt1:str,pt2:str,pt3:str):
     nrow = acq.GetPointFrameNumber()
     out = np.zeros((nrow,3))
 
@@ -1619,7 +1621,7 @@ def calculateAngleFrom3points( acq,pt1,pt2,pt3):
 
     return out
 
-def markersToArray(acq,markers=None):
+def markersToArray(acq:btk.btkAcquisition,markers:Optional[list[str]]=None):
     """
     Array of marker position data with N time steps across M markers.
     The data need to be organized as follows:
