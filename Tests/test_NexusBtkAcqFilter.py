@@ -8,13 +8,7 @@ import pyCGM2
 from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusFilters
 from pyCGM2.Nexus import nexusTools
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 
 from viconnexusapi import ViconNexus

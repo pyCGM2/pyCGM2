@@ -11,13 +11,7 @@ import copy
 from typing import List, Tuple, Dict, Optional,Union
 
 LOGGER = pyCGM2.LOGGER
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 from pyCGM2.Model import frame
 from pyCGM2.Model import motion

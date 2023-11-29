@@ -5,21 +5,9 @@ This module contains  convenient functions and classes for working with opensim.
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import numpy as np
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
-try:
-    import opensim
-except:
-    try:
-        from pyCGM2 import opensim4 as opensim
-    except:
-        LOGGER.logger.error("[pyCGM2] opensim not found on your system")
+import opensim
 
 
 R_OSIM_CGM = {"Pelvis" : np.array([[1,0,0],[0,0,1],[0,-1,0]]) ,

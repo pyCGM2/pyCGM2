@@ -12,13 +12,7 @@ from  pyCGM2.Math import geometry
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 from pyCGM2.External.ktk.kineticstoolkit import timeseries
 

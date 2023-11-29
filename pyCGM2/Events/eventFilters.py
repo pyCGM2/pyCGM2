@@ -5,13 +5,7 @@ check out the script : *\Tests\test_events.py* for examples
 """
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2.Events.eventProcedures import EventProcedure
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 from typing import List, Tuple, Dict, Optional,Union
 

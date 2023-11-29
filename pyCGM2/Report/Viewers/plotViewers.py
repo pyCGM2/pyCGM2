@@ -12,13 +12,7 @@ import pyCGM2
 from pyCGM2 import enums
 from pyCGM2.Report import plot
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 from pyCGM2.Report.normativeDatasets import NormativeData
 from pyCGM2.Processing.analysis import Analysis

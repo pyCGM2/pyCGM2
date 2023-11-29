@@ -14,13 +14,7 @@ LOGGER = pyCGM2.LOGGER
 
 from typing import List, Tuple, Dict, Optional, Union
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 class AnomalyDetectionProcedure(object):
     """Abstract base class for anomaly detection procedures.

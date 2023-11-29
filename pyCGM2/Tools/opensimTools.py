@@ -8,22 +8,10 @@ from pyCGM2.Model.Opensim.interface.opensimInterface import osimInterface
 import numpy as np
 import pandas as pd
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 
-try:
-    import opensim
-except:
-    try:
-        from pyCGM2 import opensim4 as opensim
-    except:
-        LOGGER.logger.error("[pyCGM2] opensim not found on your system")
+import opensim
 
 from typing import List, Tuple, Dict, Optional, Union, Callable
 

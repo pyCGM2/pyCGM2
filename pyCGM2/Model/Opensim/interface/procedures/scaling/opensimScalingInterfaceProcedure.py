@@ -7,21 +7,9 @@ from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
-try:
-    import opensim
-except:
-    try:
-        from pyCGM2 import opensim4 as opensim
-    except:
-        LOGGER.logger.error("[pyCGM2] opensim not found on your system")
+import opensim
 
 
 class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):

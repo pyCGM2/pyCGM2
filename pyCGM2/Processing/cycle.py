@@ -22,13 +22,7 @@ from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 
 import pyCGM2.Math.normalisation as MathNormalisation
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 from pyCGM2.Utils import utils
 from pyCGM2.Tools import btkTools

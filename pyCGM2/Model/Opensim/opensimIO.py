@@ -1,11 +1,5 @@
 import pyCGM2; LOGGER = pyCGM2.LOGGER
-try:
-    import opensim
-except:
-    try:
-        from pyCGM2 import opensim4 as opensim
-    except:
-        LOGGER.logger.error("[pyCGM2] opensim not found on your system")
+import opensim
 
 
 import numpy as np

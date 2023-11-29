@@ -9,13 +9,7 @@ from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 
 import btk
-try:
-    import opensim
-except:
-    try:
-        from pyCGM2 import opensim4 as opensim
-    except:
-        LOGGER.logger.error("[pyCGM2] opensim not found on your system")
+import opensim
 
 
 

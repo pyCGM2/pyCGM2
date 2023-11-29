@@ -19,21 +19,9 @@ from pyCGM2.Model.Opensim.interface.procedures.analysisReport.opensimAnalysesInt
 from typing import List, Tuple, Dict, Optional,Union,Any
 
 # pyCGM2
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
-try:
-    import opensim
-except:
-    try:
-        from pyCGM2 import opensim4 as opensim
-    except:
-        LOGGER.logger.error("[pyCGM2] opensim not found on your system")
+import opensim
 
 from typing import List, Tuple, Dict, Optional,Union,Any
 

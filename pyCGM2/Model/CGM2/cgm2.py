@@ -6,13 +6,7 @@ from typing import List, Tuple, Dict, Optional,Union,Any
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 from pyCGM2.Model.CGM2 import cgm
 

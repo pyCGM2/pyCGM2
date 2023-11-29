@@ -7,13 +7,7 @@ check out the script : *\Tests\test_events.py* for examples
 from typing import List, Tuple, Dict, Optional,Union
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Signal import detect_peaks

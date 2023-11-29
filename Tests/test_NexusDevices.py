@@ -7,13 +7,7 @@ import numpy as np
 import pyCGM2
 from pyCGM2.Tools import btkTools
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 
 try:

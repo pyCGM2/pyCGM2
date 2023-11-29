@@ -10,26 +10,14 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 from bs4 import BeautifulSoup
 
 # pyCGM2
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Model.Opensim import osimProcessing
 from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters
 from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 
-try:
-    import opensim
-except:
-    try:
-        from pyCGM2 import opensim4 as opensim
-    except:
-        LOGGER.logger.error("[pyCGM2] opensim not found on your system")
+import opensim
 
 
 # ---- PROCEDURES -----

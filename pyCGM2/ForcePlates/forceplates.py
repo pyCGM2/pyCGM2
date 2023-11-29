@@ -14,13 +14,7 @@ import scipy as sp
 
 import re
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 from pyCGM2.Tools import  btkTools
 
 from typing import List, Tuple, Dict, Optional,Union

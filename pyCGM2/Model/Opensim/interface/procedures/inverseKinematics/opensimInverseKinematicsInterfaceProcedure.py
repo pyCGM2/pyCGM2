@@ -3,25 +3,13 @@ import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 # pyCGM2
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 from pyCGM2.Tools import  btkTools,opensimTools
 from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 from pyCGM2.Utils import files
-try:
-    import opensim
-except:
-    try:
-        from pyCGM2 import opensim4 as opensim
-    except:
-        LOGGER.logger.error("[pyCGM2] opensim not found on your system")
+import opensim
 from pyCGM2.Model.Opensim import opensimIO
 
 

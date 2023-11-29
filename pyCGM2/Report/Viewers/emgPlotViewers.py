@@ -16,13 +16,7 @@ from pyCGM2.Report.Viewers import plotViewers
 from pyCGM2.EMG.emgManager import EmgManager
 from pyCGM2.Report.normativeDatasets import NormativeData
 from pyCGM2.Processing.analysis import Analysis
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 from typing import List, Tuple, Dict, Optional, Union, Callable
 

@@ -12,13 +12,7 @@ from pyCGM2.Nexus import nexusFilters
 from pyCGM2.Nexus import nexusUtils
 from pyCGM2.Nexus import nexusTools
 
-try:
-    import btk
-except:
-    try:
-        from pyCGM2 import btk
-    except:
-        LOGGER.logger.error("[pyCGM2] btk not found on your system")
+import btk
 
 
 
