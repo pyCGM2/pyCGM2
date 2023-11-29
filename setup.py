@@ -207,6 +207,8 @@ setup(name = 'pyCGM2',
                  'Programming Language :: Python :: 3.7',
                  'Programming Language :: Python :: 3.8',
                  'Programming Language :: Python :: 3.9',
+                 'Programming Language :: Python :: 3.10',
+                 'Programming Language :: Python :: 3.11',
                  'Operating System :: Microsoft :: Windows',
                  'Natural Language :: English'],
     #scripts=gen_data_files_forScripts("Apps/ViconApps")
