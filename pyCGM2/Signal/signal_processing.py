@@ -20,12 +20,15 @@ from typing import List, Tuple, Dict, Optional, Union, Callable
 
 def remove50hz(array:np.ndarray, fa:float):
     """
-    Remove the 50Hz signal
+    Removes the 50Hz frequency component from the provided signal array.
 
-    Args
-        array (array(n,n):  array
-        fa (float): sample frequency
-   """
+    Args:
+        array (np.ndarray): The input array containing the signal data.
+        fa (float): Sampling frequency of the signal.
+
+    Returns:
+        np.ndarray: The filtered signal array with the 50Hz component removed.
+    """
     bEmgStop, aEMGStop = signal.butter(
         2, np.array([49.9, 50.1]) / ((fa*0.5)), 'bandstop')
     value = signal.filtfilt(bEmgStop, aEMGStop, array, axis=0)
@@ -34,14 +37,18 @@ def remove50hz(array:np.ndarray, fa:float):
 
 
 def highPass(array:np.ndarray, lowerFreq:float, upperFreq:float, fa:float):
-    """butterworth bandpass filter.
+    """
+    Applies a Butterworth bandpass filter to the input signal.
 
     Args:
-        array (numpy.array(n,n)): array
-        lowerFreq (float): lower frequency
-        upperFreq (float): upper frequency
-        fa (float):  sample frequency
-   """
+        array (np.ndarray): The input array containing the signal data.
+        lowerFreq (float): Lower frequency bound for the bandpass filter.
+        upperFreq (float): Upper frequency bound for the bandpass filter.
+        fa (float): Sampling frequency of the signal.
+
+    Returns:
+        np.ndarray: The bandpass-filtered signal.
+    """
     bEmgHighPass, aEmgHighPass = signal.butter(
         2, np.array([lowerFreq, upperFreq]) / ((fa*0.5)), 'bandpass')
     value = signal.filtfilt(bEmgHighPass, aEmgHighPass,
@@ -52,24 +59,29 @@ def highPass(array:np.ndarray, lowerFreq:float, upperFreq:float, fa:float):
 
 def rectify(array:np.ndarray):
     """
-    rectify a signal ( i.e get absolute values)
+    Rectifies a signal by taking the absolute value of each element.
 
     Args:
-        array (numpy.array(n,n)): array
+        array (np.ndarray): The input array containing the signal data.
 
-   """
+    Returns:
+        np.ndarray: The rectified signal.
+    """
     return np.abs(array)
 
 
 def enveloppe(array:np.ndarray, fc:float, fa:float):
     """
-    Get signal enveloppe from a low pass filter
+    Obtains the envelope of a signal using a low-pass filter.
 
     Args:
-        array (numpy.array(n,n)): array
-        fc (float): cut-off frequency
-        fa (float): sample frequency
-   """
+        array (np.ndarray): The input array containing the signal data.
+        fc (float): Cut-off frequency for the low-pass filter.
+        fa (float): Sampling frequency of the signal.
+
+    Returns:
+        np.ndarray: The envelope of the signal.
+    """
     bEmgEnv, aEMGEnv = signal.butter(2, fc / (fa*0.5), btype='lowpass')
     value = signal.filtfilt(bEmgEnv, aEMGEnv, array, axis=0)
     return value
@@ -78,13 +90,17 @@ def enveloppe(array:np.ndarray, fc:float, fa:float):
 # ---- btkAcq -----
 def markerFiltering(btkAcq:btk.btkAcquisition, markers:List[str], order:int=2, fc:float=6, zerosFiltering:bool=True):
     """
-    Low-pass filtering of all points in an acquisition
+    Applies low-pass filtering to specified markers in a btkAcquisition object.
 
     Args:
-        btkAcq (btk.Acquisition): btk acquisition instance
-        fc (float,Optional): cut-off frequency. Default set to 6 Hz
-        order (int,optional): order of the low-pass filter, Default set to 2
-        zerosFiltering (bool,optional): enable zero filtering, Default set to True
+        btkAcq (btk.btkAcquisition): btk acquisition instance to be filtered.
+        markers (List[str]): List of marker names to be filtered.
+        order (int, optional): Order of the Butterworth filter. Defaults to 2.
+        fc (float, optional): Cut-off frequency for the filter. Defaults to 6 Hz.
+        zerosFiltering (bool, optional): Enable filtering out zeros. Defaults to True.
+
+    Returns:
+        None: The function modifies the btkAcquisition object in place.
     """
 
     def filterZeros(array, b, a):
@@ -145,12 +161,15 @@ def markerFiltering(btkAcq:btk.btkAcquisition, markers:List[str], order:int=2, f
 
 def forcePlateFiltering(btkAcq:btk.btkAcquisition, order:int=4, fc:float=5):
     """
-    Low-pass filtering of Force plate outputs
+    Applies low-pass filtering to force plate outputs in a btkAcquisition object.
 
     Args:
-        btkAcq (btk.Acquisition): btk acquisition instance
-        fc (float,Optional): cut-off frequency. Default set to 5 Hz
-        order (int,optional): order of the low-pass filter, Default set to 4
+        btkAcq (btk.btkAcquisition): btk acquisition instance to be filtered.
+        order (int, optional): Order of the Butterworth filter. Defaults to 4.
+        fc (float, optional): Cut-off frequency for the filter. Defaults to 5 Hz.
+
+    Returns:
+        None: The function modifies the btkAcquisition object in place.
     """
 
     fp = btkAcq.GetAnalogFrequency()
@@ -183,12 +202,16 @@ def forcePlateFiltering(btkAcq:btk.btkAcquisition, order:int=4, fc:float=5):
 
 def arrayLowPassFiltering(valuesArray:np.ndarray, freq:float, order:int=2, fc:float=6):
     """
-    Low-pass filtering of a numpy.array
+    Applies a low-pass filter to a numpy array.
 
     Args:
-        valuesArray (numpy.array(n,n)) array
-        fc (float,Optional): cut-off frequency. Default set to 6 Hz
-        order (int,optional): order of the low-pass filter, Default set to 2
+        valuesArray (np.ndarray): Array of values to be filtered.
+        freq (float): Sampling frequency of the array.
+        order (int, optional): Order of the Butterworth filter. Defaults to 2.
+        fc (float, optional): Cut-off frequency for the filter. Defaults to 6 Hz.
+
+    Returns:
+        np.ndarray: The low-pass-filtered array.
     """
 
 
@@ -204,6 +227,20 @@ def arrayLowPassFiltering(valuesArray:np.ndarray, freq:float, order:int=2, fc:fl
 
 
 def downsample(array:np.ndarray, initFreq:float, targetedFreq:float):
+    """
+    Downsampling a signal from an initial frequency to a targeted frequency.
+
+    Args:
+        array (np.ndarray): Array of values representing the signal.
+        initFreq (float): Initial sampling frequency of the signal.
+        targetedFreq (float): Targeted sampling frequency after downsampling.
+
+    Returns:
+        np.ndarray: The downsampled signal array.
+
+    Raises:
+        ValueError: If the targeted frequency is higher than the initial frequency.
+    """
     if targetedFreq >= initFreq:
         raise ValueError("targeted frequency cannot be over the initial frequency")
         

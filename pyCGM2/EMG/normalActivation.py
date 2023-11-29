@@ -11,12 +11,18 @@ from typing import List, Tuple, Dict, Optional
 
 
 def getNormalBurstActivity(muscle:str, fo:int):
-    """get onsets and offsets of a specific muscle.
+    """
+    Get onsets and offsets of a specific muscle's normal burst activity.
+
+    This function retrieves the normal burst activity for a specified muscle based on the data in 'normalActivation.json'.
+    It calculates the muscle's normal activation timings relative to the stance phase of a gait cycle.
 
     Args:
-        muscle (str): muscle label listed in  normalActivation.json
-        fo (int): foot off frame
+        muscle (str): Muscle label listed in 'normalActivation.json'.
+        fo (int): Foot off frame number in the gait cycle.
 
+    Returns:
+        Tuple[List[int], List[int]]: Two lists containing the start frames and durations of the muscle's burst activities.
     """
 
     normalActivations = files.openJson(
@@ -67,19 +73,22 @@ def getNormalBurstActivity_fromCycles(muscle:str,
                                       end:int, 
                                       apf:int)-> Tuple[List, List]:
     
-    """get onsets and offsets of a specific muscle from .
+    """
+    Get onsets and offsets of a specific muscle's normal burst activity for a given cycle.
+
+    This function calculates the normal burst activity timings for a specified muscle during a specific gait cycle.
+    The muscle's normal activation timings are adjusted based on the cycle's start, foot off, and end frame numbers.
 
     Args:
-        muscle (str): muscle label listed in  normalActivation.json
-        ff (int): first frame of the btk.acquisition
-        begin (int): initial frame of cycle
-        fo (int): foot off frame
-        end (int): final frame of the cycle
-        apf (int): nNumber of analog sample per frame
+        muscle (str): Muscle label listed in 'normalActivation.json'.
+        ff (int): First frame of the btk.Acquisition.
+        begin (int): Initial frame of the gait cycle.
+        fo (int): Foot off frame number within the cycle.
+        end (int): Final frame of the gait cycle.
+        apf (int): Number of analog samples per frame.
 
-     Returns:
-        Tuple[List, List]: starts and durations
-
+    Returns:
+        Tuple[List[int], List[int]]: Two lists containing the start frames and durations of the muscle's burst activities within the cycle.
     """
 
     normalActivations = files.openJson(

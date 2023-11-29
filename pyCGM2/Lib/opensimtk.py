@@ -19,30 +19,33 @@ except:
 
 
 def prepareC3dFiles(DATA_PATH:str, staticFilename=None, dynamicData:List[Tuple[str, Optional[str]]]=None):
-    """ prepare c3d data to opensim processingf.
+    """
+    Prepares C3D files for OpenSim processing.
 
+    This function processes static and dynamic C3D files for use with OpenSim. It converts C3D files to TRC format 
+    and prepares ground reaction force (GRF) data for dynamic trials. For dynamic trials, the function can also 
+    handle the assignment of force plates.
 
     Args:
-        DATA_PATH (str): path to your data
+        DATA_PATH (str): Path to the directory containing C3D files.
 
-    Keyword Arguments:
-        staticFilename (str) : static trial filename
-        dynamicData (List[Tuple[str, Optional[str]]]): list of 2-elements lists composed of the dynamic filename and its assigned force plates
+    Keyword Args:
+        staticFilename (Optional[str]): Filename of the static trial. If provided, the file is converted to TRC format.
+        dynamicData (Optional[List[Tuple[str, Optional[str]]]]): A list of tuples, each containing the filename of a dynamic trial and 
+            an optional string specifying force plate assignments. Each character in the string corresponds to a force plate (e.g., 'XRL'). 
+            'None' or an empty string indicates automatic detection.
 
     Example:
+        >>> prepareC3dFiles(
+                "c:/DATA/",
+                staticFilename="myStatic.c3d",
+                dynamicData=[["gait1.c3d", None], ["gait2.c3d", "XRL"]]
+            )
 
-    e.g : in the snippet below, there are 2 dynamic gait trials. the assigned force plate is detected for *gait1.c3d* automatically. 
-    For *gait2.c3d*, the assigned force plates None for force plate #1, Right for fp#2 and Left for fp#3. 
-    The number of capitals is the number of force plate. 
-
-    .. code-block:: python
-
-        prepareC3dFiles("c:\\DATA\\", 
-            staticFilename="myStatic.c3d",
-            dynamicData=[["gait1.c3d",None], ["gait2.c3d","XRL"]])   
-
-
-
+    Note:
+        In the example, 'gait1.c3d' will have automatic force plate assignment, while 'gait2.c3d' will have 
+        'None' for force plate #1, 'Right' for #2, and 'Left' for #3. The number of characters in the string 
+        should match the number of force plates.
     """
     if staticFilename is not None:
         acq = btkTools.smartReader(DATA_PATH+staticFilename)

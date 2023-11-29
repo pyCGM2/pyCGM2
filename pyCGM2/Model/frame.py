@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ this module gathers two classes (`Node` and `Frame`),
 important for the construction of a model
 
@@ -14,19 +13,21 @@ import math
 import numpy as np
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
+from typing import List, Tuple, Dict, Optional,Union,Any
 
 # convenient pose functions
 
-def angleAxis_TO_rotationMatrix(anglesAxis):
-
-    """Convert angleaxis  to a 3x3 rotation matrix 
+def angleAxis_TO_rotationMatrix(anglesAxis: np.ndarray) -> np.ndarray:
+    """
+    Convert an angle-axis representation to a 3x3 rotation matrix.
 
     Args:
-        anglesAxis (np.array(3)): global axis at a specific frame
+        anglesAxis (np.ndarray): An array of shape (3,) representing the global axis at a specific frame.
 
     Returns:
-        np.array(3,3): rotation matrix
-    """    
+        np.ndarray: A 3x3 rotation matrix.
+    """
+
 
     rot = [[0] * 3 for x in range(3)]
     fi = math.sqrt(sum(map(lambda n: n ** 2, anglesAxis)))
@@ -56,16 +57,17 @@ def angleAxis_TO_rotationMatrix(anglesAxis):
 
 
 
-def rotationMatrix_TO_quaternion(RotMat):
-    
+def rotationMatrix_TO_quaternion(RotMat: np.ndarray) -> np.ndarray:
     """
-    Calculates the quaternion representation from a rotation matrix.
+    Converts a rotation matrix to its quaternion representation.
 
     Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes article "Quaternion Calculus and Fast Animation".
 
-   Args:
-      RotMat(array(3,3)):  Rotation matrix
+    Args:
+        RotMat (np.ndarray): A 3x3 rotation matrix.
 
+    Returns:
+        np.ndarray: Quaternion representation of the rotation matrix.
     """
 
     quaternion = np.zeros((4))
@@ -100,18 +102,17 @@ def rotationMatrix_TO_quaternion(RotMat):
     return quaternion
 
 
-def quaternion_TO_angleAxis(quaternion):
-
+def quaternion_TO_angleAxis(quaternion: np.ndarray) -> np.ndarray:
     """
-    Calculates the AngleAxis representation from a quaternion
+    Converts a quaternion to an angle-axis representation.
 
+    Args:
+        quaternion (np.ndarray): A 4-element array representing a quaternion.
 
-   Args:
-       quaternion(array(4)): a quaternion
-
-
-
+    Returns:
+        np.ndarray: Angle-axis representation of the quaternion.
     """
+
     if quaternion.ndim != 1: 
         raise Exception("[pyCGM2] - wrong input array dimensions, only 1d")
 
@@ -145,7 +146,17 @@ def quaternion_TO_angleAxis(quaternion):
 
     # return AngleAxis
 
-def rotationMatrix_TO_angleAxis(RotMat):
+def rotationMatrix_TO_angleAxis(RotMat: np.ndarray) -> np.ndarray:
+    """
+    Converts a rotation matrix to an angle-axis representation.
+
+    Args:
+        RotMat (np.ndarray): A 3x3 rotation matrix.
+
+    Returns:
+        np.ndarray: Angle-axis representation of the rotation matrix.
+    """
+
 
 
     quaternion = rotationMatrix_TO_quaternion(RotMat)
@@ -153,7 +164,17 @@ def rotationMatrix_TO_angleAxis(RotMat):
     return AngleAxis
 
 
-def angleAxis_TO_quaternion(anglesAxis):
+def angleAxis_TO_quaternion(anglesAxis: np.ndarray) -> np.ndarray:
+    """
+    Converts an angle-axis representation to a quaternion.
+
+    Args:
+        anglesAxis (np.ndarray): An array of shape (3,) representing the angle-axis.
+
+    Returns:
+        np.ndarray: Quaternion representation of the angle-axis.
+    """
+
 
     RotMat = angleAxis_TO_rotationMatrix(anglesAxis)
     quaternion = rotationMatrix_TO_quaternion(RotMat)
@@ -161,7 +182,17 @@ def angleAxis_TO_quaternion(anglesAxis):
     return quaternion
 
 
-def quaternion_TO_rotationMatrix(quaternion):
+def quaternion_TO_rotationMatrix(quaternion: np.ndarray) -> np.ndarray:
+    """
+    Converts a quaternion to a rotation matrix.
+
+    Args:
+        quaternion (np.ndarray): A 4-element array representing a quaternion.
+
+    Returns:
+        np.ndarray: Rotation matrix representation of the quaternion.
+    """
+
     
     angleAxis = quaternion_TO_angleAxis(quaternion)
     rotMat = angleAxis_TO_rotationMatrix(angleAxis)
@@ -169,19 +200,19 @@ def quaternion_TO_rotationMatrix(quaternion):
     return rotMat
 
 
-def setFrameData(a1, a2, sequence):
+def setFrameData(a1: np.ndarray, a2: np.ndarray, sequence: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
-    Set axes and rotation matrix of a coordinate system from 2 vectors and a sequence
-
-    The sequence can be all combinaison of `XYZ`.
-    If the second letter is prefixed by `i`, the opposite vector to the cross product a1, a2 is considered
+    Sets the axes and rotation matrix of a coordinate system from two vectors and a sequence.
 
     Args:
-       a1(array(1,3)):  first vector
-       a2(array(1,3)):  second vector
-       sequence(str):  construction sequence (XYZ, XYiZ,...)
+        a1 (np.ndarray): First vector of shape (3,).
+        a2 (np.ndarray): Second vector of shape (3,).
+        sequence (str): Construction sequence (e.g., 'XYZ', 'XYiZ').
 
+    Returns:
+        Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: The x-axis, y-axis, z-axis, and rotation matrix.
     """
+
 
     if sequence == "XYZ" or sequence == "XYiZ":
         if sequence == "XYiZ":
@@ -244,14 +275,11 @@ def setFrameData(a1, a2, sequence):
 
 class Node(object):
     """
-    A node is a local position of a 3D point in a coordinate system
-
-    Note:
-        Automatically, the suffix "_node" ends the node label
+    Represents a local position of a 3D point in a coordinate system.
 
     Args:
-       label(str):  desired label of the node
-       desc(str,Optional):  description
+        label (str): The desired label of the node.
+        desc (str, optional): A description of the node.
     """
 
     def __init__(self, label, desc=""):
@@ -260,70 +288,88 @@ class Node(object):
         self.m_local = np.zeros((1, 3))
         self.m_desc = desc
 
-    def computeLocal(self, rot, t):
+    def computeLocal(self, rot: np.ndarray, t: np.ndarray) -> None:
         """
-        Compute local position from global position
+        Computes the local position of the node from its global position using the provided rotation matrix and translation vector.
 
         Args:
-            rot(array(3,3)):  a rotation matrix
-            t(array((1,3))):  a translation vector
-
+            rot (np.ndarray): A 3x3 rotation matrix.
+            t (np.ndarray): A 3-element translation vector.
         """
+
         self.m_local = np.dot(rot.T, (self.m_global-t))
 
-    def computeGlobal(self, rot, t):
+    def computeGlobal(self, rot: np.ndarray, t: np.ndarray) -> None:
         """
-        Compute global position from local
+        Computes the global position of the node from its local position using the provided rotation matrix and translation vector.
 
         Args:
-            rot(array((3,3)):  a rotation matrix
-            t(array((1,3)):  a translation vector
-
+            rot (np.ndarray): A 3x3 rotation matrix.
+            t (np.ndarray): A 3-element translation vector.
         """
+
 
         self.m_global = np.dot(rot, self.m_local) + t
 
-    def setDescription(self, description):
+    def setDescription(self, description: str) -> None:
         """
-        Set description of the node
+        Sets a description for the node.
 
         Args:
-            description(str):  description
+            description (str): The description to set for the node.
         """
+
         self.m_desc = description
 
-    def getLabel(self):
+    def getLabel(self) -> str:
         """
-        Get the node label
+        Returns the label of the node.
+
+        Returns:
+            str: The label of the node.
         """
+
         label = self.m_name
         return label[0:label.find("_node")]
 
-    def getDescription(self):
+    def getDescription(self) -> str:
         """
-        Get the node description
+        Returns the description of the node.
+
+        Returns:
+            str: The description of the node.
         """
+
 
         return self.m_desc
 
-    def getLocal(self):
+    def getLocal(self) -> np.ndarray:
         """
-        Get the local coordinates  of the node
+        Returns the local coordinates of the node.
+
+        Returns:
+            np.ndarray: The local coordinates of the node.
         """
+
 
         return self.m_local
 
-    def getGlobal(self):
+    def getGlobal(self) -> np.ndarray:
         """
-        Get the global coordinates  of the node
+        Returns the global coordinates of the node.
+
+        Returns:
+            np.ndarray: The global coordinates of the node.
         """
+
         return self.m_global
 
 
 class Frame(object):
     """
-    A `Frame` represents a coordinate system
+    Represents a coordinate system at a specific time, including rotation matrix and translation vectors.
     """
+
 
     def __init__(self):
 
@@ -338,7 +384,13 @@ class Frame(object):
 
         self._nodes = []
 
-    def constructFromAnglesAxis(self,angleAxisValues ):
+    def constructFromAnglesAxis(self, angleAxisValues: np.ndarray) -> None:
+        """
+        Constructs the frame from angle-axis values.
+
+        Args:
+            angleAxisValues (np.ndarray): An array representing the angle-axis values.
+        """
         
         self._anglesAxis = angleAxisValues
         self._matrixRot = angleAxis_TO_rotationMatrix(angleAxisValues)
@@ -348,7 +400,14 @@ class Frame(object):
         self.m_axisZ = self._matrixRot[:, 2]
 
 
-    def constructFromQuaternion(self,quaternionValues):
+    def constructFromQuaternion(self, quaternionValues: np.ndarray) -> None:
+        """
+        Constructs the frame from quaternion values.
+
+        Args:
+            quaternionValues (np.ndarray): An array representing the quaternion values.
+        """
+
 
         self._quaternion = quaternionValues
         self._matrixRot = quaternion_TO_rotationMatrix(quaternionValues) 
@@ -359,7 +418,16 @@ class Frame(object):
         self.m_axisZ = self._matrixRot[:, 2]
         
         
-    def setAxes(self,x,y,z):
+    def setAxes(self, x: np.ndarray, y: np.ndarray, z: np.ndarray) -> None:
+        """
+        Sets the axes of the frame.
+
+        Args:
+            x (np.ndarray): The x-axis of the frame.
+            y (np.ndarray): The y-axis of the frame.
+            z (np.ndarray): The z-axis of the frame.
+        """
+
 
         self.m_axisX = x
         self.m_axisY = y
@@ -369,20 +437,24 @@ class Frame(object):
         self._matrixRot[:, 1] = y
         self._matrixRot[:, 2] = z
 
-    def getRotation(self):
+    def getRotation(self) -> np.ndarray:
         """
-        Get rotation matrix
+        Returns the rotation matrix of the frame.
 
         Returns:
-            array((3,3):  a rotation matrix
-
+            np.ndarray: The rotation matrix.
         """
+
         return self._matrixRot
 
-    def getAngleAxis(self):
+    def getAngleAxis(self) -> np.ndarray:
         """
-        Get the angle axis
+        Returns the angle-axis representation of the frame's rotation.
+
+        Returns:
+            np.ndarray: The angle-axis representation.
         """
+
         if self._anglesAxis is not None:
             return self._anglesAxis
         else: 
@@ -390,29 +462,38 @@ class Frame(object):
 
             return axisAngle
 
-    def getQuaternion(self):
+    def getQuaternion(self) -> np.ndarray:
         """
-        Get the quaternion
+        Returns the quaternion representation of the frame's rotation.
+
+        Returns:
+            np.ndarray: The quaternion representation.
         """
+
         if self._quaternion is not None:
             return self._quaternion
         else: 
             quaternion = rotationMatrix_TO_quaternion(self._matrixRot)
             return quaternion
 
-    def getTranslation(self):
+    def getTranslation(self) -> np.ndarray:
         """
-        Get translation vector
+        Returns the translation vector of the frame.
+
+        Returns:
+            np.ndarray: The translation vector.
         """
+
         return self._translation
 
-    def setRotation(self, R):
+    def setRotation(self, R: np.ndarray) -> None:
         """
-        Set the rotation matrix
+        Sets the rotation matrix for the frame.
 
         Args:
-           R(array(3,3):  a rotation matrix
+            R (np.ndarray): A 3x3 rotation matrix.
         """
+
 
         self._matrixRot = R
 
@@ -423,22 +504,24 @@ class Frame(object):
         self._quaternion = rotationMatrix_TO_quaternion(self._matrixRot)
         self._anglesAxis = rotationMatrix_TO_angleAxis(self._matrixRot)
 
-    def setTranslation(self, t):
+    def setTranslation(self, t: np.ndarray) -> None:
         """
-        Set the translation vector
+        Sets the translation vector for the frame.
 
         Args:
-           t(array(3,)):  a translation vector
+            t (np.ndarray): A translation vector.
         """
+
         self._translation = t
 
-    def updateAxisFromRotation(self, R):
+    def updateAxisFromRotation(self, R: np.ndarray) -> None:
         """
-        Update the rotation matrix
+        Updates the axes of the frame based on a new rotation matrix.
 
         Args:
-           R(array(3,3):  a rotation matrix
+            R (np.ndarray): A 3x3 rotation matrix.
         """
+
         self.m_axisX = R[:, 0]
         self.m_axisY = R[:, 1]
         self.m_axisZ = R[:, 2]
@@ -448,14 +531,15 @@ class Frame(object):
         self._quaternion = rotationMatrix_TO_quaternion(self._matrixRot)
         self._anglesAxis = rotationMatrix_TO_angleAxis(self._matrixRot)
 
-    def update(self, R, t):
+    def update(self, R: np.ndarray, t: np.ndarray) -> None:
         """
-        Update both the rotation matrix and the translation vector
+        Updates both the rotation matrix and translation vector of the frame.
 
         Args:
-           R(array(3,3):  a rotation matrix
-           t(array(3,)):  a translation vector
+            R (np.ndarray): A 3x3 rotation matrix.
+            t (np.ndarray): A translation vector.
         """
+
 
         self.m_axisX = R[:, 0]
         self.m_axisY = R[:, 1]
@@ -466,17 +550,17 @@ class Frame(object):
         self._quaternion = rotationMatrix_TO_quaternion(self._matrixRot)
         self._anglesAxis = rotationMatrix_TO_angleAxis(self._matrixRot)
 
-    def addNode(self, nodeLabel, position, positionType="Global", desc=""):
+    def addNode(self, nodeLabel: str, position: np.ndarray, positionType: str = "Global", desc: str = "") -> None:
         """
-        Append a `Node` to a Frame
+        Appends a Node to the Frame.
 
         Args:
-            nodeLabel(str):  node label
-            position(array(3,)):  a translation vector
-            positionType(str,Optional):  two choice Global or Local
-            desc(str,Optional):  description
-
+            nodeLabel (str): The label of the node.
+            position (np.ndarray): The position of the node.
+            positionType (str, optional): Specifies if the position is global or local. Defaults to "Global".
+            desc (str, optional): Description of the node.
         """
+
         #TODO : use an Enum for the argment positionType
 
         LOGGER.logger.debug("new node (%s) added " % nodeLabel)
@@ -521,24 +605,30 @@ class Frame(object):
                 raise Exception("positionType not Known (Global or Local")
             self._nodes.append(node)
 
-    def getNode_byIndex(self, index):
+    def getNode_byIndex(self, index: int) -> Node:
         """
-        Get a `node` from its index
+        Returns a Node by its index.
 
         Args:
-            index(int):  index of the node within the list
+            index (int): The index of the node in the frame's node collection.
 
+        Returns:
+            Node: The Node instance at the specified index.
         """
+
         return self._nodes[index]
 
-    def getNode_byLabel(self, label):
+    def getNode_byLabel(self, label: str) -> Node:
         """
-        Get a `node` from its label
+        Returns a Node by its label.
 
-         Args:
-            label(str):  the node label
+        Args:
+            label (str): The label of the node.
 
+        Returns:
+            Node: The Node instance with the specified label.
         """
+
 
         for nodeIt in self._nodes:
             if str(label+"_node") == nodeIt.m_name:
@@ -550,10 +640,17 @@ class Frame(object):
 
         return False
 
-    def getNodeLabels(self, display=True):
+    def getNodeLabels(self, display: bool = True) -> List[str]:
         """
-        Display all node labels
+        Returns the labels of all nodes in the frame.
+
+        Args:
+            display (bool, optional): If True, prints the node labels. Defaults to True.
+
+        Returns:
+            List[str]: A list of node labels.
         """
+
         labels = []
         for nodeIt in self._nodes:
             labels.append(nodeIt.m_name[:-5])
@@ -563,26 +660,33 @@ class Frame(object):
 
         return labels
 
-    def eraseNodes(self):
+    def eraseNodes(self) -> None:
         """
-        Erase all nodes
+        Erases all nodes from the frame.
         """
+
         self._nodes = []
 
     def getNodes(self):
         """
-        Return all node instances
-        """
+        Retrieves all Node instances from the frame.
 
+        Returns:
+            List[Node]: A list of Node instance
+        """
         return self._nodes
 
-    def isNodeExist(self, nodeLabel):
+    def isNodeExist(self, nodeLabel: str) -> bool:
         """
-        Check if a node exists from its label
+        Checks if a node exists in the frame based on its label.
 
         Args:
-            nodeLabel (str): the node label
+            nodeLabel (str): The label of the node to check.
+
+        Returns:
+            bool: True if the node exists, False otherwise.
         """
+
 
         flag = False
         for nodeIt in self._nodes:
@@ -598,13 +702,17 @@ class Frame(object):
 
         return flag
 
-    def getNodeIndex(self, nodeLabel):
+    def getNodeIndex(self, nodeLabel: str) -> int:
         """
-        Get the node index
+        Retrieves the index of a node in the frame based on its label.
 
         Args:
-            nodeLabel (str): the node label
+            nodeLabel (str): The label of the node.
+
+        Returns:
+            int: The index of the node in the frame's node list.
         """
+
 
         if self.isNodeExist(nodeLabel):
             i = 0
@@ -617,16 +725,17 @@ class Frame(object):
         else:
             raise Exception("[pyCGM2] node label doesn t exist")
 
-    def updateNode(self, nodeLabel, localArray, globalArray, desc=""):
-        """Update a node
+    def updateNode(self, nodeLabel: str, localArray: np.ndarray, globalArray: np.ndarray, desc: str = "") -> None:
+        """
+        Updates a node's local and global position and description.
 
         Args:
-            nodeLabel (str): the node label
-            localArray (array(3)): local position
-            globalArray (array(3)): global position
-            desc (str,Optional): description
-
+            nodeLabel (str): The label of the node to update.
+            localArray (np.ndarray): The local position of the node.
+            globalArray (np.ndarray): The global position of the node.
+            desc (str, optional): The description of the node. Defaults to an empty string.
         """
+
 
 
         index = self.getNodeIndex(nodeLabel)
@@ -635,13 +744,13 @@ class Frame(object):
         self._nodes[index].m_local = localArray
         self._nodes[index].m_desc = desc
 
-    def copyNode(self, nodeLabel, nodeToCopy):
+    def copyNode(self, nodeLabel: str, nodeToCopy: str) -> None:
         """
-        Copy a node and add it or update a existant node
+        Copies the values of one node to another, either creating a new node or updating an existing one.
 
         Args:
-            nodeLabel (str): the node label
-            nodeToCopy (str): the label of the node to copy
+            nodeLabel (str): The label of the node where the values are to be copied.
+            nodeToCopy (str): The label of the node from which to copy the values.
         """
 
         indexToCopy = self.getNodeIndex(nodeToCopy)
@@ -657,12 +766,15 @@ class Frame(object):
         else:
             self.addNode(nodeLabel, globalArray, position="Global", desc=desc)
 
-    def getGlobalPosition(self, nodeLabel):
-        """Return the global position
+    def getGlobalPosition(self, nodeLabel: str) -> np.ndarray:
+        """
+        Returns the global position of a node.
 
         Args:
-            nodeLabel (str): the node label
+            nodeLabel (str): The label of the node.
 
+        Returns:
+            np.ndarray: The global position of the node.
         """
 
         node = self.getNode_byLabel(nodeLabel)

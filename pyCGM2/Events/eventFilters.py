@@ -17,28 +17,37 @@ from typing import List, Tuple, Dict, Optional,Union
 
 class EventFilter(object):
     """
-    Event filter to handle an event procedure
+    Event filter to handle an event procedure.
+
+    This filter is designed to detect foot contact events within a motion capture acquisition. It uses a specified event procedure to determine the timings of these events.
+
+    Args:
+        procedure (EventProcedure): An event procedure instance used for detecting foot contact events.
+        acq (btk.btkAcquisition): A BTK acquisition instance containing motion capture data.
     """
     def __init__(self,procedure:EventProcedure,acq:btk.btkAcquisition):
-        """Constructor
-
-        Args:
-            procedure (EventProcedure):an event procedure instance
-            acq (btk.btkAcquisition): a btk acquisition instance
-
-        """
+        """Initializes the EventFilter with a given event procedure and acquisition data"""
 
         self.m_aqui = acq
         self.m_procedure = procedure
         self.m_state = None
 
     def getState(self):
-        """ return the state of the filter"""
+        """
+        Return the state of the filter.
+
+        Indicates whether the event detection procedure was successful or not.
+
+        Returns:
+            bool: The state of the filter, True if event detection was successful, otherwise False.
+        """
         return self.m_state
 
     def detect(self):
         """
-            Run the motion filter
+        Run the event detection procedure.
+
+        This method applies the event detection procedure to the acquisition data to identify foot strike and foot off events. Detected events are added to the acquisition instance.
         """
         pf = self.m_aqui.GetPointFrequency()
 

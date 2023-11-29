@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Model/Opensim
-#APIDOC["Draft"]=False
-#--end--
 
 """
 This module contains  Filters and procedures used as interface for working with

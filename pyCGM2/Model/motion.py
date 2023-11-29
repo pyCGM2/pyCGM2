@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Model
-#APIDOC["Draft"]=False
-#--end--
 """
 This module contains pose algorithms
 """
@@ -10,13 +6,28 @@ import numpy as np
 import scipy as sp
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-def segmentalLeastSquare(A, B):
-    """Compute the transformation between two coordinate systems using SVD.
+
+from typing import List, Tuple, Dict, Optional
+
+def segmentalLeastSquare(A: np.ndarray, B: np.ndarray) -> Tuple[np.ndarray, np.ndarray, float, np.ndarray, np.ndarray]:
+    """
+    Compute the transformation between two sets of coordinates using Singular Value Decomposition (SVD).
+
+    This function calculates the rotation matrix, translation vector, root mean square error (RMSE), 
+    and the centroids of both sets of coordinates. It uses SVD to optimize the least square problem
+    for the transformation.
 
     Args:
-        A (numpy.array(n,3)) - Coordinates [x,y,z] of at least three markers
-        B (numpy.array(n,3)) - Coordinates [x,y,z] of at least three markers
+        A (numpy.ndarray): An array of shape (n, 3) representing coordinates [x,y,z] of at least three markers.
+        B (numpy.ndarray): An array of shape (n, 3) representing coordinates [x,y,z] of at least three markers.
 
+    Returns:
+        tuple: A tuple containing:
+            - R (numpy.ndarray): The rotation matrix.
+            - L (numpy.ndarray): The translation vector.
+            - RMSE (float): The root mean square error.
+            - Am (numpy.ndarray): The centroid of the first set of coordinates.
+            - Bm (numpy.ndarray): The centroid of the second set of coordinates.
     """
 
     Am = np.mean(A, axis=0)           # centroid of m1

@@ -1,18 +1,18 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Model
-#APIDOC["Draft"]=False
-#--end--
+
 
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-def updateFromcustomMp(model, custom_mp):
+from pyCGM2.Model.model import Model
+from typing import List, Tuple, Dict, Optional,Union,Any
+
+def updateFromcustomMp(model:Model, custom_mp:Dict):
     """
-    update the anthropometric parameters fo your model
+    Update the anthropometric parameters of the model with custom measurements.
 
     Args:
-        model (pyCGM2.Model): a model instance.
-        custom_mp (dict): mp from the file mp.settings
+        model (Model): An instance of a pyCGM2 Model.
+        custom_mp (dict): Anthropometric parameters from the file mp.settings.
     """
     for segment in model.m_segmentCollection:
         name = segment.name
@@ -51,11 +51,12 @@ def updateFromcustomMp(model, custom_mp):
 
 class Bsp(object):
     """
-        Body Segment Parameter of the lower limb according Dempster 1995
+    the Body Segment Parameters (BSP)  according to Dempster 1995.
 
-        **Reference**
 
-        Dempster. (1955). Body Segment Parameter Data for 2-D Studies
+    **Reference**
+
+    Dempster. (1955). Body Segment Parameter Data for 2-D Studies
 
     """
     # TODO: Improve implementation in order to consider different body sement parameter table.
@@ -109,14 +110,18 @@ class Bsp(object):
     TABLE["Head"]["inertia"] = np.array([  (0.587*0.75)*100.0 ,(0.587*0.75)*100.0, 0.0]) # sagittal - transversal - longitudinal
 
     @classmethod
-    def setParameters(cls, bspSegmentLabel,segmentLength, bodymass):
+    def setParameters(cls, bspSegmentLabel: str, segmentLength: float, bodymass: float) -> tuple:
         """
-        Compute body parameter of a selected lower limb segment
+        Compute body parameters for a selected lower limb segment.
 
         Args:
-           bspSegmentLabel (str): segment label defined in the class object `TABLE`
-           segmentLength (double): length of the segment
-           bodymass (double): mass of the subject
+            bspSegmentLabel (str): Segment label defined in the class object `TABLE`.
+            segmentLength (float): Length of the segment.
+            bodymass (float): Mass of the subject.
+    
+        Returns:
+            tuple: Calculated mass, center of mass, and inertia tensor components for the segment.
+
         """
         # TODO Pelvis
         # % Length = distance from midpoint of hip joint centres to junction between L4 and L5. (see Winter/Dempster)
@@ -141,21 +146,12 @@ class Bsp(object):
 
         return (mass,com,Ixx,Iyy,Izz )
 
-
-
-
-
-    def __init__(self,iModel):
-        """
-        Args:
-           iModel (pyCGM2.Model.CGM2.Model): pyCGM2.Model.CGM2.Model instance
-
-        """
+    def __init__(self,iModel:Model):
         self.m_model = iModel
 
     def compute(self):
         """
-        Compute body segment parameters of a Model
+        Compute body segment parameters for the model based on Dempster's 1955 body segment parameter data.
         """
 
         bodymass =  self.m_model.mp["Bodymass"]

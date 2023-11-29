@@ -5,20 +5,30 @@ from pyCGM2.IMU import imu
 from typing import List, Tuple, Dict, Optional,Union
 
 class RelativeImuAnglesProcedure(object):
+    """
+    Base class for procedures to compute relative angles between two IMUs.
+
+    This class serves as a foundation for implementing specific procedures that calculate the relative orientation 
+    between two IMU sensors. It can be extended to use different methods of calculating these angles.
+    """
     def __init__(self):
         self.m_fixEuler =  True
         pass
 
 class RelativeAnglesProcedure(RelativeImuAnglesProcedure):
 
-    """procedure to compute angle between 2 Imu
+    """
+    Procedure to compute angles between two IMUs.
+
+    This class calculates the relative orientation between two IMUs using specified angle representation and Euler sequence.
 
     Args:
-        representation (str, optional): angle representation. Defaults to "Euler".
-        eulerSequence (str, optional): Euler sequence. Defaults to "XYZ".
-    """ 
+        representation (str, optional): Angle representation. Defaults to "Euler".
+        eulerSequence (str, optional): Euler sequence to be used for angle calculation. Defaults to "XYZ".
+    """
 
     def __init__(self,representation="Euler", eulerSequence="XYZ"):
+        """Initializes the RelativeAnglesProcedure with the specified angle representation and Euler sequence."""
         super(RelativeAnglesProcedure, self).__init__()
 
         self.m_representation = representation
@@ -26,16 +36,17 @@ class RelativeAnglesProcedure(RelativeImuAnglesProcedure):
 
 
     def compute(self, imuInstance1:imu.Imu, imuInstance2:imu.Imu)->np.ndarray:
-        """compute the procedure
+        """
+        Compute the relative angles between two IMU instances.
+
+        The method calculates the relative orientation of one IMU with respect to another and converts it into angles based on the specified representation and Euler sequence.
 
         Args:
-            imuInstance1 (imu.Imu): an imu instance
-            imuInstance2 (imu.Imu): an imu instance
-
-
+            imuInstance1 (imu.Imu): The first IMU instance.
+            imuInstance2 (imu.Imu): The second IMU instance.
 
         Returns:
-            np.ndarray: angles
+            np.ndarray: Array of angles representing the relative orientation between the two IMUs for each frame. The array shape is (nFrames, 3), where nFrames is the number of frames.
         """
 
         motion1 = imuInstance1.getMotion()

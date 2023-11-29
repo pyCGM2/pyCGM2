@@ -1,5 +1,5 @@
 """
-Module containing classed and convenient function for dealing with a Vicon Skeleton File ( vsk)
+Module containing classed and convenient functions for dealing with a Vicon Skeleton File ( vsk)
 
 """
 
@@ -12,11 +12,13 @@ from pyCGM2.Utils import files
 from typing import List, Tuple, Dict, Optional,Union
 
 def getVskFiles(path:str):
-    """return vsk files detected in a folder
+    """Returns vsk files detected in a folder.
 
     Args:
-        path (str): folder path
+        path (str): Folder path.
 
+    Returns:
+        str: The first vsk file found in the specified folder.
     """
 
     path = path[:-1] if path[-1:]=="\\" else path
@@ -28,10 +30,10 @@ def getVskFiles(path:str):
 
 
 def checkSetReadOnly(vskfilename:str):
-    """check of vsk is in read-only mode
+    """Checks if a vsk file is in read-only mode and modifies it if necessary.
 
     Args:
-        vskfilename (str): subject name
+        vskfilename (str): Name of the vsk file.
     """
     file0 = open(vskfilename,'r')
     content = file0.read()
@@ -49,10 +51,10 @@ def checkSetReadOnly(vskfilename:str):
 
 
 class Vsk(object):
-    """ class for handling vsk file
+    """Class for handling vsk files.
 
     Args:
-        file (str): name of the vsk file
+        file (str): Name of the vsk file.
     """
 
     def __init__(self,file:str):
@@ -69,10 +71,13 @@ class Vsk(object):
 
 
     def getStaticParameterValue(self, label:str):
-        """return value of a given parameter
+        """Returns the value of a given static parameter from the vsk file.
 
         Args:
-            label (str): name of the desired parameter
+            label (str): Name of the desired parameter.
+
+        Returns:
+            The value of the specified static parameter.
         """
 
         staticParameters = self.m_soup.find_all('StaticParameter')
@@ -87,15 +92,14 @@ class Vsk(object):
 
 
 def getFromVskSubjectMp(vskInstance:Vsk, resetFlag:bool=False)->Tuple[Dict,Dict]:
-    """return CGM anthropometric data ( mp data) of a pyCGM2.Eclipse.Vsk instance
+    """Returns CGM anthropometric data (mass parameters) of a pyCGM2.Eclipse.Vsk instance.
 
     Args:
-        vskInstance (Vsk): a vsk instance
-        resetFlag (bool,optional): zero optional parameters. Default set to False
+        vskInstance (Vsk): A vsk instance.
+        resetFlag (bool, default=False): Whether to zero optional parameters.
 
     Returns:
-       Tuple[dict,dict]: required and optional mass parameters
-    
+        Tuple[Dict, Dict]: Required and optional mass parameters.
     """
 
     required_mp={

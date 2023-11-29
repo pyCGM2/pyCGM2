@@ -26,85 +26,45 @@ def detectStart_fromThreshold(values,reference, type = "lower",epsilon=0.05,firs
 
 # ----------------detecta package------------------------------------------
 def detect_cusum(x:np.ndarray, threshold:int=1, drift:int=0, ending:bool=False, show:bool=True, ax:Optional[plt.Axes]=None):
+    """
+    Cumulative sum algorithm (CUSUM) to detect abrupt changes in data.
 
+    Args:
+        x (np.ndarray): Data in which to detect changes.
+        threshold (int, optional): Amplitude threshold for the change in the data. Default is 1.
+        drift (int, optional): Drift term that prevents any change in the absence of change. Default is 0.
+        ending (bool, optional): If True, estimates when the change ends. If False, does not. Default is False.
+        show (bool, optional): If True, plots data in matplotlib figure. If False, does not. Default is True.
+        ax (plt.Axes, optional): A matplotlib Axes instance for the plot. Default is None.
 
-    """Cumulative sum algorithm (CUSUM) to detect abrupt changes in data. ([BMC](https://github.com/demotu/BMC))
+    Returns:
+        tuple: A tuple containing:
+            - ta (np.ndarray): Alarm time (index of when the change was detected).
+            - tai (np.ndarray): Index of when the change started.
+            - taf (np.ndarray): Index of when the change ended (if `ending` is True).
+            - amp (np.ndarray): Amplitude of changes (if `ending` is True).
 
-    Parameters
-    ----------
-    x : 1D array_like
-        data.
-    threshold : positive number, optional (default = 1)
-        amplitude threshold for the change in the data.
-    drift : positive number, optional (default = 0)
-        drift term that prevents any change in the absence of change.
-    ending : bool, optional (default = False)
-        True (1) to estimate when the change ends; False (0) otherwise.
-    show : bool, optional (default = True)
-        True (1) plots data in matplotlib figure, False (0) don't plot.
-    ax : a matplotlib.axes.Axes instance, optional (default = None).
+    Notes:
+        - Tuning of the CUSUM algorithm according to Gustafsson (2000): Start with a very large `threshold`. Choose `drift` to half the expected change, then adjust so that g = 0 more than 50% of the time. Set the `threshold` for the desired false alarm rate or detection delay. Decrease `drift` for faster detection, increase for fewer false alarms.
+        - By default, repeated sequential changes are not deleted. Set `ending` to True to delete them.
+        - See the referenced IPython Notebook for more information.
 
-    Returns
-    -------
-    ta : 1D array_like [indi, indf], int
-        alarm time (index of when the change was detected).
-    tai : 1D array_like, int
-        index of when the change started.
-    taf : 1D array_like, int
-        index of when the change ended (if `ending` is True).
-    amp : 1D array_like, float
-        amplitude of changes (if `ending` is True).
+    References:
+        - Gustafsson (2000) Adaptive Filtering and Change Detection.
+        - [CUSUM Notebook](https://github.com/demotu/detecta/blob/master/docs/detect_cusum.ipynb)
 
-    Notes
-    -----
-    Tuning of the CUSUM algorithm according to Gustafsson (2000)[1]_:
-    Start with a very large `threshold`.
-    Choose `drift` to one half of the expected change, or adjust `drift` such
-    that `g` = 0 more than 50% of the time.
-    Then set the `threshold` so the required number of false alarms (this can
-    be done automatically) or delay for detection is obtained.
-    If faster detection is sought, try to decrease `drift`.
-    If fewer false alarms are wanted, try to increase `drift`.
-    If there is a subset of the change times that does not make sense,
-    try to increase `drift`.
+    Examples:
+        >>> x = np.random.randn(300)/5
+        >>> x[100:200] += np.arange(0, 4, 4/100)
+        >>> ta, tai, taf, amp = detect_cusum(x, 2, .02, True, True)
+        >>> x = np.random.randn(300)
+        >>> x[100:200] += 6
+        >>> detect_cusum(x, 4, 1.5, True, True)
+        >>> x = 2*np.sin(2*np.pi*np.arange(0, 3, .01))
+        >>> ta, tai, taf, amp = detect_cusum(x, 1, .05, True, True)
 
-    Note that by default repeated sequential changes, i.e., changes that have
-    the same beginning (`tai`) are not deleted because the changes were
-    detected by the alarm (`ta`) at different instants. This is how the
-    classical CUSUM algorithm operates.
-
-    If you want to delete the repeated sequential changes and keep only the
-    beginning of the first sequential change, set the parameter `ending` to
-    True. In this case, the index of the ending of the change (`taf`) and the
-    amplitude of the change (or of the total amplitude for a repeated
-    sequential change) are calculated and only the first change of the repeated
-    sequential changes is kept. In this case, it is likely that `ta`, `tai`,
-    and `taf` will have less values than when `ending` was set to False.
-
-    See this IPython Notebook [2]_.
-
-    References
-    ----------
-    .. [1] Gustafsson (2000) Adaptive Filtering and Change Detection.
-    .. [2] https://github.com/demotu/detecta/blob/master/docs/detect_cusum.ipynb
-
-    Examples
-    --------
-    >>> x = np.random.randn(300)/5
-    >>> x[100:200] += np.arange(0, 4, 4/100)
-    >>> ta, tai, taf, amp = detect_cusum(x, 2, .02, True, True)
-
-    >>> x = np.random.randn(300)
-    >>> x[100:200] += 6
-    >>> detect_cusum(x, 4, 1.5, True, True)
-
-    >>> x = 2*np.sin(2*np.pi*np.arange(0, 3, .01))
-    >>> ta, tai, taf, amp = detect_cusum(x, 1, .05, True, True)
-
-    Version history
-    ---------------
-    '1.0.5':
-        Part of the detecta module - https://pypi.org/project/detecta/
+    Version history:
+        - '1.0.5': Part of the detecta module - [Detecta PyPI](https://pypi.org/project/detecta/)
     """
 
     x = np.atleast_1d(x).astype('float64')
@@ -211,89 +171,36 @@ def detect_cusum(x:np.ndarray, threshold:int=1, drift:int=0, ending:bool=False, 
 
 def detect_onset(x, threshold=0, n_above=1, n_below=0,
                  threshold2=None, n_above2=1, show=False, ax=None):
-    """Detects onset in data based on amplitude threshold.
+    """
+    Detects onset in data based on amplitude threshold.
 
-    Parameters
-    ----------
-    x : 1D array_like
-        data.
-    threshold : number, optional (default = 0)
-        minimum amplitude of `x` to detect.
-    n_above : number, optional (default = 1)
-        minimum number of continuous samples >= `threshold`
-        to detect (but see the parameter `n_below`).
-    n_below : number, optional (default = 0)
-        minimum number of continuous samples below `threshold` that
-        will be ignored in the detection of `x` >= `threshold`.
-    threshold2 : number or None, optional (default = None)
-        minimum amplitude of `n_above2` values in `x` to detect.
-    n_above2 : number, optional (default = 1)
-        minimum number of samples >= `threshold2` to detect.
-    show  : bool, optional (default = False)
-        True (1) plots data in matplotlib figure, False (0) don't plot.
-    ax : a matplotlib.axes.Axes instance, optional (default = None).
+    Args:
+        x (np.ndarray): Data to analyze.
+        threshold (float, optional): Minimum amplitude of `x` to detect. Default is 0.
+        n_above (int, optional): Minimum number of continuous samples >= `threshold` to detect. Default is 1.
+        n_below (int, optional): Minimum number of continuous samples below `threshold` that will be ignored in the detection. Default is 0.
+        threshold2 (float, optional): Minimum amplitude of `n_above2` values in `x` to detect. Default is None.
+        n_above2 (int, optional): Minimum number of samples >= `threshold2` to detect. Default is 1.
+        show (bool, optional): If True, plots data in matplotlib figure. If False, doesn't plot. Default is False.
+        ax (plt.Axes, optional): A matplotlib Axes instance for the plot. Default is None.
 
-    Returns
-    -------
-    inds : 2D array_like [indi, indf]
-        initial and final indeces of the onset events.
+    Returns:
+        np.ndarray: 2D array [indi, indf] with initial and final indices of the onset events.
 
-    Notes
-    -----
-    You might have to tune the parameters according to the signal-to-noise
-    characteristic of the data.
+    Notes:
+        - Signal-to-noise characteristic of the data might require tuning of parameters.
+        - See the referenced IPython Notebook for more information.
 
-    See this IPython Notebook [1]_.
+    References:
+        - [Detect Onset Notebook](https://github.com/demotu/detecta/blob/master/docs/detect_onset.ipynb)
 
-    References
-    ----------
-    .. [1] https://github.com/demotu/detecta/blob/master/docs/detect_onset.ipynb
+    Examples:
+        >>> x = np.random.randn(200)/10
+        >>> # various examples using the function with different parameters
 
-    Examples
-    --------
-    >>> x = np.random.randn(200)/10
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> detect_onset(x, np.std(x[:50]), n_above=10, n_below=0, show=True)
-
-    >>> x = np.random.randn(200)/10
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> x[80:140:20] = 0
-    >>> detect_onset(x, np.std(x[:50]), n_above=10, n_below=0, show=True)
-
-    >>> x = np.random.randn(200)/10
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> x[80:140:20] = 0
-    >>> detect_onset(x, np.std(x[:50]), n_above=10, n_below=2, show=True)
-
-    >>> x = [0, 0, 2, 0, np.nan, 0, 2, 3, 3, 0, 1, 1, 0]
-    >>> detect_onset(x, threshold=1, n_above=1, n_below=0, show=True)
-
-    >>> x = np.random.randn(200)/10
-    >>> x[11:41] = np.ones(30)*.3
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> x[80:140:20] = 0
-    >>> detect_onset(x, .1, n_above=10, n_below=1, show=True)
-
-    >>> x = np.random.randn(200)/10
-    >>> x[11:41] = np.ones(30)*.3
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> x[80:140:20] = 0
-    >>> detect_onset(x, .4, n_above=10, n_below=1, show=True)
-
-    >>> x = np.random.randn(200)/10
-    >>> x[11:41] = np.ones(30)*.3
-    >>> x[51:151] += np.hstack((np.linspace(0,1,50), np.linspace(1,0,50)))
-    >>> x[80:140:20] = 0
-    >>> detect_onset(x, .1, n_above=10, n_below=1,
-                     threshold2=.4, n_above2=5, show=True)
-
-    Version history
-    ---------------
-    '1.0.7':
-        Part of the detecta module - https://pypi.org/project/detecta/ 
-    '1.0.6':
-        Deleted 'from __future__ import'
-        added parameters `threshold2` and `n_above2`    
+    Version history:
+        - '1.0.7': Part of the detecta module - [Detecta PyPI](https://pypi.org/project/detecta/)
+        - '1.0.6': Deleted 'from __future__ import', added parameters `threshold2` and `n_above2`
     """
     def _plot(x, threshold, n_above, n_below, threshold2, n_above2, inds, ax):
         """Plot results of the detect_onset function, see its help."""
@@ -367,97 +274,40 @@ def detect_onset(x, threshold=0, n_above=1, n_below=0,
 def detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
                  kpsh=False, valley=False, show=False, ax=None, title=True):
 
-    """Detect peaks in data based on their amplitude and other features.
+    """
+    Detects peaks in data based on their amplitude and other features.
 
-    Parameters
-    ----------
-    x : 1D array_like
-        data.
-    mph : {None, number}, optional (default = None)
-        detect peaks that are greater than minimum peak height (if parameter
-        `valley` is False) or peaks that are smaller than maximum peak height
-         (if parameter `valley` is True).
-    mpd : positive integer, optional (default = 1)
-        detect peaks that are at least separated by minimum peak distance (in
-        number of data).
-    threshold : positive number, optional (default = 0)
-        detect peaks (valleys) that are greater (smaller) than `threshold`
-        in relation to their immediate neighbors.
-    edge : {None, 'rising', 'falling', 'both'}, optional (default = 'rising')
-        for a flat peak, keep only the rising edge ('rising'), only the
-        falling edge ('falling'), both edges ('both'), or don't detect a
-        flat peak (None).
-    kpsh : bool, optional (default = False)
-        keep peaks with same height even if they are closer than `mpd`.
-    valley : bool, optional (default = False)
-        if True (1), detect valleys (local minima) instead of peaks.
-    show : bool, optional (default = False)
-        if True (1), plot data in matplotlib figure.
-    ax : a matplotlib.axes.Axes instance, optional (default = None).
-    title : bool or string, optional (default = True)
-        if True, show standard title. If False or empty string, doesn't show
-        any title. If string, shows string as title.
+    Args:
+        x (np.ndarray): Data to analyze.
+        mph (float, optional): Detect peaks that are greater than minimum peak height or valleys smaller than maximum peak height if `valley` is True. Default is None.
+        mpd (int, optional): Minimum number of data points separating peaks. Default is 1.
+        threshold (float, optional): Detect peaks that are greater than the threshold in relation to their neighbors. Default is 0.
+        edge (str, optional): For a flat peak, keep only the specified edges. Options are 'rising', 'falling', 'both', or None. Default is 'rising'.
+        kpsh (bool, optional): Keep peaks with the same height even if they are closer than `mpd`. Default is False.
+        valley (bool, optional): If True, detect valleys instead of peaks. Default is False.
+        show (bool, optional): If True, plot data using matplotlib. Default is False.
+        ax (plt.Axes, optional): Matplotlib Axes instance for plotting. Default is None.
+        title (bool or str, optional): Show standard title, custom title, or no title in the plot. Default is True.
 
-    Returns
-    -------
-    ind : 1D array_like
-        indeces of the peaks in `x`.
+    Returns:
+        np.ndarray: Indices of the detected peaks in `x`.
 
-    Notes
-    -----
-    The detection of valleys instead of peaks is performed internally by simply
-    negating the data: `ind_valleys = detect_peaks(-x)`
+    Notes:
+        - The detection of valleys is done by negating the data: `ind_valleys = detect_peaks(-x)`.
+        - The function can handle NaN values.
+        - See the IPython Notebook for more information.
 
-    The function can handle NaN's
+    References:
+        - [Detect Peaks Notebook](https://github.com/demotu/detecta/blob/master/docs/detect_peaks.ipynb)
 
-    See this IPython Notebook [1]_.
+    Examples:
+        >>> x = np.random.randn(100)
+        >>> # various examples using the function with different parameters
 
-    References
-    ----------
-    .. [1] https://github.com/demotu/detecta/blob/master/docs/detect_peaks.ipynb
-
-    Examples
-    --------
-    >>> x = np.random.randn(100)
-    >>> x[60:81] = np.nan
-    >>> # detect all peaks and plot data
-    >>> ind = detect_peaks(x, show=True)
-    >>> print(ind)
-
-    >>> x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
-    >>> # set minimum peak height = 0 and minimum peak distance = 20
-    >>> detect_peaks(x, mph=0, mpd=20, show=True)
-
-    >>> x = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0]
-    >>> # set minimum peak distance = 2
-    >>> detect_peaks(x, mpd=2, show=True)
-
-    >>> x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
-    >>> # detection of valleys instead of peaks
-    >>> detect_peaks(x, mph=-1.2, mpd=20, valley=True, show=True)
-
-    >>> x = [0, 1, 1, 0, 1, 1, 0]
-    >>> # detect both edges
-    >>> detect_peaks(x, edge='both', show=True)
-
-    >>> x = [-2, 1, -2, 2, 1, 1, 3, 0]
-    >>> # set threshold = 2
-    >>> detect_peaks(x, threshold = 2, show=True)
-
-    >>> x = [-2, 1, -2, 2, 1, 1, 3, 0]
-    >>> fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(10, 4))
-    >>> detect_peaks(x, show=True, ax=axs[0], threshold=0.5, title=False)
-    >>> detect_peaks(x, show=True, ax=axs[1], threshold=1.5, title=False)
-
-    Version history
-    ---------------
-    '1.0.7':
-        Part of the detecta module - https://pypi.org/project/detecta/  
-    '1.0.6':
-        Fix issue of when specifying ax object only the first plot was shown
-        Add parameter to choose if a title is shown and input a title
-    '1.0.5':
-        The sign of `mph` is inverted if parameter `valley` is True
+    Version history:
+        - '1.0.7': Part of the detecta module - [Detecta PyPI](https://pypi.org/project/detecta/)
+        - '1.0.6': Fixes and new features regarding ax object and title parameter.
+        - '1.0.5': Inversion of `mph` sign based on `valley` parameter.
     """
     def _plot(x, mph, mpd, threshold, edge, valley, ax, ind, title):
         """Plot results of the detect_peaks function, see its help."""
@@ -563,61 +413,30 @@ def detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
 
 def detect_seq(x, value=np.nan, index=False, min_seq=1, max_alert=0,
                show=False, ax=None):
-    """Detect indices in x of sequential data identical to value.
+    """
+    Detects indices in x of sequential data identical to a specified value.
 
-    Parameters
-    ----------
-    x : 1D numpy array_like
-        data
-    value : number, optional. Default = np.nan
-        Value to be found in data
-    index : bool, optional. Default = False
-        Set to True to return a 2D array of initial and final indices where
-        data is equal to value or set to False to return an 1D array of Boolean
-        values with same length as x with True where x is equal to value and 
-        False where x is not equal to value.
-    min_seq : integer, optional. Default = 1
-        Minimum number of sequential values to detect        
-    max_alert : number, optional. Default = 0
-        Minimal number of sequential data for a message to be printed with
-        information about these indices. Set to 0 to not print any message.
-    show : bool, optional. Default = False
-        Show plot (True) of not (False).
-    ax : matplotlib object, optional. Default = None
-        Matplotlib axis object where to plot.
-        
-    Returns
-    -------
-    idx : 1D or 2D numpy array_like
-        2D numpy array [indi, indf] of initial and final indices (if index is
-        equal to True) or 1D array of Boolean values with same length as x (if
-        index is equal to False).
-            
-    References
-    ----------
-    .. [1] https://github.com/demotu/detecta/blob/master/docs/detect_seq.ipynb
+    Args:
+        x (np.ndarray): Data to analyze.
+        value (float, optional): Value to be found in data. Default is np.nan.
+        index (bool, optional): If True, returns 2D array of initial and final indices where data equals value. If False, returns 1D array of Boolean values. Default is False.
+        min_seq (int, optional): Minimum number of sequential values to detect. Default is 1.
+        max_alert (int, optional): Minimal number of sequential data for an alert message. Set to 0 to disable alerts. Default is 0.
+        show (bool, optional): If True, plots the data. Default is False.
+        ax (Optional[plt.Axes], optional): Matplotlib axis object for plotting. Default is None.
 
-    Examples
-    --------
-    >>> x = [1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0]
-    >>> detect_seq(x, 0)
+    Returns:
+        np.ndarray: Either a 2D array [indi, indf] of initial and final indices (if index=True) or a 1D array of Boolean values (if index=False).
 
-    >>> detect_seq(x, 0, index=True)
+    References:
+        - [Detect Seq Notebook](https://github.com/demotu/detecta/blob/master/docs/detect_seq.ipynb)
 
-    >>> detect_seq(x, 0, index=True, min_seq=2)  
+    Examples:
+        >>> x = [1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0]
+        >>> # various examples using the function with different parameters
 
-    >>> detect_seq(x, 10)
-
-    >>> detect_seq(x, 10, index=True)
-
-    >>> detect_seq(x, 0, index=True, min_seq=2, show=True)
-
-    >>> detect_seq(x, 0, index=True, max_alert=2)
-
-    Version history
-    ---------------
-    '1.0.1':
-        Part of the detecta module - https://pypi.org/project/detecta/  
+    Version history:
+        - '1.0.1': Part of the detecta module - [Detecta PyPI](https://pypi.org/project/detecta/)
     """
     def _plot(x, value, min_seq, ax, idx):
         """Plot results of the detect_seq function, see its help.

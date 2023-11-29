@@ -12,21 +12,25 @@ import bs4
 
 
 def getFilename(measurement:bs4.BeautifulSoup):
-    """return the filename of the measurement section
+    """Returns the filename of the measurement section.
 
     Args:
-        measurement (bs4.BeautifulSoup): a `measurement` section of the session.xml file.
+        measurement (BeautifulSoup): A `measurement` section of the session.xml file.
 
+    Returns:
+        str: The filename of the measurement, with 'qtm' replaced by 'c3d'.
     """
     return measurement.attrs["Filename"].replace("qtm", "c3d")
 
 
 def getForcePlateAssigment(measurement:bs4.BeautifulSoup):
-    """return the force plate assigment from the measurement section
+    """Returns the force plate assignment from the measurement section.
 
     Args:
-        measurement (bs4.BeautifulSoup): a `measurement` section of the session.xml file.
+        measurement (BeautifulSoup): A `measurement` section of the session.xml file.
 
+    Returns:
+        str: The force plate assignment.
     """
     mea = measurement
 
@@ -38,22 +42,26 @@ def getForcePlateAssigment(measurement:bs4.BeautifulSoup):
 
 
 def isType(measurement:bs4.BeautifulSoup, type:str):
-    """check type of  measurement section
+    """Checks the type of measurement section.
 
     Args:
-        measurement (bs4.BeautifulSoup): a `measurement` section of the session.xml file.
-        type (str): type
+        measurement (BeautifulSoup): A `measurement` section of the session.xml file.
+        type (str): The type to check against.
 
+    Returns:
+        bool: True if the measurement type matches, else False.
     """
     return measurement.attrs["Type"] == type
 
 
 def findStatic(soup:bs4.BeautifulSoup):
-    """return the static file from the bs4.BeautifulSoup instance representing the content of the session.xml
+    """Returns the static file from the BeautifulSoup instance representing the session.xml.
 
     Args:
-        soup (bs4.BeautifulSoup): content of the session.xml
+        soup (BeautifulSoup): Content of the session.xml.
 
+    Returns:
+        BeautifulSoup: The static measurement section.
     """
     qtmMeasurements = soup.find_all("Measurement")
     static = []
@@ -67,11 +75,13 @@ def findStatic(soup:bs4.BeautifulSoup):
 
 
 def findDynamic(soup:bs4.BeautifulSoup):
-    """return the dynamic files from the bs4.BeautifulSoup instance representing the content of the session.xml
+    """Returns the dynamic files from the BeautifulSoup instance representing the session.xml.
 
     Args:
-        soup (bs4.BeautifulSoup): content of the session.xml
+        soup (BeautifulSoup): Content of the session.xml.
 
+    Returns:
+        List[BeautifulSoup]: List of dynamic measurement sections.
     """
     qtmMeasurements = soup.find_all("Measurement")
 
@@ -84,12 +94,14 @@ def findDynamic(soup:bs4.BeautifulSoup):
 
 
 def findKneeCalibration(soup:bs4.BeautifulSoup, side:str):
-    """return the knee functional calibration file from the bs4.BeautifulSoup instance representing the content of the session.xml
+    """Returns the knee functional calibration file from the BeautifulSoup instance.
 
     Args:
-        soup (bs4.BeautifulSoup): content of the session.xml
-        side (str): lower limb side
+        soup (BeautifulSoup): Content of the session.xml.
+        side (str): Lower limb side ('Left' or 'Right').
 
+    Returns:
+        BeautifulSoup: The knee calibration measurement section for the specified side.
     """
     qtmMeasurements = soup.find_all("Measurement")
     kneeCalib = []
@@ -104,22 +116,26 @@ def findKneeCalibration(soup:bs4.BeautifulSoup, side:str):
 
 
 def getKneeFunctionCalibMethod(measurement:bs4.BeautifulSoup):
-    """return the method used for the knee calibration
+    """Returns the method used for the knee calibration.
 
     Args:
-        measurement (bs4.BeautifulSoup): a `measurement` section of the session.xml file.
+        measurement (BeautifulSoup): A `measurement` section of the session.xml file.
 
+    Returns:
+        str: The knee functional calibration method.
     """
     mea = measurement
     return mea.find("Knee_functional_calibration_method").text
 
 
 def detectMeasurementType(soup:bs4.BeautifulSoup):
-    """return the type of each measurement section
+    """Returns the type of each measurement section.
 
     Args:
-        soup (bs4.BeautifulSoup): content of the session.xml
+        soup (BeautifulSoup): Content of the session.xml.
 
+    Returns:
+        List[str]: List of types of each measurement section.
     """
 
     measurements = soup.find_all("Measurement")
@@ -137,11 +153,13 @@ def detectMeasurementType(soup:bs4.BeautifulSoup):
 
 
 def SubjectMp(soup:bs4.BeautifulSoup):
-    """return the antropometric parameters
+    """Returns the anthropometric parameters.
 
     Args:
-        soup (bs4.BeautifulSoup): content of the session.xml
+        soup (BeautifulSoup): Content of the session.xml.
 
+    Returns:
+        Tuple[Dict, Dict]: Required and optional anthropometric parameters.
     """
 
     bodymass = float(soup.Subject.Weight.text)
@@ -202,7 +220,15 @@ def SubjectMp(soup:bs4.BeautifulSoup):
 
 
 def get_modelled_trials(session_xml, measurement_type):
-    # Obsolete
+    """(Obsolete) Returns modelled trials of a specified type from the session XML.
+
+    Args:
+        session_xml (BeautifulSoup): The parsed session XML.
+        measurement_type (str): The measurement type to filter by.
+
+    Returns:
+        List[str]: List of filenames for modelled trials of the specified type.
+    """
     modelled_trials = []
     dynamicMeasurements = findDynamic(session_xml)
     for dynamicMeasurement in dynamicMeasurements:
@@ -213,7 +239,14 @@ def get_modelled_trials(session_xml, measurement_type):
 
 
 def get_creation_date(session_xml):
-    # Obsolete
+    """(Obsolete)  Retrieves the creation date of the session from the session XML.
+
+    Args:
+        session_xml (BeautifulSoup): The parsed session XML.
+
+    Returns:
+        datetime: The datetime object representing the creation date and time of the session.
+    """
     date_str = session_xml.Subject.Session.Creation_date.text
     year, month, day = date_str.split("-")
     time_str = session_xml.Subject.Session.Creation_time.text

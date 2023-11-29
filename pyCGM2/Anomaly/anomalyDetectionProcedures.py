@@ -23,34 +23,59 @@ except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
 class AnomalyDetectionProcedure(object):
-    """abstract marker detector procedure """
+    """Abstract base class for anomaly detection procedures.
+
+    This class provides a basic structure for implementing different anomaly detection techniques.
+    It should be extended to add specific functionalities for various types of anomaly detection.
+    """
 
     def __init__(self):
+        """Initializes the AnomalyDetectionProcedure class."""
         self.anomaly = {"Output": None,
                         "ErrorState": False}
 
     def run(self, acq:btk.btkAcquisition, filename:str, options:Dict):
+        """Abstract method to run the anomaly detection procedure.
+
+        Args:
+            acq (btk.btkAcquisition): An instance of a btk acquisition object.
+            filename (str): The filename of the data to be processed.
+            options (Dict): A dictionary of options specific to the detection procedure.
+        """
         pass
 
     def getAnomaly(self):
+        """Returns the detected anomaly.
+
+        Returns:
+            dict: A dictionary containing the anomaly output and error state.
+        """
         return self.anomaly
 
 
 class MarkerAnomalyDetectionRollingProcedure(AnomalyDetectionProcedure):
-    """marker anomaly detection from rolling statistics
+    """Marker anomaly detection using rolling statistics.
 
-    Args:
-        markers (list): marker labels
-        plot (bool): enable plot
+    This class implements a procedure for detecting anomalies in marker trajectories using rolling statistics.
 
-    Kwargs:
-        aprioriError (double): a priori error on the marker trajectory
-        window (int): size of the rolling windows
-        treshold (int) : detector threshold assoiated to the standard deviation
-        method (str) : mean or median
+    Attributes:
+        m_markers (List): List of marker labels.
+        _plot (bool): Flag indicating whether to enable plotting.
+        _aprioriError (float): A priori error on the marker trajectory.
+        _window (int): Size of the rolling windows.
+        _treshold (int): Detector threshold associated with the standard deviation.
+        _method (str): Method to use for rolling statistics, either 'mean' or 'median'.
     """
 
     def __init__(self, markers:List, plot:bool=False, **kwargs):
+        """
+        Initialize the MarkerAnomalyDetectionRollingProcedure class with given parameters.
+
+        Args:
+            markers (List): List of marker labels.
+            plot (bool, optional): Flag indicating whether to enable plotting. Defaults to False.
+            **kwargs: Additional keyword arguments including aprioriError, window, treshold, and method.
+        """
 
         super(MarkerAnomalyDetectionRollingProcedure, self).__init__()
 
@@ -66,13 +91,12 @@ class MarkerAnomalyDetectionRollingProcedure(AnomalyDetectionProcedure):
         self._method = "median" if "method" not in kwargs else kwargs["method"]
 
     def run(self, acq:btk.btkAcquisition, filename:str, options:Dict):
-        """ run the procedure
+        """Run the marker anomaly detection procedure.
 
         Args:
-            acq (btk.btkAcquisition): a btk acquisition instantce
-            filename (str): filename
-            options (dict) : passed options from the filter
-
+            acq (btk.btkAcquisition): A btk acquisition instance.
+            filename (str): Filename of the data being processed.
+            options (Dict): Additional options passed from the filter.
         """
 
         errorState = False
@@ -159,21 +183,26 @@ class MarkerAnomalyDetectionRollingProcedure(AnomalyDetectionProcedure):
 
 
 class GaitEventAnomalyProcedure(AnomalyDetectionProcedure):
-    """gait event anomaly detector
+    """Gait event anomaly detector.
+
+    This class implements a procedure for detecting anomalies in gait events.
+
+    Inherits from AnomalyDetectionProcedure.
     """
 
     def __init__(self):
-
+        """Initializes the GaitEventAnomalyProcedure class."""
         super(GaitEventAnomalyProcedure, self).__init__()
 
     def run(self, acq:btk.btkAcquisition, filename:str, options:Dict):
-        """ run the procedure
+        """Run the gait event anomaly detection procedure.
+
+        This method analyzes gait events and detects any anomalies, such as two consecutive identical events.
 
         Args:
-            acq (btk.btkAcquisition): a btk acquisition instantce
-            filename (str): filename
-            options (dict) : passed options from the filter
-
+            acq (btk.btkAcquisition): An instance of a btk acquisition object.
+            filename (str): The filename of the data being processed.
+            options (Dict): Additional options passed from the filter.
         """
 
         errorState = False
@@ -245,23 +274,31 @@ class GaitEventAnomalyProcedure(AnomalyDetectionProcedure):
 
 
 class ForcePlateAnomalyProcedure(AnomalyDetectionProcedure):
-    """force plate anomaly detector
+    """Force plate anomaly detector.
+
+    This class is designed to detect anomalies in force plate data, such as saturated signals.
+
+    Inherits from AnomalyDetectionProcedure.
     """
 
     def __init__(self):
-
+        """Initializes the ForcePlateAnomalyProcedure class."""
         super(ForcePlateAnomalyProcedure, self).__init__()
 
     def run(self, acq:btk.btkAcquisition, filename:str, options:Dict):
-        """ run the procedure
+
+        """Run the force plate anomaly detection procedure.
+
+        This method checks force plate signals for anomalies like saturation. The analysis can be customized using the `options` dictionary.
 
         Args:
-            acq (btk.btkAcquisition): a btk acquisition instantce
-            filename (str): filename
-            options (dict) : passed options from the filter
+            acq (btk.btkAcquisition): A btk acquisition instance.
+            filename (str): Filename of the data being processed.
+            options (Dict): Additional options passed from the filter. It can include:
+                - 'frameRange' (List[int, int]): A list of two integers specifying the start and end frames for the analysis. 
+                  If not provided, the analysis uses the full range of frames available in the acquisition data.
 
-        option keys:
-          * frameRange (List[int, int]) 
+        Note: Other options may be included in the dictionary, but they are not currently used in this implementation.
         """
 
         ff = acq.GetFirstFrame()
@@ -306,22 +343,38 @@ class ForcePlateAnomalyProcedure(AnomalyDetectionProcedure):
 
 
 class AnthropoDataAnomalyProcedure(AnomalyDetectionProcedure):
-    """atnthropometric data anomaly detector
+    """Anthropometric data anomaly detector.
+
+    This class implements a procedure for detecting anomalies in anthropometric data, such as implausible body measurements.
+
+    Inherits from AnomalyDetectionProcedure.
+
+    Attributes:
+        mp (Dict): A dictionary containing anthropometric measurements.
     """
 
     def __init__(self, mp):
+        """
+        Initializes the AnthropoDataAnomalyProcedure class with given anthropometric measurements.
 
+        Args:
+            mp (Dict): A dictionary containing anthropometric measurements.
+        """
         super(AnthropoDataAnomalyProcedure, self).__init__()
 
         self.mp = mp
 
     def run(self, acq:btk.btkAcquisition, filename:str, options:Dict):
-        """ run the procedure
+        """Run the anthropometric data anomaly detection procedure.
+
+        This method checks for anomalies in anthropometric data, such as extremely low body mass or disproportionate limb measurements. The `options` parameter is included for future extensibility but is not currently used in the implementation.
 
         Args:
-            acq (btk.btkAcquisition): a btk acquisition instantce
-            filename (str): filename
-            options (dict) : passed options from the filter ( not used so far)
+            acq (btk.btkAcquisition): A btk acquisition instance.
+            filename (str): Filename of the data being processed.
+            options (Dict): Additional options passed from the filter. Currently, this parameter is not used in the implementation.
+
+        Note: Future versions of this method may use the `options` dictionary to provide additional customization and functionality.
         """
 
         errorState = False

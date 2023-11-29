@@ -1,31 +1,31 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Model/CGM2
-#APIDOC["Draft"]=False
-#--end--
 """
 this module gathers decorators specific to the CGM
 """
 import numpy as np
+from typing import List, Tuple, Dict, Optional,Union,Any
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2 import enums
 from pyCGM2.Model import modelDecorator
 
+from pyCGM2.Model.CGM2.cgm import CGM
+import btk
 
 
-def applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1only=False):
-    """Apply decorators from detected calibration method
+def applyBasicDecorators(dcm: dict, model: CGM, acqStatic: btk.btkAcquisition, 
+                         optional_mp: dict, markerDiameter: float, cgm1only: bool = False) -> None:
+    """
+    Apply decorators from detected calibration method for a CGM model.
 
     Args:
-        dcm (dict): dictionary returned from the function `detectCalibrationMethods`
-        model (pyCGM2.Model.CGM2.cgm): a CGM model instance
-        acqStatic (btk.acquisition): a btk acquisition instance of a static file
-        optional_mp (dict): optional anthropometric parameters of the CGM
-        markerDiameter (float): marker diameter
-        cgm1only (bool, optional[False]): enable computation for the CGM1 only
-
-        @obsolete : consider applyKJC_AJCDecorators
-
+        dcm (dict): Dictionary returned from the function `detectCalibrationMethods`.
+        model (CGM): A CGM model instance.
+        acqStatic (btk.btkAcquisition): A BTK acquisition instance of a static file.
+        optional_mp (dict): Optional anthropometric parameters of the CGM.
+        markerDiameter (float): Diameter of the marker.
+        cgm1only (bool, optional): Enable computation for the CGM1 only. Default is False.
     """
+
 
     # native but thighRotation altered in mp
     if dcm["Left Knee"] == enums.JointCalibrationMethod.Basic and  dcm["Left Ankle"] == enums.JointCalibrationMethod.Basic and optional_mp["LeftThighRotation"] !=0:
@@ -86,21 +86,22 @@ def applyBasicDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1onl
                 modelDecorator.KneeCalibrationDecorator(model).midCondyles(acqStatic, markerDiameter=markerDiameter, side="right")
                 modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
 
-def applyKJC_AJCDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1only=False,forceMP=False):
-    """Apply decorators from detected calibration method
+def applyKJC_AJCDecorators(dcm: dict, model: CGM, acqStatic: btk.btkAcquisition, 
+                           optional_mp: dict, markerDiameter: float, cgm1only: bool = False, 
+                           forceMP: bool = False) -> None:
+    """
+    Apply decorators from detected calibration method with specific focus on KJC and AJC.
 
     Args:
-        dcm (dict): dictionary returned from the function `detectCalibrationMethods`
-        model (pyCGM2.Model.CGM2.cgm): a CGM model instance
-        acqStatic (btk.acquisition): a btk acquisition instance of a static file
-        optional_mp (dict): optional anthropometric parameters of the CGM
-        markerDiameter (float): marker diameter
-        cgm1only (bool, optional[False]): enable computation for the CGM1 only
-        forceMP (bool): force the use of mp offset to compute KJC and AJC
-    
-    # scenarii
-    
+        dcm (dict): Dictionary returned from the function `detectCalibrationMethods`.
+        model (CGM): A CGM model instance.
+        acqStatic (btk.btkAcquisition): A BTK acquisition instance of a static file.
+        optional_mp (dict): Optional anthropometric parameters of the CGM.
+        markerDiameter (float): Diameter of the marker.
+        cgm1only (bool, optional): Enable computation for the CGM1 only. Default is False.
+        forceMP (bool): Force the use of mp offset to compute KJC and AJC. Default is False.
     """
+
     if forceMP:
         LOGGER.logger.info("[pyCGM2] KJC and AJC computed from MP offset values")
         modelDecorator.Cgm1ManualOffsets(model).compute(acqStatic,"left",optional_mp["LeftThighRotation"],
@@ -166,14 +167,14 @@ def applyKJC_AJCDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1o
 
 
 
-def applyHJCDecorators(model, method):
-    """apply hip joint centre decorators
+def applyHJCDecorators(model: CGM, method: dict) -> None:
+    """
+    Apply hip joint centre decorators to the CGM model.
 
     Args:
-        model (pyCGM2.Model.CGM2.cgm): a CGM model instance
-        method (dict): dict indicating HJC method to use
-
-    Example:
+        model (CGM): A CGM model instance.
+        method (dict): Dictionary indicating HJC method to use. Keys are 'Left' and 'Right' with values
+                       being either "Hara" or a list of three numbers (position in the pelvic coordinate system).
 
     ```python
     method = {"Left": "Hara", "Right": [1,3,4]} # a string or a list (ie. position in the pelvic coordinate system)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from pyCGM2.Nexus import nexusFilters
 from pyCGM2.Nexus import nexusTools
 from pyCGM2.Lib import eventDetector

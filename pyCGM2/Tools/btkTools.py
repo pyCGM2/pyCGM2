@@ -27,11 +27,14 @@ from typing import List, Tuple, Dict, Optional, Union, Callable
 # --- acquisition -----
 def smartReader(filename:str, translators:Optional[Dict]=None):
     """
-    Convenient function to read a c3d with Btk
+    Read a C3D file using BTK, with optional marker translation.
 
     Args:
-        filename (str): filename with its path
-        translators (dict): marker translators
+        filename (str): Filename with its path.
+        translators (dict, optional): Dictionary for marker translation.
+
+    Returns:
+        btk.btkAcquisition: BTK acquisition instance read from the file.
     """
     reader = btk.btkAcquisitionFileReader()
     reader.SetFilename(filename)
@@ -95,12 +98,15 @@ def smartReader(filename:str, translators:Optional[Dict]=None):
 
 def smartWriter(acq:btk.btkAcquisition, filename:str, extension:Optional[str]=None):
     """
-    Convenient function to write a c3d with Btk
+    Write a BTK acquisition instance to a C3D or other specified format.
 
     Args:
-        acq (btk.acquisition): a btk acquisition instance
-        filename (str): filename with its path
-        extension (str): format extension (default c3d, accpted : trc)
+        acq (btk.btkAcquisition): BTK acquisition instance to write.
+        filename (str): Filename with its path.
+        extension (str, optional): File format extension (default: C3D).
+
+    Returns:
+        str: Filename of the written file.
     """
     if extension == "trc":
         filename = filename+ ".trc"
@@ -117,11 +123,13 @@ def smartWriter(acq:btk.btkAcquisition, filename:str, extension:Optional[str]=No
 
 def GetMarkerNames(acq:btk.btkAcquisition):
     """
-    return marker labels
+    Retrieves marker names from a BTK acquisition.
 
     Args:
-        acq (btk.acquisition): a btk acquisition instance
+        acq (btk.btkAcquisition): BTK acquisition instance.
 
+    Returns:
+        List[str]: List of marker names.
     """
 
     markerNames = []
@@ -133,11 +141,13 @@ def GetMarkerNames(acq:btk.btkAcquisition):
 
 def GetAnalogNames(acq:btk.btkAcquisition):
     """
-    return analog labels
+    Retrieves analog signal names from a BTK acquisition.
 
     Args:
-        acq (btk.acquisition): a btk acquisition instance
+        acq (btk.btkAcquisition): BTK acquisition instance.
 
+    Returns:
+        List[str]: List of analog signal names.
     """
 
     analogNames = []
@@ -148,12 +158,14 @@ def GetAnalogNames(acq:btk.btkAcquisition):
 
 def isGap(acq:btk.btkAcquisition, markerLabel:List[str]):
     """
-    check gap
+    Checks if there is a gap (missing data) in the specified marker.
 
     Args:
-        acq (btk.acquisition): a btk acquisition instance
-        markerLabel (list): marker labels
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        markerLabel (list): Marker labels to check for gaps.
 
+    Returns:
+        bool: True if there is a gap in the marker data, False otherwise.
     """
     residualValues = acq.GetPoint(markerLabel).GetResiduals()
     if any(residualValues == -1.0):
@@ -166,11 +178,13 @@ def isGap(acq:btk.btkAcquisition, markerLabel:List[str]):
 
 def findMarkerGap(acq:btk.btkAcquisition):
     """
-    return markers with detected gap
+    Identifies markers with detected gaps in an acquisition.
 
     Args:
-        acq (btk.acquisition): a btk acquisition instance
+        acq (btk.btkAcquisition): BTK acquisition instance.
 
+    Returns:
+        List[str]: List of markers with gaps.
     """
     gaps = []
     markerNames = GetMarkerNames(acq)
@@ -183,13 +197,15 @@ def findMarkerGap(acq:btk.btkAcquisition):
 
 def isPointExist(acq:btk.btkAcquisition, label:str, ignorePhantom:bool=True):
     """
-    check if a point exist
+    Checks if a point (marker or model output) exists in the acquisition.
 
     Args:
-        acq (btk.acquisition): a btk acquisition instance
-        label (str): marker label
-        ignorePhantom (bool,optional) ignore zero markers. Default set to True
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): Point label to check.
+        ignorePhantom (bool, optional): Whether to ignore zero markers. Default is True.
 
+    Returns:
+        bool: True if the point exists, False otherwise.
     """
 
     try:
@@ -216,13 +232,15 @@ def isPointExist(acq:btk.btkAcquisition, label:str, ignorePhantom:bool=True):
 
 def isPointsExist(acq:btk.btkAcquisition, labels:List[str], ignorePhantom:bool=True):
     """
-    check if  a list of points exist
+    Checks if a list of points exist in the acquisition.
 
     Args:
-        acq (btk.acquisition): a btk acquisition instance
-        label (list): marker labels
-        ignorePhantom (bool,optional) ignore zero markers. Default set to True
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        labels (list): List of point labels to check.
+        ignorePhantom (bool, optional): Whether to ignore zero markers. Default is True.
 
+    Returns:
+        bool: True if all points exist, False otherwise.
     """
     for label in labels:
         if not isPointExist(acq, label, ignorePhantom=ignorePhantom):
@@ -233,15 +251,15 @@ def isPointsExist(acq:btk.btkAcquisition, labels:List[str], ignorePhantom:bool=T
 
 def smartAppendPoint(acq:btk.btkAcquisition, label:str, values:np.ndarray, PointType:str="Marker", desc:str="", residuals:Optional[np.ndarray]=None):
     """
-    Append or Update a point
+    Appends or updates a point in the acquisition.
 
     Args:
-        acq (btk.acquisition): a btk acquisition instance
-        label (str): marker label
-        values (np.array(n,3)): point values
-        PointType (str): point type (choice : Marker,Angle,Moment,Force,Power,Reaction,Scalar)
-        desc (str,optional): point description. Default set to ""
-        residuals (np.array(n,1)): point residual values
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): Label of the point to append or update.
+        values (numpy.ndarray): Array of point values.
+        PointType (str, optional): Type of the point (e.g., 'Marker', 'Angle', 'Force'). Default is 'Marker'.
+        desc (str, optional): Description of the point. Default is an empty string.
+        residuals (numpy.ndarray, optional): Array of point residual values.
 
     """
 
@@ -295,11 +313,11 @@ def smartAppendPoint(acq:btk.btkAcquisition, label:str, values:np.ndarray, Point
 
 def clearPoints(acq:btk.btkAcquisition, pointlabelList:List[str]):
     """
-    Remove points
+    Removes specified points from the acquisition.
 
     Args:
-        acq (btk.acquisition): a btk acquisition instance
-        pointlabelList (list): point labels
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        pointlabelList (list): List of point labels to remove.
 
     """
 
@@ -318,11 +336,11 @@ def clearPoints(acq:btk.btkAcquisition, pointlabelList:List[str]):
 
 def keepAndDeleteOtherPoints(acq:btk.btkAcquisition, pointToKeep:List[str]):
     """
-    Remove points except ones
+    Removes all points from the acquisition except the specified ones.
 
     Args:
-        acq (btk.acquisition): a btk acquisition instance
-        pointToKeep ([str): points to keep
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        pointToKeep (list): List of point labels to keep.
 
     """
 
@@ -333,11 +351,14 @@ def keepAndDeleteOtherPoints(acq:btk.btkAcquisition, pointToKeep:List[str]):
 
 def isPhantom(acq:btk.btkAcquisition, label:str):
     """
-        check if a point is a phantom ( ie zero point)
+    Checks if a point is a phantom (i.e., zero point).
 
-        :Parameters:
-            - acq (btkAcquisition) - a btk acquisition inctance
-            - label (str) - point label
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): Label of the point to check.
+
+    Returns:
+        bool: True if the point is a phantom, False otherwise.
     """
     residuals = acq.GetPoint(label).GetResiduals()
     return False if all(residuals == -1) else True
@@ -345,13 +366,17 @@ def isPhantom(acq:btk.btkAcquisition, label:str):
 
 def getValidFrames(acq:btk.btkAcquisition, markerLabels:List[str], frameBounds:Optional[Tuple[int,int]]=None):
     """
-    get valid frames of markers
+    Gets valid frames of markers within the specified frame boundaries.
 
     Args:
-        acq (btkAcquisition): a btk acquisition inctance
-        markerLabel (str): marker label
-        frameBounds ([int,int],optional): frame boundaries
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        markerLabels (list): List of marker labels to check.
+        frameBounds (tuple, optional): Frame boundaries as a tuple (start, end).
+
+    Returns:
+        List[bool]: List indicating valid frames (True) or invalid frames (False).
     """
+
     ff = acq.GetFirstFrame()
 
     flag = []
@@ -375,12 +400,14 @@ def getValidFrames(acq:btk.btkAcquisition, markerLabels:List[str], frameBounds:O
 
 def getFrameBoundaries(acq:btk.btkAcquisition, markerLabels:List[str]):
     """
-    get frame boundaries from a list of markers
+    Gets frame boundaries from a list of markers.
 
     Args:
-        acq (btkAcquisition): a btk acquisition inctance
-        markerLabels (list): marker labels
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        markerLabels (list): List of marker labels.
 
+    Returns:
+        Tuple[int, int]: Tuple of first and last valid frame numbers.
     """
 
     flag = getValidFrames(acq, markerLabels)
@@ -395,14 +422,15 @@ def getFrameBoundaries(acq:btk.btkAcquisition, markerLabels:List[str]):
 
 def checkGap(acq:btk.btkAcquisition, markerList:List[str], frameBounds:Optional[Tuple[int,int]]=None):
     """
-    check if there are any gaps from a list of markers
+    Checks for gaps in marker data within the specified frame bounds.
 
     Args:
-        acq (btkAcquisition): a btk acquisition inctance
-        markerLabels ([str...]): marker labels
-        frameBounds ([double,double]) : frame boundaries
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        markerList (list): List of marker labels.
+        frameBounds (tuple, optional): Frame boundaries as a tuple (start, end).
 
-
+    Returns:
+        bool: True if there are gaps, False otherwise.
     """
     ff = acq.GetFirstFrame()
     flag = False
@@ -424,12 +452,11 @@ def checkGap(acq:btk.btkAcquisition, markerList:List[str], frameBounds:Optional[
 
 def applyOnValidFrames(acq:btk.btkAcquisition, validFrames:List[int]):
     """
-    set zeros to all points if the frame is  not valid
+    Sets all points to zero if the frame is not valid.
 
     Args:
-        acq (btkAcquisition): a btk acquisition inctance
-        validFrames (list): list of n frames with 1 or 0 indicating if the frame is valid or not
-
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        validFrames (list): List of frames with 1 (valid) or 0 (invalid).
     """
 
     frameNumber = acq.GetPointFrameNumber()
@@ -445,12 +472,14 @@ def applyOnValidFrames(acq:btk.btkAcquisition, validFrames:List[int]):
 
 def findValidFrames(acq:btk.btkAcquisition, markerLabels:List[str]):
     """
-    find valid frames to process from markers
+    Finds valid frames to process based on marker data.
 
     Args:
-        acq (btkAcquisition): a btk acquisition inctance
-        markerLabels (list): marker labels
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        markerLabels (list): List of marker labels.
 
+    Returns:
+        Tuple[List[int], int, int]: Tuple containing a list of valid frames, first valid frame, and last valid frame.
     """
 
     flag = []
@@ -475,12 +504,11 @@ def findValidFrames(acq:btk.btkAcquisition, markerLabels:List[str]):
 
 def applyValidFramesOnOutput(acq:btk.btkAcquisition, validFrames:List[int]):
     """
-    set model outputs to zero if not a valid frame
+    Sets model outputs to zero if not a valid frame.
 
     Args:
-        acq (btkAcquisition): a btk acquisition inctance
-        validFrames (list): valid frame flags
-
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        validFrames (list): List of valid frames.
     """
 
     validFrames = np.asarray(validFrames)
@@ -495,10 +523,13 @@ def applyValidFramesOnOutput(acq:btk.btkAcquisition, validFrames:List[int]):
 
 def checkMultipleSubject(acq:btk.btkAcquisition):
     """
-    check if multiple subject detected in the acquisition
+    Checks if multiple subjects are detected in the acquisition.
 
     Args:
-        acq (btkAcquisition): a btk acquisition inctance
+        acq (btk.btkAcquisition): BTK acquisition instance.
+
+    Raises:
+        Exception: If the acquisition contains data from multiple subjects.
     """
     if acq.GetPoint(0).GetLabel().count(":"):
         raise Exception(
@@ -509,11 +540,14 @@ def checkMultipleSubject(acq:btk.btkAcquisition):
 
 def applyTranslators(acq:btk.btkAcquisition, translators:Dict):
     """
-    Rename marker from translators
+    Renames markers based on the provided translators.
 
     Args:
-        acq (btk.Acquisition) : a btk acquisition instance
-        translators (dict) : translators
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        translators (dict): Dictionary mapping original marker names to new names.
+
+    Returns:
+        btk.btkAcquisition: Acquisition instance with renamed markers.
     """
     acqClone = btk.btkAcquisition.Clone(acq)
 
@@ -586,11 +620,14 @@ def applyTranslators(acq:btk.btkAcquisition, translators:Dict):
 
 def checkMarkers(acq:btk.btkAcquisition, markerList:List[str]):
     """
-    check marker presence. Raise an exception if fails
+    Checks the presence of specified markers in the acquisition.
 
     Args:
-        acq (btk.Acquisition) : a btk acquisition instance
-        markerList (list) : marker labels
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        markerList (list): List of marker names to check.
+
+    Raises:
+        Exception: If any of the specified markers are not found.
     """
     for m in markerList:
         if not isPointExist(acq, m):
@@ -599,11 +636,11 @@ def checkMarkers(acq:btk.btkAcquisition, markerList:List[str]):
 
 def clearEvents(acq:btk.btkAcquisition, labels:List[str]):
     """
-    remove events from their label
+    Removes events based on their labels.
 
     Args:
-        acq (btk.Acquisition) : a btk acquisition instance
-        label (list) : event labels
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        labels (list): List of event labels to be removed.
     """
 
     events = acq.GetEvents()
@@ -618,11 +655,11 @@ def clearEvents(acq:btk.btkAcquisition, labels:List[str]):
 
 def deleteContextEvents(acq:btk.btkAcquisition, context:str):
     """
-    remove events with the same context ( eg Left,Right, or General )
+    Removes events with a specified context (e.g., Left, Right, General).
 
     Args:
-        acq (btk.Acquisition) : a btk acquisition instance
-        context (str) : event context
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        context (str): Context of the events to be removed.
     """
     events = acq.GetEvents()
     newEvents = btk.btkEventCollection()
@@ -636,11 +673,11 @@ def deleteContextEvents(acq:btk.btkAcquisition, context:str):
 
 def modifyEventSubject(acq:btk.btkAcquisition, newSubjectlabel:str):
     """
-    update the subject name of all events
+    Updates the subject name for all events in the acquisition.
 
     Args:
-        acq (btk.Acquisition) : a btk acquisition instance
-        newSubjectlabel (str) : new subject
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        newSubjectlabel (str): New subject name to be applied.
     """
 
     # events
@@ -653,11 +690,11 @@ def modifyEventSubject(acq:btk.btkAcquisition, newSubjectlabel:str):
 
 def modifySubject(acq:btk.btkAcquisition, newSubjectlabel:str):
     """
-    update the subject name inside c3d metadata
+    Updates the subject name in the acquisition's metadata.
 
     Args:
-        acq (btk.Acquisition) : a btk acquisition instance
-        newSubjectlabel (str) : new subject
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        newSubjectlabel (str): New subject name to be set.
     """
     acq.GetMetaData().FindChild("SUBJECTS").value().FindChild(
         "NAMES").value().GetInfo().SetValue(0, (newSubjectlabel))
@@ -665,10 +702,13 @@ def modifySubject(acq:btk.btkAcquisition, newSubjectlabel:str):
 
 def getNumberOfModelOutputs(acq:btk.btkAcquisition):
     """
-    return the size of model outputs
+    Returns the count of different types of model outputs in the acquisition.
 
     Args:
-        acq (btk.Acquisition) : a btk acquisition instance
+        acq (btk.btkAcquisition): BTK acquisition instance.
+
+    Returns:
+        tuple: Counts of angles, forces, moments, and powers.
     """
     n_angles = 0
     n_forces = 0
@@ -694,7 +734,16 @@ def getNumberOfModelOutputs(acq:btk.btkAcquisition):
 
 
 def hasChild(md:btk.btkMetaData, mdLabel:str):
+    """
+    Checks if the specified metadata child exists.
 
+    Args:
+        md (btk.btkMetaData): Metadata instance.
+        mdLabel (str): Label of the metadata child to check.
+
+    Returns:
+        btk.btkMetaData: Child metadata if exists, else None.
+    """
     outMd = None
     for itMd in btk.Iterate(md):
         if itMd.GetLabel() == mdLabel:
@@ -705,10 +754,15 @@ def hasChild(md:btk.btkMetaData, mdLabel:str):
 
 def getVisibleMarkersAtFrame(acq:btk.btkAcquisition, markers:List[str], index:int):
     """
-    return markers visible at a specific frame
+    Returns markers that are visible at a specific frame.
 
     Args:
-        acq (btk.Acquisition) : a btk acquisition instance
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        markers (list): List of marker labels.
+        index (int): Frame index.
+
+    Returns:
+        list: List of visible markers at the specified frame.
     """
     visibleMarkers = []
     for marker in markers:
@@ -719,11 +773,14 @@ def getVisibleMarkersAtFrame(acq:btk.btkAcquisition, markers:List[str], index:in
 
 def isAnalogExist(acq:btk.btkAcquisition, label:str):
     """
-    Check if a point label exists inside an acquisition
+    Checks if an analog label exists in the acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition inctance
-        label (str) - analog label
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): Analog label to check.
+
+    Returns:
+        bool: True if the analog label exists, False otherwise.
     """
     #TODO : replace by btkIterate
     i = acq.GetAnalogs().Begin()
@@ -743,13 +800,13 @@ def isAnalogExist(acq:btk.btkAcquisition, label:str):
 
 def smartAppendAnalog(acq:btk.btkAcquisition, label:str, values:np.ndarray, desc:str=""):
     """
-    append an analog output
+    Appends or updates an analog output in the acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition inctance
-        label (str) - analog label
-        label (np.array) - values
-        desc (str,optional) - description
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): Analog label.
+        values (np.ndarray): Analog values to append or update.
+        desc (str, optional): Description of the analog. Defaults to an empty string.
     """
 
     if isAnalogExist(acq, label):
@@ -766,11 +823,11 @@ def smartAppendAnalog(acq:btk.btkAcquisition, label:str, values:np.ndarray, desc
 
 def markerUnitConverter(acq:btk.btkAcquisition, unitOffset:float):
     """
-    apply an offset to convert marker in an other unit
+    Applies an offset to convert marker units.
 
-    Args
-        acq (btkAcquisition): a btk acquisition inctance
-        unitOffset (float) - offset value
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        unitOffset (float): Offset value for unit conversion.
     """
     for it in btk.Iterate(acq.GetPoints()):
         if it.GetType() == btk.btkPoint.Marker:
@@ -780,14 +837,14 @@ def markerUnitConverter(acq:btk.btkAcquisition, unitOffset:float):
 
 def constructMarker(acq:btk.btkAcquisition, label:str, markers:List[str], numpyMethod:callable=np.mean, desc:str=""):
     """
-    construct a marker from others
+    Constructs a new marker from existing markers using a specified numpy method.
 
-    Args
-        acq (btkAcquisition): a btk acquisition inctance
-        label (str): marker label of the constructed marker
-        markers ([str...]):  markers labels
-        numpyMethod (callable): [default:np.mean]: numpy function used for handle markers
-        desc (str,optional) - description
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): Label for the new marker.
+        markers (list): List of existing marker labels to be used in construction.
+        numpyMethod (callable, optional): Numpy function to handle marker data. Defaults to np.mean.
+        desc (str, optional): Description of the new marker. Defaults to an empty string.
     """
     nFrames = acq.GetPointFrameNumber()
 
@@ -811,12 +868,12 @@ def constructMarker(acq:btk.btkAcquisition, label:str, markers:List[str], numpyM
 
 def constructPhantom(acq:btk.btkAcquisition, label:str, desc:str=""):
     """
-    construct a phantom
+    Constructs a phantom marker (marker with zero values).
 
-    Args
-        acq (btkAcquisition): a btk acquisition inctance
-        label (str): marker label of the constructed marker
-        desc (str,optional) - description
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): Label for the phantom marker.
+        desc (str, optional): Description of the phantom marker. Defaults to an empty string.
     """
     nFrames = acq.GetPointFrameNumber()
     values = np.zeros((nFrames, 3))
@@ -826,11 +883,14 @@ def constructPhantom(acq:btk.btkAcquisition, label:str, desc:str=""):
 
 def createPhantoms(acq:btk.btkAcquisition, markerLabels:List[str]):
     """
-    construct phantoms
+    Constructs phantom markers for a list of specified labels.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        markerLabels (list): phantom marker labels
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        markerLabels (list): List of marker labels for which phantoms will be created.
+
+    Returns:
+        tuple: A tuple containing lists of actual and phantom markers.
     """
     phantom_markers = []
     actual_markers = []
@@ -845,10 +905,13 @@ def createPhantoms(acq:btk.btkAcquisition, markerLabels:List[str]):
 
 def getNumberOfForcePlate(acq:btk.btkAcquisition):
     """
-    return number of force plate
+    Returns the number of force plates in the acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+
+    Returns:
+        int: The number of force plates.
     """
     pfe = btk.btkForcePlatformsExtractor()
     pfe.SetInput(acq)
@@ -860,14 +923,16 @@ def getNumberOfForcePlate(acq:btk.btkAcquisition):
 
 def getStartEndEvents(acq:btk.btkAcquisition, context:str, startLabel:str="Start", endLabel:str="End"):
     """
-    return frames of the start and end events.
+    Retrieves the frame numbers of start and end events based on their context and labels.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        context (str): event context
-        startLabel (str,optional). label of the start event. default set to Start
-        endLabel (str,optional). label of the end event. default set to End
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        context (str): Context of the events.
+        startLabel (str, optional): Label of the start event. Defaults to "Start".
+        endLabel (str, optional): Label of the end event. Defaults to "End".
 
+    Returns:
+        tuple: Frame numbers of the start and end events, if they exist.
     """
     events = acq.GetEvents()
 
@@ -890,6 +955,15 @@ def getStartEndEvents(acq:btk.btkAcquisition, context:str, startLabel:str="Start
 
 
 def _getSectionFromMd(md:btk.btkMetaData):
+    """
+    Retrieves a list of child sections from metadata.
+
+    Args:
+        md (btk.btkMetaData): BTK metadata instance.
+
+    Returns:
+        list: List of child section labels in the metadata.
+    """
     md_sections = []
     for i in range(0, md.GetChildNumber()):
         md_sections.append(md.GetChild(i).GetLabel())
@@ -898,12 +972,11 @@ def _getSectionFromMd(md:btk.btkMetaData):
 
 def changeSubjectName(acq:btk.btkAcquisition, subjectName:str):
     """
-    change subject name in all section of the acquisition
+    Changes the subject name in the acquisition's metadata.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        subjectName (str): subject name
-
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        subjectName (str): New name for the subject.
     """
 
     # change subject name in the metadata
@@ -940,14 +1013,16 @@ def changeSubjectName(acq:btk.btkAcquisition, subjectName:str):
 
 def smartGetMetadata(acq:btk.btkAcquisition, firstLevel:str, secondLevel:str, returnType:str="String"):
     """
-    return metadata
+    Retrieves metadata information based on specified levels.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        firstLevel (str): metadata first-level label
-        secondLevel (str): metadata second-level label
-        returnType (str,optional) : returned type of the metadata. defalut set to String
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        firstLevel (str): First level metadata label.
+        secondLevel (str): Second level metadata label.
+        returnType (str, optional): Type of the returned metadata (String, Integer, Double). Defaults to "String".
 
+    Returns:
+        str or int or float: Metadata information based on the returnType.
     """
     md = acq.GetMetaData()
     if secondLevel is not None:
@@ -974,15 +1049,14 @@ def smartGetMetadata(acq:btk.btkAcquisition, firstLevel:str, secondLevel:str, re
 
 def smartSetMetadata(acq:btk.btkAcquisition, firstLevel:str, secondLevel:str, index:int, value:str):
     """
-    set a metadata
+    Sets a value in the acquisition's metadata.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        firstLevel (str): metadata first-level label
-        secondLevel (str): metadata second-level label
-        index (int) : index
-        value (str,optional) : metadata value
-
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        firstLevel (str): First level metadata label.
+        secondLevel (str): Second level metadata label.
+        index (int): Index at which to set the value.
+        value (str): Value to set in the metadata.
     """
     md = acq.GetMetaData()
     if firstLevel in _getSectionFromMd(md):
@@ -993,12 +1067,15 @@ def smartSetMetadata(acq:btk.btkAcquisition, firstLevel:str, secondLevel:str, in
 
 def checkMetadata(acq:btk.btkAcquisition, firstLevel:str, secondLevel:str):
     """
-    check presence of a metadata
+    Checks the existence of specified metadata.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        firstLevel (str): metadata first-level label
-        secondLevel (str): metadata second-level label
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        firstLevel (str): First level metadata label.
+        secondLevel (str): Second level metadata label.
+
+    Returns:
+        bool: True if the metadata exists, False otherwise.
     """
     md = acq.GetMetaData()
     flag = False
@@ -1016,11 +1093,13 @@ def checkMetadata(acq:btk.btkAcquisition, firstLevel:str, secondLevel:str):
 
 def checkForcePlateExist(acq:btk.btkAcquisition):
     """
-    check force plate presence
+    Checks if force plates exist in the acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
 
+    Returns:
+        bool: True if force plates exist, False otherwise.
     """
     if checkMetadata(acq, "FORCE_PLATFORM", "USED"):
         if smartGetMetadata(acq, "FORCE_PLATFORM", "USED")[0] != "0":
@@ -1033,11 +1112,10 @@ def checkForcePlateExist(acq:btk.btkAcquisition):
 
 def sortedEvents(acq:btk.btkAcquisition):
     """
-    sort events
+    Sorts the events in the acquisition based on their time of occurrence.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
     """
     evs = acq.GetEvents()
 
@@ -1068,12 +1146,14 @@ def sortedEvents(acq:btk.btkAcquisition):
 
 def buildTrials(dataPath:str, filenames:List[str]):
     """
-    build acquisitions
+    Constructs BTK acquisitions from a list of filenames located in a specified directory.
 
-    Args
-        dataPath (str): data folder dataPath
-        filenames(list): c3d filenames
+    Args:
+        dataPath (str): Path to the directory containing the C3D files.
+        filenames (List[str]): List of filenames of the C3D files to be processed.
 
+    Returns:
+        List[btk.btkAcquisition]: List of BTK acquisition objects created from the specified files.
     """
 
     acqs = []
@@ -1092,11 +1172,13 @@ def buildTrials(dataPath:str, filenames:List[str]):
 
 def isKineticFlag(acq:btk.btkAcquisition):
     """
-    check presence of force plate events (ie Left-FP", "Right-FP")
+    Checks if kinetic data (force plate events) are present in the acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
 
+    Returns:
+        bool: True if kinetic data are present, False otherwise.
     """
 
     kineticEvent_frames = []
@@ -1121,13 +1203,16 @@ def isKineticFlag(acq:btk.btkAcquisition):
 
 def automaticKineticDetection(dataPath:str, filenames:List[str], acqs:Optional[List[btk.btkAcquisition]]=None):
     """
-    check presence of force plate events (ie Left-FP", "Right-FP") in a list of files
+    Automatically detects and processes acquisitions with kinetic data.
 
-    Args
-        dataPath (str): data folder dataPath
-        filenames ([str..]): filenames
-        acqs ([btk.acquisition,...],Optional): list of btk.acquisition instances. default set to None
+    Args:
+        dataPath (str): Path to the data directory.
+        filenames (List[str]): List of filenames to check for kinetic data.
+        acqs (Optional[List[btk.btkAcquisition]], optional): List of preloaded acquisitions. Defaults to None.
 
+    Returns:
+        Tuple[List[btk.btkAcquisition], List[str], bool]: Tuple containing a list of acquisitions with kinetic data,
+        their filenames, and a flag indicating the presence of kinetic data.
     """
 
     kineticAcqs = []
@@ -1161,11 +1246,14 @@ def automaticKineticDetection(dataPath:str, filenames:List[str], acqs:Optional[L
 
 def getForcePlateWrench(acq:btk.btkAcquisition, fpIndex:int=None):
     """
-    get force plate wrench
+    Retrieves the ground reaction wrenches for force plates in the acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        fpIndex (int, optional): Index of the specific force plate. If None, all force plates are considered. Defaults to None.
 
+    Returns:
+        btk.btkWrenchCollection: Collection of ground reaction wrenches for the force plates.
     """
     # --- ground reaction force wrench ---
     pfe = btk.btkForcePlatformsExtractor()
@@ -1184,14 +1272,16 @@ def getForcePlateWrench(acq:btk.btkAcquisition, fpIndex:int=None):
 
 def applyRotation(acq:btk.btkAcquisition, markers:List[str], globalFrameOrientation:str, forwardProgression:bool):
     """
-    apply a rotation to markers
+    Applies a rotation to the specified markers in the acquisition based on the global frame orientation.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        markers (list): marker labels
-        globalFrameOrientation (str): orientation of the global frame ( eg XYZ stands for X:long, y: transversal, Z:normal)
-        forwardProgression (bool): indicate progression along the positive axis of the progression frame
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        markers (List[str]): List of marker names to apply rotation to.
+        globalFrameOrientation (str): Orientation of the global frame (e.g., 'XYZ' for X:longitudinal, Y:transversal, Z:vertical).
+        forwardProgression (bool): Indicates if progression is along the positive axis of the frame.
 
+    Returns:
+        None: The function directly modifies the acquisition object.
     """
     if globalFrameOrientation == "XYZ":
         rot = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
@@ -1215,14 +1305,15 @@ def applyRotation(acq:btk.btkAcquisition, markers:List[str], globalFrameOrientat
 
 def smartGetEvents(acq:btk.btkAcquisition, label:str, context:str):
     """
-    return an event
+    Retrieves events from the acquisition based on label and context.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        label (str): event label
-        context (str): event context
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): Label of the events to retrieve.
+        context (str): Context of the events to retrieve.
 
-
+    Returns:
+        List[int]: List of frames where the specified events occur.
     """
     evs = acq.GetEvents()
 
@@ -1235,14 +1326,15 @@ def smartGetEvents(acq:btk.btkAcquisition, label:str, context:str):
 
 def isEventExist(acq:btk.btkAcquisition, label:str, context:str):
     """
-    check if an event exist
+    Checks if an event with the specified label and context exists in the acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        label (str): event label
-        context (str): event context
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): The label of the event to check for.
+        context (str): The context of the event to check for.
 
-
+    Returns:
+        bool: True if the event exists, False otherwise.
     """
     evs = acq.GetEvents()
     out = False
@@ -1253,14 +1345,17 @@ def isEventExist(acq:btk.btkAcquisition, label:str, context:str):
 
 def renameEvent(acq:btk.btkAcquisition, label:str, context:str, newlabel:str, newcontext:str):
     """
-    rename an event exist
+    Renames an existing event in a BTK acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        label (str): event label
-        context (str): event context
+    Args:
+        acq (btk.btkAcquisition): The BTK acquisition instance containing the event.
+        label (str): The current label of the event to be renamed.
+        context (str): The current context of the event to be renamed.
+        newlabel (str): The new label for the event.
+        newcontext (str): The new context for the event.
 
-
+    This function searches for an event in the given acquisition that matches the specified label and context.
+    If such an event is found, its label and context are updated to the new values provided.
     """
     evs = acq.GetEvents()
     for it in btk.Iterate(evs):
@@ -1271,10 +1366,14 @@ def renameEvent(acq:btk.btkAcquisition, label:str, context:str, newlabel:str, ne
 
 def cleanAcq(acq:btk.btkAcquisition):
     """
-    clean an aquisition ( remove zero points)
+    Cleans a BTK acquisition by removing points with zero values across all frames.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
+    Args:
+        acq (btk.btkAcquisition): The BTK acquisition instance to be cleaned.
+
+    This function iterates through all points in the given BTK acquisition. If a point (such as a marker, angle, 
+    force, moment, or power) has zero values for all frames, it is removed from the acquisition. This is useful for 
+    tidying up motion capture data, especially when certain points are not relevant or are placeholders with no actual data.
     """
 
     nframes = acq.GetPointFrameNumber()
@@ -1295,17 +1394,19 @@ def cleanAcq(acq:btk.btkAcquisition):
 
 def smartCreateEvent(acq:btk.btkAcquisition, label:str, context:str, frame:int, type:str="Automatic", subject:str="", desc:str=""):
     """
-    set an event
+    Creates a new event in the BTK acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        label (str): event labels
-        context (str): event context
-        frame (int) event frameEnd
-        type (btk.btkEvent enum,optional ): btk event type. Default set to btk.btkEvent.Automatic
-        subject (str,optional ): name of the subject. Defaut set to ""
-        desc (str,optional ): description. Defaut set to ""
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): Label of the event.
+        context (str): Context of the event (e.g., 'Left', 'Right').
+        frame (int): Frame number where the event occurs.
+        type (str, optional): Type of the event (e.g., 'Automatic', 'Manual'). Defaults to 'Automatic'.
+        subject (str, optional): Name of the subject associated with the event. Defaults to an empty string.
+        desc (str, optional): Description of the event. Defaults to an empty string.
 
+    Returns:
+        None: The event is added directly to the acquisition object.
     """
 
     if type=="Automatic":
@@ -1326,17 +1427,19 @@ def smartCreateEvent(acq:btk.btkAcquisition, label:str, context:str, frame:int, 
 
 def smartAppendParamAnalysis(acq:btk.btkAcquisition, name:str, eventcontext:str, value:float, description:str="", subject:str="", unit:str=""):
     """
-    set an analysis parameter
+    Appends a new analysis parameter to the BTK acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        name (str): parameter label
-        eventcontext (str): event context
-        value (float): value
-        subject (str,optional ): name of the subject. Defaut set to ""
-        description (str,optional ): description. Defaut set to ""
-        unit (str,optional ): unit. Defaut set to ""
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        name (str): Name of the analysis parameter.
+        eventcontext (str): Context of the event related to the analysis parameter.
+        value (float): Value of the analysis parameter.
+        description (str, optional): Description of the analysis parameter. Defaults to an empty string.
+        subject (str, optional): Subject associated with the analysis parameter. Defaults to an empty string.
+        unit (str, optional): Unit of the analysis parameter. Defaults to an empty string.
 
+    Returns:
+        None: The analysis parameter is appended directly to the acquisition object.
     """
 
     used = smartGetMetadata(acq, "ANALYSIS", "USED", returnType="Integer")
@@ -1461,12 +1564,13 @@ def smartAppendParamAnalysis(acq:btk.btkAcquisition, name:str, eventcontext:str,
 
 def getAllParamAnalysis(acq:btk.btkAcquisition):
     """
-    get all analysis parameters
+    Retrieves all analysis parameters from the BTK acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
 
-
+    Returns:
+        List[Dict]: A list of dictionaries, each containing information about an analysis parameter.
     """
 
     names = [it.strip()
@@ -1495,13 +1599,16 @@ def getAllParamAnalysis(acq:btk.btkAcquisition):
 
 def getParamAnalysis(btkAcq:btk.btkAcquisition, name:str, context:str, subject:str):
     """
-    get an analysis parameter
+    Retrieves a specific analysis parameter from the BTK acquisition.
 
-    Args
-        acq (btkAcquisition): a btk acquisition instance
-        name (str): parameter labels
-        context (str): event contexts
-        subject (str): subject name
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        name (str): Name of the analysis parameter.
+        context (str): Context of the event related to the analysis parameter.
+        subject (str): Subject associated with the analysis parameter.
+
+    Returns:
+        Dict: Dictionary containing information about the specified analysis parameter.
     """
 
     names = [it.strip()
@@ -1528,6 +1635,16 @@ def getParamAnalysis(btkAcq:btk.btkAcquisition, name:str, context:str, subject:s
         name, context, subject))
 
 def getLabelsFromScalar(acq:btk.btkAcquisition, description:Optional[str]=None):
+    """
+    Retrieves labels of scalar points from a BTK acquisition based on their description.
+
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        description (str, optional): Description to filter scalar points. If None, retrieves all scalar points. Defaults to None.
+
+    Returns:
+        List[str]: List of labels of the scalar points that match the given description.
+    """
     out = []
 
     if description is not None:
@@ -1543,6 +1660,16 @@ def getLabelsFromScalar(acq:btk.btkAcquisition, description:Optional[str]=None):
     return out
 
 def getScalar(acq:btk.btkAcquisition,label:str):
+    """
+    Retrieves a scalar point from a BTK acquisition by its label.
+
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        label (str): Label of the scalar point to retrieve.
+
+    Returns:
+        btk.btkPoint: The requested scalar point, if found.
+    """
 
     out = None
 
@@ -1556,15 +1683,15 @@ def getScalar(acq:btk.btkAcquisition,label:str):
 
 
 def btkPointToKtkTimeseries(acq:btk.btkAcquisition, type:btk.btkPoint=btk.btkPoint.Marker):
-    """convert the all btkPoint of a btkAcquisition in a Ktk timeseries 
+    """
+    Converts BTK points of a specified type from a BTK acquisition to a Kinetics Toolkit timeseries.
 
     Args:
-        acq (btk.btkAcquisition): acquisition
-        type (btk.btkPoint enum, optional): A btkPoint enum ( choice btk.btkPoint.Marker, btk.btkPoint.Angle,
-            btk.btkPoint.Moment,btk.btkPoint.Force,btk.btkPoint.Power) . Defaults to btk.btkPoint.Marker.
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        type (btk.btkPoint, optional): Type of BTK points to convert (e.g., Marker, Angle). Defaults to btk.btkPoint.Marker.
 
     Returns:
-        ktk.kineticstoolkit.timeseries.TimeSeries: a ktk timeseries
+        ktk.kineticstoolkit.timeseries.TimeSeries: A timeseries object containing the converted data.
     """
      
     freq = acq.GetPointFrequency()
@@ -1580,13 +1707,14 @@ def btkPointToKtkTimeseries(acq:btk.btkAcquisition, type:btk.btkPoint=btk.btkPoi
 
 
 def btkAnalogToKtkTimeseries(acq:btk.btkAcquisition):
-    """convert the all btkAnalog of a btkAcquisition in a Ktk timeseries 
+    """
+    Converts all BTK analog data from a BTK acquisition to a Kinetics Toolkit timeseries.
 
     Args:
-        acq (btk.btkAcquisition): acquisition
+        acq (btk.btkAcquisition): BTK acquisition instance.
 
     Returns:
-        ktk.kineticstoolkit.timeseries.TimeSeries: a ktk timeseries
+        ktk.kineticstoolkit.timeseries.TimeSeries: A timeseries object containing the converted analog data.
     """     
     freq = acq.GetAnalogFrequency()
     frames = np.arange(0, acq.GetAnalogFrameNumber())
@@ -1600,6 +1728,18 @@ def btkAnalogToKtkTimeseries(acq:btk.btkAcquisition):
 
 
 def calculateAngleFrom3points( acq:btk.btkAcquisition,pt1:str,pt2:str,pt3:str):
+    """
+    Calculates the angle formed by three points at each frame in a BTK acquisition.
+
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        pt1 (str): Label of the first point.
+        pt2 (str): Label of the second point.
+        pt3 (str): Label of the third point.
+
+    Returns:
+        np.ndarray: An array of angles calculated at each frame.
+    """
     nrow = acq.GetPointFrameNumber()
     out = np.zeros((nrow,3))
 
@@ -1623,20 +1763,14 @@ def calculateAngleFrom3points( acq:btk.btkAcquisition,pt1:str,pt2:str,pt3:str):
 
 def markersToArray(acq:btk.btkAcquisition,markers:Optional[List[str]]=None):
     """
-    Array of marker position data with N time steps across M markers.
-    The data need to be organized as follows:
-
-    x1(t1) y1(t1) z1(t1) x2(t1) y2(t1) z2(t1) ...    xm(t1) ym(t1) zm(t1)
-    x1(t2) y1(t2) z1(t2) x2(t2) y2(t2) z2(t2) ...    xm(t2) ym(t2) zm(t2)
-    ...    ...    ...    ...    ...    ...    ...    ...    ...    ...
-    x1(tn) y1(tn) z1(tn) x2(tn) y2(tn) z2(tn) ...    xm(tn) ym(tn) zm(tn)
+    Converts marker position data from a BTK acquisition to a numpy array.
 
     Args:
-        acq (btk.btkAcquisition): acquisition
-        markers (list, optional): list of marker labels. Defaults to None.
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        markers (List[str], optional): List of marker labels to include. If None, includes all markers. Defaults to None.
 
     Returns:
-        np.array: array of marker trajectories
+        np.ndarray: Array of marker trajectories with dimensions [n_frames, n_markers * 3].
     """
 
     markerNames  = GetMarkerNames(acq)

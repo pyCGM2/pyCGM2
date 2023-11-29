@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-import os
-from distutils import extension
-from weakref import finalize
+from typing import List, Tuple, Dict, Optional,Union,Any
+
 from pyCGM2.Utils import files
 from pyCGM2.Tools import btkTools
 from pyCGM2.Model.Opensim.interface import opensimInterface
@@ -27,9 +25,16 @@ except:
 
 
 class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
-    def __init__(self, DATA_PATH,mass, height):
-    
-         
+    """
+    Procedure for scaling XML processing in OpenSim. It handles the preparation and processing
+    of static trials and setup files for scaling in OpenSim.
+
+    Args:
+        DATA_PATH (str): The path to the data directory.
+        mass (float): The mass of the subject.
+        height (float): The height of the subject.
+    """
+    def __init__(self, DATA_PATH: str, mass: float, height: float):
         super(ScalingXmlProcedure,self).__init__()
 
         self.m_DATA_PATH = DATA_PATH
@@ -39,7 +44,14 @@ class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         self.m_height=height
 
     
-    def prepareStaticTrial_fromBtkAcq(self, acq, staticFileNoExt):
+    def prepareStaticTrial_fromBtkAcq(self, acq: btk.btkAcquisition, staticFileNoExt: str) -> None:
+        """
+        Prepares a static trial from a BTK acquisition object.
+
+        Args:
+            acq (btk.btkAcquisition): The BTK acquisition object.
+            staticFileNoExt (str): The filename (without extension) for the static file.
+        """
         self.m_staticFile = staticFileNoExt
         self._staticTrc = btkTools.smartWriter( acq, self.m_DATA_PATH + staticFileNoExt, extension="trc")
 
@@ -48,7 +60,15 @@ class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         self.m_final_time = static.getLastFrameTime()
 
 
-    def setSetupFiles(self,genericOsimFile, markersetFile, scaleToolFile):
+    def setSetupFiles(self, genericOsimFile: str, markersetFile: str, scaleToolFile: str) -> None:
+        """
+        Sets up the required files for scaling procedure in OpenSim.
+
+        Args:
+            genericOsimFile (str): Path to the generic OpenSim file.
+            markersetFile (str): Path to the markerset file.
+            scaleToolFile (str): Path to the scale tool file.
+        """
 
         self.m_osim = files.getFilename(genericOsimFile)
         files.copyPaste(genericOsimFile, self.m_DATA_PATH + self.m_osim)
@@ -62,6 +82,9 @@ class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
 
 
     def prepareXml(self):
+        """
+        Prepares the XML for the scaling process.
+        """
 
         self.xml.set_one("mass", str(self.m_mass))
         self.xml.set_one("height", str(self.m_height))
@@ -76,8 +99,10 @@ class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
 
 
     def run(self):
-
-        
+        """
+        Runs the scaling process.
+        """
+       
         self.xml.update()
 
         scale_tool = opensim.ScaleTool(self.m_scaleTool)
@@ -89,15 +114,27 @@ class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         self.finalize()
 
     def finalize(self):
+        """
+        Finalizes the scaling process, including renaming and saving files.
+        """
         files.renameFile(self.m_scaleTool,self.m_DATA_PATH + self.m_staticFile+ "-ScaleToolSetup.xml")    
 
 
 
 
 class ScalingXmlCgmProcedure(ScalingXmlProcedure):
-    def __init__(self, DATA_PATH,modelVersion,mass, height):
-    
-         
+    """
+    Procedure for scaling XML processing specific to the CGM model in OpenSim. 
+    Extends ScalingXmlProcedure to include CGM model-specific configurations.
+
+        Args:
+        DATA_PATH (str): The path to the data directory.
+        modelVersion (str): Version of the CGM model.
+        mass (float): The mass of the subject.
+        height (float): The height of the subject.
+
+    """
+    def __init__(self, DATA_PATH: str, modelVersion: str, mass: float, height: float):
         super(ScalingXmlCgmProcedure,self).__init__(DATA_PATH,mass, height)
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
@@ -124,6 +161,9 @@ class ScalingXmlCgmProcedure(ScalingXmlProcedure):
 
 
     def prepareXml(self):
+        """
+        Prepares the XML for the scaling process specific to the CGM model.
+        """
 
         self.xml.set_one("mass", str(self.m_mass))
         self.xml.set_one("height", str(self.m_height))
@@ -138,7 +178,9 @@ class ScalingXmlCgmProcedure(ScalingXmlProcedure):
 
 
     def run(self):
-
+        """
+        Runs the scaling process for the CGM model.
+        """
         
         self.xml.update()
 
@@ -151,4 +193,7 @@ class ScalingXmlCgmProcedure(ScalingXmlProcedure):
         self.finalize()
 
     def finalize(self):
+        """
+        Finalizes the scaling process for the CGM model, including renaming and saving files.
+        """
         files.renameFile(self.m_scaleTool,self.m_DATA_PATH + self.m_staticFile+ "-"+self.m_modelVersion+"-ScaleToolSetup.xml")    

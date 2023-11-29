@@ -9,16 +9,15 @@ from typing import List, Tuple, Dict, Optional,Union
 
 def splineFittingDerivation(values:np.ndarray,sampleFrequency:int,order:int=1)->np.ndarray:
     """
-    Spline fitting derivation
+    Spline fitting derivation of an array of values.
 
-    Args
-        values (np.ndarray): array of values
-        sampleFrequency (int): sample frequency
-       order (int,Optional): order of derivation. Default to 1
+    Args:
+        values (np.ndarray): Array of values for spline fitting.
+        sampleFrequency (int): Sampling frequency of the data.
+        order (int, optional): Order of derivation. Defaults to 1.
 
     Returns:
-        np.ndarray: derivative values
-
+        np.ndarray: Derivative values after spline fitting.
     """
     N = values.shape[0]
     m = values.shape[1]
@@ -44,16 +43,15 @@ def splineFittingDerivation(values:np.ndarray,sampleFrequency:int,order:int=1)->
 def splineDerivation(values:np.ndarray,sampleFrequency:int,order:int=1):
 
     """
-    Spline derivation
+    Spline derivation of an array of values.
 
-    Args
-        values (np.ndarray): array of values
-        sampleFrequency (int): sample frequency
-        order (int,Optional): order of derivation. Default to 1
+    Args:
+        values (np.ndarray): Array of values for spline derivation.
+        sampleFrequency (int): Sampling frequency of the data.
+        order (int, optional): Order of derivation. Defaults to 1.
 
     Returns:
-        np.ndarray: derivative values
-
+        np.ndarray: Derivative values after spline derivation.
     """
 
 
@@ -76,15 +74,14 @@ def splineDerivation(values:np.ndarray,sampleFrequency:int,order:int=1):
 
 def firstOrderFiniteDifference(values:np.ndarray,sampleFrequency:int)->np.ndarray:
     """
-    First-order differentiation of an array
+    First-order differentiation of an array using finite difference method.
 
-    Args
-        values (np.ndarray): array of values
-        sampleFrequency (int): sample frequency
+    Args:
+        values (np.ndarray): Array of values to differentiate.
+        sampleFrequency (int): Sampling frequency of the data.
 
     Returns:
-        np.ndarray: derivative values
-
+        np.ndarray: First-order derivative values.
     """
 
     n,m = values.shape
@@ -112,15 +109,14 @@ def firstOrderFiniteDifference(values:np.ndarray,sampleFrequency:int)->np.ndarra
 
 def secondOrderFiniteDifference(values:np.ndarray,sampleFrequency:int)->np.ndarray:
     """
-    second-order differentiation of an array
+    Second-order differentiation of an array using finite difference method.
 
-    Args
-        values (np.ndarray): array of values
-        sampleFrequency (int): sample frequency
+    Args:
+        values (np.ndarray): Array of values to differentiate.
+        sampleFrequency (int): Sampling frequency of the data.
 
     Returns:
-        np.ndarray: derivative values
-
+        np.ndarray: Second-order derivative values.
     """    
 
 
@@ -147,16 +143,17 @@ def secondOrderFiniteDifference(values:np.ndarray,sampleFrequency:int)->np.ndarr
 
 
 def matrixFirstDerivation(motionList:List[Frame], sampleFrequency:int)->List[np.ndarray]:
-    """first derivation of the rotation matrix, set in a list of frames
+    """
+    First-order derivation of the rotation matrix contained in a list of frames.
 
     Args:
-        motionList (list[Frame]): list of Frame instance
-        sampleFrequency (int): frequency
+        motionList (List[Frame]): List of Frame instances containing rotation matrices.
+        sampleFrequency (int): Sampling frequency of the data.
 
     Returns:
-        list[np.ndarray]: 1st derivative matrix
+        List[np.ndarray]: List of first derivative matrices.
     """
-    # TODO: rename the function and remove the depedancy to motionList
+
 
     nf = len(motionList)
     matrixList=[]
@@ -176,16 +173,16 @@ def matrixFirstDerivation(motionList:List[Frame], sampleFrequency:int)->List[np.
 
 
 def matrixSecondDerivation(motionList:List[Frame],sampleFrequency:int)->List[np.ndarray]:
-    """second derivation of the rotation matrix, set in a list of frames
+    """
+    Second-order derivation of the rotation matrix contained in a list of frames.
 
     Args:
-        motionList (list[Frame]): list of Frame instance
-        sampleFrequency (int): frequency
+        motionList (List[Frame]): List of Frame instances containing rotation matrices.
+        sampleFrequency (int): Sampling frequency of the data.
 
     Returns:
-        list[np.ndarray]: 2nd derivative matrix
+        List[np.ndarray]: List of second derivative matrices.
     """
-    # TODO: rename the function and remove the depedancy to motionLis
 
     nf = len(motionList)
     matrixList=[]

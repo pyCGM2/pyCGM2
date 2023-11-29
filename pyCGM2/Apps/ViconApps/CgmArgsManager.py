@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Configurator
-#APIDOC["Draft"]=False
-#--end--
-
-
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2 import enums

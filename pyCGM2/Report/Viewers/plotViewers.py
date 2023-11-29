@@ -26,32 +26,68 @@ from typing import Optional, Callable
 
 
 class PlotViewer(object):
-    """ abstract class """
+    """
+    Abstract base class for plot viewers used in pyCGM2. 
+
+    This class sets up the structure for specific plot viewers and initializes common attributes.
+
+    Args:
+        input: Input data for the plot. Type depends on the subclass implementation.
+        AutomaticYlimits (bool, optional): Flag to set Y axis limits automatically. Defaults to True.
+    """
     def __init__(self,input,AutomaticYlimits:bool=True):
         self.m_input =input
         self.m_automaticYlim_flag = AutomaticYlimits
 
     def setNormativeData(self):
+        """
+        Abstract method to set a normative dataset.
+
+        Must be implemented in subclasses if necessary.
+        """
         pass
 
     def __setLayer(self):
+        """
+        Abstract method to set up the plot layers.
+
+        Must be implemented in subclasses to define the plot structure.
+        """
         pass
 
     def __setData(self):
+        """
+        Abstract method to set up the plot data.
+
+        Must be implemented in subclasses to populate the plot with specific data.
+        """
         pass
 
     def plotPanel(self):
+        """
+        Abstract method to execute the plotting.
+
+        Must be implemented in subclasses to create the finalized plot.
+        """
         pass
 
     def setAutomaticYlimits(self,bool:bool):
+        """
+        Sets whether Y-axis limits should be auto-adjusted.
+
+        Args:
+            bool (bool): True to activate automatic adjustment of Y-axis limits.
+        """
         self.m_automaticYlim_flag = bool
 
 class SpatioTemporalPlotViewer(PlotViewer):
-    """ Plot viewer to display spatio-temporal parameters as histogram
+    """
+    Viewer for displaying spatio-temporal parameters as histograms.
+
+    Displays histograms for gait parameters like speed, stride length, cadence, etc., using an analysis instance.
 
     Args:
-        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
-
+        iAnalysis (Analysis): An instance of pyCGM2.Processing.analysis.Analysis containing the analysis results.
     """
 
     def __init__(self,iAnalysis:Analysis):
@@ -65,16 +101,21 @@ class SpatioTemporalPlotViewer(PlotViewer):
             LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
-        """Set the normative dataset
-
+        """
+        Sets the normative dataset for the plot.
 
         Args:
-             iNormativeDataSet(pyCGM2.Report.normativeDatasets.NormalSTP): a spatio-temporal normative dataset instance
+            iNormativeDataSet (NormativeData): An instance of NormativeData to reference normative data.
         """
 
         self.m_normativeData = iNormativeDataSet.data
 
     def __setLayer(self):
+        """
+        Sets up the plot layers for spatio-temporal parameters.
+
+        Defines the basic plot structure including titles and axes.
+        """
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         title=u""" Spatio temporal Gait Parameters \n """
         self.fig.suptitle(title)
@@ -92,6 +133,11 @@ class SpatioTemporalPlotViewer(PlotViewer):
 
 
     def __setData(self):
+        """
+        Executes the plot of spatio-temporal parameters.
+
+        Creates the finalized plot using the analysis data and defined structure.
+        """
 
         plot.stpHorizontalHistogram(self.fig.axes[0],self.m_analysis.stpStats,
                                 "speed",
@@ -135,7 +181,11 @@ class SpatioTemporalPlotViewer(PlotViewer):
 
 
     def plotPanel(self):
-        "Plot the panel"
+        """
+        Executes the Spatio-temporal plot.
+
+        Creates the finalized plot using the analysis data and defined structure.
+        """
         self.__setLayer()
         self.__setData()
 
@@ -178,6 +228,11 @@ class GpsMapPlotViewer(PlotViewer):
     #     pass
 
     def __setLayer(self):
+        """
+        Sets up the plot layers for GPS and MAP.
+
+        Defines the basic plot structure including titles and axes for GPS and MAP.
+        """
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         title=u"""Mouvement  Analysis Profile \n """
         self.fig.suptitle(title)
@@ -187,7 +242,11 @@ class GpsMapPlotViewer(PlotViewer):
 
 
     def __setData(self):
+        """
+        Sets up the data for the GPS and MAP plot.
 
+        Populates the plot with specific analysis data for GPS and MAP.
+        """
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
         N = 9
         overall = (self.m_analysis.gvs["LPelvisAngles"+suffixPlus,"Left"]["mean"][0],
@@ -240,24 +299,32 @@ class GpsMapPlotViewer(PlotViewer):
 
 
     def plotPanel(self):
-        """ plat the panel"""
+        """
+        Executes the GPS and MAP plot.
+
+        Creates the finalized plot using the analysis data and defined structure.
+        """
         self.__setLayer()
         self.__setData()
 
         return self.fig
 
 class NormalizedKinematicsPlotViewer(PlotViewer):
-    """ Plot time-Normalized Kinematics
+    """
+    Viewer for displaying time-normalized kinematics.
+
+    This viewer can be used to plot descriptive or consistency plots for different body parts using analysis data.
 
     Args:
-        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis instance`
-        pointLabelSuffix (str): suffix added model outputs
-        bodyPart (enums.BodyPartPlot,Optional[enums.BodyPartPlot.LowerLimb]): body part
-
+        iAnalysis (Analysis): An instance of pyCGM2.Processing.analysis.Analysis containing the analysis results.
+        pointLabelSuffix (str, optional): Suffix for point labels in the plot.
+        bodyPart (enums.BodyPartPlot, optional): Body part to be plotted. Defaults to enums.BodyPartPlot.LowerLimb.
     """
 
     def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None,bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
-
+        """"
+        Initializes the NormalizedKinematicsPlotViewer.
+        """
         super(NormalizedKinematicsPlotViewer, self).__init__(iAnalysis)
 
         self.m_analysis = self.m_input
@@ -275,17 +342,21 @@ class NormalizedKinematicsPlotViewer(PlotViewer):
 
 
     def setConcretePlotFunction(self, concreteplotFunction:Callable):
-        """set a plot function ( see `plot`)
+        """
+        Sets a concrete plotting function to be used in the viewer.
 
         Args:
-            concreteplotFunction (Callable): a plot function of a plot function of pyCGM2.Report.plot
-
+            concreteplotFunction (Callable): A plotting function from pyCGM2.Report.plot.
         """
         self.m_concretePlotFunction = concreteplotFunction
 
 
     def __setLayer(self):
+        """
+        Sets up the plot layers for time-normalized kinematics.
 
+        Defines the structure of the plot, including axes and titles, specific to kinematic data.
+        """
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
 
         if self.m_concretePlotFunction.__name__ in ["descriptivePlot","gaitDescriptivePlot"]:
@@ -438,16 +509,21 @@ class NormalizedKinematicsPlotViewer(PlotViewer):
                 ax14.set_ylim([-30,30])
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
-        """ Set the normative dataset
+        """
+        Sets the normative dataset for kinematic comparison.
 
         Args:
-            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): a normative dataset instance
-
+            iNormativeDataSet (NormativeData): An instance of NormativeData for reference in the plot.
         """
         # iNormativeDataSet.constructNormativeData()
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
+        """
+        Sets up the data for the time-normalized kinematic plot.
+
+        Populates the plot with specific analysis data for time-normalized kinematics.
+        """
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
@@ -670,7 +746,11 @@ class NormalizedKinematicsPlotViewer(PlotViewer):
 
 
     def plotPanel(self):
-        """ Plot the panel"""
+        """
+        Executes the time-normalized kinematics plot.
+
+        Creates the finalized plot using the analysis data and defined structure.
+        """
 
         if self.m_concretePlotFunction is None:
             raise Exception ("[pyCGM2] need definition of the concrete plot function")
@@ -884,17 +964,19 @@ class NormalizedKinematicsPlotViewer(PlotViewer):
         return self.fig
 
 class TemporalKinematicsPlotViewer(PlotViewer):
-    """ Plot temporal Kinematics
+    """
+    Viewer for displaying temporal kinematics.
+
+    This viewer plots kinematic parameters over time for a given acquisition and body part.
 
     Args:
-        iAcq (btk.Acquisition): an acquisition
-        pointLabelSuffix (str): suffix added model outputs
-        bodyPart (enums.BodyPartPlot,Optional[enums.BodyPartPlot.LowerLimb]): body part
-
+        iAcq (btk.Acquisition): An acquisition instance from btk.
+        pointLabelSuffix (str, optional): Suffix for point labels in the plot.
+        bodyPart (enums.BodyPartPlot, optional): Body part to be plotted. Defaults to enums.BodyPartPlot.LowerLimb.
     """
 
     def __init__(self,iAcq:btk.btkAcquisition,pointLabelSuffix:Optional[str]=None,bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
-
+        """Initializes the TemporalKinematicsPlotViewer"""
         super(TemporalKinematicsPlotViewer, self).__init__(iAcq)
 
         self.m_acq = self.m_input
@@ -910,7 +992,11 @@ class TemporalKinematicsPlotViewer(PlotViewer):
 
 
     def __setLayer(self):
+        """
+        Sets up the plot layers for temporal kinematics.
 
+        Defines the structure of the plot, including axes and titles, specific to kinematic data over time.
+        """
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         title=u""" Time Kinematics \n """
         self.fig.suptitle(title)
@@ -1047,7 +1133,11 @@ class TemporalKinematicsPlotViewer(PlotViewer):
 
 
     def __setData(self):
+        """
+        Sets up the data for the temporal kinematic plot.
 
+        Populates the plot with specific kinematic data over time from the BTK acquisition.
+        """
 
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
             plot.temporalPlot(self.fig.axes[0],self.m_acq,
@@ -1226,8 +1316,11 @@ class TemporalKinematicsPlotViewer(PlotViewer):
 
 
     def plotPanel(self):
-        """Plot the panel"""
+        """
+        Executes the temporal kinematics plot.
 
+        Creates the finalized plot using the BTK acquisition data and defined structure.
+        """
         self.__setLayer()
         self.__setData()
 
@@ -1237,16 +1330,19 @@ class TemporalKinematicsPlotViewer(PlotViewer):
 
 
 class NormalizedKineticsPlotViewer(PlotViewer):
-    """ Plot time-Normalized kinetics
+    """
+    Viewer for displaying time-normalized kinetics.
+
+    Plots kinetic parameters like moments and powers normalized over time, using analysis data.
 
     Args:
-        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis instance`
-        pointLabelSuffix (str): suffix added model outputs
-        bodyPart (enums.BodyPartPlot,Optional[enums.BodyPartPlot.LowerLimb]): body part
-
+        iAnalysis (Analysis): An instance of pyCGM2.Processing.analysis.Analysis containing the analysis results.
+        pointLabelSuffix (str, optional): Suffix for point labels in the plot.
+        bodyPart (enums.BodyPartPlot, optional): Body part to be plotted. Defaults to enums.BodyPartPlot.LowerLimb.
     """
 
     def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None,bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
+        """Initializes the NormalizedKineticsPlotViewer."""
 
         super(NormalizedKineticsPlotViewer, self).__init__(iAnalysis)
 
@@ -1263,16 +1359,20 @@ class NormalizedKineticsPlotViewer(PlotViewer):
         self.m_concretePlotFunction = None
 
     def setConcretePlotFunction(self, concreteplotFunction:Callable):
-        """set a plot function ( see `plot`)
+        """
+        Sets a concrete plotting function to be used in the viewer.
 
         Args:
-            concreteplotFunction (Callable): a plot function of a plot function of pyCGM2.Report.plot
-
+            concreteplotFunction (Callable): A plotting function from pyCGM2.Report.plot.
         """
         self.m_concretePlotFunction = concreteplotFunction
 
     def __setLayer(self):
+        """
+        Sets up the plot layers for time-normalized kinetics.
 
+        Defines the structure of the plot, including axes and titles, specific to kinetic data.
+        """
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         if self.m_concretePlotFunction.__name__ in ["descriptivePlot","gaitDescriptivePlot"]:
             title=u""" Descriptive Time-normalized Kinetics \n """
@@ -1353,15 +1453,21 @@ class NormalizedKineticsPlotViewer(PlotViewer):
 
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
-        """ Set the normative dataset
+        """
+        Sets the normative dataset for kinetic comparison.
 
         Args:
-            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): a normative dataset instance
+            iNormativeDataSet (NormativeData): An instance of NormativeData for reference in the plot.
         """
 
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
+        """
+        Sets up the data for the time-normalized kinetic plot.
+
+        Populates the plot with specific analysis data for time-normalized kinetics.
+        """
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
@@ -1429,7 +1535,11 @@ class NormalizedKineticsPlotViewer(PlotViewer):
                     "RAnklePower"+suffixPlus,"Right",2, color="blue", customLimits=None)
 
     def plotPanel(self):
-        """Plot the panel"""
+        """
+        Sets up the data for the time-normalized kinetic plot.
+
+        Populates the plot with specific analysis data for time-normalized kinetics.
+        """
 
         if self.m_concretePlotFunction is None:
             raise Exception ("[pyCGM2] need definition of the concrete plot function")
@@ -1495,17 +1605,20 @@ class NormalizedKineticsPlotViewer(PlotViewer):
 
 
 class TemporalKineticsPlotViewer(PlotViewer):
-    """ Plot temporal Kinetics
+    """
+    Viewer for displaying temporal kinetics.
+
+    Plots kinetic parameters like joint moments and powers over time for a given acquisition and body part.
 
     Args:
-        iAcq (btk.Acquisition): an acquisition
-        pointLabelSuffix (str): suffix added model outputs
-        bodyPart (enums.BodyPartPlot,Optional[enums.BodyPartPlot.LowerLimb]): body part
-
+        iAcq (btk.Acquisition): An acquisition instance from btk.
+        pointLabelSuffix (str, optional): Suffix for point labels in the plot.
+        bodyPart (enums.BodyPartPlot, optional): Body part to be plotted. Defaults to enums.BodyPartPlot.LowerLimb.
     """
 
     def __init__(self,iAcq:btk.btkAcquisition,pointLabelSuffix:Optional[str]=None,bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
-
+        """Initializes the TemporalKineticsPlotViewer.
+        """
         super(TemporalKineticsPlotViewer, self).__init__(iAcq)
 
         self.m_acq = self.m_input
@@ -1520,6 +1633,11 @@ class TemporalKineticsPlotViewer(PlotViewer):
         self.m_bodyPart = bodyPart
 
     def __setLayer(self):
+        """
+        Sets up the plot layers for temporal kinetics.
+
+        Defines the structure of the plot, including axes and titles, specific to kinetic data over time.
+        """
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         title=u""" Descriptive Time-normalized Kinetics \n """
@@ -1596,6 +1714,11 @@ class TemporalKineticsPlotViewer(PlotViewer):
 
 
     def __setData(self):
+        """
+        Sets up the data for the temporal kinetic plot.
+
+        Populates the plot with specific kinetic data over time from the BTK acquisition.
+        """
 
         if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
             plot.temporalPlot(self.fig.axes[0],self.m_acq,
@@ -1655,7 +1778,11 @@ class TemporalKineticsPlotViewer(PlotViewer):
 
 
     def plotPanel(self):
-        """plot the panel"""
+        """
+        Executes the temporal kinetics plot.
+
+        Creates the finalized plot using the BTK acquisition data and defined structure.
+        """
 
         self.__setLayer()
         self.__setData()

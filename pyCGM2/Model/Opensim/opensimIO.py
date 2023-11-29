@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-#from pyCGM2 import opensim4 as opensim
-
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 try:
     import opensim

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-import sys
-
 """
 This module contains  convenient functions and classes for working with opensim.
 """
@@ -23,12 +20,6 @@ except:
         from pyCGM2 import opensim4 as opensim
     except:
         LOGGER.logger.error("[pyCGM2] opensim not found on your system")
-
-
-from bs4 import BeautifulSoup
-
-
-
 
 
 R_OSIM_CGM = {"Pelvis" : np.array([[1,0,0],[0,0,1],[0,-1,0]]) ,

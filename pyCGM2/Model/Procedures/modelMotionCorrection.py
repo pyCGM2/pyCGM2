@@ -2,30 +2,38 @@ import pyCGM2
 import numpy as np
 import copy
 from pyCGM2.Model import frame
+from pyCGM2.Model.model import Model
+from typing import List, Tuple, Dict, Optional,Union
 
 LOGGER = pyCGM2.LOGGER
 
-class AbstractModelCorrectionProcedure(object):
+class ModelCorrectionProcedure(object):
+    """
+    Base class for model correction procedures.
+    """
     def __init__(self):
         pass
 
 
-class Naim2019ThighMisaligmentCorrectionProcedure(AbstractModelCorrectionProcedure):
-    """ This function corrects the thigh anatomical frame in respect with the method detailed in Naim et al, 2019.
+class Naim2019ThighMisaligmentCorrectionProcedure(ModelCorrectionProcedure):
+    """
+    Corrects thigh anatomical frame alignment using the method described in Naim et al, 2019.
 
-    Args:
-        iMod (pyCGM2.Model.CGM2.model.Model): a model instance
-        side (str): body side
-        threshold (double,Optional[20]): only consider frames with a flexion angle above the given threshold
+    This correction procedure is designed to adjust the thigh anatomical frame in gait analysis
+    by considering the axis misalignment, particularly when the knee flexion angle exceeds a certain threshold.
 
-        **Reference:**
-
+    Reference:
         Naaim, A., Bonnefoy-Mazure, A., Armand, S., & Dumas, R. (2019).
         Correcting lower limb segment axis misalignment in gait analysis: A simple geometrical method.
-        Gait and Posture, 72(May), 34–39
+        Gait and Posture, 72(May), 34–39.
+
+    Args:
+        model (Model): A biomechanical model instance.
+        side (str): The body side ('Left', 'Right', or 'Both') to apply the correction.
+        threshold (float, optional): The knee flexion angle threshold. Defaults to 20 degrees.
     """
 
-    def __init__(self,model,side,threshold=20):
+    def __init__(self,model:Model,side:str,threshold:float=20):
         super(Naim2019ThighMisaligmentCorrectionProcedure,self).__init__()
         self.m_model =  model
         self.m_side = side
@@ -36,7 +44,13 @@ class Naim2019ThighMisaligmentCorrectionProcedure(AbstractModelCorrectionProcedu
         LOGGER.logger.info("[pyCGM2] threshold of the Naim's correction method : %s"%(threshold))
 
     def correct(self):
+        """
+        Applies the thigh misalignment correction to the specified model.
 
+        This method adjusts the thigh anatomical frame based on the knee flexion angle
+        and the method detailed in Naim et al, 2019. The correction is applied to the specified body side(s).
+        """
+         
         side = self.m_side
 
         if self.m_side == "Both":

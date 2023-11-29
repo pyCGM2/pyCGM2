@@ -3,11 +3,20 @@ from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Tools import  btkTools,opensimTools
 import os
 import numpy as np
+import btk
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Model.Opensim.interface import opensimInterface
 from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
+
+from pyCGM2.Model.Opensim.interface.procedures.scaling.opensimScalingInterfaceProcedure import ScalingXmlProcedure
+from pyCGM2.Model.Opensim.interface.procedures.inverseKinematics.opensimInverseKinematicsInterfaceProcedure import InverseKinematicXmlProcedure
+from pyCGM2.Model.Opensim.interface.procedures.inverseDynamics.opensimInverseDynamicsInterfaceProcedure import InverseDynamicsXmlProcedure
+from pyCGM2.Model.Opensim.interface.procedures.staticOptimisation.opensimStaticOptimizationInterfaceProcedure import StaticOptimisationXmlProcedure
+from pyCGM2.Model.Opensim.interface.procedures.analysisReport.opensimAnalysesInterfaceProcedure import AnalysesXmlCgmProcedure
+
+from typing import List, Tuple, Dict, Optional,Union,Any
 
 # pyCGM2
 try:
@@ -26,35 +35,77 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] opensim not found on your system")
 
+from typing import List, Tuple, Dict, Optional,Union,Any
+
 class opensimInterfaceScalingFilter(object):
-    def __init__(self, procedure):
+    """
+    Filter interface for OpenSim model scaling.
+
+    Args:
+        procedure (ScalingXmlProcedure): The scaling procedure to be applied.
+    """
+
+    def __init__(self, procedure:ScalingXmlProcedure):
         self.m_procedure = procedure
 
     def run(self):
+        """
+        Executes the scaling procedure.
+        """
         self.m_procedure.run()
 
-    def getOsimName(self):
+    def getOsimName(self) -> str:
+        """
+        Retrieves the name of the OpenSim model.
+
+        Returns:
+            str: The name of the OpenSim model.
+        """
         return self.m_procedure.m_osimModel_name
 
     def getOsim(self):
+        """
+        Retrieves the OpenSim model.
+
+        Returns:
+            opensim.Model: The OpenSim model object.
+        """
         return self.m_procedure.m_osimModel
 
 
 
 
 class opensimInterfaceInverseKinematicsFilter(object):
-    def __init__(self, procedure):
+    """
+    Filter interface for OpenSim inverse kinematics.
+
+    Args:
+        procedure (InverseKinematicXmlProcedure): The inverse kinematics procedure to be applied.
+    """
+    def __init__(self, procedure:InverseKinematicXmlProcedure):
         self.m_procedure = procedure
         self.m_acq = None
 
     def run(self):
+        """
+        Executes the inverse kinematics procedure.
+        """
         self.m_procedure.run()
         self.m_acq = self.m_procedure.m_acq0
 
     def getAcq(self):
+        """
+        Retrieves the btk acquisition .
+
+        Returns:
+            btk.btkAcquisition:The BTK acquisition instance where the procedure results are stored.
+        """
         return self.m_acq
 
     def pushFittedMarkersIntoAcquisition(self):
+        """
+        Updates the acquisition object with fitted marker data from the inverse kinematics results.
+        """
         marker_location_filename = self.m_procedure.m_DATA_PATH + self.m_procedure.m_resultsDir+"\\"+ self.m_procedure.m_dynamicFile+"_ik_model_marker_locations.sto"
         if os.path.isfile(marker_location_filename):
             os.remove(marker_location_filename)
@@ -93,6 +144,12 @@ class opensimInterfaceInverseKinematicsFilter(object):
 
 
     def pushMotToAcq(self, osimConverter):
+        """
+        Pushes motion data into the acquisition object.
+
+        Args:
+            osimConverter: A converter for OpenSim data to the acquisition format.
+        """
 
         storageDataframe = opensimIO.OpensimDataFrame(
             self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\", self.m_procedure.m_dynamicFile+".mot")
@@ -119,16 +176,39 @@ class opensimInterfaceInverseKinematicsFilter(object):
 
 
 class opensimInterfaceInverseDynamicsFilter(object):
-    def __init__(self, procedure):
+    """
+    Filter interface for OpenSim inverse dynamics.
+
+    Args:
+        procedure (InverseDynamicsXmlProcedure): The inverse dynamics procedure to be applied.
+    """
+    def __init__(self, procedure:InverseDynamicsXmlProcedure):
         self.m_procedure = procedure
 
     def run(self):
+        """
+        Runs the defined procedure.
+        """
         self.m_procedure.run()
 
     def getAcq(self):
+        """
+        Retrieves the btk acquisition .
+
+        Returns:
+            btk.btkAcquisition:The BTK acquisition instance where the procedure results are stored.
+        """
         return self.m_procedure.m_acq
 
-    def pushStoToAcq(self, bodymass, osimConverter):
+    def pushStoToAcq(self, bodymass:float, osimConverter:Dict):
+        """
+        Pushes STO file data to BTK acquisition.
+
+        Args:
+            bodymass (float): The body mass used in the calculations.
+            osimConverter (dict): A dictionary containing OpenSim conversion data.
+
+        """
 
         if self.m_procedure.m_resultsDir == "":
             path = self.m_procedure.m_DATA_PATH
@@ -164,16 +244,34 @@ class opensimInterfaceInverseDynamicsFilter(object):
 
 
 class opensimInterfaceStaticOptimizationFilter(object):
-    def __init__(self, procedure):
+    """
+    Filter interface for OpenSim static Optimisation.
+
+    Args:
+        procedure (StaticOptimisationXmlProcedure): The static optimisation procedure to be applied.
+    """
+    def __init__(self, procedure:StaticOptimisationXmlProcedure):
         self.m_procedure = procedure
 
     def run(self):
+        """
+        Runs the defined procedure.
+        """
         self.m_procedure.run()
 
     def getAcq(self):
+        """
+        Retrieves the btk acquisition .
+
+        Returns:
+            btk.btkAcquisition:The BTK acquisition instance where the procedure results are stored.
+        """
         return self.m_procedure.m_acq
 
     def pushStoToAcq(self):
+        """
+        Pushes STO file data to BTK acquisition.
+        """    
         if self.m_procedure.m_modelVersion == "":
             filename = self.m_procedure.m_dynamicFile+"-analyses_StaticOptimization_force.sto"
         else:
@@ -212,42 +310,66 @@ class opensimInterfaceStaticOptimizationFilter(object):
 
 
 class opensimInterfaceAnalysesFilter(object):
-    def __init__(self, procedure):
+    """
+    Filter interface for OpenSim Analysis Report.
+
+    Args:
+        procedure (AnalysesXmlCgmProcedure): The analysis report procedure to be applied.
+    """
+    def __init__(self, procedure:AnalysesXmlCgmProcedure):
         self.m_procedure = procedure
 
         self.m_analysisType = None
 
 
     def run(self):
+        """
+        Runs the defined procedure.
+        """
         self.m_procedure.run()
 
     def getAcq(self):
+        """
+        Retrieves the BTK acquisition instance where the procedure results are stored.
+
+        Returns:
+            Optional[btk.btkAcquisition]: The BTK acquisition instance, if available.
+        """
         if self.m_procedure.m_acq is not None:
             return self.m_procedure.m_acq
         else:
             LOGGER.logger.warning("There is no Acquisition to return")
 
 
-    def pushStoToAcq(self,type= "MuscleAnalysis",outputs=["Length"]):
+    def pushStoToAcq(self, type: str = "MuscleAnalysis", outputs: List[str] = ["Length"]) -> None:
+        """
+        Pushes STO file data to BTK acquisition.
 
-        # "-analyses_MuscleAnalysis_MuscleActuatorPower.sto"
-        # "-analyses_MuscleAnalysis_NormalizedFiberLength.sto"
-        # "-analyses_MuscleAnalysis_NormFiberVelocity.sto"
-        # "-analyses_MuscleAnalysis_PassiveFiberForce.sto"
-        # "-analyses_MuscleAnalysis_PassiveFiberForceAlongTendon.sto"
-        # "-analyses_MuscleAnalysis_PennationAngle.sto"
-        # "-analyses_MuscleAnalysis_PennationAngularVelocity.sto"
-        # "-analyses_MuscleAnalysis_TendonForce.sto"
-        # "-analyses_MuscleAnalysis_TendonLength.sto"
-        # "-analyses_MuscleAnalysis_TendonPower.sto"
-        # "-analyses_MuscleAnalysis_ActiveFiberForce.sto"
-        # "-analyses_MuscleAnalysis_ActiveFiberForceAlongTendon.sto"
-        # "-analyses_MuscleAnalysis_FiberActivePower.sto"
-        # "-analyses_MuscleAnalysis_FiberForce.sto"
-        # "-analyses_MuscleAnalysis_FiberLength.sto"
-        # "-analyses_MuscleAnalysis_FiberPassivePower.sto"
-        # "-analyses_MuscleAnalysis_FiberVelocity.sto"
-        # "-analyses_MuscleAnalysis_Length.sto"
+        Args:
+            type (str): The type of analysis to be processed (e.g., "MuscleAnalysis").
+            outputs (List[str]): A list of outputs to be processed. The available options for "MuscleAnalysis" are:
+                - MuscleActuatorPower
+                - NormalizedFiberLength
+                - NormFiberVelocity
+                - PassiveFiberForce
+                - PassiveFiberForceAlongTendon
+                - PennationAngle
+                - PennationAngularVelocity
+                - TendonForce
+                - TendonLength
+                - TendonPower
+                - ActiveFiberForce
+                - ActiveFiberForceAlongTendon
+                - FiberActivePower
+                - FiberForce
+                - FiberLength
+                - FiberPassivePower
+                - FiberVelocity
+                - Length
+
+        Raises:
+            ValueError: If the acquisition is not available or if the specified 'type' or 'outputs' are invalid.
+        """
 
          
         if self.m_procedure.m_acq is not None:

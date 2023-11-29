@@ -46,6 +46,19 @@ from typing import List, Tuple, Dict, Optional, Union, Callable
 
 
 def rotationMatrix_labToOsim(axis:str,forwardProgression:bool):
+    """
+    Generates a rotation matrix to convert coordinates from the lab frame to the OpenSim frame.
+
+    Args:
+        axis (str): The progression axis in the lab frame ('X' or 'Y').
+        forwardProgression (bool): Indicates if the progression is forward along the axis.
+
+    Returns:
+        np.ndarray: A 3x3 rotation matrix for transforming coordinates.
+
+    Raises:
+        Exception: If the configuration for a global referential with Z axis as progression axis is not set.
+    """
     if axis == "X":
         if forwardProgression:
             R_LAB_OSIM = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
@@ -65,6 +78,14 @@ def rotationMatrix_labToOsim(axis:str,forwardProgression:bool):
 
 
 def transformMarker_ToOsimReferencial(acq:btk.btkAcquisition, axis:str, forwardProgression:bool):
+    """
+    Transforms marker coordinates in a BTK acquisition from the lab referential to the OpenSim referential.
+
+    Args:
+        acq (btk.btkAcquisition): The acquisition containing the markers to be transformed.
+        axis (str): The progression axis in the lab frame ('X' or 'Y').
+        forwardProgression (bool): Indicates if the progression is forward along the axis.
+    """
 
     R_LAB_OSIM = rotationMatrix_labToOsim(axis,forwardProgression)
 
@@ -78,6 +99,17 @@ def transformMarker_ToOsimReferencial(acq:btk.btkAcquisition, axis:str, forwardP
 
 
 def sto2pointValues(storageObject:opensim.Storage, label:str, R_LAB_OSIM:np.ndarray):
+    """
+    Extracts point values from an OpenSim Storage object and transforms them to the lab referential.
+
+    Args:
+        storageObject (opensim.Storage): The OpenSim Storage object containing the data.
+        label (str): The label of the data to be extracted.
+        R_LAB_OSIM (np.ndarray): A rotation matrix for transforming the coordinates.
+
+    Returns:
+        np.ndarray: Transformed point values.
+    """
 
     # storageObject = opensim.Storage(stoFilename)
     index_x = storageObject.getStateIndex(label+"_tx")
@@ -107,6 +139,17 @@ def sto2pointValues(storageObject:opensim.Storage, label:str, R_LAB_OSIM:np.ndar
 
 
 def mot2pointValues(motFilename:str, labels:List[str], orientation:List[int]=[1, 1, 1]):
+    """
+    Extracts point values from an OpenSim MOT file.
+
+    Args:
+        motFilename (str): The filename of the MOT file.
+        labels (List[str]): The labels of the data to be extracted.
+        orientation (List[int], optional): A list indicating the sign of each coordinate. Defaults to [1, 1, 1].
+
+    Returns:
+        np.ndarray: Extracted point values.
+    """
     storageObject = opensim.Storage(motFilename)
 
     index_x = storageObject.getStateIndex(labels[0])
@@ -132,6 +175,17 @@ def mot2pointValues(motFilename:str, labels:List[str], orientation:List[int]=[1,
     return pointValues
 
 def smartGetValues(DATA_PATH:str,filename:str,label:str):
+    """
+    Extracts values from an OpenSim Storage file based on a specific label.
+
+    Args:
+        DATA_PATH (str): Path to the data directory.
+        filename (str): The filename of the OpenSim Storage file.
+        label (str): The label of the data to be extracted.
+
+    Returns:
+        np.ndarray: The extracted values.
+    """
     storageObject = opensim.Storage(DATA_PATH+filename)
     labels = storageObject.getColumnLabels()
     for index in range(1,labels.getSize()): #1 because 0 is time
@@ -146,7 +200,16 @@ def smartGetValues(DATA_PATH:str,filename:str,label:str):
     return values
 
 def footReactionMotFile(acq:btk.btkAcquisition,filename:str,progressionAxis:str,forwardProgression:bool,mfpa:Optional[str]=None):
+    """
+    Creates a .mot file for foot reaction forces from a BTK acquisition.
 
+    Args:
+        acq (btk.btkAcquisition): The acquisition containing force plate data.
+        filename (str): The name of the output .mot file.
+        progressionAxis (str): The progression axis ('X' or 'Y').
+        forwardProgression (bool): Indicates if the progression is forward along the axis.
+        mfpa (Optional[str], optional): An optional parameter for advanced matching. Defaults to None.
+    """
     
     mappedForcePlate = forceplates.matchingFootSideOnForceplate(acq,mfpa=mfpa)
 
@@ -212,13 +275,14 @@ def footReactionMotFile(acq:btk.btkAcquisition,filename:str,progressionAxis:str,
 
 
 def export_CgmToMot(acq:btk.btkAcquisition,datapath:str,filename:str,osimModelInterface:osimInterface):
-    """Export the CGM kinematics outputs in a mot opensim-format
+    """
+    Exports CGM kinematics outputs to a .mot file in OpenSim format.
 
     Args:
-        acq (btk.Acquisition): acquisition
-        datapath (str): data path
-        filename (str): filenama
-        osimModelInterface (pyCGM2.opensimInterface.osimInterface): opensim Interface
+        acq (btk.btkAcquisition): The acquisition containing CGM outputs.
+        datapath (str): Path to the data directory.
+        filename (str): The name of the output .mot file.
+        osimModelInterface (osimInterface): The OpenSim model interface used for the export.
     """
 
     osim2cgm_converter = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"opensim\\interface\\CGM23\\CGMtoOsim.settings")

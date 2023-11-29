@@ -14,13 +14,16 @@ from pyCGM2.Processing.analysis import Analysis
 from typing import List, Tuple, Dict, Optional, Union, Callable
 
 class NormalizedGroundReactionForcePlotViewer(plotViewers.PlotViewer):
-    """ Plot time-Normalized Ground reaction forces 
+    """
+    Plot time-normalized ground reaction forces.
 
     Args:
-        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): An instance of an `analysis` object.
+        pointLabelSuffix (Optional[str]): Suffix added to the plot labels, defaults to None.
     """
 
     def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None):
+        """Initialize the NormalizedGroundReactionForcePlotViewer."""
 
         super(NormalizedGroundReactionForcePlotViewer, self).__init__(iAnalysis)
 
@@ -37,15 +40,18 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.PlotViewer):
         
         
     def setConcretePlotFunction(self, concreteplotFunction:Callable):
-        """set a plot function ( see `plot`)
+        """
+        Set a concrete plot function.
 
         Args:
-            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
-
+            concreteplotFunction (Callable): A function from pyCGM2.Report.plot to be used for plotting.
         """
         self.m_concretePlotFunction = concreteplotFunction
 
     def __setLayer(self):
+        """
+        private method to Set up the plot layers for ground reaction force visualization.
+        """
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         if self.m_concretePlotFunction.__name__ in ["descriptivePlot","gaitDescriptivePlot"]:
@@ -94,15 +100,19 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.PlotViewer):
 
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
-        """ Set the normative dataset
+        """
+        Set the normative dataset for comparison.
 
         Args:
-            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): a normative dataset instance
+            iNormativeDataSet (NormativeData): An instance of a normative dataset.
         """
 
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
+        """
+        Set the data for ground reaction force visualization.
+        """
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
         self.m_analysis.kineticStats.data["LStanGroundReactionForce"+suffixPlus,"Left"]["mean"][:,0]
@@ -127,7 +137,12 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.PlotViewer):
 
 
     def plotPanel(self):
-        """Plot the panel"""
+        """
+        Plot the panel for the ground reaction force visualization.
+
+        Returns:
+            Matplotlib figure object representing the plotted data.
+        """
 
         if self.m_concretePlotFunction is None:
             raise Exception ("[pyCGM2] need definition of the concrete plot function")
@@ -195,13 +210,18 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.PlotViewer):
 
 
 class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.PlotViewer):
-    """ Plot the time-normalized Com Kinematics from integration of the consecutive ground reaction force  
+    """
+    Plot the time-normalized center of mass (COM) kinematics from the integration of consecutive ground reaction forces.
 
     Args:
-        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): An instance of an `analysis` object.
+        pointLabelSuffix (Optional[str]): Suffix added to the plot labels, defaults to None.
+        bodymass (float): Body mass to normalize the ground reaction force, defaults to 0.
     """
 
+
     def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None,bodymass:float = 0):
+        """Initialize the NormalizedGaitGrfIntegrationPlotViewer."""
                
 
         super(NormalizedGaitGrfIntegrationPlotViewer, self).__init__(iAnalysis)
@@ -220,18 +240,20 @@ class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.PlotViewer):
 
 
     def setConcretePlotFunction(self, concreteplotFunction:Callable):
-        """set a plot function ( see `plot`)
+        """
+        Set a concrete plot function.
 
         Args:
-            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
-
+            concreteplotFunction (Callable): A function from pyCGM2.Report.plot to be used for plotting.
         """
         self.m_concretePlotFunction = concreteplotFunction
 
 
 
     def __setLayer(self):
-
+        """
+        private method to Set up the plot layers for ground reaction force visualization.
+        """
         # stance phases.
         self._stanceL = self.m_analysis.kineticStats.pst['stancePhase', "Left"]["mean"]
         self._double1L = self.m_analysis.kineticStats.pst['doubleStance1', "Left"]["mean"]
@@ -345,6 +367,9 @@ class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.PlotViewer):
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
+        """
+        Set the data for plotting in the Normalized Gait GRF Integration Viewer
+        """
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
     
         labels = ["LTotalGroundReactionForce","LCOMAcceleration_FP","LCOMVelocity_FP","LCOMTrajectory_FP"]
@@ -474,7 +499,14 @@ class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.PlotViewer):
 
 
     def plotPanel(self):
-        """Plot the panel"""
+        """
+        Plot the panel for the COM kinematics visualization derived from GRF integration.
+
+        This method integrates the ground reaction forces over time to visualize the kinematics of the center of mass. It plots the longitudinal, lateral, and vertical components of the COM acceleration, velocity, and position. The plot includes indication of stance phases and double support phases for both left and right sides.
+
+        Returns:
+            matplotlib.figure.Figure: The figure object representing the plotted COM kinematics.
+        """
 
 
         self.__setLayer()
@@ -540,13 +572,18 @@ class NormalizedGaitGrfIntegrationPlotViewer(plotViewers.PlotViewer):
         # return self.fig
 
 class NormalizedGaitMeanGrfIntegrationPlotViewer(plotViewers.PlotViewer):
-    """ Plot the time-normalized Com Kinematics from integration of the mean ground reaction force 
+    """
+    Plot the time-normalized center of mass (COM) kinematics from the integration of mean ground reaction force.
 
     Args:
-        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): An instance of an `analysis` object.
+        pointLabelSuffix (Optional[str]): Suffix added to the plot labels, defaults to None.
+        bodymass (float): Body mass to normalize the ground reaction force, defaults to 0.
     """
 
     def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None,bodymass:float = 0):
+        """Initialize the NormalizedGaitMeanGrfIntegrationPlotViewer.
+"""
                
 
         super(NormalizedGaitMeanGrfIntegrationPlotViewer, self).__init__(iAnalysis)
@@ -566,7 +603,9 @@ class NormalizedGaitMeanGrfIntegrationPlotViewer(plotViewers.PlotViewer):
 
 
     def __setLayer(self):
-
+        """
+        private method to Set up the plot layers for ground reaction force visualization.
+        """
         # stance phases.
         stanceL = self.m_analysis.kineticStats.pst['stancePhase', "Left"]["mean"]
         double1L = self.m_analysis.kineticStats.pst['doubleStance1', "Left"]["mean"]
@@ -705,6 +744,7 @@ class NormalizedGaitMeanGrfIntegrationPlotViewer(plotViewers.PlotViewer):
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
+        """ Set the data for plotting in the Normalized Gait Mean GRF Integration Viewer."""
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
         self.fig.axes[0].plot( self.m_analysis.kineticStats.optionalData["GaitNormalizedGRFIntegration","Left"]["Force"][:,0],"-r")
@@ -736,7 +776,14 @@ class NormalizedGaitMeanGrfIntegrationPlotViewer(plotViewers.PlotViewer):
 
 
     def plotPanel(self):
-        """Plot the panel"""
+        """
+        Plot the panel for the COM kinematics visualization from the mean GRF integration.
+
+        This method integrates the mean ground reaction forces over time to visualize the kinematics of the center of mass. Similar to NormalizedGaitGrfIntegrationPlotViewer, it plots the COM acceleration, velocity, and position, but based on the mean GRF trace. The visualization assists in understanding the overall dynamic behavior of the body during gait.
+
+        Returns:
+            matplotlib.figure.Figure: The figure object representing the plotted mean COM kinematics.
+        """
 
 
         self.__setLayer()

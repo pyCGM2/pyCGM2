@@ -1,9 +1,9 @@
 
-# -*- coding: utf-8 -*-
 import pyCGM2
 import numpy as np
 import matplotlib.pyplot as plt
-import copy
+
+from typing import List, Tuple, Dict, Optional,Union
 
 LOGGER = pyCGM2.LOGGER
 try:
@@ -14,29 +14,49 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] btk not found on your system")
 
-from pyCGM2.Model import frame
-from pyCGM2.Model import motion
-
-from pyCGM2 import enums
-from  pyCGM2.Math import euler
-from  pyCGM2.Math import numeric
 from pyCGM2.Math import derivation
 from pyCGM2.Tools import  btkTools
-from pyCGM2.Utils import timer
 
 from pyCGM2.ForcePlates import forceplates
 
 
-class AbstractForcePlateIntegrationProcedure(object):
+class ForcePlateIntegrationProcedure(object):
+    """
+    Base class for procedures integrating force plate data.
+    """
     def __init__(self):
         pass
 
 
-class GaitForcePlateIntegrationProcedure(AbstractForcePlateIntegrationProcedure):
+class GaitForcePlateIntegrationProcedure(ForcePlateIntegrationProcedure):
+    """
+    Procedure for integrating gait data with force plate information.
+
+    This procedure calculates the center of mass (CoM) trajectory, velocity, and acceleration
+    using force plate data during gait analysis. It handles the integration for both left and right sides.
+
+    Methods:
+        compute: Integrates force plate data to compute CoM trajectories and related kinematic information.
+    """
     def __init__(self,):
         super(GaitForcePlateIntegrationProcedure,self).__init__()
         
-    def compute(self,acq,mappedForcePlate,bodymass,globalFrameOrientation,forwardProgression):
+    def compute(self, acq: btk.btkAcquisition, mappedForcePlate: str, bodymass: float,
+                globalFrameOrientation: str, forwardProgression: bool):
+        """
+        Compute and append the CoM trajectory and related kinematic information to the acquisition data.
+
+        Args:
+            acq (btk.btkAcquisition): The motion acquisition data.
+            mappedForcePlate (str): Mapping of force plates to the subject's feet (e.g., 'RL' for right-left).
+            bodymass (float): The body mass of the subject.
+            globalFrameOrientation (str): Orientation of the global reference frame ('XYZ' or 'YXZ').
+            forwardProgression (bool): Indicator of whether the subject is moving forward.
+
+        This method integrates force plate data to compute CoM trajectories, velocities,
+        and accelerations for gait analysis. It adjusts calculations based on the global frame orientation
+        and the direction of progression.
+        """    
         pfe = btk.btkForcePlatformsExtractor()
         grwf = btk.btkGroundReactionWrenchFilter()
         pfe.SetInput(acq)

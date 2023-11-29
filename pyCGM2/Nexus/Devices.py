@@ -15,47 +15,72 @@ except ImportError as e:
 from typing import List, Tuple, Dict, Optional,Union
 
 class Channel(object):
-    """a pyCGM2-Nexus Channel
+    """
+    Represents a channel in a pyCGM2-Nexus interface.
 
-    Args:
-        label (str): channel label
-        values (np.ndarray): values
-        unit (str): init
-        description (str): short description of the channel
+    Attributes:
+        label (str): The label of the channel.
+        values (np.ndarray): The numerical values associated with the channel.
+        unit (str): The unit of measurement for the channel's values.
+        description (str): A brief description of the channel.
     """
 
     def __init__(self, label:str,values:np.ndarray,unit:str,description:str):
-        
+        """
+        Initializes the Channel object with specified label, values, unit, and description.
+        """
         self.m_label = label
         self.m_values = values
         self.m_description = description
         self.m_unit = unit
 
     def getLabel(self):
-        """ return the channel label"""
+        """
+        Returns the label of the channel.
+
+        Returns:
+            str: The label of the channel.
+        """
         return  self.m_label
     def getValues(self):
-        """ return the channel values"""
+        """
+        Returns the values of the channel.
+
+        Returns:
+            np.ndarray: The numerical values of the channel.
+        """
         return self.m_values
     def getDescription(self):
-        """ return the channel description"""
+        """
+        Returns the description of the channel.
+
+        Returns:
+            str: A brief description of the channel.
+        """
         return  self.m_description
     def getUnit(self):
-        """ return the channel unit"""
+        """
+        Returns the unit of measurement for the channel's values.
+
+        Returns:
+            str: The unit of measurement of the channel.
+        """
         return self.m_unit
 
 
 
 class Device(object):
-    """a pyCGM2-Nexus device
+    """
+    Represents a generic device in a pyCGM2-Nexus interface.
 
-    Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle
-        id (str): a device ID
-
+    Attributes:
+        NEXUS (ViconNexus.ViconNexus): The Vicon Nexus handle.
+        id (str): The identifier of the device.
     """
 
     def __init__(self,NEXUS:ViconNexus.ViconNexus, id:str):
+        """Initializes the Device object with a Vicon Nexus handle and device ID.
+        """
         self.NEXUS = NEXUS
         self.m_id = id
 
@@ -69,15 +94,30 @@ class Device(object):
 
 
     def getDeviceName(self):
-        """return device name"""
+        """
+        Returns the name of the device.
+
+        Returns:
+            str: The name of the device.
+        """
         return self.m_name
 
     def getDeviceFrequency(self):
-        """return device sample m_frequency"""
+        """
+        Returns the sampling frequency of the device.
+
+        Returns:
+            float: The sampling frequency of the device in Hertz.
+        """
         return self.m_frequency
 
     def getOutputNames(self):
-        """return the list of ouputs"""
+        """
+        Returns a list of output names from the device.
+
+        Returns:
+            List[str]: A list of output names associated with the device.
+        """
         out = []
         for i in self.m_outputIds:
             out.append(self.NEXUS.GetDeviceOutputDetails(self.m_id,i)[0])
@@ -86,21 +126,27 @@ class Device(object):
 
 
 class AnalogDevice(Device):
-    """a pyCGM2-Nexus Analog Device
+    """
+    Represents an analog device in a pyCGM2-Nexus interface, extending the Device class.
 
-    Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle
-        id (str): device ID
-
+    Attributes:
+        channels (list[Channel]): A list of channels associated with the analog device.
     """
 
     def __init__(self,NEXUS:ViconNexus.ViconNexus, id:str):
+        """Initializes the AnalogDevice object with a Vicon Nexus handle and device ID.
+        """
         super(AnalogDevice, self).__init__(NEXUS,id)
         self.m_channels = []
         #self.m_id = id
 
     def getUnit(self):
-        """ return device unit"""
+        """
+        Returns the unit of measurement for the analog device's channels.
+
+        Returns:
+            str: The unit of measurement for the channels.
+        """
         unit = []
         for outputId in self.m_outputIds:
             unit.append(str(self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[2]))
@@ -108,8 +154,12 @@ class AnalogDevice(Device):
 
 
     def getChannels(self):
-        """ return channel names"""
+        """
+        Retrieves and stores the channels associated with the analog device.
 
+        Returns:
+            List[Channel]: A list of Channel objects associated with the device.
+        """
         for outputId in self.m_outputIds:
             outputName = self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
             outputType = self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[1]
@@ -127,40 +177,66 @@ class AnalogDevice(Device):
 
 
 class ForcePlate(Device):
-    """a pyCGM2-Nexus force plate device
+    """
+    Represents a force plate device in a pyCGM2-Nexus interface, extending the Device class.
 
-    Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle
-        id (str): device ID
-
+    Attributes:
+        forcePlateInfo: Information about the force plate, such as origin and orientation.
     """
 
     def __init__(self,NEXUS:ViconNexus.ViconNexus, id:str):
+        """Initializes the ForcePlate object with a Vicon Nexus handle and device ID.
+        """
         super(ForcePlate, self).__init__(NEXUS,id)
 
 
     def getDescription(self):
-        """ return force plate description """
+        """
+        Returns a description of the force plate.
+
+        Returns:
+            str: A description of the force plate.
+        """
         return str("Force Plate [" +str(self.m_id) + "]")
 #
     def getOrigin(self):
-        """ return force plate origin """
+        """
+        Returns the origin of the force plate in global coordinates.
+
+        Returns:
+            np.ndarray: The origin coordinates of the force plate.
+        """
         nfp_info = self.m_forcePlateInfo
         return np.asarray(nfp_info.WorldT)
 
     def getLocalOrigin(self):
-        """ return force plate local Origin """
+        """
+        Returns the local origin of the force plate.
+
+        Returns:
+            np.ndarray: The local origin coordinates of the force plate.
+        """
         nfp_info = self.m_forcePlateInfo
         return np.asarray(nfp_info.LocalT)
 
 
     def getContext(self):
-        """ return event context """
+        """
+        Returns the context of the force plate, such as the side it represents.
+
+        Returns:
+            str: The context of the force plate.
+        """
         nfp_info = self.m_forcePlateInfo
         return nfp_info.Context
 
     def getPhysicalOrigin(self):
-        """ return physical origin location """
+        """
+        Returns the physical origin location of the force plate.
+
+        Returns:
+            np.ndarray: The physical origin coordinates of the force plate.
+        """
         nfp_info = self.m_forcePlateInfo
         worldR =  np.asarray(nfp_info.WorldR).reshape((3,3))
         origin = self.getOrigin()
@@ -169,7 +245,12 @@ class ForcePlate(Device):
 
 
     def getOrientation(self):
-        """ return force plate orientation """
+        """
+        Returns the orientation of the force plate.
+
+        Returns:
+            np.ndarray: The orientation matrix of the force plate.
+        """
         nfp_info = self.m_forcePlateInfo
         worldR =  np.asarray(nfp_info.WorldR).reshape((3,3))
         localR =  np.asarray(nfp_info.LocalR).reshape((3,3))
@@ -177,7 +258,12 @@ class ForcePlate(Device):
         return np.dot(worldR,localR)
 
     def getForceUnit(self):
-        """ return force unit """
+        """
+        Returns the unit of measurement for the force data from the force plate.
+
+        Returns:
+            str: The unit of force measurement.
+        """
 
         for outputId in self.m_outputIds:
             if self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Fx","Fy","Fz"]:
@@ -187,7 +273,12 @@ class ForcePlate(Device):
         return str(self.NEXUS.GetDeviceOutputDetails(self.m_id,deviceOutputID)[2])
 
     def getMomentUnit(self):
-        """ return moment unit """
+        """
+        Returns the unit of measurement for the moment data from the force plate.
+
+        Returns:
+            str: The unit of moment measurement.
+        """
 
         for outputId in self.m_outputIds:
             if self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Mx","My","Fz"]:
@@ -200,7 +291,12 @@ class ForcePlate(Device):
 
 
     def getGlobalForce(self):
-        """ return force in the global coordinate system """
+        """
+        Returns the force data from the force plate in global coordinates.
+
+        Returns:
+            np.ndarray: The global force data from the force plate.
+        """
 
         for outputId in self.m_outputIds:
             if self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Fx","Fy","Fz"]:
@@ -220,8 +316,12 @@ class ForcePlate(Device):
 
 
     def getGlobalMoment(self):
-        """ return moment in the global coordinate system """
+        """
+        Returns the moment data from the force plate in global coordinates.
 
+        Returns:
+            np.ndarray: The global moment data from the force plate.
+        """
         for outputId in self.m_outputIds:
             if self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Mx","My","Mz"]:
                 outputName =  self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
@@ -240,8 +340,12 @@ class ForcePlate(Device):
 
 
     def getGlobalCoP(self):
-        """ return COP in the global coordinate system """
+        """
+        Returns the Center of Pressure (CoP) from the force plate in global coordinates.
 
+        Returns:
+            np.ndarray: The global CoP data from the force plate.
+        """
         for outputId in self.m_outputIds:
             if self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[4] == ["Cx","Cy","Cz"]:
                 outputName =  self.NEXUS.GetDeviceOutputDetails(self.m_id,outputId)[0]
@@ -260,7 +364,13 @@ class ForcePlate(Device):
 
 
     def getLocalReactionForce(self):
-        """ return force in the local force plate coordinate system """
+        """
+        Returns the reaction force from the force plate in local coordinates.
+
+        Returns:
+            np.ndarray: The local reaction force data from the force plate.
+        """
+
 
         force = -1* self.getGlobalForce()
         R = self.getOrientation()
@@ -271,8 +381,12 @@ class ForcePlate(Device):
         return out
 
     def getLocalReactionMoment(self):
-        """ return moment in the local force plate coordinate system """
+        """
+        Returns the reaction moment from the force plate in local coordinates.
 
+        Returns:
+            np.ndarray: The local reaction moment data from the force plate.
+        """
         moment = self.getGlobalMoment()
         force = self.getGlobalForce()
         #origin = -1*self.getLocalPhysicOrigin()
@@ -297,7 +411,12 @@ class ForcePlate(Device):
 
 
     def getCorners(self):
-        """ return corners location in the coordinate system """
+        """
+        Returns the coordinates of the corners of the force plate.
+
+        Returns:
+            np.ndarray: The coordinates of the corners of the force plate.
+        """
         nfp_info = self.m_forcePlateInfo
 
         R = np.asarray(nfp_info.WorldR).reshape((3,3))

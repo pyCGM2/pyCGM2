@@ -33,22 +33,22 @@ def temporalPlot(figAxis:plt.Axes,acq:btk.btkAcquisition,
                 title:Optional[str]=None, xlabel:Optional[str]=None, ylabel:Optional[str]=None,
                 ylim:Optional[List]=None,legendLabel:Optional[str]=None,
                 customLimits:Optional[List]=None):
-    """Plot temporal traces from an acquisition
+    """Plots temporal traces from an acquisition.
 
     Args:
-        figAxis (plt.Axes): a matplotlib figure axes
-        acq (btk.btkAcquisition): a btk acquisition
-        pointLabel (str): point label
-        axis (int): column index of the point values
-        pointLabelSuffix (Optional[str], optional): suffix added to the point label. Defaults to None.
-        color (Optional[str], optional): line color. Defaults to None.
-        linewidth (Optional[str], optional): line width. Defaults to None.
-        title (Optional[str], optional): title Defaults to None.
-        xlabel (Optional[str], optional): x-axis label. Defaults to None.
-        ylabel (Optional[str], optional): y-axis label. Defaults to None.
-        ylim (Optional[list], optional): y boundaries. Defaults to None.
-        legendLabel (Optional[str], optional): legend. Defaults to None.
-        customLimits (Optional[list], optional): horizontal lines. Defaults to None.
+        figAxis (plt.Axes): A matplotlib figure axis.
+        acq (btk.btkAcquisition): A btk acquisition.
+        pointLabel (str): Point label.
+        axis (int): Column index of the point values.
+        pointLabelSuffix (Optional[str], optional): Suffix added to the point label. Defaults to None.
+        color (Optional[str], optional): Line color. Defaults to None.
+        linewidth (Optional[str], optional): Line width. Defaults to None.
+        title (Optional[str], optional): Title. Defaults to None.
+        xlabel (Optional[str], optional): X-axis label. Defaults to None.
+        ylabel (Optional[str], optional): Y-axis label. Defaults to None.
+        ylim (Optional[List], optional): Y boundaries. Defaults to None.
+        legendLabel (Optional[str], optional): Legend. Defaults to None.
+        customLimits (Optional[List], optional): Horizontal lines. Defaults to None.
     """
 
     pointLabel = pointLabel + "_" + pointLabelSuffix if pointLabelSuffix is not None else pointLabel
@@ -93,24 +93,23 @@ def descriptivePlot(figAxis:plt.Axes,
                     customLimits:Optional[List]=None,
                     nan_to_num:bool=True):
 
-    '''Plot descriptive (average and sd corridor) time-normalized traces from an attribute of an `analysis` instance
+    """Plots descriptive (average and sd corridor) time-normalized traces from an analysis instance.
 
     Args:
-         figAxis (plt.Axes): a matplotlib figure axis
-         analysisStructureItem (AnalysisStructure): an attribute of an `analysis` instance
-         pointLabel (str): point label
-         contextPointLabel (str): event context
-         axis (int): column index of the point values
-         color (Optional[str], optional): line color. Defaults to None.
-         title (Optional[str], optional): title Defaults to None.
-         xlabel (Optional[str], optional): x-axis label. Defaults to None.
-         ylabel (Optional[str], optional): y-axis label. Defaults to None.
-         ylim (Optional[list], optional): y boundaries. Defaults to None.
-         legendLabel (Optional[str], optional): legend. Defaults to None.
-         customLimits (Optional[list], optional): horizontal lines. Defaults to None.
-         nan_to_num (bool,optional): nan conversion
-                 
-    '''
+        figAxis (plt.Axes): A matplotlib figure axis.
+        analysisStructureItem (AnalysisStructure): An attribute of an analysis instance.
+        pointLabel (str): Point label.
+        contextPointLabel (str): Event context.
+        axis (int): Column index of the point values.
+        color (Optional[str], optional): Line color. Defaults to None.
+        title (Optional[str], optional): Title. Defaults to None.
+        xlabel (Optional[str], optional): X-axis label. Defaults to None.
+        ylabel (Optional[str], optional): Y-axis label. Defaults to None.
+        ylim (Optional[List], optional): Y boundaries. Defaults to None.
+        legendLabel (Optional[str], optional): Legend. Defaults to None.
+        customLimits (Optional[List], optional): Horizontal lines. Defaults to None.
+        nan_to_num (bool, optional): Convert NaN to number. Defaults to True.
+    """
 
 
     # check if [ pointlabel , context ] in keys of analysisStructureItem
@@ -137,8 +136,13 @@ def descriptivePlot(figAxis:plt.Axes,
             for value in customLimits:
                 figAxis.axhline(value,color=color,ls='dashed')
 
+    else:
+        line= figAxis.plot(np.linspace(0,100,101), np.zeros(101), color=color,linestyle="-")        
 
     if legendLabel is not None: line[0].set_label(legendLabel)
+
+        
+    
     if title is not None: figAxis.set_title(title ,size=8)
     figAxis.set_xlim([0.0,100])
     figAxis.tick_params(axis='x', which='major', labelsize=6)
@@ -156,24 +160,23 @@ def consistencyPlot(figAxis:plt.Axes,
                     customLimits:Optional[List]=None,
                     nan_to_num:bool=True):
 
-    '''Plot all time-normalized traces from an `analysis` instance
+    """Plots all time-normalized traces from an `analysis` instance.
 
     Args:
-         figAxis (plt.Axes): a matplotlib figure axis
-         analysisStructureItem (AnalysisStructure): an attribute of an `analysis` instance
-         pointLabel (str): point label
-         contextPointLabel (str): event context
-         axis (int): column index of the point values
-         color (Optional[str], optional): line color. Defaults to None.
-         title (Optional[str], optional): title Defaults to None.
-         xlabel (Optional[str], optional): x-axis label. Defaults to None.
-         ylabel (Optional[str], optional): y-axis label. Defaults to None.
-         ylim (Optional[list], optional): y boundaries. Defaults to None.
-         legendLabel (Optional[str], optional): legend. Defaults to None.
-         customLimits (Optional[list], optional): horizontal lines. Defaults to None.
-         nan_to_num (bool,optional): nan conversion
-         
-    '''
+        figAxis (plt.Axes): A matplotlib figure axis.
+        analysisStructureItem (AnalysisStructure): An attribute of an `analysis` instance.
+        pointLabel (str): Point label.
+        contextPointLabel (str): Event context.
+        axis (int): Column index of the point values.
+        color (Optional[str], optional): Line color. Defaults to None.
+        title (Optional[str], optional): Title. Defaults to None.
+        xlabel (Optional[str], optional): X-axis label. Defaults to None.
+        ylabel (Optional[str], optional): Y-axis label. Defaults to None.
+        ylim (Optional[List], optional): Y boundaries. Defaults to None.
+        legendLabel (Optional[str], optional): Legend. Defaults to None.
+        customLimits (Optional[List], optional): Horizontal lines. Defaults to None.
+        nan_to_num (bool, optional): Convert NaN to number. Defaults to True.
+    """
 
 
     flag = False
@@ -217,24 +220,23 @@ def meanPlot(figAxis:plt.Axes,
                     customLimits:Optional[List]=None,
                     nan_to_num:bool=True):
 
-    '''Plot the  average time-normalized traces from an attribute of an `analysis` instance
+    """Plots the average time-normalized traces from an attribute of an `analysis` instance.
 
     Args:
-         figAxis (plt.Axes): a matplotlib figure axis
-         analysisStructureItem (AnalysisStructure): an attribute of an `analysis` instance
-         pointLabel (str): point label
-         contextPointLabel (str): event context
-         axis (int): column index of the point values
-         color (Optional[str], optional): line color. Defaults to None.
-         title (Optional[str], optional): title Defaults to None.
-         xlabel (Optional[str], optional): x-axis label. Defaults to None.
-         ylabel (Optional[str], optional): y-axis label. Defaults to None.
-         ylim (Optional[list], optional): y boundaries. Defaults to None.
-         legendLabel (Optional[str], optional): legend. Defaults to None.
-         customLimits (Optional[list], optional): horizontal lines. Defaults to None.
-         nan_to_num (bool,optional): nan conversion
-
-    '''
+        figAxis (plt.Axes): A matplotlib figure axis.
+        analysisStructureItem (AnalysisStructure): An attribute of an `analysis` instance.
+        pointLabel (str): Point label.
+        contextPointLabel (str): Event context.
+        axis (int): Column index of the point values.
+        color (Optional[str], optional): Line color. Defaults to None.
+        title (Optional[str], optional): Title. Defaults to None.
+        xlabel (Optional[str], optional): X-axis label. Defaults to None.
+        ylabel (Optional[str], optional): Y-axis label. Defaults to None.
+        ylim (Optional[List], optional): Y boundaries. Defaults to None.
+        legendLabel (Optional[str], optional): Legend. Defaults to None.
+        customLimits (Optional[List], optional): Horizontal lines. Defaults to None.
+        nan_to_num (bool, optional): Convert NaN to number. Defaults to True.
+    """
 
 
 
@@ -276,23 +278,22 @@ def gaitDescriptivePlot(figAxis:plt.Axes,
                     ylabel:Optional[str]=None,ylim:Optional[List]=None,legendLabel:Optional[str]=None,
                     customLimits:Optional[List]=None):
 
-    '''Plot descriptive (average and sd corridor) gait traces from an attribute of an `analysis` instance
+    """Plots descriptive (average and sd corridor) gait traces from an attribute of an `analysis` instance.
 
     Args:
-        figAxis (plt.Axes): a matplotlib figure axis
-        analysisStructureItem (AnalysisStructure): an attribute of an `analysis` instance
-        pointLabel (str): point label
-        contextPointLabel (str): event context
-        axis (int): column index of the point values
-        color (Optional[str], optional): line color. Defaults to None.
-        title (Optional[str], optional): title Defaults to None.
-        xlabel (Optional[str], optional): x-axis label. Defaults to None.
-        ylabel (Optional[str], optional): y-axis label. Defaults to None.
-        ylim (Optional[list], optional): y boundaries. Defaults to None.
-        legendLabel (Optional[str], optional): legend. Defaults to None.
-        customLimits (Optional[list], optional): horizontal lines. Defaults to None.
-
-    '''
+        figAxis (plt.Axes): A matplotlib figure axis.
+        analysisStructureItem (AnalysisStructure): An attribute of an `analysis` instance.
+        pointLabel (str): Point label.
+        contextPointLabel (str): Event context.
+        axis (int): Column index of the point values.
+        color (Optional[str], optional): Line color. Defaults to None.
+        title (Optional[str], optional): Title. Defaults to None.
+        xlabel (Optional[str], optional): X-axis label. Defaults to None.
+        ylabel (Optional[str], optional): Y-axis label. Defaults to None.
+        ylim (Optional[List], optional): Y boundaries. Defaults to None.
+        legendLabel (Optional[str], optional): Legend. Defaults to None.
+        customLimits (Optional[List], optional): Horizontal lines. Defaults to None.
+    """
 
 
 
@@ -340,23 +341,22 @@ def gaitConsistencyPlot(figAxis:plt.Axes,
                     ylabel:Optional[str]=None,ylim:Optional[List]=None,legendLabel:Optional[str]=None,
                     customLimits:Optional[List]=None):
 
-    '''Plot all gait traces from an attribute of an `analysis` instance
+    """Plots all gait traces from an attribute of an `analysis` instance.
 
     Args:
-        figAxis (plt.Axes): a matplotlib figure axis
-        analysisStructureItem (AnalysisStructure): an attribute of an `analysis` instance
-        pointLabel (str): point label
-        contextPointLabel (str): event context
-        axis (int): column index of the point values
-        color (Optional[str], optional): line color. Defaults to None.
-        title (Optional[str], optional): title Defaults to None.
-        xlabel (Optional[str], optional): x-axis label. Defaults to None.
-        ylabel (Optional[str], optional): y-axis label. Defaults to None.
-        ylim (Optional[list], optional): y boundaries. Defaults to None.
-        legendLabel (Optional[str], optional): legend. Defaults to None.
-        customLimits (Optional[list], optional): horizontal lines. Defaults to None.
-
-    '''
+        figAxis (plt.Axes): A matplotlib figure axis.
+        analysisStructureItem (AnalysisStructure): An attribute of an `analysis` instance.
+        pointLabel (str): Point label.
+        contextPointLabel (str): Event context.
+        axis (int): Column index of the point values.
+        color (Optional[str], optional): Line color. Defaults to None.
+        title (Optional[str], optional): Title. Defaults to None.
+        xlabel (Optional[str], optional): X-axis label. Defaults to None.
+        ylabel (Optional[str], optional): Y-axis label. Defaults to None.
+        ylim (Optional[List], optional): Y boundaries. Defaults to None.
+        legendLabel (Optional[str], optional): Legend. Defaults to None.
+        customLimits (Optional[List], optional): Horizontal lines. Defaults to None.
+    """
 
     flag = False
     for key in analysisStructureItem.data.keys():
@@ -465,16 +465,17 @@ def stpHorizontalHistogram(figAxis:plt.Axes,analysisStructureItem:AnalysisStruct
                         title:Optional[str]=None, 
                         xlabel:Optional[str]=None,
                         xlim:Optional[List]=None):
-    '''Plot spatio-temporal parameters as histogram from an attribute of an `analysis` instance
+    """Plots spatio-temporal parameters as a histogram from an attribute of an `analysis` instance.
 
     Args:
-         figAxis (plt.Axes): a matplotlib figure axis
-         analysisStructureItem (AnalysisStructure): an AnalysisStructure on an analysis instance 
-         stpLabel (str): spatio-temporal label
-         title (Optional[str], optional): plot title
-         xlabel (Optional[str], optional): x-axis label. Defaults to None.
-         xlim (Optional[list], optional): x boundaries. Defaults to None.
-    '''
+        figAxis (plt.Axes): A matplotlib figure axis.
+        analysisStructureItem (AnalysisStructure): An AnalysisStructure on an analysis instance.
+        stpLabel (str): Spatio-temporal label.
+        overall (bool, optional): Plot overall data. Defaults to False.
+        title (Optional[str], optional): Plot title. Defaults to None.
+        xlabel (Optional[str], optional): X-axis label. Defaults to None.
+        xlim (Optional[List], optional): X boundaries. Defaults to None.
+    """
 
 
     if (stpLabel,"Right") in analysisStructureItem.keys() and (stpLabel,"Left") in analysisStructureItem.keys():
@@ -521,13 +522,12 @@ def stpHorizontalHistogram(figAxis:plt.Axes,analysisStructureItem:AnalysisStruct
 
 
 def addNormalActivationLayer(figAxis:plt.Axes,normalActivationLabel:str,fo:int):
-    """display normal muscle activation in the background of a time-normalized trace
+    """Displays normal muscle activation in the background of a time-normalized trace.
 
     Args:
-        figAxis (plt.Axes): a matplotlib figure axis
-        normalActivationLabel (str): muscle label
-        fo (int): time-normalized foot off frame
-
+        figAxis (plt.Axes): A matplotlib figure axis.
+        normalActivationLabel (str): Muscle label.
+        fo (int): Time-normalized foot off frame.
     """
 
     pos,burstDuration=normalActivation.getNormalBurstActivity(normalActivationLabel,fo)
@@ -538,13 +538,13 @@ def addNormalActivationLayer(figAxis:plt.Axes,normalActivationLabel:str,fo:int):
 
 def addTemporalNormalActivationLayer(figAxis:plt.Axes,acq:btk.btkAcquisition,
                                      normalActivationLabel:str,context:str):
-    """display normal muscle activation in the background of a temporal trace
+    """Displays normal muscle activation in the background of a temporal trace.
 
     Args:
-        figAxis (plt.Axes): a matplotlib figure axis
-        acq (btk.btkAcquisition): a Btk acquisition
-        normalActivationLabel (str): muscle label
-        context (str): event context
+        figAxis (plt.Axes): A matplotlib figure axis.
+        acq (btk.btkAcquisition): A Btk acquisition.
+        normalActivationLabel (str): Muscle label.
+        context (str): Event context.
     """
 
     if normalActivationLabel:
@@ -559,12 +559,12 @@ def addTemporalNormalActivationLayer(figAxis:plt.Axes,acq:btk.btkAcquisition,
 
 
 def addRectanglePatches(figAxis:plt.Axes,clusters:List,heightProportion:float = 0.05):
-    """displat a rectangle
+    """Displays a rectangle.
 
     Args:
-        figAxis (plt.Axes): a matplotlib figure axis
-        clusters (list): clusters with begin and end indexes
-        heightProportion (float, optional): proportion with height. Defaults to 0.05.
+        figAxis (plt.Axes): A matplotlib figure axis.
+        clusters (List): Clusters with begin and end indexes.
+        heightProportion (float, optional): Proportion with height. Defaults to 0.05.
     """
     ymax = figAxis.get_ylim()[1]
     ymin = figAxis.get_ylim()[0]

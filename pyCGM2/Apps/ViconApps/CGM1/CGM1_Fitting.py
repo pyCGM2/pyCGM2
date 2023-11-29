@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Executable Apps/Vicon/CGM1
-#APIDOC["Import"]=False
-#APIDOC["Draft"]=False
-#--end--
 
 import warnings
 import argparse

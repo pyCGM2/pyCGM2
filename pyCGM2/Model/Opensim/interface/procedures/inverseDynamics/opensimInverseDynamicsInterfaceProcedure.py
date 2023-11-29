@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-import os
-import numpy as np
-import pyCGM2; LOGGER = pyCGM2.LOGGER
-from bs4 import BeautifulSoup
-import matplotlib.pyplot as plt
+from typing import List, Tuple, Dict, Optional,Union,Any
 
+import pyCGM2; LOGGER = pyCGM2.LOGGER
 # pyCGM2
 try:
     import btk
@@ -31,9 +27,19 @@ except:
 
 
 class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
-        
-    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory):
+    """
+    Provides a procedure for setting up and executing inverse dynamics analyses in OpenSim.
 
+    This class handles the preparation of trials from BTK acquisitions, configuration of analysis 
+    parameters, and execution of the inverse dynamics tool in OpenSim.
+
+    Args:
+        DATA_PATH (str): Path to the data directory.
+        scaledOsimName (str): Name of the scaled OpenSim model file.
+        resultsDirectory (Optional[str]): Directory for storing results.
+    """
+        
+    def __init__(self, DATA_PATH: str, scaledOsimName: str, resultsDirectory: Optional[str]):
         super(InverseDynamicsXmlProcedure,self).__init__()
 
         self.m_DATA_PATH = DATA_PATH
@@ -47,14 +53,33 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
 
         self.m_acq=None
 
-    def setSetupFiles(self,idToolTemplateFile,externalLoadTemplateFile):
+    def setSetupFiles(self, idToolTemplateFile: str, externalLoadTemplateFile: str) -> None:
+        """
+        Sets up the necessary files for inverse dynamics analysis.
+
+        Args:
+            idToolTemplateFile (str): Path to the Inverse Dynamics tool template file.
+            externalLoadTemplateFile (str): Path to the external load template file.
+        """
+
         self.m_idTool = self.m_DATA_PATH +  "-idTool-setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(idToolTemplateFile,self.m_idTool)
         self.m_externalLoad = self.m_DATA_PATH  + "-externalLoad.xml"
         self.xml_load = opensimInterface.opensimXmlInterface(externalLoadTemplateFile,self.m_externalLoad)
         
 
-    def prepareTrial_fromBtkAcq(self, acq, dynamicFile, mfpa,progressionAxis,forwardProgression):
+    def prepareTrial_fromBtkAcq(self, acq: btk.btkAcquisition, dynamicFile: str, mfpa: Any, 
+                                progressionAxis: str, forwardProgression: bool) -> None:
+        """
+        Prepares the trial data from a BTK acquisition for inverse dynamics analysis.
+
+        Args:
+            acq (btk.btkAcquisition): BTK acquisition object.
+            dynamicFile (str): Name of the dynamic file.
+            mfpa (Any): Parameter for foot reaction analysis (specific type depends on the context).
+            progressionAxis (str): Axis of progression.
+            forwardProgression (bool): Direction of forward progression.
+        """
         self.m_dynamicFile =dynamicFile
         self.m_acq = acq
         self.m_mfpa = mfpa
@@ -73,18 +98,36 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
             self.m_progressionAxis,self.m_forwardProgression,mfpa = self.m_mfpa)
 
 
-    def setFrameRange(self,begin,end):
+    def setFrameRange(self, begin: Optional[int], end: Optional[int]) -> None:
+        """
+        Sets the frame range for the inverse dynamics analysis.
+
+        Args:
+            begin (Optional[int]): The beginning frame number. If None, starts from the first frame.
+            end (Optional[int]): The ending frame number. If None, ends at the last frame.
+        
+        """
         if self.m_acq is None:
             raise Exception(f"[pyCGM2] - no acquisition detected - trial preparation from a btk::Acquisition not done")
         self.m_beginTime = 0.0 if begin is None else (begin-self.m_ff)/self.m_freq
         self.m_endTime = (self.m_acq.GetLastFrame() - self.m_ff)/self.m_freq  if end is  None else (end-self.m_ff)/self.m_freq
 
-    def setTimeRange(self,begin,end):
+    def setTimeRange(self, begin: float, end: float) -> None:
+        """
+        Sets the time range for the inverse dynamics analysis.
+
+        Args:
+            begin (float): The beginning time in seconds.
+            end (float): The ending time in seconds.
+        """
         self.m_beginTime = begin
         self.m_endTime = end
 
 
     def prepareXml(self):
+        """
+        Prepares the XML configuration for the Inverse Dynamics Tool in OpenSim.
+        """
         self.xml.getSoup().find("InverseDynamicsTool").attrs["name"] = "InverseDynamics"
         self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("coordinates_file", self.m_RES_PATH+ self.m_dynamicFile+".mot")
@@ -101,6 +144,9 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
         
 
     def run(self):
+        """
+        Executes the inverse dynamics analysis using the configured XML files.
+        """
 
         self.xml.update()
         self.xml_load.update()
@@ -111,7 +157,9 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
         self.finalize()
     
     def finalize(self):
-
+        """
+        Finalizes the process, including renaming and cleanup of the setup files.
+        """
         files.renameFile(self.m_idTool, 
                     self.m_DATA_PATH + self.m_dynamicFile+ "-IDTool-setup.xml")
         files.renameFile(self.m_externalLoad,
@@ -120,9 +168,19 @@ class InverseDynamicsXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure
 
 
 class InverseDynamicsXmlCgmProcedure(InverseDynamicsXmlProcedure):
-        
-    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory,modelVersion):
+    """
+    Specialized procedure for handling inverse dynamics analyses in OpenSim, specifically tailored for CGM models.
 
+    This class extends InverseDynamicsXmlProcedure to include configurations and customizations necessary for CGM model versions.
+
+    Args:
+        DATA_PATH (str): Path to the data directory.
+        scaledOsimName (str): Name of the scaled OpenSim model file.
+        resultsDirectory (Optional[str]): Directory for storing results. If None, defaults to DATA_PATH.
+        modelVersion (str): The version of the CGM model to be used.    
+    """
+        
+    def __init__(self, DATA_PATH: str, scaledOsimName: str, resultsDirectory: Optional[str], modelVersion: str):
         super(InverseDynamicsXmlCgmProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory)
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
@@ -141,6 +199,11 @@ class InverseDynamicsXmlCgmProcedure(InverseDynamicsXmlProcedure):
         self.xml_load = opensimInterface.opensimXmlInterface(externalLoadFile,self.m_externalLoad)
 
     def prepareXml(self):
+        """
+        Prepares the XML configuration specific to the CGM model for the Inverse Dynamics Tool in OpenSim.
+
+        Customizes the XML settings to align with the specifics of the CGM model version being used.
+        """
         self.xml.getSoup().find("InverseDynamicsTool").attrs["name"] = self.m_modelVersion+"-InverseDynamics"
         self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("coordinates_file", self.m_RES_PATH+ self.m_dynamicFile+".mot")
@@ -158,6 +221,9 @@ class InverseDynamicsXmlCgmProcedure(InverseDynamicsXmlProcedure):
         
 
     def run(self):
+        """
+        Executes the inverse dynamics analysis using the configured XML files, specifically tailored for the CGM model.
+        """
 
         self.xml.update()
         self.xml_load.update()
@@ -168,7 +234,10 @@ class InverseDynamicsXmlCgmProcedure(InverseDynamicsXmlProcedure):
         self.finalize()
     
     def finalize(self):
-
+        """
+        Finalizes the CGM model-specific inverse dynamics process, including renaming and cleanup of setup files.
+        """
+        
         files.renameFile(self.m_idTool, 
                     self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-IDTool-setup.xml")
         files.renameFile(self.m_externalLoad,

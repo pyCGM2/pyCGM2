@@ -21,21 +21,27 @@ from typing import List, Tuple, Dict, Optional, Union, Callable
 
 
 class KinematicsPlotComparisonViewer(plotViewers.PlotViewer):
-    """ Compare kinematics
+    """
+    A viewer for comparing kinematic data across multiple `Analysis` instances.
+    
+    This class allows for the visualization of kinematic data, enabling a comparison
+    between different analyses. It supports customization for specific body parts and
+    accommodates various data suffixes and contexts.
 
     Args:
-        iAnalyses (list ): `pyCGM2.Processing.analysis.Analysis` instances
-        context (str): event context
-        pointLabelSuffix (str) - suffix added to model outputs
-        legends(list): labels caracterizing the `analysis` instances
-        pointLabelSuffix_lst(list,Optional[None]): suffix added to model outputs of the `analysis` instances
-        bodyPart(pyCGM2.enums.BodyPartPlot,Optional[pyCGM2.enums.BodyPartPlot.LowerLimb]):body part
+        iAnalyses (List[Analysis]): Instances of analyses to be compared.
+        context (str): The context of the biomechanical event.
+        legends (List[str]): Descriptive labels for each analysis instance.
+        pointLabelSuffix_lst (Optional[List[str]]): Suffixes for model output labels.
+        bodyPart (enums.BodyPartPlot): The body part to be visualized, defaults to LowerLimb.
 
     """
 
 
     def __init__(self,iAnalyses:List[Analysis],context:List[str],legends:List[str],pointLabelSuffix_lst:Optional[List[str]]=None,
                  bodyPart:enums.BodyPartPlot=enums.BodyPartPlot.LowerLimb):
+        """Initialize the comparison plot viewer"""
+
 
         super(KinematicsPlotComparisonViewer, self).__init__(iAnalyses)
 
@@ -63,16 +69,30 @@ class KinematicsPlotComparisonViewer(plotViewers.PlotViewer):
         self.m_concretePlotFunction = None
 
     def setConcretePlotFunction(self, concreteplotFunction:Callable):
-        """set a plot function 
+        """
+        Sets a specific plot function for kinematic data visualization.
+        
+        This method allows the customization of the plot based on the user's needs,
+        enabling the use of various plot types from the pyCGM2.Report.plot library.
 
         Args:
-            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
-
+            concreteplotFunction (Callable): A plot function from pyCGM2.Report.plot.
         """
+
         self.m_concretePlotFunction = concreteplotFunction
 
     def __setLayer(self):
 
+        """
+        Private method to set up the plot layers.
+        
+        This method initializes the figure and axes for the plot, setting titles,
+        subtitles, and adjusting layout parameters. It also configures the axes
+        based on the selected body part.
+
+        Note:
+            This method is internally used by the class and not intended for external use.
+        """
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
 
         if self.m_concretePlotFunction.__name__ in ["descriptivePlot","gaitDescriptivePlot"]:
@@ -182,23 +202,41 @@ class KinematicsPlotComparisonViewer(plotViewers.PlotViewer):
 
 
     def __setLegend(self,axisIndex):
+        """
+        Private method to set the legend for the plot.
+        
+        Configures and places the legend on the plot based on the provided axis index.
+
+        Args:
+            axisIndex (int): Index of the axis where the legend is to be placed.
+
+        Note:
+            This method is internally used by the class and not intended for external use.
+        """
         self.fig.axes[axisIndex].legend(fontsize=6)
         #self.fig.axes[axisIndex].legend(fontsize=6, bbox_to_anchor=(0,1.2,1,0.2), loc="lower left",
         #    mode="None", borderaxespad=0, ncol=len(self.m_analysis))
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
-        """Set a normative dataset
+        """
+        Sets the normative dataset for comparison with the analysis data.
 
         Args:
-            iNormativeDataSet (NormativeData): normative data instance
-
+            iNormativeDataSet (NormativeData): An instance of normative data for comparison.
         """
 
         # iNormativeDataSet.constructNormativeData()
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
+        """
+        Private method to set the data for plotting.
+        
+        Organizes and prepares the kinematic data from the analysis instances for plotting.
 
+        Note:
+            This method is internally used by the class and not intended for external use.
+        """
 
         if self.m_context == "Left":
             colormap = plt.cm.Reds
@@ -495,7 +533,18 @@ class KinematicsPlotComparisonViewer(plotViewers.PlotViewer):
                 i+=1
 
     def plotPanel(self):
-        """ plot the panel"""
+        """
+        Generates and plots the kinematic comparison panel.
+
+        This method orchestrates the plotting process, including setting up the layers,
+        arranging data, and rendering the final plot.
+
+        Returns:
+            matplotlib.figure.Figure: The generated plot as a matplotlib figure object.
+            
+        Raises:
+            Exception: If the concrete plot function is not defined.
+        """
 
 
         if self.m_concretePlotFunction is None:
@@ -557,20 +606,27 @@ class KinematicsPlotComparisonViewer(plotViewers.PlotViewer):
         return self.fig
 
 class KineticsPlotComparisonViewer(plotViewers.PlotViewer):
-    """ Compare kinetics
+    """ 
+    A viewer for comparing kinetic data across multiple `Analysis` instances.
+    
+    Similar to kineticsPlotComparisonViewer, this class is designed for the visualization
+    and comparison of kinetic data from different analysis instances. It supports kinetic
+    data visualization for specified body parts and handles various data suffixes and contexts.
+
 
     Args:
-        iAnalyses (list ):  `pyCGM2.Processing.analysis.Analysis` instances
-        context (str): event context
-        pointLabelSuffix (str) - suffix added to model outputs
-        legends(list): labels caracterizing the `analysis` instances
-        pointLabelSuffix_lst(list,Optional[None]): suffix added to model outputs of the `analysis` instances
-        bodyPart(pyCGM2.enums.BodyPartPlot,Optional[pyCGM2.enums.BodyPartPlot.LowerLimb]):body part
+        iAnalyses (List[Analysis]): Instances of analyses to be compared.
+        context (str): The context of the biomechanical event.
+        legends (List[str]): Descriptive labels for each analysis instance.
+        pointLabelSuffix_lst (Optional[List[str]]): Suffixes for model output labels.
+        bodyPart (enums.BodyPartPlot): The body part to be visualized, defaults to LowerLimb.
+
 
     """
 
     def __init__(self,iAnalyses:List[Analysis],context:List[str],legends:List[str],pointLabelSuffix_lst:Optional[List[str]]=None,
                  bodyPart:enums.BodyPartPlot= enums.BodyPartPlot.LowerLimb):
+        """Initialize the comparison plot viewer"""
 
 
         super(KineticsPlotComparisonViewer, self).__init__(iAnalyses)
@@ -598,15 +654,28 @@ class KineticsPlotComparisonViewer(plotViewers.PlotViewer):
         self.m_concretePlotFunction = None
 
     def setConcretePlotFunction(self, concreteplotFunction:Callable):
-        """set a plot function 
+        """
+        Sets a specific plot function for kinetic data visualization.
+        
+        This method allows the customization of the plot based on the user's needs,
+        enabling the use of various plot types from the pyCGM2.Report.plot library.
 
         Args:
-            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
-
+            concreteplotFunction (Callable): A plot function from pyCGM2.Report.plot.
         """
         self.m_concretePlotFunction = concreteplotFunction
 
     def __setLayer(self):
+        """
+        Private method to set up the plot layers.
+        
+        This method initializes the figure and axes for the plot, setting titles,
+        subtitles, and adjusting layout parameters. It also configures the axes
+        based on the selected body part.
+
+        Note:
+            This method is internally used by the class and not intended for external use.
+        """
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
 
@@ -684,22 +753,40 @@ class KineticsPlotComparisonViewer(plotViewers.PlotViewer):
             LOGGER.logger.warning("Plot Panel not implemented yet")
 
     def __setLegend(self,axisIndex):
+        """
+        Private method to set the legend for the plot.
+        
+        Configures and places the legend on the plot based on the provided axis index.
+
+        Args:
+            axisIndex (int): Index of the axis where the legend is to be placed.
+
+        Note:
+            This method is internally used by the class and not intended for external use.
+        """
         self.fig.axes[axisIndex].legend(fontsize=6)
         #self.fig.axes[axisIndex].legend(fontsize=6, bbox_to_anchor=(0,1.2,1,0.2), loc="lower left",
         #    mode="None", borderaxespad=0, ncol=len(self.m_analysis))
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
-        """Set a normative dataset
+        """
+        Sets the normative dataset for comparison with the analysis data.
 
         Args:
-            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance
-
+            iNormativeDataSet (NormativeData): An instance of normative data for comparison.
         """
         # iNormativeDataSet.constructNormativeData()
         self.m_normativeData = iNormativeDataSet.data
 
     def __setData(self):
+        """
+        Private method to set the data for plotting.
+        
+        Organizes and prepares the kinematic data from the analysis instances for plotting.
 
+        Note:
+            This method is internally used by the class and not intended for external use.
+        """
         if self.m_context == "Left":
             colormap = plt.cm.Reds
             colormap_i=[colormap(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
@@ -819,7 +906,18 @@ class KineticsPlotComparisonViewer(plotViewers.PlotViewer):
 
         #
     def plotPanel(self):
-        """ plot the panel"""
+        """
+        Generates and plots the kinematic comparison panel.
+
+        This method orchestrates the plotting process, including setting up the layers,
+        arranging data, and rendering the final plot.
+
+        Returns:
+            matplotlib.figure.Figure: The generated plot as a matplotlib figure object.
+            
+        Raises:
+            Exception: If the concrete plot function is not defined.
+        """
 
         if self.m_concretePlotFunction is None:
             raise Exception ("[pyCGM2] need definition of the concrete plot function")

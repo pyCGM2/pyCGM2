@@ -23,6 +23,12 @@ from pyCGM2.Processing.ProgressionFrame import progressionFrameProcedures
 
 # --- abstract procedure
 class EventProcedure(object):
+    """
+    Abstract class for event procedures.
+
+    This class serves as a foundation for specific event detection procedures in gait analysis. 
+    It should be extended to implement methods for detecting specific types of gait events.
+    """
     def __init__(self):
         pass
 
@@ -32,42 +38,55 @@ class EventProcedure(object):
 
 class ZeniProcedure(EventProcedure):
     """
-        Gait Event detection from Zeni et al, 2008
+    Gait event detection procedure based on the method described by Zeni et al., 2008.
+
+    This procedure implements a gait event detection algorithm that identifies foot strike and foot off events based on the motion of heel and toe markers relative to the pelvis.
+
+    Attributes:
+        description (str): Description of the event detection procedure.
+        footStrikeOffset (int): Systematic offset applied to each foot strike event.
+        footOffOffset (int): Systematic offset applied to each foot off event.
     """
 
     def __init__(self):
+        """
+        Initializes the ZeniProcedure class.
+        """
         super(ZeniProcedure, self).__init__()
         self.description = "Zeni (2008)"
         self.footStrikeOffset = 0
         self.footOffOffset = 0
 
     def setFootStrikeOffset(self,value:int):
-        """set a systematic offset to each foot strike event
+        """
+        Set a systematic offset to each foot strike event.
 
         Args:
-            value (int): frame offset
+            value (int): Frame offset to apply to each foot strike event.
         """
 
         self.footStrikeOffset = value
 
     def setFootOffOffset(self,value:int):
-        """set a systematic offset to each foot off event
+        """
+        Set a systematic offset to each foot off event.
 
         Args:
-            value (int): frame offset
+            value (int): Frame offset to apply to each foot off event.
         """
         self.footOffOffset = value
 
     def detect(self,acq:btk.btkAcquisition)-> Union[Tuple[int, int, int, int], int] :
-        """detect events
+        """
+        Detect events using the Zeni method.
 
         Args:
-            acq (btk.btkAcquisition): a btk acquisition instance
+            acq (btk.btkAcquisition): A BTK acquisition instance containing motion capture data.
 
-        Return:
-            Union[Tuple[int, int, int, int], int] : frames indicating the left foot strike, the left foot off,
-            the right foot strike and the right foot off respectively. return 0 if it fails
-
+        Returns:
+            Union[Tuple[int, int, int, int], int]: Frames indicating the left foot strike, left foot off, 
+                                                   right foot strike, and right foot off respectively. 
+                                                   Returns 0 if detection fails.
         """
 
 

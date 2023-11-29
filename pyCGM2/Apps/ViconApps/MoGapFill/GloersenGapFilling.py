@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Executable Apps/Vicon/Gap Filling
-#APIDOC["Import"]=False
-#APIDOC["Draft"]=False
-#--end--
 import argparse
 from pyCGM2.Nexus import nexusFilters
 from pyCGM2.Nexus import nexusTools
@@ -38,7 +33,7 @@ def main(args=None):
         LOGGER.logger.info("Gap filling for subject %s" % (subject))
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,
             DATA_PATH, filenameLabelledNoExt, subject)
         acq = nacf.build()
 

@@ -17,6 +17,18 @@ from typing import List, Tuple, Dict, Optional
 
 
 def loadSettings(DATA_PATH:str,settingFile:str,subfolder:str=""):
+    """
+    Load settings from a specified file. It first checks the data path for the settings file,
+    if not found, it loads from the default pyCGM2 settings folder.
+
+    Args:
+        DATA_PATH (str): The path to the data directory.
+        settingFile (str): The name of the settings file.
+        subfolder (str, optional): Subfolder within the pyCGM2 settings folder. Defaults to "".
+
+    Returns:
+        dict: Loaded settings.
+    """
     if os.path.isfile(DATA_PATH + settingFile):
         settings = openFile(DATA_PATH, settingFile)
         LOGGER.logger.warning(
@@ -27,12 +39,16 @@ def loadSettings(DATA_PATH:str,settingFile:str,subfolder:str=""):
     return settings
 
 def loadModelSettings(DATA_PATH:str,expertsettings_filename:str):
-    """Load a pyCGM2 model settings.
+    """
+    Load pyCGM2 model settings from a specified file. It checks the data path first;
+    if not found, it loads from the pyCGM2 settings folder.
 
     Args:
-        DATA_PATH (str): data folder path
-        expertsettings_filename (str): setting filename
+        DATA_PATH (str): The path to the data directory.
+        expertsettings_filename (str): The name of the model settings file.
 
+    Returns:
+        dict: Loaded model settings.
     """
     if os.path.isfile(DATA_PATH+expertsettings_filename):
         settings = openFile(DATA_PATH,expertsettings_filename)
@@ -42,13 +58,19 @@ def loadModelSettings(DATA_PATH:str,expertsettings_filename:str):
     return settings
 
 def openFile(path:str,filename:str):
-    """open a json/yaml file.
+    """
+    Open a JSON or YAML file and return its contents as a dictionary. It detects the file format
+    based on its content.
 
     Args:
-        path (str): data folder path
-        filename (str):  filename with Extension
+        path (str): The directory path where the file is located.
+        filename (str): The filename with extension.
 
+    Returns:
+        dict: The contents of the file.
 
+    Raises:
+        Exception: If the file is neither JSON nor YAML format.
     """
     if path is None:
         path =  getDirname(filename)
@@ -76,7 +98,19 @@ def openFile(path:str,filename:str):
 
 
 def openJson(path:str,filename:str):
+    """
+    Open a JSON file and return its contents as a dictionary.
 
+    Args:
+        path (str): The directory path where the file is located.
+        filename (str): The JSON filename.
+
+    Returns:
+        dict: The contents of the JSON file.
+
+    Raises:
+        Exception: If there is a JSON syntax error.
+    """
     if path is not None: path = path
     filename = filename
 
@@ -90,6 +124,19 @@ def openJson(path:str,filename:str):
         raise Exception ("[pyCGM2] : json syntax of file (%s) is incorrect. check it" %(filename))
 
 def openYaml(path:str,filename:str):
+    """
+    Open a YAML file and return its contents as a dictionary.
+
+    Args:
+        path (str): The directory path where the file is located.
+        filename (str): The YAML filename.
+
+    Returns:
+        dict: The contents of the YAML file.
+
+    Raises:
+        Exception: If there is a YAML syntax error.
+    """
     if path is not None: path = path
     filename = filename
     try:
@@ -102,11 +149,15 @@ def openYaml(path:str,filename:str):
         raise Exception ("[pyCGM2] : yaml syntax of file (%s) is incorrect. check it" %(filename))
 
 def openPickleFile(path:str,filename:str):
-    """open a serialized file.
+    """
+    Open a serialized (pickle) file and return its contents.
 
     Args:
-        path (str): data folder path
-        filename (str):  filename with Extension
+        path (str): The directory path where the file is located.
+        filename (str): The filename with extension.
+
+    Returns:
+        object: The deserialized object from the pickle file.
     """
 
 
@@ -116,12 +167,13 @@ def openPickleFile(path:str,filename:str):
     return content
 
 def savePickleFile(instance:object,path:str,filename:str):
-    """serialized a pyCGM2 instance , then save it.
+    """
+    Serialize an object and save it as a pickle file.
 
     Args:
-        instance (object): a object instance
-        path (str): data folder path
-        filename (str):  filename with Extension
+        instance (object): The object to be serialized and saved.
+        path (str): The directory path to save the file.
+        filename (str): The filename for the saved file.
     """
 
     if os.path.isfile((path + filename)):
@@ -133,11 +185,17 @@ def savePickleFile(instance:object,path:str,filename:str):
 
 
 def readContent(stringContent:str):
-    """read a json/yaml content
+    """
+    Read a string content in JSON or YAML format and return it as a dictionary.
 
     Args:
-        stringContent (str): json or yaml content
+        stringContent (str): The string content in JSON or YAML format.
 
+    Returns:
+        dict: The parsed content.
+
+    Raises:
+        Exception: If the content is neither JSON nor YAML.
     """
 
     jsonFlag = is_json(stringContent)
@@ -158,11 +216,18 @@ def readContent(stringContent:str):
 
 
 def loadModel(path:str,FilenameNoExt:str):
-    """load a pyCGM2 model instance
+    """
+    Load a pyCGM2 model instance from a file.
 
     Args:
-        path (str): data folder path
-        FilenameNoExt (str):  model filename wthout extension
+        path (str): The path to the directory containing the model file.
+        FilenameNoExt (str): The filename of the model file without extension.
+
+    Returns:
+        Model: The loaded pyCGM2 model instance.
+
+    Raises:
+        Exception: If the model file does not exist.
     """
     if FilenameNoExt is not None:
         filename = FilenameNoExt + "-pyCGM2.model"
@@ -179,12 +244,13 @@ def loadModel(path:str,FilenameNoExt:str):
         return model
 
 def saveModel(model:Model,path:str,FilenameNoExt:str):
-    """save a pyCGM2 model instance
+    """
+    Save a pyCGM2 model instance to a file.
 
     Args:
-        model pyCGM2.Model.model.Model): a model instance
-        path (str): data folder path
-        FilenameNoExt (str):  model filename wthout extension
+        model (Model): The pyCGM2 model instance to be saved.
+        path (str): The directory path to save the model file.
+        FilenameNoExt (str): The base filename to use for saving the model.
     """
 
     if FilenameNoExt is not None:
@@ -203,12 +269,18 @@ def saveModel(model:Model,path:str,FilenameNoExt:str):
 
 
 def loadAnalysis(path:str,FilenameNoExt:str):
-    """load an `analysis` instance
+    """
+    Load a pyCGM2 analysis instance from a file.
 
     Args:
-        path (str): data folder path
-        FilenameNoExt (str):  analysis filename without extension
+        path (str): The path to the directory containing the analysis file.
+        FilenameNoExt (str): The filename of the analysis file without extension.
 
+    Returns:
+        Analysis: The loaded pyCGM2 analysis instance.
+
+    Raises:
+        Exception: If the analysis file does not exist.
     """
     if FilenameNoExt is not None:
         filename = FilenameNoExt + "-pyCGM2.analysis"
@@ -225,12 +297,13 @@ def loadAnalysis(path:str,FilenameNoExt:str):
         return analysis
 
 def saveAnalysis(analysisInstance:Analysis,path:str,FilenameNoExt:str):
-    """save a pyCGM2 analysis instance
+    """
+    Save a pyCGM2 analysis instance to a file.
 
     Args:
-        model pyCGM2.Processing.analysis.Analysis): an analysis instance
-        path (str): data folder path
-        FilenameNoExt (str):  model filename wthout extension
+        analysisInstance (Analysis): The pyCGM2 analysis instance to be saved.
+        path (str): The directory path to save the analysis file.
+        FilenameNoExt (str): The base filename to use for saving the analysis.
     """
     if FilenameNoExt is not None:
         filename = FilenameNoExt + "-pyCGM2.analysis"
@@ -248,12 +321,14 @@ def saveAnalysis(analysisInstance:Analysis,path:str,FilenameNoExt:str):
 
 
 def saveJson(path:str, filename:str, content:Dict,ensure_ascii:bool=False):
-    """save as json file
+    """
+    Save a dictionary as a JSON file.
 
     Args:
-        path (str): data folder path
-        filename (str):  json filename
-        content (dict): dictionary to save
+        path (str): The directory path to save the JSON file.
+        filename (str): The name of the JSON file to be saved.
+        content (Dict): The dictionary content to be saved as JSON.
+        ensure_ascii (bool, optional): If set to False, non-ASCII characters will be saved as they are. Defaults to False.
     """
 
     if path is not None: path = path
@@ -266,16 +341,16 @@ def saveJson(path:str, filename:str, content:Dict,ensure_ascii:bool=False):
             json.dump(content, outfile,indent=4,ensure_ascii=ensure_ascii)
 
 def saveYaml(path:str, filename:str, content:Dict):
-    """save as yaml file
+    """
+    Save a dictionary as a YAML file.
 
     Args:
-        path (str): data folder path
-        filename (str):  json filename
-        content (dict): dictionary to save
+        path (str): The directory path to save the YAML file.
+        filename (str): The name of the YAML file to be saved.
+        content (Dict): The dictionary content to be saved as YAML.
 
-
-    Note: Do not work well with orderdict
-
+    Note:
+        This function may not work well with OrderedDict types.
     """
 
     if path is not None: path = path
@@ -289,11 +364,15 @@ def saveYaml(path:str, filename:str, content:Dict):
 
 
 def getTranslators(DATA_PATH:str, translatorType:str = "CGM1.translators"):
-    """get CGM marker translators
+    """
+    Retrieve CGM marker translators from a specified file.
 
     Args:
-        DATA_PATH (str): data folder path
-        translatorType (str,Optional[CGM1.translators]): translator filename
+        DATA_PATH (str): The path to the data directory.
+        translatorType (str, optional): The name of the translator file. Defaults to "CGM1.translators".
+
+    Returns:
+        dict: The loaded translators, or False if not found.
     """
 
     #  translators management
@@ -307,11 +386,15 @@ def getTranslators(DATA_PATH:str, translatorType:str = "CGM1.translators"):
        return False
 
 def getIKweightSet(DATA_PATH:str, ikwf:str):
-    """get marker weights for kinematic fitting
+    """
+    Retrieve marker weights for kinematic fitting from a specified file.
 
     Args:
-        DATA_PATH (str): data folder path
-        ikwf (str): weights filename
+        DATA_PATH (str): The path to the data directory.
+        ikwf (str): The name of the weights file.
+
+    Returns:
+        dict: The loaded marker weights, or False if not found.
     """
 
     if os.path.isfile( (DATA_PATH + ikwf)):
@@ -322,12 +405,17 @@ def getIKweightSet(DATA_PATH:str, ikwf:str):
        return False
 
 def getMpFileContent(DATA_PATH:str,file:str,subject:str):
-    """get anthropometric data
+    """
+    Retrieve anthropometric data from a specified file.
 
     Args:
-        DATA_PATH (str): data folder path
-        file (str): Filename
-        subject  (str): subject name
+        DATA_PATH (str): The path to the data directory.
+        file (str): The name of the file containing anthropometric data.
+        subject (str): The name of the subject.
+
+    Returns:
+        dict: The loaded anthropometric data.
+        str: The name of the output file.
     """
 
     if subject is not None:
@@ -344,12 +432,16 @@ def getMpFileContent(DATA_PATH:str,file:str,subject:str):
     return content,out
 
 def getMp(mpInfo:Dict,resetFlag:bool=True):
-    """return required and optional anthropometric parameters
+    """
+    Return required and optional anthropometric parameters from a given dictionary.
 
     Args:
-        mpInfo (dict): global mp dictionary
-        resetFlag (bool,Optional[True]): reset optional parameters
+        mpInfo (Dict): The global dictionary containing anthropometric parameters.
+        resetFlag (bool, optional): If True, resets optional parameters. Defaults to True.
 
+    Returns:
+        dict: Required anthropometric parameters.
+        dict: Optional anthropometric parameters.
     """
 
     required_mp={
@@ -403,11 +495,17 @@ def getMp(mpInfo:Dict,resetFlag:bool=True):
 
 
 def loadMp(path:str,filename:str):
-    """load a mp file.
+    """
+    Load a set of anthropometric parameters (mp file).
 
     Args:
-        path (str): data folder path
-        filename (str):  filename with Extension
+        path (str): The path to the directory containing the mp file.
+        filename (str): The filename of the mp file to load.
+
+    Returns:
+        Dict: Content of the mp file including both required and optional anthropometric parameters.
+        Dict: Required anthropometric parameters.
+        Dict: Optional anthropometric parameters.
     """
     content = openFile(path, filename)
 
@@ -423,14 +521,14 @@ def loadMp(path:str,filename:str):
 
 
 def saveMp(mpInfo:Dict,model:Model,DATA_PATH:str,mpFilename:str):
-    """Save anthropometric parameters as json
+    """
+    Save anthropometric parameters as a JSON file.
 
     Args:
-        mpInfo (dict): global anthropometric parameters
-        model (pyCGM2.Model.model.Model): a model instance
-        DATA_PATH (str): data folder path
-        mpFilename (str): filename
-
+        mpInfo (Dict): Global anthropometric parameters dictionary.
+        model (Model): A pyCGM2 model instance.
+        DATA_PATH (str): The directory path to save the mp file.
+        mpFilename (str): The filename for saving the anthropometric parameters.
     """
 
     # update optional mp and save a new info file
@@ -473,14 +571,17 @@ def saveMp(mpInfo:Dict,model:Model,DATA_PATH:str,mpFilename:str):
 
 
 def getFiles(path:str, extension:str, ignore:Optional[bool]=None,raiseFlag:bool=False):
-    """get all files in a folder
+    """
+    Retrieve all files with a specific extension from a directory.
 
     Args:
-        path (str): folder path
-        extension (str): file extension
-        ignore (str,Optional[None]): ignored filenames
-        raiseFlag (bool,Optional[False]): raise exception
+        path (str): The directory path to search for files.
+        extension (str): The file extension to filter by.
+        ignore (bool, optional): If specified, ignores files with certain criteria. Defaults to None.
+        raiseFlag (bool, optional): If True, raises an exception if the directory is not found. Defaults to False.
 
+    Returns:
+        List[str]: A list of filenames with the specified extension.
     """
 
     try:
@@ -501,11 +602,16 @@ def getFiles(path:str, extension:str, ignore:Optional[bool]=None,raiseFlag:bool=
 
 
 def getC3dFiles(path:str, text:str="", ignore:Optional[bool]=None ):
-    """get all c3d files in a folder
+    """
+    Retrieve all C3D files from a directory, optionally filtering by text within filenames.
 
     Args:
-        path (str): folder path
-        text (str,Optional[""]): included text in the filename
+        path (str): The directory path to search for C3D files.
+        text (str, optional): Text to filter filenames by. Defaults to "".
+        ignore (bool, optional): If specified, ignores files with certain criteria. Defaults to None.
+
+    Returns:
+        List[str]: A list of C3D filenames.
     """
 
     out=[]
@@ -520,12 +626,14 @@ def getC3dFiles(path:str, text:str="", ignore:Optional[bool]=None ):
     return out
 
 def copySessionFolder(folderPath:str, folder2copy:str, newFolder:str, selectedFiles:Optional[List]=None):
-    """copy a vicon-session folder
+    """
+    Copy a session folder, optionally including only selected files.
 
     Args:
-        folderPath (str): new session folder path
-        folder2copy (str): session folder path to copy
-        selectedFiles (str,Optional[none]): selected files to copy
+        folderPath (str): The path to the parent directory.
+        folder2copy (str): The name of the session folder to copy.
+        newFolder (str): The name of the new folder to create.
+        selectedFiles (List, optional): A list of specific files to include. Defaults to None.
     """
 
 
@@ -557,11 +665,14 @@ def copySessionFolder(folderPath:str, folder2copy:str, newFolder:str, selectedFi
                     shutil.copyfile(src, dst)
 
 def createDir(fullPathName:str):
-    """Create a folder
+    """
+    Create a new directory.
 
     Args:
-        fullPathName (str): path
+        fullPathName (str): The full path name of the new directory.
 
+    Returns:
+        str: The full path of the created directory.
     """
     fullPathName = fullPathName
     pathOut = fullPathName[:-1] if fullPathName[-1:]=="\\" else fullPathName
@@ -572,11 +683,14 @@ def createDir(fullPathName:str):
     return pathOut+"\\"
 
 def getDirs(folderPath:str):
-    """get all folders
+    """
+    Get all subdirectories within a folder.
 
     Args:
-        folderPath (str): folder path
+        folderPath (str): The folder path to search for subdirectories.
 
+    Returns:
+        List[str]: A list of subdirectory names.
     """
     folderPath = folderPath
     pathOut = folderPath[:-1] if folderPath[-1:]=="\\" else folderPath
@@ -584,6 +698,17 @@ def getDirs(folderPath:str):
     return ( dirs)
 
 def try_as(loader, s, on_error):
+    """
+    Attempt to parse a string with a given loader and catch specific errors.
+
+    Args:
+        loader (callable): The function used to load and parse the string.
+        s (str): The string to be parsed.
+        on_error (Exception): The exception type to catch.
+
+    Returns:
+        bool: True if parsing is successful, False otherwise.
+    """
     try:
         loader(s)
         return True
@@ -591,17 +716,36 @@ def try_as(loader, s, on_error):
         return False
 
 def is_json(s):
+    """
+    Check if a string is valid JSON.
+
+    Args:
+        s (str): The string to check.
+
+    Returns:
+        bool: True if the string is valid JSON, False otherwise.
+    """
     return try_as(json.loads, s, ValueError)
 
 def is_yaml(s):
+    """
+    Check if a string is valid YAML.
+
+    Args:
+        s (str): The string to check.
+
+    Returns:
+        bool: True if the string is valid YAML, False otherwise.
+    """
     return try_as(yaml.safe_load, s, yaml.scanner.ScannerError)
 
 def copyPaste(src:str, dst:str):
-    """file copy/paste
+    """
+    Copy and paste a file from a source to a destination.
 
     Args:
-        src (str): source
-        dst (str): destination
+        src (str): The source file path.
+        dst (str): The destination file path.
     """
     try:
         shutil.copyfile(src,
@@ -612,11 +756,12 @@ def copyPaste(src:str, dst:str):
     
 
 def copyPasteDirectory(src:str, dst:str):
-    """folder copy/paste
+    """
+    Copy and paste a directory from a source to a destination.
 
     Args:
-        src (str): source
-        dst (str): destination
+        src (str): The source directory path.
+        dst (str): The destination directory path.
     """
     try:
         shutil.copytree(src, dst)
@@ -627,22 +772,25 @@ def copyPasteDirectory(src:str, dst:str):
 
 
 def deleteDirectory(dir:str):
-    """Delete a folder
+    """
+    Delete a directory.
 
     Args:
-        dir (str): folder path
-
+        dir (str): The path of the directory to be deleted.
     """
     shutil.rmtree(dir)
 
 
 def readXml(DATA_PATH:str,filename:str):
-    """Read a xml file
+    """
+    Read an XML file and parse its contents.
 
     Args:
-        DATA_PATH (str): folder path
-        filename (str): xlm filename
+        DATA_PATH (str): The path where the XML file is located.
+        filename (str): The name of the XML file to read.
 
+    Returns:
+        BeautifulSoup object: Parsed content of the XML file.
     """
     with open((DATA_PATH+filename),"rb",) as f:
         content = f.read()
@@ -653,11 +801,14 @@ def readXml(DATA_PATH:str,filename:str):
 
 
 def getFileCreationDate(file:str):
-    """ return file creation date
+    """
+    Get the creation date of a file.
 
     Args:
-        file (str): full filename (path+filename)
+        file (str): The full path of the file.
 
+    Returns:
+        datetime: The creation date of the file.
     """
     stat = os.stat(file)
     try:
@@ -669,7 +820,15 @@ def getFileCreationDate(file:str):
 
 
 def concatenateExcelFiles(DATA_PATH_OUT:str,outputFilename:str,sheetNames:List[str],xlsFiles:List[str]):
+    """
+    Concatenate multiple Excel files into a single Excel file.
 
+    Args:
+        DATA_PATH_OUT (str): The output directory path.
+        outputFilename (str): The name of the resulting Excel file.
+        sheetNames (List[str]): A list of sheet names to include in the output file.
+        xlsFiles (List[str]): A list of Excel files to concatenate.
+    """
     xlsxWriter = pd.ExcelWriter((DATA_PATH_OUT+outputFilename+".xlsx"))
     for sheet in sheetNames:
         df_total = pd.DataFrame()
@@ -686,12 +845,37 @@ def concatenateExcelFiles(DATA_PATH_OUT:str,outputFilename:str,sheetNames:List[s
 
 
 def getFilename(fullname:str):
+    """
+    Extract the filename from a full path.
+
+    Args:
+        fullname (str): The full path including the filename.
+
+    Returns:
+        str: The filename extracted from the full path.
+    """
     return fullname[len(os.path.dirname(fullname))+1:]
 
 def getDirname(fullname:str):
+    """
+    Extract the directory path from a full path.
+
+    Args:
+        fullname (str): The full path including the filename.
+
+    Returns:
+        str: The directory path extracted from the full path.
+    """
     return fullname[0:len(os.path.dirname(fullname))+1]
 
 def renameFile( fileToRename:str,renamedFile:str ):
+    """
+    Rename a file.
+
+    Args:
+        fileToRename (str): The current name (and path) of the file.
+        renamedFile (str): The new name (and path) for the file.
+    """
     try:       
         os.rename(fileToRename,renamedFile)                    
     except FileExistsError:

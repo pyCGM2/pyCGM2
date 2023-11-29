@@ -12,13 +12,21 @@ import opensim
 from typing import List, Tuple, Dict, Optional, Union
 
 class ImuInverseKinematicXMLProcedure(object):
-    def __init__(self, DATA_PATH:str,calibratedOsimName:str, resultsDirectory:str):
-        """procedure to run opensense Inverse Kinematics
+    """
+    Procedure to run OpenSense Inverse Kinematics using IMU data.
 
-        Args:
-            DATA_PATH (str): data path
-            calibratedOsimName (str): name of the osim file
-            resultsDirectory (str): results directory
+    This class provides functionalities to prepare and execute an inverse kinematics analysis using IMU data 
+    with OpenSim's OpenSense toolkit.
+
+    Args:
+        DATA_PATH (str): Data path where the .osim model and results are located.
+        calibratedOsimName (str): Name of the calibrated OpenSim model file (.osim).
+        resultsDirectory (str): Directory where the results will be saved.
+    """
+
+    def __init__(self, DATA_PATH:str,calibratedOsimName:str, resultsDirectory:str):
+        """
+        Initializes the ImuInverseKinematicXMLProcedure with specified data path, osim model name, and results directory.
         """
         super(ImuInverseKinematicXMLProcedure,self).__init__()
         
@@ -38,21 +46,24 @@ class ImuInverseKinematicXMLProcedure(object):
         self.m_sensor_to_opensim_rotations = None
 
     def setSetupFile(self,imuInverseKinematicToolFile:str):
-        """set the inverse kinematics setup file
+         """
+        Set the inverse kinematics setup file for the procedure.
 
         Args:
-            imuInverseKinematicToolFile (str): path+filename of the opensense setupfile
+            imuInverseKinematicToolFile (str): Path and filename of the OpenSense setup file.
         """
 
         self.m_imuInverseKinematicTool = self.m_DATA_PATH + "__imuInverseKinematics_Setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(imuInverseKinematicToolFile,self.m_imuInverseKinematicTool)
 
     def prepareImuMapper(self,imuMapperDict:Dict):
-        """prepare the imuMapper 
+        """
+        Prepare the IMU mapper.
+
+        The mapper associates OpenSim model bodies with corresponding IMU instances.
 
         Args:
-            imuMapperDict (dict): imu mapper
-
+            imuMapperDict (Dict): Dictionary mapping OpenSim body names to IMU instances.
         """
 
         for key in imuMapperDict:
@@ -63,12 +74,12 @@ class ImuInverseKinematicXMLProcedure(object):
         self.m_imuMapper.update(imuMapperDict)
 
     def prepareImu(self,osimBody:str,imuInstance:imu.Imu):
-        """assign an imu instance to an osim body
+        """
+        Assign an IMU instance to an OpenSim model body.
 
         Args:
-            osimBody (str): name of the body in the osim file
-            imuInstance (imu.Imu): a pyCGM2 IMU instance
-
+            osimBody (str): Name of the body in the OpenSim model.
+            imuInstance (imu.Imu): A pyCGM2 IMU instance.
         """
         if osimBody not in self.m_osimInterface.getBodies():
             LOGGER.logger.error(f"[pyCGM2] the key {osimBody} of your mapper is not a body of the osim file")
@@ -77,12 +88,13 @@ class ImuInverseKinematicXMLProcedure(object):
         self.m_imuMapper.update({osimBody : imuInstance})
 
     def prepareOrientationFile(self,motionFilenameNoExt:str,freq:int,order:List=[0,1,2,3]):
-        """prepare the orientation file ( mot file) from Imus
+         """
+        Prepare the orientation file (STO file) from IMUs.
 
         Args:
-            motionFilenameNoExt (str): name of the mot file to create
-            freq (int): frequency
-            order (list, optional): quaternion reordering. Defaults to [0,1,2,3].
+            motionFilenameNoExt (str): Name of the STO file to be created.
+            freq (int): Sampling frequency of the IMU data.
+            order (List, optional): Quaternion reordering. Defaults to [0, 1, 2, 3].
         """
         self.m_dynamicFile = motionFilenameNoExt+".sto"
 
@@ -99,11 +111,12 @@ class ImuInverseKinematicXMLProcedure(object):
 
 
     def setTimeRange(self,beginTime:Optional[float],lastTime:Optional[float]):
-        """set begin and end time
+        """
+        Set the begin and end time for the analysis.
 
         Args:
-            beginTime (Optional[float]): start
-            lastTime (Optional[float]): end
+            beginTime (Optional[float]): Start time of the analysis.
+            lastTime (Optional[float]): End time of the analysis.
         """
         if beginTime is not None and beginTime <-self.m_endTime: 
             self.m_beginTime = beginTime
@@ -111,10 +124,11 @@ class ImuInverseKinematicXMLProcedure(object):
             self.m_endTime = lastTime
 
     def prepareSensorToOpensimRotation(self,eulerAngles:List):
-        """ euler angle to pass to opensim global coordinate system
+        """
+        Prepare Euler angles to align sensors to the OpenSim global coordinate system.
 
         Args:
-            eulerAngles (list): list of 3 values in radian
+            eulerAngles (List): List of 3 Euler angle values in radians.
         """
         if len(eulerAngles) !=3:
             LOGGER.logger.error(f"eulerAngles must be a list of 3 values in radian")
@@ -122,7 +136,9 @@ class ImuInverseKinematicXMLProcedure(object):
         self.m_sensor_to_opensim_rotations = eulerAngles
 
     def prepareXml(self):
-        """ prepare-update and update the xml associated with the setup file"""
+        """
+        Prepare and update the XML associated with the setup file for the inverse kinematics analysis.
+        """
         self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("orientations_file", self.m_dynamicFile)
 
@@ -140,7 +156,9 @@ class ImuInverseKinematicXMLProcedure(object):
 
 
     def run(self):
-        """run the procedure """
+        """
+        Run the IMU inverse kinematics procedure using the prepared setup.
+        """
 
         self.xml.update()
         
@@ -150,7 +168,9 @@ class ImuInverseKinematicXMLProcedure(object):
         self.finalize()
 
     def finalize(self):
-        """finalize after running """
+        """
+        Finalize the procedure after running, including renaming the setup file.
+        """
         # rename the xml setup file with the filename as suffix
         files.renameFile(self.m_imuInverseKinematicTool, 
                     self.m_DATA_PATH + self.m_dynamicFile[:-3] + "-imuInverseKinematicTool-setup.xml")

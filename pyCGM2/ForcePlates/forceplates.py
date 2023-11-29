@@ -28,20 +28,23 @@ from typing import List, Tuple, Dict, Optional,Union
 def ForcePlateIntegration(ReactionForce:np.ndarray, mass:float, frameInit:int=0,frameEnd:int=None,
                             v0:List =[0,0,0], p0:List= [0,0,0], 
                             analogFrequency:int=1000)-> Tuple[np.ndarray, np.ndarray,np.ndarray]:
-    """integration of the reaction force
+    """
+    Integration of the reaction force to compute position, velocity, and acceleration.
+
+    This function integrates the ground reaction force to calculate the vertical acceleration, velocity, 
+    and position of the center of mass.
 
     Args:
-        ReactionForce (array[frames,3)]: ground reaction force
-        mass (double): bodymass
-        frameInit (int,Optional[0]): initial frame of the area of interest
-        frameEnd (int,Optional[None]): initial frame of the area of interest.
-        v0 (list,Optional[0,0,0]): initial velocity.
-        p0 (list,Optional[0,0,0]): initial position.
-        analogFrequency (double,optional[1000]): analog frequency.
+        ReactionForce (np.ndarray): Ground reaction force (array of shape [frames, 3]).
+        mass (float): Body mass in kilograms.
+        frameInit (int, optional): Initial frame of the area of interest. Defaults to 0.
+        frameEnd (int, optional): Final frame of the area of interest. Defaults to None (end of the array).
+        v0 (List, optional): Initial velocity (in 3D). Defaults to [0, 0, 0].
+        p0 (List, optional): Initial position (in 3D). Defaults to [0, 0, 0].
+        analogFrequency (int, optional): Analog frequency in Hz. Defaults to 1000.
 
-     Returns:
-        Tuple[np.ndarray, np.ndarray,np.ndarray]: position, velocity, acceleration
-        
+    Returns:
+        Tuple[np.ndarray, np.ndarray, np.ndarray]: Arrays of position, velocity, and acceleration.
     """
 
     g=9.81
@@ -80,11 +83,11 @@ def ForcePlateIntegration(ReactionForce:np.ndarray, mass:float, frameInit:int=0,
 
 
 def appendForcePlateCornerAsMarker (btkAcq:btk.btkAcquisition):
-    """update a btk acquisition with force plate corners as marker
+    """
+    Update a BTK acquisition by adding force plate corners as markers.
 
     Args:
-        btkAcq (btk.btkAcquisition): a btk acquisition instance
-
+        btkAcq (btk.btkAcquisition): A BTK acquisition instance to update.
     """
 
     # --- ground reaction force wrench ---
@@ -124,25 +127,22 @@ def matchingFootSideOnForceplate (btkAcq:btk.btkAcquisition,
                                   left_markerLabelToe:str ="LTOE", left_markerLabelHeel:str ="LHEE",
                                   right_markerLabelToe:str ="RTOE", right_markerLabelHeel:str ="RHEE",  
                                   display:bool = False, mfpa:str=None):
-    """Convenient function detecting foot in contact with a force plate
-
-    This function firsly assign foot side to FP from minimal distance with the application point of reaction force.
-    A refinement is done subsequently, it confirm if foot side is valid. A foot is invalided if :
-
-      - FP output no data superior to the set threshold
-      - Foot markers are not contain in the polygon defined by force plate corner
+    """
+    Detect the foot in contact with a force plate and refine the detection.
 
     Args:
-        btkAcq (Btk.Acquisition) - Btk acquisition instance
-        enableRefine (bool,Optional): enable refinement from vertical force of the foot assigned from marker position.
-        forceThreshold (double,Optional[50]): vertical force threshold.
-        left_markerLabelToe (type,Optional[LTOE]): marker label of the left toe.
-        left_markerLabelHeel (type,Optional[LHEE]): marker label of the left heel.
-        right_markerLabelToe (type,Optional[RTOE]): marker label of the right toe.
-        right_markerLabelHeel (type,Optional[RHEE]): marker label of the right heel.
-        display (bool,Optional[false]): display n figures (where n is the force plate number) presenting relative distance between mid foot and the orgin of the force plate.
-        mfpa (str,Optional[None]): force plate manually assigned from Vicon Eclipse.
+        btkAcq (btk.btkAcquisition): A BTK acquisition instance.
+        enableRefine (bool, optional): Enable refinement based on vertical force and foot markers. Defaults to True.
+        forceThreshold (int, optional): Vertical force threshold for force plate detection. Defaults to 50 N.
+        left_markerLabelToe (str, optional): Label of the left toe marker. Defaults to "LTOE".
+        left_markerLabelHeel (str, optional): Label of the left heel marker. Defaults to "LHEE".
+        right_markerLabelToe (str, optional): Label of the right toe marker. Defaults to "RTOE".
+        right_markerLabelHeel (str, optional): Label of the right heel marker. Defaults to "RHEE".
+        display (bool, optional): Display figures for force plate matching. Defaults to False.
+        mfpa (str, optional): Manually assigned force plates. Defaults to None.
 
+    Returns:
+        str: Letters indicating the foot assigned to each force plate (e.g., "LRX").
     """
 
 
@@ -318,11 +318,12 @@ def matchingFootSideOnForceplate (btkAcq:btk.btkAcquisition,
 
 
 def addForcePlateGeneralEvents (btkAcq:btk.btkAcquisition,mappedForcePlate:str):
-    """add maximum force plate as general event
+    """
+    Add maximum force of force plates as general events in the acquisition.
 
     Args:
-        btkAcq (btk.btkAcquisition): btk acquisition instance
-        mappedForcePlate (str): letters that indicate foot assigned to a force plate (eg LRX)
+        btkAcq (btk.btkAcquisition): A BTK acquisition instance.
+        mappedForcePlate (str): Letters indicating foot side assigned to each force plate (e.g., "LRX").
     """
 
 
@@ -368,11 +369,14 @@ def addForcePlateGeneralEvents (btkAcq:btk.btkAcquisition,mappedForcePlate:str):
         indexFP+=1
 
 def correctForcePlateType5(btkAcq:btk.btkAcquisition):
-    """Correct acquisition with force plate of type 5
+    """
+    Correct an acquisition that includes force plates of type 5.
 
     Args:
-        btkAcq (btk.btkAcquisition): btk acquisition instance
+        btkAcq (btk.btkAcquisition): A BTK acquisition instance with force plate type 5.
 
+    Returns:
+        btk.btkAcquisition: The corrected BTK acquisition instance.
     """
 
     pfe = btk.btkForcePlatformsExtractor()
@@ -461,14 +465,21 @@ def correctForcePlateType5(btkAcq:btk.btkAcquisition):
 
 
 def combineForcePlate(acq:btk.btkAcquisition,mappedForcePlate:str)-> Tuple[btk.btkWrench, btk.btkWrench]:
-    """combine signals from force plates
+    """
+    Combine signals from force plates based on foot side assignment.
+
+    This function aggregates the force, moment, and position data from multiple force plates based on the assignment 
+    of each force plate to a specific foot. It creates combined wrenches (forces and moments) for each foot.
 
     Args:
-        acq (btk.btkAcquisition): a btk acquisition instance
-        mappedForcePlate (str): letters that indicate foot assigned to a force plate (eg LRX)
+        acq (btk.btkAcquisition): A BTK acquisition instance.
+        mappedForcePlate (str): Letters indicating foot side assigned to each force plate (e.g., "LRX").
 
     Returns:
-       Tuple[btk.btkWrench, btk.btkWrench]: left and right wrenchs
+        Tuple[btk.btkWrench, btk.btkWrench]: Two btkWrench objects, one for each foot ('Left' and 'Right'). 
+                                             Each wrench object contains the combined force, moment, 
+                                             and position data for the respective foot. If no data is present 
+                                             for a particular foot, its corresponding wrench object will be None.
     """
 
     analogFrames = acq.GetAnalogFrameNumber()
@@ -549,16 +560,24 @@ def combineForcePlate(acq:btk.btkAcquisition,mappedForcePlate:str)-> Tuple[btk.b
 def detectGaitConsecutiveForcePlates(acq:btk.btkAcquisition,
                                      mappedForcePlate:str, 
                                      threshold:int = 25)-> Optional[Dict]:
-    """detect valid and two consecutive foot contacts on force plate. ie the leading limb and the trailing limb
+    """
+    Detect valid and two consecutive foot contacts on force plates, identifying the leading and trailing limbs.
+
+    This function detects instances where both feet are in contact with force plates simultaneously. It is used to 
+    identify the leading and trailing limbs during gait, based on the force produced on each force plate. The function 
+    validates contacts by ensuring that the force exceeds a threshold and that foot markers are contained within the 
+    force plate's area.
 
     Args:
-        acq (btk.btkAcquisitionAcquisition): acquisition
-        mappedForcePlate (str):letters that indicate foot assigned to a force plate (eg LRX)
-        threshold (int, optional): force threshold for force plate detection. Defaults to 25 N.
+        acq (btk.btkAcquisition): A BTK acquisition instance.
+        mappedForcePlate (str): A string of letters indicating the foot assigned to each force plate (e.g., 'LRX').
+        threshold (int, optional): The force threshold for force plate detection. Defaults to 25 N.
 
     Returns:
-        Optional[Dict] dictionnary with two keys ["Left","Right"], each composed with a list indidanting the FP index of the leading limb and the FP of the trailing limb
-    """    
+        Optional[Dict]: A dictionary with two keys 'Left' and 'Right', each containing a list of force plate indices 
+                        indicating the leading and trailing limb contacts. Returns None if no consecutive contacts are detected.
+    """
+        
     pfe = btk.btkForcePlatformsExtractor()
     grwf = btk.btkGroundReactionWrenchFilter()
     pfe.SetInput(acq)

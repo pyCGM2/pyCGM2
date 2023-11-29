@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This module contains filters and associated procedures which can be applied on a model
 
@@ -9,6 +8,7 @@ import pyCGM2
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
+from typing import List, Tuple, Dict, Optional,Union
 
 LOGGER = pyCGM2.LOGGER
 try:
@@ -25,73 +25,61 @@ from pyCGM2.Model import motion
 from pyCGM2 import enums
 from  pyCGM2.Math import euler
 from  pyCGM2.Math import numeric
-from pyCGM2.Math import derivation
 from pyCGM2.Tools import  btkTools
 from pyCGM2.Utils import timer
 
-from pyCGM2.ForcePlates import forceplates
-
-
+from pyCGM2.Model.model import Model
+from pyCGM2.Model.Procedures.forcePlateIntegrationProcedures import ForcePlateIntegrationProcedure
+from pyCGM2.Model.Procedures.modelMotionCorrection import ModelCorrectionProcedure
+from pyCGM2.Model.Procedures.modelQuality import QualityProcedure 
 
 #-------- MODEL PROCEDURE  ----------
 
 # --- calibration procedure
 class GeneralCalibrationProcedure(object):
-    """  General Procedure to load from the Model Calibration Filter if you work with a custom model
-    """
+    """General Procedure to load from the Model Calibration Filter for custom models."""
+
 
     def __init__(self):
        self.definition={}
        self.anatomicalDefinition={}
 
-    def setDefinition(self, segmentName,referentialLabel,
-                      sequence=str(),
-                      pointLabel1=0,pointLabel2=0, pointLabel3=0,
-                      pointLabelOrigin=0):
-        """Define rules for constructing a `technical` coordinate system.
-
-        `pointLabels` are the labels of marker ( virtual or concrete markers)
-        used for constructing two axes ( v1 and v2) which
-         eventually define the coordinate system.
-
+    def setDefinition(self, segmentName: str, referentialLabel: str, sequence: str = "",
+                      pointLabel1: str = "", pointLabel2: str = "", pointLabel3: str = "",
+                      pointLabelOrigin: str = "") -> None:
+        
+        """Define rules for constructing a 'technical' coordinate system.
 
         Args:
-             segmentName (str): name of the segment
-             referentialLabel (str): label of the referential
-             sequence (str): construction sequence (XYZ,XYiZ,....)
-             pointLabel1 (str): marker label used for constructing the axes v1 and v2
-             pointLabel2 (str): marker label used for constructing the axis v1
-             pointLabel3 (str): marker label used for construting the axis v2
-             pointLabelOrigin (str): marker label used as origin of the coordinate system
-
+            segmentName (str): Name of the segment.
+            referentialLabel (str): Label of the referential.
+            sequence (str, optional): Construction sequence (XYZ, XYiZ, ...). Defaults to "".
+            pointLabel1 (str, optional): Marker label used for constructing axes v1 and v2. Defaults to "".
+            pointLabel2 (str, optional): Marker label used for constructing axis v1. Defaults to "".
+            pointLabel3 (str, optional): Marker label used for constructing axis v2. Defaults to "".
+            pointLabelOrigin (str, optional): Marker label used as origin of the coordinate system. Defaults to "".
         """
+
         if segmentName in self.definition:
             self.definition[segmentName][referentialLabel]={'sequence':sequence, 'labels':[pointLabel1,pointLabel2,pointLabel3,pointLabelOrigin]}
         else:
             self.definition[segmentName]={}
             self.definition[segmentName][referentialLabel]={'sequence':sequence, 'labels':[pointLabel1,pointLabel2,pointLabel3,pointLabelOrigin]}
 
-    def setAnatomicalDefinition(self, segmentName,
-                      sequence=str(),
-                      nodeLabel1=0,nodeLabel2=0, nodeLabel3=0,
-                      nodeLabelOrigin=0):
-        """Define rules for constructing the `anatomical` coordinate system.
-
-        `nodeLabels` are the labels of node (see `Frame` module )
-        used for constructing two axes ( v1 and v2) which
-        eventually define the coordinate system.
-
+    def setAnatomicalDefinition(self, segmentName: str, sequence: str = "",
+                                nodeLabel1: str = "", nodeLabel2: str = "", nodeLabel3: str = "",
+                                nodeLabelOrigin: str = "") -> None:
+        """Define rules for constructing the 'anatomical' coordinate system.
 
         Args:
-             segmentName (str): name of the segment
-             referentialLabel (str): label of the referential
-             sequence (str): construction sequence (XYZ,XYiZ,....)
-             nodeLabel1 (str): node label used for constructing the axes v1 and v2
-             nodeLabel2 (str): node label used for constructing the axis v1
-             nodeLabel3 (str): node label used for construting the axis v2
-             nodeLabelOrigin (str): node label used as origin of the coordinate system
-
+            segmentName (str): Name of the segment.
+            sequence (str, optional): Construction sequence (XYZ, XYiZ, ...). Defaults to "".
+            nodeLabel1 (str, optional): Node label used for constructing axes v1 and v2. Defaults to "".
+            nodeLabel2 (str, optional): Node label used for constructing axis v1. Defaults to "".
+            nodeLabel3 (str, optional): Node label used for constructing axis v2. Defaults to "".
+            nodeLabelOrigin (str, optional): Node label used as origin of the coordinate system. Defaults to "".
         """
+
         if segmentName in self.anatomicalDefinition:
             self.anatomicalDefinition[segmentName]={'sequence':sequence, 'labels':[nodeLabel1,nodeLabel2,nodeLabel3,nodeLabelOrigin]}
         else:
@@ -100,18 +88,11 @@ class GeneralCalibrationProcedure(object):
 
 
 class StaticCalibrationProcedure(object):
-    """ Procedure to load from the Model Calibration Filter if you work with
-    a pyCGM2-embedded model instance (like the CGM#i)
-
-    This procedure internally calls the `calibrationProcedure` method of the model instance.
-
+    """Procedure for calibration using a pyCGM2-embedded model instance.
     Args:
-         model (pyCGM2.Model.Model): a pyCGM2-embeded model instancel
-
-
-
+            model (Model): A pyCGM2-embedded model instance.
     """
-    def __init__(self,model):
+    def __init__(self,model:Model):
 
         self.model=model
         self.definition={}
@@ -119,19 +100,32 @@ class StaticCalibrationProcedure(object):
         self.__setDefinition()
 
     def __setDefinition(self):
+        """Internal method to set calibration definitions based on the model."""
         self.definition=self.model.calibrationProcedure()
 
 
 
 # ---- inverse dynamic procedure
-class CGMLowerlimbInverseDynamicProcedure(object):
-    """ Procedure for calcualting Inverse dynamics of the CGM lower limbs
-    """
+class InverseDynamicProcedure(object):
     def __init__(self):
         pass
 
+class CGMLowerlimbInverseDynamicProcedure(InverseDynamicProcedure):
+    """Procedure for calculating Inverse dynamics of the CGM lower limbs."""
+    def __init__(self):
+        super(CGMLowerlimbInverseDynamicProcedure,self).__init__()
+        pass
 
-    def _externalDeviceForceContribution(self, wrenchs):
+
+    def _externalDeviceForceContribution(self, wrenchs:List[btk.btkWrench]):
+        """Calculate external device force contribution.
+
+        Args:
+            wrenchs (List[btk.btkWrench]): List of wrenches.
+
+        Returns:
+            np.ndarray: Calculated force values.
+        """
 
         nf = wrenchs[0].GetForce().GetValues().shape[0]
         forceValues = np.zeros((nf,3))
@@ -140,7 +134,18 @@ class CGMLowerlimbInverseDynamicProcedure(object):
 
         return forceValues
 
-    def _externalDeviceMomentContribution(self, wrenchs, Oi, scaleToMeter):
+    def _externalDeviceMomentContribution(self, wrenchs: List[btk.btkWrench], Oi: np.ndarray, scaleToMeter: float) -> np.ndarray:
+        
+        """Calculate external device moment contribution.
+
+        Args:
+            wrenchs (btk.btkWrenchCollection): Collection of wrenches.
+            Oi (np.ndarray): Origin positions.
+            scaleToMeter (float): Scale factor to meter.
+
+        Returns:
+            np.ndarray: Calculated moment values.
+        """
 
         nf = wrenchs[0].GetMoment().GetValues().shape[0]
         momentValues = np.zeros((nf,3))
@@ -160,7 +165,18 @@ class CGMLowerlimbInverseDynamicProcedure(object):
         return momentValues
 
 
-    def _distalMomentContribution(self, wrench, Oi, scaleToMeter, source = "Wrench"):
+    def _distalMomentContribution(self, wrench: btk.btkWrench, Oi: np.ndarray, scaleToMeter: float, source: str = "Wrench") -> np.ndarray:
+        """Calculate distal moment contribution.
+
+        Args:
+            wrench (btk.btkWrench): Wrench instance.
+            Oi (np.ndarray): Origin positions.
+            scaleToMeter (float): Scale factor to meter.
+            source (str, optional): Source type. Defaults to "Wrench".
+
+        Returns:
+            np.ndarray: Calculated moment values.
+        """
 
         nf = wrench.GetMoment().GetValues().shape[0]
         momentValues = np.zeros((nf,3))
@@ -185,7 +201,18 @@ class CGMLowerlimbInverseDynamicProcedure(object):
 
         return momentValues
 
-    def _forceAccelerationContribution(self,mi,ai,g,scaleToMeter):
+    def _forceAccelerationContribution(self, mi: float, ai: np.ndarray, g: np.ndarray, scaleToMeter: float) -> np.ndarray:
+        """Calculate force acceleration contribution.
+
+        Args:
+            mi (float): Mass.
+            ai (np.ndarray): Acceleration.
+            g (np.ndarray): Gravity vector.
+            scaleToMeter (float): Scale factor to meter.
+
+        Returns:
+            np.ndarray: Calculated force values.
+        """
 
         nf = ai.shape[0]
         g= np.matrix(g)
@@ -199,7 +226,19 @@ class CGMLowerlimbInverseDynamicProcedure(object):
         return  accelerationContribution
 
 
-    def _inertialMomentContribution(self,Ii, alphai,omegai, Ti ,scaleToMeter):
+    def _inertialMomentContribution(self, Ii: np.ndarray, alphai: np.ndarray, omegai: np.ndarray, Ti: np.ndarray, scaleToMeter: float) -> np.ndarray:
+        """Calculate inertial moment contribution.
+
+        Args:
+            Ii (np.ndarray): Inertia.
+            alphai (np.ndarray): Angular acceleration.
+            omegai (np.ndarray): Angular velocity.
+            Ti (np.ndarray): Transformation matrices.
+            scaleToMeter (float): Scale factor to meter.
+
+        Returns:
+            np.ndarray: Calculated moment values.
+        """
 
         nf = alphai.shape[0]
 
@@ -223,7 +262,19 @@ class CGMLowerlimbInverseDynamicProcedure(object):
 
         return   accelerationContribution + coriolisContribution
 
-    def _accelerationMomentContribution(self, mi,ci, ai, Ti, scaleToMeter):
+    def _accelerationMomentContribution(self, mi: float, ci: np.ndarray, ai: np.ndarray, Ti: np.ndarray, scaleToMeter: float) -> np.ndarray:
+        """Calculate acceleration moment contribution.
+
+        Args:
+            mi (float): Mass.
+            ci (np.ndarray): Center of mass.
+            ai (np.ndarray): Acceleration.
+            Ti (np.ndarray): Transformation matrices.
+            scaleToMeter (float): Scale factor to meter.
+
+        Returns:
+            np.ndarray: Calculated moment values.
+        """
 
         nf = ai.shape[0]
 
@@ -241,7 +292,19 @@ class CGMLowerlimbInverseDynamicProcedure(object):
         return accelerationContribution
 
 
-    def _gravityMomentContribution(self, mi,ci, g, Ti, scaleToMeter):
+    def _gravityMomentContribution(self, mi: float, ci: np.ndarray, g: np.ndarray, Ti: np.ndarray, scaleToMeter: float) -> np.ndarray:
+        """Calculate gravity moment contribution.
+
+        Args:
+            mi (float): Mass.
+            ci (np.ndarray): Center of mass.
+            g (np.ndarray): Gravity vector.
+            Ti (np.ndarray): Transformation matrices.
+            scaleToMeter (float): Scale factor to meter.
+
+        Returns:
+            np.ndarray: Calculated moment values.
+        """
 
         nf = len(Ti)
 
@@ -258,8 +321,20 @@ class CGMLowerlimbInverseDynamicProcedure(object):
         return  gravityContribution
 
 
+    def computeSegmental(self, model: Model, segmentLabel: str, btkAcq: btk.btkAcquisition, gravity: np.ndarray, scaleToMeter: float, distalSegmentLabel: Optional[str] = None) -> np.ndarray:
+        """Compute segmental dynamics.
 
-    def computeSegmental(self,model,segmentLabel,btkAcq, gravity, scaleToMeter,distalSegmentLabel=None):
+        Args:
+            model (Model): Model instance.
+            segmentLabel (str): Label of the segment.
+            btkAcq (btk.btkAcquisition): Acquisition instance.
+            gravity (np.ndarray): Gravity vector.
+            scaleToMeter (float): Scale factor to meter.
+            distalSegmentLabel (Optional[str], optional): Label of the distal segment. Defaults to None.
+
+        Returns:
+            np.ndarray: Calculated segmental dynamics.
+        """
         N = btkAcq.GetPointFrameNumber()
 
         # initialisation
@@ -342,8 +417,15 @@ class CGMLowerlimbInverseDynamicProcedure(object):
 
         return momentValues
 
-    def compute(self,model, btkAcq, gravity, scaleToMeter):
-        #TODO : automate
+    def compute(self, model: Model, btkAcq: btk.btkAcquisition, gravity: np.ndarray, scaleToMeter: float):
+        """Run the computation of segmental dynamics for the lower limbs.
+
+        Args:
+            model (Model): Model instance.
+            btkAcq (btk.btkAcquisition): Acquisition instance.
+            gravity (np.ndarray): Gravity vector.
+            scaleToMeter (float): Scale factor to meter.
+        """
 
         self.computeSegmental(model,"Left Foot",btkAcq, gravity, scaleToMeter)
         self.computeSegmental(model,"Right Foot",btkAcq, gravity, scaleToMeter)
@@ -366,49 +448,64 @@ class CGMLowerlimbInverseDynamicProcedure(object):
 #-------- MODEL CALIBRATION FILTER ----------
 
 class ModelCalibrationFilter(object):
-    """
-        Calibrate a model from a static acquisition.
+    """Calibrate a model from a static acquisition.
 
-        The calibration consists in the construction of both technical and anatomical
-        coordinate sytems of each segment constituting the model.
+    The calibration consists of constructing both technical and anatomical coordinate systems for each segment constituting the model.
 
-        Args
-           procedure (pyCGM2.Model.CGM2.ModelFilters.(_Procedure)): a calibration procedure
-           acq (btk.Acquisition): an acquisition instance
-           iMod (pyCGM2.Model.CGM2.model.Model): a model instance
+    Args:
+        procedure (Union[GeneralCalibrationProcedure,StaticCalibrationProcedure]): Calibration procedure to be used.
+        acq (btk.btkAcquisition): Acquisition instance containing static trial data.
+        iMod (Model): Model instance to be calibrated.
 
-        Kargs:
-          markerDiameter (double): marker diameter
-          basePlate (double): base plate thickness
-          viconCGM1compatible(bool): replicate the Vicon Plugin-gait error related to the proximal and distal tibia
-          leftFlatFoot (bool) : left longitudinal foot axis parallel to the ground
-          rightFlatFoot : right longitudinal foot axis parallel to the ground
-          headFlat:  longitudinal head axis parallel to the ground
-
+    Kwargs:
+        markerDiameter (float): Diameter of the markers used.
+        basePlate (float): Thickness of the base plate.
+        viconCGM1compatible (bool): If True, replicate the Vicon Plugin-gait error related to the proximal and distal tibia.
+        leftFlatFoot (bool): If True, set the longitudinal axis of the left foot parallel to the ground.
+        rightFlatFoot (bool): If True, set the longitudinal axis of the right foot parallel to the ground.
+        headFlat (bool): If True, set the longitudinal axis of the head parallel to the ground.
     """
 
-    def __init__(self,procedure, acq, iMod,**options):
+    def __init__(self,
+                 procedure:Union[GeneralCalibrationProcedure,StaticCalibrationProcedure], 
+                 acq:btk.btkAcquisition, iMod:Model,**options):
         self.m_aqui=acq
         self.m_procedure=procedure
         self.m_model=iMod
         self.m_options=options
         self.m_noAnatomicalCalibration = False
 
-    def setOption(self, label,value):
+    def setOption(self, label: str, value):
+        """Set or update an option for the calibration.
+
+        Args:
+            label (str): Option label.
+            value: Value of the option.
+        """
         self.m_options[label] = value
 
-    def setBoolOption(self, label):
+    def setBoolOption(self, label: str):
+        """Enable a boolean option.
+
+        Args:
+            label (str): Option label.
+        """
         self.m_options[label] = True
 
-    def setNoAnatomicalCalibration(self,boolFlag):
+    def setNoAnatomicalCalibration(self, boolFlag: bool):
+        """Set whether to perform anatomical calibration or not.
+
+        Args:
+            boolFlag (bool): Flag to enable or disable anatomical calibration.
+        """
         self.m_noAnatomicalCalibration = boolFlag
 
 
-    def compute(self, firstFrameOnly = True):
-        """  Run the  Calibration filter
+    def compute(self, firstFrameOnly: bool = True):
+        """Run the calibration filter.
 
         Args:
-           firstFrameOnly (bool,optional[true]): use the first frame only
+            firstFrameOnly (bool, optional): Use only the first frame for calibration. Defaults to True.
         """
 
         ff=self.m_aqui.GetFirstFrame()
@@ -514,33 +611,32 @@ class ModelCalibrationFilter(object):
 
 
 class ModelMotionFilter(object):
+    """Updates the model with the pose of both technical and anatomical coordinate systems at each frame.
+
+    Args:
+        procedure (Union[GeneralCalibrationProcedure,StaticCalibrationProcedure]): The motion procedure to be used.
+        acq (btk.btkAcquisition): Acquisition instance containing motion data.
+        iMod (Model): The model instance to be updated.
+        method (enums.motionMethod): Pose method to be used.
+
+    Kwargs:
+        markerDiameter (float): Diameter of the markers used. It helps in determining the exact location of the markers.
+        basePlate (float): Thickness of the base plate. Used in calculations where ground interaction is considered.
+        viconCGM1compatible (bool): If true, replicates the Vicon Plugin-gait error related to proximal and distal tibia.
+        useLeftKJCmarker (str): Label of the left knee joint center, present in the c3d as a virtual marker.
+        useLeftAJCmarker (str): Label of the left ankle joint center, present in the c3d as a virtual marker.
+        useLeftSJCmarker (str): Label of the left shoulder joint center, present in the c3d as a virtual marker.
+        useLeftEJCmarker (str): Label of the left elbow joint center, present in the c3d as a virtual marker.
+        useLeftWJCmarker (str): Label of the left wrist joint center, present in the c3d as a virtual marker.
+        useRightKJCmarker (str): Label of the right knee joint center, present in the c3d as a virtual marker.
+        useRightAJCmarker (str): Label of the right ankle joint center, present in the c3d as a virtual marker.
+        useRightSJCmarker (str): Label of the right shoulder joint center, present in the c3d as a virtual marker.
+        useRightEJCmarker (str): Label of the right elbow joint center, present in the c3d as a virtual marker.
+        useRightWJCmarker (str): Label of the right wrist joint center, present in the c3d as a virtual marker.
     """
-        This filter update the model with the pose of both technical and anatomical coordinate systems at each frame.
-
-        Args
-           procedure (pyCGM2.Model.CGM2.ModelFilters.(_Procedure)):a motion procedure
-           acq (btk.Acquisition): an acquisition instance
-           iMod (pyCGM2.Model.CGM2.model.Model): a model instance
-           method (pyCGM2.enums.motionMethod): pose method
-
-        Kargs:
-          markerDiameter (double): marker diameter
-          basePlate (double): base plate thickness
-          viconCGM1compatible(bool): replicate the Vicon Plugin-gait error related to the proximal and distal tibia
-          useLeftKJCmarker (str): label of the left knee joint centre, present in the c3d as virtual marker
-          useLeftAJCmarker (str): label of the left ankle joint centre, present in the c3d as virtual marker
-          useLeftSJCmarker (str): label of the left shoulder joint centre, present in the c3d as virtual marker
-          useLeftEJCmarker (str): label of the left elbow joint centre, present in the c3d as virtual marker
-          useLeftWJCmarker (str): label of the left wrist joint centre, present in the c3d as virtual marker
-          useRightKJCmarker (str): label of the right knee joint centre, present in the c3d as virtual marker
-          useRightAJCmarker (str): label of the right ankle joint centre, present in the c3d as virtual marker
-          useRightSJCmarker (str): label of the right shoulder joint centre, present in the c3d as virtual marker
-          useRightEJCmarker (str): label of the right elbow joint centre, present in the c3d as virtual marker
-          useRightWJCmarker (str): label of the right wrist joint centre, present in the c3d as virtual marker
-    """
 
 
-    def __init__(self,procedure,acq, iMod,method, **options ):
+    def __init__(self,procedure:Union[GeneralCalibrationProcedure,StaticCalibrationProcedure],acq:btk.btkAcquisition, iMod:Model,method:enums.motionMethod, **options ):
 
 
         self.m_aqui = acq
@@ -551,21 +647,36 @@ class ModelMotionFilter(object):
         self.m_noAnatomicalMotion = False
 
 
-    def setOption(self, label,value):
-        self.m_options[label] = value
-
-    def setBoolOption(self, label):
-        self.m_options[label] = True
-
-    def setNoAnatomicalMotion(self,boolFlag):
-        self.m_noAnatomicalMotion = boolFlag
-
-    def segmentalCompute(self,segments):
-        """Compute motion for given segments
+    def setOption(self, label: str, value):
+        """Set or update an option for the motion filter.
 
         Args:
-            segments (list): segment labels
+            label (str): The option label.
+            value: The value of the option.
+        """
+        self.m_options[label] = value
 
+    def setBoolOption(self, label: str):
+        """Activate a boolean option.
+
+        Args:
+            label (str): The option label.
+        """
+        self.m_options[label] = True
+
+    def setNoAnatomicalMotion(self, boolFlag: bool):
+        """Determines whether or not anatomical motion should be computed.
+
+        Args:
+            boolFlag (bool): Flag to activate or deactivate anatomical motion.
+        """
+        self.m_noAnatomicalMotion = boolFlag
+
+    def segmentalCompute(self, segments: List[str]):
+        """Computes motion for the given segments.
+
+        Args:
+            segments (List[str]): Labels of the segments to process.
         """
 
         if str(self.m_model) != "Basis Model":
@@ -665,8 +776,7 @@ class ModelMotionFilter(object):
                         csFrame.update(R,ptO)
                         segPicked.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
     def compute(self):
-        """  Run the  filter
-        """
+        """Runs the motion filter."""
 
         if str(self.m_model) != "Basis Model":
            self.m_model.computeMotion(self.m_aqui,
@@ -771,12 +881,32 @@ class ModelMotionFilter(object):
 
 
 class TrackingMarkerDecompositionFilter(object):
+    """Decompose tracking markers into their component directions.
 
-    def __init__(self,iModel,iAcq):
+    This filter separates tracking markers into three components (directions) and appends
+    them to the acquisition as individual markers. The decomposition directions depend
+    on the segment and marker names. For example, foot markers are decomposed into
+    superior-inferior, medial-lateral, and proximal-distal directions.
+
+    Args:
+        iModel (Model): The model instance containing segment and marker information.
+        iAcq (btk.btkAcquisition): The acquisition instance from which marker data will be extracted.
+
+    Attributes:
+        m_model (Model): The model instance.
+        m_acq (btk.btkAcquisition): The acquisition instance.
+    """
+
+    def __init__(self, iModel: Model, iAcq: btk.btkAcquisition):
         self.m_model = iModel
         self.m_acq = iAcq
 
     def decompose(self):
+        """Performs the decomposition of tracking markers.
+
+        Decomposes each tracking marker in the model into three orthogonal components
+        and appends these as new markers in the acquisition data.
+        """
         for seg in self.m_model.m_segmentCollection:
             if  "Proximal" not in seg.name:
                 if "Foot" in seg.name:
@@ -825,28 +955,44 @@ class TrackingMarkerDecompositionFilter(object):
 # ----- Joint angles -----
 
 class ModelJCSFilter(object):
-    """  Compute the relative joint angles
+    """Compute the relative joint angles using joint coordinate systems.
 
-    Args
-       acq (btk.Acquisition): an acquisition instance
-       iMod (pyCGM2.Model.CGM2.model.Model): a model instance
+    This filter calculates the relative angles between segments at each joint using
+    the anatomical and technical coordinate systems defined in the model. The angles
+    are computed for each joint and stored as points in the acquisition instance.
 
+    Args:
+        iMod (Model): The model instance containing joint and segment information.
+        acq (btk.btkAcquisition): The acquisition instance to which the computed angles will be added.
+
+    Attributes:
+        m_aqui (btk.btkAcquisition): The acquisition instance.
+        m_model (Model): The model instance.
+        m_fixEuler (bool): Flag to determine if Euler angles should be fixed.
     """
 
-    def __init__(self, iMod, acq):
+    def __init__(self, iMod: Model, acq: btk.btkAcquisition):
         self.m_aqui = acq
         self.m_model = iMod
         self.m_fixEuler = True
 
-    def setFixEuler(self,bool):
-        self.m_fixEuler =  bool
-
-    def compute(self,description="", pointLabelSuffix = None):
-        """ run the filter. All ouputs are stored in the acquisition instance as btk.Point
+    def setFixEuler(self, fix: bool):
+        """Set the flag to fix Euler angles.
 
         Args:
-           description (str,Optional[""]): short description added to the btkPoint storing joint angles
-           pointLabelSuffix (str,Optional[None]): suffix ending the angle label
+            fix (bool): If True, Euler angles will be fixed.
+        """
+        self.m_fixEuler =  bool
+
+    def compute(self, description: str = "", pointLabelSuffix: str = None):
+        """Run the joint coordinate system filter.
+
+        Computes the relative joint angles for each joint defined in the model and
+        stores them in the acquisition instance.
+
+        Args:
+            description (str, optional): Short description to be added to the point labels.
+            pointLabelSuffix (str, optional): Suffix to be added to the point labels.
         """
 
 
@@ -915,20 +1061,24 @@ class ModelJCSFilter(object):
 
 
 class ModelAbsoluteAnglesFilter(object):
-    """  Compute the absolute joint angles
+    """Compute absolute joint angles.
 
-    Args
-       acq (btk.Acquisition): an acquisition instance
-       iMod (pyCGM2.Model.CGM2.model.Model): a model instance
-       segmentLabels (list of str): segment labels
-       angleLabels (list of str): absolute angles labels
-       eulerSequences (str): Euler sequence to use. ( nomenclature TOR (ie Tilt-Obliquity-Rotation), ORT, ROT... )
-       globalFrameOrientation (str): global frame
-       forwardProgression (bool): flag indicating subject moves in same direction than the global longitudinal axis
+    This filter calculates the absolute angles of specified segments in the model. The angles are 
+    expressed relative to a global frame, making them 'absolute' in the context of the model's motion.
+    The computed angles are stored as points in the acquisition instance.
 
+    Args:
+        iMod (Model): The model instance containing segment information.
+        acq (btk.btkAcquisition): The acquisition instance where the angles will be stored.
+        segmentLabels (List[str]): Labels of the segments for which the angles are computed.
+        angleLabels (List[str]): Labels for the angles to be computed.
+        eulerSequences (List[str]): Euler sequences for angle computations.
+        globalFrameOrientation (str): Orientation of the global frame.
+        forwardProgression (bool): Indicates the direction of subject's movement.
     """
 
-    def __init__(self, iMod, acq, segmentLabels=[],angleLabels=[], eulerSequences=[], globalFrameOrientation = "XYZ", forwardProgression = True):
+    def __init__(self, iMod:Model, acq:btk.btkAcquisition, segmentLabels:List[str]=[],angleLabels:List[str]=[], eulerSequences:List[str]=[], 
+                 globalFrameOrientation:str = "XYZ", forwardProgression:bool = True):
 
         self.m_aqui = acq
         self.m_model = iMod
@@ -939,12 +1089,16 @@ class ModelAbsoluteAnglesFilter(object):
         self.m_forwardProgression = forwardProgression
 
 
-    def compute(self,description="absolute", pointLabelSuffix = None):
-        """ Run the filter. All ouputs are stored in the acquisition instance as btk.Point
+    def compute(self, 
+                description: str = "absolute", 
+                pointLabelSuffix: Optional[str] = None):
+        """Run the absolute angles filter.
+
+        Calculates and stores the absolute angles of specified segments in the model.
 
         Args:
-           description (str,Optional[absolute]):short description added to the btkPoint storing joint angles
-           pointLabelSuffix (str,Optional[None]): suffix ending the angle label
+            description (str, optional): Description added to the angle labels.
+            pointLabelSuffix (Optional[str], optional): Suffix added to the angle labels.
         """
 
         for index in range (0, len(self.m_segmentLabels)):
@@ -1147,19 +1301,28 @@ class ModelAbsoluteAnglesFilter(object):
 # ----- Force plates -----
 
 class ForcePlateAssemblyFilter(object):
-    """  Assemble Force plate with the model
+    """
+    Assemble force plates with the model for dynamic trials.
+
+    This filter associates force plates with specified segments of the model during dynamic trials. 
+    It calculates ground reaction forces and moments and appends them to the acquisition instance. 
+    The association is based on mapped force plate letters indicating the body side in contact with the force plates.
 
     Args:
-       btkAcq (btkAcquisition): an acquisition instance of a dynamic trial
-       iMod (pyCGM2.Model.CGM2.model.Model): a model instance
-       mappedForcePlateLetters (str): string indicating body side of the segment in contact with the force plate
-       leftSegmentLabel (str,Optional[Left Foot]): left segment label to assemble with force plates
-       rightSegmentLabel (str,Optional[Right Foot]): right segment label to assemble with force plates
-
+        iMod (Model): A model instance.
+        btkAcq (btk.btkAcquisition): An acquisition instance of a dynamic trial.
+        mappedForcePlateLetters (str): String indicating body side of the segment in contact with the force plate.
+        leftSegmentLabel (str, optional): Left segment label to assemble with force plates. Defaults to "Left Foot".
+        rightSegmentLabel (str, optional): Right segment label to assemble with force plates. Defaults to "Right Foot".
 
     """
 
-    def __init__(self, iMod, btkAcq, mappedForcePlateLetters, leftSegmentLabel="Left Foot", rightSegmentLabel="Right Foot" ):
+    def __init__(self, 
+                 iMod: Model, 
+                 btkAcq: btk.btkAcquisition, 
+                 mappedForcePlateLetters: str, 
+                 leftSegmentLabel: str = "Left Foot", 
+                 rightSegmentLabel: str = "Right Foot"):
 
         self.m_aqui = btkAcq
         self.m_model = iMod
@@ -1173,11 +1336,14 @@ class ForcePlateAssemblyFilter(object):
         self.m_model.getSegment(self.m_rightSeglabel).zeroingExternalDevice()
 
 
-    def compute(self,pointLabelSuffix=None):
-        """Run the filter. Ground reaction forces and moments are stored in the acquisition instance
+    def compute(self, pointLabelSuffix: Optional[str] = None):
+        """
+        Run the filter to associate force plates with model segments.
+
+        Calculates ground reaction forces and moments and appends them to the acquisition instance.
 
         Args:
-           pointLabelSuffix (str,Optional[None]): suffix ending ground reaction labels
+            pointLabelSuffix (Optional[str], optional): Suffix to append to the ground reaction force and moment labels.
         """
 
         pfe = btk.btkForcePlatformsExtractor()
@@ -1253,16 +1419,32 @@ class ForcePlateAssemblyFilter(object):
         
         
 class GroundReactionIntegrationFilter(object):
-    """  
+    """
+    Integrates ground reaction forces into the model during dynamic trials.
+
+    This filter computes and integrates the ground reaction forces based on the mapped force plate letters 
+    and the body mass of the subject. It's used to enhance the accuracy of force plate data integration 
+    into the biomechanical model during dynamic trials.
 
     Args:
-       btkAcq (btkAcquisition): an acquisition instance of a dynamic trial
-       iMod (pyCGM2.Model.CGM2.model.Model): a model instance
-       mappedForcePlateLetters (str): string indicating body side of the segment in contact with the force plate
+        procedure (ForcePlateIntegrationProcedure): An instance of a procedure defining specific computations.
+        btkAcq (btk.btkAcquisition): An acquisition instance of a dynamic trial.
+        mappedForcePlateLetters (str): String indicating body side of the segment in contact with the force plate.
+        bodymass (float): The body mass of the subject.
+        globalFrameOrientation (str, optional): Orientation of the global frame. Defaults to "XYZ".
+        forwardProgression (bool, optional): Indicates if the subject moves in the same direction as the global longitudinal axis. Defaults to True.
+
     """
 
-    def __init__(self, procedure, btkAcq, mappedForcePlateLetters,bodymass,globalFrameOrientation = "XYZ", forwardProgression = True):
+    def __init__(self, 
+                 procedure: ForcePlateIntegrationProcedure, 
+                 btkAcq: btk.btkAcquisition, 
+                 mappedForcePlateLetters: str, 
+                 bodymass: float, 
+                 globalFrameOrientation: str = "XYZ", 
+                 forwardProgression: bool = True):
 
+    
         self.m_aqui = btkAcq
         self.m_mappedForcePlate = mappedForcePlateLetters
         self.m_bodymass = bodymass
@@ -1271,6 +1453,12 @@ class GroundReactionIntegrationFilter(object):
         self.m_procedure = procedure
 
     def compute(self):
+        """
+        Execute the filter to integrate ground reaction forces into the model.
+
+        This method runs the defined procedure to compute and integrate the ground reaction forces 
+        into the biomechanical model based on the force plate data and subject's body mass.
+        """
 
         self.m_procedure.compute(self.m_aqui,
                                  self.m_mappedForcePlate,
@@ -1280,21 +1468,18 @@ class GroundReactionIntegrationFilter(object):
 
 
 class GroundReactionForceAdapterFilter(object):
-    """filter to standardized the ground reaction force.
+    """
+    Filter to standardize ground reaction force data in a biomechanical model.
 
-    A new force ( btkPoint::Force), LStandardizedGroundReactionForce ( resp LStandardizedGroundReactionForce) is appended to the acquisition.
-
-    The point respects the nomenclature :
-
-     * [0]forward(+)backward(-) 
-     * [1]lateral(+)medial(-)
-     *[2] upward(+)downward(-)
+    This filter processes ground reaction force data to conform to a standardized nomenclature and coordinate system,
+    making it consistent and easier to interpret across different analyses. The output force vectors are aligned with 
+    the specified global frame orientation and take into account the direction of progression.
 
     Args:
-        btkAcq (btk.BtkAcquistion): the acquisition
-        globalFrameOrientation (str,Optional[XYZ]): configuration of the global referential 
-        forwardProgression (bool,Optional[True]):  flag to indicate if the subject work along the axis of progression
-    
+        btkAcq (btk.btkAcquisition): Acquisition instance containing dynamic trial data.
+        globalFrameOrientation (str, optional): Orientation of the global reference frame. Defaults to "XYZ".
+        forwardProgression (bool, optional): Indicates if the subject moves in the same direction as the global longitudinal axis. Defaults to True.
+
     Example:
 
     ```python
@@ -1318,18 +1503,25 @@ class GroundReactionForceAdapterFilter(object):
     ```
     
     """
-    def __init__(self, btkAcq, globalFrameOrientation = "XYZ", forwardProgression = True):
-        
+    def __init__(self, 
+                 btkAcq: btk.btkAcquisition, 
+                 globalFrameOrientation: str = "XYZ", 
+                 forwardProgression: bool = True):
+
         self.m_aqui = btkAcq
         self.m_globalFrameOrientation = globalFrameOrientation
         self.m_forwardProgression = forwardProgression
 
-    def compute(self,pointLabelSuffix=None):
-        """run the filter
+    def compute(self,pointLabelSuffix:Optional[str]=None):
+        """
+        Execute the filter to standardize ground reaction forces.
+
+        The method adjusts ground reaction force vectors according to the global frame orientation and subject's 
+        direction of progression. It appends standardized force vectors to the acquisition data.
 
         Args:
-            pointLabelSuffix (str, optional): suffix added to point labels. Defaults to None.
-        """        
+            pointLabelSuffix (str, optional): Suffix to be added to the label of the output ground reaction force data. Defaults to None.
+        """       
 
         if self.m_globalFrameOrientation == "XYZ":
             if self.m_forwardProgression:
@@ -1400,22 +1592,39 @@ class GroundReactionForceAdapterFilter(object):
 # ----- Inverse dynamics -----
 
 class InverseDynamicFilter(object):
-    """Compute joint Forces and moments from Inverse dynamics
+    """
+    Compute joint forces and moments from inverse dynamics.
+
+    This filter calculates joint forces and moments based on inverse dynamics analysis of a biomechanical model during a dynamic trial.
 
     Args:
-        btkAcq (btk.Acquisition): an acquisition instance of a dynamic trial
-        iMod (pyCGM2.Model.CGM2.model.Model): a model instance
-        procedure (pyCGM2.Model.CGM2.modelFilters.(_Procedure)): an inverse dynamic procedure
-        gravityVector (numpy.array(3,),Optional[numpy.array([0,0,-1]]): the gravity vector
-        scaleToMeter (double,Optional[0.001]): scale to meter
-        projection (pyCGM2.enums.MomentProjection,Optional[enums.MomentProjection.Distal]):  coordinate system in which joint moments and forces are expressed
-        exportMomentContributions (bool,Optional[false]): export moment contributions
+        iMod (Model): A biomechanical model instance.
+        btkAcq (btk.btkAcquisition): An acquisition instance of a dynamic trial.
+        procedure (Optional[InverseDynamicProcedure]): An inverse dynamic procedure, if any. Defaults to None.
+        gravityVector (np.array): The gravity vector, typically [0, 0, -1]. Defaults to np.array([0, 0, -1]).
+        scaleToMeter (float): Scale factor to convert measurements to meters. Defaults to 0.001.
+        projection (enums.MomentProjection): Coordinate system in which joint moments and forces are expressed. Defaults to enums.MomentProjection.Distal.
+        globalFrameOrientation (str): Global frame orientation. Defaults to "XYZ".
+        forwardProgression (bool): Flag indicating if subject moves in the same direction as the global longitudinal axis. Defaults to True.
+        exportMomentContributions (bool): Flag to export moment contributions. Defaults to False.
+        **options: Additional optional arguments.
+
+    Kargs:
+        viconCGM1compatible(bool): replicate the Vicon Plugin-gait error related to the proximal and distal tibia
+
     """
 
-    def __init__(self, iMod, btkAcq, procedure = None, gravityVector = np.array([0,0,-1]), scaleToMeter =0.001,
-                 projection = enums.MomentProjection.Distal,
-                 globalFrameOrientation="XYZ",forwardProgression=True,
-                 exportMomentContributions = False, **options):
+    def __init__(self, 
+                 iMod: Model, 
+                 btkAcq: btk.btkAcquisition, 
+                 procedure: Optional[InverseDynamicProcedure] = None, 
+                 gravityVector: np.array = np.array([0, 0, -1]), 
+                 scaleToMeter: float = 0.001,
+                 projection: enums.MomentProjection = enums.MomentProjection.Distal,
+                 globalFrameOrientation: str = "XYZ",
+                 forwardProgression: bool = True,
+                 exportMomentContributions: bool = False,
+                 **options):
 
         self.m_aqui = btkAcq
         self.m_model = iMod
@@ -1429,16 +1638,16 @@ class InverseDynamicFilter(object):
 
         self.m_options = options
 
-    def compute(self, pointLabelSuffix = None ):
-        """Run the filter. Joint forces and moments are stored in the acquisition instance
+    def compute(self, pointLabelSuffix: Optional[str] = None):
+        """
+        Execute the inverse dynamics analysis and store the results in the acquisition instance.
+
+        Joint forces and moments are calculated and added to the acquisition data.
 
         Args:
-           pointLabelSuffix (str,Optional[None]): suffix ending output labels
-
-        Kargs:
-            viconCGM1compatible(bool): replicate the Vicon Plugin-gait error related to the proximal and distal tibia
-
+            pointLabelSuffix (str, optional): Suffix to be added to the label of the output joint forces and moments data. Defaults to None.
         """
+
 
         self.m_procedure.compute(self.m_model,self.m_aqui,self.m_gravity,self.m_scaleToMeter)
 
@@ -1643,7 +1852,7 @@ class JointPowerFilter(object):
     """Compute joint power
 
     Args:
-        btkAcq (btk.Acquisition): an acquisition instance of a dynamic trial
+        btkAcq (btk.btkAcquisition): an acquisition instance of a dynamic trial
         iMod (pyCGM2.Model.CGM2.model.Model): a model instance
         scaleToMeter (double,Optional[0.001]): scale to meter
     """
@@ -1689,18 +1898,63 @@ class JointPowerFilter(object):
 
 
 class GeneralCoordinateSystemProcedure(object):
+    """
+    Procedure for defining general coordinate systems for segments in a biomechanical model.
+
+    This procedure allows setting up custom definitions for coordinate systems attached to various segments.
+
+    Attributes:
+        definitions (List[Dict]): A list of coordinate system definitions. Each definition is a dictionary containing segment label, coordinate system label, and referential type.
+    """
     def __init__(self):
         self.definitions=[]
 
-    def setDefinition(self, segmentLabel, coordinateSystemLabel, referentialType):
+    def setDefinition(self, segmentLabel: str, coordinateSystemLabel: str, referentialType: str):
+        """
+        Set a definition for a coordinate system in a model segment.
+
+        Args:
+            segmentLabel (str): Label of the segment.
+            coordinateSystemLabel (str): Label of the coordinate system.
+            referentialType (str): Type of the referential.
+        """
+
         dic = {"segmentLabel": segmentLabel,"coordinateSystemLabel": coordinateSystemLabel,"referentialType": referentialType}
         self.definitions.append(dic)
 
 class ModelCoordinateSystemProcedure(object):
-    def __init__(self,iMod):
+    """
+    Procedure for handling model-specific coordinate systems.
+
+    This procedure utilizes model's internal coordinate system definitions for further processing.
+
+    Args:
+        iMod (Model): A biomechanical model instance.
+
+    Attributes:
+        definitions (List[dict]): Coordinate system definitions from the model.
+    """
+    def __init__(self,iMod:Model):
         self.definitions = iMod.m_csDefinitions
 
 class CoordinateSystemDisplayFilter(object):
+    """
+    Filter to display coordinate systems of a biomechanical model.
+
+    This filter is used for visualizing the coordinate systems defined in a model, either statically or during motion.
+
+    Args:
+        iProc (GeneralCoordinateSystemProcedure or ModelCoordinateSystemProcedure): The procedure with coordinate system definitions.
+        iMod (Model): The biomechanical model.
+        btkAcq (btk.btkAcquisition): An acquisition instance.
+
+    """
+
+    def __init__(self, iProc, iMod: Model, btkAcq: btk.btkAcquisition):
+        self.m_procedure = iProc
+        self.model = iMod
+        self.aqui = btkAcq
+        self.static = False
     def __init__(self,iProc, iMod, btkAcq):
 
         self.m_procedure = iProc
@@ -1708,10 +1962,21 @@ class CoordinateSystemDisplayFilter(object):
         self.aqui = btkAcq
         self.static = False
 
-    def setStatic(self,boolean):
+    def setStatic(self,boolean:bool):
+        """
+        Set the display mode to static or dynamic.
+
+        Args:
+            boolean (bool): True for static display, False for dynamic display.
+        """
         self.static = boolean
 
     def display(self):
+        """
+        Execute the display of coordinate systems as per the procedure definitions.
+
+        The coordinate systems are visualized either statically or dynamically based on the `static` attribute.
+        """
         definitions = self.m_procedure.definitions
 
         if self.static:
@@ -1736,23 +2001,28 @@ class CoordinateSystemDisplayFilter(object):
 
 
 class CentreOfMassFilter(object):
-    """Compute the centre of mass trajectory
+    """
+    Filter for computing the center of mass (CoM) trajectory of a biomechanical model.
+
+    This filter calculates the trajectory of the CoM for each segment and for the entire model.
 
     Args:
-        btkAcq (btk.Acquisition): an acquisition instance of a dynamic trial
-        iMod (pyCGM2.Model.CGM2.model.Model): a model instance
+        iMod (Model): The biomechanical model instance.
+        btkAcq (btk.btkAcquisition): The motion acquisition data.
+
     """
 
-    def __init__(self, iMod, btkAcq):
+    def __init__(self, iMod:Model, btkAcq:btk.btkAcquisition):
 
         self.model = iMod
         self.aqui = btkAcq
 
-    def compute(self, pointLabelSuffix=None):
-        """Run the filter. The centre of mass trajectoy is stored in the acquisition instance
+    def compute(self, pointLabelSuffix: Optional[str] = None):
+        """
+        Compute and append the CoM trajectory to the acquisition data.
 
         Args:
-           pointLabelSuffix (str,Optional[None]): suffix added to the ouput label
+            pointLabelSuffix (Optional[str]): An optional suffix to be added to the CoM point label.
         """
 
         count = 0
@@ -1780,26 +2050,41 @@ class CentreOfMassFilter(object):
 
 
 class ModelMotionCorrectionFilter(object):
-    """This filter correct the  motion attributes (ie the segmental pose at each frame) of the anatomical coordinate systems.
+    """
+    Filter for correcting the motion of a biomechanical model.
 
-    The method implemented so far is the misaligment correction of Naaim et al (see `Naim2019ThighMisaligmentCorrectionProcedure`)
+    This filter applies corrections to the motion attributes of the anatomical coordinate systems in the model.
 
     Args:
-        procedure (pyCGM2.Model.CGM2.Procedures.AbstractModelCorrectionProcedure)): a model correction procedure
+        procedure (ModelCorrectionProcedure): The model correction procedure to be applied.
     """
-    def __init__(self,procedure):
+    
+    def __init__(self,procedure:ModelCorrectionProcedure):
 
         self.m_procedure = procedure
 
     def correct(self):
-        "Run the filter"
+        """
+        Execute the correction procedure on the model.
+        """
         self.m_procedure.correct()
 
 class ModelQualityFilter(object):
-    def __init__(self,acq,procedure):
+    """
+    Filter for assessing the quality of the biomechanical model's motion.
+
+    This filter runs a specified procedure to evaluate the quality of the model's motion.
+
+    Args:
+        acq (btk.btkAcquisition): The motion acquisition data.
+        procedure (QualityProcedure): The quality assessment procedure to be applied.
+    """
+    def __init__(self,acq:btk.btkAcquisition,procedure:QualityProcedure):
         self.m_procedure = procedure
         self.m_acq = acq
 
     def run(self):
-        "Run the filter"
+        """
+        Execute the quality assessment procedure.
+        """
         self.m_procedure.run(self.m_acq)

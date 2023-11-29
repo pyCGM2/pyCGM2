@@ -11,18 +11,28 @@ kw = dict(marker='o', linestyle='none', color='r', alpha=0.3)
 
 
 def anomaly_rolling(values:np.ndarray, aprioriError:int=0, window:int=10, threshold:int=3, method:str="median", plot:bool=False, label:str="Unknow", referenceValues:Optional[float]=None):
-    """anomaly detection from rolling windows
+    
+    """
+    Detects anomalies in a sequence of values using a rolling window approach.
+
+    This function identifies points in the data that are statistically different from the values in a moving window. Anomalies are determined based on a threshold applied to a specified descriptive statistic (median or mean) over a rolling window.
 
     Args:
-        values (np.array): values
-        aprioriError (int,Optional[0]): a priori error.
-        window (int,Optional[10]): size of the window.
-        threshold (int,Optional[3]):  standard deviation factor
-        method (str,Optional[median]): descriptive statistic method
-        plot (bool,Optional[False]): enable plot
-        label (str,Optional[Unknown]): Description of parameter `label`
-        referenceValues (np.array,Optional[None]): values used as reference instead of the values computing from the rolling windows
+        values (np.ndarray): The array of values for anomaly detection.
+        aprioriError (int, optional): An a priori error margin added and subtracted from each value. Defaults to 0.
+        window (int, optional): The size of the rolling window to compute the descriptive statistic. Defaults to 10.
+        threshold (int, optional): The threshold for identifying anomalies, based on the standard deviation factor. Defaults to 3.
+        method (str, optional): The method of computing the descriptive statistic ('median' or 'mean'). Defaults to "median".
+        plot (bool, optional): If True, a plot of the values, rolling statistic, and anomalies is displayed. Defaults to False.
+        label (str, optional): A label for the data, used in plotting. Defaults to "Unknown".
+        referenceValues (Optional[float], optional): An array of reference values to be used instead of the values computed from the rolling window. If None, the rolling window values are used. Defaults to None.
 
+    Returns:
+        list: A list of indices where anomalies are detected in the input values.
+
+    Note:
+        - Zero values in the input are considered anomalies and are warned about.
+        - The function plots the original values, the rolling statistic, and the detected anomalies if `plot` is True.
     """
 
     df = pd.DataFrame({'Values': values})

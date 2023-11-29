@@ -9,13 +9,15 @@ from pyCGM2.Model import model
 from typing import List, Tuple, Dict, Optional,Union
 
 def getNexusSubjectMp(NEXUS:ViconNexus.ViconNexus,subject:str, resetFlag:bool=False):
-    """ return required and optional anthropometric parameters
+    """Retrieves required and optional anthropometric parameters from Nexus.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): viconnexusapi handle.
-        subject (str): subject ( eq. vsk) name.
-        resetFlag (bool,optional):  reset optional mp.
-
+        NEXUS (ViconNexus.ViconNexus): Vicon Nexus API handle.
+        subject (str): Subject (equivalent to VSK) name.
+        resetFlag (bool, default=False): Flag to reset optional anthropometric parameters.
+    
+    Returns:
+        Tuple[Dict, Dict]: A tuple containing two dictionaries, one for required and one for optional anthropometric parameters.
     """
 
     params = NEXUS.GetSubjectParamNames(subject)
@@ -70,13 +72,12 @@ def getNexusSubjectMp(NEXUS:ViconNexus.ViconNexus,subject:str, resetFlag:bool=Fa
     return required_mp,optional_mp
 
 def updateNexusSubjectMp(NEXUS:ViconNexus.ViconNexus,model:model.Model,subjectName:str):
-    """ update anthropometric from a pyCGM2 model instance
+    """Updates anthropometric parameters in Nexus from a pyCGM2 model instance.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus api handle.
-        model (model.Model): a pyCGM2 model instance.
-        subjectName (str):  subject (ie vsk) name
-
+        NEXUS (ViconNexus.ViconNexus): Vicon Nexus API handle.
+        model (model.Model): A pyCGM2 model instance.
+        subjectName (str): Subject name (equivalent to VSK name).
     """
 
     NEXUS.SetSubjectParam( subjectName, "InterAsisDistance",model.mp_computed["InterAsisDistance"],True)

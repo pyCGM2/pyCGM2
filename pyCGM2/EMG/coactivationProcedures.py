@@ -8,32 +8,39 @@ import numpy as np
 from typing import List, Tuple, Dict, Optional
 
 class CoActivationProcedure(object):
+    """Base class for co-activation procedures.
+
+    This class serves as a foundation for specific co-activation index computation methods. 
+    It should be extended to add specific functionalities for different types of co-activation index computations.
+    """
     def __init__(self):
+        """Initializes the CoActivationProcedure class."""
         pass
 
 class UnithanCoActivationProcedure(CoActivationProcedure):
     """
-    Coactivation procedure according Unithan et al, 1996
+    Co-activation procedure according to Unithan et al., 1996.
 
-    Unnithan VB, Dowling JJ, Frost G, Volpe Ayub B, Bar-Or O. Cocontraction and phasic activity during GAIT in children with cerebral palsy. Electromyogr Clin Neurophysiol. 1996;36:487–494.
+    This class implements the co-activation index computation as described by Unnithan et al. in their 1996 study on co-contraction and phasic activity during gait in children with cerebral palsy.
 
+    Reference:
+        Unnithan VB, Dowling JJ, Frost G, Volpe Ayub B, Bar-Or O. Cocontraction and phasic activity during GAIT in children with cerebral palsy. Electromyogr Clin Neurophysiol. 1996;36:487–494.
     """
 
     def __init__(self):
+        """Initializes the UnithanCoActivationProcedure class."""
         super(UnithanCoActivationProcedure, self).__init__()
 
 
     def run(self, emg1:str, emg2:str):
-        """run the procedure.
+        """Run the Unithan co-activation index computation procedure.
 
         Args:
-            emg1 (str):  emg label .
-            emg2 (str): emg label
+            emg1 (str): EMG label of the first muscle.
+            emg2 (str): EMG label of the second muscle.
 
         Returns:
-            list: Coactivation index
-
-
+            list: A list containing the computed co-activation index values.
         """
 
         out = []
@@ -49,27 +56,28 @@ class UnithanCoActivationProcedure(CoActivationProcedure):
 
 class FalconerCoActivationProcedure(CoActivationProcedure):
     """
-    Coactivation index according falconer and Winter
+    Co-activation index computation according to Falconer and Winter.
 
-    Falconer K, Winter DA. Quantitative assessment of cocontraction at the ankle joint in walking. Electromyogr Clin Neurophysiol. 1985;25:135–149. [PubMed] [Google Scholar]
+    This class implements the co-activation index computation as described by Falconer and Winter. The method is used to quantitatively assess co-contraction at the ankle joint during walking.
 
+    Reference:
+        Falconer K, Winter DA. Quantitative assessment of cocontraction at the ankle joint in walking. Electromyogr Clin Neurophysiol. 1985;25:135–149.
     """
 
     def __init__(self):
+        """Initializes the FalconerCoActivationProcedure class."""
         super(FalconerCoActivationProcedure, self).__init__()
 
 
     def run(self, emg1:str, emg2:str):
-        """run the procedure.
+        """Run the Falconer co-activation index computation procedure.
 
         Args:
-            emg1 (str):  emg label .
-            emg2 (str): emg label
+            emg1 (str): EMG label of the first muscle.
+            emg2 (str): EMG label of the second muscle.
 
         Returns:
-            list: Coactivation index
-
-
+            list: A list containing the computed co-activation index values.
         """
 
         out = []

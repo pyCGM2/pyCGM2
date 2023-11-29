@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
+from typing import List, Tuple, Dict, Optional,Union,Any
 import os
-import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
-from bs4 import BeautifulSoup
 
 # pyCGM2
 try:
@@ -28,8 +26,17 @@ from pyCGM2.Model.Opensim import opensimIO
 
 
 class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
-    def __init__(self,DATA_PATH,scaledOsimName, resultsDirectory):
+    """
+    Procedure for handling inverse kinematics in OpenSim using XML configuration.
+    This class manages the setup and execution of inverse kinematics analyses.
 
+    Args:
+        DATA_PATH (str): The path to the data directory.
+        scaledOsimName (str): The name of the scaled OpenSim model file.
+        resultsDirectory (Optional[str]): The directory for storing results. If None, results will be stored in DATA_PATH.
+
+    """
+    def __init__(self, DATA_PATH: str, scaledOsimName: str, resultsDirectory: Optional[str]):
         super(InverseKinematicXmlProcedure,self).__init__()
         self.m_DATA_PATH = DATA_PATH
 
@@ -41,11 +48,27 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         self.m_accuracy = 1e-8
         self.m_acq = None
 
-    def setSetupFile(self, ikToolFile):
+    def setSetupFile(self, ikToolFile: str) -> None:
+        """
+        Sets up the IK tool file for the inverse kinematics analysis.
+
+        Args:
+            ikToolFile (str): The path to the IK tool setup file.
+        """
         self.m_ikTool = self.m_DATA_PATH + "__IKTool-setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(ikToolFile,self.m_ikTool)
     
-    def prepareTrial_fromBtkAcq(self, acq, dynamicFile,progressionAxis,forwardProgression):
+    def prepareTrial_fromBtkAcq(self, acq: btk.btkAcquisition, 
+                                dynamicFile: str, progressionAxis: str, forwardProgression: bool) -> None:
+        """
+        Prepares a trial from a BTK acquisition for inverse kinematics analysis.
+
+        Args:
+            acq (btk.btkAcquisition): The BTK acquisition object.
+            dynamicFile (str): The filename for the dynamic trial.
+            progressionAxis (str): The axis of progression.
+            forwardProgression (bool): Indicates the direction of forward progression.
+        """
 
 
         self.m_dynamicFile = dynamicFile
@@ -68,23 +91,53 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         self.m_endTime = (self.m_acqMotion_forIK.GetLastFrame() - self.m_ff)/self.m_freq
         self.m_frameRange = [int((self.m_beginTime*self.m_freq)+self.m_ff),int((self.m_endTime*self.m_freq)+self.m_ff)] 
 
-    def prepareWeights(self,weights_dict):
+    def prepareWeights(self, weights_dict: Dict[str, float]) -> None:
+        """
+        Sets the marker weights for the inverse kinematics analysis.
+
+        Args:
+            weights_dict (Dict[str, float]): A dictionary mapping marker names to their weights.
+        """
         self.m_weights = weights_dict
 
-    def setAccuracy(self,value):
+    def setAccuracy(self, value: float) -> None:
+        """
+        Sets the accuracy for the inverse kinematics analysis.
+
+        Args:
+            value (float): The accuracy value.
+        """
         self.m_accuracy = value
 
-    def setFrameRange(self,begin,end):
+    def setFrameRange(self, begin: Optional[int], end: Optional[int]) -> None:
+        """
+        Sets the frame range for the inverse kinematics analysis.
+
+        Args:
+            begin (Optional[int]): The beginning frame number. If None, it starts from the first frame.
+            end (Optional[int]): The ending frame number. If None, it ends at the last frame.
+        
+        """
         if self.m_acq is None:
             raise Exception(f"[pyCGM2] - no acquisition detected - trial preparation from a btk::Acquisition not done")
         self.m_beginTime = 0.0 if begin is None else (begin-self.m_ff)/self.m_freq
         self.m_endTime = (self.m_acq.GetLastFrame() - self.m_ff)/self.m_freq  if end is  None else (end-self.m_ff)/self.m_freq
 
-    def setTimeRange(self,begin,end):
+    def setTimeRange(self, begin: float, end: float) -> None:
+        """
+        Sets the time range for the inverse kinematics analysis.
+
+        Args:
+            begin (float): The beginning time.
+            end (float): The ending time.
+        """
         self.m_beginTime = begin
         self.m_endTime = end
 
     def prepareXml(self):
+        """
+        Prepares the XML configuration for the inverse kinematics analysis.
+        """
 
         self.xml.set_one("model_file", self.m_osimName)
         self.xml.set_one("marker_file", files.getFilename(self.m_markerFile))
@@ -96,6 +149,9 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         self.xml.set_one("results_directory",  self.m_resultsDir)
 
     def run(self):
+        """
+        Runs the inverse kinematics analysis.
+        """
 
         if os.path.isfile(self.m_DATA_PATH +self.m_dynamicFile+"_ik_model_marker_locations.sto"):
             os.remove(self.m_DATA_PATH +self.m_dynamicFile+"_ik_model_marker_locations.sto")
@@ -122,15 +178,27 @@ class InverseKinematicXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedur
         self.finalize()
 
     def finalize(self):
-        # rename the xml setup file with the filename as suffix
+        """
+        Finalizes the procedure, including file renaming and cleanup.
+        """
         files.renameFile(self.m_ikTool, 
                     self.m_DATA_PATH + self.m_dynamicFile + "-IKTool-setup.xml")
        
 
 
 class InverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
-    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory,modelVersion):
+    """
+    Specialized procedure for handling inverse kinematics in OpenSim using XML configuration
+    for the CGM model. Extends InverseKinematicXmlProcedure with CGM model-specific configurations.
 
+    Args:
+        DATA_PATH (str): The path to the data directory.
+        scaledOsimName (str): The name of the scaled OpenSim model file.
+        resultsDirectory (Optional[str]): The directory for storing results.
+        modelVersion (str): The version of the CGM model.
+
+    """
+    def __init__(self, DATA_PATH: str, scaledOsimName: str, resultsDirectory: Optional[str], modelVersion: str):
         super(InverseKinematicXmlCgmProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory)
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
@@ -145,14 +213,26 @@ class InverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
         self.xml = opensimInterface.opensimXmlInterface(ikToolFile,self.m_ikTool)
        
     def finalize(self):
-        # rename the xml setup file with the filename as suffix
+        """
+        Finalizes the procedure, including file renaming and cleanup.
+        """
         files.renameFile(self.m_ikTool, 
                     self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-IKTool-setup.xml")
 
 
 class KalmanInverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
-    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory,modelVersion):
+    """
+    Procedure for handling Kalman-filter-based inverse kinematics in OpenSim for the CGM model.
+    Extends InverseKinematicXmlProcedure with Kalman filter specific configurations.
 
+    Args:
+        DATA_PATH (str): The path to the data directory.
+        scaledOsimName (str): The name of the scaled OpenSim model file.
+        resultsDirectory (Optional[str]): The directory for storing results.
+        modelVersion (str): The version of the CGM model.
+    """
+
+    def __init__(self, DATA_PATH: str, scaledOsimName: str, resultsDirectory: Optional[str], modelVersion: str):
         super(KalmanInverseKinematicXmlCgmProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory)
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
@@ -166,7 +246,13 @@ class KalmanInverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
         self.m_ikTool = self.m_DATA_PATH + self.m_modelVersion + "-kalmanIk-setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(ikToolFile,self.m_ikTool)
        
-    def prepareWeights(self,weights_dict):
+    def prepareWeights(self, weights_dict: Dict[str, float]) -> None:
+        """
+        Adjusts and sets the marker weights for the Kalman-filter-based inverse kinematics analysis.
+
+        Args:
+            weights_dict (Dict[str, float]): A dictionary mapping marker names to their weights.
+        """
         for key in weights_dict:
             weights_dict[key]=weights_dict[key]/50
 
@@ -174,7 +260,9 @@ class KalmanInverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
 
 
     def run(self):
-
+        """
+        Runs the Kalman-filter-based inverse kinematics analysis using a CGM model.
+        """
         if os.path.isfile(self.m_DATA_PATH +self.m_dynamicFile+"_ik_model_marker_locations.sto"):
             os.remove(self.m_DATA_PATH +self.m_dynamicFile+"_ik_model_marker_locations.sto")
         if os.path.isfile(self.m_DATA_PATH +self.m_dynamicFile+"_ik_marker_errors.sto"):
@@ -201,14 +289,14 @@ class KalmanInverseKinematicXmlCgmProcedure(InverseKinematicXmlProcedure):
         
         os.system(cmd)
         
-        
         # ikTool.setModel(self.m_osimModel)
         
-
         self.finalize()
 
     def finalize(self):
-        # rename the xml setup file with the filename as suffix
+        """
+        Finalizes the Kalman-filter-based inverse kinematics procedure, including file renaming and cleanup.
+        """
         files.renameFile(self.m_ikTool, 
                     self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-kalmanIk-setup.xml")
 

@@ -27,17 +27,19 @@ except:
 from typing import List, Tuple, Dict, Optional, Union, Callable
 
 class TemporalEmgPlotViewer(plotViewers.PlotViewer):
-    """plot temporal emg plot
+    """
+    A viewer for plotting temporal EMG data.
+
+    This viewer plots raw or processed EMG data from a btk.Acquisition instance over time, 
+    allowing for the visualization of EMG activity during the course of an acquisition.
 
     Args:
-        iAcq (btk.Acquisition): an acquisition
-        pointLabelSuffix (str,Optional[None]): suffix added to emg outputs
-
-
+        iAcq (btk.Acquisition): The acquisition containing EMG data.
+        pointLabelSuffix (str, optional): A suffix added to EMG channel names for custom labeling.
     """
 
     def __init__(self,iAcq:btk.btkAcquisition,pointLabelSuffix:Optional[str]=None):
-
+        """Initialize the TemporalEmgPlotViewer."""
 
         super(TemporalEmgPlotViewer, self).__init__(iAcq)
 
@@ -56,11 +58,11 @@ class TemporalEmgPlotViewer(plotViewers.PlotViewer):
         self.m_selectChannels = None
 
     def setEmgManager(self,emgManager:EmgManager):
-        """set the `emgManager` instance
+        """
+        Set the EMG Manager for the viewer.
 
         Args:
-            emgManager (pyCGM2.EMG.EmgManager): `emgManager` instance
-
+            emgManager (EmgManager): An instance of EmgManager containing EMG processing details.
         """
 
         self.m_emgmanager = emgManager
@@ -68,25 +70,31 @@ class TemporalEmgPlotViewer(plotViewers.PlotViewer):
             self.m_selectChannels = self.m_emgmanager.getChannels()
 
     def selectEmgChannels(self,channelNames:List[str]):
-        """set the emg channels
+        """
+        Select specific EMG channels for plotting.
 
         Args:
-            channelNames (str): channel labels
-
+            channelNames (List[str]): List of EMG channel names to be plotted.
         """
         self.m_selectChannels = channelNames
 
     def setEmgRectify(self, flag:bool):
-        """Enable/disable rectify mode
+        """
+        Enable or disable EMG rectification in the plot.
 
         Args:
-            flag (bool): boolean flag
-
+            flag (bool): True to enable rectification, False to disable.
         """
 
         self.rectify = flag
 
     def __setLayer(self):
+        """
+        Internal method to set up the plot layers.
+
+        Configures the plot layout, titles, and axes for EMG visualization.
+        """
+
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         title=u""" Temporal EMG \n """
@@ -124,21 +132,34 @@ class TemporalEmgPlotViewer(plotViewers.PlotViewer):
 
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
+        """
+        Set a normative dataset for comparison.
+
+        Note: Currently, displaying normal EMG data is not implemented.
+
+        Args:
+            iNormativeDataSet (NormativeData): Instance of NormativeData for comparison.
+        """
         LOGGER.logger.warning("[pyCGM2] - pycgm2 not include and display normal emg data")
         pass
 
 
     def ignoreNormalActivty(self, bool:bool):
-        """Enable/disable normal actividy display
+        """
+        Enable or disable the display of normal EMG activity in the plot.
 
         Args:
-            bool (bool): boolean flag
-
+            bool (bool): True to ignore normal EMG activity, False to display it.
         """
 
         self.m_ignoreNormalActivity = bool
 
     def __setData(self):
+        """
+        Internal method to set the data for the plot.
+
+        Processes and plots the EMG data from the acquisition instance.
+        """
 
         i=0
         for channel in self.m_selectChannels:
@@ -158,7 +179,10 @@ class TemporalEmgPlotViewer(plotViewers.PlotViewer):
 
 
     def plotPanel(self):
-        """ plot the panel
+        """
+        Plot the panel with EMG data.
+
+        Generates and returns the final plot figure with configured EMG data.
         """
 
         self.__setLayer()
@@ -168,16 +192,19 @@ class TemporalEmgPlotViewer(plotViewers.PlotViewer):
 
 
 class CoactivationEmgPlotViewer(plotViewers.PlotViewer):
-    """plot coactivation plot
+    """
+    A viewer for plotting EMG coactivation data.
+
+    This viewer facilitates the visualization of muscle coactivation by plotting EMG data 
+    from two selected muscles and highlighting their coactivation periods.
 
     Args:
-        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
-        pointLabelSuffix (str,Optional[None]): suffix added to emg outputs
-
-
+        iAnalysis (Analysis): An Analysis instance containing processed EMG data.
+        pointLabelSuffix (str, optional): A suffix added to EMG outputs for custom labeling.
     """
 
     def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None):
+        """Initialize the CoactivationEmgPlotViewer."""
 
         super(CoactivationEmgPlotViewer, self).__init__(iAnalysis)
 
@@ -190,37 +217,42 @@ class CoactivationEmgPlotViewer(plotViewers.PlotViewer):
         self.m_pointLabelSuffix = pointLabelSuffix
 
     def setEmgs(self,label1:str,label2:str):
-        """set the 2 emg labels to plot
+        """
+        Set the EMG labels for coactivation analysis.
 
         Args:
-            label1 (str): emg channel label
-            label2 (str): emg channel label
-
+            label1 (str): Label of the first EMG channel.
+            label2 (str): Label of the second EMG channel.
         """
         self.m_emg1 = label1+"_Rectify_Env_Norm"
         self.m_emg2 = label2+"_Rectify_Env_Norm"
 
     def setMuscles(self,label1:str,label2:str):
-        """set the 2 measured muscle names
+        """
+        Set the names of the muscles for coactivation analysis.
 
         Args:
-            label1 (str): muscle name
-            label2 (str): muscle name
-
+            label1 (str): Name of the first muscle.
+            label2 (str): Name of the second muscle.
         """
         self.m_muscleLabel1 = label1
         self.m_muscleLabel2 = label2
 
     def setContext(self,context:str):
-        """set event context
+        """
+        Set the context for the coactivation analysis.
 
         Args:
-            context (str): event context
-
+            context (str): The context of the analysis (e.g., 'Left', 'Right').
         """
         self.m_context = context
 
     def __setLayer(self):
+        """
+        Internal method to set up the plot layers.
+
+        Configures the plot layout, titles, and axes for EMG coactivation visualization.
+        """
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         title=" Coactivation : " + self.m_muscleLabel1 + " Vs " + self.m_muscleLabel2
@@ -238,20 +270,33 @@ class CoactivationEmgPlotViewer(plotViewers.PlotViewer):
 
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
+        """
+        Set a normative dataset for comparison.
+
+        Note: Currently, displaying normal EMG data is not implemented.
+
+        Args:
+            iNormativeDataSet (NormativeData): Instance of NormativeData for comparison.
+        """
         LOGGER.logger.warning("[pyCGM2] - pycgm2 not include and display normal emg data")
         pass
 
     def setConcretePlotFunction(self, concreteplotFunction:Callable):
-        """set a concrete plot function
+        """
+        Set a concrete plot function for the viewer.
 
         Args:
-            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
-
+            concreteplotFunction (Callable): A specific plot function from pyCGM2.Report.plot.
         """
         self.m_concretePlotFunction = concreteplotFunction
 
 
     def __setData(self):
+        """
+        Internal method to set the data for the coactivation plot.
+
+        Processes and plots the EMG data for muscle coactivation analysis.
+        """
 
         self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.emgStats,
                         self.m_emg1,self.m_context,0,color="red")
@@ -269,7 +314,11 @@ class CoactivationEmgPlotViewer(plotViewers.PlotViewer):
 
 
     def plotPanel(self):
-        """plot the panel"""
+        """
+        Plot the coactivation panel with EMG data.
+
+        Generates and returns the final plot figure with configured EMG coactivation data.
+        """
 
         self.__setLayer()
         self.__setData()
@@ -279,16 +328,19 @@ class CoactivationEmgPlotViewer(plotViewers.PlotViewer):
         return self.fig
 
 class EnvEmgGaitPlotPanelViewer(plotViewers.PlotViewer):
-    """plot emg envelops
+    """
+    A viewer for plotting EMG envelops during gait analysis.
+
+    This viewer creates plots of EMG envelops for selected channels, providing insights 
+    into muscle activity throughout gait cycles.
 
     Args:
-        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
-        pointLabelSuffix (str,Optional[None]): suffix added to emg outputs
-
-
+        iAnalysis (Analysis): An Analysis instance containing processed EMG data.
+        pointLabelSuffix (str, optional): A suffix added to EMG outputs for custom labeling.
     """
 
     def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None):
+        """Initialize the EnvEmgGaitPlotPanelViewer."""
 
         super(EnvEmgGaitPlotPanelViewer, self).__init__(iAnalysis)
 
@@ -307,20 +359,20 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.PlotViewer):
         self.m_selectChannels = None
 
     def selectEmgChannels(self,channelNames:List[str]):
-        """set the emg channels
+        """
+        Select specific EMG channels for plotting.
 
         Args:
-            channelNames (str): channel labels
-
+            channelNames (List[str]): List of EMG channel names to be plotted.
         """
         self.m_selectChannels = channelNames
 
     def setEmgManager(self,emgManager:EmgManager):
-        """set the `emgManager` instance
+        """
+        Set the EMG Manager for the viewer.
 
         Args:
-            emgManager (pyCGM2.EMG.EmgManager): `emgManager` instance
-
+            emgManager (EmgManager): An instance of EmgManager containing EMG processing details.
         """
         self.m_emgmanager = emgManager
         if self.m_selectChannels is None:
@@ -338,6 +390,11 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.PlotViewer):
 
 
     def __setLayer(self):
+        """
+        Internal method to set up the plot layers.
+
+        Configures the layout, titles, and axes for EMG envelop visualization during gait.
+        """
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         title=u""" EMG Envelop \n """ if not self.m_normalizedEmgFlag  else u""" Normalized EMG Envelop \n """
@@ -380,20 +437,31 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.PlotViewer):
 
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
+        """
+        Set a normative dataset for comparison (not implemented).
+
+        Args:
+            iNormativeDataSet (NormativeData): Instance of NormativeData for comparison.
+        """
         LOGGER.logger.warning("[pyCGM2] - pycgm2 not include and display normal emg data")
         pass
 
     def setConcretePlotFunction(self, concreteplotFunction:Callable):
-        """set a concrete plot function
+        """
+        Set a specific plot function for the viewer.
 
         Args:
-            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
-
+            concreteplotFunction (Callable): A plot function from pyCGM2.Report.plot.
         """
         self.m_concretePlotFunction = concreteplotFunction
 
 
     def __setData(self):
+        """
+        Internal method to set the data for the EMG gait plot.
+
+        Processes and plots the EMG data for gait cycle analysis.
+        """
 
         i=0
         for channel in self.m_selectChannels:
@@ -413,7 +481,11 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.PlotViewer):
             i+=1
 
     def plotPanel(self):
-        """plot the panel"""
+        """
+        Plot the EMG gait panel.
+
+        Generates and returns the final plot figure with configured EMG data for gait analysis.
+        """
 
         self.__setLayer()
         self.__setData()
@@ -423,18 +495,20 @@ class EnvEmgGaitPlotPanelViewer(plotViewers.PlotViewer):
 
 
 class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.PlotViewer):
-    """plot emg envelops from multiple `analysis` instances
+    """
+    A viewer for plotting EMG envelops from multiple Analysis instances.
+
+    This viewer is used to compare EMG envelops across different Analysis instances, 
+    which can be useful for comparing muscle activities under different conditions.
 
     Args:
-        iAnalyses (list):  `analysis` instances
-        legend(str): label assoaciated to each instance
-        pointLabelSuffix (str,Optional[None]): suffix added to emg outputs
-
-
+        iAnalyses (List[Analysis]): A list of Analysis instances to compare.
+        legends (List[str]): Labels associated with each Analysis instance for legend display.
+        pointLabelSuffix (str, optional): A suffix added to EMG outputs for custom labeling.
     """
 
     def __init__(self,iAnalyses:List[Analysis],legends:List[str],pointLabelSuffix:Optional[str]=None):
-
+        """Initialize the MultipleAnalysis_EnvEmgPlotPanelViewer."""
 
         super(MultipleAnalysis_EnvEmgPlotPanelViewer, self).__init__(iAnalyses)
 
@@ -462,20 +536,20 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.PlotViewer):
         self.m_selectChannels = None
 
     def selectEmgChannels(self,channelNames:List[str]):
-        """set the emg channels
+        """
+        Select specific EMG channels for visualization across multiple analyses.
 
         Args:
-            channelNames (str): channel labels
-
+            channelNames (List[str]): List of EMG channel names to include in the plots.
         """
         self.m_selectChannels = channelNames
 
     def setEmgManager(self,emgManager:EmgManager):
-        """set the `emgManager` instance
+        """
+        Set the EMG Manager for the viewer.
 
         Args:
-            emgManager (pyCGM2.EMG.EmgManager): `emgManager` instance
-
+            emgManager (EmgManager): An instance of EmgManager containing EMG processing details.
         """
         self.m_emgmanager = emgManager
         if self.m_selectChannels is None:
@@ -492,6 +566,11 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.PlotViewer):
 
 
     def __setLayer(self):
+        """
+        Internal method to set up the plot layers for multiple analyses.
+
+        Configures the layout, titles, and axes for EMG envelop visualization.
+        """
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         title=u""" EMG Envelop \n """ if not self.m_normalizedEmgFlag  else u""" Normalized EMG Envelop \n """
@@ -533,55 +612,77 @@ class MultipleAnalysis_EnvEmgPlotPanelViewer(plotViewers.PlotViewer):
             ax.set_ylabel("Emg Unit",size=8)
 
     def __setLegend(self,axisIndex):
+        """
+        Internal method to set the legend for the plot.
+
+        Args:
+            axisIndex (int): Index of the axis where the legend will be placed.
+        """
         self.fig.axes[axisIndex].legend(fontsize=6)
 
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
+        """
+        Set a normative dataset for comparison.
+
+        Note: Currently, displaying normal EMG data is not implemented.
+
+        Args:
+            iNormativeDataSet (NormativeData): Instance of NormativeData for comparison.
+        """
         LOGGER.logger.warning("[pyCGM2] - pycgm2 not include and display normal emg data")
         pass
 
     def setConcretePlotFunction(self, concreteplotFunction:Callable):
-        """set a concrete plot function
+        """
+        Set a specific plot function for the viewer.
 
         Args:
-            concreteplotFunction (Callable): a function of pyCGM2.Report.plot
-
+            concreteplotFunction (Callable): A plot function from pyCGM2.Report.plot.
         """
         self.m_concretePlotFunction = concreteplotFunction
 
 
     def __setData(self):
+        """
+        Internal method to set the data for the EMG plot panel from multiple analyses.
+
+        Processes and plots EMG data from different analyses for comparative visualization.
+        """
         #suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix!="" else ""
 
-            colormap_i_left=[plt.cm.Reds(k) for k in np.linspace(0.2, 1, len(self.m_analysis))]
-            colormap_i_left = [(0,0,0)] + colormap_i_left
-            colormap_i_right=[plt.cm.Blues(k) for k in np.linspace(0.2, 1, len(self.m_analysis))]
-            colormap_i_right = [(0,0,0)] + colormap_i_right
+        colormap_i_left=[plt.cm.Reds(k) for k in np.linspace(0.2, 1, len(self.m_analysis))]
+        colormap_i_left = [(0,0,0)] + colormap_i_left
+        colormap_i_right=[plt.cm.Blues(k) for k in np.linspace(0.2, 1, len(self.m_analysis))]
+        colormap_i_right = [(0,0,0)] + colormap_i_right
 
 
-            j = 0
-            for analysis in self.m_analysis:
+        j = 0
+        for analysis in self.m_analysis:
 
-                i=0
-                for channel in self.m_selectChannels:
-                    label = channel+"_Rectify_Env" if not self.m_normalizedEmgFlag else channel+"_Rectify_Env_Norm"
-                    context = self.m_emgmanager.m_emgChannelSection[channel]["Context"]
+            i=0
+            for channel in self.m_selectChannels:
+                label = channel+"_Rectify_Env" if not self.m_normalizedEmgFlag else channel+"_Rectify_Env_Norm"
+                context = self.m_emgmanager.m_emgChannelSection[channel]["Context"]
 
-                    if context == "Left":
-                        self.m_concretePlotFunction(self.fig.axes[i],analysis.emgStats,
-                                        label,context,0,color=colormap_i_left[j],legendLabel=self.m_legends[j])
-                    elif context =="Right":
-                        self.m_concretePlotFunction(self.fig.axes[i],analysis.emgStats,
-                                        label,context,0,color=colormap_i_right[j],legendLabel=self.m_legends[j])
-                    i+=1
+                if context == "Left":
+                    self.m_concretePlotFunction(self.fig.axes[i],analysis.emgStats,
+                                    label,context,0,color=colormap_i_left[j],legendLabel=self.m_legends[j])
+                elif context =="Right":
+                    self.m_concretePlotFunction(self.fig.axes[i],analysis.emgStats,
+                                    label,context,0,color=colormap_i_right[j],legendLabel=self.m_legends[j])
+                i+=1
 
-                j+=1
+            j+=1
 
 
 
     def plotPanel(self):
-        """plot the panel"""
+        """
+        Plot the EMG panel with data from multiple analyses.
 
+        Generates and returns the final plot figure with configured EMG data for comparative analysis.
+        """
 
         self.__setLayer()
         self.__setData()

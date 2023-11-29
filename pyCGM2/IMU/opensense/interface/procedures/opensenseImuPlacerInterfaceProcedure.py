@@ -13,14 +13,18 @@ import opensim
 
 
 class ImuPlacerXMLProcedure(object):
-    """opensense IMU placer procedure
+    """
+    OpenSense IMU placer procedure for setting up and running IMU calibration with OpenSim.
 
-        Args:
-            DATA_PATH (str): data path
-            genericOsimFile (str): path+filename of the osim file
+    Args:
+        DATA_PATH (str): Data path where the OpenSim model and results will be stored.
+        genericOsimFile (str): Path and filename of the generic OpenSim model file (.osim).
     """
     
     def __init__(self, DATA_PATH:str,genericOsimFile:str):
+        """
+        Initializes the ImuPlacerXMLProcedure with the specified data path and generic OpenSim model file.
+        """
         super(ImuPlacerXMLProcedure,self).__init__()
 
         self.m_DATA_PATH = DATA_PATH
@@ -37,10 +41,11 @@ class ImuPlacerXMLProcedure(object):
         self.m_osimInterface = opensimInterface.osimInterface(self.m_DATA_PATH, self.m_osim)
 
     def setSetupFile(self,imuPlacerToolFile:str):
-        """set the setup file
+        """
+        Set the setup file for the IMU placer tool.
 
         Args:
-            imuPlacerToolFile (str): path+filename of the opensense imu placer setup file
+            imuPlacerToolFile (str): Path and filename of the OpenSense IMU placer setup file.
         """
 
         self.m_imuPlacerTool = self.m_DATA_PATH + "__imuPlacerTool-setup.xml"
@@ -48,11 +53,11 @@ class ImuPlacerXMLProcedure(object):
 
 
     def prepareImuMapper(self,imuMapperDict:Dict):
-        """prepare the imuMapper 
+        """
+        Prepare the IMU mapper, associating OpenSim model bodies with IMU instances.
 
         Args:
-            imuMapperDict (dict): imu mapper
-
+            imuMapperDict (Dict): Dictionary mapping OpenSim body names to IMU instances.
         """
         for key in imuMapperDict:
             if key not in self.m_osimInterface.getBodies():
@@ -62,13 +67,14 @@ class ImuPlacerXMLProcedure(object):
         self.m_imuMapper.update(imuMapperDict)
 
     def prepareImu(self,osimBody:str,imuInstance:imu.Imu):
-        """assign an imu instance to an osim body
+        """
+        Assign an IMU instance to an OpenSim model body.
 
         Args:
-            osimBody (str): name of the body in the osim file
-            imuInstance (imu.Imu): a pyCGM2 IMU instance
-
+            osimBody (str): Name of the body in the OpenSim model.
+            imuInstance (imu.Imu): A pyCGM2 IMU instance.
         """
+
         if osimBody not in self.m_osimInterface.getBodies():
             LOGGER.logger.error(f"[pyCGM2] the key {osimBody} of your mapper is not a body of the osim file")
             raise 
@@ -77,12 +83,13 @@ class ImuPlacerXMLProcedure(object):
 
 
     def prepareOrientationFile(self,staticFilenameNoExt:str,freq:int,order:List=[0,1,2,3]):
-        """prepare the orientation file ( mot file) from Imus
+        """
+        Prepare the orientation file (STO file) from IMUs for static calibration.
 
         Args:
-            motionFilenameNoExt (str): name of the mot file to create
-            freq (int): frequency
-            order (list, optional): quaternion reordering. Defaults to [0,1,2,3].
+            staticFilenameNoExt (str): Name of the STO file to be created for static calibration.
+            freq (int): Sampling frequency of the IMU data.
+            order (List, optional): Quaternion reordering. Defaults to [0, 1, 2, 3].
         """
 
         self.m_staticFile = staticFilenameNoExt+".sto"
@@ -95,23 +102,31 @@ class ImuPlacerXMLProcedure(object):
         self.m_sensorOrientationFile = self.m_staticFile
 
     def prepareBaseImu(self, segmentName:str, heading:str):
-         """ set the imu base and its heading axis
-         """ 
+        """
+        Set the base IMU and its heading axis for the calibration procedure.
+
+        Args:
+            segmentName (str): Segment name associated with the base IMU.
+            heading (str): The heading axis for the base IMU.
+        """ 
          self.m_base_imu_label=segmentName+"_imu"
          self.m_base_heading_axis=heading
 
     def prepareSensorToOpensimRotation(self,eulerAngles:List):
-        """ euler angle to pass to opensim global coordinate system
+        """
+        Prepare Euler angles to align sensors to the OpenSim global coordinate system.
 
         Args:
-            eulerAngles (list): list of 3 values in radian
+            eulerAngles (List): List of 3 Euler angle values in radians.
         """
         if len(eulerAngles) !=3:
             raise ("[pyCGM2] - eulerAngles must be a list of 3 values in radian")
         self.m_sensor_to_opensim_rotations = eulerAngles
 
     def prepareXml(self):
-        """ prepare-update and update the xml associated with the setup file"""
+        """
+        Prepare and update the XML associated with the IMU placer setup file.
+        """
 
         self.xml.set_one("model_file", self.m_osim)
         self.xml.set_one("base_imu_label", self.m_base_imu_label)
@@ -124,7 +139,9 @@ class ImuPlacerXMLProcedure(object):
             self.xml.set_one("sensor_to_opensim_rotations", ' '.join(str(e) for e in self.m_sensor_to_opensim_rotations)) 
 
     def run(self):
-        """run the procedure """
+        """
+        Run the IMU placer procedure using the prepared setup.
+        """
 
         self.xml.update()
 
@@ -134,5 +151,7 @@ class ImuPlacerXMLProcedure(object):
         self.finalize()
 
     def finalize(self):
-        """finalize after running """
+        """
+        Finalize the procedure after running, including any post-processing steps.
+        """
         pass

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import warnings
 import argparse
 from pyCGM2.Lib.CGM import cgm1_1

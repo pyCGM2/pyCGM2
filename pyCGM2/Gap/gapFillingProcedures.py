@@ -16,16 +16,31 @@ from typing import List, Tuple, Dict, Optional,Union
 
 # --- abstract procedure
 class GapFillingProcedure(object):
+    """
+    An abstract base class for gap filling procedures.
+
+    This class serves as a template for implementing various gap filling strategies in kinematic data.
+
+    Subclasses should implement the `fill` method to define specific gap filling algorithms.
+
+    Examples of subclasses:
+        - Burke2016KalmanGapFillingProcedure
+        - Gloersen2016GapFillingProcedure
+    """
     def __init__(self):
         pass
 
 # --- concrete procedure
 class Burke2016KalmanGapFillingProcedure(GapFillingProcedure):
     """
-        gap fill procedure according  Burke et al. (Job 2016)
+    A gap filling procedure based on the methodology described by Burke et al. (2016).
 
+    This procedure uses a low-dimensional Kalman smoothing approach to estimate missing marker positions.
+
+    Reference:
         Burke, M.; Lasenby, J. (2016) Estimating missing marker positions using low dimensional Kalman smoothing. 
-        In : Journal of biomechanics, vol.49, n°9, p.1854-1858. DOI: 10.1016/j.jbiomech.2016.04.016.
+        In: Journal of Biomechanics, vol.49, n°9, p.1854-1858. DOI: 10.1016/j.jbiomech.2016.04.016.
+
     """
 
     def __init__(self):
@@ -33,7 +48,19 @@ class Burke2016KalmanGapFillingProcedure(GapFillingProcedure):
         self.description = "Burke (2016)"
 
 
-    def _smooth(self,rawdata,tol=0.0025,sigR=1e-3,keepOriginal=True):
+    def _smooth(self, rawdata, tol=0.0025, sigR=1e-3, keepOriginal=True):
+        """
+        Internal method to perform Kalman smoothing on the raw data.
+
+        Args:
+            rawdata (numpy.ndarray): The raw marker position data.
+            tol (float): Tolerance level for SVD. Defaults to 0.0025.
+            sigR (float): Signal-to-noise ratio. Defaults to 1e-3.
+            keepOriginal (bool): Whether to keep original data where no gaps are present. Defaults to True.
+
+        Returns:
+            numpy.ndarray: Smoothed data.
+        """
 
         X = rawdata[~np.isnan(rawdata).any(axis=1)]
         m = np.mean(X,axis=0)
@@ -87,13 +114,18 @@ class Burke2016KalmanGapFillingProcedure(GapFillingProcedure):
         return y
 
 
-    def fill(self,acq:btk.btkAcquisition,**kwargs):
-        """fill gap
+    def fill(self, acq: btk.btkAcquisition, **kwargs):
+        """
+        Fills gaps in marker data according to the specified procedure.
 
         Args:
-            acq (Btk.Acquisition): a btk acquisition instance
+            acq (btk.btkAcquisition): A BTK acquisition instance with kinematic data.
+            **kwargs: Additional arguments for gap filling.
 
+        Returns:
+            Tuple[btk.btkAcquisition, List[str]]: The filled acquisition and a list of markers that were filled.
         """
+
         LOGGER.logger.info("----Burke2016 gap filling----")
         btkmarkersLoaded  = btkTools.GetMarkerNames(acq)
         ff = acq.GetFirstFrame()
@@ -145,13 +177,30 @@ class Burke2016KalmanGapFillingProcedure(GapFillingProcedure):
 
 class Gloersen2016GapFillingProcedure(GapFillingProcedure):
     """
-    Fills gaps in the marker postion data exploiting intercorrelations between marker coordinates.
+    A gap filling procedure based on the intercorrelation method as described by Gløersen and Federolf (2016).
+
+    This procedure fills gaps in marker position data by exploiting intercorrelations between marker coordinates, 
+    suitable for cases where multiple markers have missing data simultaneously.
+
+    References:
+        - Federolf PA. 2013. A novel approach to solve the 'missing marker problem' in marker-based motion analysis that exploits the segment coordination patterns in multi-limb motion data. PLoS ONE 8(10): e78689.
+        - Gløersen Ø, Federolf P. 2016. Predicting missing marker trajectories in human motion data using marker intercorrelations. PLoS ONE 11(3): e0152616.
 
 
-    See:
-        Federolf PA. 2013. PLoS ONE 8(10):e78689. doi:10.1371/journal.pone.0078689
-        Gløersen Ø, Federolf P. 2016. PLoS ONE 11(3):e0152616. doi:10.1371/journal.pone.0152616
-
+    Args:
+        **kwargs: Additional keyword arguments to configure the procedure, including:
+            - method (str): Specifies the reconstruction strategy for gaps in multiple markers. 
+              Options are 'R1' or 'R2'. Default is 'R2'.
+            - weight_scale (float): The parameter 'sigma' used in weighting calculations. It influences the 
+              impact of distance on weight assignments. Default is 200.
+            - mm_weight (float): The weighting factor for markers with missing data. Higher values give 
+              more weight to these markers during the gap filling process. Default is 0.02.
+            - distal_threshold (float): The threshold used in 'R2' method for determining distal markers. 
+              It represents the cut-off distance for distal marker relative to average Euclidean distances. 
+              Default is 0.5.
+            - min_cum_sv (float): The minimum cumulative sum of the eigenvalues of normalized singular 
+              values used in PCA. This determines the number of principal component vectors included 
+              in the analysis. Default is 0.99.
     """
 
     def __init__(self,**kwargs):
@@ -167,53 +216,46 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
 
 
 
-    def _distance2marker(self, data, ix_channels_with_gaps):
-            """Computes the Euclidean distance for each marker with missing data to each other marker.
+    def _distance2marker(self, data: np.ndarray, ix_channels_with_gaps: np.ndarray) -> np.ndarray:
+        """
+        Computes the Euclidean distance for each marker with missing data to each other marker.
 
-            Parameters
-            ----------
-            data : (N, M) array_like
-                The marker position data with N time steps across M channels.
-            ix_channels_with_gaps : array_lik
-                The indexes of the channels with missing marker data.
-            
-            Returns
-            -------
-            weights : (M'', M') array_like
-                Array of pair-wise Euclidean distances between markers with gaps and each other marker.
-                Here, M'' is the number of markers with missing data, and M' is the number of markers.
-            """
-            from scipy.spatial.distance import cdist
+        Args:
+            data (np.ndarray): The marker position data array with shape (N, M), where N is the number of time steps and M is the number of channels.
+            ix_channels_with_gaps (np.ndarray): The indexes of the channels with missing marker data.
 
-            # Get shape of data
-            N, M = data.shape
-            
-            # Reshape data to shape (3, n_markers, n_time_steps)
-            ix_markers_with_gaps = ( ix_channels_with_gaps[2::3] // 3 )  # columns of markers with gaps
-            n_markers_with_gaps = len(ix_markers_with_gaps)
-            data_reshaped = (data.T).reshape((3, M//3, N), order="F")
+        Returns:
+            np.ndarray: A 2D array of pair-wise Euclidean distances between markers with gaps and each other marker. The shape of the array is (M'', M'), where M'' is the number of markers with missing data, and M' is the total number of markers.
+        """
 
-            # Compute weights based on distances
-            weights = np.empty((n_markers_with_gaps, M//3, N))
-            for i in range(N):
-                weights[:,:,i] = cdist(data_reshaped[:,ix_markers_with_gaps,i].T, data_reshaped[:,:,i].T, "euclidean")
-            weights = np.nanmean(weights, axis=-1)
-            return weights
+        from scipy.spatial.distance import cdist
+
+        # Get shape of data
+        N, M = data.shape
         
-    def _PCA(self,data):
-        """Performs principal components analysis by means of singular value decomposition.
+        # Reshape data to shape (3, n_markers, n_time_steps)
+        ix_markers_with_gaps = ( ix_channels_with_gaps[2::3] // 3 )  # columns of markers with gaps
+        n_markers_with_gaps = len(ix_markers_with_gaps)
+        data_reshaped = (data.T).reshape((3, M//3, N), order="F")
 
-        Parameters
-        ----------
-        data : (N, M) array_like
-            The marker position data with N time steps across M channels.
+        # Compute weights based on distances
+        weights = np.empty((n_markers_with_gaps, M//3, N))
+        for i in range(N):
+            weights[:,:,i] = cdist(data_reshaped[:,ix_markers_with_gaps,i].T, data_reshaped[:,:,i].T, "euclidean")
+        weights = np.nanmean(weights, axis=-1)
+        return weights
         
-        Returns
-        -------
-        PC : 
-            The principal component vectors.
-        sqrtEV : 
-            The square root of the eigenvalues.
+    def _PCA(self, data: np.ndarray):
+        """
+        Performs principal components analysis (PCA) using singular value decomposition on marker position data.
+
+        Args:
+            data (np.ndarray): The marker position data array with shape (N, M), where N is the number of time steps and M is the number of channels.
+
+        Returns:
+            Tuple[np.ndarray, np.ndarray]: A tuple containing two elements:
+                - PC (np.ndarray): The principal component vectors.
+                - sqrtEV (np.ndarray): The square root of the eigenvalues.
         """
 
         # Get shape of data
@@ -227,21 +269,25 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
         PC = VT.T
         return PC, sqrtEV
 
-    def _reconstruct(self,data, weight_scale, mm_weight, min_cum_sv):
-        """Reconstructs missing marker data using the strategy based on intercorrelations between marker clusters.
 
-        Parameters
-        ----------
-        data : (N, M) array_like
-            Array of marker position data with N time steps across M channels.
-            Note that the mean trajectories have been subtracted from the original marker position data,
-            as to obtain a coordinate system moving with the subject.
-
-        Returns
-        -------
-        reconstructed_data : (N, M) array_like
-            The data with reconstructed marker trajectories.
+    def _reconstruct(self, data: np.ndarray, weight_scale: float, mm_weight: float, min_cum_sv: float):
         """
+        Reconstructs missing marker data using a strategy based on intercorrelations between marker clusters.
+
+        This method is used for gap filling in marker position data by considering the interrelations of 
+        marker movements. The mean trajectories are subtracted from the original data to provide a coordinate 
+        system that moves with the subject.
+
+        Args:
+            data (np.ndarray): Array of marker position data with shape (N, M), where N is the number of time steps and M is the number of channels. This data should have mean trajectories subtracted.
+            weight_scale (float): The scaling factor used in weight calculations for the reconstruction process.
+            mm_weight (float): The weighting factor for markers with missing data.
+            min_cum_sv (float): The minimum cumulative sum of the eigenvalues for the PCA, determining the number of principal components to be used.
+
+        Returns:
+            np.ndarray: The reconstructed marker position data array with the same shape as the input data (N, M), where missing data has been filled in.
+        """
+
 
         # Get shape of data
         n_time_steps, n_channels = data.shape
@@ -311,40 +357,28 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
 
 
     def fill(self,acq:btk.btkAcquisition,**kwargs):
-        """Fills gaps in the marker postion data exploiting intercorrelations between marker coordinates.
-
-        See:
-            Federolf PA. 2013. PLoS ONE 8(10):e78689. doi:10.1371/journal.pone.0078689
-            Gløersen Ø, Federolf P. 2016. PLoS ONE 11(3):e0152616. doi:10.1371/journal.pone.0152616
-
-        Parameters
-        ----------
-        data_gaps : (N, M) array_like
-            Array of marker position data with N time steps across M channels.
-            The data need to be organized as follows:
-
-            x1(t1) y1(t1) z1(t1) x2(t1) y2(t1) z2(t1) ...    xm(t1) ym(t1) zm(t1)
-            x1(t2) y1(t2) z1(t2) x2(t2) y2(t2) z2(t2) ...    xm(t2) ym(t2) zm(t2)
-            ...    ...    ...    ...    ...    ...    ...    ...    ...    ...
-            x1(tn) y1(tn) z1(tn) x2(tn) y2(tn) z2(tn) ...    xm(tn) ym(tn) zm(tn)
-
-            Thus, the first three columns correspond to the x-, y-, and-z coordinate of the 1st marker.
-            The rows correspond to the consecutive time steps (i.e., frames).
-        
-        Optional parameters
-        -------------------
-            method : str
-                Reconstruction strategy for gaps in multiple markers (`R1` or `R2` (default)).
-            weight_scale : float
-                Parameter `sigma` for determining weights. Default is 200.
-            mm_weight : float
-                Parameter for weight on missing markers. Default is 0.02.
-            distal_threshold : float
-                Cut-off distance for distal marker in `R2` relative to average Euclidean distances. Default is 0.5.
-            min_cum_sv : float
-                Minimum cumulative sum of eigenvalues of the normalized singular values.
-                Determines the number of principal component vectors included in the analysis. Default is 0.99.
         """
+        Fills gaps in the marker position data by exploiting intercorrelations between marker coordinates.
+
+        This method applies gap filling strategies based on marker intercorrelations, as described in the research by Federolf PA (2013) and Gløersen Ø, Federolf P (2016). It is particularly useful in cases where multiple markers have missing data simultaneously.
+
+
+        Args:
+            acq (btk.btkAcquisition): A BTK acquisition instance containing the marker position data.
+            **kwargs: Optional parameters to configure the gap filling process:
+                - method (str): Reconstruction strategy for gaps in multiple markers. Options are 'R1' or 'R2' (default: 'R2').
+                - weight_scale (float): Parameter 'sigma' for determining weights (default: 200).
+                - mm_weight (float): Weight factor for missing markers (default: 0.02).
+                - distal_threshold (float): Cut-off distance for distal marker in 'R2', relative to average Euclidean distances (default: 0.5).
+                - min_cum_sv (float): Minimum cumulative sum of eigenvalues of normalized singular values. It determines the number of principal component vectors included in the analysis (default: 0.99).
+
+        Returns:
+            Tuple[btk.btkAcquisition, List[str]]: The filled acquisition and a list of markers that were filled.
+
+        Note
+
+        """
+        
         LOGGER.logger.info("----Gloersen2016 gap filling----")
         btkmarkersLoaded  = btkTools.GetMarkerNames(acq)
         ff = acq.GetFirstFrame()
@@ -374,7 +408,15 @@ class Gloersen2016GapFillingProcedure(GapFillingProcedure):
             rawDatabtk[np.asarray(E)==-1,3*i-1] = np.nan
 
         data_gaps = rawDatabtk
+        #data_gaps : Array of marker position data with N time steps across M channels.
+        #The data need to be organized as follows:
+        #    x1(t1) y1(t1) z1(t1) x2(t1) y2(t1) z2(t1) ...    xm(t1) ym(t1) zm(t1)
+        #    x1(t2) y1(t2) z1(t2) x2(t2) y2(t2) z2(t2) ...    xm(t2) ym(t2) zm(t2)
+        #    ...    ...    ...    ...    ...    ...    ...    ...    ...    ...
+        #    x1(tn) y1(tn) z1(tn) x2(tn) y2(tn) z2(tn) ...    xm(tn) ym(tn) zm(tn)
 
+        #Thus, the first three columns correspond to the x-, y-, and-z coordinate of the 1st marker.
+        #The rows correspond to the consecutive time steps (i.e., frames).
 
 
         # Get number of time steps, number of channels, and corresponding number of markers

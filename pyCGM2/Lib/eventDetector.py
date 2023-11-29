@@ -9,28 +9,33 @@ def zeni(acqGait:btk.btkAcquisition,
          footStrikeOffset:int=0, 
          footOffOffset:int=0,
          **kwargs):
-    """kinematic-based event detector according Zeni et al(2008).
+    """
+    Kinematic-based gait event detection according to Zeni et al. (2008).
 
-    This method need the presence of the markers "LPSI","RPSI","LHEE","LTOE","RHEE","RTOE"
-
-
-    *Reference:*
-    Zeni, J. A.; Richards, J. G.; Higginson, J. S. (2008) Two simple methods for determining gait events during treadmill and overground walking using kinematic data. In : Gait & posture, vol. 27, n° 4, p. 710–714. DOI: 10.1016/j.gaitpost.2007.07.007.
+    This function detects gait events in a BTK acquisition instance using marker data. 
+    It requires the presence of specific markers and can apply a low-pass filter to marker data. 
+    The method is based on the approach described by Zeni, J. A., Richards, J. G., 
+    & Higginson, J. S. in their 2008 paper.
 
     Args:
-        acqGait (btk.btkAcquisition): an acquisition instance.
-        footStrikeOffset (int): systematic offset to add to all `footStrikeOffset` events. Default is 0.
-        footOffOffset (int): systematic offset to add to all `footOffOffset` events. Default is 0.
+        acqGait (btk.btkAcquisition): An acquisition instance with gait data.
+        footStrikeOffset (int, optional): A systematic offset added to all foot strike events. Defaults to 0.
+        footOffOffset (int, optional): A systematic offset added to all foot off events. Defaults to 0.
 
-    Keyword Arguments:
-        fc_lowPass_marker (double) : cut-off frequency of the lowpass filter applied on markers
-        order_lowPass_marker (int): order of the lowpass filter applied on markers
+    Keyword Args:
+        fc_lowPass_marker (float): Cut-off frequency of the low-pass filter applied to markers. If not specified or 0, no filtering is applied.
+        order_lowPass_marker (int): Order of the low-pass filter applied to markers. Defaults to 4 if not specified.
 
     Returns:
-        acqGait ( btk.btkAcquisition): updated acquisition with detected events.
-        state (bool): state of the detector
+        Tuple[btk.btkAcquisition, bool]: A tuple containing the updated acquisition instance with detected events, and a boolean indicating the state of the detector.
 
+    Example:
+        >>> updated_acq, detection_state = zeni(acquisition, footStrikeOffset=10, footOffOffset=5)
 
+    Reference:
+        Zeni, J. A., Richards, J. G., & Higginson, J. S. (2008). Two simple methods for determining gait events 
+        during treadmill and overground walking using kinematic data. Gait & Posture, 27(4), 710–714. 
+        DOI: 10.1016/j.gaitpost.2007.07.007.
     """
 
     acqGait.ClearEvents()

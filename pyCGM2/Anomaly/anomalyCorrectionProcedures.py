@@ -30,26 +30,42 @@ def plot_dendrogram(model, **kwargs):
     dendrogram(linkage_matrix, **kwargs)
 
 class AnomalyCorrectionProcedure(object):
+    """Base class for implementing anomaly correction procedures.
+
+    This class serves as a foundation for developing specific anomaly correction techniques.
+    It can be extended to add specific initialization and methods for handling different types of anomalies.
+    """
     def __init__(self):
         pass
 
 
 class MarkerAnomalyCorrectionProcedure(AnomalyCorrectionProcedure):
-    """procedure to correct marker anomaly
+    """Subclass of AnomalyCorrectionProcedure for correcting anomalies in marker data.
 
-    Args:
-        markers (Union[List,str]): marker labels
-        anomalyIndexes (list): indexes of the detected anomalies
-        plot (bool): enable plot
+    This class implements a procedure to identify and correct anomalies in marker trajectories
+    using various parameters and methods.
 
-    Keyword Arguments:
-        distance_threshold (float): distance threshold between indexes
-
-
+    Attributes:
+        m_markers (Union[List[str], str]): List of marker labels or a single marker label.
+        m_anomalyIndexes (List[int]): Indices of detected anomalies in the marker data.
+        _plot (bool): Flag to indicate if the plot should be displayed. Defaults to False.
+        _distance_threshold (int): Threshold distance for clustering anomalies. Defaults to 10.
     """
+    
 
-    def __init__(self, markers:Union[List,str], anomalyIndexes:List, plot:bool=False, **kwargs):
+
+    def __init__(self, markers:Union[List,str], anomalyIndexes:List[int], plot:bool=False, **kwargs):
+        """
+        Initialize the MarkerAnomalyCorrectionProcedure class with given parameters.
+
+        Args:
+            markers (Union[List[str], str]): List of marker labels or a single marker label.
+            anomalyIndexes (List[int]): List of indices where anomalies are detected in the marker data.
+            plot (bool, optional): Flag to indicate if the plot should be displayed. Defaults to False.
+        """
         super(MarkerAnomalyCorrectionProcedure,self).__init__()
+        
+    
 
         if type(markers) == str:
             markers = [markers]
@@ -62,12 +78,15 @@ class MarkerAnomalyCorrectionProcedure(AnomalyCorrectionProcedure):
             "distance_threshold"]
 
     def run(self, acq:btk.btkAcquisition, filename:str):
-        """ run the procedure
+        """
+        Execute the anomaly correction procedure on the given acquisition data.
 
         Args:
-            acq (btk.Acquisition): a btk acquisition instantce
-            filename (str): filename
+            acq (btk.btkAcquisition): An instance of a btk acquisition object.
+            filename (str): The filename of the data to be processed.
 
+        Returns:
+            btk.btkAcquisition: The acquisition object after applying anomaly corrections.
         """
 
         ff = acq.GetFirstFrame()

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC: /Apps/Vicon/Gap filling
-
 import argparse
 import copy
 import os

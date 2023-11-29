@@ -14,30 +14,42 @@ from pyCGM2.Processing.analysis import Analysis
 from typing import List, Tuple, Dict, Optional
 
 class DiscreteEmgProcedure(object):
+    """Base class for procedures extracting discrete values from EMG signals.
+
+    This class serves as a foundation for specific EMG data analysis procedures.
+    It should be extended to implement methods for extracting specific discrete values such as amplitudes or other metrics from EMG signals.
+    """
     def __init__(self):
+        """Initializes the DiscreteEmgProcedure class."""
         pass
 
 class AmplitudesProcedure(DiscreteEmgProcedure):
     """
-    This procedure computes EMG amplitude for each gait phases
+    Procedure to compute EMG amplitudes for each gait phase.
+
+    This class extends DiscreteEmgProcedure to specifically calculate the amplitude of EMG signals during different phases of gait. The amplitudes are calculated for each provided EMG channel and muscle.
+
+    Attributes:
+        NAME (str): Descriptive name of the procedure.
     """
 
     NAME = "EMG Amplitude from Integration for each gait phase"
 
     def __init__(self):
+        """Initializes the AmplitudesProcedure class."""
         super(AmplitudesProcedure, self).__init__()
 
     def detect(self, analysisInstance:Analysis, emgLabels:List[str], emgMuscles:List[str], emgContexts:List[str])->pd.DataFrame:
-        """compute amplitudes
+        """Compute amplitudes for each gait phase.
 
         Args:
-            analysisInstance (Analysis): _description_
-            emgLabels (List[str]): emg channels
-            emgMuscles (List[str]): muscle names
-            emgContexts (List[str]): event context
+            analysisInstance (Analysis): An instance of the Analysis class containing EMG and gait data.
+            emgLabels (List[str]): List of EMG channel labels.
+            emgMuscles (List[str]): List of corresponding muscle names.
+            emgContexts (List[str]): List of event contexts associated with each muscle.
 
         Returns:
-            pd.DataFrame: dataframe
+            pd.DataFrame: A DataFrame containing computed amplitude values for each muscle, context, and gait phase.
         """        
 
 
@@ -55,19 +67,19 @@ class AmplitudesProcedure(DiscreteEmgProcedure):
 
     def __construcPandasSerie(self,emgLabel:str,muscle:str,context:str, cycleIndex:int,phase:str,
                               value:float,procedure:str)->pd.Series:
-        """construct a pandas series
+        """Construct a Pandas Series for a single amplitude value.
 
         Args:
-            emgLabel (str): emg channel
-            muscle (str): muscle name
-            context (str): event context_
-            cycleIndex (int): cycle index
-            phase (str): movement phase ( e.g doubleStance)
-            value (float): value
-            procedure (str): name of the amplitude procedure
+            emgLabel (str): EMG channel label.
+            muscle (str): Muscle name.
+            context (str): Event context.
+            cycleIndex (int): Index of the gait cycle.
+            phase (str): Name of the gait phase (e.g., 'doubleStance').
+            value (float): Computed amplitude value.
+            procedure (str): Name of the amplitude computation procedure.
 
         Returns:
-            pd.Series: _description_
+            pd.Series: A Pandas Series object representing a single row of amplitude data.
         """
         iDict = OrderedDict([('ChannelLabel', emgLabel),
                      ('Label', muscle),
@@ -79,16 +91,16 @@ class AmplitudesProcedure(DiscreteEmgProcedure):
         return pd.Series(iDict)
 
     def __getAmplitudebyPhase(self,analysisInstance:Analysis,emglabel:str,muscle:str,context:str)->pd.DataFrame:
-        """compute amplitude value for each phase
+        """Compute amplitude values for each phase of the gait cycle.
 
         Args:
-            analysisInstance (Analysis): analysis instance
-            emglabel (str): emg channel
-            muscle (str): muscle name
-            context (str): event context
+            analysisInstance (Analysis): Analysis instance containing EMG data.
+            emgLabel (str): EMG channel label.
+            muscle (str): Muscle name.
+            context (str): Event context.
 
         Returns:
-            pd.DataFrame: populated dataframe 
+            pd.DataFrame: A DataFrame populated with amplitude data for each phase of the gait cycle.
         """
         procedure = "Amplitude"
         muscle = context[0]+muscle

@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
+from typing import List, Tuple, Dict, Optional,Union,Any
+
 import os
-import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 # pyCGM2
@@ -10,6 +10,7 @@ from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures import opensimProcedures
 from pyCGM2.Model.Opensim import opensimIO
 
+import btk
 try:
     import opensim
 except:
@@ -18,11 +19,18 @@ except:
     except:
         LOGGER.logger.error("[pyCGM2] opensim not found on your system")
 
-
-
 class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
+    """
+    Handles the setup and execution of various analyses in OpenSim using XML configurations.
 
-    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory):
+    Args:
+            DATA_PATH (str): Path to the data directory.
+            scaledOsimName (str): Name of the scaled OpenSim model file.
+            resultsDirectory (Optional[str]): Directory for storing results. If None, defaults to DATA_PATH.
+
+    """
+
+    def __init__(self, DATA_PATH: str, scaledOsimName: str, resultsDirectory: Optional[str]):
         super(AnalysesXmlProcedure,self).__init__()
 
         self.m_DATA_PATH = DATA_PATH
@@ -37,8 +45,14 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
 
         self.m_acq = None 
 
+    def setSetupFiles(self, analysisToolTemplateFile: str, externalLoadTemplateFile: Optional[str]) -> None:
+        """
+        Sets up the file paths for the analysis tool and, optionally, the external load file.
 
-    def setSetupFiles(self,analysisToolTemplateFile,externalLoadTemplateFile):
+        Args:
+            analysisToolTemplateFile (str): Path to the analysis tool template file.
+            externalLoadTemplateFile (Optional[str]): Path to the external load template file, if applicable.
+        """
         self.m_idAnalyses = self.m_DATA_PATH + "__analysesTool-setup.xml"
         self.xml = opensimInterface.opensimXmlInterface(analysisToolTemplateFile,self.m_idAnalyses)
    
@@ -48,7 +62,17 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         else: 
             self._externalLoadApplied= False
 
-    def prepareTrial_fromMotFiles(self,kinematicMotFile,externalLoadDataFile):
+    def prepareTrial_fromMotFiles(self, kinematicMotFile: str, externalLoadDataFile: Optional[str]) -> None:
+        """
+        Prepares the trial data from MOT files for analysis.
+
+        Args:
+            kinematicMotFile (str): Name of the kinematic MOT file.
+            externalLoadDataFile (Optional[str]): Name of the external load data file, if available.
+        
+        Raises:
+            Exception: If the specified MOT file is not found.
+        """
         self.m_dynamicFile = kinematicMotFile[:-4]
 
         if not os.path.isfile(self.m_RES_PATH+kinematicMotFile):
@@ -65,7 +89,18 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
             self.m_externalLoadDataFile = self.m_RES_PATH + "\\"+ externalLoadDataFile
 
 
-    def prepareTrial_fromBtkAcq(self, acq, dynamicFile,mfpa,progressionAxis,forwardProgression):
+    def prepareTrial_fromBtkAcq(self, acq: btk.btkAcquisition, dynamicFile: str, mfpa: Any, 
+                                progressionAxis: str, forwardProgression: bool) -> None:
+        """
+        Prepares the trial data from a BTK acquisition for analysis.
+
+        Args:
+            acq (btk.btkAcquisition): BTK acquisition object.
+            dynamicFile (str): Name of the dynamic file.
+            mfpa (Any): Parameter for foot reaction analysis (specific type depends on the context).
+            progressionAxis (str): Axis of progression.
+            forwardProgression (bool): Direction of forward progression.
+        """
         self.m_dynamicFile =dynamicFile
         self.m_acq = acq
         self.m_mfpa = mfpa
@@ -87,18 +122,37 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         else:
             LOGGER.logger.info("Trial without force plate - No dynamic trials prepared ")
 
-    def setFrameRange(self,begin,end):
+    def setFrameRange(self, begin: Optional[int], end: Optional[int]) -> None:
+        """
+        Sets the frame range for the analysis.
+
+        Args:
+            begin (Optional[int]): The beginning frame number. If None, starts from the first frame.
+            end (Optional[int]): The ending frame number. If None, ends at the last frame.
+        
+        Raises:
+            Exception: If no acquisition data is detected.
+        """
         if self.m_acq is None:
             raise Exception(f"[pyCGM2] - no acquisition detected - trial preparation from a btk::Acquisition not done")
         self.m_beginTime = 0.0 if begin is None else (begin-self.m_ff)/self.m_freq
         self.m_endTime = (self.m_acq.GetLastFrame() - self.m_ff)/self.m_freq  if end is  None else (end-self.m_ff)/self.m_freq
 
-    def setTimeRange(self,begin,end):
+    def setTimeRange(self, begin: float, end: float) -> None:
+        """
+        Sets the time range for the analysis.
+
+        Args:
+            begin (float): The beginning time in seconds.
+            end (float): The ending time in seconds.
+        """
         self.m_beginTime = begin
         self.m_endTime = end
 
     def prepareXml(self):
-
+        """
+        Prepares the XML configuration for the analysis in OpenSim.
+        """
 
         # self.xml.set_one("model_file", self.m_dynamicFile+".mot")
         self.xml.getSoup().find("AnalyzeTool").attrs["name"] = self.m_dynamicFile+"-analyses"
@@ -116,6 +170,9 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
 
 
     def run(self):
+        """
+        Executes the analysis using the configured XML files.
+        """
 
         self.xml.update()
         if self._externalLoadApplied:
@@ -128,6 +185,9 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         self.finalize()
 
     def finalize(self):
+        """
+        Finalizes the process, including renaming and cleanup of the setup files.
+        """
         files.renameFile(self.m_idAnalyses, 
             self.m_DATA_PATH + self.m_dynamicFile+ "-analysesTool-setup.xml")
 
@@ -137,8 +197,20 @@ class AnalysesXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
 
 
 class AnalysesXmlCgmProcedure(AnalysesXmlProcedure):
+    """
+    Specialized procedure for handling analyses in OpenSim, specifically tailored for CGM models.
 
-    def __init__(self,DATA_PATH,scaledOsimName, resultsDirectory,modelVersion):
+    This class extends AnalysesXmlProcedure to include configurations and customizations necessary for CGM model versions in various analyses within OpenSim.
+
+    Args:
+        DATA_PATH (str): Path to the data directory.
+        scaledOsimName (str): Name of the scaled OpenSim model file.
+        resultsDirectory (Optional[str]): Directory for storing results. If None, defaults to DATA_PATH.
+        modelVersion (str): The version of the CGM model to be used.
+
+    """
+
+    def __init__(self, DATA_PATH: str, scaledOsimName: str, resultsDirectory: Optional[str], modelVersion: str):
         super(AnalysesXmlCgmProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory)
 
         self.m_modelVersion = modelVersion.replace(".", "") if modelVersion is not None else "UnversionedModel"
@@ -162,7 +234,9 @@ class AnalysesXmlCgmProcedure(AnalysesXmlProcedure):
             self._externalLoadApplied= False
 
     def prepareXml(self):
-
+        """
+        Prepares the XML configuration for the analysis in OpenSim.
+        """
 
         # self.xml.set_one("model_file", self.m_dynamicFile+".mot")
         self.xml.getSoup().find("AnalyzeTool").attrs["name"] = self.m_dynamicFile+"-"+self.m_modelVersion+"-analyses"
@@ -179,6 +253,9 @@ class AnalysesXmlCgmProcedure(AnalysesXmlProcedure):
             self.xml_load.set_one("datafile", self.m_externalLoadDataFile)
 
     def finalize(self):
+        """
+        Finalizes the process, including renaming and cleanup of the setup files.
+        """
         files.renameFile(self.m_idAnalyses, 
             self.m_DATA_PATH + self.m_dynamicFile+ "-"+self.m_modelVersion + "-analysesTool-setup.xml")
 
@@ -188,8 +265,19 @@ class AnalysesXmlCgmProcedure(AnalysesXmlProcedure):
 
 
 class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
+    """
+    Specialized procedure for handling analyses in OpenSim using CGM-driven models.
 
-    def __init__(self,DATA_PATH,scaledOsimName,resultsDirectory,modelVersion):
+    This class extends AnalysesXmlCgmProcedure to work with CGM-driven models, allowing for the specification and analysis of reference poses.
+
+    Args:
+        DATA_PATH (str): Path to the data directory.
+        scaledOsimName (str): Name of the scaled OpenSim model file.
+        resultsDirectory (Optional[str]): Directory for storing results. If None, defaults to DATA_PATH.
+        modelVersion (str): The version of the CGM model to be used.
+    """
+
+    def __init__(self, DATA_PATH: str, scaledOsimName: str, resultsDirectory: Optional[str], modelVersion: str):
         super(AnalysesXmlCgmDrivenModelProcedure,self).__init__(DATA_PATH,scaledOsimName,resultsDirectory,modelVersion)
 
         self.m_acq = None
@@ -209,7 +297,14 @@ class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
         self._externalLoadApplied = False
         
 
-    def setPose(self,poseLabel,qi = None):
+    def setPose(self, poseLabel: str, qi: Optional[Dict[str, Any]] = None) -> None:
+        """
+        Sets the pose for the CGM-driven model analysis.
+
+        Args:
+            poseLabel (str): Label for the pose being analyzed.
+            qi (Optional[Dict[str, Any]]): Dictionary of joint angles to modify in the reference pose.
+        """
         self.m_poseLabel = poseLabel
 
         if qi is not None:
@@ -223,7 +318,9 @@ class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
 
     
     def prepareXml(self):
-
+        """
+        Prepares the XML configuration for the analysis in OpenSim.
+        """
 
         # self.xml.set_one("model_file", self.m_dynamicFile+".mot")
         self.xml.getSoup().find("AnalyzeTool").attrs["name"] = self.m_modelVersion +"-Pose["+self.m_poseLabel+"]"
@@ -241,6 +338,9 @@ class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
 
 
     def finalize(self):
+        """
+        Finalizes the process, including renaming and cleanup of the setup files.
+        """
         files.renameFile(self.m_idAnalyses, 
             self.m_DATA_PATH + self.m_modelVersion + "-Pose["+self.m_poseLabel+"]-analysesTool-setup.xml")
 

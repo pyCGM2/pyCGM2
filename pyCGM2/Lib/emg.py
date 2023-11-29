@@ -8,16 +8,22 @@ from pyCGM2 import enums
 from pyCGM2.Processing.analysis import Analysis
 
 from typing import List, Tuple, Dict, Optional,Union
+import btk
 
 def loadEmg(DATA_PATH:str):
     """
-    Load and manage emg settings
+    Load EMG data and create an EMG manager instance.
+
+    This function initializes an EmgManager instance using a specified data path.
 
     Args:
-        DATA_PATH (str): folder path.
+        DATA_PATH (str): The folder path where EMG data and settings are located.
 
     Returns:
-        emgManager (pyCGM2.EMG.EmgManager): an emg manager instance
+        pyCGM2.EMG.EmgManager: An initialized EmgManager instance for managing EMG data.
+
+    Example:
+        >>> emg_manager = loadEmg("/path/to/data")
     """
 
     return emgManager.EmgManager(DATA_PATH)
@@ -30,22 +36,23 @@ def processEMG(DATA_PATH:str,
                envelopFrequency:float=6.0, 
                fileSuffix:Optional[str]=None,
                outDataPath:Optional[str]=None):
-    """ basic filtering of EMG from c3d files .
+    """
+    Process and filter EMG data from c3d files.
+
+    This function applies basic EMG filtering to specified c3d files. It supports high-pass
+    and low-pass filtering and allows exporting the processed data.
 
     Args:
-        DATA_PATH (str): folder path.
-        gaitTrials (list): list of c3d files.
-        emgChannels (list): list or emg channel
-        highPassFrequencies (list)[20,200]: boundaries of the bandpass filter
-        envelopFrequency (float)[6.0]: cut-off frequency of low pass emg
-        fileSuffix (str)[None]: add a suffix to the exported c3d files
-        outDataPath (str)[None]: path to place the exported c3d files.
+        DATA_PATH (str): The folder path containing c3d files.
+        gaitTrials (List[str]): A list of c3d file names to process.
+        emgChannels (List[str]): A list of EMG channel names to be processed.
+        highPassFrequencies (List[int]): The boundaries of the bandpass filter. Defaults to [20, 200].
+        envelopFrequency (float): The cut-off frequency for the low pass filter. Defaults to 6.0.
+        fileSuffix (Optional[str]): A suffix for the exported c3d files. Defaults to None.
+        outDataPath (Optional[str]): The path to save the exported c3d files. Defaults to None.
 
-    Examples:
-
-    .. code-block:: python
-
-        emg.processEMG(DATA_PATH, ["file1.c3d","file2.c3d"], ["Voltage.EMG1","Voltage.EMG2"])
+    Example:
+        >>> processEMG("/data/path", ["gaitTrial1.c3d", "gaitTrial2.c3d"], ["Voltage.EMG1", "Voltage.EMG2"])
 
     The code loads 2 c3d files, then processes the analog channel name `Voltage.EMG1`
     and `Voltage.EMG2`
@@ -84,24 +91,27 @@ def normalizedEMG(DATA_PATH:str,
                   mvcSettings:Optional[Dict]=None,
                   **kwargs):
     """
-    Emg normalisation in amplitude.
+    Normalize EMG data in amplitude and update the analysis instance.
 
-    This function update the analysis instance with normalized emg signal in amplitude
+    This function normalizes the amplitude of EMG signals in an analysis instance, using 
+    different normalization methods. It can also normalize based on another analysis instance 
+    or specified MVC settings.
 
     Args:
-        analysis (pyCGM2.Processing.analysis.Analysis): an analysis Instance
-        DATA_PATH (str): folder path
-        method (str)["MeanMax"]: normalisation method (choice : MeanMax, MaxMax, MedianMax ).
-        fromOtherAnalysis (pyCGM2.Processing.analysis.Analysis)[None]: normalise in amplitude from another analysis instance.
-        mvcSettings (dict)[None]: mvc settings.
+        DATA_PATH (str): Folder path for EMG data.
+        analysis (Analysis): An Analysis instance to be updated with normalized EMG data.
+        method (str): Normalization method. Choices include 'MeanMax', 'MaxMax', and 'MedianMax'. Defaults to 'MeanMax'.
+        fromOtherAnalysis (Optional[Analysis]): Use another Analysis instance for normalization. Defaults to None.
+        mvcSettings (Optional[Dict]): MVC settings for normalization. Defaults to None.
 
-    Keyword Arguments:
-        forceEmgManager (pyCGM2.Emg.EmgManager)[None]: force the use of a specific emgManager instance.
+    Keyword Args:
+        forceEmgManager (pyCGM2.EMG.EmgManager): Force the use of a specific EmgManager instance.
 
+    Returns:
+        pd.DataFrame: A DataFrame with labels and MVC thresholds.
 
-
-    Examples:
-
+    Example:
+       
     .. code-block:: python
 
         emg.normalizedEMG(emgAnalysisInstance,
@@ -158,22 +168,25 @@ def normalizedEMG(DATA_PATH:str,
     return df
 
 
-def processEMG_fromBtkAcq(acq, emgChannels, highPassFrequencies=[20,200],envelopFrequency=6.0):
-    """ Process EMG from a btk.acquisition
+def processEMG_fromBtkAcq(acq:btk.btkAcquisition, emgChannels:List[str], 
+                          highPassFrequencies:List[int]=[20,200],
+                          envelopFrequency:float=6.0):
+    """
+    Process EMG data from a BTK acquisition instance.
+
+    This function applies basic and envelop processing filters to EMG data within a BTK acquisition instance.
 
     Args:
-        acq (btk.Acquisition): an acquisition instance
-        emgChannels (list): emg channels ( ie analog labels )
-        highPassFrequencies (list,Optional[20,200]): high pass frequencies
-        envelopFrequency (float,Optional[6.0]): low pass filter frequency
+        acq (btk.btkAcquisition): A BTK acquisition instance containing EMG data.
+        emgChannels (List[str]): A list of EMG channel names to process.
+        highPassFrequencies (List[int]): The high-pass filter frequencies. Defaults to [20, 200].
+        envelopFrequency (float): The cut-off frequency for the low-pass filter. Defaults to 6.0.
 
-    Examples:
+    Returns:
+        btk.btkAcquisition: The processed BTK acquisition instance.
 
-    .. code-block:: python
-
-        emg.processEMG_fromBtkAcq(acq,
-        .................["Voltage.EMG1","Voltage.EMG2"])
-
+    Example:
+        >>> processed_acq = processEMG_fromBtkAcq(acq, ["Voltage.EMG1", "Voltage.EMG2"])
     """
 
     bf = emgFilters.BasicEmgProcessingFilter(acq,emgChannels)

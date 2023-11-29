@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Executable Apps/Vicon/CGM2.4
-#APIDOC["Import"]=False
-#APIDOC["Draft"]=False
-#--end--
-
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse

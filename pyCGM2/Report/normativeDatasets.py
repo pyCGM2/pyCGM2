@@ -19,18 +19,24 @@ from pyCGM2.Utils import files
 
 
 class NormativeData(object):
-    """Normative dataset.
+    """
+    Represents a normative dataset loaded from a JSON file.
 
-    The instance contruction populates the attribute `data` which reports normative data as a dictionary
+    The dataset is automatically populated into the `data` attribute, which is a dictionary with model output as keys.
+    Each key reports mean and standard deviation values.
+
+    Attributes:
+        data (dict): Dictionary with model outputs as keys and mean, standard deviation as sub-keys.
 
     Args:
-        filenameNoExt (str): filename of the targeted json file.
-        modality (str): modality.
-
+        filenameNoExt (str): Filename of the targeted JSON file, without extension.
+        modality (str): Specific modality of the normative data to load.
     """
 
     def __init__(self,filenameNoExt:str,modality:str):
-
+        """
+        Initializes the NormativeData instance and populates the `data` attribute.
+        """
 
         fullJsonDict = files.openFile(pyCGM2.NORMATIVE_DATABASE_PATH,filenameNoExt+".json")
         keys = list(fullJsonDict.keys())
@@ -40,7 +46,9 @@ class NormativeData(object):
         self._construct()
 
     def _construct(self):
-
+        """
+        Constructs the normative data dictionary from the loaded JSON data.
+        """
         for key in self._jsonDict:
 
             self.data[key] = {}
@@ -68,19 +76,29 @@ class NormativeData(object):
 
 
 class NormalSTP(object):
-    """Normative spatio-temporal dataset.
+    """
+    Represents normative spatio-temporal data loaded from an Excel file.
 
-    The instance contruction populates the attribute `data` which reports normative data as a dictionary
+    The instance construction populates the attribute `data`, which reports the normative spatio-temporal data
+    as a dictionary with labels as keys, and mean and standard deviation as sub-values.
+
+    Attributes:
+        data (dict): Dictionary with spatio-temporal labels as keys and mean, standard deviation as sub-values.
     """
 
     def __init__(self):
+        """
+        Initializes the NormalSTP instance and populates the `data` attribute from an Excel file.
+        """
 
         self.m_filename = pyCGM2.NORMATIVE_DATABASE_PATH+"stp\\normal_stp.xlsx"
         self.data = {}
         self._construct()
 
     def _construct(self):
-
+        """
+        Constructs the normative spatio-temporal data dictionary from the loaded Excel data.
+        """
         values =pd.read_excel(self.m_filename,sheet_name = "Nantes")
 
         for index, row in values.iterrows():

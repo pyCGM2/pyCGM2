@@ -2,14 +2,15 @@ import numpy as np
 from typing import List, Tuple, Dict, Optional,Union
 
 def computeAngle(u1:np.ndarray,v1:np.ndarray)->float:
-    """_summary_
+    """
+    Compute the angle between two vectors.
 
     Args:
-        u1 (np.ndarray): vector 1
-        v1 (np.ndarray): vector 2
+        u1 (np.ndarray): First vector.
+        v1 (np.ndarray): Second vector.
 
     Returns:
-        float: angle value
+        float: Angle in radians between the two vectors.
     """
     if len(u1)==3:
     #     %3D, can use cross to resolve sign
@@ -34,16 +35,15 @@ def computeAngle(u1:np.ndarray,v1:np.ndarray)->float:
 
 def angleFrom2Vectors(v1:np.ndarray, v2:np.ndarray, vn:Optional[np.ndarray]=None)->float:
     """
-    Return a signed angle between 2 vectors.
-    The common orthogonal vector is used for defining the sign of the angle
+    Compute a signed angle between two vectors, optionally using a common orthogonal vector.
 
     Args:
-        v1 (np.ndarray): first vector
-        v2 (np.ndarray): second vector
-        vn (Optional[np.ndarray], optional): common orthogonal vector. Defaults to None.
+        v1 (np.ndarray): First vector.
+        v2 (np.ndarray): Second vector.
+        vn (Optional[np.ndarray], optional): Common orthogonal vector. Defaults to None.
 
     Returns:
-        float: angle value
+        float: Signed angle between the two vectors.
     """
 
     cross = np.cross(v1, v2)
@@ -57,13 +57,14 @@ def angleFrom2Vectors(v1:np.ndarray, v2:np.ndarray, vn:Optional[np.ndarray]=None
 
 
 def oppositeVector(v1:np.ndarray)->np.ndarray:
-    """opposite vector
+    """
+    Compute the opposite (negative) of a vector.
 
     Args:
-        v1 (np.ndarray): vector
+        v1 (np.ndarray): Input vector.
 
     Returns:
-        np.ndarray: opposite vector
+        np.ndarray: Opposite vector.
     """
     return (-1*np.ones(3))*v1
 
@@ -78,11 +79,15 @@ def LineLineIntersect(p1:np.ndarray, p2:np.ndarray, p3:np.ndarray, p4:np.ndarray
       - pb = p3 + mub (p4 - p3)
 
     Args:
-        p1 (np.ndarray) : 3d coordinates (dimension 3)
-        p2 (np.ndarray) : 3d coordinates
-        p3 (np.ndarray) : 3d coordinates
-        p4 (np.ndarray) : 3d coordinates
+        p1 (np.ndarray): Start point of the first line.
+        p2 (np.ndarray): End point of the first line.
+        p3 (np.ndarray): Start point of the second line.
+        p4 (np.ndarray): End point of the second line.
 
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: The points pa and pb on the first and second line, respectively,
+                                      where the shortest line segment intersects each line.
+    
     note::
 
         this a python conversion from the code proposed by

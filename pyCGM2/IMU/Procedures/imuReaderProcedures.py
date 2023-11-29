@@ -13,11 +13,12 @@ from pyCGM2.Signal import signal_processing
 from typing import List, Tuple, Dict, Optional,Union
 
 def synchroniseNotAlignedCsv(fullfilenames:List,timeColumn = "time_s"):
-    """synchronise different csv files
+    """
+    Synchronise different CSV files based on a common time column.
 
     Args:
-        fullfilenames (list): list of path+filenames
-        timeColumn (str, optional): name of the time column. Defaults to "time_s".
+        fullfilenames (List): List of paths and filenames of the CSV files to be synchronised.
+        timeColumn (str, optional): Name of the time column used for synchronisation. Defaults to "time_s".
     """
 
     def find_nearest(array, value):
@@ -49,28 +50,34 @@ def synchroniseNotAlignedCsv(fullfilenames:List,timeColumn = "time_s"):
     return datasets_equal
 
 class ImuReaderProcedure(object):
+    """
+    Base class for procedures to read IMU data from various sources.
+    """
     def __init__(self):
+        """Initialize"""
         self.m_downsampleFreq = None
 
     def downsample(self,freq:int):
-        """downsample
+        """
+        Set the frequency to downsample the IMU data.
 
         Args:
-            freq (int): _description_
+            freq (int): Frequency in Hz to downsample the data.
         """
         self.m_downsampleFreq = freq
 
 class CsvProcedure(ImuReaderProcedure):
-    """procedure to read data from csv file
+    """
+    Procedure to read IMU data from a CSV file.
 
-        Args:
-            fullfilename (str): path+filename
-            translators (dict): imu translator
-            freq (str, optional): frequency. Defaults to "Auto".
-            timeColumn (str, optional): name of the time column in the csv. Defaults to "time_s".
+    Args:
+        fullfilename (str): Path and filename of the CSV file.
+        translators (Dict): Dictionary translating CSV column names to IMU data labels.
+        freq (str, optional): Frequency of the IMU data. If set to 'Auto', it will be automatically determined. Defaults to 'Auto'.
+        timeColumn (str, optional): Name of the time column in the CSV file. Defaults to 'time_s'.
     """
     def __init__(self,fullfilename:str,translators:Dict,freq = "Auto" , timeColumn = "time_s"):
-        
+        """Initializes the CsvProcedure with specified file, translators, frequency, and time column."""
         super(CsvProcedure, self).__init__()
         
         self.m_data = pd.read_csv(fullfilename)
@@ -82,10 +89,11 @@ class CsvProcedure(ImuReaderProcedure):
 
 
     def read(self)->imu.Imu:
-        """ read data
-        
+        """
+        Read and process IMU data from the CSV file.
+
         Returns:
-            imu.Imu: imu instance
+            imu.Imu: Instance of IMU containing the processed data.
         """
         
         if self.m_freq == "Auto":
@@ -148,15 +156,19 @@ class CsvProcedure(ImuReaderProcedure):
         return imuInstance
         
 class DataframeProcedure(ImuReaderProcedure):
-    """procedure to read data from pandas dataframe
+    """
+    Procedure to read IMU data from a Pandas DataFrame.
 
-        Args:
-            dataframe (pd.DataFrame): dataframe
-            translators (dict): imu translator
-            freq (str, optional): frequency. Defaults to "Auto".
-            timeColumn (str, optional): name of the time column in the csv. Defaults to "time_s".
+    Args:
+        dataframe (pd.DataFrame): DataFrame containing IMU data.
+        translators (Dict): Dictionary translating DataFrame column names to IMU data labels.
+        freq (str, optional): Frequency of the IMU data. If set to 'Auto', it will be automatically determined. Defaults to 'Auto'.
+        timeColumn (str, optional): Name of the time column in the DataFrame. Defaults to 'time_s'.
     """
     def __init__(self,dataframe:pd.DataFrame,translators:Dict,freq = "Auto" , timeColumn = "time_s"):
+        """
+        Initializes the DataframeProcedure with specified DataFrame, translators, frequency, and time column.
+        """
         super(DataframeProcedure, self).__init__()
         
         self.m_data = dataframe
@@ -168,10 +180,11 @@ class DataframeProcedure(ImuReaderProcedure):
 
 
     def read(self)->imu.Imu:
-        """ read data
+        """
+        Read and process IMU data from the DataFrame.
 
         Returns:
-            imu.Imu: imu instance
+            imu.Imu: Instance of IMU containing the processed data.
         """
     
         if self.m_freq == "Auto":
@@ -238,13 +251,15 @@ class DataframeProcedure(ImuReaderProcedure):
         return imuInstance
 
 class C3dBlueTridentProcedure(ImuReaderProcedure):
-    """procedure to read blue trident data from a c3d
+    """
+    Procedure to read Blue Trident IMU data from a C3D file.
 
     Args:
-        fullfilename (str): path+filename
-        viconDeviceId (int): id of the imu in the vicon device list
+        fullfilename (str): Path and filename of the C3D file.
+        viconDeviceId (int): ID of the IMU device in the Vicon device list.
     """
     def __init__(self,fullfilename:str,viconDeviceId:int):
+        """Initializes the C3dBlueTridentProcedure with specified C3D file and device ID."""
         super(C3dBlueTridentProcedure, self).__init__()
         
         self.m_acq = btkTools.smartReader(fullfilename)
@@ -252,10 +267,11 @@ class C3dBlueTridentProcedure(ImuReaderProcedure):
 
 
     def read(self)->imu.Imu:
-        """ read data
+        """
+        Read and process IMU data from the C3D file.
 
         Returns:
-            imu.Imu: imu instance
+            imu.Imu: Instance of IMU containing the processed data.
         """
 
         freq = self.m_acq.GetAnalogFrequency()

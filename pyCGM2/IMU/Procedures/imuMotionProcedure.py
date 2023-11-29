@@ -3,24 +3,31 @@ from pyCGM2.Model import frame
 from pyCGM2.IMU import imu
 
 class ImuMotionProcedure(object):
+    """
+    Base class for procedures to construct motion from IMU data.
+    """
     def __init__(self):
         pass
 
 class QuaternionMotionProcedure(ImuMotionProcedure):
-    """ construct motion from quaternions
-        Args:
-            quaternions (np.ndarray): quaternions
+    """
+    Construct motion from quaternions.
+
+    Args:
+        quaternions (np.ndarray): Array of quaternions.
     """
     def __init__(self,quaternions:np.ndarray):
+        """Initializes the QuaternionMotionProcedure with quaternions data."""
         super(QuaternionMotionProcedure, self).__init__()
         self.m_quaternions =  quaternions
 
 
     def compute(self,imuInstance:imu.Imu):
-        """compute the procedure
+        """
+        Compute the procedure to create motion frames from quaternions.
 
         Args:
-            imuInstance (imu.Imu): an imu instance
+            imuInstance (imu.Imu): An IMU instance to which the motion frames will be added.
         """
         for i in range(0,self.m_quaternions.shape[0]):
             imuFrame=frame.Frame()
@@ -28,20 +35,25 @@ class QuaternionMotionProcedure(ImuMotionProcedure):
             imuInstance.m_motion.append(imuFrame)
 
 class GlobalAngleMotionProcedure(ImuMotionProcedure):
-    """ construct motion from global angle (eq angle axis)
-        Args:
-            globalAngle (np.ndarray): global angle
+    """
+    Construct motion from global angles (equivalent to angle-axis representation).
+
+    Args:
+        globalAngle (np.ndarray): Array of global angles.
     """
     def __init__(self,globalAngle):
+        """Initializes the GlobalAngleMotionProcedure with global angles data."""
+
         super(GlobalAngleMotionProcedure, self).__init__()
         self.m_globalAngle =  globalAngle
 
 
     def compute(self,imuInstance:imu.Imu):
-        """compute the procedure
+        """
+        Compute the procedure to create motion frames from global angles.
 
         Args:
-            imuInstance (imu.Imu): an imu instance
+            imuInstance (imu.Imu): An IMU instance to which the motion frames will be added.
         """
         for i in range(0,self.m_globalAngle.shape[0]):
             imuFrame=frame.Frame()
@@ -51,17 +63,19 @@ class GlobalAngleMotionProcedure(ImuMotionProcedure):
 
 
 class RealignedMotionProcedure(ImuMotionProcedure):
-    """realigne imu motion relative to the first frame
+    """
+    Realigned IMU motion relative to the first frame.
     """
     def __init__(self):
         super(RealignedMotionProcedure, self).__init__()
 
 
     def compute(self,imuInstance:imu.Imu):
-        """compute the procedure
+        """
+        Compute the procedure to realign IMU motion frames relative to the first frame.
 
         Args:
-            imuInstance (imu.Imu): an imu instance
+            imuInstance (imu.Imu): An IMU instance whose motion frames will be realigned.
         """
         trial_initial_DCM = np.linalg.inv(imuInstance.m_motion[0].getRotation())
 

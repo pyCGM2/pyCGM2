@@ -1,9 +1,10 @@
 ## coding: utf-8
-
+import os
 import argparse
 
-
-from pyCGM2.Apps.Commands import initSettingsCmd
+import pyCGM2
+LOGGER = pyCGM2.LOGGER
+from pyCGM2.Utils import files
 
 from pyCGM2.Apps.ViconApps.CGM1 import CGM1_Calibration, CGM1_Fitting
 from pyCGM2.Apps.ViconApps.CGM1_1 import CGM1_1_Calibration, CGM1_1_Fitting
@@ -35,11 +36,69 @@ from pyCGM2.Apps.QtmApps.CGMi import CGM25_workflow
 from pyCGM2.Apps.QtmApps.CGMi import CGM26_workflow
 
 
+
+
 class NEXUS_PlotsParser(object):
-    def __init__(self,nexusSubparser):
+    """
+    Responsible for parsing and managing plot-related commands within the Vicon Nexus environment.
+    This class facilitates the creation and organization of sub-parsers for various plot types, 
+    such as spatio-temporal parameters (STP), kinematics, kinetics, and EMG. These sub-parsers 
+    are integrated into a higher-level command parser, enabling structured and efficient handling 
+    of plot commands.
+
+    Args:
+        nexusSubparser (argparse.ArgumentParser): A higher-level command parser for integrating plot sub-commands.
+
+    Sub-Parsers and their Arguments:
+        'STP' (Spatiotemporal Parameters) Parser:
+            - '-ps', '--pointSuffix': Suffix added to model outputs, type: str.
+
+        'Kinematics' Parser:
+            - 'Temporal':
+                - '-ps', '--pointSuffix': Suffix of model outputs, type: str.
+            - 'Normalized':
+                - '-nd', '--normativeData': Normative data set (e.g., 'Schwartz2008'), type: str.
+                - '-ndm', '--normativeDataModality': Normative data modality (varies based on dataset), type: str.
+                - '-ps', '--pointSuffix': Suffix of model outputs, type: str.
+                - '-c', '--consistency': Consistency plots, action: 'store_true'.
+            - 'Comparison':
+                - Similar to Normalized parser.
+            - 'MAP':
+                - Similar to Normalized parser, excluding the 'consistency' option.
+
+        'Kinetics' Parser:
+            - 'Temporal':
+                - '-ps', '--pointSuffix': Suffix of model outputs, type: str.
+            - 'Normalized':
+                - '-nd', '--normativeData': Normative data set, type: str.
+                - '-ndm', '--normativeDataModality': Normative data modality, type: str.
+                - '-ps', '--pointSuffix': Suffix of model outputs, type: str.
+                - '-c', '--consistency': Consistency plots, action: 'store_true'.
+            - 'Comparison':
+                - Similar to Normalized parser.
+
+        'EMG' Parser:
+            - 'Temporal':
+                - '-bpf', '--BandpassFrequencies': Bandpass filter frequencies, nargs: '+', type: list.
+                - '-elf', '--EnvelopLowpassFrequency': Cutoff frequency for EMG envelops, type: int.
+                - '-r', '--raw': Non-rectified data, action: 'store_true'.
+                - '-ina', '--ignoreNormalActivity': Do not display normal activity, action: 'store_true'.
+            - 'Normalized':
+                - Similar to Temporal parser, excluding the 'raw' and 'ignoreNormalActivity' options.
+                - '-c', '--consistency': Consistency plots, action: 'store_true'.
+            - 'Comparison':
+                - Similar to Normalized parser.
+    """
+    def __init__(self, nexusSubparser: argparse.ArgumentParser):
         self.nexusSubparser = nexusSubparser
 
     def constructParsers(self):
+        """
+        Constructs and adds sub-parsers for different plot categories within the Nexus parser.
+        
+        Each parser and sub-parser is configured with specific arguments and options relevant to the respective plot category. 
+        The parsers are designed to capture and process command line arguments for generating various types of plots in the Nexus environment.
+        """
         # plot--------------
         plot_parser = self.nexusSubparser.add_parser("Plots", help= "Plot commands")
         plot_subparsers = plot_parser.add_subparsers(help='', dest="Plots")
@@ -140,13 +199,55 @@ class NEXUS_PlotsParser(object):
 
 
 class NEXUS_CGMparser(object):
-    def __init__(self,nexusSubparser,cgmVersion):
+    """
+    Handles the parsing of commands specific to different versions of the Conventional Gait Analysis Model (CGM) within the Vicon Nexus environment.
+    This class constructs parsers for calibration and fitting commands, with options varying based on the CGM version.
+
+    Args:
+        nexusSubparser (argparse.ArgumentParser): A higher-level command parser for integrating CGM-specific sub-commands.
+        cgmVersion (str): The version of CGM for which the parser is being constructed.
+
+    'Calibration' Parser Arguments:
+        - '-l', '--leftFlatFoot': Option for left flat foot, type: int.
+        - '-r', '--rightFlatFoot': Option for right flat foot, type: int.
+        - '-hf', '--headFlat': Option for head flat, type: int.
+        - '-md', '--markerDiameter': Marker diameter, type: float.
+        - '-ps', '--pointSuffix': Suffix of the model outputs, type: str.
+        - '--check': Force CGM version as model output suffix, action: 'store_true'.
+        - '--resetMP': Reset optional anthropometric parameters, action: 'store_true'.
+        - '--forceMP': Force the use of MP offsets for joint centres calculation, action: 'store_true'.
+        - '-ae', '--anomalyException': Raise an exception if an anomaly is detected, action: 'store_true'.
+        - '--offline': Subject name and static c3d file, nargs: 2, required: False.
+        - '--forceLHJC': Forces the left hip joint center, nargs: '+', available in CGM versions 2.1 to 2.5.
+        - '--forceRHJC': Forces the right hip joint center, nargs: '+', available in CGM versions 2.1 to 2.5.
+        - '-msm','--musculoSkeletalModel': Musculoskeletal model, action: 'store_true', available in CGM versions 2.2 and 2.3.
+        - '--noIk': Cancel inverse kinematic, action: 'store_true', available in CGM versions 2.3 to 2.5.
+
+    'Fitting' Parser Arguments:
+        - '-md', '--markerDiameter': Marker diameter, type: float.
+        - '-ps', '--pointSuffix': Suffix of model outputs, type: str.
+        - '--check': Force CGM version as model output suffix, action: 'store_true'.
+        - '-ae', '--anomalyException': Raise an exception if an anomaly is detected, action: 'store_true'.
+        - '-fi', '--frameInit': First frame to process, type: int.
+        - '-fe', '--frameEnd': Last frame to process, type: int.
+        - '--offline': Subject name, dynamic c3d file, and mfpa, nargs: 3, required: False.
+        - '-c3d', '--c3d': Load the c3d file, type: str, to avoid loading data from Nexus API.
+        - '--proj': Referential to project joint moment. Options: 'Distal', 'Proximal', 'Global' for CGM1.0; 'JCS', 'Distal', 'Proximal', 'Global' for CGM versions 1.1, 2.1 to 2.5.
+        - '-msm','--musculoSkeletalModel': Musculoskeletal model, action: 'store_true', available in CGM versions 2.2 and 2.3.
+        - '-a','--accuracy': Inverse Kinematics accuracy, type: float, available in CGM versions 2.2 to 2.5.
+        - '--noIk': Cancel inverse kinematic, action: 'store_true', available in CGM versions 2.2 to 2.5.
+    """  
+    def __init__(self, nexusSubparser: argparse.ArgumentParser, cgmVersion: str):
         self.nexusSubparser = nexusSubparser
         self.cgmVersion = cgmVersion
         self.cgmVersionShort = self.cgmVersion.replace(".","")
 
 
     def constructParsers(self):
+        """
+        Constructs parsers for CGM-specific commands such as calibration and fitting. 
+        It adds these parsers under the main CGM version parser.
+        """
         cgm_parsers = self.nexusSubparser.add_parser(self.cgmVersion, help= f"{self.cgmVersion} commands")
         cgm_subparsers = cgm_parsers.add_subparsers(help='', dest=self.cgmVersionShort)
 
@@ -155,7 +256,19 @@ class NEXUS_CGMparser(object):
 
 
 
-    def __calibrationParser(self,calibrationParser):
+    def __calibrationParser(self, calibrationParser: argparse.ArgumentParser):
+        """
+        Constructs and configures the calibration parser with arguments specific to the CGM version.
+
+        The common arguments include options for flat foot, head position, marker diameter, etc.
+        Additional version-specific arguments are added based on the CGM version.
+
+        Args:
+            calibrationParser (argparse.ArgumentParser): The parser to which calibration arguments will be added.
+
+        Returns:
+            argparse.ArgumentParser: The updated calibration parser with added arguments.
+        """
 
         calibrationParser.add_argument('-l', '--leftFlatFoot', type=int,
                             help='left flat foot option')
@@ -189,7 +302,19 @@ class NEXUS_CGMparser(object):
     
         return calibrationParser
 
-    def __fittingParser(self,fittingParser):
+    def __fittingParser(self, fittingParser: argparse.ArgumentParser):
+        """
+        Constructs and configures the fitting parser with arguments specific to the CGM version.
+
+        Common arguments include marker diameter, point suffix, anomaly exception handling, etc.
+        Additional version-specific arguments are added based on the CGM version.
+
+        Args:
+            fittingParser (argparse.ArgumentParser): The parser to which fitting arguments will be added.
+
+        Returns:
+            argparse.ArgumentParser: The updated fitting parser with added arguments.
+        """
         
         fittingParser.add_argument('-md', '--markerDiameter',
                             type=float, help='marker diameter')
@@ -226,7 +351,16 @@ class NEXUS_CGMparser(object):
 
         return fittingParser
 
-    def setCalibrationParser(self,cgm_subparsers):
+    def setCalibrationParser(self, cgm_subparsers: argparse._SubParsersAction):
+        """
+        Sets up the calibration parser as a sub-parser under the main CGM parser.
+
+        Args:
+            cgm_subparsers (argparse._SubParsersAction): The subparsers action object to which the calibration parser is to be added.
+
+        Returns:
+            argparse.ArgumentParser: The calibration parser configured with CGM-specific arguments.
+        """
 
         calibrationParser = cgm_subparsers.add_parser('Calibration', 
                                                       help=f"Calibration command of the {self.cgmVersion}")
@@ -234,7 +368,16 @@ class NEXUS_CGMparser(object):
 
         return  calibrationParser  
 
-    def setFittingParser(self,cgm_subparsers):
+    def setFittingParser(self, cgm_subparsers: argparse._SubParsersAction):
+        """
+        Sets up the fitting parser as a sub-parser under the main CGM parser.
+
+        Args:
+            cgm_subparsers (argparse._SubParsersAction): The subparsers action object to which the fitting parser is to be added.
+
+        Returns:
+            argparse.ArgumentParser: The fitting parser configured with CGM-specific arguments.
+        """
         fittingParser = cgm_subparsers.add_parser('Fitting', 
                                                   help=f"Fitting command of the {self.cgmVersion}")
         fittingParser = self.__fittingParser(fittingParser)          
@@ -242,14 +385,30 @@ class NEXUS_CGMparser(object):
         return fittingParser
 
 class QTM_CGMparser(object):
-    def __init__(self,qtmSubparser,cgmVersion):
+    """
+    Responsible for parsing and managing commands specific to different versions of the Clinical Gait Analysis Model (CGM) 
+    within the Qualisys Track Manager (QTM) environment. This class creates parsers tailored to the specific CGM version.
+
+    Args:
+        qtmSubparser (argparse.ArgumentParser): A higher-level command parser for integrating CGM-specific sub-commands in QTM.
+        cgmVersion (str): The version of CGM for which the parser is being constructed.
+
+    'QTM' Parser Arguments:
+        - '--sessionFile': Specifies the XML settings file from QTM, type: str, default: "session.xml".
+        - '-ae', '--anomalyException': Raises an exception if an anomaly is detected in the data, action: 'store_true'.
+        - '-msm', '--musculoSkeletalModel': Activates the musculoskeletal model, action: 'store_true', available in CGM versions 2.2 and 2.3.
+    """
+    def __init__(self, qtmSubparser: argparse.ArgumentParser, cgmVersion: str):
         self.qtmSubparser = qtmSubparser
         self.cgmVersion = cgmVersion
         self.cgmVersionShort = self.cgmVersion.replace(".","")
 
 
     def constructParsers(self):
-
+        """
+        Constructs parsers for CGM-specific commands in the QTM environment.
+        Adds arguments to the parser based on the CGM version, allowing customization of CGM processing within QTM.
+        """
         cgm_parsers = self.qtmSubparser.add_parser(self.cgmVersion, help= f"{self.cgmVersion} commands")
 
         cgm_parsers.add_argument('--sessionFile', type=str,
@@ -263,6 +422,45 @@ class QTM_CGMparser(object):
 
 
 class MainParser:
+    """
+    Main parser class for handling command line arguments for various functionalities within the pyCGM2 framework.
+    This class sets up sub-parsers for settings, Vicon Nexus, and Qualisys Track Manager (QTM) related commands.
+
+    The parser organizes the commands into different categories, each responsible for a specific aspect of the CGM analysis workflow.
+
+    Sub-Parsers and their Arguments:
+        'SETTINGS':
+            - 'Edit': For folder initialization commands.
+                - '-m', '--model': Copy CGM settings, type: str.
+                - '-e', '--emg': Copy EMG settings, action: 'store_true'.
+
+        'NEXUS':
+            - 'CGM1.0' to 'CGM2.5' parsers with their  arguments.
+            - 'CGM2.6' Parser:
+                - '2DOF': Two Degree of Freedom knee functional calibration.
+                    - '-s', '--side': Specify the side (Left or Right), type: str.
+                    - '-fi', '--frameInit': First frame to process, type: int.
+                    - '-fe', '--frameEnd': Last frame to process, type: int.
+                - 'SARA': SARA knee functional calibration.
+                    - '-s', '--side': Specify the side (Left or Right), type: str.
+                    - '-fi', '--frameInit': First frame to process, type: int.
+                    - '-fe', '--frameEnd': Last frame to process, type: int.
+            - 'Events' for event-related commands.
+                - 'Zeni': Zeni kinematic-based event detection.
+                    - '-fso', '--footStrikeOffset': Systematic foot strike offset, type: int.
+                    - '-foo', '--footOffOffset': Systematic foot off offset, type: int.
+            - 'Gaps' for gap filling commands.
+                - 'Kalman': Kalman gap filling, '--markers': list of markers.
+                - 'Gloersen': Gloersen gap filling, '--markers': list of markers.
+            - 'Plots': For generating various plots.
+                
+            - 'System': For Nexus system commands.
+                - 'DeviceDetails': Command to get device details.
+
+        'QTM':
+            - CGM parsers specific to QTM environment.
+
+    """
     def __init__(self):
         self.parser = argparse.ArgumentParser()
         self.subparsers = self.parser.add_subparsers(help='sub-command help', dest='subparser')
@@ -272,6 +470,11 @@ class MainParser:
         self.QTM()
 
     def Settings(self):
+        """
+        Sets up the parser for SETTINGS related commands.
+
+        Creates a sub-parser for SETTINGS with options for editing folder initialization and EMG settings.
+        """
 
         nexusparser = self.subparsers.add_parser('SETTINGS', help='pyCGM2 settings')
         nexus_subparser = nexusparser.add_subparsers(help='', dest='SETTINGS')
@@ -284,7 +487,11 @@ class MainParser:
 
 
     def Nexus(self):
+        """
+        Sets up the parser for NEXUS related commands.
 
+        Creates sub-parsers for different CGM versions, events, gap filling, plots, and system commands within the Vicon Nexus environment.
+        """
         # First level subparser
         nexusparser = self.subparsers.add_parser('NEXUS', help='Vicon nexus commands')
         nexus_subparser = nexusparser.add_subparsers(help='', dest='NEXUS')
@@ -350,6 +557,9 @@ class MainParser:
 
 
     def QTM(self):
+        """
+        Sets up the parser for QTM related commands.
+        """
 
         qtmparser = self.subparsers.add_parser('QTM', help='Vicon nexus commands')
         qtm_subparser = qtmparser.add_subparsers(help='', dest='QTM')
@@ -363,7 +573,13 @@ class MainParser:
         QTM_CGMparser(qtm_subparser,"CGM2.5").constructParsers()
         QTM_CGMparser(qtm_subparser,"CGM2.6").constructParsers()
 
-    def run(self,debug=False):
+    def run(self,debug:bool=False):
+        """
+        Executes the parser and processes the parsed arguments to trigger appropriate functionalities based on the user's input.
+
+        Args:
+            debug (bool): If True, runs the parser in debug mode for testing purposes. Default is False.
+        """
         
         args = self.parser.parse_args()
         print(args)
@@ -371,7 +587,61 @@ class MainParser:
         if not debug:
             if "SETTINGS" in args:
                 if args.SETTINGS == "Edit":
-                    initSettingsCmd.main(args)
+                    if args.emg:
+                        files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"emg.settings",
+                                            os.getcwd()+"\\"+"emg.settings")
+                        LOGGER.logger.info("[pyCGM2] file [emg.settings] copied in your data folder")
+                        os.startfile(os.getcwd()+"\\"+"emg.settings")
+
+                    if args.model is not None:
+                        if args.model == "CGM1" or args.model == "CGM1.0":
+                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER
+                                            + "CGM1-pyCGM2.settings", os.getcwd()+"\\"+"CGM1-pyCGM2.settings")
+                            LOGGER.logger.info("[pyCGM2] file [CGM1-pyCGM2.settings] copied in your data folder")
+                            os.startfile(os.getcwd()+"\\"+"CGM1-pyCGM2.settings")
+                        if args.model == "CGM1.1":
+                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM1_1-pyCGM2.settings",
+                                            os.getcwd()+"\\"+"CGM1_1-pyCGM2.settings")
+                            LOGGER.logger.info("[pyCGM2] file [CGM1_1-pyCGM2.settings] copied in your data folder")
+                            os.startfile(os.getcwd()+"\\"+"CGM1_1-pyCGM2.settings")
+                        elif args.model == "CGM2.1":
+                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_1-pyCGM2.settings",
+                                            os.getcwd()+"\\"+"CGM2_1-pyCGM2.settings")
+                            LOGGER.logger.info("[pyCGM2] file [CGM2_1-pyCGM2.settings] copied in your data folder")
+                            os.startfile(os.getcwd()+"\\"+"CGM2_1-pyCGM2.settings")
+                        elif args.model == "CGM2.2":
+                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_2-pyCGM2.settings",
+                                            os.getcwd()+"\\"+"CGM2_2-pyCGM2.settings")
+                            LOGGER.logger.info("[pyCGM2] file [CGM2_2-pyCGM2.settings] copied in your data folder")
+                            os.startfile(os.getcwd()+"\\"+"CGM2_2-pyCGM2.settings")
+                        elif args.model == "CGM2.3":
+                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_3-pyCGM2.settings",
+                                            os.getcwd()+"\\"+"CGM2_3-pyCGM2.settings")
+                            LOGGER.logger.info("[pyCGM2] file [CGM2_3-pyCGM2.settings] copied in your data folder")
+                            os.startfile(os.getcwd()+"\\"+"CGM2_3-pyCGM2.settings")
+
+                        elif args.model == "CGM2.4":
+                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_4-pyCGM2.settings",
+                                            os.getcwd()+"\\"+"CGM2_4-pyCGM2.settings")
+                            LOGGER.logger.info("[pyCGM2] file [CGM2_4-pyCGM2.settings] copied in your data folder")
+                            os.startfile(os.getcwd()+"\\"+"CGM2_4-pyCGM2.settings")
+
+                        elif args.model == "CGM2.5":
+                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_5-pyCGM2.settings",
+                                            os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
+                            LOGGER.logger.info("[pyCGM2] file [CGM2_5-pyCGM2.settings] copied in your data folder")
+                            os.startfile(os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
+
+                        elif args.model == "CGM2.6":
+                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_5-pyCGM2.settings",
+                                            os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
+                            LOGGER.logger.info("[pyCGM2] file [CGM2_5-pyCGM2.settings] copied in your data folder")
+                            os.startfile(os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
+
+                        else:
+                            LOGGER.logger.error("[pyCGM2] model version not know (CGM1, CGM1.1 ... CGM2.5)")
+                            raise
+
 
             elif "NEXUS" in args:
                 if args.NEXUS == "CGM1.0":

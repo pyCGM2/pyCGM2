@@ -10,6 +10,7 @@ from pyCGM2.Processing.C3dManager import c3dManagerFilters
 from pyCGM2.Processing import cycle
 from pyCGM2.Processing import analysis
 from pyCGM2.Processing.analysis import Analysis
+
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
@@ -17,10 +18,10 @@ from typing import List, Tuple, Dict, Optional,Union
 
 def makeAnalysis(DATA_PATH:str,
                  filenames:List,
-                 type:str="Gait",
-                 kinematicLabelsDict:Dict=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
-                 kineticLabelsDict:Dict=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
-                 emgChannels:List=pyCGM2.EMG_CHANNELS,
+                 eventType:str="Gait",
+                 kinematicLabelsDict:Optional[Dict]=cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT,
+                 kineticLabelsDict:Optional[Dict]=cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT,
+                 emgChannels:Optional[List]=pyCGM2.EMG_CHANNELS,
                  geometryMuscleLabelsDict:Optional[Dict]=None,
                  dynamicMuscleLabelsDict:Optional[Dict]=None,
                  pointLabelSuffix:Optional[str]=None,
@@ -46,26 +47,29 @@ def makeAnalysis(DATA_PATH:str,
     - emgfilenames
 
     Args:
-        DATA_PATH (str): folder path
-        filenames (list): list of c3d files to normalize
-        type (str)[Gait]: event type (choice : "Gait" or "unknown").
-        kinematicLabelsDict (dict)[cgm.CGM.ANALYSIS_KINEMATIC_LABELS_DICT]: dictionary containing kinematic data to normalize.
-        kineticLabelsDict (dict)[cgm.CGM.ANALYSIS_KINETIC_LABELS_DICT]: dictionary containing kinetic data to normalize.
-        emgChannels (list)[channels of emg.settings]: list of emg channels
-        pointLabelSuffix (str)[None]: suffix associated to point output
-        subjectInfo (dict)[None]: dictionary with metadata information about the subject.
-        experimentalInfo (dict)[None]: dictionary with metadata information about the expreiment.
-        modelInfo (dict)[None]: dictionary with metadata information about the model.
+        DATA_PATH (str): Folder path containing c3d files.
+        filenames (List[str]): List of c3d filenames for analysis.
+        eventType (str, optional): Type of events, defaults to 'Gait'. Options include 'Gait' and 'unknown'.
+        kinematicLabelsDict (Dict, optional): Dictionary specifying kinematic data to normalize.
+        kineticLabelsDict (Dict, optional): Dictionary specifying kinetic data to normalize.
+        emgChannels (List[str], optional): List of EMG channels. Defaults to channels defined in pyCGM2.EMG_CHANNELS.
+        geometryMuscleLabelsDict (Optional[Dict], optional): Dictionary specifying muscle geometry labels.
+        dynamicMuscleLabelsDict (Optional[Dict], optional): Dictionary specifying dynamic muscle labels.
+        pointLabelSuffix (Optional[str], optional): Suffix associated with point outputs.
+        subjectInfo (Optional[Dict], optional): Metadata information about the subject.
+        experimentalInfo (Optional[Dict], optional): Metadata information about the experiment.
+        modelInfo (Optional[Dict], optional): Metadata information about the model.
 
     Keyword Arguments:
-        btkAcqs (list of btk.Acquisition): btkAcq instances to process instead of calling c3d file.
-        pstfilenames (list)[None]: list of c3d files used for computing spatiotemporal parameters
-        kinematicfilenames (list)[None]: list of c3d files used to normalize kinematic data
-        kineticfilenames (list)[None]: list of c3d files used to normalize kinetic data
-        emgfilenames (list)[None]: list of c3d files used to normalize emg data
+        btkAcqs (List[btk.btkAcquisition]): Optional list of btkAcquisition instances to process.
+        pstfilenames (List[str]): Optional list of c3d files for computing spatiotemporal parameters.
+        kinematicfilenames (List[str]): Optional list of c3d files for normalizing kinematic data.
+        kineticfilenames (List[str]): Optional list of c3d files for normalizing kinetic data.
+        emgfilenames (List[str]): Optional list of c3d files for normalizing EMG data.
+
 
     Returns:
-        analysisFilter.analysis (pyCGM2.Processing.analysis.Analysis): an analysis instance
+        analysis.Analysis: an analysis instance
 
 
     Examples:
@@ -145,7 +149,7 @@ def makeAnalysis(DATA_PATH:str,
     trialManager = cmf.generate()
 
     #----cycles
-    if type == "Gait":
+    if eventType == "Gait":
         cycleBuilder = cycle.GaitCyclesBuilder(spatioTemporalAcqs=trialManager.spatioTemporal["Acqs"],
                                                kinematicAcqs=trialManager.kinematic["Acqs"],
                                                kineticAcqs=trialManager.kinetic["Acqs"],
@@ -170,7 +174,7 @@ def makeAnalysis(DATA_PATH:str,
     else:
         emgLabelList = None
 
-    if type == "Gait":
+    if eventType == "Gait":
         analysisBuilder = analysis.GaitAnalysisBuilder(cycles,
                                                        kinematicLabelsDict=kinematicLabelsDict,
                                                        kineticLabelsDict=kineticLabelsDict,
@@ -220,13 +224,43 @@ def exportAnalysis(analysisInstance:Analysis, DATA_PATH:str, name:str,
     exportFilter.export(name, path=DATA_PATH, excelFormat="xls", mode=mode)
 
 
-def automaticCPdeviations(DATA_PATH:str, 
-                          analysis:Analysis, 
-                          reference:str="Nieuwenhuys2017", 
-                          pointLabelSuffix:Optional[str]=None, 
-                          filterTrue:bool=False, export:bool=True, 
-                          outputname:str="Nieuwenhuys2017", 
-                          language:str="-fr"):
+def automaticCPdeviations(
+    DATA_PATH: str,
+    analysis: Analysis,
+    reference: str = "Nieuwenhuys2017",
+    pointLabelSuffix: Optional[str] = None,
+    filterTrue: bool = False,
+    export: bool = True,
+    outputname: str = "Nieuwenhuys2017",
+    language: str = "-fr"):
+    """
+    Calculate and optionally export joint pattern deviations based on a specified reference.
+
+    This function processes joint patterns using rules defined in an external Excel file,
+    filters and retrieves pattern data, and can export the results to Excel files.
+
+    Args:
+        DATA_PATH (str): The path where the export files will be saved.
+        analysis (Analysis): The `Analysis` object containing the necessary analysis data.
+        reference (str, optional): Reference name for the joint pattern rules. Defaults to "Nieuwenhuys2017".
+        pointLabelSuffix (Optional[str], optional): Suffix for the point labels. Defaults to None.
+        filterTrue (bool, optional): If True, applies additional filtering to the patterns. Defaults to False.
+        export (bool, optional): If True, exports the resulting data to Excel files. Defaults to True.
+        outputname (str, optional): Base name for the output files. Defaults to "Nieuwenhuys2017".
+        language (str, optional): Language specifier for the rules file, e.g., '-fr' for French. Defaults to "-fr".
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the joint pattern deviations.
+
+    Note:
+        Requires external Excel files for rules, located in PYCGM2_SETTINGS_FOLDER.
+
+    Example:
+        >>> patterns = automaticCPdeviations("/path/to/data", analysisObj)
+    """
+
+    # Your function's code remains unchanged
+
 
     RULES_PATH = pyCGM2.PYCGM2_SETTINGS_FOLDER + "jointPatterns\\"
     rulesXls = RULES_PATH+reference+language+".xlsx"

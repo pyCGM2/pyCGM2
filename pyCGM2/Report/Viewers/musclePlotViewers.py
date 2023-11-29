@@ -12,17 +12,18 @@ from pyCGM2.Processing.analysis import Analysis
 from typing import List, Tuple, Dict, Optional, Union, Callable
 
 class MuscleNormalizedPlotPanelViewer(plotViewers.PlotViewer):
-    """plot emg envelops
+    """
+    This class creates a panel viewer for normalized muscle plots.
+
+    It is designed to visualize the envelops of muscle parameters, such as length or activation, normalized over the gait cycle.
 
     Args:
-        iAnalysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
-        pointLabelSuffix (str,Optional[None]): suffix added to emg outputs
-
-
+        iAnalysis (pyCGM2.Processing.analysis.Analysis): The analysis instance containing muscle data.
+        pointLabelSuffix (str, Optional[None]): A suffix to add to the muscle data points, if any.
     """
 
     def __init__(self,iAnalysis:Analysis,pointLabelSuffix:Optional[str]=None):
-
+        """ Initialize the MuscleNormalizedPlotPanelViewer with an analysis instance and optional point label suffix."""
         super(MuscleNormalizedPlotPanelViewer, self).__init__(iAnalysis)
 
         self.m_analysis = self.m_input
@@ -39,9 +40,20 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.PlotViewer):
 
 
     def setNormalizationSuffix(self,suffix:str):
+        """
+        Set a suffix for normalization to be appended to muscle data labels.
+
+        Args:
+            suffix (str): The suffix to be added for normalization purposes.
+        """
         self.m_normalisationSuffix = "_"+suffix
 
     def __setLayer(self):
+        """
+        Set up the plot layer for the muscle normalized plot panel.
+
+        This method configures the figure and axes for the muscle plots, including layout adjustments and labeling.
+        """
 
         self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
         title=u""" Time-normalized Muscle Plot \n """ 
@@ -84,6 +96,11 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.PlotViewer):
                 axisIt.set_ylim([0.5,1.5])
 
     def __setData(self):
+        """
+        Prepare and set the data for muscle normalized plots.
+
+        This method extracts and processes muscle data from the analysis instance, preparing it for visualization in the plot panel.
+        """
 
         muscles_leftContext =[]
         muscles_rightContext =[]
@@ -122,32 +139,48 @@ class MuscleNormalizedPlotPanelViewer(plotViewers.PlotViewer):
                 
 
     def setNormativeDataset(self,iNormativeDataSet:NormativeData):
-        """ Set the normative dataset
+        """
+        Assign a normative dataset to the viewer for reference in the plots.
 
         Args:
-            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): a normative dataset instance
-
+            iNormativeDataSet (pyCGM2.Report.normativeDatasets.NormativeData): The normative data to be used as a reference in the plots.
         """
         self.m_normativeData = iNormativeDataSet.data
 
     def setConcretePlotFunction(self, concreteplotFunction:Callable):
-        """set a concrete plot function
+        """
+        Set a concrete plot function for rendering the muscle data.
 
         Args:
-            concreteplotFunction (Callable): a plot function of pyCGM2.Report.plot
-
+            concreteplotFunction (Callable): A function from pyCGM2.Report.plot that will be used for plotting the muscle data.
         """
         self.m_concretePlotFunction = concreteplotFunction
 
     def setMuscles(self,iMuscles:List):
+        """
+        Define the list of muscles to be included in the plot.
+
+        Args:
+            iMuscles (List): A list of muscle names to be visualized.
+        """
         self.m_muscles= iMuscles
 
     def setMuscleOutputType(self,type:str):
+        """
+        Set the type of muscle output to be visualized, such as muscle length or activation.
+
+        Args:
+            type (str): A string representing the type of muscle output (e.g., "MuscleLength").
+        """
         self.m_muscleOutputType= type
 
 
     def plotPanel(self):
-        """plot the panel"""
+        """
+        Render and display the muscle normalized plot panel.
+
+        This method creates the muscle plot panel, combining the set data with the layout and visual elements prepared earlier.
+        """
 
         self.__setLayer()
         self.__setData()

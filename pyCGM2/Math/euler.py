@@ -8,23 +8,15 @@ import copy
 from typing import List, Tuple, Dict, Optional,Union
 
 def wrapEulerTo(inputAngles:np.ndarray, Dest:np.ndarray):
-    """correct euler angle
+    """
+    Correct Euler angles to wrap around the target values.
 
     Args:
-        inputAngles (np.ndarray): current angle value
-        Dest (np.ndarray): targeted value
+        inputAngles (np.ndarray): Current Euler angle values.
+        Dest (np.ndarray): Targeted Euler angle values to wrap to.
 
-
-    **Examples**
-
-    ```python
-        # extract from ModelJCSFilter
-        dest = np.deg2rad(np.array([0,0,0]))
-        for i in range (0, self.m_aqui.GetPointFrameNumber()):
-            jointFinalValues[i,:] = euler.wrapEulerTo(np.deg2rad(jointFinalValues[i,:]), dest)
-            dest = jointFinalValues[i,:]
-    ```
-
+    Returns:
+        np.ndarray: Corrected Euler angles wrapped to the target values.
     """
 
     an = copy.copy(inputAngles)
@@ -44,7 +36,16 @@ def wrapEulerTo(inputAngles:np.ndarray, Dest:np.ndarray):
 
 
 def _FixEuler(Dest, Curr):
+    """
+    Internal function to fix Euler angles with respect to a destination angle.
 
+    Args:
+        Dest (np.ndarray): Destination Euler angles.
+        Curr (np.ndarray): Current Euler angles to be adjusted.
+
+    Returns:
+        Tuple[float, np.ndarray]: The distance and adjusted Euler angles.
+    """
     Changed = Curr + np.pi*2 * np.floor((Dest - Curr + np.pi)/(np.pi*2))
     Distance = np.max(abs(Dest - Changed))
 
@@ -52,6 +53,15 @@ def _FixEuler(Dest, Curr):
 
 
 def _safeArcsin(Value):
+    """
+    Safe computation of arcsin, ensuring the input value is within valid range.
+
+    Args:
+        Value (float): Input value for arcsin computation.
+
+    Returns:
+        float: Result of the arcsin computation.
+    """
     if np.abs(Value) > 1:
         Value = np.max(np.array([np.min(np.array([Value, 1])), -1]))
 
@@ -60,15 +70,14 @@ def _safeArcsin(Value):
 
 def euler_xyz(Matrix:np.ndarray, similarOrder:bool=True):
     """
-    Decomposition of a rotation matrix according the sequence XYZ.
-
-    The function returns the 3 angles around X,Y,Z. ( the argument `similarOrder` has no effect for this sequence )
+    Decompose a rotation matrix using the XYZ Euler sequence.
 
     Args:
-        Matrix (np.ndarray): Rotation matrix
-        similarOrder` (bool,Optional): flag to return ouputs mapping the sequence ( default to True)
+        Matrix (np.ndarray): Rotation matrix to decompose.
+        similarOrder (bool, optional): Flag to return outputs mapping the XYZ sequence. Defaults to True.
 
-
+    Returns:
+        Tuple[float, float, float]: Euler angles (XYZ) derived from the rotation matrix.
     """
     # python translation  of the matlab pig .
 
@@ -91,15 +100,14 @@ def euler_xyz(Matrix:np.ndarray, similarOrder:bool=True):
 
 def euler_xzy(Matrix:np.ndarray, similarOrder:bool=True):
     """
-    Decomposition of a rotation matrix according the sequence XZY.
-
-    The function returns the 3 angles around X,Y,Z.
-    If the argument `similarOrder` is enable, the returned angles map the angle sequence XZY
-    ( ie 1st ouput: angle around X, 2nd ouput: angle around Z, 3rd ouput: angle around Y)
+    Decompose a rotation matrix using the YZX Euler sequence.
 
     Args:
-        Matrix (np.ndarray): Rotation matrix
-        similarOrder` (bool,Optional): flag to return ouputs mapping the sequence ( default to True)
+        Matrix (np.ndarray): Rotation matrix to decompose.
+        similarOrder (bool, optional): Flag to return outputs mapping the YZX sequence. Defaults to True.
+
+    Returns:
+        Tuple[float, float, float]: Euler angles (YZX) derived from the rotation matrix.
     """
 
     Euler3 = _safeArcsin(-Matrix[0, 1])
@@ -121,15 +129,14 @@ def euler_xzy(Matrix:np.ndarray, similarOrder:bool=True):
 
 def euler_yxz(Matrix:np.ndarray, similarOrder:bool=True):
     """
-    Decomposition of a rotation matrix according the sequence YXZ.
-
-    The function returns the 3 angles around X,Y,Z.
-    If the argument `similarOrder` is enable, the returned angles map the angle sequence YXZ
-    ( ie 1st ouput: angle around Y, 2nd ouput: angle around X, 3rd ouput: angle around Z)
+    Decompose a rotation matrix using the YXZ Euler sequence.
 
     Args:
-        Matrix (np.ndarray): Rotation matrix
-        similarOrder` (bool,Optional): flag to return ouputs mapping the sequence ( default to True)
+        Matrix (np.ndarray): Rotation matrix to decompose.
+        similarOrder (bool, optional): Flag to return outputs mapping the YXZ sequence. Defaults to True.
+
+    Returns:
+        Tuple[float, float, float]: Euler angles (YXZ) derived from the rotation matrix.
     """
 
     Euler1 = _safeArcsin(-Matrix[1, 2])
@@ -151,15 +158,14 @@ def euler_yxz(Matrix:np.ndarray, similarOrder:bool=True):
 
 def euler_yzx(Matrix:np.ndarray, similarOrder:bool=True):
     """
-    Decomposition of a rotation matrix according the sequence YZX.
-
-    The function returns the 3 angles around X,Y,Z.
-    If the argument `similarOrder` is enable, the returned angles map the angle sequence YZX
-    ( ie 1st ouput: angle around Y, 2nd ouput: angle around Z, 3rd ouput: angle around X)
+    Decompose a rotation matrix using the ZYX Euler sequence.
 
     Args:
-        Matrix (np.ndarray): Rotation matrix
-        similarOrder` (bool,Optional): flag to return ouputs mapping the sequence ( default to True)
+        Matrix (np.ndarray): Rotation matrix to decompose.
+        similarOrder (bool, optional): Flag to return outputs mapping the ZYX sequence. Defaults to True.
+
+    Returns:
+        Tuple[float, float, float]: Euler angles (ZYX) derived from the rotation matrix.
     """
 
     Euler3 = _safeArcsin(Matrix[1, 0])
@@ -181,15 +187,14 @@ def euler_yzx(Matrix:np.ndarray, similarOrder:bool=True):
 
 def euler_zxy(Matrix:np.ndarray, similarOrder:bool=True):
     """
-    Decomposition of a rotation matrix according the sequence ZXY.
-
-    The function returns the 3 angles around X,Y,Z.
-    If the argument `similarOrder` is enable, the returned angles map the angle sequence ZXY
-    ( ie 1st ouput: angle around Z, 2nd ouput: angle around X, 3rd ouput: angle around Y)
+    Decompose a rotation matrix using the ZXY Euler sequence.
 
     Args:
-        Matrix (np.ndarray): Rotation matrix
-        similarOrder` (bool,Optional): flag to return ouputs mapping the sequence ( default to True)
+        Matrix (np.ndarray): Rotation matrix to decompose.
+        similarOrder (bool, optional): Flag to return outputs mapping the ZXY sequence. Defaults to True.
+
+    Returns:
+        Tuple[float, float, float]: Euler angles (ZXY) derived from the rotation matrix.
     """
 
     Euler1 = _safeArcsin(Matrix[2, 1])
@@ -211,15 +216,14 @@ def euler_zxy(Matrix:np.ndarray, similarOrder:bool=True):
 
 def euler_zyx(Matrix, similarOrder:bool=True):
     """
-    Decomposition of a rotation matrix according the sequence ZYX.
-
-    The function returns the 3 angles around X,Y,Z.
-    If the argument `similarOrder` is enable, the returned angles map the angle sequence ZYX
-    ( ie 1st ouput: angle around Z, 2nd ouput: angle around Y, 3rd ouput: angle around X)
+    Decompose a rotation matrix using the XZY Euler sequence.
 
     Args:
-        Matrix (np.ndarray): Rotation matrix
-        similarOrder` (bool,Optional): flag to return ouputs mapping the sequence ( default to True)
+        Matrix (np.ndarray): Rotation matrix to decompose.
+        similarOrder (bool, optional): Flag to return outputs mapping the XZY sequence. Defaults to True.
+
+    Returns:
+        Tuple[float, float, float]: Euler angles (XZY) derived from the rotation matrix.
     """
 
     Euler2 = _safeArcsin(-Matrix[2, 0])

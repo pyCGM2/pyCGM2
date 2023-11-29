@@ -22,7 +22,16 @@ except ImportError as e:
 from typing import List, Tuple, Dict, Optional,Union
 
 def _setPointData(ftr, framecount, ff, values):
-
+    """
+    Sets point data for a given frame range in Nexus.
+    Args:
+        ftr: The first frame of the trial range.
+        framecount: Total number of frames in the trial.
+        ff: The first frame of the data to be set.
+        values: The values to be set.
+    Returns:
+        A tuple containing data and a list of boolean flags indicating the existence of data at each frame.
+    """
     beg = ff - ftr
 
     data = [list(np.zeros((framecount))), list(
@@ -41,11 +50,12 @@ def _setPointData(ftr, framecount, ff, values):
 
 
 def getActiveSubject(NEXUS:ViconNexus.ViconNexus):
-    """return the active subject
-
+    """
+    Retrieves the active subject from Nexus.
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+    Returns:
+        The name of the active subject.
     """
 
     names, templates, active = NEXUS.GetSubjectInfo()
@@ -62,7 +72,11 @@ def getActiveSubject(NEXUS:ViconNexus.ViconNexus):
 
 def checkActivatedSubject(NEXUS, subjectNames):
     """
-    **Obsolete**  prefer the function getActiveSubject instead
+    Checks and retrieves the activated subject in Nexus (Obsolete, use `getActiveSubject` instead).
+    Args:
+        NEXUS, subjectNames.
+    Returns:
+        The name of the activated subject.
     """
     LOGGER.logger.warning(
         "This method is deprecated. prefer getActiveSubject now")
@@ -99,16 +113,14 @@ def checkActivatedSubject(NEXUS, subjectNames):
 
 def setTrajectoryFromArray(NEXUS:ViconNexus.ViconNexus, 
                            vskName:str, label:str, array:np.ndarray, firstFrame:int=0):
-    """Set a trajectory (ie marker) from an array
+    """Sets a trajectory in Nexus using data from an array.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        vskName (str): vsk name.
-        label (str): trajectory label ( eq. marker label)
-        array (np.ndarray): array (shape(n,3))
-        firstFrame (int,optional): first frame of the acquisition. default set to 0
-
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        vskName (str): The name of the VSK file.
+        label (str): The label of the trajectory.
+        array (np.ndarray): The data array.
+        firstFrame (int): The first frame of the trajectory in the acquisition.
     """
 
     trialRange_init = NEXUS.GetTrialRange()[0]
@@ -121,14 +133,13 @@ def setTrajectoryFromArray(NEXUS:ViconNexus.ViconNexus,
 
 
 def setTrajectoryFromAcq(NEXUS:ViconNexus.ViconNexus, vskName:str, label:str, acq:btk.btkAcquisition):
-    """Set a trajectory ( eq. marker) from an btk.acquisition
+    """Sets a trajectory in Nexus using data from a BTK acquisition.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        vskName (str): vsk name.
-        label (str): trajectory label ( eq. marker label)
-        acq (btk.btkAcquisition): a btk.acquisition instance
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        vskName (str): The name of the VSK file.
+        label (str): The label of the trajectory.
+        acq (btk.btkAcquisition): The BTK acquisition object.
     """
 
     markers = NEXUS.GetMarkerNames(vskName)
@@ -153,15 +164,14 @@ def setTrajectoryFromAcq(NEXUS:ViconNexus.ViconNexus, vskName:str, label:str, ac
 
 def appendModelledMarkerFromAcq(NEXUS:ViconNexus.ViconNexus, 
                                 vskName:str, label:str, acq:btk.btkAcquisition, suffix:str=""):
-    """append a modelled marker ( eg HJC) from a btk.acquisition
+    """Appends a modeled marker to Nexus from a BTK acquisition.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        vskName (str): vsk name.
-        label (str): modelled marker label ( eq. marker label)
-        acq (btk.btkAcquisition): a btk.acquisition instance
-        suffix (str,optional): suffix added to the model outputs, defalut set to ""
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        vskName (str): The name of the VSK file.
+        label (str): The label of the marker.
+        acq (btk.btkAcquisition): The BTK acquisition object.
+        suffix (str): Suffix to be added to the model output.
     """
 
     lst = NEXUS.GetModelOutputNames(vskName)
@@ -189,14 +199,13 @@ def appendModelledMarkerFromAcq(NEXUS:ViconNexus.ViconNexus,
 def appendAngleFromAcq(NEXUS:ViconNexus.ViconNexus, 
                     vskName:str, label:str, acq:btk.btkAcquisition):
     
-    """append a angle from a btk.acquisition
+    """Appends an angle data to Nexus from a BTK acquisition.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        vskName (str): vsk name.
-        label (str): modelled marker label ( eq. marker label)
-        acq (btk.btkAcquisition): a btk.acquisition instance
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        vskName (str): The name of the VSK file.
+        label (str): The label of the angle data.
+        acq (btk.btkAcquisition): The BTK acquisition object.
     """
 
 
@@ -226,15 +235,14 @@ def appendAngleFromAcq(NEXUS:ViconNexus.ViconNexus,
 def appendForceFromAcq(NEXUS:ViconNexus.ViconNexus,
                        vskName:str,label:str, acq:btk.btkAcquisition,
                        normalizedData:bool=True):
-    """append a Force  from an btk.acquisition
+    """Appends force data to Nexus from a BTK acquisition.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        vskName (str): vsk name.
-        label (str): force label
-        acq (btk.btkAcquisition): a btk.acquisition instance
-        normalizedData (bool,optional): indicate if values are normalized in amplitude.
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        vskName (str): The name of the VSK file.
+        label (str): The label of the force data.
+        acq (btk.btkAcquisition): The BTK acquisition object.
+        normalizedData (bool): Indicates if the data is normalized.
     """
 
 
@@ -266,15 +274,14 @@ def appendForceFromAcq(NEXUS:ViconNexus.ViconNexus,
 
 def appendMomentFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,label:str, acq:btk.btkAcquisition,
                         normalizedData:bool=True):
-    """append a Moment  from a btk.acquisition instance
+    """Appends moment data to Nexus from a BTK acquisition.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        vskName (str): vsk name.
-        label (str): moment label
-        acq (btk.btkAcquisition): a btk.acquisition instance
-        normalizedData (bool,optional): indicate if values are normalized in amplitude.
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        vskName (str): The name of the VSK file.
+        label (str): The label of the moment data.
+        acq (btk.btkAcquisition): The BTK acquisition object.
+        normalizedData (bool): Indicates if values are normalized in amplitude.
     """
 
     lst = NEXUS.GetModelOutputNames(vskName)
@@ -306,15 +313,14 @@ def appendMomentFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,label:str, acq:b
 
 def appendPowerFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,label:str, acq:btk.btkAcquisition,
                        normalizedData:bool=True):
-    """append a power from a btk.acquisition
+    """Appends power data to Nexus from a BTK acquisition.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        vskName (str): vsk name.
-        label (str): power label
-        acq (btk.btkAcquisition): a btk.acquisition instance
-        normalizedData (bool,optional): indicate if values are normalized in amplitude.
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        vskName (str): The name of the VSK file.
+        label (str): The label of the power data.
+        acq (btk.btkAcquisition): The BTK acquisition object.
+        normalizedData (bool): Indicates if values are normalized in amplitude.
     """
     lst = NEXUS.GetModelOutputNames(vskName)
     if label in lst:
@@ -345,18 +351,18 @@ def appendBones(NEXUS:ViconNexus.ViconNexus,
                 manualScale:Optional[np.ndarray]=None,
                 suffix:str="",
                 existFromPoint:Optional[str] = None):
-    """append a vicon bone  from a btk.acquisition
+    """Appends a Vicon bone from a BTK acquisition.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        vskName (str): vsk name.
-        label (str): bone label
-        acq (btk.btkAcquisition): a btk.acquisition instance
-        OriginValues (np.ndarray(n,3),Optional[None]): manual assignement of the bone origin.
-        manualScale (np.ndarray(1,3),Optional[None]): manual scale.
-        suffix (str,optional): suffix added to bone outputs. Defalut set to ""
-        existFromPoint (str,optional): btk point label conditioning presence or absence of the bone. Default set to None.
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        vskName (str): The VSK file name.
+        acq (btk.btkAcquisition): The BTK acquisition instance.
+        label (str): The bone label.
+        segment (str): The segment to append.
+        OriginValues (Optional[np.ndarray]): Manual assignment of the bone origin.
+        manualScale (Optional[np.ndarray]): Manual scale values.
+        suffix (str): Suffix added to bone outputs.
+        existFromPoint (Optional[str]): BTK point label conditioning the presence or absence of the bone.
     """
 
     if any(segment.getExistFrames()):
@@ -430,17 +436,15 @@ def appendBones(NEXUS:ViconNexus.ViconNexus,
 
 def appendBtkScalarFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,
                            groupName:str,label:str,nexusTypes:Union[str,list],acq:btk.btkAcquisition):
-    """append btk scalar to the acquisition instance
+    """Appends BTK scalar to the acquisition instance.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): NEXUS handling
-        vskName (str): subject name
-        groupName (str): data group name
-        label (str): scalar label
-        nexusTypes (Union[str,list]): nexus data type 
-        acq (btk.btkAcquisition): a btk acquisition instance
-
-
+        NEXUS (ViconNexus.ViconNexus): NEXUS handle.
+        vskName (str): Subject name.
+        groupName (str): Data group name.
+        label (str): Scalar label.
+        nexusTypes (Union[str, list]): Nexus data type.
+        acq (btk.btkAcquisition): A BTK acquisition instance.
     """
 
     if isinstance(nexusTypes, str):
@@ -480,14 +484,13 @@ def appendBtkScalarFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,
         NEXUS.SetModelOutput( vskName, label, data, exists )
 
 def createGeneralEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,labels:List):
-    """append general events from an btk.acquisition
+    """Appends general events from a BTK acquisition to Nexus.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        subject (str): vsk name.
-        labels (list): general event labels
-        acq (btk.btkAcquisition): a btk.acquisition instance
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        subject (str): The VSK file name.
+        acq (btk.btkAcquisition): The BTK acquisition instance.
+        labels (List): List of general event labels.
     """
 
     freq = acq.GetPointFrequency()
@@ -497,14 +500,13 @@ def createGeneralEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcqui
             NEXUS.CreateAnEvent( subject, "General", ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
 def createEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,labels:List):
-    """append events from an btk.acquisition
+    """Appends specific events from a BTK acquisition to Nexus.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        subject (str): subject-vsk name.
-        labels (list): event labels
-        acq (btk.btkAcquisition): a btk.acquisition instance
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        subject (str): Subject-VSK name.
+        acq (btk.btkAcquisition): The BTK acquisition instance.
+        labels (List): List of event labels.
     """
 
     freq = acq.GetPointFrequency()
@@ -514,11 +516,13 @@ def createEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,
             NEXUS.CreateAnEvent( subject, ev.GetContext(), ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
 def getForcePlateAssignment(NEXUS:ViconNexus.ViconNexus):
-    """get Force plate assignement
+    """Retrieves force plate assignments from Nexus.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
 
+    Returns:
+        A dictionary with force plate IDs as keys and their assignments as values.
     """
     out = {}
     for id in NEXUS.GetDeviceIDs():
@@ -535,13 +539,13 @@ def getForcePlateAssignment(NEXUS:ViconNexus.ViconNexus):
     return out
 
 def appendAnalysisParameters(NEXUS:ViconNexus.ViconNexus, acq:btk.btkAcquisition):
-    """append analysis parameter to a btk.acquisition
+    """Appends analysis parameters to a BTK acquisition.
 
     Args:
-        NEXUS (ViconNexus.ViconNexus): vicon nexus handle.
-        acq (btk.btkAcquisition): a btk.acquisition instance
-
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        acq (btk.btkAcquisition): The BTK acquisition instance.
     """
+   
     parameters = btkTools.getAllParamAnalysis(acq)
 
     for parameter in parameters:

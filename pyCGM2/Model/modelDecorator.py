@@ -1,10 +1,5 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Model
-#APIDOC["Draft"]=False
-#--end--
 """ this module gathers classes/ functions for calibrating a model,
 ie locating  joint centres and axis
-
 """
 
 import numpy as np
@@ -12,28 +7,37 @@ from scipy.optimize import least_squares
 
 import pyCGM2
 from pyCGM2.Model import model
+from pyCGM2.Model.model import Model
 from pyCGM2 import enums
 from pyCGM2.Tools import btkTools
 from pyCGM2.Math import numeric
 from pyCGM2.Math import geometry
 from pyCGM2.Math import euler
 from pyCGM2.Model import frame
+from pyCGM2.Model.frame import Frame
 
 LOGGER = pyCGM2.LOGGER
 
+from typing import List, Tuple, Dict, Optional,Union
 
-def footJointCentreFromMet(acq,side,frameInit,frameEnd,markerDiameter =14, offset =0 ):
-    """calculate the foot centre from metatarsal markers.
+import btk
+
+def footJointCentreFromMet(acq:btk.btkAcquisition,side:str,
+                           frameInit:int,frameEnd:int,markerDiameter:float =14, offset:float =0 ):
+    """Calculates foot center from metatarsal markers.
 
     Args:
-        acq (btk.acquisition): an acquisition
-        side (str): body sideEnum
-        frameInit (int): start frame
-        frameEnd (int): end frame
-        markerDiameter (double,Optional[14]): marker diameter.
-        offset (double,Optional[0]): marker offset.
+        acq (btk.btkAcquisition): An acquisition.
+        side (str): Side of the body ('left' or 'right').
+        frameInit (int): Start frame.
+        frameEnd (int): End frame.
+        markerDiameter (float, optional): Marker diameter. Defaults to 14.
+        offset (float, optional): Marker offset. Defaults to 0.
 
+    Returns:
+        np.array: Coordinates of the foot center.
     """
+
 
     if side == "left":
         met2_base=acq.GetPoint("LTOE").GetValues()[frameInit:frameEnd,:].mean(axis=0)
@@ -68,20 +72,21 @@ def footJointCentreFromMet(acq,side,frameInit,frameEnd,markerDiameter =14, offse
     return fjc
 
 
-def VCMJointCentre(HalfJoint, JointMarker, TopJoint, StickMarker, beta = 0 ):
-    """Calculate the joint centre according the Vicon Clinical Manager method
-    ( ie chord function )
+def VCMJointCentre(HalfJoint:float, JointMarker:np.ndarray, TopJoint:np.ndarray, StickMarker:np.ndarray, beta:float = 0 ):
+    """Calculates joint center according to Vicon Clinical Manager method.
 
     Args:
-        HalfJoint (double): radius of the joint
-        JointMarker (array(1,3)): joint marker trajectory at a specific frame
-        TopJoint (type): proximal joint centre trajectory at a specific frame
-        StickMarker (type): lateral marker trajectory at a specific frame
-        beta (double,Optional[0]): rotation angle offset.
+        HalfJoint (float): Radius of the joint.
+        JointMarker (np.ndarray): Joint marker trajectory for a specific frame.
+        TopJoint (np.ndarray): Proximal joint center trajectory for a specific frame.
+        StickMarker (np.ndarray): Lateral marker trajectory for a specific frame.
+        beta (float, optional): Rotation angle offset. Defaults to 0.
 
-    **Reference**
+    Returns:
+        np.ndarray: Coordinates of the joint center.
 
-    Kabada, M., Ramakrishan, H., & Wooten, M. (1990). Measurement of lower extremity kinematics during level walking. Journal of Orthopaedic Research, 8, 383–392.
+    Reference:
+        Kabada, M., Ramakrishan, H., & Wooten, M. (1990). Measurement of lower extremity kinematics during level walking. Journal of Orthopaedic Research, 8, 383–392.
     """
 
     OffsetAngle = np.deg2rad(beta)
@@ -162,8 +167,19 @@ def VCMJointCentre(HalfJoint, JointMarker, TopJoint, StickMarker, beta = 0 ):
         return JointMarker + E * HalfJoint;
 
 
-def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
-    # obsolete - use VCMJointCentre instead
+def chord(offset: float, A1: np.ndarray, A2: np.ndarray, A3: np.ndarray, beta: float = 0.0, epsilon: float = 0.001) -> np.ndarray:
+    """
+    Calculates joint center using the 'chord' method. This function is obsolete and replaced by VCMJointCentre.
+
+    Args:
+        offset (float): Offset value for the calculation.
+        A1, A2, A3 (np.ndarray): 3D coordinates used in the calculation.
+        beta (float, optional): Rotation angle offset. Defaults to 0.0.
+        epsilon (float, optional): Small value to avoid division by zero. Defaults to 0.001.
+
+    Returns:
+        np.ndarray: The calculated joint center.
+    """
 
     if (len(A1) != len(A2) or len(A1) != len(A3) or len(A2) != len(A3)):
         raise Exception ("length of input argument of chord function different")
@@ -310,15 +326,19 @@ def chord (offset,A1,A2,A3,beta=0.0, epsilon =0.001):
 
     return out
 
-def midPoint(acq,lateralMarkerLabel,medialMarkerLabel,offset=0):
-    """return the mid point trajectory
+def midPoint(acq: btk.btkAcquisition, lateralMarkerLabel: str, medialMarkerLabel: str, offset: float = 0) -> np.ndarray:
+    """
+    Returns the mid-point trajectory between two markers.
 
     Args:
-        acq (btk.Acquisition): An acquisition
-        lateralMarkerLabel (str): label of the lateral marker
-        medialMarkerLabel (str):  label of the medial marker
-        offset (double,Optional[0]): offset
+        acq (btk.btkAcquisition): An acquisition.
+        lateralMarkerLabel (str): Label of the lateral marker.
+        medialMarkerLabel (str): Label of the medial marker.
+        offset (float, optional): Offset value for the calculation. Defaults to 0.
 
+    Returns:
+        np.ndarray: Mid-point trajectory between the two markers.
+    
     **Note**
 
     if `offset` is different to 0, the mid point is computed from the statement:
@@ -355,6 +375,26 @@ def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,j
         flexInd (int,Optional[0]): sagital plane index
 
     """
+
+
+def calibration2Dof(proxMotionRef: List[Frame], distMotionRef: List[Frame], 
+                    indexFirstFrame: int, indexLastFrame: int, jointRange: List[int], 
+                    sequence: str = "YXZ", index: int = 1, flexInd: int = 0) -> float:
+    """
+    Calibration of 2 degrees of freedom (DOF).
+
+    Args:
+        proxMotionRef (List[Frame]): Motion attribute of the proximal referential.
+        distMotionRef (List[Frame]): Motion attribute of the distal referential.
+        indexFirstFrame, indexLastFrame (int): Start and end frames for the calibration.
+        jointRange (List[int]): Range of joint angles to process.
+        sequence (str, optional): Euler sequence. Defaults to "YXZ".
+        index (int, optional): Coronal plane index. Defaults to 1.
+        flexInd (int, optional): Sagittal plane index. Defaults to 0.
+
+    Returns:
+        float: Calculated offset value.
+    """    
 
     # onjective function : minimize variance of the knee varus valgus angle
     def objFun(x, proxMotionRef, distMotionRef,indexFirstFrame,indexLastFrame, sequence,index,jointRange):
@@ -437,20 +477,26 @@ def calibration2Dof(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame,j
 
 
 
-def saraCalibration(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame, offset = 100, method = "1"):
-    """Computation of a joint center position from SARA.
+def saraCalibration(proxMotionRef: List[Frame], distMotionRef: List[Frame], 
+                    indexFirstFrame: Optional[int], 
+                    indexLastFrame: Optional[int], 
+                    offset: float = 100, method: str = "1"):
+    """
+    Computes a joint center position using the SARA method.
 
     Args:
-        proxMotionRef (pyCGM2.Model.Referential.motion): motion attribute of the proximal referential
-        distMotionRef (pyCGM2.Model.Referential.motion): motion attribute of the distal referential
-        offset (double,Optional[100]): distance in mm for positionning  axis boundaries
-        method (int,Optional[1]): method index . Affect the objective function (see Ehrig et al.).
+        proxMotionRef (List[Frame]): Motion attribute of the proximal referential.
+        distMotionRef (List[Frame]): Motion attribute of the distal referential.
+        indexFirstFrame (Optional[int]): Start frame index.
+        indexLastFrame (Optional[int]): End frame index.
+        offset (float, optional): Distance in mm for positioning axis boundaries. Defaults to 100.
+        method (str, optional): Method index. Affects the objective function. Defaults to "1".
 
-
-
-    **Reference**
-
-    Ehrig, R., Taylor, W. R., Duda, G., & Heller, M. (2007). A survey of formal methods for determining functional joint axes. Journal of Biomechanics, 40(10), 2150–7.
+    Returns:
+        Tuple: Contains proximal origin, proximal axis limit, distal origin, distal axis limit, proximal axis norm, distal axis norm, and coefficient of determination.
+    
+    Reference:
+        Ehrig, R., Taylor, W. R., Duda, G., & Heller, M. (2007). A survey of formal methods for determining functional joint axes. Journal of Biomechanics, 40(10), 2150–7.
 
     """
     frames0 = range(0,len(proxMotionRef))
@@ -562,20 +608,27 @@ def saraCalibration(proxMotionRef,distMotionRef,indexFirstFrame,indexLastFrame, 
 
 
 
-def haraRegression(mp_input,mp_computed,markerDiameter = 14.0,  basePlate = 2.0):
-    """Hip joint centre regression from Hara et al, 2016
-
-    Args
-        mp_input (dict):  dictionary of the measured anthropometric parameters
-        mp_computed (dict):  dictionary of the cgm-computed anthropometric parameters
-        markerDiameter (double,Optional[14.0]):  diameter of the marker
-        basePlate (double,Optional[2.0]): thickness of the base plate
-
-    **Reference**
-
-    Hara, R., Mcginley, J. L., C, B., Baker, R., & Sangeux, M. (2016). Generation of age and sex specific regression equations to locate the Hip Joint Centres. Gait & Posture
-
+def haraRegression(mp_input:Dict[str, float],mp_computed:Dict[str, float],
+                   markerDiameter:float = 14.0,  basePlate:float = 2.0):
     """
+    Implements the Hara et al. regression for hip joint center estimation.
+
+    Reference:
+        Hara, R., Mcginley, J. L., C, B., Baker, R., & Sangeux, M. (2016). Generation of age and sex specific regression equations to locate the Hip Joint Centres. Gait & Posture
+
+    
+
+    Args:
+        mp_input (Dict[str, float]): Dictionary of measured anthropometric parameters.
+        mp_computed (Dict[str, float]): Dictionary of computed anthropometric parameters.
+        markerDiameter (float, optional): Diameter of the marker. Defaults to 14.0.
+        basePlate (float, optional): Thickness of the base plate. Defaults to 2.0.
+
+    Returns:
+
+    Tuple[np.ndarray, np.ndarray]: Estimated positions of left and right hip joint centers.
+    """
+
     #TODO : remove mp_computed
 
 
@@ -599,31 +652,35 @@ def haraRegression(mp_input,mp_computed,markerDiameter = 14.0,  basePlate = 2.0)
     return HJC_L,HJC_R
 
 
+def harringtonRegression(mp_input: Dict[str, float], mp_computed: Dict[str, float], predictors: str, markerDiameter: float = 14.0, basePlate: float = 2.0, cgmReferential: bool = True) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Implements the Harrington et al. regression for hip joint center estimation.
 
-def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0, basePlate = 2.0, cgmReferential=True):
-    """ Hip joint centre regression from Harrington et al, 2007
+    Reference:
+
+        Harrington, M., Zavatsky, A., Lawson, S., Yuan, Z., & Theologis, T. (2007). Prediction of the hip joint centre in adults, children, and patients with cerebral palsy based on magnetic resonance imaging. Journal of Biomechanics, 40(3), 595–602
+        
+        Sangeux, M. (2015). On the implementation of predictive methods to locate the hip joint centres. Gait and Posture, 42(3), 402–405. 
 
     Args:
-        mp_input (dict):  dictionary of the measured anthropometric parameters
-        mp_computed (dict):  dictionary of the cgm-computed anthropometric parameters
-        predictors (str): predictor choice of the regression (full,PWonly,LLonly)
-        markerDiameter (double,Optional[14.0]):  diameter of the marker
-        basePlate (double,Optional[2.0]): thickness of the base plate
-        cgmReferential (boolOptional[True]) - flag indicating HJC position will be expressed in the CGM pelvis Coordinate system
+        mp_input (Dict[str, float]): Dictionary of measured anthropometric parameters.
+        mp_computed (Dict[str, float]): Dictionary of computed anthropometric parameters.
+        predictors (str): Predictor choice of the regression (full, PWonly, LLonly).
+        markerDiameter (float, optional): Diameter of the marker. Defaults to 14.0.
+        basePlate (float, optional): Thickness of the base plate. Defaults to 2.0.
+        cgmReferential (bool, optional): Flag indicating if HJC position will be expressed in CGM pelvis coordinate system. Defaults to True.
 
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: Estimated positions of left and right hip joint centers.
 
-    **Notes**
+    Note:
 
-      - Predictor choice allows using modified Harrington's regression from Sangeux 2015
-      - `pelvisDepth`,`asisDistance` and `meanlegLength`  are automaticaly computed from CGM calibration
-
-
-    **References**
-
-      - Harrington, M., Zavatsky, A., Lawson, S., Yuan, Z., & Theologis, T. (2007). Prediction of the hip joint centre in adults, children, and patients with cerebral palsy based on magnetic resonance imaging. Journal of Biomechanics, 40(3), 595–602
-      - Sangeux, M. (2015). On the implementation of predictive methods to locate the hip joint centres. Gait and Posture, 42(3), 402–405.
-
+        - Predictor choice allows using modified Harrington's regression from Sangeux 2015
+        - `pelvisDepth`,`asisDistance` and `meanlegLength`  are automaticaly computed from CGM calibration
+        
+            
     """
+
     #TODO : how to work without CGM calibration
 
     if predictors.value == "full":
@@ -681,19 +738,22 @@ def harringtonRegression(mp_input,mp_computed, predictors, markerDiameter = 14.0
     return HJC_L,HJC_R
 
 
-def davisRegression(mp_input,mp_computed, markerDiameter = 14.0, basePlate = 2.0):
-    """Hip joint centre regression according Davis et al, 1991
+def davisRegression(mp_input: Dict[str, float], mp_computed: Dict[str, float], markerDiameter: float = 14.0, basePlate: float = 2.0) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Implements the Davis et al. regression for hip joint center estimation.
 
-    Args
-        mp_input (dict):  dictionary of the measured anthropometric parameters
-        mp_computed (dict):  dictionary of the cgm-computed anthropometric parameters
-        markerDiameter (double,Optional[14.0]):  diameter of the marker
-        basePlate (double,Optional[2.0]): thickness of the base plate
+    Args:
+        mp_input (Dict[str, float]): Dictionary of measured anthropometric parameters.
+        mp_computed (Dict[str, float]): Dictionary of computed anthropometric parameters.
+        markerDiameter (float, optional): Diameter of the marker. Defaults to 14.0.
+        basePlate (float, optional): Thickness of the base plate. Defaults to 2.0.
 
-    **Reference:**
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: Estimated positions of left and right hip joint centers.
+    
+    Reference:
 
-    Davis, R., Ounpuu, S., Tyburski, D., & Gage, J. (1991). A gait analysis data collection and reduction technique. Human Movement Science, 10, 575–587.
-
+        Davis, R., Ounpuu, S., Tyburski, D., & Gage, J. (1991). A gait analysis data collection and reduction technique. Human Movement Science, 10, 575–587.
 
     """
 
@@ -713,22 +773,26 @@ def davisRegression(mp_input,mp_computed, markerDiameter = 14.0, basePlate = 2.0
 
     return HJC_L,HJC_R
 
-def bellRegression(mp_input,mp_computed,  markerDiameter = 14.0, basePlate = 2.0, cgmReferential=True):
-    """Hip joint centre regression from Bell and Brand et al, 2007
+def bellRegression(mp_input: Dict[str, float], mp_computed: Dict[str, float], markerDiameter: float = 14.0, basePlate: float = 2.0, cgmReferential: bool = True) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Implements the Bell et al. regression for hip joint center estimation.
 
-    Args
-        mp_input (dict):  dictionary of the measured anthropometric parameters
-        mp_computed (dict):  dictionary of the cgm-computed anthropometric parameters
-        markerDiameter (double,Optional[14.0]):  diameter of the marker
-        basePlate (double,Optional[2.0]): thickness of the base plate
-        cgmReferential (bool,optional[True]) - flag indicating HJC position will be expressed in the CGM pelvis Coordinate system
+    Args:
+        mp_input (Dict[str, float]): Dictionary of measured anthropometric parameters.
+        mp_computed (Dict[str, float]): Dictionary of computed anthropometric parameters.
+        markerDiameter (float, optional): Diameter of the marker. Defaults to 14.0.
+        basePlate (float, optional): Thickness of the base plate. Defaults to 2.0.
+        cgmReferential (bool, optional): Flag indicating if HJC position will be expressed in CGM pelvis coordinate system. Defaults to True.
 
-    **Reference:**
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: Estimated positions of left and right hip joint centers.
+    
+    Reference:
 
-      - Bell AL, Pederson DR, and Brand RA (1989) Prediction of hip joint center location from external landmarks.
+        - Bell AL, Pederson DR, and Brand RA (1989) Prediction of hip joint center location from external landmarks.
         Human Movement Science. 8:3-16:
 
-      - Bell AL, Pedersen DR, Brand RA (1990) A Comparison of the Accuracy of Several hip Center Location Prediction Methods.
+        - Bell AL, Pedersen DR, Brand RA (1990) A Comparison of the Accuracy of Several hip Center Location Prediction Methods.
         J Biomech. 23, 617-621.
     """
 
@@ -764,29 +828,34 @@ def bellRegression(mp_input,mp_computed,  markerDiameter = 14.0, basePlate = 2.0
 # -------- ABSTRACT DECORATOR MODEL : INTERFACE ---------
 
 class DecoratorModel(model.Model):
+    """Base class for model decorators."""
     def __init__(self, iModel):
         super(DecoratorModel,self).__init__()
         self.model = iModel
 
 #-------- CONCRETE DECORATOR MODEL ---------
 class Kad(DecoratorModel):
-    """ A concrete CGM decorator altering the knee joint centre from the Knee Aligment device
-
-    Args
-      iModel (CGM2.cgm.CGM): a CGM instance
-      iAcq (btk.Acquisition): btk aquisition instance of a static c3d with the KAD
     """
-    def __init__(self, iModel,iAcq):
+    A decorator class for altering the knee joint centre using the Knee Alignment Device (KAD) method.
+
+    Args:
+        iModel (Model): An instance of the CGM model.
+        iAcq (btk.btkAcquisition): An acquisition instance of a static c3d with the KAD.
+
+    """
+    def __init__(self, iModel:Model,iAcq:btk.btkAcquisition):
         super(Kad,self).__init__(iModel)
         self.acq = iAcq
 
-    def compute(self,side="both",markerDiameter = 14):
-        """ Run the KAD processing
+    def compute(self, side: str = "both", markerDiameter: float = 14):
+        """
+        Computes the knee joint centre using the KAD method.
 
         Args:
-            side (str,Optional[both]): body side
-            markerDiameter (double,Optional[14]): diameter of the marker
+            side (str, optional): Side of the body to compute ('left', 'right', or 'both'). Defaults to "both".
+            markerDiameter (float, optional): Diameter of the marker. Defaults to 14.
         """
+
         distSkin = 0
 
         ff = self.acq.GetFirstFrame()
@@ -962,26 +1031,28 @@ class Kad(DecoratorModel):
 
 
 class Cgm1ManualOffsets(DecoratorModel):
-    """ Replicate behaviour of the CGM1 if segmental offset manaully altered
+    """
+    A decorator class for applying manual offsets to the CGM1 model.
 
-    Args
-      iModel (CGM2.cgm.CGM): a CGM instance
+    Args:
+        iModel (Model): An instance of the CGM model.
 
     """
-    def __init__(self, iModel):
+    def __init__(self, iModel:Model):
         super(Cgm1ManualOffsets,self).__init__(iModel)
 
 
-    def compute(self,acq,side,thighoffset,markerDiameter,tibialTorsion,shankoffset):
-        """ run the processing
+    def compute(self, acq:btk.btkAcquisition, side:str, thighoffset:float, markerDiameter:float, tibialTorsion:float, shankoffset:float):
+        """
+        Applies manual offsets to the CGM1 model.
 
-        Args
-            acq (btk.Acquisition): an aquisition instance of a static c3d
-            side (str): body side
-            thighoffset (double): thigh offset
-            markerDiameter (double): diameter of marker
-            shankoffset (double): shank offset
-            tibialTorsion (double): tibial torsion
+        Args:
+            acq (btk.btkAcquisition): An acquisition instance of a static c3d.
+            side (str): Body side ('left' or 'right').
+            thighoffset (float): Thigh offset value.
+            markerDiameter (float): Diameter of the marker.
+            tibialTorsion (float): Tibial torsion value.
+            shankoffset (float): Shank offset value.
         """
 
 
@@ -1106,26 +1177,25 @@ class Cgm1ManualOffsets(DecoratorModel):
 
 
 class HipJointCenterDecorator(DecoratorModel):
-    """ Concrete CGM decorators altering the hip joint centre
+    """ 
+    A decorator class for altering the hip joint center in the CGM model.
 
     Args:
-      iModel (CGM2.cgm.CGM): a CGM instance
+        iModel (Model): An instance of pyCGM2 model.
     """
-    def __init__(self, iModel):
+    def __init__(self, iModel:Model):
         super(HipJointCenterDecorator,self).__init__(iModel)
 
-    def custom(self,position_Left=0,position_Right=0,side = "both", methodDesc="custom"):
-        """ Locate hip joint centres manually
+    def custom(self,position_Left:Union[np.ndarray, list]=0,position_Right:Union[np.ndarray, list]=0,side:str = "both", methodDesc:str="custom"):
+        """
+        Locates hip joint centers manually.  Be sure you construct the pelvis coordinate system in accordance with the CGM guidelines.
 
         Args:
-           position_Left (np.array(3,)): position of the left hip center in the pelvis referential
-           position_Right (np.array(3,)): position of the right hip center in the pelvis referential
-           side (str,Optional[both]): body side
-           methodDesc (str,Optional[Custom]): short description of the method
-
-        **Note:**
-
-          - look out the pelvis referential. It has to be similar to the cgm1 pelvis referential.
+            position_Left (Union[np.ndarray, list]): Position of the left hip center in the pelvis referential.
+            position_Right (Union[np.ndarray, list]): Position of the right hip center in the pelvis referential.
+            side (str, optional): Side of the body ('left', 'right', or 'both'). Defaults to "both".
+            methodDesc (str, optional): Short description of the method. Defaults to "custom".
+        
 
         """
 
@@ -1165,13 +1235,16 @@ class HipJointCenterDecorator(DecoratorModel):
                 tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = methodDesc)
 
 
-    def harrington(self,predictors= enums.HarringtonPredictor.Native, side="both"):
-        """  Use of the Harrington's regressions
+    def harrington(self, predictors: enums.HarringtonPredictor = enums.HarringtonPredictor.Native, 
+                   side: str = "both") -> None:
+        """
+        Uses the Harrington's regressions for hip joint center estimation.
 
         Args:
-           predictors (pyCGM2.enums,Optional[enums.HarringtonPredictor.Native]): harrington's predictors to use
-           side (str,Optional[both]): body side
-
+            predictors (enums.HarringtonPredictor, optional): Harrington's predictors to use.
+                Defaults to enums.HarringtonPredictor.Native.
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
         """
 
         self.model.decoratedModel = True
@@ -1204,12 +1277,13 @@ class HipJointCenterDecorator(DecoratorModel):
             tf_dist.static.addNode("RHJC_Harrington",glob, positionType="Global", desc = "Harrington")
             tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = "Harrington")
 
-    def hara(self, side="both"):
-        """Use of the Hara's regressions
+    def hara(self, side: str = "both") -> None:
+        """
+        Uses the Hara's regressions for hip joint center estimation.
 
         Args:
-            side (str,Optional[both]): body side
-
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
         """
 
         self.model.decoratedModel = True
@@ -1242,12 +1316,13 @@ class HipJointCenterDecorator(DecoratorModel):
             tf_dist.static.addNode("RHJC_Hara",glob, positionType="Global", desc = "Hara")
             tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = "Hara")
 
-    def davis(self, side="both"):
-        """ Use of the Davis's regressions
+    def davis(self, side: str = "both") -> None:
+        """
+        Uses the Davis's regressions for hip joint center estimation.
 
         Args:
-           side (str,Optional[both]): body side
-
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
         """
 
         self.model.decoratedModel = True
@@ -1280,12 +1355,13 @@ class HipJointCenterDecorator(DecoratorModel):
             tf_dist.static.addNode("RHJC_Davis",glob, positionType="Global", desc = "Davis")
             tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = "Davis")
 
-    def bell(self, side="both"):
-        """Use of the Bell's regressions
+    def bell(self, side: str = "both") -> None:
+        """
+        Uses the Bell's regressions for hip joint center estimation.
 
         Args:
-            side (str,Optional[both]): body side
-
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
         """
 
         self.model.decoratedModel = True
@@ -1318,9 +1394,24 @@ class HipJointCenterDecorator(DecoratorModel):
             tf_dist.static.addNode("RHJC_Bell",glob, positionType="Global", desc = "Bell")
             tf_dist.static.addNode("RHJC",glob, positionType="Global", desc = "Bell")
 
-    def greatTrochanterOffset(self,acq, offset = 89.0,side="both",
-                    leftGreatTrochLabel="LGTR", rightGreatTrochLabel="LKNM",
-                    markerDiameter = 14):
+    def greatTrochanterOffset(self, acq: btk.btkAcquisition, offset: float = 89.0, 
+                              side: str = "both", leftGreatTrochLabel: str = "LGTR", 
+                              rightGreatTrochLabel: str = "LKNM", markerDiameter: float = 14.0) -> None:
+        """
+        Computes the hip joint center from the great trochanter offset.
+
+        Args:
+            acq (btk.btkAcquisition): An acquisition.
+            offset (float, optional): Distance in mm for positioning axis boundaries.
+                Defaults to 89.0.
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
+            leftGreatTrochLabel (str, optional): Label of the left great trochanter marker.
+                Defaults to "LGTR".
+            rightGreatTrochLabel (str, optional): Label of the right great trochanter marker.
+                Defaults to "LKNM".
+            markerDiameter (float, optional): Diameter of the marker. Defaults to 14.0.
+        """
 
         self.model.decoratedModel = True
 
@@ -1373,14 +1464,19 @@ class HipJointCenterDecorator(DecoratorModel):
             btkTools.smartAppendPoint(acq,"RHJC_GT",RHJCvalues, desc="GT")
 
 
-    def fromHjcMarker(self,acq, leftHJC_label = "LHJC",rightHJC_label = "RHJC" ,side="both"):
-        """HJC positioned from a virtual HJC marker trajectory computed from an other process
+    def fromHjcMarker(self, acq: btk.btkAcquisition, leftHJC_label: str = "LHJC", 
+                      rightHJC_label: str = "RHJC", side: str = "both") -> None:
+        """
+        Positions hip joint centers from virtual HJC marker trajectories computed from another process.
 
         Args:
-            acq (btk.Acquisition): an aquisition instance with  the virtual HJC marker trajectories
-            leftHJC_label (str,Optional["LHJC"]): label of the left vritual HJC marker
-            rightHJC_label (str,Optional["RHJC"]): label of the right vritual HJC marker
-            side (str,Optional[both]): body side
+            acq (btk.btkAcquisition): An acquisition with virtual HJC marker trajectories.
+            leftHJC_label (str, optional): Label of the left virtual HJC marker.
+                Defaults to "LHJC".
+            rightHJC_label (str, optional): Label of the right virtual HJC marker.
+                Defaults to "RHJC".
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
         """
         self.model.decoratedModel = True
 
@@ -1419,35 +1515,36 @@ class HipJointCenterDecorator(DecoratorModel):
             #btkTools.smartAppendPoint(acq,"LHJC_MRK",RHJCvalues, desc="from marker")
 
 class KneeCalibrationDecorator(DecoratorModel):
-    """ Concrete cgm decorator altering the knee joint
+    """ 
+    A decorator class for altering the hip joint center in the CGM model.
 
     Args:
-      iModel (CGM2.cgm.CGM): a CGM instance
-
+        iModel (Model): An instance of pyCGM2 model.
     """
-    def __init__(self, iModel):
-        """
-
-        """
-
+    def __init__(self, iModel:Model):
         super(KneeCalibrationDecorator,self).__init__(iModel)
 
-    def midCondyles_KAD(self,acq, side="both",
-                    leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LKNM",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RKNM",
-                    markerDiameter = 14):
-
-        """Compute Knee joint centre from mid condyles and relocate AJC like KAD process.
+    def midCondyles_KAD(self, acq: btk.btkAcquisition, side: str = "both",
+                         leftLateralKneeLabel: str = "LKNE", leftMedialKneeLabel: str = "LKNM",
+                         rightLateralKneeLabel: str = "RKNE", rightMedialKneeLabel: str = "RKNM",
+                         markerDiameter: float = 14) -> None:
+        """
+        Compute Knee joint centre from mid condyles and relocate AJC like KAD process.
 
         Args:
-            acq (btkAcquisition): a btk acquisition instance of a static c3d
-            side (str,Optional[both]): body side
-            leftLateralKneeLabel (str,Optional[LKNE]):  label of the left lateral knee marker
-            leftMedialKneeLabel (str,Optional[LKNM]):  label of the left medial knee marker
-            rightLateralKneeLabel (str,Optional[RKNE]):  label of the left lateral knee marker
-            rightMedialKneeLabel (str,Optional[RKNM]):  label of the left medial knee marker
-            markerDiameter (double,Optional[14]):  marker diameter
+            acq (btk.btkAcquisition): An acquisition.
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
+            leftLateralKneeLabel (str, optional): Label of the left lateral knee marker.
+                Defaults to "LKNE".
+            leftMedialKneeLabel (str, optional): Label of the left medial knee marker.
+                Defaults to "LKNM".
+            rightLateralKneeLabel (str, optional): Label of the right lateral knee marker.
+                Defaults to "RKNE".
+            rightMedialKneeLabel (str, optional): Label of the right medial knee marker.
+                Defaults to "RKNM".
+            markerDiameter (float, optional): Diameter of the marker. Defaults to 14.
         """
-
         self.model.decoratedModel = True
 
         if side=="both" or side=="left":
@@ -1530,22 +1627,28 @@ class KneeCalibrationDecorator(DecoratorModel):
             tf_dist2.static.addNode("RAJC_midKnee",RAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
             tf_dist2.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "midKJC")
 
-    def midCondyles(self,acq, side="both",
-                    leftLateralKneeLabel="LKNE", leftMedialKneeLabel="LKNM",rightLateralKneeLabel="RKNE", rightMedialKneeLabel="RKNM",
-                    markerDiameter = 14,widthFromMp=True):
-        """Compute Knee joint centre from mid condyles.
-
+    def midCondyles(self, acq: btk.btkAcquisition, side: str = "both",
+                    leftLateralKneeLabel: str = "LKNE", leftMedialKneeLabel: str = "LKNM",
+                    rightLateralKneeLabel: str = "RKNE", rightMedialKneeLabel: str = "RKNM",
+                    markerDiameter: float = 14, widthFromMp: bool = True) -> None:
+        """
+        Compute the knee joint centre from mid condyles.
 
         Args:
-            acq (btkAcquisition): a btk acquisition instance of a static c3d
-            side (str,Optional[True]): body side
-            leftLateralKneeLabel (str,Optional[LKNE]):  label of the left lateral knee marker
-            leftMedialKneeLabel (str,Optional[LKNM]):  label of the left medial knee marker
-            rightLateralKneeLabel (str,Optional[RKNE]):  label of the right lateral knee marker
-            rightMedialKneeLabel (str,Optional[RKNM]):  label of the right medial knee marker
-            markerDiameter (double,Optional[14]):  marker diameter
-            widthFromMp (bool,Optional[True]): knee with from model anthropometric parameters
-
+            acq (btk.btkAcquisition): An acquisition.
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
+            leftLateralKneeLabel (str, optional): Label of the left lateral knee marker.
+                Defaults to "LKNE".
+            leftMedialKneeLabel (str, optional): Label of the left medial knee marker.
+                Defaults to "LKNM".
+            rightLateralKneeLabel (str, optional): Label of the right lateral knee marker.
+                Defaults to "RKNE".
+            rightMedialKneeLabel (str, optional): Label of the right medial knee marker.
+                Defaults to "RKNM".
+            markerDiameter (float, optional): Diameter of the marker. Defaults to 14.
+            widthFromMp (bool, optional): Use knee width from model anthropometric parameters.
+                Defaults to True.
         """
         # TODO : coding exception if label doesn t find.
 
@@ -1604,16 +1707,16 @@ class KneeCalibrationDecorator(DecoratorModel):
             # marker
             btkTools.smartAppendPoint(acq,"RKJC_MID",RKJCvalues, desc="MID")
 
-    def sara(self,side,**kwargs):
-        """Compute Knee flexion axis, relocate knee joint centre from SARA functional calibration
+    def sara(self, side: str, **kwargs) -> None:
+        """
+        Compute Knee flexion axis, relocate knee joint centre from SARA functional calibration.
 
         Args:
-            side (str): body side
+            side (str): Body side.
 
-        Kargs:
-            indexFirstFrame (int): start frame
-            indexLastFrame (int): last frame
-
+        Kwargs:
+            indexFirstFrame (int): Start frame.
+            indexLastFrame (int): Last frame.
         """
         self.model.decoratedModel = True
 
@@ -1761,17 +1864,18 @@ class KneeCalibrationDecorator(DecoratorModel):
             self.model.mp_computed["RightKneeFuncCalibrationOffset"] = angle
 
 
-    def calibrate2dof(self, side, **kwargs):
-        """run the calibration2Dof method
+    def calibrate2dof(self, side: str, **kwargs) -> None:
+        """
+        Run the calibration2Dof method.
 
         Args:
-            side (str): body side
+            side (str): Body side.
 
-        Kargs:
-            indexFirstFrame (int): start frame
-            indexLastFrame (int): last frame
-            sequence (str): Euler sequence
-            jointRange (list): flexion angle boundaries
+        Kwargs:
+            indexFirstFrame (int): Start frame.
+            indexLastFrame (int): Last frame.
+            sequence (str): Euler sequence.
+            jointRange (list): Flexion angle boundaries.
         """
 
         self.model.decoratedModel = True
@@ -1807,14 +1911,19 @@ class KneeCalibrationDecorator(DecoratorModel):
             self.model.setCalibrationProperty("RightFuncKneeMethod","2DOF")
             self.model.mp_computed["RightKneeFuncCalibrationOffset"] = longRot
 
-    def fromKjcMarker(self,acq, leftKJC_label = "LKJC",rightKJC_label = "RKJC" ,side="both"):
-        """KJC positioned from a virtual KJC marker trajectory computed from an other process
+    def fromKjcMarker(self, acq: btk.btkAcquisition, leftKJC_label: str = "LKJC", 
+                      rightKJC_label: str = "RKJC", side: str = "both") -> None:
+        """
+        Positions knee joint centers from virtual KJC marker trajectories computed from another process.
 
         Args:
-            acq (btkAcquisition): an acquisition with the virtual KJC marker trajectoriy
-            leftKJC_label (str,Optional[LKJC]) : left virtual KJC label
-            rightKJC_label (str,Optional[RKJC]) : right virtual KJC label
-            side (str,Optional[True]): body side
+            acq (btk.btkAcquisition): An acquisition with virtual KJC marker trajectories.
+            leftKJC_label (str, optional): Label of the left virtual KJC marker.
+                Defaults to "LKJC".
+            rightKJC_label (str, optional): Label of the right virtual KJC marker.
+                Defaults to "RKJC".
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
         """
 
 
@@ -1855,32 +1964,38 @@ class KneeCalibrationDecorator(DecoratorModel):
             #btkTools.smartAppendPoint(acq,"RHJC_MRK",RKJCvalues, desc="from marker")
 
 class AnkleCalibrationDecorator(DecoratorModel):
-    """Concrete cgm decorator altering the ankle joint
+    """ 
+    A decorator class for altering the hip joint center in the CGM model.
 
     Args:
-      iModel (CGM2.cgm.CGM): a CGM instance
+        iModel (Model): An instance of pyCGM2 model.
     """
 
-    def __init__(self, iModel):
+    def __init__(self, iModel:Model):
         super(AnkleCalibrationDecorator,self).__init__(iModel)
 
-    def midMaleolus(self,acq, side="both",
-                    leftLateralAnkleLabel="LANK", leftMedialAnkleLabel="LMED",
-                    rightLateralAnkleLabel="RANK", rightMedialAnkleLabel="RMED", markerDiameter= 14,widthFromMp=True):
-
-        """Compute the ankle joint centre from mid maleolus.
-
+    def midMaleolus(self, acq: btk.btkAcquisition, side: str = "both",
+                    leftLateralAnkleLabel: str = "LANK", leftMedialAnkleLabel: str = "LMED",
+                    rightLateralAnkleLabel: str = "RANK", rightMedialAnkleLabel: str = "RMED",
+                    markerDiameter: float = 14, widthFromMp: bool = True) -> None:
+        """
+        Compute the ankle joint centre from mid malleolus.
 
         Args:
-            acq (btkAcquisition): a btk acquisition instance of a static c3d
-            side (str,Optional[True]): body side
-            leftLateralAnkleLabel (str,Optional[LANK]):  label of the left lateral ankle marker
-            leftMedialAnkleLabel (str,Optional[LMED]):  label of the left medial ankle marker
-            rightLateralAnkleLabel (str,Optional[RANK]):  label of the right lateral ankle marker
-            rightMedialAnkleLabel (str,Optional[RMED]):  label of the right medial ankle marker
-            markerDiameter (double,Optional[14]):  marker diameter
-            widthFromMp (bool,Optional[True]): knee with from model anthropometric parameters
-
+            acq (btk.btkAcquisition): An acquisition.
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
+            leftLateralAnkleLabel (str, optional): Label of the left lateral ankle marker.
+                Defaults to "LANK".
+            leftMedialAnkleLabel (str, optional): Label of the left medial ankle marker.
+                Defaults to "LMED".
+            rightLateralAnkleLabel (str, optional): Label of the right lateral ankle marker.
+                Defaults to "RANK".
+            rightMedialAnkleLabel (str, optional): Label of the right medial ankle marker.
+                Defaults to "RMED".
+            markerDiameter (float, optional): Diameter of the marker. Defaults to 14.
+            widthFromMp (bool, optional): Use ankle width from model anthropometric parameters.
+                Defaults to True.
         """
 
 
@@ -1937,14 +2052,19 @@ class AnkleCalibrationDecorator(DecoratorModel):
 
             btkTools.smartAppendPoint(acq,"RAJC_MID",RAJCvalues, desc="MID")
 
-    def fromAjcMarker(self,acq, leftAJC_label = "LAJC",rightAJC_label = "RAJC" ,side="both"):
-        """AJC positioned from  virtual AJC marker trajectory computed from an other process
+    def fromAjcMarker(self, acq: btk.btkAcquisition, leftAJC_label: str = "LAJC",
+                      rightAJC_label: str = "RAJC", side: str = "both") -> None:
+        """
+        Positions ankle joint centers from virtual AJC marker trajectories computed from another process.
 
         Args:
-            acq (btkAcquisition): an acquisition with the virtual AJC marker trajectory
-            leftAJC_label (str,Optional[LAJC]) : left virtual AJC label
-            rightAJC_label (str,Optional[RAJC]) : right virtual AJC label
-            side (str,Optional[True]): body side
+            acq (btk.btkAcquisition): An acquisition with virtual AJC marker trajectories.
+            leftAJC_label (str, optional): Label of the left virtual AJC marker.
+                Defaults to "LAJC".
+            rightAJC_label (str, optional): Label of the right virtual AJC marker.
+                Defaults to "RAJC".
+            side (str, optional): Body side to apply the method ('left', 'right', or 'both').
+                Defaults to "both".
         """
 
 
@@ -1964,8 +2084,6 @@ class AnkleCalibrationDecorator(DecoratorModel):
             tf_dist.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
             tf_prox.static.addNode("LAJC",LAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
 
-            # marker
-            #btkTools.smartAppendPoint(acq,"LAJC_MRK",LAJCvalues, desc="fromMarker")
 
         if side=="both" or side=="right":
 
@@ -1981,27 +2099,3 @@ class AnkleCalibrationDecorator(DecoratorModel):
             tf_dist.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
             tf_prox.static.addNode("RAJC",RAJCvalues.mean(axis=0), positionType="Global", desc = "from marker")
 
-            # marker
-            #btkTools.smartAppendPoint(acq,"RHJC_MRK",RAJCvalues, desc="from marker")
-
-
-
-# class FootCalibrationDecorator(DecoratorModel):
-#     """
-#         Concrete cgm decorator altering the ankle joint
-#     """
-#     def __init__(self, iModel):
-#         """
-#             :Parameters:
-#               - `iModel` (CGM2.cgm.CGM) - a CGM instance
-#         """
-#         super(AnkleCalibrationDecorator,self).__init__(iModel)
-#
-#     def footJointCentreFromForeFoot(self,acq, side="both"):
-#
-#         """
-#         """
-#
-#
-#         #self.model.nativeCgm1 = False
-#         self.model.decoratedModel = True
