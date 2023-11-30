@@ -46,6 +46,7 @@ ENCODER = "latin-1"
 # CONSTANTS
 MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)) + "\\"
 
+MAIN_PYCGM2_TESTS_PATH = MAIN_PYCGM2_PATH+"Tests\\"
 
 #opensim plugin binaries
 sys.path.append( MAIN_PYCGM2_PATH +"pyCGM2\\opensim4\\KSlibaries\\lib\\bin")
