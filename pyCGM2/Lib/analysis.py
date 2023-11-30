@@ -170,7 +170,7 @@ def makeAnalysis(DATA_PATH:str,
     cycles = cyclefilter.build()
 
     if emgChannels is not None:
-        emgLabelList = [label+"_Rectify_Env" for label in emgChannels]
+        emgLabelList = [label+"_Rectify_Env" for label in emgChannels]+emgChannels+[label+"_Rectify" for label in emgChannels]
     else:
         emgLabelList = None
 

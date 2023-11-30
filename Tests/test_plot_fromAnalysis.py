@@ -1,7 +1,7 @@
 # coding: utf-8
-#pytest -s --mpl --disable-pytest-warnings  test_plot_fromAnalysis.py::Test_highLevel::test_highLevel_plotDescriptiveEnvelopEMGpanel
+#pytest -s --mpl --disable-pytest-warnings  test_plot_fromAnalysis.py::Test_lowLevel::test_lowLevel_SaggitalGagePlotViewer
+#pytest -s --mpl --disable-pytest-warnings  test_plot_fromAnalysis.py::Test_highLevel::test_hightLevel_SaggitalGagePlotViewer
 
-# from __future__ import unicode_literals
 import pytest
 
 
@@ -14,9 +14,13 @@ from pyCGM2.Lib import emg
 from pyCGM2.Report import plot as reportPlot
 from pyCGM2.Report import plotFilters
 from pyCGM2.Report.Viewers import plotViewers
+from pyCGM2.Report.Viewers import emgPlotViewers
+from pyCGM2.Report.Viewers import customPlotViewers
 from pyCGM2.Report.Viewers import  comparisonPlotViewers
 from pyCGM2.Report import normativeDatasets
 from pyCGM2.Utils import files
+
+from pyCGM2.EMG import emgManager
 
 SHOW = False
 
@@ -141,6 +145,26 @@ class Test_lowLevel:
         if SHOW: plt.show()
         return fig
 
+    def test_lowLevel_SaggitalGagePlotViewer(self):
+
+            DATA_PATH,modelledFilenames,analysisInstance = dataTest2()
+            normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
+
+
+            emg_manager = emgManager.EmgManager(None,emgSettings=None)
+            #emg_manager = emgManager.EmgManager(pyCGM2.MAIN_PYCGM2_TESTS_PATH,emgSettings="emg-noRF.settings")
+
+
+            # viewer
+            kv =customPlotViewers.SaggitalGagePlotViewer(analysisInstance,emg_manager,emgType="Raw")
+            kv.setNormativeDataset(normativeDataset)
+
+            # filter
+            pf = plotFilters.PlottingFilter()
+            pf.setViewer(kv)
+            fig = pf.plot()
+
+            plt.show()
 
 class Test_highLevel:
 
@@ -295,6 +319,15 @@ class Test_highLevel:
 
         if SHOW: plt.show()
         return fig
+
+
+    def test_hightLevel_SaggitalGagePlotViewer(self):
+
+            DATA_PATH,modelledFilenames,analysisInstance = dataTest2()
+            normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
+
+            plot.plotSaggitalGagePanel(DATA_PATH,analysisInstance,normativeDataset,emgType="Raw")
+
 
 
 class Test_highLevel_customNormative:

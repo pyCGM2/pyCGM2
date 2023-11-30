@@ -14,33 +14,52 @@ class EmgManager(object):
 
     Args:
         DATA_PATH (str): Data folder path where the EMG settings file is located.
-        emgSettings (Optional[Union[str, Dict]]): Filename with EMG settings or a dictionary of EMG settings. If None, default settings are loaded.
+        emgSettings (Optional[Union[str, Dict]]): Filename or (path+filename) with EMG settings or a dictionary of EMG settings. 
+        If None, default settings are loaded.
     """
 
     def __init__(self, DATA_PATH:str, emgSettings: Optional[Union[str, Dict]]=None):
         """ Initializes the EmgManager with a path to the data folder and EMG settings"""
-        if emgSettings is None:
-            if os.path.isfile(DATA_PATH + "emg.settings"):
-                emgSettings = files.openFile(DATA_PATH, "emg.settings")
-                LOGGER.logger.info(
-                    "[pyCGM2]: emg.settings detected in the data folder")
-            else:
-                emgSettings = files.openFile(
-                    pyCGM2.PYCGM2_SETTINGS_FOLDER, "emg.settings")
-        else:
-            if isinstance(emgSettings,str):
-                if DATA_PATH is not None:
-                    LOGGER.logger.info( f"[pyCGM2]: emg settings loaded from => {emgSettings} ")
-                    emgSettings = files.openFile(DATA_PATH, emgSettings)
-                else: 
-                    emgSettings = files.openFile(None, emgSettings)
-            else:
-                pass
         
-        self.m_emgSettings = emgSettings
-        self.m_emgChannelSection = emgSettings["CHANNELS"]
-        self.m_emgProcessingSection = emgSettings["Processing"]
+        settings = files.openFile(
+                    pyCGM2.PYCGM2_SETTINGS_FOLDER, "emg.settings")
 
+        if DATA_PATH is not None and isinstance(emgSettings,str):
+            LOGGER.logger.info( f"[pyCGM2] - emgsettings loaded from {DATA_PATH+emgSettings}")
+            settings = files.openFile(DATA_PATH, emgSettings)
+
+        elif DATA_PATH is not None and emgSettings is None:
+            if os.path.isfile(DATA_PATH + "emg.settings"):
+                LOGGER.logger.info( f"[pyCGM2] - local emgsettings detected in {DATA_PATH}")
+                settings = files.openFile(DATA_PATH, "emg.settings")
+                    
+        elif DATA_PATH is None and isinstance(emgSettings,str):
+            settings = files.openFile(None, emgSettings)
+            LOGGER.logger.info( f"[pyCGM2] - emgsettings loaded from {emgSettings}")
+
+        elif DATA_PATH is None and isinstance(emgSettings,Dict):
+            LOGGER.logger.info( f"[pyCGM2] - emg settings loaded from a dictionnary")
+            settings = emgSettings
+        else:
+            LOGGER.logger.info( f"[pyCGM2] - default emgsettings")
+
+        
+    
+        self.m_emgSettings = settings
+        self.m_emgChannelSection = settings["CHANNELS"]
+        self.m_emgProcessingSection = settings["Processing"]
+
+       
+
+        self._emg={}
+        for key in self.m_emgChannelSection:
+            if self.m_emgChannelSection[key]["Muscle"] is not None: 
+                self._emg[key] = self.m_emgChannelSection[key]["Muscle"]+"_"+self.m_emgChannelSection[key]["Context"]
+
+
+        # self._emg=[]
+        # for i in range(0,len(self.m_labels)):
+        #     self.combinedEMG.append([self.m_labels[i],self.m_side[i], self.m_muscles[i]])
    
     
     def getChannelSection(self):
@@ -128,3 +147,17 @@ class EmgManager(object):
                 out.append(self.m_emgChannelSection[channel]["NormalActivity"])
 
         return out
+    
+    def getChannel(self,muscle:str,eventContext:str):
+        """
+        Return the EMG channel label from a defined muscle and eventContext.
+
+        Returns:
+            str: the emg hannel.
+        """
+        for key, value in self._emg.items():
+            if value == muscle+"_"+eventContext:
+                return key
+        return None  # Si la valeur n'est pas trouvée
+
+

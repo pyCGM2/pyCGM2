@@ -129,8 +129,9 @@ def descriptivePlot(figAxis:plt.Axes,
         if customLimits is not None:
             for value in customLimits:
                 figAxis.axhline(value,color=color,ls='dashed')
-
+       
     else:
+        LOGGER.logger.warning(f"[pyCGM2] - no values to diplay. The label {pointLabel}-{contextPointLabel} is not within your analysis instance ")
         line= figAxis.plot(np.linspace(0,100,101), np.zeros(101), color=color,linestyle="-")        
 
     if legendLabel is not None: line[0].set_label(legendLabel)
@@ -192,6 +193,8 @@ def consistencyPlot(figAxis:plt.Axes,
         if customLimits is not None:
            for value in customLimits:
                figAxis.axhline(value,color=color,ls='dashed')
+    else:
+        LOGGER.logger.warning(f"[pyCGM2] - no values to diplay. The label {pointLabel}-{contextPointLabel} is not within your analysis instance ")
 
 
     if legendLabel is not None and flag: lines[0].set_label(legendLabel)
@@ -253,6 +256,9 @@ def meanPlot(figAxis:plt.Axes,
         if customLimits is not None:
             for value in customLimits:
                 figAxis.axhline(value,color=color,ls='dashed')
+    else:
+        LOGGER.logger.warning(f"[pyCGM2] - no values to diplay. The label {pointLabel}-{contextPointLabel} is not within your analysis instance ")
+
 
     if legendLabel is not None  and flag: lines[0].set_label(legendLabel)
     if title is not None: figAxis.set_title(title ,size=8)
@@ -317,6 +323,8 @@ def gaitDescriptivePlot(figAxis:plt.Axes,
         if customLimits is not None:
             for value in customLimits:
                 figAxis.axhline(value,color=color,ls='dashed')
+    else:
+        LOGGER.logger.warning(f"[pyCGM2] - no values to diplay. The label {pointLabel}-{contextPointLabel} is not within your analysis instance ")
 
     if legendLabel is not None: line[0].set_label(legendLabel)
     if title is not None: figAxis.set_title(title ,size=8)
@@ -381,6 +389,8 @@ def gaitConsistencyPlot(figAxis:plt.Axes,
         if customLimits is not None:
            for value in customLimits:
                figAxis.axhline(value,color=color,ls='dashed')
+    else:
+        LOGGER.logger.warning(f"[pyCGM2] - no values to diplay. The label {pointLabel}-{contextPointLabel} is not within your analysis instance ")
 
 
     if legendLabel is not None and flag: lines[0].set_label(legendLabel)
@@ -397,6 +407,7 @@ def gaitMeanPlot(figAxis:plt.Axes,
                     analysisStructureItem:AnalysisStructure,
                     pointLabel:str,contextPointLabel:str,axis:int,
                     color:Optional[str]=None,
+                    alpha:Optional[float]=None,
                     title:Optional[str]=None, xlabel:Optional[str]=None, 
                     ylabel:Optional[str]=None,ylim:Optional[List]=None,legendLabel:Optional[str]=None,
                     customLimits:Optional[List]=None):
@@ -431,7 +442,7 @@ def gaitMeanPlot(figAxis:plt.Axes,
     # plot
     if flag:
         mean=analysisStructureItem.data[pointLabel,contextPointLabel]["mean"][:,axis]
-        lines= figAxis.plot(np.linspace(0,100,101), mean, color=color,linestyle="-")
+        lines= figAxis.plot(np.linspace(0,100,101), mean, color=color,linestyle="-",alpha=alpha)
 
         stance = analysisStructureItem.pst['stancePhase', contextPointLabel]["mean"]
         double1 = analysisStructureItem.pst['doubleStance1', contextPointLabel]["mean"]
@@ -443,6 +454,8 @@ def gaitMeanPlot(figAxis:plt.Axes,
         if customLimits is not None:
             for value in customLimits:
                 figAxis.axhline(value,color=color,ls='dashed')
+    else:
+        LOGGER.logger.warning(f"[pyCGM2] - no values to diplay. The label {pointLabel}-{contextPointLabel} is not within your analysis instance ")
 
     if legendLabel is not None  and flag: lines[0].set_label(legendLabel)
     if title is not None: figAxis.set_title(title ,size=8)
@@ -515,19 +528,30 @@ def stpHorizontalHistogram(figAxis:plt.Axes,analysisStructureItem:AnalysisStruct
     figAxis.tick_params(axis='x', which='major', labelsize=6)
 
 
-def addNormalActivationLayer(figAxis:plt.Axes,normalActivationLabel:str,fo:int):
+def addNormalActivationLayer(figAxis:plt.Axes,normalActivationLabel:str,fo:int,color:str="g",edgecolor:str="red",alpha:float=0.1,position:Optional[str]=None):
     """Displays normal muscle activation in the background of a time-normalized trace.
 
     Args:
         figAxis (plt.Axes): A matplotlib figure axis.
         normalActivationLabel (str): Muscle label.
         fo (int): Time-normalized foot off frame.
+        color(str): color line
+        edgecolor(str): edge color
+        alpha(float): transparency value
+        position(Optional[str]): position of the rectangle patch ( None, Upper or Lower)
     """
+    
+    prop = 0.1*(figAxis.get_ylim()[1]-figAxis.get_ylim()[0])
+    figAxis.set_ylim(bottom=figAxis.get_ylim()[0]-prop, top=figAxis.get_ylim()[1]+prop)
 
     pos,burstDuration=normalActivation.getNormalBurstActivity(normalActivationLabel,fo)
     for j in range(0,len(pos)):
-        figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , color='g',alpha=0.1))
-
+        if position is None:
+            figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , facecolor=color,alpha=alpha))
+        if position=="Upper":
+            figAxis.add_patch(plt.Rectangle((pos[j],figAxis.get_ylim()[1]-prop),burstDuration[j],figAxis.get_ylim()[1] , facecolor=color,alpha=alpha,edgecolor=edgecolor))
+        if position=="Lower":
+            figAxis.add_patch(plt.Rectangle((pos[j],figAxis.get_ylim()[0]+prop),burstDuration[j],figAxis.get_ylim()[0] , facecolor=color,alpha=alpha,edgecolor=edgecolor))
 
 
 def addTemporalNormalActivationLayer(figAxis:plt.Axes,acq:btk.btkAcquisition,
@@ -540,7 +564,6 @@ def addTemporalNormalActivationLayer(figAxis:plt.Axes,acq:btk.btkAcquisition,
         normalActivationLabel (str): Muscle label.
         context (str): Event context.
     """
-
     if normalActivationLabel:
         gaitCycles = cycle.construcGaitCycle(acq)
 
@@ -549,6 +572,7 @@ def addTemporalNormalActivationLayer(figAxis:plt.Axes,acq:btk.btkAcquisition,
                 pos,burstDuration=normalActivation.getNormalBurstActivity_fromCycles(normalActivationLabel,cycleIt.firstFrame,cycleIt.begin, cycleIt.m_contraFO, cycleIt.end, cycleIt.appf)
                 for j in range(0,len(pos)):
                     figAxis.add_patch(plt.Rectangle((pos[j],0),burstDuration[j],figAxis.get_ylim()[1] , color='g',alpha=0.1))
+                    
 
 
 

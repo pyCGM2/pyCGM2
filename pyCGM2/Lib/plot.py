@@ -10,6 +10,7 @@ import numpy as np
 import pyCGM2
 from pyCGM2.Report.Viewers import plotViewers
 from pyCGM2.Report.Viewers import emgPlotViewers
+from pyCGM2.Report.Viewers import customPlotViewers
 from pyCGM2.Report.Viewers import  comparisonPlotViewers
 from pyCGM2.Report import plot
 from pyCGM2.Report import plotFilters
@@ -306,6 +307,8 @@ def plotTemporalEMG(DATA_PATH:str, processedEmgfile:str,
         return figs,outfilenames
     else:
         return figs
+
+
 
 def plotDescriptiveEnvelopEMGpanel(DATA_PATH:str,analysis:Analysis,
                                 normalized:bool=False, eventType:str="Gait",exportPdf:bool=False,
@@ -1577,6 +1580,75 @@ def plot_DescriptiveGrfIntegration(DATA_PATH:str,analysis,normativeDataset,bodym
     if title is not None: pf.setTitle(title+"-descriptive FP Integration")
     if exportPdf: pf.setExport(OUT_PATH,filenameOut,"pdf")
     fig = pf.plot()
+    if show: plt.show()
+
+    if exportPng:
+        fig.savefig(OUT_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
+
+def plotSaggitalGagePanel(DATA_PATH:str,
+                          analysis:Analysis,
+                          normativeDataset:NormativeData,
+                          emgType:str="Envelope",
+                          exportPdf:bool=False,
+                          OUT_PATH:Optional[str]= None,
+                          outputName=None,
+                          show:bool=True,
+                          title=None,exportPng=False,autoYlim:bool=False,**kwargs):
+    """
+    Creates and displays a saggital gait analysis plot as described in 'The Identification and Treatment of Gait Problems in Cerebral Palsy' by Gage et al.
+
+    This function generates a plot that combines kinematic, kinetic, and electromyographic data to provide a comprehensive view of sagittal gait analysis.
+
+    Args:
+        DATA_PATH (str): Path to the data directory.
+        analysis (Analysis): An Analysis instance containing the gait analysis data.
+        normativeDataset (NormativeData): A NormativeData instance for comparison.
+        emgType (str): type of emg signal to plot. Defaults to `Envelope`, choice: `Raw` or `Rectify`.
+        exportPdf (bool): If True, exports the plot as a PDF. Defaults to False.
+        OUT_PATH (Optional[str]): Path for saving exported files. If None, uses DATA_PATH. Defaults to None.
+        outputName (Optional[str]): Name of the output file. Defaults to 'PyCGM2-Analysis'.
+        show (bool): If True, shows the plot using Matplotlib. Defaults to True.
+        title (Optional[str]): Title for the plot panel. Defaults to None.
+        exportPng (bool): If True, exports the plot as a PNG. Defaults to False.
+        autoYlim (bool): If True, sets Y-axis limits automatically. Defaults to False.
+        **kwargs: Additional keyword arguments, including 'forceEmgManager' for specifying an EMG Manager.
+
+    Returns:
+        Union[matplotlib.figure.Figure, Tuple[matplotlib.figure.Figure, str]]: The Matplotlib figure object. 
+        If exporting as PNG, returns a tuple of the figure object and the filename.
+    """
+
+    if OUT_PATH is None:
+        OUT_PATH = DATA_PATH
+
+
+    if "forceEmgManager" in kwargs:
+        emg = kwargs["forceEmgManager"]
+    else:
+        emg = emgManager.EmgManager(DATA_PATH)
+    
+    if outputName is None:
+        outputName = "PyCGM2-Analysis"
+
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-SaggitalGageViewer"
+
+    # viewer
+    kv =customPlotViewers.SaggitalGagePlotViewer(analysis,emg,emgType=emgType)
+    kv.setNormativeDataset(normativeDataset)
+    kv.setAutomaticYlimits(autoYlim)
+
+    # filter
+    pf = plotFilters.PlottingFilter()
+    pf.setViewer(kv)
+    if title is not None: pf.setTitle( title+"-Gage Sagital Viewer")
+
+    if exportPdf :pf.setExport(OUT_PATH,filenameOut,"pdf")
+    fig = pf.plot()
+
     if show: plt.show()
 
     if exportPng:
