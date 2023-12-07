@@ -1,0 +1,20 @@
+NEW 
+- btk and opensim install from conda-forge
+- installation of the wand planar angle
+- interface with opensim4
+- work in offline mode
+- blueTrident reader
+- enable customisation of the anthropometric parameter
+- computation of the muscle lenght
+
+FIX 
+ - comparative plots did not work with 101 points data
+ - GVS not exported in the spreadsheet
+ - wrong targeted command for the CGM2.6 SARA method
+ - knee calibration did not work with a lower limb only model
+ - KAD-like scenario 
+ - tibial torsions are not updated with the CGM1 for the case : medial ankle markers only.
+
+
+minor
+ height added to mp

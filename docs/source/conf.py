@@ -34,18 +34,19 @@ extensions = ["myst_parser",
              "sphinx.ext.autosectionlabel",
              'sphinx.ext.napoleon',
              "sphinx.ext.autodoc",
+             "sphinx.ext.autosummary",
              'sphinxarg.ext',
              'sphinxcontrib.mermaid' ]
 
-source_suffix = ['.md']
+source_suffix = [".rst",".md"]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ['templates']
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = ["templates"]
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -53,7 +54,11 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'pydata_sphinx_theme'
+
+html_theme_options = {
+  "show_toc_level": 5
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -63,3 +68,12 @@ html_static_path = ['_static']
 napoleon_custom_sections = [('Returns', 'params_style')]
 
 html_logo = '_static/pyCGM2-logo2.png'
+
+
+# 
+autosectionlabel_prefix_document = True
+
+# generate autosummary even if no references
+autosummary_generate = True
+autosummary_generate_overwrite = True
+
