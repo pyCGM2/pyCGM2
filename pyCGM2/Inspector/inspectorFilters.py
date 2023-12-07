@@ -16,8 +16,7 @@ class InspectorFilter(object):
         filename (str): Filename of the C3D file associated with the acquisition.
         procedure (InspectorProcedure): The inspection procedure to be used for inspecting the acquisition.
 
-    Low-level Keyword Args:
-        **kwargs: Additional arguments passed to the inspection procedure.
+    
     """
     def __init__(self,acq:btk.btkAcquisition,filename:str,procedure:InspectorProcedure,**kwargs):
         """

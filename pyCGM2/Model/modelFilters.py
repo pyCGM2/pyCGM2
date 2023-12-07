@@ -1474,27 +1474,25 @@ class GroundReactionForceAdapterFilter(object):
         globalFrameOrientation (str, optional): Orientation of the global reference frame. Defaults to "XYZ".
         forwardProgression (bool, optional): Indicates if the subject moves in the same direction as the global longitudinal axis. Defaults to True.
 
-    Example:
+    .. code-block:: python
 
-    ```python
-
-        gaitFilename="gait1.c3d"
-        acqGaitYf = btkTools.smartReader(data_path +  gaitFilename)
+        gaitFilename = "gait1.c3d"
+        acqGaitYf = btkTools.smartReader(data_path + gaitFilename)
         mfpa = "RLX"
-     
-        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGaitYf,mfpa=mfpa)
-        forceplates.addForcePlateGeneralEvents(acqGaitYf,mappedForcePlate)
-        LOGGER.logger.warning("Manual Force plate assignment : %s" %mappedForcePlate)
+        
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acqGaitYf, mfpa=mfpa)
+        forceplates.addForcePlateGeneralEvents(acqGaitYf, mappedForcePlate)
+        LOGGER.logger.warning("Manual Force plate assignment : %s" % mappedForcePlate)
 
-        # assembly foot and force plate
-        modelFilters.ForcePlateAssemblyFilter(model,acqGaitYf,mappedForcePlate,
-                                 leftSegmentLabel="Left Foot",
-                                 rightSegmentLabel="Right Foot").compute(pointLabelSuffix=None)
-        progressionAxis, forwardProgression, globalFrame =progression.detectProgressionFrame(acqGaitYf)
+        # Assembly foot and force plate
+        modelFilters.ForcePlateAssemblyFilter(model, acqGaitYf, mappedForcePlate, 
+                                            leftSegmentLabel="Left Foot", 
+                                            rightSegmentLabel="Right Foot").compute(pointLabelSuffix=None)
+        progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acqGaitYf)
 
-        cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGaitYf,globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
+        cgrff = modelFilters.GroundReactionForceAdapterFilter(acqGaitYf, globalFrameOrientation=globalFrame, forwardProgression=forwardProgression)
         cgrff.compute()
-    ```
+        
     
     """
     def __init__(self, 

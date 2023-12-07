@@ -5,7 +5,6 @@ import re
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER  
 from pyCGM2.IMU import imu
-from pyCGM2.IMU import imuFilters
 from pyCGM2.IMU.Procedures import imuMotionProcedure
 from pyCGM2.Tools import btkTools
 from pyCGM2.Signal import signal_processing
@@ -150,6 +149,7 @@ class CsvProcedure(ImuReaderProcedure):
 
             motProc = imuMotionProcedure.QuaternionMotionProcedure(quaternions)
 
+            from pyCGM2.IMU import imuFilters
             motFilter = imuFilters.ImuMotionFilter(imuInstance,motProc)
             motFilter.run()
     
@@ -245,6 +245,7 @@ class DataframeProcedure(ImuReaderProcedure):
 
             motProc = imuMotionProcedure.QuaternionMotionProcedure(quaternions)
 
+            from pyCGM2.IMU import imuFilters
             motFilter = imuFilters.ImuMotionFilter(imuInstance,motProc)
             motFilter.run()
     
@@ -359,6 +360,8 @@ class C3dBlueTridentProcedure(ImuReaderProcedure):
             LOGGER.logger.info("[pyCGM2] - your c3d contains global Angle - the reader computes the imu Motion")
 
             motProc = imuMotionProcedure.GlobalAngleMotionProcedure(globalAngle)
+
+            from pyCGM2.IMU import imuFilters
             motFilter = imuFilters.ImuMotionFilter(imuInstance,motProc)
             motFilter.run()
 

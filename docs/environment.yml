@@ -23,3 +23,8 @@ dependencies:
 - xlwt
 - lxml
 - pip
+- myst-parser
+- sphinx
+- sphinx-argparse
+- sphinxcontrib-mermaid
+- pydata-sphinx-theme

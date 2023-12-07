@@ -51,6 +51,11 @@ requirements:
     - openpyxl
     - xlwt
     - lxml
+    - myst-parser
+    - sphinx
+    - sphinx-argparse
+    - sphinxcontrib-mermaid
+    - pydata-sphinx-theme
 
 channels:
   - conda-forge
@@ -64,6 +69,7 @@ source:
 build:
   script: pip install .
   string: py{{ python_version | replace(".", "") }}
+  post-link: scripts/post-link.bat
 
 test:
   imports:

@@ -9,12 +9,23 @@ The `AnalysisFilter` calls a `procedure` and return the final `Analysis` instanc
 
 
 import pyCGM2.Processing.cycle as CGM2cycle
+
+from  pyCGM2.Processing.cycle import Cycles
+
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
-from typing import List, Tuple, Dict, Optional,Union
+from typing import List, Tuple, Dict, Optional,Union,Any
 
 class AnalysisStructure:
+    """
+    A structure for organizing and storing analysis data.
+
+    Attributes:
+        data (Dict): A dictionary to store main analysis results.
+        pst (Dict): A dictionary to store associated spatiotemporal parameters.
+        optionalData (Dict): A dictionary to store optional or additional analysis data.
+    """
     data = {}
     pst = {}
     optionalData = {}
@@ -24,20 +35,31 @@ class AnalysisStructure:
 
 # --- OBJECT TO BUILD-----
 class Analysis():
-    """Object built from AnalysisFilter.build().
+    """
+    A class-container for storing analysis data including descriptive statistics of various biomechanical parameters.
 
-    Analysis work as **class-container**. Its attributes are:
-
-          - `stpStats` (dict)  - descritive statictics (mean,sd,median) of satiotemporal parameters
-          - `kinematicStats` (AnalysisStructure)  - descritive statictics of kinematics data.
-          - `kineticStats` (AnalysisStructure)  - descritive statictics of kinetics data.
-          - `emgStats` (AnalysisStructure)  - descritive statictics of emg data.
-
-    Two items constitute the  `AnalysisStructure` returns by `kinematicStats`, `kineticStats` and `emgStats`
-
-        - `data` is a a dict collecting descriptive statistics of kinematic, kinetic or emg output.
-        - `pst` returns the spatiotemporal parameters of the cycles associated to kinematic, kinetics or emg outputs.
-
+    Attributes:
+        stpStats (dict): Descriptive statistics of spatiotemporal parameters.
+        kinematicStats (AnalysisStructure): Descriptive statistics of kinematics data.
+        kineticStats (AnalysisStructure): Descriptive statistics of kinetics data.
+        emgStats (AnalysisStructure): Descriptive statistics of EMG data.
+        muscleGeometryStats (AnalysisStructure): Descriptive statistics of muscle geometry data.
+        muscleDynamicStats (AnalysisStructure): Descriptive statistics of muscle dynamics data.
+        gps (Optional[dict]): Gait Profile Score (GPS) data.
+        gvs (Optional[dict]): Gait Variable Score (GVS) data.
+        coactivations (dict): Coactivation data for muscle pairs.
+        subjectInfo (Optional[dict]): Information about the subject.
+        experimentalInfo (Optional[dict]): Information about the experiment.
+        modelInfo (Optional[dict]): Information about the biomechanical model used.
+        emgInfo (Optional[dict]): Additional information about EMG data.
+        kinematicInfo (Optional[dict]): Additional information about kinematic data.
+        kineticInfo (Optional[dict]): Additional information about kinetic data.
+        stpInfo (Optional[dict]): Additional information about spatiotemporal parameters.
+        scoreInfo (Optional[dict]): Additional information about scores.
+        muscleGeometryInfo (dict): Additional information about muscle geometry.
+        muscleDynamicInfo (dict): Additional information about muscle dynamics.
+    
+    
     Examples:
         If you want to return the mean, sd, and median of the left hip angles, time normalized from left gait events
 
@@ -75,67 +97,181 @@ class Analysis():
         self.muscleGeometryInfo = {}
         self.muscleDynamicsInfo = {}
 
-    def setStp(self, inDict):
+    def setStp(self, inDict:Dict):
+        """
+        Set spatiotemporal parameters.
+
+        Args:
+            inDict (Dict): Dictionary of spatiotemporal parameters.
+        """
         self.stpStats = inDict
 
-    def setKinematic(self, data, pst={}):
+    def setKinematic(self, data:Dict, pst:Dict={}):
+        """
+        Set kinematic data.
+
+        Args:
+            data (Dict): Kinematic data.
+            pst (Dict): Spatiotemporal parameters associated with kinematic data.
+        """
         self.kinematicStats.data = data
         self.kinematicStats.pst = pst
 
-    def setKinetic(self, data, pst={}, optionalData={}):
+    def setKinetic(self, data:Dict, pst:Dict={}, optionalData:Dict={}):
+        """
+        Set kinetic data.
+
+        Args:
+            data (Dict): Kinetic data.
+            pst (Dict): Spatiotemporal parameters associated with kinetic data.
+            optionalData (Dict): Optional additional kinetic data.
+        """
         self.kineticStats.data = data
         self.kineticStats.pst = pst
         self.kineticStats.optionalData = optionalData
 
-    def setEmg(self, data, pst={}):
+    def setEmg(self, data: Dict, pst: Dict = {}):
+        """
+        Set EMG data.
+
+        Args:
+            data (Dict): EMG data.
+            pst (Dict): Spatiotemporal parameters associated with EMG data.
+        """
         self.emgStats.data = data
         self.emgStats.pst = pst
 
-    def setMuscleGeometry(self, data, pst={}):
+    def setMuscleGeometry(self, data: Dict, pst: Dict = {}):
+        """
+        Set muscle geometry data.
+
+        Args:
+            data (Dict): Muscle geometry data.
+            pst (Dict): Spatiotemporal parameters associated with muscle geometry data.
+        """
         self.muscleGeometryStats.data = data
         self.muscleGeometryStats.pst = pst
 
 
-    def setGps(self, GpsStatsOverall, GpsStatsContext):
+    def setGps(self, GpsStatsOverall: Dict, GpsStatsContext: Dict):
+        """
+        Set Gait Profile Score (GPS) data.
+
+        Args:
+            GpsStatsOverall (Dict): Overall GPS data.
+            GpsStatsContext (Dict): GPS data by context (e.g., left, right).
+        """
         self.gps = {}
         self.gps["Overall"] = GpsStatsOverall
         self.gps["Context"] = GpsStatsContext
 
-    def setGvs(self, gvsStats):
+    def setGvs(self, gvsStats: Dict):
+        """
+        Set Gait Variable Score (GVS) data.
+
+        Args:
+            gvsStats (Dict): GVS data.
+        """
         self.gvs = gvsStats
 
-    def setSubjectInfo(self, subjectDict):
+    def setSubjectInfo(self, subjectDict: Dict):
+        """
+        Set subject information.
+
+        Args:
+            subjectDict (Dict): Dictionary containing subject information.
+        """
         self.subjectInfo = subjectDict
 
-    def setExperimentalInfo(self, experDict):
+    def setExperimentalInfo(self, experDict: Dict):
+        """
+        Set experimental information.
+
+        Args:
+            experDict (Dict): Dictionary containing experimental information.
+        """
         self.experimentalInfo = experDict
 
-    def setModelInfo(self, modeltDict):
-        self.modelInfo = modeltDict
+    def setModelInfo(self, modelDict: Dict):
+        """
+        Set model information.
 
-    def setStpInfo(self, iDict):
+        Args:
+            modelDict (Dict): Dictionary containing biomechanical model information.
+        """
+        self.modelInfo = modelDict
+
+    def setStpInfo(self, iDict: Dict):
+        """
+        Set additional information about spatiotemporal parameters.
+
+        Args:
+            iDict (Dict): Dictionary containing additional spatiotemporal information.
+        """
         self.stpInfo = iDict
 
-    def setKinematicInfo(self, iDict):
+    def setKinematicInfo(self, iDict: Dict):
+        """
+        Set additional information about kinematic data.
+
+        Args:
+            iDict (Dict): Dictionary containing additional kinematic information.
+        """
         self.kinematicInfo = iDict
 
-    def setKineticInfo(self, iDict):
+    def setKineticInfo(self, iDict: Dict):
+        """
+        Set additional information about kinetic data.
+
+        Args:
+            iDict (Dict): Dictionary containing additional kinetic information.
+        """
         self.kineticInfo = iDict
 
-    def setEmgInfo(self, iDict):
+    def setEmgInfo(self, iDict: Dict):
+        """
+        Set additional information about EMG data.
+
+        Args:
+            iDict (Dict): Dictionary containing additional EMG information.
+        """
         self.emgInfo = iDict
 
-    def setScoreInfo(self, iDict):
+    def setScoreInfo(self, iDict: Dict):
+        """
+        Set additional information about scores.
+
+        Args:
+            iDict (Dict): Dictionary containing additional scoring information.
+        """
         self.scoreInfo = iDict
 
-    def setMuscleGeometryInfo(self, iDict):
+    def setMuscleGeometryInfo(self, iDict: Dict):
+        """
+        Set additional information about muscle geometry.
+
+        Args:
+            iDict (Dict): Dictionary containing additional muscle geometry information.
+        """
         self.muscleGeometryInfo = iDict
 
-    def setMuscleDynamicInfo(self, iDict):
+    def setMuscleDynamicInfo(self, iDict: Dict):
+        """
+        Set additional information about muscle dynamics.
+
+        Args:
+            iDict (Dict): Dictionary containing additional muscle dynamics information.
+        """
         self.muscleDynamicInfo = iDict
 
 
-    def getKinematicCycleNumbers(self):
+    def getKinematicCycleNumbers(self) -> Tuple[int, int]:
+        """
+        Get the number of kinematic cycles for the left and right contexts.
+
+        Returns:
+            Tuple[int, int]: Tuple containing the number of left and right kinematic cycles.
+        """
         for label, context in self.kinematicStats.data.keys():
             if context == "Left":
                 n_leftCycles = self.kinematicStats.data[label, context]["values"].__len__(
@@ -149,7 +285,16 @@ class Analysis():
                 break
         return n_leftCycles, n_rightCycles
 
-    def setCoactivation(self, labelEmg1, labelEmg2, context, res):
+    def setCoactivation(self, labelEmg1: str, labelEmg2: str, context: str, res: Dict):
+        """
+        Set coactivation data for a pair of muscles in a specific context.
+
+        Args:
+            labelEmg1 (str): First EMG label.
+            labelEmg2 (str): Second EMG label.
+            context (str): Context of coactivation (e.g., 'Left', 'Right').
+            res (Dict): Dictionary containing coactivation results.
+        """
         self.coactivations[labelEmg1, labelEmg2, context] = res
 
 
@@ -179,14 +324,17 @@ class AnalysisBuilder(AbstractBuilder):
 
 
     Args:
-         cycles(pyCGM2.Processing.cycle.Cycles): Cycles instance built from CycleFilter
-         kinematicLabelsDict (dict): dictionary with two items (Left and Right) grouping kinematic output label
-         kineticLabelsDict (dict): dictionary with two items (Left and Right) grouping kinetic output label
-         pointlabelSuffix (dict) - suffix ending kinematicLabels and kineticLabels dictionnaries
-         emgLabelList (list of str): labels of used emg
-         subjectInfos (dict): information about the subject
-         modelInfos (dict): information about the model
-         experimentalInfos (dict): information about the experimental conditions
+        cycles (Cycles): Cycles instance built from `CycleFilter`.
+        kinematicLabelsDict (Optional[Dict[str, List[str]]]): Dictionary grouping kinematic output labels.
+        kineticLabelsDict (Optional[Dict[str, List[str]]]): Dictionary grouping kinetic output labels.
+        pointlabelSuffix (Optional[str]): Suffix for kinematic and kinetic labels.
+        emgLabelList (Optional[List[str]]): List of EMG labels.
+        geometryMuscleLabelsDict (Optional[Dict[str, List[str]]]): Dictionary grouping muscle geometry labels.
+        dynamicMuscleLabelsDict (Optional[Dict[str, List[str]]]): Dictionary grouping muscle dynamic labels.
+        modelInfos (Optional[Dict]): Information about the model.
+        subjectInfos (Optional[Dict]): Information about the subject.
+        experimentalInfos (Optional[Dict]): Information about the experimental conditions.
+        emgs (Optional[Any]): Additional EMG data.
 
 
     **Notes**
@@ -196,14 +344,14 @@ class AnalysisBuilder(AbstractBuilder):
 
     """
 
-    def __init__(self, cycles,
-                 kinematicLabelsDict=None,
-                 kineticLabelsDict=None,
-                 pointlabelSuffix=None,
-                 emgLabelList=None,
-                 geometryMuscleLabelsDict=None,
-                 dynamicMuscleLabelsDict=None,
-                 modelInfos=None, subjectInfos=None, experimentalInfos=None, emgs=None):
+    def __init__(self, cycles:Cycles,
+                 kinematicLabelsDict:Optional[Dict[str, List[str]]]=None,
+                 kineticLabelsDict:Optional[Dict[str, List[str]]]=None,
+                 pointlabelSuffix:Optional[str]=None,
+                 emgLabelList:Optional[List[str]]=None,
+                 geometryMuscleLabelsDict:Optional[Dict[str, List[str]]]=None,
+                 dynamicMuscleLabelsDict:Optional[Dict[str, List[str]]]=None,
+                 modelInfos:Optional[Dict]=None, subjectInfos:Optional[Dict]=None, experimentalInfos:Optional[Dict]=None, emgs:Optional[Any]=None):
 
 
         super(AnalysisBuilder, self).__init__(cycles=cycles)
@@ -222,7 +370,11 @@ class AnalysisBuilder(AbstractBuilder):
         pass
 
     def computeKinematics(self):
-        """ Compute descriptive stats of the kinematic parameters
+        """
+        Compute descriptive statistics of kinematic parameters.
+
+        Returns:
+            Tuple[Dict, Dict]: Tuple containing the output dictionary of kinematic data and the associated spatiotemporal parameters.
         """
 
         out = {}
@@ -258,7 +410,11 @@ class AnalysisBuilder(AbstractBuilder):
         return out, outPst
 
     def computeKinetics(self):
-        """ Compute descriptive stats of the kinetic parameters
+        """
+        Compute descriptive statistics of kinetic parameters.
+
+        Returns:
+            Tuple[Dict, Dict, Dict]: Tuple containing the output dictionary of kinetic data, the associated spatiotemporal parameters, and optional additional data.
         """
 
         out = {}
@@ -315,7 +471,11 @@ class AnalysisBuilder(AbstractBuilder):
         return out, outPst, outOptional
 
     def computeEmgEnvelopes(self):
-        """Compute descriptive stats of the  emg envelops
+        """
+        Compute descriptive statistics of EMG envelopes.
+
+        Returns:
+            Tuple[Dict, Dict]: Tuple containing the output dictionary of EMG data and the associated spatiotemporal parameters.
         """
         out = {}
         outPst = {}
@@ -334,7 +494,11 @@ class AnalysisBuilder(AbstractBuilder):
         return out, outPst
 
     def computeMuscleGeometry(self):
-        """ Compute descriptive stats of the kinematic parameters
+        """
+        Compute descriptive statistics of muscle geometry parameters.
+
+        Returns:
+            Tuple[Dict, Dict]: Tuple containing the output dictionary of muscle geometry data and the associated spatiotemporal parameters.
         """
 
         out = {}
@@ -370,7 +534,11 @@ class AnalysisBuilder(AbstractBuilder):
         return out, outPst
 
     def computeMuscleDynamic(self):
-        """ Compute descriptive stats of the kinetic parameters
+        """
+        Compute descriptive statistics of muscle dynamic parameters.
+
+        Returns:
+            Tuple[Dict, Dict, Dict]: Tuple containing the output dictionary of muscle dynamic data, the associated spatiotemporal parameters, and optional additional data.
         """
 
         out = {}
@@ -427,34 +595,34 @@ class AnalysisBuilder(AbstractBuilder):
         return out, outPst, outOptional
 
 class GaitAnalysisBuilder(AbstractBuilder):
-    """Gait analysis Builder.
+    """
+    Builder for constructing a gait analysis instance.
+
+    This builder computes spatiotemporal, kinematic, kinetic, and EMG parameters.
 
     Args:
-         cycles(pyCGM2.Processing.cycle.Cycles): Cycles instance built from `CycleFilter`
-         kinematicLabelsDict (dict): dictionary with two items (Left and Right) grouping kinematic output label
-         kineticLabelsDict (dict): dictionary with two items (Left and Right) grouping kinetic output label
-         pointlabelSuffix (dict) - suffix ending kinematicLabels and kineticLabels dictionnaries
-         emgLabelList (list of str): labels of used emg
-         subjectInfos (dict): information about the subject
-         modelInfos (dict): information about the model
-         experimentalInfos (dict): information about the experimental conditions
-
-
-    **Notes**
-
-        `modelInfos`,`experimentalInfos`, `subjectInfos` are simple dictionaries used to store basic information.
-        When the analysis is exported as speadsheet, these informations appear as columns.
-
+        cycles (Cycles): Cycles instance built from `CycleFilter`.
+        kinematicLabelsDict (Optional[Dict[str, List[str]]]): Dictionary grouping kinematic output labels.
+        kineticLabelsDict (Optional[Dict[str, List[str]]]): Dictionary grouping kinetic output labels.
+        pointlabelSuffix (Optional[str]): Suffix for kinematic and kinetic labels.
+        emgLabelList (Optional[List[str]]): List of EMG labels.
+        geometryMuscleLabelsDict (Optional[Dict[str, List[str]]]): Dictionary grouping muscle geometry labels.
+        dynamicMuscleLabelsDict (Optional[Dict[str, List[str]]]): Dictionary grouping muscle dynamic labels.
+        modelInfos (Optional[Dict]): Information about the model.
+        subjectInfos (Optional[Dict]): Information about the subject.
+        experimentalInfos (Optional[Dict]): Information about the experimental conditions.
+        emgs (Optional[Any]): Additional EMG data.
     """
+    
 
-    def __init__(self, cycles,
-                 kinematicLabelsDict=None,
-                 kineticLabelsDict=None,
-                 pointlabelSuffix=None,
-                 emgLabelList=None,
-                 geometryMuscleLabelsDict=None,
-                 dynamicMuscleLabelsDict=None,
-                 modelInfos=None, subjectInfos=None, experimentalInfos=None, emgs=None):
+    def __init__(self, cycles:Cycles,
+                 kinematicLabelsDict:Optional[Dict[str, List[str]]]=None,
+                 kineticLabelsDict:Optional[Dict[str, List[str]]]=None,
+                 pointlabelSuffix:Optional[str]=None,
+                 emgLabelList:Optional[List[str]]=None,
+                 geometryMuscleLabelsDict:Optional[Dict[str, List[str]]]=None,
+                 dynamicMuscleLabelsDict:Optional[Dict[str, List[str]]]=None,
+                 modelInfos:Optional[Dict]=None, subjectInfos:Optional[Dict]=None, experimentalInfos:Optional[Dict]=None, emgs:Optional[Any]=None):
 
 
         super(GaitAnalysisBuilder, self).__init__(cycles=cycles)
@@ -467,7 +635,8 @@ class GaitAnalysisBuilder(AbstractBuilder):
         self.m_dynamicMuscleLabelsDict = dynamicMuscleLabelsDict
 
     def computeSpatioTemporel(self):
-        """ compute descriptive stats of the spatio-temporal parameters
+        """
+        Compute spatiotemporal parameters. This method is currently not implemented.
         """
         out = {}
 
@@ -506,7 +675,11 @@ class GaitAnalysisBuilder(AbstractBuilder):
         return out
 
     def computeKinematics(self):
-        """ Compute descriptive stats of the kinematic parameters
+        """
+        Compute descriptive statistics of kinematic parameters.
+
+        Returns:
+            Tuple[Dict, Dict]: Tuple containing the output dictionary of kinematic data and the associated spatiotemporal parameters.
         """
 
         out = {}
@@ -550,7 +723,11 @@ class GaitAnalysisBuilder(AbstractBuilder):
         return out, outPst
 
     def computeKinetics(self):
-        """ Compute descriptive stats of the kinetic parameters
+        """
+        Compute descriptive statistics of kinetic parameters.
+
+        Returns:
+            Tuple[Dict, Dict, Dict]: Tuple containing the output dictionary of kinetic data, the associated spatiotemporal parameters, and optional additional data.
         """
 
         out = {}
@@ -614,7 +791,11 @@ class GaitAnalysisBuilder(AbstractBuilder):
         return out, outPst, outOptional
 
     def computeEmgEnvelopes(self):
-        """ Compute descriptive stats of the emg envelops
+        """
+        Compute descriptive statistics of EMG envelopes.
+
+        Returns:
+            Tuple[Dict, Dict]: Tuple containing the output dictionary of EMG data and the associated spatiotemporal parameters.
         """
 
         out = {}
@@ -644,7 +825,11 @@ class GaitAnalysisBuilder(AbstractBuilder):
         return out, outPst
 
     def computeMuscleGeometry(self):
-        """ Compute descriptive stats of the kinematic parameters
+        """
+        Compute descriptive statistics of muscle geometry parameters.
+
+        Returns:
+            Tuple[Dict, Dict]: Tuple containing the output dictionary of muscle geometry data and the associated spatiotemporal parameters.
         """
 
         out = {}
@@ -688,7 +873,11 @@ class GaitAnalysisBuilder(AbstractBuilder):
         return out, outPst
 
     def computeMuscleDynamic(self):
-        """ Compute descriptive stats of the kinetic parameters
+        """
+        Compute descriptive statistics of muscle dynamic parameters.
+
+        Returns:
+            Tuple[Dict, Dict, Dict]: Tuple containing the output dictionary of muscle dynamic data, the associated spatiotemporal parameters, and optional additional data.
         """
 
         out = {}

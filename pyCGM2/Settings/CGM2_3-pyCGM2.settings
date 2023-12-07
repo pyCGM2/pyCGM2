@@ -91,6 +91,8 @@ Fitting:
         RPAT: 0
         LTHLD: 0
         LPAT: 0
+        LCAL: 100
+        RCAL: 100
 
 
 ################

@@ -1,9 +1,10 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
+"""
+This module is designed to classify gait patterns. It utilizes normative data to classify and analyze gait patterns.
 
-
+The `PFKEprocedure` is a specific implementation that follows the guidelines set out by Sangeux et al. in 2015. It is 
+capable of classifying gait patterns based on specific criteria and thresholds related to the movement of the plantar 
+flexors and knee extensors.
+"""
 import numpy as np
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
@@ -13,32 +14,39 @@ from pyCGM2.Report import plot
 
 LOGGER = pyCGM2.LOGGER
 
+from pyCGM2.Processing.analysis import Analysis
+from pyCGM2.Report.normativeDatasets import NormativeData
+from typing import List, Tuple, Dict, Optional,Union,Any
+
 # --- abstract procedure
 class ClassificationProcedure(object):
+    """
+    Base class for classification procedures.
+    """
     def __init__(self):
         pass
 
 
 class PFKEprocedure(ClassificationProcedure):
-    """PlantarFlexor-KneeExtensor classification procedure defined by Sangeux et al 2015
+    """
+    Implements the PlantarFlexor-KneeExtensor (PFKE) classification procedure.
+
+    This procedure classifies gait patterns based on the relationship between ankle and knee movements during gait, as defined by Sangeux et al. in 2015.
 
     Args:
-        normativeData (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance
-        midStanceDefinition (str): mid stance frame boundaries. Choice: PFKE (20,45), Perry (10,30) or Baker (10,50))
-        dataType (str): chosen data type for classification. Choice cycle,mean,median.If cycle, knee and ankle scores are the median score from all cycle values with the normative mean value
-        side (str): event context (Both,Left or Right)
+        normativeData (NormativeData): Normative data instance used for classification.
+        midStanceDefinition (str): Defines the mid-stance frame boundaries. Choices: "PFKE" (20,45), "Perry" (10,30), or "Baker" (10,50).
+        dataType (str): Type of data used for classification. Choices: "cycle", "mean", "median".
+        side (str): Event context to classify ("Both", "Left", or "Right").
 
-    **Reference**
-
-      - Sangeux, Morgan; Rodda, Jill; Graham, H. Kerr (2015)
-      Sagittal gait patterns in cerebral palsy: the plantarflexor-knee extension couple index.
-      In : Gait & posture, vol. 41, n° 2, p. 586–591. DOI: 10.1016/j.gaitpost.2014.12.019.
-
-
+    Reference:
+        Sangeux, Morgan; Rodda, Jill; Graham, H. Kerr (2015)
+        Sagittal gait patterns in cerebral palsy: the plantarflexor-knee extension couple index.
+        Gait & Posture, 41(2), 586–591. DOI: 10.1016/j.gaitpost.2014.12.019.
 
     """
 
-    def __init__(self, normativeData,midStanceDefinition = "PFKE",dataType = "cycle",side = "Both"):
+    def __init__(self, normativeData:NormativeData,midStanceDefinition:str = "PFKE",dataType:str = "cycle",side:str = "Both"):
         super(PFKEprocedure, self).__init__()
 
         self.m_normativeData = normativeData
@@ -95,13 +103,16 @@ class PFKEprocedure(ClassificationProcedure):
 
         return SagPatternClass,DistPFKE
 
-    def run(self, analysis,pointSuffix):
-        """run the procedure
+    def run(self, analysis:Analysis,pointSuffix:Optional[str]):
+        """
+        Execute the PFKE classification procedure on the provided analysis data.
 
         Args:
-            analysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
-            pointSuffix (str): suffix added to model outputs.
+            analysis (Analysis): Analysis instance containing gait data.
+            pointSuffix (Optional[str]): Suffix added to model outputs.
 
+        Returns:
+            Dict: Classification results for the specified limbs.
         """
 
         if pointSuffix is None:
@@ -195,11 +206,16 @@ class PFKEprocedure(ClassificationProcedure):
 
         return self.m_sagPattern
 
-    def plot(self,analysis, title=None):
-        """plot PFKE panels
+    def plot(self,analysis:Analysis, title:Optional[str]=None):
+        """
+        Generates a plot of the PFKE classification results.
 
         Args:
-            analysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+            analysis (Analysis): Analysis instance containing gait data.
+            title (Optional[str]): Title for the plot.
+
+        Returns:
+            matplotlib.figure.Figure: The generated plot figure.
         """
         fig = plt.figure(facecolor="white")
         gs = gridspec.GridSpec(nrows=2, ncols=2, height_ratios=[1, 3])

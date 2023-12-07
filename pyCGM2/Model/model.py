@@ -964,9 +964,10 @@ class Model(object):
         Kwargs:
             projection (enums.MomentProjection): Coordinate system used to project the joint moment.
 
-        ```python
-            model.setClinicalDescriptor("LHip",enums.DataType.Angle, [0,1,2],[-1.0,-1.0,-1.0], [0.0,0.0,0.0]
-        ```
+        Examples:
+            ```python
+            model.setClinicalDescriptor("LHip", enums.DataType.Angle, [0,1,2], [-1.0,-1.0,-1.0], [0.0,0.0,0.0])
+            ```
 
         """
 

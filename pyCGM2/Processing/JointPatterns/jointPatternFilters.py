@@ -1,25 +1,46 @@
 # -*- coding: utf-8 -*-
+"""
+This module provides a filter for analyzing and interpreting joint patterns in motion data. 
+It allows for the detection of specific patterns in joint movements using defined procedures 
+and can be used to filter and extract relevant information from these analyses.
+
+"""
 import numpy as np
 import pandas as pd
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-from pyCGM2.Signal.detect_peaks import detect_peaks
-from pyCGM2.Math import derivation
 
-from pyCGM2.Processing import analysisHandler
 import re
+
+from pyCGM2.Processing.JointPatterns.jointPatternProcedures import JointPatternProcedure
+from pyCGM2.Processing.analysis import Analysis
+from typing import List, Tuple, Dict, Optional,Union,Any
 
 class JointPatternFilter(object):
     """
+    Filter for analyzing and interpreting joint patterns in movement analyses.
+
+    Args:
+        jointPatternProcedure (JointPatternProcedure): The procedure used for joint pattern detection.
+        analysis (Analysis): The analysis instance containing the data to be analyzed.
     """
 
-    def __init__(self, jointPatternProcedure, analysis):
+    def __init__(self, jointPatternProcedure:JointPatternProcedure, analysis:Analysis):
 
         self.m_procedure = jointPatternProcedure
         self.m_analysis = analysis
 
     @classmethod
-    def interpretCriteria(cls,criteria):
+    def interpretCriteria(cls,criteria:str):
+        """
+        Interprets criteria for joint pattern models.
+
+        Args:
+            criteria (str): Criteria defined for pattern detection.
+
+        Returns:
+            Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]: Returns primary and secondary criteria.
+        """
         primaries=[]
         secondaries=[]
 
@@ -44,10 +65,26 @@ class JointPatternFilter(object):
 
 
     def getValues(self):
+        """
+        Extracts values from detected joint patterns.
+
+        Returns:
+            pd.DataFrame: DataFrame containing the extracted values.
+        """
         dataframeData = self.m_procedure.detectValue(self.m_analysis)
         return dataframeData
 
-    def getPatterns(self,filter=False):
+    def getPatterns(self,filter:bool=False):
+        """
+        Detects and returns joint patterns.
+
+        Args:
+            filter (bool, optional): If True, filters the results. Defaults to False.
+
+        Returns:
+            pd.DataFrame: DataFrame of detected joint patterns.
+        """
+
         data = self.m_procedure.detectValue(self.m_analysis)
         dataframePattern = self.m_procedure.detectPattern()
 

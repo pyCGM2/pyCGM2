@@ -25,5 +25,10 @@ dependencies:
 - xlwt
 - lxml
 - pip
+- myst-parser
+- sphinx
+- sphinx-argparse
+- sphinxcontrib-mermaid
+- sphinx_rtd_theme
 
 

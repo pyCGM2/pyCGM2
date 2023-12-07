@@ -1,20 +1,15 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
-
 """
-A *discrete point* is a value at a specific frame of a cycle.
+This module focuses on extracting discrete points from biomechanical data cycles. 
+Discrete points are specific values at particular frames within a cycle. 
+Using the DiscretePointsFilter, this module enables the extraction of discrete values 
+according to a specified strategy defined by a procedure. An example procedure used 
+is the BenedettiProcedure, which follows the recommendations from Benedetti et al (1998) 
+for gait analysis in clinical applications.
 
-In this module, through the filter `DiscretePointsFilter`, the goal is to get series of discrete values extracted according a
-specific strategy (ie a procedure). For instance, the `BenedettiProcedure` extracts dicrete points
-recommanded in Benededdi et al (1998):
-
-**References**:
-
-Benedetti, M. G.; Catani, F.; Leardini, A.; Pignotti, E.; Giannini, S. (1998) Data management in gait analysis for clinical applications. In : Clinical biomechanics (Bristol, Avon), vol. 13, n° 3, p. 204–215. DOI: 10.1016/s0268-0033(97)00041-7.
-
-
+References:
+Benedetti, M. G.; Catani, F.; Leardini, A.; Pignotti, E.; Giannini, S. (1998) 
+Data management in gait analysis for clinical applications. 
+Clinical Biomechanics (Bristol, Avon), vol. 13, n° 3, p. 204–215. DOI: 10.1016/s0268-0033(97)00041-7.
 """
 import numpy as np
 import pandas as pd
@@ -25,23 +20,30 @@ from pyCGM2.Processing import exporter
 from pyCGM2.Signal.detect_peaks import detect_peaks
 from pyCGM2.Math import derivation
 
+from pyCGM2.Processing.DiscretePoints.discretePointProcedures import DiscretePointProcedure
+from pyCGM2.Processing.analysis import Analysis
+from typing import List, Tuple, Dict, Optional,Union,Any
 
 # --- FILTER ----
 
 
 class DiscretePointsFilter(object):
-    """Discrete point filter
+    """
+    Filter to extract discrete points from biomechanical data cycles.
 
     Args:
-        discretePointProcedure (pyCGM2.Processing.DiscrePoints.discretePointProcedures.DiscretePointProcedure): a procedure
-        analysis (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
-        modelInfo (dict): information about the model
-        subjInfo (dict): information about the subject
-        condExpInfo (dict): information about the experiment
-
+        discretePointProcedure (DiscretePointProcedure): Procedure to extract discrete points.
+        analysis (Analysis): Analysis instance containing biomechanical data.
+        modelInfo (Optional[Dict]): Information about the biomechanical model.
+        subjInfo (Optional[Dict]): Information about the subject.
+        condExpInfo (Optional[Dict]): Information about the experimental conditions.
     """
 
-    def __init__(self, discretePointProcedure, analysis,modelInfo=None,subjInfo=None,condExpInfo=None):
+    def __init__(self, discretePointProcedure:DiscretePointProcedure, 
+                 analysis:Analysis,
+                 modelInfo:Optional[Dict]=None,
+                 subjInfo:Optional[Dict]=None,
+                 condExpInfo:Optional[Dict]=None):
 
         self.m_procedure = discretePointProcedure
         self.m_analysis=analysis
@@ -51,36 +53,40 @@ class DiscretePointsFilter(object):
         self.m_subjInfo = subjInfo
         self.m_condExpInfo = condExpInfo
 
-    def setModelInfo(self, modelInfo):
-        """Set model information
+    def setModelInfo(self, modelInfo:Dict):
+        """
+        Set model information.
 
         Args:
-            modelInfo (dict): model information
-
+            modelInfo (Dict): Model information.
         """
         self.m_modelInfo = modelInfo
 
-    def setSubjInfo(self, subjInfo):
-        """Set subject information
+    def setSubjInfo(self, subjInfo:Dict):
+        """
+        Set subject information.
 
         Args:
-            subjInfo (dict): subject information
-
+            subjInfo (Dict): Subject information.
         """
         self.m_subjInfo = subjInfo
 
-    def setCondExpInf(self, condExpInfo):
-        """Set experimental information
+    def setCondExpInf(self, condExpInfo:Dict):
+        """
+        Set experimental condition information.
 
         Args:
-            condExpInfo (dict): experimental information
-
+            condExpInfo (Dict): Experimental condition information.
         """
         self.m_condExpInfo = condExpInfo
 
 
     def getOutput(self):
-        """ get the output dataframe with all discrete values according to the procedure
+        """
+        Get the output DataFrame with all discrete values according to the procedure.
+
+        Returns:
+            pd.DataFrame: DataFrame containing the discrete values extracted.
         """
         self.dataframe = self.m_procedure.detect(self.m_analysis)
 

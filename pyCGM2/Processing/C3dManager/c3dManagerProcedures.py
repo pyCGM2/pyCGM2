@@ -1,40 +1,46 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
+"""
+This module provides procedures for managing C3D files used in biomechanical analyses. 
+It includes various procedures to organize and disseminate C3D data sets based on different 
+computational objectives such as spatio-temporal analysis, kinematics, kinetics, and EMG. 
+The procedures are designed to work with the `C3dManagerFilter` to facilitate the selection 
+and categorization of C3D files for subsequent analyses.
+"""
 
-"""
-This module gathers the procedures callable from the c3dManagerFilters
-"""
 
 
 from pyCGM2.Tools import btkTools
+import btk
 
+from typing import List, Tuple, Dict, Optional,Union,Any
 
+from pyCGM2.Processing.C3dManager.c3dManager import C3dManager
 
 class C3dManagerProcedure(object):
+    """
+    Base class for C3D management procedures.
+
+    This class serves as a foundational structure for specific procedures that organize C3D trials.
+    Derived classes should implement specific strategies for managing C3D files.
+    """
     def __init__(self):
         pass
 
 class UniqueBtkAcqSetProcedure(C3dManagerProcedure):
-    """the same combinaison (btk.Acquisition/c3d filenames) is used for all
-    computational objectives
+    """
+    A procedure where the same combination of btk.Acquisition instances and C3D filenames 
+    is used for all computational objectives.
 
     Args:
-        data_path (str): folder path
-        fileLst (list): c3d filenames
-        acqs (list): btk.Acquisition instances
+        data_path (str): Directory path of C3D files.
+        fileLst (List[str]): List of C3D filenames.
+        acqs (List[btk.btkAcquisition]): List of btk.Acquisition instances.
 
-    **Warning:**
-
-    btk.Acquisition instances must match filenames.
-    The first btk.acquisition instance must be the btk.acquisition from the first c3d filename.
-
-
+    Warning:
+        btk.btkAcquisition instances must match the filenames provided.
     """
+    
 
-
-    def __init__(self, data_path, fileLst,acqs):
+    def __init__(self, data_path:str, fileLst:List[str],acqs:List[btk.btkAcquisition]):
         super(UniqueBtkAcqSetProcedure,self).__init__()
         self.m_files = fileLst
         self.m_data_path = data_path
@@ -42,16 +48,18 @@ class UniqueBtkAcqSetProcedure(C3dManagerProcedure):
 
 
 
-    def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag,muscleGeometryFlag,muscleDynamicFlag ):
-        """disseminate the combinaison (btk.Acquisition/c3d filenames)
+    def generate(self,c3dManager:C3dManager,spatioTempFlag:bool,kinematicFlag:bool,kineticFlag:bool,emgFlag:bool,muscleGeometryFlag:bool,muscleDynamicFlag:bool ):
+        """
+        Disseminates a combination of btk.btkAcquisition instances and C3D filenames across different computational categories in the C3dManager instance.
 
         Args:
-            c3dManager (pyCGM2.Processing.c3dManager.C3dManager): a `c3dManager` instance.
-            spatioTempFlag (bool): enable populating the `spatioTemporal` attribute of the  `c3dManager` instance
-            kinematicFlag (bool): enable populating the `kinematic` attribute of the  `c3dManager` instance
-            kineticFlag (bool): enable populating the `kinetic` attribute of the  `c3dManager` instance
-            emgFlag (bool): enable populating the `emg` attribute of the  `c3dManager` instance
-
+            c3dManager (C3dManager): The C3dManager instance to be populated.
+            spatioTempFlag (bool): If True, populates the spatio-temporal category.
+            kinematicFlag (bool): If True, populates the kinematic category.
+            kineticFlag (bool): If True, populates the kinetic category.
+            emgFlag (bool): If True, populates the EMG category.
+            muscleGeometryFlag (bool): If True, populates the muscle geometry category.
+            muscleDynamicFlag (bool): If True, populates the muscle dynamic category.
         """
 
 
@@ -77,31 +85,33 @@ class UniqueBtkAcqSetProcedure(C3dManagerProcedure):
 
 
 class UniqueC3dSetProcedure(C3dManagerProcedure):
-    """the same c3d filenames is used for all computational objectives
+    """
+    Procedure using the same C3D filenames for all computational objectives.
 
     Args:
-        data_path (str): folder path
-        fileLst (list): c3d filenames
+        data_path (str): Path to the folder containing C3D files.
+        fileLst (List[str]): List of C3D filenames to be used across all computational categories.
     """
-
-
-    def __init__(self, data_path, fileLst):
+    
+    def __init__(self, data_path:str, fileLst:List[str]):
         super(UniqueC3dSetProcedure,self).__init__()
         self.m_files = fileLst
         self.m_data_path = data_path
 
 
 
-    def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag,muscleGeometryFlag,muscleDynamicFlag):
-        """disseminate c3d filenames
+    def generate(self,c3dManager:C3dManager,spatioTempFlag:bool,kinematicFlag:bool,kineticFlag:bool,emgFlag:bool,muscleGeometryFlag:bool,muscleDynamicFlag:bool ):
+        """
+        Disseminates a combination of btk.btkAcquisition instances and C3D filenames across different computational categories in the C3dManager instance.
 
         Args:
-            c3dManager (pyCGM2.Processing.c3dManager.C3dManager): a `c3dManager` instance.
-            spatioTempFlag (bool): enable populating the `spatioTemporal` attribute of the  `c3dManager` instance
-            kinematicFlag (bool): enable populating the `kinematic` attribute of the  `c3dManager` instance
-            kineticFlag (bool): enable populating the `kinetic` attribute of the  `c3dManager` instance
-            emgFlag (bool): enable populating the `emg` attribute of the  `c3dManager` instance
-
+            c3dManager (C3dManager): The C3dManager instance to be populated.
+            spatioTempFlag (bool): If True, populates the spatio-temporal category.
+            kinematicFlag (bool): If True, populates the kinematic category.
+            kineticFlag (bool): If True, populates the kinetic category.
+            emgFlag (bool): If True, populates the EMG category.
+            muscleGeometryFlag (bool): If True, populates the muscle geometry category.
+            muscleDynamicFlag (bool): If True, populates the muscle dynamic category.
         """
 
 
@@ -132,15 +142,19 @@ class UniqueC3dSetProcedure(C3dManagerProcedure):
             c3dManager.muscleDynamic["Acqs"],c3dManager.muscleDynamic["Filenames"], = btkTools.buildTrials(self.m_data_path,self.m_files)
 
 class DistinctC3dSetProcedure(C3dManagerProcedure):
-    """Distinct c3d sets are for each computational objectives
+    """
+    Procedure using distinct C3D sets for each computational objective.
 
     Args:
-        data_path (str): folder path
-        stp_fileLst (list): c3d filenames for the spatioTemporal computation
-        kinematic_fileLst (list): c3d filenames for the kinematic computation
-        kinetic_fileLst (list): c3d filenames for the kinetics computation
-        emg_fileLst (list): c3d filenames for the emg computation
+        data_path (str): Path to the folder containing C3D files.
+        stp_fileLst (List[str]): C3D filenames for spatio-temporal computation.
+        kinematic_fileLst (List[str]): C3D filenames for kinematic computation.
+        kinetic_fileLst (List[str]): C3D filenames for kinetic computation.
+        emg_fileLst (List[str]): C3D filenames for EMG computation.
+        muscleGeometry_fileLst (List[str]): C3D filenames for muscle geometry computation.
+        muscleDynamic_fileLst (List[str]): C3D filenames for muscle dynamic computation.
     """
+    
 
     def __init__(self, data_path, stp_fileLst, kinematic_fileLst, kinetic_fileLst, emg_fileLst, 
                 muscleGeometry_fileLst, muscleDynamic_fileLst):
@@ -154,16 +168,18 @@ class DistinctC3dSetProcedure(C3dManagerProcedure):
         self.m_files_muscleGeometry = muscleGeometry_fileLst
         self.m_files_muscleDynamic = muscleDynamic_fileLst
 
-    def generate(self,c3dManager,spatioTempFlag,kinematicFlag,kineticFlag,emgFlag,muscleGeometryFlag,muscleDynamicFlag):
-        """disseminate c3d sets
+    def generate(self,c3dManager:C3dManager,spatioTempFlag:bool,kinematicFlag:bool,kineticFlag:bool,emgFlag:bool,muscleGeometryFlag:bool,muscleDynamicFlag:bool ):
+        """
+        Disseminates a combination of btk.btkAcquisition instances and C3D filenames across different computational categories in the C3dManager instance.
 
         Args:
-            c3dManager (pyCGM2.Processing.c3dManager.C3dManager): a `c3dManager` instance.
-            spatioTempFlag (bool): enable populating the `spatioTemporal` attribute of the  `c3dManager` instance
-            kinematicFlag (bool): enable populating the `kinematic` attribute of the  `c3dManager` instance
-            kineticFlag (bool): enable populating the `kinetic` attribute of the  `c3dManager` instance
-            emgFlag (bool): enable populating the `emg` attribute of the  `c3dManager` instance
-
+            c3dManager (C3dManager): The C3dManager instance to be populated.
+            spatioTempFlag (bool): If True, populates the spatio-temporal category.
+            kinematicFlag (bool): If True, populates the kinematic category.
+            kineticFlag (bool): If True, populates the kinetic category.
+            emgFlag (bool): If True, populates the EMG category.
+            muscleGeometryFlag (bool): If True, populates the muscle geometry category.
+            muscleDynamicFlag (bool): If True, populates the muscle dynamic category.
         """
 
         #---spatioTemporalTrials

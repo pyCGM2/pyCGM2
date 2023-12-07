@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
-
-
 import numpy as np
 from pyCGM2.Math import numeric
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+from pyCGM2.Processing.analysis import Analysis
+from pyCGM2.Report.normativeDatasets import NormativeData
+from typing import List, Tuple, Dict, Optional,Union,Any
 
 class ScoreProcedure(object):
     def __init__(self):
@@ -16,19 +13,24 @@ class ScoreProcedure(object):
 
 
 class CGM1_GPS(ScoreProcedure):
-    """Gait profile score accordin Baker et al. 2009
+    """
+    Gait Profile Score (GPS) calculation based on Baker et al. 2009.
+
+    This class computes the GPS which is a summary measure of the deviation of an
+    individual's gait from normative gait data.
 
     Args:
-        pointSuffix (str,Optional[None]): suffix added to model ouputs
+        pointSuffix (Optional[str], optional): Suffix added to model outputs. Defaults to None.
 
-    **Reference**
-
-    Baker, Richard; McGinley, Jennifer L.; Schwartz, Michael H.; Beynon, Sarah; Rozumalski, Adam; Graham, H. Kerr; Tirosh, Oren (2009) The gait profile score and movement analysis profile. In : Gait & posture, vol. 30, n° 3, p. 265–269. DOI: 10.1016/j.gaitpost.2009.05.020.
-
+    References:
+        Baker, Richard; McGinley, Jennifer L.; Schwartz, Michael H.; Beynon, Sarah; 
+        Rozumalski, Adam; Graham, H. Kerr; Tirosh, Oren (2009) The gait profile score 
+        and movement analysis profile. In: Gait & posture, vol. 30, n° 3, p. 265–269.
+        DOI: 10.1016/j.gaitpost.2009.05.020.
     """
 
 
-    def __init__(self,pointSuffix=None):
+    def __init__(self,pointSuffix:Optional[str]=None):
         super(CGM1_GPS, self).__init__()
 
 
@@ -53,7 +55,18 @@ class CGM1_GPS(ScoreProcedure):
         self.matchingNormativeDataLabel = matchingNormativeDataLabel
         self.axes = axes
 
-    def _compute(self,analysis,normativeData):
+    def _compute(self,analysis:Analysis,normativeData:NormativeData):
+        """
+        Computes the Gait Profile Score (GPS) and associated Gait Variable Scores (GVS).
+
+        Args:
+            analysis (Analysis): The analysis instance containing kinematic data.
+            normativeData (NormativeData): The normative dataset for comparison.
+
+        Returns:
+            Tuple[Dict[str, Dict[str, Any]], Dict[str, Dict[str, Any]], Dict[str, Dict[str, Any]]]:
+            A tuple containing dictionaries for GVS, GPS by context (Left/Right), and overall GPS.
+        """
 
         gvs = {}
 

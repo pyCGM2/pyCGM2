@@ -172,6 +172,12 @@
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
 					<weight>0</weight>
 				</IKMarkerTask>
+				<IKMarkerTask name="LCAL">
+					<!--Whether or not this task will be used during inverse kinematics solve.-->
+					<apply>false</apply>
+					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
+					<weight>0</weight>
+				</IKMarkerTask>
                 <IKMarkerTask name="RTHLD">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
 					<apply>false</apply>
@@ -179,6 +185,12 @@
 					<weight>0</weight>
 				</IKMarkerTask>
                 <IKMarkerTask name="RPAT">
+					<!--Whether or not this task will be used during inverse kinematics solve.-->
+					<apply>false</apply>
+					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
+					<weight>0</weight>
+				</IKMarkerTask>
+				<IKMarkerTask name="RCAL">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
 					<apply>false</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->

@@ -1,16 +1,9 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
-
 """
-This module aims to organize the c3d trials according to computational objectives,
-ie computation of spatio-temporal, kinematic, kinetics or emg parameters.
+This module is designed to manage and organize C3D trials based on different computational objectives, such as spatio-temporal, kinematic, kinetic, and EMG parameter computations.
 
-The implementation is based on a *builder pattern*.
-The filter `C3dManagerFilter` calls a procedure, then return a `C3dManager` instance, a
-ie ,  a structure listing both Btk.Acquisition instances and their associated filename
-according the computational objectives
+The implementation follows a builder pattern, where the `C3dManagerFilter` is used to create and configure a `C3dManager` instance. This instance acts as a structured repository that lists btk.Acquisition instances and their associated filenames, organized according to the computational objectives.
+
+Example usage:
 
 .. code-block:: python
 
@@ -22,38 +15,26 @@ according the computational objectives
     cmf.enableKinetic(True)
     cmf.enableEmg(True)
     trialManager = cmf.generate()
-
 """
+import pyCGM2
+LOGGER = pyCGM2.LOGGER
 
-from pyCGM2.Tools import btkTools
+from pyCGM2.Processing.C3dManager.c3dManagerProcedures import C3dManagerProcedure
+from pyCGM2.Processing.C3dManager import c3dManager
 
-
-class C3dManager(object):
-    """ A `c3d manager` instance is a structure listing btk.Acquisition instances and
-    the associated filenames for the 4 computational objectives
-    (spatio-temporal, kinematic, kinetics or emg computation)
-
-    """
-    def __init__ (self):
-        self.spatioTemporal={"Acqs":None , "Filenames":None}
-        self.kinematic={"Acqs":None , "Filenames":None}
-        self.kineticFlag = False
-        self.kinetic={"Acqs": None, "Filenames":None }
-        self.emg={"Acqs":None , "Filenames":None}
-        self.muscleGeometry={"Acqs": None , "Filenames":None}
-        
-        self.muscleDynamicFlag = False
-        self.muscleDynamic={"Acqs":None , "Filenames":None}
+from typing import List, Tuple, Dict, Optional,Union,Any
 
 class C3dManagerFilter(object):
     """
-    pyCGM2 Filter used for disseminate c3d trial set(s)
+    A filter for managing and disseminating sets of C3D trials.
+
+    This filter is used to organize C3D trials into distinct sets based on computational objectives like spatio-temporal, kinematic, kinetic, and EMG parameters.
 
     Args:
-        procedure ( pyCGM2.Processing.C3dManager.c3dManagerProcedures.C3dManagerProcedure): a C3dManagerProcedure instance
+        procedure (C3dManagerProcedure): An instance of a C3dManagerProcedure.
     """
 
-    def __init__(self,procedure):
+    def __init__(self,procedure:C3dManagerProcedure):
 
         self.m_procedure = procedure
         self.m_spatioTempFlag = True
@@ -63,8 +44,8 @@ class C3dManagerFilter(object):
         self.m_muscleGeometryFlag = False
         self.m_muscleDynamicFlag = False
 
-    def enableSpatioTemporal(self, boolean):
-        """enable spatio-temporal computation
+    def enableSpatioTemporal(self, boolean:bool):
+        """ Enable/disable spatio-temporal computation. 
 
         Args:
             boolean (bool): boolean flag
@@ -72,8 +53,8 @@ class C3dManagerFilter(object):
         """
         self.m_spatioTempFlag = boolean
 
-    def enableKinematic(self, boolean):
-        """enable kinematic computation
+    def enableKinematic(self, boolean:bool):
+        """enable/disable kinematic computation
 
         Args:
             boolean (bool): boolean flag
@@ -81,8 +62,8 @@ class C3dManagerFilter(object):
         """
         self.m_kinematicFlag = boolean
 
-    def enableKinetic(self, boolean):
-        """enable kinetic computation
+    def enableKinetic(self, boolean:bool):
+        """enable/disable kinetic computation
 
         Args:
             boolean (bool): boolean flag
@@ -90,8 +71,8 @@ class C3dManagerFilter(object):
         """
         self.m_kineticFlag = boolean
 
-    def enableEmg(self, boolean):
-        """enable emg computation
+    def enableEmg(self, boolean:bool):
+        """enable/disable emg computation
 
         Args:
             boolean (bool): boolean flag
@@ -100,8 +81,8 @@ class C3dManagerFilter(object):
         self.m_emgFlag = boolean
 
 
-    def enableMuscleGeometry(self, boolean):
-        """enable emg computation
+    def enableMuscleGeometry(self, boolean:bool):
+        """enable/disable Muscle geometry computation
 
         Args:
             boolean (bool): boolean flag
@@ -109,8 +90,8 @@ class C3dManagerFilter(object):
         """
         self.m_muscleGeometryFlag = boolean
 
-    def enableMuscleDynamic(self, boolean):
-        """enable emg computation
+    def enableMuscleDynamic(self, boolean:bool):
+        """enable/disable muscle dynamics computation
 
         Args:
             boolean (bool): boolean flag
@@ -121,13 +102,19 @@ class C3dManagerFilter(object):
 
 
     def generate(self):
-        """ disseminate c3d trials according to the given Procedure
+        """
+        Generates and returns a C3dManager instance based on the specified procedure and the enabled computational objectives.
+
+        This method disseminates the C3D trials into different categories such as spatio-temporal, kinematic, kinetic, EMG, muscle geometry and muscle  
+
+        Returns:
+            C3dManager: An instance of `C3dManager` that contains organized C3D trials as specified by the procedure and the enabled computational objectives.
         """
 
-        c3dManager = C3dManager()
+        c3dManagerInstance = c3dManager.C3dManager()
         
 
-        self.m_procedure.generate(c3dManager,
+        self.m_procedure.generate(c3dManagerInstance,
                                 self.m_spatioTempFlag,
                                 self.m_kinematicFlag, 
                                 self.m_kineticFlag, 
@@ -135,4 +122,4 @@ class C3dManagerFilter(object):
                                 self.m_muscleGeometryFlag,
                                 self.m_muscleDynamicFlag)
 
-        return c3dManager
+        return c3dManagerInstance

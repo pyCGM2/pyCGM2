@@ -325,6 +325,14 @@
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
 				<fixed>false</fixed>
 			</Marker>
+			<Marker name="LCAL">
+				<!--Body segment in the model on which the marker resides.-->
+				<body>calcn_l</body>
+				<!--Location of a marker on the body segment.-->
+				<location> 0.0422081 -0.39479 0.00836546</location>
+				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
+				<fixed>false</fixed>
+			</Marker>
             <Marker name="RTHLD">
 				<!--Body segment in the model on which the marker resides.-->
 				<body>femur_r</body>
@@ -336,6 +344,14 @@
             <Marker name="RPAT">
 				<!--Body segment in the model on which the marker resides.-->
 				<body>femur_r</body>
+				<!--Location of a marker on the body segment.-->
+				<location> 0.0422081 -0.39479 0.00836546</location>
+				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
+				<fixed>false</fixed>
+			</Marker>
+			<Marker name="RCAL">
+				<!--Body segment in the model on which the marker resides.-->
+				<body>calcn_r</body>
 				<!--Location of a marker on the body segment.-->
 				<location> 0.0422081 -0.39479 0.00836546</location>
 				<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->

@@ -91,7 +91,7 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,
 
     if "Fitting" in weights.keys():
         weights  = weights["Fitting"]["Weight"]
-
+        
 
     # --- btk acquisition ----
     if "forceBtkAcq" in kwargs.keys():
@@ -453,7 +453,9 @@ def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
         if target not in actual_trackingMarkers or target not in model.getStaticIkTargets():
             weights[target] = 0
             LOGGER.logger.warning("[pyCGM2] - the IK targeted marker [%s] is not labelled in the acquisition [%s]"%(target,reconstructFilenameLabelled))
-
+    
+    
+    
     if ik_flag:
 
         #                        ---OPENSIM IK---

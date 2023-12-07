@@ -1,4 +1,10 @@
-# -*- coding: utf-8 -*-
+"""
+This module focuses on analyzing and extracting joint patterns from biomechanical data. 
+Utilizing the XlsJointPatternProcedure, it reads predefined patterns and criteria from Excel files 
+and applies them to an analysis instance to detect specific joint movement patterns. 
+The module is useful for automated and detailed joint movement analysis in biomechanical studies.
+"""
+
 import numpy as np
 import pandas as pd
 import pyCGM2; LOGGER = pyCGM2.LOGGER
@@ -8,17 +14,31 @@ from pyCGM2.Math import derivation
 
 from pyCGM2.Processing import analysisHandler
 from pyCGM2.Processing.JointPatterns import jointPatternFilters
-import re
+
+
+
+from pyCGM2.Processing.analysis import Analysis
+from typing import List, Tuple, Dict, Optional,Union,Any
+
 
 class JointPatternProcedure(object):
+    """
+    Base class for joint pattern procedures.
+    """
     def __init__(self):
         pass
 
 
 class XlsJointPatternProcedure(JointPatternProcedure):
+    """
+    Procedure for detecting joint patterns using an Excel file.
 
+    Args:
+        xlsFiles (str): Path to the Excel file containing pattern definitions.
+        pointSuffix (Optional[str]): Suffix added to model outputs.
+    """
 
-    def __init__(self,xlsFiles,pointSuffix=None):
+    def __init__(self,xlsFiles:str,pointSuffix:Optional[str]=None):
         super(XlsJointPatternProcedure,self).__init__()
 
         self.pointSuffix = ("_"+pointSuffix)  if pointSuffix is not None else ""
@@ -128,7 +148,16 @@ class XlsJointPatternProcedure(JointPatternProcedure):
 
 
 
-    def detectValue(self,analysis):
+    def detectValue(self,analysis:Analysis):
+        """
+        Detects values from joint patterns in an analysis instance.
+
+        Args:
+            analysis (Analysis): The analysis instance containing joint data.
+
+        Returns:
+            pd.DataFrame: DataFrame containing detected values and their statuses.
+        """
 
         xlsData = self.m_xls.parse("data")
 
@@ -191,6 +220,12 @@ class XlsJointPatternProcedure(JointPatternProcedure):
         return xlsData
 
     def detectPattern(self):
+        """
+        Detects and returns joint patterns based on predefined criteria.
+
+        Returns:
+            pd.DataFrame: DataFrame containing detected joint patterns.
+        """
 
         xlsPatterns = self.m_xls.parse("patterns")
         xlsPatterns["Success"] = "NA"

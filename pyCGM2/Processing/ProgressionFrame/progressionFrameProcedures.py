@@ -1,30 +1,57 @@
-# -*- coding: utf-8 -*-
+"""
+This module provides procedures for detecting the progression frame in gait analysis 
+using different anatomical markers or marker sets. These procedures are crucial for 
+accurately determining the orientation and movement direction during gait analysis, 
+which is essential for proper kinematic assessment.
+"""
 import numpy as np
+import btk
 
 from pyCGM2.Tools import  btkTools
+
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
+from typing import List, Tuple, Dict, Optional,Union,Any
 
 class ProgressionFrameProcedure(object):
+    """
+    Base class for progression frame detection procedures.
+
+    This class provides a common interface for different procedures to determine the progression 
+    frame in gait analysis. It is intended to be subclassed by specific implementations using 
+    various anatomical markers or sets.
+    """
     def __init__(self):
         pass
 
 class PointProgressionFrameProcedure(ProgressionFrameProcedure):
-    """detect the progression from the trajectory of a single marker
+    """
+    Detects the progression frame using the trajectory of a single marker.
+
+    This procedure analyzes the movement of a single specified marker to determine the 
+    progression axis and direction during gait analysis.
 
     Args:
-        marker (str,Optional[LHEE]): marker label
-
+        marker (str, optional): The marker label used for detection. Defaults to "LHEE".
     """
 
-    def __init__(self,marker="LHEE"):
+    def __init__(self,marker:str="LHEE"):
         super(PointProgressionFrameProcedure, self).__init__()
         self.m_marker=marker
 
         self.__threshold = 800
 
 
-    def compute(self,acq):
+    def compute(self,acq:btk.btkAcquisition):
+        """
+        Computes the progression frame based on the specified marker's trajectory.
+
+        Args:
+            acq (btk.btkAcquisition): The acquisition containing gait data.
+
+        Returns:
+            Tuple[str, bool, str]: A tuple containing the progression axis, forward progression flag, and global frame.
+        """
 
         if not btkTools.isPointExist(acq,self.m_marker):
             raise Exception( "[pyCGM2] : origin point doesnt exist")
@@ -58,17 +85,19 @@ class PointProgressionFrameProcedure(ProgressionFrameProcedure):
         return   progressionAxis,forwardProgression,globalFrame
 
 class PelvisProgressionFrameProcedure(ProgressionFrameProcedure):
-    """detect the progression from the trajectory of pelvic markers
+    """Detects progression frame using the trajectory of pelvic markers.
+
+    This procedure utilizes the movement of anterior and posterior pelvic markers to 
+    ascertain the progression axis and direction.
 
     Args:
-        marker (str,Optional[LASI]): marker label
-        frontMarkers (list,Optional["LASI","RASI"]): anterior pelvic marker labels
-        backMarkers (list,Optional["LPSI","RPSI"]): posterior pelvic markers labels
-
+        marker (str): Primary marker label for detection. Defaults to "LASI".
+        frontMarkers (List[str]): List of anterior pelvic marker labels. Defaults to ["LASI", "RASI"].
+        backMarkers (List[str]): List of posterior pelvic markers labels. Defaults to ["LPSI", "RPSI"].
     """
 
 
-    def __init__(self,marker="LASI",frontMarkers = ["LASI","RASI"], backMarkers =  ["LPSI","RPSI"]):
+    def __init__(self,marker:str="LASI",frontMarkers:List[str] = ["LASI","RASI"], backMarkers:List[str] =  ["LPSI","RPSI"]):
         super(PelvisProgressionFrameProcedure, self).__init__()
 
         self.m_marker=marker
@@ -79,7 +108,16 @@ class PelvisProgressionFrameProcedure(ProgressionFrameProcedure):
         self.__threshold = 800
 
 
-    def compute(self,acq):
+    def compute(self,acq:btk.btkAcquisition):
+        """
+        Computes the progression frame based on the pelvic markers' trajectory.
+
+        Args:
+            acq (btk.btkAcquisition): The acquisition containing gait data.
+
+        Returns:
+            Tuple[str, bool, str]: A tuple containing the progression axis, forward progression flag, and global frame.
+        """
 
         if not btkTools.isPointExist(acq,self.m_marker):
             raise Exception( "[pyCGM2] : marker %s doesn't exist"%(self.m_marker))
@@ -191,17 +229,19 @@ class PelvisProgressionFrameProcedure(ProgressionFrameProcedure):
 
 
 class ThoraxProgressionFrameProcedure(ProgressionFrameProcedure):
-    """detect the progression from the trajectory of thoracic markers
+    """Detects progression frame using the trajectory of thoracic markers.
+
+    This procedure analyzes the movement of anterior and posterior thoracic markers to determine 
+    the progression axis and direction during gait analysis.
 
     Args:
-        marker (str,Optional[CLAV]): marker label
-        frontMarkers (list,Optional["CLAV"]): anterior pelvic marker labels
-        backMarkers (list,Optional["C7"]): posterior pelvic markers labels
-
+        marker (str): Primary marker label for detection. Defaults to "CLAV".
+        frontMarkers (List[str]): List of anterior pelvic marker labels. Defaults to ["CLAV"].
+        backMarkers (List[str]): List of posterior pelvic markers labels. Defaults to ["C7"].
     """
 
 
-    def __init__(self,marker="CLAV",frontMarkers = ["CLAV"], backMarkers =  ["C7"]):
+    def __init__(self,marker:str="CLAV",frontMarkers:List[str] = ["CLAV"], backMarkers:List[str] =  ["C7"]):
         super(ThoraxProgressionFrameProcedure, self).__init__()
         self.m_marker=marker
 
@@ -211,7 +251,16 @@ class ThoraxProgressionFrameProcedure(ProgressionFrameProcedure):
         self.__threshold = 800
 
 
-    def compute(self,acq):
+    def compute(self,acq:btk.btkAcquisition):
+        """
+        Computes the progression frame based on the thorax markers' trajectory.
+
+        Args:
+            acq (btk.btkAcquisition): The acquisition containing gait data.
+
+        Returns:
+            Tuple[str, bool, str]: A tuple containing the progression axis, forward progression flag, and global frame.
+        """
 
         if not btkTools.isPointExist(acq,self.m_marker):
             raise Exception( "[pyCGM2] : marker %s doesn't exist"%(self.m_marker))

@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
-
 """
 This module contains 2 classes (`XlsAnalysisExportFilter` and `AnalysisExportFilter`)
 for exporting an analysis instance in xls fomat and  json respectively.
@@ -20,6 +15,9 @@ import copy
 
 import pyCGM2
 from pyCGM2.Utils import files
+from pyCGM2.Processing.analysis import Analysis
+
+from typing import List, Tuple, Dict, Optional,Union,Any
 
 # ----- PANDAS ---------
 # TODO : optimize implementation
@@ -827,19 +825,23 @@ def renameEmgInAnalysis(analysisInstance,emgSettings):
 
 
 class XlsExportDataFrameFilter(object):
-    """Filter exporting a pandas.dataFrame or a list of pandas.dataFrame as xls spreadsheet(s)
+    """
+    Filter for exporting a pandas DataFrame or a list of pandas DataFrames as XLS or XLSX spreadsheets.
+
+    Attributes:
+        dataframes (List[pd.DataFrame]): List of DataFrames to be exported.
     """
 
     def __init__(self):
 
         self.dataframes =[]
 
-    def setDataFrames(self, dataframes):
-        """Set the dataFrame
+    def setDataFrames(self, dataframes: Union[pd.DataFrame, List[pd.DataFrame]]):
+        """
+        Set the DataFrame(s) to be exported.
 
         Args:
-            dataframes (pandas.dataFrame or list): dataframe or list of dataframe
-
+            dataframes (Union[pd.DataFrame, List[pd.DataFrame]]): A single DataFrame or a list of DataFrames.
         """
 
         if isinstance(dataframes,pd.core.frame.DataFrame):
@@ -848,14 +850,14 @@ class XlsExportDataFrameFilter(object):
         for it in dataframes:
             self.dataframes.append(it)
 
-    def export(self,outputName, path=None,excelFormat = "xls"):
-        """ Export spreadsheet
+    def export(self, outputName: str, path: Optional[str] = None, excelFormat: str = "xls"):
+        """
+        Export the DataFrame(s) as XLS or XLSX spreadsheet(s).
 
         Args:
-            outputName (str): filename without extension
-            path (str): Path
-            excelFormat (str): format (xls,xlsx)
-
+            outputName (str): Base filename for the output file(s), without extension.
+            path (Optional[str]): Directory path for the output file(s). If None, the current directory is used.
+            excelFormat (str): Desired spreadsheet format ('xls' or 'xlsx').
         """
         i=0
         for  dataframe in self.dataframes:
@@ -876,37 +878,40 @@ class XlsExportDataFrameFilter(object):
         xlsxWriter.save()
 
 class XlsAnalysisExportFilter(object):
-    """Filter exporting an `analysis` instance as spreadheet.
+    """
+    Filter for exporting an analysis instance as a spreadsheet.
 
-    Exported spreadsheet can organize either by row (`Advanced` mode) or column
-    (`basic` mode). In `Advanced` mode, a row is made up of 101 columns representing
-    a time normalized cycle.
+    The exported spreadsheet can be organized either by row (in 'Advanced' mode) 
+    or by column (in 'Basic' mode). In 'Advanced' mode, a row consists of 101 columns 
+    representing a time-normalized cycle.
 
-
+    Attributes:
+        analysis (Analysis): An instance of Analysis to be exported.
     """
 
     def __init__(self):
 
         self.analysis = None
 
-    def setAnalysisInstance(self,analysisInstance):
-        """set the `analysis` instance
+    def setAnalysisInstance(self,analysisInstance:Analysis):
+        """
+        Set the analysis instance to be exported.
 
         Args:
-            analysisInstance (pyCGM2.analysis.Analysis): an `analysis` instance
+            analysisInstance (Analysis): An instance of Analysis.
         """
 
         self.analysis = analysisInstance
 
-    def export(self,outputName, path=None,excelFormat = "xls",mode="Advanced"):
-        """ Export spreadsheet
+    def export(self, outputName: str, path: Optional[str] = None, excelFormat: str = "xls", mode: str = "Advanced") :
+        """
+        Export the analysis instance as a spreadsheet.
 
         Args:
-            outputName (str): filename without extension
-            path (str): Path
-            excelFormat (str): format (xls,xlsx)
-            mode (str): structure mode of the spreadsheet (Advanced,Basic)
-
+            outputName (str): The base filename for the output file, without extension.
+            path (Optional[str]): The directory path for the output file. If None, the current directory is used.
+            excelFormat (str): The format of the output file ('xls' or 'xlsx').
+            mode (str): The structure mode of the spreadsheet ('Advanced' or 'Basic').
         """
 
 
@@ -1592,28 +1597,37 @@ class XlsAnalysisExportFilter(object):
 
 
 class AnalysisExportFilter(object):
-    """Filter exporting an `analysis` instance as json.
+    """
+    Filter for exporting an Analysis instance as a JSON file.
+
+    Attributes:
+        analysis (Analysis): An instance of Analysis to be exported.
     """
 
     def __init__(self):
 
         self.analysis = None
 
-    def setAnalysisInstance(self,analysisInstance):
-        """set the `analysis` instance
+    def setAnalysisInstance(self,analysisInstance:Analysis):
+        """
+        Set the Analysis instance to be exported.
 
         Args:
-            analysisInstance (pyCGM2.analysis.Analysis): an `analysis` instance
+            analysisInstance (Analysis): An instance of Analysis.
         """
         self.analysis = analysisInstance
 
 
-    def export(self,outputName, path=None):
-        """ Export as json
+    def export(self, outputName: str, path: Optional[str] = None):
+        """
+        Export the Analysis instance as a JSON file.
 
         Args:
-            outputName (str): filename without extension
-            path (str): Path
+            outputName (str): The base filename for the output file, without extension.
+            path (Optional[str]): The directory path for the output file. If None, the current directory is used.
+
+        Returns:
+            Dict[str, Any]: The dictionary object that is written to the JSON file.
         """
 
         out=OrderedDict()

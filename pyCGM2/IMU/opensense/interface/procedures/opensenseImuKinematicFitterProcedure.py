@@ -46,7 +46,7 @@ class ImuInverseKinematicXMLProcedure(object):
         self.m_sensor_to_opensim_rotations = None
 
     def setSetupFile(self,imuInverseKinematicToolFile:str):
-         """
+        """
         Set the inverse kinematics setup file for the procedure.
 
         Args:
@@ -88,7 +88,7 @@ class ImuInverseKinematicXMLProcedure(object):
         self.m_imuMapper.update({osimBody : imuInstance})
 
     def prepareOrientationFile(self,motionFilenameNoExt:str,freq:int,order:List=[0,1,2,3]):
-         """
+        """
         Prepare the orientation file (STO file) from IMUs.
 
         Args:

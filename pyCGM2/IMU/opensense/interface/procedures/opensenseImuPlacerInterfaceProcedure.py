@@ -108,9 +108,10 @@ class ImuPlacerXMLProcedure(object):
         Args:
             segmentName (str): Segment name associated with the base IMU.
             heading (str): The heading axis for the base IMU.
-        """ 
-         self.m_base_imu_label=segmentName+"_imu"
-         self.m_base_heading_axis=heading
+        """
+
+        self.m_base_imu_label=segmentName+"_imu"
+        self.m_base_heading_axis=heading
 
     def prepareSensorToOpensimRotation(self,eulerAngles:List):
         """

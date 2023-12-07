@@ -1,4 +1,12 @@
 ## coding: utf-8
+"""
+This module provides a command-line interface for managing and executing various tasks in the pyCGM2 framework.
+It includes commands for setting up and running different versions of the Conventional Gait Analysis Model (CGM),
+as well as generating plots, handling events, and performing gap filling within Vicon Nexus and Qualisys Track Manager (QTM) environments.
+
+Users can leverage this interface to streamline their workflow in gait analysis and biomechanical studies using pyCGM2.
+"""
+
 import os
 import argparse
 
@@ -573,6 +581,12 @@ class MainParser:
         QTM_CGMparser(qtm_subparser,"CGM2.5").constructParsers()
         QTM_CGMparser(qtm_subparser,"CGM2.6").constructParsers()
 
+    def get_parser(self):
+        """
+        Returns the argument parser.
+        """
+        return self.parser
+    
     def run(self,debug:bool=False):
         """
         Executes the parser and processes the parsed arguments to trigger appropriate functionalities based on the user's input.
@@ -759,6 +773,13 @@ class MainParser:
                 elif args.QTM == "CGM2.6":
                     CGM26_workflow.main(args)
 
+def get_main_parser():
+    """
+    This function is used by sphinx-argparse for documentation.
+    It returns the main argument parser.
+    """
+    my_parser = MainParser()
+    return my_parser.get_parser()
 
 def main():
     my_class = MainParser()

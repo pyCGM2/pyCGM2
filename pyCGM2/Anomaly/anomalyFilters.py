@@ -24,11 +24,6 @@ class AnomalyDetectionFilter(object):
         frameRange (List[int]): A list specifying the range of frames to analyze. 
             The list should contain two elements: the start frame and the end frame.
 
-    Attributes:
-        m_procedure (AnomalyDetectionProcedure): The anomaly detection procedure instance.
-        m_acq (btk.btkAcquisition): The BTK acquisition instance.
-        m_filename (str): The file name associated with the acquisition data.
-        options (Dict): Additional keyword arguments passed to the procedure.
     """
 
     def __init__(self, acq:btk.btkAcquisition, filename:str, procedure:AnomalyDetectionProcedure, **kwargs):
@@ -62,10 +57,6 @@ class AnomalyCorrectionFilter(object):
         filename (str): The name of the file associated with the BTK acquisition data.
         procedure (AnomalyCorrectionProcedure): An instance of a subclass of AnomalyCorrectionProcedure used for correcting anomalies.
 
-    Attributes:
-        m_procedure (AnomalyCorrectionProcedure): The anomaly correction procedure instance.
-        m_acq (btk.btkAcquisition): The BTK acquisition instance.
-        m_filename (str): The file name associated with the acquisition data.
     """
 
     def __init__(self, acq:btk.btkAcquisition, filename:str, procedure:AnomalyCorrectionProcedure):

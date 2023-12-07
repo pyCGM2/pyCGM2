@@ -787,14 +787,11 @@ def bellRegression(mp_input: Dict[str, float], mp_computed: Dict[str, float], ma
     Returns:
         Tuple[np.ndarray, np.ndarray]: Estimated positions of left and right hip joint centers.
     
-    Reference:
+    References:
+        - Bell AL, Pederson DR, and Brand RA (1989) "Prediction of hip joint center location from external landmarks." Human Movement Science. 8:3-16.
 
-        - Bell AL, Pederson DR, and Brand RA (1989) Prediction of hip joint center location from external landmarks.
-        Human Movement Science. 8:3-16:
-
-        - Bell AL, Pedersen DR, Brand RA (1990) A Comparison of the Accuracy of Several hip Center Location Prediction Methods.
-        J Biomech. 23, 617-621.
-    """
+        - Bell AL, Pedersen DR, Brand RA (1990) "A Comparison of the Accuracy of Several hip Center Location Prediction Methods." J Biomech. 23, 617-621.
+"""
 
 
     HJCx_L= 0.36*mp_computed["InterAsisDistance"] # ML

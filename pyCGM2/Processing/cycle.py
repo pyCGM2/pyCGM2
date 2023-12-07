@@ -1,10 +1,4 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
-
 """
-
 This module aims to construct a `Cycles` instance. Based on a *builder pattern design*,
 the Filter `CyclesFilter` calls a builder, ie `CyclesBuilder` or
 a `GaitCyclesBuilder` in the context of gait Analysis, then return a `Cycles` instance.
@@ -24,190 +18,29 @@ import pyCGM2.Math.normalisation as MathNormalisation
 
 import btk
 
-from pyCGM2.Utils import utils
 from pyCGM2.Tools import btkTools
 
-
-def spatioTemporelParameter_descriptiveStats(cycles,label,context):
-
-    """Compute descriptive statistics of spatio-temporal parameters from a `cycles` instance
-
-    Args:
-        cycles (pyCGM2.Processing.cycle.Cycles): Cycles instance
-        label (str): spatio-temporal label
-        context (str): event context ( Left, Right)
-    """
-
-    outDict={}
-
-    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context])
-    val = np.zeros((n))
-
-    i=0
-    for cycle in cycles:
-        if cycle.enableFlag and cycle.context==context:
-            val[i] = cycle.getSpatioTemporalParameter(label)
-            i+=1
-    outDict = {'mean':np.mean(val),'std':np.std(val),'median':np.median(val),'values': val}
-
-    return outDict
-
-
-def point_descriptiveStats(cycles,label,context):
-    """Compute descriptive statistics of point parameters from a `cycles` instance
-
-    Args:
-        cycles (pyCGM2.Processing.cycle.Cycles): Cycles instance
-        label (str): point label
-        context (str): event context ( Left, Right)
-
-    """
-
-    outDict={}
-
-    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle
-
-    x=np.empty((101,n))
-    y=np.empty((101,n))
-    z=np.empty((101,n))
-
-    listOfPointValues=[]
-
-    i=0
-    for cycle in cycles:
-        if cycle.enableFlag and cycle.context==context:
-            tmp = cycle.getPointTimeSequenceDataNormalized(label)
-            x[:,i]=tmp[:,0]
-            y[:,i]=tmp[:,1]
-            z[:,i]=tmp[:,2]
-
-            listOfPointValues.append(tmp)
-
-            i+=1
-
-    meanData=np.array(np.zeros((101,3)))
-    stdData=np.array(np.zeros((101,3)))
-    medianData=np.array(np.zeros((101,3)))
-
-    if not np.all(x==0):
-        x[x == 0] = np.nan
-        meanData[:,0] = np.nanmean(x, axis=1)
-        stdData[:,0]=np.nanstd(x,axis=1)
-        medianData[:,0]=np.nanmedian(x,axis=1)
-
-    if not np.all(y==0):
-        y[y == 0] = np.nan
-        meanData[:,1] = np.nanmean(y, axis=1)
-        stdData[:,1]=np.nanstd(y,axis=1)
-        medianData[:,1]=np.nanmedian(y,axis=1)
-
-
-    if not np.all(z==0):
-        z[z == 0] = np.nan
-        meanData[:,2] = np.nanmean(z, axis=1)
-        stdData[:,2]=np.nanstd(z,axis=1)
-        medianData[:,2]=np.nanmedian(z,axis=1)
-
-
-    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues }
+from typing import List, Tuple, Dict, Optional, Union, Callable
 
 
 
-    return outDict
-
-
-
-def analog_descriptiveStats(cycles,label,context):
-    """Compute descriptive statistics of analog parameters from a `cycles` instance
-
-    Args:
-        cycles (pyCGM2.Processing.cycle.Cycles): Cycles instance
-        label (str): analog label
-        context (str): event context ( Left, Right)
-    """
-
-    outDict={}
-
-    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle
-
-    listOfPointValues=[]
-    x=np.empty((101,n))
-
-    i=0
-    for cycle in cycles:
-        if cycle.enableFlag and cycle.context==context:
-            tmp = cycle.getAnalogTimeSequenceDataNormalized(label)
-            x[:,i]=tmp[:,0]
-            listOfPointValues.append(tmp)
-            i+=1
-
-
-    meanData=np.array(np.zeros((101,1)))
-    if not np.all(x==0):
-        meanData[:,0]=np.nanmean(x,axis=1)
-
-    stdData=np.array(np.zeros((101,1)))
-    if not np.all(x==0):
-        stdData[:,0]=np.nanstd(x,axis=1)
-
-    medianData=np.array(np.zeros((101,1)))
-    if not np.all(x==0):
-        medianData[:,0]=np.nanmedian(x,axis=1)
-
-    maximalValues = np.max(x,axis=0)
-
-    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues, 'maxs': maximalValues}
-
-    return outDict
-
-
-def construcGaitCycle(acq):
-    """Construct gait cycle
-
-    Args:
-        acq (btk.Acquisition): an acquisition
-
-    """
-
-    gaitCycles=[]
-
-    context = "Left"
-    left_fs_frames=[]
-    for ev in btk.Iterate(acq.GetEvents()):
-        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
-            left_fs_frames.append(ev.GetFrame())
-
-    for i in range(0, len(left_fs_frames)-1):
-        gaitCycles.append (GaitCycle(acq, left_fs_frames[i],left_fs_frames[i+1],
-                                       context))
-
-    context = "Right"
-    right_fs_frames=[]
-    for ev in btk.Iterate(acq.GetEvents()):
-        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
-            right_fs_frames.append(ev.GetFrame())
-
-    for i in range(0, len(right_fs_frames)-1):
-        gaitCycles.append (GaitCycle(acq, right_fs_frames[i],right_fs_frames[i+1],
-                                       context))
-
-    return gaitCycles
 
 
 
 class Cycle(object):
-    """ Generic Cycle
+    """
+    Generic Cycle class constructor.
 
     Args:
-        acq (btk.Acquisituion): an acquisition
-        startFrame (int):  start frame of the cycle
-        endFrame (double): end frame of the cycle
-        enableFlag (bool): flag  to indicate the cycle will be use in further computation.
-
+        acq (btk.btkAcquisition): An acquisition instance.
+        startFrame (int): Start frame of the cycle.
+        endFrame (int): End frame of the cycle.
+        context (str): Context of the cycle (e.g., 'Left', 'Right').
+        enableFlag (bool): Flag to indicate if the cycle will be used in further computation. Defaults to True.
     """
 
 
-    def __init__(self,acq,startFrame,endFrame,context, enableFlag = True):
+    def __init__(self,acq:btk.btkAcquisition,startFrame:int,endFrame:int,context:str, enableFlag:bool = True):
 
         self.acq=acq
 
@@ -230,24 +63,27 @@ class Cycle(object):
 
 
 
-    def setEnableFlag(self,flag):
-        """enable/disable the cycle
+    def setEnableFlag(self,flag:bool):
+        """
+        Enable or disable the cycle.
 
         Args:
-             flag (bool): boolean flag
-
+            flag (bool): Boolean flag to enable or disable the cycle.
         """
         self.enableFlag = flag
 
     def addDiscreteData(self,label,value,instant):
         pass
 
-    def getPointTimeSequenceData(self,pointLabel):
-        """Get temporal point data of the cycle
+    def getPointTimeSequenceData(self,pointLabel:str):
+        """
+        Get point data of the cycle.
 
         Args:
-            pointLabel (str): point Label
+            pointLabel (str): Point label.
 
+        Returns:
+            Optional[np.ndarray]: Temporal data of the specified point label.
         """
 
         if btkTools.isPointExist(self.acq,pointLabel):
@@ -258,12 +94,15 @@ class Cycle(object):
 
 
 
-    def getPointTimeSequenceDataNormalized(self,pointLabel):
-        """Time-Normalise  a point label
+    def getPointTimeSequenceDataNormalized(self,pointLabel:str):
+        """
+        Get Time-normalized a point label.
 
         Args:
-            pointLabel (str): point Label
+            pointLabel (str): Point label.
 
+        Returns:
+            np.ndarray: Time-normalized data of the specified point label.
         """
 
         data = self.getPointTimeSequenceData(pointLabel)
@@ -274,12 +113,15 @@ class Cycle(object):
 
         return out
 
-    def getAnalogTimeSequenceData(self,analogLabel):
-        """Get analog data of the cycle
+    def getAnalogTimeSequenceData(self,analogLabel:str):
+        """
+        Get analog data of the cycle.
 
         Args:
-            analogLabel (str): analog Label
+            analogLabel (str): Analog label.
 
+        Returns:
+            Optional[np.ndarray]: Analog data of the specified label.
         """
         if btkTools.isAnalogExist(self.acq,analogLabel):
             return  self.acq.GetAnalog(analogLabel).GetValues()[int((self.begin-self.firstFrame) * self.appf) : int((self.end-self.firstFrame+1) * self.appf),:]
@@ -288,11 +130,15 @@ class Cycle(object):
             return None
 
 
-    def getAnalogTimeSequenceDataNormalized(self,analogLabel):
-        """Time-normalize an analog data
+    def getAnalogTimeSequenceDataNormalized(self,analogLabel:str):
+        """
+        Get time-normalized analog data of the cycle.
 
         Args:
-            analogLabel (str): analog Label
+            analogLabel (str): Analog label.
+
+        Returns:
+            Optional[np.ndarray]: Analog data of the specified label.
         """
 
         data = self.getAnalogTimeSequenceData(analogLabel)
@@ -303,12 +149,15 @@ class Cycle(object):
 
         return  out
 
-    def getEvents(self,context="All"):
-        """Get all events of the cycle
+    def getEvents(self,context:str="All"):
+        """
+        Get all events of the cycle.
 
         Args:
-            context (str): event context (All, Left or Right)
+            context (str): Event context (All, Left, or Right).
 
+        Returns:
+            List[btk.Event]: List of events in the specified context.
         """
         events = []
         evsn = self.acq.GetEvents()
@@ -325,25 +174,20 @@ class Cycle(object):
 
 class GaitCycle(Cycle):
 
-    """Inherited class from Cycle defining a Gait cycle.
+    """
+    GaitCycle class constructor, inherited from Cycle. Defines a gait cycle.
 
     Args:
-        acq (btk.Acquisituion): an acquisition
-        startFrame (int):  start frame of the cycle
-        endFrame (double): end frame of the cycle
-        enableFlag (bool): flag  to indicate the cycle will be use in further computation.
+        gaitAcq (btk.btkAcquisition): An acquisition instance for the gait cycle.
+        startFrame (int): Start frame of the gait cycle.
+        endFrame (int): End frame of the gait cycle.
+        context (str): Context of the gait cycle (e.g., 'Left', 'Right').
+        enableFlag (bool): Flag to indicate if the cycle will be used in further computation. Defaults to True.
 
-    **Notes**
-
-        - By default, X0 and Y0 are the longitudinal and lateral global axis respectively
+    Notes:
+        - By default, X0 and Y0 are the longitudinal and lateral global axes respectively.
         - `GaitCycle` construction computes spatio-temporal parameters automatically.
-        - spatio-temporal parameters are :
-            "duration", "cadence",
-            "stanceDuration", "stepDuration", "doubleStance1Duration",
-            "doubleStance2Duration", "simpleStanceDuration", "stancePhase",
-            "swingDuration", "swingPhase", "doubleStance1", "doubleStance2",
-            "simpleStance", "stepPhase", "strideLength", "stepLength",
-            "strideWidth", "speed"
+        - Spatio-temporal parameters include 'duration', 'cadence', 'stanceDuration', 'stepDuration', etc.
     """
 
 
@@ -355,7 +199,7 @@ class GaitCycle(Cycle):
                 "strideWidth", "speed"]
 
 
-    def __init__(self,gaitAcq,startFrame,endFrame,context, enableFlag = True):
+    def __init__(self,gaitAcq:btk.btkAcquisition,startFrame:int,endFrame:int,context:str, enableFlag:bool = True):
         super(GaitCycle, self).__init__(gaitAcq,startFrame,endFrame,context, enableFlag = enableFlag)
 
         evs=self.getEvents()
@@ -386,6 +230,9 @@ class GaitCycle(Cycle):
 
 
     def __computeSpatioTemporalParameter(self):
+        """
+        Compute spatio-temporal parameters for the gait cycle.
+        """
 
         duration = np.divide((self.end-self.begin),self.pointfrequency)
         stanceDuration=np.divide(np.abs(self.m_contraFO - self.begin) , self.pointfrequency)
@@ -470,11 +317,14 @@ class GaitCycle(Cycle):
 
                 self.stps["speed"] = np.divide(strideLength,duration)
 
-    def getSpatioTemporalParameter(self,label):
-        """ Return a spatio-temporal parameter
+    def getSpatioTemporalParameter(self,label:str):
+        """ Return a spatio-temporal parameter.
 
         Args:
-             label (str): label of the desired spatio-temporal parameter
+            label (str): Label of the desired spatio-temporal parameter.
+
+        Returns:
+            float: Value of the specified spatio-temporal parameter.
         """
 
         return self.stps[label]
@@ -482,47 +332,7 @@ class GaitCycle(Cycle):
 
 # ----- PATTERN BUILDER -----
 
-# ----- FILTER -----
-class CyclesFilter:
-    """ Filter buiding a `Cycles` instance.
-    """
 
-    __builder = None
-
-    def setBuilder(self, builder):
-        """Set the builder
-
-        Args:
-            builder (pyCGM2.Processing.Cycle.(Builder)): a concrete cycle builder
-
-        """
-        self.__builder = builder
-
-
-    def build(self):
-        """ Build a `Cycles` instance
-        """
-        cycles = Cycles()
-
-        spatioTemporalElements = self.__builder.getSpatioTemporal()
-        cycles.setSpatioTemporalCycles(spatioTemporalElements)
-
-        kinematicElements = self.__builder.getKinematics()
-        cycles.setKinematicCycles(kinematicElements)
-
-        kineticElements = self.__builder.getKinetics()
-        cycles.setKineticCycles(kineticElements)
-
-        emgElements = self.__builder.getEmg()
-        cycles.setEmgCycles(emgElements)
-
-        muscleGeometryElements = self.__builder.getMuscleGeometry()
-        cycles.setMuscleGeometryCycles(muscleGeometryElements)
-
-        muscleDynamicElements = self.__builder.getMuscleDynamic()
-        cycles.setMuscleDynamicCycles(muscleDynamicElements)
-
-        return cycles
 
 
 
@@ -571,18 +381,24 @@ class Cycles():
 
 # --- BUILDER
 class CyclesBuilder(object):
-    """Builder of generic cycles
+    """
+    Builder of generic cycles.
 
     Args:
-        spatioTemporalAcqs (list): acquisitions used for  spatio-temporal parameter computation
-        kinematicAcqs (list):acquisitions used for  kinematics computation
-        kineticAcqs (list): acquisitions used for kinetics computation
-        emgAcqs (list): acquisitions used for emg computation
-
+        spatioTemporalAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for spatio-temporal parameter computation.
+        kinematicAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for kinematics computation.
+        kineticAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for kinetics computation.
+        emgAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for EMG computation.
+        muscleGeometryAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for muscle geometry computation.
+        muscleDynamicAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for muscle dynamic computation.
     """
 
-    def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None,
-                muscleGeometryAcqs=None,muscleDynamicAcqs=None):
+    def __init__(self,spatioTemporalAcqs:Optional[List[btk.btkAcquisition]]=None,
+                 kinematicAcqs:Optional[List[btk.btkAcquisition]]=None,
+                 kineticAcqs:Optional[List[btk.btkAcquisition]]=None,
+                 emgAcqs:Optional[List[btk.btkAcquisition]]=None,
+                 muscleGeometryAcqs:Optional[List[btk.btkAcquisition]]=None,
+                 muscleDynamicAcqs:Optional[List[btk.btkAcquisition]]=None):
 
         self.spatioTemporalAcqs =spatioTemporalAcqs
         self.kinematicAcqs =kinematicAcqs
@@ -592,7 +408,11 @@ class CyclesBuilder(object):
         self.muscleDynamicAcqs = muscleDynamicAcqs
 
     def getSpatioTemporal(self):
-        """get the list of Cycle used for  spatio-temporal parameter computation
+        """
+        Get the list of Cycles used for spatio-temporal parameter computation.
+
+        Returns:
+            Optional[List[Cycle]]: List of cycles for spatio-temporal parameter computation.
         """
 
         if self.spatioTemporalAcqs is not None:
@@ -646,7 +466,11 @@ class CyclesBuilder(object):
             return None
 
     def getKinematics(self):
-        """get the list of Cycle used for  kinematic computation
+        """
+        Get the list of Cycles used for kinematic computation.
+
+        Returns:
+            Optional[List[Cycle]]: List of cycles for kinematic computation.
         """
         if self.kinematicAcqs is not None:
             kinematicCycles=[]
@@ -696,7 +520,11 @@ class CyclesBuilder(object):
             return None
 
     def getKinetics(self):
-        """get the list of Cycle used for  kinetic computation
+        """
+        Get the list of Cycles used for kinetic computation.
+
+        Returns:
+            Optional[List[Cycle]]: List of cycles for kinetic computation.
         """
         if self.kineticAcqs is not None:
 
@@ -774,7 +602,11 @@ class CyclesBuilder(object):
             return None
 
     def getEmg(self):
-        """get the list of Cycle used for emg computation
+        """
+        Get the list of Cycles used for EMG computation.
+
+        Returns:
+            Optional[List[Cycle]]: List of cycles for EMG computation.
         """
         if self.emgAcqs is not None:
             emgCycles=[]
@@ -825,6 +657,12 @@ class CyclesBuilder(object):
             return None
     
     def getMuscleGeometry(self):
+        """
+        Get the list of Cycles used for muscle geometry computation.
+
+        Returns:
+            Optional[List[Cycle]]: List of cycles for muscle geometry computation.
+        """
         if self.muscleGeometryAcqs is not None:
             muscleGeometryCycles=[]
             for acq in  self.muscleGeometryAcqs:
@@ -873,7 +711,11 @@ class CyclesBuilder(object):
             return None
 
     def getMuscleDynamic(self):
-        """get the list of Cycle used for  kinetic computation
+        """
+        Get the list of Cycles used for muscle dynamic computation.
+
+        Returns:
+            Optional[List[Cycle]]: List of cycles for muscle dynamic computation.
         """
         if self.muscleDynamicAcqs is not None:
 
@@ -951,17 +793,24 @@ class CyclesBuilder(object):
             return None
 
 class GaitCyclesBuilder(CyclesBuilder):
-    """ Builder of gait cycle
-
-    Args:
-        spatioTemporalAcqs (list): acquisitions used for  spatio-temporal parameter computation
-        kinematicAcqs (list):acquisitions used for  kinematics computation
-        kineticAcqs (list): acquisitions used for kinetics computation
-        emgAcqs (list): acquisitions used for emg computation
     """
+        Builder of gait cycles.
 
-    def __init__(self,spatioTemporalAcqs=None,kinematicAcqs=None,kineticAcqs=None,emgAcqs=None,
-                 muscleGeometryAcqs=None,muscleDynamicAcqs=None):
+        Args:
+            spatioTemporalAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for spatio-temporal parameter computation.
+            kinematicAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for kinematics computation.
+            kineticAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for kinetics computation.
+            emgAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for EMG computation.
+            muscleGeometryAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for muscle geometry computation.
+            muscleDynamicAcqs (Optional[List[btk.btkAcquisition]]): Acquisitions used for muscle dynamic computation.
+        """
+
+    def __init__(self,spatioTemporalAcqs:Optional[List[btk.btkAcquisition]]=None,
+                 kinematicAcqs:Optional[List[btk.btkAcquisition]]=None,
+                 kineticAcqs:Optional[List[btk.btkAcquisition]]=None,
+                 emgAcqs:Optional[List[btk.btkAcquisition]]=None,
+                 muscleGeometryAcqs:Optional[List[btk.btkAcquisition]]=None,
+                 muscleDynamicAcqs:Optional[List[btk.btkAcquisition]]=None):
 
         super(GaitCyclesBuilder, self).__init__(
             spatioTemporalAcqs = spatioTemporalAcqs,
@@ -973,7 +822,11 @@ class GaitCyclesBuilder(CyclesBuilder):
             )
 
     def getSpatioTemporal(self):
-        """get the list of Cycle used for  spatio-temporal parameter computation
+        """
+        Get the list of Gait Cycles used for spatio-temporal parameter computation.
+
+        Returns:
+            Optional[List[GaitCycle]]: List of cycles for spatio-temporal parameter computation.
         """
 
         if self.spatioTemporalAcqs is not None:
@@ -1007,7 +860,11 @@ class GaitCyclesBuilder(CyclesBuilder):
             return None
 
     def getKinematics(self):
-        """get the list of Cycle used for kinematic computation
+        """
+        Get the list of Gait Cycles used for kinematic computation.
+
+        Returns:
+            Optional[List[GaitCycle]]: List of cycles for kinematic computation.
         """
 
         if self.kinematicAcqs is not None:
@@ -1041,7 +898,11 @@ class GaitCyclesBuilder(CyclesBuilder):
             return None
 
     def getKinetics(self):
-        """get the list of Cycle used for kinetic computation
+        """
+        Get the list of Gait Cycles used for kinetic computation.
+
+        Returns:
+            Optional[List[GaitCycle]]: List of cycles for kinetic computation.
         """
 
         if self.kineticAcqs is not None:
@@ -1102,7 +963,11 @@ class GaitCyclesBuilder(CyclesBuilder):
             return None
 
     def getEmg(self):
-        """get the list of Cycle used for emg computation
+        """
+        Get the list of Gait Cycles used for EMG computation.
+
+        Returns:
+            Optional[List[GaitCycle]]: List of cycles for EMG computation.
         """
 
         if self.emgAcqs is not None:
@@ -1135,7 +1000,11 @@ class GaitCyclesBuilder(CyclesBuilder):
 
 
     def getMuscleGeometry(self):
-        """get the list of Cycle used for the computation of the muscle Geometry
+        """
+        Get the list of Gait Cycles used for muscle geometry computation.
+
+        Returns:
+            Optional[List[GaitCycle]]: List of cycles for muscle geometry computation.
         """
         if self.muscleGeometryAcqs is not None:
             muscleGeometryCycles=[]
@@ -1170,6 +1039,10 @@ class GaitCyclesBuilder(CyclesBuilder):
     
     def getMuscleDynamic(self):
         """
+        Get the list of Gait Cycles used for muscle dynamic computation.
+
+        Returns:
+            Optional[List[GaitCycle]]: List of cycles for muscle dynamic computation.
         """
 
         if self.muscleDynamicAcqs is not None:
@@ -1229,6 +1102,228 @@ class GaitCyclesBuilder(CyclesBuilder):
         else:
             return None
 
+# ----- FILTER -----
+class CyclesFilter:
+    """ Filter buiding a `Cycles` instance.
+    """
+
+    __builder = None
+
+    def setBuilder(self, builder:CyclesBuilder):
+        """Set the builder
+
+        Args:
+            builder (CyclesBuilder): a concrete cycle builder
+
+        """
+        self.__builder = builder
 
 
-    
+    def build(self):
+        """
+        Build and return a `Cycles` instance using the set builder.
+
+        Returns:
+            Cycles: An instance of `Cycles` constructed using the current builder.
+        """
+        cycles = Cycles()
+
+        spatioTemporalElements = self.__builder.getSpatioTemporal()
+        cycles.setSpatioTemporalCycles(spatioTemporalElements)
+
+        kinematicElements = self.__builder.getKinematics()
+        cycles.setKinematicCycles(kinematicElements)
+
+        kineticElements = self.__builder.getKinetics()
+        cycles.setKineticCycles(kineticElements)
+
+        emgElements = self.__builder.getEmg()
+        cycles.setEmgCycles(emgElements)
+
+        muscleGeometryElements = self.__builder.getMuscleGeometry()
+        cycles.setMuscleGeometryCycles(muscleGeometryElements)
+
+        muscleDynamicElements = self.__builder.getMuscleDynamic()
+        cycles.setMuscleDynamicCycles(muscleDynamicElements)
+
+        return cycles
+
+
+def spatioTemporelParameter_descriptiveStats(cycles:Cycles, label:str,context:str):
+
+    """
+    Compute descriptive statistics of spatio-temporal parameters from a `cycles` instance.
+
+    Args:
+        cycles (Cycles): Cycles instance.
+        label (str): Spatio-temporal label.
+        context (str): Event context (e.g., Left, Right).
+
+    Returns:
+        Dict: Dictionary containing mean, std, median, and values of the spatio-temporal parameters.
+    """
+
+    outDict={}
+
+    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context])
+    val = np.zeros((n))
+
+    i=0
+    for cycle in cycles:
+        if cycle.enableFlag and cycle.context==context:
+            val[i] = cycle.getSpatioTemporalParameter(label)
+            i+=1
+    outDict = {'mean':np.mean(val),'std':np.std(val),'median':np.median(val),'values': val}
+
+    return outDict
+
+
+def point_descriptiveStats(cycles: Cycles, label: str, context: str):
+    """
+    Compute descriptive statistics of point parameters from a `cycles` instance.
+
+    Args:
+        cycles (Cycles): Cycles instance.
+        label (str): Point label.
+        context (str): Event context (e.g., Left, Right).
+
+    Returns:
+        Dict: Dictionary containing mean, std, median, and values of the point parameters.
+    """
+
+    outDict={}
+
+    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle
+
+    x=np.empty((101,n))
+    y=np.empty((101,n))
+    z=np.empty((101,n))
+
+    listOfPointValues=[]
+
+    i=0
+    for cycle in cycles:
+        if cycle.enableFlag and cycle.context==context:
+            tmp = cycle.getPointTimeSequenceDataNormalized(label)
+            x[:,i]=tmp[:,0]
+            y[:,i]=tmp[:,1]
+            z[:,i]=tmp[:,2]
+
+            listOfPointValues.append(tmp)
+
+            i+=1
+
+    meanData=np.array(np.zeros((101,3)))
+    stdData=np.array(np.zeros((101,3)))
+    medianData=np.array(np.zeros((101,3)))
+
+    if not np.all(x==0):
+        x[x == 0] = np.nan
+        meanData[:,0] = np.nanmean(x, axis=1)
+        stdData[:,0]=np.nanstd(x,axis=1)
+        medianData[:,0]=np.nanmedian(x,axis=1)
+
+    if not np.all(y==0):
+        y[y == 0] = np.nan
+        meanData[:,1] = np.nanmean(y, axis=1)
+        stdData[:,1]=np.nanstd(y,axis=1)
+        medianData[:,1]=np.nanmedian(y,axis=1)
+
+
+    if not np.all(z==0):
+        z[z == 0] = np.nan
+        meanData[:,2] = np.nanmean(z, axis=1)
+        stdData[:,2]=np.nanstd(z,axis=1)
+        medianData[:,2]=np.nanmedian(z,axis=1)
+
+
+    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues }
+
+
+
+    return outDict
+
+
+
+def analog_descriptiveStats(cycles: Cycles, label: str, context: str):
+    """
+    Compute descriptive statistics of analog parameters from a `cycles` instance.
+
+    Args:
+        cycles (Cycles): Cycles instance.
+        label (str): Analog label.
+        context (str): Event context (e.g., Left, Right).
+
+    Returns:
+        Dict: Dictionary containing mean, std, median, maximal values, and values of the analog parameters.
+    """
+
+    outDict={}
+
+    n=len([cycle for cycle in cycles if cycle.enableFlag and cycle.context==context]) # list comprehension , get number of enabled cycle
+
+    listOfPointValues=[]
+    x=np.empty((101,n))
+
+    i=0
+    for cycle in cycles:
+        if cycle.enableFlag and cycle.context==context:
+            tmp = cycle.getAnalogTimeSequenceDataNormalized(label)
+            x[:,i]=tmp[:,0]
+            listOfPointValues.append(tmp)
+            i+=1
+
+
+    meanData=np.array(np.zeros((101,1)))
+    if not np.all(x==0):
+        meanData[:,0]=np.nanmean(x,axis=1)
+
+    stdData=np.array(np.zeros((101,1)))
+    if not np.all(x==0):
+        stdData[:,0]=np.nanstd(x,axis=1)
+
+    medianData=np.array(np.zeros((101,1)))
+    if not np.all(x==0):
+        medianData[:,0]=np.nanmedian(x,axis=1)
+
+    maximalValues = np.max(x,axis=0)
+
+    outDict = {'mean':meanData, 'median':medianData, 'std':stdData, 'values': listOfPointValues, 'maxs': maximalValues}
+
+    return outDict
+
+
+def construcGaitCycle(acq: btk.btkAcquisition):
+    """
+    Construct gait cycle from an acquisition.
+
+    Args:
+        acq (btk.btkAcquisition): An acquisition instance.
+
+    Returns:
+        List: List of constructed GaitCycle instances.
+    """
+
+    gaitCycles=[]
+
+    context = "Left"
+    left_fs_frames=[]
+    for ev in btk.Iterate(acq.GetEvents()):
+        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+            left_fs_frames.append(ev.GetFrame())
+
+    for i in range(0, len(left_fs_frames)-1):
+        gaitCycles.append (GaitCycle(acq, left_fs_frames[i],left_fs_frames[i+1],
+                                       context))
+
+    context = "Right"
+    right_fs_frames=[]
+    for ev in btk.Iterate(acq.GetEvents()):
+        if ev.GetContext() == context and ev.GetLabel() == "Foot Strike":
+            right_fs_frames.append(ev.GetFrame())
+
+    for i in range(0, len(right_fs_frames)-1):
+        gaitCycles.append (GaitCycle(acq, right_fs_frames[i],right_fs_frames[i+1],
+                                       context))
+
+    return gaitCycles

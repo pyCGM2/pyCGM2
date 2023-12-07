@@ -289,8 +289,8 @@ class ForcePlateAnomalyProcedure(AnomalyDetectionProcedure):
             acq (btk.btkAcquisition): A btk acquisition instance.
             filename (str): Filename of the data being processed.
             options (Dict): Additional options passed from the filter. It can include:
-                - 'frameRange' (List[int, int]): A list of two integers specifying the start and end frames for the analysis. 
-                  If not provided, the analysis uses the full range of frames available in the acquisition data.
+                - 'frameRange' (List[int, int]): A list of two integers specifying the start and end frames for the analysis.
+                If not provided, the analysis uses the full range of frames available in the acquisition data.
 
         Note: Other options may be included in the dictionary, but they are not currently used in this implementation.
         """

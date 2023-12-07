@@ -1,7 +1,13 @@
-# -*- coding: utf-8 -*-
-#APIDOC["Path"]=/Core/Processing
-#APIDOC["Draft"]=False
-#--end--
+"""
+This module focuses on extracting specific discrete points from biomechanical data, 
+particularly from gait analysis. The module implements several procedures, 
+each following a different methodology for extracting these points, 
+such as BenedettiProcedure, MaxMinProcedure, and GoldbergProcedure.
+
+The BenedettiProcedure follows the guidelines set by Benedetti et al. (1998) 
+for gait analysis in clinical applications. Similarly, the GoldbergProcedure 
+adheres to the methods recommended by Goldberg et al. (2006).
+"""
 
 import numpy as np
 import pandas as pd
@@ -12,44 +18,48 @@ from pyCGM2.Processing import exporter
 from pyCGM2.Signal.detect_peaks import detect_peaks
 from pyCGM2.Math import derivation
 
+from pyCGM2.Processing.analysis import Analysis
+from typing import List, Tuple, Dict, Optional,Union,Any
 
 # --- abstract procedure
 class DiscretePointProcedure(object):
+    """
+    An abstract base class for different discrete point procedures.
+    """
     def __init__(self):
         pass
 
 # --- PROCEDURE ----
 class BenedettiProcedure(DiscretePointProcedure):
-    """ discrete points recommanded by benededdi et al(1998).
+    """
+    Implements the discrete point extraction method as recommended by Benedetti et al. (1998).
 
     Args:
-        pointSuffix (str): suffix added to model ouputs
+        pointSuffix (Optional[str]): Suffix to be added to model outputs.
 
-
-    **References**:
-
-    Benedetti, M. G.; Catani, F.; Leardini, A.; Pignotti, E.; Giannini, S. (1998) Data management in gait analysis for clinical applications. In : Clinical biomechanics (Bristol, Avon), vol. 13, n° 3, p. 204–215. DOI: 10.1016/s0268-0033(97)00041-7.
-
-
+    References:
+        Benedetti, M. G.; Catani, F.; Leardini, A.; Pignotti, E.; Giannini, S. (1998) 
+        Data management in gait analysis for clinical applications. 
+        Clinical Biomechanics (Bristol, Avon), vol. 13, n° 3, p. 204–215. DOI: 10.1016/s0268-0033(97)00041-7.
     """
-
-
-
 
     NAME = "Benedetti"
 
 
-    def __init__(self,pointSuffix=None):
+    def __init__(self,pointSuffix:Optional[str]=None):
         super(BenedettiProcedure, self).__init__()
 
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
 
-    def detect (self,analysisInstance):
-        """extract discrete points
+    def detect (self,analysisInstance:Analysis):
+        """
+        Extract discrete points based on the Benedetti methodology.
 
         Args:
-            analysisInstance (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+            analysisInstance (Analysis): An instance of biomechanical data analysis.
 
+        Returns:
+            DataFrame: A pandas DataFrame with the extracted discrete points.
         """
 
         # self.__detectTest(analysisInstance,"RHipMoment","Right") # TEST
@@ -1424,25 +1434,29 @@ class BenedettiProcedure(DiscretePointProcedure):
 
 
 class MaxMinProcedure(DiscretePointProcedure):
-    """ extract extrema values.
+    """
+    Extracts the maximum and minimum values of biomechanical data points.
 
     Args:
-        pointSuffix (str): suffix added to model ouputs
-
+        pointSuffix (Optional[str]): Suffix to be added to model outputs.
     """
+
     NAME = "MaxMin"
 
 
-    def __init__(self,pointSuffix=None):
+    def __init__(self,pointSuffix:Optional[str]=None):
         super(MaxMinProcedure, self).__init__()
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
 
-    def detect (self,analysisInstance):
-        """extract discrete points
+    def detect (self,analysisInstance:Analysis):
+        """
+        Extract maximum and minimum points from the analysis data.
 
         Args:
-            analysisInstance (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+            analysisInstance (Analysis): An instance of biomechanical data analysis.
 
+        Returns:
+            DataFrame: A pandas DataFrame with the extracted extrema points.
         """
 
         dataframes = []
@@ -1615,30 +1629,35 @@ class MaxMinProcedure(DiscretePointProcedure):
 
 
 class GoldbergProcedure(DiscretePointProcedure):
-    """ discrete points recommanded by Goldberg et al(1998).
+    """
+    Implements discrete point extraction as recommended by Goldberg et al. (2006).
+
+    This procedure is particularly designed for knee kinetics and kinematics analysis.
 
     Args:
-        pointSuffix (str): suffix added to model ouputs
+        pointSuffix (Optional[str]): Suffix to be added to model outputs.
 
-    **References**:
-
-    Goldberg, Saryn R.; Ounpuu, Sylvia; Arnold, Allison S.; Gage, James R.; Delp, Scott L. (2006) Kinematic and kinetic factors that correlate with improved knee flexion following treatment for stiff-knee gait. In : Journal of biomechanics, vol. 39, n° 4, p. 689–698. DOI: 10.1016/j.jbiomech.2005.01.015.
-
+    References:
+        Goldberg, S. R., et al. (2006). Kinematic and kinetic factors that correlate with improved knee flexion 
+        following treatment for stiff-knee gait. Journal of Biomechanics, 39(4), 689-698.
     """
 
     NAME = "Goldberg"
 
 
-    def __init__(self,pointSuffix=None):
+    def __init__(self,pointSuffix:Optional[str]=None):
         super(GoldbergProcedure, self).__init__()
         self.pointSuffix = str("_"+pointSuffix)  if pointSuffix is not None else ""
 
-    def detect (self,analysisInstance):
-        """extract discrete points
+    def detect (self,analysisInstance:Analysis):
+        """
+        Extract discrete points based on the Goldberg methodology for knee analysis.
 
         Args:
-            analysisInstance (pyCGM2.Processing.analysis.Analysis): an `analysis` instance
+            analysisInstance (Analysis): An instance of biomechanical data analysis.
 
+        Returns:
+            DataFrame: A pandas DataFrame with the extracted discrete points.
         """
 
         dataframes = []
