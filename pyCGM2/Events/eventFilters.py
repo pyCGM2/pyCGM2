@@ -54,20 +54,24 @@ class EventFilter(object):
             self.m_state = True
             for ind in indexes_fs_left:
                 ev = btk.btkEvent('Foot Strike', (ind-1)/pf, 'Left', btk.btkEvent.Manual, '', eventDescriptor)
+                ev.SetFrame(int(ind))
                 ev.SetId(1)
                 self.m_aqui.AppendEvent(ev)
 
             for ind in indexes_fo_left:
                 ev = btk.btkEvent('Foot Off', (ind-1)/pf, 'Left', btk.btkEvent.Manual, '', eventDescriptor)
+                ev.SetFrame(int(ind))
                 ev.SetId(2)
                 self.m_aqui.AppendEvent(ev)
 
             for ind in indexes_fs_right:
                 ev = btk.btkEvent('Foot Strike', (ind-1)/pf, 'Right', btk.btkEvent.Manual, '', eventDescriptor)
+                ev.SetFrame(int(ind))
                 ev.SetId(1)
                 self.m_aqui.AppendEvent(ev)
 
             for ind in indexes_fo_right:
                 ev = btk.btkEvent('Foot Off', (ind-1)/pf, 'Right', btk.btkEvent.Manual, '', eventDescriptor)
+                ev.SetFrame(int(ind))
                 ev.SetId(2)
                 self.m_aqui.AppendEvent(ev)
