@@ -34,14 +34,13 @@ from pyCGM2.Apps.ViconApps.Plot import scores
 from pyCGM2.Apps.ViconApps.Plot import kinetics
 from pyCGM2.Apps.ViconApps.Plot import emg
 
-from pyCGM2.Apps.QtmApps.CGMi import CGM1_workflow
-from pyCGM2.Apps.QtmApps.CGMi import CGM11_workflow
-from pyCGM2.Apps.QtmApps.CGMi import CGM21_workflow
-from pyCGM2.Apps.QtmApps.CGMi import CGM22_workflow
-from pyCGM2.Apps.QtmApps.CGMi import CGM23_workflow
-from pyCGM2.Apps.QtmApps.CGMi import CGM24_workflow
-from pyCGM2.Apps.QtmApps.CGMi import CGM25_workflow
-from pyCGM2.Apps.QtmApps.CGMi import CGM26_workflow
+from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_events
+from pyCGM2.Apps.QtmApps.CGMi import QCGM_modelling
+from pyCGM2.Apps.QtmApps.CGMi import QCGM_processing
+
+
+
+
 
 
 
@@ -392,42 +391,6 @@ class NEXUS_CGMparser(object):
 
         return fittingParser
 
-class QTM_CGMparser(object):
-    """
-    Responsible for parsing and managing commands specific to different versions of the Clinical Gait Analysis Model (CGM) 
-    within the Qualisys Track Manager (QTM) environment. This class creates parsers tailored to the specific CGM version.
-
-    Args:
-        qtmSubparser (argparse.ArgumentParser): A higher-level command parser for integrating CGM-specific sub-commands in QTM.
-        cgmVersion (str): The version of CGM for which the parser is being constructed.
-
-    'QTM' Parser Arguments:
-        - '--sessionFile': Specifies the XML settings file from QTM, type: str, default: "session.xml".
-        - '-ae', '--anomalyException': Raises an exception if an anomaly is detected in the data, action: 'store_true'.
-        - '-msm', '--musculoSkeletalModel': Activates the musculoskeletal model, action: 'store_true', available in CGM versions 2.2 and 2.3.
-    """
-    def __init__(self, qtmSubparser: argparse.ArgumentParser, cgmVersion: str):
-        self.qtmSubparser = qtmSubparser
-        self.cgmVersion = cgmVersion
-        self.cgmVersionShort = self.cgmVersion.replace(".","")
-
-
-    def constructParsers(self):
-        """
-        Constructs parsers for CGM-specific commands in the QTM environment.
-        Adds arguments to the parser based on the CGM version, allowing customization of CGM processing within QTM.
-        """
-        cgm_parsers = self.qtmSubparser.add_parser(self.cgmVersion, help= f"{self.cgmVersion} commands")
-
-        cgm_parsers.add_argument('--sessionFile', type=str,
-                            help='setting xml file from qtm', default="session.xml")
-        cgm_parsers.add_argument('-ae', '--anomalyException',
-                            action='store_true', help='raise an exception if an anomaly is detected')
-
-        if self.cgmVersion in ["CGM2.2","CGM2.3"]:
-           cgm_parsers.add_argument('-msm','--musculoSkeletalModel', action='store_true', help='musculoskeletal model')
-
-
 
 class MainParser:
     """
@@ -572,14 +535,14 @@ class MainParser:
         qtmparser = self.subparsers.add_parser('QTM', help='Vicon nexus commands')
         qtm_subparser = qtmparser.add_subparsers(help='', dest='QTM')
 
-        QTM_CGMparser(qtm_subparser,"CGM1.0").constructParsers()
-        QTM_CGMparser(qtm_subparser,"CGM1.1").constructParsers()
-        QTM_CGMparser(qtm_subparser,"CGM2.1").constructParsers()
-        QTM_CGMparser(qtm_subparser,"CGM2.2").constructParsers()
-        QTM_CGMparser(qtm_subparser,"CGM2.3").constructParsers()
-        QTM_CGMparser(qtm_subparser,"CGM2.4").constructParsers()
-        QTM_CGMparser(qtm_subparser,"CGM2.5").constructParsers()
-        QTM_CGMparser(qtm_subparser,"CGM2.6").constructParsers()
+        event_parser = qtm_subparser.add_parser("GaitEvents", help= "GaitEvents commands")
+
+        qtm_cgm_parser = qtm_subparser.add_parser("CGM", help= "CGM commands")
+        qtm_cgm_subparser = qtm_cgm_parser.add_subparsers(help='', dest='CGM')
+
+        cgmModelling_parser = qtm_cgm_subparser.add_parser("Modelling", help= "CGM Modelling command")
+        cgmProcessing_parser = qtm_cgm_subparser.add_parser("Processing", help= "CGM processing command")
+
 
     def get_parser(self):
         """
@@ -756,22 +719,12 @@ class MainParser:
                         deviceDetailsCommand.main(args)
 
             elif "QTM" in args:
-                if args.QTM == "CGM1.0":
-                    CGM1_workflow.main(args)
-                elif args.QTM == "CGM1.0":
-                    CGM11_workflow.main(args)
-                elif args.QTM == "CGM2.1":
-                    CGM21_workflow.main(args)
-                elif args.QTM == "CGM2.2":
-                    CGM22_workflow.main(args)
-                elif args.QTM == "CGM2.3":
-                    CGM23_workflow.main(args)
-                elif args.QTM == "CGM2.4":
-                    CGM24_workflow.main(args)
-                elif args.QTM == "CGM2.5":
-                    CGM25_workflow.main(args)
-                elif args.QTM == "CGM2.6":
-                    CGM26_workflow.main(args)
+                if args.QTM == "CGM" and args.CGM == "Modelling":
+                    QCGM_modelling.main(args)
+                elif args.QTM == "CGM" and args.CGM == "Processing":
+                    QCGM_processing.main(args)
+                elif args.QTM == "GaitEvents":
+                    QPYCGM2_events.main(args)    
 
 def get_main_parser():
     """
