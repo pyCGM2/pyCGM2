@@ -10,6 +10,7 @@ from pyCGM2.Lib.CGM import cgm1, cgm1_1
 from pyCGM2.Lib.CGM import cgm2_1
 from pyCGM2.Lib.CGM.musculoskeletal import cgm2_2,cgm2_3 
 from pyCGM2.Lib.CGM import  cgm2_4, cgm2_5
+from pyCGM2.Lib.CGM import  kneeCalibration
 import shutil
 import os
 
